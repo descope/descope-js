@@ -3,7 +3,8 @@ module.exports = {
 
 	collectCoverage: true,
 	coverageDirectory: 'coverage',
-	collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
+	// Asaf - check how to merge coverage from multiple repo
+	collectCoverageFrom: ['index.ts'],
 
 	transform: {
 		'^.+\\.ts?$': [

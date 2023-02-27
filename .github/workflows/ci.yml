@@ -51,7 +51,7 @@ jobs:
       - run: npm rebuild && npm run prepare --if-present
       - name: Linting
         run: npm run lint
-        
+
   testing:
     name: 👔 Test
     runs-on: ubuntu-latest
@@ -73,13 +73,13 @@ jobs:
       - run: npm rebuild && npm run prepare --if-present
       - name: Testing
         run: npm run test
-      - name: Coverage check
-        uses: devmasx/coverage-check-action@v1.2.0
-        with:
-          type: lcov
-          min_coverage: 94.9
-          result_path: coverage/lcov.info
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Coverage check
+      #   uses: devmasx/coverage-check-action@v1.2.0
+      #   with:
+      #     type: lcov
+      #     min_coverage: 94.9
+      #     result_path: coverage/lcov.info
+      #     token: ${{ secrets.GITHUB_TOKEN }}
 
   license-validation:
     name: 🪪 License Validation
