@@ -1,0 +1,27 @@
+{
+  "name": "monorepo-playground",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.0.0",
+    "eslint-config-custom": "*",
+    "prettier": "latest",
+    "rimraf": "^4.1.2",
+    "rollup": "^3.17.3",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "packageManager": "npm@8.9.0"
+}

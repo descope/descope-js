@@ -1,0 +1,23 @@
+{
+  "name": "component-sdk",
+  "version": "0.0.0",
+  "main": "./index.tsx",
+  "types": "./index.tsx",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "build": "rollup --config"
+  },
+  "dependencies": {
+    "web-sdk": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.22",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "react": "^18.2.0",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  }
+}
