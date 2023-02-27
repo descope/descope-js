@@ -10,14 +10,19 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.0.0",
+    "@types/jest": "^29.4.0",
     "eslint-config-custom": "*",
+    "jest": "^29.4.3",
+    "jest-environment-jsdom": "^29.4.3",
     "prettier": "latest",
     "rimraf": "^4.1.2",
     "rollup": "^3.17.3",
+    "ts-jest": "^29.0.5",
     "turbo": "latest"
   },
   "engines": {
