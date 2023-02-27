@@ -1,0 +1,8 @@
+{
+  "name": "@descope/web",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "@descope/core": "*"
+  }
+}
