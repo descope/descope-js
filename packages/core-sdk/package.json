@@ -1,6 +1,6 @@
 {
   "name": "core-sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "./index.tsx",
   "types": "./index.tsx",
   "license": "MIT",
@@ -9,6 +9,10 @@
     "lint": "eslint \"**/*.ts*\"",
     "build": "rimraf dist && rollup --config",
     "test": "jest"
+    
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "eslint": "^7.32.0",

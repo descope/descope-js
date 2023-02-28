@@ -1,6 +1,6 @@
 {
   "name": "web-sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "./index.tsx",
   "types": "./index.tsx",
   "license": "MIT",
@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "core-sdk": "*"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
