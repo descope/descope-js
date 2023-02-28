@@ -1,6 +1,6 @@
 {
   "name": "component-sdk",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "./index.tsx",
   "types": "./index.tsx",
   "license": "MIT",
@@ -8,6 +8,9 @@
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
     "build": "rollup --config"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "web-sdk": "*"
