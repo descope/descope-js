@@ -1,5 +1,5 @@
 {
-  "name": "@descope-pg/web-sdk",
+  "name": "@descope/web-sdk",
   "version": "1.0.0",
   "main": "./index.tsx",
   "types": "./index.tsx",

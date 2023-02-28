@@ -1,5 +1,5 @@
 {
-  "name": "@descope-pg/core-sdk",
+  "name": "@descope/core-sdk",
   "version": "1.0.0",
   "main": "./index.tsx",
   "types": "./index.tsx",
