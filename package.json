@@ -28,5 +28,8 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "packageManager": "npm@8.9.0"
+  "packageManager": "npm@8.9.0",
+  "dependencies": {
+    "@changesets/cli": "^2.26.0"
+  }
 }
