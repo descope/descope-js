@@ -45,8 +45,7 @@
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "preset": "conventional",
-        "postTargets": ["core2:npm"]
+        "preset": "conventional"
       }
     },
     "github": {
