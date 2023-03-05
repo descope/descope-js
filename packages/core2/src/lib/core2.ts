@@ -1,3 +1,3 @@
 export function core2(): string {
-  return 'core2';
+  return 'core6';
 }
