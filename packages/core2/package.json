@@ -1,6 +1,8 @@
 {
   "name": "@descope/core2",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "type": "commonjs",
-  "dependencies": {"@descope/core": "*"}
+  "dependencies": {
+    "@descope/core": "*"
+  }
 }
