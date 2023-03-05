@@ -8,6 +8,7 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "updateBuildableProjectDepsInPackageJson": false,
         "outputPath": "dist/packages/core2",
         "main": "packages/core2/src/index.ts",
         "tsConfig": "packages/core2/tsconfig.lib.json",

@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "type": "commonjs",
   "dependencies": {
-    "@descope/core": "*"
+    "@descope/core": "0.0.3"
   }
 }
