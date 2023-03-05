@@ -9,6 +9,13 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 * core new ([669e46d](https://github.com/descope/monorepo-playground/commit/669e46d56a51041c4ef9ee74298daa88e0c260f1))
 
+## [0.0.7](https://github.com/descope/monorepo-playground/compare/core-0.0.6...core-0.0.7) (2023-03-05)
+
+
+### Bug Fixes
+
+* core new ([669e46d](https://github.com/descope/monorepo-playground/commit/669e46d56a51041c4ef9ee74298daa88e0c260f1))
+
 ### [0.0.6](https://github.com/descope/monorepo-playground/compare/core-0.0.5...core-0.0.6) (2023-03-05)
 
 
