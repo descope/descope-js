@@ -8,6 +8,7 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "updateBuildableProjectDepsInPackageJson": true,
         "outputPath": "dist/packages/core2",
         "main": "packages/core2/src/index.ts",
         "tsConfig": "packages/core2/tsconfig.lib.json",
@@ -45,7 +46,8 @@
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "preset": "conventional"
+        "preset": "conventional",
+        "postTargets": ["core2:npm", "core2:github"]
       }
     },
     "github": {

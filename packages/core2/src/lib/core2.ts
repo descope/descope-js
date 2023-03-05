@@ -2,5 +2,5 @@
 
 export function core2(): string {
   // core();
-  return 'core10';
+  return 'core11';
 }
