@@ -27,6 +27,14 @@ jobs:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
       - name: Build
-        run: pnpm run build:latest-tag
+        run: npm run version:ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+      - name: Update pnpm workspace yaml
+        run: sed -i.bu 's/packages\//dist\/packages\//' ./pnpm-workspace.yaml
+      - name: Run pnpm install
+        run: pnpm install
+      - name: Run pnpm publish
+        run: pnpm -r publish
+      - name: Push tags
+        run: git push --tags
