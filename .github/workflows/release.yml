@@ -26,11 +26,12 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: npm run version:ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+          CI: true
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update pnpm workspace yaml
         run: sed -i.bu 's/packages\//dist\/packages\//' ./pnpm-workspace.yaml
       - name: Run pnpm install
