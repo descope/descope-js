@@ -7,6 +7,14 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Bug Fixes
 
+* changelog ([c310d2c](https://github.com/descope/monorepo-playground/commit/c310d2cd19d996ecbb49165582eb4bbd2dd06f30))
+* tests ([c27ed2a](https://github.com/descope/monorepo-playground/commit/c27ed2a37fb66482f7b8222d3148a90869150b0b))
+
+## [0.2.1](https://github.com/descope/monorepo-playground/compare/web-0.2.0...web-0.2.1) (2023-03-06)
+
+
+### Bug Fixes
+
 * tests ([c27ed2a](https://github.com/descope/monorepo-playground/commit/c27ed2a37fb66482f7b8222d3148a90869150b0b))
 
 ## [0.2.0](https://github.com/descope/monorepo-playground/compare/web-0.1.2...web-0.2.0) (2023-03-06)
