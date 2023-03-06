@@ -6,7 +6,6 @@ importers:
     specifiers:
       '@commitlint/cli': ^17.0.0
       '@commitlint/config-conventional': ^17.0.0
-      '@descope/core2': ^0.0.6
       '@jscutlery/semver': ^2.30.1
       '@nrwl/devkit': ^15.8.5
       '@nrwl/eslint-plugin-nx': 15.7.2
@@ -35,7 +34,6 @@ importers:
     devDependencies:
       '@commitlint/cli': 17.4.4
       '@commitlint/config-conventional': 17.4.4
-      '@descope/core2': 0.0.6_tslib@2.5.0
       '@jscutlery/semver': 2.30.1_@nrwl+devkit@15.8.5
       '@nrwl/devkit': 15.8.5_nx@15.7.2+typescript@4.8.4
       '@nrwl/eslint-plugin-nx': 15.7.2_yy4bbsv3gdwtxchbacjbmznzim
@@ -1503,14 +1501,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
-    dev: true
-
-  /@descope/core2/0.0.6_tslib@2.5.0:
-    resolution: {integrity: sha512-1h0czZJwMLL8O56j2wx/CH7ZqkW2SG0Cj5FjCkdqR+mZ2xsWvUZeArW/KMh1DKpOighzhU6M1Nq5S1/S3vuTyw==, tarball: download/@descope/core2/0.0.6/b858e3c46aa0ffa61f00aa4203c9ff5886654722}
-    peerDependencies:
-      tslib: ^2.3.0
-    dependencies:
-      tslib: 2.5.0
     dev: true
 
   /@eslint/eslintrc/1.4.1:
