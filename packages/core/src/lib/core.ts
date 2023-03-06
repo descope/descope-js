@@ -1,3 +1,3 @@
 export function core(): string {
-  return 'core21';
+  return 'core22';
 }

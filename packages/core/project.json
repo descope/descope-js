@@ -40,10 +40,10 @@
       "options": {
         "trackDeps": true,
         "preset": "conventional",
-        "postTargets": ["core:post-version"]
+        "postTargets": ["core:postversion"]
       }
     },
-    "post-version": {
+    "postversion": {
       "executor": "nx:run-commands",
       "options": {
         "command": "echo 'hello'"
