@@ -40,15 +40,9 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "trackDeps": true,
+        "push": false,
         "preset": "conventional"
       }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "echo 'hello'"
-      },
-      "dependsOn": ["build", "version"]
     }
   },
   "tags": []
