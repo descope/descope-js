@@ -8,7 +8,7 @@
     "lint": "nx affected --base=origin/main --target lint",
     "test": "nx affected --base=origin/main --target test",
     "affected:latest-tag": "nx affected --base=$(git for-each-ref --sort=creatordate --format '%(refname) %(creatordate)' refs/tags | tail -n 1 | awk '{sub(\"^refs/tags/\",\"\",$1); print $1}')",
-    "version:latest-tag": "pnpm affected:latest-tag --target version build --parallel 1",
+    "version:latest-tag": "pnpm affected:latest-tag --target version --parallel 1",
     "lint:latest-tag": "pnpm affected:latest-tag --target lint",
     "print:latest-tag": "nx print-affected --base=$(git for-each-ref --sort=creatordate --format '%(refname) %(creatordate)' refs/tags | tail -n 1 | awk '{sub(\"^refs/tags/\",\"\",$1); print $1}') --select=projects"
   },

@@ -39,8 +39,16 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "trackDeps": true,
-        "preset": "conventional"
+        "preset": "conventional",
+        "postTargets": ["core:post-version"]
       }
+    },
+    "post-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'hello'"
+      },
+      "dependsOn": ["build"]
     },
     "publish": {
       "executor": "nx:run-commands",
