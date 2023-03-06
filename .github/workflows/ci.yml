@@ -1,0 +1,33 @@
+name: CI
+
+on: push
+
+env:
+  NODE_VERSION: 16.14
+
+jobs:
+  pr:
+    name: 👷 Build & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: pnpm/action-setup@v2
+      # Skip post-install scripts here, as a malicious
+      # script could steal NODE_AUTH_TOKEN.
+      - name: Install dependencies
+        run: pnpm ci --ignore-scripts
+        env:
+          CI: true
+          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+      - name: Build
+        run: pnpm run build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+      - name: Lint
+      - run: pnpm run lint

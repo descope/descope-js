@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "nx affected --target build",
+    "lint": "nx affected --target lint",
+    "affected:latest-tag": "nx affected --base=$(git show-ref --tags | tail -n 1 | sed 's~.* refs/tags/~~')",
+    "build:latest-tag": "pnpm affected:latest-tag --target build",
+    "lint:latest-tag": "pnpm affected:latest-tag --target lint"
   },
   "private": true,
   "dependencies": {
