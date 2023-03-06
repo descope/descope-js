@@ -1,6 +1,6 @@
 {
   "name": "@descope/web",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "type": "commonjs",
   "dependencies": {
     "@descope/core": "workspace:*"
