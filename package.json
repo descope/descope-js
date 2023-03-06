@@ -7,11 +7,11 @@
     "build": "nx affected --base=origin/main --target build",
     "lint": "nx affected --base=origin/main --target lint",
     "test": "nx affected --base=origin/main --target test",
-    "affected:latest-tag": "nx affected --base=$(git for-each-ref --sort=-taggerdate --count=1 | sed 's~.*refs/tags/~~')",
+    "affected:latest-tag": "nx affected --base=$(git ls-remote --tags --sort=\"committerdate\" origin | tail -n 1 | sed 's~.*refs/tags/~~' | sed 's/\\^{}//')",
     "version:ci": "pnpm affected:latest-tag --target version --parallel 1",
     "postversion:ci": "pnpm affected:latest-tag --target build --parallel 1",
     "lint:latest-tag": "pnpm affected:latest-tag --target lint",
-    "print:latest-tag": "nx print-affected --base=$(git for-each-ref --sort=-taggerdate --count=1 | sed 's~.*refs/tags/~~') --select=projects"
+    "print:latest-tag": "nx print-affected --base=$(git ls-remote --tags --sort=\"committerdate\" origin | tail -n 1 | sed 's~.*refs/tags/~~' | sed 's/\\^{}//') --select=projects"
   },
   "private": true,
   "dependencies": {
