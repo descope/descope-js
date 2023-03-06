@@ -35,6 +35,6 @@ jobs:
       - name: Run pnpm install
         run: pnpm install
       - name: Run pnpm publish
-        run: pnpm -r publish
+        run: pnpm -r publish --no-git-checks
       - name: Push tags
         run: git push --tags
