@@ -1,10 +1,7 @@
 name: CI
-
 on: push
-
 env:
   NODE_VERSION: 16.14
-
 jobs:
   pr:
     name: 👷 Build & Lint
@@ -18,8 +15,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - uses: pnpm/action-setup@v2
-      # Skip post-install scripts here, as a malicious
-      # script could steal NODE_AUTH_TOKEN.
       - name: Install dependencies
         run: pnpm ci --ignore-scripts
         env:
