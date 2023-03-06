@@ -33,7 +33,7 @@ jobs:
       - name: Update pnpm workspace yaml
         run: sed -i.bu 's/packages\//dist\/packages\//' ./pnpm-workspace.yaml
       - name: Run pnpm install
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - name: Run pnpm publish
         run: pnpm -r publish --no-git-checks
       - name: Push tags
