@@ -2,5 +2,5 @@
 
 export function web(): string {
   // console.log(core2())
-  return 'web';
+  return 'web 2';
 }
