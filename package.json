@@ -9,6 +9,7 @@
     "test": "nx affected --base=origin/main --target test",
     "affected:latest-tag": "nx affected --base=$(git show-ref --tags | tail -n 1 | sed 's~.* refs/tags/~~')",
     "build:latest-tag": "pnpm affected:latest-tag --target build",
+    "version:latest-tag": "pnpm affected:latest-tag --target version",
     "lint:latest-tag": "pnpm affected:latest-tag --target lint",
     "print:latest-tag": "nx print-affected --base=$(git show-ref --tags | tail -n 1 | sed 's~.* refs/tags/~~') --select=projects"
   },
