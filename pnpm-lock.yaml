@@ -59,20 +59,17 @@ importers:
       ts-node: 10.9.1_o3cqn7e5gjtu3y7kauu454ca2y
       typescript: 4.8.4
 
-  dist/packages/core:
+  packages/core:
     specifiers: {}
 
-  dist/packages/core2:
+  packages/core2:
     specifiers:
       '@descope/core': workspace:*
     dependencies:
       '@descope/core': link:../core
 
-  dist/packages/web:
-    specifiers:
-      '@descope/core': workspace:*
-    dependencies:
-      '@descope/core': link:../core
+  packages/web:
+    specifiers: {}
 
 packages:
 
