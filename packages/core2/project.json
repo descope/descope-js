@@ -39,6 +39,7 @@
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
+        "trackDeps": true,
         "preset": "conventional"
       }
     },
