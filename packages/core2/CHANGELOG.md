@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.4](https://github.com/descope/monorepo-playground/compare/core2-0.1.3...core2-0.1.4) (2023-03-06)
+
+
+### Bug Fixes
+
+* core2 ([ae5043d](https://github.com/descope/monorepo-playground/commit/ae5043da8fcea780304cdcab8a307bb53a44c9da))
+
 ### [0.1.3](https://github.com/descope/monorepo-playground/compare/core2-0.1.2...core2-0.1.3) (2023-03-05)
 
 
