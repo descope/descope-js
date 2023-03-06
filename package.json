@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "build": "nx affected --target build",
-    "lint": "nx affected --target lint",
+    "build": "nx affected --base=origin/main --target build",
+    "lint": "nx affected --base=origin/main --target lint",
     "affected:latest-tag": "nx affected --base=$(git show-ref --tags | tail -n 1 | sed 's~.* refs/tags/~~')",
     "build:latest-tag": "pnpm affected:latest-tag --target build",
     "lint:latest-tag": "pnpm affected:latest-tag --target lint"
