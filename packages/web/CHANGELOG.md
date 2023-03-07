@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.1](https://github.com/descope/monorepo-playground/compare/web-0.1.0...web-0.1.1) (2023-03-07)
+
+
+### Bug Fixes
+
+* web 1 DUMMY ([e5e16cd](https://github.com/descope/monorepo-playground/commit/e5e16cd4df920895f4ac9c9e61f0c0d93c440411))
+
 ## 0.1.0 (2023-03-07)
 
 
