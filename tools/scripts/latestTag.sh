@@ -2,6 +2,6 @@
 
 output=$(git ls-remote --tags --sort="committerdate" origin);
 if [ -z $output ];
-then echo origin/$(git rev-parse --abbrev-ref HEAD);
+then echo origin/main;
 else echo $output;
 fi;
