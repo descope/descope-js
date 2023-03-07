@@ -1,4 +1,4 @@
-name: 👊 Bump Version & Release
+name: Release
 
 on:
   push:
