@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## 0.0.1 (2023-03-07)
+
+
+### Bug Fixes
+
+* add underscores ([dba42dd](https://github.com/descope/monorepo-playground/commit/dba42dd6ee0723cbb9816f308cd89eef6c68e9ce))
+* align version ([25ba603](https://github.com/descope/monorepo-playground/commit/25ba603a3e8a52be70e73daa0750d633010129bc))
+* btter tests ([eba7d66](https://github.com/descope/monorepo-playground/commit/eba7d66c768ddadbe740bc8c0d67c0c3b147badb))
+* bug fix sample ([da07d75](https://github.com/descope/monorepo-playground/commit/da07d75c37aeb9a7f122927d9d29b56b8eae0109))
+* core ([2735b30](https://github.com/descope/monorepo-playground/commit/2735b30ec6f3f29e5ddcb075b2e21994709f2979))
+* core ([2696d83](https://github.com/descope/monorepo-playground/commit/2696d83a8a10dd11b1189e3999abd2a3eb87537b))
+* core ([643472b](https://github.com/descope/monorepo-playground/commit/643472b76b515aa2aa3d09fef43222b7f071d6be))
+* core ([2ee2e9c](https://github.com/descope/monorepo-playground/commit/2ee2e9c2c1cdf1e41875f8bca7b848ea222024ef))
+* core ([7fcd276](https://github.com/descope/monorepo-playground/commit/7fcd27645f88b3f7b338f21d7a681dc67d68a485))
+* core 1 DUMMY ([5b21170](https://github.com/descope/monorepo-playground/commit/5b211706fef29dabf5bd2a475514726ea6c9ad70))
+* core new ([669e46d](https://github.com/descope/monorepo-playground/commit/669e46d56a51041c4ef9ee74298daa88e0c260f1))
+* core10 ([8a7570d](https://github.com/descope/monorepo-playground/commit/8a7570d80c55b35e1f977514b5246bb4dca49a42))
+* core11 ([dd1be33](https://github.com/descope/monorepo-playground/commit/dd1be332a24731086c33529bfdb95859a78ed73f))
+* core12 ([0aa95e5](https://github.com/descope/monorepo-playground/commit/0aa95e5a1644043ee7c413da03eb5fbc3a68deb2))
+* core13 ([5f019ce](https://github.com/descope/monorepo-playground/commit/5f019ce6f84ff16c2cf5a380bfc969a299cbf06d))
+* core14 ([05d63b5](https://github.com/descope/monorepo-playground/commit/05d63b5078cb666fa6ced4f2a9609c5fb5fce3e1))
+* core15 ([4dee65e](https://github.com/descope/monorepo-playground/commit/4dee65ef7ee0a7ffce17947930ede7b833b001d2))
+* core16 ([2730c0b](https://github.com/descope/monorepo-playground/commit/2730c0b87e3143df27af655aa43ad9fe93627441))
+* core17 ([73c565d](https://github.com/descope/monorepo-playground/commit/73c565d08e212527c07030ef124f814efa9142c3))
+* core18 ([73f0017](https://github.com/descope/monorepo-playground/commit/73f0017fe72001c1a1a5ae3ad634826407b83e74))
+* core19 ([8c9faba](https://github.com/descope/monorepo-playground/commit/8c9faba7d31c8a66b0cf5c361afbe9314fd72c59))
+* core20 ([a4decd0](https://github.com/descope/monorepo-playground/commit/a4decd0ac1cfa85e88585ec34c4d65a5ca39a2d5))
+* core21 ([2b02815](https://github.com/descope/monorepo-playground/commit/2b028154cf162aca7089ff74b5c1608d9a1f8f81))
+* core22 ([34ed946](https://github.com/descope/monorepo-playground/commit/34ed94652a63b6fa7a3dcc8c1472246c0a53d24b))
+* core23 ([6033538](https://github.com/descope/monorepo-playground/commit/6033538904f1df089133c16972504c14d6064d7a))
+* core24 ([1afc679](https://github.com/descope/monorepo-playground/commit/1afc679d4f28481ffb2bb580cd6ae11e0acaa986))
+* core25 ([d33db67](https://github.com/descope/monorepo-playground/commit/d33db673860eb8b78d8e07823d59890e10d95d56))
+* core26 ([e8387f7](https://github.com/descope/monorepo-playground/commit/e8387f7d5942609d07d99fcdc440d47646c45e2f))
+* core27 ([be375d3](https://github.com/descope/monorepo-playground/commit/be375d310b930e737396b76d94abbeb8be4e4c5f))
+* core28 ([16208e8](https://github.com/descope/monorepo-playground/commit/16208e8ff8afa80cc0eaf5592bdb1da2bba094ab))
+* core29 ([833605a](https://github.com/descope/monorepo-playground/commit/833605a86d6254a750fad544f9795e217501f736))
+* core3 ([0e5f4d1](https://github.com/descope/monorepo-playground/commit/0e5f4d19f48db8fa98af7cb997b65a775dcd4e73))
+* fixing bug 1 ([a144d19](https://github.com/descope/monorepo-playground/commit/a144d19f9db74ecd4c65913b4f9e7238ead89299))
+* tests ([c27ed2a](https://github.com/descope/monorepo-playground/commit/c27ed2a37fb66482f7b8222d3148a90869150b0b))
+
 ### [0.0.27](https://github.com/descope/monorepo-playground/compare/core-0.0.26...core-0.0.27) (2023-03-06)
 
 
