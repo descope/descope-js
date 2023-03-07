@@ -4,7 +4,7 @@ env:
   NODE_VERSION: 18.2
 jobs:
   pr:
-    name: 👷 Build & Lint
+    name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

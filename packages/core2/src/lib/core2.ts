@@ -1,6 +1,5 @@
-// import {core} from '@descope/core'
+import { core } from '@descope/core';
 
 export function core2(): string {
-  // core();
-  return 'core12';
+  return 'core2_2' + core();
 }
