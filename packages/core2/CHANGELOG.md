@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.3](https://github.com/descope/monorepo-playground/compare/core2-0.1.2...core2-0.1.3) (2023-03-07)
+
+### Dependency Updates
+
+* `core` updated to version `0.0.4`
 ## [0.1.2](https://github.com/descope/monorepo-playground/compare/core2-0.1.1...core2-0.1.2) (2023-03-07)
 
 ### Dependency Updates
