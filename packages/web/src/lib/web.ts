@@ -1,4 +1,4 @@
 
 export function web(): string {
-  return 'web_2';
+  return 'web_3';
 }
