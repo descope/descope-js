@@ -8,11 +8,11 @@
     "lint": "nx affected --base=origin/nx --target lint",
     "test": "nx affected --base=origin/nx --target test",
     "print-affected": "nx print-affected --base=origin/nx --select=projects",
-    "affected:ci": "nx affected --base=$(output=$(git ls-remote --tags --sort=\"committerdate\" origin | tail -n 1 | sed 's~.*refs/tags/~~' | sed 's/\\^{}//'); if [[ \"$output\" -gt 0 ]]; then echo $output; else echo 'origin/nx'; fi;)",
+    "affected:ci": "nx affected --base=$(bash ./tools/scripts/latest-tag.sh)",
     "version:ci": "pnpm affected:ci --target version --parallel 1",
     "postversion:ci": "pnpm affected:ci --target build --parallel 1",
     "lint:ci": "pnpm affected:ci --target lint",
-    "print-affected:ci": "nx print-affected --base=$(output=$(git ls-remote --tags --sort=\"committerdate\" origin | tail -n 1 | sed 's~.*refs/tags/~~' | sed 's/\\^{}//'); if [[ \"$output\" -gt 0 ]]; then echo $output; else echo 'origin/nx'; fi;) --select=projects"
+    "print-affected:ci": "nx print-affected --base=$(bash ./tools/scripts/latest-tag.sh) --select=projects"
   },
   "private": true,
   "dependencies": {
