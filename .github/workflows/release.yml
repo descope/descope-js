@@ -42,4 +42,4 @@ jobs:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Push tags
-        run: git push --tags
+        run: git push --atomic origin nx $(git tag -l)
