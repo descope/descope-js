@@ -1,0 +1,15 @@
+name: Pull Request
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+env:
+  NODE_VERSION: 18.2
+jobs:
+  pr:
+    name: 👷 Build / Lint / Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: deepakputhraya/action-pr-title@master
+      with:
+        regex: '([a-z])+:.+'
+        allowed_prefixes: 'build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test'
