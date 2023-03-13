@@ -20,7 +20,7 @@
 		"start": "npm run generateCerts && npm run build && http-server -S -o ./examples",
 		"build": "rimraf dist && rollup -c",
 		"test": "jest",
-		"lint": "eslint './(src|test|examples)/**/*.ts' --fix && tsc --noEmit",
+		"lint": "eslint '+(src|test|examples)/**/*.ts' --fix && tsc --noEmit",
 		"format": "prettier . -w --ignore-path .gitignore",
 		"format-check": "prettier . --check --ignore-path .gitignore",
 		"format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
@@ -45,6 +45,7 @@
 		"authentication"
 	],
 	"devDependencies": {
+    "eslint-plugin-react": "^7.28.0",
 		"@open-wc/rollup-plugin-html": "1.2.5",
 		"@rollup/plugin-commonjs": "24.0.1",
 		"@rollup/plugin-node-resolve": "^15.0.0",
@@ -52,6 +53,7 @@
 		"@rollup/plugin-terser": "^0.4.0",
 		"@rollup/plugin-typescript": "^11.0.0",
 		"@types/jest": "^27.0.2",
+		"@types/node": "18.15.0",
 		"@types/js-cookie": "^3.0.2",
 		"@types/lodash.get": "^4.4.7",
 		"@typescript-eslint/parser": "^5.33.1",

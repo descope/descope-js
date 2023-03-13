@@ -1,9 +1,10 @@
 {
+  "root": true,
 	"env": {
 		"browser": true,
 		"es2021": true
 	},
-	"extends": ["../../.eslintrc.json", "plugin:import/typescript", "prettier", "plugin:jest-dom/recommended"],
+	"extends": ["plugin:import/typescript", "prettier", "plugin:jest-dom/recommended"],
 	"parser": "@typescript-eslint/parser",
 	"ignorePatterns": [
 		"build/*",

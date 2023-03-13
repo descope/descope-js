@@ -133,7 +133,7 @@ async function conditional(options: string, abort: AbortController): Promise<str
 }
 
 // eslint-disable-next-line import/exports-last
-export async function isSupported(requirePlatformAuthenticator: boolean = false): Promise<boolean> {
+export async function isSupported(requirePlatformAuthenticator = false): Promise<boolean> {
 	if (!IS_BROWSER) {
 		return Promise.resolve(false);
 	}

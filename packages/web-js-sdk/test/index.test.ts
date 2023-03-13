@@ -1,6 +1,6 @@
 import createSdk from '../src/index';
 
-let mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
+const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
 describe('sdk', () => {

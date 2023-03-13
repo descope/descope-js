@@ -1,5 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { addOnResize, dragElement, limitCoordinateToScreenBoundaries, State } from './helpers';
+import {
+  addOnResize,
+  dragElement,
+  limitCoordinateToScreenBoundaries,
+  State,
+} from './helpers';
 import { DebuggerMessage } from './types';
 
 const INITIAL_POS_THRESHOLD = 32;
@@ -114,7 +119,7 @@ template.innerHTML = `
 </style>
 
 <div style="top:${INITIAL_POS_THRESHOLD}px; left:${
-	window.innerWidth - INITIAL_WIDTH - INITIAL_POS_THRESHOLD
+  window.innerWidth - INITIAL_WIDTH - INITIAL_POS_THRESHOLD
 }px;" class="debugger">
   <div class="header">
     <span>Debugger messages</span>
@@ -135,44 +140,44 @@ const icon = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns=
 type MessagesState = { messages: DebuggerMessage[] };
 
 class Debugger extends HTMLElement {
-	#messagesState = new State<MessagesState>({ messages: [] });
+  #messagesState = new State<MessagesState>({ messages: [] });
 
-	#rootEle: HTMLDivElement;
+  #rootEle: HTMLDivElement;
 
-	#contentEle: HTMLDivElement;
+  #contentEle: HTMLDivElement;
 
-	#headerEle: HTMLDivElement;
+  #headerEle: HTMLDivElement;
 
-	#eventsCbRefs = {
-		resize: this.#onWindowResize.bind(this)
-	};
+  #eventsCbRefs = {
+    resize: this.#onWindowResize.bind(this),
+  };
 
-	constructor() {
-		super();
+  constructor() {
+    super();
 
-		this.attachShadow({ mode: 'open' });
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		this.#rootEle = this.shadowRoot.querySelector<HTMLDivElement>('.debugger');
-		this.#contentEle = this.#rootEle.querySelector<HTMLDivElement>('.content');
-		this.#headerEle = this.#rootEle.querySelector<HTMLDivElement>('.header');
-	}
+    this.#rootEle = this.shadowRoot.querySelector<HTMLDivElement>('.debugger');
+    this.#contentEle = this.#rootEle.querySelector<HTMLDivElement>('.content');
+    this.#headerEle = this.#rootEle.querySelector<HTMLDivElement>('.header');
+  }
 
-	updateData(data: DebuggerMessage | DebuggerMessage[]) {
-		this.#messagesState.update((state) => ({
-			messages: state.messages.concat(data)
-		}));
-	}
+  updateData(data: DebuggerMessage | DebuggerMessage[]) {
+    this.#messagesState.update((state) => ({
+      messages: state.messages.concat(data),
+    }));
+  }
 
-	#onNewMessages(data: MessagesState) {
-		this.#renderMessages(data);
-		this.#setCollapsibleMessages();
-	}
+  #onNewMessages(data: MessagesState) {
+    this.#renderMessages(data);
+    this.#setCollapsibleMessages();
+  }
 
-	#renderMessages(data: MessagesState) {
-		this.#contentEle.innerHTML = data.messages
-			.map(
-				(message) => `
+  #renderMessages(data: MessagesState) {
+    this.#contentEle.innerHTML = data.messages
+      .map(
+        (message) => `
     <div class="msg">
       ${icon}
       <div class="msg_content">
@@ -186,60 +191,65 @@ class Debugger extends HTMLElement {
       <div class="chevron"></div>
     </div>
   `
-			)
-			.join('');
-	}
+      )
+      .join('');
+  }
 
-	#setCollapsibleMessages() {
-		this.#contentEle.querySelectorAll('.msg').forEach((ele: HTMLElement) => {
-			const descEle = ele.querySelector('.msg_desc');
-			const lineHeight = 20;
-			const isScroll = descEle.scrollWidth > descEle.clientWidth;
-			const isMultiLine = descEle.clientHeight > lineHeight;
-			const isCollapsible = isScroll || isMultiLine;
+  #setCollapsibleMessages() {
+    this.#contentEle.querySelectorAll('.msg').forEach((ele: HTMLElement) => {
+      const descEle = ele.querySelector('.msg_desc');
+      const lineHeight = 20;
+      const isScroll = descEle.scrollWidth > descEle.clientWidth;
+      const isMultiLine = descEle.clientHeight > lineHeight;
+      const isCollapsible = isScroll || isMultiLine;
 
-			if (isCollapsible) {
-				ele.classList.add('collapsible');
-				ele.onclick = (e: MouseEvent) => {
-					// message description should not toggle collapse
-					if (!(e.target as HTMLElement).classList.contains('msg_desc')) {
-						ele.classList.toggle('collapsed');
-					}
-				};
-			} else {
-				ele.classList.remove('collapsible');
-				ele.onclick = null;
-			}
-		});
-	}
+      if (isCollapsible) {
+        ele.classList.add('collapsible');
+        ele.onclick = (e: MouseEvent) => {
+          // message description should not toggle collapse
+          if (!(e.target as HTMLElement).classList.contains('msg_desc')) {
+            ele.classList.toggle('collapsed');
+          }
+        };
+      } else {
+        ele.classList.remove('collapsible');
+        ele.onclick = null;
+      }
+    });
+  }
 
-	#onWindowResize() {
-		// when window is resizing we want to make sure debugger is still visible
-		const [left, top] = limitCoordinateToScreenBoundaries(
-			this.#rootEle,
-			Number.parseInt(this.#rootEle.style.left, 10),
-			Number.parseInt(this.#rootEle.style.top, 10),
-			{ top: 'all', bottom: 100, left: 100, right: 100 }
-		);
-		this.#rootEle.style.top = `${top}px`;
-		this.#rootEle.style.left = `${left}px`;
-	}
+  #onWindowResize() {
+    // when window is resizing we want to make sure debugger is still visible
+    const [left, top] = limitCoordinateToScreenBoundaries(
+      this.#rootEle,
+      Number.parseInt(this.#rootEle.style.left, 10),
+      Number.parseInt(this.#rootEle.style.top, 10),
+      { top: 'all', bottom: 100, left: 100, right: 100 }
+    );
+    this.#rootEle.style.top = `${top}px`;
+    this.#rootEle.style.left = `${left}px`;
+  }
 
-	connectedCallback() {
-		dragElement(this.#rootEle, this.#headerEle, { top: 'all', bottom: 100, left: 100, right: 100 });
+  connectedCallback() {
+    dragElement(this.#rootEle, this.#headerEle, {
+      top: 'all',
+      bottom: 100,
+      left: 100,
+      right: 100,
+    });
 
-		window.addEventListener('resize', this.#eventsCbRefs.resize);
+    window.addEventListener('resize', this.#eventsCbRefs.resize);
 
-		addOnResize(this.#rootEle);
-		this.#rootEle.onresize = this.#setCollapsibleMessages.bind(this);
+    addOnResize(this.#rootEle);
+    this.#rootEle.onresize = this.#setCollapsibleMessages.bind(this);
 
-		this.#messagesState.subscribe(this.#onNewMessages.bind(this));
-	}
+    this.#messagesState.subscribe(this.#onNewMessages.bind(this));
+  }
 
-	disconnectedCallback() {
-		this.#messagesState.unsubscribeAll();
-		window.removeEventListener('resize', this.#eventsCbRefs.resize);
-	}
+  disconnectedCallback() {
+    this.#messagesState.unsubscribeAll();
+    window.removeEventListener('resize', this.#eventsCbRefs.resize);
+  }
 }
 
 customElements.define('descope-debugger', Debugger);

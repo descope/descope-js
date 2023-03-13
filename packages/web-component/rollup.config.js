@@ -11,52 +11,55 @@ const packageJson = require('./package.json');
 const input = 'src/lib/descope-wc/index.ts';
 
 export default [
-	{
-		input,
-		output: {
-			dir: 'dist',
-			format: 'iife'
-		},
-		inlineDynamicImports: true,
-		plugins: [
-			del({ targets: 'dist' }),
-			define({
-				replacements: {
-					BUILD_VERSION: JSON.stringify(packageJson.version)
-				}
-			}),
-			typescript({
-				rootDir: './src/lib'
-			}),
-			commonjs(),
-			nodeResolve(),
-			terser()
-		]
-	},
-	{
-		input,
-		output: {
-			dir: 'dist/esm',
-			format: 'esm'
-		},
-		plugins: [
-			typescript({
-				rootDir: './src/lib',
-				declarationDir: 'dist/esm/dts'
-			}),
-			define({
-				replacements: {
-					BUILD_VERSION: JSON.stringify(packageJson.version)
-				}
-			}),
-			commonjs(),
-			nodeResolve(),
-			terser()
-		]
-	},
-	{
-		input: './dist/dts/descope-wc/index.d.ts',
-		output: [{ file: 'dist/index.d.ts', format: 'esm' }],
-		plugins: [dts(), del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/esm/dts'] })]
-	}
+  {
+    input,
+    output: {
+      dir: 'dist',
+      format: 'iife',
+    },
+    inlineDynamicImports: true,
+    plugins: [
+      del({ targets: 'dist' }),
+      define({
+        replacements: {
+          BUILD_VERSION: JSON.stringify(packageJson.version),
+        },
+      }),
+      typescript({
+        rootDir: './src/lib',
+      }),
+      commonjs(),
+      nodeResolve(),
+      terser(),
+    ],
+  },
+  {
+    input,
+    output: {
+      dir: 'dist/esm',
+      format: 'esm',
+    },
+    plugins: [
+      typescript({
+        rootDir: './src/lib',
+        declarationDir: 'dist/esm/dts',
+      }),
+      define({
+        replacements: {
+          BUILD_VERSION: JSON.stringify(packageJson.version),
+        },
+      }),
+      commonjs(),
+      nodeResolve(),
+      terser(),
+    ],
+  },
+  {
+    input: './dist/dts/descope-wc/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    plugins: [
+      dts(),
+      del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/esm/dts'] }),
+    ],
+  },
 ];

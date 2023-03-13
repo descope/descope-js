@@ -2,7 +2,7 @@ import createSdk from '../src/index';
 import { flowResponse } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
-let mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
+const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 Object.defineProperty(global, 'PublicKeyCredential', { value: class {} });
 

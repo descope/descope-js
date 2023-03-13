@@ -14,7 +14,7 @@ const descopeHeaders = {
 	'x-descope-sdk-version': global.BUILD_VERSION
 };
 
-let mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
+const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
 describe('fingerprint', () => {

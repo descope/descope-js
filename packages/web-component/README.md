@@ -34,7 +34,7 @@ render(){
 
 ```html
 <head>
-	<script src="./my-lib.umd.production.min.js"></script>
+  <script src="./my-lib.umd.production.min.js"></script>
 </head>
 ```
 
