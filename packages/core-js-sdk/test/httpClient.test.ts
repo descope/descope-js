@@ -2,13 +2,13 @@ import createHttpClient from '../src/httpClient';
 import createFetchLogger from '../src/httpClient/helpers/createFetchLogger';
 
 const mockFetch = jest.fn();
-global.fetch = mockFetch;
+globalThis.fetch = mockFetch;
 
 const afterRequestHook = jest.fn();
 
 const descopeHeaders = {
 	'x-descope-sdk-name': 'core-js',
-	'x-descope-sdk-version': global.BUILD_VERSION
+	'x-descope-sdk-version': globalThis.BUILD_VERSION
 };
 
 const httpClient = createHttpClient({
@@ -80,7 +80,7 @@ describe('httpClient', () => {
 					test: '123',
 					Authorization: 'Bearer 456',
 					'x-descope-sdk-name': 'lulu',
-					'x-descope-sdk-version': global.BUILD_VERSION
+					'x-descope-sdk-version': globalThis.BUILD_VERSION
 				}),
 				method: 'GET'
 			}

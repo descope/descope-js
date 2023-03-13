@@ -14,7 +14,7 @@
 		"isolatedModules": true,
 		"declaration": true,
 		"declarationDir": "dts",
-		"typeRoots": ["./node_modules/@types"]
+		"typeRoots": ["./node_modules/@types"],
 	},
 
 	"include": ["**/*.ts"],
