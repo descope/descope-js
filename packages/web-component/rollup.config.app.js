@@ -12,6 +12,7 @@ const packageJson = require('./package.json');
 dotenv.config();
 
 export default {
+  preserveSymlinks: true,
   input: 'src/app/index.html',
   output: { dir: 'build', format: 'esm', sourcemap: true },
   plugins: [
