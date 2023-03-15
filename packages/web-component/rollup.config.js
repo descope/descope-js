@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import del from 'rollup-plugin-delete';
 import { terser } from 'rollup-plugin-terser';
 import dts from 'rollup-plugin-dts';
+import copy from 'rollup-plugin-copy'
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import define from 'rollup-plugin-define';
@@ -62,4 +63,22 @@ export default [
       del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/esm/dts'] }),
     ],
   },
+  {
+     // copy dist folder to root dist folder, so nx build will use it
+    // this is a temporary solution until we migrate to nx build
+    // input just point to a random file from dist
+    input: './dist/index.js',
+    plugins: [
+      copy({
+        targets: [
+          {
+            src: ['dist/**.*', '!..'], dest: '../../dist/packages/web-component/'
+          },
+          {
+            src: 'dist/esm/**.*', dest: '../../dist/packages/web-component/esm',
+          }
+        ]
+      })
+    ]
+  }
 ];
