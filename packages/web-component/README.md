@@ -44,21 +44,20 @@ render(){
 <descope-wc project-id="<project-id>" flow-id="<flow-id>"></descope-wc>
 ```
 
-### Run the demo app
-
-- Install dependencies - `npm i`
-- Create a `.env` file and add the following parameters:
-
+### Run Example
+To run the example:
+1. Clone the repo
+1. Install dependencies `pnpm i`
+1. Go to package directory `cd packages/web-component`
+1. Create a `.env` file and the following variables:
 ```env
 // .env
-DESCOPE_BASE_URL=<base-url>
-DESCOPE_FLOW_ID=<flow-id>
 DESCOPE_PROJECT_ID=<project-id>
+DESCOPE_FLOW_ID=<flow-id>
 ```
+1. Run the sample `pnpm run start`
 
-- Run application - `npm run start`
-
-_TODO: we should host this file so it can be included without installing the package, once we will publish it to a public registry, we can also use unpkg.com/ to serve it_
+NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun (this is a temporary solution until we improve the process to fit to monorepo).
 
 ## Optional Attributes
 
