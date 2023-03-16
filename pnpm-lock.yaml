@@ -57,9 +57,6 @@ importers:
       ts-node: 10.9.1_o3cqn7e5gjtu3y7kauu454ca2y
       typescript: 4.8.4
 
-  packages/core:
-    specifiers: {}
-
   packages/core-js-sdk:
     specifiers:
       '@open-wc/rollup-plugin-html': 1.2.5
@@ -152,15 +149,6 @@ importers:
       ts-jest: 29.0.5_6fn3c3y27zsf3yd4qtmwargku4
       ts-node: 10.9.1_typescript@4.8.4
       typescript: 4.8.4
-
-  packages/core2:
-    specifiers:
-      '@descope/core': workspace:*
-    dependencies:
-      '@descope/core': link:../core
-
-  packages/web:
-    specifiers: {}
 
   packages/web-component:
     specifiers:
@@ -5854,7 +5842,7 @@ packages:
     dependencies:
       confusing-browser-globals: 1.0.11
       eslint: 8.34.0
-      eslint-plugin-import: 2.27.5_iu3wgsmneko2dt5obqm7bgzhfu
+      eslint-plugin-import: 2.27.5_o4eobofgmyly4lv3ob6uu4snzm
       object.assign: 4.1.4
       object.entries: 1.1.6
       semver: 6.3.0
@@ -5968,7 +5956,7 @@ packages:
       eslint-plugin-promise: ^6.0.0
     dependencies:
       eslint: 8.34.0
-      eslint-plugin-import: 2.27.5_iu3wgsmneko2dt5obqm7bgzhfu
+      eslint-plugin-import: 2.27.5_o4eobofgmyly4lv3ob6uu4snzm
       eslint-plugin-n: 15.6.1_eslint@8.34.0
       eslint-plugin-promise: 6.1.1_eslint@8.34.0
     dev: true
@@ -8389,7 +8377,7 @@ packages:
       pretty-format: 29.5.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1_qnkrvra44ag3tzv2z6otl47lcm
+      ts-node: 10.9.1_typescript@4.8.4
     transitivePeerDependencies:
       - supports-color
     dev: true

@@ -13,12 +13,7 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@descope/core": ["packages/core/src/index.ts"],
-      "@descope/core2": ["packages/core2/src/index.ts"],
-      "@descope/web": ["packages/web/src/index.ts"]
-    }
+    "baseUrl": "."
   },
   "exclude": ["node_modules", "tmp"]
 }
