@@ -19,6 +19,7 @@ importers:
       '@typescript-eslint/parser': ^5.36.1
       eslint: ~8.15.0
       eslint-config-prettier: 8.1.0
+      glob: ^9.3.0
       husky: ^8.0.0
       jest: 28.1.1
       jest-environment-jsdom: 28.1.1
@@ -47,6 +48,7 @@ importers:
       '@typescript-eslint/parser': 5.54.0_oy7hgmlo6357d5kkcjbkfgtg4q
       eslint: 8.15.0
       eslint-config-prettier: 8.1.0_eslint@8.15.0
+      glob: 9.3.0
       husky: 8.0.3
       jest: 28.1.1_6m7kcbkkzjz4ln6z66tlzx44we
       jest-environment-jsdom: 28.1.1
@@ -7219,6 +7221,16 @@ packages:
 
   /glob/9.2.1:
     resolution: {integrity: sha512-Pxxgq3W0HyA3XUvSXcFhRSs+43Jsx0ddxcFrbjxNGkL2Ak5BAUBxLqI5G6ADDeCHLfzzXFhe0b1yYcctGmytMA==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      fs.realpath: 1.0.0
+      minimatch: 7.4.2
+      minipass: 4.2.4
+      path-scurry: 1.6.1
+    dev: true
+
+  /glob/9.3.0:
+    resolution: {integrity: sha512-EAZejC7JvnQINayvB/7BJbpZpNOJ8Lrw2OZNEvQxe0vaLn1SuwMcfV7/MNaX8L/T0wmptBFI4YMtDvSBxYDc7w==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       fs.realpath: 1.0.0
