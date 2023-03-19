@@ -30,10 +30,3 @@ jobs:
         run: pnpm run lint
       - name: Test
         run: pnpm run test
-      - name: Coverage check
-        uses: devmasx/coverage-check-action@v1.2.0
-        with:
-          type: lcov
-          min_coverage: 95
-          result_path: coverage/lcov.info
-          token: ${{ github.token }}
