@@ -3,7 +3,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import fs from 'fs';
 import del from 'rollup-plugin-delete';
-import copy from 'rollup-plugin-copy'
 import dts from 'rollup-plugin-dts';
 import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
@@ -68,25 +67,7 @@ export default [
 			del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/cjs/dts'] }),
 			cjsPackage()
 		]
-	},
-  {
-    // copy dist folder to root dist folder, so nx build will use it
-    // this is a temporary solution until we migrate to nx build
-    // input just point to a random file from dist
-    input: './dist/index.esm.js',
-    plugins: [
-      copy({
-        targets: [
-          {
-            src: ['dist/**.*', '!..'], dest: `../../dist/packages/web-js-sdk/`
-          },
-          {
-            src: 'dist/cjs/**.*', dest: `../../dist/packages/web-js-sdk/cjs`,
-          }
-        ]
-      })
-    ]
-  }
+	}
 ];
 
 function cjsPackage() {
