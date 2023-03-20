@@ -1,0 +1,17 @@
+{
+  "name": "web-component",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/web-component/src",
+  "projectType": "library",
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": false,
+        "preset": "conventional"
+      }
+    }
+  },
+  "tags": []
+}
