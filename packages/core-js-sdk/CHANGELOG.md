@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.2](https://github.com/descope/monorepo-playground/compare/core-js-sdk-0.0.1...core-js-sdk-0.0.2) (2023-03-20)
+
+
+### Bug Fixes
+
+* 666 RELEASE ([a95e4a7](https://github.com/descope/monorepo-playground/commit/a95e4a70fbffd4188d6b31016167a1d02888c92c))
+* 777 RELEASE ([43b90da](https://github.com/descope/monorepo-playground/commit/43b90dadc36edc8ac1d3f418ca5ef9ed835db58d))
+
 ## 0.0.1 (2023-03-20)
 
 
