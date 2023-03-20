@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.3](https://github.com/descope/monorepo-playground/compare/web-js-sdk-0.0.2...web-js-sdk-0.0.3) (2023-03-20)
+
+
+### Bug Fixes
+
+* 555 RELEASE ([9fed5a7](https://github.com/descope/monorepo-playground/commit/9fed5a7b78d98b76e38142aa4d050691c16ca8f4))
+
 ## [0.0.2](https://github.com/descope/monorepo-playground/compare/web-js-sdk-0.0.1...web-js-sdk-0.0.2) (2023-03-20)
 
 
