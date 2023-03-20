@@ -21,15 +21,7 @@
     "build": "rimraf dist && rollup -c",
     "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'",
-    "format": "prettier . -w --ignore-path .gitignore",
-    "format-check": "prettier . --check --ignore-path .gitignore",
-    "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
     "generateCerts": "test -f ./key.pem && test -f ./cert.pem || openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/C=US/ST=California/L=San Francisco/O=Descope/CN=localhost' -keyout ./key.pem -out ./cert.pem"
-  },
-  "lint-staged": {
-    "+(src|test|examples)/**/*.{js,ts,jsx,tsx}": [
-      "npm run lint"
-    ]
   },
   "license": "MIT",
   "repository": {

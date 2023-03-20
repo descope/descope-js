@@ -16,15 +16,7 @@
     "build-app": "rollup -c rollup.config.app.js",
     "build": "rollup -c",
     "test": "jest",
-    "lint": "eslint '+(src|test)/**/*.ts'",
-    "format": "prettier . -w --ignore-path .gitignore",
-    "format-check": "prettier . --check --ignore-path .gitignore",
-    "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged"
-  },
-  "lint-staged": {
-    "+(src|test)/**/*.{js,ts,jsx,tsx}": [
-      "npm run lint"
-    ]
+    "lint": "eslint '+(src|test)/**/*.ts'"
   },
   "license": "MIT",
   "repository": {
