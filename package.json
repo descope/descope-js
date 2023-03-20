@@ -53,6 +53,9 @@
   "lint-staged": {
     "*.[tj]sx?": [
       "npm run lint",
+      "git add"
+    ],
+    "*.*": [
       "npm run format --uncommitted",
       "git add"
     ]
