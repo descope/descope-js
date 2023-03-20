@@ -6,7 +6,6 @@ importers:
     specifiers:
       '@commitlint/cli': ^17.0.0
       '@commitlint/config-conventional': ^17.0.0
-      '@descope/web-component': '*'
       '@jscutlery/semver': ^2.30.1
       '@nrwl/devkit': ^15.8.5
       '@nrwl/eslint-plugin-nx': 15.7.2
@@ -36,7 +35,6 @@ importers:
     devDependencies:
       '@commitlint/cli': 17.4.4
       '@commitlint/config-conventional': 17.4.4
-      '@descope/web-component': link:packages/web-component
       '@jscutlery/semver': 2.30.1_@nrwl+devkit@15.8.5
       '@nrwl/devkit': 15.8.5_nx@15.7.2+typescript@4.8.4
       '@nrwl/eslint-plugin-nx': 15.7.2_yy4bbsv3gdwtxchbacjbmznzim
