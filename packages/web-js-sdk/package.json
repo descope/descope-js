@@ -1,6 +1,6 @@
 {
 	"name": "@descope/web-js-sdk",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"author": "Descope Team <info@descope.com>",
 	"homepage": "https://github.com/descope/web-js-sdk",
 	"bugs": {
@@ -45,7 +45,7 @@
 		"authentication"
 	],
 	"devDependencies": {
-    "eslint-plugin-react": "^7.28.0",
+		"eslint-plugin-react": "^7.28.0",
 		"@open-wc/rollup-plugin-html": "1.2.5",
 		"@rollup/plugin-commonjs": "24.0.1",
 		"@rollup/plugin-node-resolve": "^15.0.0",
@@ -73,7 +73,7 @@
 		"eslint-plugin-promise": "6.1.1",
 		"http-server": "^14.0.0",
 		"jest": "^27.3.1",
-    "jest-environment-jsdom": "^27.3.1",
+		"jest-environment-jsdom": "^27.3.1",
 		"lint-staged": "^13.0.3",
 		"prettier": "^2.6.2",
 		"pretty-quick": "^3.1.3",
