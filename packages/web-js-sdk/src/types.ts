@@ -18,3 +18,5 @@ export type AfterRequestHook = Extract<CoreSdkConfig['hooks']['afterRequest'], F
 export type { UserResponse } from '@descope/core-js-sdk';
 
 
+
+
