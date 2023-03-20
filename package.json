@@ -58,7 +58,7 @@
     ],
     "package.json": [
       "bash -c \"pnpm i\"",
-      "git add pnpm-lock.yaml "
+      "git add pnpm-lock.yaml"
     ]
   }
 }
