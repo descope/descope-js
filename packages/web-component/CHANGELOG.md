@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.2](https://github.com/descope/monorepo-playground/compare/web-component-0.0.1...web-component-0.0.2) (2023-03-20)
+
+
+### Bug Fixes
+
+* 123 RELEASE ([e05cfff](https://github.com/descope/monorepo-playground/commit/e05cfffd70d145c95ef20d2dcdc57482cb08e471))
+* 222 RELEASE ([3301dc8](https://github.com/descope/monorepo-playground/commit/3301dc86d7914c8ae93cfe2ec0cc8940a428bc5d))
+* dummy RELEASE ([6dcba57](https://github.com/descope/monorepo-playground/commit/6dcba577e80998cc50f824bf8aab7681f83abfda))
+
 ## 0.0.1 (2023-03-20)
 
 ### Dependency Updates
