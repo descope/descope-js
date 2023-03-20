@@ -16,3 +16,5 @@ export type BeforeRequestHook = Extract<CoreSdkConfig['hooks']['beforeRequest'],
 export type AfterRequestHook = Extract<CoreSdkConfig['hooks']['afterRequest'], Function>;
 
 export type { UserResponse } from '@descope/core-js-sdk';
+
+
