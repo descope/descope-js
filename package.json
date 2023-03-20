@@ -51,12 +51,8 @@
     "typescript": "~4.8.2"
   },
   "lint-staged": {
-    "*.[tj]sx?": [
-      "npm run lint",
-      "git add"
-    ],
-    "*.*": [
-      "npm run format --uncommitted",
+    "package.json": [
+      "bash -c \"pnpm i\"",
       "git add"
     ]
   }
