@@ -20,7 +20,6 @@
     "format": "prettier . -w --ignore-path .gitignore",
     "format-check": "prettier . --check --ignore-path .gitignore",
     "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
-    "prepublishOnly": "npm run build"
   },
   "lint-staged": {
     "+(src|test)/**/*.{js,ts,jsx,tsx}": [

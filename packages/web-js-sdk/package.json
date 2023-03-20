@@ -24,7 +24,6 @@
 		"format": "prettier . -w --ignore-path .gitignore",
 		"format-check": "prettier . --check --ignore-path .gitignore",
 		"format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
-		"prepublishOnly": "npm run build",
 		"generateCerts": "test -f ./key.pem && test -f ./cert.pem || openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/C=US/ST=California/L=San Francisco/O=Descope/CN=localhost' -keyout ./key.pem -out ./cert.pem"
 	},
 	"lint-staged": {
