@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "postbuild:ci_": "pnpm -r $(npm run print-affected:ci | tail -n 1 | sed 's/, / --filter /g;s/^/--filter /') exec pwd | sed 's/$/\\//' | xargs -I {} rsync -av --progress {} /Users/nirgurarie/dev/monorepo-playground/dist/packages/ --exclude node_modules",
+    "postbuild:ci": "pnpm -r $(npm run print-affected:ci | tail -n 1 | sed 's/, / --filter /g;s/^/--filter /') exec pwd | sed 's/$/\\//' | xargs -I {} rsync -av --progress {} /Users/nirgurarie/dev/monorepo-playground/dist/packages/ --exclude node_modules",
     "build": "nx affected --base=origin/main --target build",
     "lint": "nx affected --base=origin/main --target lint",
     "test": "nx affected --base=origin/main --target test",
