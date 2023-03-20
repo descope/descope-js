@@ -7,7 +7,14 @@ module.exports = {
 	collectCoverage: true,
 	coverageDirectory: 'coverage',
 	collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
-
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 95,
+      lines: 95,
+      statements: 95,
+    },
+  },
 	// A set of global variables that need to be available in all test environments
 	globals: {
 		'ts-jest': {

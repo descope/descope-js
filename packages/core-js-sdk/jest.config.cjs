@@ -4,7 +4,14 @@ module.exports = {
 	collectCoverage: true,
 	coverageDirectory: 'coverage',
 	collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
-
+  coverageThreshold: {
+    global: {
+      branches: 67,
+      functions: 91,
+      lines: 94,
+      statements: 94,
+    },
+  },
 	// A set of global variables that need to be available in all test environments
 	globals: {
 		BUILD_VERSION: 'one.two.three'

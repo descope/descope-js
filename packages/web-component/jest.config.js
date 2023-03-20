@@ -7,7 +7,14 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   collectCoverageFrom: ['src/lib/**/*.ts'],
-
+  coverageThreshold: {
+    global: {
+      branches: 85,
+      functions: 95,
+      lines: 96,
+      statements: 96,
+    },
+  },
   globals: {
     'ts-jest': {
       tsconfig: 'tsconfig.json',
