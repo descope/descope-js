@@ -51,7 +51,7 @@
     "typescript": "~4.8.2"
   },
   "lint-staged": {
-    "**/*.*": [
+    "*.*": [
       "bash -c \"npm run format\"",
       "bash -c \"npm run lint\"",
       "git add"
