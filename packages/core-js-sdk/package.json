@@ -22,7 +22,7 @@
 		"lint": "eslint src/**/*.* --fix -c ./.eslintrc.json",
 		"format": "prettier . -w --ignore-path .gitignore",
 		"format-check": "prettier . --check --ignore-path .gitignore",
-		"format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
+		"format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged"
 	},
 	"lint-staged": {
 		"+(src|test|examples)/**/*.{js,ts,jsx,tsx}": [
