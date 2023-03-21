@@ -13,15 +13,15 @@ importers:
       '@nrwl/js': 15.7.2
       '@nrwl/linter': 15.7.2
       '@nrwl/workspace': 15.7.2
-      '@types/jest': 28.1.1
+      '@types/jest': 28.1.8
       '@types/node': 16.11.7
       '@typescript-eslint/eslint-plugin': 5.36.1
       '@typescript-eslint/parser': ^5.36.1
       eslint: ~8.15.0
       eslint-config-prettier: 8.1.0
       husky: ^8.0.0
-      jest: 28.1.1
-      jest-environment-jsdom: 28.1.1
+      jest: 28.1.3
+      jest-environment-jsdom: 28.1.3
       lint-staged: ^13.0.3
       ngx-deploy-npm: ^5.2.0
       nx: 15.7.2
@@ -42,20 +42,20 @@ importers:
       '@nrwl/js': 15.7.2_iewltepy45s5cyhsd2ythsmlha
       '@nrwl/linter': 15.7.2_zi76drywmf6jzoveavhbcackhi
       '@nrwl/workspace': 15.7.2_3joxs7tzhkrjjacnd53qs32tau
-      '@types/jest': 28.1.1
+      '@types/jest': 28.1.8
       '@types/node': 16.11.7
       '@typescript-eslint/eslint-plugin': 5.36.1_3wsw5pkckrtggnnu6fp463qx3a
       '@typescript-eslint/parser': 5.54.0_oy7hgmlo6357d5kkcjbkfgtg4q
       eslint: 8.15.0
       eslint-config-prettier: 8.1.0_eslint@8.15.0
       husky: 8.0.3
-      jest: 28.1.1_6m7kcbkkzjz4ln6z66tlzx44we
-      jest-environment-jsdom: 28.1.1
+      jest: 28.1.3_6m7kcbkkzjz4ln6z66tlzx44we
+      jest-environment-jsdom: 28.1.3
       lint-staged: 13.1.2
       ngx-deploy-npm: 5.2.0_eo637pnanrv6wmxawldzdq22x4
       nx: 15.7.2
       prettier: 2.8.4
-      ts-jest: 28.0.8_xm67kbs6jojoohvjgmo5u3nlhu
+      ts-jest: 28.0.8_fztrhi54teek7om3xmnfwid3mq
       ts-node: 10.9.1_o3cqn7e5gjtu3y7kauu454ca2y
       typescript: 4.8.4
 
@@ -2440,7 +2440,7 @@ packages:
     dependencies:
       '@bcoe/v8-coverage': 0.2.3
       '@jest/console': 28.1.3
-      '@jest/test-result': 28.1.1
+      '@jest/test-result': 28.1.3
       '@jest/transform': 28.1.3
       '@jest/types': 28.1.3
       '@jridgewell/trace-mapping': 0.3.17
@@ -3579,11 +3579,11 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@types/jest/28.1.1:
-    resolution: {integrity: sha512-C2p7yqleUKtCkVjlOur9BWVA4HgUQmEj/HWCt5WzZ5mLXrWnyIfl0wGuArc+kBXsy0ZZfLp+7dywB4HtSVYGVA==}
+  /@types/jest/28.1.8:
+    resolution: {integrity: sha512-8TJkV++s7B6XqnDrzR1m/TT0A0h948Pnl/097veySPN67VRAgQ4gZ7n2KfJo2rVq6njQjdxU3GCCyDvAeuHoiw==}
     dependencies:
-      jest-matcher-utils: 27.5.1
-      pretty-format: 27.5.1
+      expect: 28.1.3
+      pretty-format: 28.1.3
     dev: true
 
   /@types/jest/29.4.0:
@@ -8424,7 +8424,7 @@ packages:
       jest-environment-node: 28.1.3
       jest-get-type: 28.0.2
       jest-regex-util: 28.0.2
-      jest-resolve: 28.1.1
+      jest-resolve: 28.1.3
       jest-runner: 28.1.3
       jest-util: 28.1.3
       jest-validate: 28.1.3
@@ -8699,8 +8699,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest-environment-jsdom/28.1.1:
-    resolution: {integrity: sha512-41ZvgSoPNcKG5q3LuuOcAczdBxRq9DbZkPe24okN6ZCmiZdAfFtPg3z+lOtsT1fM6OAERApKT+3m0MRDQH2zIA==}
+  /jest-environment-jsdom/28.1.3:
+    resolution: {integrity: sha512-HnlGUmZRdxfCByd3GM2F100DgQOajUBzEitjGqIREcb45kGjZvRrKUdlaF6escXBdcXNl0OBh+1ZrfeZT3GnAg==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/environment': 28.1.3
@@ -9120,7 +9120,7 @@ packages:
       jest-util: 28.1.3
       jest-validate: 28.1.3
       resolve: 1.22.1
-      resolve.exports: 1.1.0
+      resolve.exports: 1.1.1
       slash: 3.0.0
     dev: true
 
@@ -9617,8 +9617,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest/28.1.1_6m7kcbkkzjz4ln6z66tlzx44we:
-    resolution: {integrity: sha512-qw9YHBnjt6TCbIDMPMpJZqf9E12rh6869iZaN08/vpOGgHJSAaLLUn6H8W3IAEuy34Ls3rct064mZLETkxJ2XA==}
+  /jest/28.1.3_6m7kcbkkzjz4ln6z66tlzx44we:
+    resolution: {integrity: sha512-N4GT5on8UkZgH0O5LUavMRV1EDEhNTL0KEfRmDIeZHSV7p2XgLoY9t9VDUgL6o+yfdgYHVxuz81G8oB9VG5uyA==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
     peerDependencies:
@@ -12261,7 +12261,7 @@ packages:
       yargs-parser: 20.2.9
     dev: true
 
-  /ts-jest/28.0.8_xm67kbs6jojoohvjgmo5u3nlhu:
+  /ts-jest/28.0.8_fztrhi54teek7om3xmnfwid3mq:
     resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
@@ -12284,7 +12284,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.1_6m7kcbkkzjz4ln6z66tlzx44we
+      jest: 28.1.3_6m7kcbkkzjz4ln6z66tlzx44we
       jest-util: 28.1.3
       json5: 2.2.3
       lodash.memoize: 4.1.2
