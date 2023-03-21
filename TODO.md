@@ -9,3 +9,5 @@
 - research using project json (with plugins) vs package.json scripts
 - packages cleanup ("eslint-plugin-react": "^7.28.0" in core-js-sdk)
 - renovate
+- check that CI is failing when command is failing
+- change all base branches from `nx` to `main`

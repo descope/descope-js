@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export * from './helpers';
 export { default as State } from './state';
 export { replaceWithScreenState, setTOTPVariable } from './templates';
