@@ -15,9 +15,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      # - run: |
-      #     git config user.name github-actions
-      #     git config user.email github-actions@github.com
+          persist-credentials: false
+          ref: ${{ github.ref }}
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
