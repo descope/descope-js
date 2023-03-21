@@ -72,7 +72,7 @@ importers:
       esbuild: ^0.17.0
       eslint: 8.26.0
       eslint-config-airbnb-typescript: 17.0.0
-      eslint-config-prettier: 8.6.0
+      eslint-config-prettier: 8.7.0
       eslint-config-standard: 17.0.0
       eslint-import-resolver-typescript: 3.5.3
       eslint-plugin-import: 2.27.5
@@ -120,7 +120,7 @@ importers:
       esbuild: 0.17.11
       eslint: 8.26.0
       eslint-config-airbnb-typescript: 17.0.0_gldlhrdosyxcbn7j2m53ionyg4
-      eslint-config-prettier: 8.6.0_eslint@8.26.0
+      eslint-config-prettier: 8.7.0_eslint@8.26.0
       eslint-config-standard: 17.0.0_orzfbtnketgepydvklroutl45a
       eslint-import-resolver-typescript: 3.5.3_e55ds5l35gpamu3vxkmffm35ca
       eslint-plugin-import: 2.27.5_loqgimnduxgxaqsgw27vkvhcdq
@@ -130,7 +130,7 @@ importers:
       eslint-plugin-n: 15.6.1_eslint@8.26.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.26.0
-      eslint-plugin-prettier: 4.2.1_5favqhoiksmzoe7jg6nfhkgjce
+      eslint-plugin-prettier: 4.2.1_kcd4wrdqutqeu5ihdjtioupblu
       eslint-plugin-promise: 6.1.1_eslint@8.26.0
       jest: 29.5.0_ts-node@10.9.1
       jest-environment-jsdom: 29.5.0
@@ -7666,18 +7666,6 @@ packages:
       eslint: 8.15.0
     dev: true
 
-  /eslint-config-prettier/8.6.0_eslint@8.26.0:
-    resolution:
-      {
-        integrity: sha512-bAF0eLpLVqP5oEVUFKpMA+NnRFICwn9X8B5jrR9FcqnYBuPbqWEjTEspPWMj5ye6czoSLDweCzSo3Ko7gGrZaA==,
-      }
-    hasBin: true
-    peerDependencies:
-      eslint: '>=7.0.0'
-    dependencies:
-      eslint: 8.26.0
-    dev: true
-
   /eslint-config-prettier/8.6.0_eslint@8.34.0:
     resolution:
       {
@@ -7688,6 +7676,18 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 8.34.0
+    dev: true
+
+  /eslint-config-prettier/8.7.0_eslint@8.26.0:
+    resolution:
+      {
+        integrity: sha512-HHVXLSlVUhMSmyW4ZzEuvjpwqamgmlfkutD53cYXLikh4pt/modINRcCIApJ84czDxM4GZInwUrromsDdTImTA==,
+      }
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+    dependencies:
+      eslint: 8.26.0
     dev: true
 
   /eslint-config-standard/17.0.0_orzfbtnketgepydvklroutl45a:
@@ -8263,7 +8263,7 @@ packages:
       eslint: 8.34.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_5favqhoiksmzoe7jg6nfhkgjce:
+  /eslint-plugin-prettier/4.2.1_kcd4wrdqutqeu5ihdjtioupblu:
     resolution:
       {
         integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==,
@@ -8278,7 +8278,7 @@ packages:
         optional: true
     dependencies:
       eslint: 8.26.0
-      eslint-config-prettier: 8.6.0_eslint@8.26.0
+      eslint-config-prettier: 8.7.0_eslint@8.26.0
       prettier: 2.8.4
       prettier-linter-helpers: 1.0.0
     dev: true
@@ -9673,7 +9673,7 @@ packages:
     engines: { node: '>=8.0.0' }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.2_debug@4.3.2
+      follow-redirects: 1.15.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
