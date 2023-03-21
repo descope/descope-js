@@ -23,17 +23,17 @@ export default Object.assign(createSdk, { DeliveryMethods });
 
 export { transformResponse } from './sdk/helpers';
 export type {
-	EnchantedLinkResponse,
-	ExchangeAccessKeyResponse,
-	FlowAction,
-	FlowResponse,
-	FlowStatus,
-	JWTResponse,
-	ResponseData,
-	SdkResponse,
-	TOTPResponse,
-	URLResponse,
-	UserResponse
+  EnchantedLinkResponse,
+  ExchangeAccessKeyResponse,
+  FlowAction,
+  FlowResponse,
+  FlowStatus,
+  JWTResponse,
+  ResponseData,
+  SdkResponse,
+  TOTPResponse,
+  URLResponse,
+  UserResponse,
 } from './sdk/types';
 export * from './utils';
 export { default as HttpStatusCodes } from './constants/httpStatusCodes';

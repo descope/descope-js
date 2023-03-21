@@ -5,7 +5,8 @@ const FINGERPRINT_ENDPOINT_URL = 'fingerprint.endpoint.url';
 
 /** Fingerprint.js custom API endpoint */
 export const FP_EP_URL =
-	(IS_BROWSER && localStorage?.getItem(FINGERPRINT_ENDPOINT_URL)) || 'https://fp.descope.com';
+  (IS_BROWSER && localStorage?.getItem(FINGERPRINT_ENDPOINT_URL)) ||
+  'https://fp.descope.com';
 /** Fingerprint visitor data */
 export const FP_BODY_DATA = 'fpData';
 /** Session ID for visitor */

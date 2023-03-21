@@ -252,7 +252,7 @@ class DescopeWc extends BaseDescopeWc {
       stepStateUpdate.next = (interactionId, inputs) =>
         this.sdk.flow.start(
           flowId,
-          { tenant, lastAuth },
+          { tenant, lastAuth, ...(redirectUrl && { redirectUrl }) },
           conditionInteractionId,
           interactionId,
           {

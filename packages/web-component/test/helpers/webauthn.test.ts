@@ -1,7 +1,18 @@
 import { isConditionalLoginSupported } from '../../src/lib/helpers/webauthn';
+import {
+  timeoutPromise,
+  getChromiumVersion,
+} from '../../src/lib/helpers/helpers';
 
 jest.mock('../../src/lib/helpers/helpers', () => ({
   withMemCache: (fn) => fn,
+  timeoutPromise: jest.fn(
+    () =>
+      new Promise((_, rej) => {
+        setTimeout(rej, 10000);
+      })
+  ),
+  getChromiumVersion: jest.fn(),
 }));
 
 describe('WebAuthn Helper Function', () => {
@@ -35,8 +46,42 @@ describe('WebAuthn Helper Function', () => {
       (<any>(
         window.PublicKeyCredential
       )).isUserVerifyingPlatformAuthenticatorAvailable = jest.fn(() => true);
-      const res = isConditionalLoginSupported();
-      expect(res).resolves.toBe(true);
+      const res = await isConditionalLoginSupported();
+      expect(res).toBe(true);
+    });
+
+    it('should not hang and return true when isConditionalMediationAvailable is not resolved and Chromium version supports passkeys', async () => {
+      (timeoutPromise as jest.Mock).mockImplementationOnce(
+        () =>
+          new Promise((_, rej) => {
+            setTimeout(rej, 100);
+          })
+      );
+      getChromiumVersion.mockReturnValueOnce(110);
+      (<any>window.PublicKeyCredential).isConditionalMediationAvailable = () =>
+        new Promise(() => {});
+      (<any>(
+        window.PublicKeyCredential
+      )).isUserVerifyingPlatformAuthenticatorAvailable = jest.fn(() => true);
+      const res = await isConditionalLoginSupported();
+      expect(res).toBe(true);
+    });
+
+    it('should not hang and return false when isConditionalMediationAvailable is not resolved and Chromium version does not support passkeys', async () => {
+      (timeoutPromise as jest.Mock).mockImplementationOnce(
+        () =>
+          new Promise((_, rej) => {
+            setTimeout(rej, 100);
+          })
+      );
+      getChromiumVersion.mockReturnValueOnce(100);
+      (<any>window.PublicKeyCredential).isConditionalMediationAvailable = () =>
+        new Promise(() => {});
+      (<any>(
+        window.PublicKeyCredential
+      )).isUserVerifyingPlatformAuthenticatorAvailable = jest.fn(() => true);
+      const res = await isConditionalLoginSupported();
+      expect(res).toBe(false);
     });
 
     it('should not throw when browser function rejects', async () => {

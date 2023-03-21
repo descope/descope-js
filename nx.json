@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
   "affected": {
-    "defaultBase": "origin/nx-js-sdk"
+    "defaultBase": "origin/main"
   },
   "tasksRunnerOptions": {
     "default": {

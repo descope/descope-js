@@ -456,7 +456,7 @@ describe('web-component', () => {
     pageContent =
       '<button id="submitterId">click</button><input id="email" name="email"></input><span>hey</span>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
     await screen.findByShadowText('hey');
 
@@ -465,7 +465,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        { lastAuth: {} },
+        { lastAuth: {}, redirectUrl: 'http://custom.url' },
         undefined,
         'submitterId',
         {

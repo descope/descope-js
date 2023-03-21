@@ -2,6 +2,8 @@ name: Pull Request
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
+  branches:
+    - main
 env:
   NODE_VERSION: 18.2
 jobs:
@@ -9,7 +11,7 @@ jobs:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
     steps:
-    - uses: deepakputhraya/action-pr-title@master
-      with:
-        regex: '([a-z])+:.+'
-        allowed_prefixes: 'build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test'
+      - uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: '([a-z])+:.+'
+          allowed_prefixes: 'build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test'

@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.6](https://github.com/descope/monorepo-playground/compare/web-component-0.0.5...web-component-0.0.6) (2023-03-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `0.0.5`
 ## [0.0.5](https://github.com/descope/monorepo-playground/compare/web-component-0.0.4...web-component-0.0.5) (2023-03-20)
 
 ### Dependency Updates
