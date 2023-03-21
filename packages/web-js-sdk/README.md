@@ -19,11 +19,11 @@ const myProjectId = 'xxx';
 const sdk = descopeSdk({ projectId: myProjectId });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
-	// handle session token change...
+  // handle session token change...
 });
 
 sdk.onUserChange((newUser, oldUser) => {
-	// handle user change...
+  // handle user change...
 });
 const userIdentifier = 'identifier';
 sdk.otp.signIn.email(userIdentifier);
@@ -34,7 +34,9 @@ const sessionToken = getSessionToken();
 ```
 
 ### Run Example
+
 To run the example:
+
 1. Clone the repo
 1. Install dependencies `pnpm i`
 1. Go to package directory `cd packages/web-js-sdk`
@@ -43,4 +45,3 @@ To run the example:
 The browser open a tab with directory tree of available examples. Click on the desire directory and follow the instruction.
 
 NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun (this is a temporary solution until we improve the process to fit to monorepo).
-

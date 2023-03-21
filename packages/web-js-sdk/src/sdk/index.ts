@@ -3,13 +3,13 @@ import createWebAuthn from './webauthn';
 import withFlow from './flow';
 
 const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
-	const coreSdk = createCoreSdk(...args);
+  const coreSdk = createCoreSdk(...args);
 
-	return {
-		...coreSdk,
-		flow: withFlow(coreSdk),
-		webauthn: createWebAuthn(coreSdk)
-	};
+  return {
+    ...coreSdk,
+    flow: withFlow(coreSdk),
+    webauthn: createWebAuthn(coreSdk),
+  };
 };
 
 export default createSdk;

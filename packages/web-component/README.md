@@ -45,16 +45,20 @@ render(){
 ```
 
 ### Run Example
+
 To run the example:
+
 1. Clone the repo
 1. Install dependencies `pnpm i`
 1. Go to package directory `cd packages/web-component`
 1. Create a `.env` file and the following variables:
+
 ```env
 // .env
 DESCOPE_PROJECT_ID=<project-id>
 DESCOPE_FLOW_ID=<flow-id>
 ```
+
 1. Run the sample `pnpm run start`
 
 NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun (this is a temporary solution until we improve the process to fit to monorepo).

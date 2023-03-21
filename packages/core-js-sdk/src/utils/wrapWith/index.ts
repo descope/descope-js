@@ -39,37 +39,39 @@ import { SdkFnWrapper, ReplacePaths, SdkFnsPaths } from './types';
  */
 
 const wrapWith = <
-	Obj extends object,
-	Paths extends ReadonlyArray<SdkFnsPaths<Obj>>,
-	WrapperData extends ResponseData
+  Obj extends object,
+  Paths extends ReadonlyArray<SdkFnsPaths<Obj>>,
+  WrapperData extends ResponseData
 >(
-	obj: Obj,
-	paths: Paths,
-	wrapper: SdkFnWrapper<WrapperData>
+  obj: Obj,
+  paths: Paths,
+  wrapper: SdkFnWrapper<WrapperData>
 ): ReplacePaths<Obj, Paths, WrapperData> => {
-	paths.forEach((path) => {
-		const sections = path.split('.');
-		let section = sections.shift();
-		let currentRef: Record<string, any> = obj;
+  paths.forEach((path) => {
+    const sections = path.split('.');
+    let section = sections.shift();
+    let currentRef: Record<string, any> = obj;
 
-		while (sections.length > 0) {
-			currentRef = currentRef[section];
+    while (sections.length > 0) {
+      currentRef = currentRef[section];
 
-			if (!section || !currentRef) {
-				throw Error(`Invalid path "${path}", "${section}" is missing or has no value`);
-			}
+      if (!section || !currentRef) {
+        throw Error(
+          `Invalid path "${path}", "${section}" is missing or has no value`
+        );
+      }
 
-			section = sections.shift();
-		}
+      section = sections.shift();
+    }
 
-		if (typeof currentRef[section] !== 'function') {
-			throw Error(`"${path}" is not a function`);
-		}
-		const origFn = currentRef[section];
-		currentRef[section] = wrapper(origFn);
-	});
+    if (typeof currentRef[section] !== 'function') {
+      throw Error(`"${path}" is not a function`);
+    }
+    const origFn = currentRef[section];
+    currentRef[section] = wrapper(origFn);
+  });
 
-	return obj as any;
+  return obj as any;
 };
 
 export default wrapWith;
