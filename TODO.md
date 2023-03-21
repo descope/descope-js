@@ -9,3 +9,4 @@
 - clean changelog
 - update pnpm so it will fail if pnpm publish fails - https://github.com/pnpm/pnpm/issues/5528
 - configure all ci actions as mandatory before merge (GH PR settings)
+- remove branch history
