@@ -11,15 +11,22 @@ jobs:
     if: "contains(github.event.head_commit.message, 'RELEASE')"
     runs-on: ubuntu-latest
     steps:
+      - name: Get token
+        id: get_token
+        uses: tibdex/github-app-token@v1
+        with:
+          private_key: ${{ secrets.APP_PEM }}
+          app_id: ${{ secrets.APP_ID }}
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          persist-credentials: false
+          # persist-credentials: false
+          token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
-      - run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+      # - run: |
+      #     git config user.name github-actions
+      #     git config user.email github-actions@github.com
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -31,12 +38,6 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
-      - name: Get token
-        id: get_token
-        uses: tibdex/github-app-token@v1
-        with:
-          private_key: ${{ secrets.APP_PEM }}
-          app_id: ${{ secrets.APP_ID }}
       - name: Build
         run: npm run version:ci
         env:
@@ -48,7 +49,7 @@ jobs:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
       - name: Push versions, changelog and tags
-        run: git tag test-1 && git push --atomic origin main $(git tag -l)
+        run: git push --atomic origin main $(git tag -l)
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
