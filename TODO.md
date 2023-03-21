@@ -7,3 +7,4 @@
 
 - reuse config files (such as tsconfig, jest, lint, rollup, etc..)
 - research using project json (with plugins) vs package.json scripts
+- packages cleanup ("eslint-plugin-react": "^7.28.0" in core-js-sdk)
