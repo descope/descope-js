@@ -18,6 +18,7 @@
       "inputs": ["production", "^production"]
     },
     "lint": {
+      "dependsOn": ["^build"],
       "inputs": [
         "default",
         "{workspaceRoot}/.eslintrc.json",
