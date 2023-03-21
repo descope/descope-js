@@ -11,3 +11,4 @@
 - renovate
 - check that CI is failing when command is failing
 - change all base branches from `nx` to `main`
+- clean changelog

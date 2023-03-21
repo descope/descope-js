@@ -13,7 +13,7 @@
     "print-affected": "nx print-affected --select=projects",
     "affected:ci": "nx affected --base=$(sh ./tools/scripts/latestTag.sh)",
     "preversion:ci": "sh ./tools/scripts/latestTag.sh",
-    "version:ci": "pnpm affected:ci --target version --parallel 1",
+    "version:ci": "pnpm affected:ci --target version --noVerify=true --parallel 1",
     "postversion:ci": "pnpm run build:ci",
     "print-affected:ci": "nx print-affected --base=$(sh ./tools/scripts/latestTag.sh) --select=projects",
     "format": "nx format:write",
