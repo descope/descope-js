@@ -1,6 +1,6 @@
 # @descope/core-js-sdk
 
-Descope JavaScript core SDK - Alpha
+Descope JavaScript core SDK
 
 ## Usage
 
