@@ -13,10 +13,10 @@ npm install @descope/core-js-sdk
 ### Use it
 
 ```js
-import descopeSdk from '@descope/core-js-sdk';
+import createSdk from '@descope/core-js-sdk';
 
 const myProjectId = 'xxx';
-const sdk = descopeSdk({ projectId: myProjectId });
+const sdk = createSdk({ projectId: myProjectId });
 
 const loginId = 'loginId';
 
