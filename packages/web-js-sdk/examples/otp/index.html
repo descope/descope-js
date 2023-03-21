@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>What's your project ID?</h1>
+      <form>
+        <input name="input" type="text" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <script>
+      let sdk;
+      let step = 0;
+      let mail;
+      const fns = [
+        (projectId) => {
+          sdk = Descope({ projectId });
+        },
+        (email) => {
+          mail = email;
+          return sdk.otp.signUpOrIn.email(email);
+        },
+        (code) => sdk.otp.verify.email(mail, code),
+      ];
+      const texts = [
+        "What's your email?",
+        "What's the code you got in your email?",
+        'Success!',
+      ];
+
+      const formEle = document.getElementsByTagName('form')[0];
+      const h1Ele = document.getElementsByTagName('h1')[0];
+      const inputEle = document.getElementsByTagName('input')[0];
+
+      formEle.onsubmit = async function (e) {
+        e.preventDefault();
+        const input = new FormData(e.target).get('input');
+
+        let resp;
+        try {
+          resp = await fns[step](input);
+          if (resp?.ok === false) alert(JSON.stringify(resp, null, 4));
+        } catch (e) {
+          alert(e.message);
+          return;
+        }
+
+        h1Ele.innerText = texts[step];
+        inputEle.value = '';
+        step++;
+        if (!texts[step]) {
+          formEle.remove();
+          alert(JSON.stringify(resp, null, 4));
+        }
+      };
+    </script>
+  </body>
+</html>

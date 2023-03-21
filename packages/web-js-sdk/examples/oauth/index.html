@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>What's your project ID?</h1>
+      <form>
+        <input name="input" type="text" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <script>
+      const warningEle = document.getElementsByClassName('warning')[0];
+      const url = new URL(window.location.href);
+      url.pathname += 'exchange';
+
+      const formEle = document.getElementsByTagName('form')[0];
+      const h1Ele = document.getElementsByTagName('h1')[0];
+      const inputEle = document.getElementsByTagName('input')[0];
+
+      formEle.onsubmit = async function (e) {
+        e.preventDefault();
+        const projectId = new FormData(e.target).get('input');
+
+        const sdk = Descope({ projectId });
+        const url = new URL(location.href);
+        url.pathname += 'exchange.html';
+        url.searchParams.set('projectId', projectId);
+        sdk.oauth.start.google(url.toString(), { redirect: true });
+
+        h1Ele.innerText = 'Redirecting...';
+        formEle.remove();
+      };
+    </script>
+  </body>
+</html>

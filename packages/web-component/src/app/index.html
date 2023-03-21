@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Descope WC demo app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        background-color: antiquewhite;
+        position: relative;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        width: 500px;
+        min-height: 300px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="../lib/descope-wc/index.ts"></script>
+    <div class="login-container">
+      <descope-wc
+        project-id="<project-id>"
+        flow-id="<flow-id>"
+        base-url="<base-url>"
+        debug="true"
+      ></descope-wc>
+    </div>
+    <script>
+      const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+      descopeWcEle.addEventListener('error', (e) =>
+        alert(`Error! - ${e.detail.errorMessage}`)
+      );
+      descopeWcEle.addEventListener('success', (e) =>
+        alert(`Success! - ${JSON.stringify(e.detail)}`)
+      );
+    </script>
+  </body>
+</html>

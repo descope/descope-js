@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    if: "contains(github.event.head_commit.message, 'RELEASE')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          CI: true
+      - name: Build
+        run: npm run version:ci
+        env:
+          CI: true
+      - name: Run pnpm publish
+        run: pnpm -r publish --access=public --no-git-checks
+        env:
+          CI: true
+          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
+      - name: Push tags
+        run: git push --atomic origin main $(git tag -l)
