@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.6](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.5...core-js-sdk-1.0.6) (2023-03-21)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([#33](https://github.com/descope/descope-js/issues/33)) ([998e593](https://github.com/descope/descope-js/commit/998e5939dbc15037f047eb46d39a6470714722d7))
+
 ## [1.0.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.4...core-js-sdk-1.0.5) (2023-03-21)
 
 ## [1.0.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.3...core-js-sdk-1.0.4) (2023-03-21)
