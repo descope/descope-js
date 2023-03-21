@@ -34,9 +34,17 @@ jobs:
         env:
           CI: true
       - name: Run pnpm publish
-        run: pnpm -r publish --access=public --no-git-checks
+        run: pnpm -r publish --dry-run --access=public --no-git-checks
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
-      - name: Push tags
+      - name: Get token
+        id: get_token
+        uses: tibdex/github-app-token@v1
+        with:
+          private_key: ${{ secrets.APP_PEM }}
+          app_id: ${{ secrets.APP_ID }}
+      - name: Push versions, changelog and tags
         run: git push --atomic origin main $(git tag -l)
+        env:
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
