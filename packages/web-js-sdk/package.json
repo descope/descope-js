@@ -36,7 +36,6 @@
     "authentication"
   ],
   "devDependencies": {
-    "eslint-plugin-react": "^7.28.0",
     "@open-wc/rollup-plugin-html": "1.2.5",
     "@rollup/plugin-commonjs": "24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
@@ -48,7 +47,7 @@
     "@types/js-cookie": "^3.0.2",
     "@types/lodash.get": "^4.4.7",
     "@typescript-eslint/parser": "^5.33.1",
-    "eslint": "8.34.0",
+    "eslint": "8.36.0",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-config-standard": "17.0.0",

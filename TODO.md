@@ -4,7 +4,7 @@
 - optional - send to slack channel on release
 - reuse config files (such as tsconfig, jest, lint, rollup, etc..)
 - research using project json (with plugins) vs package.json scripts
-- packages cleanup ("eslint-plugin-react": "^7.28.0" in core-js-sdk)
+- packages cleanup
 - renovate
 - clean changelog
 - update pnpm so it will fail if pnpm publish fails - https://github.com/pnpm/pnpm/issues/5528
