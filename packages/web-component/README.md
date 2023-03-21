@@ -18,7 +18,7 @@ npm install @descope/web-component
 import '@descope/web-component'
 import { DescopeWc } // in case you need types definition or you want to use the class directly
 
-//render a custom element, for example:
+// render a custom element, for example:
 render(){
   return (
     <descope-wc project="myProjectId"/>
