@@ -229,3 +229,32 @@ export const handleAutoFocus = (
     firstVisibleInput?.focus();
   }
 };
+
+type PromiseExecutor = ConstructorParameters<typeof Promise>[0];
+
+/**
+ * timeoutPromise(2000, (resolve, reject) => {// Logic});
+ */
+export const timeoutPromise = (timeout: number, callback?: PromiseExecutor) =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`Promise timed out after ${timeout} ms`));
+    }, timeout);
+
+    callback?.(
+      (value: any) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error: any) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+
+export const getChromiumVersion = (
+  navigator as any
+)?.userAgentData?.brands?.find(
+  ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
+);
