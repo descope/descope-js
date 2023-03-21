@@ -30,7 +30,7 @@ describe('otp', () => {
           user: { name: 'John Doe' },
         }
       );
-      expect(2).toEqual(1);
+      expect(2).toEqual(3);
     });
 
     it('should return the correct response', async () => {
