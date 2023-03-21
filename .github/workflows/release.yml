@@ -24,9 +24,9 @@ jobs:
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
-      # - run: |
-      #     git config user.name github-actions
-      #     git config user.email github-actions@github.com
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
