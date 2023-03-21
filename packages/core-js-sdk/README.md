@@ -15,7 +15,7 @@ npm install @descope/core-js-sdk
 ```js
 import createSdk from '@descope/core-js-sdk';
 
-const myProjectId = 'xxx';
+const myProjectId = 'xxxx';
 
 const sdk = createSdk({ projectId: myProjectId });
 
