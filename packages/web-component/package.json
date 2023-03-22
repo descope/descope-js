@@ -12,7 +12,7 @@
   "types": "dist/index.d.ts",
   "description": "Descope WC",
   "scripts": {
-    "start": "rollup -c rollup.config.app.serve.js -w",
+    "start": "pnpm run --prefix ../../ build && rollup -c rollup.config.app.serve.js -w",
     "build-app": "rollup -c rollup.config.app.js",
     "build": "rollup -c",
     "test": "jest",
