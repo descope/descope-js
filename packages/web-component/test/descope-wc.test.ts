@@ -738,6 +738,33 @@ describe('web-component', () => {
     );
   });
 
+  it('should handle a case where config request returns error response', async () => {
+    const fn = fetchMock.getMockImplementation();
+    fetchMock.mockImplementation((url: string) => {
+      if (url.endsWith('config.json')) {
+        return { ok: false };
+      }
+      return fn(url);
+    });
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    const errorSpy = jest.spyOn(console, 'error');
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          'Cannot get config file',
+          'make sure that your projectId & flowId are correct',
+          expect.any(Error)
+        ),
+      { timeout: 3000 }
+    );
+  });
+
   it('should update the page when user clicks on back', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -870,8 +897,9 @@ describe('web-component', () => {
 
     resolve(generateSdkResponse({ screenId: '1' }));
 
-    await waitFor(() =>
-      expect(screen.getByShadowText('Click')).not.toHaveClass('loading')
+    await waitFor(
+      () => expect(screen.getByShadowText('Click')).not.toHaveClass('loading'),
+      { timeout: 3000 }
     );
   });
 

@@ -249,7 +249,7 @@ class BaseDescopeWc extends HTMLElement {
       );
     }
 
-    return undefined;
+    return {};
   });
 
   async #loadFonts() {
