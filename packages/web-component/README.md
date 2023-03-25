@@ -61,7 +61,7 @@ DESCOPE_FLOW_ID=<flow-id>
 
 1. Run the sample `pnpm run start`
 
-NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun (this is a temporary solution until we improve the process to fit to monorepo).
+NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` (this is a temporary solution until we improve the process to fit to monorepo).
 
 ## Optional Attributes
 
