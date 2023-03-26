@@ -16,7 +16,8 @@ npm install @descope/web-js-sdk
 import descopeSdk, { getSessionToken } from '@descope/web-js-sdk';
 
 const myProjectId = 'xxx';
-const sdk = descopeSdk({ projectId: myProjectId });
+// Passing persistTokens as true will make `sdk.getSessionToken()` available, see bellow
+const sdk = descopeSdk({ projectId: myProjectId, persistTokens: true });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
   // handle session token change...
@@ -30,7 +31,7 @@ sdk.otp.signIn.email(userIdentifier);
 
 // Get session token
 // can be used to pass token to server on header
-const sessionToken = getSessionToken();
+const sessionToken = sdk.getSessionToken();
 ```
 
 ### Run Example
@@ -44,4 +45,4 @@ To run the example:
 
 The browser open a tab with directory tree of available examples. Click on the desire directory and follow the instruction.
 
-NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun (this is a temporary solution until we improve the process to fit to monorepo).
+NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` (this is a temporary solution until we improve the process to fit to monorepo).

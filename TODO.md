@@ -5,7 +5,5 @@
 - reuse config files (such as tsconfig, jest, lint, rollup, etc..)
 - research using project json (with plugins) vs package.json scripts
 - packages cleanup
-- renovate
-- clean changelog
 - update pnpm so it will fail if pnpm publish fails - https://github.com/pnpm/pnpm/issues/5528
 - remove branch history
