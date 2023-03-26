@@ -471,7 +471,8 @@ describe('web-component', () => {
         {
           email: '',
           origin: 'http://localhost',
-        }
+        },
+        'lorem ipsum'
       )
     );
   });
@@ -1213,7 +1214,8 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
-        undefined
+        undefined,
+        'lorem ipsum'
       )
     );
   });
@@ -1555,7 +1557,8 @@ describe('web-component', () => {
           { lastAuth: { authMethod: 'otp' } },
           conditionInteractionId,
           'interactionId',
-          { origin: 'http://localhost' }
+          { origin: 'http://localhost' },
+          'lorem ipsum'
         )
       );
     });
@@ -1581,10 +1584,17 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
       await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith('sign-in', {}, undefined, '', {
-          exchangeCode: 'code1',
-          idpInitiated: true,
-        })
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {},
+          undefined,
+          '',
+          {
+            exchangeCode: 'code1',
+            idpInitiated: true,
+          },
+          'lorem ipsum'
+        )
       );
     });
 

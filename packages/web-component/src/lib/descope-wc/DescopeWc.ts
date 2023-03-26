@@ -126,7 +126,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          inputs
+          inputs,
+          'lorem ipsum'
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -258,7 +259,8 @@ class DescopeWc extends BaseDescopeWc {
           {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
-          }
+          },
+          'lorem ipsum'
         );
     } else if (
       isChanged('projectId') ||
