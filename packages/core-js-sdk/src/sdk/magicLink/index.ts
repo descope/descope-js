@@ -99,12 +99,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (
-            loginId: string,
-            phone: string,
-            URI?: string,
-            token?: string
-          ): Promise<SdkResponse<MaskedPhone>> =>
+          (loginId: string, phone: string, URI?: string, token?: string) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.magicLink.update.phone, delivery),
@@ -115,7 +110,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
         ),
       }),
       {}
-    ),
+    ) as MagicLink[Routes.updatePhone],
   },
 });
 

@@ -8,9 +8,7 @@ import {
   JWTResponse,
   DeliveryPhone,
   LoginOptions,
-  MaskedPhone,
   MaskedEmail,
-  Routes,
 } from '../types';
 import {
   stringEmail,
@@ -18,7 +16,7 @@ import {
   stringPhone,
   withValidations,
 } from '../validations';
-import { Otp } from './types';
+import { Otp, Routes } from './types';
 
 const loginIdValidations = stringNonEmpty('loginId');
 const withVerifyValidations = withValidations(
@@ -117,11 +115,7 @@ const withOtp = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (
-            loginId: string,
-            phone: string,
-            token?: string
-          ): Promise<SdkResponse<MaskedPhone>> =>
+          (loginId: string, phone: string, token?: string) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.otp.update.phone, delivery),
@@ -132,7 +126,7 @@ const withOtp = (httpClient: HttpClient) => ({
         ),
       }),
       {}
-    ),
+    ) as Otp[Routes.updatePhone],
   },
 });
 

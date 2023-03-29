@@ -130,12 +130,17 @@ export enum DeliveryPhone {
   whatsapp = 'whatsapp',
 }
 
-/** All delivery methods currently supported */
-export enum DeliveryMethods {
+export enum DeliveryEmail {
   email = 'email',
-  sms = 'sms',
-  whatsapp = 'whatsapp',
 }
+
+/** All delivery methods currently supported */
+export type DeliveryMethods = DeliveryPhone | DeliveryEmail;
+
+export const DeliveryMethods = {
+  ...DeliveryPhone,
+  ...DeliveryEmail,
+} as const;
 
 /** All flow execution statuses
  *  - waiting - flow execution is waiting for user interaction
@@ -234,17 +239,14 @@ export type Deliveries<T extends Record<DeliveryMethods, SdkFn> | SdkFn> = {
   [S in DeliveryMethods]: T extends Record<DeliveryMethods, SdkFn> ? T[S] : T;
 };
 
+export type DeliveriesPhone<T extends Record<DeliveryPhone, SdkFn> | SdkFn> = {
+  [S in DeliveryPhone]: T extends Record<DeliveryPhone, SdkFn> ? T[S] : T;
+};
+
 /** Map different functions to email vs phone (sms, whatsapp) */
 export type DeliveriesMap<EmailFn extends SdkFn, PhoneFn extends SdkFn> = {
   [S in DeliveryMethods]: S extends 'email' ? EmailFn : PhoneFn;
 };
-
-/** The different routes (actions) we can do */
-export enum Routes {
-  signUp = 'signup',
-  signIn = 'signin',
-  verify = 'verify',
-}
 
 /** Logger type that supports the given levels (debug, log, error) */
 export type Logger = Pick<Console, 'debug' | 'log' | 'error' | 'warn'>;

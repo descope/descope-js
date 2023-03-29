@@ -7,6 +7,7 @@ import {
   MaskedEmail,
   ResponseData,
   DeliveriesMap,
+  DeliveriesPhone,
 } from '../types';
 
 type VerifyFn = (
@@ -33,14 +34,22 @@ type DeliveriesSignUp = DeliveriesMap<
   SignUpFn<MaskedPhone>
 >;
 
+type UpdatePhoneFn = (
+  loginId: string,
+  phone: string,
+  token?: string
+) => Promise<SdkResponse<MaskedPhone>>;
+
 export enum Routes {
   signUp = 'signup',
   signIn = 'signin',
   verify = 'verify',
+  updatePhone = 'updatePhone',
 }
 
 export type Otp = {
   [Routes.verify]: Deliveries<VerifyFn>;
   [Routes.signIn]: Deliveries<DeliveriesSignIn>;
   [Routes.signUp]: Deliveries<DeliveriesSignUp>;
+  [Routes.updatePhone]: DeliveriesPhone<UpdatePhoneFn>;
 };
