@@ -70,11 +70,7 @@ const buildRequestLog = (args: Parameters<Fetch>) =>
 
 /** Log the response object */
 const buildResponseLog = async (resp: Response) => {
-  const respBody = await (resp.clone ? resp.clone().text() : resp.text());
-  // eslint-disable-next-line no-param-reassign
-  resp.text = () => Promise.resolve(respBody);
-  // eslint-disable-next-line no-param-reassign
-  resp.json = () => Promise.resolve(JSON.parse(respBody));
+  const respBody = await resp.text();
 
   return httpLogBuilder()
     .title('Response')
@@ -85,6 +81,22 @@ const buildResponseLog = async (resp: Response) => {
     .build();
 };
 
+const fetchWrapper =
+  (fetch: Fetch) =>
+  async (...args: Parameters<Fetch>) => {
+    const resp = await fetch(...args);
+
+    // we found out that cloning the response is problematic when using node fetch
+    // so instead, we are reading the body stream once and overriding the clone, text & json functions
+    const respText = await resp.text();
+
+    resp.text = () => Promise.resolve(respText);
+    resp.json = () => Promise.resolve(JSON.parse(respText));
+    resp.clone = () => resp;
+
+    return resp;
+  };
+
 /**
  * Create a fetch with a logger wrapped around it if a logger is given
  * @param logger Logger to send the logs to
@@ -92,7 +104,7 @@ const buildResponseLog = async (resp: Response) => {
  *
  */
 const createFetchLogger = (logger: Logger, receivedFetch?: Fetch) => {
-  const fetchInternal = receivedFetch || fetch;
+  const fetchInternal = fetchWrapper(receivedFetch || fetch);
   if (!fetchInternal)
     // eslint-disable-next-line no-console
     logger?.warn(
@@ -107,6 +119,7 @@ const createFetchLogger = (logger: Logger, receivedFetch?: Fetch) => {
       );
     logger.log(buildRequestLog(args));
     const resp = await fetchInternal(...args);
+
     logger[resp.ok ? 'log' : 'error'](await buildResponseLog(resp));
 
     return resp;

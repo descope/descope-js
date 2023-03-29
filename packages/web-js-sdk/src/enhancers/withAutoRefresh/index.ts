@@ -19,6 +19,8 @@ const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
 export const withAutoRefresh =
   <T extends CreateWebSdk>(createSdk: T) =>
   ({ autoRefresh, ...config }: Parameters<T>[0] & AutoRefreshOptions) => {
+    if (!autoRefresh) return createSdk(config);
+
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
     const { clearAllTimers, setTimer } = createTimerFunctions();
