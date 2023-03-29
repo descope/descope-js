@@ -36,8 +36,8 @@ importers:
         specifier: 15.8.6
         version: 15.8.6(eslint@8.36.0)(prettier@2.8.4)(typescript@4.9.5)
       '@types/jest':
-        specifier: 29.4.2
-        version: 29.4.2
+        specifier: 29.4.3
+        version: 29.4.3
       '@types/node':
         specifier: 16.18.16
         version: 16.18.16
@@ -3440,8 +3440,8 @@ packages:
       pretty-format: 29.5.0
     dev: true
 
-  /@types/jest@29.4.2:
-    resolution: {integrity: sha512-bbne90W7is+m88ezmZrLiTpp41tIoTdvPC5t3gLoNgu/6qbGdWTC2JWqPWQRJn2Q7rVYTr8aTWqOjhGJDXyvAQ==}
+  /@types/jest@29.4.3:
+    resolution: {integrity: sha512-rQ+fXtBHSDfgoTwGLLNuZ27fHpp14mCZSxGUZ3MlNExwJno5hz0uXEWtXfQlE8vaZmYAa6atbR9rpHk+NnlRaw==}
     dependencies:
       expect: 29.5.0
       pretty-format: 29.5.0
@@ -3528,7 +3528,7 @@ packages:
   /@types/testing-library__jest-dom@5.14.5:
     resolution: {integrity: sha512-SBwbxYoyPIvxHbeHxTZX2Pe/74F/tX2/D3mMvzabdeJ25bBojfW0TyB8BHrbq/9zaaKICJZjLP+8r6AeZMFCuQ==}
     dependencies:
-      '@types/jest': 29.4.2
+      '@types/jest': 29.4.3
     dev: true
 
   /@types/tough-cookie@4.0.2:
