@@ -8,7 +8,8 @@ import {
   JWTResponse,
   User,
   LoginOptions,
-  MaskedAddress,
+  MaskedEmail,
+  MaskedPhone,
 } from '../types';
 import { MagicLink, Routes } from './types';
 import {
@@ -33,7 +34,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
           URI?: string,
           loginOptions?: LoginOptions,
           token?: string
-        ): Promise<SdkResponse<MaskedAddress<typeof delivery>>> =>
+        ) =>
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.magicLink.signIn, delivery),
@@ -50,11 +51,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (
-          loginId: string,
-          URI?: string,
-          user?: User
-        ): Promise<SdkResponse<MaskedAddress<typeof delivery>>> =>
+        (loginId: string, URI?: string, user?: User) =>
           transformResponse(
             httpClient.post(pathJoin(apiPaths.magicLink.signUp, delivery), {
               loginId,
@@ -70,17 +67,13 @@ const withMagicLink = (httpClient: HttpClient) => ({
   signUpOrIn: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
-      [delivery]: withSignValidations(
-        (
-          loginId: string,
-          URI?: string
-        ): Promise<SdkResponse<MaskedAddress<typeof delivery>>> =>
-          transformResponse(
-            httpClient.post(pathJoin(apiPaths.magicLink.signUpOrIn, delivery), {
-              loginId,
-              URI,
-            })
-          )
+      [delivery]: withSignValidations((loginId: string, URI?: string) =>
+        transformResponse(
+          httpClient.post(pathJoin(apiPaths.magicLink.signUpOrIn, delivery), {
+            loginId,
+            URI,
+          })
+        )
       ),
     }),
     {}
@@ -93,7 +86,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
         email: string,
         URI?: string,
         token?: string
-      ): Promise<SdkResponse<never>> =>
+      ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.magicLink.update.email,
@@ -106,12 +99,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (
-            loginId: string,
-            phone: string,
-            URI?: string,
-            token?: string
-          ): Promise<SdkResponse<never>> =>
+          (loginId: string, phone: string, URI?: string, token?: string) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.magicLink.update.phone, delivery),

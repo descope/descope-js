@@ -1,58 +1,22 @@
-import { apiPaths } from '../constants';
-import { HttpClient } from '../httpClient';
-import { pathJoin, transformResponse } from './helpers';
+import { apiPaths } from '../../constants';
+import { HttpClient } from '../../httpClient';
+import { pathJoin, transformResponse } from '../helpers';
 import {
   DeliveryMethods,
-  Deliveries,
   User,
   SdkResponse,
   JWTResponse,
   DeliveryPhone,
   LoginOptions,
-  MaskedAddress,
-} from './types';
+  MaskedEmail,
+} from '../types';
 import {
   stringEmail,
   stringNonEmpty,
   stringPhone,
   withValidations,
-} from './validations';
-
-enum Routes {
-  signUp = 'signup',
-  signIn = 'signin',
-  verify = 'verify',
-  updatePhone = 'updatePhone',
-}
-
-type VerifyFn = (
-  loginId: string,
-  code: string
-) => Promise<SdkResponse<JWTResponse>>;
-type SignInFn<T> = (loginId: string) => Promise<SdkResponse<MaskedAddress<T>>>;
-type SignUpFn<T> = (
-  loginId: string,
-  user?: User
-) => Promise<SdkResponse<MaskedAddress<T>>>;
-type UpdatePhoneFn = (
-  loginId: string,
-  phone: string
-) => Promise<SdkResponse<MaskedAddress<DeliveryMethods.sms>>>;
-
-type Otp = {
-  [Routes.verify]: Deliveries<VerifyFn>;
-  [Routes.signIn]: {
-    [DeliveryMethods.email]: SignInFn<DeliveryMethods.email>;
-    [DeliveryMethods.sms]: SignInFn<DeliveryMethods.sms>;
-    [DeliveryMethods.whatsapp]: SignInFn<DeliveryMethods.whatsapp>;
-  };
-  [Routes.signUp]: {
-    [DeliveryMethods.email]: SignUpFn<DeliveryMethods.email>;
-    [DeliveryMethods.sms]: SignUpFn<DeliveryMethods.sms>;
-    [DeliveryMethods.whatsapp]: SignUpFn<DeliveryMethods.whatsapp>;
-  };
-  [Routes.updatePhone]: Deliveries<UpdatePhoneFn>;
-};
+} from '../validations';
+import { Otp, Routes } from './types';
 
 const loginIdValidations = stringNonEmpty('loginId');
 const withVerifyValidations = withValidations(
@@ -90,11 +54,7 @@ const withOtp = (httpClient: HttpClient) => ({
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (
-          loginId: string,
-          loginOptions?: LoginOptions,
-          token?: string
-        ): Promise<SdkResponse<MaskedAddress<typeof delivery>>> =>
+        (loginId: string, loginOptions?: LoginOptions, token?: string) =>
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.otp.signIn, delivery),
@@ -110,17 +70,13 @@ const withOtp = (httpClient: HttpClient) => ({
   signUp: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
-      [delivery]: withSignValidations(
-        (
-          loginId: string,
-          user?: User
-        ): Promise<SdkResponse<MaskedAddress<typeof delivery>>> =>
-          transformResponse(
-            httpClient.post(pathJoin(apiPaths.otp.signUp, delivery), {
-              loginId,
-              user,
-            })
-          )
+      [delivery]: withSignValidations((loginId: string, user?: User) =>
+        transformResponse(
+          httpClient.post(pathJoin(apiPaths.otp.signUp, delivery), {
+            loginId,
+            user,
+          })
+        )
       ),
     }),
     {}
@@ -129,15 +85,12 @@ const withOtp = (httpClient: HttpClient) => ({
   signUpOrIn: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
-      [delivery]: withSignValidations(
-        (
-          loginId: string
-        ): Promise<SdkResponse<MaskedAddress<typeof delivery>>> =>
-          transformResponse(
-            httpClient.post(pathJoin(apiPaths.otp.signUpOrIn, delivery), {
-              loginId,
-            })
-          )
+      [delivery]: withSignValidations((loginId: string) =>
+        transformResponse(
+          httpClient.post(pathJoin(apiPaths.otp.signUpOrIn, delivery), {
+            loginId,
+          })
+        )
       ),
     }),
     {}
@@ -149,7 +102,7 @@ const withOtp = (httpClient: HttpClient) => ({
         loginId: string,
         email: string,
         token?: string
-      ): Promise<SdkResponse<MaskedAddress<DeliveryMethods.email>>> =>
+      ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.otp.update.email,
@@ -162,11 +115,7 @@ const withOtp = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (
-            loginId: string,
-            phone: string,
-            token?: string
-          ): Promise<SdkResponse<MaskedAddress<DeliveryMethods.sms>>> =>
+          (loginId: string, phone: string, token?: string) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.otp.update.phone, delivery),

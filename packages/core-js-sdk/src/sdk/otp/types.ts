@@ -1,31 +1,28 @@
 import {
   Deliveries,
-  SdkResponse,
   User,
+  SdkResponse,
+  JWTResponse,
+  MaskedPhone,
+  MaskedEmail,
   ResponseData,
   DeliveriesMap,
-  MaskedEmail,
-  MaskedPhone,
   DeliveriesPhone,
 } from '../types';
 
-type SignInFn<T extends ResponseData> = (
+type VerifyFn = (
   loginId: string,
-  uri: string
+  code: string
+) => Promise<SdkResponse<JWTResponse>>;
+
+type SignInFn<T extends ResponseData> = (
+  loginId: string
 ) => Promise<SdkResponse<T>>;
 
 type SignUpFn<T extends ResponseData> = (
   loginId: string,
-  uri: string,
   user?: User
 ) => Promise<SdkResponse<T>>;
-
-type UpdatePhoneFn = (
-  loginId: string,
-  phone: string,
-  URI?: string,
-  token?: string
-) => Promise<SdkResponse<MaskedPhone>>;
 
 type DeliveriesSignIn = DeliveriesMap<
   SignInFn<MaskedEmail>,
@@ -37,13 +34,21 @@ type DeliveriesSignUp = DeliveriesMap<
   SignUpFn<MaskedPhone>
 >;
 
+type UpdatePhoneFn = (
+  loginId: string,
+  phone: string,
+  token?: string
+) => Promise<SdkResponse<MaskedPhone>>;
+
 export enum Routes {
   signUp = 'signup',
   signIn = 'signin',
+  verify = 'verify',
   updatePhone = 'updatePhone',
 }
 
-export type MagicLink = {
+export type Otp = {
+  [Routes.verify]: Deliveries<VerifyFn>;
   [Routes.signIn]: Deliveries<DeliveriesSignIn>;
   [Routes.signUp]: Deliveries<DeliveriesSignUp>;
   [Routes.updatePhone]: DeliveriesPhone<UpdatePhoneFn>;
