@@ -44,7 +44,7 @@ describe('autoRefresh', () => {
     expect(clearTimeoutSpy).toHaveBeenCalled();
   });
 
-  it('should not auto refresh when disabled (default value', async () => {
+  it('should not auto refresh when disabled (default value)', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
     const mockFetch = jest
