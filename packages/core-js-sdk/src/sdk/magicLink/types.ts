@@ -2,40 +2,39 @@ import {
   Deliveries,
   SdkResponse,
   User,
-  MaskedAddress,
-  DeliveryMethods,
+  ResponseData,
+  DeliveriesMap,
+  MaskedEmail,
+  MaskedPhone,
 } from '../types';
 
-export type SignInFn<T> = (
+type SignInFn<T extends ResponseData> = (
   loginId: string,
   uri: string
-) => Promise<SdkResponse<MaskedAddress<T>>>;
-export type SignUpFn<T> = (
+) => Promise<SdkResponse<T>>;
+
+type SignUpFn<T extends ResponseData> = (
   loginId: string,
   uri: string,
   user?: User
-) => Promise<SdkResponse<MaskedAddress<T>>>;
-export type UpdatePhoneFn = (
-  loginId: string,
-  phone: string
-) => Promise<SdkResponse<MaskedAddress<DeliveryMethods.sms>>>;
+) => Promise<SdkResponse<T>>;
+
+type DeliveriesSignIn = DeliveriesMap<
+  SignInFn<MaskedEmail>,
+  SignInFn<MaskedPhone>
+>;
+
+type DeliveriesSignUp = DeliveriesMap<
+  SignUpFn<MaskedEmail>,
+  SignUpFn<MaskedPhone>
+>;
 
 export enum Routes {
   signUp = 'signup',
   signIn = 'signin',
-  updatePhone = 'updatePhone',
 }
 
 export type MagicLink = {
-  [Routes.signIn]: {
-    [DeliveryMethods.email]: SignInFn<DeliveryMethods.email>;
-    [DeliveryMethods.sms]: SignInFn<DeliveryMethods.sms>;
-    [DeliveryMethods.whatsapp]: SignInFn<DeliveryMethods.whatsapp>;
-  };
-  [Routes.signUp]: {
-    [DeliveryMethods.email]: SignUpFn<DeliveryMethods.email>;
-    [DeliveryMethods.sms]: SignUpFn<DeliveryMethods.sms>;
-    [DeliveryMethods.whatsapp]: SignUpFn<DeliveryMethods.whatsapp>;
-  };
-  [Routes.updatePhone]: Deliveries<UpdatePhoneFn>;
+  [Routes.signIn]: Deliveries<DeliveriesSignIn>;
+  [Routes.signUp]: Deliveries<DeliveriesSignUp>;
 };

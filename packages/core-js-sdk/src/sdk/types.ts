@@ -1,5 +1,3 @@
-type SdkFn = (...args: any[]) => Promise<SdkResponse<ResponseData>>;
-
 type DeviceInfo = {
   webAuthnSupport?: boolean;
 };
@@ -20,11 +18,13 @@ type AuthMethod =
   | 'saml'
   | 'webauthn';
 
-type MaskedPhone = {
+export type SdkFn = (...args: any[]) => Promise<SdkResponse<ResponseData>>;
+
+export type MaskedPhone = {
   maskedPhone: string;
 };
 
-type MaskedEmail = {
+export type MaskedEmail = {
   maskedEmail: string;
 };
 
@@ -94,14 +94,6 @@ export type EnchantedLinkResponse = {
   /** Email to which the link was sent to */
   maskedEmail: string;
 };
-
-export type MaskedAddress<T> = T extends DeliveryMethods.email
-  ? MaskedEmail
-  : T extends DeliveryMethods.sms
-  ? MaskedPhone
-  : T extends DeliveryMethods.whatsapp
-  ? MaskedPhone
-  : never;
 
 /** URL response to redirect user in case of OAuth or SSO */
 export type URLResponse = {
@@ -238,10 +230,14 @@ export type SdkResponse<T extends ResponseData> = {
 };
 
 /** Different delivery method */
-export type Deliveries<T extends SdkFn> = Record<
-  keyof typeof DeliveryMethods,
-  T
->;
+export type Deliveries<T extends Record<DeliveryMethods, SdkFn> | SdkFn> = {
+  [S in DeliveryMethods]: T extends Record<DeliveryMethods, SdkFn> ? T[S] : T;
+};
+
+/** Map different functions to email vs phone (sms, whatsapp) */
+export type DeliveriesMap<EmailFn extends SdkFn, PhoneFn extends SdkFn> = {
+  [S in DeliveryMethods]: S extends 'email' ? EmailFn : PhoneFn;
+};
 
 /** The different routes (actions) we can do */
 export enum Routes {
