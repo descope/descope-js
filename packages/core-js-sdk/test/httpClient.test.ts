@@ -32,6 +32,9 @@ const hookedHttpClient = createHttpClient({
 });
 
 describe('httpClient', () => {
+  beforeEach(() => {
+    mockFetch.mockReturnValue({ text: () => JSON.stringify({}) });
+  });
   it('should call fetch with the correct params when calling "get"', () => {
     httpClient.get('1/2/3', {
       headers: { test2: '123' },
@@ -55,11 +58,6 @@ describe('httpClient', () => {
   });
 
   it('should call the "afterHook"', async () => {
-    const fetchReturnValue = Promise.resolve({
-      clone: () => ({ key: 'val' }),
-    });
-    mockFetch.mockReturnValue(fetchReturnValue);
-
     await hookedHttpClient.post('1/2/3', {
       headers: { test2: '123' },
       queryParams: { test2: '123' },
@@ -67,10 +65,23 @@ describe('httpClient', () => {
 
     expect(afterRequestHook).toHaveBeenCalledWith(
       expect.objectContaining({ path: '1/2/3' }),
-      {
-        key: 'val',
-      }
+      expect.objectContaining({
+        text: expect.any(Function),
+        json: expect.any(Function),
+        clone: expect.any(Function),
+      })
     );
+  });
+
+  it('afterhook response should have the correct body', async () => {
+    await hookedHttpClient.post('1/2/3', {
+      headers: { test2: '123' },
+      queryParams: { test2: '123' },
+    });
+
+    const response = afterRequestHook.mock.calls[0][1];
+
+    expect(await response.text()).toBe('{}');
   });
 
   it('should call the "beforeRequest" hook to modify request config if needed', () => {
@@ -191,7 +202,7 @@ describe('createFetchLogger', () => {
     const fetch = jest.fn();
     fetch.mockResolvedValueOnce({
       ok: true,
-      clone: () => ({ text: () => 'resBody' }),
+      text: () => 'resBody',
       url: 'http://descope.com/',
       headers: new Headers({ header: 'header' }),
     });
@@ -227,7 +238,7 @@ describe('createFetchLogger', () => {
     const fetch = jest.fn();
     fetch.mockResolvedValueOnce({
       ok: true,
-      clone: () => ({ text: () => 'resBody' }),
+      text: () => 'resBody',
       url: 'http://descope.com/',
       headers: new Headers({ header: 'header' }),
       status: 200,
@@ -265,7 +276,7 @@ describe('createFetchLogger', () => {
     const fetch = jest.fn();
     fetch.mockResolvedValueOnce({
       ok: false,
-      clone: () => ({ text: () => 'resBody' }),
+      text: () => 'resBody',
       url: 'http://descope.com/',
       headers: new Headers({ header: 'header' }),
       status: 200,
@@ -303,7 +314,7 @@ describe('createFetchLogger', () => {
     const fetch = jest.fn();
     fetch.mockResolvedValueOnce({
       ok: false,
-      clone: () => ({ text: () => '{"body": "body"}' }),
+      text: () => '{"body": "body"}',
       url: 'http://descope.com/',
       headers: new Headers({ header: 'header' }),
       status: 200,
