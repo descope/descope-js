@@ -15,7 +15,7 @@ describe('autoRefresh', () => {
       .mockReturnValue(createMockReturnValue(authInfo));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
     const refreshSpy = jest
       .spyOn(sdk, 'refresh')
       .mockReturnValue(new Promise(() => {}));
@@ -42,5 +42,25 @@ describe('autoRefresh', () => {
     await new Promise(process.nextTick);
 
     expect(clearTimeoutSpy).toHaveBeenCalled();
+  });
+
+  it('should not auto refresh when disabled (default value)', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid' });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
+    expect(refreshSpy).not.toHaveBeenCalled();
   });
 });
