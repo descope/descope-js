@@ -22,7 +22,7 @@ importers:
         version: 15.8.5(nx@15.8.7)(typescript@4.9.5)
       '@nrwl/eslint-plugin-nx':
         specifier: 15.8.7
-        version: 15.8.7(@typescript-eslint/parser@5.54.0)(eslint-config-prettier@8.7.0)(eslint@8.36.0)(nx@15.8.7)(typescript@4.9.5)
+        version: 15.8.7(@typescript-eslint/parser@5.54.0)(eslint-config-prettier@8.8.0)(eslint@8.36.0)(nx@15.8.7)(typescript@4.9.5)
       '@nrwl/jest':
         specifier: 15.8.7
         version: 15.8.7(@types/node@16.18.16)(eslint@8.36.0)(nx@15.8.7)(prettier@2.8.4)(ts-node@10.9.1)(typescript@4.9.5)
@@ -51,8 +51,8 @@ importers:
         specifier: ~8.36.0
         version: 8.36.0
       eslint-config-prettier:
-        specifier: 8.7.0
-        version: 8.7.0(eslint@8.36.0)
+        specifier: 8.8.0
+        version: 8.8.0(eslint@8.36.0)
       husky:
         specifier: ^8.0.0
         version: 8.0.3
@@ -133,8 +133,8 @@ importers:
         specifier: 17.0.0
         version: 17.0.0(@typescript-eslint/eslint-plugin@5.56.0)(@typescript-eslint/parser@5.54.0)(eslint-plugin-import@2.27.5)(eslint@8.36.0)
       eslint-config-prettier:
-        specifier: 8.7.0
-        version: 8.7.0(eslint@8.36.0)
+        specifier: 8.8.0
+        version: 8.8.0(eslint@8.36.0)
       eslint-config-standard:
         specifier: 17.0.0
         version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.36.0)
@@ -164,7 +164,7 @@ importers:
         version: 1.2.3(eslint@8.36.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
-        version: 4.2.1(eslint-config-prettier@8.7.0)(eslint@8.36.0)(prettier@2.8.4)
+        version: 4.2.1(eslint-config-prettier@8.8.0)(eslint@8.36.0)(prettier@2.8.4)
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@8.36.0)
@@ -266,8 +266,8 @@ importers:
         specifier: 17.0.0
         version: 17.0.0(@typescript-eslint/eslint-plugin@5.56.0)(@typescript-eslint/parser@5.54.0)(eslint-plugin-import@2.27.5)(eslint@8.36.0)
       eslint-config-prettier:
-        specifier: 8.7.0
-        version: 8.7.0(eslint@8.36.0)
+        specifier: 8.8.0
+        version: 8.8.0(eslint@8.36.0)
       eslint-config-standard:
         specifier: 17.0.0
         version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.36.0)
@@ -297,7 +297,7 @@ importers:
         version: 1.2.3(eslint@8.36.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
-        version: 4.2.1(eslint-config-prettier@8.7.0)(eslint@8.36.0)(prettier@2.8.4)
+        version: 4.2.1(eslint-config-prettier@8.8.0)(eslint@8.36.0)(prettier@2.8.4)
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@8.36.0)
@@ -405,8 +405,8 @@ importers:
         specifier: 17.0.0
         version: 17.0.0(@typescript-eslint/eslint-plugin@5.56.0)(@typescript-eslint/parser@5.54.0)(eslint-plugin-import@2.27.5)(eslint@8.36.0)
       eslint-config-prettier:
-        specifier: 8.7.0
-        version: 8.7.0(eslint@8.36.0)
+        specifier: 8.8.0
+        version: 8.8.0(eslint@8.36.0)
       eslint-config-standard:
         specifier: 17.0.0
         version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.36.0)
@@ -436,7 +436,7 @@ importers:
         version: 1.2.3(eslint@8.36.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
-        version: 4.2.1(eslint-config-prettier@8.7.0)(eslint@8.36.0)(prettier@2.8.4)
+        version: 4.2.1(eslint-config-prettier@8.8.0)(eslint@8.36.0)(prettier@2.8.4)
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@8.36.0)
@@ -2738,7 +2738,7 @@ packages:
       - typescript
     dev: true
 
-  /@nrwl/eslint-plugin-nx@15.8.7(@typescript-eslint/parser@5.54.0)(eslint-config-prettier@8.7.0)(eslint@8.36.0)(nx@15.8.7)(typescript@4.9.5):
+  /@nrwl/eslint-plugin-nx@15.8.7(@typescript-eslint/parser@5.54.0)(eslint-config-prettier@8.8.0)(eslint@8.36.0)(nx@15.8.7)(typescript@4.9.5):
     resolution: {integrity: sha512-bVa43NAfF0QF5QDmAPV9qXn0d/x42ih2s3WA57AOzJl7lQ3zeGUZeyJq6ZwQIGuD3QQueVnYhBs0smJdnVuOIw==}
     peerDependencies:
       '@typescript-eslint/parser': ^5.29.0
@@ -2752,7 +2752,7 @@ packages:
       '@typescript-eslint/utils': 5.55.0(eslint@8.36.0)(typescript@4.9.5)
       chalk: 4.1.2
       confusing-browser-globals: 1.0.11
-      eslint-config-prettier: 8.7.0(eslint@8.36.0)
+      eslint-config-prettier: 8.8.0(eslint@8.36.0)
       semver: 7.3.4
     transitivePeerDependencies:
       - eslint
@@ -5751,8 +5751,8 @@ packages:
       object.entries: 1.1.6
     dev: true
 
-  /eslint-config-prettier@8.7.0(eslint@8.36.0):
-    resolution: {integrity: sha512-HHVXLSlVUhMSmyW4ZzEuvjpwqamgmlfkutD53cYXLikh4pt/modINRcCIApJ84czDxM4GZInwUrromsDdTImTA==}
+  /eslint-config-prettier@8.8.0(eslint@8.36.0):
+    resolution: {integrity: sha512-wLbQiFre3tdGgpDv67NQKnJuTlcUVYHas3k+DZCc2U2BadthoEY4B7hLPvAxaqdyOGCzuLfii2fqGph10va7oA==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -5975,7 +5975,7 @@ packages:
       eslint: 8.36.0
     dev: true
 
-  /eslint-plugin-prettier@4.2.1(eslint-config-prettier@8.7.0)(eslint@8.36.0)(prettier@2.8.4):
+  /eslint-plugin-prettier@4.2.1(eslint-config-prettier@8.8.0)(eslint@8.36.0)(prettier@2.8.4):
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -5987,7 +5987,7 @@ packages:
         optional: true
     dependencies:
       eslint: 8.36.0
-      eslint-config-prettier: 8.7.0(eslint@8.36.0)
+      eslint-config-prettier: 8.8.0(eslint@8.36.0)
       prettier: 2.8.4
       prettier-linter-helpers: 1.0.0
     dev: true
