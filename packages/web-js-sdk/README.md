@@ -17,7 +17,11 @@ import descopeSdk, { getSessionToken } from '@descope/web-js-sdk';
 
 const myProjectId = 'xxx';
 // Passing persistTokens as true will make `sdk.getSessionToken()` available, see bellow
-const sdk = descopeSdk({ projectId: myProjectId, persistTokens: true });
+const sdk = descopeSdk({
+  projectId: myProjectId,
+  persistTokens: true,
+  autoRefresh: true,
+});
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
   // handle session token change...
@@ -26,11 +30,28 @@ sdk.onSessionTokenChange((newSession, oldSession) => {
 sdk.onUserChange((newUser, oldUser) => {
   // handle user change...
 });
+
+// It is common to call the refresh function after sdk initialization, for a case that the browser has the refresh token on storage/cookie
+// Note that if autoRefresh is true, and refresh is successful -
+// The sdk will automatically continue to refresh the token
+sdk.refresh();
+
+// Alternatively -  use the sdk's available authentication methods to authenticate the user
 const userIdentifier = 'identifier';
-sdk.otp.signIn.email(userIdentifier);
+let res = await sdk.otp.signIn.email(userIdentifier);
+if (!res.ok) {
+  throw Error('Failed to sign in');
+}
+
+// Get the code from email and
+const codeFromEmail = '1234';
+res = await sdk.otp.verify.email(userIdentifier, codeFromEmail);
+if (!res.ok) {
+  throw Error('Failed to sign in');
+}
 
 // Get session token
-// can be used to pass token to server on header
+// Can be used to pass token to server on header
 const sessionToken = sdk.getSessionToken();
 ```
 
