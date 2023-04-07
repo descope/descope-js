@@ -16,11 +16,11 @@ npm install @descope/web-js-sdk
 import descopeSdk, { getSessionToken } from '@descope/web-js-sdk';
 
 const myProjectId = 'xxx';
-// Passing persistTokens as true will make `sdk.getSessionToken()` available, see bellow
+// Passing persistTokens as
 const sdk = descopeSdk({
-  projectId: myProjectId,
-  persistTokens: true,
-  autoRefresh: true,
+  projectId: myProjectId, // Descope Project ID (Required).
+  persistTokens: true, // Persist tokens that returned after successful authentication (e.g. sdk.otp.verify.email(...), sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, if true, it will make `sdk.getSessionToken()` available, see usage bellow bellow.
+  autoRefresh: true, // Automatically schedule a call refresh session call after a successful authentication.
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
@@ -31,8 +31,8 @@ sdk.onUserChange((newUser, oldUser) => {
   // handle user change...
 });
 
-// It is common to call the refresh function after sdk initialization, for a case that the browser has the refresh token on storage/cookie
-// Note that if autoRefresh is true, and refresh is successful -
+// For a case that the browser has a valid refresh token on storage/cookie, the user should get a valid session token (e.i. user should be logged-in). For that purpose, it is common to call the refresh function after sdk initialization
+// Note that because refresh will return a session token - if autoRefresh is true -
 // The sdk will automatically continue to refresh the token
 sdk.refresh();
 
