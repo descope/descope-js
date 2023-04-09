@@ -16,8 +16,12 @@ npm install @descope/web-js-sdk
 import descopeSdk, { getSessionToken } from '@descope/web-js-sdk';
 
 const myProjectId = 'xxx';
-// Passing persistTokens as true will make `sdk.getSessionToken()` available, see bellow
-const sdk = descopeSdk({ projectId: myProjectId, persistTokens: true });
+// Passing persistTokens as
+const sdk = descopeSdk({
+  projectId: myProjectId, // Descope Project ID (Required).
+  persistTokens: true, // Persist tokens that returned after successful authentication (e.g. sdk.otp.verify.email(...), sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, if true, it will make `sdk.getSessionToken()` available, see usage bellow bellow.
+  autoRefresh: true, // Automatically schedule a call refresh session call after a successful authentication.
+});
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
   // handle session token change...
@@ -26,11 +30,28 @@ sdk.onSessionTokenChange((newSession, oldSession) => {
 sdk.onUserChange((newUser, oldUser) => {
   // handle user change...
 });
+
+// For a case that the browser has a valid refresh token on storage/cookie, the user should get a valid session token (e.i. user should be logged-in). For that purpose, it is common to call the refresh function after sdk initialization
+// Note that because refresh will return a session token - if autoRefresh is true -
+// The sdk will automatically continue to refresh the token
+sdk.refresh();
+
+// Alternatively -  use the sdk's available authentication methods to authenticate the user
 const userIdentifier = 'identifier';
-sdk.otp.signIn.email(userIdentifier);
+let res = await sdk.otp.signIn.email(userIdentifier);
+if (!res.ok) {
+  throw Error('Failed to sign in');
+}
+
+// Get the code from email and
+const codeFromEmail = '1234';
+res = await sdk.otp.verify.email(userIdentifier, codeFromEmail);
+if (!res.ok) {
+  throw Error('Failed to sign in');
+}
 
 // Get session token
-// can be used to pass token to server on header
+// Can be used to pass token to server on header
 const sessionToken = sdk.getSessionToken();
 ```
 
