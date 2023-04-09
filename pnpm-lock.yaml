@@ -329,8 +329,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       rollup-plugin-dts:
-        specifier: ^4.2.2
-        version: 4.2.3(rollup@2.79.1)(typescript@4.8.4)
+        specifier: ^5.0.0
+        version: 5.2.0(rollup@2.79.1)(typescript@4.8.4)
       rollup-plugin-livereload:
         specifier: ^2.0.5
         version: 2.0.5
@@ -7496,7 +7496,7 @@ packages:
       pretty-format: 29.5.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1(@types/node@16.18.21)(typescript@4.9.5)
+      ts-node: 10.9.1(@types/node@18.15.0)(typescript@4.8.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8613,13 +8613,6 @@ packages:
 
   /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
-    dependencies:
-      sourcemap-codec: 1.4.8
-    dev: true
-
-  /magic-string@0.26.7:
-    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
-    engines: {node: '>=12'}
     dependencies:
       sourcemap-codec: 1.4.8
     dev: true
@@ -9814,14 +9807,14 @@ packages:
       del: 5.1.0
     dev: true
 
-  /rollup-plugin-dts@4.2.3(rollup@2.79.1)(typescript@4.8.4):
-    resolution: {integrity: sha512-jlcpItqM2efqfIiKzDB/IKOS9E9fDvbkJSGw5GtK/PqPGS9eC3R3JKyw2VvpTktZA+TNgJRMu1NTv244aTUzzQ==}
-    engines: {node: '>=v12.22.12'}
+  /rollup-plugin-dts@5.2.0(rollup@2.79.1)(typescript@4.8.4):
+    resolution: {integrity: sha512-B68T/haEu2MKcz4kNUhXB8/h5sq4gpplHAJIYNHbh8cp4ZkvzDvNca/11KQdFrB9ZeKucegQIotzo5T0JUtM8w==}
+    engines: {node: '>=v14'}
     peerDependencies:
-      rollup: ^2.55
+      rollup: ^3.0.0
       typescript: ^4.1
     dependencies:
-      magic-string: 0.26.7
+      magic-string: 0.29.0
       rollup: 2.79.1
       typescript: 4.8.4
     optionalDependencies:
