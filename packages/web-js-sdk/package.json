@@ -43,7 +43,7 @@
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": "18.15.0",
+    "@types/node": "18.15.10",
     "@types/js-cookie": "^3.0.2",
     "@types/lodash.get": "^4.4.7",
     "@typescript-eslint/parser": "^5.33.1",
