@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>Done!</h1>
+    </div>
+
+    <script>
+      const formEle = document.getElementsByTagName('form')[0];
+      const h1Ele = document.getElementsByTagName('h1')[0];
+      const inputEle = document.getElementsByTagName('input')[0];
+
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const projectId = urlSearchParams.get('projectId');
+      const code = urlSearchParams.get('code');
+
+      const sdk = Descope({ projectId });
+      sdk.oauth.exchange(code).then((resp) => {
+        alert(JSON.stringify(resp, null, 4));
+      });
+    </script>
+  </body>
+</html>

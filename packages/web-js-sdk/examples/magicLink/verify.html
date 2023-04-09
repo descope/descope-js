@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+
+  <body>
+    <div>
+      <h1>Done!</h1>
+    </div>
+
+    <script>
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const projectId = urlSearchParams.get('projectId');
+      const token = urlSearchParams.get('t');
+      let sdk = Descope({ projectId });
+      sdk.magicLink.verify(token).then((resp) => {
+        alert(JSON.stringify(resp, null, 4));
+      });
+    </script>
+  </body>
+</html>

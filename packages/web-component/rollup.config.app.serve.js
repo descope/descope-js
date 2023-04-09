@@ -1,0 +1,8 @@
+import browsersync from 'rollup-plugin-browsersync';
+import conf from './rollup.config.app';
+
+// If TS type errors remove bs-recipes references in package-lock.json due to bad global React typings
+export default {
+  ...conf,
+  plugins: [...conf.plugins, browsersync({ server: 'build' })],
+};

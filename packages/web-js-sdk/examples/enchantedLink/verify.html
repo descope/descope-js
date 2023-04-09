@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+
+  <body>
+    <div>
+      <h1>Verifying...</h1>
+    </div>
+
+    <script>
+      (async () => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const projectId = urlSearchParams.get('projectId');
+        const token = urlSearchParams.get('t');
+        let sdk = Descope({ projectId });
+        const resp = await sdk.enchantedLink.verify(token);
+
+        if (resp.ok) {
+          document.getElementsByTagName('h1')[0].innerText =
+            'Done, go to the original tab';
+        } else {
+          document.getElementsByTagName('h1')[0].innerText = 'Error';
+          alert(JSON.stringify(resp, null, 4));
+        }
+      })();
+    </script>
+  </body>
+</html>

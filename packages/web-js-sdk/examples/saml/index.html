@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>What's your project ID?</h1>
+      <form>
+        <input name="input" type="text" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <script>
+      let sdk;
+      let step = 0;
+      let mail;
+      let projId;
+      const fns = [
+        (projectId) => {
+          projId = projectId;
+          sdk = Descope({ projectId });
+        },
+        (emailOrTenant) => {
+          mail = emailOrTenant;
+          const uri = new URL(window.location.href);
+          uri.host = 'localhost'; // does not work with 127.0.0.1 for now
+          uri.pathname += 'verify.html';
+          uri.searchParams.set('projectId', projId);
+
+          return sdk.saml.start(emailOrTenant, uri.toString()).then((resp) => {
+            window.location = resp.data.url;
+          });
+        },
+      ];
+      const texts = ["What's your email/tenant?", 'Redirecting...'];
+
+      const formEle = document.getElementsByTagName('form')[0];
+      const h1Ele = document.getElementsByTagName('h1')[0];
+      const inputEle = document.getElementsByTagName('input')[0];
+
+      formEle.onsubmit = async function (e) {
+        e.preventDefault();
+
+        const input = new FormData(e.target).get('input');
+
+        try {
+          const resp = await fns[step](input);
+          if (resp?.ok === false) alert(JSON.stringify(resp, null, 4));
+        } catch (e) {
+          alert(e.message);
+          return;
+        }
+
+        h1Ele.innerText = texts[step];
+        inputEle.value = '';
+        step++;
+        if (!texts[step]) formEle.remove();
+      };
+    </script>
+  </body>
+</html>
