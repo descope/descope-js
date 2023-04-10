@@ -15,10 +15,10 @@ npm install @descope/web-component
 ### As a library
 
 ```js
-import '@descope/web-component'
-import { DescopeWc } // in case you need types definition or you want to use the class directly
+import '@descope/web-component' // This import will define `descope-wc` custom element
+import { DescopeWc } // In case you need types definition or you want to use the class directly
 
-// render a custom element, for example:
+// Render Descope Web Component, for example:
 render(){
   return (
     <descope-wc project="myProjectId"/>
@@ -55,8 +55,12 @@ To run the example:
 
 ```env
 // .env
+# Descope Project ID
 DESCOPE_PROJECT_ID=<project-id>
+# Flow ID to run, e.g. sign-up-or-in
 DESCOPE_FLOW_ID=<flow-id>
+# Optional - Descope base URL
+DESCOPE_BASE_URL
 ```
 
 1. Run the sample `pnpm run start`
@@ -67,6 +71,7 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 
 | Attribute    | Available options                                                                                                                                                                                                                         | Default value |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| base-url     | Custom Descope base URL                                                                                                                                                                                                                   | **""**        |
 | theme        | **"light"** - Light theme</br>**"dark"** - Dark theme</br>**"os"** - Auto select a theme based on the OS theme settings                                                                                                                   | **"light"**   |
 | debug        | **"true"** - Enable debugger</br>**"false"** - Disable debugger                                                                                                                                                                           | **"false"**   |
 | telemetryKey | **String** - Telemetry public key provided by Descope Inc                                                                                                                                                                                 | **""**        |
