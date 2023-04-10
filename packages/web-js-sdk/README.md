@@ -1,6 +1,6 @@
 # @descope/web-js-sdk
 
-Descope JavaScript web SDK - Alpha
+Descope JavaScript web SDK
 
 ## Usage
 
@@ -16,11 +16,16 @@ npm install @descope/web-js-sdk
 import descopeSdk, { getSessionToken } from '@descope/web-js-sdk';
 
 const myProjectId = 'xxx';
-// Passing persistTokens as
+
 const sdk = descopeSdk({
-  projectId: myProjectId, // Descope Project ID (Required).
-  persistTokens: true, // Persist tokens that returned after successful authentication (e.g. sdk.otp.verify.email(...), sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, if true, it will make `sdk.getSessionToken()` available, see usage bellow bellow.
-  autoRefresh: true, // Automatically schedule a call refresh session call after a successful authentication.
+  /* Descope Project ID (Required) */
+  projectId: myProjectId,
+  /* Persist tokens that returned after successful authentication (e.g. sdk.otp.verify.email(...),
+  sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, this will 
+  make `sdk.getSessionToken()` available, see usage bellow bellow */
+  persistTokens: true,
+  /* Automatically schedule a call refresh session call after a successful authentication */
+  autoRefresh: true,
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
@@ -31,9 +36,11 @@ sdk.onUserChange((newUser, oldUser) => {
   // handle user change...
 });
 
-// For a case that the browser has a valid refresh token on storage/cookie, the user should get a valid session token (e.i. user should be logged-in). For that purpose, it is common to call the refresh function after sdk initialization
-// Note that because refresh will return a session token - if autoRefresh is true -
-// The sdk will automatically continue to refresh the token
+/* For a case that the browser has a valid refresh token on storage/cookie,
+the user should get a valid session token (e.i. user should be logged-in).
+For that purpose, it is common to call the refresh function after sdk initialization.
+Note: Refresh return a session token, so if the autoRefresh was provided, the sdk will
+automatically continue to refresh the token */
 sdk.refresh();
 
 // Alternatively -  use the sdk's available authentication methods to authenticate the user
@@ -43,7 +50,7 @@ if (!res.ok) {
   throw Error('Failed to sign in');
 }
 
-// Get the code from email and
+// Get the one time code from email and verify it
 const codeFromEmail = '1234';
 res = await sdk.otp.verify.email(userIdentifier, codeFromEmail);
 if (!res.ok) {
