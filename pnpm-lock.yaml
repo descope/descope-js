@@ -137,7 +137,7 @@ importers:
         version: 8.8.0(eslint@8.37.0)
       eslint-config-standard:
         specifier: 17.0.0
-        version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.37.0)
+        version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.7.0)(eslint-plugin-promise@6.1.1)(eslint@8.37.0)
       eslint-import-resolver-typescript:
         specifier: 3.5.3
         version: 3.5.3(eslint-plugin-import@2.27.5)(eslint@8.37.0)
@@ -154,8 +154,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(eslint@8.37.0)
       eslint-plugin-n:
-        specifier: 15.6.1
-        version: 15.6.1(eslint@8.37.0)
+        specifier: 15.7.0
+        version: 15.7.0(eslint@8.37.0)
       eslint-plugin-no-only-tests:
         specifier: 3.1.0
         version: 3.1.0
@@ -270,7 +270,7 @@ importers:
         version: 8.8.0(eslint@8.37.0)
       eslint-config-standard:
         specifier: 17.0.0
-        version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.37.0)
+        version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.7.0)(eslint-plugin-promise@6.1.1)(eslint@8.37.0)
       eslint-import-resolver-typescript:
         specifier: 3.5.3
         version: 3.5.3(eslint-plugin-import@2.27.5)(eslint@8.37.0)
@@ -287,8 +287,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(eslint@8.37.0)
       eslint-plugin-n:
-        specifier: 15.6.1
-        version: 15.6.1(eslint@8.37.0)
+        specifier: 15.7.0
+        version: 15.7.0(eslint@8.37.0)
       eslint-plugin-no-only-tests:
         specifier: 3.1.0
         version: 3.1.0
@@ -409,7 +409,7 @@ importers:
         version: 8.8.0(eslint@8.37.0)
       eslint-config-standard:
         specifier: 17.0.0
-        version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.37.0)
+        version: 17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.7.0)(eslint-plugin-promise@6.1.1)(eslint@8.37.0)
       eslint-import-resolver-typescript:
         specifier: 3.5.3
         version: 3.5.3(eslint-plugin-import@2.27.5)(eslint@8.37.0)
@@ -426,8 +426,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(eslint@8.37.0)
       eslint-plugin-n:
-        specifier: 15.6.1
-        version: 15.6.1(eslint@8.37.0)
+        specifier: 15.7.0
+        version: 15.7.0(eslint@8.37.0)
       eslint-plugin-no-only-tests:
         specifier: 3.1.0
         version: 3.1.0
@@ -5774,7 +5774,7 @@ packages:
       eslint: 8.37.0
     dev: true
 
-  /eslint-config-standard@17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.6.1)(eslint-plugin-promise@6.1.1)(eslint@8.37.0):
+  /eslint-config-standard@17.0.0(eslint-plugin-import@2.27.5)(eslint-plugin-n@15.7.0)(eslint-plugin-promise@6.1.1)(eslint@8.37.0):
     resolution: {integrity: sha512-/2ks1GKyqSOkH7JFvXJicu0iMpoojkwB+f5Du/1SC0PtBL+s8v30k9njRZ21pm2drKYm2342jFnGWzttxPmZVg==}
     peerDependencies:
       eslint: ^8.0.1
@@ -5784,7 +5784,7 @@ packages:
     dependencies:
       eslint: 8.37.0
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.54.0)(eslint-import-resolver-typescript@3.5.3)(eslint@8.37.0)
-      eslint-plugin-n: 15.6.1(eslint@8.37.0)
+      eslint-plugin-n: 15.7.0(eslint@8.37.0)
       eslint-plugin-promise: 6.1.1(eslint@8.37.0)
     dev: true
 
@@ -5959,8 +5959,8 @@ packages:
       object.fromentries: 2.0.6
       semver: 6.3.0
 
-  /eslint-plugin-n@15.6.1(eslint@8.37.0):
-    resolution: {integrity: sha512-R9xw9OtCRxxaxaszTQmQAlPgM+RdGjaL1akWuY/Fv9fRAi8Wj4CUKc6iYVG8QNRjRuo8/BqVYIpfqberJUEacA==}
+  /eslint-plugin-n@15.7.0(eslint@8.37.0):
+    resolution: {integrity: sha512-jDex9s7D/Qial8AGVIHq4W7NswpUD5DPDL2RH8Lzd9EloWUuvUkHfv4FRLMipH5q2UtyurorBkPeNi1wVWNh3Q==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       eslint: '>=7.0.0'
