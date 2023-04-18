@@ -17,31 +17,17 @@ export const conditionsMap: ConditionsMap<Context> = {
 };
 
 /* eslint-disable import/prefer-default-export */
-export const calculateCondition = (
-  condition: ClientCondition,
-  ctx: Context
-) => {
-  const checkFunc = conditionsMap[condition?.key]?.[condition.operator];
-  if (!checkFunc) {
-    return {};
-  }
-  const conditionResult = checkFunc(ctx) ? condition.met : condition.unmet;
-  return {
-    startScreenId: conditionResult?.screenId,
-    conditionInteractionId: conditionResult?.interactionId,
-  };
-};
-
-/* eslint-disable import/prefer-default-export */
 export const calculateConditions = (
-  conditions: ClientCondition[],
-  ctx: Context
+  ctx: Context,
+  conditions?: ClientCondition[]
 ) => {
   let conditionResult: ClientConditionResult;
-  conditions.every((condition) => {
+  conditions?.every((condition) => {
     const checkFunc = conditionsMap[condition?.key]?.[condition.operator];
     if (!checkFunc) {
-      return {};
+      conditionResult = undefined;
+      // break
+      return false;
     }
     const check = checkFunc(ctx);
     if (check) {
@@ -52,8 +38,11 @@ export const calculateConditions = (
     conditionResult = condition.unmet;
     return true;
   });
-  return {
-    startScreenId: conditionResult?.screenId,
-    conditionInteractionId: conditionResult?.interactionId,
-  };
+  if (conditionResult) {
+    return {
+      startScreenId: conditionResult?.screenId,
+      conditionInteractionId: conditionResult?.interactionId,
+    };
+  }
+  return {};
 };
