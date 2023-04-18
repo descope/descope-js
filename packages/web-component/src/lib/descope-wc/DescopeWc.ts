@@ -99,11 +99,11 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenId: string;
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
+    if (!flowId) return;
+    const flowConfig = await this.getFlowConfig();
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      if (!flowId) return;
-      const flowConfig = await this.getFlowConfig();
       const conditions = flowConfig.condition
         ? [flowConfig.condition]
         : flowConfig.conditions;
@@ -131,7 +131,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          inputs
+          inputs,
+          flowConfig?.version || 0
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -158,7 +159,8 @@ class DescopeWc extends BaseDescopeWc {
           token,
           exchangeCode: code,
           exchangeError,
-        }
+        },
+        flowConfig?.version || 0
       );
       this.#handleSdkResponse(sdkResp);
       this.flowState.update({
@@ -213,7 +215,8 @@ class DescopeWc extends BaseDescopeWc {
           transactionId: webauthnTransactionId,
           response,
           cancelWebauthn,
-        }
+        },
+        flowConfig?.version || 0
       );
       this.#handleSdkResponse(sdkResp);
     }
@@ -224,7 +227,8 @@ class DescopeWc extends BaseDescopeWc {
           executionId,
           stepId,
           CUSTOM_INTERACTIONS.polling,
-          {}
+          {},
+          flowConfig?.version || 0
         );
         this.#handleSdkResponse(sdkResp);
       }, 2000);
@@ -263,7 +267,8 @@ class DescopeWc extends BaseDescopeWc {
           {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
-          }
+          },
+          flowConfig?.version || 0
         );
     } else if (
       isChanged('projectId') ||
