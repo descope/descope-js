@@ -17,7 +17,7 @@ import {
   State,
   withMemCache,
 } from '../helpers';
-import { calculateCondition } from '../helpers/conditions';
+import { calculateCondition, calculateConditions } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
 import { disableWebauthnButtons } from '../helpers/templates';
@@ -99,17 +99,24 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenId: string;
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
+    if (!flowId) return;
+    const flowConfig = await this.getFlowConfig();
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      if (!flowId) return;
-      const flowConfig = await this.getFlowConfig();
-
-      ({ startScreenId = flowConfig.startScreenId, conditionInteractionId } =
-        calculateCondition(flowConfig.condition, {
-          loginId,
-          code,
-        }));
+      if (flowConfig.conditions) {
+        ({ startScreenId = flowConfig.startScreenId, conditionInteractionId } =
+          calculateConditions(flowConfig.conditions, {
+            loginId,
+            code,
+          }));
+      } else if (flowConfig.condition) {
+        ({ startScreenId = flowConfig.startScreenId, conditionInteractionId } =
+          calculateCondition(flowConfig.condition, {
+            loginId,
+            code,
+          }));
+      }
 
       if (!startScreenId) {
         const inputs = code
@@ -126,7 +133,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          inputs
+          inputs,
+          flowConfig?.version
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -153,7 +161,8 @@ class DescopeWc extends BaseDescopeWc {
           token,
           exchangeCode: code,
           exchangeError,
-        }
+        },
+        flowConfig?.version
       );
       this.#handleSdkResponse(sdkResp);
       this.flowState.update({
@@ -208,7 +217,8 @@ class DescopeWc extends BaseDescopeWc {
           transactionId: webauthnTransactionId,
           response,
           cancelWebauthn,
-        }
+        },
+        flowConfig?.version
       );
       this.#handleSdkResponse(sdkResp);
     }
@@ -219,7 +229,8 @@ class DescopeWc extends BaseDescopeWc {
           executionId,
           stepId,
           CUSTOM_INTERACTIONS.polling,
-          {}
+          {},
+          flowConfig?.version
         );
         this.#handleSdkResponse(sdkResp);
       }, 2000);
@@ -258,7 +269,8 @@ class DescopeWc extends BaseDescopeWc {
           {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
-          }
+          },
+          flowConfig?.version
         );
     } else if (
       isChanged('projectId') ||

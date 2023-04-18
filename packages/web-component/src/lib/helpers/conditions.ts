@@ -1,6 +1,11 @@
-import { ClientCondition, ConditionsMap, Context } from '../types';
+import {
+  ClientCondition,
+  ClientConditionResult,
+  ConditionsMap,
+  Context,
+} from '../types';
 
-export const conditions: ConditionsMap<Context> = {
+export const conditionsMap: ConditionsMap<Context> = {
   'lastAuth.loginId': {
     'not-empty': (ctx) => !!ctx.loginId,
     empty: (ctx) => !ctx.loginId,
@@ -16,11 +21,37 @@ export const calculateCondition = (
   condition: ClientCondition,
   ctx: Context
 ) => {
-  const checkFunc = conditions[condition?.key]?.[condition.operator];
+  const checkFunc = conditionsMap[condition?.key]?.[condition.operator];
   if (!checkFunc) {
     return {};
   }
   const conditionResult = checkFunc(ctx) ? condition.met : condition.unmet;
+  return {
+    startScreenId: conditionResult?.screenId,
+    conditionInteractionId: conditionResult?.interactionId,
+  };
+};
+
+/* eslint-disable import/prefer-default-export */
+export const calculateConditions = (
+  conditions: ClientCondition[],
+  ctx: Context
+) => {
+  let conditionResult: ClientConditionResult;
+  conditions.every((condition) => {
+    const checkFunc = conditionsMap[condition?.key]?.[condition.operator];
+    if (!checkFunc) {
+      return {};
+    }
+    const check = checkFunc(ctx);
+    if (check) {
+      conditionResult = condition.met;
+      // break
+      return false;
+    }
+    conditionResult = condition.unmet;
+    return true;
+  });
   return {
     startScreenId: conditionResult?.screenId,
     conditionInteractionId: conditionResult?.interactionId,

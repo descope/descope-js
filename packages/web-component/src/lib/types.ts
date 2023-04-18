@@ -86,7 +86,7 @@ type Operator =
   | 'in'
   | 'not-in';
 
-interface ClientConditionResult {
+export interface ClientConditionResult {
   screenId: string;
   interactionId: string;
 }
