@@ -5,7 +5,7 @@ import {
   Context,
 } from '../types';
 
-export const conditionsMap: ConditionsMap<Context> = {
+export const conditionsMap: ConditionsMap = {
   'lastAuth.loginId': {
     'not-empty': (ctx) => !!ctx.loginId,
     empty: (ctx) => !ctx.loginId,

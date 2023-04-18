@@ -99,7 +99,6 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenId: string;
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
-    if (!flowId) return;
     const flowConfig = await this.getFlowConfig();
 
     // if there is no execution id we should start a new flow

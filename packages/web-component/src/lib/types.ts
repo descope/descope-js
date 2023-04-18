@@ -104,11 +104,11 @@ export type ThemeOptions = 'light' | 'dark' | 'os';
 
 export type Key = 'lastAuth.loginId' | 'idpInitiated';
 
-type CheckFunction<T> = (ctx: T) => boolean;
+type CheckFunction = (ctx: Context) => boolean;
 
-export type ConditionsMap<T> = {
+export type ConditionsMap = {
   [key in Key]: {
-    [operator in Operator]?: CheckFunction<T>;
+    [operator in Operator]?: CheckFunction;
   };
 };
 
