@@ -132,7 +132,7 @@ class DescopeWc extends BaseDescopeWc {
           conditionInteractionId,
           '',
           inputs,
-          flowConfig?.version || 0
+          flowConfig.version || 0
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -160,7 +160,7 @@ class DescopeWc extends BaseDescopeWc {
           exchangeCode: code,
           exchangeError,
         },
-        flowConfig?.version || 0
+        flowConfig.version || 0
       );
       this.#handleSdkResponse(sdkResp);
       this.flowState.update({
@@ -216,7 +216,7 @@ class DescopeWc extends BaseDescopeWc {
           response,
           cancelWebauthn,
         },
-        flowConfig?.version || 0
+        flowConfig.version || 0
       );
       this.#handleSdkResponse(sdkResp);
     }
@@ -228,7 +228,7 @@ class DescopeWc extends BaseDescopeWc {
           stepId,
           CUSTOM_INTERACTIONS.polling,
           {},
-          flowConfig?.version || 0
+          flowConfig.version || 0
         );
         this.#handleSdkResponse(sdkResp);
       }, 2000);
@@ -268,7 +268,7 @@ class DescopeWc extends BaseDescopeWc {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
           },
-          flowConfig?.version || 0
+          flowConfig.version || 0
         );
     } else if (
       isChanged('projectId') ||
