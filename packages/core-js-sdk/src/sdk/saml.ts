@@ -14,7 +14,7 @@ const withSaml = (httpClient: HttpClient) => ({
       redirectUrl?: string,
       loginOptions?: LoginOptions,
       token?: string
-    ): Promise<SdkResponse<JWTResponse>> =>
+    ): Promise<SdkResponse<URLResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.saml.start, loginOptions || {}, {
           queryParams: { tenant: tenantNameOrEmail, redirectURL: redirectUrl },
