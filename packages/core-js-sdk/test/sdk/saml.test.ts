@@ -19,7 +19,7 @@ describe('saml', () => {
       expect(() => sdk.saml.start('')).toThrow('"tenant" must not be empty');
     });
 
-    it('should return the correct url when "redirect" is set to default (false)', async () => {
+    it('should return the correct url', async () => {
       delete window.location;
       window.location = new URL('https://www.example.com');
       const httpRespJson = { url: 'http://redirecturl.com/' };
@@ -49,61 +49,6 @@ describe('saml', () => {
         ok: true,
         response: httpResponse,
       });
-    });
-
-    it('should redirect the browser to the correct url when "redirect" is set to true', async () => {
-      delete window.location;
-      window.location = new URL('https://www.example.com');
-      mockHttpClient.post.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ url: 'http://redirecturl.com/' }),
-        clone: () => ({
-          json: () => Promise.resolve({ url: 'http://redirecturl.com/' }),
-        }),
-      });
-      await sdk.saml.start('tenant', undefined, { redirect: true });
-      expect(mockHttpClient.post).toHaveBeenCalledWith(
-        apiPaths.saml.start,
-        {},
-        {
-          queryParams: {
-            tenant: 'tenant',
-          },
-        }
-      );
-
-      expect(window.location.href).toBe('http://redirecturl.com/');
-    });
-
-    it('should redirect the browser to the correct url when "redirect" is set to true and login options', async () => {
-      delete window.location;
-      window.location = new URL('https://www.example.com');
-      mockHttpClient.post.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ url: 'http://redirecturl.com/' }),
-        clone: () => ({
-          json: () => Promise.resolve({ url: 'http://redirecturl.com/' }),
-        }),
-      });
-      await sdk.saml.start(
-        'tenant',
-        undefined,
-        { redirect: true },
-        { stepup: true, customClaims: { k1: 'v1' } },
-        'token'
-      );
-      expect(mockHttpClient.post).toHaveBeenCalledWith(
-        apiPaths.saml.start,
-        { stepup: true, customClaims: { k1: 'v1' } },
-        {
-          queryParams: {
-            tenant: 'tenant',
-          },
-          token: 'token',
-        }
-      );
-
-      expect(window.location.href).toBe('http://redirecturl.com/');
     });
   });
 
