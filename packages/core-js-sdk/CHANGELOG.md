@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.16](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.15...core-js-sdk-1.0.16) (2023-04-19)
+
+
+### Bug Fixes
+
+* improve saml response ([#95](https://github.com/descope/descope-js/issues/95)): RELEASE ([97a0558](https://github.com/descope/descope-js/commit/97a05582a9be62b411e7e4d9f353693b3504db53))
+
 ## [1.0.15](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.14...core-js-sdk-1.0.15) (2023-04-12)
 
 ## [1.0.14](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.13...core-js-sdk-1.0.14) (2023-04-12)
