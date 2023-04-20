@@ -30,7 +30,10 @@
         const url = new URL(location.href);
         url.pathname += 'exchange.html';
         url.searchParams.set('projectId', projectId);
-        sdk.oauth.start.google(url.toString(), { redirect: true });
+        const res = await sdk.oauth.start.google(url.toString());
+        if (resp?.ok === false) alert(JSON.stringify(resp, null, 4));
+
+        window.location.href = res.url;
 
         h1Ele.innerText = 'Redirecting...';
         formEle.remove();

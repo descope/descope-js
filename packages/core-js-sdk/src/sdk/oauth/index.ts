@@ -11,32 +11,20 @@ const withOauth = (httpClient: HttpClient) => ({
   start: Object.keys(OAuthProviders).reduce(
     (acc, provider) => ({
       ...acc,
-      // eslint-disable-next-line consistent-return
-      [provider]: async (
+      [provider]: (
         redirectUrl?: string,
-        { redirect = false } = {},
         loginOptions?: LoginOptions,
         token?: string
-      ) => {
-        const resp = await httpClient.post(
-          apiPaths.oauth.start,
-          loginOptions || {},
-          {
+      ) =>
+        transformResponse(
+          httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
             queryParams: {
               provider,
               ...(redirectUrl && { redirectURL: redirectUrl }),
             },
             token,
-          }
-        );
-        if (!redirect || !resp.ok)
-          return transformResponse<SdkResponse<URLResponse>>(
-            Promise.resolve(resp)
-          );
-
-        const { url } = await resp.json();
-        window.location.href = url;
-      },
+          })
+        ),
     }),
     {}
   ) as Oauth['start'],
