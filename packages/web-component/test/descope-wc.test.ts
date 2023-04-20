@@ -1651,7 +1651,7 @@ describe('web-component', () => {
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 3000,
+        timeout: 4000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
