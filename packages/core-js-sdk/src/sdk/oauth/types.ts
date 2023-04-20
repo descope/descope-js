@@ -14,9 +14,7 @@ enum OAuthProviders {
 type StartFn = <B extends { redirect: boolean }>(
   redirectURL?: string,
   config?: B
-) => Promise<
-  B extends { redirect: true } ? undefined : SdkResponse<URLResponse>
->;
+) => Promise<SdkResponse<URLResponse>>;
 type VerifyFn = (code: string) => Promise<SdkResponse<JWTResponse>>;
 
 type Providers<T> = Record<keyof typeof OAuthProviders, T>;

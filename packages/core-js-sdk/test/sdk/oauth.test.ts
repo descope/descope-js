@@ -11,7 +11,7 @@ describe('oauth', () => {
     mockHttpClient.reset();
   });
   describe('start', () => {
-    it('should return the correct url when "redirect" is set to default (false)', async () => {
+    it('should return the correct url', async () => {
       delete window.location;
       window.location = new URL('https://www.example.com');
       const httpRespJson = { url: 'http://redirecturl.com/' };
@@ -43,32 +43,6 @@ describe('oauth', () => {
       });
     });
 
-    it('should redirect the browser to the correct url when "redirect" is set to true', async () => {
-      delete window.location;
-      window.location = new URL('https://www.example.com');
-
-      mockHttpClient.post.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ url: 'http://redirecturl.com/' }),
-        clone: () => ({
-          json: () => Promise.resolve({ url: 'http://redirecturl.com/' }),
-        }),
-      });
-
-      await sdk.oauth.start.facebook(undefined, { redirect: true });
-      expect(mockHttpClient.post).toHaveBeenCalledWith(
-        apiPaths.oauth.start,
-        {},
-        {
-          queryParams: {
-            provider: 'facebook',
-          },
-        }
-      );
-
-      expect(window.location.href).toBe('http://redirecturl.com/');
-    });
-
     it('should override the redirect url when provided', () => {
       sdk.oauth.start.facebook('http://redirecturl.com/');
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -86,7 +60,6 @@ describe('oauth', () => {
     it('should override the redirect url when provided and login options', () => {
       sdk.oauth.start.facebook(
         'http://redirecturl.com/',
-        {},
         { stepup: true, customClaims: { k1: 'v1' } },
         'token'
       );
