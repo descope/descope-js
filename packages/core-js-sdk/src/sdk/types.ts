@@ -44,6 +44,7 @@ export type UserResponse = User & {
   picture?: string;
   roleNames?: string[];
   userTenants?: UserTenant[];
+  createTime: number;
 };
 
 /** A tenant association mapping  */
