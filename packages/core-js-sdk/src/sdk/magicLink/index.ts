@@ -85,12 +85,14 @@ const withMagicLink = (httpClient: HttpClient) => ({
         loginId: string,
         email: string,
         URI?: string,
-        token?: string
+        token?: string,
+        addToLoginIDs?: boolean,
+        onMergeUseExisting?: boolean
       ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.magicLink.update.email,
-            { loginId, email, URI },
+            { loginId, email, URI, addToLoginIDs, onMergeUseExisting },
             { token }
           )
         )
@@ -99,11 +101,18 @@ const withMagicLink = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (loginId: string, phone: string, URI?: string, token?: string) =>
+          (
+            loginId: string,
+            phone: string,
+            URI?: string,
+            token?: string,
+            addToLoginIDs?: boolean,
+            onMergeUseExisting?: boolean
+          ) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.magicLink.update.phone, delivery),
-                { loginId, phone, URI },
+                { loginId, phone, URI, addToLoginIDs, onMergeUseExisting },
                 { token }
               )
             )

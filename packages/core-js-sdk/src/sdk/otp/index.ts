@@ -101,12 +101,14 @@ const withOtp = (httpClient: HttpClient) => ({
       (
         loginId: string,
         email: string,
-        token?: string
+        token?: string,
+        addToLoginIDs?: boolean,
+        onMergeUseExisting?: boolean
       ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.otp.update.email,
-            { loginId, email },
+            { loginId, email, addToLoginIDs, onMergeUseExisting },
             { token }
           )
         )
@@ -115,11 +117,17 @@ const withOtp = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (loginId: string, phone: string, token?: string) =>
+          (
+            loginId: string,
+            phone: string,
+            token?: string,
+            addToLoginIDs?: boolean,
+            onMergeUseExisting?: boolean
+          ) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.otp.update.phone, delivery),
-                { loginId, phone },
+                { loginId, phone, addToLoginIDs, onMergeUseExisting },
                 { token }
               )
             )

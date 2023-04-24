@@ -137,12 +137,14 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
         loginId: string,
         email: string,
         URI?: string,
-        token?: string
+        token?: string,
+        addToLoginIDs?: boolean,
+        onMergeUseExisting?: boolean
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
         transformResponse(
           httpClient.post(
             apiPaths.enchantedLink.update.email,
-            { loginId, email, URI },
+            { loginId, email, URI, addToLoginIDs, onMergeUseExisting },
             { token }
           )
         )
