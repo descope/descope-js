@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="http://localhost:9876/screen.js"></script>
     <title>Descope WC demo app</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self' static.descope.org;
+      style-src 'unsafe-inline' fonts.googleapis.com;
+      img-src static.descope.org;
+      font-src fonts.gstatic.com;
+      script-src 'unsafe-inline' localhost:3000;
+    "
+    />
     <style>
       body {
         background-color: antiquewhite;

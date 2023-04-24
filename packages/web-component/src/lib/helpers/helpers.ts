@@ -135,10 +135,14 @@ export const generateFnsFromScriptTags = (
   ).map((script) => {
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
     const scriptId = script.getAttribute('data-id');
-    const scriptContent = template.getElementById(scriptId)?.innerHTML;
+    // const scriptContent = template.getElementById(scriptId)?.innerHTML;
 
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const fn = Function(scriptContent).bind(script.previousSibling, context);
+    // const fn = Function(scriptContent).bind(script.previousSibling, context);
+    const fn = window.ds_scripts[scriptId].bind(
+      script.previousSibling,
+      context
+    );
     script.remove();
 
     return fn;
