@@ -9,6 +9,7 @@ import {
   DeliveryPhone,
   LoginOptions,
   MaskedEmail,
+  UpdateOptions,
 } from '../types';
 import {
   stringEmail,
@@ -98,17 +99,16 @@ const withOtp = (httpClient: HttpClient) => ({
 
   update: {
     email: withUpdateEmailValidations(
-      (
+      <T extends boolean>(
         loginId: string,
         email: string,
         token?: string,
-        addToLoginIDs?: boolean,
-        onMergeUseExisting?: boolean
+        updateOptions? : UpdateOptions<T>
       ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.otp.update.email,
-            { loginId, email, addToLoginIDs, onMergeUseExisting },
+            { loginId, email, ...updateOptions },
             { token }
           )
         )
@@ -117,17 +117,16 @@ const withOtp = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (
+          <T extends boolean>(
             loginId: string,
             phone: string,
             token?: string,
-            addToLoginIDs?: boolean,
-            onMergeUseExisting?: boolean
+            updateOptions? : UpdateOptions<T>
           ) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.otp.update.phone, delivery),
-                { loginId, phone, addToLoginIDs, onMergeUseExisting },
+                { loginId, phone, ...updateOptions },
                 { token }
               )
             )

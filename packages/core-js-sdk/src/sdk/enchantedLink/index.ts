@@ -12,6 +12,7 @@ import {
   EnchantedLinkResponse,
   User,
   LoginOptions,
+  UpdateOptions,
 } from '../types';
 import { EnchantedLink, Routes, WaitForSessionConfig } from './types';
 import {
@@ -133,18 +134,17 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
 
   update: {
     email: withUpdateEmailValidations(
-      (
+      <T extends boolean>(
         loginId: string,
         email: string,
         URI?: string,
         token?: string,
-        addToLoginIDs?: boolean,
-        onMergeUseExisting?: boolean
+        updateOptions? : UpdateOptions<T>
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
         transformResponse(
           httpClient.post(
             apiPaths.enchantedLink.update.email,
-            { loginId, email, URI, addToLoginIDs, onMergeUseExisting },
+            { loginId, email, URI, ...updateOptions },
             { token }
           )
         )
