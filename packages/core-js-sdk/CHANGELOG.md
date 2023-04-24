@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.19](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.18...core-js-sdk-1.0.19) (2023-04-24)
+
+
+### Bug Fixes
+
+* Export user created time in user response ([#100](https://github.com/descope/descope-js/issues/100)) ([2d23d08](https://github.com/descope/descope-js/commit/2d23d08d2b60ab99b3700721fa5ed92801fd355c)), closes [descope/etc#2450](https://github.com/descope/etc/issues/2450)
+
 ## [1.0.18](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.17...core-js-sdk-1.0.18) (2023-04-22)
 
 
