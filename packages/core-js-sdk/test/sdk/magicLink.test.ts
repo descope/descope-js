@@ -215,7 +215,8 @@ describe('Magic Link', () => {
           'loginId',
           'new@email.com',
           'new@email.com',
-          'token'
+          'token',
+          { addToLoginIDs: true, onMergeUseExisting: true }
         );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.magicLink.update.email,
@@ -223,6 +224,8 @@ describe('Magic Link', () => {
             email: 'new@email.com',
             loginId: 'loginId',
             URI: 'new@email.com',
+            addToLoginIDs: true,
+            onMergeUseExisting: true,
           },
           { token: 'token' }
         );

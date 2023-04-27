@@ -8,6 +8,7 @@ import {
   ResponseData,
   DeliveriesMap,
   DeliveriesPhone,
+  UpdateOptions,
 } from '../types';
 
 type VerifyFn = (
@@ -34,10 +35,11 @@ type DeliveriesSignUp = DeliveriesMap<
   SignUpFn<MaskedPhone>
 >;
 
-type UpdatePhoneFn = (
+type UpdatePhoneFn = <T extends boolean>(
   loginId: string,
   phone: string,
-  token?: string
+  token?: string,
+  updateOptions? : UpdateOptions<T>
 ) => Promise<SdkResponse<MaskedPhone>>;
 
 export enum Routes {
