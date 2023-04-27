@@ -95,14 +95,14 @@ export interface ClientCondition {
   operator: Operator;
   key: string;
   met: ClientConditionResult;
-  unmet: ClientConditionResult;
+  unmet?: ClientConditionResult;
 }
 
 export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated';
+export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'ELSE';
 
 type CheckFunction = (ctx: Context) => boolean;
 

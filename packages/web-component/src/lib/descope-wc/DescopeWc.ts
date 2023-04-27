@@ -17,7 +17,7 @@ import {
   State,
   withMemCache,
 } from '../helpers';
-import { calculateConditions } from '../helpers/conditions';
+import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
 import { disableWebauthnButtons } from '../helpers/templates';
@@ -103,17 +103,19 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      const conditions = flowConfig.condition
-        ? [flowConfig.condition]
-        : flowConfig.conditions;
-      ({ startScreenId = flowConfig.startScreenId, conditionInteractionId } =
-        calculateConditions(
-          {
-            loginId,
-            code,
-          },
-          conditions
+      if (flowConfig.conditions) {
+        ({ startScreenId, conditionInteractionId } = calculateConditions(
+          { loginId, code },
+          flowConfig.conditions
         ));
+      } else if (flowConfig.condition) {
+        ({ startScreenId, conditionInteractionId } = calculateCondition(
+          flowConfig.condition,
+          { loginId, code }
+        ));
+      } else {
+        startScreenId = flowConfig.startScreenId;
+      }
 
       if (!startScreenId) {
         const inputs = code

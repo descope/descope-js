@@ -1822,4 +1822,66 @@ describe('web-component', () => {
       expect.any(Object)
     );
   });
+  it('Should fetch else screen when else is met', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    localStorage.setItem(
+      DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+      '{"authMethod":"otp"}'
+    );
+    getLastUserLoginIdMock.mockReturnValue('');
+
+    configContent = {
+      flows: {
+        'sign-in': {
+          conditions: [
+            {
+              key: 'idpInitiated',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'is-true',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            {
+              key: 'lastAuth.loginId',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+                screenId: 'met',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            {
+              key: 'ELSE',
+              met: {
+                interactionId: '123123',
+                screenId: 'else',
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'));
+    expect(startMock).not.toBeCalled();
+    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/else.html`;
+
+    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(htmlUrlPathRegex),
+      expect.any(Object)
+    );
+  });
 });
