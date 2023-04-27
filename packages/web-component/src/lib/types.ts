@@ -50,6 +50,8 @@ export type FlowState = {
   webauthnTransactionId: string;
   webauthnOptions: string;
   telemetryKey: string;
+  redirectAuthCodeChallenge: string;
+  redirectAuthCallbackUrl: string;
 };
 
 export type StepState = {
