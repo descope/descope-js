@@ -384,8 +384,15 @@ class BaseDescopeWc extends HTMLElement {
 
       this.#handleKeyPress();
 
-      const { executionId, stepId, token, code, exchangeError } =
-        handleUrlParams();
+      const {
+        executionId,
+        stepId,
+        token,
+        code,
+        exchangeError,
+        redirectAuthCallbackUrl,
+        redirectAuthCodeChallenge,
+      } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
       window.addEventListener('popstate', this.#eventsCbRefs.popstate);
@@ -405,6 +412,8 @@ class BaseDescopeWc extends HTMLElement {
         code,
         exchangeError,
         telemetryKey: this.telemetryKey,
+        redirectAuthCallbackUrl,
+        redirectAuthCodeChallenge,
       });
 
       this.#debugState.update({ isDebug: this.debug });

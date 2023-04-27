@@ -9,6 +9,11 @@ type LastAuth = {
   loginId?: string;
 };
 
+type RedirectAuth = {
+  callbackUrl: string;
+  codeChallenge: string;
+};
+
 type AuthMethod =
   | 'magiclink'
   | 'enchantedlink'
@@ -214,6 +219,7 @@ export type Options = {
   tenant?: string;
   deviceInfo?: DeviceInfo;
   lastAuth?: LastAuth;
+  redirectAuth?: RedirectAuth;
 };
 
 export type ResponseData = Record<string, any>;

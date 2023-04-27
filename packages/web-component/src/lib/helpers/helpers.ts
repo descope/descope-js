@@ -6,6 +6,8 @@ import {
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
+  URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
+  URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -112,6 +114,21 @@ export function clearExchangeErrorFromUrl() {
   resetUrlParam(URL_ERR_PARAM_NAME);
 }
 
+export function getRedirectAuthFromUrl() {
+  const redirectAuthCodeChallenge = getUrlParam(
+    URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME
+  );
+  const redirectAuthCallbackUrl = getUrlParam(
+    URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME
+  );
+  return { redirectAuthCodeChallenge, redirectAuthCallbackUrl };
+}
+
+export function clearRedirectAuthFromUrl() {
+  resetUrlParam(URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME);
+  resetUrlParam(URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -184,7 +201,21 @@ export const handleUrlParams = () => {
     clearExchangeErrorFromUrl();
   }
 
-  return { executionId, stepId, token, code, exchangeError };
+  const { redirectAuthCodeChallenge, redirectAuthCallbackUrl } =
+    getRedirectAuthFromUrl();
+  if (redirectAuthCodeChallenge || redirectAuthCallbackUrl) {
+    clearRedirectAuthFromUrl();
+  }
+
+  return {
+    executionId,
+    stepId,
+    token,
+    code,
+    exchangeError,
+    redirectAuthCodeChallenge,
+    redirectAuthCallbackUrl,
+  };
 };
 
 export const loadFont = (url: string) => {

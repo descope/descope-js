@@ -16,6 +16,8 @@ import {
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
+  URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -1622,6 +1624,36 @@ describe('web-component', () => {
         expect.stringMatching(htmlUrlPathRegex),
         expect.any(Object)
       );
+    });
+
+    it('should call start with redirect auth data and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const challenge = window.btoa('hash');
+      const callback = 'https://mycallback.com';
+      const encodedChallenge = encodeURIComponent(challenge);
+      const encodedCallback = encodeURIComponent(callback);
+      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            tenant: undefined,
+          },
+          undefined,
+          '',
+          undefined
+        )
+      );
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 4000,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
     });
   });
 });
