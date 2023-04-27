@@ -9,7 +9,7 @@ import {
   User,
   LoginOptions,
   MaskedEmail,
-  MaskedPhone,
+  UpdateOptions,
 } from '../types';
 import { MagicLink, Routes } from './types';
 import {
@@ -81,16 +81,17 @@ const withMagicLink = (httpClient: HttpClient) => ({
 
   update: {
     email: withUpdateEmailValidations(
-      (
+      <T extends boolean>(
         loginId: string,
         email: string,
         URI?: string,
-        token?: string
+        token?: string,
+        updateOptions? : UpdateOptions<T>
       ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.magicLink.update.email,
-            { loginId, email, URI },
+            { loginId, email, URI, ...updateOptions },
             { token }
           )
         )
@@ -99,11 +100,17 @@ const withMagicLink = (httpClient: HttpClient) => ({
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(
-          (loginId: string, phone: string, URI?: string, token?: string) =>
+          <T extends boolean>(
+            loginId: string,
+            phone: string,
+            URI?: string,
+            token?: string,
+            updateOptions? : UpdateOptions<T>
+          ) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.magicLink.update.phone, delivery),
-                { loginId, phone, URI },
+                { loginId, phone, URI, ...updateOptions },
                 { token }
               )
             )
