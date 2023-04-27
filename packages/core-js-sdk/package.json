@@ -1,6 +1,6 @@
 {
   "name": "@descope/core-js-sdk",
-  "version": "1.0.15",
+  "version": "1.0.19",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/core-js-sdk",
   "bugs": {
@@ -44,11 +44,11 @@
     "@types/lodash.get": "^4.4.7",
     "@typescript-eslint/parser": "^5.33.1",
     "esbuild": "^0.17.0",
-    "eslint": "8.37.0",
+    "eslint": "8.38.0",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-config-standard": "17.0.0",
-    "eslint-import-resolver-typescript": "3.5.4",
+    "eslint-import-resolver-typescript": "3.5.5",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-jest": "27.2.1",
     "eslint-plugin-jest-dom": "4.0.3",
