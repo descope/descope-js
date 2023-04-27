@@ -7,6 +7,7 @@ import {
   MaskedEmail,
   MaskedPhone,
   DeliveriesPhone,
+  UpdateOptions,
 } from '../types';
 
 type SignInFn<T extends ResponseData> = (
@@ -20,11 +21,12 @@ type SignUpFn<T extends ResponseData> = (
   user?: User
 ) => Promise<SdkResponse<T>>;
 
-type UpdatePhoneFn = (
+type UpdatePhoneFn =<T extends boolean> (
   loginId: string,
   phone: string,
   URI?: string,
-  token?: string
+  token?: string,
+  updateOptions?: UpdateOptions<T>
 ) => Promise<SdkResponse<MaskedPhone>>;
 
 type DeliveriesSignIn = DeliveriesMap<
