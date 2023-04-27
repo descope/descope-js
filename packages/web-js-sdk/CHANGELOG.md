@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.21](https://github.com/descope/descope-js/compare/web-js-sdk-1.0.20...web-js-sdk-1.0.21) (2023-04-25)
+
+## [1.0.20](https://github.com/descope/descope-js/compare/web-js-sdk-1.0.19...web-js-sdk-1.0.20) (2023-04-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.0.19`
+## [1.0.19](https://github.com/descope/descope-js/compare/web-js-sdk-1.0.18...web-js-sdk-1.0.19) (2023-04-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.0.18`
+
+### Bug Fixes
+
+* remove oauth redirect ([#96](https://github.com/descope/descope-js/issues/96)) ([7a6c49b](https://github.com/descope/descope-js/commit/7a6c49bd68b20d4167863252dc3f5acbfadbb3bd))
+
 ## [1.0.18](https://github.com/descope/descope-js/compare/web-js-sdk-1.0.17...web-js-sdk-1.0.18) (2023-04-19)
 
 ### Dependency Updates

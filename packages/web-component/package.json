@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "2.0.25",
+  "version": "2.0.28",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-component",
   "bugs": {
@@ -38,7 +38,7 @@
     "@types/jest": "^29.0.0",
     "@types/node": "18.15.0",
     "dotenv": "^16.0.3",
-    "eslint": "8.37.0",
+    "eslint": "8.38.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-config-prettier": "8.8.0",
@@ -75,6 +75,6 @@
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.16.8"
+    "terser": "5.16.9"
   }
 }
