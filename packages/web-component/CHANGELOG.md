@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.1.0](https://github.com/descope/descope-js/compare/web-component-2.0.28...web-component-2.1.0) (2023-05-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.1.0`
+
+### Features
+
+* wc redirect auth ([#98](https://github.com/descope/descope-js/issues/98)) ([66980f2](https://github.com/descope/descope-js/commit/66980f222796c13220875dcd96f47256eb4769b6))
+
 ## [2.0.28](https://github.com/descope/descope-js/compare/web-component-2.0.27...web-component-2.0.28) (2023-04-25)
 
 ### Dependency Updates
