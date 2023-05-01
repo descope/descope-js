@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.1.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.19...core-js-sdk-1.1.0) (2023-05-01)
+
+
+### Features
+
+* Add options to merge users in case of phone or email update ([#106](https://github.com/descope/descope-js/issues/106)) ([8fec218](https://github.com/descope/descope-js/commit/8fec218fa7657950e41f3c5b83492cef0396ff29))
+* wc redirect auth ([#98](https://github.com/descope/descope-js/issues/98)) ([66980f2](https://github.com/descope/descope-js/commit/66980f222796c13220875dcd96f47256eb4769b6))
+
 ## [1.0.19](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.18...core-js-sdk-1.0.19) (2023-04-24)
 
 
