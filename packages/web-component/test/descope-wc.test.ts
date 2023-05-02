@@ -76,6 +76,12 @@ Object.defineProperty(window.history, 'replaceState', {
 
 describe('web-component', () => {
   beforeEach(() => {
+    configContent = {
+      flows: {
+        'versioned-flow': { version: 1 },
+        otpSignInEmail: { version: 1 },
+      },
+    };
     jest.useFakeTimers();
 
     fetchMock.mockImplementation((url: string) => {
@@ -108,7 +114,6 @@ describe('web-component', () => {
     window.location.search = '';
     themeContent = '';
     pageContent = '';
-    configContent = {};
   });
 
   it('should call the success cb when flow in completed status', async () => {
@@ -473,7 +478,8 @@ describe('web-component', () => {
         {
           email: '',
           origin: 'http://localhost',
-        }
+        },
+        0
       )
     );
   });
@@ -614,7 +620,7 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('Loaded1');
+    await waitFor(() => screen.findByShadowText('Loaded1'), { timeout: 3000 });
     await waitFor(() => screen.getByShadowText('hey john!'));
   });
 
@@ -628,7 +634,7 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('Loaded1');
+    await waitFor(() => screen.findByShadowText('Loaded1'), { timeout: 3000 });
     await waitFor(() => screen.getByShadowText('hey not john!'));
   });
 
@@ -754,7 +760,7 @@ describe('web-component', () => {
 
     const errorSpy = jest.spyOn(console, 'error');
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(
       () =>
@@ -806,9 +812,15 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', {
-        token: 'token1',
-      })
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submit',
+        {
+          token: 'token1',
+        },
+        1
+      )
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: 3000,
@@ -824,9 +836,15 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', {
-        exchangeCode: 'code1',
-      })
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submit',
+        {
+          exchangeCode: 'code1',
+        },
+        0
+      )
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: 3000,
@@ -839,12 +857,18 @@ describe('web-component', () => {
     pageContent = '<span>It works!</span>';
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_ERR_PARAM_NAME}=err1`;
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', {
-        exchangeError: 'err1',
-      })
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submit',
+        {
+          exchangeError: 'err1',
+        },
+        1
+      )
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: 3000,
@@ -914,7 +938,7 @@ describe('web-component', () => {
     );
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(
       () =>
@@ -936,7 +960,7 @@ describe('web-component', () => {
 
     const errorSpy = jest.spyOn(console, 'error');
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(
       () =>
@@ -958,7 +982,7 @@ describe('web-component', () => {
 
     const errorSpy = jest.spyOn(console, 'error');
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(
       () =>
@@ -993,10 +1017,16 @@ describe('web-component', () => {
       () => expect(sdk.webauthn.helpers.create).toHaveBeenCalled(),
       { timeout: 3000 }
     );
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', {
-      transactionId: 't1',
-      response: 'webauthn-response',
-    });
+    expect(nextMock).toHaveBeenCalledWith(
+      '0',
+      '0',
+      'submit',
+      {
+        transactionId: 't1',
+        response: 'webauthn-response',
+      },
+      0
+    );
   });
 
   it('Should search of existing credentials when action type is "webauthnGet"', async () => {
@@ -1016,15 +1046,21 @@ describe('web-component', () => {
       Promise.resolve('webauthn-response-get')
     );
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
       timeout: 3000,
     });
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', {
-      transactionId: 't1',
-      response: 'webauthn-response-get',
-    });
+    expect(nextMock).toHaveBeenCalledWith(
+      '0',
+      '0',
+      'submit',
+      {
+        transactionId: 't1',
+        response: 'webauthn-response-get',
+      },
+      1
+    );
   });
 
   it('Should handle canceling webauthn', async () => {
@@ -1049,10 +1085,16 @@ describe('web-component', () => {
     await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
       timeout: 3000,
     });
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', {
-      transactionId: 't1',
-      cancelWebauthn: true,
-    });
+    expect(nextMock).toHaveBeenCalledWith(
+      '0',
+      '0',
+      'submit',
+      {
+        transactionId: 't1',
+        cancelWebauthn: true,
+      },
+      0
+    );
   });
 
   it('it loads the fonts from the config when loading', async () => {
@@ -1215,7 +1257,8 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
-        undefined
+        undefined,
+        0
       )
     );
   });
@@ -1536,6 +1579,7 @@ describe('web-component', () => {
                 screenId: 'unmet',
               },
             },
+            version: 1,
           },
         },
       };
@@ -1557,7 +1601,8 @@ describe('web-component', () => {
           { lastAuth: { authMethod: 'otp' } },
           conditionInteractionId,
           'interactionId',
-          { origin: 'http://localhost' }
+          { origin: 'http://localhost' },
+          1
         )
       );
     });
@@ -1577,16 +1622,24 @@ describe('web-component', () => {
                 screenId: 'unmet',
               },
             },
+            version: 1,
           },
         },
       };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
       await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith('sign-in', {}, undefined, '', {
-          exchangeCode: 'code1',
-          idpInitiated: true,
-        })
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {},
+          undefined,
+          '',
+          {
+            exchangeCode: 'code1',
+            idpInitiated: true,
+          },
+          1
+        )
       );
     });
 
@@ -1647,7 +1700,8 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          undefined
+          undefined,
+          0
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
@@ -1655,5 +1709,212 @@ describe('web-component', () => {
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
+  });
+  it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
+    window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
+    configContent = {
+      flows: {
+        'sign-in': {
+          conditions: [
+            {
+              key: 'idpInitiated',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+          ],
+          version: 1,
+        },
+      },
+    };
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {},
+        undefined,
+        '',
+        {
+          exchangeCode: 'code1',
+          idpInitiated: true,
+        },
+        1
+      )
+    );
+  });
+
+  it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions with last auth', async () => {
+    window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
+    configContent = {
+      flows: {
+        'sign-in': {
+          conditions: [
+            {
+              key: 'idpInitiated',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            {
+              key: 'lastAuth.loginId',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+                screenId: 'met',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+          ],
+          version: 1,
+        },
+      },
+    };
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {},
+        undefined,
+        '',
+        {
+          exchangeCode: 'code1',
+          idpInitiated: true,
+        },
+        1
+      )
+    );
+  });
+
+  it('Should fetch met screen when second condition is met', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    localStorage.setItem(
+      DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+      '{"authMethod":"otp"}'
+    );
+    getLastUserLoginIdMock.mockReturnValue('abc');
+
+    configContent = {
+      flows: {
+        'sign-in': {
+          conditions: [
+            {
+              key: 'idpInitiated',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'is-true',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            {
+              key: 'lastAuth.loginId',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+                screenId: 'met',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'));
+    expect(startMock).not.toBeCalled();
+    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/met.html`;
+
+    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(htmlUrlPathRegex),
+      expect.any(Object)
+    );
+  });
+  it('Should fetch else screen when else is met', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    localStorage.setItem(
+      DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+      '{"authMethod":"otp"}'
+    );
+    getLastUserLoginIdMock.mockReturnValue('');
+
+    configContent = {
+      flows: {
+        'sign-in': {
+          conditions: [
+            {
+              key: 'idpInitiated',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'is-true',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            {
+              key: 'lastAuth.loginId',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+                screenId: 'met',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            {
+              key: 'ELSE',
+              met: {
+                interactionId: '123123',
+                screenId: 'else',
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'));
+    expect(startMock).not.toBeCalled();
+    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/else.html`;
+
+    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(htmlUrlPathRegex),
+      expect.any(Object)
+    );
   });
 });

@@ -329,7 +329,9 @@ class BaseDescopeWc extends HTMLElement {
   async getFlowConfig() {
     const { projectConfig } = await this.#getConfig();
 
-    return projectConfig?.flows?.[this.flowId] || {};
+    const config = projectConfig?.flows?.[this.flowId] || {};
+    config.version ??= 0;
+    return config;
   }
 
   logger = {
