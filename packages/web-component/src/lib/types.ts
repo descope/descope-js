@@ -88,7 +88,7 @@ type Operator =
   | 'in'
   | 'not-in';
 
-interface ClientConditionResult {
+export interface ClientConditionResult {
   screenId: string;
   interactionId: string;
 }
@@ -97,7 +97,7 @@ export interface ClientCondition {
   operator: Operator;
   key: string;
   met: ClientConditionResult;
-  unmet: ClientConditionResult;
+  unmet?: ClientConditionResult;
 }
 
 export type AutoFocusOptions = true | false | 'skipFirstScreen';
@@ -106,11 +106,11 @@ export type ThemeOptions = 'light' | 'dark' | 'os';
 
 export type Key = 'lastAuth.loginId' | 'idpInitiated';
 
-type CheckFunction<T> = (ctx: T) => boolean;
+type CheckFunction = (ctx: Context) => boolean;
 
-export type ConditionsMap<T> = {
+export type ConditionsMap = {
   [key in Key]: {
-    [operator in Operator]?: CheckFunction<T>;
+    [operator in Operator]?: CheckFunction;
   };
 };
 
