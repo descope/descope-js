@@ -1700,7 +1700,8 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          undefined
+          undefined,
+          0
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {

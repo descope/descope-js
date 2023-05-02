@@ -104,7 +104,7 @@ export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'ELSE';
+export type Key = 'lastAuth.loginId' | 'idpInitiated';
 
 type CheckFunction = (ctx: Context) => boolean;
 
