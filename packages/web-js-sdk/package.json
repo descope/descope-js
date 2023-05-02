@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-js-sdk",
-  "version": "1.0.21",
+  "version": "1.1.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-js-sdk",
   "bugs": {
@@ -82,7 +82,7 @@
   },
   "dependencies": {
     "@descope/core-js-sdk": "workspace:*",
-    "@fingerprintjs/fingerprintjs-pro": "3.8.2",
+    "@fingerprintjs/fingerprintjs-pro": "3.8.3",
     "js-cookie": "3.0.1"
   },
   "overrides": {

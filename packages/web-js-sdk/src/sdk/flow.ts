@@ -2,7 +2,10 @@ import { CoreSdk, ReplaceParam } from '../types';
 import { isSupported } from './webauthn';
 
 type CoreSdkFlowStartArgs = Parameters<CoreSdk['flow']['start']>;
-type Options = Pick<CoreSdkFlowStartArgs[1], 'tenant' | 'redirectUrl'> & {
+type Options = Pick<
+  CoreSdkFlowStartArgs[1],
+  'tenant' | 'redirectUrl' | 'redirectAuth'
+> & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
 

@@ -90,6 +90,8 @@ class DescopeWc extends BaseDescopeWc {
       exchangeError,
       webauthnTransactionId,
       webauthnOptions,
+      redirectAuthCodeChallenge,
+      redirectAuthCallbackUrl,
     } = currentState;
 
     if (this.#currentInterval) {
@@ -100,6 +102,14 @@ class DescopeWc extends BaseDescopeWc {
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
+
+    const redirectAuth =
+      redirectAuthCallbackUrl && redirectAuthCodeChallenge
+        ? {
+            callbackUrl: redirectAuthCallbackUrl,
+            codeChallenge: redirectAuthCodeChallenge,
+          }
+        : undefined;
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
@@ -128,6 +138,7 @@ class DescopeWc extends BaseDescopeWc {
           flowId,
           {
             tenant,
+            redirectAuth,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
@@ -262,7 +273,12 @@ class DescopeWc extends BaseDescopeWc {
       stepStateUpdate.next = (interactionId, inputs) =>
         this.sdk.flow.start(
           flowId,
-          { tenant, lastAuth, ...(redirectUrl && { redirectUrl }) },
+          {
+            tenant,
+            redirectAuth,
+            lastAuth,
+            ...(redirectUrl && { redirectUrl }),
+          },
           conditionInteractionId,
           interactionId,
           {
