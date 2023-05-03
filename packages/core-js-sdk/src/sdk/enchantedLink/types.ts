@@ -1,4 +1,4 @@
-import { Deliveries, SdkResponse, EnchantedLinkResponse, User } from '../types';
+import { SdkResponse, EnchantedLinkResponse, User } from '../types';
 
 export type EnchantedLinkSignInFn = (
   loginId: string,
