@@ -242,8 +242,8 @@ export type SdkResponse<T extends ResponseData> = {
 };
 
 /** Different delivery method */
-export type Deliveries<T extends Record<DeliveryMethods, SdkFn> | SdkFn> = {
-  [S in DeliveryMethods]: T extends Record<DeliveryMethods, SdkFn> ? T[S] : T;
+export type Deliveries<T extends Record<DeliveryMethods, SdkFn>> = {
+  [S in DeliveryMethods]: T[S];
 };
 
 export type DeliveriesPhone<T extends Record<DeliveryPhone, SdkFn> | SdkFn> = {
@@ -259,6 +259,6 @@ export type DeliveriesMap<EmailFn extends SdkFn, PhoneFn extends SdkFn> = {
 export type Logger = Pick<Console, 'debug' | 'log' | 'error' | 'warn'>;
 
 export type UpdateOptions<T extends boolean> = {
-  addToLoginIDs?: T,
-  onMergeUseExisting?: T extends true? boolean : never
-}
+  addToLoginIDs?: T;
+  onMergeUseExisting?: T extends true ? boolean : never;
+};
