@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.1.0...core-js-sdk-1.2.0) (2023-05-03)
+
+
+### Features
+
+* Multiple conditions ([#94](https://github.com/descope/descope-js/issues/94)) ([287c9b6](https://github.com/descope/descope-js/commit/287c9b643f409cce4ba117c3b448ccd315329818))
+
 ## [1.1.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.0.19...core-js-sdk-1.1.0) (2023-05-01)
 
 
