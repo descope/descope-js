@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.2.0...core-js-sdk-1.2.1) (2023-05-03)
+
+
+### Bug Fixes
+
+* use type locally instead of exported ([#112](https://github.com/descope/descope-js/issues/112)) RELEASE ([479cf0e](https://github.com/descope/descope-js/commit/479cf0e73e792a55be3d395ea5e4a50fb8716cab))
+
 ## [1.2.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.1.0...core-js-sdk-1.2.0) (2023-05-03)
 
 
