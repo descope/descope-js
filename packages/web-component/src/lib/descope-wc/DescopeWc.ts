@@ -130,9 +130,9 @@ class DescopeWc extends BaseDescopeWc {
       if (!startScreenId) {
         const inputs = code
           ? {
-              exchangeCode: code,
-              idpInitiated: true,
-            }
+            exchangeCode: code,
+            idpInitiated: true,
+          }
           : undefined;
         const sdkResp = await this.sdk.flow.start(
           flowId,
@@ -444,6 +444,16 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  async loadWCUI(clone: any) {
+    const descopeEle = Array.from(clone.querySelectorAll('*'))
+      .reduce((acc, el) =>
+        el.tagName.startsWith('DESCOPE-') ? acc.add(el.tagName.toLocaleLowerCase()) : acc
+        , new Set());
+
+    await Promise.all([...descopeEle].map(tag => DescopeUI[tag]()));
+  }
+
   async onStepChange(currentState: StepState, prevState: StepState) {
     const { htmlUrl, direction, next, screenState } = currentState;
 
@@ -468,6 +478,8 @@ class DescopeWc extends BaseDescopeWc {
 
     // put the totp variable on the root element, which is the top level 'div'
     setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
+
+    this.loadWCUI(stepTemplate.content);
 
     const injectNextPage = async () => {
       try {
