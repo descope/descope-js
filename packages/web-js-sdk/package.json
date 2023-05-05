@@ -83,7 +83,7 @@
   "dependencies": {
     "@descope/core-js-sdk": "workspace:*",
     "@fingerprintjs/fingerprintjs-pro": "3.8.3",
-    "js-cookie": "3.0.1"
+    "js-cookie": "3.0.4"
   },
   "overrides": {
     "terser": "^5.14.2"
