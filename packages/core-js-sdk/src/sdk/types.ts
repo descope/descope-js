@@ -220,6 +220,7 @@ export type Options = {
   deviceInfo?: DeviceInfo;
   lastAuth?: LastAuth;
   redirectAuth?: RedirectAuth;
+  oidcIdpStateId?: string;
 };
 
 export type ResponseData = Record<string, any>;
