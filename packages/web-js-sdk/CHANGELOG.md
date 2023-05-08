@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.1.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.5...web-js-sdk-1.1.6) (2023-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-cookie to v3.0.5 ([#116](https://github.com/descope/descope-js/issues/116)) ([a752746](https://github.com/descope/descope-js/commit/a752746847ced4687666d3c902465aa86ed7005f))
+
 ## [1.1.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.4...web-js-sdk-1.1.5) (2023-05-05)
 
 ### Dependency Updates
