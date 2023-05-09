@@ -159,7 +159,7 @@ export async function isSupported(
     return Promise.resolve(false);
   }
   const supported = !!(
-    PublicKeyCredential &&
+    window.PublicKeyCredential &&
     navigator.credentials &&
     navigator.credentials.create &&
     navigator.credentials.get
