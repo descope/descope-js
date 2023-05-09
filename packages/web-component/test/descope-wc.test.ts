@@ -473,7 +473,13 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        { lastAuth: {}, redirectUrl: 'http://custom.url' },
+        {
+          lastAuth: {},
+          redirectUrl: 'http://custom.url',
+          oidcIdpStateId: null,
+          redirectAuth: undefined,
+          tenant: undefined,
+        },
         undefined,
         'submitterId',
         {
@@ -1599,7 +1605,12 @@ describe('web-component', () => {
       await waitFor(() =>
         expect(startMock).toBeCalledWith(
           'sign-in',
-          { lastAuth: { authMethod: 'otp' } },
+          {
+            lastAuth: { authMethod: 'otp' },
+            oidcIdpStateId: null,
+            redirectAuth: undefined,
+            tenant: undefined,
+          },
           conditionInteractionId,
           'interactionId',
           { origin: 'http://localhost' },
@@ -1632,7 +1643,11 @@ describe('web-component', () => {
       await waitFor(() =>
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
-          {},
+          {
+            oidcIdpStateId: null,
+            redirectAuth: undefined,
+            tenant: undefined,
+          },
           undefined,
           '',
           {
@@ -1696,6 +1711,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            oidcIdpStateId: null,
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
           },
@@ -1767,7 +1783,11 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {},
+        {
+          oidcIdpStateId: null,
+          redirectAuth: undefined,
+          tenant: undefined,
+        },
         undefined,
         '',
         {
@@ -1818,7 +1838,11 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {},
+        {
+          oidcIdpStateId: null,
+          redirectAuth: undefined,
+          tenant: undefined,
+        },
         undefined,
         '',
         {
