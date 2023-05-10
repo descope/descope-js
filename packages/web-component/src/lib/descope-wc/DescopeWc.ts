@@ -92,6 +92,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOptions,
       redirectAuthCodeChallenge,
       redirectAuthCallbackUrl,
+      oidcIdpStateId,
     } = currentState;
 
     if (this.#currentInterval) {
@@ -139,6 +140,7 @@ class DescopeWc extends BaseDescopeWc {
           {
             tenant,
             redirectAuth,
+            oidcIdpStateId,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
@@ -276,6 +278,7 @@ class DescopeWc extends BaseDescopeWc {
           {
             tenant,
             redirectAuth,
+            oidcIdpStateId,
             lastAuth,
             ...(redirectUrl && { redirectUrl }),
           },
