@@ -394,6 +394,7 @@ class BaseDescopeWc extends HTMLElement {
         exchangeError,
         redirectAuthCallbackUrl,
         redirectAuthCodeChallenge,
+        oidcIdpStateId,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
@@ -416,6 +417,7 @@ class BaseDescopeWc extends HTMLElement {
         telemetryKey: this.telemetryKey,
         redirectAuthCallbackUrl,
         redirectAuthCodeChallenge,
+        oidcIdpStateId,
       });
 
       this.#debugState.update({ isDebug: this.debug });
