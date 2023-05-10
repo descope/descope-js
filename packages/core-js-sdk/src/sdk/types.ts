@@ -50,6 +50,9 @@ export type UserResponse = User & {
   roleNames?: string[];
   userTenants?: UserTenant[];
   createTime: number;
+  totp: boolean;
+  saml: boolean;
+  oauth?: Record<string, boolean>;
 };
 
 /** A tenant association mapping  */
