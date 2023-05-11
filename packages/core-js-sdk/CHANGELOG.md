@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.2.3...core-js-sdk-1.3.0) (2023-05-11)
+
+
+### Features
+
+* add oidc flow start param ([#120](https://github.com/descope/descope-js/issues/120)) ([44248e3](https://github.com/descope/descope-js/commit/44248e3ca7d5f4aaf1dc50e7f369d03a98a55d73))
+* totp, saml and oauth are now on user directly ([#122](https://github.com/descope/descope-js/issues/122)) ([0a8938d](https://github.com/descope/descope-js/commit/0a8938d07bfba2f04eed770d8b4b057047a00c3b))
+
 ## [1.2.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.2.2...core-js-sdk-1.2.3) (2023-05-05)
 
 ## [1.2.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.2.1...core-js-sdk-1.2.2) (2023-05-03)
