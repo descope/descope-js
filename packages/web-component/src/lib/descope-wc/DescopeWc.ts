@@ -605,3 +605,5 @@ class DescopeWc extends BaseDescopeWc {
 }
 
 export default DescopeWc;
+
+export const testFn = () => 1;
