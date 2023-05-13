@@ -452,6 +452,48 @@ describe('web-component', () => {
     );
   });
 
+  it('When submitting it calls next with the checkbox checked value - false', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<button id="submitterId">click</button><input id="toggle" name="t1" type="checkbox"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await screen.findByShadowText('It works!');
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() =>
+      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submitterId', {
+        t1: false,
+        origin: 'http://localhost',
+      })
+    );
+  });
+
+  it('When submitting it calls next with the checkbox checked value - true', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<button id="submitterId">click</button><input id="toggle" name="t1" type="checkbox" checked="true"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await screen.findByShadowText('It works!');
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() =>
+      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submitterId', {
+        t1: true,
+        origin: 'http://localhost',
+      })
+    );
+  });
+
   it('When submitting and no execution id - it calls start with the button id', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     configContent = {
