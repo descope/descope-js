@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.0](https://github.com/descope/descope-js/compare/web-component-2.2.5...web-component-2.3.0) (2023-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.2.0`
+
+### Features
+
+* add oidc flow start param ([#120](https://github.com/descope/descope-js/issues/120)) ([44248e3](https://github.com/descope/descope-js/commit/44248e3ca7d5f4aaf1dc50e7f369d03a98a55d73))
+
+## [2.2.5](https://github.com/descope/descope-js/compare/web-component-2.2.4...web-component-2.2.5) (2023-05-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.1.6`
+## [2.2.4](https://github.com/descope/descope-js/compare/web-component-2.2.3...web-component-2.2.4) (2023-05-05)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.1.5`
+## [2.2.3](https://github.com/descope/descope-js/compare/web-component-2.2.2...web-component-2.2.3) (2023-05-05)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.1.4`
 ## [2.2.2](https://github.com/descope/descope-js/compare/web-component-2.2.1...web-component-2.2.2) (2023-05-03)
 
 ### Dependency Updates

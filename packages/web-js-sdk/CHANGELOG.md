@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.6...web-js-sdk-1.2.0) (2023-05-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.3.0`
+
+### Features
+
+* add oidc flow start param ([#120](https://github.com/descope/descope-js/issues/120)) ([44248e3](https://github.com/descope/descope-js/commit/44248e3ca7d5f4aaf1dc50e7f369d03a98a55d73))
+
+## [1.1.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.5...web-js-sdk-1.1.6) (2023-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-cookie to v3.0.5 ([#116](https://github.com/descope/descope-js/issues/116)) ([a752746](https://github.com/descope/descope-js/commit/a752746847ced4687666d3c902465aa86ed7005f))
+
+## [1.1.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.4...web-js-sdk-1.1.5) (2023-05-05)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.2.3`
+## [1.1.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.3...web-js-sdk-1.1.4) (2023-05-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-cookie to v3.0.4 ([#114](https://github.com/descope/descope-js/issues/114)) ([ffd9bb6](https://github.com/descope/descope-js/commit/ffd9bb631fcbd63c731c14f84526d98b1ff4c2ef))
+
 ## [1.1.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.1.2...web-js-sdk-1.1.3) (2023-05-03)
 
 ### Dependency Updates
