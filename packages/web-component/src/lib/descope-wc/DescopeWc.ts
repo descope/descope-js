@@ -535,11 +535,12 @@ class DescopeWc extends BaseDescopeWc {
       this.shadowRoot.querySelectorAll(
         `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
-    ).reduce(
-      (acc, input: HTMLInputElement) =>
-        input.name ? Object.assign(acc, { [input.name]: input.value }) : acc,
-      {}
-    );
+    ).reduce((acc, input: HTMLInputElement) => input.name
+        ? Object.assign(acc, {
+            [input.name]:
+              input[input.type === 'checkbox' ? 'checked' : 'value'],
+          })
+        : acc, {});
   }
 
   #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
