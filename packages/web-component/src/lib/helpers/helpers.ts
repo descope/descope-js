@@ -8,7 +8,6 @@ import {
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
-  OIDC_IDP_STATE_ID_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -130,14 +129,6 @@ export function clearRedirectAuthFromUrl() {
   resetUrlParam(URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME);
 }
 
-export function getOIDCIDPParamFromUrl() {
-  return getUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
-}
-
-export function clearOIDCIDPParamFromUrl() {
-  resetUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
-}
-
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -216,11 +207,6 @@ export const handleUrlParams = () => {
     clearRedirectAuthFromUrl();
   }
 
-  const oidcIdpStateId = getOIDCIDPParamFromUrl();
-  if (oidcIdpStateId) {
-    clearOIDCIDPParamFromUrl();
-  }
-
   return {
     executionId,
     stepId,
@@ -229,7 +215,6 @@ export const handleUrlParams = () => {
     exchangeError,
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
-    oidcIdpStateId,
   };
 };
 
