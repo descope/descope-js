@@ -10,14 +10,14 @@ const withExchangeValidations = withValidations(stringNonEmpty('code'));
 const withSaml = (httpClient: HttpClient) => ({
   start: withStartValidations(
     (
-      tenantNameOrEmail: string,
+      tenantIdOrEmail: string,
       redirectUrl?: string,
       loginOptions?: LoginOptions,
       token?: string
     ): Promise<SdkResponse<URLResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.saml.start, loginOptions || {}, {
-          queryParams: { tenant: tenantNameOrEmail, redirectURL: redirectUrl },
+          queryParams: { tenant: tenantIdOrEmail, redirectURL: redirectUrl },
           token,
         })
       )
