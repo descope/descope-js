@@ -18,7 +18,6 @@ import {
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
-  OIDC_IDP_STATE_ID_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -515,13 +514,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {
-          lastAuth: {},
-          redirectUrl: 'http://custom.url',
-          oidcIdpStateId: null,
-          redirectAuth: undefined,
-          tenant: undefined,
-        },
+        { lastAuth: {}, redirectUrl: 'http://custom.url' },
         undefined,
         'submitterId',
         {
@@ -1647,12 +1640,7 @@ describe('web-component', () => {
       await waitFor(() =>
         expect(startMock).toBeCalledWith(
           'sign-in',
-          {
-            lastAuth: { authMethod: 'otp' },
-            oidcIdpStateId: null,
-            redirectAuth: undefined,
-            tenant: undefined,
-          },
+          { lastAuth: { authMethod: 'otp' } },
           conditionInteractionId,
           'interactionId',
           { origin: 'http://localhost' },
@@ -1685,11 +1673,7 @@ describe('web-component', () => {
       await waitFor(() =>
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
-          {
-            oidcIdpStateId: null,
-            redirectAuth: undefined,
-            tenant: undefined,
-          },
+          {},
           undefined,
           '',
           {
@@ -1753,37 +1737,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            oidcIdpStateId: null,
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
-            tenant: undefined,
-          },
-          undefined,
-          '',
-          undefined,
-          0
-        )
-      );
-      await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
-      });
-      await waitFor(() => expect(window.location.search).toBe(''));
-    });
-
-    it('should call start with oidc idp flag and clear it from url', async () => {
-      startMock.mockReturnValueOnce(generateSdkResponse());
-
-      pageContent = '<span>It works!</span>';
-
-      const oidcIdpStateId = 'abcdefgh';
-      const encodedOidcIdpStateId = encodeURIComponent(oidcIdpStateId);
-      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcIdpStateId}`;
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            oidcIdpStateId: 'abcdefgh',
             tenant: undefined,
           },
           undefined,
@@ -1825,11 +1779,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {
-          oidcIdpStateId: null,
-          redirectAuth: undefined,
-          tenant: undefined,
-        },
+        {},
         undefined,
         '',
         {
@@ -1880,11 +1830,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {
-          oidcIdpStateId: null,
-          redirectAuth: undefined,
-          tenant: undefined,
-        },
+        {},
         undefined,
         '',
         {
