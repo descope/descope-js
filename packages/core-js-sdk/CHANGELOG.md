@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.0...core-js-sdk-1.3.1) (2023-05-17)
+
+
+### Bug Fixes
+
+* Replace name with ID as it's expected ([#127](https://github.com/descope/descope-js/issues/127)) ([0f48b22](https://github.com/descope/descope-js/commit/0f48b225a568860da351ea320ac54fe28be85405))
+
 ## [1.3.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.2.3...core-js-sdk-1.3.0) (2023-05-11)
 
 
