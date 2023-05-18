@@ -12,6 +12,7 @@ export const URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME = 'ra-callback';
 export const DESCOPE_ATTRIBUTE_PREFIX = 'data-descope-';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_FIELD = 'data-exclude-field';
 export const DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY = 'dls_last_auth';
+export const OIDC_IDP_STATE_ID_PARAM_NAME = 'state_id';
 
 export const ELEMENT_TYPE_ATTRIBUTE = 'data-type';
 
