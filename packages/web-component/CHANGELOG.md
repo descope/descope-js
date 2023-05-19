@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.2](https://github.com/descope/descope-js/compare/web-component-2.3.1...web-component-2.3.2) (2023-05-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.2.2`
+
+### Reverts
+
+* Revert feat: add oidc flow start param (#120) (#129) ([1a43b2d](https://github.com/descope/descope-js/commit/1a43b2d8137b3bccc4a249598ad08a9a6f66b27a)), closes [#120](https://github.com/descope/descope-js/issues/120) [#129](https://github.com/descope/descope-js/issues/129)
+
 ## [2.3.1](https://github.com/descope/descope-js/compare/web-component-2.3.0...web-component-2.3.1) (2023-05-17)
 
 ### Dependency Updates
