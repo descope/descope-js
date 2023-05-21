@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.4...web-js-sdk-1.2.5) (2023-05-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.3.5`
+
+### Bug Fixes
+
+* add types to package.json#exports RELEASE ([#136](https://github.com/descope/descope-js/issues/136)) ([4b11b70](https://github.com/descope/descope-js/commit/4b11b7029474eed9644f57c3aeb52729a0a4d4b7))
+
 ## [1.2.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.3...web-js-sdk-1.2.4) (2023-05-21)
 
 ### Dependency Updates
