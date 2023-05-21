@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.4...core-js-sdk-1.3.5) (2023-05-21)
+
+
+### Bug Fixes
+
+* add types to package.json#exports RELEASE ([#136](https://github.com/descope/descope-js/issues/136)) ([4b11b70](https://github.com/descope/descope-js/commit/4b11b7029474eed9644f57c3aeb52729a0a4d4b7))
+
 ## [1.3.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.3...core-js-sdk-1.3.4) (2023-05-21)
 
 ## [1.3.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.2...core-js-sdk-1.3.3) (2023-05-20)
