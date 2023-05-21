@@ -8,7 +8,9 @@ import define from 'rollup-plugin-define';
 
 import packageJson from './package.json' assert { type: 'json' };
 
-const input = 'src/lib/descope-wc/index.ts';
+const input = './src/lib/descope-wc/index.ts';
+const external = (id) =>
+  !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
 export default [
   {
@@ -53,6 +55,7 @@ export default [
       nodeResolve(),
       terser(),
     ],
+    external,
   },
   {
     input: './dist/dts/descope-wc/index.d.ts',
