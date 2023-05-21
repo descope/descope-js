@@ -28,11 +28,7 @@ export type HttpClient = {
     body?: any,
     config?: HttpClientReqConfig
   ) => Promise<Response>;
-  delete: (
-    path: string,
-    body?: any,
-    config?: HttpClientReqConfig
-  ) => Promise<Response>;
+  delete: (path: string, config?: HttpClientReqConfig) => Promise<Response>;
   hooks?: Hooks;
 };
 
