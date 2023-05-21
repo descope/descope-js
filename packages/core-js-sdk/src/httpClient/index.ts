@@ -108,12 +108,12 @@ const createHttpClient = ({
         method: HTTPMethods.put,
         token,
       }),
-    delete: (path, body, { headers, queryParams, token } = {}) =>
+    delete: (path, { headers, queryParams, token } = {}) =>
       sendRequest({
         path,
         headers,
         queryParams,
-        body,
+        body: undefined,
         method: HTTPMethods.delete,
         token,
       }),

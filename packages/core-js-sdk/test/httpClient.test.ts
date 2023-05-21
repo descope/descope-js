@@ -158,7 +158,7 @@ describe('httpClient', () => {
     );
   });
 
-  it.each(['post', 'put', 'delete'])(
+  it.each(['post', 'put'])(
     'should call fetch with the correct params when calling "%s"',
     (method) => {
       httpClient[method]('1/2/3', 'aaa', {
@@ -183,6 +183,29 @@ describe('httpClient', () => {
       );
     }
   );
+
+  it('http delete called with correct parameters', () => {
+    httpClient['delete']('1/2/3', {
+      headers: { test2: '123' },
+      queryParams: { test2: '123' },
+      token: '123',
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL('http://descope.com/1/2/3?test2=123'),
+      {
+        body: undefined,
+        credentials: 'include',
+        headers: new Headers({
+          test2: '123',
+          test: '123',
+          Authorization: 'Bearer 456:123',
+          ...descopeHeaders,
+        }),
+        method: 'delete'.toUpperCase(),
+      }
+    );
+  });
 
   it('should not throw when not providing config or logger', () => {
     expect(
