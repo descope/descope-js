@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.2...core-js-sdk-1.3.3) (2023-05-20)
+
+## [1.3.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.1...core-js-sdk-1.3.2) (2023-05-19)
+
+
+### Reverts
+
+* Revert feat: add oidc flow start param (#120) (#129) ([1a43b2d](https://github.com/descope/descope-js/commit/1a43b2d8137b3bccc4a249598ad08a9a6f66b27a)), closes [#120](https://github.com/descope/descope-js/issues/120) [#129](https://github.com/descope/descope-js/issues/129)
+
+## [1.3.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.0...core-js-sdk-1.3.1) (2023-05-17)
+
+
+### Bug Fixes
+
+* Replace name with ID as it's expected ([#127](https://github.com/descope/descope-js/issues/127)) ([0f48b22](https://github.com/descope/descope-js/commit/0f48b225a568860da351ea320ac54fe28be85405))
+
 ## [1.3.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.2.3...core-js-sdk-1.3.0) (2023-05-11)
 
 

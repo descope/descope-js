@@ -32,13 +32,13 @@ describe('saml', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValueOnce(httpResponse);
-      const resp = await sdk.saml.start('tenant');
+      const resp = await sdk.saml.start('tenant-ID');
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.saml.start,
         {},
         {
           queryParams: {
-            tenant: 'tenant',
+            tenant: 'tenant-ID',
           },
         }
       );
