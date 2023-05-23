@@ -374,7 +374,7 @@ class BaseDescopeWc extends HTMLElement {
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
       const scriptEle = document.createElement('script');
-      scriptEle.src = 'http://127.0.0.1:5502/dist/umd/index.js';
+      scriptEle.src = window['DESCOPE_WCUI'];
       document.body.append(scriptEle);
       //TODO: prefetch
       if (this.#shouldMountInFormEle()) {
