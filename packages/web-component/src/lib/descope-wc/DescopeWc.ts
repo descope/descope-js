@@ -128,7 +128,7 @@ class DescopeWc extends BaseDescopeWc {
         startScreenId = flowConfig.startScreenId;
       }
 
-      if (!startScreenId) {
+      if (!startScreenId || oidcIdpStateId) {
         const inputs = code
           ? {
               exchangeCode: code,
@@ -249,7 +249,7 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     // if there is no screen id (probably due to page refresh) we should get it from the server
-    if (!screenId && !startScreenId) {
+    if (!screenId && !startScreenId && !oidcIdpStateId) {
       this.logger.info(
         'Refreshing the page during a flow is not supported yet'
       );
@@ -271,7 +271,7 @@ class DescopeWc extends BaseDescopeWc {
 
     const lastAuth = getLastAuth(loginId);
 
-    if (startScreenId) {
+    if (startScreenId || !oidcIdpStateId) {
       stepStateUpdate.next = (interactionId, inputs) =>
         this.sdk.flow.start(
           flowId,
@@ -523,12 +523,16 @@ class DescopeWc extends BaseDescopeWc {
       this.shadowRoot.querySelectorAll(
         `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
-    ).reduce((acc, input: HTMLInputElement) => input.name
-        ? Object.assign(acc, {
-            [input.name]:
-              input[input.type === 'checkbox' ? 'checked' : 'value'],
-          })
-        : acc, {});
+    ).reduce(
+      (acc, input: HTMLInputElement) =>
+        input.name
+          ? Object.assign(acc, {
+              [input.name]:
+                input[input.type === 'checkbox' ? 'checked' : 'value'],
+            })
+          : acc,
+      {}
+    );
   }
 
   #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
