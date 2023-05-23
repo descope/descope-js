@@ -14,6 +14,7 @@ import {
   isConditionalLoginSupported,
   replaceWithScreenState,
   setTOTPVariable,
+  showFirstScreenOnExecutionInit,
   State,
   withMemCache,
 } from '../helpers';
@@ -128,10 +129,8 @@ class DescopeWc extends BaseDescopeWc {
         startScreenId = flowConfig.startScreenId;
       }
 
-      // As an optimization - we want to start a new flow only if we have a don't have start screen id or we have a oidcIdpStateId
-      // - If there startScreenId it means that the sdk can show the first screen and we don't need to wait for the sdk to return the first screen
-      // - If there is a oidcIdpStateId - we can't skip this call because the sdk may
-      if (!startScreenId || oidcIdpStateId) {
+      // As an optimization - we want to show the first screen if it is possible
+      if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs = code
           ? {
               exchangeCode: code,
@@ -276,7 +275,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // If there is a start screen id, next action should start the flow
     // But if oidcIdpStateId is not empty, this optimization doesn't happen
-    if (startScreenId && !oidcIdpStateId) {
+    if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
       stepStateUpdate.next = (interactionId, inputs) =>
         this.sdk.flow.start(
           flowId,

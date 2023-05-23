@@ -304,3 +304,11 @@ export const getChromiumVersion = (
 )?.userAgentData?.brands?.find(
   ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
 );
+
+// As an optimization - We can show first screen if we have startScreenId and we don't have oidcIdpStateId
+// - If there startScreenId it means that the sdk can show the first screen and we don't need to wait for the sdk to return the first screen
+// - If there is a oidcIdpStateId - we can't skip this call because the sdk may
+export const showFirstScreenOnExecutionInit = (
+  startScreenId: string,
+  oidcIdpStateId: string
+): boolean => startScreenId && !oidcIdpStateId;
