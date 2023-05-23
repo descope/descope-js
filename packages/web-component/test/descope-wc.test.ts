@@ -1798,7 +1798,7 @@ describe('web-component', () => {
       await waitFor(() => expect(window.location.search).toBe(''));
     });
 
-    it('should call start with oidc idp when there is a start screen is happening', async () => {
+    it('should call start with oidc idp when there is a start screen is condifured', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       configContent = {
