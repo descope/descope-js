@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.10](https://github.com/descope/descope-js/compare/web-component-2.3.9...web-component-2.3.10) (2023-05-24)
+
+
+### Bug Fixes
+
+* Skip start optimization fro oidc flows ([#144](https://github.com/descope/descope-js/issues/144)) ([80bc3a5](https://github.com/descope/descope-js/commit/80bc3a57371f30af133eeafe16a6065a75db1113))
+
 ## [2.3.9](https://github.com/descope/descope-js/compare/web-component-2.3.8...web-component-2.3.9) (2023-05-23)
 
 ## [2.3.8](https://github.com/descope/descope-js/compare/web-component-2.3.7...web-component-2.3.8) (2023-05-22)
