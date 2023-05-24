@@ -1797,6 +1797,33 @@ describe('web-component', () => {
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
+
+    it('should call start with oidc idp when there is a start screen is condifured', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      configContent = {
+        flows: {
+          'sign-in': { startScreenId: 'screen-0' },
+        },
+      };
+
+      pageContent = '<button>click</button><span>It works!</span>';
+
+      const oidcIdpStateId = 'abcdefgh';
+      const encodedOidcIdpStateId = encodeURIComponent(oidcIdpStateId);
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcIdpStateId}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 4000,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled());
+    });
   });
   it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
     window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
