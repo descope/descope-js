@@ -251,7 +251,7 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     // if there is no screen id (probably due to page refresh) we should get it from the server
-    if (!screenId && !startScreenId && !oidcIdpStateId) {
+    if (!screenId && !startScreenId) {
       this.logger.info(
         'Refreshing the page during a flow is not supported yet'
       );
