@@ -20,8 +20,6 @@ describe('saml', () => {
     });
 
     it('should return the correct url', async () => {
-      delete window.location;
-      window.location = new URL('https://www.example.com');
       const httpRespJson = { url: 'http://redirecturl.com/' };
       const httpResponse = {
         ok: true,
