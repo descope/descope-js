@@ -52,7 +52,9 @@ export type FlowState = {
   telemetryKey: string;
   redirectAuthCodeChallenge: string;
   redirectAuthCallbackUrl: string;
+  redirectAuthInitiator: string;
   oidcIdpStateId: string;
+  deferredRedirect: boolean;
 };
 
 export type StepState = {

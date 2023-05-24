@@ -93,6 +93,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOptions,
       redirectAuthCodeChallenge,
       redirectAuthCallbackUrl,
+      redirectAuthInitiator,
       oidcIdpStateId,
     } = currentState;
 
@@ -190,6 +191,13 @@ class DescopeWc extends BaseDescopeWc {
     if (action === RESPONSE_ACTIONS.redirect) {
       if (!redirectTo) {
         this.logger.error('Did not get redirect url');
+      }
+      if (redirectAuthInitiator === 'android' && document.hidden) {
+        // on android native flows, defer redirects until in foreground
+        this.flowState.update({
+          deferredRedirect: true,
+        });
+        return;
       }
       window.location.assign(redirectTo);
       return;
