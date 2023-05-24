@@ -223,8 +223,8 @@ importers:
         specifier: workspace:*
         version: link:../web-js-sdk
       tslib:
-        specifier: 2.3.1
-        version: 2.3.1
+        specifier: 2.5.0
+        version: 2.5.0
     devDependencies:
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
@@ -240,7 +240,7 @@ importers:
         version: 5.0.2(rollup@2.79.1)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.1.0(rollup@2.79.1)(tslib@2.3.1)(typescript@4.9.5)
+        version: 11.1.0(rollup@2.79.1)(tslib@2.5.0)(typescript@4.9.5)
       '@testing-library/dom':
         specifier: ^9.0.0
         version: 9.2.0
@@ -3000,7 +3000,7 @@ packages:
       terser: 5.17.1
     dev: true
 
-  /@rollup/plugin-typescript@11.1.0(rollup@2.79.1)(tslib@2.3.1)(typescript@4.9.5):
+  /@rollup/plugin-typescript@11.1.0(rollup@2.79.1)(tslib@2.5.0)(typescript@4.9.5):
     resolution: {integrity: sha512-86flrfE+bSHB69znnTV6kVjkncs2LBMhcTCyxWgRxLyfXfQrxg4UwlAqENnjrrxnSNS/XKCDJCl8EkdFJVHOxw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3016,7 +3016,7 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@2.79.1)
       resolve: 1.22.2
       rollup: 2.79.1
-      tslib: 2.3.1
+      tslib: 2.5.0
       typescript: 4.9.5
     dev: true
 
@@ -7137,7 +7137,7 @@ packages:
       pretty-format: 29.5.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1(@types/node@16.18.28)(typescript@4.9.5)
+      ts-node: 10.9.1(@types/node@18.15.0)(typescript@4.9.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10078,9 +10078,6 @@ packages:
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
-
-  /tslib@2.3.1:
-    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
 
   /tslib@2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
