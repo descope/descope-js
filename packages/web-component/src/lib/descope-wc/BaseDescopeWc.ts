@@ -52,7 +52,7 @@ class BaseDescopeWc extends HTMLElement {
 
   #init = false;
 
-  #flowState = new State<FlowState>();
+  #flowState = new State<FlowState>({ deferredRedirect: false } as FlowState);
 
   #debugState = new State<DebugState>();
 
@@ -66,6 +66,7 @@ class BaseDescopeWc extends HTMLElement {
 
   #eventsCbRefs = {
     popstate: this.#syncStateIdFromUrl.bind(this),
+    visibilitychange: this.#syncStateWithVisibility.bind(this),
   };
 
   sdk: ReturnType<typeof createSdk>;
@@ -180,6 +181,16 @@ class BaseDescopeWc extends HTMLElement {
   #syncStateIdFromUrl() {
     const { stepId, executionId } = getRunIdsFromUrl();
     this.#flowState.update({ stepId, executionId });
+  }
+
+  #syncStateWithVisibility() {
+    if (!document.hidden) {
+      // Defer the update a bit, it won't work otherwise
+      setTimeout(() => {
+        // Trigger state update that will redirect and pending deferred redirection
+        this.#flowState.update({ deferredRedirect: false });
+      }, 300);
+    }
   }
 
   #createSdk(projectId: string, baseUrl: string, telemetryKey: string) {
@@ -394,11 +405,17 @@ class BaseDescopeWc extends HTMLElement {
         exchangeError,
         redirectAuthCallbackUrl,
         redirectAuthCodeChallenge,
+        redirectAuthInitiator,
         oidcIdpStateId,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
       window.addEventListener('popstate', this.#eventsCbRefs.popstate);
+
+      window.addEventListener(
+        'visibilitychange',
+        this.#eventsCbRefs.visibilitychange
+      );
 
       this.#flowState.subscribe(this.#onFlowChange.bind(this));
       this.#debugState.subscribe(this.#handleDebugMode.bind(this));
@@ -417,6 +434,7 @@ class BaseDescopeWc extends HTMLElement {
         telemetryKey: this.telemetryKey,
         redirectAuthCallbackUrl,
         redirectAuthCodeChallenge,
+        redirectAuthInitiator,
         oidcIdpStateId,
       });
 
