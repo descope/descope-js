@@ -18,6 +18,7 @@ import {
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
+  URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
@@ -1022,6 +1023,79 @@ describe('web-component', () => {
     );
   });
 
+  it('When action type is "redirect" and redirect auth initiator is android navigates to the "redirectUrl" only in foreground', async () => {
+    nextMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: 'https://myurl.com',
+      })
+    );
+
+    // Start hidden (in background)
+    let isHidden = true;
+    Object.defineProperty(document, 'hidden', {
+      configurable: true,
+      get() {
+        return isHidden;
+      },
+    });
+
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    // Make sure no redirect happened
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), { timeout: 2000 });
+    expect(window.location.assign).not.toHaveBeenCalledWith(
+      'https://myurl.com'
+    );
+
+    // Back to the foreground
+    isHidden = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await waitFor(
+      () =>
+        expect(window.location.assign).toHaveBeenCalledWith(
+          'https://myurl.com'
+        ),
+      {
+        timeout: 2000,
+      }
+    );
+  });
+
+  it('When action type is "redirect" and redirect auth initiator is not android navigates to the "redirectUrl" even in background', async () => {
+    nextMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: 'https://myurl.com',
+      })
+    );
+
+    // Start hidden (in background)
+    const isHidden = true;
+    Object.defineProperty(document, 'hidden', {
+      configurable: true,
+      get() {
+        return isHidden;
+      },
+    });
+
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    // Make sure no redirect happened
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), { timeout: 2000 });
+    await waitFor(
+      () =>
+        expect(window.location.assign).toHaveBeenCalledWith(
+          'https://myurl.com'
+        ),
+      {
+        timeout: 2000,
+      }
+    );
+  });
+
   it('When action type is "webauthnCreate" and webauthnTransactionId is missing should log an error ', async () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
@@ -1746,7 +1820,7 @@ describe('web-component', () => {
       const callback = 'https://mycallback.com';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}`;
+      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
