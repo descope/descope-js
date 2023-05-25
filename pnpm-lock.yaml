@@ -222,6 +222,9 @@ importers:
       '@descope/web-js-sdk':
         specifier: workspace:*
         version: link:../web-js-sdk
+      tslib:
+        specifier: 2.5.0
+        version: 2.5.0
     devDependencies:
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
