@@ -580,7 +580,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #hydrate(next: NextFn) {
     // hydrating the page
-    this.rootElement.querySelectorAll('button').forEach((button) => {
+    this.rootElement.querySelectorAll('descope-button').forEach((button) => {
       // eslint-disable-next-line no-param-reassign
       button.onclick = () => {
         this.#handleSubmit(button, next);
