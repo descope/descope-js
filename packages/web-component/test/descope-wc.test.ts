@@ -2133,4 +2133,75 @@ describe('web-component', () => {
       expect.any(Object)
     );
   });
+
+  describe('Descope UI', () => {
+    it('should log error if Descope UI cannot be loaded', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      const errorSpy = jest.spyOn(console, 'error');
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const scriptEle = document.querySelector('script');
+
+      globalThis.DescopeUI = undefined;
+
+      scriptEle.onload({} as any);
+
+      await waitFor(() => expect(errorSpy).toHaveBeenCalledWith('Cannot load DescopeUI', expect.any(String), expect.any(Error)), { timeout: 3000 });
+    });
+    it('should try to load all descope component on the page', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = '<descope-input id="email"></descope-input><descope-button>It works!</descope-button>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const scriptEle = document.querySelector('script');
+
+      globalThis.DescopeUI = { 'descope-button': jest.fn(), 'descope-input': jest.fn() };
+
+      scriptEle.onload({} as any);
+
+      await waitFor(() => Object.keys(globalThis.DescopeUI).forEach(key => expect(globalThis.DescopeUI[key]).toHaveBeenCalled()), { timeout: 3000 });
+    });
+    it('should log an error if descope component is missing', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = '<descope-button id="email"></descope-button><span>It works!</span>';
+
+      const errorSpy = jest.spyOn(console, 'error');
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const scriptEle = document.querySelector('script');
+
+      globalThis.DescopeUI = {};
+
+      scriptEle.onload({} as any);
+
+      await waitFor(() => expect(errorSpy).toHaveBeenCalledWith('Cannot load UI component "descope-button"', expect.any(String), expect.any(Error)), { timeout: 3000 });
+    });
+    it('should not load components which are already loaded', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
+
+      customElements.define('descope-test-button', class extends HTMLElement{});
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const scriptEle = document.querySelector('script');
+
+      globalThis.DescopeUI = { 'descope-test-button': jest.fn() };
+
+      scriptEle.onload({} as any);
+
+      await screen.findByShadowText('Button');
+
+      expect(globalThis.DescopeUI['descope-test-button']).not.toHaveBeenCalled();
+    });
+  });
 });

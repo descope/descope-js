@@ -20,6 +20,7 @@ import {
   FlowStateUpdateFn,
   SdkConfig,
   ThemeOptions,
+  DescopeUI
 } from '../types';
 import initTemplate from './initTemplate';
 
@@ -72,6 +73,8 @@ class BaseDescopeWc extends HTMLElement {
   sdk: ReturnType<typeof createSdk>;
 
   #updateExecState: FlowStateUpdateFn;
+
+  DescopeUI: DescopeUI;
 
   constructor(updateExecState: FlowStateUpdateFn) {
     super();
@@ -382,12 +385,30 @@ class BaseDescopeWc extends HTMLElement {
     };
   }
 
+  #loadDescopeUI() {
+    //TODO: move this into a constant once the lib is deployed
+    const scriptSrc = window['DESCOPE_WCUI'];
+    const scriptEle = document.createElement('script');
+    document.body.append(scriptEle);
+
+    const onError = () => {
+      this.logger.error('Cannot load DescopeUI', `Make sure this URL is valid and return the correct script: "${scriptSrc}"`);
+    };
+
+    scriptEle.onload = () => {
+      if (!globalThis.DescopeUI) onError();
+      this.DescopeUI = globalThis.DescopeUI;
+    };
+
+    scriptEle.onerror = onError;
+
+    scriptEle.src = scriptSrc;
+  }
+
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
-      const scriptEle = document.createElement('script');
-      scriptEle.src = window['DESCOPE_WCUI'];
-      document.body.append(scriptEle);
-      //TODO: prefetch
+      this.#loadDescopeUI();
+
       if (this.#shouldMountInFormEle()) {
         this.#handleOuterForm();
         return;
