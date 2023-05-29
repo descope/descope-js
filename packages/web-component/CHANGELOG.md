@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.4.0](https://github.com/descope/descope-js/compare/web-component-2.3.12...web-component-2.4.0) (2023-05-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.2.7`
+
+### Features
+
+* Defer redirect when in background for Android ([#149](https://github.com/descope/descope-js/issues/149)) ([e9cf776](https://github.com/descope/descope-js/commit/e9cf776729a2de865c37f6ab0b6969f82c624374))
+
+
+### Bug Fixes
+
+* duplicate redirect calls (one is canceled by the browser) ([#156](https://github.com/descope/descope-js/issues/156)) ([7175ccc](https://github.com/descope/descope-js/commit/7175ccc9d2e32e211e76b19d9ed9277ad75623fc))
+
+## [2.3.12](https://github.com/descope/descope-js/compare/web-component-2.3.11...web-component-2.3.12) (2023-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.5.0 ([#151](https://github.com/descope/descope-js/issues/151)) ([77e361c](https://github.com/descope/descope-js/commit/77e361ccf6d3aa2f94e03f56194c1350e5f6c509))
+
+## [2.3.11](https://github.com/descope/descope-js/compare/web-component-2.3.10...web-component-2.3.11) (2023-05-24)
+
+
+### Bug Fixes
+
+* add tslib ([#150](https://github.com/descope/descope-js/issues/150)) RELEASE ([14e459a](https://github.com/descope/descope-js/commit/14e459a2529ca8ab0c032e8ae6c5b31cbf9fafa8))
+
+## [2.3.10](https://github.com/descope/descope-js/compare/web-component-2.3.9...web-component-2.3.10) (2023-05-24)
+
+
+### Bug Fixes
+
+* Skip start optimization fro oidc flows ([#144](https://github.com/descope/descope-js/issues/144)) ([80bc3a5](https://github.com/descope/descope-js/commit/80bc3a57371f30af133eeafe16a6065a75db1113))
+
+## [2.3.9](https://github.com/descope/descope-js/compare/web-component-2.3.8...web-component-2.3.9) (2023-05-23)
+
 ## [2.3.8](https://github.com/descope/descope-js/compare/web-component-2.3.7...web-component-2.3.8) (2023-05-22)
 
 ## [2.3.7](https://github.com/descope/descope-js/compare/web-component-2.3.6...web-component-2.3.7) (2023-05-22)
