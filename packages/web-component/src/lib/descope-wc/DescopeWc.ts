@@ -188,9 +188,13 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    if (action === RESPONSE_ACTIONS.redirect) {
+    if (
+      action === RESPONSE_ACTIONS.redirect &&
+      (isChanged('redirectTo') || isChanged('deferredRedirect'))
+    ) {
       if (!redirectTo) {
         this.logger.error('Did not get redirect url');
+        return;
       }
       if (redirectAuthInitiator === 'android' && document.hidden) {
         // on android native flows, defer redirects until in foreground
