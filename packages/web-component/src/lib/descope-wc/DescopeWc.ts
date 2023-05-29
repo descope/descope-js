@@ -14,6 +14,7 @@ import {
   isConditionalLoginSupported,
   replaceWithScreenState,
   setTOTPVariable,
+  showFirstScreenOnExecutionInit,
   State,
   withMemCache,
 } from '../helpers';
@@ -92,6 +93,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOptions,
       redirectAuthCodeChallenge,
       redirectAuthCallbackUrl,
+      redirectAuthInitiator,
       oidcIdpStateId,
     } = currentState;
 
@@ -128,7 +130,8 @@ class DescopeWc extends BaseDescopeWc {
         startScreenId = flowConfig.startScreenId;
       }
 
-      if (!startScreenId) {
+      // As an optimization - we want to show the first screen if it is possible
+      if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs = code
           ? {
             exchangeCode: code,
@@ -185,9 +188,20 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    if (action === RESPONSE_ACTIONS.redirect) {
+    if (
+      action === RESPONSE_ACTIONS.redirect &&
+      (isChanged('redirectTo') || isChanged('deferredRedirect'))
+    ) {
       if (!redirectTo) {
         this.logger.error('Did not get redirect url');
+        return;
+      }
+      if (redirectAuthInitiator === 'android' && document.hidden) {
+        // on android native flows, defer redirects until in foreground
+        this.flowState.update({
+          deferredRedirect: true,
+        });
+        return;
       }
       window.location.assign(redirectTo);
       return;
@@ -271,7 +285,9 @@ class DescopeWc extends BaseDescopeWc {
 
     const lastAuth = getLastAuth(loginId);
 
-    if (startScreenId) {
+    // If there is a start screen id, next action should start the flow
+    // But if oidcIdpStateId is not empty, this optimization doesn't happen
+    if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
       stepStateUpdate.next = (interactionId, inputs) =>
         this.sdk.flow.start(
           flowId,
@@ -535,12 +551,16 @@ class DescopeWc extends BaseDescopeWc {
       this.shadowRoot.querySelectorAll(
         `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
-    ).reduce((acc, input: HTMLInputElement) => input.name
-        ? Object.assign(acc, {
-            [input.name]:
-              input[input.type === 'checkbox' ? 'checked' : 'value'],
-          })
-        : acc, {});
+    ).reduce(
+      (acc, input: HTMLInputElement) =>
+        input.name
+          ? Object.assign(acc, {
+              [input.name]:
+                input[input.type === 'checkbox' ? 'checked' : 'value'],
+            })
+          : acc,
+      {}
+    );
   }
 
   #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
