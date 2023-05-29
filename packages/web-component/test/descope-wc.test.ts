@@ -1001,6 +1001,25 @@ describe('web-component', () => {
     );
   });
 
+  it('When action type is "redirect" it calls location.assign one time only', async () => {
+    nextMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: 'https://myurl.com',
+      })
+    );
+
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () => expect(window.location.assign).toHaveBeenCalledTimes(1),
+      {
+        timeout: 5000,
+      }
+    );
+  });
+
   it('When action type is "redirect" and redirectUrl is missing should log an error ', async () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
