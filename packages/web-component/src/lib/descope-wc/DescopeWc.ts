@@ -21,7 +21,7 @@ import {
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
-import { disableWebauthnButtons } from '../helpers/templates';
+import { disableWebauthnButtons, getDescopeUiComponentsList } from '../helpers/templates';
 import {
   Direction,
   FlowState,
@@ -109,9 +109,9 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -463,14 +463,21 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async loadWCUI(clone: any) {
-    const descopeEle = Array.from(clone.querySelectorAll('*'))
-      .reduce((acc, el) =>
-        el.tagName.startsWith('DESCOPE-') ? acc.add(el.tagName.toLocaleLowerCase()) : acc
-        , new Set());
+  async loadDescopeUiComponents(clone: any) {
+    const descopeUiComponentsList = getDescopeUiComponentsList(clone);
 
-    await Promise.all([...descopeEle].map(tag => DescopeUI[tag]()));
+    await Promise.all(descopeUiComponentsList.map(tag => {
+      const isComponentAlreadyDefined = customElements.get(tag);
+
+      if (isComponentAlreadyDefined) return undefined;
+
+      if (!this.DescopeUI[tag]) {
+        this.logger.error(`Cannot load UI component "${tag}"`, `Descope UI does not have a component named "${tag}", available components are: "${Object.keys(this.DescopeUI).join(', ')}"`);
+        return undefined;
+      }
+
+      return this.DescopeUI[tag]();
+    }));
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
@@ -498,7 +505,7 @@ class DescopeWc extends BaseDescopeWc {
     // put the totp variable on the root element, which is the top level 'div'
     setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
 
-    this.loadWCUI(stepTemplate.content);
+    this.loadDescopeUiComponents(stepTemplate.content);
 
     const injectNextPage = async () => {
       try {
@@ -555,9 +562,9 @@ class DescopeWc extends BaseDescopeWc {
       (acc, input: HTMLInputElement) =>
         input.name
           ? Object.assign(acc, {
-              [input.name]:
-                input[input.type === 'checkbox' ? 'checked' : 'value'],
-            })
+            [input.name]:
+              input[input.type === 'checkbox' ? 'checked' : 'value'],
+          })
           : acc,
       {}
     );
@@ -600,7 +607,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #hydrate(next: NextFn) {
     // hydrating the page
-    this.rootElement.querySelectorAll('descope-button').forEach((button) => {
+    this.rootElement.querySelectorAll('descope-button').forEach((button: HTMLButtonElement) => {
       // eslint-disable-next-line no-param-reassign
       button.onclick = () => {
         this.#handleSubmit(button, next);

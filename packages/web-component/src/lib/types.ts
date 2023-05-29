@@ -121,3 +121,5 @@ export interface Context {
   loginId?: string;
   code?: string;
 }
+
+export type DescopeUI = Record<string, () => Promise<void>>
