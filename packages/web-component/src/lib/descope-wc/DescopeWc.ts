@@ -557,7 +557,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
-    if (submitter.formNoValidate || this.#validateInputs()) {
+    if (submitter.getAttribute('formnovalidate') === 'true' || this.#validateInputs()) {
       const submitterId = submitter?.getAttribute('id');
 
       this.#handleSubmitButtonLoader(submitter);
