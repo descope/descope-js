@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.4.0](https://github.com/descope/descope-js/compare/web-component-2.3.12...web-component-2.4.0) (2023-05-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.2.7`
+
+### Features
+
+* Defer redirect when in background for Android ([#149](https://github.com/descope/descope-js/issues/149)) ([e9cf776](https://github.com/descope/descope-js/commit/e9cf776729a2de865c37f6ab0b6969f82c624374))
+
+
+### Bug Fixes
+
+* duplicate redirect calls (one is canceled by the browser) ([#156](https://github.com/descope/descope-js/issues/156)) ([7175ccc](https://github.com/descope/descope-js/commit/7175ccc9d2e32e211e76b19d9ed9277ad75623fc))
+
 ## [2.3.12](https://github.com/descope/descope-js/compare/web-component-2.3.11...web-component-2.3.12) (2023-05-24)
 
 
