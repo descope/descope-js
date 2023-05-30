@@ -121,8 +121,12 @@ export const disableWebauthnButtons = (fragment: DocumentFragment) => {
   webauthnButtons.forEach((button) => button.setAttribute('disabled', 'true'));
 };
 
-export const getDescopeUiComponentsList = (clone: DocumentFragment) =>
-  [...Array.from(clone.querySelectorAll('*'))
-    .reduce<Set<string>>((acc, el: HTMLElement) =>
-      el.tagName.startsWith('DESCOPE-') ? acc.add(el.tagName.toLocaleLowerCase()) : acc,
-      new Set())];
+export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
+  ...Array.from(clone.querySelectorAll('*')).reduce<Set<string>>(
+    (acc, el: HTMLElement) =>
+      el.tagName.startsWith('DESCOPE-')
+        ? acc.add(el.tagName.toLocaleLowerCase())
+        : acc,
+    new Set()
+  ),
+];

@@ -122,4 +122,4 @@ export interface Context {
   code?: string;
 }
 
-export type DescopeUI = Record<string, () => Promise<void>>
+export type DescopeUI = Record<string, () => Promise<void>>;
