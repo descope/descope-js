@@ -1,5 +1,10 @@
 import createSdk from '@descope/web-js-sdk';
-import { CONFIG_FILENAME, THEME_FILENAME } from '../constants';
+import {
+  CONFIG_FILENAME,
+  THEME_FILENAME,
+  UI_COMPONENTS_URL,
+  UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+} from '../constants';
 import {
   camelCase,
   clearRunIdsFromUrl,
@@ -20,7 +25,7 @@ import {
   FlowStateUpdateFn,
   SdkConfig,
   ThemeOptions,
-  DescopeUI
+  DescopeUI,
 } from '../types';
 import initTemplate from './initTemplate';
 
@@ -74,7 +79,7 @@ class BaseDescopeWc extends HTMLElement {
 
   #updateExecState: FlowStateUpdateFn;
 
-  DescopeUI: DescopeUI;
+  descopeUI: Promise<DescopeUI>;
 
   constructor(updateExecState: FlowStateUpdateFn) {
     super();
@@ -366,7 +371,8 @@ class BaseDescopeWc extends HTMLElement {
       if (e.key !== 'Enter') return;
 
       e.preventDefault();
-      const buttons = this.rootElement.querySelectorAll('button');
+      const buttons: NodeListOf<HTMLButtonElement> =
+        this.rootElement.querySelectorAll('descope-button');
 
       // in case there is a single button on the page, click on it
       if (buttons.length === 1) {
@@ -385,24 +391,32 @@ class BaseDescopeWc extends HTMLElement {
     };
   }
 
-  #loadDescopeUI() {
-    //TODO: move this into a constant once the lib is deployed
-    const scriptSrc = window['DESCOPE_WCUI'];
+  #loadDescopeUI(version = 'latest') {
+    const scriptSrc = UI_COMPONENTS_URL.replace(
+      UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+      version
+    );
     const scriptEle = document.createElement('script');
     document.body.append(scriptEle);
 
-    const onError = () => {
-      this.logger.error('Cannot load DescopeUI', `Make sure this URL is valid and return the correct script: "${scriptSrc}"`);
-    };
+    this.descopeUI = new Promise((res, rej) => {
+      const onError = () => {
+        this.logger.error(
+          'Cannot load DescopeUI',
+          `Make sure this URL is valid and return the correct script: "${scriptSrc}"`
+        );
+        rej(Error('Cannot load DescopeUI'));
+      };
 
-    scriptEle.onload = () => {
-      if (!globalThis.DescopeUI) onError();
-      this.DescopeUI = globalThis.DescopeUI;
-    };
+      scriptEle.onload = () => {
+        if (!globalThis.DescopeUI) onError();
+        res(globalThis.DescopeUI);
+      };
 
-    scriptEle.onerror = onError;
+      scriptEle.onerror = onError;
 
-    scriptEle.src = scriptSrc;
+      scriptEle.src = scriptSrc;
+    });
   }
 
   async connectedCallback() {

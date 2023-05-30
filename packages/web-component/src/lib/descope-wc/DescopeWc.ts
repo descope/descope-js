@@ -6,7 +6,6 @@ import {
 } from '../constants';
 import {
   fetchContent,
-  generateFnsFromScriptTags,
   getAnimationDirection,
   getContentUrl,
   getElementDescopeAttributes,
@@ -21,8 +20,12 @@ import {
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
-import { disableWebauthnButtons, getDescopeUiComponentsList } from '../helpers/templates';
 import {
+  disableWebauthnButtons,
+  getDescopeUiComponentsList,
+} from '../helpers/templates';
+import {
+  DescopeUI,
   Direction,
   FlowState,
   NextFn,
@@ -109,9 +112,9 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-          callbackUrl: redirectAuthCallbackUrl,
-          codeChallenge: redirectAuthCodeChallenge,
-        }
+            callbackUrl: redirectAuthCallbackUrl,
+            codeChallenge: redirectAuthCodeChallenge,
+          }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -134,9 +137,9 @@ class DescopeWc extends BaseDescopeWc {
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs = code
           ? {
-            exchangeCode: code,
-            idpInitiated: true,
-          }
+              exchangeCode: code,
+              idpInitiated: true,
+            }
           : undefined;
         const sdkResp = await this.sdk.flow.start(
           flowId,
@@ -466,18 +469,32 @@ class DescopeWc extends BaseDescopeWc {
   async loadDescopeUiComponents(clone: any) {
     const descopeUiComponentsList = getDescopeUiComponentsList(clone);
 
-    await Promise.all(descopeUiComponentsList.map(tag => {
-      const isComponentAlreadyDefined = customElements.get(tag);
+    await Promise.all(
+      descopeUiComponentsList.map(async (tag) => {
+        const isComponentAlreadyDefined = !!customElements.get(tag);
 
-      if (isComponentAlreadyDefined) return undefined;
+        if (isComponentAlreadyDefined) return undefined;
 
-      if (!this.DescopeUI[tag]) {
-        this.logger.error(`Cannot load UI component "${tag}"`, `Descope UI does not have a component named "${tag}", available components are: "${Object.keys(this.DescopeUI).join(', ')}"`);
-        return undefined;
-      }
+        let descopeUI: DescopeUI;
+        try {
+          descopeUI = await this.descopeUI;
+        } catch (e) {
+          return undefined;
+        }
 
-      return this.DescopeUI[tag]();
-    }));
+        if (!descopeUI[tag]) {
+          this.logger.error(
+            `Cannot load UI component "${tag}"`,
+            `Descope UI does not have a component named "${tag}", available components are: "${Object.keys(
+              descopeUI
+            ).join(', ')}"`
+          );
+          return undefined;
+        }
+
+        return descopeUI[tag]();
+      })
+    );
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
@@ -488,9 +505,8 @@ class DescopeWc extends BaseDescopeWc {
     stepTemplate.innerHTML = body;
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
-    const scriptFns = generateFnsFromScriptTags(
-      clone,
-      await this.getExecutionContext()
+    const loadDescopeUiComponents = this.loadDescopeUiComponents(
+      stepTemplate.content
     );
 
     // we want to disable the webauthn buttons if it's not supported on the browser
@@ -505,17 +521,8 @@ class DescopeWc extends BaseDescopeWc {
     // put the totp variable on the root element, which is the top level 'div'
     setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
 
-    this.loadDescopeUiComponents(stepTemplate.content);
-
     const injectNextPage = async () => {
-      try {
-        scriptFns.forEach((fn) => {
-          fn();
-        });
-      } catch (e) {
-        this.logger.error(e.message);
-      }
-
+      await loadDescopeUiComponents;
       this.rootElement.replaceChildren(clone);
 
       // If before html url was empty, we deduce its the first time a screen is shown
@@ -562,9 +569,9 @@ class DescopeWc extends BaseDescopeWc {
       (acc, input: HTMLInputElement) =>
         input.name
           ? Object.assign(acc, {
-            [input.name]:
-              input[input.type === 'checkbox' ? 'checked' : 'value'],
-          })
+              [input.name]:
+                input[input.type === 'checkbox' ? 'checked' : 'value'],
+            })
           : acc,
       {}
     );
@@ -584,7 +591,10 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
-    if (submitter.getAttribute('formnovalidate') === 'true' || this.#validateInputs()) {
+    if (
+      submitter.getAttribute('formnovalidate') === 'true' ||
+      this.#validateInputs()
+    ) {
       const submitterId = submitter?.getAttribute('id');
 
       this.#handleSubmitButtonLoader(submitter);
@@ -607,12 +617,14 @@ class DescopeWc extends BaseDescopeWc {
 
   #hydrate(next: NextFn) {
     // hydrating the page
-    this.rootElement.querySelectorAll('descope-button').forEach((button: HTMLButtonElement) => {
-      // eslint-disable-next-line no-param-reassign
-      button.onclick = () => {
-        this.#handleSubmit(button, next);
-      };
-    });
+    this.rootElement
+      .querySelectorAll('descope-button')
+      .forEach((button: HTMLButtonElement) => {
+        // eslint-disable-next-line no-param-reassign
+        button.onclick = () => {
+          this.#handleSubmit(button, next);
+        };
+      });
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {
