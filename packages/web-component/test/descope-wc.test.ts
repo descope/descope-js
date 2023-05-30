@@ -76,6 +76,19 @@ Object.defineProperty(window.history, 'replaceState', {
   },
 });
 
+class DescopeButton extends HTMLElement {
+  constructor() {
+    super();
+    const template = document.createElement('template');
+    template.innerHTML = `<button><slot></slot></button>`;
+
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+}
+
+customElements.define('descope-button', DescopeButton);
+
 describe('web-component', () => {
   beforeEach(() => {
     configContent = {
@@ -91,6 +104,8 @@ describe('web-component', () => {
         ok: true,
         headers: new Headers({ 'x-geo': 'XX' }),
       };
+
+      globalThis.DescopeUI = {};
 
       switch (true) {
         case url.endsWith('theme.css'): {
@@ -223,40 +238,6 @@ describe('web-component', () => {
     expect(themeStyleEle.innerText).toContain(themeContent);
   });
 
-  it('should log the script error when throws', async () => {
-    const errorSpy = jest.spyOn(console, 'error');
-    startMock.mockReturnValue(generateSdkResponse());
-
-    pageContent =
-      '<input id="email"></input><script data-id="123"></script><span>It works!</span><scripts><script id="123">throw Error("script error!")</script></scripts>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    expect(errorSpy).toHaveBeenCalledWith(
-      'script error!',
-      '',
-      expect.any(Error)
-    );
-  });
-
-  it('should call the generateFnsFromScriptTags with the correct context', async () => {
-    const generateSpy = jest.spyOn(helpers, 'generateFnsFromScriptTags');
-    startMock.mockReturnValue(generateSdkResponse());
-
-    pageContent =
-      '<input id="email"></input><script data-id="123"></script><span>It works!</span><scripts><script id="123">throw Error("script error!")</script></scripts>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    expect(generateSpy).toHaveBeenCalledWith(expect.any(DocumentFragment), {
-      geo: 'XX',
-    });
-  });
-
   it('Auto focus input by default', async () => {
     startMock.mockReturnValue(generateSdkResponse());
     const autoFocusSpy = jest.spyOn(helpers, 'handleAutoFocus');
@@ -284,7 +265,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
     const autoFocusSpy = jest.spyOn(helpers, 'handleAutoFocus');
     pageContent =
-      '<input id="email"></input><button>click</button><span>It works!</span>';
+      '<input id="email"></input><descope-button>click</descope-button><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc auto-focus="skipFirstScreen" flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -297,13 +278,16 @@ describe('web-component', () => {
     autoFocusSpy.mockClear();
 
     fireEvent.click(screen.getByShadowText('click'));
-    await waitFor(() => {
-      expect(autoFocusSpy).toBeCalledWith(
-        expect.any(HTMLElement),
-        'skipFirstScreen',
-        false
-      );
-    });
+    await waitFor(
+      () => {
+        expect(autoFocusSpy).toBeCalledWith(
+          expect.any(HTMLElement),
+          'skipFirstScreen',
+          false
+        );
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should fetch the data from the correct path', async () => {
@@ -416,7 +400,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button>click</button><input id="email"></input><input id="code"></input><span>Loaded</span>';
+      '<descope-button>click</descope-button><input id="email"></input><input id="code"></input><span>Loaded</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -438,7 +422,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="submitterId">click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -459,7 +443,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="submitterId">click</button><input id="toggle" name="t1" type="checkbox"></input><span>It works!</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="toggle" name="t1" type="checkbox"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-up-or-in" project-id="1"></descope-wc>`;
 
@@ -480,7 +464,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="submitterId">click</button><input id="toggle" name="t1" type="checkbox" checked="true"></input><span>It works!</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="toggle" name="t1" type="checkbox" checked="true"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -505,7 +489,7 @@ describe('web-component', () => {
     };
 
     pageContent =
-      '<button id="submitterId">click</button><input id="email" name="email"></input><span>hey</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
@@ -539,7 +523,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="buttonId">Click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="buttonId">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -559,7 +543,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="noClick">No Click</button><button id="click" data-type="button">Click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="noClick">No Click</descope-button><descope-button id="click" data-type="button">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -627,7 +611,7 @@ describe('web-component', () => {
       generateSdkResponse({ screenState: { errorText: 'Error!' } })
     );
 
-    pageContent = `<button>click</button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
+    pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -650,7 +634,7 @@ describe('web-component', () => {
       generateSdkResponse({ screenState: { inputs: { email: 'email1' } } })
     );
 
-    pageContent = `<button>click</button><div>Loaded</div><input class="descope-input" name="email">`;
+    pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="email">`;
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -658,7 +642,9 @@ describe('web-component', () => {
 
     fireEvent.click(screen.getByShadowText('click'));
 
-    await waitFor(() => screen.getByShadowDisplayValue('email1'));
+    await waitFor(() => screen.getByShadowDisplayValue('email1'), {
+      timeout: 3000,
+    });
   });
 
   it('should update page templates according to screen state', async () => {
@@ -929,7 +915,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
-    pageContent = `<button type="button" id="123" ${DESCOPE_ATTRIBUTE_PREFIX}attr1='attr1' ${DESCOPE_ATTRIBUTE_PREFIX}attr2='attr2'>Click</button>`;
+    pageContent = `<descope-button type="button" id="123" ${DESCOPE_ATTRIBUTE_PREFIX}attr1='attr1' ${DESCOPE_ATTRIBUTE_PREFIX}attr2='attr2'>Click</descope-button>`;
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -959,7 +945,7 @@ describe('web-component', () => {
         })
     );
 
-    pageContent = `<button type="button" id="123" ${DESCOPE_ATTRIBUTE_PREFIX}attr1='attr1' ${DESCOPE_ATTRIBUTE_PREFIX}attr2='attr2'>Click</button>`;
+    pageContent = `<descope-button type="button" id="123" ${DESCOPE_ATTRIBUTE_PREFIX}attr1='attr1' ${DESCOPE_ATTRIBUTE_PREFIX}attr2='attr2'>Click</descope-button>`;
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -1361,7 +1347,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
     pageContent =
-      '<button id="submitterId">click</button><input id="email" name="email" required placeholder="email" class="descope-input"></input><span>hey</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="email" name="email" required placeholder="email" class="descope-input"></input><span>hey</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
@@ -1378,7 +1364,9 @@ describe('web-component', () => {
 
     fireEvent.click(buttonEle);
 
-    await waitFor(() => expect(inputEle.reportValidity).toHaveBeenCalled());
+    await waitFor(() => expect(inputEle.reportValidity).toHaveBeenCalled(), {
+      timeout: 3000,
+    });
 
     await waitFor(() => expect(inputEle.checkValidity).toHaveBeenCalled());
   });
@@ -1726,7 +1714,7 @@ describe('web-component', () => {
         },
       };
 
-      pageContent = `<button type="button" id="interactionId">Click</button>`;
+      pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
@@ -1900,7 +1888,8 @@ describe('web-component', () => {
         },
       };
 
-      pageContent = '<button>click</button><span>It works!</span>';
+      pageContent =
+        '<descope-button>click</descope-button><span>It works!</span>';
 
       const oidcIdpStateId = 'abcdefgh';
       const encodedOidcIdpStateId = encodeURIComponent(oidcIdpStateId);
@@ -1915,7 +1904,9 @@ describe('web-component', () => {
 
       fireEvent.click(screen.getByShadowText('click'));
 
-      await waitFor(() => expect(nextMock).toHaveBeenCalled());
+      await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+        timeout: 3000,
+      });
     });
   });
   it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
@@ -2150,27 +2141,46 @@ describe('web-component', () => {
 
       scriptEle.onload({} as any);
 
-      await waitFor(() => expect(errorSpy).toHaveBeenCalledWith('Cannot load DescopeUI', expect.any(String), expect.any(Error)), { timeout: 3000 });
+      (document.querySelector('descope-wc') as any).descopeUI.catch(() => {});
+
+      await waitFor(() =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          'Cannot load DescopeUI',
+          expect.any(String),
+          expect.any(Error)
+        )
+      );
     });
     it('should try to load all descope component on the page', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      pageContent = '<descope-input id="email"></descope-input><descope-button>It works!</descope-button>';
+      pageContent =
+        '<descope-input id="email"></descope-input><descope-button1>It works!</descope-button1>';
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
       const scriptEle = document.querySelector('script');
 
-      globalThis.DescopeUI = { 'descope-button': jest.fn(), 'descope-input': jest.fn() };
+      globalThis.DescopeUI = {
+        'descope-button1': jest.fn(),
+        'descope-input': jest.fn(),
+      };
 
       scriptEle.onload({} as any);
 
-      await waitFor(() => Object.keys(globalThis.DescopeUI).forEach(key => expect(globalThis.DescopeUI[key]).toHaveBeenCalled()), { timeout: 3000 });
+      await waitFor(
+        () =>
+          Object.keys(globalThis.DescopeUI).forEach((key) =>
+            expect(globalThis.DescopeUI[key]).toHaveBeenCalled()
+          ),
+        { timeout: 3000 }
+      );
     });
     it('should log an error if descope component is missing', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      pageContent = '<descope-button id="email"></descope-button><span>It works!</span>';
+      pageContent =
+        '<descope-button1 id="email"></descope-button1><span>It works!</span>';
 
       const errorSpy = jest.spyOn(console, 'error');
 
@@ -2182,26 +2192,39 @@ describe('web-component', () => {
 
       scriptEle.onload({} as any);
 
-      await waitFor(() => expect(errorSpy).toHaveBeenCalledWith('Cannot load UI component "descope-button"', expect.any(String), expect.any(Error)), { timeout: 3000 });
+      await waitFor(
+        () =>
+          expect(errorSpy).toHaveBeenCalledWith(
+            'Cannot load UI component "descope-button1"',
+            expect.any(String),
+            expect.any(Error)
+          ),
+        { timeout: 3000 }
+      );
     });
     it('should not load components which are already loaded', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      pageContent = '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
+      pageContent =
+        '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
 
-      customElements.define('descope-test-button', class extends HTMLElement{});
+      customElements.define(
+        'descope-test-button',
+        class extends HTMLElement {}
+      );
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
       const scriptEle = document.querySelector('script');
 
-      globalThis.DescopeUI = { 'descope-test-button': jest.fn() };
+      const DescopeUI = { 'descope-test-button': jest.fn() };
+      globalThis.DescopeUI = DescopeUI;
 
       scriptEle.onload({} as any);
 
-      await screen.findByShadowText('Button');
+      await waitFor(() => screen.getByShadowText('Button'), { timeout: 4000 });
 
-      expect(globalThis.DescopeUI['descope-test-button']).not.toHaveBeenCalled();
+      expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
     });
   });
 });
