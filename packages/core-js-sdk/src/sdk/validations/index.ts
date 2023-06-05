@@ -1,6 +1,12 @@
 import { createValidation } from './core';
 import { Validator } from './types';
-import { isEmail, isNotEmpty, isPhone, isString } from './validators';
+import {
+  isEmail,
+  isNotEmpty,
+  isOptionalString,
+  isPhone,
+  isString,
+} from './validators';
 
 /**
  *
@@ -19,7 +25,7 @@ export const withValidations =
   };
 
 export const string = (fieldName: string) => [
-  isString(`"${fieldName}" must be a string`),
+  isOptionalString(`"${fieldName}" must be a string or undefined`),
 ];
 export const stringNonEmpty = (fieldName: string) => [
   isString(`"${fieldName}" must be a string`),

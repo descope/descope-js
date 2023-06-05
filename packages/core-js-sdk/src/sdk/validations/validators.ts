@@ -5,6 +5,9 @@ import { Validator } from './types';
 const regexMatch = (regex: RegExp) => (val: any) => regex.test(val);
 
 const validateString = (val: any) => typeof val === 'string';
+const validateStringOrUndefined = (val: any) =>
+  val === undefined || typeof val === 'string';
+
 const validateEmail = regexMatch(
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 );
@@ -30,6 +33,12 @@ export const isString = createValidator(
   validateString,
   'Input is not a string'
 );
+
+export const isOptionalString = createValidator(
+  validateStringOrUndefined,
+  'Input provided but its not a string'
+);
+
 // export const isPlainObject = createValidator(validatePlainObject, 'Input is not a plain object');
 export const hasPathValue = (path: string, rules: Validator[]) =>
   createValidator(validatePathValue(path, rules))();

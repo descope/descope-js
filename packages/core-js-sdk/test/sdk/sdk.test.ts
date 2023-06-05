@@ -99,6 +99,10 @@ describe('sdk', () => {
       expect(() => sdk.logout({ a: 'b' })).toThrow('"token" must be a string');
     });
 
+    it('should not throw an error when token is undefined', () => {
+      expect(() => sdk.logout()).not.toThrow();
+    });
+
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
