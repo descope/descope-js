@@ -14,6 +14,9 @@ describe('sdk', () => {
   });
 
   describe('refresh', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.refresh({ a: 'b' })).toThrow('"token" must be a string');
+    });
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
@@ -92,6 +95,10 @@ describe('sdk', () => {
   });
 
   describe('logout', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.logout({ a: 'b' })).toThrow('"token" must be a string');
+    });
+
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
@@ -114,6 +121,11 @@ describe('sdk', () => {
   });
 
   describe('logoutAll', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.logoutAll({ a: 'b' })).toThrow(
+        '"token" must be a string'
+      );
+    });
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
@@ -136,6 +148,9 @@ describe('sdk', () => {
   });
 
   describe('me', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.me({ a: 'b' })).toThrow('"token" must be a string');
+    });
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
