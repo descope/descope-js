@@ -1755,6 +1755,11 @@ describe('web-component', () => {
     });
     it('Should call start with code and idpInitiated when idpInitiated condition is met', async () => {
       window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
+      localStorage.setItem(
+        DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+        '{"authMethod":"otp"}'
+      );
+      getLastUserLoginIdMock.mockReturnValue('abc');
       configContent = {
         flows: {
           'sign-in': {
@@ -1782,6 +1787,7 @@ describe('web-component', () => {
             oidcIdpStateId: null,
             redirectAuth: undefined,
             tenant: undefined,
+            lastAuth: { authMethod: 'otp' },
           },
           undefined,
           '',
@@ -1849,6 +1855,7 @@ describe('web-component', () => {
             oidcIdpStateId: null,
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
+            lastAuth: {},
           },
           undefined,
           '',
@@ -1878,6 +1885,7 @@ describe('web-component', () => {
           {
             oidcIdpStateId: 'abcdefgh',
             tenant: undefined,
+            lastAuth: {},
           },
           undefined,
           '',
@@ -1949,6 +1957,7 @@ describe('web-component', () => {
           oidcIdpStateId: null,
           redirectAuth: undefined,
           tenant: undefined,
+          lastAuth: {},
         },
         undefined,
         '',
@@ -2004,6 +2013,7 @@ describe('web-component', () => {
           oidcIdpStateId: null,
           redirectAuth: undefined,
           tenant: undefined,
+          lastAuth: {},
         },
         undefined,
         '',
