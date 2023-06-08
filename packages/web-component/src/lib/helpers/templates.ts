@@ -101,6 +101,7 @@ export const replaceWithScreenState = (
 ) => {
   replaceElementMessage(baseEle, 'error-message', screenState?.errorText);
   replaceElementInputs(baseEle, screenState?.inputs);
+  replaceElementInputs(baseEle, screenState?.form);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
 };
