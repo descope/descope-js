@@ -27,7 +27,8 @@ export interface LastAuthState {
 
 export interface ScreenState {
   errorText?: string;
-  inputs?: Record<string, string>;
+  form?: Record<string, string>;
+  inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
   totp?: { image?: string; provisionUrl?: string };
 }
