@@ -145,6 +145,7 @@ class DescopeWc extends BaseDescopeWc {
             redirectAuth,
             oidcIdpStateId,
             ...(redirectUrl && { redirectUrl }),
+            lastAuth: getLastAuth(loginId),
           },
           conditionInteractionId,
           '',
