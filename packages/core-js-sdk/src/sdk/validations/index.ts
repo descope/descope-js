@@ -1,15 +1,16 @@
-import { createValidation } from './core';
+import { createOrValidator, createValidation } from './core';
 import { Validator } from './types';
 import {
   isEmail,
   isNotEmpty,
-  isOptionalString,
   isPhone,
   isString,
+  isStringOrUndefined,
 } from './validators';
 
 /**
  *
+ * Validate that all of the validators passes
  * @params each parameter is an array of validators, those validators will be verified against the wrapped function argument which in the same place
  * @throws if any of the validators fails, an error with the relevant message will be thrown
  */
@@ -25,8 +26,13 @@ export const withValidations =
   };
 
 export const string = (fieldName: string) => [
-  isOptionalString(`"${fieldName}" must be a string or undefined`),
+  isString(`"${fieldName}" must be a string`),
 ];
+
+export const isStringOrUndefinedValidator = (fieldName: string) => [
+  isStringOrUndefined(`"${fieldName}" must be string or undefined`),
+];
+
 export const stringNonEmpty = (fieldName: string) => [
   isString(`"${fieldName}" must be a string`),
   isNotEmpty(`"${fieldName}" must not be empty`),

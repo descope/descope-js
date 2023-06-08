@@ -16,11 +16,17 @@ import withSaml from './saml';
 import withTotp from './totp';
 import withPassword from './password';
 import { JWTResponse, UserResponse } from './types';
-import { stringNonEmpty, withValidations, string } from './validations';
+import {
+  stringNonEmpty,
+  withValidations,
+  isStringOrUndefinedValidator,
+} from './validations';
 import withWebauthn from './webauthn';
 
 const withJwtValidations = withValidations(stringNonEmpty('token'));
-const withOptionalTokenValidations = withValidations(string('token'));
+const withOptionalTokenValidations = withValidations(
+  isStringOrUndefinedValidator('token')
+);
 
 /** Returns Descope SDK with all available operations */
 export default (httpClient: HttpClient) => ({
