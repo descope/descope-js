@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.4.1](https://github.com/descope/descope-js/compare/web-component-2.4.0...web-component-2.4.1) (2023-06-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.5.2 ([#162](https://github.com/descope/descope-js/issues/162)) ([b6808ef](https://github.com/descope/descope-js/commit/b6808efd2450dc7ed944772e7ace6dedc1af8eb8))
+* send last auth always on start ([#165](https://github.com/descope/descope-js/issues/165)) ([1249cae](https://github.com/descope/descope-js/commit/1249cae23e5a67cc88732f0d2540ce83d806c0df))
+
 ## [2.4.0](https://github.com/descope/descope-js/compare/web-component-2.3.12...web-component-2.4.0) (2023-05-29)
 
 ### Dependency Updates
