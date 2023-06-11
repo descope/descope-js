@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       tslib:
-        specifier: 2.5.0
-        version: 2.5.0
+        specifier: 2.5.2
+        version: 2.5.2
     devDependencies:
       '@commitlint/cli':
         specifier: ^17.0.0
@@ -117,7 +117,7 @@ importers:
         version: 0.4.1(rollup@3.21.0)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.1.0(rollup@3.21.0)(tslib@2.5.0)(typescript@4.9.5)
+        version: 11.1.0(rollup@3.21.0)(tslib@2.5.2)(typescript@4.9.5)
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.1
@@ -227,8 +227,8 @@ importers:
         specifier: workspace:*
         version: link:../web-js-sdk
       tslib:
-        specifier: 2.5.0
-        version: 2.5.0
+        specifier: 2.5.2
+        version: 2.5.2
     devDependencies:
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
@@ -244,7 +244,7 @@ importers:
         version: 5.0.2(rollup@2.79.1)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.1.0(rollup@2.79.1)(tslib@2.5.0)(typescript@4.9.5)
+        version: 11.1.0(rollup@2.79.1)(tslib@2.5.2)(typescript@4.9.5)
       '@testing-library/dom':
         specifier: ^9.0.0
         version: 9.2.0
@@ -389,7 +389,7 @@ importers:
         version: 0.4.1(rollup@3.21.0)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.1.0(rollup@3.21.0)(tslib@2.5.0)(typescript@4.9.5)
+        version: 11.1.0(rollup@3.21.0)(tslib@2.5.2)(typescript@4.9.5)
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.1
@@ -2186,7 +2186,7 @@ packages:
   /@fingerprintjs/fingerprintjs-pro@3.8.3:
     resolution: {integrity: sha512-Top2U6/DYVraSir49pIcSQX5DaJhd0farIX3gaNSogy+Ln9NHQz3arM5Q2pdT5mdvWnRLuTLiXw5qacZdvFuQA==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: false
 
   /@humanwhocodes/config-array@0.11.8:
@@ -2558,7 +2558,7 @@ packages:
       nx: 15.9.4
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /@nrwl/devkit@15.9.4(nx@15.9.4):
@@ -2571,7 +2571,7 @@ packages:
       nx: 15.9.4
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /@nrwl/eslint-plugin-nx@15.9.4(@typescript-eslint/parser@5.59.1)(eslint-config-prettier@8.8.0)(eslint@8.40.0)(nx@15.9.4)(typescript@4.9.5):
@@ -2612,7 +2612,7 @@ packages:
       jest-resolve: 29.5.0
       jest-util: 29.5.0
       resolve.exports: 1.1.0
-      tslib: 2.5.0
+      tslib: 2.5.2
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -2650,7 +2650,7 @@ packages:
       minimatch: 3.0.5
       source-map-support: 0.5.19
       tree-kill: 1.2.2
-      tslib: 2.5.0
+      tslib: 2.5.2
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -2674,7 +2674,7 @@ packages:
       '@phenomnomnominal/tsquery': 4.1.1(typescript@4.9.5)
       eslint: 8.40.0
       tmp: 0.2.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -2797,7 +2797,7 @@ packages:
       open: 8.4.2
       rxjs: 6.6.7
       tmp: 0.2.1
-      tslib: 2.5.0
+      tslib: 2.5.2
       yargs: 17.7.1
       yargs-parser: 21.1.1
     transitivePeerDependencies:
@@ -2886,7 +2886,7 @@ packages:
       open: 8.4.2
       picocolors: 1.0.0
       tiny-glob: 0.2.9
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /@rollup/plugin-commonjs@24.1.0(rollup@2.79.1):
@@ -3004,7 +3004,7 @@ packages:
       terser: 5.17.1
     dev: true
 
-  /@rollup/plugin-typescript@11.1.0(rollup@2.79.1)(tslib@2.5.0)(typescript@4.9.5):
+  /@rollup/plugin-typescript@11.1.0(rollup@2.79.1)(tslib@2.5.2)(typescript@4.9.5):
     resolution: {integrity: sha512-86flrfE+bSHB69znnTV6kVjkncs2LBMhcTCyxWgRxLyfXfQrxg4UwlAqENnjrrxnSNS/XKCDJCl8EkdFJVHOxw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3020,11 +3020,11 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@2.79.1)
       resolve: 1.22.2
       rollup: 2.79.1
-      tslib: 2.5.0
+      tslib: 2.5.2
       typescript: 4.9.5
     dev: true
 
-  /@rollup/plugin-typescript@11.1.0(rollup@3.21.0)(tslib@2.5.0)(typescript@4.9.5):
+  /@rollup/plugin-typescript@11.1.0(rollup@3.21.0)(tslib@2.5.2)(typescript@4.9.5):
     resolution: {integrity: sha512-86flrfE+bSHB69znnTV6kVjkncs2LBMhcTCyxWgRxLyfXfQrxg4UwlAqENnjrrxnSNS/XKCDJCl8EkdFJVHOxw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3040,7 +3040,7 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@3.21.0)
       resolve: 1.22.2
       rollup: 3.21.0
-      tslib: 2.5.0
+      tslib: 2.5.2
       typescript: 4.9.5
     dev: true
 
@@ -3643,7 +3643,7 @@ packages:
     engines: {node: '>=14.15.0'}
     dependencies:
       js-yaml: 3.14.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /@zkochan/js-yaml@0.0.6:
@@ -4284,7 +4284,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /camelcase-keys@6.2.2:
@@ -5060,7 +5060,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /dot-prop@5.3.0:
@@ -7917,7 +7917,7 @@ packages:
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /lru-cache@5.1.1:
@@ -8199,7 +8199,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /node-addon-api@3.2.1:
@@ -8305,7 +8305,7 @@ packages:
       tar-stream: 2.2.0
       tmp: 0.2.1
       tsconfig-paths: 4.2.0
-      tslib: 2.5.0
+      tslib: 2.5.2
       v8-compile-cache: 2.3.0
       yargs: 17.7.1
       yargs-parser: 21.1.1
@@ -8549,7 +8549,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /parent-module@1.0.1:
@@ -8595,7 +8595,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /path-exists@3.0.0:
@@ -9257,7 +9257,7 @@ packages:
   /rxjs@7.8.0:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /safe-buffer@5.1.2:
@@ -9810,7 +9810,7 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/utils': 2.3.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /systemjs@6.14.1:
@@ -10083,8 +10083,8 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
-  /tslib@2.5.0:
-    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
+  /tslib@2.5.2:
+    resolution: {integrity: sha512-5svOrSA2w3iGFDs1HibEVBGbDrAY82bFQ3HZ3ixB+88nsbsWQoKqDRb5UBYAUPEzbBn6dAp5gRNXglySbx1MlA==}
 
   /tsutils@3.21.0(typescript@4.9.5):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
