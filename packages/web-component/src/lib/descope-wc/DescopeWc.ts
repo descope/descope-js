@@ -11,6 +11,7 @@ import {
   getContentUrl,
   getElementDescopeAttributes,
   handleAutoFocus,
+  isChrome,
   isConditionalLoginSupported,
   replaceWithScreenState,
   setTOTPVariable,
@@ -217,6 +218,31 @@ class DescopeWc extends BaseDescopeWc {
         return;
       }
 
+      // we override the default webauthn options to only use platform authenticators (i.e., builtin biometrics)
+      // when registering a new webauthn credential if we're running on Chrome and the device actually has such
+      // an authenticator. this makes it so in Chrome when the passkeys dialog pops up the user is immediately
+      // offered to use biometrics, rather than having to select it from several options. this behavior is enabled
+      // by default but can be disabled on the web-component itsel by setting prefer-biometrics="false".
+      let options = webauthnOptions;
+      if (
+        this.preferBiometrics &&
+        action === RESPONSE_ACTIONS.webauthnCreate &&
+        isChrome() &&
+        (await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable?.())
+      ) {
+        try {
+          const json = JSON.parse(options);
+          if (json.publicKey && !json.publicKey.authenticatorSelection) {
+            json.publicKey.authenticatorSelection = {
+              authenticatorAttachment: 'platform',
+            };
+            options = JSON.stringify(json);
+          }
+        } catch (e) {
+          this.logger.info('Failed to modify webauthn create options');
+        }
+      }
+
       this.#conditionalUiAbortController?.abort();
       this.#conditionalUiAbortController = null;
 
@@ -225,8 +251,8 @@ class DescopeWc extends BaseDescopeWc {
       try {
         response =
           action === RESPONSE_ACTIONS.webauthnCreate
-            ? await this.sdk.webauthn.helpers.create(webauthnOptions)
-            : await this.sdk.webauthn.helpers.get(webauthnOptions);
+            ? await this.sdk.webauthn.helpers.create(options)
+            : await this.sdk.webauthn.helpers.get(options);
       } catch (e) {
         if (e.name !== 'NotAllowedError') {
           this.logger.error(e.message);
