@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "2.4.0",
+  "version": "2.4.5",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-component",
   "bugs": {
@@ -34,11 +34,11 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "5.16.5",
-    "@types/testing-library__jest-dom": "5.14.5",
+    "@types/testing-library__jest-dom": "5.14.6",
     "@types/jest": "^29.0.0",
     "@types/node": "18.15.0",
     "dotenv": "^16.0.3",
-    "eslint": "8.40.0",
+    "eslint": "8.41.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-config-prettier": "8.8.0",
@@ -72,10 +72,10 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "tslib": "2.5.0",
+    "tslib": "2.5.2",
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.17.3"
+    "terser": "5.17.6"
   }
 }

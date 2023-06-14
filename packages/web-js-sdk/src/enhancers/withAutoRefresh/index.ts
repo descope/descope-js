@@ -8,6 +8,7 @@ import {
   millisecondsUntilDate,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
+import logger from '../helpers/logger';
 
 // The amount of time (ms) to trigger the refresh before session expires
 const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
@@ -30,13 +31,18 @@ export const withAutoRefresh =
 
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
+        logger.debug('Received 401, canceling all timers');
         clearAllTimers();
       } else if (sessionJwt) {
         const timeout =
           millisecondsUntilDate(getTokenExpiration(sessionJwt)) -
           REFRESH_THRESHOLD;
         clearAllTimers();
-        setTimer(() => sdk.refresh(refreshJwt), timeout);
+        logger.debug(`Setting refresh timer for ${timeout}ms`);
+        setTimer(() => {
+          logger.debug('Refreshing session');
+          sdk.refresh(refreshJwt);
+        }, timeout);
       }
     };
 
@@ -46,7 +52,7 @@ export const withAutoRefresh =
       (fn) =>
       async (...args) => {
         const resp = await fn(...args);
-
+        logger.debug('Clearing all timers');
         clearAllTimers();
 
         return resp;
