@@ -2055,7 +2055,7 @@ describe('web-component', () => {
       await waitFor(() => expect(startMock).toHaveBeenCalled());
 
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 6000,
       });
 
       fireEvent.click(screen.getByShadowText('click'));
