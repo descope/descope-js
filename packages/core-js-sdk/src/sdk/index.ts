@@ -4,6 +4,7 @@ import withAccessKeys from './accesskey';
 import withEnchantedLink from './enchantedLink';
 import withFlow from './flow';
 import {
+  getTenants,
   getJwtPermissions,
   getJwtRoles,
   isJwtExpired,
@@ -46,6 +47,7 @@ export default (httpClient: HttpClient) => ({
   me: (token?: string) =>
     transformResponse<UserResponse>(httpClient.get(apiPaths.me, { token })),
   isJwtExpired: withJwtValidations(isJwtExpired),
+  getTenants: withJwtValidations(getTenants),
   getJwtPermissions: withJwtValidations(getJwtPermissions),
   getJwtRoles: withJwtValidations(getJwtRoles),
   httpClient,

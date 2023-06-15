@@ -66,6 +66,9 @@ describe('sdk', () => {
         C2EdY4UXXzKPV0EKdZFJbuKKmvtl: {
           roles: ['abc', 'xyz'],
         },
+        C2EdY4UXXzKPV0EKdZFJbuKKmvtm: {
+          roles: ['def'],
+        },
       },
     };
 
@@ -88,6 +91,13 @@ describe('sdk', () => {
       expect(
         sdk.getJwtRoles('jwt', 'C2EdY4UXXzKPV0EKdZFJbuKKmvtl')
       ).toStrictEqual(['abc', 'xyz']);
+    });
+    it('should return a list of tenants', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => mock);
+      expect(sdk.getTenants('jwt')).toStrictEqual([
+        'C2EdY4UXXzKPV0EKdZFJbuKKmvtl',
+        'C2EdY4UXXzKPV0EKdZFJbuKKmvtm',
+      ]);
     });
   });
 
