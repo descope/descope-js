@@ -239,6 +239,7 @@ class DescopeWc extends BaseDescopeWc {
             options = JSON.stringify(json);
           }
         } catch (e) {
+          // if options could not be parsed we ignore it here so this kind of error is always handled the same way
           this.logger.info('Failed to modify webauthn create options');
         }
       }
