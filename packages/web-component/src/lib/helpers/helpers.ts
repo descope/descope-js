@@ -88,7 +88,7 @@ export const setRunIdsOnUrl = (executionId: string, stepId: string) => {
   setFlowUrlParam([executionId, stepId].join('_'));
 };
 
-export function isChrome() {
+export function isChromium() {
   return (
     /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
   );

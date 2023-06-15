@@ -11,7 +11,7 @@ import {
   getContentUrl,
   getElementDescopeAttributes,
   handleAutoFocus,
-  isChrome,
+  isChromium,
   isConditionalLoginSupported,
   replaceWithScreenState,
   setTOTPVariable,
@@ -227,7 +227,7 @@ class DescopeWc extends BaseDescopeWc {
       if (
         this.preferBiometrics &&
         action === RESPONSE_ACTIONS.webauthnCreate &&
-        isChrome() &&
+        isChromium() &&
         (await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable?.())
       ) {
         try {

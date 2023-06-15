@@ -7,7 +7,7 @@ import {
   getContentUrl,
   getRunIdsFromUrl,
   handleUrlParams,
-  isChrome,
+  isChromium,
   loadFont,
   State,
   withMemCache,
@@ -92,7 +92,7 @@ class BaseDescopeWc extends HTMLElement {
 
   #shouldMountInFormEle() {
     const wc = this.shadowRoot.host;
-    return !wc.closest('form') && isChrome();
+    return !wc.closest('form') && isChromium();
   }
 
   // we want to make sure the web-component is wrapped with on outer form element
