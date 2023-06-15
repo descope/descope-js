@@ -232,10 +232,10 @@ class DescopeWc extends BaseDescopeWc {
       ) {
         try {
           const json = JSON.parse(options);
-          if (json.publicKey && !json.publicKey.authenticatorSelection) {
-            json.publicKey.authenticatorSelection = {
-              authenticatorAttachment: 'platform',
-            };
+          if (json.publicKey) {
+            json.publicKey.authenticatorSelection ||= {};
+            json.publicKey.authenticatorSelection.authenticatorAttachment ||=
+              'platform';
             options = JSON.stringify(json);
           }
         } catch (e) {
