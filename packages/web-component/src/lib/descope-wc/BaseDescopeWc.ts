@@ -7,6 +7,7 @@ import {
   getContentUrl,
   getRunIdsFromUrl,
   handleUrlParams,
+  isChromium,
   loadFont,
   State,
   withMemCache,
@@ -39,6 +40,7 @@ class BaseDescopeWc extends HTMLElement {
       'telemetryKey',
       'redirect-url',
       'auto-focus',
+      'prefer-biometrics',
     ];
   }
 
@@ -89,11 +91,8 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   #shouldMountInFormEle() {
-    const isChrome =
-      /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
     const wc = this.shadowRoot.host;
-
-    return !wc.closest('form') && isChrome;
+    return !wc.closest('form') && isChromium();
   }
 
   // we want to make sure the web-component is wrapped with on outer form element
@@ -155,6 +154,11 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get preferBiometrics(): boolean {
+    const res = this.getAttribute('prefer-biometrics') ?? 'true';
+    return res === 'true';
+  }
+
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
@@ -164,6 +168,7 @@ class BaseDescopeWc extends HTMLElement {
       'telemetryKey',
       'redirect-url',
       'auto-focus',
+      'prefer-biometrics',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {

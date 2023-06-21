@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.5.0](https://github.com/descope/descope-js/compare/web-component-2.4.5...web-component-2.5.0) (2023-06-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.2.10`
+
+### Features
+
+* add prefer-biometrics option that defaults to true ([#173](https://github.com/descope/descope-js/issues/173)) ([b6453d0](https://github.com/descope/descope-js/commit/b6453d0c575144892bf10091fbc0f46060e7a480))
+
 ## [2.4.5](https://github.com/descope/descope-js/compare/web-component-2.4.4...web-component-2.4.5) (2023-06-13)
 
 ## [2.4.4](https://github.com/descope/descope-js/compare/web-component-2.4.3...web-component-2.4.4) (2023-06-12)

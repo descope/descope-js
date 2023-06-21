@@ -57,6 +57,8 @@ let themeContent = '';
 let pageContent = '';
 let configContent = {};
 
+class TestClass {}
+
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
 
@@ -64,6 +66,8 @@ Object.defineProperty(window, 'location', {
   value: new URL(window.location.origin),
 });
 window.location.assign = jest.fn();
+
+Object.defineProperty(window, 'PublicKeyCredential', { value: TestClass });
 
 Object.defineProperty(window.history, 'pushState', {
   value: (x: any, y: any, url: string) => {
@@ -75,6 +79,8 @@ Object.defineProperty(window.history, 'replaceState', {
     window.location.href = url;
   },
 });
+
+const isChromiumSpy = jest.spyOn(helpers, 'isChromium');
 
 describe('web-component', () => {
   beforeEach(() => {
@@ -1171,6 +1177,137 @@ describe('web-component', () => {
     );
   });
 
+  it('Should create new credentials on platform only in Chrome when action type is "webauthnCreate"', async () => {
+    const initialOptions = '{"publicKey":{}}';
+    const expectedOptions =
+      '{"publicKey":{"authenticatorSelection":{"authenticatorAttachment":"platform"}}}';
+
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.webauthnCreate,
+        webAuthnTransactionId: 't1',
+        webAuthnOptions: initialOptions,
+      })
+    );
+    pageContent = '<span>It works!</span>';
+
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    sdk.webauthn.helpers.create.mockReturnValueOnce(
+      Promise.resolve('webauthn-response')
+    );
+
+    isChromiumSpy.mockReturnValue(true);
+    const pkc = <any>window.PublicKeyCredential;
+    pkc.isUserVerifyingPlatformAuthenticatorAvailable = () => true;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
+          expectedOptions
+        ),
+      { timeout: 3000 }
+    );
+    expect(nextMock).toHaveBeenCalledWith(
+      '0',
+      '0',
+      'submit',
+      {
+        transactionId: 't1',
+        response: 'webauthn-response',
+      },
+      0
+    );
+  });
+
+  it('Should create new credentials without platform flag in Chrome when action type is "webauthnCreate" and prefer-biometrics is false', async () => {
+    const initialOptions = '{"publicKey":{}}';
+
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.webauthnCreate,
+        webAuthnTransactionId: 't1',
+        webAuthnOptions: initialOptions,
+      })
+    );
+    pageContent = '<span>It works!</span>';
+
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    sdk.webauthn.helpers.create.mockReturnValueOnce(
+      Promise.resolve('webauthn-response')
+    );
+
+    isChromiumSpy.mockReturnValue(true);
+    const pkc = <any>window.PublicKeyCredential;
+    pkc.isUserVerifyingPlatformAuthenticatorAvailable = () => true;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" prefer-biometrics="false" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
+          initialOptions
+        ),
+      { timeout: 3000 }
+    );
+    expect(nextMock).toHaveBeenCalledWith(
+      '0',
+      '0',
+      'submit',
+      {
+        transactionId: 't1',
+        response: 'webauthn-response',
+      },
+      0
+    );
+  });
+
+  it('Should not fail to create new credentials if options cannot be parsed when action type is "webauthnCreate"', async () => {
+    const initialOptions = '{"publicKey:{}}';
+
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.webauthnCreate,
+        webAuthnTransactionId: 't1',
+        webAuthnOptions: initialOptions,
+      })
+    );
+    pageContent = '<span>It works!</span>';
+
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    sdk.webauthn.helpers.create.mockReturnValueOnce(
+      Promise.resolve('webauthn-response')
+    );
+
+    isChromiumSpy.mockReturnValue(true);
+    const pkc = <any>window.PublicKeyCredential;
+    pkc.isUserVerifyingPlatformAuthenticatorAvailable = () => true;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
+          initialOptions
+        ),
+      { timeout: 3000 }
+    );
+    expect(nextMock).toHaveBeenCalledWith(
+      '0',
+      '0',
+      'submit',
+      {
+        transactionId: 't1',
+        response: 'webauthn-response',
+      },
+      0
+    );
+  });
+
   it('Should search of existing credentials when action type is "webauthnGet"', async () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
@@ -1918,7 +2055,7 @@ describe('web-component', () => {
       await waitFor(() => expect(startMock).toHaveBeenCalled());
 
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 6000,
       });
 
       fireEvent.click(screen.getByShadowText('click'));
