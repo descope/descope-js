@@ -18,4 +18,9 @@ const decoratedCreateSdk = compose(
 
 export type { UserResponse } from './types';
 
+export {
+  REFRESH_TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from './enhancers/withPersistTokens/constants';
+
 export default decoratedCreateSdk;
