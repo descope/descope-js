@@ -10,6 +10,7 @@ import {
   getAnimationDirection,
   getContentUrl,
   getElementDescopeAttributes,
+  getInputValueByType,
   handleAutoFocus,
   isChromium,
   isConditionalLoginSupported,
@@ -562,19 +563,30 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #getFormData() {
-    return Array.from(
+  async #getFormData() {
+    const inputs = Array.from(
       this.shadowRoot.querySelectorAll(
         `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
-    ).reduce(
-      (acc, input: HTMLInputElement) =>
-        input.name
-          ? Object.assign(acc, {
-              [input.name]:
-                input[input.type === 'checkbox' ? 'checked' : 'value'],
-            })
-          : acc,
+    ) as HTMLInputElement[];
+
+    // wait for all inputs
+    const values = await Promise.all(
+      inputs.map(async (input) => {
+        const value = await getInputValueByType(input);
+        return {
+          name: input.name,
+          value,
+        };
+      })
+    );
+
+    // reduce to object
+    return values.reduce(
+      (acc, val) => ({
+        ...acc,
+        [val.name]: val.value,
+      }),
       {}
     );
   }
@@ -598,7 +610,7 @@ class DescopeWc extends BaseDescopeWc {
 
       this.#handleSubmitButtonLoader(submitter);
 
-      const formData = this.#getFormData();
+      const formData = await this.#getFormData();
       const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
       const actionArgs = {
