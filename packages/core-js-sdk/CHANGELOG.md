@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.4.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.9...core-js-sdk-1.4.0) (2023-06-22)
+
+
+### Features
+
+* add getTenants utility function to fetch tenant list from JWT ([#172](https://github.com/descope/descope-js/issues/172)) ([98a1914](https://github.com/descope/descope-js/commit/98a1914387ac907c08aa574ccdcb19ee9d1e0406))
+
 ## [1.3.9](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.8...core-js-sdk-1.3.9) (2023-06-19)
 
 ## [1.3.8](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.7...core-js-sdk-1.3.8) (2023-06-11)
