@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-component",
   "bugs": {
@@ -76,6 +76,6 @@
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.17.6"
+    "terser": "5.17.7"
   }
 }
