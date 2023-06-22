@@ -1,4 +1,4 @@
-import createSdk from '../src/index';
+import createSdk, { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from '../src/index';
 import { flowResponse } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
@@ -63,5 +63,10 @@ describe('sdk', () => {
         tenant: 'yo',
       },
     });
+  });
+
+  it('should export constants', () => {
+    expect(SESSION_TOKEN_KEY).toBeDefined();
+    expect(REFRESH_TOKEN_KEY).toBeDefined();
   });
 });
