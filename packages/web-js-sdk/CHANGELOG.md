@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.2...web-js-sdk-1.3.3) (2023-06-27)
+
+
+### Bug Fixes
+
+* Fix umd build ([#186](https://github.com/descope/descope-js/issues/186)) RELEASE ([1f6ee56](https://github.com/descope/descope-js/commit/1f6ee561a04a1569488a505aa7a277e894cf3441))
+
 ## [1.3.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.1...web-js-sdk-1.3.2) (2023-06-24)
 
 ### Dependency Updates
