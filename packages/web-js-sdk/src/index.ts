@@ -1,26 +1,10 @@
-import { compose } from './enhancers/helpers';
-import { withAnalytics } from './enhancers/withAnalytics';
-import { withAutoRefresh } from './enhancers/withAutoRefresh';
-import { withFingerprint } from './enhancers/withFingerprint';
-import { withLastLoggedInUser } from './enhancers/withLastLoggedInUser';
-import { withNotifications } from './enhancers/withNotifications';
-import withPersistTokens from './enhancers/withPersistTokens';
-import createSdk from './sdk';
+import sdk from './decoratedSdk';
 
-const decoratedCreateSdk = compose(
-  withFingerprint,
-  withAutoRefresh,
-  withAnalytics,
-  withNotifications,
-  withLastLoggedInUser, // must be one before last due to TS types
-  withPersistTokens // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
-)(createSdk);
-
-export type { UserResponse } from './types';
-
+// NOTE: when changing export in this file, make sure to update the same in
+// index.umd.ts (for UMD bundles)
 export {
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
 } from './enhancers/withPersistTokens/constants';
 
-export default decoratedCreateSdk;
+export default sdk;
