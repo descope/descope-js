@@ -1,3 +1,4 @@
+// @ts-ignore
 // We run build before test, so we can import from dist
 import Descope from '../dist/index.umd.js';
 

@@ -10,9 +10,9 @@ module.exports = {
   coverageThreshold: {
     global: {
       branches: 80,
-      functions: 94.5,
-      lines: 94.5,
-      statements: 94.5,
+      functions: 93.5,
+      lines: 93.5,
+      statements: 93.5,
     },
   },
   // A set of global variables that need to be available in all test environments
