@@ -25,7 +25,7 @@
   "scripts": {
     "start": "npm run generateCerts && npx nx run web-js-sdk:build && npm run build && http-server -S -o ./examples",
     "build": "rimraf dist && rollup -c",
-    "test": "npm run build && jest",
+    "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'",
     "generateCerts": "test -f ./key.pem && test -f ./cert.pem || openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/C=US/ST=California/L=San Francisco/O=Descope/CN=localhost' -keyout ./key.pem -out ./cert.pem"
   },
