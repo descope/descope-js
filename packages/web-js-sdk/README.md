@@ -13,7 +13,7 @@ npm install @descope/web-js-sdk
 ### Use it
 
 ```js
-import descopeSdk, { getSessionToken } from '@descope/web-js-sdk';
+import descopeSdk from '@descope/web-js-sdk';
 
 const myProjectId = 'xxx';
 
@@ -21,9 +21,15 @@ const sdk = descopeSdk({
   /* Descope Project ID (Required) */
   projectId: myProjectId,
   /* Persist tokens that returned after successful authentication (e.g. sdk.otp.verify.email(...),
-  sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, this will 
+  sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, this will
   make `sdk.getSessionToken()` available, see usage bellow bellow */
   persistTokens: true,
+  /* Pass `sessionTokenViaCookie: true` to store the session token in a cookie when using `persistTokens`. By default, the sdk will set the session token in the browser storage.
+  Notes:
+    - This option is relevant only when `persistTokens` is true.
+    - Because the cookie is set as a `Secure` cookie. It will be sent only over HTTPS connections. Some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol. */
+  */
+  sessionTokenViaCookie: false,
   /* Automatically schedule a call refresh session call after a successful authentication */
   autoRefresh: true,
 });
