@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.4.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.1...core-js-sdk-1.4.2) (2023-06-24)
+
+## [1.4.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.0...core-js-sdk-1.4.1) (2023-06-23)
+
+
+### Bug Fixes
+
+* add optional token validations ([#164](https://github.com/descope/descope-js/issues/164)) ([79c0e87](https://github.com/descope/descope-js/commit/79c0e874c05554a1ce370fa6486b44421d3919e1))
+
 ## [1.4.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.9...core-js-sdk-1.4.0) (2023-06-22)
 
 

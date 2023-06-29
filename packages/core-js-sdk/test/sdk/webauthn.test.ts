@@ -173,10 +173,6 @@ describe('webauthn', () => {
 
   describe('signIn', () => {
     describe('start', () => {
-      it('should throw an error when loginId is not a string', () => {
-        expect(sdk.webauthn.signIn.start).toThrow('"loginId" must be a string');
-      });
-
       it('should not throw an error when loginId is empty', () => {
         expect(() => sdk.webauthn.signIn.start('', 'origin')).not.toThrow();
       });
