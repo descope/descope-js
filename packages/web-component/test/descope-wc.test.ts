@@ -444,7 +444,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="submitterId">click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<button id="submitterId">click</button><input id="email" class="descope-input" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -465,7 +465,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="submitterId">click</button><input id="toggle" name="t1" type="checkbox"></input><span>It works!</span>';
+      '<button id="submitterId">click</button><input id="toggle" class="descope-input" name="t1" type="checkbox"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-up-or-in" project-id="1"></descope-wc>`;
 
@@ -486,7 +486,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="submitterId">click</button><input id="toggle" name="t1" type="checkbox" checked="true"></input><span>It works!</span>';
+      '<button id="submitterId">click</button><input id="toggle" name="t1" class="descope-input" type="checkbox" checked="true"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -511,7 +511,7 @@ describe('web-component', () => {
     };
 
     pageContent =
-      '<button id="submitterId">click</button><input id="email" name="email"></input><span>hey</span>';
+      '<button id="submitterId">click</button><input id="email" class="descope-input" name="email"></input><span>hey</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
