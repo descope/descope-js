@@ -97,9 +97,14 @@ const replaceProvisionURL = (
  */
 export const replaceWithScreenState = (
   baseEle: DocumentFragment,
-  screenState?: ScreenState
+  screenState?: ScreenState,
+  errorTransformer?: (error: string) => string
 ) => {
-  replaceElementMessage(baseEle, 'error-message', screenState?.errorText);
+  let errorText = screenState?.errorText;
+  if (errorTransformer && errorText) {
+    errorText = errorTransformer(screenState.errorText);
+  }
+  replaceElementMessage(baseEle, 'error-message', errorText);
   replaceElementInputs(baseEle, screenState?.inputs);
   replaceElementInputs(baseEle, screenState?.form);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);

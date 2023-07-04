@@ -41,6 +41,7 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'prefer-biometrics',
+      'error-transformer',
     ];
   }
 
@@ -157,6 +158,10 @@ class BaseDescopeWc extends HTMLElement {
   get preferBiometrics(): boolean {
     const res = this.getAttribute('prefer-biometrics') ?? 'true';
     return res === 'true';
+  }
+
+  get errorTransformer(): string {
+    return this.getAttribute('error-transformer') || undefined;
   }
 
   #validateAttrs() {

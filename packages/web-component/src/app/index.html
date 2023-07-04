@@ -28,9 +28,18 @@
         flow-id="<flow-id>"
         base-url="<base-url>"
         debug="true"
+        error-transformer="translateError"
       ></descope-wc>
     </div>
     <script>
+      // Translate or modify the error as needed
+      function translateError(errorText) {
+        const translationMap = {
+          'None of the following inputs where provided to SSO login: Email, Tenant Name or Tenant ID.':
+            'Please provide your email address',
+        };
+        return translationMap[errorText] || errorText;
+      }
       const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
       descopeWcEle.addEventListener('error', (e) =>
         alert(`Error! - ${e.detail.errorMessage}`)

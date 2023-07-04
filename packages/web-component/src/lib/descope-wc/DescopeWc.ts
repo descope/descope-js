@@ -511,7 +511,7 @@ class DescopeWc extends BaseDescopeWc {
       await this.#handleWebauthnConditionalUi(clone, next);
     }
 
-    replaceWithScreenState(clone, screenState);
+    replaceWithScreenState(clone, screenState, window[this.errorTransformer]);
 
     // put the totp variable on the root element, which is the top level 'div'
     setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
@@ -565,7 +565,7 @@ class DescopeWc extends BaseDescopeWc {
   #getFormData() {
     return Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
+        `.descope-input[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
     ).reduce(
       (acc, input: HTMLInputElement) =>
