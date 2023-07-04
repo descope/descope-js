@@ -174,6 +174,7 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'prefer-biometrics',
+      'error-transformer',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
