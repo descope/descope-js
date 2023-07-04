@@ -41,7 +41,6 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'prefer-biometrics',
-      'error-transformer',
     ];
   }
 
@@ -160,10 +159,6 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
-  get errorTransformer(): string {
-    return this.getAttribute('error-transformer') || undefined;
-  }
-
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
@@ -174,7 +169,6 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'prefer-biometrics',
-      'error-transformer',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {

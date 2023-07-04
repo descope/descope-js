@@ -28,19 +28,19 @@
         flow-id="<flow-id>"
         base-url="<base-url>"
         debug="true"
-        error-transformer="translateError"
       ></descope-wc>
     </div>
     <script>
       // Translate or modify the error as needed
-      function translateError(errorText) {
+      function translateError(error) {
         const translationMap = {
-          'None of the following inputs where provided to SSO login: Email, Tenant Name or Tenant ID.':
-            'Please provide your email address',
+          SAMLStartFailed: 'Failed to start SAML flow',
         };
-        return translationMap[errorText] || errorText;
+        return translationMap[error.type] || error.text;
       }
       const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+
+      descopeWcEle.errorTransformer = translateError;
       descopeWcEle.addEventListener('error', (e) =>
         alert(`Error! - ${e.detail.errorMessage}`)
       );
