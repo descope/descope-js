@@ -35,6 +35,8 @@ import BaseDescopeWc from './BaseDescopeWc';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
+  errorTransformer: ((error: { text: string; type: string }) => string) | undefined;
+
   static set sdkConfigOverrides(config: Partial<SdkConfig>) {
     BaseDescopeWc.sdkConfigOverrides = config;
   }
@@ -110,9 +112,9 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -135,9 +137,9 @@ class DescopeWc extends BaseDescopeWc {
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs = code
           ? {
-              exchangeCode: code,
-              idpInitiated: true,
-            }
+            exchangeCode: code,
+            idpInitiated: true,
+          }
           : undefined;
         const sdkResp = await this.sdk.flow.start(
           flowId,
@@ -511,7 +513,12 @@ class DescopeWc extends BaseDescopeWc {
       await this.#handleWebauthnConditionalUi(clone, next);
     }
 
-    replaceWithScreenState(clone, screenState);
+    replaceWithScreenState(
+      clone,
+      screenState,
+      this.errorTransformer,
+      this.logger
+    );
 
     // put the totp variable on the root element, which is the top level 'div'
     setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
@@ -565,15 +572,15 @@ class DescopeWc extends BaseDescopeWc {
   #getFormData() {
     return Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
+        `.descope-input[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
     ).reduce(
       (acc, input: HTMLInputElement) =>
         input.name
           ? Object.assign(acc, {
-              [input.name]:
-                input[input.type === 'checkbox' ? 'checked' : 'value'],
-            })
+            [input.name]:
+              input[input.type === 'checkbox' ? 'checked' : 'value'],
+          })
           : acc,
       {}
     );
