@@ -35,10 +35,7 @@ import BaseDescopeWc from './BaseDescopeWc';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
-  errorTransformer: (error: {
-    text: string;
-    type: string;
-  }) => string | undefined;
+  errorTransformer: ((error: { text: string; type: string }) => string) | undefined;
 
   static set sdkConfigOverrides(config: Partial<SdkConfig>) {
     BaseDescopeWc.sdkConfigOverrides = config;
@@ -115,9 +112,9 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -140,9 +137,9 @@ class DescopeWc extends BaseDescopeWc {
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs = code
           ? {
-              exchangeCode: code,
-              idpInitiated: true,
-            }
+            exchangeCode: code,
+            idpInitiated: true,
+          }
           : undefined;
         const sdkResp = await this.sdk.flow.start(
           flowId,
@@ -581,9 +578,9 @@ class DescopeWc extends BaseDescopeWc {
       (acc, input: HTMLInputElement) =>
         input.name
           ? Object.assign(acc, {
-              [input.name]:
-                input[input.type === 'checkbox' ? 'checked' : 'value'],
-            })
+            [input.name]:
+              input[input.type === 'checkbox' ? 'checked' : 'value'],
+          })
           : acc,
       {}
     );
