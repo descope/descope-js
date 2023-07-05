@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.6.0](https://github.com/descope/descope-js/compare/web-component-2.5.7...web-component-2.6.0) (2023-07-05)
+
+
+### Features
+
+* Add an option to translate end user errors ([#193](https://github.com/descope/descope-js/issues/193)) ([c070b1b](https://github.com/descope/descope-js/commit/c070b1b8ef8eafeae3fbe02c116b93bf50f87d25))
+
+## [2.5.7](https://github.com/descope/descope-js/compare/web-component-2.5.6...web-component-2.5.7) (2023-07-03)
+
+## [2.5.6](https://github.com/descope/descope-js/compare/web-component-2.5.5...web-component-2.5.6) (2023-06-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.4`
 ## [2.5.5](https://github.com/descope/descope-js/compare/web-component-2.5.4...web-component-2.5.5) (2023-06-27)
 
 ### Dependency Updates
