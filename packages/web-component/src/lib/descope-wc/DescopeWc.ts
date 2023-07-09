@@ -1,6 +1,7 @@
 import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
+  DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
 } from '../constants';
@@ -637,7 +638,13 @@ class DescopeWc extends BaseDescopeWc {
 
   #hydrate(next: NextFn) {
     // hydrating the page
-    this.rootElement.querySelectorAll('button').forEach((button) => {
+    // Adding event listeners to all buttons with data-type attribute
+    const netButtons = Array.from(
+      this.rootElement.querySelectorAll('button')
+    ).filter(
+      (button) => !button.hasAttribute(DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON)
+    );
+    netButtons.forEach((button: HTMLButtonElement) => {
       // eslint-disable-next-line no-param-reassign
       button.onclick = () => {
         this.#handleSubmit(button, next);
