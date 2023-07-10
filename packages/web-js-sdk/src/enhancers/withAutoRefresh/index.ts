@@ -26,6 +26,20 @@ export const withAutoRefresh =
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
     const { clearAllTimers, setTimer } = createTimerFunctions();
 
+    // we need to hold the expiration time and the refresh token in order to refresh the session
+    // when the user comes back to the tab or from background/lock screen/etc.
+    let sessionExpiration: Date;
+    let refreshToken: string;
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        // if the session is expired, do a refresh
+        if (new Date() > sessionExpiration) {
+          logger.debug('Expiration time passed, refreshing session');
+          sdk.refresh(refreshToken);
+        }
+      }
+    });
+
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const { refreshJwt, sessionJwt } = await getAuthInfoFromResponse(res);
 
@@ -34,13 +48,21 @@ export const withAutoRefresh =
         logger.debug('Received 401, canceling all timers');
         clearAllTimers();
       } else if (sessionJwt) {
+        sessionExpiration = getTokenExpiration(sessionJwt);
+        refreshToken = refreshJwt;
         const timeout =
-          millisecondsUntilDate(getTokenExpiration(sessionJwt)) -
-          REFRESH_THRESHOLD;
+          millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
         clearAllTimers();
-        logger.debug(`Setting refresh timer for ${timeout}ms`);
+
+        const refreshTimeStr = new Date(
+          Date.now() + timeout
+        ).toLocaleTimeString('en-US', { hour12: false });
+        logger.debug(
+          `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`
+        );
+
         setTimer(() => {
-          logger.debug('Refreshing session');
+          logger.debug('Refreshing session due to timer');
           sdk.refresh(refreshJwt);
         }, timeout);
       }

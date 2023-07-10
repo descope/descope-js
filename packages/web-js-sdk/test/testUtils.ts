@@ -18,3 +18,9 @@ export const createMockReturnValue = (data: any) => {
 
   return ret;
 };
+
+export const getExpiredSessionToken = () => {
+  return `{}.${window.btoa(
+    JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 60 * 60 })
+  )}.`;
+};
