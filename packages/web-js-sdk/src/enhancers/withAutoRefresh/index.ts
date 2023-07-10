@@ -31,12 +31,13 @@ export const withAutoRefresh =
     let sessionExpiration: Date;
     let refreshToken: string;
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        // if the session is expired, do a refresh
-        if (new Date() > sessionExpiration) {
-          logger.debug('Expiration time passed, refreshing session');
-          sdk.refresh(refreshToken);
-        }
+      // tab becomes visible and the session is expired, do a refresh
+      if (
+        document.visibilityState === 'visible' &&
+        new Date() > sessionExpiration
+      ) {
+        logger.debug('Expiration time passed, refreshing session');
+        sdk.refresh(refreshToken);
       }
     });
 
