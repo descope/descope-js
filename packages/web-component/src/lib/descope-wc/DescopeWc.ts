@@ -638,18 +638,17 @@ class DescopeWc extends BaseDescopeWc {
 
   #hydrate(next: NextFn) {
     // hydrating the page
-    // Adding event listeners to all buttons with data-type attribute
-    const netButtons = Array.from(
-      this.rootElement.querySelectorAll('button')
-    ).filter(
-      (button) => !button.hasAttribute(DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON)
-    );
-    netButtons.forEach((button: HTMLButtonElement) => {
-      // eslint-disable-next-line no-param-reassign
-      button.onclick = () => {
-        this.#handleSubmit(button, next);
-      };
-    });
+    // Adding event listeners to all buttons without the exclude attribute
+    this.rootElement
+      .querySelectorAll(
+        `button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`
+      )
+      .forEach((button: HTMLButtonElement) => {
+        // eslint-disable-next-line no-param-reassign
+        button.onclick = () => {
+          this.#handleSubmit(button, next);
+        };
+      });
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {
