@@ -1,8 +1,7 @@
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
-import { createMockReturnValue } from './testUtils';
+import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
-import exp from 'constants';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
   debug: jest.fn(),
@@ -114,5 +113,61 @@ describe('autoRefresh', () => {
     expect(setTimeoutSpy).not.toHaveBeenCalled();
     expect(refreshSpy).not.toHaveBeenCalled();
     expect(loggerDebugMock).not.toHaveBeenCalled();
+  });
+
+  it('should refresh token when visibilitychange event and session expired', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+
+    // trigger visibilitychange event and ensure refresh called
+    const event = new Event('visibilitychange');
+    document.dispatchEvent(event);
+    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
+
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Expiration time passed, refreshing session'
+    );
+  });
+
+  it('should refresh token when visibilitychange event and session is not expired', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionJwt: getFutureSessionToken(),
+      })
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+
+    // trigger visibilitychange event and ensure refresh called
+    const event = new Event('visibilitychange');
+    document.dispatchEvent(event);
+    expect(refreshSpy).not.toBeCalled();
   });
 });

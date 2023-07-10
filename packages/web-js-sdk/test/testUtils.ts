@@ -18,3 +18,10 @@ export const createMockReturnValue = (data: any) => {
 
   return ret;
 };
+
+export const getFutureSessionToken = () => {
+  // create a token that expires in 1 hour
+  return `{}.${window.btoa(
+    JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 60 * 60 })
+  )}.`;
+};
