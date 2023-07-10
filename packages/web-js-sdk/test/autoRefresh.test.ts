@@ -1,9 +1,6 @@
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
-import {
-  createMockReturnValue,
-  getExpiredSessionToken as getFutureSessionToken,
-} from './testUtils';
+import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
