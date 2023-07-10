@@ -1,6 +1,9 @@
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
-import { createMockReturnValue, getExpiredSessionToken } from './testUtils';
+import {
+  createMockReturnValue,
+  getExpiredSessionToken as getFutureSessionToken,
+} from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
@@ -150,7 +153,7 @@ describe('autoRefresh', () => {
     const mockFetch = jest.fn().mockReturnValue(
       createMockReturnValue({
         ...authInfo,
-        sessionJwt: getExpiredSessionToken(),
+        sessionJwt: getFutureSessionToken(),
       })
     );
     global.fetch = mockFetch;
