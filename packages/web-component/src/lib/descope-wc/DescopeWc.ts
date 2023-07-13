@@ -1,6 +1,7 @@
 import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
+  DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
 } from '../constants';
@@ -10,6 +11,7 @@ import {
   getAnimationDirection,
   getContentUrl,
   getElementDescopeAttributes,
+  getInputValueByType,
   handleAutoFocus,
   isChromium,
   isConditionalLoginSupported,
@@ -35,7 +37,9 @@ import BaseDescopeWc from './BaseDescopeWc';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
-  errorTransformer: ((error: { text: string; type: string }) => string) | undefined;
+  errorTransformer:
+    | ((error: { text: string; type: string }) => string)
+    | undefined;
 
   static set sdkConfigOverrides(config: Partial<SdkConfig>) {
     BaseDescopeWc.sdkConfigOverrides = config;
@@ -112,9 +116,9 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-          callbackUrl: redirectAuthCallbackUrl,
-          codeChallenge: redirectAuthCodeChallenge,
-        }
+            callbackUrl: redirectAuthCallbackUrl,
+            codeChallenge: redirectAuthCodeChallenge,
+          }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -137,9 +141,9 @@ class DescopeWc extends BaseDescopeWc {
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs = code
           ? {
-            exchangeCode: code,
-            idpInitiated: true,
-          }
+              exchangeCode: code,
+              idpInitiated: true,
+            }
           : undefined;
         const sdkResp = await this.sdk.flow.start(
           flowId,
@@ -569,19 +573,30 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #getFormData() {
-    return Array.from(
+  async #getFormData() {
+    const inputs = Array.from(
       this.shadowRoot.querySelectorAll(
         `.descope-input[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
-    ).reduce(
-      (acc, input: HTMLInputElement) =>
-        input.name
-          ? Object.assign(acc, {
-            [input.name]:
-              input[input.type === 'checkbox' ? 'checked' : 'value'],
-          })
-          : acc,
+    ) as HTMLInputElement[];
+
+    // wait for all inputs
+    const values = await Promise.all(
+      inputs.map(async (input) => {
+        const value = await getInputValueByType(input);
+        return {
+          name: input.name,
+          value,
+        };
+      })
+    );
+
+    // reduce to object
+    return values.reduce(
+      (acc, val) => ({
+        ...acc,
+        [val.name]: val.value,
+      }),
       {}
     );
   }
@@ -605,7 +620,7 @@ class DescopeWc extends BaseDescopeWc {
 
       this.#handleSubmitButtonLoader(submitter);
 
-      const formData = this.#getFormData();
+      const formData = await this.#getFormData();
       const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
       const actionArgs = {
@@ -623,12 +638,17 @@ class DescopeWc extends BaseDescopeWc {
 
   #hydrate(next: NextFn) {
     // hydrating the page
-    this.rootElement.querySelectorAll('button').forEach((button) => {
-      // eslint-disable-next-line no-param-reassign
-      button.onclick = () => {
-        this.#handleSubmit(button, next);
-      };
-    });
+    // Adding event listeners to all buttons without the exclude attribute
+    this.rootElement
+      .querySelectorAll(
+        `button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`
+      )
+      .forEach((button: HTMLButtonElement) => {
+        // eslint-disable-next-line no-param-reassign
+        button.onclick = () => {
+          this.#handleSubmit(button, next);
+        };
+      });
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {

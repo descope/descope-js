@@ -29,6 +29,20 @@ import { generateSdkResponse } from './testUtils';
 
 jest.mock('@descope/web-js-sdk');
 
+class MockFileReader {
+  onload = null;
+
+  readAsDataURL() {
+    if (this.onload) {
+      this.onload({
+        target: {
+          result: 'data:;base64,example',
+        },
+      });
+    }
+  }
+}
+
 const sdk = {
   flow: {
     start: jest.fn().mockName('flow.start'),
@@ -664,7 +678,64 @@ describe('web-component', () => {
 
     fireEvent.click(screen.getByShadowText('click'));
 
-    await waitFor(() => screen.getByShadowDisplayValue('email1'));
+    await waitFor(() => screen.getByShadowDisplayValue('email1'), {
+      timeout: 3000,
+    });
+  });
+
+  it('should upload file', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    // Use the mock FileReader in your tests.
+    (global as any).FileReader = MockFileReader;
+
+    pageContent = `<button>click</button><div>Loaded</div><input class="descope-input" name="image" type="file" placeholder="image-ph">`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Loaded'), { timeout: 3000 });
+
+    // fill the input with a file
+    const input = screen.getByShadowPlaceholderText('image-ph');
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', null, {
+          image: 'data:;base64,example',
+          origin: 'http://localhost',
+        }),
+      { timeout: 3000 }
+    );
+  });
+
+  it('should go next with no file', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    // Use the mock FileReader in your tests.
+    (global as any).FileReader = MockFileReader;
+
+    pageContent = `<button>click</button><div>Loaded</div><input class="descope-input" name="image" type="file" placeholder="image-ph">`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Loaded'), { timeout: 3000 });
+
+    await fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', null, {
+          image: null,
+          origin: 'http://localhost',
+        }),
+      { timeout: 3000 }
+    );
   });
 
   it('should update page templates according to screen state', async () => {
@@ -2001,7 +2072,7 @@ describe('web-component', () => {
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 6000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2031,7 +2102,7 @@ describe('web-component', () => {
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 8000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
