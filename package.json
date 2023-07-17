@@ -22,7 +22,7 @@
   },
   "private": true,
   "dependencies": {
-    "tslib": "2.5.3"
+    "tslib": "2.6.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.0",
