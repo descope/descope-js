@@ -363,8 +363,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@fingerprintjs/fingerprintjs-pro':
-        specifier: 3.8.3
-        version: 3.8.3
+        specifier: 3.8.4
+        version: 3.8.4
       js-cookie:
         specifier: 3.0.5
         version: 3.0.5
@@ -2450,8 +2450,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@fingerprintjs/fingerprintjs-pro@3.8.3:
-    resolution: {integrity: sha512-Top2U6/DYVraSir49pIcSQX5DaJhd0farIX3gaNSogy+Ln9NHQz3arM5Q2pdT5mdvWnRLuTLiXw5qacZdvFuQA==}
+  /@fingerprintjs/fingerprintjs-pro@3.8.4:
+    resolution: {integrity: sha512-6m2fTydRjuiM8y02AoUJcOXZuXblHCLmKH3Huu7sgmxDhogTAm1JO0QsF4rigM6hedlFRAejcozBEteqWRZWew==}
     dependencies:
       tslib: 2.6.0
     dev: false
