@@ -139,12 +139,17 @@ class DescopeWc extends BaseDescopeWc {
 
       // As an optimization - we want to show the first screen if it is possible
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
-        const inputs = code
-          ? {
-              exchangeCode: code,
-              idpInitiated: true,
-            }
-          : undefined;
+        const inputs: Record<string, any> = {};
+        let exists = false;
+        if (code) {
+          exists = true;
+          inputs.exchangeCode = code;
+          inputs.idpInitiated = true;
+        }
+        if (token) {
+          exists = true;
+          inputs.token = token;
+        }
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
@@ -156,13 +161,13 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          inputs,
+          exists ? inputs : undefined,
           flowConfig.version
         );
 
         this.#handleSdkResponse(sdkResp);
         if (sdkResp?.data?.status !== 'completed') {
-          this.flowState.update({ code: undefined });
+          this.flowState.update({ code: undefined, token: undefined });
         }
         return;
       }
@@ -337,6 +342,7 @@ class DescopeWc extends BaseDescopeWc {
           {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
+            ...(token && { token }),
           },
           flowConfig.version
         );
