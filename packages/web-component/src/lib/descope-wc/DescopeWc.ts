@@ -139,13 +139,13 @@ class DescopeWc extends BaseDescopeWc {
 
       // As an optimization - we want to show the first screen if it is possible
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
-        const inputs = {};
+        const inputs: Record<string, any> = {};
         if (code) {
-          inputs['exchangeCode'] = code;
-          inputs['idpInitiated'] = true;
+          inputs.exchangeCode = code;
+          inputs.idpInitiated = true;
         }
         if (token) {
-          inputs['token'] = token;
+          inputs.token = token;
         }
         const sdkResp = await this.sdk.flow.start(
           flowId,
@@ -324,8 +324,7 @@ class DescopeWc extends BaseDescopeWc {
     // If there is a start screen id, next action should start the flow
     // But if oidcIdpStateId is not empty, this optimization doesn't happen
     if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
-      stepStateUpdate.next = (interactionId, inputs) => {
-        return this.sdk.flow.start(
+      stepStateUpdate.next = (interactionId, inputs) => this.sdk.flow.start(
           flowId,
           {
             tenant,
@@ -343,7 +342,6 @@ class DescopeWc extends BaseDescopeWc {
           },
           flowConfig.version
         );
-      };
     } else if (
       isChanged('projectId') ||
       isChanged('baseUrl') ||
