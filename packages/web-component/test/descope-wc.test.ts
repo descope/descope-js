@@ -516,14 +516,15 @@ describe('web-component', () => {
     );
   });
 
-  it('When submitting and no execution id - it calls start with the button id', async () => {
+  it('When submitting and no execution id - it calls start with the button id and token if exists', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     configContent = {
       flows: {
         'sign-in': { startScreenId: 'screen-0' },
       },
     };
-
+    const token = 'token1';
+    window.location.search = `?&${URL_TOKEN_PARAM_NAME}=${token}`;
     pageContent =
       '<button id="submitterId">click</button><input id="email" class="descope-input" name="email"></input><span>hey</span>';
 
@@ -548,6 +549,7 @@ describe('web-component', () => {
         {
           email: '',
           origin: 'http://localhost',
+          token,
         },
         0
       )
@@ -2068,6 +2070,39 @@ describe('web-component', () => {
           undefined,
           '',
           undefined,
+          0
+        )
+      );
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 6000,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
+    it('should call start with redirect auth data and token and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+      const token = 'token1';
+      const challenge = window.btoa('hash');
+      const callback = 'https://mycallback.com';
+      const encodedChallenge = encodeURIComponent(challenge);
+      const encodedCallback = encodeURIComponent(callback);
+      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android&${URL_TOKEN_PARAM_NAME}=${token}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            oidcIdpStateId: null,
+            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            tenant: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          { token },
           0
         )
       );
