@@ -164,7 +164,7 @@ class DescopeWc extends BaseDescopeWc {
 
         this.#handleSdkResponse(sdkResp);
         if (sdkResp?.data?.status !== 'completed') {
-          this.flowState.update({ code: undefined });
+          this.flowState.update({ code: undefined, token: undefined });
         }
         return;
       }
@@ -324,7 +324,8 @@ class DescopeWc extends BaseDescopeWc {
     // If there is a start screen id, next action should start the flow
     // But if oidcIdpStateId is not empty, this optimization doesn't happen
     if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
-      stepStateUpdate.next = (interactionId, inputs) => this.sdk.flow.start(
+      stepStateUpdate.next = (interactionId, inputs) =>
+        this.sdk.flow.start(
           flowId,
           {
             tenant,
