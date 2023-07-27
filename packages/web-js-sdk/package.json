@@ -88,7 +88,7 @@
   },
   "dependencies": {
     "@descope/core-js-sdk": "workspace:*",
-    "@fingerprintjs/fingerprintjs-pro": "3.8.4",
+    "@fingerprintjs/fingerprintjs-pro": "3.8.5",
     "js-cookie": "3.0.5"
   },
   "overrides": {
