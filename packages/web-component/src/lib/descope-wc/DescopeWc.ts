@@ -140,11 +140,14 @@ class DescopeWc extends BaseDescopeWc {
       // As an optimization - we want to show the first screen if it is possible
       if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
         const inputs: Record<string, any> = {};
+        let exists = false;
         if (code) {
+          exists = true;
           inputs.exchangeCode = code;
           inputs.idpInitiated = true;
         }
         if (token) {
+          exists = true;
           inputs.token = token;
         }
         const sdkResp = await this.sdk.flow.start(
@@ -158,7 +161,7 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          inputs,
+          exists ? inputs : undefined,
           flowConfig.version
         );
 
