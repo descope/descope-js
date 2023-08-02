@@ -434,7 +434,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#conditionalUiAbortController?.abort();
 
     const conditionalUiInput = fragment.querySelector(
-      'input[autocomplete="webauthn"]'
+      '*[autocomplete="webauthn"]'
     ) as HTMLInputElement;
 
     if (conditionalUiInput && (await isConditionalLoginSupported())) {

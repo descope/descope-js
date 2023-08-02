@@ -273,9 +273,12 @@ class BaseDescopeWc extends HTMLElement {
 
   async #loadFonts() {
     const { projectConfig } = await this.#getConfig();
-    projectConfig?.cssTemplate?.[this.theme]?.typography?.fontFamilies?.forEach(
-      (font: Record<string, any>) => loadFont(font.url)
-    );
+    const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    fonts &&
+      Object.values(fonts).forEach((font: Record<string, any>) =>
+        loadFont(font.url)
+      );
   }
 
   #handleTheme() {
@@ -287,8 +290,14 @@ class BaseDescopeWc extends HTMLElement {
     const styleEle = document.createElement('style');
     const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
     try {
-      const { body } = await fetchContent(themeUrl, 'text');
-      styleEle.innerText = body;
+      const { body: theme } = await fetchContent(themeUrl, 'json');
+      styleEle.innerText = theme.light.globals + theme.dark.globals;
+
+      const descopeUi = await this.descopeUI;
+      descopeUi.componentsThemeManager.themes = {
+        light: theme.light.components,
+        dark: theme.dark.components,
+      };
     } catch (e) {
       this.logger.error(
         'Cannot fetch theme file',
@@ -298,8 +307,10 @@ class BaseDescopeWc extends HTMLElement {
     this.shadowRoot.appendChild(styleEle);
   }
 
-  #applyTheme() {
+  async #applyTheme() {
     this.rootElement.setAttribute('data-theme', this.theme);
+    const descopeUi = await this.descopeUI;
+    descopeUi.componentsThemeManager.currentTheme = this.theme;
   }
 
   async getExecutionContext() {
