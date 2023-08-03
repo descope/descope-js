@@ -32,7 +32,7 @@ export const RESPONSE_ACTIONS = {
 export const ASSETS_FOLDER = 'v2-alpha';
 
 // Those files are saved on a new folder to prevent breaking changes
-export const THEME_FILENAME = 'theme.css';
+export const THEME_FILENAME = 'theme.json';
 export const CONFIG_FILENAME = 'config.json';
 
 export const CUSTOM_INTERACTIONS = {

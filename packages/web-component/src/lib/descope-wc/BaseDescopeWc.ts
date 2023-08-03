@@ -402,7 +402,14 @@ class BaseDescopeWc extends HTMLElement {
     };
   }
 
-  #loadDescopeUI(version = 'latest') {
+  async #loadDescopeUI() {
+    let version = (await this.#getConfig())?.projectConfig?.componentsVersion;
+
+    if (!version) {
+      this.logger.error('Did not get components version, using latest version');
+      version = 'latest';
+    }
+
     const scriptSrc = UI_COMPONENTS_URL.replace(
       UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
       version
