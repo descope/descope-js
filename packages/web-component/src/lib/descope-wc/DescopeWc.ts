@@ -102,6 +102,7 @@ class DescopeWc extends BaseDescopeWc {
       redirectAuthCallbackUrl,
       redirectAuthInitiator,
       oidcIdpStateId,
+      locale,
     } = currentState;
 
     if (this.#currentInterval) {
@@ -309,6 +310,17 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    // get the right filename according to the user locale and flow target locales
+    const filename = `${startScreenId || screenId}.html`;
+
+    let filenameWithLocale: string;
+    const userLocale = (locale || navigator.language).toLowerCase(); // use provided locals, otherwise use browser locale
+    const targetLocales = await this.getTargetLocales();
+
+    if (targetLocales.includes(userLocale)) {
+      filenameWithLocale = `${startScreenId || screenId}-${userLocale}.html`;
+    }
+
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
       direction: getAnimationDirection(+stepId, +prevState.stepId),
@@ -319,7 +331,10 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      htmlUrl: getContentUrl(projectId, `${startScreenId || screenId}.html`),
+      htmlUrl: getContentUrl(projectId, filename),
+      htmlLocaleUrl: filenameWithLocale
+        ? getContentUrl(projectId, filenameWithLocale)
+        : undefined,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -504,11 +519,28 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlUrl, direction, next, screenState } = currentState;
+    const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
+      currentState;
 
     const stepTemplate = document.createElement('template');
-    const { body } = await fetchContent(htmlUrl, 'text');
-    stepTemplate.innerHTML = body;
+
+    if (htmlLocaleUrl) {
+      // try first locale url, if can't get for some reason, fallback to the original html url (the one without locale)
+      try {
+        const { body } = await fetchContent(htmlLocaleUrl, 'text');
+        stepTemplate.innerHTML = body;
+      } catch (ex) {
+        this.logger.error(
+          `Failed to fetch html from ${htmlLocaleUrl}, error: ${ex}. Fallback to url ${htmlUrl}`
+        );
+      }
+    }
+
+    if (!stepTemplate.innerHTML) {
+      const { body } = await fetchContent(htmlUrl, 'text');
+      stepTemplate.innerHTML = body;
+    }
+
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
     const scriptFns = generateFnsFromScriptTags(
