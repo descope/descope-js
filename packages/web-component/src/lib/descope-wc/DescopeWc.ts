@@ -314,7 +314,7 @@ class DescopeWc extends BaseDescopeWc {
     const filename = `${startScreenId || screenId}.html`;
 
     let filenameWithLocale: string;
-    const userLocale = (locale || navigator.language).toLowerCase(); // use provided locals, otherwise use browser locale
+    const userLocale = (locale || navigator.language || '').toLowerCase(); // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
 
     if (targetLocales.includes(userLocale)) {
