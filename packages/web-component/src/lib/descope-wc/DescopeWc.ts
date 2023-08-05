@@ -77,6 +77,34 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.unsubscribeAll();
   }
 
+  async getHtmlFilenames(locale: string, screenId: string) {
+    let filenameWithLocale: string;
+    const userLocale = (locale || navigator.language || '').toLowerCase(); // use provided locals, otherwise use browser locale
+    const targetLocales = await this.getTargetLocales();
+
+    if (targetLocales.includes(userLocale)) {
+      filenameWithLocale = `${screenId}-${userLocale}.html`;
+    }
+    return filenameWithLocale;
+  }
+
+  async getPageContent(htmlUrl: string, htmlLocaleUrl: string) {
+    if (htmlLocaleUrl) {
+      // try first locale url, if can't get for some reason, fallback to the original html url (the one without locale)
+      try {
+        const { body } = await fetchContent(htmlLocaleUrl, 'text');
+        return body;
+      } catch (ex) {
+        this.logger.error(
+          `Failed to fetch html from ${htmlLocaleUrl}, error: ${ex}. Fallback to url ${htmlUrl}`
+        );
+      }
+    }
+
+    const { body } = await fetchContent(htmlUrl, 'text');
+    return body;
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -310,16 +338,13 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    const readyScreenId = startScreenId || screenId;
+
     // get the right filename according to the user locale and flow target locales
-    const filename = `${startScreenId || screenId}.html`;
-
-    let filenameWithLocale: string;
-    const userLocale = (locale || navigator.language || '').toLowerCase(); // use provided locals, otherwise use browser locale
-    const targetLocales = await this.getTargetLocales();
-
-    if (targetLocales.includes(userLocale)) {
-      filenameWithLocale = `${startScreenId || screenId}-${userLocale}.html`;
-    }
+    const filenameWithLocale: string = await this.getHtmlFilenames(
+      locale,
+      readyScreenId
+    );
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
@@ -331,10 +356,9 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      htmlUrl: getContentUrl(projectId, filename),
-      htmlLocaleUrl: filenameWithLocale
-        ? getContentUrl(projectId, filenameWithLocale)
-        : undefined,
+      htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
+      htmlLocaleUrl:
+        filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -523,23 +547,7 @@ class DescopeWc extends BaseDescopeWc {
       currentState;
 
     const stepTemplate = document.createElement('template');
-
-    if (htmlLocaleUrl) {
-      // try first locale url, if can't get for some reason, fallback to the original html url (the one without locale)
-      try {
-        const { body } = await fetchContent(htmlLocaleUrl, 'text');
-        stepTemplate.innerHTML = body;
-      } catch (ex) {
-        this.logger.error(
-          `Failed to fetch html from ${htmlLocaleUrl}, error: ${ex}. Fallback to url ${htmlUrl}`
-        );
-      }
-    }
-
-    if (!stepTemplate.innerHTML) {
-      const { body } = await fetchContent(htmlUrl, 'text');
-      stepTemplate.innerHTML = body;
-    }
+    stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);
 
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
