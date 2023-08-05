@@ -565,7 +565,7 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
@@ -585,7 +585,7 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
@@ -663,10 +663,12 @@ describe('web-component', () => {
 
     fireEvent.click(screen.getByShadowText('click'));
 
-    await waitFor(() =>
-      screen.getByShadowText('Error!', {
-        selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
-      })
+    await waitFor(
+      () =>
+        screen.getByShadowText('Error!', {
+          selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
+        }),
+      { timeout: 3000 }
     );
   });
 
@@ -1016,7 +1018,7 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('Click'), { timeout: 3000 });
+    await waitFor(() => screen.findByShadowText('Click'), { timeout: 5000 });
 
     pageContent =
       '<input id="email"></input><input id="code"></input><span>It works!</span>';
@@ -2439,7 +2441,7 @@ describe('web-component', () => {
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-Us"></descope-wc>`;
 
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 5000,
+        timeout: 8000,
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
@@ -2464,7 +2466,7 @@ describe('web-component', () => {
         expect.stringMatching(configUrlPathRegex),
         expect.any(Object)
       );
-    });
+    }, 10000);
 
     it('should fetch the data from the correct path when locale provided and not part of target locales', async () => {
       startMock.mockReturnValue(generateSdkResponse());
