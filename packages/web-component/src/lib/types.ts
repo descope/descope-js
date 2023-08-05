@@ -57,11 +57,13 @@ export type FlowState = {
   redirectAuthInitiator: string;
   oidcIdpStateId: string;
   deferredRedirect: boolean;
+  locale: string;
 };
 
 export type StepState = {
   screenState: ScreenState;
   htmlUrl: string;
+  htmlLocaleUrl: string;
   next: NextFn;
   direction: Direction | undefined;
 };
