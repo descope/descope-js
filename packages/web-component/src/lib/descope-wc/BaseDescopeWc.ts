@@ -36,6 +36,7 @@ class BaseDescopeWc extends HTMLElement {
       'base-url',
       'tenant',
       'theme',
+      'locale',
       'debug',
       'telemetryKey',
       'redirect-url',
@@ -129,6 +130,10 @@ class BaseDescopeWc extends HTMLElement {
     return this.getAttribute('debug') === 'true';
   }
 
+  get locale() {
+    return this.getAttribute('locale') || undefined;
+  }
+
   get theme(): ThemeOptions {
     const theme = this.getAttribute('theme') as ThemeOptions;
 
@@ -164,6 +169,7 @@ class BaseDescopeWc extends HTMLElement {
       'base-url',
       'tenant',
       'theme',
+      'locale',
       'debug',
       'telemetryKey',
       'redirect-url',
@@ -350,6 +356,13 @@ class BaseDescopeWc extends HTMLElement {
     return config;
   }
 
+  async getTargetLocales() {
+    const { projectConfig } = await this.#getConfig();
+    return (projectConfig?.targetLocales || []).map((locale: string) =>
+      locale.toLowerCase()
+    );
+  }
+
   logger = {
     error: (message: string, description = '') => {
       // eslint-disable-next-line no-console
@@ -431,6 +444,7 @@ class BaseDescopeWc extends HTMLElement {
         baseUrl: this.baseUrl,
         tenant: this.tenant,
         redirectUrl: this.redirectUrl,
+        locale: this.locale,
         stepId,
         executionId,
         token,
