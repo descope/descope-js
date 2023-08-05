@@ -77,7 +77,7 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.unsubscribeAll();
   }
 
-  async getHtmlFilenames(locale: string, screenId: string) {
+  async getHtmlFilenameWithLocale(locale: string, screenId: string) {
     let filenameWithLocale: string;
     const userLocale = (locale || navigator.language || '').toLowerCase(); // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
@@ -341,7 +341,7 @@ class DescopeWc extends BaseDescopeWc {
     const readyScreenId = startScreenId || screenId;
 
     // get the right filename according to the user locale and flow target locales
-    const filenameWithLocale: string = await this.getHtmlFilenames(
+    const filenameWithLocale: string = await this.getHtmlFilenameWithLocale(
       locale,
       readyScreenId
     );
