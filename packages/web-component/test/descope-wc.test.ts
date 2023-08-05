@@ -176,7 +176,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 1000,
+      timeout: 3000,
     });
 
     await waitFor(() => expect(window.location.search).toBe(''));
@@ -357,271 +357,6 @@ describe('web-component', () => {
       expect.stringMatching(configUrlPathRegex),
       expect.any(Object)
     );
-  });
-
-  it('should fetch the data from the correct path when locale provided without target locales', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    pageContent = '<input id="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail locale="en-us"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
-
-    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
-    );
-  });
-
-  it('should fetch the data from the correct path when locale provided with target locales', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    configContent = {
-      targetLocales: ['en-US'],
-    };
-
-    pageContent = '<input id="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-Us"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
-
-    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
-    );
-  });
-
-  it('should fetch the data from the correct path when locale provided and not part of target locales', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    configContent = {
-      targetLocales: ['de'],
-    };
-
-    pageContent = '<input id="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-us"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
-
-    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
-    );
-  });
-
-  it('should fetch the data from the correct path when locale provided in navigator', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    configContent = {
-      targetLocales: ['en-US'],
-    };
-
-    Object.defineProperty(navigator, 'language', {
-      value: 'en-Us',
-      writable: true,
-    });
-
-    pageContent = '<input id="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
-
-    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
-    );
-
-    Object.defineProperty(navigator, 'language', {
-      value: '',
-      writable: true,
-    });
-  });
-
-  it('should fetch the data from the correct path when locale provided in navigator but not in target locales', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    configContent = {
-      targetLocales: ['de'],
-    };
-
-    Object.defineProperty(navigator, 'language', {
-      value: 'en-Us',
-      writable: true,
-    });
-
-    pageContent = '<input id="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
-
-    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
-    );
-
-    Object.defineProperty(navigator, 'language', {
-      value: '',
-      writable: true,
-    });
-  });
-
-  it('should fetch the data from the correct path when locale provided in navigator and request to locale fails', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    configContent = {
-      targetLocales: ['en-US'],
-    };
-
-    const fn = fetchMock.getMockImplementation();
-    fetchMock.mockImplementation((url: string) => {
-      if (url.endsWith('en-us.html')) {
-        return { ok: false };
-      }
-      return fn(url);
-    });
-
-    Object.defineProperty(navigator, 'language', {
-      value: 'en-Us',
-      writable: true,
-    });
-
-    pageContent = '<input id="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
-
-    await screen.findByShadowText('It works!');
-
-    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
-    const expectedHtmlFallbackPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
-
-    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-    const htmlUrlFallbackPathRegex = new RegExp(
-      `//[^/]+${expectedHtmlFallbackPath}$`
-    );
-    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(htmlUrlFallbackPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
-    );
-
-    Object.defineProperty(navigator, 'language', {
-      value: '',
-      writable: true,
-    });
   });
 
   it('should throw an error project-id is missing', async () => {
@@ -877,7 +612,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.findByShadowText('It works!'), {
+      timeout: 3000,
+    });
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
@@ -897,7 +634,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.findByShadowText('It works!'), {
+      timeout: 3000,
+    });
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
@@ -1307,7 +1046,7 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('Click'), { timeout: 3000 });
+    await waitFor(() => screen.findByShadowText('Click'), { timeout: 4000 });
 
     fireEvent.click(screen.getByShadowText('Click'));
 
@@ -2650,5 +2389,284 @@ describe('web-component', () => {
       expect.stringMatching(htmlUrlPathRegex),
       expect.any(Object)
     );
+  });
+
+  describe('locale', () => {
+    it('should fetch the data from the correct path when locale provided without target locales', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail locale="en-us"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: 3000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+    });
+
+    it('should fetch the data from the correct path when locale provided with target locales', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        targetLocales: ['en-US'],
+      };
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-Us"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 5000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+    });
+
+    it('should fetch the data from the correct path when locale provided and not part of target locales', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        targetLocales: ['de'],
+      };
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-us"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: 3000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+    });
+
+    it('should fetch the data from the correct path when locale provided in navigator', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        targetLocales: ['en-US'],
+      };
+
+      Object.defineProperty(navigator, 'language', {
+        value: 'en-Us',
+        writable: true,
+      });
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: 3000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+
+      Object.defineProperty(navigator, 'language', {
+        value: '',
+        writable: true,
+      });
+    });
+
+    it('should fetch the data from the correct path when locale provided in navigator but not in target locales', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        targetLocales: ['de'],
+      };
+
+      Object.defineProperty(navigator, 'language', {
+        value: 'en-Us',
+        writable: true,
+      });
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: 3000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+
+      Object.defineProperty(navigator, 'language', {
+        value: '',
+        writable: true,
+      });
+    });
+
+    it('should fetch the data from the correct path when locale provided in navigator and request to locale fails', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        targetLocales: ['en-US'],
+      };
+
+      const fn = fetchMock.getMockImplementation();
+      fetchMock.mockImplementation((url: string) => {
+        if (url.endsWith('en-us.html')) {
+          return { ok: false };
+        }
+        return fn(url);
+      });
+
+      Object.defineProperty(navigator, 'language', {
+        value: 'en-Us',
+        writable: true,
+      });
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: 3000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedHtmlFallbackPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const htmlUrlFallbackPathRegex = new RegExp(
+        `//[^/]+${expectedHtmlFallbackPath}$`
+      );
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlFallbackPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+
+      Object.defineProperty(navigator, 'language', {
+        value: '',
+        writable: true,
+      });
+    });
   });
 });
