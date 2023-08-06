@@ -357,8 +357,8 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   async getTargetLocales() {
-    const { projectConfig } = await this.#getConfig();
-    return (projectConfig?.targetLocales || []).map((locale: string) =>
+    const flowConfig = await this.getFlowConfig();
+    return (flowConfig?.targetLocales || []).map((locale: string) =>
       locale.toLowerCase()
     );
   }
