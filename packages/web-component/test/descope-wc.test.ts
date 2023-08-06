@@ -2433,7 +2433,11 @@ describe('web-component', () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       configContent = {
-        targetLocales: ['en-US'],
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['en-US'],
+          },
+        },
       };
 
       pageContent = '<input id="email"></input><span>It works!</span>';
@@ -2472,7 +2476,11 @@ describe('web-component', () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       configContent = {
-        targetLocales: ['de'],
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['de'],
+          },
+        },
       };
 
       pageContent = '<input id="email"></input><span>It works!</span>';
@@ -2511,7 +2519,11 @@ describe('web-component', () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       configContent = {
-        targetLocales: ['en-US'],
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['en-US'],
+          },
+        },
       };
 
       Object.defineProperty(navigator, 'language', {
@@ -2560,7 +2572,11 @@ describe('web-component', () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       configContent = {
-        targetLocales: ['de'],
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['de'],
+          },
+        },
       };
 
       Object.defineProperty(navigator, 'language', {
@@ -2609,7 +2625,11 @@ describe('web-component', () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       configContent = {
-        targetLocales: ['en-US'],
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['en-US'],
+          },
+        },
       };
 
       const fn = fetchMock.getMockImplementation();
