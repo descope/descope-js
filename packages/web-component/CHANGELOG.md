@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.7.0](https://github.com/descope/descope-js/compare/web-component-2.6.4...web-component-2.7.0) (2023-08-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.8`
+
+### Features
+
+* flow config locales usage ([#231](https://github.com/descope/descope-js/issues/231)) ([963c95f](https://github.com/descope/descope-js/commit/963c95f6b2bc1d3b1b9ab581f10428088238d190))
+* Upload file ([#195](https://github.com/descope/descope-js/issues/195)) ([32eafec](https://github.com/descope/descope-js/commit/32eafec95a51fb677bce8f2a32336566991b6417))
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.0 ([#207](https://github.com/descope/descope-js/issues/207)) ([c17af0e](https://github.com/descope/descope-js/commit/c17af0e7adc1e6ae806302e81b8e0dcececb8ed8))
+
 ### [2.6.4](https://github.com/descope/descope-js/compare/web-component-2.6.3...web-component-2.6.4) (2023-07-10)
 
 ### [2.6.3](https://github.com/descope/descope-js/compare/web-component-2.6.2...web-component-2.6.3) (2023-07-10)
