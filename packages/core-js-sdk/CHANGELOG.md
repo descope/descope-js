@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.5.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.6...core-js-sdk-1.5.0) (2023-08-08)
+
+
+### Features
+
+* Add tenant name to userTenant object ([#204](https://github.com/descope/descope-js/issues/204)) ([97ca964](https://github.com/descope/descope-js/commit/97ca96403a8d8a118bb346a3a3ae457cc5bd2040))
+
 ### [1.4.6](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.5...core-js-sdk-1.4.6) (2023-07-10)
 
 ## [1.4.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.4...core-js-sdk-1.4.5) (2023-07-10)
