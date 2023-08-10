@@ -52,7 +52,7 @@ class DescopeWc extends BaseDescopeWc {
   log = {
     error: (message: string, description?: string) => {
       super.logger().error(message, description);
-      this.#dispatchNext({
+      this.#dispatchLog({
         type: MessageLogType.ERROR,
         title: message,
         description,
@@ -60,7 +60,7 @@ class DescopeWc extends BaseDescopeWc {
     },
     warn: (message: string, description?: string) => {
       super.logger().warn(message, description);
-      this.#dispatchNext({
+      this.#dispatchLog({
         type: MessageLogType.WARN,
         title: message,
         description,
@@ -68,7 +68,7 @@ class DescopeWc extends BaseDescopeWc {
     },
     info: (message: string, description?: string, state?: any) => {
       super.logger().info(message, description);
-      this.#dispatchNext({
+      this.#dispatchLog({
         type: MessageLogType.INFO,
         title: message,
         description,
@@ -775,8 +775,8 @@ class DescopeWc extends BaseDescopeWc {
     this.rootElement.classList.add('fade-out');
   }
 
-  #dispatchNext(m: MessageLog) {
-    this.#dispatch('next', m);
+  #dispatchLog(m: MessageLog) {
+    this.#dispatch('log', m);
   }
 
   #dispatch(eventName: string, detail: any) {
