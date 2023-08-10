@@ -29,7 +29,7 @@ export const RESPONSE_ACTIONS = {
   webauthnGet: 'webauthnGet',
 };
 
-export const ASSETS_FOLDER = 'v2-alpha';
+export const ASSETS_FOLDER = 'v2-beta';
 
 // Those files are saved on a new folder to prevent breaking changes
 export const THEME_FILENAME = 'theme.json';
