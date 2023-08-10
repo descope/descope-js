@@ -7,5 +7,5 @@ export type {
   AutoFocusOptions,
   ThemeOptions,
   MessageLog,
-  MessageLogType,
+  MessageLogLevel,
 } from '../types';

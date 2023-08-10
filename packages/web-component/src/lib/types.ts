@@ -80,15 +80,15 @@ export type DebuggerMessage = {
   description?: string;
 };
 
-export enum MessageLogType {
+export enum MessageLogLevel {
   INFO = 'info',
   ERROR = 'error',
   WARN = 'warning',
 }
 
 export type MessageLog = {
-  type: MessageLogType;
-  state?: any;
+  type: MessageLogLevel;
+  data?: any;
 } & DebuggerMessage;
 
 export type FlowStateUpdateFn = (state: FlowState) => void;

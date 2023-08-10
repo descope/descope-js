@@ -29,7 +29,7 @@ import {
   Direction,
   FlowState,
   MessageLog,
-  MessageLogType,
+  MessageLogLevel,
   NextFn,
   NextFnReturnPromiseValue,
   SdkConfig,
@@ -53,7 +53,7 @@ class DescopeWc extends BaseDescopeWc {
     error: (message: string, description?: string) => {
       super.logger().error(message, description);
       this.#dispatchLog({
-        type: MessageLogType.ERROR,
+        type: MessageLogLevel.ERROR,
         title: message,
         description,
       });
@@ -61,18 +61,18 @@ class DescopeWc extends BaseDescopeWc {
     warn: (message: string, description?: string) => {
       super.logger().warn(message, description);
       this.#dispatchLog({
-        type: MessageLogType.WARN,
+        type: MessageLogLevel.WARN,
         title: message,
         description,
       });
     },
-    info: (message: string, description?: string, state?: any) => {
+    info: (message: string, description?: string, data?: any) => {
       super.logger().info(message, description);
       this.#dispatchLog({
-        type: MessageLogType.INFO,
+        type: MessageLogLevel.INFO,
         title: message,
         description,
-        state,
+        data,
       });
     },
   };
