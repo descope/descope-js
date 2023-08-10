@@ -552,10 +552,10 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #validateInputs() {
-    return Array.from(this.shadowRoot.querySelectorAll('.descope-input')).every(
+    return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
       (input: HTMLInputElement) => {
-        input.reportValidity();
-        return input.checkValidity();
+        input.reportValidity?.();
+        return input.checkValidity?.();
       }
     );
   }
