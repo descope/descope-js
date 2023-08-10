@@ -867,7 +867,7 @@ describe('web-component', () => {
       ok: true,
     });
 
-    const logSpy = jest.spyOn(console, 'log');
+    const logSpy = jest.spyOn(console, 'warn');
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1`;
 
