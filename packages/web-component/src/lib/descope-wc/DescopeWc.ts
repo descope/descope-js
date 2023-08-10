@@ -49,6 +49,34 @@ class DescopeWc extends BaseDescopeWc {
 
   flowState: State<FlowState>;
 
+  log = {
+    error: (message: string, description?: string) => {
+      super.logger().error(message, description);
+      this.#dispatchNext({
+        type: MessageLogType.ERROR,
+        title: message,
+        description,
+      });
+    },
+    warn: (message: string, description?: string) => {
+      super.logger().warn(message, description);
+      this.#dispatchNext({
+        type: MessageLogType.WARN,
+        title: message,
+        description,
+      });
+    },
+    info: (message: string, description?: string, state?: any) => {
+      super.logger().info(message, description);
+      this.#dispatchNext({
+        type: MessageLogType.INFO,
+        title: message,
+        description,
+        state,
+      });
+    },
+  };
+
   stepState = new State<StepState>({} as StepState, {
     updateOnlyOnChange: false,
   });
@@ -65,25 +93,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   logger() {
-    return {
-      error: (message: string, description?: string) => {
-        super.logger().error(message, description);
-        this.#dispatchNext({
-          type: MessageLogType.ERROR,
-          title: message,
-          description,
-        });
-      },
-      info: (message: string, description?: string, state?: any) => {
-        super.logger().info(message, description);
-        this.#dispatchNext({
-          type: MessageLogType.INFO,
-          title: message,
-          description,
-          state,
-        });
-      },
-    };
+    return this.log;
   }
 
   async connectedCallback() {
@@ -361,9 +371,9 @@ class DescopeWc extends BaseDescopeWc {
       }, 2000);
     }
 
-    // if there is no screen id (probably due to page refresh) we should get it from the server
+    // if there is no screen id (possbily due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
-      this.logger().info('No screen was found to show');
+      this.logger().warn('No screen was found to show');
       return;
     }
 
@@ -451,8 +461,10 @@ class DescopeWc extends BaseDescopeWc {
     if (sdkResp.data?.error) {
       this.logger().error(
         `[${sdkResp.data.error.code}]: ${sdkResp.data.error.description}`,
-        `${errorText} - ${sdkResp.data.error.message}`
+        `${errorText ? `${errorText} - ` : ''}${sdkResp.data.error.message}`
       );
+    } else if (errorText) {
+      this.logger().error(errorText);
     }
 
     const { status, authInfo, lastAuth } = sdkResp.data;
