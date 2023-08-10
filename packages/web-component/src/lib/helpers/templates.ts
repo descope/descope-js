@@ -31,12 +31,11 @@ const replaceElementInputs = (
   Object.entries(screenInputs || {}).forEach(([name, value]) => {
     const inputEls = Array.from(
       baseEle.querySelectorAll(
-        `.descope-input[name="${name}"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
+        `*[name="${name}"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
     ) as HTMLInputElement[];
     inputEls.forEach((inputEle) => {
-      // eslint-disable-next-line no-param-reassign
-      inputEle.value = value;
+      inputEle.setAttribute('value', value);
     });
   });
 };
@@ -69,7 +68,7 @@ const replaceElementTemplates = (
   baseEle: DocumentFragment,
   screenState?: Record<string, any>
 ) => {
-  const eleList = baseEle.querySelectorAll('.descope-text,.descope-link');
+  const eleList = baseEle.querySelectorAll('descope-text,descope-link');
   eleList.forEach((inEle: HTMLElement) => {
     // eslint-disable-next-line no-param-reassign
     inEle.textContent = applyTemplates(inEle.textContent, screenState);
@@ -116,7 +115,7 @@ export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
 
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {
   const webauthnButtons = fragment.querySelectorAll(
-    `button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`
+    `descope-button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`
   );
   webauthnButtons.forEach((button) => button.setAttribute('disabled', 'true'));
 };
