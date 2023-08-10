@@ -567,9 +567,9 @@ class DescopeWc extends BaseDescopeWc {
       )
     ).reduce(
       (acc, input: HTMLInputElement) =>
-        input.name
+        input.getAttribute('name')
           ? Object.assign(acc, {
-              [input.name]:
+              [input.getAttribute('name')]:
                 input[input.type === 'checkbox' ? 'checked' : 'value'],
             })
           : acc,
