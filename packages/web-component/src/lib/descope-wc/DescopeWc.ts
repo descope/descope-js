@@ -495,7 +495,7 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    this.logger().info(`Step "${stepName}" [#${stepId}] is ${status}`, '', {
+    this.logger().info(`Step "${stepName}" is ${status}`, '', {
       screen,
       status,
       stepId,
