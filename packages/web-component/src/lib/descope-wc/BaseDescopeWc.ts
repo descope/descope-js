@@ -265,7 +265,7 @@ class BaseDescopeWc extends HTMLElement {
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.logger.error(
+      this.logger().error(
         'Cannot get config file',
         'make sure that your projectId & flowId are correct'
       );
@@ -293,7 +293,7 @@ class BaseDescopeWc extends HTMLElement {
       const { body } = await fetchContent(themeUrl, 'text');
       styleEle.innerText = body;
     } catch (e) {
-      this.logger.error(
+      this.logger().error(
         'Cannot fetch theme file',
         'make sure that your projectId & flowId are correct'
       );
@@ -363,17 +363,19 @@ class BaseDescopeWc extends HTMLElement {
     );
   }
 
-  logger = {
-    error: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.error(message, description, new Error());
-      this.#updateDebuggerMessages(message, description);
-    },
-    info: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.log(message, description);
-    },
-  };
+  logger() {
+    return {
+      error: (message: string, description = '') => {
+        // eslint-disable-next-line no-console
+        console.error(message, description, new Error());
+        this.#updateDebuggerMessages(message, description);
+      },
+      info: (message: string, description = '') => {
+        // eslint-disable-next-line no-console
+        console.log(message, description);
+      },
+    };
+  }
 
   #handleKeyPress() {
     // we want to simulate submit when the user presses Enter

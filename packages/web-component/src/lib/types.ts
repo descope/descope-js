@@ -80,6 +80,17 @@ export type DebuggerMessage = {
   description?: string;
 };
 
+export enum MessageLogType {
+  INFO = 'info',
+  ERROR = 'error',
+  WARN = 'warning',
+}
+
+export type MessageLog = {
+  type: MessageLogType;
+  state?: any;
+} & DebuggerMessage;
+
 export type FlowStateUpdateFn = (state: FlowState) => void;
 
 type Operator =

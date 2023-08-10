@@ -874,10 +874,7 @@ describe('web-component', () => {
     fireEvent.popState(window);
 
     await waitFor(() =>
-      expect(logSpy).toHaveBeenCalledWith(
-        'Refreshing the page during a flow is not supported yet',
-        ''
-      )
+      expect(logSpy).toHaveBeenCalledWith('No screen was found to show', '')
     );
   });
 
