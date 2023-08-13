@@ -586,10 +586,10 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
-          submitter?.classList?.add('loading');
+          submitter.setAttribute('loading', 'true');
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
-          submitter?.classList?.remove('loading');
+          submitter.removeAttribute('loading');
         }
       }
     );
