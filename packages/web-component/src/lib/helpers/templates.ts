@@ -113,6 +113,17 @@ export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
   }
 };
 
+export const setPhoneAutoDetectDefaultCode = (
+  fragment: DocumentFragment,
+  autoDetectCode?: string
+) => {
+  Array.from(
+    fragment.querySelectorAll('descope-phone-field[default-code="autoDetect"]')
+  ).forEach((phoneEle) => {
+    phoneEle.setAttribute('default-code', autoDetectCode);
+  });
+};
+
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {
   const webauthnButtons = fragment.querySelectorAll(
     `descope-button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`
