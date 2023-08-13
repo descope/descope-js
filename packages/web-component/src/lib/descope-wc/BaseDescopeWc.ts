@@ -30,9 +30,7 @@ declare const BUILD_VERSION: string;
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends HTMLElement {
-  logger: ILogger = {
-    ...console,
-  };
+  logger: ILogger = console;
 
   static get observedAttributes() {
     return [

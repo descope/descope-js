@@ -216,24 +216,6 @@ describe('web-component', () => {
     wcEle.removeEventListener('error', onError);
   });
 
-  it('should call the log cb when calling log', async () => {
-    pageContent = '<input id="email" name="email"></input>';
-    startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } })
-    );
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    const wcEle = document.getElementsByTagName('descope-wc')[0];
-
-    const onLog = jest.fn();
-    wcEle.addEventListener('log', onLog);
-
-    await waitFor(() => expect(onLog).toHaveBeenCalled(), { timeout: 1000 });
-
-    wcEle.removeEventListener('log', onLog);
-  });
-
   it('When WC loads it injects the correct content', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 

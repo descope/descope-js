@@ -101,6 +101,28 @@ const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 descopeWcEle.errorTransformer = translateError;
 ```
 
+### `logger` - An object that defines how to log error, warning and info. Defaults to console.error, console.warn and console.info respectively
+
+Usage example:
+
+```javascript
+const log = {
+  info: (message: string, description: string, state: any) => {
+    console.log(message, description);
+  },
+  warn: (title: string, description: string) => {
+    console.warn(`WARN: ${title}`, description);
+  },
+  error: (title: string, description: string) => {
+    console.error(`ERROR: ${title}`, description);
+  },
+};
+
+const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+
+descopeWcEle.logger = log;
+```
+
 ## Events
 
 ### `error` - Fired when an error occurs. The event detail contains the error object.
@@ -122,16 +144,5 @@ Usage example:
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 descopeWcEle.addEventListener('success', (e) =>
   alert(`Success! - ${JSON.stringify(e.detail)}`)
-);
-```
-
-### `log` - Fired when the log is called. The event detail contains the message and details and a possible current state.
-
-Usage example:
-
-```javascript
-const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('log', (e) =>
-  alert(`Log! - ${JSON.stringify(e.detail)}`)
 );
 ```
