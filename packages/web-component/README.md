@@ -106,7 +106,7 @@ descopeWcEle.errorTransformer = translateError;
 Usage example:
 
 ```javascript
-const log = {
+const logger = {
   info: (message: string, description: string, state: any) => {
     console.log(message, description);
   },
@@ -120,7 +120,7 @@ const log = {
 
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 
-descopeWcEle.logger = log;
+descopeWcEle.logger = logger;
 ```
 
 ## Events
