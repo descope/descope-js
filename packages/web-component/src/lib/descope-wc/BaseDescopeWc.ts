@@ -439,7 +439,7 @@ class BaseDescopeWc extends HTMLElement {
 
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
-      this.#loadDescopeUI();
+      await this.#loadDescopeUI();
 
       if (this.#shouldMountInFormEle()) {
         this.#handleOuterForm();
