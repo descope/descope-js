@@ -23,6 +23,7 @@ import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
   getDescopeUiComponentsList,
+  setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
   DescopeUI,
@@ -517,6 +518,10 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     replaceWithScreenState(clone, screenState);
+
+    // set the default country code based on the locale value we got
+    const { geo } = await this.getExecutionContext();
+    setPhoneAutoDetectDefaultCode(clone, geo);
 
     // put the totp variable on the root element, which is the top level 'div'
     setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
