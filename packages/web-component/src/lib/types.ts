@@ -80,17 +80,6 @@ export type DebuggerMessage = {
   description?: string;
 };
 
-export enum MessageLogLevel {
-  INFO = 'info',
-  ERROR = 'error',
-  WARN = 'warning',
-}
-
-export type MessageLog = {
-  type: MessageLogLevel;
-  data?: any;
-} & DebuggerMessage;
-
 export type FlowStateUpdateFn = (state: FlowState) => void;
 
 type Operator =
@@ -135,4 +124,10 @@ export type ConditionsMap = {
 export interface Context {
   loginId?: string;
   code?: string;
+}
+
+export interface ILogger {
+  info(title: string, description: string, state: any): void;
+  warn(title: string, description?: string): void;
+  error(title: string, description?: string, params?: any): void;
 }

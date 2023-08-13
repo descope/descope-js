@@ -28,8 +28,6 @@ import { disableWebauthnButtons } from '../helpers/templates';
 import {
   Direction,
   FlowState,
-  MessageLog,
-  MessageLogLevel,
   NextFn,
   NextFnReturnPromiseValue,
   SdkConfig,
@@ -49,34 +47,6 @@ class DescopeWc extends BaseDescopeWc {
 
   flowState: State<FlowState>;
 
-  log = {
-    error: (message: string, description?: string) => {
-      super.logger().error(message, description);
-      this.#dispatchLog({
-        type: MessageLogLevel.ERROR,
-        title: message,
-        description,
-      });
-    },
-    warn: (message: string, description?: string) => {
-      super.logger().warn(message, description);
-      this.#dispatchLog({
-        type: MessageLogLevel.WARN,
-        title: message,
-        description,
-      });
-    },
-    info: (message: string, description?: string, data?: any) => {
-      super.logger().info(message, description);
-      this.#dispatchLog({
-        type: MessageLogLevel.INFO,
-        title: message,
-        description,
-        data,
-      });
-    },
-  };
-
   stepState = new State<StepState>({} as StepState, {
     updateOnlyOnChange: false,
   });
@@ -90,10 +60,6 @@ class DescopeWc extends BaseDescopeWc {
     super(flowState.update.bind(flowState));
 
     this.flowState = flowState;
-  }
-
-  logger() {
-    return this.log;
   }
 
   async connectedCallback() {
@@ -129,7 +95,7 @@ class DescopeWc extends BaseDescopeWc {
         const { body } = await fetchContent(htmlLocaleUrl, 'text');
         return body;
       } catch (ex) {
-        this.logger().error(
+        this.loggerWrapper.error(
           `Failed to fetch html page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
           ex
         );
@@ -140,7 +106,7 @@ class DescopeWc extends BaseDescopeWc {
       const { body } = await fetchContent(htmlUrl, 'text');
       return body;
     } catch (ex) {
-      this.logger().error(`Failed to fetch html page from ${htmlUrl}`, ex);
+      this.loggerWrapper.error(`Failed to fetch html page from ${htmlUrl}`, ex);
     }
     return null;
   }
@@ -275,7 +241,7 @@ class DescopeWc extends BaseDescopeWc {
       (isChanged('redirectTo') || isChanged('deferredRedirect'))
     ) {
       if (!redirectTo) {
-        this.logger().error('Did not get redirect url');
+        this.loggerWrapper.error('Did not get redirect url');
         return;
       }
       if (redirectAuthInitiator === 'android' && document.hidden) {
@@ -294,7 +260,9 @@ class DescopeWc extends BaseDescopeWc {
       action === RESPONSE_ACTIONS.webauthnGet
     ) {
       if (!webauthnTransactionId || !webauthnOptions) {
-        this.logger().error('Did not get webauthn transaction id or options');
+        this.loggerWrapper.error(
+          'Did not get webauthn transaction id or options'
+        );
         return;
       }
 
@@ -320,7 +288,7 @@ class DescopeWc extends BaseDescopeWc {
           }
         } catch (e) {
           // if options could not be parsed we ignore it here so this kind of error is always handled the same way
-          this.logger().info('Failed to modify webauthn create options');
+          this.loggerWrapper.info('Failed to modify webauthn create options');
         }
       }
 
@@ -336,7 +304,7 @@ class DescopeWc extends BaseDescopeWc {
             : await this.sdk.webauthn.helpers.get(options);
       } catch (e) {
         if (e.name !== 'NotAllowedError') {
-          this.logger().error(e.message);
+          this.loggerWrapper.error(e.message);
           return;
         }
 
@@ -372,7 +340,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no screen id (possbily due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
-      this.logger().warn('No screen was found to show');
+      this.loggerWrapper.warn('No screen was found to show');
       return;
     }
 
@@ -449,7 +417,7 @@ class DescopeWc extends BaseDescopeWc {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
 
-      this.logger().error(
+      this.loggerWrapper.error(
         sdkResp?.error?.errorDescription || defaultMessage,
         sdkResp?.error?.errorMessage || defaultDescription
       );
@@ -458,12 +426,12 @@ class DescopeWc extends BaseDescopeWc {
 
     const errorText = sdkResp.data?.screen?.state?.errorText;
     if (sdkResp.data?.error) {
-      this.logger().error(
+      this.loggerWrapper.error(
         `[${sdkResp.data.error.code}]: ${sdkResp.data.error.description}`,
         `${errorText ? `${errorText} - ` : ''}${sdkResp.data.error.message}`
       );
     } else if (errorText) {
-      this.logger().error(errorText);
+      this.loggerWrapper.error(errorText);
     }
 
     const { status, authInfo, lastAuth } = sdkResp.data;
@@ -494,14 +462,18 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    this.logger().info(`Step "${stepName || `#${stepId}`}" is ${status}`, '', {
-      screen,
-      status,
-      stepId,
-      stepName,
-      action,
-      error,
-    });
+    this.loggerWrapper.info(
+      `Step "${stepName || `#${stepId}`}" is ${status}`,
+      '',
+      {
+        screen,
+        status,
+        stepId,
+        stepName,
+        action,
+        error,
+      }
+    );
 
     this.flowState.update({
       stepId,
@@ -523,14 +495,14 @@ class DescopeWc extends BaseDescopeWc {
         window.location.origin
       ); // when using conditional UI we need to call start without identifier
       if (!startResp.ok) {
-        this.logger().error(
+        this.loggerWrapper.error(
           'Webauthn start failed',
           startResp?.error?.errorMessage
         );
       }
       return startResp.data;
     } catch (err) {
-      this.logger().error('Webauthn start failed', err.message);
+      this.loggerWrapper.error('Webauthn start failed', err.message);
     }
 
     return undefined;
@@ -589,7 +561,7 @@ class DescopeWc extends BaseDescopeWc {
           })
           .catch((err) => {
             if (err.name !== 'AbortError') {
-              this.logger().error('Conditional login failed', err.message);
+              this.loggerWrapper.error('Conditional login failed', err.message);
             }
           });
       }
@@ -621,7 +593,7 @@ class DescopeWc extends BaseDescopeWc {
       clone,
       screenState,
       this.errorTransformer,
-      this.logger()
+      this.loggerWrapper
     );
 
     // put the totp variable on the root element, which is the top level 'div'
@@ -633,7 +605,7 @@ class DescopeWc extends BaseDescopeWc {
           fn();
         });
       } catch (e) {
-        this.logger().error(e.message);
+        this.loggerWrapper.error(e.message);
       }
 
       this.rootElement.replaceChildren(clone);
@@ -773,10 +745,6 @@ class DescopeWc extends BaseDescopeWc {
     });
 
     this.rootElement.classList.add('fade-out');
-  }
-
-  #dispatchLog(m: MessageLog) {
-    this.#dispatch('log', m);
   }
 
   #dispatch(eventName: string, detail: any) {

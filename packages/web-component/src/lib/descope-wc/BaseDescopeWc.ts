@@ -19,6 +19,7 @@ import {
   DebugState,
   FlowState,
   FlowStateUpdateFn,
+  ILogger,
   SdkConfig,
   ThemeOptions,
 } from '../types';
@@ -29,6 +30,10 @@ declare const BUILD_VERSION: string;
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends HTMLElement {
+  logger: ILogger = {
+    ...console,
+  };
+
   static get observedAttributes() {
     return [
       'project-id',
@@ -55,19 +60,16 @@ class BaseDescopeWc extends HTMLElement {
 
   #init = false;
 
-  #log = {
+  loggerWrapper = {
     error: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.error(message, description, new Error());
+      this.logger.error(message, description, new Error());
       this.#updateDebuggerMessages(message, description);
     },
     warn: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.warn(message, description);
+      this.logger.warn(message, description);
     },
-    info: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.log(message, description);
+    info: (message: string, description = '', state: any = {}) => {
+      this.logger.info(message, description, state);
     },
   };
 
@@ -281,7 +283,7 @@ class BaseDescopeWc extends HTMLElement {
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.logger().error(
+      this.loggerWrapper.error(
         'Cannot get config file',
         'make sure that your projectId & flowId are correct'
       );
@@ -309,7 +311,7 @@ class BaseDescopeWc extends HTMLElement {
       const { body } = await fetchContent(themeUrl, 'text');
       styleEle.innerText = body;
     } catch (e) {
-      this.logger().error(
+      this.loggerWrapper.error(
         'Cannot fetch theme file',
         'make sure that your projectId & flowId are correct'
       );
@@ -377,10 +379,6 @@ class BaseDescopeWc extends HTMLElement {
     return (flowConfig?.targetLocales || []).map((locale: string) =>
       locale.toLowerCase()
     );
-  }
-
-  logger() {
-    return this.#log;
   }
 
   #handleKeyPress() {
