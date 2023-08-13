@@ -281,9 +281,9 @@ class BaseDescopeWc extends HTMLElement {
       );
   }
 
-  #handleTheme() {
-    this.#loadTheme();
-    this.#applyTheme();
+  async #handleTheme() {
+    await this.#loadTheme();
+    await this.#applyTheme();
   }
 
   async #loadTheme() {
@@ -310,7 +310,7 @@ class BaseDescopeWc extends HTMLElement {
   async #applyTheme() {
     this.rootElement.setAttribute('data-theme', this.theme);
     const descopeUi = await this.descopeUI;
-    descopeUi.componentsThemeManager.currentTheme = this.theme;
+    descopeUi.componentsThemeManager.currentThemeName = this.theme;
   }
 
   async getExecutionContext() {
@@ -448,7 +448,7 @@ class BaseDescopeWc extends HTMLElement {
 
       this.#validateAttrs();
 
-      this.#handleTheme();
+      await this.#handleTheme();
 
       this.#loadFonts();
 
