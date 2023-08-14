@@ -19,6 +19,7 @@ import {
   DebugState,
   FlowState,
   FlowStateUpdateFn,
+  ILogger,
   SdkConfig,
   ThemeOptions,
 } from '../types';
@@ -29,6 +30,8 @@ declare const BUILD_VERSION: string;
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends HTMLElement {
+  logger: ILogger = console;
+
   static get observedAttributes() {
     return [
       'project-id',
@@ -54,6 +57,19 @@ class BaseDescopeWc extends HTMLElement {
   };
 
   #init = false;
+
+  loggerWrapper = {
+    error: (message: string, description = '') => {
+      this.logger.error(message, description, new Error());
+      this.#updateDebuggerMessages(message, description);
+    },
+    warn: (message: string, description = '') => {
+      this.logger.warn(message, description);
+    },
+    info: (message: string, description = '', state: any = {}) => {
+      this.logger.info(message, description, state);
+    },
+  };
 
   #flowState = new State<FlowState>({ deferredRedirect: false } as FlowState);
 
@@ -265,7 +281,7 @@ class BaseDescopeWc extends HTMLElement {
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.logger.error(
+      this.loggerWrapper.error(
         'Cannot get config file',
         'make sure that your projectId & flowId are correct'
       );
@@ -293,7 +309,7 @@ class BaseDescopeWc extends HTMLElement {
       const { body } = await fetchContent(themeUrl, 'text');
       styleEle.innerText = body;
     } catch (e) {
-      this.logger.error(
+      this.loggerWrapper.error(
         'Cannot fetch theme file',
         'make sure that your projectId & flowId are correct'
       );
@@ -362,18 +378,6 @@ class BaseDescopeWc extends HTMLElement {
       locale.toLowerCase()
     );
   }
-
-  logger = {
-    error: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.error(message, description, new Error());
-      this.#updateDebuggerMessages(message, description);
-    },
-    info: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.log(message, description);
-    },
-  };
 
   #handleKeyPress() {
     // we want to simulate submit when the user presses Enter
