@@ -257,10 +257,10 @@ export const handleAutoFocus = (
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
     // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector(
-      'input:not([aria-hidden="true"])'
-    );
-    firstVisibleInput?.focus();
+    const firstVisibleInput: HTMLInputElement = ele.querySelector('*[name]');
+    setTimeout(() => {
+      firstVisibleInput?.focus();
+    });
   }
 };
 
