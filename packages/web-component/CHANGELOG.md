@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.8.0](https://github.com/descope/descope-js/compare/web-component-2.7.2...web-component-2.8.0) (2023-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.9`
+
+### Features
+
+* Add logger prop for runner ([#236](https://github.com/descope/descope-js/issues/236)) ([7fd0c2f](https://github.com/descope/descope-js/commit/7fd0c2fa6d62df305c402bf66028cf0567af0d68))
+
 ### [2.7.2](https://github.com/descope/descope-js/compare/web-component-2.7.1...web-component-2.7.2) (2023-08-08)
 
 ### [2.7.1](https://github.com/descope/descope-js/compare/web-component-2.7.0...web-component-2.7.1) (2023-08-08)
