@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       tslib:
-        specifier: 2.6.0
-        version: 2.6.0
+        specifier: 2.6.1
+        version: 2.6.1
     devDependencies:
       '@commitlint/cli':
         specifier: ^17.0.0
@@ -114,7 +114,7 @@ importers:
         version: 0.4.0(rollup@3.0.0)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.0.0(rollup@3.0.0)(tslib@2.6.0)(typescript@4.9.3)
+        version: 11.0.0(rollup@3.0.0)(tslib@2.6.1)(typescript@4.9.3)
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.2
@@ -224,8 +224,8 @@ importers:
         specifier: workspace:*
         version: link:../web-js-sdk
       tslib:
-        specifier: 2.6.0
-        version: 2.6.0
+        specifier: 2.6.1
+        version: 2.6.1
     devDependencies:
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
@@ -241,7 +241,7 @@ importers:
         version: 5.0.2(rollup@2.78.0)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.0.0(rollup@2.78.0)(tslib@2.6.0)(typescript@4.9.3)
+        version: 11.0.0(rollup@2.78.0)(tslib@2.6.1)(typescript@4.9.3)
       '@testing-library/dom':
         specifier: ^9.0.0
         version: 9.0.0
@@ -386,7 +386,7 @@ importers:
         version: 0.4.0(rollup@3.0.0)
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.0.0(rollup@3.0.0)(tslib@2.6.0)(typescript@4.9.3)
+        version: 11.0.0(rollup@3.0.0)(tslib@2.6.1)(typescript@4.9.3)
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.2
@@ -2453,7 +2453,7 @@ packages:
   /@fingerprintjs/fingerprintjs-pro@3.8.5:
     resolution: {integrity: sha512-07bkz/BrQYIHh0FIQ8rMKx62IKu+gkZrUzNsoT1fLwYfnM0uk+s+XQXLeaDXGMGpHgkZSP4nPMAn+nkRfWy6ww==}
     dependencies:
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: false
 
   /@humanwhocodes/config-array@0.11.10:
@@ -2837,7 +2837,7 @@ packages:
       nx: 15.9.4
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.6.0
+      tslib: 2.6.1
     transitivePeerDependencies:
       - typescript
     dev: true
@@ -2852,7 +2852,7 @@ packages:
       nx: 15.9.4
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /@nrwl/eslint-plugin-nx@15.9.4(@typescript-eslint/parser@5.36.1)(eslint-config-prettier@8.8.0)(eslint@8.45.0)(nx@15.9.4)(typescript@4.9.3):
@@ -2893,7 +2893,7 @@ packages:
       jest-resolve: 29.6.1
       jest-util: 29.6.1
       resolve.exports: 1.1.0
-      tslib: 2.6.0
+      tslib: 2.6.1
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -2931,7 +2931,7 @@ packages:
       minimatch: 3.0.5
       source-map-support: 0.5.19
       tree-kill: 1.2.2
-      tslib: 2.6.0
+      tslib: 2.6.1
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -2955,7 +2955,7 @@ packages:
       '@phenomnomnominal/tsquery': 4.1.1(typescript@4.9.3)
       eslint: 8.45.0
       tmp: 0.2.1
-      tslib: 2.6.0
+      tslib: 2.6.1
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -3078,7 +3078,7 @@ packages:
       open: 8.4.2
       rxjs: 6.6.7
       tmp: 0.2.1
-      tslib: 2.6.0
+      tslib: 2.6.1
       yargs: 17.7.2
       yargs-parser: 21.1.1
     transitivePeerDependencies:
@@ -3167,7 +3167,7 @@ packages:
       is-glob: 4.0.3
       open: 9.1.0
       picocolors: 1.0.0
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /@rollup/plugin-commonjs@24.0.0(rollup@2.78.0):
@@ -3303,7 +3303,7 @@ packages:
       terser: 5.18.2
     dev: true
 
-  /@rollup/plugin-typescript@11.0.0(rollup@2.78.0)(tslib@2.6.0)(typescript@4.9.3):
+  /@rollup/plugin-typescript@11.0.0(rollup@2.78.0)(tslib@2.6.1)(typescript@4.9.3):
     resolution: {integrity: sha512-goPyCWBiimk1iJgSTgsehFD5OOFHiAknrRJjqFCudcW8JtWiBlK284Xnn4flqMqg6YAjVG/EE+3aVzrL5qNSzQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3319,11 +3319,11 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@2.78.0)
       resolve: 1.22.2
       rollup: 2.78.0
-      tslib: 2.6.0
+      tslib: 2.6.1
       typescript: 4.9.3
     dev: true
 
-  /@rollup/plugin-typescript@11.0.0(rollup@3.0.0)(tslib@2.6.0)(typescript@4.9.3):
+  /@rollup/plugin-typescript@11.0.0(rollup@3.0.0)(tslib@2.6.1)(typescript@4.9.3):
     resolution: {integrity: sha512-goPyCWBiimk1iJgSTgsehFD5OOFHiAknrRJjqFCudcW8JtWiBlK284Xnn4flqMqg6YAjVG/EE+3aVzrL5qNSzQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3339,7 +3339,7 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@3.0.0)
       resolve: 1.22.2
       rollup: 3.0.0
-      tslib: 2.6.0
+      tslib: 2.6.1
       typescript: 4.9.3
     dev: true
 
@@ -3972,7 +3972,7 @@ packages:
     resolution: {integrity: sha512-qEewJouhRvaecGjbkjz9kMKn96UASbDodNrE5MYy2TrXkHcisIkbMxZdGBYfAq+s1dFtCSx/5H4k5bEkfakM+A==}
     dependencies:
       js-yaml: 3.14.1
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /@zkochan/js-yaml@0.0.6:
@@ -4650,7 +4650,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /camelcase-keys@6.2.2:
@@ -5457,7 +5457,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /dot-prop@5.3.0:
@@ -8563,7 +8563,7 @@ packages:
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /lru-cache@10.0.0:
@@ -8841,7 +8841,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /node-addon-api@3.2.1:
@@ -8947,7 +8947,7 @@ packages:
       tar-stream: 2.2.0
       tmp: 0.2.1
       tsconfig-paths: 4.2.0
-      tslib: 2.6.0
+      tslib: 2.6.1
       v8-compile-cache: 2.3.0
       yargs: 17.7.2
       yargs-parser: 21.1.1
@@ -9199,7 +9199,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /parent-module@1.0.1:
@@ -9246,7 +9246,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /path-exists@3.0.0:
@@ -9944,13 +9944,13 @@ packages:
   /rxjs@7.8.0:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
     dependencies:
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /safe-buffer@5.1.2:
@@ -10514,7 +10514,7 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/utils': 2.4.2
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /systemjs@6.14.1:
@@ -10855,8 +10855,8 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
-  /tslib@2.6.0:
-    resolution: {integrity: sha512-7At1WUettjcSRHXCyYtTselblcHl9PJFFVKiCAy/bY97+BPZXSQ2wbq0P9s8tK2G7dFQfNnlJnPAiArVBVBsfA==}
+  /tslib@2.6.1:
+    resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
 
   /tsutils@3.21.0(typescript@4.9.3):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}

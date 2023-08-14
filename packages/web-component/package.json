@@ -72,7 +72,7 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "tslib": "2.6.0",
+    "tslib": "2.6.1",
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
