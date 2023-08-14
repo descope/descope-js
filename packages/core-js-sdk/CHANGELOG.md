@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.6.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.5.0...core-js-sdk-1.6.0) (2023-08-14)
+
+
+### Features
+
+* Add logger prop for runner ([#236](https://github.com/descope/descope-js/issues/236)) ([7fd0c2f](https://github.com/descope/descope-js/commit/7fd0c2fa6d62df305c402bf66028cf0567af0d68))
+
 ## [1.5.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.6...core-js-sdk-1.5.0) (2023-08-08)
 
 
