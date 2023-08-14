@@ -52,8 +52,7 @@ export async function fetchContent<T extends 'text' | 'json'>(
 }> {
   const res = await fetch(url, { cache: 'default' });
   if (!res.ok) {
-    // eslint-disable-next-line no-console
-    throw Error(`Error fetching URL ${url}`);
+    throw Error(`Error fetching URL ${url} [${res.status}]`);
   }
 
   return {

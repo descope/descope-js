@@ -101,6 +101,28 @@ const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 descopeWcEle.errorTransformer = translateError;
 ```
 
+### `logger` - An object that defines how to log error, warning and info. Defaults to console.error, console.warn and console.info respectively
+
+Usage example:
+
+```javascript
+const logger = {
+  info: (message: string, description: string, state: any) => {
+    console.log(message, description);
+  },
+  warn: (title: string, description: string) => {
+    console.warn(`WARN: ${title}`, description);
+  },
+  error: (title: string, description: string) => {
+    console.error(`ERROR: ${title}`, description);
+  },
+};
+
+const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+
+descopeWcEle.logger = logger;
+```
+
 ## Events
 
 ### `error` - Fired when an error occurs. The event detail contains the error object.
@@ -109,7 +131,9 @@ Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('error', (e) => alert(`Error! - ${e.detail.errorMessage}`));
+descopeWcEle.addEventListener('error', (e) =>
+  alert(`Error! - ${e.detail.errorMessage}`)
+);
 ```
 
 ### `success` - Fired when the flow is completed successfully. The event detail contains the flow result.
@@ -118,5 +142,7 @@ Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('success', (e) => alert(`Success! - ${JSON.stringify(e.detail)}`));
+descopeWcEle.addEventListener('success', (e) =>
+  alert(`Success! - ${JSON.stringify(e.detail)}`)
+);
 ```

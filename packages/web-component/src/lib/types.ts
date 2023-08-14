@@ -125,3 +125,9 @@ export interface Context {
   loginId?: string;
   code?: string;
 }
+
+export interface ILogger {
+  info(title: string, description: string, state: any): void;
+  warn(title: string, description?: string): void;
+  error(title: string, description?: string, ...optionalParams: any[]): void;
+}

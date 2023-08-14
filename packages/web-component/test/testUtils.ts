@@ -2,6 +2,7 @@
 export const generateSdkResponse = ({
   ok = true,
   stepId = '0',
+  stepName = 'Step Name',
   screenId = '0',
   redirectUrl = '',
   screenState = {},
@@ -16,6 +17,7 @@ export const generateSdkResponse = ({
   ok,
   data: {
     stepId,
+    stepName,
     action,
     screen: { id: screenId, state: screenState },
     redirect: { url: redirectUrl },
