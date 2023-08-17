@@ -91,7 +91,8 @@ Usage example:
 ```javascript
 function translateError(error) {
   const translationMap = {
-    SAMLStartFailed: 'לא ניתן להתחבר כרגע, אנא נסה שוב מאוחר יותר',
+    SAMLStartFailed:
+      'No es posible iniciar sesión en este momento, por favor intenta nuevamente más tarde',
   };
   return translationMap[error.type] || error.text;
 }
