@@ -59,6 +59,7 @@ export type UserResponse = User & {
 export type UserTenant = {
   tenantId: string;
   roleNames?: string[];
+  tenantName: string;
 };
 
 /** Login options to be added to the different authentication methods */
@@ -185,6 +186,8 @@ export type FlowResponse = {
   executionId: string;
   // current step identifier
   stepId: string;
+  // current step name
+  stepName: string;
   // flow execution status
   status: FlowStatus;
   // the next required action

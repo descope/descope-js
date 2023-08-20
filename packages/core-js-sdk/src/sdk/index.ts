@@ -4,6 +4,7 @@ import withAccessKeys from './accesskey';
 import withEnchantedLink from './enchantedLink';
 import withFlow from './flow';
 import {
+  getTenants,
   getJwtPermissions,
   getJwtRoles,
   isJwtExpired,
@@ -16,10 +17,17 @@ import withSaml from './saml';
 import withTotp from './totp';
 import withPassword from './password';
 import { JWTResponse, UserResponse } from './types';
-import { stringNonEmpty, withValidations } from './validations';
+import {
+  stringNonEmpty,
+  withValidations,
+  isStringOrUndefinedValidator,
+} from './validations';
 import withWebauthn from './webauthn';
 
 const withJwtValidations = withValidations(stringNonEmpty('token'));
+const withOptionalTokenValidations = withValidations(
+  isStringOrUndefinedValidator('token')
+);
 
 /** Returns Descope SDK with all available operations */
 export default (httpClient: HttpClient) => ({
@@ -33,19 +41,22 @@ export default (httpClient: HttpClient) => ({
   webauthn: withWebauthn(httpClient),
   password: withPassword(httpClient),
   flow: withFlow(httpClient),
-  refresh: (token?: string) =>
+  refresh: withOptionalTokenValidations((token?: string) =>
     transformResponse<JWTResponse>(
       httpClient.post(apiPaths.refresh, {}, { token })
-    ),
-  logout: (token?: string) =>
-    transformResponse<never>(httpClient.post(apiPaths.logout, {}, { token })),
-  logoutAll: (token?: string) =>
-    transformResponse<never>(
-      httpClient.post(apiPaths.logoutAll, {}, { token })
-    ),
-  me: (token?: string) =>
-    transformResponse<UserResponse>(httpClient.get(apiPaths.me, { token })),
+    )
+  ),
+  logout: withOptionalTokenValidations((token?: string) =>
+    transformResponse<never>(httpClient.post(apiPaths.logout, {}, { token }))
+  ),
+  logoutAll: withOptionalTokenValidations((token?: string) =>
+    transformResponse<never>(httpClient.post(apiPaths.logoutAll, {}, { token }))
+  ),
+  me: withOptionalTokenValidations((token?: string) =>
+    transformResponse<UserResponse>(httpClient.get(apiPaths.me, { token }))
+  ),
   isJwtExpired: withJwtValidations(isJwtExpired),
+  getTenants: withJwtValidations(getTenants),
   getJwtPermissions: withJwtValidations(getJwtPermissions),
   getJwtRoles: withJwtValidations(getJwtRoles),
   httpClient,

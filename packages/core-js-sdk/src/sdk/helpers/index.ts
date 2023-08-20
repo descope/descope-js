@@ -33,6 +33,17 @@ export function isJwtExpired(token: string): boolean {
 }
 
 /**
+ * Returns the list of tenants in the given JWT
+ *
+ * @param token JWT token
+ */
+export function getTenants(token: string): string[] {
+  let claims: any = parseJwt(token);
+  const items = Object.keys(claims?.tenants);
+  return Array.isArray(items) ? items : [];
+}
+
+/**
  * Returns the list of permissions granted in the given JWT but DOES NOT check for signature
  *
  * @param token JWT token

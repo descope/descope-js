@@ -6,6 +6,7 @@ import {
   getAnimationDirection,
   getRunIdsFromUrl,
   handleAutoFocus,
+  isChromium,
   setRunIdsOnUrl,
 } from '../../src/lib/helpers/helpers';
 
@@ -83,6 +84,47 @@ describe('helpers', () => {
     window.history.replaceState = replaceState;
     clearRunIdsFromUrl();
     expect(replaceState).toHaveBeenCalledWith({}, '', `http://localhost/`);
+  });
+
+  describe('isChromium', () => {
+    const mockBrowser = (userAgent: string, vendor: string) => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value: userAgent,
+        writable: true,
+      });
+      Object.defineProperty(navigator, 'vendor', {
+        value: vendor,
+        writable: true,
+      });
+    };
+    it('should return "false" on firefox', () => {
+      mockBrowser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0',
+        ''
+      );
+      expect(isChromium()).toBe(false);
+    });
+    it('should return "true" on chrome', () => {
+      mockBrowser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+        'Google Inc.'
+      );
+      expect(isChromium()).toBe(true);
+    });
+    it('should return "false" on safari', () => {
+      mockBrowser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15',
+        'Apple Computer, Inc.'
+      );
+      expect(isChromium()).toBe(false);
+    });
+    it('should return "true" on edge', () => {
+      mockBrowser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43',
+        'Google Inc.'
+      );
+      expect(isChromium()).toBe(true);
+    });
   });
 
   describe('getAnimationDirection', () => {

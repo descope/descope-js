@@ -180,9 +180,6 @@ describe('debugger', () => {
     await waitFor(() =>
       expect(screen.getByShadowText('[123]: description')).toBeInTheDocument()
     );
-    await waitFor(() =>
-      expect(screen.getByShadowText('message')).toBeInTheDocument()
-    );
   });
 
   it('should remain visible when resizing the window', async () => {

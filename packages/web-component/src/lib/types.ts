@@ -27,7 +27,9 @@ export interface LastAuthState {
 
 export interface ScreenState {
   errorText?: string;
-  inputs?: Record<string, string>;
+  errorType?: string;
+  form?: Record<string, string>;
+  inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
   totp?: { image?: string; provisionUrl?: string };
 }
@@ -55,11 +57,13 @@ export type FlowState = {
   redirectAuthInitiator: string;
   oidcIdpStateId: string;
   deferredRedirect: boolean;
+  locale: string;
 };
 
 export type StepState = {
   screenState: ScreenState;
   htmlUrl: string;
+  htmlLocaleUrl: string;
   next: NextFn;
   direction: Direction | undefined;
 };
@@ -120,6 +124,12 @@ export type ConditionsMap = {
 export interface Context {
   loginId?: string;
   code?: string;
+}
+
+export interface ILogger {
+  info(title: string, description: string, state: any): void;
+  warn(title: string, description?: string): void;
+  error(title: string, description?: string, ...optionalParams: any[]): void;
 }
 
 export type DescopeUI = Record<string, () => Promise<void>> & {

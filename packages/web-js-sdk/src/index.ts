@@ -18,4 +18,10 @@ const decoratedCreateSdk = compose(
 
 export type { UserResponse } from './types';
 
+// Note: make sure to update packages/web-js-sdk/test/umd.test.ts when adding new constants
+export {
+  REFRESH_TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from './enhancers/withPersistTokens/constants';
+
 export default decoratedCreateSdk;
