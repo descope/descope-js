@@ -14,6 +14,11 @@ describe('sdk', () => {
   });
 
   describe('refresh', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.refresh({ a: 'b' })).toThrow(
+        '"token" must be string or undefined'
+      );
+    });
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
@@ -66,6 +71,9 @@ describe('sdk', () => {
         C2EdY4UXXzKPV0EKdZFJbuKKmvtl: {
           roles: ['abc', 'xyz'],
         },
+        C2EdY4UXXzKPV0EKdZFJbuKKmvtm: {
+          roles: ['def'],
+        },
       },
     };
 
@@ -89,9 +97,26 @@ describe('sdk', () => {
         sdk.getJwtRoles('jwt', 'C2EdY4UXXzKPV0EKdZFJbuKKmvtl')
       ).toStrictEqual(['abc', 'xyz']);
     });
+    it('should return a list of tenants', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => mock);
+      expect(sdk.getTenants('jwt')).toStrictEqual([
+        'C2EdY4UXXzKPV0EKdZFJbuKKmvtl',
+        'C2EdY4UXXzKPV0EKdZFJbuKKmvtm',
+      ]);
+    });
   });
 
   describe('logout', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.logout({ a: 'b' })).toThrow(
+        '"token" must be string or undefined'
+      );
+    });
+
+    it('should not throw an error when token is undefined', () => {
+      expect(() => sdk.logout()).not.toThrow();
+    });
+
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
@@ -114,6 +139,11 @@ describe('sdk', () => {
   });
 
   describe('logoutAll', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.logoutAll({ a: 'b' })).toThrow(
+        '"token" must be string or undefined'
+      );
+    });
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {
@@ -136,6 +166,11 @@ describe('sdk', () => {
   });
 
   describe('me', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.me({ a: 'b' })).toThrow(
+        '"token" must be string or undefined'
+      );
+    });
     it('should send the correct request', () => {
       const httpRespJson = { key: 'val' };
       const httpResponse = {

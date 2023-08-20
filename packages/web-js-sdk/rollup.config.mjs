@@ -51,7 +51,7 @@ export default [
     external,
   },
   {
-    input,
+    input: './src/index.umd.ts',
     output: {
       file: 'dist/index.umd.js',
       format: 'umd',

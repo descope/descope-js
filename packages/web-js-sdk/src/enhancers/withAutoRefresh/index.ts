@@ -8,6 +8,7 @@ import {
   millisecondsUntilDate,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
+import logger from '../helpers/logger';
 
 // The amount of time (ms) to trigger the refresh before session expires
 const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
@@ -25,18 +26,46 @@ export const withAutoRefresh =
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
     const { clearAllTimers, setTimer } = createTimerFunctions();
 
+    // we need to hold the expiration time and the refresh token in order to refresh the session
+    // when the user comes back to the tab or from background/lock screen/etc.
+    let sessionExpiration: Date;
+    let refreshToken: string;
+    document.addEventListener('visibilitychange', () => {
+      // tab becomes visible and the session is expired, do a refresh
+      if (
+        document.visibilityState === 'visible' &&
+        new Date() > sessionExpiration
+      ) {
+        logger.debug('Expiration time passed, refreshing session');
+        sdk.refresh(refreshToken);
+      }
+    });
+
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const { refreshJwt, sessionJwt } = await getAuthInfoFromResponse(res);
 
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
+        logger.debug('Received 401, canceling all timers');
         clearAllTimers();
       } else if (sessionJwt) {
+        sessionExpiration = getTokenExpiration(sessionJwt);
+        refreshToken = refreshJwt;
         const timeout =
-          millisecondsUntilDate(getTokenExpiration(sessionJwt)) -
-          REFRESH_THRESHOLD;
+          millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
         clearAllTimers();
-        setTimer(() => sdk.refresh(refreshJwt), timeout);
+
+        const refreshTimeStr = new Date(
+          Date.now() + timeout
+        ).toLocaleTimeString('en-US', { hour12: false });
+        logger.debug(
+          `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`
+        );
+
+        setTimer(() => {
+          logger.debug('Refreshing session due to timer');
+          sdk.refresh(refreshJwt);
+        }, timeout);
       }
     };
 
@@ -46,7 +75,7 @@ export const withAutoRefresh =
       (fn) =>
       async (...args) => {
         const resp = await fn(...args);
-
+        logger.debug('Clearing all timers');
         clearAllTimers();
 
         return resp;
