@@ -2,6 +2,101 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.3.12](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.11...web-js-sdk-1.3.12) (2023-08-18)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.3`
+### [1.3.11](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.10...web-js-sdk-1.3.11) (2023-08-18)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.2`
+### [1.3.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.9...web-js-sdk-1.3.10) (2023-08-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.1`
+### [1.3.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.8...web-js-sdk-1.3.9) (2023-08-14)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.0`
+### [1.3.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.7...web-js-sdk-1.3.8) (2023-08-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.5.0`
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.8.4 ([#209](https://github.com/descope/descope-js/issues/209)) ([9478551](https://github.com/descope/descope-js/commit/94785519c84d45420cd7c632c93539e5fa31fca2))
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.8.5 ([#218](https://github.com/descope/descope-js/issues/218)) ([9a45354](https://github.com/descope/descope-js/commit/9a45354e0dc256c5438ff3c09b5a6ecc2155e929))
+
+### [1.3.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.6...web-js-sdk-1.3.7) (2023-07-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.6`
+
+### Bug Fixes
+
+* handle refresh on visibility change ([#198](https://github.com/descope/descope-js/issues/198)) ([257187b](https://github.com/descope/descope-js/commit/257187bd4f05dc899489f8eba70c06f12ca24706))
+
+## [1.3.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.5...web-js-sdk-1.3.6) (2023-07-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.5`
+## [1.3.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.4...web-js-sdk-1.3.5) (2023-07-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.4`
+## [1.3.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.3...web-js-sdk-1.3.4) (2023-06-30)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.3`
+## [1.3.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.2...web-js-sdk-1.3.3) (2023-06-27)
+
+
+### Bug Fixes
+
+* Fix umd build ([#186](https://github.com/descope/descope-js/issues/186)) RELEASE ([1f6ee56](https://github.com/descope/descope-js/commit/1f6ee561a04a1569488a505aa7a277e894cf3441))
+
+## [1.3.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.1...web-js-sdk-1.3.2) (2023-06-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.2`
+## [1.3.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.0...web-js-sdk-1.3.1) (2023-06-23)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.1`
+## [1.3.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.10...web-js-sdk-1.3.0) (2023-06-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.0`
+
+### Features
+
+* expose tokens constants ([#180](https://github.com/descope/descope-js/issues/180)) RELEASE ([b2e3482](https://github.com/descope/descope-js/commit/b2e3482fe4083811acce0ba2b755c0034d9c1699))
+
+## [1.2.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.9...web-js-sdk-1.2.10) (2023-06-19)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.3.9`
+## [1.2.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.8...web-js-sdk-1.2.9) (2023-06-12)
+
+## [1.2.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.7...web-js-sdk-1.2.8) (2023-06-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.3.8`
 ## [1.2.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.2.6...web-js-sdk-1.2.7) (2023-05-29)
 
 ### Dependency Updates

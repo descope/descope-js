@@ -12,6 +12,7 @@ import {
   getContentUrl,
   getRunIdsFromUrl,
   handleUrlParams,
+  isChromium,
   loadFont,
   State,
   withMemCache,
@@ -23,6 +24,7 @@ import {
   DebugState,
   FlowState,
   FlowStateUpdateFn,
+  ILogger,
   SdkConfig,
   ThemeOptions,
   DescopeUI,
@@ -34,6 +36,8 @@ declare const BUILD_VERSION: string;
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends HTMLElement {
+  logger: ILogger = console;
+
   static get observedAttributes() {
     return [
       'project-id',
@@ -41,10 +45,12 @@ class BaseDescopeWc extends HTMLElement {
       'base-url',
       'tenant',
       'theme',
+      'locale',
       'debug',
       'telemetryKey',
       'redirect-url',
       'auto-focus',
+      'prefer-biometrics',
     ];
   }
 
@@ -57,6 +63,19 @@ class BaseDescopeWc extends HTMLElement {
   };
 
   #init = false;
+
+  loggerWrapper = {
+    error: (message: string, description = '') => {
+      this.logger.error(message, description, new Error());
+      this.#updateDebuggerMessages(message, description);
+    },
+    warn: (message: string, description = '') => {
+      this.logger.warn(message, description);
+    },
+    info: (message: string, description = '', state: any = {}) => {
+      this.logger.info(message, description, state);
+    },
+  };
 
   #flowState = new State<FlowState>({ deferredRedirect: false } as FlowState);
 
@@ -97,11 +116,8 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   #shouldMountInFormEle() {
-    const isChrome =
-      /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
     const wc = this.shadowRoot.host;
-
-    return !wc.closest('form') && isChrome;
+    return !wc.closest('form') && isChromium();
   }
 
   // we want to make sure the web-component is wrapped with on outer form element
@@ -138,6 +154,10 @@ class BaseDescopeWc extends HTMLElement {
     return this.getAttribute('debug') === 'true';
   }
 
+  get locale() {
+    return this.getAttribute('locale') || undefined;
+  }
+
   get theme(): ThemeOptions {
     const theme = this.getAttribute('theme') as ThemeOptions;
 
@@ -163,15 +183,22 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get preferBiometrics(): boolean {
+    const res = this.getAttribute('prefer-biometrics') ?? 'true';
+    return res === 'true';
+  }
+
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
       'tenant',
       'theme',
+      'locale',
       'debug',
       'telemetryKey',
       'redirect-url',
       'auto-focus',
+      'prefer-biometrics',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
@@ -262,7 +289,7 @@ class BaseDescopeWc extends HTMLElement {
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.logger.error(
+      this.loggerWrapper.error(
         'Cannot get config file',
         'make sure that your projectId & flowId are correct'
       );
@@ -299,7 +326,7 @@ class BaseDescopeWc extends HTMLElement {
         dark: theme.dark.components,
       };
     } catch (e) {
-      this.logger.error(
+      this.loggerWrapper.error(
         'Cannot fetch theme file',
         'make sure that your projectId & flowId are correct'
       );
@@ -364,17 +391,12 @@ class BaseDescopeWc extends HTMLElement {
     return config;
   }
 
-  logger = {
-    error: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.error(message, description, new Error());
-      this.#updateDebuggerMessages(message, description);
-    },
-    info: (message: string, description = '') => {
-      // eslint-disable-next-line no-console
-      console.log(message, description);
-    },
-  };
+  async getTargetLocales() {
+    const flowConfig = await this.getFlowConfig();
+    return (flowConfig?.targetLocales || []).map((locale: string) =>
+      locale.toLowerCase()
+    );
+  }
 
   #handleKeyPress() {
     // we want to simulate submit when the user presses Enter
@@ -419,7 +441,7 @@ class BaseDescopeWc extends HTMLElement {
 
     this.descopeUI = new Promise((res, rej) => {
       const onError = () => {
-        this.logger.error(
+        this.loggerWrapper.error(
           'Cannot load DescopeUI',
           `Make sure this URL is valid and return the correct script: "${scriptSrc}"`
         );
@@ -483,6 +505,7 @@ class BaseDescopeWc extends HTMLElement {
         baseUrl: this.baseUrl,
         tenant: this.tenant,
         redirectUrl: this.redirectUrl,
+        locale: this.locale,
         stepId,
         executionId,
         token,

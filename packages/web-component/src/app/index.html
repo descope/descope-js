@@ -27,11 +27,21 @@
         project-id="<project-id>"
         flow-id="<flow-id>"
         base-url="<base-url>"
+        locale="<locale>"
         debug="true"
       ></descope-wc>
     </div>
     <script>
+      // Translate or modify the error as needed
+      function translateError(error) {
+        const translationMap = {
+          SAMLStartFailed: 'Failed to start SAML flow',
+        };
+        return translationMap[error.type] || error.text;
+      }
       const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+
+      descopeWcEle.errorTransformer = translateError;
       descopeWcEle.addEventListener('error', (e) =>
         alert(`Error! - ${e.detail.errorMessage}`)
       );

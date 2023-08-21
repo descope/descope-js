@@ -96,10 +96,23 @@ const replaceProvisionURL = (
  */
 export const replaceWithScreenState = (
   baseEle: DocumentFragment,
-  screenState?: ScreenState
+  screenState?: ScreenState,
+  errorTransformer?: (error: { text: string; type: string }) => string,
+  logger?: { error: (message: string, description: string) => void }
 ) => {
-  replaceElementMessage(baseEle, 'error-message', screenState?.errorText);
+  let errorText = screenState?.errorText;
+  try {
+    errorText =
+      errorTransformer?.({
+        text: screenState?.errorText,
+        type: screenState?.errorType,
+      }) || screenState?.errorText;
+  } catch (e) {
+    logger.error('Error transforming error message', e.message);
+  }
+  replaceElementMessage(baseEle, 'error-message', errorText);
   replaceElementInputs(baseEle, screenState?.inputs);
+  replaceElementInputs(baseEle, screenState?.form);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
 };

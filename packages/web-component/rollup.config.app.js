@@ -38,7 +38,8 @@ export default {
         contents
           .replace('<project-id>', process.env.DESCOPE_PROJECT_ID || '')
           .replace('<flow-id>', process.env.DESCOPE_FLOW_ID || 'sign-up-or-in')
-          .replace('<base-url>', process.env.DESCOPE_BASE_URL || ''),
+          .replace('<base-url>', process.env.DESCOPE_BASE_URL || '')
+          .replace('<locale>', process.env.DESCOPE_LOCALE || ''),
     }),
   ],
 };
