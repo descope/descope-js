@@ -523,11 +523,15 @@ class DescopeWc extends BaseDescopeWc {
     const { geo } = await this.getExecutionContext();
     setPhoneAutoDetectDefaultCode(clone, geo);
 
-    // put the totp variable on the root element, which is the top level 'div'
-    setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
-
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
+
+      // put the totp variable on the root element, which is the top level 'div' inside the shadowroot
+      setTOTPVariable(
+        this.shadowRoot.querySelector('div'),
+        screenState?.totp?.image
+      );
+
       this.rootElement.replaceChildren(clone);
 
       // If before html url was empty, we deduce its the first time a screen is shown
