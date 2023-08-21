@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.6.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.3...core-js-sdk-1.6.4) (2023-08-21)
+
+
+### Performance Improvements
+
+* Replace password session ([#247](https://github.com/descope/descope-js/issues/247)) ([5c20127](https://github.com/descope/descope-js/commit/5c201271d6a2d84ddbc504ed6e4864e233dfb924))
+
 ### [1.6.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.2...core-js-sdk-1.6.3) (2023-08-18)
 
 ### [1.6.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.1...core-js-sdk-1.6.2) (2023-08-18)
