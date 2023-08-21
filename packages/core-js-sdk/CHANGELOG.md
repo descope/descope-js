@@ -2,6 +2,54 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.6.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.2...core-js-sdk-1.6.3) (2023-08-18)
+
+### [1.6.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.1...core-js-sdk-1.6.2) (2023-08-18)
+
+### [1.6.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.0...core-js-sdk-1.6.1) (2023-08-17)
+
+## [1.6.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.5.0...core-js-sdk-1.6.0) (2023-08-14)
+
+
+### Features
+
+* Add logger prop for runner ([#236](https://github.com/descope/descope-js/issues/236)) ([7fd0c2f](https://github.com/descope/descope-js/commit/7fd0c2fa6d62df305c402bf66028cf0567af0d68))
+
+## [1.5.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.6...core-js-sdk-1.5.0) (2023-08-08)
+
+
+### Features
+
+* Add tenant name to userTenant object ([#204](https://github.com/descope/descope-js/issues/204)) ([97ca964](https://github.com/descope/descope-js/commit/97ca96403a8d8a118bb346a3a3ae457cc5bd2040))
+
+### [1.4.6](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.5...core-js-sdk-1.4.6) (2023-07-10)
+
+## [1.4.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.4...core-js-sdk-1.4.5) (2023-07-10)
+
+## [1.4.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.3...core-js-sdk-1.4.4) (2023-07-07)
+
+## [1.4.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.2...core-js-sdk-1.4.3) (2023-06-30)
+
+## [1.4.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.1...core-js-sdk-1.4.2) (2023-06-24)
+
+## [1.4.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.0...core-js-sdk-1.4.1) (2023-06-23)
+
+
+### Bug Fixes
+
+* add optional token validations ([#164](https://github.com/descope/descope-js/issues/164)) ([79c0e87](https://github.com/descope/descope-js/commit/79c0e874c05554a1ce370fa6486b44421d3919e1))
+
+## [1.4.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.9...core-js-sdk-1.4.0) (2023-06-22)
+
+
+### Features
+
+* add getTenants utility function to fetch tenant list from JWT ([#172](https://github.com/descope/descope-js/issues/172)) ([98a1914](https://github.com/descope/descope-js/commit/98a1914387ac907c08aa574ccdcb19ee9d1e0406))
+
+## [1.3.9](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.8...core-js-sdk-1.3.9) (2023-06-19)
+
+## [1.3.8](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.7...core-js-sdk-1.3.8) (2023-06-11)
+
 ## [1.3.7](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.6...core-js-sdk-1.3.7) (2023-05-29)
 
 ## [1.3.6](https://github.com/descope/descope-js/compare/core-js-sdk-1.3.5...core-js-sdk-1.3.6) (2023-05-22)
