@@ -105,9 +105,15 @@ export const replaceWithScreenState = (
 };
 
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
-  if (image) {
+  const totpVarName = (
+    customElements.get('descope-totp-image') as CustomElementConstructor & {
+      cssVarList: Record<string, string>;
+    }
+  )?.cssVarList.url;
+
+  if (image && totpVarName) {
     rootEle?.style?.setProperty(
-      '--totp-image',
+      totpVarName,
       `url(data:image/jpg;base64,${image})`
     );
   }
