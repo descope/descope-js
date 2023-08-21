@@ -683,7 +683,7 @@ class DescopeWc extends BaseDescopeWc {
   async #getFormData() {
     const inputs = Array.from(
       this.shadowRoot.querySelectorAll(
-        `.descope-input[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
+        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
     ) as HTMLInputElement[];
 
