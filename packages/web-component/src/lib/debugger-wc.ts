@@ -51,7 +51,7 @@ template.innerHTML = `
   }
 
   .msg {
-    border-bottom: 1px solid lightgrey; 
+    border-bottom: 1px solid lightgrey;
     padding: 8px 16px;
     display: flex;
     gap: 5px;
@@ -66,7 +66,7 @@ template.innerHTML = `
     padding: 8px 16px;
     background-color: #FAFAFA;
   }
-    
+
 
   .msg.collapsible:not(.collapsed) {
     background-color: #F5F5F5;
@@ -89,12 +89,13 @@ template.innerHTML = `
     overflow: hidden;
     flex-grow: 1;
     margin-right:5px;
-  }  
+  }
 
   .msg_desc {
     color: #646464;
     cursor: initial;
-  }  
+    word-wrap: break-word;
+  }
 
   .msg.collapsed .msg_desc {
     overflow: hidden;
