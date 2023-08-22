@@ -53,6 +53,9 @@ class DescopeWc extends BaseDescopeWc {
 
   #currentInterval: NodeJS.Timeout;
 
+  // this is needed to prevent multiple polling calls
+  #isExecutingPolling = false;
+
   #conditionalUiAbortController = null;
 
   constructor() {
@@ -327,14 +330,24 @@ class DescopeWc extends BaseDescopeWc {
 
     if (action === RESPONSE_ACTIONS.poll) {
       this.#currentInterval = setInterval(async () => {
-        const sdkResp = await this.sdk.flow.next(
-          executionId,
-          stepId,
-          CUSTOM_INTERACTIONS.polling,
-          {},
-          flowConfig.version
-        );
-        this.#handleSdkResponse(sdkResp);
+        if (this.#isExecutingPolling) {
+          // if we are already executing polling, we should not start another one
+          return;
+        }
+
+        this.#isExecutingPolling = true;
+        try {
+          const sdkResp = await this.sdk.flow.next(
+            executionId,
+            stepId,
+            CUSTOM_INTERACTIONS.polling,
+            {},
+            flowConfig.version
+          );
+          this.#handleSdkResponse(sdkResp);
+        } finally {
+          this.#isExecutingPolling = false;
+        }
       }, 2000);
     }
 
