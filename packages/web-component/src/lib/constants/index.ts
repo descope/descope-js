@@ -31,6 +31,7 @@ export const RESPONSE_ACTIONS = {
 };
 
 export const ASSETS_FOLDER = 'v2-beta';
+export const PREV_VER_ASSETS_FOLDER = 'v2-alpha';
 
 // Those files are saved on a new folder to prevent breaking changes
 export const THEME_FILENAME = 'theme.json';

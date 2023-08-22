@@ -63,9 +63,13 @@ export async function fetchContent<T extends 'text' | 'json'>(
 
 const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); // preventing duplicate separators
 
-export function getContentUrl(projectId: string, filename: string) {
+export function getContentUrl(
+  projectId: string,
+  filename: string,
+  assetsFolder = ASSETS_FOLDER
+) {
   const url = new URL(BASE_CONTENT_URL);
-  url.pathname = pathJoin(url.pathname, projectId, ASSETS_FOLDER, filename);
+  url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
 
   return url.toString();
 }
