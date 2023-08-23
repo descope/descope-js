@@ -732,10 +732,12 @@ class DescopeWc extends BaseDescopeWc {
 
       const formData = await this.#getFormData();
       const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+      const contextArgs = this.componentsContext;
 
       const actionArgs = {
         ...eleDescopeAttrs,
         ...formData,
+        ...contextArgs,
         // 'origin' is required to start webauthn. For now we'll add it to every request
         origin: window.location.origin,
       };

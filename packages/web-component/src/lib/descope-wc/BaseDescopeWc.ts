@@ -82,6 +82,8 @@ class BaseDescopeWc extends HTMLElement {
 
   #debugState = new State<DebugState>();
 
+  componentsContext = {};
+
   nextRequestStatus = new State<{ isLoading: boolean }>({ isLoading: false });
 
   rootElement: HTMLDivElement;
@@ -93,6 +95,7 @@ class BaseDescopeWc extends HTMLElement {
   #eventsCbRefs = {
     popstate: this.#syncStateIdFromUrl.bind(this),
     visibilitychange: this.#syncStateWithVisibility.bind(this),
+    componentsContext: this.#handleComponentsContext.bind(this),
   };
 
   sdk: ReturnType<typeof createSdk>;
@@ -350,6 +353,10 @@ class BaseDescopeWc extends HTMLElement {
     this.shadowRoot.appendChild(styleEle);
   }
 
+  #handleComponentsContext(e: CustomEvent) {
+    this.componentsContext = { ...e.detail, ...this.componentsContext };
+  }
+
   async #applyTheme() {
     this.rootElement.setAttribute('data-theme', this.theme);
     const descopeUi = await this.descopeUI;
@@ -529,6 +536,11 @@ class BaseDescopeWc extends HTMLElement {
       window.addEventListener('popstate', this.#eventsCbRefs.popstate);
 
       window.addEventListener(
+        'components-context',
+        this.#eventsCbRefs.componentsContext
+      );
+
+      window.addEventListener(
         'visibilitychange',
         this.#eventsCbRefs.visibilitychange
       );
@@ -563,6 +575,14 @@ class BaseDescopeWc extends HTMLElement {
     this.#debugState.unsubscribeAll();
     this.#disableDebugger();
     window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
+    window.removeEventListener(
+      'visibilitychange',
+      this.#eventsCbRefs.visibilitychange
+    );
+    window.removeEventListener(
+      'components-context',
+      this.#eventsCbRefs.componentsContext
+    );
   }
 
   attributeChangedCallback(
