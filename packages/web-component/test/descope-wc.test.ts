@@ -2049,6 +2049,88 @@ describe('web-component', () => {
       );
     });
 
+    it('Should call start with token and externalToken when externalToken condition is met', async () => {
+      window.location.search = `?${URL_TOKEN_PARAM_NAME}=code1`;
+      localStorage.setItem(
+        DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+        '{"authMethod":"otp"}'
+      );
+      getLastUserLoginIdMock.mockReturnValue('abc');
+      configContent = {
+        flows: {
+          'sign-in': {
+            condition: {
+              key: 'externalToken',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'not-empty',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+            version: 1,
+          },
+        },
+      };
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            oidcIdpStateId: null,
+            redirectAuth: undefined,
+            tenant: undefined,
+            lastAuth: { authMethod: 'otp' },
+          },
+          undefined,
+          '',
+          {
+            token: 'code1',
+          },
+          1
+        )
+      );
+    });
+
+    it('Should fetch unmet screen when externalToken condition is not met', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      configContent = {
+        flows: {
+          'sign-in': {
+            condition: {
+              key: 'externalToken',
+              met: {
+                interactionId: 'gbutpyzvtgs',
+              },
+              operator: 'is-true',
+              unmet: {
+                interactionId: 'ELSE',
+                screenId: 'unmet',
+              },
+            },
+          },
+        },
+      };
+
+      pageContent = '<div>hey</div>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('hey'));
+      expect(startMock).not.toBeCalled();
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/unmet.html`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+    });
+
     it('should call start with redirect auth data and clear it from url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 

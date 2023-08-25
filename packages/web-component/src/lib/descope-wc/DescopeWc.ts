@@ -160,13 +160,13 @@ class DescopeWc extends BaseDescopeWc {
     if (!executionId) {
       if (flowConfig.conditions) {
         ({ startScreenId, conditionInteractionId } = calculateConditions(
-          { loginId, code },
+          { loginId, code, token },
           flowConfig.conditions
         ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
-          { loginId, code }
+          { loginId, code, token }
         ));
       } else {
         startScreenId = flowConfig.startScreenId;
