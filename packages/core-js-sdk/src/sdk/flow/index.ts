@@ -19,8 +19,9 @@ const withFlow = (httpClient: HttpClient) => ({
       options?: Options,
       conditionInteractionId?: string,
       interactionId?: string,
-      input?: FlowInput,
-      version?: number
+      version?: number,
+      componentsVersion?: string,
+      input?: FlowInput
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.flow.start, {
@@ -28,8 +29,9 @@ const withFlow = (httpClient: HttpClient) => ({
           options,
           conditionInteractionId,
           interactionId,
-          input,
           version,
+          componentsVersion,
+          input,
         })
       )
   ),
@@ -38,8 +40,9 @@ const withFlow = (httpClient: HttpClient) => ({
       executionId: string,
       stepId: string,
       interactionId: string,
-      input?: FlowInput,
-      version?: number
+      version?: number,
+      componentsVersion?: string,
+      input?: FlowInput
     ): Promise<SdkResponse<FlowResponse>> => {
       return transformResponse(
         httpClient.post(apiPaths.flow.next, {
@@ -48,6 +51,7 @@ const withFlow = (httpClient: HttpClient) => ({
           interactionId,
           input,
           version,
+          componentsVersion,
         })
       );
     }
