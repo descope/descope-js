@@ -82,7 +82,9 @@ class BaseDescopeWc extends HTMLElement {
 
   #debugState = new State<DebugState>();
 
-  componentsContext = {};
+  #componentsContext = {};
+
+  getComponentsContext = () => this.#componentsContext;
 
   nextRequestStatus = new State<{ isLoading: boolean }>({ isLoading: false });
 
@@ -535,6 +537,8 @@ class BaseDescopeWc extends HTMLElement {
       // we want to update the state when user clicks on back in the browser
       window.addEventListener('popstate', this.#eventsCbRefs.popstate);
 
+      // adding event to listen to events coming from components (e.g. recaptcha risk token) that want to add data to the context
+      // this data will be sent to the server on the next request
       window.addEventListener(
         'components-context',
         this.#eventsCbRefs.componentsContext

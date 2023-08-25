@@ -732,7 +732,7 @@ class DescopeWc extends BaseDescopeWc {
 
       const formData = await this.#getFormData();
       const eleDescopeAttrs = getElementDescopeAttributes(submitter);
-      const contextArgs = this.componentsContext;
+      const contextArgs = this.getComponentsContext();
 
       const actionArgs = {
         ...eleDescopeAttrs,
