@@ -111,7 +111,7 @@ export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated';
+export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'externalToken';
 
 type CheckFunction = (ctx: Context) => boolean;
 
@@ -124,6 +124,7 @@ export type ConditionsMap = {
 export interface Context {
   loginId?: string;
   code?: string;
+  token?: string;
 }
 
 export interface ILogger {
