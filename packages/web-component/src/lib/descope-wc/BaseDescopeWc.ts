@@ -1,6 +1,7 @@
 import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
+  PREV_VER_ASSETS_FOLDER,
   THEME_FILENAME,
   UI_COMPONENTS_URL,
   UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
@@ -281,6 +282,26 @@ class BaseDescopeWc extends HTMLElement {
     this.#updateExecState(currentState);
   }
 
+  async #getIsFlowsVersionMismatch() {
+    const config = await this.#getConfig();
+
+    return config.isMissingConfig && (await this.#isPrevVerConfig());
+  }
+
+  async #isPrevVerConfig() {
+    const prevVerConfigUrl = getContentUrl(
+      this.projectId,
+      CONFIG_FILENAME,
+      PREV_VER_ASSETS_FOLDER
+    );
+    try {
+      await fetchContent(prevVerConfigUrl, 'json');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // we want to get the config only if we don't have it already
   #getConfig = withMemCache(async () => {
     const configUrl = getContentUrl(this.projectId, CONFIG_FILENAME);
@@ -291,13 +312,8 @@ class BaseDescopeWc extends HTMLElement {
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.loggerWrapper.error(
-        'Cannot get config file',
-        'make sure that your projectId & flowId are correct'
-      );
+      return { isMissingConfig: true };
     }
-
-    return {};
   });
 
   async #loadFonts() {
@@ -355,9 +371,6 @@ class BaseDescopeWc extends HTMLElement {
 
   async #handleDebugMode({ isDebug }) {
     if (isDebug) {
-      // we are importing the debugger dynamically so we won't load it when it's not needed
-      await import('../debugger-wc');
-
       this.#debuggerEle = document.createElement(
         'descope-debugger'
       ) as HTMLElement & {
@@ -373,6 +386,9 @@ class BaseDescopeWc extends HTMLElement {
         pointerEvents: 'none',
         zIndex: 99999,
       });
+
+      // we are importing the debugger dynamically so we won't load it when it's not needed
+      await import('../debugger-wc');
 
       document.body.appendChild(this.#debuggerEle);
     } else {
@@ -469,7 +485,8 @@ class BaseDescopeWc extends HTMLElement {
 
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
-      await this.#loadDescopeUI();
+      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
+      this.#debugState.update({ isDebug: this.debug });
 
       if (this.#shouldMountInFormEle()) {
         this.#handleOuterForm();
@@ -477,6 +494,26 @@ class BaseDescopeWc extends HTMLElement {
       }
 
       this.#validateAttrs();
+
+      if (await this.#getIsFlowsVersionMismatch()) {
+        this.loggerWrapper.error(
+          'This SDK version does not support your flows version',
+          'Make sure to upgrade your flows to the latest version or use an older SDK version'
+        );
+
+        return;
+      }
+
+      if ((await this.#getConfig()).isMissingConfig) {
+        this.loggerWrapper.error(
+          'Cannot get config file',
+          'Make sure that your projectId & flowId are correct'
+        );
+
+        return;
+      }
+
+      await this.#loadDescopeUI();
 
       await this.#handleTheme();
 
@@ -505,7 +542,6 @@ class BaseDescopeWc extends HTMLElement {
       );
 
       this.#flowState.subscribe(this.#onFlowChange.bind(this));
-      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
 
       this.#flowState.update({
         projectId: this.projectId,
@@ -525,8 +561,6 @@ class BaseDescopeWc extends HTMLElement {
         redirectAuthInitiator,
         oidcIdpStateId,
       });
-
-      this.#debugState.update({ isDebug: this.debug });
 
       this.#init = true;
     }

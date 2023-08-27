@@ -100,7 +100,7 @@ class DescopeWc extends BaseDescopeWc {
         return body;
       } catch (ex) {
         this.loggerWrapper.error(
-          `Failed to fetch html page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
+          `Failed to fetch flow page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
           ex
         );
       }
@@ -110,7 +110,7 @@ class DescopeWc extends BaseDescopeWc {
       const { body } = await fetchContent(htmlUrl, 'text');
       return body;
     } catch (ex) {
-      this.loggerWrapper.error(`Failed to fetch html page from ${htmlUrl}`, ex);
+      this.loggerWrapper.error(`Failed to fetch flow page`, ex.message);
     }
     return null;
   }
