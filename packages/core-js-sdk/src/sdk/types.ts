@@ -222,6 +222,7 @@ export type FlowResponse = {
 
 export type Options = {
   redirectUrl?: string;
+  location?: string;
   tenant?: string;
   deviceInfo?: DeviceInfo;
   lastAuth?: LastAuth;
