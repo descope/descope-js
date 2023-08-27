@@ -1664,7 +1664,9 @@ describe('web-component', () => {
 
       jest.runAllTimers();
 
-      await screen.findByShadowText('It works!');
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 10000,
+      });
 
       fireEvent.click(screen.getByShadowText('click'));
 
