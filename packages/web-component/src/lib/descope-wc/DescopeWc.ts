@@ -51,8 +51,6 @@ class DescopeWc extends BaseDescopeWc {
     updateOnlyOnChange: false,
   });
 
-  #currentInterval: NodeJS.Timeout;
-
   #conditionalUiAbortController = null;
 
   constructor() {
@@ -138,10 +136,6 @@ class DescopeWc extends BaseDescopeWc {
       oidcIdpStateId,
       locale,
     } = currentState;
-
-    if (this.#currentInterval) {
-      this.#resetCurrentInterval();
-    }
 
     let startScreenId: string;
     let conditionInteractionId: string;
@@ -325,18 +319,12 @@ class DescopeWc extends BaseDescopeWc {
       this.#handleSdkResponse(sdkResp);
     }
 
-    if (action === RESPONSE_ACTIONS.poll) {
-      this.#currentInterval = setInterval(async () => {
-        const sdkResp = await this.sdk.flow.next(
-          executionId,
-          stepId,
-          CUSTOM_INTERACTIONS.polling,
-          {},
-          flowConfig.version
-        );
-        this.#handleSdkResponse(sdkResp);
-      }, 2000);
-    }
+    this.#handlePollingResponse(
+      executionId,
+      stepId,
+      flowConfig.version,
+      action
+    );
 
     // if there is no screen id (possbily due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
@@ -405,14 +393,23 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
-  #resetCurrentInterval = () => {
-    clearInterval(this.#currentInterval);
-    this.#currentInterval = null;
+  #handlePollingResponse = async (executionId, stepId, version, action) => {
+    if (action === RESPONSE_ACTIONS.poll) {
+      const sdkResp = await this.sdk.flow.next(
+        executionId,
+        stepId,
+        CUSTOM_INTERACTIONS.polling,
+        {},
+        version
+      );
+      this.#handleSdkResponse(sdkResp);
+      const { action: nextAction } = sdkResp.data;
+      this.#handlePollingResponse(executionId, stepId, version, nextAction);
+    }
   };
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
-      this.#resetCurrentInterval();
       this.#dispatch('error', sdkResp?.error);
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -438,7 +435,6 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       setLastAuth(lastAuth);
-      this.#resetCurrentInterval();
       this.#dispatch('success', authInfo);
       return;
     }
