@@ -51,6 +51,8 @@ class DescopeWc extends BaseDescopeWc {
     updateOnlyOnChange: false,
   });
 
+  #pollingTimeout: NodeJS.Timeout;
+
   #conditionalUiAbortController = null;
 
   constructor() {
@@ -396,7 +398,7 @@ class DescopeWc extends BaseDescopeWc {
   #handlePollingResponse = (executionId, stepId, version, action) => {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
-      setTimeout(async () => {
+      this.#pollingTimeout = setTimeout(async () => {
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
@@ -410,6 +412,11 @@ class DescopeWc extends BaseDescopeWc {
         this.#handlePollingResponse(executionId, stepId, version, nextAction);
       }, 2000);
     }
+  };
+
+  #resetPollingTimeout = () => {
+    clearTimeout(this.#pollingTimeout);
+    this.#pollingTimeout = null;
   };
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
@@ -718,6 +725,8 @@ class DescopeWc extends BaseDescopeWc {
       .forEach((button: HTMLButtonElement) => {
         // eslint-disable-next-line no-param-reassign
         button.onclick = () => {
+          // in case the user clicked on a button while the polling is scheduled, we should cancel it
+          this.#resetPollingTimeout();
           this.#handleSubmit(button, next);
         };
       });

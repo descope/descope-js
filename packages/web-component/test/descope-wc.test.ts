@@ -1651,6 +1651,37 @@ describe('web-component', () => {
       jest.useRealTimers();
     });
 
+    it('Should clear timeout when user clicks a button', async () => {
+      jest.spyOn(global, 'clearTimeout');
+
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      pageContent =
+        '<button id="submitterId">click</button><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      jest.runAllTimers();
+
+      await screen.findByShadowText('It works!');
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() =>
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          'submitterId',
+          expect.any(Object)
+        )
+      );
+
+      await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {
+        timeout: 10000,
+      });
+    });
+
     it('When has polling element - next with "polling", and check that timeout is set properly', async () => {
       jest.spyOn(global, 'setTimeout');
 
