@@ -153,7 +153,7 @@ export type FlowConfig = {
   condition?: ClientCondition;
 };
 
-export interface Configuration {
+export interface ProjectConfiguration {
   componentsVersion: string;
   cssTemplate: {
     dark: ThemeTemplate;

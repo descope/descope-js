@@ -28,7 +28,7 @@ import {
   SdkConfig,
   ThemeOptions,
   DescopeUI,
-  Configuration,
+  ProjectConfiguration,
   FlowConfig,
 } from '../types';
 import initTemplate from './initTemplate';
@@ -287,7 +287,7 @@ class BaseDescopeWc extends HTMLElement {
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
-        projectConfig: body as Configuration,
+        projectConfig: body as ProjectConfiguration,
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
@@ -385,7 +385,7 @@ class BaseDescopeWc extends HTMLElement {
       this.#debuggerEle?.updateData({ title, description });
   }
 
-  async getProjectConfig(): Promise<Configuration> {
+  async getProjectConfig(): Promise<ProjectConfiguration> {
     const { projectConfig } = await this.#getConfig();
     return projectConfig;
   }
