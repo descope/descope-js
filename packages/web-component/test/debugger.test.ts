@@ -107,6 +107,15 @@ describe('debugger', () => {
         }
       }
     });
+
+    const origAppend = document.body.append;
+    const spyAppend = jest.spyOn(document.body, 'append');
+    spyAppend.mockImplementation((ele: any) => {
+      setTimeout(() => {
+        ele.onload?.();
+      });
+      origAppend.bind(document.body)(ele);
+    });
   });
 
   afterEach(() => {
@@ -123,7 +132,7 @@ describe('debugger', () => {
 
     jest.runAllTimers();
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     expect(document.getElementsByTagName('descope-debugger').length).toBe(0);
   });
@@ -199,6 +208,12 @@ describe('debugger', () => {
   });
 
   it('should toggle debugger when flag changes', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
     await waitFor(() =>
@@ -207,7 +222,9 @@ describe('debugger', () => {
       ).toBeInTheDocument()
     );
 
-    const wcEle = document.getElementsByTagName('descope-wc')[0];
+    const wcEle = document.querySelector('descope-wc');
+
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     wcEle.setAttribute('debug', 'false');
 

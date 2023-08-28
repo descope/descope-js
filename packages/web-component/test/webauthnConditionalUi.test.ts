@@ -39,10 +39,14 @@ const webauthnSignInStartMock = sdk.webauthn.signIn.start as jest.Mock;
 const isConditionalLoginSupportedMock =
   isConditionalLoginSupported as jest.Mock;
 
+globalThis.DescopeUI = {};
+
 // this is for mocking the pages/theme/config
-const themeContent = '';
+const themeContent = {};
 let pageContent = '';
-const configContent = {};
+const configContent = {
+  componentsVersion: '1.2.3',
+};
 
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
@@ -74,8 +78,8 @@ describe('webauthnConditionalUi', () => {
       };
 
       switch (true) {
-        case url.endsWith('theme.css'): {
-          return { ...res, text: () => themeContent };
+        case url.endsWith('theme.json'): {
+          return { ...res, body: () => themeContent };
         }
         case url.endsWith('.html'): {
           return { ...res, text: () => pageContent };
@@ -90,6 +94,15 @@ describe('webauthnConditionalUi', () => {
     });
 
     webauthnConditionalMock.mockResolvedValueOnce('response');
+
+    const origAppend = document.body.append;
+    const spyAppend = jest.spyOn(document.body, 'append');
+    spyAppend.mockImplementation((ele: any) => {
+      setTimeout(() => {
+        ele.onload?.();
+      });
+      origAppend.bind(document.body)(ele);
+    });
   });
 
   afterEach(() => {
@@ -111,13 +124,17 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowPlaceholderText('test');
+    await waitFor(() => screen.findByShadowPlaceholderText('test'), {
+      timeout: 3000,
+    });
 
-    await waitFor(() =>
-      expect(screen.getByShadowPlaceholderText('test')).toHaveAttribute(
-        'name',
-        'user-test'
-      )
+    await waitFor(
+      () =>
+        expect(screen.getByShadowPlaceholderText('test')).toHaveAttribute(
+          'name',
+          'user-test'
+        ),
+      { timeout: 3000 }
     );
   });
 
@@ -134,9 +151,14 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    const input = await screen.findByShadowPlaceholderText('test');
+    const input = await waitFor(
+      () => screen.getByShadowPlaceholderText('test'),
+      { timeout: 3000 }
+    );
 
-    await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'));
+    await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'), {
+      timeout: 3000,
+    });
 
     fireEvent.input(input, { target: { value: '1' } });
 
@@ -156,7 +178,10 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    const input = await screen.findByShadowPlaceholderText('test');
+    const input = await waitFor(
+      () => screen.getByShadowPlaceholderText('test'),
+      { timeout: 3000 }
+    );
 
     await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'));
 
@@ -197,7 +222,7 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     fireEvent.click(screen.getByShadowText('click'));
 
@@ -250,11 +275,13 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'id', {
-        response: 'response',
-        transactionId: 'transactionId',
-      })
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'id', {
+          response: 'response',
+          transactionId: 'transactionId',
+        }),
+      { timeout: 3000 }
     );
   });
 
