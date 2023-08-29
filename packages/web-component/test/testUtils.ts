@@ -34,3 +34,15 @@ export const generateSdkResponse = ({
     errorDescription: requestErrorDescription,
   },
 });
+
+export const invokeScriptOnload = () => {
+  const origAppend = document.body.append;
+
+  const spyAppend = jest.spyOn(document.body, 'append');
+  spyAppend.mockImplementation((ele: any) => {
+    setTimeout(() => {
+      ele.onload?.();
+    });
+    origAppend.bind(document.body)(ele);
+  });
+};
