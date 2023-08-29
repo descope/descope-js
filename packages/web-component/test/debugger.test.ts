@@ -4,6 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import { screen } from 'shadow-dom-testing-library';
 import '../src/lib/descope-wc';
+import { invokeScriptOnload } from './testUtils';
 
 const generateSdkResponse = ({
   ok = true,
@@ -108,14 +109,7 @@ describe('debugger', () => {
       }
     });
 
-    const origAppend = document.body.append;
-    const spyAppend = jest.spyOn(document.body, 'append');
-    spyAppend.mockImplementation((ele: any) => {
-      setTimeout(() => {
-        ele.onload?.();
-      });
-      origAppend.bind(document.body)(ele);
-    });
+    invokeScriptOnload();
   });
 
   afterEach(() => {

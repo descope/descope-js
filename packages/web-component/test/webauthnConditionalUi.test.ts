@@ -2,7 +2,7 @@ import createSdk from '@descope/web-js-sdk';
 import '@testing-library/jest-dom';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { screen } from 'shadow-dom-testing-library';
-import { generateSdkResponse } from './testUtils';
+import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import '../src/lib/descope-wc';
 
 import { isConditionalLoginSupported } from '../src/lib/helpers/webauthn';
@@ -95,14 +95,7 @@ describe('webauthnConditionalUi', () => {
 
     webauthnConditionalMock.mockResolvedValueOnce('response');
 
-    const origAppend = document.body.append;
-    const spyAppend = jest.spyOn(document.body, 'append');
-    spyAppend.mockImplementation((ele: any) => {
-      setTimeout(() => {
-        ele.onload?.();
-      });
-      origAppend.bind(document.body)(ele);
-    });
+    invokeScriptOnload();
   });
 
   afterEach(() => {

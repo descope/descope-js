@@ -25,7 +25,7 @@ import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
 import * as helpers from '../src/lib/helpers/helpers';
 // eslint-disable-next-line import/no-namespace
-import { generateSdkResponse } from './testUtils';
+import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 
 jest.mock('@descope/web-js-sdk');
 
@@ -145,14 +145,7 @@ describe('web-component', () => {
     });
     (createSdk as jest.Mock).mockReturnValue(sdk);
 
-    const origAppend = document.body.append;
-    const spyAppend = jest.spyOn(document.body, 'append');
-    spyAppend.mockImplementation((ele: any) => {
-      setTimeout(() => {
-        ele.onload?.();
-      });
-      origAppend.bind(document.body)(ele);
-    });
+    invokeScriptOnload();
   });
 
   afterEach(() => {
