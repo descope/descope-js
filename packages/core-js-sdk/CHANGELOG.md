@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.7.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.5...core-js-sdk-1.7.0) (2023-08-29)
+
+
+### Features
+
+* separate redirect url and location ([#252](https://github.com/descope/descope-js/issues/252)) ([0ff3c81](https://github.com/descope/descope-js/commit/0ff3c813c9622cf3cc00cfa13c555a8e36238be7))
+
 ### [1.6.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.4...core-js-sdk-1.6.5) (2023-08-24)
 
 ### [1.6.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.3...core-js-sdk-1.6.4) (2023-08-21)
