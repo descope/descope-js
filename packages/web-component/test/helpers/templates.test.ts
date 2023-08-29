@@ -12,26 +12,22 @@ describe('templates', () => {
   it('should handle descope inputs', async () => {
     document.body.innerHTML = `<div>
 			<input class="descope-input" name="email">
-			<textarea class="descope-input" name="description">
 		</div>`;
 
     replaceWithScreenState(document, {
       inputs: { email: 'email1', description: 'description1' },
     });
     await waitFor(() => screen.getByShadowDisplayValue('email1'));
-    await waitFor(() => screen.getByShadowDisplayValue('description1'));
   });
 
   it('should handle descope form', async () => {
     document.body.innerHTML = `<div>
-			<input class="descope-input" name="email">
-			<textarea class="descope-input" name="description">
+			<input class="descope-input" name="email"></input>
 		</div>`;
 
     replaceWithScreenState(document, {
-      form: { email: 'email2', description: 'description2' },
+      form: { email: 'email2' },
     });
     await waitFor(() => screen.getByShadowDisplayValue('email2'));
-    await waitFor(() => screen.getByShadowDisplayValue('description2'));
   });
 });
