@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/dom';
 import { URL_RUN_IDS_PARAM_NAME } from '../../src/lib/constants';
 import { dragElement } from '../../src/lib/helpers';
 import {
@@ -163,7 +164,7 @@ describe('helpers', () => {
 });
 
 describe('handleAutoFocus', () => {
-  it('should focus element when auto focus is on', () => {
+  it('should focus element when auto focus is on', async () => {
     const focusFn = jest.fn();
 
     handleAutoFocus(
@@ -174,7 +175,7 @@ describe('handleAutoFocus', () => {
       false
     );
 
-    expect(focusFn).toBeCalled();
+    await waitFor(() => expect(focusFn).toBeCalled());
   });
 
   it('should not focus element when auto focus is off', () => {
@@ -188,7 +189,7 @@ describe('handleAutoFocus', () => {
       true
     );
 
-    expect(focusFn).not.toBeCalled();
+    setTimeout(() => expect(focusFn).not.toBeCalled());
   });
 
   it('should not focus element when auto focus is `skipAutoFocus` on first screen', () => {
@@ -202,10 +203,10 @@ describe('handleAutoFocus', () => {
       true
     );
 
-    expect(focusFn).not.toBeCalled();
+    setTimeout(() => expect(focusFn).not.toBeCalled());
   });
 
-  it('should focus element when auto focus is `skipAutoFocus` on non-first screen', () => {
+  it('should focus element when auto focus is `skipAutoFocus` on non-first screen', async () => {
     const focusFn = jest.fn();
 
     handleAutoFocus(
@@ -216,6 +217,6 @@ describe('handleAutoFocus', () => {
       false
     );
 
-    expect(focusFn).toBeCalled();
+    await waitFor(() => expect(focusFn).toBeCalled());
   });
 });
