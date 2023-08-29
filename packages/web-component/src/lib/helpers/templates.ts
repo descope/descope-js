@@ -84,7 +84,7 @@ const replaceProvisionURL = (
   );
   eleList.forEach((ele: HTMLLinkElement) => {
     // eslint-disable-next-line no-param-reassign
-    ele.href = provisionUrl;
+    ele.setAttribute('href', provisionUrl);
   });
 };
 

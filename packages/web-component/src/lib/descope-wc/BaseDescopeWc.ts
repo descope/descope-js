@@ -336,13 +336,16 @@ class BaseDescopeWc extends HTMLElement {
     const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
     try {
       const { body: theme } = await fetchContent(themeUrl, 'json');
-      styleEle.innerText = theme.light.globals + theme.dark.globals;
+      styleEle.innerText =
+        (theme?.light?.globals || '') + (theme?.dark?.globals || '');
 
       const descopeUi = await this.descopeUI;
-      descopeUi.componentsThemeManager.themes = {
-        light: theme.light.components,
-        dark: theme.dark.components,
-      };
+      if (descopeUi?.componentsThemeManager) {
+        descopeUi.componentsThemeManager.themes = {
+          light: theme?.light?.components,
+          dark: theme?.dark?.components,
+        };
+      }
     } catch (e) {
       this.loggerWrapper.error(
         'Cannot fetch theme file',
@@ -355,7 +358,9 @@ class BaseDescopeWc extends HTMLElement {
   async #applyTheme() {
     this.rootElement.setAttribute('data-theme', this.theme);
     const descopeUi = await this.descopeUI;
-    descopeUi.componentsThemeManager.currentThemeName = this.theme;
+    if (descopeUi?.componentsThemeManager) {
+      descopeUi.componentsThemeManager.currentThemeName = this.theme;
+    }
   }
 
   async getExecutionContext() {
@@ -461,15 +466,15 @@ class BaseDescopeWc extends HTMLElement {
       version
     );
     const scriptEle = document.createElement('script');
-    document.body.append(scriptEle);
 
-    this.descopeUI = new Promise((res, rej) => {
+    this.descopeUI = new Promise((res) => {
       const onError = () => {
         this.loggerWrapper.error(
           'Cannot load DescopeUI',
           `Make sure this URL is valid and return the correct script: "${scriptSrc}"`
         );
-        rej(Error('Cannot load DescopeUI'));
+
+        res({} as DescopeUI);
       };
 
       scriptEle.onload = () => {
@@ -481,6 +486,8 @@ class BaseDescopeWc extends HTMLElement {
 
       scriptEle.src = scriptSrc;
     });
+
+    document.body.append(scriptEle);
   }
 
   async connectedCallback() {
