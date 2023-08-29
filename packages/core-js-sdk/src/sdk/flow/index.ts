@@ -49,9 +49,9 @@ const withFlow = (httpClient: HttpClient) => ({
           executionId,
           stepId,
           interactionId,
-          input,
           version,
           componentsVersion,
+          input,
         })
       );
     }
