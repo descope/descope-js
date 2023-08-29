@@ -22,6 +22,7 @@ describe('sdk', () => {
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
+        redirectUrl: 'http://localhost/',
         location: 'http://localhost/',
         deviceInfo: { webAuthnSupport: false },
       },
