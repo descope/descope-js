@@ -16,10 +16,15 @@ module.exports = {
     },
   },
   globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
     BUILD_VERSION: '1.2.3',
+  },
+  transform: {
+    '^.+\\.ts?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+      },
+    ],
   },
 
   preset: 'ts-jest',
