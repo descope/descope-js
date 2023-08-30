@@ -256,7 +256,7 @@ class DescopeWc extends BaseDescopeWc {
       isChanged('samlIdpFormResponse')
     ) {
       if (!samlIdpFormResponse) {
-        this.logger.error('Did not get saml form data to load');
+        this.loggerWrapper.error('Did not get saml form data to load');
         return;
       }
 
