@@ -361,7 +361,7 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   #handleComponentsContext(e: CustomEvent) {
-    this.componentsContext = { ...e.detail, ...this.componentsContext };
+    this.#componentsContext = { ...e.detail, ...this.#componentsContext };
   }
 
   async #applyTheme() {
