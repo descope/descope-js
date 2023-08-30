@@ -648,8 +648,8 @@ class DescopeWc extends BaseDescopeWc {
 
     if (
       currentState.samlIdpUsername &&
-      !screenState.form.loginId &&
-      !screenState.form.email
+      !screenState.form?.loginId &&
+      !screenState.form?.email
     ) {
       screenState.form = {
         loginId: currentState.samlIdpUsername,
