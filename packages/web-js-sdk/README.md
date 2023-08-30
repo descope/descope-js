@@ -24,6 +24,8 @@ const sdk = descopeSdk({
   sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, this will
   make `sdk.getSessionToken()` available, see usage bellow bellow */
   persistTokens: true,
+  /* Read Tokens that exist after a succesful authentication, this does not persist incoming tokens and refreshes in browser storage. */
+  readTokens: true,
   /* Pass `sessionTokenViaCookie: true` to store the session token in a cookie when using `persistTokens`. By default, the sdk will set the session token in the browser storage.
   Notes:
     - This option is relevant only when `persistTokens` is true.

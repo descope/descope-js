@@ -20,6 +20,7 @@ export const withPersistTokens =
   <T extends CreateWebSdk>(createSdk: T) =>
   <A extends boolean>({
     persistTokens: isPersistTokens,
+    readTokens: isReadTokens,
     sessionTokenViaCookie,
     ...config
   }: Parameters<T>[0] & PersistTokensOptions<A>): A extends true
@@ -28,7 +29,7 @@ export const withPersistTokens =
         getSessionToken: typeof getSessionToken;
       }
     : ReturnType<T> => {
-    if (!isPersistTokens || !IS_BROWSER) {
+    if ((!isPersistTokens && !isReadTokens) || !IS_BROWSER) {
       if (isPersistTokens) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -38,18 +39,26 @@ export const withPersistTokens =
       return createSdk(config) as any;
     }
 
-    const afterRequest: AfterRequestHook = async (_req, res) => {
-      if (res?.status === 401) {
-        clearTokens();
-      } else {
-        persistTokens(
-          await getAuthInfoFromResponse(res),
-          sessionTokenViaCookie
-        );
-      }
+    let options: any = {
+      beforeRequest: isPersistTokens || isReadTokens ? beforeRequest : null,
     };
 
-    const sdk = createSdk(addHooks(config, { beforeRequest, afterRequest }));
+    if (persistTokens) {
+      const afterRequest: AfterRequestHook = async (_req, res) => {
+        if (res?.status === 401) {
+          clearTokens();
+        } else {
+          persistTokens(
+            await getAuthInfoFromResponse(res),
+            sessionTokenViaCookie
+          );
+        }
+      };
+
+      options = { ...options, afterRequest };
+    }
+
+    const sdk = createSdk(addHooks(config, options));
 
     const wrappedSdk = wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
 
