@@ -151,6 +151,7 @@ class DescopeWc extends BaseDescopeWc {
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
+    const projectConfig = await this.getProjectConfig();
 
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
@@ -200,8 +201,9 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          exists ? inputs : undefined,
-          flowConfig.version
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          exists ? inputs : undefined
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -224,12 +226,13 @@ class DescopeWc extends BaseDescopeWc {
         executionId,
         stepId,
         CUSTOM_INTERACTIONS.submit,
+        flowConfig.version,
+        projectConfig.componentsVersion,
         {
           token,
           exchangeCode: code,
           exchangeError,
-        },
-        flowConfig.version
+        }
       );
       this.#handleSdkResponse(sdkResp);
       this.flowState.update({
@@ -319,12 +322,13 @@ class DescopeWc extends BaseDescopeWc {
         executionId,
         stepId,
         CUSTOM_INTERACTIONS.submit,
+        flowConfig.version,
+        projectConfig.componentsVersion,
         {
           transactionId: webauthnTransactionId,
           response,
           cancelWebauthn,
-        },
-        flowConfig.version
+        }
       );
       this.#handleSdkResponse(sdkResp);
     }
@@ -335,8 +339,9 @@ class DescopeWc extends BaseDescopeWc {
           executionId,
           stepId,
           CUSTOM_INTERACTIONS.polling,
-          {},
-          flowConfig.version
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          {}
         );
         this.#handleSdkResponse(sdkResp);
       }, 2000);
@@ -376,7 +381,12 @@ class DescopeWc extends BaseDescopeWc {
     // If there is a start screen id, next action should start the flow
     // But if oidcIdpStateId is not empty, this optimization doesn't happen
     if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
-      stepStateUpdate.next = (interactionId, inputs) =>
+      stepStateUpdate.next = (
+        interactionId,
+        version,
+        componentsVersion,
+        inputs
+      ) =>
         this.sdk.flow.start(
           flowId,
           {
@@ -388,12 +398,13 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           interactionId,
+          version,
+          componentsVersion,
           {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(token && { token }),
-          },
-          flowConfig.version
+          }
         );
     } else if (
       isChanged('projectId') ||
@@ -553,14 +564,21 @@ class DescopeWc extends BaseDescopeWc {
         // we need the abort controller so we can cancel the current webauthn session in case the user clicked on a webauthn button, and we need to start a new session
         this.#conditionalUiAbortController = new AbortController();
 
+        const flowConfig = await this.getFlowConfig();
+        const projectConfig = await this.getProjectConfig();
         // we should not wait for this fn, it will call next when the user uses his passkey on the input
         this.sdk.webauthn.helpers
           .conditional(options, this.#conditionalUiAbortController)
           .then(async (response) => {
-            const resp = await next(conditionalUiInput.id, {
-              transactionId,
-              response,
-            });
+            const resp = await next(
+              conditionalUiInput.id,
+              flowConfig.version,
+              projectConfig.componentsVersion,
+              {
+                transactionId,
+                response,
+              }
+            );
             this.#handleSdkResponse(resp);
           })
           .catch((err) => {
@@ -656,8 +674,15 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`
       );
       if (loader) {
+        const flowConfig = await this.getFlowConfig();
+        const projectConfig = await this.getProjectConfig();
         // Loader component in the screen triggers polling interaction
-        const response = await next(CUSTOM_INTERACTIONS.polling, {});
+        const response = await next(
+          CUSTOM_INTERACTIONS.polling,
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          {}
+        );
         this.#handleSdkResponse(response);
       }
     };
@@ -742,7 +767,14 @@ class DescopeWc extends BaseDescopeWc {
         origin: window.location.origin,
       };
 
-      const sdkResp = await next(submitterId, actionArgs);
+      const flowConfig = await this.getFlowConfig();
+      const projectConfig = await this.getProjectConfig();
+      const sdkResp = await next(
+        submitterId,
+        flowConfig.version,
+        projectConfig.componentsVersion,
+        actionArgs
+      );
 
       this.#handleSdkResponse(sdkResp);
     }

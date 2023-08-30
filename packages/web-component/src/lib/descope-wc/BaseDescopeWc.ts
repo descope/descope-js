@@ -29,6 +29,8 @@ import {
   SdkConfig,
   ThemeOptions,
   DescopeUI,
+  ProjectConfiguration,
+  FlowConfig,
 } from '../types';
 import initTemplate from './initTemplate';
 
@@ -311,7 +313,7 @@ class BaseDescopeWc extends HTMLElement {
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
-        projectConfig: body,
+        projectConfig: body as ProjectConfiguration,
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
@@ -413,12 +415,18 @@ class BaseDescopeWc extends HTMLElement {
       this.#debuggerEle?.updateData({ title, description });
   }
 
-  async getFlowConfig() {
+  async getProjectConfig(): Promise<ProjectConfiguration> {
     const { projectConfig } = await this.#getConfig();
+    return projectConfig;
+  }
 
-    const config = projectConfig?.flows?.[this.flowId] || {};
-    config.version ??= 0;
-    return config;
+  async getFlowConfig(): Promise<FlowConfig> {
+    const projectConfig = await this.getProjectConfig();
+
+    const flowConfig =
+      projectConfig?.flows?.[this.flowId] || ({} as FlowConfig);
+    flowConfig.version ??= 0;
+    return flowConfig;
   }
 
   async getTargetLocales() {

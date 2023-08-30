@@ -79,7 +79,7 @@ describe('webauthnConditionalUi', () => {
 
       switch (true) {
         case url.endsWith('theme.json'): {
-          return { ...res, body: () => themeContent };
+          return { ...res, json: () => themeContent };
         }
         case url.endsWith('.html'): {
           return { ...res, text: () => pageContent };
@@ -245,12 +245,14 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Webauthn start failed',
-        '',
-        expect.any(Error)
-      )
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          'Webauthn start failed',
+          '',
+          expect.any(Error)
+        ),
+      { timeout: 3000 }
     );
   });
 
@@ -270,7 +272,7 @@ describe('webauthnConditionalUi', () => {
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', 'id', {
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'id', 0, '1.2.3', {
           response: 'response',
           transactionId: 'transactionId',
         }),
