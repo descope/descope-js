@@ -56,6 +56,10 @@ export type FlowState = {
   redirectAuthInitiator: string;
   oidcIdpStateId: string;
   deferredRedirect: boolean;
+  samlIdpStateId: string;
+  samlIdpFormResponse: string;
+  samlIdpUsername: string;
+  ssoAppId: string;
 };
 
 export type StepState = {
@@ -63,6 +67,7 @@ export type StepState = {
   htmlUrl: string;
   next: NextFn;
   direction: Direction | undefined;
+  samlIdpUsername: string;
 };
 
 export type DebugState = {

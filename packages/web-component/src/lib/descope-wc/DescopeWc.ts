@@ -96,6 +96,10 @@ class DescopeWc extends BaseDescopeWc {
       redirectAuthCallbackUrl,
       redirectAuthInitiator,
       oidcIdpStateId,
+      samlIdpStateId,
+      samlIdpUsername,
+      samlIdpFormResponse,
+      ssoAppId,
     } = currentState;
 
     if (this.#currentInterval) {
@@ -132,7 +136,15 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       // As an optimization - we want to show the first screen if it is possible
-      if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
+      if (
+        !showFirstScreenOnExecutionInit(
+          startScreenId,
+          oidcIdpStateId,
+          samlIdpStateId,
+          samlIdpUsername,
+          ssoAppId
+        )
+      ) {
         const inputs = code
           ? {
               exchangeCode: code,
@@ -145,6 +157,9 @@ class DescopeWc extends BaseDescopeWc {
             tenant,
             redirectAuth,
             oidcIdpStateId,
+            samlIdpStateId,
+            samlIdpUsername,
+            ssoAppId,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
           },
@@ -187,6 +202,34 @@ class DescopeWc extends BaseDescopeWc {
         code: undefined,
         exchangeError: undefined,
       }); // should happen after handleSdkResponse, otherwise we will not have screen id on the next run
+      return;
+    }
+
+    if (
+      action === RESPONSE_ACTIONS.loadForm &&
+      isChanged('samlIdpFormResponse')
+    ) {
+      if (!samlIdpFormResponse) {
+        this.logger.error('Did not get saml form data to load');
+        return;
+      }
+
+      // Handle SAML IDP end of flow ("redirect like" by using html form with hidden params)
+
+      document.body.innerHTML = `<html>${  samlIdpFormResponse  }</html>`;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = samlIdpFormResponse;
+
+      const scripts = Array.from(tempDiv.getElementsByTagName('script'));
+      scripts.forEach((originalScript) => {
+        const script = document.createElement('script');
+        if (originalScript.src) {
+          script.src = originalScript.src;
+        } else {
+          script.textContent = originalScript.textContent;
+        }
+        document.body.appendChild(script);
+      });
       return;
     }
 
@@ -309,13 +352,22 @@ class DescopeWc extends BaseDescopeWc {
         },
       },
       htmlUrl: getContentUrl(projectId, `${startScreenId || screenId}.html`),
+      samlIdpUsername,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId is not empty, this optimization doesn't happen
-    if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
+    // But if oidcIdpStateId, samlIdpStateId, ssoAppId is not empty, this optimization doesn't happen
+    if (
+      showFirstScreenOnExecutionInit(
+        startScreenId,
+        oidcIdpStateId,
+        samlIdpStateId,
+        samlIdpUsername,
+        ssoAppId
+      )
+    ) {
       stepStateUpdate.next = (interactionId, inputs) =>
         this.sdk.flow.start(
           flowId,
@@ -323,6 +375,9 @@ class DescopeWc extends BaseDescopeWc {
             tenant,
             redirectAuth,
             oidcIdpStateId,
+            samlIdpStateId,
+            samlIdpUsername,
+            ssoAppId,
             lastAuth,
             ...(redirectUrl && { redirectUrl }),
           },
@@ -388,8 +443,15 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    const { executionId, stepId, action, screen, redirect, webauthn } =
-      sdkResp.data;
+    const {
+      executionId,
+      stepId,
+      action,
+      screen,
+      redirect,
+      webauthn,
+      samlIdpFormResponse,
+    } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
       // We only update action because the polling response action does not return extra information
@@ -407,6 +469,7 @@ class DescopeWc extends BaseDescopeWc {
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
+      samlIdpFormResponse,
     });
   };
 
@@ -509,6 +572,17 @@ class DescopeWc extends BaseDescopeWc {
       disableWebauthnButtons(clone);
     } else {
       await this.#handleWebauthnConditionalUi(clone, next);
+    }
+
+    if (
+      currentState.samlIdpUsername &&
+      !screenState.form.loginId &&
+      !screenState.form.email
+    ) {
+      screenState.form = {
+        loginId: currentState.samlIdpUsername,
+        email: currentState.samlIdpUsername,
+      };
     }
 
     replaceWithScreenState(clone, screenState);

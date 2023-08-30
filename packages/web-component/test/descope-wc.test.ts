@@ -20,6 +20,9 @@ import {
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
+  SAML_IDP_STATE_ID_PARAM_NAME,
+  SAML_IDP_USERNAME_PARAM_NAME,
+  SSO_APP_ID_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -526,6 +529,9 @@ describe('web-component', () => {
           lastAuth: {},
           redirectUrl: 'http://custom.url',
           oidcIdpStateId: null,
+          samlIdpStateId: null,
+          samlIdpUsername: null,
+          ssoAppId: null,
           redirectAuth: undefined,
           tenant: undefined,
         },
@@ -1880,6 +1886,9 @@ describe('web-component', () => {
           {
             lastAuth: { authMethod: 'otp' },
             oidcIdpStateId: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
             redirectAuth: undefined,
             tenant: undefined,
           },
@@ -1922,6 +1931,9 @@ describe('web-component', () => {
           'sign-in',
           {
             oidcIdpStateId: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
             redirectAuth: undefined,
             tenant: undefined,
             lastAuth: { authMethod: 'otp' },
@@ -1990,6 +2002,9 @@ describe('web-component', () => {
           'sign-in',
           {
             oidcIdpStateId: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
             lastAuth: {},
@@ -2021,7 +2036,11 @@ describe('web-component', () => {
           'sign-in',
           {
             oidcIdpStateId: 'abcdefgh',
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
             tenant: undefined,
+            redirectAuth: undefined,
             lastAuth: {},
           },
           undefined,
@@ -2036,7 +2055,7 @@ describe('web-component', () => {
       await waitFor(() => expect(window.location.search).toBe(''));
     });
 
-    it('should call start with oidc idp when there is a start screen is condifured', async () => {
+    it('should call start with oidc idp when there is a start screen is configured', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       configContent = {
@@ -2062,7 +2081,193 @@ describe('web-component', () => {
 
       await waitFor(() => expect(nextMock).toHaveBeenCalled());
     });
+
+    it('should call start with saml idp when there is a start screen is configured', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      configContent = {
+        flows: {
+          'sign-in': { startScreenId: 'screen-0' },
+        },
+      };
+
+      pageContent = '<button>click</button><span>It works!</span>';
+
+      const samlIdpStateId = 'abcdefgh';
+      const encodedSamlIdpStateId = encodeURIComponent(samlIdpStateId);
+      window.location.search = `?${SAML_IDP_STATE_ID_PARAM_NAME}=${encodedSamlIdpStateId}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 6000,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled());
+    });
+
+    it('should call start with saml idp with username when there is a start screen is configured', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      configContent = {
+        flows: {
+          'sign-in': { startScreenId: 'screen-0' },
+        },
+      };
+
+      pageContent = '<button>click</button><span>It works!</span>';
+
+      const samlIdpUsername = 'abcdefgh';
+      const encodedSamlIdpUsername = encodeURIComponent(samlIdpUsername);
+      window.location.search = `?${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpUsername}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 6000,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled());
+    });
+
+    it('should call start with saml idp flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const samlIdpStateId = 'abcdefgh';
+      const encodedSamlIdpStateId = encodeURIComponent(samlIdpStateId);
+      window.location.search = `?${SAML_IDP_STATE_ID_PARAM_NAME}=${encodedSamlIdpStateId}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            oidcIdpStateId: null,
+            samlIdpStateId: 'abcdefgh',
+            samlIdpUsername: null,
+            ssoAppId: null,
+            tenant: undefined,
+            redirectAuth: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          undefined,
+          0
+        )
+      );
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 4000,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
+    it('should call start with saml idp with username flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const samlIdpStateId = 'abcdefgh';
+      const encodedSamlIdpStateId = encodeURIComponent(samlIdpStateId);
+      const samlIdpUsername = 'dummyUser';
+      const encodedSamlIdpUsername = encodeURIComponent(samlIdpUsername);
+      window.location.search = `?${SAML_IDP_STATE_ID_PARAM_NAME}=${encodedSamlIdpStateId}&${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpUsername}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            oidcIdpStateId: null,
+            samlIdpStateId: 'abcdefgh',
+            samlIdpUsername: 'dummyUser',
+            ssoAppId: null,
+            tenant: undefined,
+            redirectAuth: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          undefined,
+          0
+        )
+      );
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 4000,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
+    it('should call start with ssoAppId when there is a start screen is configured', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      configContent = {
+        flows: {
+          'sign-in': { startScreenId: 'screen-0' },
+        },
+      };
+
+      pageContent = '<button>click</button><span>It works!</span>';
+
+      const ssoAppId = 'abcdefgh';
+      const encodedSSOAppId = encodeURIComponent(ssoAppId);
+      window.location.search = `?${SSO_APP_ID_PARAM_NAME}=${encodedSSOAppId}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 6000,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled());
+    });
+
+    it('should call start with ssoAppId flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const ssoAppId = 'abcdefgh';
+      const encodedSSOAppId = encodeURIComponent(ssoAppId);
+      window.location.search = `?${SSO_APP_ID_PARAM_NAME}=${encodedSSOAppId}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            oidcIdpStateId: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: 'abcdefgh',
+            tenant: undefined,
+            redirectAuth: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          undefined,
+          0
+        )
+      );
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 4000,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
   });
+
   it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
     window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
     configContent = {
@@ -2092,6 +2297,9 @@ describe('web-component', () => {
         'sign-in',
         {
           oidcIdpStateId: null,
+          samlIdpStateId: null,
+          samlIdpUsername: null,
+          ssoAppId: null,
           redirectAuth: undefined,
           tenant: undefined,
           lastAuth: {},
@@ -2148,6 +2356,9 @@ describe('web-component', () => {
         'sign-in',
         {
           oidcIdpStateId: null,
+          samlIdpStateId: null,
+          samlIdpUsername: null,
+          ssoAppId: null,
           redirectAuth: undefined,
           tenant: undefined,
           lastAuth: {},

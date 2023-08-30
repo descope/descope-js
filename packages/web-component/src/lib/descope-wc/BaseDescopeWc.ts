@@ -412,6 +412,9 @@ class BaseDescopeWc extends HTMLElement {
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
         oidcIdpStateId,
+        samlIdpStateId,
+        samlIdpUsername,
+        ssoAppId,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
@@ -441,6 +444,9 @@ class BaseDescopeWc extends HTMLElement {
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
         oidcIdpStateId,
+        samlIdpStateId,
+        samlIdpUsername,
+        ssoAppId,
       });
 
       this.#debugState.update({ isDebug: this.debug });

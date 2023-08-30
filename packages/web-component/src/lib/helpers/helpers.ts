@@ -10,6 +10,9 @@ import {
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
+  SAML_IDP_STATE_ID_PARAM_NAME,
+  SAML_IDP_USERNAME_PARAM_NAME,
+  SSO_APP_ID_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -153,6 +156,30 @@ export function clearOIDCIDPParamFromUrl() {
   resetUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
 }
 
+export function getSAMLIDPParamFromUrl() {
+  return getUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function clearSAMLIDPParamFromUrl() {
+  resetUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function getSAMLIDPUsernameParamFromUrl() {
+  return getUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
+}
+
+export function clearSAMLIDPUsernameParamFromUrl() {
+  resetUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
+}
+
+export function getSSOAppIdParamFromUrl() {
+  return getUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearSSOAppIdParamFromUrl() {
+  resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -243,6 +270,21 @@ export const handleUrlParams = () => {
     clearOIDCIDPParamFromUrl();
   }
 
+  const samlIdpStateId = getSAMLIDPParamFromUrl();
+  if (samlIdpStateId) {
+    clearSAMLIDPParamFromUrl();
+  }
+
+  const samlIdpUsername = getSAMLIDPUsernameParamFromUrl();
+  if (samlIdpStateId) {
+    clearSAMLIDPUsernameParamFromUrl();
+  }
+
+  const ssoAppId = getSSOAppIdParamFromUrl();
+  if (ssoAppId) {
+    clearSSOAppIdParamFromUrl();
+  }
+
   return {
     executionId,
     stepId,
@@ -253,6 +295,9 @@ export const handleUrlParams = () => {
     redirectAuthCallbackUrl,
     redirectAuthInitiator,
     oidcIdpStateId,
+    samlIdpStateId,
+    samlIdpUsername,
+    ssoAppId,
   };
 };
 
@@ -331,7 +376,18 @@ export const getChromiumVersion = (
 // As an optimization - We can show first screen if we have startScreenId and we don't have oidcIdpStateId
 // - If there startScreenId it means that the sdk can show the first screen and we don't need to wait for the sdk to return the first screen
 // - If there is a oidcIdpStateId - we can't skip this call because the sdk may
+// - If there is a samlIdpStateId - we can't skip this call because the sdk may
+// - If there is a samlIdpUsername - we can't skip this call because the sdk may
+// - If there is a ssoAppId - we can't skip this call because the sdk may
 export const showFirstScreenOnExecutionInit = (
   startScreenId: string,
-  oidcIdpStateId: string
-): boolean => startScreenId && !oidcIdpStateId;
+  oidcIdpStateId: string,
+  samlIdpStateId: string,
+  samlIdpUsername: string,
+  ssoAppId: string
+): boolean =>
+  startScreenId &&
+  !oidcIdpStateId &&
+  !samlIdpStateId &&
+  !samlIdpUsername &&
+  !ssoAppId;
