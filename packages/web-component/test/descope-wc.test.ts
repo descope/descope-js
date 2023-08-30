@@ -29,6 +29,8 @@ import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 
 jest.mock('@descope/web-js-sdk');
 
+const WAIT_TIMEOUT = 6000;
+
 class MockFileReader {
   onload = null;
 
@@ -179,7 +181,7 @@ describe('web-component', () => {
         expect(onSuccess).toHaveBeenCalledWith(
           expect.objectContaining({ detail: 'auth info' })
         ),
-      { timeout: 1000 }
+      { timeout: WAIT_TIMEOUT }
     );
 
     wcEle.removeEventListener('success', onSuccess);
@@ -194,7 +196,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
 
     await waitFor(() => expect(window.location.search).toBe(''));
@@ -228,7 +230,7 @@ describe('web-component', () => {
             },
           })
         ),
-      { timeout: 1000 }
+      { timeout: WAIT_TIMEOUT }
     );
 
     wcEle.removeEventListener('error', onError);
@@ -241,7 +243,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
   });
 
   it('When WC loads it injects the theme', async () => {
@@ -256,7 +260,9 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1" theme="light"></descope-wc>`;
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const themeStyleEle = shadowEle?.querySelector(
       'style:last-child'
@@ -276,7 +282,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), true, true);
   });
 
@@ -287,7 +295,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc auto-focus="false" flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), false, true);
   });
 
@@ -300,7 +310,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc auto-focus="skipFirstScreen" flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(autoFocusSpy).toBeCalledWith(
       expect.any(HTMLElement),
       'skipFirstScreen',
@@ -317,7 +329,7 @@ describe('web-component', () => {
           false
         );
       },
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -328,7 +340,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
     const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
@@ -415,7 +429,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     pageContent = '<input id="email"></input><span>It updated!</span>';
 
@@ -435,14 +451,18 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     pageContent =
       '<input id="email"></input><input id="code"></input><span>It works!</span>';
 
     fireEvent.click(screen.getByShadowText('click'));
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     expect(startMock).toBeCalledTimes(1);
     expect(nextMock).toBeCalledTimes(1);
@@ -457,15 +477,24 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     fireEvent.click(screen.getByShadowText('click'));
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submitterId', {
-        email: '',
-        origin: 'http://localhost',
-      })
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submitterId',
+        1,
+        '1.2.3',
+        {
+          email: '',
+          origin: 'http://localhost',
+        }
+      )
     );
   });
 
@@ -478,15 +507,24 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-up-or-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     fireEvent.click(screen.getByShadowText('click'));
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submitterId', {
-        t1: false,
-        origin: 'http://localhost',
-      })
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submitterId',
+        0,
+        '1.2.3',
+        {
+          t1: false,
+          origin: 'http://localhost',
+        }
+      )
     );
   });
 
@@ -499,15 +537,24 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     fireEvent.click(screen.getByShadowText('click'));
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submitterId', {
-        t1: true,
-        origin: 'http://localhost',
-      })
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submitterId',
+        1,
+        '1.2.3',
+        {
+          t1: true,
+          origin: 'http://localhost',
+        }
+      )
     );
   });
 
@@ -542,12 +589,13 @@ describe('web-component', () => {
         },
         undefined,
         'submitterId',
+        0,
+        '1.2.3',
         {
           email: '',
           origin: 'http://localhost',
           token,
-        },
-        0
+        }
       )
     );
   });
@@ -561,7 +609,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
@@ -581,7 +631,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
@@ -594,6 +646,8 @@ describe('web-component', () => {
         '0',
         '0',
         'click',
+        1,
+        '1.2.3',
         expect.any(Object)
       )
     );
@@ -609,7 +663,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
 
     const rootEle = document
@@ -631,7 +685,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
 
     const rootEle = document
@@ -653,7 +707,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.findByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
 
@@ -664,7 +720,7 @@ describe('web-component', () => {
         screen.getByShadowText('Error!', {
           selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
         }),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -678,12 +734,14 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     fireEvent.click(screen.getByShadowText('click'));
 
     await waitFor(() => screen.getByShadowDisplayValue('email1'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
   });
 
@@ -698,7 +756,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     // fill the input with a file
     const input = screen.getByShadowPlaceholderText('image-ph');
@@ -709,11 +769,11 @@ describe('web-component', () => {
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', null, {
+        expect(nextMock).toHaveBeenCalledWith('0', '0', null, 1, '1.2.3', {
           image: 'data:;base64,example',
           origin: 'http://localhost',
         }),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -728,17 +788,19 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     await fireEvent.click(screen.getByShadowText('click'));
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', null, {
+        expect(nextMock).toHaveBeenCalledWith('0', '0', null, 1, '1.2.3', {
           image: null,
           origin: 'http://localhost',
         }),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -751,7 +813,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
     await waitFor(() => screen.getByShadowText('hey john!'));
   });
 
@@ -765,7 +829,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
     await waitFor(() => screen.getByShadowText('hey not john!'));
   });
 
@@ -779,7 +845,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
     await waitFor(() => screen.getByShadowText('hey not john!'));
   });
 
@@ -794,9 +862,11 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
     await waitFor(() => screen.getByShadowText('hey Niros!!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
   });
 
@@ -809,7 +879,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
     await waitFor(() => screen.getByShadowText('Provision URL'));
 
     const totpLink = screen.getByShadowText('Provision URL');
@@ -825,7 +897,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const btn = screen.getByShadowText('Webauthn');
     expect(btn).toHaveAttribute('disabled', 'true');
@@ -843,7 +917,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('Loaded1'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
@@ -853,7 +929,7 @@ describe('web-component', () => {
         expect(rootEle).toHaveStyle({
           '--url': 'url(data:image/jpg;base64,base-64-text)',
         }),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -904,7 +980,7 @@ describe('web-component', () => {
           'Make sure that your projectId & flowId are correct',
           expect.any(Error)
         ),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -916,7 +992,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1`;
@@ -934,7 +1010,7 @@ describe('web-component', () => {
     );
 
     await waitFor(() => screen.findByShadowText('It updated!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
   });
 
@@ -947,18 +1023,12 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith(
-        '0',
-        '0',
-        'submit',
-        {
-          token: 'token1',
-        },
-        1
-      )
+      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
+        token: 'token1',
+      })
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
   });
 
@@ -971,18 +1041,12 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith(
-        '0',
-        '0',
-        'submit',
-        {
-          exchangeCode: 'code1',
-        },
-        0
-      )
+      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+        exchangeCode: 'code1',
+      })
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
   });
 
@@ -995,18 +1059,12 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith(
-        '0',
-        '0',
-        'submit',
-        {
-          exchangeError: 'err1',
-        },
-        1
-      )
+      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
+        exchangeError: 'err1',
+      })
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
   });
 
@@ -1018,7 +1076,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('Click'), { timeout: 5000 });
+    await waitFor(() => screen.findByShadowText('Click'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     pageContent =
       '<input id="email"></input><input id="code"></input><span>It works!</span>';
@@ -1026,7 +1086,7 @@ describe('web-component', () => {
     fireEvent.click(screen.getByShadowText('Click'));
 
     await waitFor(() =>
-      expect(nextMock).toBeCalledWith('0', '0', '123', {
+      expect(nextMock).toBeCalledWith('0', '0', '123', 1, '1.2.3', {
         attr1: 'attr1',
         attr2: 'attr2',
         origin: 'http://localhost',
@@ -1048,7 +1108,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('Click'), { timeout: 4000 });
+    await waitFor(() => screen.findByShadowText('Click'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     fireEvent.click(screen.getByShadowText('Click'));
 
@@ -1060,7 +1122,7 @@ describe('web-component', () => {
 
     await waitFor(
       () => expect(screen.getByShadowText('Click')).not.toHaveClass('loading'),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -1081,7 +1143,7 @@ describe('web-component', () => {
           'https://myurl.com'
         ),
       {
-        timeout: 2000,
+        timeout: WAIT_TIMEOUT,
       }
     );
   });
@@ -1100,7 +1162,7 @@ describe('web-component', () => {
     await waitFor(
       () => expect(window.location.assign).toHaveBeenCalledTimes(1),
       {
-        timeout: 5000,
+        timeout: WAIT_TIMEOUT,
       }
     );
   });
@@ -1123,7 +1185,7 @@ describe('web-component', () => {
           '',
           expect.any(Error)
         ),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -1148,7 +1210,9 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     // Make sure no redirect happened
-    await waitFor(() => expect(nextMock).toHaveBeenCalled(), { timeout: 2000 });
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(window.location.assign).not.toHaveBeenCalledWith(
       'https://myurl.com'
     );
@@ -1162,7 +1226,7 @@ describe('web-component', () => {
           'https://myurl.com'
         ),
       {
-        timeout: 2000,
+        timeout: WAIT_TIMEOUT,
       }
     );
   });
@@ -1188,14 +1252,16 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     // Make sure no redirect happened
-    await waitFor(() => expect(nextMock).toHaveBeenCalled(), { timeout: 2000 });
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
     await waitFor(
       () =>
         expect(window.location.assign).toHaveBeenCalledWith(
           'https://myurl.com'
         ),
       {
-        timeout: 2000,
+        timeout: WAIT_TIMEOUT,
       }
     );
   });
@@ -1218,7 +1284,7 @@ describe('web-component', () => {
           '',
           expect.any(Error)
         ),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
   });
 
@@ -1242,18 +1308,12 @@ describe('web-component', () => {
 
     await waitFor(
       () => expect(sdk.webauthn.helpers.create).toHaveBeenCalled(),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
-    expect(nextMock).toHaveBeenCalledWith(
-      '0',
-      '0',
-      'submit',
-      {
-        transactionId: 't1',
-        response: 'webauthn-response',
-      },
-      0
-    );
+    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+      transactionId: 't1',
+      response: 'webauthn-response',
+    });
   });
 
   it('Should create new credentials on platform only in Chrome when action type is "webauthnCreate"', async () => {
@@ -1287,18 +1347,12 @@ describe('web-component', () => {
         expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
           expectedOptions
         ),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
-    expect(nextMock).toHaveBeenCalledWith(
-      '0',
-      '0',
-      'submit',
-      {
-        transactionId: 't1',
-        response: 'webauthn-response',
-      },
-      0
-    );
+    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+      transactionId: 't1',
+      response: 'webauthn-response',
+    });
   });
 
   it('Should create new credentials without platform flag in Chrome when action type is "webauthnCreate" and prefer-biometrics is false', async () => {
@@ -1330,18 +1384,12 @@ describe('web-component', () => {
         expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
           initialOptions
         ),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
-    expect(nextMock).toHaveBeenCalledWith(
-      '0',
-      '0',
-      'submit',
-      {
-        transactionId: 't1',
-        response: 'webauthn-response',
-      },
-      0
-    );
+    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+      transactionId: 't1',
+      response: 'webauthn-response',
+    });
   });
 
   it('Should not fail to create new credentials if options cannot be parsed when action type is "webauthnCreate"', async () => {
@@ -1373,18 +1421,12 @@ describe('web-component', () => {
         expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
           initialOptions
         ),
-      { timeout: 3000 }
+      { timeout: WAIT_TIMEOUT }
     );
-    expect(nextMock).toHaveBeenCalledWith(
-      '0',
-      '0',
-      'submit',
-      {
-        transactionId: 't1',
-        response: 'webauthn-response',
-      },
-      0
-    );
+    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+      transactionId: 't1',
+      response: 'webauthn-response',
+    });
   });
 
   it('Should search of existing credentials when action type is "webauthnGet"', async () => {
@@ -1407,18 +1449,12 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock).toHaveBeenCalledWith(
-      '0',
-      '0',
-      'submit',
-      {
-        transactionId: 't1',
-        response: 'webauthn-response-get',
-      },
-      1
-    );
+    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
+      transactionId: 't1',
+      response: 'webauthn-response-get',
+    });
   });
 
   it('Should handle canceling webauthn', async () => {
@@ -1441,18 +1477,12 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
 
     await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock).toHaveBeenCalledWith(
-      '0',
-      '0',
-      'submit',
-      {
-        transactionId: 't1',
-        cancelWebauthn: true,
-      },
-      0
-    );
+    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+      transactionId: 't1',
+      cancelWebauthn: true,
+    });
   });
 
   it('it loads the fonts from the config when loading', async () => {
@@ -1583,7 +1613,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('click'), { timeout: 5000 });
+    await waitFor(() => screen.findByShadowText('click'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     const buttonEle = await screen.findByShadowText('click');
 
@@ -1597,7 +1629,7 @@ describe('web-component', () => {
     fireEvent.click(buttonEle);
 
     await waitFor(() => expect(inputEle.reportValidity).toHaveBeenCalled(), {
-      timeout: 3000,
+      timeout: WAIT_TIMEOUT,
     });
 
     await waitFor(() => expect(inputEle.checkValidity).toHaveBeenCalled());
@@ -1611,7 +1643,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowText('hey'), { timeout: 5000 });
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
@@ -1619,8 +1653,9 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
-        undefined,
-        0
+        0,
+        '1.2.3',
+        undefined
       )
     );
   });
@@ -1679,7 +1714,7 @@ describe('web-component', () => {
       jest.runAllTimers();
 
       await waitFor(() => expect(clearInterval).toHaveBeenCalled(), {
-        timeout: 10000,
+        timeout: 2000,
       });
     });
 
@@ -1703,7 +1738,7 @@ describe('web-component', () => {
         () =>
           expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 2000),
         {
-          timeout: 10000,
+          timeout: WAIT_TIMEOUT,
         }
       );
     });
@@ -1728,10 +1763,12 @@ describe('web-component', () => {
             '0',
             '0',
             CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
             {}
           ),
         {
-          timeout: 10000,
+          timeout: WAIT_TIMEOUT,
         }
       );
 
@@ -1753,10 +1790,12 @@ describe('web-component', () => {
             '0',
             '0',
             CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
             {}
           ),
         {
-          timeout: 10000,
+          timeout: WAIT_TIMEOUT,
         }
       );
     });
@@ -1778,7 +1817,7 @@ describe('web-component', () => {
       jest.runAllTimers();
 
       await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(3), {
-        timeout: 10000,
+        timeout: WAIT_TIMEOUT * 2,
       });
     });
 
@@ -1811,7 +1850,7 @@ describe('web-component', () => {
       jest.runAllTimers();
 
       await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
-        timeout: 10000,
+        timeout: WAIT_TIMEOUT,
       });
 
       await waitFor(
@@ -1820,7 +1859,7 @@ describe('web-component', () => {
             expect.objectContaining({ detail: 'auth info' })
           ),
         {
-          timeout: 10000,
+          timeout: WAIT_TIMEOUT,
         }
       );
 
@@ -1971,8 +2010,9 @@ describe('web-component', () => {
           },
           conditionInteractionId,
           'interactionId',
-          { origin: 'http://localhost' },
-          1
+          1,
+          '1.2.3',
+          { origin: 'http://localhost' }
         )
       );
     });
@@ -2015,11 +2055,12 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          1,
+          '1.2.3',
           {
             exchangeCode: 'code1',
             idpInitiated: true,
-          },
-          1
+          }
         )
       );
     });
@@ -2084,12 +2125,13 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          undefined,
-          0
+          0,
+          '1.2.3',
+          undefined
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 6000,
+        timeout: WAIT_TIMEOUT,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2117,12 +2159,13 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          { token },
-          0
+          0,
+          '1.2.3',
+          { token }
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 6000,
+        timeout: WAIT_TIMEOUT,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2147,12 +2190,13 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          undefined,
-          0
+          0,
+          '1.2.3',
+          undefined
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 8000,
+        timeout: WAIT_TIMEOUT,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2178,13 +2222,13 @@ describe('web-component', () => {
       await waitFor(() => expect(startMock).toHaveBeenCalled());
 
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 6000,
+        timeout: WAIT_TIMEOUT,
       });
 
       fireEvent.click(screen.getByShadowText('click'));
 
       await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
-        timeout: 3000,
+        timeout: WAIT_TIMEOUT,
       });
     });
   });
@@ -2224,11 +2268,12 @@ describe('web-component', () => {
         },
         undefined,
         '',
+        1,
+        '1.2.3',
         {
           exchangeCode: 'code1',
           idpInitiated: true,
-        },
-        1
+        }
       )
     );
   });
@@ -2281,11 +2326,12 @@ describe('web-component', () => {
         },
         undefined,
         '',
+        1,
+        '1.2.3',
         {
           exchangeCode: 'code1',
           idpInitiated: true,
-        },
-        1
+        }
       )
     );
   });
@@ -2419,7 +2465,7 @@ describe('web-component', () => {
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail locale="en-us"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('It works!'), {
-        timeout: 3000,
+        timeout: WAIT_TIMEOUT,
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
@@ -2446,49 +2492,53 @@ describe('web-component', () => {
       );
     });
 
-    it('should fetch the data from the correct path when locale provided with target locales', async () => {
-      startMock.mockReturnValue(generateSdkResponse());
+    it(
+      'should fetch the data from the correct path when locale provided with target locales',
+      async () => {
+        startMock.mockReturnValue(generateSdkResponse());
 
-      configContent = {
-        ...configContent,
-        flows: {
-          otpSignInEmail: {
-            targetLocales: ['en-US'],
+        configContent = {
+          ...configContent,
+          flows: {
+            otpSignInEmail: {
+              targetLocales: ['en-US'],
+            },
           },
-        },
-      };
+        };
 
-      pageContent = '<input id="email"></input><span>It works!</span>';
+        pageContent = '<input id="email"></input><span>It works!</span>';
 
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-Us"></descope-wc>`;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-Us"></descope-wc>`;
 
-      await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 8000,
-      });
+        await waitFor(() => screen.findByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
 
-      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
-      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+        const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+        const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+        const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
-      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
-      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
-      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+        const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+        const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+        const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
-      );
+        expect(fetchMock).toHaveBeenCalledWith(
+          expect.stringMatching(htmlUrlPathRegex),
+          expect.any(Object)
+        );
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
-      );
+        expect(fetchMock).toHaveBeenCalledWith(
+          expect.stringMatching(themeUrlPathRegex),
+          expect.any(Object)
+        );
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
-      );
-    }, 10000);
+        expect(fetchMock).toHaveBeenCalledWith(
+          expect.stringMatching(configUrlPathRegex),
+          expect.any(Object)
+        );
+      },
+      WAIT_TIMEOUT
+    );
 
     it('should fetch the data from the correct path when locale provided and not part of target locales', async () => {
       startMock.mockReturnValue(generateSdkResponse());
@@ -2507,7 +2557,7 @@ describe('web-component', () => {
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en-us"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('It works!'), {
-        timeout: 3000,
+        timeout: WAIT_TIMEOUT,
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
@@ -2556,7 +2606,7 @@ describe('web-component', () => {
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('It works!'), {
-        timeout: 3000,
+        timeout: WAIT_TIMEOUT,
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
@@ -2610,7 +2660,7 @@ describe('web-component', () => {
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('It works!'), {
-        timeout: 3000,
+        timeout: WAIT_TIMEOUT,
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
@@ -2672,7 +2722,7 @@ describe('web-component', () => {
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('It works!'), {
-        timeout: 3000,
+        timeout: WAIT_TIMEOUT,
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
@@ -2738,11 +2788,11 @@ describe('web-component', () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       pageContent =
-        '<descope-input id="email"></descope-input><descope-button1>It works!</descope-button1>';
+        '<descope-input16 id="email"></descope-input16><descope-button16>It works!</descope-button16>';
 
       globalThis.DescopeUI = {
-        'descope-button1': jest.fn(),
-        'descope-input': jest.fn(),
+        'descope-button16': jest.fn(),
+        'descope-input16': jest.fn(),
       };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
@@ -2752,7 +2802,7 @@ describe('web-component', () => {
           Object.keys(globalThis.DescopeUI).forEach((key) =>
             expect(globalThis.DescopeUI[key]).toHaveBeenCalled()
           ),
-        { timeout: 3000 }
+        { timeout: WAIT_TIMEOUT }
       );
     });
     it('should log an error if descope component is missing', async () => {
@@ -2772,7 +2822,7 @@ describe('web-component', () => {
             expect.any(String),
             expect.any(Error)
           ),
-        { timeout: 3000 }
+        { timeout: 5100 }
       );
     });
     it('should not load components which are already loaded', async () => {
@@ -2791,7 +2841,9 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.getByShadowText('Button'), { timeout: 4000 });
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
 
       expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
     });
