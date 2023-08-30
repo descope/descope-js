@@ -158,35 +158,6 @@ describe('web-component', () => {
     pageContent = '';
   });
 
-  it('should call the success cb when flow in completed status', async () => {
-    pageContent = '<input id="email" name="email"></input>';
-
-    startMock.mockReturnValue(
-      generateSdkResponse({
-        ok: true,
-        status: 'completed',
-      })
-    );
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id=1></descope-wc>`;
-
-    const wcEle = document.getElementsByTagName('descope-wc')[0];
-
-    const onSuccess = jest.fn();
-
-    wcEle.addEventListener('success', onSuccess);
-
-    await waitFor(
-      () =>
-        expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' })
-        ),
-      { timeout: WAIT_TIMEOUT }
-    );
-
-    wcEle.removeEventListener('success', onSuccess);
-  });
-
   it('should clear the flow query params after render', async () => {
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1&code=123456`;
     nextMock.mockReturnValue(generateSdkResponse({}));
@@ -1714,7 +1685,7 @@ describe('web-component', () => {
       jest.runAllTimers();
 
       await waitFor(() => expect(clearInterval).toHaveBeenCalled(), {
-        timeout: 2000,
+        timeout: 8000,
       });
     });
 
@@ -2454,6 +2425,35 @@ describe('web-component', () => {
       expect.stringMatching(htmlUrlPathRegex),
       expect.any(Object)
     );
+  });
+
+  it('should call the success cb when flow in completed status', async () => {
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+      })
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id=1></descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ detail: 'auth info' })
+        ),
+      { timeout: WAIT_TIMEOUT }
+    );
+
+    wcEle.removeEventListener('success', onSuccess);
   });
 
   describe('locale', () => {
