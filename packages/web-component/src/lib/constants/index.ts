@@ -14,6 +14,9 @@ export const DESCOPE_ATTRIBUTE_PREFIX = 'data-descope-';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_FIELD = 'data-exclude-field';
 export const DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY = 'dls_last_auth';
 export const OIDC_IDP_STATE_ID_PARAM_NAME = 'state_id';
+export const SAML_IDP_STATE_ID_PARAM_NAME = 'saml_idp_state_id';
+export const SAML_IDP_USERNAME_PARAM_NAME = 'saml_idp_username';
+export const SSO_APP_ID_PARAM_NAME = 'sso_app_id';
 
 export const ELEMENT_TYPE_ATTRIBUTE = 'data-type';
 
@@ -22,6 +25,7 @@ export const RESPONSE_ACTIONS = {
   poll: 'poll',
   webauthnCreate: 'webauthnCreate',
   webauthnGet: 'webauthnGet',
+  loadForm: 'loadForm',
 };
 
 export const ASSETS_FOLDER = 'v2-alpha';
