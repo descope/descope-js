@@ -27,6 +27,7 @@ export interface LastAuthState {
 
 export interface ScreenState {
   errorText?: string;
+  errorType?: string;
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
@@ -56,6 +57,7 @@ export type FlowState = {
   redirectAuthInitiator: string;
   oidcIdpStateId: string;
   deferredRedirect: boolean;
+  locale: string;
   samlIdpStateId: string;
   samlIdpFormResponse: string;
   samlIdpUsername: string;
@@ -65,6 +67,7 @@ export type FlowState = {
 export type StepState = {
   screenState: ScreenState;
   htmlUrl: string;
+  htmlLocaleUrl: string;
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
@@ -113,7 +116,7 @@ export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated';
+export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'externalToken';
 
 type CheckFunction = (ctx: Context) => boolean;
 
@@ -126,4 +129,11 @@ export type ConditionsMap = {
 export interface Context {
   loginId?: string;
   code?: string;
+  token?: string;
+}
+
+export interface ILogger {
+  info(title: string, description: string, state: any): void;
+  warn(title: string, description?: string): void;
+  error(title: string, description?: string, ...optionalParams: any[]): void;
 }

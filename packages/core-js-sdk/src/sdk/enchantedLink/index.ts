@@ -107,7 +107,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       new Promise((resolve) => {
         const { pollingIntervalMs, timeoutMs } =
           normalizeWaitForSessionConfig(config);
-        let timeout: number;
+        let timeout: NodeJS.Timeout | undefined;
         const interval = setInterval(async () => {
           const resp = await httpClient.post(apiPaths.enchantedLink.session, {
             pendingRef,
@@ -139,7 +139,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
         email: string,
         URI?: string,
         token?: string,
-        updateOptions? : UpdateOptions<T>
+        updateOptions?: UpdateOptions<T>
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
         transformResponse(
           httpClient.post(

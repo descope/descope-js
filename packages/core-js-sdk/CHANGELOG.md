@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.7.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.5...core-js-sdk-1.7.0) (2023-08-29)
+
+
+### Features
+
+* separate redirect url and location ([#252](https://github.com/descope/descope-js/issues/252)) ([0ff3c81](https://github.com/descope/descope-js/commit/0ff3c813c9622cf3cc00cfa13c555a8e36238be7))
+
+### [1.6.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.4...core-js-sdk-1.6.5) (2023-08-24)
+
+### [1.6.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.3...core-js-sdk-1.6.4) (2023-08-21)
+
+
+### Performance Improvements
+
+* Replace password session ([#247](https://github.com/descope/descope-js/issues/247)) ([5c20127](https://github.com/descope/descope-js/commit/5c201271d6a2d84ddbc504ed6e4864e233dfb924))
+
+### [1.6.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.2...core-js-sdk-1.6.3) (2023-08-18)
+
+### [1.6.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.1...core-js-sdk-1.6.2) (2023-08-18)
+
+### [1.6.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.0...core-js-sdk-1.6.1) (2023-08-17)
+
+## [1.6.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.5.0...core-js-sdk-1.6.0) (2023-08-14)
+
+
+### Features
+
+* Add logger prop for runner ([#236](https://github.com/descope/descope-js/issues/236)) ([7fd0c2f](https://github.com/descope/descope-js/commit/7fd0c2fa6d62df305c402bf66028cf0567af0d68))
+
+## [1.5.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.6...core-js-sdk-1.5.0) (2023-08-08)
+
+
+### Features
+
+* Add tenant name to userTenant object ([#204](https://github.com/descope/descope-js/issues/204)) ([97ca964](https://github.com/descope/descope-js/commit/97ca96403a8d8a118bb346a3a3ae457cc5bd2040))
+
+### [1.4.6](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.5...core-js-sdk-1.4.6) (2023-07-10)
+
+## [1.4.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.4...core-js-sdk-1.4.5) (2023-07-10)
+
+## [1.4.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.3...core-js-sdk-1.4.4) (2023-07-07)
+
 ## [1.4.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.2...core-js-sdk-1.4.3) (2023-06-30)
 
 ## [1.4.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.4.1...core-js-sdk-1.4.2) (2023-06-24)

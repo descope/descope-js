@@ -2,6 +2,103 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [2.8.9](https://github.com/descope/descope-js/compare/web-component-2.8.8...web-component-2.8.9) (2023-08-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.0`
+### [2.8.8](https://github.com/descope/descope-js/compare/web-component-2.8.7...web-component-2.8.8) (2023-08-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.14`
+### [2.8.7](https://github.com/descope/descope-js/compare/web-component-2.8.6...web-component-2.8.7) (2023-08-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.13`
+### [2.8.6](https://github.com/descope/descope-js/compare/web-component-2.8.5...web-component-2.8.6) (2023-08-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.12`
+### [2.8.5](https://github.com/descope/descope-js/compare/web-component-2.8.4...web-component-2.8.5) (2023-08-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.11`
+### [2.8.4](https://github.com/descope/descope-js/compare/web-component-2.8.3...web-component-2.8.4) (2023-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.10`
+### [2.8.3](https://github.com/descope/descope-js/compare/web-component-2.8.2...web-component-2.8.3) (2023-08-17)
+
+### [2.8.2](https://github.com/descope/descope-js/compare/web-component-2.8.1...web-component-2.8.2) (2023-08-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.1 ([#241](https://github.com/descope/descope-js/issues/241)) ([d82d397](https://github.com/descope/descope-js/commit/d82d3977eedc4074cf88da5f89b5122c1f8595cf))
+
+### [2.8.1](https://github.com/descope/descope-js/compare/web-component-2.8.0...web-component-2.8.1) (2023-08-14)
+
+## [2.8.0](https://github.com/descope/descope-js/compare/web-component-2.7.2...web-component-2.8.0) (2023-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.9`
+
+### Features
+
+* Add logger prop for runner ([#236](https://github.com/descope/descope-js/issues/236)) ([7fd0c2f](https://github.com/descope/descope-js/commit/7fd0c2fa6d62df305c402bf66028cf0567af0d68))
+
+### [2.7.2](https://github.com/descope/descope-js/compare/web-component-2.7.1...web-component-2.7.2) (2023-08-08)
+
+### [2.7.1](https://github.com/descope/descope-js/compare/web-component-2.7.0...web-component-2.7.1) (2023-08-08)
+
+## [2.7.0](https://github.com/descope/descope-js/compare/web-component-2.6.4...web-component-2.7.0) (2023-08-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.8`
+
+### Features
+
+* flow config locales usage ([#231](https://github.com/descope/descope-js/issues/231)) ([963c95f](https://github.com/descope/descope-js/commit/963c95f6b2bc1d3b1b9ab581f10428088238d190))
+* Upload file ([#195](https://github.com/descope/descope-js/issues/195)) ([32eafec](https://github.com/descope/descope-js/commit/32eafec95a51fb677bce8f2a32336566991b6417))
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.0 ([#207](https://github.com/descope/descope-js/issues/207)) ([c17af0e](https://github.com/descope/descope-js/commit/c17af0e7adc1e6ae806302e81b8e0dcececb8ed8))
+
+### [2.6.4](https://github.com/descope/descope-js/compare/web-component-2.6.3...web-component-2.6.4) (2023-07-10)
+
+### [2.6.3](https://github.com/descope/descope-js/compare/web-component-2.6.2...web-component-2.6.3) (2023-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.7`
+## [2.6.2](https://github.com/descope/descope-js/compare/web-component-2.6.1...web-component-2.6.2) (2023-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.6`
+## [2.6.1](https://github.com/descope/descope-js/compare/web-component-2.6.0...web-component-2.6.1) (2023-07-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.5`
+## [2.6.0](https://github.com/descope/descope-js/compare/web-component-2.5.7...web-component-2.6.0) (2023-07-05)
+
+
+### Features
+
+* Add an option to translate end user errors ([#193](https://github.com/descope/descope-js/issues/193)) ([c070b1b](https://github.com/descope/descope-js/commit/c070b1b8ef8eafeae3fbe02c116b93bf50f87d25))
+
+## [2.5.7](https://github.com/descope/descope-js/compare/web-component-2.5.6...web-component-2.5.7) (2023-07-03)
+
 ## [2.5.6](https://github.com/descope/descope-js/compare/web-component-2.5.5...web-component-2.5.6) (2023-06-30)
 
 ### Dependency Updates
