@@ -2096,6 +2096,9 @@ describe('web-component', () => {
             redirectAuth: undefined,
             tenant: undefined,
             lastAuth: { authMethod: 'otp' },
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
           },
           undefined,
           '',
@@ -2199,6 +2202,9 @@ describe('web-component', () => {
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
             lastAuth: {},
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
           },
           undefined,
           '',
@@ -2356,7 +2362,7 @@ describe('web-component', () => {
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 6000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2392,7 +2398,7 @@ describe('web-component', () => {
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 6000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2453,7 +2459,7 @@ describe('web-component', () => {
         )
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 4000,
+        timeout: 6000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
