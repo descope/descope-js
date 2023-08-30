@@ -2,6 +2,77 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.4.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.14...web-js-sdk-1.4.0) (2023-08-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.7.0`
+
+### Features
+
+* separate redirect url and location ([#252](https://github.com/descope/descope-js/issues/252)) ([0ff3c81](https://github.com/descope/descope-js/commit/0ff3c813c9622cf3cc00cfa13c555a8e36238be7))
+
+### [1.3.14](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.13...web-js-sdk-1.3.14) (2023-08-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.5`
+### [1.3.13](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.12...web-js-sdk-1.3.13) (2023-08-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.4`
+### [1.3.12](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.11...web-js-sdk-1.3.12) (2023-08-18)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.3`
+### [1.3.11](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.10...web-js-sdk-1.3.11) (2023-08-18)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.2`
+### [1.3.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.9...web-js-sdk-1.3.10) (2023-08-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.1`
+### [1.3.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.8...web-js-sdk-1.3.9) (2023-08-14)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.0`
+### [1.3.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.7...web-js-sdk-1.3.8) (2023-08-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.5.0`
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.8.4 ([#209](https://github.com/descope/descope-js/issues/209)) ([9478551](https://github.com/descope/descope-js/commit/94785519c84d45420cd7c632c93539e5fa31fca2))
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.8.5 ([#218](https://github.com/descope/descope-js/issues/218)) ([9a45354](https://github.com/descope/descope-js/commit/9a45354e0dc256c5438ff3c09b5a6ecc2155e929))
+
+### [1.3.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.6...web-js-sdk-1.3.7) (2023-07-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.6`
+
+### Bug Fixes
+
+* handle refresh on visibility change ([#198](https://github.com/descope/descope-js/issues/198)) ([257187b](https://github.com/descope/descope-js/commit/257187bd4f05dc899489f8eba70c06f12ca24706))
+
+## [1.3.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.5...web-js-sdk-1.3.6) (2023-07-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.5`
+## [1.3.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.4...web-js-sdk-1.3.5) (2023-07-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.4.4`
 ## [1.3.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.3...web-js-sdk-1.3.4) (2023-06-30)
 
 ### Dependency Updates

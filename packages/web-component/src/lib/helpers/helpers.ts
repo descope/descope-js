@@ -55,8 +55,7 @@ export async function fetchContent<T extends 'text' | 'json'>(
 }> {
   const res = await fetch(url, { cache: 'default' });
   if (!res.ok) {
-    // eslint-disable-next-line no-console
-    throw Error(`Error fetching URL ${url}`);
+    throw Error(`Error fetching URL ${url} [${res.status}]`);
   }
 
   return {
@@ -391,3 +390,29 @@ export const showFirstScreenOnExecutionInit = (
   !samlIdpStateId &&
   !samlIdpUsername &&
   !ssoAppId;
+
+export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
+  new Promise((resolve) => {
+    switch (input.type) {
+      case 'checkbox': {
+        resolve(input.checked);
+        break;
+      }
+      case 'file': {
+        const reader = new FileReader();
+        if (input.files?.length) {
+          reader.onload = (e: any) => {
+            const contents = e.target.result;
+            resolve(contents);
+          };
+          reader.readAsDataURL(input.files[0]);
+        } else {
+          resolve(null);
+        }
+        break;
+      }
+      default: {
+        resolve(input.value);
+      }
+    }
+  });

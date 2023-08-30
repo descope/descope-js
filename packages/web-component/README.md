@@ -61,6 +61,8 @@ DESCOPE_PROJECT_ID=<project-id>
 DESCOPE_FLOW_ID=<flow-id>
 # Optional - Descope base URL
 DESCOPE_BASE_URL
+# Optional - Descope locale (according to the target locales configured in the flow)
+DESCOPE_LOCALE=<locale>
 ```
 
 1. Run the sample `pnpm run start`
@@ -77,3 +79,71 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | telemetryKey | **String** - Telemetry public key provided by Descope Inc                                                                                                                                                                                 | **""**        |
 | auto-focus   | **"true"** - Automatically focus on the first input of each screen</br>**"false"** - Do not automatically focus on screen's inputs</br>**"skipFirstScreen"** - Automatically focus on the first input of each screen, except first screen | **"true"**    |
 |              |                                                                                                                                                                                                                                           |               |
+
+## Optional Properties
+
+### `errorTransformer` - A function that receives an error object and returns a string. The returned string will be displayed to the user.
+
+The function can be used to translate error messages to the user's language or to change the error message.
+
+Usage example:
+
+```javascript
+function translateError(error) {
+  const translationMap = {
+    SAMLStartFailed:
+      'No es posible iniciar sesión en este momento, por favor intenta nuevamente más tarde',
+  };
+  return translationMap[error.type] || error.text;
+}
+
+const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+
+descopeWcEle.errorTransformer = translateError;
+```
+
+### `logger` - An object that defines how to log error, warning and info. Defaults to console.error, console.warn and console.info respectively
+
+Usage example:
+
+```javascript
+const logger = {
+  info: (message: string, description: string, state: any) => {
+    console.log(message, description);
+  },
+  warn: (title: string, description: string) => {
+    console.warn(`WARN: ${title}`, description);
+  },
+  error: (title: string, description: string) => {
+    console.error(`ERROR: ${title}`, description);
+  },
+};
+
+const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+
+descopeWcEle.logger = logger;
+```
+
+## Events
+
+### `error` - Fired when an error occurs. The event detail contains the error object.
+
+Usage example:
+
+```javascript
+const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+descopeWcEle.addEventListener('error', (e) =>
+  alert(`Error! - ${e.detail.errorMessage}`)
+);
+```
+
+### `success` - Fired when the flow is completed successfully. The event detail contains the flow result.
+
+Usage example:
+
+```javascript
+const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+descopeWcEle.addEventListener('success', (e) =>
+  alert(`Success! - ${JSON.stringify(e.detail)}`)
+);
+```

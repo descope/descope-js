@@ -11,6 +11,10 @@ const conditionsMap: ConditionsMap = {
     'is-true': (ctx) => !!ctx.code,
     'is-false': (ctx) => !ctx.code,
   },
+  externalToken: {
+    'is-true': (ctx) => !!ctx.token,
+    'is-false': (ctx) => !ctx.token,
+  },
 };
 
 export const calculateCondition = (
