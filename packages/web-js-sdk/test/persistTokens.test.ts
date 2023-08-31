@@ -42,6 +42,28 @@ describe('persistTokens', () => {
 
     expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
   });
+
+  it('should get refresh token from local storage read tokens', () => {
+    const sdk = createSdk({ projectId: 'pid', readTokens: true });
+    localStorage.setItem('DSR', authInfo.refreshJwt);
+    sdk.httpClient.get('1/2/3');
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL(`https://api.descope.com/1/2/3`),
+      {
+        body: undefined,
+        headers: new Headers({
+          Authorization: `Bearer pid:${authInfo.refreshJwt}`,
+          ...descopeHeaders,
+        }),
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+
+    expect(sdk).not.toHaveProperty('getRefreshToken');
+  });
+
   it('should set session token as cookie and refresh token to local storage when managing session token via cookie', async () => {
     const mockFetch = jest
       .fn()

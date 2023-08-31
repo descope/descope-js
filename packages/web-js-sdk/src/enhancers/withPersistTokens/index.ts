@@ -18,12 +18,12 @@ import { PersistTokensOptions } from './types';
  */
 export const withPersistTokens =
   <T extends CreateWebSdk>(createSdk: T) =>
-  <A extends boolean>({
+  <A extends boolean, B extends boolean>({
     persistTokens: isPersistTokens,
     readTokens: isReadTokens,
     sessionTokenViaCookie,
     ...config
-  }: Parameters<T>[0] & PersistTokensOptions<A>): A extends true
+  }: Parameters<T>[0] & PersistTokensOptions<A, B>): A extends true
     ? ReturnType<T> & {
         getRefreshToken: typeof getRefreshToken;
         getSessionToken: typeof getSessionToken;
