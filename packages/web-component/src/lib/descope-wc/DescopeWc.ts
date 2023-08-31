@@ -380,6 +380,7 @@ class DescopeWc extends BaseDescopeWc {
             redirectAuth,
             oidcIdpStateId,
             lastAuth,
+            preview: this.preview,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
