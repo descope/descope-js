@@ -134,7 +134,8 @@ describe('web-component', () => {
   });
 
   afterEach(() => {
-    document.getElementsByTagName('html')[0].innerHTML = '';
+    document.getElementsByTagName('head')[0].innerHTML = '';
+    document.getElementsByTagName('body')[0].innerHTML = '';
     jest.resetAllMocks();
     window.location.search = '';
     themeContent = '';
@@ -2985,6 +2986,71 @@ describe('web-component', () => {
         value: '',
         writable: true,
       });
+    });
+
+    it('should validate handling of saml idp response (html form)', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          ok: true,
+          executionId: 'e1',
+          action: RESPONSE_ACTIONS.loadForm,
+          samlIdpFormResponse:
+            `<form method="post" action="POST" id="SAMLResponseForm">` +
+            `<input type="hidden" data-testid="input-saml-res" name="SAMLResponse" value="DUMMY-SAML-RESPONSE" />` +
+            `<input type="hidden" data-testid="input-relay-state" name="RelayState" value="DUMMY-RELAY-STATE" />` +
+            `<input id="SAMLSubmitButton" type="submit" value="Continue" />` +
+            `</form>` +
+            `<script>document.getElementById('SAMLSubmitButton').style.visibility='hidden';</script>` +
+            `<script>document.getElementById('SAMLResponseForm')</script>`,
+        })
+      );
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+      // validate form render
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('input-saml-res')).toBeInTheDocument();
+          expect(screen.getByTestId('input-saml-res')).not.toBeVisible();
+          expect(screen.getByTestId('input-relay-state')).toBeInTheDocument();
+          expect(screen.getByTestId('input-relay-state')).not.toBeVisible();
+        },
+        {
+          timeout: 6000,
+        }
+      );
+    });
+
+    it('should automatic fill saml idp username in form element', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          ok: true,
+          executionId: 'e1',
+        })
+      );
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      const samlIdpEmailAddress = 'dummy@email.com';
+      const encodedSamlIdpEmailAddress =
+        encodeURIComponent(samlIdpEmailAddress);
+      window.location.search = `?${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpEmailAddress}`;
+
+      pageContent = `<div>Loaded</div><input class="descope-input" id="loginId" name="loginId" value="{{loginId}}">{{loginId}}</input><input class="descope-input" id="email" name="email">{{email}}</input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('Loaded'), {
+        timeout: 6000,
+      });
+
+      const inputs = await waitFor(
+        () => screen.findAllByShadowDisplayValue(samlIdpEmailAddress),
+        {
+          timeout: 6000,
+        }
+      );
+
+      expect(inputs.length).toBe(2);
     });
   });
 });
