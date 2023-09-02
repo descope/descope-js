@@ -2618,7 +2618,7 @@ describe('web-component', () => {
         timeout: 3000,
       });
 
-      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
       const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
@@ -2713,7 +2713,7 @@ describe('web-component', () => {
 
       const fn = fetchMock.getMockImplementation();
       fetchMock.mockImplementation((url: string) => {
-        if (url.endsWith('en-us.html')) {
+        if (url.endsWith('en.html')) {
           return { ok: false };
         }
         return fn(url);
@@ -2732,7 +2732,7 @@ describe('web-component', () => {
         timeout: 3000,
       });
 
-      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
       const expectedHtmlFallbackPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
       const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
