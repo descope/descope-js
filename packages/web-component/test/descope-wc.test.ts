@@ -2600,7 +2600,7 @@ describe('web-component', () => {
       configContent = {
         flows: {
           otpSignInEmail: {
-            targetLocales: ['en-US'],
+            targetLocales: ['en'],
           },
         },
       };
@@ -2671,7 +2671,7 @@ describe('web-component', () => {
         timeout: 3000,
       });
 
-      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-zh-TW.html`;
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-zh-tw.html`;
       const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
@@ -2759,7 +2759,7 @@ describe('web-component', () => {
       configContent = {
         flows: {
           otpSignInEmail: {
-            targetLocales: ['en-US'],
+            targetLocales: ['en'],
           },
         },
       };
