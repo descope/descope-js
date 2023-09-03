@@ -13,6 +13,7 @@ import {
   getElementDescopeAttributes,
   getInputValueByType,
   handleAutoFocus,
+  injectSamlIdpForm,
   isChromium,
   isConditionalLoginSupported,
   replaceWithScreenState,
@@ -261,26 +262,7 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       // Handle SAML IDP end of flow ("redirect like" by using html form with hidden params)
-
-      // create form tag from response string
-      const htmlFormTemp = document.createElement('div');
-      htmlFormTemp.innerHTML = samlIdpFormResponse;
-      const htmlForm = htmlFormTemp.querySelector('form');
-      document.body.appendChild(htmlForm);
-
-      // create script tags from response scripts
-      const htmlScripts = document.createElement('div');
-      htmlScripts.innerHTML = samlIdpFormResponse;
-      const scripts = Array.from(htmlScripts.getElementsByTagName('script'));
-      scripts.forEach((originalScript) => {
-        const script = document.createElement('script');
-        if (originalScript.src) {
-          script.src = originalScript.src;
-        } else {
-          script.textContent = originalScript.textContent;
-        }
-        document.body.appendChild(script);
-      });
+      injectSamlIdpForm(samlIdpFormResponse); // will redirect us to the saml acs url
       return;
     }
 

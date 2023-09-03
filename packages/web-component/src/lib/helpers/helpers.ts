@@ -416,3 +416,25 @@ export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
       }
     }
   });
+
+export const injectSamlIdpForm = (samlIdpFormResponse: string) => {
+  // create form tag from response string
+  const htmlFormTemp = document.createElement('div');
+  htmlFormTemp.innerHTML = samlIdpFormResponse;
+  const htmlForm = htmlFormTemp.querySelector('form');
+  document.body.appendChild(htmlForm);
+
+  // create script tags from response scripts
+  const htmlScripts = document.createElement('div');
+  htmlScripts.innerHTML = samlIdpFormResponse;
+  const scripts = Array.from(htmlScripts.getElementsByTagName('script'));
+  scripts.forEach((originalScript) => {
+    const script = document.createElement('script');
+    if (originalScript.src) {
+      script.src = originalScript.src;
+    } else {
+      script.textContent = originalScript.textContent;
+    }
+    document.body.appendChild(script);
+  });
+};
