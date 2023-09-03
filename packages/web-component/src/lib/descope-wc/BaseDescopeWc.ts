@@ -438,6 +438,12 @@ class BaseDescopeWc extends HTMLElement {
 
       // in case there is a single button on the page, click on it
       if (buttons.length === 1) {
+        if (
+          buttons[0].getAttribute('disabled') ||
+          buttons[0].getAttribute('loading') === 'true'
+        ) {
+          return;
+        }
         buttons[0].click();
         return;
       }
@@ -448,6 +454,12 @@ class BaseDescopeWc extends HTMLElement {
 
       // in case there is a single "generic" button on the page, click on it
       if (genericButtons.length === 1) {
+        if (
+          genericButtons[0].getAttribute('disabled') ||
+          genericButtons[0].getAttribute('loading') === 'true'
+        ) {
+          return;
+        }
         genericButtons[0].click();
       }
     };
