@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.9.0](https://github.com/descope/descope-js/compare/web-component-2.8.12...web-component-2.9.0) (2023-09-03)
+
+
+### Features
+
+* Take the first part of locale ([#268](https://github.com/descope/descope-js/issues/268)) ([bd1397b](https://github.com/descope/descope-js/commit/bd1397bb54ac845d47d088f15378aad73257ca72))
+
+### [2.8.12](https://github.com/descope/descope-js/compare/web-component-2.8.11...web-component-2.8.12) (2023-09-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.3`
+### [2.8.11](https://github.com/descope/descope-js/compare/web-component-2.8.10...web-component-2.8.11) (2023-09-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.2`
+### [2.8.10](https://github.com/descope/descope-js/compare/web-component-2.8.9...web-component-2.8.10) (2023-09-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.1`
 ### [2.8.9](https://github.com/descope/descope-js/compare/web-component-2.8.8...web-component-2.8.9) (2023-08-29)
 
 ### Dependency Updates

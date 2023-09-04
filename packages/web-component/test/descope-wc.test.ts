@@ -2602,7 +2602,7 @@ describe('web-component', () => {
       configContent = {
         flows: {
           otpSignInEmail: {
-            targetLocales: ['en-US'],
+            targetLocales: ['en'],
           },
         },
       };
@@ -2620,7 +2620,60 @@ describe('web-component', () => {
         timeout: 3000,
       });
 
-      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object)
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object)
+      );
+
+      Object.defineProperty(navigator, 'language', {
+        value: '',
+        writable: true,
+      });
+    });
+
+    it('should fetch the data from the correct path when zh-TW locale provided in navigator', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['zh-TW'],
+          },
+        },
+      };
+
+      Object.defineProperty(navigator, 'language', {
+        value: 'zh-TW',
+        writable: true,
+      });
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: 3000,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-zh-tw.html`;
       const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
@@ -2708,14 +2761,14 @@ describe('web-component', () => {
       configContent = {
         flows: {
           otpSignInEmail: {
-            targetLocales: ['en-US'],
+            targetLocales: ['en'],
           },
         },
       };
 
       const fn = fetchMock.getMockImplementation();
       fetchMock.mockImplementation((url: string) => {
-        if (url.endsWith('en-us.html')) {
+        if (url.endsWith('en.html')) {
           return { ok: false };
         }
         return fn(url);
@@ -2734,7 +2787,7 @@ describe('web-component', () => {
         timeout: 3000,
       });
 
-      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
       const expectedHtmlFallbackPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
       const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
