@@ -59,7 +59,9 @@ export type FlowState = {
   deferredRedirect: boolean;
   locale: string;
   samlIdpStateId: string;
-  samlIdpFormResponse: string;
+  samlIdpResponseUrl: string;
+  samlIdpResponseSamlResponse: string;
+  samlIdpResponseRelayState: string;
   samlIdpUsername: string;
   ssoAppId: string;
 };
