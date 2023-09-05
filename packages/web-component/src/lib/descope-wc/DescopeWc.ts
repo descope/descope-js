@@ -140,14 +140,18 @@ class DescopeWc extends BaseDescopeWc {
       locale,
       samlIdpStateId,
       samlIdpUsername,
-      samlIdpFormResponse,
+      samlIdpResponseUrl,
+      samlIdpResponseSamlResponse,
+      samlIdpResponseRelayState,
       ssoAppId,
     } = currentState;
 
+    console.log('11111111')
     if (this.#currentInterval) {
       this.#resetCurrentInterval();
     }
 
+    console.log('2222222')
     let startScreenId: string;
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
@@ -252,17 +256,21 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    const samlProps = ['samlIdpResponseUrl', 'samlIdpResponseSamlResponse', 'samlIdpResponseRelayState'];
+    console.log('ENTRY POINT')
     if (
       action === RESPONSE_ACTIONS.loadForm &&
-      isChanged('samlIdpFormResponse')
+      samlProps.map(samlProp => isChanged(samlProp)).includes(true)
     ) {
-      if (!samlIdpFormResponse) {
-        this.loggerWrapper.error('Did not get saml form data to load');
+      console.log('HANDLE SAML PROPS')
+      if (samlProps.map(samlProp => isChanged(samlProp)).includes(false)) {
+        this.loggerWrapper.error('Did not get saml idp params data to load');
         return;
       }
 
       // Handle SAML IDP end of flow ("redirect like" by using html form with hidden params)
-      injectSamlIdpForm(samlIdpFormResponse); // will redirect us to the saml acs url
+      console.log('START INJECT')
+      injectSamlIdpForm(samlIdpResponseUrl, samlIdpResponseSamlResponse, samlIdpResponseRelayState); // will redirect us to the saml acs url
       return;
     }
 
@@ -494,7 +502,7 @@ class DescopeWc extends BaseDescopeWc {
       redirect,
       webauthn,
       error,
-      samlIdpFormResponse,
+      samlIdpResponse: samlIdpResponse,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
@@ -527,7 +535,9 @@ class DescopeWc extends BaseDescopeWc {
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
-      samlIdpFormResponse,
+      samlIdpResponseUrl: samlIdpResponse?.url,
+      samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
+      samlIdpResponseRelayState: samlIdpResponse?.relayState,
     });
   };
 

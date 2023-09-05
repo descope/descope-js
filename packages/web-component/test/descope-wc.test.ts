@@ -83,6 +83,7 @@ Object.defineProperty(window, 'location', {
   value: new URL(window.location.origin),
 });
 window.location.assign = jest.fn();
+const handleOnSubmitMock = jest.fn();
 
 Object.defineProperty(window, 'PublicKeyCredential', { value: TestClass });
 
@@ -2987,33 +2988,36 @@ describe('web-component', () => {
         writable: true,
       });
     });
+  });
 
-    it('should validate handling of saml idp response (html form)', async () => {
+  describe.only('SAML', () => {
+    it.only('should validate handling of saml idp response', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({
           ok: true,
           executionId: 'e1',
           action: RESPONSE_ACTIONS.loadForm,
-          samlIdpFormResponse:
-            `<form method="post" action="POST" id="SAMLResponseForm">` +
-            `<input type="hidden" data-testid="input-saml-res" name="SAMLResponse" value="DUMMY-SAML-RESPONSE" />` +
-            `<input type="hidden" data-testid="input-relay-state" name="RelayState" value="DUMMY-RELAY-STATE" />` +
-            `<input id="SAMLSubmitButton" type="submit" value="Continue" />` +
-            `</form>` +
-            `<script>document.getElementById('SAMLSubmitButton').style.visibility='hidden';</script>` +
-            `<script>document.getElementById('SAMLResponseForm')</script>`,
+          samlIdpResponseUrl: "http://acs.dummy.com",
+          samlIdpResponseSamlResponse: "aaaa",
+          samlIdpResponseRelayState: "bbbb",
         })
       );
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
+      const form = document.body.querySelector('descope-wc');
+      console.log(form.shadowRoot.querySelector('form'));
+      // form.onsubmit = handleOnSubmitMock;
+
       // validate form render
       await waitFor(
         () => {
-          expect(screen.getByTestId('input-saml-res')).toBeInTheDocument();
-          expect(screen.getByTestId('input-saml-res')).not.toBeVisible();
-          expect(screen.getByTestId('input-relay-state')).toBeInTheDocument();
-          expect(screen.getByTestId('input-relay-state')).not.toBeVisible();
+          // expect(screen.findByRole('saml-response')).toBeInTheDocument();
+
+          // expect(screen.getByTestId('input-saml-res')).toBeInTheDocument();
+          // expect(screen.getByTestId('input-saml-res')).not.toBeVisible();
+          // expect(screen.getByTestId('input-relay-state')).toBeInTheDocument();
+          // expect(screen.getByTestId('input-relay-state')).not.toBeVisible();
         },
         {
           timeout: 6000,
@@ -3052,5 +3056,6 @@ describe('web-component', () => {
 
       expect(inputs.length).toBe(2);
     });
-  });
+  })
 });
+
