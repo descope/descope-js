@@ -83,7 +83,6 @@ Object.defineProperty(window, 'location', {
   value: new URL(window.location.origin),
 });
 window.location.assign = jest.fn();
-const handleOnSubmitMock = jest.fn();
 
 Object.defineProperty(window, 'PublicKeyCredential', { value: TestClass });
 
@@ -2997,27 +2996,54 @@ describe('web-component', () => {
           ok: true,
           executionId: 'e1',
           action: RESPONSE_ACTIONS.loadForm,
-          samlIdpResponseUrl: "http://acs.dummy.com",
-          samlIdpResponseSamlResponse: "aaaa",
-          samlIdpResponseRelayState: "bbbb",
+          samlIdpResponseUrl: 'http://acs.dummy.com',
+          samlIdpResponseSamlResponse: 'saml-response-dummy-value',
+          samlIdpResponseRelayState: 'saml-relay-state-dummy-value',
         })
       );
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
-      const form = document.body.querySelector('descope-wc');
-      console.log(form.shadowRoot.querySelector('form'));
-      // form.onsubmit = handleOnSubmitMock;
+      // const f = document.createElement('form');
+      // f.onsubmit = jest.fn().mockReturnValue(() => console.log('DUMMY SUBMIT'));
+      // const createEleSpy = jest.spyOn(document, 'createElement').mockReturnValue(f);
 
-      // validate form render
+      // const dummySubmit = jest.spyOn(document, 'createElement').mockReturnValue(f);
+      // const createEleSpy = jest.spyOn(document, 'createElement').mockReturnValue(f);
+      // // validate form render
+      // await waitFor(() => screen.findByShadowText('Loaded'), {
+      //   timeout: 6000,
+      // });
+
+      // expect(createEleSpy).toHaveBeenCalled();
+      // const submitSpy = jest.fn().mockImplementation(() => {});
+      // const submitSpy = jest.spyOn(form, 'submit');
+      // const form = document.querySelector('form');
+      // form.submit = jest.fn();
+
       await waitFor(
         () => {
-          // expect(screen.findByRole('saml-response')).toBeInTheDocument();
+          // validate form exist
+          const form = document.querySelector('form');
+          expect(form).toBeInTheDocument();
 
-          // expect(screen.getByTestId('input-saml-res')).toBeInTheDocument();
-          // expect(screen.getByTestId('input-saml-res')).not.toBeVisible();
-          // expect(screen.getByTestId('input-relay-state')).toBeInTheDocument();
-          // expect(screen.getByTestId('input-relay-state')).not.toBeVisible();
+          // validate inputs exist
+          const inputSamlResponse = document.querySelector(
+            'input[role="saml-response"]'
+          );
+          expect(inputSamlResponse).toBeInTheDocument();
+          expect(inputSamlResponse).toBeInTheDocument();
+          expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
+
+          // validate inputs are hidden
+          const inputSamlRelayState = document.querySelector(
+            'input[role="saml-relay-state"]'
+          );
+          expect(inputSamlRelayState).toBeInTheDocument();
+          expect(inputSamlRelayState).not.toBeVisible();
+          expect(inputSamlRelayState).toHaveValue(
+            'saml-relay-state-dummy-value'
+          );
         },
         {
           timeout: 6000,
@@ -3056,6 +3082,5 @@ describe('web-component', () => {
 
       expect(inputs.length).toBe(2);
     });
-  })
+  });
 });
-

@@ -383,11 +383,16 @@ export const showFirstScreenOnExecutionInit = (
   ssoAppId: string
 ): boolean => {
   const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
-  const optimizeIfMissingSAMLParams = startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
+  const optimizeIfMissingSAMLParams =
+    startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
   const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
 
-  return optimizeIfMissingOIDCParams && optimizeIfMissingSAMLParams && optimizeIfMissingSSOParams;
-}
+  return (
+    optimizeIfMissingOIDCParams &&
+    optimizeIfMissingSAMLParams &&
+    optimizeIfMissingSSOParams
+  );
+};
 
 export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
   new Promise((resolve) => {
@@ -415,14 +420,17 @@ export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
     }
   });
 
-export const injectSamlIdpForm = (url: string, samlResponse: string, relayState: string) => {
-  const formEle = document.createElement("form");
+export const injectSamlIdpForm = (
+  url: string,
+  samlResponse: string,
+  relayState: string
+) => {
+  const formEle = document.createElement('form');
   formEle.method = 'POST';
-  formEle.role = 'form';
   formEle.action = url;
   formEle.innerHTML = `
   <input type="hidden" role="saml-response" name="SAMLResponse" value="${samlResponse}" />
-  <input type="hidden" role="relay-state" name="RelayState" value="${relayState}" />
+  <input type="hidden" role="saml-relay-state" name="RelayState" value="${relayState}" />
   <input style="display: none;" id="SAMLSubmitButton" type="submit" value="Continue" />
   `;
 

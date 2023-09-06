@@ -254,19 +254,26 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    const samlProps = ['samlIdpResponseUrl', 'samlIdpResponseSamlResponse', 'samlIdpResponseRelayState'];
+    const samlProps = [
+      'samlIdpResponseUrl',
+      'samlIdpResponseSamlResponse',
+      'samlIdpResponseRelayState',
+    ];
     if (
       action === RESPONSE_ACTIONS.loadForm &&
-      samlProps.map(samlProp => isChanged(samlProp)).includes(true)
+      samlProps.map((samlProp) => isChanged(samlProp)).includes(true)
     ) {
-      if (samlProps.map(samlProp => isChanged(samlProp)).includes(false)) {
+      if (samlProps.map((samlProp) => isChanged(samlProp)).includes(false)) {
         this.loggerWrapper.error('Did not get saml idp params data to load');
         return;
       }
 
       // Handle SAML IDP end of flow ("redirect like" by using html form with hidden params)
-      injectSamlIdpForm(samlIdpResponseUrl, samlIdpResponseSamlResponse, samlIdpResponseRelayState); // will redirect us to the saml acs url
-      return;
+      injectSamlIdpForm(
+        samlIdpResponseUrl,
+        samlIdpResponseSamlResponse,
+        samlIdpResponseRelayState
+      ); // will redirect us to the saml acs url
     }
 
     if (
@@ -371,7 +378,7 @@ class DescopeWc extends BaseDescopeWc {
       }, 2000);
     }
 
-    // if there is no screen id (possbily due to page refresh or no screen flow) we should get it from the server
+    // if there is no screen id (possibly due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
       this.loggerWrapper.warn('No screen was found to show');
       return;
@@ -498,7 +505,7 @@ class DescopeWc extends BaseDescopeWc {
       redirect,
       webauthn,
       error,
-      samlIdpResponse: samlIdpResponse,
+      samlIdpResponse,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
