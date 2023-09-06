@@ -2990,8 +2990,8 @@ describe('web-component', () => {
     });
   });
 
-  describe.only('SAML', () => {
-    it.only('should validate handling of saml idp response', async () => {
+  describe('SAML', () => {
+    it('should validate handling of saml idp response', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({
           ok: true,

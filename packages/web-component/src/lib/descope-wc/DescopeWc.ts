@@ -146,12 +146,10 @@ class DescopeWc extends BaseDescopeWc {
       ssoAppId,
     } = currentState;
 
-    console.log('11111111')
     if (this.#currentInterval) {
       this.#resetCurrentInterval();
     }
 
-    console.log('2222222')
     let startScreenId: string;
     let conditionInteractionId: string;
     const loginId = this.sdk.getLastUserLoginId();
@@ -257,19 +255,16 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     const samlProps = ['samlIdpResponseUrl', 'samlIdpResponseSamlResponse', 'samlIdpResponseRelayState'];
-    console.log('ENTRY POINT')
     if (
       action === RESPONSE_ACTIONS.loadForm &&
       samlProps.map(samlProp => isChanged(samlProp)).includes(true)
     ) {
-      console.log('HANDLE SAML PROPS')
       if (samlProps.map(samlProp => isChanged(samlProp)).includes(false)) {
         this.loggerWrapper.error('Did not get saml idp params data to load');
         return;
       }
 
       // Handle SAML IDP end of flow ("redirect like" by using html form with hidden params)
-      console.log('START INJECT')
       injectSamlIdpForm(samlIdpResponseUrl, samlIdpResponseSamlResponse, samlIdpResponseRelayState); // will redirect us to the saml acs url
       return;
     }
@@ -409,7 +404,8 @@ class DescopeWc extends BaseDescopeWc {
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, ssoAppId is not empty, this optimization doesn't happen
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId is not empty, this optimization doesn't happen
+    // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (
       showFirstScreenOnExecutionInit(
         startScreenId,

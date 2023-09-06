@@ -372,24 +372,22 @@ export const getChromiumVersion = (
   ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
 );
 
-// As an optimization - We can show first screen if we have startScreenId and we don't have oidcIdpStateId
+// As an optimization - We can show first screen if we have startScreenId and we don't have any other of the ssoAppId/oidcIdpStateId/samlIdp params
 // - If there startScreenId it means that the sdk can show the first screen and we don't need to wait for the sdk to return the first screen
-// - If there is a oidcIdpStateId - we can't skip this call because the sdk may
-// - If there is a samlIdpStateId - we can't skip this call because the sdk may
-// - If there is a samlIdpUsername - we can't skip this call because the sdk may
-// - If there is a ssoAppId - we can't skip this call because the sdk may
+// - If there is any one else of the other params (like oidcIdpStateId, ..) - we can't skip this call because descope may decide not to show the first screen (in cases like a user is already logged in)
 export const showFirstScreenOnExecutionInit = (
   startScreenId: string,
   oidcIdpStateId: string,
   samlIdpStateId: string,
   samlIdpUsername: string,
   ssoAppId: string
-): boolean =>
-  startScreenId &&
-  !oidcIdpStateId &&
-  !samlIdpStateId &&
-  !samlIdpUsername &&
-  !ssoAppId;
+): boolean => {
+  const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
+  const optimizeIfMissingSAMLParams = startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
+  const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
+
+  return optimizeIfMissingOIDCParams && optimizeIfMissingSAMLParams && optimizeIfMissingSSOParams;
+}
 
 export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
   new Promise((resolve) => {
@@ -418,7 +416,6 @@ export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
   });
 
 export const injectSamlIdpForm = (url: string, samlResponse: string, relayState: string) => {
-  console.log('INJECTING...')
   const formEle = document.createElement("form");
   formEle.method = 'POST';
   formEle.role = 'form';
@@ -430,7 +427,5 @@ export const injectSamlIdpForm = (url: string, samlResponse: string, relayState:
   `;
 
   document.body.appendChild(formEle);
-
-  console.log('FORM', document.body.querySelector('form'))
   formEle.submit();
 };
