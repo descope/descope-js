@@ -3032,7 +3032,7 @@ describe('web-component', () => {
             'input[role="saml-response"]'
           );
           expect(inputSamlResponse).toBeInTheDocument();
-          expect(inputSamlResponse).toBeInTheDocument();
+          expect(inputSamlResponse).not.toBeVisible();
           expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
 
           // validate inputs are hidden
