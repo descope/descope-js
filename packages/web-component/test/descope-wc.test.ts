@@ -3044,63 +3044,71 @@ describe('web-component', () => {
 
   describe('SAML', () => {
     it('should validate handling of saml idp response', async () => {
+      const samlUrl = 'http://acs.dummy.com';
+
       startMock.mockReturnValue(
         generateSdkResponse({
           ok: true,
           executionId: 'e1',
           action: RESPONSE_ACTIONS.loadForm,
-          samlIdpResponseUrl: 'http://acs.dummy.com',
+          samlIdpResponseUrl: samlUrl,
           samlIdpResponseSamlResponse: 'saml-response-dummy-value',
           samlIdpResponseRelayState: 'saml-relay-state-dummy-value',
         })
       );
 
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+      fetchMock.mockReturnValue({});
 
-      // const f = document.createElement('form');
-      // f.onsubmit = jest.fn().mockReturnValue(() => console.log('DUMMY SUBMIT'));
-      // const createEleSpy = jest.spyOn(document, 'createElement').mockReturnValue(f);
+      const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
+      mockSubmitForm.mockImplementation(() => {});
 
-      // const dummySubmit = jest.spyOn(document, 'createElement').mockReturnValue(f);
-      // const createEleSpy = jest.spyOn(document, 'createElement').mockReturnValue(f);
-      // // validate form render
-      // await waitFor(() => screen.findByShadowText('Loaded'), {
-      //   timeout: 6000,
-      // });
+      document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
-      // expect(createEleSpy).toHaveBeenCalled();
-      // const submitSpy = jest.fn().mockImplementation(() => {});
-      // const submitSpy = jest.spyOn(form, 'submit');
-      // const form = document.querySelector('form');
-      // form.submit = jest.fn();
-
-      await waitFor(
+      const form = (await waitFor(
         () => {
-          // validate form exist
-          const form = document.querySelector('form');
-          expect(form).toBeInTheDocument();
+          const samlForm = document.querySelector(`form[action="${samlUrl}"]`);
 
-          // validate inputs exist
-          const inputSamlResponse = document.querySelector(
-            'input[role="saml-response"]'
-          );
-          expect(inputSamlResponse).toBeInTheDocument();
-          expect(inputSamlResponse).not.toBeVisible();
-          expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
-
-          // validate inputs are hidden
-          const inputSamlRelayState = document.querySelector(
-            'input[role="saml-relay-state"]'
-          );
-          expect(inputSamlRelayState).toBeInTheDocument();
-          expect(inputSamlRelayState).not.toBeVisible();
-          expect(inputSamlRelayState).toHaveValue(
-            'saml-relay-state-dummy-value'
-          );
+          if (!samlForm) {
+            throw Error();
+          }
+          return samlForm;
         },
         {
           timeout: 6000,
         }
+      )) as HTMLFormElement;
+
+      expect(form).toBeInTheDocument();
+
+      // const formDataSpy = jest.spyOn(form, 'onformdata');
+
+      // validate inputs exist
+      const inputSamlResponse = document.querySelector(
+        'input[role="saml-response"]'
+      );
+      expect(inputSamlResponse).toBeInTheDocument();
+      expect(inputSamlResponse).not.toBeVisible();
+      expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
+
+      // validate inputs are hidden
+      const inputSamlRelayState = document.querySelector(
+        'input[role="saml-relay-state"]'
+      );
+      expect(inputSamlRelayState).toBeInTheDocument();
+      expect(inputSamlRelayState).not.toBeVisible();
+      expect(inputSamlRelayState).toHaveValue('saml-relay-state-dummy-value');
+
+      await waitFor(
+        () => {
+          expect(mockSubmitForm).toHaveBeenCalledTimes(1);
+          // expect(fetchMock).toHaveBeenCalledWith(
+          //   expect.objectContaining({
+          //     method: 'POST',
+          //     action: 'http://acs.dummy.com'
+          //    })
+          // );
+        },
+        { timeout: 6000 }
       );
     });
 

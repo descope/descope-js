@@ -20,6 +20,7 @@ import {
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
+  submitForm,
   withMemCache,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
@@ -277,7 +278,8 @@ class DescopeWc extends BaseDescopeWc {
       injectSamlIdpForm(
         samlIdpResponseUrl,
         samlIdpResponseSamlResponse,
-        samlIdpResponseRelayState
+        samlIdpResponseRelayState,
+        submitForm
       ); // will redirect us to the saml acs url
     }
 

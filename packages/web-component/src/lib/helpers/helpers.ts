@@ -423,7 +423,8 @@ export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
 export const injectSamlIdpForm = (
   url: string,
   samlResponse: string,
-  relayState: string
+  relayState: string,
+  submitCallback: (form: HTMLFormElement) => void
 ) => {
   const formEle = document.createElement('form');
   formEle.method = 'POST';
@@ -435,5 +436,8 @@ export const injectSamlIdpForm = (
   `;
 
   document.body.appendChild(formEle);
-  formEle.submit();
+
+  submitCallback(formEle);
 };
+
+export const submitForm = (formEle: HTMLFormElement) => formEle?.submit();
