@@ -3059,8 +3059,6 @@ describe('web-component', () => {
         })
       );
 
-      fetchMock.mockReturnValue({});
-
       const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
       mockSubmitForm.mockImplementation(() => {});
 
@@ -3082,11 +3080,9 @@ describe('web-component', () => {
 
       expect(form).toBeInTheDocument();
 
-      // const formDataSpy = jest.spyOn(form, 'onformdata');
-
       // validate inputs exist
       const inputSamlResponse = document.querySelector(
-        'input[role="saml-response"]'
+        `form[action="${samlUrl}"] input[role="saml-response"]`
       );
       expect(inputSamlResponse).toBeInTheDocument();
       expect(inputSamlResponse).not.toBeVisible();
@@ -3094,7 +3090,7 @@ describe('web-component', () => {
 
       // validate inputs are hidden
       const inputSamlRelayState = document.querySelector(
-        'input[role="saml-relay-state"]'
+        `form[action="${samlUrl}"] input[role="saml-relay-state"]`
       );
       expect(inputSamlRelayState).toBeInTheDocument();
       expect(inputSamlRelayState).not.toBeVisible();
@@ -3103,12 +3099,6 @@ describe('web-component', () => {
       await waitFor(
         () => {
           expect(mockSubmitForm).toHaveBeenCalledTimes(1);
-          // expect(fetchMock).toHaveBeenCalledWith(
-          //   expect.objectContaining({
-          //     method: 'POST',
-          //     action: 'http://acs.dummy.com'
-          //    })
-          // );
         },
         { timeout: 6000 }
       );
