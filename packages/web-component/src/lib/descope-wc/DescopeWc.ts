@@ -440,6 +440,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpUsername,
             ssoAppId,
             lastAuth,
+            preview: this.preview,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,

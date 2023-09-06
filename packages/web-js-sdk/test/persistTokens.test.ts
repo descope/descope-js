@@ -91,6 +91,29 @@ describe('persistTokens', () => {
     expect(refreshSpy).not.toBeCalled();
   });
 
+  it('should not set refresh if persistTokens is configured to false with prefix', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      autoRefresh: false,
+      persistTokens: true,
+      storagePrefix: 'test.',
+    });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('test.DSR')).toBeTruthy();
+    expect(refreshSpy).not.toBeCalled();
+  });
+
   it('should not set storage if persistTokens is configured to false', async () => {
     const mockFetch = jest
       .fn()
@@ -108,16 +131,16 @@ describe('persistTokens', () => {
     it('should get session from from cookie', async () => {
       const getMock = Cookies.get as jest.Mock;
       getMock.mockReturnValue('session-1');
-      expect(getSessionToken()).toEqual('session-1');
+      expect(getSessionToken('test')).toEqual('session-1');
       expect(getMock).toBeCalled();
     });
 
     it('should get session from from local storage', async () => {
       const getMock = Cookies.get as jest.Mock;
       getMock.mockReturnValue('');
-      localStorage.setItem('DS', 'session-1');
+      localStorage.setItem('test.DS', 'session-1');
 
-      expect(getSessionToken()).toEqual('session-1');
+      expect(getSessionToken('test.')).toEqual('session-1');
     });
 
     it('afterRequest - should not set session token as cookie and refresh token to local storage when managing session token via cookie', async () => {

@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.5.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.4.3...web-js-sdk-1.5.0) (2023-09-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.8.0`
+
+### Features
+
+* add preview and storage prefix ([#265](https://github.com/descope/descope-js/issues/265)) ([22ad036](https://github.com/descope/descope-js/commit/22ad03641ab705877b5e0900204a02e71b44e82c))
+
 ### [1.4.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.4.2...web-js-sdk-1.4.3) (2023-09-01)
 
 ### Dependency Updates

@@ -234,6 +234,7 @@ export type Options = {
   lastAuth?: LastAuth;
   redirectAuth?: RedirectAuth;
   oidcIdpStateId?: string;
+  preview?: boolean;
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;

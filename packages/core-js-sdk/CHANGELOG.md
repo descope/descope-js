@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.3...core-js-sdk-1.8.0) (2023-09-06)
+
+
+### Features
+
+* add preview and storage prefix ([#265](https://github.com/descope/descope-js/issues/265)) ([22ad036](https://github.com/descope/descope-js/commit/22ad03641ab705877b5e0900204a02e71b44e82c))
+
 ### [1.7.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.2...core-js-sdk-1.7.3) (2023-09-01)
 
 ### [1.7.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.1...core-js-sdk-1.7.2) (2023-09-01)

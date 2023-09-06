@@ -34,40 +34,46 @@ function setJwtTokenCookie(
 
 export const persistTokens = (
   { refreshJwt, sessionJwt, ...cookieParams } = {} as Partial<JWTResponse>,
-  sessionTokenViaCookie = false
+  sessionTokenViaCookie = false,
+  storagePrefix = ''
 ) => {
   // persist refresh token
-  refreshJwt && setLocalStorage(REFRESH_TOKEN_KEY, refreshJwt);
+  refreshJwt &&
+    setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
 
   // persist session token
   if (sessionJwt) {
     sessionTokenViaCookie
       ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, cookieParams)
-      : setLocalStorage(SESSION_TOKEN_KEY, sessionJwt);
+      : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
   }
 };
 
 /** Return the refresh token from the localStorage. Not for production usage because refresh token will not be saved in localStorage. */
-export function getRefreshToken() {
-  return getLocalStorage(REFRESH_TOKEN_KEY) || '';
+export function getRefreshToken(prefix: string = '') {
+  return getLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`) || '';
 }
 
 /**
  * Return the session token. first try to get from cookie, and fallback to local storage
  * See sessionTokenViaCookie option for more details about session token location
  */
-export function getSessionToken(): string {
+export function getSessionToken(prefix: string = ''): string {
   return (
-    Cookies.get(SESSION_TOKEN_KEY) || getLocalStorage(SESSION_TOKEN_KEY) || ''
+    Cookies.get(SESSION_TOKEN_KEY) ||
+    getLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`) ||
+    ''
   );
 }
 
 /** Remove both the localStorage refresh JWT and the session cookie */
-export function clearTokens() {
-  removeLocalStorage(REFRESH_TOKEN_KEY);
-  removeLocalStorage(SESSION_TOKEN_KEY);
+export function clearTokens(prefix: string = '') {
+  removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
+  removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
   Cookies.remove(SESSION_TOKEN_KEY);
 }
 
-export const beforeRequest: BeforeRequestHook = (config) =>
-  Object.assign(config, { token: config.token || getRefreshToken() });
+export const beforeRequest =
+  (prefix?: string): BeforeRequestHook =>
+  (config) =>
+    Object.assign(config, { token: config.token || getRefreshToken(prefix) });

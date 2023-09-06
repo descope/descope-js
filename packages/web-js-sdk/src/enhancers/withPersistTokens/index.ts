@@ -21,11 +21,12 @@ export const withPersistTokens =
   <A extends boolean>({
     persistTokens: isPersistTokens,
     sessionTokenViaCookie,
+    storagePrefix,
     ...config
   }: Parameters<T>[0] & PersistTokensOptions<A>): A extends true
     ? ReturnType<T> & {
-        getRefreshToken: typeof getRefreshToken;
-        getSessionToken: typeof getSessionToken;
+        getRefreshToken: () => string;
+        getSessionToken: () => string;
       }
     : ReturnType<T> => {
     if (!isPersistTokens || !IS_BROWSER) {
@@ -40,31 +41,45 @@ export const withPersistTokens =
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
       if (res?.status === 401) {
-        clearTokens();
+        clearTokens(storagePrefix);
       } else {
         persistTokens(
           await getAuthInfoFromResponse(res),
-          sessionTokenViaCookie
+          sessionTokenViaCookie,
+          storagePrefix
         );
       }
     };
 
-    const sdk = createSdk(addHooks(config, { beforeRequest, afterRequest }));
+    const sdk = createSdk(
+      addHooks(config, {
+        beforeRequest: beforeRequest(storagePrefix),
+        afterRequest,
+      })
+    );
 
-    const wrappedSdk = wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
+    const wrappedSdk = wrapWith(
+      sdk,
+      ['logout', 'logoutAll'],
+      wrapper(storagePrefix)
+    );
+
+    const refreshToken = () => getRefreshToken(storagePrefix);
+    const sessionToken = () => getSessionToken(storagePrefix);
 
     return Object.assign(wrappedSdk, {
-      getRefreshToken,
-      getSessionToken,
+      getRefreshToken: refreshToken,
+      getSessionToken: sessionToken,
     }) as any;
   };
 
-const wrapper: SdkFnWrapper<{}> =
+const wrapper =
+  (prefix?: string): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
 
-    clearTokens();
+    clearTokens(prefix);
 
     return resp;
   };

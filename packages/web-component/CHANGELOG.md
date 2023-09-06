@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.10.0](https://github.com/descope/descope-js/compare/web-component-2.9.0...web-component-2.10.0) (2023-09-06)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.5.0`
+
+### Features
+
+* add preview and storage prefix ([#265](https://github.com/descope/descope-js/issues/265)) ([22ad036](https://github.com/descope/descope-js/commit/22ad03641ab705877b5e0900204a02e71b44e82c))
+
 ## [2.9.0](https://github.com/descope/descope-js/compare/web-component-2.8.12...web-component-2.9.0) (2023-09-03)
 
 
