@@ -41,6 +41,8 @@ class BaseDescopeWc extends HTMLElement {
       'theme',
       'locale',
       'debug',
+      'storage-prefix',
+      'preview',
       'telemetryKey',
       'redirect-url',
       'auto-focus',
@@ -180,6 +182,14 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get storagePrefix() {
+    return this.getAttribute('storage-prefix') || '';
+  }
+
+  get preview() {
+    return !!this.getAttribute('preview');
+  }
+
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
@@ -190,6 +200,8 @@ class BaseDescopeWc extends HTMLElement {
       'telemetryKey',
       'redirect-url',
       'auto-focus',
+      'preview',
+      'storage-prefix',
       'prefer-biometrics',
     ];
 
@@ -226,6 +238,8 @@ class BaseDescopeWc extends HTMLElement {
     this.sdk = createSdk({
       // Use persist tokens options in order to add existing tokens in outgoing requests (if they exists)
       persistTokens: true,
+      preview: this.preview,
+      storagePrefix: this.storagePrefix,
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
