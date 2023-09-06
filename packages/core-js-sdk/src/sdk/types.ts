@@ -203,8 +203,12 @@ export type FlowResponse = {
   redirect?: {
     url: string;
   };
-  // SAML IDP form response (this is the html form response goes from the IDP through the end user browser to the SP)
-  samlIdpFormResponse?: string;
+  // SAML IDP response (this will be used to build the html form response goes from the IDP through the end user browser to the SP)
+  samlIdpResponse?: {
+    url: string;
+    samlResponse: string;
+    relayState: string;
+  };
   // webauthn data - if action is one of 'webauthnCreate', 'webauthnGet'
   webauthn?: {
     transactionId: string;
