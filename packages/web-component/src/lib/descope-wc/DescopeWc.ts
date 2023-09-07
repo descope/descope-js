@@ -267,9 +267,9 @@ class DescopeWc extends BaseDescopeWc {
     ];
     if (
       action === RESPONSE_ACTIONS.loadForm &&
-      samlProps.map((samlProp) => isChanged(samlProp)).includes(true)
+      samlProps.some((samlProp) => isChanged(samlProp))
     ) {
-      if (samlProps.map((samlProp) => isChanged(samlProp)).includes(false)) {
+      if (!samlIdpResponseUrl || !samlIdpResponseSamlResponse) {
         this.loggerWrapper.error('Did not get saml idp params data to load');
         return;
       }
@@ -278,7 +278,7 @@ class DescopeWc extends BaseDescopeWc {
       injectSamlIdpForm(
         samlIdpResponseUrl,
         samlIdpResponseSamlResponse,
-        samlIdpResponseRelayState,
+        samlIdpResponseRelayState || '',
         submitForm
       ); // will redirect us to the saml acs url
     }
@@ -659,10 +659,11 @@ class DescopeWc extends BaseDescopeWc {
       !screenState.form?.loginId &&
       !screenState.form?.email
     ) {
-      screenState.form = {
-        loginId: currentState.samlIdpUsername,
-        email: currentState.samlIdpUsername,
-      };
+      if (!screenState.form) {
+        screenState.form = {};
+      }
+      screenState.form.loginId = currentState.samlIdpUsername;
+      screenState.form.email = currentState.samlIdpUsername;
     }
 
     replaceWithScreenState(
