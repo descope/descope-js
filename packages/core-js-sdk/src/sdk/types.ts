@@ -50,9 +50,9 @@ export type UserResponse = User & {
   roleNames?: string[];
   userTenants?: UserTenant[];
   createTime: number;
-  totp: boolean;
-  saml: boolean;
-  oauth?: Record<string, boolean>;
+  TOTP: boolean;
+  SAML: boolean;
+  OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
 };
 
