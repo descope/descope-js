@@ -58,6 +58,12 @@ export type FlowState = {
   oidcIdpStateId: string;
   deferredRedirect: boolean;
   locale: string;
+  samlIdpStateId: string;
+  samlIdpResponseUrl: string;
+  samlIdpResponseSamlResponse: string;
+  samlIdpResponseRelayState: string;
+  samlIdpUsername: string;
+  ssoAppId: string;
 };
 
 export type StepState = {
@@ -66,6 +72,7 @@ export type StepState = {
   htmlLocaleUrl: string;
   next: NextFn;
   direction: Direction | undefined;
+  samlIdpUsername: string;
 };
 
 export type DebugState = {
