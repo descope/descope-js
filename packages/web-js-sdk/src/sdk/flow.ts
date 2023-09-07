@@ -4,7 +4,14 @@ import { isSupported } from './webauthn';
 type CoreSdkFlowStartArgs = Parameters<CoreSdk['flow']['start']>;
 type Options = Pick<
   CoreSdkFlowStartArgs[1],
-  'tenant' | 'redirectUrl' | 'redirectAuth' | 'oidcIdpStateId' | 'preview'
+  | 'tenant'
+  | 'redirectUrl'
+  | 'redirectAuth'
+  | 'oidcIdpStateId'
+  | 'samlIdpStateId'
+  | 'samlIdpUsername'
+  | 'ssoAppId'
+  | 'preview'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };

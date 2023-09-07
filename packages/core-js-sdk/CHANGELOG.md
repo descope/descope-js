@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.9.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.8.0...core-js-sdk-1.9.0) (2023-09-07)
+
+
+### Features
+
+* Support sso-apps and saml-idp ([#260](https://github.com/descope/descope-js/issues/260)) ([881b32e](https://github.com/descope/descope-js/commit/881b32ef309ee902f89dcf4765af119377d643eb))
+
 ## [1.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.3...core-js-sdk-1.8.0) (2023-09-06)
 
 
