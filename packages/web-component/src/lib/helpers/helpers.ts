@@ -10,6 +10,9 @@ import {
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
+  SAML_IDP_STATE_ID_PARAM_NAME,
+  SAML_IDP_USERNAME_PARAM_NAME,
+  SSO_APP_ID_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -152,6 +155,30 @@ export function clearOIDCIDPParamFromUrl() {
   resetUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
 }
 
+export function getSAMLIDPParamFromUrl() {
+  return getUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function clearSAMLIDPParamFromUrl() {
+  resetUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function getSAMLIDPUsernameParamFromUrl() {
+  return getUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
+}
+
+export function clearSAMLIDPUsernameParamFromUrl() {
+  resetUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
+}
+
+export function getSSOAppIdParamFromUrl() {
+  return getUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearSSOAppIdParamFromUrl() {
+  resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -242,6 +269,21 @@ export const handleUrlParams = () => {
     clearOIDCIDPParamFromUrl();
   }
 
+  const samlIdpStateId = getSAMLIDPParamFromUrl();
+  if (samlIdpStateId) {
+    clearSAMLIDPParamFromUrl();
+  }
+
+  const samlIdpUsername = getSAMLIDPUsernameParamFromUrl();
+  if (samlIdpStateId) {
+    clearSAMLIDPUsernameParamFromUrl();
+  }
+
+  const ssoAppId = getSSOAppIdParamFromUrl();
+  if (ssoAppId) {
+    clearSSOAppIdParamFromUrl();
+  }
+
   return {
     executionId,
     stepId,
@@ -252,6 +294,9 @@ export const handleUrlParams = () => {
     redirectAuthCallbackUrl,
     redirectAuthInitiator,
     oidcIdpStateId,
+    samlIdpStateId,
+    samlIdpUsername,
+    ssoAppId,
   };
 };
 
@@ -327,13 +372,27 @@ export const getChromiumVersion = (
   ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
 );
 
-// As an optimization - We can show first screen if we have startScreenId and we don't have oidcIdpStateId
+// As an optimization - We can show first screen if we have startScreenId and we don't have any other of the ssoAppId/oidcIdpStateId/samlIdp params
 // - If there startScreenId it means that the sdk can show the first screen and we don't need to wait for the sdk to return the first screen
-// - If there is a oidcIdpStateId - we can't skip this call because the sdk may
+// - If there is any one else of the other params (like oidcIdpStateId, ..) - we can't skip this call because descope may decide not to show the first screen (in cases like a user is already logged in)
 export const showFirstScreenOnExecutionInit = (
   startScreenId: string,
-  oidcIdpStateId: string
-): boolean => startScreenId && !oidcIdpStateId;
+  oidcIdpStateId: string,
+  samlIdpStateId: string,
+  samlIdpUsername: string,
+  ssoAppId: string
+): boolean => {
+  const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
+  const optimizeIfMissingSAMLParams =
+    startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
+  const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
+
+  return (
+    optimizeIfMissingOIDCParams &&
+    optimizeIfMissingSAMLParams &&
+    optimizeIfMissingSSOParams
+  );
+};
 
 export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
   new Promise((resolve) => {
@@ -360,3 +419,25 @@ export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
       }
     }
   });
+
+export const injectSamlIdpForm = (
+  url: string,
+  samlResponse: string,
+  relayState: string,
+  submitCallback: (form: HTMLFormElement) => void
+) => {
+  const formEle = document.createElement('form');
+  formEle.method = 'POST';
+  formEle.action = url;
+  formEle.innerHTML = `
+  <input type="hidden" role="saml-response" name="SAMLResponse" value="${samlResponse}" />
+  <input type="hidden" role="saml-relay-state" name="RelayState" value="${relayState}" />
+  <input style="display: none;" id="SAMLSubmitButton" type="submit" value="Continue" />
+  `;
+
+  document.body.appendChild(formEle);
+
+  submitCallback(formEle);
+};
+
+export const submitForm = (formEle: HTMLFormElement) => formEle?.submit();
