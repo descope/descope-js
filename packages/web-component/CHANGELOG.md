@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.0](https://github.com/descope/descope-js/compare/web-component-2.10.0...web-component-2.11.0) (2023-09-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.0`
+
+### Features
+
+* Support sso-apps and saml-idp ([#260](https://github.com/descope/descope-js/issues/260)) ([881b32e](https://github.com/descope/descope-js/commit/881b32ef309ee902f89dcf4765af119377d643eb))
+
 ## [2.10.0](https://github.com/descope/descope-js/compare/web-component-2.9.0...web-component-2.10.0) (2023-09-06)
 
 ### Dependency Updates
