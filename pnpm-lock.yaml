@@ -76,8 +76,8 @@ importers:
         specifier: 15.9.4
         version: 15.9.4
       prettier:
-        specifier: ^2.6.2
-        version: 2.6.2
+        specifier: ^3.0.0
+        version: 3.0.3
       ts-jest:
         specifier: 29.1.1
         version: 29.1.1(@babel/core@7.22.8)(jest@29.6.2)(typescript@4.9.3)
@@ -165,7 +165,7 @@ importers:
         version: 1.2.3(eslint@8.47.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@2.6.2)
+        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@3.0.3)
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@8.47.0)
@@ -179,11 +179,11 @@ importers:
         specifier: ^13.0.3
         version: 13.0.3
       prettier:
-        specifier: ^2.6.2
-        version: 2.6.2
+        specifier: ^3.0.0
+        version: 3.0.3
       pretty-quick:
         specifier: ^3.1.3
-        version: 3.1.3(prettier@2.6.2)
+        version: 3.1.3(prettier@3.0.3)
       rimraf:
         specifier: ^5.0.0
         version: 5.0.0
@@ -301,7 +301,7 @@ importers:
         version: 1.2.3(eslint@8.47.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@2.6.2)
+        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@3.0.3)
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@8.47.0)
@@ -315,11 +315,11 @@ importers:
         specifier: ^13.0.3
         version: 13.0.3
       prettier:
-        specifier: ^2.6.2
-        version: 2.6.2
+        specifier: ^3.0.0
+        version: 3.0.3
       pretty-quick:
         specifier: ^3.1.3
-        version: 3.1.3(prettier@2.6.2)
+        version: 3.1.3(prettier@3.0.3)
       rollup:
         specifier: ^2.78.0
         version: 2.78.0
@@ -440,7 +440,7 @@ importers:
         version: 1.2.3(eslint@8.47.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@2.6.2)
+        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@3.0.3)
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@8.47.0)
@@ -457,11 +457,11 @@ importers:
         specifier: ^13.0.3
         version: 13.0.3
       prettier:
-        specifier: ^2.6.2
-        version: 2.6.2
+        specifier: ^3.0.0
+        version: 3.0.3
       pretty-quick:
         specifier: ^3.1.3
-        version: 3.1.3(prettier@2.6.2)
+        version: 3.1.3(prettier@3.0.3)
       rimraf:
         specifier: ^5.0.0
         version: 5.0.0
@@ -6119,7 +6119,7 @@ packages:
       eslint: 8.47.0
     dev: true
 
-  /eslint-plugin-prettier@4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@2.6.2):
+  /eslint-plugin-prettier@4.2.1(eslint-config-prettier@8.10.0)(eslint@8.47.0)(prettier@3.0.3):
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -6132,7 +6132,7 @@ packages:
     dependencies:
       eslint: 8.47.0
       eslint-config-prettier: 8.10.0(eslint@8.47.0)
-      prettier: 2.6.2
+      prettier: 3.0.3
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -9683,9 +9683,9 @@ packages:
       fast-diff: 1.3.0
     dev: true
 
-  /prettier@2.6.2:
-    resolution: {integrity: sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==}
-    engines: {node: '>=10.13.0'}
+  /prettier@3.0.3:
+    resolution: {integrity: sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==}
+    engines: {node: '>=14'}
     hasBin: true
     dev: true
 
@@ -9716,7 +9716,7 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /pretty-quick@3.1.3(prettier@2.6.2):
+  /pretty-quick@3.1.3(prettier@3.0.3):
     resolution: {integrity: sha512-kOCi2FJabvuh1as9enxYmrnBC6tVMoVOenMaBqRfsvBHB0cbpYHjdQEpSglpASDFEXVwplpcGR4CLEaisYAFcA==}
     engines: {node: '>=10.13'}
     hasBin: true
@@ -9729,7 +9729,7 @@ packages:
       ignore: 5.2.4
       mri: 1.2.0
       multimatch: 4.0.0
-      prettier: 2.6.2
+      prettier: 3.0.3
     dev: true
 
   /process-nextick-args@2.0.1:
