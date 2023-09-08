@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.9.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.0...core-js-sdk-1.9.1) (2023-09-08)
+
+
+### Bug Fixes
+
+* Add custom attributes RELEASE ([#275](https://github.com/descope/descope-js/issues/275)) ([dab21a0](https://github.com/descope/descope-js/commit/dab21a0ff4f163044b9e88289a4c383217610ac0))
+
 ## [1.9.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.8.0...core-js-sdk-1.9.0) (2023-09-07)
 
 
