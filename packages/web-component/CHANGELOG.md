@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [2.11.2](https://github.com/descope/descope-js/compare/web-component-2.11.1...web-component-2.11.2) (2023-09-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.2 ([#278](https://github.com/descope/descope-js/issues/278)) ([c5d929e](https://github.com/descope/descope-js/commit/c5d929e493e83344ff2626e1aa7f934c92902195))
+
 ### [2.11.1](https://github.com/descope/descope-js/compare/web-component-2.11.0...web-component-2.11.1) (2023-09-08)
 
 ### Dependency Updates
