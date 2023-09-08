@@ -101,8 +101,8 @@ importers:
         specifier: 1.2.5
         version: 1.2.5
       '@rollup/plugin-commonjs':
-        specifier: ^24.0.0
-        version: 24.0.0(rollup@3.0.0)
+        specifier: ^25.0.0
+        version: 25.0.4(rollup@3.0.0)
       '@rollup/plugin-node-resolve':
         specifier: ^15.0.0
         version: 15.0.0(rollup@3.0.0)
@@ -231,8 +231,8 @@ importers:
         specifier: 1.2.5
         version: 1.2.5
       '@rollup/plugin-commonjs':
-        specifier: ^24.0.0
-        version: 24.0.0(rollup@2.78.0)
+        specifier: ^25.0.0
+        version: 25.0.4(rollup@2.78.0)
       '@rollup/plugin-node-resolve':
         specifier: ^15.0.0
         version: 15.0.0(rollup@2.78.0)
@@ -373,8 +373,8 @@ importers:
         specifier: 1.2.5
         version: 1.2.5
       '@rollup/plugin-commonjs':
-        specifier: 24.1.0
-        version: 24.1.0(rollup@3.0.0)
+        specifier: 25.0.4
+        version: 25.0.4(rollup@3.0.0)
       '@rollup/plugin-node-resolve':
         specifier: ^15.0.0
         version: 15.0.0(rollup@3.0.0)
@@ -3151,8 +3151,8 @@ packages:
     dev: true
     optional: true
 
-  /@rollup/plugin-commonjs@24.0.0(rollup@2.78.0):
-    resolution: {integrity: sha512-0w0wyykzdyRRPHOb0cQt14mIBLujfAv6GgP6g8nvg/iBxEm112t3YPPq+Buqe2+imvElTka+bjNlJ/gB56TD8g==}
+  /@rollup/plugin-commonjs@25.0.4(rollup@2.78.0):
+    resolution: {integrity: sha512-L92Vz9WUZXDnlQQl3EwbypJR4+DM2EbsO+/KOcEkP4Mc6Ct453EeDB2uH9lgRwj4w5yflgNpq9pHOiY8aoUXBQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0
@@ -3169,26 +3169,8 @@ packages:
       rollup: 2.78.0
     dev: true
 
-  /@rollup/plugin-commonjs@24.0.0(rollup@3.0.0):
-    resolution: {integrity: sha512-0w0wyykzdyRRPHOb0cQt14mIBLujfAv6GgP6g8nvg/iBxEm112t3YPPq+Buqe2+imvElTka+bjNlJ/gB56TD8g==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.68.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.0.0)
-      commondir: 1.0.1
-      estree-walker: 2.0.2
-      glob: 8.1.0
-      is-reference: 1.2.1
-      magic-string: 0.27.0
-      rollup: 3.0.0
-    dev: true
-
-  /@rollup/plugin-commonjs@24.1.0(rollup@3.0.0):
-    resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
+  /@rollup/plugin-commonjs@25.0.4(rollup@3.0.0):
+    resolution: {integrity: sha512-L92Vz9WUZXDnlQQl3EwbypJR4+DM2EbsO+/KOcEkP4Mc6Ct453EeDB2uH9lgRwj4w5yflgNpq9pHOiY8aoUXBQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0
