@@ -10,7 +10,6 @@ import {
   getAnimationDirection,
   getContentUrl,
   getElementDescopeAttributes,
-  getInputValueByType,
   handleAutoFocus,
   isChromium,
   isConditionalLoginSupported,
@@ -714,13 +713,10 @@ class DescopeWc extends BaseDescopeWc {
 
     // wait for all inputs
     const values = await Promise.all(
-      inputs.map(async (input) => {
-        const value = await getInputValueByType(input);
-        return {
+      inputs.map(async (input) => ({
           name: input.name,
-          value,
-        };
-      })
+          value: input.value,
+        }))
     );
 
     // reduce to object
