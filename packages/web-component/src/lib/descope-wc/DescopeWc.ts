@@ -10,7 +10,6 @@ import {
   getAnimationDirection,
   getContentUrl,
   getElementDescopeAttributes,
-  getInputValueByType,
   handleAutoFocus,
   isChromium,
   isConditionalLoginSupported,
@@ -717,13 +716,10 @@ class DescopeWc extends BaseDescopeWc {
 
     // wait for all inputs
     const values = await Promise.all(
-      inputs.map(async (input) => {
-        const value = await getInputValueByType(input);
-        return {
-          name: input.getAttribute('name'),
-          value,
-        };
-      })
+      inputs.map(async (input) => ({
+        name: input.getAttribute('name'),
+        value: input.value,
+      }))
     );
 
     // reduce to object
@@ -760,8 +756,10 @@ class DescopeWc extends BaseDescopeWc {
 
       const formData = await this.#getFormData();
       const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+      const contextArgs = this.getComponentsContext();
 
       const actionArgs = {
+        ...contextArgs,
         ...eleDescopeAttrs,
         ...formData,
         // 'origin' is required to start webauthn. For now we'll add it to every request
