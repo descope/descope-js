@@ -532,17 +532,20 @@ class DescopeWc extends BaseDescopeWc {
   // eslint-disable-next-line class-methods-use-this
   #handleConditionalUiInput(inputEle: HTMLInputElement) {
     const ignoreList = ['email'];
-    const origName = inputEle.name;
+    const origName = inputEle.getAttribute('name');
 
     if (!ignoreList.includes(origName)) {
       const conditionalUiSupportName = `user-${origName}`;
 
       // eslint-disable-next-line no-param-reassign
-      inputEle.name = conditionalUiSupportName;
+      inputEle.setAttribute('name', conditionalUiSupportName);
 
       inputEle.addEventListener('input', () => {
         // eslint-disable-next-line no-param-reassign
-        inputEle.name = inputEle.value ? origName : conditionalUiSupportName;
+        inputEle.setAttribute(
+          'name',
+          inputEle.value ? origName : conditionalUiSupportName
+        );
       });
     }
   }
@@ -717,7 +720,7 @@ class DescopeWc extends BaseDescopeWc {
       inputs.map(async (input) => {
         const value = await getInputValueByType(input);
         return {
-          name: input.name,
+          name: input.getAttribute('name'),
           value,
         };
       })
