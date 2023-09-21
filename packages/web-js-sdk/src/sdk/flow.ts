@@ -4,7 +4,14 @@ import { isSupported } from './webauthn';
 type CoreSdkFlowStartArgs = Parameters<CoreSdk['flow']['start']>;
 type Options = Pick<
   CoreSdkFlowStartArgs[1],
-  'tenant' | 'redirectUrl' | 'redirectAuth' | 'oidcIdpStateId'
+  | 'tenant'
+  | 'redirectUrl'
+  | 'redirectAuth'
+  | 'oidcIdpStateId'
+  | 'samlIdpStateId'
+  | 'samlIdpUsername'
+  | 'ssoAppId'
+  | 'preview'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
@@ -15,7 +22,8 @@ export default (coreSdk: CoreSdk) => ({
   start: async (...args: ReplaceParam<CoreSdkFlowStartArgs, '1', Options>) => {
     const webAuthnSupport = await isSupported();
     const decoratedOptions = {
-      redirectUrl: window.location.href,
+      redirectUrl: window.location.href, // for backward compatibility
+      location: window.location.href,
       ...args[1],
       deviceInfo: {
         webAuthnSupport,

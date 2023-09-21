@@ -74,7 +74,7 @@ const withPassword = (httpClient: HttpClient) => ({
       loginId: string,
       oldPassword: string,
       newPassword: string
-    ): Promise<SdkResponse<never>> =>
+    ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.replace, {
           loginId,

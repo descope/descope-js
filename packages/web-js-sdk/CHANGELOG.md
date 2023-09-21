@@ -2,6 +2,71 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.6.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.1...web-js-sdk-1.6.2) (2023-09-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.9.2`
+### [1.6.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.0...web-js-sdk-1.6.1) (2023-09-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.9.1`
+## [1.6.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.5.0...web-js-sdk-1.6.0) (2023-09-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.9.0`
+
+### Features
+
+* Support sso-apps and saml-idp ([#260](https://github.com/descope/descope-js/issues/260)) ([881b32e](https://github.com/descope/descope-js/commit/881b32ef309ee902f89dcf4765af119377d643eb))
+
+## [1.5.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.4.3...web-js-sdk-1.5.0) (2023-09-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.8.0`
+
+### Features
+
+* add preview and storage prefix ([#265](https://github.com/descope/descope-js/issues/265)) ([22ad036](https://github.com/descope/descope-js/commit/22ad03641ab705877b5e0900204a02e71b44e82c))
+
+### [1.4.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.4.2...web-js-sdk-1.4.3) (2023-09-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.7.3`
+### [1.4.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.4.1...web-js-sdk-1.4.2) (2023-09-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.7.2`
+### [1.4.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.4.0...web-js-sdk-1.4.1) (2023-09-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.7.1`
+## [1.4.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.14...web-js-sdk-1.4.0) (2023-08-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.7.0`
+
+### Features
+
+* separate redirect url and location ([#252](https://github.com/descope/descope-js/issues/252)) ([0ff3c81](https://github.com/descope/descope-js/commit/0ff3c813c9622cf3cc00cfa13c555a8e36238be7))
+
+### [1.3.14](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.13...web-js-sdk-1.3.14) (2023-08-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.5`
+### [1.3.13](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.12...web-js-sdk-1.3.13) (2023-08-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.6.4`
 ### [1.3.12](https://github.com/descope/descope-js/compare/web-js-sdk-1.3.11...web-js-sdk-1.3.12) (2023-08-18)
 
 ### Dependency Updates

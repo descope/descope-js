@@ -11,12 +11,14 @@ import {
   getContentUrl,
   getElementDescopeAttributes,
   handleAutoFocus,
+  injectSamlIdpForm,
   isChromium,
   isConditionalLoginSupported,
   replaceWithScreenState,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
+  submitForm,
   withMemCache,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
@@ -82,7 +84,12 @@ class DescopeWc extends BaseDescopeWc {
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
     let filenameWithLocale: string;
-    const userLocale = (locale || navigator.language || '').toLowerCase(); // use provided locals, otherwise use browser locale
+    let browserLocale = navigator.language;
+    if (browserLocale && browserLocale !== 'zh-TW') {
+      // zh-TW is the only locale that must have "-", for all others we need to have the first part
+      browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
+    }
+    const userLocale = (locale || browserLocale || '').toLowerCase(); // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
 
     if (targetLocales.includes(userLocale)) {
@@ -140,6 +147,12 @@ class DescopeWc extends BaseDescopeWc {
       redirectAuthInitiator,
       oidcIdpStateId,
       locale,
+      samlIdpStateId,
+      samlIdpUsername,
+      samlIdpResponseUrl,
+      samlIdpResponseSamlResponse,
+      samlIdpResponseRelayState,
+      ssoAppId,
     } = currentState;
 
     if (this.#currentInterval) {
@@ -164,20 +177,28 @@ class DescopeWc extends BaseDescopeWc {
     if (!executionId) {
       if (flowConfig.conditions) {
         ({ startScreenId, conditionInteractionId } = calculateConditions(
-          { loginId, code },
+          { loginId, code, token },
           flowConfig.conditions
         ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
-          { loginId, code }
+          { loginId, code, token }
         ));
       } else {
         startScreenId = flowConfig.startScreenId;
       }
 
       // As an optimization - we want to show the first screen if it is possible
-      if (!showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
+      if (
+        !showFirstScreenOnExecutionInit(
+          startScreenId,
+          oidcIdpStateId,
+          samlIdpStateId,
+          samlIdpUsername,
+          ssoAppId
+        )
+      ) {
         const inputs: Record<string, any> = {};
         let exists = false;
         if (code) {
@@ -195,6 +216,9 @@ class DescopeWc extends BaseDescopeWc {
             tenant,
             redirectAuth,
             oidcIdpStateId,
+            samlIdpStateId,
+            samlIdpUsername,
+            ssoAppId,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
           },
@@ -240,6 +264,29 @@ class DescopeWc extends BaseDescopeWc {
         exchangeError: undefined,
       }); // should happen after handleSdkResponse, otherwise we will not have screen id on the next run
       return;
+    }
+
+    const samlProps = [
+      'samlIdpResponseUrl',
+      'samlIdpResponseSamlResponse',
+      'samlIdpResponseRelayState',
+    ];
+    if (
+      action === RESPONSE_ACTIONS.loadForm &&
+      samlProps.some((samlProp) => isChanged(samlProp))
+    ) {
+      if (!samlIdpResponseUrl || !samlIdpResponseSamlResponse) {
+        this.loggerWrapper.error('Did not get saml idp params data to load');
+        return;
+      }
+
+      // Handle SAML IDP end of flow ("redirect like" by using html form with hidden params)
+      injectSamlIdpForm(
+        samlIdpResponseUrl,
+        samlIdpResponseSamlResponse,
+        samlIdpResponseRelayState || '',
+        submitForm
+      ); // will redirect us to the saml acs url
     }
 
     if (
@@ -346,7 +393,7 @@ class DescopeWc extends BaseDescopeWc {
       }, 2000);
     }
 
-    // if there is no screen id (possbily due to page refresh or no screen flow) we should get it from the server
+    // if there is no screen id (possibly due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
       this.loggerWrapper.warn('No screen was found to show');
       return;
@@ -373,13 +420,23 @@ class DescopeWc extends BaseDescopeWc {
       htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
       htmlLocaleUrl:
         filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
+      samlIdpUsername,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId is not empty, this optimization doesn't happen
-    if (showFirstScreenOnExecutionInit(startScreenId, oidcIdpStateId)) {
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId is not empty, this optimization doesn't happen
+    // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
+    if (
+      showFirstScreenOnExecutionInit(
+        startScreenId,
+        oidcIdpStateId,
+        samlIdpStateId,
+        samlIdpUsername,
+        ssoAppId
+      )
+    ) {
       stepStateUpdate.next = (
         interactionId,
         version,
@@ -392,7 +449,11 @@ class DescopeWc extends BaseDescopeWc {
             tenant,
             redirectAuth,
             oidcIdpStateId,
+            samlIdpStateId,
+            samlIdpUsername,
+            ssoAppId,
             lastAuth,
+            preview: this.preview,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
@@ -466,6 +527,7 @@ class DescopeWc extends BaseDescopeWc {
       redirect,
       webauthn,
       error,
+      samlIdpResponse,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
@@ -498,6 +560,9 @@ class DescopeWc extends BaseDescopeWc {
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
+      samlIdpResponseUrl: samlIdpResponse?.url,
+      samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
+      samlIdpResponseRelayState: samlIdpResponse?.relayState,
     });
   };
 
@@ -641,6 +706,18 @@ class DescopeWc extends BaseDescopeWc {
       disableWebauthnButtons(clone);
     } else {
       await this.#handleWebauthnConditionalUi(clone, next);
+    }
+
+    if (
+      currentState.samlIdpUsername &&
+      !screenState.form?.loginId &&
+      !screenState.form?.email
+    ) {
+      if (!screenState.form) {
+        screenState.form = {};
+      }
+      screenState.form.loginId = currentState.samlIdpUsername;
+      screenState.form.email = currentState.samlIdpUsername;
     }
 
     replaceWithScreenState(
