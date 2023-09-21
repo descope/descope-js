@@ -23,6 +23,7 @@ describe('sdk', () => {
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
         redirectUrl: 'http://localhost/',
+        location: 'http://localhost/',
         deviceInfo: { webAuthnSupport: false },
       },
       flowId: 'id',
@@ -51,7 +52,7 @@ describe('sdk', () => {
       .mockReturnValue(createMockReturnValue(flowResponse));
     global.fetch = mockFetch;
     const sdk = createSdk({ projectId: 'pid' });
-    await sdk.flow.start('id', { tenant: 'yo' });
+    await sdk.flow.start('id', { tenant: 'yo', preview: true });
     expect(mockFetch).toBeCalledWith(
       expect.objectContaining({
         href: 'https://api.descope.com/v1/flow/start',
@@ -61,6 +62,7 @@ describe('sdk', () => {
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
         tenant: 'yo',
+        preview: true,
       },
     });
   });

@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.9.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.1...core-js-sdk-1.9.2) (2023-09-08)
+
+### [1.9.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.0...core-js-sdk-1.9.1) (2023-09-08)
+
+
+### Bug Fixes
+
+* Add custom attributes RELEASE ([#275](https://github.com/descope/descope-js/issues/275)) ([dab21a0](https://github.com/descope/descope-js/commit/dab21a0ff4f163044b9e88289a4c383217610ac0))
+
+## [1.9.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.8.0...core-js-sdk-1.9.0) (2023-09-07)
+
+
+### Features
+
+* Support sso-apps and saml-idp ([#260](https://github.com/descope/descope-js/issues/260)) ([881b32e](https://github.com/descope/descope-js/commit/881b32ef309ee902f89dcf4765af119377d643eb))
+
+## [1.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.3...core-js-sdk-1.8.0) (2023-09-06)
+
+
+### Features
+
+* add preview and storage prefix ([#265](https://github.com/descope/descope-js/issues/265)) ([22ad036](https://github.com/descope/descope-js/commit/22ad03641ab705877b5e0900204a02e71b44e82c))
+
+### [1.7.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.2...core-js-sdk-1.7.3) (2023-09-01)
+
+### [1.7.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.1...core-js-sdk-1.7.2) (2023-09-01)
+
+### [1.7.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.7.0...core-js-sdk-1.7.1) (2023-09-01)
+
+## [1.7.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.5...core-js-sdk-1.7.0) (2023-08-29)
+
+
+### Features
+
+* separate redirect url and location ([#252](https://github.com/descope/descope-js/issues/252)) ([0ff3c81](https://github.com/descope/descope-js/commit/0ff3c813c9622cf3cc00cfa13c555a8e36238be7))
+
+### [1.6.5](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.4...core-js-sdk-1.6.5) (2023-08-24)
+
+### [1.6.4](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.3...core-js-sdk-1.6.4) (2023-08-21)
+
+
+### Performance Improvements
+
+* Replace password session ([#247](https://github.com/descope/descope-js/issues/247)) ([5c20127](https://github.com/descope/descope-js/commit/5c201271d6a2d84ddbc504ed6e4864e233dfb924))
+
 ### [1.6.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.2...core-js-sdk-1.6.3) (2023-08-18)
 
 ### [1.6.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.6.1...core-js-sdk-1.6.2) (2023-08-18)

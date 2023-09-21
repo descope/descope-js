@@ -2,6 +2,80 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [2.11.3](https://github.com/descope/descope-js/compare/web-component-2.11.2...web-component-2.11.3) (2023-09-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.2`
+### [2.11.2](https://github.com/descope/descope-js/compare/web-component-2.11.1...web-component-2.11.2) (2023-09-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.2 ([#278](https://github.com/descope/descope-js/issues/278)) ([c5d929e](https://github.com/descope/descope-js/commit/c5d929e493e83344ff2626e1aa7f934c92902195))
+
+### [2.11.1](https://github.com/descope/descope-js/compare/web-component-2.11.0...web-component-2.11.1) (2023-09-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.1`
+## [2.11.0](https://github.com/descope/descope-js/compare/web-component-2.10.0...web-component-2.11.0) (2023-09-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.0`
+
+### Features
+
+* Support sso-apps and saml-idp ([#260](https://github.com/descope/descope-js/issues/260)) ([881b32e](https://github.com/descope/descope-js/commit/881b32ef309ee902f89dcf4765af119377d643eb))
+
+## [2.10.0](https://github.com/descope/descope-js/compare/web-component-2.9.0...web-component-2.10.0) (2023-09-06)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.5.0`
+
+### Features
+
+* add preview and storage prefix ([#265](https://github.com/descope/descope-js/issues/265)) ([22ad036](https://github.com/descope/descope-js/commit/22ad03641ab705877b5e0900204a02e71b44e82c))
+
+## [2.9.0](https://github.com/descope/descope-js/compare/web-component-2.8.12...web-component-2.9.0) (2023-09-03)
+
+
+### Features
+
+* Take the first part of locale ([#268](https://github.com/descope/descope-js/issues/268)) ([bd1397b](https://github.com/descope/descope-js/commit/bd1397bb54ac845d47d088f15378aad73257ca72))
+
+### [2.8.12](https://github.com/descope/descope-js/compare/web-component-2.8.11...web-component-2.8.12) (2023-09-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.3`
+### [2.8.11](https://github.com/descope/descope-js/compare/web-component-2.8.10...web-component-2.8.11) (2023-09-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.2`
+### [2.8.10](https://github.com/descope/descope-js/compare/web-component-2.8.9...web-component-2.8.10) (2023-09-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.1`
+### [2.8.9](https://github.com/descope/descope-js/compare/web-component-2.8.8...web-component-2.8.9) (2023-08-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.4.0`
+### [2.8.8](https://github.com/descope/descope-js/compare/web-component-2.8.7...web-component-2.8.8) (2023-08-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.14`
+### [2.8.7](https://github.com/descope/descope-js/compare/web-component-2.8.6...web-component-2.8.7) (2023-08-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.3.13`
 ### [2.8.6](https://github.com/descope/descope-js/compare/web-component-2.8.5...web-component-2.8.6) (2023-08-18)
 
 ### Dependency Updates

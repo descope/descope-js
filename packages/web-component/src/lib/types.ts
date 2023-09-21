@@ -54,6 +54,12 @@ export type FlowState = {
   oidcIdpStateId: string;
   deferredRedirect: boolean;
   locale: string;
+  samlIdpStateId: string;
+  samlIdpResponseUrl: string;
+  samlIdpResponseSamlResponse: string;
+  samlIdpResponseRelayState: string;
+  samlIdpUsername: string;
+  ssoAppId: string;
 };
 
 export type StepState = {
@@ -62,6 +68,7 @@ export type StepState = {
   htmlLocaleUrl: string;
   next: NextFn;
   direction: Direction | undefined;
+  samlIdpUsername: string;
 };
 
 export type DebugState = {
@@ -107,7 +114,7 @@ export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated';
+export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'externalToken';
 
 type CheckFunction = (ctx: Context) => boolean;
 
@@ -120,6 +127,7 @@ export type ConditionsMap = {
 export interface Context {
   loginId?: string;
   code?: string;
+  token?: string;
 }
 
 export interface ILogger {

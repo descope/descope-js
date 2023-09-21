@@ -13,6 +13,9 @@ export const generateSdkResponse = ({
   requestErrorDescription = '',
   webAuthnTransactionId = '',
   webAuthnOptions = '',
+  samlIdpResponseUrl = '',
+  samlIdpResponseSamlResponse = '',
+  samlIdpResponseRelayState = '',
 } = {}) => ({
   ok,
   data: {
@@ -27,6 +30,11 @@ export const generateSdkResponse = ({
     webauthn: {
       options: webAuthnOptions,
       transactionId: webAuthnTransactionId,
+    },
+    samlIdpResponse: {
+      url: samlIdpResponseUrl,
+      samlResponse: samlIdpResponseSamlResponse,
+      relayState: samlIdpResponseRelayState,
     },
   },
   error: {
