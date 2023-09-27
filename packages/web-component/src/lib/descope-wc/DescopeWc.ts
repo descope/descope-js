@@ -77,6 +77,9 @@ class DescopeWc extends BaseDescopeWc {
 
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();
+
+    this.#conditionalUiAbortController?.abort();
+    this.#conditionalUiAbortController = null;
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
