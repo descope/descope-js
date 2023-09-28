@@ -21,7 +21,7 @@ import { DescopeWc } // In case you need types definition or you want to use the
 // Render Descope Web Component, for example:
 render(){
   return (
-    <descope-wc project="myProjectId"/>
+    <descope-wc project-id="myProjectId"/>
   )
 }
 ```
