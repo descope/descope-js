@@ -352,6 +352,9 @@ export const handleAutoFocus = (
  *   try {
  *     count = await timeoutPromise(2000, promise);
  *   }
+ *
+ * Fallback is returned only in case of timeout, so if the passed promise rejects
+ * the fallback value is not used, and the returned promise will throw as well.
  */
 export function timeoutPromise<T>(
   timeout: number,
