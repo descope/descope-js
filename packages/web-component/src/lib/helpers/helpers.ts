@@ -343,34 +343,55 @@ export const handleAutoFocus = (
   }
 };
 
-type PromiseExecutor = ConstructorParameters<typeof Promise>[0];
-
 /**
- * timeoutPromise(2000, (resolve, reject) => {// Logic});
+ * With a fallback value in case:
+ *   const promise = loadUserCount();
+ *   const count = await timeoutPromise(2000, promise, 0);
+ *
+ * Or just throw if the timeout expires:
+ *   try {
+ *     count = await timeoutPromise(2000, promise);
+ *   }
  */
-export const timeoutPromise = (timeout: number, callback?: PromiseExecutor) =>
-  new Promise((resolve, reject) => {
+export function timeoutPromise<T>(
+  timeout: number,
+  promise: Promise<T>,
+  fallback?: T
+): Promise<T> {
+  return new Promise((resolve, reject) => {
+    let expired = false;
     const timer = setTimeout(() => {
-      reject(new Error(`Promise timed out after ${timeout} ms`));
+      expired = true;
+      if (fallback !== undefined) {
+        resolve(fallback);
+      } else {
+        reject(new Error(`Promise timed out after ${timeout} ms`));
+      }
     }, timeout);
 
-    callback?.(
-      (value: any) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      (error: any) => {
-        clearTimeout(timer);
-        reject(error);
-      }
-    );
+    promise
+      .then((value) => {
+        if (!expired) {
+          clearTimeout(timer);
+          resolve(value);
+        }
+      })
+      .catch((error) => {
+        if (!expired) {
+          clearTimeout(timer);
+          reject(error);
+        }
+      });
   });
+}
 
-export const getChromiumVersion = (
-  navigator as any
-)?.userAgentData?.brands?.find(
-  ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
-);
+export const getChromiumVersion = (): number => {
+  const brands = (navigator as any)?.userAgentData?.brands;
+  const found = brands?.find(
+    ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
+  );
+  return found ? found.version : 0;
+};
 
 // As an optimization - We can show first screen if we have startScreenId and we don't have any other of the ssoAppId/oidcIdpStateId/samlIdp params
 // - If there startScreenId it means that the sdk can show the first screen and we don't need to wait for the sdk to return the first screen
