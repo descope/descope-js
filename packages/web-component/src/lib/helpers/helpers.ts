@@ -344,11 +344,14 @@ export const handleAutoFocus = (
 };
 
 /**
- * With a fallback value in case:
+ * To return a fallback value in case the timeout expires and the promise
+ * isn't fulfilled:
+ *
  *   const promise = loadUserCount();
  *   const count = await timeoutPromise(2000, promise, 0);
  *
- * Or just throw if the timeout expires:
+ * Or without a fallback value to just throw an error if the timeout expires:
+ *
  *   try {
  *     count = await timeoutPromise(2000, promise);
  *   }
