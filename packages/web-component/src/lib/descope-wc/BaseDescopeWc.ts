@@ -46,7 +46,6 @@ class BaseDescopeWc extends HTMLElement {
       'telemetryKey',
       'redirect-url',
       'auto-focus',
-      'prefer-biometrics',
     ];
   }
 
@@ -177,11 +176,6 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
-  get preferBiometrics(): boolean {
-    const res = this.getAttribute('prefer-biometrics') ?? 'true';
-    return res === 'true';
-  }
-
   get storagePrefix() {
     return this.getAttribute('storage-prefix') || '';
   }
@@ -202,7 +196,6 @@ class BaseDescopeWc extends HTMLElement {
       'auto-focus',
       'preview',
       'storage-prefix',
-      'prefer-biometrics',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
