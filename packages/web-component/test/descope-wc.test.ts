@@ -1321,7 +1321,7 @@ describe('web-component', () => {
       'submit',
       {
         transactionId: 't1',
-        cancelWebauthn: true,
+        failure: 'NotAllowedError',
       },
       0
     );

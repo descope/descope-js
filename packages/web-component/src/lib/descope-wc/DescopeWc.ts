@@ -319,21 +319,25 @@ class DescopeWc extends BaseDescopeWc {
       this.#conditionalUiAbortController = null;
 
       let response: string;
-      let cancelWebauthn;
+      let failure: string;
+
       try {
         response =
           action === RESPONSE_ACTIONS.webauthnCreate
             ? await this.sdk.webauthn.helpers.create(webauthnOptions)
             : await this.sdk.webauthn.helpers.get(webauthnOptions);
       } catch (e) {
-        if (e.name !== 'NotAllowedError') {
+        if (e.name === 'InvalidStateError') {
+          // currently returned in Chrome when trying to register a WebAuthn device
+          // that's already registered for the user
+          this.loggerWrapper.warn('WebAuthn operation failed', e.message);
+        } else if (e.name !== 'NotAllowedError') {
+          // shouldn't happen in normal usage ('AbortError' is only when setting an AbortController)
           this.loggerWrapper.error(e.message);
-          return;
         }
-
-        cancelWebauthn = true;
+        failure = e.name;
       }
-      // Call next with the response and transactionId
+      // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
         executionId,
         stepId,
@@ -341,7 +345,7 @@ class DescopeWc extends BaseDescopeWc {
         {
           transactionId: webauthnTransactionId,
           response,
-          cancelWebauthn,
+          failure,
         },
         flowConfig.version
       );
