@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.6.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.2...web-js-sdk-1.6.3) (2023-10-03)
+
+
+### Bug Fixes
+
+* large session expiration consideration  ([#287](https://github.com/descope/descope-js/issues/287)) ([022e0a0](https://github.com/descope/descope-js/commit/022e0a09945b95b3bee5d87abbb3c049e2975c41))
+
 ### [1.6.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.1...web-js-sdk-1.6.2) (2023-09-08)
 
 ### Dependency Updates
