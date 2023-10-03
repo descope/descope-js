@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [2.11.4](https://github.com/descope/descope-js/compare/web-component-2.11.3...web-component-2.11.4) (2023-10-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.3`
+
+### Bug Fixes
+
+* Autofill bug in getChromiumVersion function ([#286](https://github.com/descope/descope-js/issues/286)) ([7d1e2b8](https://github.com/descope/descope-js/commit/7d1e2b8308f23dfac9977e75fd165d175213ab17))
+
 ### [2.11.3](https://github.com/descope/descope-js/compare/web-component-2.11.2...web-component-2.11.3) (2023-09-08)
 
 ### Dependency Updates
