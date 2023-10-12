@@ -2,6 +2,8 @@
 
 import { withMemCache, timeoutPromise, getChromiumVersion } from './helpers';
 
+const CHROMIUM_VERSION_THAT_SUPPORTS_PASSKEYS = 108;
+
 // eslint-disable-next-line import/prefer-default-export
 export const isConditionalLoginSupported = withMemCache(async () => {
   if (
@@ -9,8 +11,6 @@ export const isConditionalLoginSupported = withMemCache(async () => {
     !(<any>PublicKeyCredential).isConditionalMediationAvailable ||
     !PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable
   ) {
-    // eslint-disable-next-line no-console
-    console.warn('webauthn', 'Conditional UI is not supported');
     return false;
   }
   try {
@@ -21,16 +21,13 @@ export const isConditionalLoginSupported = withMemCache(async () => {
 
     // when using Dashlane Chrome extension, "isConditionalMediationAvailable" never resolved and the app hangs
     // if timeout exceeded, we are deciding if passkeys are supported based on the Chromium version
-    const CHROMIUM_VERSION_THAT_SUPPORTS_PASSKEYS = 108;
-    return await Promise.race([
-      isSupported,
-      timeoutPromise(100).catch(
-        () => getChromiumVersion() >= CHROMIUM_VERSION_THAT_SUPPORTS_PASSKEYS
-      ),
-    ]);
+    const isChromiumSupported =
+      getChromiumVersion() >= CHROMIUM_VERSION_THAT_SUPPORTS_PASSKEYS;
+
+    return await timeoutPromise(100, isSupported, isChromiumSupported);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn('webauthn', 'Conditional login check failed', err);
+    console.error('Conditional login check failed', err);
     return false;
   }
 });
