@@ -31,7 +31,9 @@ const sdk = descopeSdk({
 In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol. */
   */
   sessionTokenViaCookie: false,
-  /* Automatically schedule a call refresh session call after a successful authentication */
+  /* Automatically schedule a call refresh session call after a successful authentication:
+  Note: due to browser limitation, the maximum interval for the refresh has an upper bound of 2^32 - 1 milliseconds (approximately 24.8 days).
+  */
   autoRefresh: true,
 });
 

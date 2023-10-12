@@ -111,8 +111,6 @@ class DescopeButton extends HTMLElement {
 }
 
 customElements.define('descope-button', DescopeButton);
-
-const isChromiumSpy = jest.spyOn(helpers, 'isChromium');
 const origAppend = document.body.append;
 
 describe('web-component', () => {
@@ -1299,119 +1297,6 @@ describe('web-component', () => {
     });
   });
 
-  it('Should create new credentials on platform only in Chrome when action type is "webauthnCreate"', async () => {
-    const initialOptions = '{"publicKey":{}}';
-    const expectedOptions =
-      '{"publicKey":{"authenticatorSelection":{"authenticatorAttachment":"platform"}}}';
-
-    startMock.mockReturnValueOnce(
-      generateSdkResponse({
-        action: RESPONSE_ACTIONS.webauthnCreate,
-        webAuthnTransactionId: 't1',
-        webAuthnOptions: initialOptions,
-      })
-    );
-    pageContent = '<span>It works!</span>';
-
-    nextMock.mockReturnValueOnce(generateSdkResponse());
-
-    sdk.webauthn.helpers.create.mockReturnValueOnce(
-      Promise.resolve('webauthn-response')
-    );
-
-    isChromiumSpy.mockReturnValue(true);
-    const pkc = <any>window.PublicKeyCredential;
-    pkc.isUserVerifyingPlatformAuthenticatorAvailable = () => true;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
-
-    await waitFor(
-      () =>
-        expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
-          expectedOptions
-        ),
-      { timeout: WAIT_TIMEOUT }
-    );
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
-      transactionId: 't1',
-      response: 'webauthn-response',
-    });
-  });
-
-  it('Should create new credentials without platform flag in Chrome when action type is "webauthnCreate" and prefer-biometrics is false', async () => {
-    const initialOptions = '{"publicKey":{}}';
-
-    startMock.mockReturnValueOnce(
-      generateSdkResponse({
-        action: RESPONSE_ACTIONS.webauthnCreate,
-        webAuthnTransactionId: 't1',
-        webAuthnOptions: initialOptions,
-      })
-    );
-    pageContent = '<span>It works!</span>';
-
-    nextMock.mockReturnValueOnce(generateSdkResponse());
-
-    sdk.webauthn.helpers.create.mockReturnValueOnce(
-      Promise.resolve('webauthn-response')
-    );
-
-    isChromiumSpy.mockReturnValue(true);
-    const pkc = <any>window.PublicKeyCredential;
-    pkc.isUserVerifyingPlatformAuthenticatorAvailable = () => true;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" prefer-biometrics="false" project-id="1"></descope-wc>`;
-
-    await waitFor(
-      () =>
-        expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
-          initialOptions
-        ),
-      { timeout: WAIT_TIMEOUT }
-    );
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
-      transactionId: 't1',
-      response: 'webauthn-response',
-    });
-  });
-
-  it('Should not fail to create new credentials if options cannot be parsed when action type is "webauthnCreate"', async () => {
-    const initialOptions = '{"publicKey:{}}';
-
-    startMock.mockReturnValueOnce(
-      generateSdkResponse({
-        action: RESPONSE_ACTIONS.webauthnCreate,
-        webAuthnTransactionId: 't1',
-        webAuthnOptions: initialOptions,
-      })
-    );
-    pageContent = '<span>It works!</span>';
-
-    nextMock.mockReturnValueOnce(generateSdkResponse());
-
-    sdk.webauthn.helpers.create.mockReturnValueOnce(
-      Promise.resolve('webauthn-response')
-    );
-
-    isChromiumSpy.mockReturnValue(true);
-    const pkc = <any>window.PublicKeyCredential;
-    pkc.isUserVerifyingPlatformAuthenticatorAvailable = () => true;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
-
-    await waitFor(
-      () =>
-        expect(sdk.webauthn.helpers.create).toHaveBeenCalledWith(
-          initialOptions
-        ),
-      { timeout: WAIT_TIMEOUT }
-    );
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
-      transactionId: 't1',
-      response: 'webauthn-response',
-    });
-  });
-
   it('Should search of existing credentials when action type is "webauthnGet"', async () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
@@ -1464,7 +1349,7 @@ describe('web-component', () => {
     });
     expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
       transactionId: 't1',
-      cancelWebauthn: true,
+      failure: 'NotAllowedError',
     });
   });
 

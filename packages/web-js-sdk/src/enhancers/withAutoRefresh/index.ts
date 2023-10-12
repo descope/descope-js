@@ -9,6 +9,7 @@ import {
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
+import { MAX_TIMEOUT } from '../../constants';
 
 // The amount of time (ms) to trigger the refresh before session expires
 const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
@@ -51,8 +52,15 @@ export const withAutoRefresh =
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
         refreshToken = refreshJwt;
-        const timeout =
+        let timeout =
           millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
+
+        if (timeout > MAX_TIMEOUT) {
+          logger.debug(
+            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`
+          );
+          timeout = MAX_TIMEOUT;
+        }
         clearAllTimers();
 
         const refreshTimeStr = new Date(
