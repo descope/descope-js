@@ -9,6 +9,7 @@ enum OAuthProviders {
   apple = 'apple',
   discord = 'discord',
   linkedin = 'linkedin',
+  slack = 'slack',
 }
 
 type VerifyFn = (code: string) => Promise<SdkResponse<JWTResponse>>;
@@ -26,4 +27,3 @@ export type Oauth = {
 };
 
 export { OAuthProviders };
-
