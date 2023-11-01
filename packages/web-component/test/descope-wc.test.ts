@@ -29,6 +29,7 @@ import DescopeWc from '../src/lib/descope-wc';
 import * as helpers from '../src/lib/helpers/helpers';
 // eslint-disable-next-line import/no-namespace
 import { generateSdkResponse } from './testUtils';
+import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 
 jest.mock('@descope/web-js-sdk');
 
@@ -96,6 +97,8 @@ Object.defineProperty(window.history, 'replaceState', {
     window.location.href = url;
   },
 });
+
+const abTestingKey = getABTestingKey();
 
 describe('web-component', () => {
   beforeEach(() => {
@@ -540,6 +543,7 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         {
+          abTestingKey,
           lastAuth: {},
           redirectUrl: 'http://custom.url',
           oidcIdpStateId: null,
@@ -1829,6 +1833,7 @@ describe('web-component', () => {
         expect(startMock).toBeCalledWith(
           'sign-in',
           {
+            abTestingKey,
             lastAuth: { authMethod: 'otp' },
             oidcIdpStateId: null,
             samlIdpStateId: null,
@@ -1876,6 +1881,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
@@ -1962,6 +1968,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             redirectAuth: undefined,
             tenant: undefined,
@@ -2032,6 +2039,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
@@ -2068,6 +2076,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
@@ -2102,6 +2111,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: 'abcdefgh',
             samlIdpStateId: null,
             samlIdpUsername: null,
@@ -2217,6 +2227,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: null,
@@ -2253,6 +2264,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: 'dummyUser',
@@ -2314,6 +2326,7 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
+            abTestingKey,
             oidcIdpStateId: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
@@ -2363,6 +2376,7 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         {
+          abTestingKey,
           oidcIdpStateId: null,
           samlIdpStateId: null,
           samlIdpUsername: null,
@@ -2422,6 +2436,7 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         {
+          abTestingKey,
           oidcIdpStateId: null,
           samlIdpStateId: null,
           samlIdpUsername: null,
@@ -2441,7 +2456,7 @@ describe('web-component', () => {
     );
   });
 
-  it('Should fetch met screen when second condition is met', async () => {
+  it('Should fetch met screen when second condition is met (also checks conditions with predicates)', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     localStorage.setItem(
       DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
@@ -2465,12 +2480,13 @@ describe('web-component', () => {
               },
             },
             {
-              key: 'lastAuth.loginId',
+              key: 'abTestingKey',
               met: {
                 interactionId: 'gbutpyzvtgs',
                 screenId: 'met',
               },
-              operator: 'not-empty',
+              operator: 'greater-than',
+              predicate: abTestingKey - 1,
               unmet: {
                 interactionId: 'ELSE',
                 screenId: 'unmet',
