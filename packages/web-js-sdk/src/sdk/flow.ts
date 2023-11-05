@@ -23,7 +23,6 @@ export default (coreSdk: CoreSdk) => ({
   start: async (...args: ReplaceParam<CoreSdkFlowStartArgs, '1', Options>) => {
     const webAuthnSupport = await isSupported();
     const decoratedOptions = {
-      redirectUrl: window.location.href, // for backward compatibility
       location: window.location.href,
       ...args[1],
       deviceInfo: {
