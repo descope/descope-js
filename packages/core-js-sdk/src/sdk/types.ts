@@ -240,6 +240,7 @@ export type Options = {
   samlIdpUsername?: string;
   ssoAppId?: string;
   abTestingKey?: number;
+  startOptionsVersion?: number;
 };
 
 export type ResponseData = Record<string, any>;

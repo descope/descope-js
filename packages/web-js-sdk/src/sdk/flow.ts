@@ -17,6 +17,8 @@ type Options = Pick<
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
 
+const START_OPTIONS_VERSION_PREFER_START_REDIRECT_URL = 1;
+
 export default (coreSdk: CoreSdk) => ({
   ...coreSdk.flow,
   // wrap start fn and adds more data to the start options
@@ -28,6 +30,7 @@ export default (coreSdk: CoreSdk) => ({
       deviceInfo: {
         webAuthnSupport,
       },
+      startOptionsVersion: START_OPTIONS_VERSION_PREFER_START_REDIRECT_URL,
     };
 
     args[1] = decoratedOptions;

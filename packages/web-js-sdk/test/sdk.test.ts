@@ -40,6 +40,7 @@ describe('sdk', () => {
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
         redirectUrl: 'http://custom.redirect',
+        startOptionsVersion: 1,
       },
       flowId: 'id',
     });
