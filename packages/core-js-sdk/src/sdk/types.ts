@@ -239,6 +239,7 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  abTestingKey?: number;
 };
 
 export type ResponseData = Record<string, any>;

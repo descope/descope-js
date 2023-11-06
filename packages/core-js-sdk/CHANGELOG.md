@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [1.10.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.10.0...core-js-sdk-1.10.1) (2023-11-01)
+
+## [1.10.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.3...core-js-sdk-1.10.0) (2023-10-26)
+
+
+### Features
+
+* support also custom oauth providers ([#294](https://github.com/descope/descope-js/issues/294)) ([3a4b205](https://github.com/descope/descope-js/commit/3a4b20531676d518239d4b7f4aa5abbfc57aea42))
+
+### [1.9.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.2...core-js-sdk-1.9.3) (2023-10-16)
+
 ### [1.9.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.1...core-js-sdk-1.9.2) (2023-09-08)
 
 ### [1.9.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.0...core-js-sdk-1.9.1) (2023-09-08)
