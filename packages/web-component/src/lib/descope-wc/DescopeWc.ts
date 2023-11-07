@@ -711,7 +711,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #validateInputs() {
-    return Array.from(this.shadowRoot.querySelectorAll('.descope-input')).every(
+    return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
       (input: HTMLInputElement) => {
         input.reportValidity();
         return input.checkValidity();
@@ -722,7 +722,7 @@ class DescopeWc extends BaseDescopeWc {
   async #getFormData() {
     const inputs = Array.from(
       this.shadowRoot.querySelectorAll(
-        `.descope-input[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
+        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
     ) as HTMLInputElement[];
 

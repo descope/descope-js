@@ -31,7 +31,7 @@ const replaceElementInputs = (
   Object.entries(screenInputs || {}).forEach(([name, value]) => {
     const inputEls = Array.from(
       baseEle.querySelectorAll(
-        `.descope-input[name="${name}"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
+        `*[name="${name}"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
       )
     ) as HTMLInputElement[];
     inputEls.forEach((inputEle) => {
