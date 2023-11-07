@@ -9,8 +9,8 @@ import {
 import { FingerprintObject } from './types';
 
 const createFingerprintObject = (
-  sessionId: string = '',
-  requestId: string = ''
+  sessionId: string,
+  requestId: string
 ): FingerprintObject => ({
   [VISITOR_SESSION_ID_PARAM]: sessionId,
   [VISITOR_REQUEST_ID_PARAM]: requestId,

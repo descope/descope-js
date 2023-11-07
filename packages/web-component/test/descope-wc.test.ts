@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import createSdk from '@descope/web-js-sdk';
+import createSdk, { ensureFingerprintIds } from '@descope/web-js-sdk';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import { screen } from 'shadow-dom-testing-library';
@@ -35,6 +35,7 @@ jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
   default: jest.fn(),
   clearFingerprintData: jest.fn(),
+  ensureFingerprintIds: jest.fn(),
 }));
 
 class MockFileReader {
@@ -1376,6 +1377,27 @@ describe('web-component', () => {
       expect.stringMatching(htmlUrlPathRegex),
       expect.any(Object)
     );
+  });
+
+  it('runs fingerprint when config contains the correct fields', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      flows: {
+        'sign-in': {
+          startScreenId: 'screen-0',
+          fingerprintEnabled: true,
+          fingerprintKey: 'fp-public-key',
+        },
+      },
+    };
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'));
+    expect(ensureFingerprintIds).toHaveBeenCalledWith('fp-public-key');
   });
 
   it('it should set the theme based on the user parameter', async () => {
