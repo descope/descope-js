@@ -51,7 +51,6 @@ export type FlowState = {
   exchangeError: string;
   webauthnTransactionId: string;
   webauthnOptions: string;
-  telemetryKey: string;
   redirectAuthCodeChallenge: string;
   redirectAuthCallbackUrl: string;
   redirectAuthInitiator: string;

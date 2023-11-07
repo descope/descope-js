@@ -91,12 +91,8 @@ describe('fingerprintUtils', () => {
     expect(sessionId).toEqual('local-session-id');
   });
 
-  it('get fingerprint empty object ', async () => {
+  it('no fingerprint data ', async () => {
     localStorage.removeItem(FP_STORAGE_KEY);
-
-    const requestId = getFingerprintData()[VISITOR_REQUEST_ID_PARAM];
-    expect(requestId).toEqual('');
-    const sessionId = getFingerprintData()[VISITOR_SESSION_ID_PARAM];
-    expect(sessionId).toEqual('');
+    expect(getFingerprintData()).toBeNull();
   });
 });

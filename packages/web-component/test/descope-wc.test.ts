@@ -1497,30 +1497,6 @@ describe('web-component', () => {
     );
   });
 
-  it('should create correctly sdk when telemetryKey configured', async () => {
-    document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" telemetryKey="123"></descope-wc>`;
-
-    await waitFor(() =>
-      expect(createSdk as jest.Mock).toHaveBeenCalledWith(
-        expect.objectContaining({ fpKey: '123', fpLoad: true })
-      )
-    );
-  });
-
-  it('should create correctly sdk when telemetryKey is not configured', async () => {
-    document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-
-    await waitFor(() =>
-      expect(createSdk as jest.Mock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fpKey: undefined,
-          fpLoad: false,
-          persistTokens: true,
-        })
-      )
-    );
-  });
-
   describe('poll', () => {
     beforeEach(() => {
       jest.useFakeTimers();

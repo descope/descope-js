@@ -1,4 +1,8 @@
 import {
+  ensureFingerprintIds,
+  clearFingerprintData,
+} from '@descope/web-js-sdk';
+import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
@@ -175,6 +179,15 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
+      if (
+        flowConfig.fingerprintEnabled &&
+        flowConfig.fingerprintKey?.length > 0
+      ) {
+        ensureFingerprintIds(flowConfig.fingerprintKey);
+      } else {
+        clearFingerprintData();
+      }
+
       if (flowConfig.conditions) {
         ({ startScreenId, conditionInteractionId } = calculateConditions(
           { loginId, code, token, abTestingKey },
