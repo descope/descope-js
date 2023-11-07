@@ -31,7 +31,11 @@ import * as helpers from '../src/lib/helpers/helpers';
 import { generateSdkResponse } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 
-jest.mock('@descope/web-js-sdk');
+jest.mock('@descope/web-js-sdk', () => ({
+  __esModule: true,
+  default: jest.fn(),
+  clearFingerprintData: jest.fn(),
+}));
 
 class MockFileReader {
   onload = null;

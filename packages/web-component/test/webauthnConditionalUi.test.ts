@@ -26,7 +26,11 @@ jest.mock('@descope/web-js-sdk', () => {
     getLastUserLoginId: jest.fn().mockName('getLastUserLoginId'),
     getLastUserDisplayName: jest.fn().mockName('getLastUserDisplayName'),
   };
-  return () => sdk;
+  return {
+    __esModule: true,
+    default: () => sdk,
+    clearFingerprintData: jest.fn(),
+  };
 });
 
 const sdk = createSdk({ projectId: '' });
