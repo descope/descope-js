@@ -12,6 +12,7 @@ type Options = Pick<
   | 'samlIdpUsername'
   | 'ssoAppId'
   | 'preview'
+  | 'abTestingKey'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };

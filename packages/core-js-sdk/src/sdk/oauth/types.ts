@@ -1,4 +1,4 @@
-import { SdkResponse, URLResponse, JWTResponse } from '../types';
+import { SdkResponse, URLResponse, JWTResponse, LoginOptions } from '../types';
 
 enum OAuthProviders {
   facebook = 'facebook',
@@ -9,15 +9,17 @@ enum OAuthProviders {
   apple = 'apple',
   discord = 'discord',
   linkedin = 'linkedin',
+  slack = 'slack',
 }
 
-type StartFn = <B extends { redirect: boolean }>(
-  redirectURL?: string,
-  config?: B
-) => Promise<SdkResponse<URLResponse>>;
 type VerifyFn = (code: string) => Promise<SdkResponse<JWTResponse>>;
+export type StartFn = (
+  redirectURL?: string,
+  loginOptions?: LoginOptions,
+  token?: string
+) => Promise<SdkResponse<URLResponse>>;
 
-type Providers<T> = Record<keyof typeof OAuthProviders, T>;
+export type Providers<T> = Record<keyof typeof OAuthProviders, T>;
 
 export type Oauth = {
   start: Providers<StartFn>;

@@ -22,6 +22,7 @@ import {
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
+import { getABTestingKey } from '../helpers/abTestingKey';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
@@ -163,6 +164,7 @@ class DescopeWc extends BaseDescopeWc {
 
     let startScreenId: string;
     let conditionInteractionId: string;
+    const abTestingKey = getABTestingKey();
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
@@ -179,13 +181,13 @@ class DescopeWc extends BaseDescopeWc {
     if (!executionId) {
       if (flowConfig.conditions) {
         ({ startScreenId, conditionInteractionId } = calculateConditions(
-          { loginId, code, token },
+          { loginId, code, token, abTestingKey },
           flowConfig.conditions
         ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
-          { loginId, code, token }
+          { loginId, code, token, abTestingKey }
         ));
       } else {
         startScreenId = flowConfig.startScreenId;
@@ -223,6 +225,7 @@ class DescopeWc extends BaseDescopeWc {
             ssoAppId,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
+            abTestingKey,
           },
           conditionInteractionId,
           '',
@@ -434,6 +437,7 @@ class DescopeWc extends BaseDescopeWc {
             ssoAppId,
             lastAuth,
             preview: this.preview,
+            abTestingKey,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
