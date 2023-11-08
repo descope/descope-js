@@ -106,6 +106,7 @@ export interface ClientConditionResult {
 export interface ClientCondition {
   operator: Operator;
   key: string;
+  predicate?: string | number;
   met: ClientConditionResult;
   unmet?: ClientConditionResult;
 }
@@ -114,9 +115,13 @@ export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'externalToken';
+export type Key =
+  | 'lastAuth.loginId'
+  | 'idpInitiated'
+  | 'externalToken'
+  | 'abTestingKey';
 
-type CheckFunction = (ctx: Context) => boolean;
+type CheckFunction = (ctx: Context, predicate?: string | number) => boolean;
 
 export type ConditionsMap = {
   [key in Key]: {
@@ -128,6 +133,7 @@ export interface Context {
   loginId?: string;
   code?: string;
   token?: string;
+  abTestingKey?: number;
 }
 
 export interface ILogger {
