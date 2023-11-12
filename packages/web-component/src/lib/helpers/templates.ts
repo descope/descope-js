@@ -35,8 +35,7 @@ const replaceElementInputs = (
       )
     ) as HTMLInputElement[];
     inputEls.forEach((inputEle) => {
-      // eslint-disable-next-line no-param-reassign
-      inputEle.value = value;
+      inputEle.setAttribute('value', value);
     });
   });
 };
@@ -69,7 +68,7 @@ const replaceElementTemplates = (
   baseEle: DocumentFragment,
   screenState?: Record<string, any>
 ) => {
-  const eleList = baseEle.querySelectorAll('.descope-text,.descope-link');
+  const eleList = baseEle.querySelectorAll('descope-text,descope-link');
   eleList.forEach((inEle: HTMLElement) => {
     // eslint-disable-next-line no-param-reassign
     inEle.textContent = applyTemplates(inEle.textContent, screenState);
@@ -85,7 +84,7 @@ const replaceProvisionURL = (
   );
   eleList.forEach((ele: HTMLLinkElement) => {
     // eslint-disable-next-line no-param-reassign
-    ele.href = provisionUrl;
+    ele.setAttribute('href', provisionUrl);
   });
 };
 
@@ -119,17 +118,44 @@ export const replaceWithScreenState = (
 };
 
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
-  if (image) {
+  const totpVarName = (
+    customElements.get('descope-totp-image') as CustomElementConstructor & {
+      cssVarList: Record<string, string>;
+    }
+  )?.cssVarList.url;
+
+  if (image && totpVarName) {
     rootEle?.style?.setProperty(
-      '--totp-image',
+      totpVarName,
       `url(data:image/jpg;base64,${image})`
     );
   }
 };
 
+export const setPhoneAutoDetectDefaultCode = (
+  fragment: DocumentFragment,
+  autoDetectCode?: string
+) => {
+  Array.from(
+    fragment.querySelectorAll('descope-phone-field[default-code="autoDetect"]')
+  ).forEach((phoneEle) => {
+    phoneEle.setAttribute('default-code', autoDetectCode);
+  });
+};
+
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {
   const webauthnButtons = fragment.querySelectorAll(
-    `button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`
+    `descope-button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`
   );
   webauthnButtons.forEach((button) => button.setAttribute('disabled', 'true'));
 };
+
+export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
+  ...Array.from(clone.querySelectorAll('*')).reduce<Set<string>>(
+    (acc, el: HTMLElement) =>
+      el.tagName.startsWith('DESCOPE-')
+        ? acc.add(el.tagName.toLocaleLowerCase())
+        : acc,
+    new Set()
+  ),
+];

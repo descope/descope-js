@@ -11,10 +11,6 @@ type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never;
 
-export type FlowConfig = {
-  startScreenId?: string;
-};
-
 export enum Direction {
   backward = 'backward',
   forward = 'forward',
@@ -144,4 +140,40 @@ export interface ILogger {
   info(title: string, description: string, state: any): void;
   warn(title: string, description?: string): void;
   error(title: string, description?: string, ...optionalParams: any[]): void;
+}
+
+export type DescopeUI = Record<string, () => Promise<void>> & {
+  componentsThemeManager: Record<string, any>;
+};
+
+type Font = {
+  family: string[];
+  label: string;
+  url?: string;
+};
+
+type ThemeTemplate = {
+  fonts: {
+    font1: Font;
+    font2: Font;
+  };
+};
+
+export type FlowConfig = {
+  startScreenId?: string;
+  version: number;
+  targetLocales?: string[];
+  conditions?: ClientCondition[];
+  condition?: ClientCondition;
+};
+
+export interface ProjectConfiguration {
+  componentsVersion: string;
+  cssTemplate: {
+    dark: ThemeTemplate;
+    light: ThemeTemplate;
+  };
+  flows: {
+    [key: string]: FlowConfig; // dynamic key names for flows
+  };
 }

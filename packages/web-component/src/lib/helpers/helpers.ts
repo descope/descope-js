@@ -66,9 +66,13 @@ export async function fetchContent<T extends 'text' | 'json'>(
 
 const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); // preventing duplicate separators
 
-export function getContentUrl(projectId: string, filename: string) {
+export function getContentUrl(
+  projectId: string,
+  filename: string,
+  assetsFolder = ASSETS_FOLDER
+) {
   const url = new URL(BASE_CONTENT_URL);
-  url.pathname = pathJoin(url.pathname, projectId, ASSETS_FOLDER, filename);
+  url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
 
   return url.toString();
 }
@@ -186,35 +190,6 @@ export const createIsChanged =
   <T extends Record<string, any>>(state: T, prevState: T) =>
   (attrName: keyof T) =>
     state[attrName] !== prevState[attrName];
-
-/**
- * in order to be able to run scripts that are part of the components, we are adding a script tag next to the component's element
- * in order to avoid cloning the scripts, each tag contains a ref-id and the actual scripts are placed under the "scripts" section
- * here we are going over the script refs, finding the actual script, generating a function out of it, binding the element to the function so we can access it from the script
- * we are returning an array of functions that can be triggered later on
- */
-export const generateFnsFromScriptTags = (
-  template: DocumentFragment,
-  context?: Record<string, string>
-) => {
-  const scriptFns = Array.from(
-    template.querySelectorAll('script[data-id]')
-  ).map((script) => {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const scriptId = script.getAttribute('data-id');
-    const scriptContent = template.getElementById(scriptId)?.innerHTML;
-
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const fn = Function(scriptContent).bind(script.previousSibling, context);
-    script.remove();
-
-    return fn;
-  });
-
-  template.querySelector('scripts')?.remove();
-
-  return scriptFns;
-};
 
 export const getElementDescopeAttributes = (ele: HTMLElement) =>
   Array.from(ele?.attributes || []).reduce((acc, attr) => {
@@ -336,10 +311,10 @@ export const handleAutoFocus = (
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
     // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector(
-      'input:not([aria-hidden="true"])'
-    );
-    firstVisibleInput?.focus();
+    const firstVisibleInput: HTMLInputElement = ele.querySelector('*[name]');
+    setTimeout(() => {
+      firstVisibleInput?.focus();
+    });
   }
 };
 

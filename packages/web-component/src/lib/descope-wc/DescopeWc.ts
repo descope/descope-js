@@ -7,11 +7,9 @@ import {
 } from '../constants';
 import {
   fetchContent,
-  generateFnsFromScriptTags,
   getAnimationDirection,
   getContentUrl,
   getElementDescopeAttributes,
-  getInputValueByType,
   handleAutoFocus,
   injectSamlIdpForm,
   isConditionalLoginSupported,
@@ -26,8 +24,13 @@ import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { getABTestingKey } from '../helpers/abTestingKey';
 import { IsChanged } from '../helpers/state';
-import { disableWebauthnButtons } from '../helpers/templates';
 import {
+  disableWebauthnButtons,
+  getDescopeUiComponentsList,
+  setPhoneAutoDetectDefaultCode,
+} from '../helpers/templates';
+import {
+  DescopeUI,
   Direction,
   FlowState,
   NextFn,
@@ -106,7 +109,7 @@ class DescopeWc extends BaseDescopeWc {
         return body;
       } catch (ex) {
         this.loggerWrapper.error(
-          `Failed to fetch html page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
+          `Failed to fetch flow page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
           ex
         );
       }
@@ -116,7 +119,7 @@ class DescopeWc extends BaseDescopeWc {
       const { body } = await fetchContent(htmlUrl, 'text');
       return body;
     } catch (ex) {
-      this.loggerWrapper.error(`Failed to fetch html page from ${htmlUrl}`, ex);
+      this.loggerWrapper.error(`Failed to fetch flow page`, ex.message);
     }
     return null;
   }
@@ -164,6 +167,7 @@ class DescopeWc extends BaseDescopeWc {
     const abTestingKey = getABTestingKey();
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
+    const projectConfig = await this.getProjectConfig();
 
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
@@ -225,8 +229,9 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          exists ? inputs : undefined,
-          flowConfig.version
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          exists ? inputs : undefined
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -249,12 +254,13 @@ class DescopeWc extends BaseDescopeWc {
         executionId,
         stepId,
         CUSTOM_INTERACTIONS.submit,
+        flowConfig.version,
+        projectConfig.componentsVersion,
         {
           token,
           exchangeCode: code,
           exchangeError,
-        },
-        flowConfig.version
+        }
       );
       this.#handleSdkResponse(sdkResp);
       this.flowState.update({
@@ -345,12 +351,13 @@ class DescopeWc extends BaseDescopeWc {
         executionId,
         stepId,
         CUSTOM_INTERACTIONS.submit,
+        flowConfig.version,
+        projectConfig.componentsVersion,
         {
           transactionId: webauthnTransactionId,
           response,
           failure,
-        },
-        flowConfig.version
+        }
       );
       this.#handleSdkResponse(sdkResp);
     }
@@ -361,8 +368,9 @@ class DescopeWc extends BaseDescopeWc {
           executionId,
           stepId,
           CUSTOM_INTERACTIONS.polling,
-          {},
-          flowConfig.version
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          {}
         );
         this.#handleSdkResponse(sdkResp);
       }, 2000);
@@ -412,7 +420,12 @@ class DescopeWc extends BaseDescopeWc {
         ssoAppId
       )
     ) {
-      stepStateUpdate.next = (interactionId, inputs) =>
+      stepStateUpdate.next = (
+        interactionId,
+        version,
+        componentsVersion,
+        inputs
+      ) =>
         this.sdk.flow.start(
           flowId,
           {
@@ -429,12 +442,13 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           interactionId,
+          version,
+          componentsVersion,
           {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(token && { token }),
-          },
-          flowConfig.version
+          }
         );
     } else if (
       isChanged('projectId') ||
@@ -566,17 +580,20 @@ class DescopeWc extends BaseDescopeWc {
   // eslint-disable-next-line class-methods-use-this
   #handleConditionalUiInput(inputEle: HTMLInputElement) {
     const ignoreList = ['email'];
-    const origName = inputEle.name;
+    const origName = inputEle.getAttribute('name');
 
     if (!ignoreList.includes(origName)) {
       const conditionalUiSupportName = `user-${origName}`;
 
       // eslint-disable-next-line no-param-reassign
-      inputEle.name = conditionalUiSupportName;
+      inputEle.setAttribute('name', conditionalUiSupportName);
 
       inputEle.addEventListener('input', () => {
         // eslint-disable-next-line no-param-reassign
-        inputEle.name = inputEle.value ? origName : conditionalUiSupportName;
+        inputEle.setAttribute(
+          'name',
+          inputEle.value ? origName : conditionalUiSupportName
+        );
       });
     }
   }
@@ -585,7 +602,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#conditionalUiAbortController?.abort();
 
     const conditionalUiInput = fragment.querySelector(
-      'input[autocomplete="webauthn"]'
+      '*[autocomplete="webauthn"]'
     ) as HTMLInputElement;
 
     if (conditionalUiInput && (await isConditionalLoginSupported())) {
@@ -598,14 +615,21 @@ class DescopeWc extends BaseDescopeWc {
         // we need the abort controller so we can cancel the current webauthn session in case the user clicked on a webauthn button, and we need to start a new session
         this.#conditionalUiAbortController = new AbortController();
 
+        const flowConfig = await this.getFlowConfig();
+        const projectConfig = await this.getProjectConfig();
         // we should not wait for this fn, it will call next when the user uses his passkey on the input
         this.sdk.webauthn.helpers
           .conditional(options, this.#conditionalUiAbortController)
           .then(async (response) => {
-            const resp = await next(conditionalUiInput.id, {
-              transactionId,
-              response,
-            });
+            const resp = await next(
+              conditionalUiInput.id,
+              flowConfig.version,
+              projectConfig.componentsVersion,
+              {
+                transactionId,
+                response,
+              }
+            );
             this.#handleSdkResponse(resp);
           })
           .catch((err) => {
@@ -617,6 +641,37 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  async loadDescopeUiComponents(clone: any) {
+    const descopeUiComponentsList = getDescopeUiComponentsList(clone);
+
+    await Promise.all(
+      descopeUiComponentsList.map(async (tag) => {
+        const isComponentAlreadyDefined = !!customElements.get(tag);
+
+        if (isComponentAlreadyDefined) return undefined;
+
+        let descopeUI: DescopeUI;
+        try {
+          descopeUI = await this.descopeUI;
+        } catch (e) {
+          return undefined;
+        }
+
+        if (!descopeUI[tag]) {
+          this.loggerWrapper.error(
+            `Cannot load UI component "${tag}"`,
+            `Descope UI does not have a component named "${tag}", available components are: "${Object.keys(
+              descopeUI
+            ).join(', ')}"`
+          );
+          return undefined;
+        }
+
+        return descopeUI[tag]();
+      })
+    );
+  }
+
   async onStepChange(currentState: StepState, prevState: StepState) {
     const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
       currentState;
@@ -626,9 +681,8 @@ class DescopeWc extends BaseDescopeWc {
 
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
-    const scriptFns = generateFnsFromScriptTags(
-      clone,
-      await this.getExecutionContext()
+    const loadDescopeUiComponents = this.loadDescopeUiComponents(
+      stepTemplate.content
     );
 
     // we want to disable the webauthn buttons if it's not supported on the browser
@@ -657,17 +711,18 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper
     );
 
-    // put the totp variable on the root element, which is the top level 'div'
-    setTOTPVariable(clone.querySelector('div'), screenState?.totp?.image);
+    // set the default country code based on the locale value we got
+    const { geo } = await this.getExecutionContext();
+    setPhoneAutoDetectDefaultCode(clone, geo);
 
     const injectNextPage = async () => {
-      try {
-        scriptFns.forEach((fn) => {
-          fn();
-        });
-      } catch (e) {
-        this.loggerWrapper.error(e.message);
-      }
+      await loadDescopeUiComponents;
+
+      // put the totp variable on the root element, which is the top level 'div' inside the shadowroot
+      setTOTPVariable(
+        this.shadowRoot.querySelector('div'),
+        screenState?.totp?.image
+      );
 
       this.rootElement.replaceChildren(clone);
 
@@ -682,8 +737,15 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`
       );
       if (loader) {
+        const flowConfig = await this.getFlowConfig();
+        const projectConfig = await this.getProjectConfig();
         // Loader component in the screen triggers polling interaction
-        const response = await next(CUSTOM_INTERACTIONS.polling, {});
+        const response = await next(
+          CUSTOM_INTERACTIONS.polling,
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          {}
+        );
         this.#handleSdkResponse(response);
       }
     };
@@ -700,8 +762,8 @@ class DescopeWc extends BaseDescopeWc {
   #validateInputs() {
     return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
       (input: HTMLInputElement) => {
-        input.reportValidity();
-        return input.checkValidity();
+        input.reportValidity?.();
+        return input.checkValidity?.();
       }
     );
   }
@@ -715,13 +777,10 @@ class DescopeWc extends BaseDescopeWc {
 
     // wait for all inputs
     const values = await Promise.all(
-      inputs.map(async (input) => {
-        const value = await getInputValueByType(input);
-        return {
-          name: input.name,
-          value,
-        };
-      })
+      inputs.map(async (input) => ({
+        name: input.getAttribute('name'),
+        value: input.value,
+      }))
     );
 
     // reduce to object
@@ -738,32 +797,44 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
-          submitter?.classList?.add('loading');
+          submitter.setAttribute('loading', 'true');
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
-          submitter?.classList?.remove('loading');
+          submitter.removeAttribute('loading');
         }
       }
     );
   }
 
   async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
-    if (submitter.formNoValidate || this.#validateInputs()) {
+    if (
+      submitter.getAttribute('formnovalidate') === 'true' ||
+      this.#validateInputs()
+    ) {
       const submitterId = submitter?.getAttribute('id');
 
       this.#handleSubmitButtonLoader(submitter);
 
       const formData = await this.#getFormData();
       const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+      const contextArgs = this.getComponentsContext();
 
       const actionArgs = {
+        ...contextArgs,
         ...eleDescopeAttrs,
         ...formData,
         // 'origin' is required to start webauthn. For now we'll add it to every request
         origin: window.location.origin,
       };
 
-      const sdkResp = await next(submitterId, actionArgs);
+      const flowConfig = await this.getFlowConfig();
+      const projectConfig = await this.getProjectConfig();
+      const sdkResp = await next(
+        submitterId,
+        flowConfig.version,
+        projectConfig.componentsVersion,
+        actionArgs
+      );
 
       this.#handleSdkResponse(sdkResp);
     }
@@ -774,7 +845,7 @@ class DescopeWc extends BaseDescopeWc {
     // Adding event listeners to all buttons without the exclude attribute
     this.rootElement
       .querySelectorAll(
-        `button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`
+        `descope-button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`
       )
       .forEach((button: HTMLButtonElement) => {
         // eslint-disable-next-line no-param-reassign
