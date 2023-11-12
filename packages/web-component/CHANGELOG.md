@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.0](https://github.com/descope/descope-js/compare/web-component-2.11.8...web-component-3.0.0) (2023-11-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.7`
+
+### ⚠ BREAKING CHANGES
+
+* Use web components UI (#293)
+
+### Features
+
+* Use web components UI ([#293](https://github.com/descope/descope-js/issues/293)) ([2d0fed7](https://github.com/descope/descope-js/commit/2d0fed7cee3f25b2d4d18a41e0531eba2f3aa8cb))
+
+
+### Bug Fixes
+
+* Input query selector ([#300](https://github.com/descope/descope-js/issues/300)) ([0ac9314](https://github.com/descope/descope-js/commit/0ac9314fe7476ece850f77b3960848b07b9cf33e))
+
 ### [2.11.8](https://github.com/descope/descope-js/compare/web-component-2.11.7...web-component-2.11.8) (2023-11-01)
 
 ### Dependency Updates
