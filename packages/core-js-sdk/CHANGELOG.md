@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.10.1...core-js-sdk-2.0.0) (2023-11-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use web components UI (#293)
+
+### Features
+
+* Use web components UI ([#293](https://github.com/descope/descope-js/issues/293)) ([2d0fed7](https://github.com/descope/descope-js/commit/2d0fed7cee3f25b2d4d18a41e0531eba2f3aa8cb))
+
 ### [1.10.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.10.0...core-js-sdk-1.10.1) (2023-11-01)
 
 ## [1.10.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.3...core-js-sdk-1.10.0) (2023-10-26)
