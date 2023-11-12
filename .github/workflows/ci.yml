@@ -2,8 +2,8 @@ name: CI
 on:
   pull_request:
   push:
-    branches: 
-    - main
+    branches:
+      - main
 env:
   NODE_VERSION: 18.2
   PNPM_VERSION: 7.28.0

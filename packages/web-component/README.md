@@ -93,8 +93,7 @@ Usage example:
 ```javascript
 function translateError(error) {
   const translationMap = {
-    SAMLStartFailed:
-      'No es posible iniciar sesión en este momento, por favor intenta nuevamente más tarde',
+    SAMLStartFailed: 'No es posible iniciar sesión en este momento, por favor intenta nuevamente más tarde',
   };
   return translationMap[error.type] || error.text;
 }
@@ -134,9 +133,7 @@ Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('error', (e) =>
-  alert(`Error! - ${e.detail.errorMessage}`)
-);
+descopeWcEle.addEventListener('error', (e) => alert(`Error! - ${e.detail.errorMessage}`));
 ```
 
 ### `success` - Fired when the flow is completed successfully. The event detail contains the flow result.
@@ -145,7 +142,5 @@ Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('success', (e) =>
-  alert(`Success! - ${JSON.stringify(e.detail)}`)
-);
+descopeWcEle.addEventListener('success', (e) => alert(`Success! - ${JSON.stringify(e.detail)}`));
 ```
