@@ -18,7 +18,7 @@ importers:
       '@typescript-eslint/eslint-plugin': 5.62.0
       '@typescript-eslint/parser': ^5.36.1
       eslint: ~8.52.0
-      eslint-config-prettier: 8.10.0
+      eslint-config-prettier: 9.0.0
       husky: ^8.0.0
       jest: 29.7.0
       jest-environment-jsdom: 29.7.0
@@ -37,7 +37,7 @@ importers:
       '@commitlint/config-conventional': 18.4.0
       '@jscutlery/semver': 4.0.0
       '@nrwl/devkit': 15.9.2_nx@15.9.7
-      '@nrwl/eslint-plugin-nx': 15.9.7_vecuhjruqesfsswmcytxkzjzku
+      '@nrwl/eslint-plugin-nx': 15.9.7_rb5tl6ilbyzilwiraisimix7jy
       '@nrwl/jest': 15.9.7_gy7cbcjzr4cxe7pekyjainyjry
       '@nrwl/js': 15.9.7_nx@15.9.7+typescript@4.9.5
       '@nrwl/linter': 15.9.7_gzqt3vtf2ybxurw6j7hfnbiffu
@@ -47,7 +47,7 @@ importers:
       '@typescript-eslint/eslint-plugin': 5.62.0_wwoqxjt5ys7vh2nb6ta5vka2ie
       '@typescript-eslint/parser': 5.59.1_a3vhf2jlnnjnbmpqqovi7mhg4a
       eslint: 8.52.0
-      eslint-config-prettier: 8.10.0_eslint@8.52.0
+      eslint-config-prettier: 9.0.0_eslint@8.52.0
       husky: 8.0.3
       jest: 29.7.0_plq4oe6sl5pdzghe34df6vf6y4
       jest-environment-jsdom: 29.7.0
@@ -73,7 +73,7 @@ importers:
       esbuild: ^0.19.0
       eslint: 8.52.0
       eslint-config-airbnb-typescript: 17.1.0
-      eslint-config-prettier: 8.10.0
+      eslint-config-prettier: 9.0.0
       eslint-config-standard: 17.1.0
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.28.1
@@ -119,7 +119,7 @@ importers:
       esbuild: 0.19.3
       eslint: 8.52.0
       eslint-config-airbnb-typescript: 17.1.0_zu4xj54f3mg5siwat3noecvv2u
-      eslint-config-prettier: 8.10.0_eslint@8.52.0
+      eslint-config-prettier: 9.0.0_eslint@8.52.0
       eslint-config-standard: 17.1.0_6m74rr2dtf6ig5jkdzzncfzrae
       eslint-import-resolver-typescript: 3.6.1_zu4xj54f3mg5siwat3noecvv2u
       eslint-plugin-import: 2.28.1_37l5lln5kwvlkngju43dfveplq
@@ -129,7 +129,7 @@ importers:
       eslint-plugin-n: 15.7.0_eslint@8.52.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
-      eslint-plugin-prettier: 4.2.1_bk2rujilmxlltspnl4c5hwjdfu
+      eslint-plugin-prettier: 4.2.1_3gub33wyleffmhqgij3eqdtipm
       eslint-plugin-promise: 6.1.1_eslint@8.52.0
       jest: 29.5.0_ts-node@10.9.1
       jest-environment-jsdom: 29.5.0
@@ -165,7 +165,7 @@ importers:
       eslint: 8.52.0
       eslint-config-airbnb: 19.0.4
       eslint-config-airbnb-typescript: 17.1.0
-      eslint-config-prettier: 8.10.0
+      eslint-config-prettier: 9.0.0
       eslint-config-standard: 17.1.0
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.28.1
@@ -213,7 +213,7 @@ importers:
       eslint: 8.52.0
       eslint-config-airbnb: 19.0.4_qxbjzjbecn2hynzhfqvp7ufcfu
       eslint-config-airbnb-typescript: 17.1.0_qxbjzjbecn2hynzhfqvp7ufcfu
-      eslint-config-prettier: 8.10.0_eslint@8.52.0
+      eslint-config-prettier: 9.0.0_eslint@8.52.0
       eslint-config-standard: 17.1.0_6m74rr2dtf6ig5jkdzzncfzrae
       eslint-import-resolver-typescript: 3.6.1_qxbjzjbecn2hynzhfqvp7ufcfu
       eslint-plugin-import: 2.28.1_lyvq25vtjollchpmure3ryrn3a
@@ -223,7 +223,7 @@ importers:
       eslint-plugin-n: 15.7.0_eslint@8.52.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
-      eslint-plugin-prettier: 4.2.1_bk2rujilmxlltspnl4c5hwjdfu
+      eslint-plugin-prettier: 4.2.1_3gub33wyleffmhqgij3eqdtipm
       eslint-plugin-promise: 6.1.1_eslint@8.52.0
       jest: 29.5.0_zwqzladshglw6i5hoaitvxqexu
       jest-environment-jsdom: 29.5.0
@@ -260,7 +260,7 @@ importers:
       '@typescript-eslint/parser': ^5.33.1
       eslint: 8.52.0
       eslint-config-airbnb-typescript: 17.1.0
-      eslint-config-prettier: 8.10.0
+      eslint-config-prettier: 9.0.0
       eslint-config-standard: 17.1.0
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.28.1
@@ -309,7 +309,7 @@ importers:
       '@typescript-eslint/parser': 5.59.1_a3vhf2jlnnjnbmpqqovi7mhg4a
       eslint: 8.52.0
       eslint-config-airbnb-typescript: 17.1.0_zu4xj54f3mg5siwat3noecvv2u
-      eslint-config-prettier: 8.10.0_eslint@8.52.0
+      eslint-config-prettier: 9.0.0_eslint@8.52.0
       eslint-config-standard: 17.1.0_6m74rr2dtf6ig5jkdzzncfzrae
       eslint-import-resolver-typescript: 3.6.1_zu4xj54f3mg5siwat3noecvv2u
       eslint-plugin-import: 2.28.1_37l5lln5kwvlkngju43dfveplq
@@ -319,7 +319,7 @@ importers:
       eslint-plugin-n: 15.7.0_eslint@8.52.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
-      eslint-plugin-prettier: 4.2.1_bk2rujilmxlltspnl4c5hwjdfu
+      eslint-plugin-prettier: 4.2.1_3gub33wyleffmhqgij3eqdtipm
       eslint-plugin-promise: 6.1.1_eslint@8.52.0
       http-server: 14.1.1
       jest: 29.5.0_zwqzladshglw6i5hoaitvxqexu
@@ -2714,7 +2714,7 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@nrwl/eslint-plugin-nx/15.9.7_vecuhjruqesfsswmcytxkzjzku:
+  /@nrwl/eslint-plugin-nx/15.9.7_rb5tl6ilbyzilwiraisimix7jy:
     resolution: {integrity: sha512-vbWayEFtTqIrpv32dc1cQeNpGeUATkQJc7It6SZDaJlp2JzNVe8kgFfSx4wbxfvzpRMIUmM/3s+J70/mABGsHw==}
     peerDependencies:
       '@typescript-eslint/parser': ^5.29.0
@@ -2728,7 +2728,7 @@ packages:
       '@typescript-eslint/utils': 5.62.0_a3vhf2jlnnjnbmpqqovi7mhg4a
       chalk: 4.1.2
       confusing-browser-globals: 1.0.11
-      eslint-config-prettier: 8.10.0_eslint@8.52.0
+      eslint-config-prettier: 9.0.0_eslint@8.52.0
       semver: 7.5.4
     transitivePeerDependencies:
       - eslint
@@ -5553,8 +5553,8 @@ packages:
       object.entries: 1.1.6
     dev: true
 
-  /eslint-config-prettier/8.10.0_eslint@8.52.0:
-    resolution: {integrity: sha512-SM8AMJdeQqRYT9O9zguiruQZaN7+z+E4eAP9oiLNGKMtomwaB1E9dcgUD6ZAn/eQAb52USbvezbiljfZUhbJcg==}
+  /eslint-config-prettier/9.0.0_eslint@8.52.0:
+    resolution: {integrity: sha512-IcJsTkJae2S35pRsRAwoCE+925rJJStOdkKnLVgtE+tEpqU0EVVM7OqrwxqgptKdX29NUwC82I5pXsGFIgSevw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -5901,7 +5901,7 @@ packages:
       eslint: 8.52.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_bk2rujilmxlltspnl4c5hwjdfu:
+  /eslint-plugin-prettier/4.2.1_3gub33wyleffmhqgij3eqdtipm:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -5913,7 +5913,7 @@ packages:
         optional: true
     dependencies:
       eslint: 8.52.0
-      eslint-config-prettier: 8.10.0_eslint@8.52.0
+      eslint-config-prettier: 9.0.0_eslint@8.52.0
       prettier: 2.8.8
       prettier-linter-helpers: 1.0.0
     dev: true
