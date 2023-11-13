@@ -25,7 +25,7 @@ importers:
       lint-staged: ^15.0.0
       ngx-deploy-npm: ^7.0.0
       nx: 15.9.7
-      prettier: ^2.6.2
+      prettier: ^3.0.0
       ts-jest: 29.1.1
       ts-node: 10.9.1
       tslib: 2.6.2
@@ -54,7 +54,7 @@ importers:
       lint-staged: 15.1.0
       ngx-deploy-npm: 7.1.0_tslib@2.6.2
       nx: 15.9.7
-      prettier: 2.8.8
+      prettier: 3.1.0
       ts-jest: 29.1.1_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.1_ukzf45i7jc6u2jtmcoilism54i
       typescript: 4.9.5
@@ -90,7 +90,7 @@ importers:
       jwt-decode: 3.1.2
       lint-staged: ^15.0.0
       lodash.get: 4.4.2
-      prettier: ^2.6.2
+      prettier: ^3.0.0
       pretty-quick: ^3.1.3
       rimraf: ^5.0.0
       rollup: ^3.0.0
@@ -129,13 +129,13 @@ importers:
       eslint-plugin-n: 15.7.0_eslint@8.52.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
-      eslint-plugin-prettier: 4.2.1_3gub33wyleffmhqgij3eqdtipm
+      eslint-plugin-prettier: 4.2.1_v2fgby437gowzve6apq24vphbu
       eslint-plugin-promise: 6.1.1_eslint@8.52.0
       jest: 29.5.0_ts-node@10.9.1
       jest-environment-jsdom: 29.5.0
       lint-staged: 15.1.0
-      prettier: 2.8.8
-      pretty-quick: 3.1.3_prettier@2.8.8
+      prettier: 3.1.0
+      pretty-quick: 3.1.3_prettier@3.1.0
       rimraf: 5.0.1
       rollup: 3.21.0
       rollup-plugin-auto-external: 2.0.0_rollup@3.21.0
@@ -180,7 +180,7 @@ importers:
       jest: ^29.0.0
       jest-environment-jsdom: ^29.0.0
       lint-staged: ^15.0.0
-      prettier: ^2.6.2
+      prettier: ^3.0.0
       pretty-quick: ^3.1.3
       rollup: ^2.78.0
       rollup-plugin-browsersync: ^1.3.3
@@ -223,13 +223,13 @@ importers:
       eslint-plugin-n: 15.7.0_eslint@8.52.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
-      eslint-plugin-prettier: 4.2.1_3gub33wyleffmhqgij3eqdtipm
+      eslint-plugin-prettier: 4.2.1_v2fgby437gowzve6apq24vphbu
       eslint-plugin-promise: 6.1.1_eslint@8.52.0
       jest: 29.5.0_zwqzladshglw6i5hoaitvxqexu
       jest-environment-jsdom: 29.5.0
       lint-staged: 15.1.0
-      prettier: 2.8.8
-      pretty-quick: 3.1.3_prettier@2.8.8
+      prettier: 3.1.0
+      pretty-quick: 3.1.3_prettier@3.1.0
       rollup: 2.79.1
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@2.79.1
@@ -277,7 +277,7 @@ importers:
       jest-environment-jsdom: ^29.0.0
       js-cookie: 3.0.5
       lint-staged: ^15.0.0
-      prettier: ^2.6.2
+      prettier: ^3.0.0
       pretty-quick: ^3.1.3
       rimraf: ^5.0.0
       rollup: ^3.0.0
@@ -319,14 +319,14 @@ importers:
       eslint-plugin-n: 15.7.0_eslint@8.52.0
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
-      eslint-plugin-prettier: 4.2.1_3gub33wyleffmhqgij3eqdtipm
+      eslint-plugin-prettier: 4.2.1_v2fgby437gowzve6apq24vphbu
       eslint-plugin-promise: 6.1.1_eslint@8.52.0
       http-server: 14.1.1
       jest: 29.5.0_zwqzladshglw6i5hoaitvxqexu
       jest-environment-jsdom: 29.5.0
       lint-staged: 15.1.0
-      prettier: 2.8.8
-      pretty-quick: 3.1.3_prettier@2.8.8
+      prettier: 3.1.0
+      pretty-quick: 3.1.3_prettier@3.1.0
       rimraf: 5.0.1
       rollup: 3.21.0
       rollup-plugin-auto-external: 2.0.0_rollup@3.21.0
@@ -5902,7 +5902,7 @@ packages:
       eslint: 8.52.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_3gub33wyleffmhqgij3eqdtipm:
+  /eslint-plugin-prettier/4.2.1_v2fgby437gowzve6apq24vphbu:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -5915,7 +5915,7 @@ packages:
     dependencies:
       eslint: 8.52.0
       eslint-config-prettier: 9.0.0_eslint@8.52.0
-      prettier: 2.8.8
+      prettier: 3.1.0
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -9669,9 +9669,9 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.8.8:
-    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
-    engines: {node: '>=10.13.0'}
+  /prettier/3.1.0:
+    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
+    engines: {node: '>=14'}
     hasBin: true
     dev: true
 
@@ -9702,7 +9702,7 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /pretty-quick/3.1.3_prettier@2.8.8:
+  /pretty-quick/3.1.3_prettier@3.1.0:
     resolution: {integrity: sha512-kOCi2FJabvuh1as9enxYmrnBC6tVMoVOenMaBqRfsvBHB0cbpYHjdQEpSglpASDFEXVwplpcGR4CLEaisYAFcA==}
     engines: {node: '>=10.13'}
     hasBin: true
@@ -9715,7 +9715,7 @@ packages:
       ignore: 5.2.4
       mri: 1.2.0
       multimatch: 4.0.0
-      prettier: 2.8.8
+      prettier: 3.1.0
     dev: true
 
   /process-nextick-args/2.0.1:
