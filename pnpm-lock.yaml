@@ -23,7 +23,7 @@ importers:
       jest: 29.7.0
       jest-environment-jsdom: 29.7.0
       lint-staged: ^15.0.0
-      ngx-deploy-npm: ^5.2.0
+      ngx-deploy-npm: ^7.0.0
       nx: 15.9.7
       prettier: ^2.6.2
       ts-jest: 29.1.1
@@ -52,7 +52,7 @@ importers:
       jest: 29.7.0_plq4oe6sl5pdzghe34df6vf6y4
       jest-environment-jsdom: 29.7.0
       lint-staged: 15.1.0
-      ngx-deploy-npm: 5.2.0_sdk46ergekthw3amnrbtfscm4y
+      ngx-deploy-npm: 7.1.0_tslib@2.6.2
       nx: 15.9.7
       prettier: 2.8.8
       ts-jest: 29.1.1_67xnt3v64q2pgz6kguni4h37hu
@@ -9124,17 +9124,14 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /ngx-deploy-npm/5.2.0_sdk46ergekthw3amnrbtfscm4y:
-    resolution: {integrity: sha512-+lsBNlDQ6Lr0fBN2eV+kbiExnPJwmuTK0cz1HBzvi+13DWu/AgAwy5o7bA+IkZL5pS6f4alJpjqY+TDMfGpubw==}
-    engines: {node: '>=14.0.0'}
+  /ngx-deploy-npm/7.1.0_tslib@2.6.2:
+    resolution: {integrity: sha512-zUv/C9giRVrhmOu3dIG3tjjN+1/bOV5xQzPGgXBZL74M5dgZo+/Dui1JxrVCZH9m8QogR4Zg+0Xq6FeXo2xKrg==}
+    engines: {node: '>=18.0.0'}
     peerDependencies:
-      '@nrwl/devkit': ^14.0.0 || ^15.0.0
-      '@nrwl/workspace': ^14.0.0 || ^15.0.0
-      nx: ^14.0.0 || ^15.0.0
+      '@nx/devkit': "^16.0.0 ||\_^17.0.0 ||\_^18.0.0"
+      tslib: ^2.3.0
     dependencies:
-      '@nrwl/devkit': 15.9.2_nx@15.9.7
-      '@nrwl/workspace': 15.9.7
-      nx: 15.9.7
+      tslib: 2.6.2
     dev: true
 
   /no-case/3.0.4:
