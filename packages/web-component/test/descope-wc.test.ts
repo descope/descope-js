@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import createSdk from '@descope/web-js-sdk';
+import createSdk, { ensureFingerprintIds } from '@descope/web-js-sdk';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import { screen } from 'shadow-dom-testing-library';
@@ -31,7 +31,12 @@ import * as helpers from '../src/lib/helpers/helpers';
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 
-jest.mock('@descope/web-js-sdk');
+jest.mock('@descope/web-js-sdk', () => ({
+  __esModule: true,
+  default: jest.fn(),
+  clearFingerprintData: jest.fn(),
+  ensureFingerprintIds: jest.fn(),
+}));
 
 const WAIT_TIMEOUT = 6000;
 
@@ -1402,6 +1407,27 @@ describe('web-component', () => {
     );
   });
 
+  it('runs fingerprint when config contains the correct fields', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      flows: {
+        'sign-in': {
+          startScreenId: 'screen-0',
+          fingerprintEnabled: true,
+          fingerprintKey: 'fp-public-key',
+        },
+      },
+    };
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'));
+    expect(ensureFingerprintIds).toHaveBeenCalledWith('fp-public-key');
+  });
+
   it('it should set the theme based on the user parameter', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -1528,30 +1554,6 @@ describe('web-component', () => {
         0,
         '1.2.3',
         undefined
-      )
-    );
-  });
-
-  it('should create correctly sdk when telemetryKey configured', async () => {
-    document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" telemetryKey="123"></descope-wc>`;
-
-    await waitFor(() =>
-      expect(createSdk as jest.Mock).toHaveBeenCalledWith(
-        expect.objectContaining({ fpKey: '123', fpLoad: true })
-      )
-    );
-  });
-
-  it('should create correctly sdk when telemetryKey is not configured', async () => {
-    document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-
-    await waitFor(() =>
-      expect(createSdk as jest.Mock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fpKey: undefined,
-          fpLoad: false,
-          persistTokens: true,
-        })
       )
     );
   });

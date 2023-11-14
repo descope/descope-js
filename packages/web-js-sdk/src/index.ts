@@ -24,4 +24,9 @@ export {
   SESSION_TOKEN_KEY,
 } from './enhancers/withPersistTokens/constants';
 
+export {
+  ensureFingerprintIds,
+  clearFingerprintData,
+} from './enhancers/withFingerprint/helpers';
+
 export default decoratedCreateSdk;

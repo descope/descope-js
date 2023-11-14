@@ -9,8 +9,8 @@ import {
 import { FingerprintObject } from './types';
 
 const createFingerprintObject = (
-  sessionId: string = '',
-  requestId: string = ''
+  sessionId: string,
+  requestId: string
 ): FingerprintObject => ({
   [VISITOR_SESSION_ID_PARAM]: sessionId,
   [VISITOR_REQUEST_ID_PARAM]: requestId,
@@ -40,7 +40,7 @@ const setFPToStorage = (value: FingerprintObject) => {
   localStorage.setItem(FP_STORAGE_KEY, JSON.stringify(item));
 };
 
-// Get Fingerprint from storage, will return null if not exists, of if expired
+// Get Fingerprint from storage, will return null if not exists, or if expired
 const getFPFromStorage = (returnExpired = false): FingerprintObject => {
   const itemStr = localStorage.getItem(FP_STORAGE_KEY);
   // if the item doesn't exist, return null
@@ -89,7 +89,12 @@ export const ensureFingerprintIds = async (fpKey: string) => {
  * Get Fingerprint data (request ids) from storage, or create empty object
  * If data is expired, return it anyway
  */
-export const getFingerprintData = (): FingerprintObject => {
-  // get from storage, fallback to default
-  return getFPFromStorage(true) || createFingerprintObject();
+export const getFingerprintData = (): FingerprintObject | null => {
+  // get from storage if exists
+  return getFPFromStorage(true);
+};
+
+/** Clear Fingerprint data from storage */
+export const clearFingerprintData = () => {
+  localStorage.removeItem(FP_STORAGE_KEY);
 };
