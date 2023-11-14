@@ -26,9 +26,7 @@ export const withFingerprint =
       console.warn(
         'Fingerprint is a client side only capability and will not work when running in the server'
       );
-      return createSdk({
-        ...config,
-      });
+      return createSdk(config);
     }
 
     // load fingerprint now if needed

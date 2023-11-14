@@ -183,10 +183,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      if (
-        flowConfig.fingerprintEnabled &&
-        flowConfig.fingerprintKey?.length > 0
-      ) {
+      if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
         ensureFingerprintIds(flowConfig.fingerprintKey);
       } else {
         clearFingerprintData();

@@ -164,6 +164,8 @@ export type FlowConfig = {
   targetLocales?: string[];
   conditions?: ClientCondition[];
   condition?: ClientCondition;
+  fingerprintEnabled?: boolean;
+  fingerprintKey?: string;
 };
 
 export interface ProjectConfiguration {
