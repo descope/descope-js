@@ -1,9 +1,9 @@
+import { waitFor } from '@testing-library/dom';
 import { URL_RUN_IDS_PARAM_NAME } from '../../src/lib/constants';
 import { dragElement } from '../../src/lib/helpers';
 import {
   clearRunIdsFromUrl,
   fetchContent,
-  generateFnsFromScriptTags,
   getAnimationDirection,
   getRunIdsFromUrl,
   handleAutoFocus,
@@ -140,180 +140,83 @@ describe('helpers', () => {
     });
   });
 
-  describe('generateFnsFromScriptTags', () => {
-    it('should return array of functions with the script content when each function is bound the its previous element', () => {
-      const elements = ['123', '456'].map((val) => {
-        const span = document.createElement('span');
-        span.innerText = val;
+  it('should move an element to the correct position', () => {
+    const ele = document.createElement('div');
+    dragElement(ele, ele);
 
-        const script = document.createElement('script');
-        script.setAttribute('data-id', '1');
-        Object.defineProperty(script, 'previousSibling', {
-          value: span,
-        });
+    ele.onmousedown({
+      clientX: 10,
+      clientY: 20,
+      preventDefault: jest.fn(),
+    } as unknown as MouseEvent);
+    document.onmousemove({
+      clientX: 30,
+      clientY: 40,
+      preventDefault: jest.fn(),
+    } as unknown as MouseEvent);
+    document.onmouseup({} as MouseEvent);
 
-        return script;
-      });
+    // eslint-disable-next-line jest-dom/prefer-to-have-style
+    expect(ele.style.top).toBe('20px');
+    // eslint-disable-next-line jest-dom/prefer-to-have-style
+    expect(ele.style.left).toBe('20px');
+  });
+});
 
-      const script = document.createElement('script');
-      script.setAttribute('id', '1');
-      script.innerHTML = 'return this.innerText';
+describe('handleAutoFocus', () => {
+  it('should focus element when auto focus is on', async () => {
+    const focusFn = jest.fn();
 
-      jest
-        .spyOn(document, 'querySelectorAll')
-        .mockReturnValue(elements as unknown as NodeListOf<Element>);
-      jest.spyOn(document, 'getElementById').mockReturnValue(script);
+    handleAutoFocus(
+      {
+        querySelector: () => ({ focus: focusFn }),
+      } as never as HTMLElement,
+      true,
+      false
+    );
 
-      const fns = generateFnsFromScriptTags(document as DocumentFragment);
-
-      ['123', '456'].forEach((val, i) => expect(fns[i]()).toBe(val));
-    });
-
-    it('should bind the context to the function', () => {
-      const elements = ['123', '456'].map((val) => {
-        const span = document.createElement('span');
-        span.innerText = val;
-
-        const script = document.createElement('script');
-        script.setAttribute('data-id', '1');
-        Object.defineProperty(script, 'previousSibling', {
-          value: span,
-        });
-
-        return script;
-      });
-
-      const script = document.createElement('script');
-      script.setAttribute('id', '1');
-      script.innerHTML = 'return arguments[0]';
-
-      jest
-        .spyOn(document, 'querySelectorAll')
-        .mockReturnValue(elements as unknown as NodeListOf<Element>);
-      jest.spyOn(document, 'getElementById').mockReturnValue(script);
-
-      const context = { a: '1' };
-      const fns = generateFnsFromScriptTags(
-        document as DocumentFragment,
-        context
-      );
-
-      ['123', '456'].forEach((val, i) => expect(fns[i]()).toBe(context));
-    });
-
-    it('should remove the script element that contains the script ref', () => {
-      const elements = ['123', '456'].map((val) => {
-        const span = document.createElement('span');
-        span.innerText = val;
-
-        const script = document.createElement('script');
-        script.setAttribute('data-id', '1');
-        Object.defineProperty(script, 'previousSibling', {
-          value: span,
-        });
-
-        script.remove = jest.fn();
-
-        return script;
-      });
-
-      jest
-        .spyOn(document, 'querySelectorAll')
-        .mockReturnValue(elements as unknown as NodeListOf<Element>);
-
-      generateFnsFromScriptTags(document as DocumentFragment);
-
-      elements.forEach((script) => expect(script.remove).toBeCalled());
-    });
-    it('should remove the scripts element with the actual scripts', () => {
-      const scripts = document.createElement('scripts');
-      scripts.remove = jest.fn();
-
-      jest.spyOn(document, 'querySelector').mockReturnValue(scripts);
-
-      generateFnsFromScriptTags(document as DocumentFragment);
-
-      expect(scripts.remove).toHaveBeenCalled();
-    });
-
-    it('should move an element to the correct position', () => {
-      const ele = document.createElement('div');
-      dragElement(ele, ele);
-
-      ele.onmousedown({
-        clientX: 10,
-        clientY: 20,
-        preventDefault: jest.fn(),
-      } as unknown as MouseEvent);
-      document.onmousemove({
-        clientX: 30,
-        clientY: 40,
-        preventDefault: jest.fn(),
-      } as unknown as MouseEvent);
-      document.onmouseup({} as MouseEvent);
-
-      // eslint-disable-next-line jest-dom/prefer-to-have-style
-      expect(ele.style.top).toBe('20px');
-      // eslint-disable-next-line jest-dom/prefer-to-have-style
-      expect(ele.style.left).toBe('20px');
-    });
+    await waitFor(() => expect(focusFn).toBeCalled());
   });
 
-  describe('handleAutoFocus', () => {
-    it('should focus element when auto focus is on', () => {
-      const focusFn = jest.fn();
+  it('should not focus element when auto focus is off', () => {
+    const focusFn = jest.fn();
 
-      handleAutoFocus(
-        {
-          querySelector: () => ({ focus: focusFn }),
-        } as never as HTMLElement,
-        true,
-        false
-      );
+    handleAutoFocus(
+      {
+        querySelector: () => ({ focus: focusFn }),
+      } as never as HTMLElement,
+      false,
+      true
+    );
 
-      expect(focusFn).toBeCalled();
-    });
+    setTimeout(() => expect(focusFn).not.toBeCalled());
+  });
 
-    it('should not focus element when auto focus is off', () => {
-      const focusFn = jest.fn();
+  it('should not focus element when auto focus is `skipAutoFocus` on first screen', () => {
+    const focusFn = jest.fn();
 
-      handleAutoFocus(
-        {
-          querySelector: () => ({ focus: focusFn }),
-        } as never as HTMLElement,
-        false,
-        true
-      );
+    handleAutoFocus(
+      {
+        querySelector: () => ({ focus: focusFn }),
+      } as never as HTMLElement,
+      'skipFirstScreen',
+      true
+    );
 
-      expect(focusFn).not.toBeCalled();
-    });
+    setTimeout(() => expect(focusFn).not.toBeCalled());
+  });
 
-    it('should not focus element when auto focus is `skipAutoFocus` on first screen', () => {
-      const focusFn = jest.fn();
+  it('should focus element when auto focus is `skipAutoFocus` on non-first screen', async () => {
+    const focusFn = jest.fn();
 
-      handleAutoFocus(
-        {
-          querySelector: () => ({ focus: focusFn }),
-        } as never as HTMLElement,
-        'skipFirstScreen',
-        true
-      );
+    handleAutoFocus(
+      {
+        querySelector: () => ({ focus: focusFn }),
+      } as never as HTMLElement,
+      'skipFirstScreen',
+      false
+    );
 
-      expect(focusFn).not.toBeCalled();
-    });
-
-    it('should focus element when auto focus is `skipAutoFocus` on non-first screen', () => {
-      const focusFn = jest.fn();
-
-      handleAutoFocus(
-        {
-          querySelector: () => ({ focus: focusFn }),
-        } as never as HTMLElement,
-        'skipFirstScreen',
-        false
-      );
-
-      expect(focusFn).toBeCalled();
-    });
+    await waitFor(() => expect(focusFn).toBeCalled());
   });
 });

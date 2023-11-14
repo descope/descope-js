@@ -1,5 +1,11 @@
 import createSdk from '@descope/web-js-sdk';
-import { CONFIG_FILENAME, THEME_FILENAME } from '../constants';
+import {
+  CONFIG_FILENAME,
+  PREV_VER_ASSETS_FOLDER,
+  THEME_FILENAME,
+  UI_COMPONENTS_URL,
+  UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+} from '../constants';
 import {
   camelCase,
   clearRunIdsFromUrl,
@@ -22,6 +28,9 @@ import {
   ILogger,
   SdkConfig,
   ThemeOptions,
+  DescopeUI,
+  ProjectConfiguration,
+  FlowConfig,
 } from '../types';
 import initTemplate from './initTemplate';
 
@@ -75,6 +84,10 @@ class BaseDescopeWc extends HTMLElement {
 
   #debugState = new State<DebugState>();
 
+  #componentsContext = {};
+
+  getComponentsContext = () => this.#componentsContext;
+
   nextRequestStatus = new State<{ isLoading: boolean }>({ isLoading: false });
 
   rootElement: HTMLDivElement;
@@ -86,11 +99,14 @@ class BaseDescopeWc extends HTMLElement {
   #eventsCbRefs = {
     popstate: this.#syncStateIdFromUrl.bind(this),
     visibilitychange: this.#syncStateWithVisibility.bind(this),
+    componentsContext: this.#handleComponentsContext.bind(this),
   };
 
   sdk: ReturnType<typeof createSdk>;
 
   #updateExecState: FlowStateUpdateFn;
+
+  descopeUI: Promise<DescopeUI>;
 
   constructor(updateExecState: FlowStateUpdateFn) {
     super();
@@ -266,43 +282,70 @@ class BaseDescopeWc extends HTMLElement {
     this.#updateExecState(currentState);
   }
 
+  async #getIsFlowsVersionMismatch() {
+    const config = await this.#getConfig();
+
+    return config.isMissingConfig && (await this.#isPrevVerConfig());
+  }
+
+  async #isPrevVerConfig() {
+    const prevVerConfigUrl = getContentUrl(
+      this.projectId,
+      CONFIG_FILENAME,
+      PREV_VER_ASSETS_FOLDER
+    );
+    try {
+      await fetchContent(prevVerConfigUrl, 'json');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // we want to get the config only if we don't have it already
   #getConfig = withMemCache(async () => {
     const configUrl = getContentUrl(this.projectId, CONFIG_FILENAME);
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
-        projectConfig: body,
+        projectConfig: body as ProjectConfiguration,
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.loggerWrapper.error(
-        'Cannot get config file',
-        'make sure that your projectId & flowId are correct'
-      );
+      return { isMissingConfig: true };
     }
-
-    return {};
   });
 
   async #loadFonts() {
     const { projectConfig } = await this.#getConfig();
-    projectConfig?.cssTemplate?.[this.theme]?.typography?.fontFamilies?.forEach(
-      (font: Record<string, any>) => loadFont(font.url)
-    );
+    const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    fonts &&
+      Object.values(fonts).forEach((font: Record<string, any>) =>
+        loadFont(font.url)
+      );
   }
 
-  #handleTheme() {
-    this.#loadTheme();
-    this.#applyTheme();
+  async #handleTheme() {
+    await this.#loadTheme();
+    await this.#applyTheme();
   }
 
   async #loadTheme() {
     const styleEle = document.createElement('style');
     const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
     try {
-      const { body } = await fetchContent(themeUrl, 'text');
-      styleEle.innerText = body;
+      const { body: theme } = await fetchContent(themeUrl, 'json');
+      styleEle.innerText =
+        (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+
+      const descopeUi = await this.descopeUI;
+      if (descopeUi?.componentsThemeManager) {
+        descopeUi.componentsThemeManager.themes = {
+          light: theme?.light?.components,
+          dark: theme?.dark?.components,
+        };
+      }
     } catch (e) {
       this.loggerWrapper.error(
         'Cannot fetch theme file',
@@ -312,8 +355,16 @@ class BaseDescopeWc extends HTMLElement {
     this.shadowRoot.appendChild(styleEle);
   }
 
-  #applyTheme() {
+  #handleComponentsContext(e: CustomEvent) {
+    this.#componentsContext = { ...e.detail, ...this.#componentsContext };
+  }
+
+  async #applyTheme() {
     this.rootElement.setAttribute('data-theme', this.theme);
+    const descopeUi = await this.descopeUI;
+    if (descopeUi?.componentsThemeManager) {
+      descopeUi.componentsThemeManager.currentThemeName = this.theme;
+    }
   }
 
   async getExecutionContext() {
@@ -329,9 +380,6 @@ class BaseDescopeWc extends HTMLElement {
 
   async #handleDebugMode({ isDebug }) {
     if (isDebug) {
-      // we are importing the debugger dynamically so we won't load it when it's not needed
-      await import('../debugger-wc');
-
       this.#debuggerEle = document.createElement(
         'descope-debugger'
       ) as HTMLElement & {
@@ -348,6 +396,9 @@ class BaseDescopeWc extends HTMLElement {
         zIndex: 99999,
       });
 
+      // we are importing the debugger dynamically so we won't load it when it's not needed
+      await import('../debugger-wc');
+
       document.body.appendChild(this.#debuggerEle);
     } else {
       this.#disableDebugger();
@@ -359,12 +410,18 @@ class BaseDescopeWc extends HTMLElement {
       this.#debuggerEle?.updateData({ title, description });
   }
 
-  async getFlowConfig() {
+  async getProjectConfig(): Promise<ProjectConfiguration> {
     const { projectConfig } = await this.#getConfig();
+    return projectConfig;
+  }
 
-    const config = projectConfig?.flows?.[this.flowId] || {};
-    config.version ??= 0;
-    return config;
+  async getFlowConfig(): Promise<FlowConfig> {
+    const projectConfig = await this.getProjectConfig();
+
+    const flowConfig =
+      projectConfig?.flows?.[this.flowId] || ({} as FlowConfig);
+    flowConfig.version ??= 0;
+    return flowConfig;
   }
 
   async getTargetLocales() {
@@ -380,7 +437,8 @@ class BaseDescopeWc extends HTMLElement {
       if (e.key !== 'Enter') return;
 
       e.preventDefault();
-      const buttons = this.rootElement.querySelectorAll('button');
+      const buttons: NodeListOf<HTMLButtonElement> =
+        this.rootElement.querySelectorAll('descope-button');
 
       // in case there is a single button on the page, click on it
       if (buttons.length === 1) {
@@ -399,8 +457,48 @@ class BaseDescopeWc extends HTMLElement {
     };
   }
 
+  async #loadDescopeUI() {
+    let version = (await this.#getConfig())?.projectConfig?.componentsVersion;
+
+    if (!version) {
+      this.logger.error('Did not get components version, using latest version');
+      version = 'latest';
+    }
+
+    const scriptSrc = UI_COMPONENTS_URL.replace(
+      UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+      version
+    );
+    const scriptEle = document.createElement('script');
+
+    this.descopeUI = new Promise((res) => {
+      const onError = () => {
+        this.loggerWrapper.error(
+          'Cannot load DescopeUI',
+          `Make sure this URL is valid and return the correct script: "${scriptSrc}"`
+        );
+
+        res({} as DescopeUI);
+      };
+
+      scriptEle.onload = () => {
+        if (!globalThis.DescopeUI) onError();
+        res(globalThis.DescopeUI);
+      };
+
+      scriptEle.onerror = onError;
+
+      scriptEle.src = scriptSrc;
+    });
+
+    document.body.append(scriptEle);
+  }
+
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
+      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
+      this.#debugState.update({ isDebug: this.debug });
+
       if (this.#shouldMountInFormEle()) {
         this.#handleOuterForm();
         return;
@@ -408,7 +506,27 @@ class BaseDescopeWc extends HTMLElement {
 
       this.#validateAttrs();
 
-      this.#handleTheme();
+      if (await this.#getIsFlowsVersionMismatch()) {
+        this.loggerWrapper.error(
+          'This SDK version does not support your flows version',
+          'Make sure to upgrade your flows to the latest version or use an older SDK version'
+        );
+
+        return;
+      }
+
+      if ((await this.#getConfig()).isMissingConfig) {
+        this.loggerWrapper.error(
+          'Cannot get config file',
+          'Make sure that your projectId & flowId are correct'
+        );
+
+        return;
+      }
+
+      await this.#loadDescopeUI();
+
+      await this.#handleTheme();
 
       this.#loadFonts();
 
@@ -432,13 +550,19 @@ class BaseDescopeWc extends HTMLElement {
       // we want to update the state when user clicks on back in the browser
       window.addEventListener('popstate', this.#eventsCbRefs.popstate);
 
+      // adding event to listen to events coming from components (e.g. recaptcha risk token) that want to add data to the context
+      // this data will be sent to the server on the next request
+      window.addEventListener(
+        'components-context',
+        this.#eventsCbRefs.componentsContext
+      );
+
       window.addEventListener(
         'visibilitychange',
         this.#eventsCbRefs.visibilitychange
       );
 
       this.#flowState.subscribe(this.#onFlowChange.bind(this));
-      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
 
       this.#flowState.update({
         projectId: this.projectId,
@@ -461,8 +585,6 @@ class BaseDescopeWc extends HTMLElement {
         ssoAppId,
       });
 
-      this.#debugState.update({ isDebug: this.debug });
-
       this.#init = true;
     }
   }
@@ -472,6 +594,14 @@ class BaseDescopeWc extends HTMLElement {
     this.#debugState.unsubscribeAll();
     this.#disableDebugger();
     window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
+    window.removeEventListener(
+      'visibilitychange',
+      this.#eventsCbRefs.visibilitychange
+    );
+    window.removeEventListener(
+      'components-context',
+      this.#eventsCbRefs.componentsContext
+    );
   }
 
   attributeChangedCallback(
