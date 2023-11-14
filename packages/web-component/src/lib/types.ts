@@ -47,7 +47,6 @@ export type FlowState = {
   exchangeError: string;
   webauthnTransactionId: string;
   webauthnOptions: string;
-  telemetryKey: string;
   redirectAuthCodeChallenge: string;
   redirectAuthCallbackUrl: string;
   redirectAuthInitiator: string;
@@ -165,6 +164,8 @@ export type FlowConfig = {
   targetLocales?: string[];
   conditions?: ClientCondition[];
   condition?: ClientCondition;
+  fingerprintEnabled?: boolean;
+  fingerprintKey?: string;
 };
 
 export interface ProjectConfiguration {

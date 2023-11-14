@@ -52,7 +52,6 @@ class BaseDescopeWc extends HTMLElement {
       'debug',
       'storage-prefix',
       'preview',
-      'telemetryKey',
       'redirect-url',
       'auto-focus',
     ];
@@ -180,10 +179,6 @@ class BaseDescopeWc extends HTMLElement {
     return theme || 'light';
   }
 
-  get telemetryKey() {
-    return this.getAttribute('telemetryKey') || undefined;
-  }
-
   get autoFocus(): AutoFocusOptions {
     const res = this.getAttribute('auto-focus') ?? 'true';
     if (res === 'skipFirstScreen') {
@@ -207,7 +202,6 @@ class BaseDescopeWc extends HTMLElement {
       'theme',
       'locale',
       'debug',
-      'telemetryKey',
       'redirect-url',
       'auto-focus',
       'preview',
@@ -241,9 +235,7 @@ class BaseDescopeWc extends HTMLElement {
     }
   }
 
-  #createSdk(projectId: string, baseUrl: string, telemetryKey: string) {
-    const fpKey = telemetryKey || undefined;
-    const fpLoad = !!fpKey;
+  #createSdk(projectId: string, baseUrl: string) {
     this.sdk = createSdk({
       // Use persist tokens options in order to add existing tokens in outgoing requests (if they exists)
       persistTokens: true,
@@ -252,8 +244,6 @@ class BaseDescopeWc extends HTMLElement {
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
-      fpKey,
-      fpLoad,
     });
 
     // we are wrapping the next & start function so we can indicate the request status
@@ -277,17 +267,15 @@ class BaseDescopeWc extends HTMLElement {
     _prevState: FlowState,
     isChanged: IsChanged<FlowState>
   ) {
-    const { projectId, baseUrl, telemetryKey } = currentState;
+    const { projectId, baseUrl } = currentState;
 
     const shouldCreateSdkInstance =
-      isChanged('projectId') ||
-      isChanged('baseUrl') ||
-      isChanged('telemetryKey');
+      isChanged('projectId') || isChanged('baseUrl');
 
     if (shouldCreateSdkInstance) {
       if (!projectId) return;
       // Initialize the sdk when got a new project id
-      this.#createSdk(projectId, baseUrl, telemetryKey);
+      this.#createSdk(projectId, baseUrl);
     }
 
     // update runtime state
@@ -588,7 +576,6 @@ class BaseDescopeWc extends HTMLElement {
         token,
         code,
         exchangeError,
-        telemetryKey: this.telemetryKey,
         redirectAuthCallbackUrl,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
