@@ -42,6 +42,37 @@ describe('sdk', () => {
     });
   });
 
+  describe('selectTenant', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.selectTenant('tenantId', { a: 'b' })).toThrow(
+        '"token" must be string or undefined'
+      );
+    });
+    it('should send the correct request', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.selectTenant('tenantId', 'token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.selectTenant,
+        {
+          tenant: 'tenantId',
+        },
+        {
+          token: 'token',
+        }
+      );
+    });
+  });
+
   describe('isJwtExpired', () => {
     it('should throw an error when token is not a string', () => {
       expect(sdk.isJwtExpired).toThrow('"token" must be a string');

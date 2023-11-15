@@ -23,6 +23,7 @@ import {
   isStringOrUndefinedValidator,
 } from './validations';
 import withWebauthn from './webauthn';
+import { isString, isStringOrUndefined } from './validations/validators';
 
 const withJwtValidations = withValidations(stringNonEmpty('token'));
 const withOptionalTokenValidations = withValidations(
@@ -46,6 +47,15 @@ export default (httpClient: HttpClient) => ({
       httpClient.post(apiPaths.refresh, {}, { token })
     )
   ),
+  selectTenant: withValidations(
+    [isString('tenantId')],
+    [isStringOrUndefined('"token" must be string or undefined')]
+  )((tenantId: string, token?: string) =>
+    transformResponse<JWTResponse>(
+      httpClient.post(apiPaths.selectTenant, { tenant: tenantId }, { token })
+    )
+  ),
+
   logout: withOptionalTokenValidations((token?: string) =>
     transformResponse<never>(httpClient.post(apiPaths.logout, {}, { token }))
   ),
