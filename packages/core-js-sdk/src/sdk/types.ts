@@ -54,6 +54,7 @@ export type UserResponse = User & {
   SAML: boolean;
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
+  status: string;
 };
 
 /** A tenant association mapping  */
