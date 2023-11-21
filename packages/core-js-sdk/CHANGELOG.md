@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.1.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.0.0...core-js-sdk-2.1.0) (2023-11-21)
+
+
+### Features
+
+* Add `status` to the user response RELEASE ([#318](https://github.com/descope/descope-js/issues/318)) ([0865665](https://github.com/descope/descope-js/commit/086566564b4fed5d9ffde01ac32343e65e0ee076))
+
 ## [2.0.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.10.1...core-js-sdk-2.0.0) (2023-11-12)
 
 
