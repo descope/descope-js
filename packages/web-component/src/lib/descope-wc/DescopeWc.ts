@@ -676,8 +676,21 @@ class DescopeWc extends BaseDescopeWc {
           );
           return undefined;
         }
+        try {
+          return await descopeUI[tag]();
+        } catch (e) {
+          // this error is thrown when trying to register a component which is already registered
+          // because the components are registered asynchronously, it might happen that the register fn is called twice
+          // in case it happens, we are silently ignore the error
+          if (e.name === 'NotSupportedError') {
+            // eslint-disable-next-line no-console
+            console.debug(`${tag} is already registered`);
+          } else {
+            throw e;
+          }
+        }
 
-        return descopeUI[tag]();
+        return undefined;
       })
     );
   }
