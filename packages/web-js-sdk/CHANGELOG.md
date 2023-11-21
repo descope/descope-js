@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.7.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.7...web-js-sdk-1.7.0) (2023-11-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.1.0`
+
+### Features
+
+* WC now initializes fingerprint according to config ([#301](https://github.com/descope/descope-js/issues/301)) ([cc5d01d](https://github.com/descope/descope-js/commit/cc5d01d1087d0a1523cb3bcb6b9e4887fdf07765))
+
 ## [1.6.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.6...web-js-sdk-1.6.7) (2023-11-12)
 
 ### Dependency Updates
