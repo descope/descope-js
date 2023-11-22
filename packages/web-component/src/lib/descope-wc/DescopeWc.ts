@@ -34,7 +34,6 @@ import {
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
-  DescopeUI,
   Direction,
   FlowState,
   NextFn,
@@ -651,7 +650,10 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async loadDescopeUiComponents(clone: any) {
+  async loadDescopeUiComponents(clone: DocumentFragment) {
+    const descopeUI = await this.descopeUI;
+    if (!descopeUI) return;
+
     const descopeUiComponentsList = getDescopeUiComponentsList(clone);
 
     await Promise.all(
@@ -659,13 +661,6 @@ class DescopeWc extends BaseDescopeWc {
         const isComponentAlreadyDefined = !!customElements.get(tag);
 
         if (isComponentAlreadyDefined) return undefined;
-
-        let descopeUI: DescopeUI;
-        try {
-          descopeUI = await this.descopeUI;
-        } catch (e) {
-          return undefined;
-        }
 
         if (!descopeUI[tag]) {
           this.loggerWrapper.error(
@@ -680,7 +675,7 @@ class DescopeWc extends BaseDescopeWc {
           return await descopeUI[tag]();
         } catch (e) {
           // this error is thrown when trying to register a component which is already registered
-          // because the components are registered asynchronously, it might happen that the register fn is called twice
+          // when running 2 flows on the same page, it might happen that the register fn is called twice
           // in case it happens, we are silently ignore the error
           if (e.name === 'NotSupportedError') {
             // eslint-disable-next-line no-console

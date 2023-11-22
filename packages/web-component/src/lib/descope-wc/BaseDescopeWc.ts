@@ -458,6 +458,11 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   async #loadDescopeUI() {
+    if (globalThis.DescopeUI) {
+      this.descopeUI = Promise.resolve(globalThis.DescopeUI);
+      return;
+    }
+
     let version = (await this.#getConfig())?.projectConfig?.componentsVersion;
 
     if (!version) {
@@ -478,7 +483,7 @@ class BaseDescopeWc extends HTMLElement {
           `Make sure this URL is valid and return the correct script: "${scriptSrc}"`
         );
 
-        res({} as DescopeUI);
+        res(undefined);
       };
 
       scriptEle.onload = () => {
