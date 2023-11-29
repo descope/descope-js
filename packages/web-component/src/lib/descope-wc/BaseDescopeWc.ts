@@ -458,45 +458,66 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   async #loadDescopeUI() {
+    const SCRIPT_ID = 'load-descope-ui';
+
+    // if DescopeUI is already loaded, use it
     if (globalThis.DescopeUI) {
       this.descopeUI = Promise.resolve(globalThis.DescopeUI);
       return;
     }
 
-    let version = (await this.#getConfig())?.projectConfig?.componentsVersion;
+    const existingScript = document.getElementById(
+      SCRIPT_ID
+    ) as HTMLScriptElement;
+    const scriptEle: HTMLScriptElement =
+      existingScript || document.createElement('script');
 
-    if (!version) {
-      this.logger.error('Did not get components version, using latest version');
-      version = 'latest';
+    if (existingScript) {
+      this.loggerWrapper.info(
+        'DescopeUI loading script is already exist, probably multiple flows are running on the same page'
+      );
+    } else {
+      scriptEle.id = SCRIPT_ID;
+
+      let version = (await this.#getConfig())?.projectConfig?.componentsVersion;
+
+      if (!version) {
+        this.logger.error(
+          'Did not get components version, using latest version'
+        );
+        version = 'latest';
+      }
+
+      scriptEle.src = UI_COMPONENTS_URL.replace(
+        UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+        version
+      );
+
+      document.body.append(scriptEle);
     }
-
-    const scriptSrc = UI_COMPONENTS_URL.replace(
-      UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
-      version
-    );
-    const scriptEle = document.createElement('script');
 
     this.descopeUI = new Promise((res) => {
       const onError = () => {
         this.loggerWrapper.error(
           'Cannot load DescopeUI',
-          `Make sure this URL is valid and return the correct script: "${scriptSrc}"`
+          `Make sure this URL is valid and return the correct script: "${scriptEle.src}"`
         );
 
         res(undefined);
       };
 
-      scriptEle.onload = () => {
+      scriptEle.addEventListener('load', () => {
         if (!globalThis.DescopeUI) onError();
         res(globalThis.DescopeUI);
-      };
+      });
 
-      scriptEle.onerror = onError;
+      scriptEle.addEventListener('error', onError);
 
-      scriptEle.src = scriptSrc;
+      // in case the load event was dispatched before we registered, we have a fallback
+      if (globalThis.DescopeUI) {
+        res(globalThis.DescopeUI);
+      }
     });
-
-    document.body.append(scriptEle);
   }
 
   async connectedCallback() {
