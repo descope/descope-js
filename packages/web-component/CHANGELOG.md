@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.1.4](https://github.com/descope/descope-js/compare/web-component-3.1.3...web-component-3.1.4) (2023-11-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.7.1`
+
+### Bug Fixes
+
+* added tslib as a dep to web-js RELEASE ([#324](https://github.com/descope/descope-js/issues/324)) ([246242f](https://github.com/descope/descope-js/commit/246242ffce9626af4129678bb6221baa58366c43))
+
 ## [3.1.3](https://github.com/descope/descope-js/compare/web-component-3.1.2...web-component-3.1.3) (2023-11-29)
 
 
