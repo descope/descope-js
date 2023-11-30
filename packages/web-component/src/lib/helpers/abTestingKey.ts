@@ -1,5 +1,6 @@
 const LOCAL_STORAGE_AB_TESTING_KEY = 'dls_ab_testing_id';
 
+// eslint-disable-next-line import/prefer-default-export
 export const getABTestingKey = (): number => {
   const abTestingKey = localStorage.getItem(LOCAL_STORAGE_AB_TESTING_KEY);
   if (!abTestingKey) {
