@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.7.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.7.0...web-js-sdk-1.7.1) (2023-11-30)
+
+
+### Bug Fixes
+
+* added tslib as a dep to web-js RELEASE ([#324](https://github.com/descope/descope-js/issues/324)) ([246242f](https://github.com/descope/descope-js/commit/246242ffce9626af4129678bb6221baa58366c43))
+
 ## [1.7.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.7...web-js-sdk-1.7.0) (2023-11-21)
 
 ### Dependency Updates
