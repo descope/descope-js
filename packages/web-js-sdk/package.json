@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-js-sdk",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-js-sdk",
   "bugs": {
@@ -89,7 +89,8 @@
   "dependencies": {
     "@descope/core-js-sdk": "workspace:*",
     "@fingerprintjs/fingerprintjs-pro": "3.8.5",
-    "js-cookie": "3.0.5"
+    "js-cookie": "3.0.5",
+    "tslib": "2.6.2"
   },
   "overrides": {
     "terser": "^5.14.2"
