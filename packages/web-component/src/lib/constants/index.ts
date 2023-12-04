@@ -7,7 +7,7 @@ export const BASE_CONTENT_URL =
   'https://static.descope.com/pages';
 export const UI_COMPONENTS_URL =
   (IS_LOCAL_STORAGE && localStorage.getItem(UI_COMPONENTS_URL_KEY)) ||
-  'https://cdn.jsdelivr.net/npm/@descope/web-components-ui@<version>/dist/umd/index.js';
+  'https://static.descope.com/npm/@descope/web-components-ui@<version>/dist/umd/index.js';
 export const URL_RUN_IDS_PARAM_NAME = 'descope-login-flow';
 export const URL_TOKEN_PARAM_NAME = 't';
 export const URL_CODE_PARAM_NAME = 'code';
