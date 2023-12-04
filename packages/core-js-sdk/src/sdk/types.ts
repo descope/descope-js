@@ -37,6 +37,9 @@ export type MaskedEmail = {
 export type User = {
   email?: string;
   name?: string;
+  givenName?: string;
+  middleName?: string;
+  familyName?: string;
   phone?: string;
 };
 
