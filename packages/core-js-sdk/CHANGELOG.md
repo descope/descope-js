@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.2.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.1.0...core-js-sdk-2.2.0) (2023-12-04)
+
+
+### Features
+
+* Given/Family name support ([#326](https://github.com/descope/descope-js/issues/326)) ([3caebb1](https://github.com/descope/descope-js/commit/3caebb1129ba07a239f2a7c578c541569e718722))
+
 ## [2.1.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.0.0...core-js-sdk-2.1.0) (2023-11-21)
 
 
