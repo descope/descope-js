@@ -17,7 +17,8 @@ import {
   handleAutoFocus,
   injectSamlIdpForm,
   isConditionalLoginSupported,
-  replaceWithScreenState,
+  updateScreenFromScreenState,
+  updateTemplateFromScreenState,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
@@ -113,7 +114,7 @@ class DescopeWc extends BaseDescopeWc {
       } catch (ex) {
         this.loggerWrapper.error(
           `Failed to fetch flow page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
-          ex
+          ex,
         );
       }
     }
@@ -130,7 +131,7 @@ class DescopeWc extends BaseDescopeWc {
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
-    isChanged: IsChanged<FlowState>
+    isChanged: IsChanged<FlowState>,
   ) {
     const {
       projectId,
@@ -191,12 +192,12 @@ class DescopeWc extends BaseDescopeWc {
       if (flowConfig.conditions) {
         ({ startScreenId, conditionInteractionId } = calculateConditions(
           { loginId, code, token, abTestingKey },
-          flowConfig.conditions
+          flowConfig.conditions,
         ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
-          { loginId, code, token, abTestingKey }
+          { loginId, code, token, abTestingKey },
         ));
       } else {
         startScreenId = flowConfig.startScreenId;
@@ -209,7 +210,7 @@ class DescopeWc extends BaseDescopeWc {
           oidcIdpStateId,
           samlIdpStateId,
           samlIdpUsername,
-          ssoAppId
+          ssoAppId,
         )
       ) {
         const inputs: Record<string, any> = {};
@@ -240,7 +241,7 @@ class DescopeWc extends BaseDescopeWc {
           '',
           flowConfig.version,
           projectConfig.componentsVersion,
-          exists ? inputs : undefined
+          exists ? inputs : undefined,
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -269,7 +270,7 @@ class DescopeWc extends BaseDescopeWc {
           token,
           exchangeCode: code,
           exchangeError,
-        }
+        },
       );
       this.#handleSdkResponse(sdkResp);
       this.flowState.update({
@@ -299,7 +300,7 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpResponseUrl,
         samlIdpResponseSamlResponse,
         samlIdpResponseRelayState || '',
-        submitForm
+        submitForm,
       ); // will redirect us to the saml acs url
     }
 
@@ -328,7 +329,7 @@ class DescopeWc extends BaseDescopeWc {
     ) {
       if (!webauthnTransactionId || !webauthnOptions) {
         this.loggerWrapper.error(
-          'Did not get webauthn transaction id or options'
+          'Did not get webauthn transaction id or options',
         );
         return;
       }
@@ -366,7 +367,7 @@ class DescopeWc extends BaseDescopeWc {
           transactionId: webauthnTransactionId,
           response,
           failure,
-        }
+        },
       );
       this.#handleSdkResponse(sdkResp);
     }
@@ -379,7 +380,7 @@ class DescopeWc extends BaseDescopeWc {
           CUSTOM_INTERACTIONS.polling,
           flowConfig.version,
           projectConfig.componentsVersion,
-          {}
+          {},
         );
         this.#handleSdkResponse(sdkResp);
       }, 2000);
@@ -396,7 +397,7 @@ class DescopeWc extends BaseDescopeWc {
     // get the right filename according to the user locale and flow target locales
     const filenameWithLocale: string = await this.getHtmlFilenameWithLocale(
       locale,
-      readyScreenId
+      readyScreenId,
     );
 
     // generate step state update data
@@ -426,14 +427,14 @@ class DescopeWc extends BaseDescopeWc {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
-        ssoAppId
+        ssoAppId,
       )
     ) {
       stepStateUpdate.next = (
         interactionId,
         version,
         componentsVersion,
-        inputs
+        inputs,
       ) =>
         this.sdk.flow.start(
           flowId,
@@ -457,7 +458,7 @@ class DescopeWc extends BaseDescopeWc {
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(token && { token }),
-          }
+          },
         );
     } else if (
       isChanged('projectId') ||
@@ -487,7 +488,7 @@ class DescopeWc extends BaseDescopeWc {
 
       this.loggerWrapper.error(
         sdkResp?.error?.errorDescription || defaultMessage,
-        sdkResp?.error?.errorMessage || defaultDescription
+        sdkResp?.error?.errorMessage || defaultDescription,
       );
       return;
     }
@@ -496,7 +497,7 @@ class DescopeWc extends BaseDescopeWc {
     if (sdkResp.data?.error) {
       this.loggerWrapper.error(
         `[${sdkResp.data.error.code}]: ${sdkResp.data.error.description}`,
-        `${errorText ? `${errorText} - ` : ''}${sdkResp.data.error.message}`
+        `${errorText ? `${errorText} - ` : ''}${sdkResp.data.error.message}`,
       );
     } else if (errorText) {
       this.loggerWrapper.error(errorText);
@@ -541,7 +542,7 @@ class DescopeWc extends BaseDescopeWc {
         stepName,
         action,
         error,
-      }
+      },
     );
 
     this.flowState.update({
@@ -564,12 +565,12 @@ class DescopeWc extends BaseDescopeWc {
     try {
       const startResp = await this.sdk.webauthn.signIn.start(
         '',
-        window.location.origin
+        window.location.origin,
       ); // when using conditional UI we need to call start without identifier
       if (!startResp.ok) {
         this.loggerWrapper.error(
           'Webauthn start failed',
-          startResp?.error?.errorMessage
+          startResp?.error?.errorMessage,
         );
       }
       return startResp.data;
@@ -601,7 +602,7 @@ class DescopeWc extends BaseDescopeWc {
         // eslint-disable-next-line no-param-reassign
         inputEle.setAttribute(
           'name',
-          inputEle.value ? origName : conditionalUiSupportName
+          inputEle.value ? origName : conditionalUiSupportName,
         );
       });
     }
@@ -611,7 +612,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#conditionalUiAbortController?.abort();
 
     const conditionalUiInput = fragment.querySelector(
-      '*[autocomplete="webauthn"]'
+      '*[autocomplete="webauthn"]',
     ) as HTMLInputElement;
 
     if (conditionalUiInput && (await isConditionalLoginSupported())) {
@@ -637,7 +638,7 @@ class DescopeWc extends BaseDescopeWc {
               {
                 transactionId,
                 response,
-              }
+              },
             );
             this.#handleSdkResponse(resp);
           })
@@ -666,8 +667,8 @@ class DescopeWc extends BaseDescopeWc {
           this.loggerWrapper.error(
             `Cannot load UI component "${tag}"`,
             `Descope UI does not have a component named "${tag}", available components are: "${Object.keys(
-              descopeUI
-            ).join(', ')}"`
+              descopeUI,
+            ).join(', ')}"`,
           );
           return undefined;
         }
@@ -686,7 +687,7 @@ class DescopeWc extends BaseDescopeWc {
         }
 
         return undefined;
-      })
+      }),
     );
   }
 
@@ -700,7 +701,7 @@ class DescopeWc extends BaseDescopeWc {
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
     const loadDescopeUiComponents = this.loadDescopeUiComponents(
-      stepTemplate.content
+      stepTemplate.content,
     );
 
     // we want to disable the webauthn buttons if it's not supported on the browser
@@ -722,11 +723,11 @@ class DescopeWc extends BaseDescopeWc {
       screenState.form.email = currentState.samlIdpUsername;
     }
 
-    replaceWithScreenState(
+    updateTemplateFromScreenState(
       clone,
       screenState,
       this.errorTransformer,
-      this.loggerWrapper
+      this.loggerWrapper,
     );
 
     // set the default country code based on the locale value we got
@@ -739,10 +740,15 @@ class DescopeWc extends BaseDescopeWc {
       // put the totp variable on the root element, which is the top level 'div' inside the shadowroot
       setTOTPVariable(
         this.shadowRoot.querySelector('div'),
-        screenState?.totp?.image
+        screenState?.totp?.image,
       );
 
       this.rootElement.replaceChildren(clone);
+
+      // we need to wait for all components to render before we can set its value
+      setTimeout(() =>
+        updateScreenFromScreenState(this.rootElement, screenState),
+      );
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
@@ -752,7 +758,7 @@ class DescopeWc extends BaseDescopeWc {
       this.#hydrate(next);
       this.#dispatch('page-updated', {});
       const loader = this.rootElement.querySelector(
-        `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`
+        `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
         const flowConfig = await this.getFlowConfig();
@@ -762,7 +768,7 @@ class DescopeWc extends BaseDescopeWc {
           CUSTOM_INTERACTIONS.polling,
           flowConfig.version,
           projectConfig.componentsVersion,
-          {}
+          {},
         );
         this.#handleSdkResponse(response);
       }
@@ -782,15 +788,15 @@ class DescopeWc extends BaseDescopeWc {
       (input: HTMLInputElement) => {
         input.reportValidity?.();
         return input.checkValidity?.();
-      }
+      },
     );
   }
 
   async #getFormData() {
     const inputs = Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
-      )
+        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
+      ),
     ) as HTMLInputElement[];
 
     // wait for all inputs
@@ -798,7 +804,7 @@ class DescopeWc extends BaseDescopeWc {
       inputs.map(async (input) => ({
         name: input.getAttribute('name'),
         value: input.value,
-      }))
+      })),
     );
 
     // reduce to object
@@ -807,7 +813,7 @@ class DescopeWc extends BaseDescopeWc {
         ...acc,
         [val.name]: val.value,
       }),
-      {}
+      {},
     );
   }
 
@@ -820,7 +826,7 @@ class DescopeWc extends BaseDescopeWc {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
           submitter.removeAttribute('loading');
         }
-      }
+      },
     );
   }
 
@@ -851,7 +857,7 @@ class DescopeWc extends BaseDescopeWc {
         submitterId,
         flowConfig.version,
         projectConfig.componentsVersion,
-        actionArgs
+        actionArgs,
       );
 
       this.#handleSdkResponse(sdkResp);
@@ -863,7 +869,7 @@ class DescopeWc extends BaseDescopeWc {
     // Adding event listeners to all buttons without the exclude attribute
     this.rootElement
       .querySelectorAll(
-        `descope-button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`
+        `descope-button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`,
       )
       .forEach((button: HTMLButtonElement) => {
         // eslint-disable-next-line no-param-reassign
@@ -880,14 +886,14 @@ class DescopeWc extends BaseDescopeWc {
         this.rootElement.classList.remove('fade-out');
         injectNextPage();
       },
-      { once: true }
+      { once: true },
     );
 
     const transitionClass =
       direction === Direction.forward ? 'slide-forward' : 'slide-backward';
 
     Array.from(
-      this.rootElement.getElementsByClassName('input-container')
+      this.rootElement.getElementsByClassName('input-container'),
     ).forEach((ele, i) => {
       // eslint-disable-next-line no-param-reassign
       (ele as HTMLElement).style['transition-delay'] = `${i * 40}ms`;
