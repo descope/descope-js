@@ -59,6 +59,8 @@ export type FlowState = {
   samlIdpResponseRelayState: string;
   samlIdpUsername: string;
   ssoAppId: string;
+  form: Record<string, any>;
+  client: Record<string, any>;
 };
 
 export type StepState = {

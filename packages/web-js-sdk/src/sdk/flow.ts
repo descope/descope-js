@@ -13,6 +13,8 @@ type Options = Pick<
   | 'ssoAppId'
   | 'preview'
   | 'abTestingKey'
+  | 'form'
+  | 'client'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };

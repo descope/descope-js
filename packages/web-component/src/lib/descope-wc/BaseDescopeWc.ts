@@ -54,6 +54,8 @@ class BaseDescopeWc extends HTMLElement {
       'preview',
       'redirect-url',
       'auto-focus',
+      'form',
+      'client',
     ];
   }
 
@@ -146,6 +148,25 @@ class BaseDescopeWc extends HTMLElement {
     return this.getAttribute('flow-id');
   }
 
+  get form() {
+    try {
+      return JSON.parse(this.getAttribute('form') || '') as Record<string, any>;
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  get client() {
+    try {
+      return JSON.parse(this.getAttribute('client') || '') as Record<
+        string,
+        any
+      >;
+    } catch (e) {
+      return undefined;
+    }
+  }
+
   get baseUrl() {
     return this.getAttribute('base-url') || undefined;
   }
@@ -206,6 +227,8 @@ class BaseDescopeWc extends HTMLElement {
       'auto-focus',
       'preview',
       'storage-prefix',
+      'form',
+      'client',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
@@ -215,7 +238,7 @@ class BaseDescopeWc extends HTMLElement {
 
     if (this.theme && this.theme !== 'light' && this.theme !== 'dark') {
       throw Error(
-        'Supported theme values are "light", "dark", or leave empty for using the OS theme'
+        'Supported theme values are "light", "dark", or leave empty for using the OS theme',
       );
     }
   }
@@ -265,7 +288,7 @@ class BaseDescopeWc extends HTMLElement {
   async #onFlowChange(
     currentState: FlowState,
     _prevState: FlowState,
-    isChanged: IsChanged<FlowState>
+    isChanged: IsChanged<FlowState>,
   ) {
     const { projectId, baseUrl } = currentState;
 
@@ -292,7 +315,7 @@ class BaseDescopeWc extends HTMLElement {
     const prevVerConfigUrl = getContentUrl(
       this.projectId,
       CONFIG_FILENAME,
-      PREV_VER_ASSETS_FOLDER
+      PREV_VER_ASSETS_FOLDER,
     );
     try {
       await fetchContent(prevVerConfigUrl, 'json');
@@ -322,7 +345,7 @@ class BaseDescopeWc extends HTMLElement {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fonts &&
       Object.values(fonts).forEach((font: Record<string, any>) =>
-        loadFont(font.url)
+        loadFont(font.url),
       );
   }
 
@@ -349,7 +372,7 @@ class BaseDescopeWc extends HTMLElement {
     } catch (e) {
       this.loggerWrapper.error(
         'Cannot fetch theme file',
-        'make sure that your projectId & flowId are correct'
+        'make sure that your projectId & flowId are correct',
       );
     }
     this.shadowRoot.appendChild(styleEle);
@@ -381,7 +404,7 @@ class BaseDescopeWc extends HTMLElement {
   async #handleDebugMode({ isDebug }) {
     if (isDebug) {
       this.#debuggerEle = document.createElement(
-        'descope-debugger'
+        'descope-debugger',
       ) as HTMLElement & {
         updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
       };
@@ -427,7 +450,7 @@ class BaseDescopeWc extends HTMLElement {
   async getTargetLocales() {
     const flowConfig = await this.getFlowConfig();
     return (flowConfig?.targetLocales || []).map((locale: string) =>
-      locale.toLowerCase()
+      locale.toLowerCase(),
     );
   }
 
@@ -447,7 +470,7 @@ class BaseDescopeWc extends HTMLElement {
       }
 
       const genericButtons = Array.from(buttons).filter(
-        (button) => button.getAttribute('data-type') === 'button'
+        (button) => button.getAttribute('data-type') === 'button',
       );
 
       // in case there is a single "generic" button on the page, click on it
@@ -467,14 +490,14 @@ class BaseDescopeWc extends HTMLElement {
     }
 
     const existingScript = document.getElementById(
-      SCRIPT_ID
+      SCRIPT_ID,
     ) as HTMLScriptElement;
     const scriptEle: HTMLScriptElement =
       existingScript || document.createElement('script');
 
     if (existingScript) {
       this.loggerWrapper.info(
-        'DescopeUI loading script is already exist, probably multiple flows are running on the same page'
+        'DescopeUI loading script is already exist, probably multiple flows are running on the same page',
       );
     } else {
       scriptEle.id = SCRIPT_ID;
@@ -483,14 +506,14 @@ class BaseDescopeWc extends HTMLElement {
 
       if (!version) {
         this.logger.error(
-          'Did not get components version, using latest version'
+          'Did not get components version, using latest version',
         );
         version = 'latest';
       }
 
       scriptEle.src = UI_COMPONENTS_URL.replace(
         UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
-        version
+        version,
       );
 
       document.body.append(scriptEle);
@@ -500,7 +523,7 @@ class BaseDescopeWc extends HTMLElement {
       const onError = () => {
         this.loggerWrapper.error(
           'Cannot load DescopeUI',
-          `Make sure this URL is valid and return the correct script: "${scriptEle.src}"`
+          `Make sure this URL is valid and return the correct script: "${scriptEle.src}"`,
         );
 
         res(undefined);
@@ -535,7 +558,7 @@ class BaseDescopeWc extends HTMLElement {
       if (await this.#getIsFlowsVersionMismatch()) {
         this.loggerWrapper.error(
           'This SDK version does not support your flows version',
-          'Make sure to upgrade your flows to the latest version or use an older SDK version'
+          'Make sure to upgrade your flows to the latest version or use an older SDK version',
         );
 
         return;
@@ -544,7 +567,7 @@ class BaseDescopeWc extends HTMLElement {
       if ((await this.#getConfig()).isMissingConfig) {
         this.loggerWrapper.error(
           'Cannot get config file',
-          'Make sure that your projectId & flowId are correct'
+          'Make sure that your projectId & flowId are correct',
         );
 
         return;
@@ -580,12 +603,12 @@ class BaseDescopeWc extends HTMLElement {
       // this data will be sent to the server on the next request
       window.addEventListener(
         'components-context',
-        this.#eventsCbRefs.componentsContext
+        this.#eventsCbRefs.componentsContext,
       );
 
       window.addEventListener(
         'visibilitychange',
-        this.#eventsCbRefs.visibilitychange
+        this.#eventsCbRefs.visibilitychange,
       );
 
       this.#flowState.subscribe(this.#onFlowChange.bind(this));
@@ -597,6 +620,8 @@ class BaseDescopeWc extends HTMLElement {
         tenant: this.tenant,
         redirectUrl: this.redirectUrl,
         locale: this.locale,
+        form: this.form,
+        client: this.client,
         stepId,
         executionId,
         token,
@@ -622,18 +647,18 @@ class BaseDescopeWc extends HTMLElement {
     window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
     window.removeEventListener(
       'visibilitychange',
-      this.#eventsCbRefs.visibilitychange
+      this.#eventsCbRefs.visibilitychange,
     );
     window.removeEventListener(
       'components-context',
-      this.#eventsCbRefs.componentsContext
+      this.#eventsCbRefs.componentsContext,
     );
   }
 
   attributeChangedCallback(
     attrName: string,
     oldValue: string,
-    newValue: string
+    newValue: string,
   ) {
     if (!this.shadowRoot.isConnected || !this.#init) return;
 
