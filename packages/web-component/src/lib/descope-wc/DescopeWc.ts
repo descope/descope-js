@@ -44,6 +44,26 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
+const DYNAMIC_DATA_MOCK = {
+  tenant: {
+    'default-value': '1',
+    data: [
+      {
+        label: 'tenant1',
+        value: 't1'
+      },
+      {
+        label: 'tenant2',
+        value: 't2'
+      },
+      {
+        label: 'tenant3',
+        value: 't3'
+      }
+    ]
+  }
+}
+
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
   errorTransformer:
@@ -142,6 +162,7 @@ class DescopeWc extends BaseDescopeWc {
       action,
       screenId,
       screenState,
+      screenComponentsConfig,
       redirectTo,
       redirectUrl,
       token,
@@ -243,6 +264,9 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           exists ? inputs : undefined,
         );
+
+        // todo: where to add this mock?
+        Object.assign(sdkResp.screen, { componentsConfig: DYNAMIC_DATA_MOCK });
 
         this.#handleSdkResponse(sdkResp);
         if (sdkResp?.data?.status !== 'completed') {
@@ -410,6 +434,7 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
+      screenComponentsConfig,
       htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
       htmlLocaleUrl:
         filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
@@ -552,6 +577,7 @@ class DescopeWc extends BaseDescopeWc {
       redirectTo: redirect?.url,
       screenId: screen?.id,
       screenState: screen?.state,
+      screenComponentsConfig: screen?.componentsConfig,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
       samlIdpResponseUrl: samlIdpResponse?.url,
@@ -692,7 +718,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
+    const { htmlUrl, htmlLocaleUrl, direction, next, screenState, screenComponentsConfig } =
       currentState;
 
     const stepTemplate = document.createElement('template');
@@ -726,6 +752,7 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
+      screenComponentsConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );

@@ -7,6 +7,8 @@ export type Sdk = ReturnType<typeof createSdk>;
 
 export type SdkFlowNext = Sdk['flow']['next'];
 
+export type ComponentsConfig = Record<string, any>;
+
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never;
@@ -42,6 +44,7 @@ export type FlowState = {
   redirectUrl: string;
   screenId: string;
   screenState: ScreenState;
+  screenComponentsConfig: ComponentsConfig;
   token: string;
   code: string;
   exchangeError: string;
@@ -63,6 +66,7 @@ export type FlowState = {
 
 export type StepState = {
   screenState: ScreenState;
+  screenComponentsConfig: ComponentsConfig;
   htmlUrl: string;
   htmlLocaleUrl: string;
   next: NextFn;

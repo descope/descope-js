@@ -2,7 +2,7 @@ import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
 } from '../constants';
-import { ScreenState } from '../types';
+import { ComponentsConfig, ScreenState } from '../types';
 
 const replaceElementMessage = (
   baseEle: DocumentFragment,
@@ -89,6 +89,38 @@ const replaceProvisionURL = (
   });
 };
 
+const setElementConfig = (
+  baseEle: DocumentFragment,
+  componentsConfig: ComponentsConfig,
+  logger?: { error: (message: string, description: string) => void }
+) => {
+  if (!componentsConfig) {
+    return;
+  }
+  // collect components that needs configuration from DOM
+  Object.keys(componentsConfig).forEach((componentName) => {
+    baseEle.querySelectorAll(`[name=${componentName}]`).forEach((comp) => {
+      const config = componentsConfig[componentName];
+
+      Object.keys(config).forEach(attr => {
+        let value = config[attr];
+  
+        if (typeof value !== 'string') {
+          try {
+            value = JSON.stringify(value)
+          }
+          catch(e) {
+            logger.error(`Could not stringify value "${value}" for "${attr}"`, e.message);
+            value = '';
+          }
+        }
+  
+        comp.setAttribute(attr, value);
+      });
+    })
+  });
+}
+
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
@@ -97,6 +129,7 @@ const replaceProvisionURL = (
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
+  screenComponentsConfig?: ComponentsConfig,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
@@ -113,6 +146,7 @@ export const updateTemplateFromScreenState = (
   replaceElementMessage(baseEle, 'error-message', errorText);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
+  setElementConfig(baseEle, screenComponentsConfig, logger)
 };
 
 /**
