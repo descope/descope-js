@@ -40,6 +40,26 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
+const DYNAMIC_DATA_MOCK = {
+  tenant: {
+    selectedTenant: '1',
+    options: [
+      {
+        label: 'tenant1',
+        value: 't1'
+      },
+      {
+        label: 'tenant2',
+        value: 't2'
+      },
+      {
+        label: 'tenant3',
+        value: 't3'
+      }
+    ]
+  }
+}
+
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
   errorTransformer:
@@ -64,6 +84,7 @@ class DescopeWc extends BaseDescopeWc {
     const flowState = new State<FlowState>();
     super(flowState.update.bind(flowState));
 
+    debugger;
     this.flowState = flowState;
   }
 
@@ -234,7 +255,7 @@ class DescopeWc extends BaseDescopeWc {
           exists ? inputs : undefined
         );
 
-        this.#handleSdkResponse(sdkResp);
+        this.#handleSdkResponse(Object.assign({}, sdkResp, DYNAMIC_DATA_MOCK));
         if (sdkResp?.data?.status !== 'completed') {
           this.flowState.update({ code: undefined, token: undefined });
         }
