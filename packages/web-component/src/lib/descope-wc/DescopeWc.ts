@@ -160,8 +160,6 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
       ssoAppId,
-      client,
-      form,
     } = currentState;
 
     if (this.#currentInterval) {
@@ -235,8 +233,8 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
-            client,
-            form,
+            client: this.client,
+            form: this.form,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
@@ -410,7 +408,7 @@ class DescopeWc extends BaseDescopeWc {
       screenState: {
         ...screenState,
         form: {
-          ...form,
+          ...this.form,
           ...screenState?.form,
         },
         lastAuth: {
@@ -456,8 +454,8 @@ class DescopeWc extends BaseDescopeWc {
             lastAuth,
             preview: this.preview,
             abTestingKey,
-            client,
-            form,
+            client: this.client,
+            form: this.form,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,

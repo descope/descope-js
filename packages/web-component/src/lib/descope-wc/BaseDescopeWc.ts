@@ -150,7 +150,15 @@ class BaseDescopeWc extends HTMLElement {
 
   get form() {
     try {
-      return JSON.parse(this.getAttribute('form') || '') as Record<string, any>;
+      const form = JSON.parse(this.getAttribute('form')) as Record<string, any>;
+      return Object.entries(form || {}).reduce(
+        (prev, [key, value]) => ({
+          ...prev,
+          [key]: value,
+          [`form.${key}`]: value,
+        }),
+        {},
+      );
     } catch (e) {
       return undefined;
     }
@@ -158,10 +166,7 @@ class BaseDescopeWc extends HTMLElement {
 
   get client() {
     try {
-      return JSON.parse(this.getAttribute('client') || '') as Record<
-        string,
-        any
-      >;
+      return JSON.parse(this.getAttribute('client')) as Record<string, any>;
     } catch (e) {
       return undefined;
     }
@@ -620,15 +625,6 @@ class BaseDescopeWc extends HTMLElement {
         tenant: this.tenant,
         redirectUrl: this.redirectUrl,
         locale: this.locale,
-        form: Object.entries(this.form || {}).reduce(
-          (prev, [key, value]) => ({
-            ...prev,
-            [key]: value,
-            [`form.${key}`]: value,
-          }),
-          {},
-        ),
-        client: this.client,
         stepId,
         executionId,
         token,
