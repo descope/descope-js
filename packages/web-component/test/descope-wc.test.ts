@@ -574,8 +574,8 @@ describe('web-component', () => {
           samlIdpStateId: null,
           samlIdpUsername: null,
           ssoAppId: null,
-          client: null,
-          form: null,
+          client: undefined,
+          form: undefined,
           redirectAuth: undefined,
           tenant: undefined,
         },
@@ -1563,6 +1563,33 @@ describe('web-component', () => {
     );
   });
 
+  it('should call start with form and client when provided', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" form='{"email": "test"}' client='{"email": "test2"}'></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.objectContaining({
+          form: { email: 'test', 'form.email': 'test' },
+          client: { email: 'test2' },
+        }),
+        undefined,
+        '',
+        0,
+        '1.2.3',
+        undefined,
+      ),
+    );
+  });
+
   describe('poll', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -1888,8 +1915,8 @@ describe('web-component', () => {
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
             redirectAuth: undefined,
             preview: false,
             tenant: undefined,
@@ -2031,8 +2058,8 @@ describe('web-component', () => {
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
           },
           undefined,
           '',
@@ -2102,8 +2129,8 @@ describe('web-component', () => {
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
             lastAuth: {},
@@ -2145,8 +2172,8 @@ describe('web-component', () => {
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
           },
           undefined,
           '',
@@ -2180,8 +2207,8 @@ describe('web-component', () => {
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
@@ -2307,8 +2334,8 @@ describe('web-component', () => {
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: null,
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
@@ -2347,8 +2374,8 @@ describe('web-component', () => {
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: 'dummyUser',
             ssoAppId: null,
-            client: null,
-            form: null,
+            client: undefined,
+            form: undefined,
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
@@ -2467,8 +2494,8 @@ describe('web-component', () => {
           samlIdpStateId: null,
           samlIdpUsername: null,
           ssoAppId: null,
-          client: null,
-          form: null,
+          client: undefined,
+          form: undefined,
           redirectAuth: undefined,
           tenant: undefined,
           lastAuth: {},

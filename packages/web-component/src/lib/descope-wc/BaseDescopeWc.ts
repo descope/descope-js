@@ -620,7 +620,14 @@ class BaseDescopeWc extends HTMLElement {
         tenant: this.tenant,
         redirectUrl: this.redirectUrl,
         locale: this.locale,
-        form: this.form,
+        form: Object.entries(this.form || {}).reduce(
+          (prev, [key, value]) => ({
+            ...prev,
+            [key]: value,
+            [`form.${key}`]: value,
+          }),
+          {},
+        ),
         client: this.client,
         stepId,
         executionId,
