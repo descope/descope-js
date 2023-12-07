@@ -17,7 +17,8 @@ import {
   handleAutoFocus,
   injectSamlIdpForm,
   isConditionalLoginSupported,
-  replaceWithScreenState,
+  updateScreenFromScreenState,
+  updateTemplateFromScreenState,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
@@ -732,7 +733,7 @@ class DescopeWc extends BaseDescopeWc {
       screenState.form.email = currentState.samlIdpUsername;
     }
 
-    replaceWithScreenState(
+    updateTemplateFromScreenState(
       clone,
       screenState,
       this.errorTransformer,
@@ -753,6 +754,11 @@ class DescopeWc extends BaseDescopeWc {
       );
 
       this.rootElement.replaceChildren(clone);
+
+      // we need to wait for all components to render before we can set its value
+      setTimeout(() =>
+        updateScreenFromScreenState(this.rootElement, screenState),
+      );
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
