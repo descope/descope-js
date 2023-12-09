@@ -213,17 +213,6 @@ class DescopeWc extends BaseDescopeWc {
           ssoAppId,
         )
       ) {
-        const inputs: Record<string, any> = {};
-        let exists = false;
-        if (code) {
-          exists = true;
-          inputs.exchangeCode = code;
-          inputs.idpInitiated = true;
-        }
-        if (token) {
-          exists = true;
-          inputs.token = token;
-        }
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
@@ -234,7 +223,6 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpUsername,
             ssoAppId,
             client: this.client,
-            form: this.form,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
@@ -243,7 +231,11 @@ class DescopeWc extends BaseDescopeWc {
           '',
           flowConfig.version,
           projectConfig.componentsVersion,
-          exists ? inputs : undefined,
+          {
+            ...this.form,
+            ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
+            ...(token ? { token } : {}),
+          },
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -455,7 +447,6 @@ class DescopeWc extends BaseDescopeWc {
             preview: this.preview,
             abTestingKey,
             client: this.client,
-            form: this.form,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
@@ -463,6 +454,7 @@ class DescopeWc extends BaseDescopeWc {
           version,
           componentsVersion,
           {
+            ...this.form,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(token && { token }),

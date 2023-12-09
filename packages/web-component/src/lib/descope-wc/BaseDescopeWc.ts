@@ -54,8 +54,6 @@ class BaseDescopeWc extends HTMLElement {
       'preview',
       'redirect-url',
       'auto-focus',
-      'form',
-      'client',
     ];
   }
 
@@ -150,25 +148,30 @@ class BaseDescopeWc extends HTMLElement {
 
   get form() {
     try {
-      const form = JSON.parse(this.getAttribute('form')) as Record<string, any>;
-      return Object.entries(form || {}).reduce(
+      const form = (JSON.parse(this.getAttribute('form')) || {}) as Record<
+        string,
+        any
+      >;
+      return Object.entries(form).reduce(
         (prev, [key, value]) => ({
           ...prev,
-          [key]: value,
           [`form.${key}`]: value,
         }),
-        {},
+        form,
       );
     } catch (e) {
-      return undefined;
+      return {};
     }
   }
 
   get client() {
     try {
-      return JSON.parse(this.getAttribute('client')) as Record<string, any>;
+      return (JSON.parse(this.getAttribute('client')) || {}) as Record<
+        string,
+        any
+      >;
     } catch (e) {
-      return undefined;
+      return {};
     }
   }
 
