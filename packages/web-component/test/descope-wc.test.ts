@@ -575,7 +575,6 @@ describe('web-component', () => {
           samlIdpUsername: null,
           ssoAppId: null,
           client: {},
-          form: {},
           redirectAuth: undefined,
           tenant: undefined,
         },
@@ -1558,7 +1557,7 @@ describe('web-component', () => {
         '',
         0,
         '1.2.3',
-        undefined,
+        {},
       ),
     );
   });
@@ -1578,14 +1577,13 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         expect.objectContaining({
-          form: { email: 'test', 'form.email': 'test' },
           client: { email: 'test2' },
         }),
         undefined,
         '',
         0,
         '1.2.3',
-        undefined,
+        { email: 'test', 'form.email': 'test' },
       ),
     );
   });
@@ -1916,7 +1914,6 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            form: {},
             redirectAuth: undefined,
             preview: false,
             tenant: undefined,
@@ -1968,7 +1965,6 @@ describe('web-component', () => {
             ssoAppId: null,
             redirectAuth: undefined,
             tenant: undefined,
-            form: {},
             client: {},
             lastAuth: { authMethod: 'otp' },
           },
@@ -2061,7 +2057,6 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            form: {},
           },
           undefined,
           '',
@@ -2132,7 +2127,6 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            form: {},
             redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
             tenant: undefined,
             lastAuth: {},
@@ -2141,7 +2135,7 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          undefined,
+          {},
         ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
@@ -2175,7 +2169,6 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            form: {},
           },
           undefined,
           '',
@@ -2210,7 +2203,6 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            form: {},
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
@@ -2219,7 +2211,7 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          undefined,
+          {},
         ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
@@ -2337,7 +2329,6 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            form: {},
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
@@ -2346,7 +2337,7 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          undefined,
+          {},
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2377,7 +2368,6 @@ describe('web-component', () => {
             samlIdpUsername: 'dummyUser',
             ssoAppId: null,
             client: {},
-            form: {},
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
@@ -2386,7 +2376,7 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          undefined,
+          {},
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2447,14 +2437,13 @@ describe('web-component', () => {
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
-            form: {},
             client: {},
           },
           undefined,
           '',
           0,
           '1.2.3',
-          undefined,
+          {},
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2499,7 +2488,6 @@ describe('web-component', () => {
           samlIdpUsername: null,
           ssoAppId: null,
           client: {},
-          form: {},
           redirectAuth: undefined,
           tenant: undefined,
           lastAuth: {},
@@ -2565,7 +2553,6 @@ describe('web-component', () => {
           redirectAuth: undefined,
           tenant: undefined,
           lastAuth: {},
-          form: {},
           client: {},
         },
         undefined,
