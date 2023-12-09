@@ -213,17 +213,6 @@ class DescopeWc extends BaseDescopeWc {
           ssoAppId,
         )
       ) {
-        const inputs: Record<string, any> = {};
-        let exists = false;
-        if (code) {
-          exists = true;
-          inputs.exchangeCode = code;
-          inputs.idpInitiated = true;
-        }
-        if (token) {
-          exists = true;
-          inputs.token = token;
-        }
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
@@ -233,6 +222,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
@@ -241,7 +231,11 @@ class DescopeWc extends BaseDescopeWc {
           '',
           flowConfig.version,
           projectConfig.componentsVersion,
-          exists ? inputs : undefined,
+          {
+            ...this.form,
+            ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
+            ...(token ? { token } : {}),
+          },
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -405,6 +399,10 @@ class DescopeWc extends BaseDescopeWc {
       direction: getAnimationDirection(+stepId, +prevState.stepId),
       screenState: {
         ...screenState,
+        form: {
+          ...this.form,
+          ...screenState?.form,
+        },
         lastAuth: {
           loginId,
           name: this.sdk.getLastUserDisplayName() || loginId,
@@ -448,6 +446,7 @@ class DescopeWc extends BaseDescopeWc {
             lastAuth,
             preview: this.preview,
             abTestingKey,
+            client: this.client,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
@@ -455,6 +454,7 @@ class DescopeWc extends BaseDescopeWc {
           version,
           componentsVersion,
           {
+            ...this.form,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(token && { token }),
