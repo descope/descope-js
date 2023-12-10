@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.2.0](https://github.com/descope/descope-js/compare/web-component-3.1.6...web-component-3.2.0) (2023-12-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.0`
+
+### Features
+
+* add form and client custom flow inputs override ([#329](https://github.com/descope/descope-js/issues/329)) ([0d31a8d](https://github.com/descope/descope-js/commit/0d31a8dbd0e8e889e387fbc07246368f0cb6754d))
+
 ## [3.1.6](https://github.com/descope/descope-js/compare/web-component-3.1.5...web-component-3.1.6) (2023-12-05)
 
 
