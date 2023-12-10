@@ -23,6 +23,7 @@ import {
   SAML_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -2715,6 +2716,32 @@ describe('web-component', () => {
     );
 
     wcEle.removeEventListener('success', onSuccess);
+  });
+
+  it('should update dynamic attribute values', async () => {
+    pageContent = `<input ${HAS_DYNAMIC_VALUES_ATTR_NAME}="" testAttr="{{form.varName}}" id="email" name="email" placeholder="email"></input>`;
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenState: {
+          form: { varName: 'varValue' },
+        },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id=1></descope-wc>`;
+
+    const inputEle = await waitFor(
+      () => screen.getByShadowPlaceholderText('email'),
+      {
+        timeout: WAIT_TIMEOUT,
+      },
+    );
+
+    await waitFor(
+      () => expect(inputEle).toHaveAttribute('testAttr', 'varValue'),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   describe('locale', () => {
