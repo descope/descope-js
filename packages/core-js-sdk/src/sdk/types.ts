@@ -244,6 +244,7 @@ export type Options = {
   samlIdpUsername?: string;
   ssoAppId?: string;
   abTestingKey?: number;
+  client?: Record<string, any>;
 };
 
 export type ResponseData = Record<string, any>;
