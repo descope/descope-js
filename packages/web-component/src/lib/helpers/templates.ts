@@ -1,6 +1,7 @@
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
+  HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
 import { ScreenState } from '../types';
 
@@ -76,6 +77,19 @@ const replaceElementTemplates = (
   });
 };
 
+const replaceTemplateDynamicAttrValues = (
+  baseEle: DocumentFragment,
+  screenState?: Record<string, any>,
+) => {
+  const eleList = baseEle.querySelectorAll(`[${HAS_DYNAMIC_VALUES_ATTR_NAME}]`);
+  eleList.forEach((ele: HTMLElement) => {
+    Array.from(ele.attributes).forEach((attr) => {
+      // eslint-disable-next-line no-param-reassign
+      attr.value = applyTemplates(attr.value, screenState);
+    });
+  });
+};
+
 const replaceProvisionURL = (
   baseEle: DocumentFragment,
   provisionUrl?: string,
@@ -113,6 +127,7 @@ export const updateTemplateFromScreenState = (
   replaceElementMessage(baseEle, 'error-message', errorText);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
+  replaceTemplateDynamicAttrValues(baseEle, screenState);
 };
 
 /**
