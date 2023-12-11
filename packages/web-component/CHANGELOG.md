@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.0](https://github.com/descope/descope-js/compare/web-component-3.2.0...web-component-3.3.0) (2023-12-11)
+
+
+### Features
+
+* support dynamic attribute values RELEASE ([#333](https://github.com/descope/descope-js/issues/333)) ([7d0119a](https://github.com/descope/descope-js/commit/7d0119a1f02c2110a47db97d7f563cd13c3ead41))
+
 ## [3.2.0](https://github.com/descope/descope-js/compare/web-component-3.1.6...web-component-3.2.0) (2023-12-09)
 
 ### Dependency Updates
