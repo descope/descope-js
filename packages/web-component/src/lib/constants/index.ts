@@ -45,3 +45,5 @@ export const CUSTOM_INTERACTIONS = {
   submit: 'submit',
   polling: 'polling',
 };
+
+export const HAS_DYNAMIC_VALUES_ATTR_NAME = 'data-has-dynamic-attr-values';
