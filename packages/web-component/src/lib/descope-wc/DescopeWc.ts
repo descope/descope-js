@@ -652,7 +652,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async loadDescopeUiComponents(clone: DocumentFragment) {
-    const descopeUI = await this.descopeUI;
+    const descopeUI = await BaseDescopeWc.descopeUI;
     if (!descopeUI) return;
 
     const descopeUiComponentsList = getDescopeUiComponentsList(clone);
@@ -673,6 +673,7 @@ class DescopeWc extends BaseDescopeWc {
           return undefined;
         }
         try {
+          // eslint-disable-next-line @typescript-eslint/return-await
           return await descopeUI[tag]();
         } catch (e) {
           // this error is thrown when trying to register a component which is already registered

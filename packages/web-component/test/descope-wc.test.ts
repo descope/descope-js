@@ -31,6 +31,7 @@ import * as helpers from '../src/lib/helpers/helpers';
 // eslint-disable-next-line import/no-namespace
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
+import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
@@ -3199,6 +3200,9 @@ describe('web-component', () => {
   });
 
   describe('Descope UI', () => {
+    beforeEach(() => {
+      BaseDescopeWc.descopeUI = undefined;
+    });
     it('should log error if Descope UI cannot be loaded', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
@@ -3221,13 +3225,13 @@ describe('web-component', () => {
     it('should try to load all descope component on the page', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      pageContent =
-        '<descope-input16 id="email"></descope-input16><descope-button16>It works!</descope-button16>';
-
       globalThis.DescopeUI = {
         'descope-button16': jest.fn(),
         'descope-input16': jest.fn(),
       };
+
+      pageContent =
+        '<descope-input16 id="email"></descope-input16><descope-button16>It works!</descope-button16>';
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
