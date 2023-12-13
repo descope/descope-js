@@ -4,6 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import { screen } from 'shadow-dom-testing-library';
 import '../src/lib/descope-wc';
+import { invokeScriptOnload } from './testUtils';
 
 const generateSdkResponse = ({
   ok = true,
@@ -53,7 +54,11 @@ jest.mock('@descope/web-js-sdk', () => {
     getLastUserLoginId: jest.fn().mockName('getLastUserLoginId'),
     getLastUserDisplayName: jest.fn().mockName('getLastUserDisplayName'),
   };
-  return () => sdk;
+  return {
+    __esModule: true,
+    default: () => sdk,
+    clearFingerprintData: jest.fn(),
+  };
 });
 
 const sdk = createSdk({ projectId: '' });
@@ -107,6 +112,8 @@ describe('debugger', () => {
         }
       }
     });
+
+    invokeScriptOnload();
   });
 
   afterEach(() => {
@@ -123,7 +130,7 @@ describe('debugger', () => {
 
     jest.runAllTimers();
 
-    await screen.findByShadowText('It works!');
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     expect(document.getElementsByTagName('descope-debugger').length).toBe(0);
   });
@@ -132,8 +139,8 @@ describe('debugger', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByShadowText('No errors detected 👀')
-      ).toBeInTheDocument()
+        screen.getByShadowText('No errors detected 👀'),
+      ).toBeInTheDocument(),
     );
   });
 
@@ -143,28 +150,28 @@ describe('debugger', () => {
         ok: false,
         requestErrorMessage: 'error message!',
         requestErrorDescription: 'error description!',
-      })
+      }),
     );
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
     await waitFor(() =>
-      expect(screen.getByShadowText('error message!')).toBeInTheDocument()
+      expect(screen.getByShadowText('error message!')).toBeInTheDocument(),
     );
     await waitFor(() =>
-      expect(screen.getByShadowText('error description!')).toBeInTheDocument()
+      expect(screen.getByShadowText('error description!')).toBeInTheDocument(),
     );
   });
 
   it('should add a debugger message when got a screen error', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { errorText: 'error message!' } })
+      generateSdkResponse({ screenState: { errorText: 'error message!' } }),
     );
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
     await waitFor(() =>
-      expect(screen.getByShadowText('error message!')).toBeInTheDocument()
+      expect(screen.getByShadowText('error message!')).toBeInTheDocument(),
     );
   });
 
@@ -172,13 +179,13 @@ describe('debugger', () => {
     startMock.mockReturnValue(
       generateSdkResponse({
         error: { code: '123', description: 'description', message: 'message' },
-      })
+      }),
     );
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
     await waitFor(() =>
-      expect(screen.getByShadowText('[123]: description')).toBeInTheDocument()
+      expect(screen.getByShadowText('[123]: description')).toBeInTheDocument(),
     );
   });
 
@@ -187,32 +194,40 @@ describe('debugger', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByShadowText('No errors detected 👀')
-      ).toBeInTheDocument()
+        screen.getByShadowText('No errors detected 👀'),
+      ).toBeInTheDocument(),
     );
 
     fireEvent.resize(window, {});
 
     await waitFor(() =>
-      expect(screen.getByShadowText('No errors detected 👀')).toBeVisible()
+      expect(screen.getByShadowText('No errors detected 👀')).toBeVisible(),
     );
   });
 
   it('should toggle debugger when flag changes', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
     await waitFor(() =>
       expect(
-        screen.getByShadowText('No errors detected 👀')
-      ).toBeInTheDocument()
+        screen.getByShadowText('No errors detected 👀'),
+      ).toBeInTheDocument(),
     );
 
-    const wcEle = document.getElementsByTagName('descope-wc')[0];
+    const wcEle = document.querySelector('descope-wc');
+
+    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
 
     wcEle.setAttribute('debug', 'false');
 
     await waitFor(() =>
-      expect(document.getElementsByTagName('descope-debugger').length).toBe(0)
+      expect(document.getElementsByTagName('descope-debugger').length).toBe(0),
     );
   });
 
@@ -222,7 +237,7 @@ describe('debugger', () => {
         ok: false,
         requestErrorMessage: 'error message!',
         requestErrorDescription: 'error description!',
-      })
+      }),
     );
 
     Object.defineProperty(HTMLElement.prototype, 'scrollWidth', { value: 300 });
@@ -231,13 +246,13 @@ describe('debugger', () => {
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
     await waitFor(() =>
-      expect(screen.getByShadowText('error description!')).toBeInTheDocument()
+      expect(screen.getByShadowText('error description!')).toBeInTheDocument(),
     );
 
     fireEvent.click(screen.getByShadowText('error description!'));
 
     expect(
-      screen.getByShadowText('error message!').parentElement.parentElement
+      screen.getByShadowText('error message!').parentElement.parentElement,
     ).toHaveClass('collapsed');
   });
 });

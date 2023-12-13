@@ -6,6 +6,7 @@ import {
   VISITOR_SESSION_ID_PARAM,
 } from '../src/enhancers/withFingerprint/constants';
 import {
+  clearFingerprintData,
   ensureFingerprintIds,
   getFingerprintData,
 } from '../src/enhancers/withFingerprint/helpers';
@@ -30,7 +31,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() + 1000,
-      })
+      }),
     );
 
     await ensureFingerprintIds('123');
@@ -50,7 +51,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() - 1000,
-      })
+      }),
     );
 
     await ensureFingerprintIds('123');
@@ -82,7 +83,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() - 1000,
-      })
+      }),
     );
 
     const requestId = getFingerprintData()[VISITOR_REQUEST_ID_PARAM];
@@ -91,12 +92,22 @@ describe('fingerprintUtils', () => {
     expect(sessionId).toEqual('local-session-id');
   });
 
-  it('get fingerprint empty object ', async () => {
+  it('should return null when no fingerprint data available', async () => {
     localStorage.removeItem(FP_STORAGE_KEY);
+    expect(getFingerprintData()).toBeNull();
+  });
 
-    const requestId = getFingerprintData()[VISITOR_REQUEST_ID_PARAM];
-    expect(requestId).toEqual('');
-    const sessionId = getFingerprintData()[VISITOR_SESSION_ID_PARAM];
-    expect(sessionId).toEqual('');
+  it('should clean fingerprint data', async () => {
+    // set local storage FP to one second from now
+    localStorage.setItem(
+      FP_STORAGE_KEY,
+      JSON.stringify({
+        value: mockFingerprint,
+        expiry: new Date().getTime() + 1000,
+      }),
+    );
+
+    clearFingerprintData();
+    expect(localStorage.getItem(FP_STORAGE_KEY)).toBeNull();
   });
 });

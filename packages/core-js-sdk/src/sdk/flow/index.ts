@@ -9,7 +9,7 @@ const withStartValidations = withValidations(stringNonEmpty('flowId'));
 const withNextValidations = withValidations(
   stringNonEmpty('executionId'),
   stringNonEmpty('stepId'),
-  stringNonEmpty('interactionId')
+  stringNonEmpty('interactionId'),
 );
 
 const withFlow = (httpClient: HttpClient) => ({
@@ -19,8 +19,9 @@ const withFlow = (httpClient: HttpClient) => ({
       options?: Options,
       conditionInteractionId?: string,
       interactionId?: string,
+      version?: number,
+      componentsVersion?: string,
       input?: FlowInput,
-      version?: number
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.flow.start, {
@@ -28,29 +29,32 @@ const withFlow = (httpClient: HttpClient) => ({
           options,
           conditionInteractionId,
           interactionId,
-          input,
           version,
-        })
-      )
+          componentsVersion,
+          input,
+        }),
+      ),
   ),
   next: withNextValidations(
     (
       executionId: string,
       stepId: string,
       interactionId: string,
+      version?: number,
+      componentsVersion?: string,
       input?: FlowInput,
-      version?: number
     ): Promise<SdkResponse<FlowResponse>> => {
       return transformResponse(
         httpClient.post(apiPaths.flow.next, {
           executionId,
           stepId,
           interactionId,
-          input,
           version,
-        })
+          componentsVersion,
+          input,
+        }),
       );
-    }
+    },
   ),
 });
 

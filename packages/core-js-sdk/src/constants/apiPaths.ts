@@ -72,6 +72,7 @@ export default {
     policy: '/v1/auth/password/policy',
   },
   refresh: '/v1/auth/refresh',
+  selectTenant: '/v1/auth/tenant/select',
   logout: '/v1/auth/logout',
   logoutAll: '/v1/auth/logoutall',
   me: '/v1/auth/me',

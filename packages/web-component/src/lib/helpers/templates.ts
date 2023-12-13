@@ -1,16 +1,17 @@
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
+  HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
 import { ScreenState } from '../types';
 
 const replaceElementMessage = (
   baseEle: DocumentFragment,
   eleType: string,
-  message = ''
+  message = '',
 ) => {
   const eleList = baseEle.querySelectorAll(
-    `[${ELEMENT_TYPE_ATTRIBUTE}="${eleType}"]`
+    `[${ELEMENT_TYPE_ATTRIBUTE}="${eleType}"]`,
   );
   eleList.forEach((ele: HTMLElement) => {
     // eslint-disable-next-line no-param-reassign
@@ -25,14 +26,14 @@ const replaceElementMessage = (
  * it will add 'val1' as the input value
  */
 const replaceElementInputs = (
-  baseEle: DocumentFragment,
-  screenInputs: Record<string, string>
+  baseEle: HTMLElement,
+  screenInputs: Record<string, string>,
 ) => {
   Object.entries(screenInputs || {}).forEach(([name, value]) => {
     const inputEls = Array.from(
       baseEle.querySelectorAll(
-        `.descope-input[name="${name}"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`
-      )
+        `*[name="${name}"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
+      ),
     ) as HTMLInputElement[];
     inputEls.forEach((inputEle) => {
       // eslint-disable-next-line no-param-reassign
@@ -58,7 +59,7 @@ const getByPath = (obj: Record<string, any>, path: string) =>
  */
 const applyTemplates = (
   text: string,
-  screenState?: Record<string, any>
+  screenState?: Record<string, any>,
 ): string =>
   text.replace(/{{(.+?)}}/g, (_, match) => getByPath(screenState, match));
 
@@ -67,39 +68,51 @@ const applyTemplates = (
  */
 const replaceElementTemplates = (
   baseEle: DocumentFragment,
-  screenState?: Record<string, any>
+  screenState?: Record<string, any>,
 ) => {
-  const eleList = baseEle.querySelectorAll('.descope-text,.descope-link');
+  const eleList = baseEle.querySelectorAll('descope-text,descope-link');
   eleList.forEach((inEle: HTMLElement) => {
     // eslint-disable-next-line no-param-reassign
     inEle.textContent = applyTemplates(inEle.textContent, screenState);
   });
 };
 
+const replaceTemplateDynamicAttrValues = (
+  baseEle: DocumentFragment,
+  screenState?: Record<string, any>,
+) => {
+  const eleList = baseEle.querySelectorAll(`[${HAS_DYNAMIC_VALUES_ATTR_NAME}]`);
+  eleList.forEach((ele: HTMLElement) => {
+    Array.from(ele.attributes).forEach((attr) => {
+      // eslint-disable-next-line no-param-reassign
+      attr.value = applyTemplates(attr.value, screenState);
+    });
+  });
+};
+
 const replaceProvisionURL = (
   baseEle: DocumentFragment,
-  provisionUrl?: string
+  provisionUrl?: string,
 ) => {
   const eleList = baseEle.querySelectorAll(
-    `[${ELEMENT_TYPE_ATTRIBUTE}="totp-link"]`
+    `[${ELEMENT_TYPE_ATTRIBUTE}="totp-link"]`,
   );
   eleList.forEach((ele: HTMLLinkElement) => {
     // eslint-disable-next-line no-param-reassign
-    ele.href = provisionUrl;
+    ele.setAttribute('href', provisionUrl);
   });
 };
 
 /**
- * Perform action in base element based on screen state
+ * Update a screen template based on the screen state
  *  - Show/hide error messages
- *  - Replace values of element inputs with screen state's inputs
  *  - Replace element templates ({{...}} syntax) with screen state object
  */
-export const replaceWithScreenState = (
+export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
   errorTransformer?: (error: { text: string; type: string }) => string,
-  logger?: { error: (message: string, description: string) => void }
+  logger?: { error: (message: string, description: string) => void },
 ) => {
   let errorText = screenState?.errorText;
   try {
@@ -112,24 +125,62 @@ export const replaceWithScreenState = (
     logger.error('Error transforming error message', e.message);
   }
   replaceElementMessage(baseEle, 'error-message', errorText);
-  replaceElementInputs(baseEle, screenState?.inputs);
-  replaceElementInputs(baseEle, screenState?.form);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
+  replaceTemplateDynamicAttrValues(baseEle, screenState);
+};
+
+/**
+ * Update a screen based on a screen state
+ *  - Replace values of element inputs with screen state's inputs
+ */
+export const updateScreenFromScreenState = (
+  baseEle: HTMLElement,
+  screenState?: ScreenState,
+) => {
+  replaceElementInputs(baseEle, screenState?.inputs);
+  replaceElementInputs(baseEle, screenState?.form);
 };
 
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
-  if (image) {
+  const totpVarName = (
+    customElements.get('descope-totp-image') as CustomElementConstructor & {
+      cssVarList: Record<string, string>;
+    }
+  )?.cssVarList.url;
+
+  if (image && totpVarName) {
     rootEle?.style?.setProperty(
-      '--totp-image',
-      `url(data:image/jpg;base64,${image})`
+      totpVarName,
+      `url(data:image/jpg;base64,${image})`,
     );
   }
 };
 
+export const setPhoneAutoDetectDefaultCode = (
+  fragment: DocumentFragment,
+  autoDetectCode?: string,
+) => {
+  Array.from(
+    fragment.querySelectorAll('descope-phone-field[default-code="autoDetect"]'),
+  ).forEach((phoneEle) => {
+    phoneEle.setAttribute('default-code', autoDetectCode);
+  });
+};
+
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {
   const webauthnButtons = fragment.querySelectorAll(
-    `button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`
+    `descope-button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`,
   );
   webauthnButtons.forEach((button) => button.setAttribute('disabled', 'true'));
 };
+
+export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
+  ...Array.from(clone.querySelectorAll('*')).reduce<Set<string>>(
+    (acc, el: HTMLElement) =>
+      el.tagName.startsWith('DESCOPE-')
+        ? acc.add(el.tagName.toLocaleLowerCase())
+        : acc,
+    new Set(),
+  ),
+];

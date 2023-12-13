@@ -1,5 +1,12 @@
 import createSdk from '@descope/web-js-sdk';
-import { CONFIG_FILENAME, THEME_FILENAME } from '../constants';
+import {
+  CONFIG_FILENAME,
+  PREV_VER_ASSETS_FOLDER,
+  THEME_FILENAME,
+  UI_COMPONENTS_FALLBACK_URL,
+  UI_COMPONENTS_URL,
+  UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+} from '../constants';
 import {
   camelCase,
   clearRunIdsFromUrl,
@@ -22,6 +29,9 @@ import {
   ILogger,
   SdkConfig,
   ThemeOptions,
+  DescopeUI,
+  ProjectConfiguration,
+  FlowConfig,
 } from '../types';
 import initTemplate from './initTemplate';
 
@@ -43,7 +53,6 @@ class BaseDescopeWc extends HTMLElement {
       'debug',
       'storage-prefix',
       'preview',
-      'telemetryKey',
       'redirect-url',
       'auto-focus',
     ];
@@ -76,6 +85,10 @@ class BaseDescopeWc extends HTMLElement {
 
   #debugState = new State<DebugState>();
 
+  #componentsContext = {};
+
+  getComponentsContext = () => this.#componentsContext;
+
   nextRequestStatus = new State<{ isLoading: boolean }>({ isLoading: false });
 
   rootElement: HTMLDivElement;
@@ -87,11 +100,14 @@ class BaseDescopeWc extends HTMLElement {
   #eventsCbRefs = {
     popstate: this.#syncStateIdFromUrl.bind(this),
     visibilitychange: this.#syncStateWithVisibility.bind(this),
+    componentsContext: this.#handleComponentsContext.bind(this),
   };
 
   sdk: ReturnType<typeof createSdk>;
 
   #updateExecState: FlowStateUpdateFn;
+
+  descopeUI: Promise<DescopeUI>;
 
   constructor(updateExecState: FlowStateUpdateFn) {
     super();
@@ -131,6 +147,35 @@ class BaseDescopeWc extends HTMLElement {
     return this.getAttribute('flow-id');
   }
 
+  get form() {
+    try {
+      const form = (JSON.parse(this.getAttribute('form')) || {}) as Record<
+        string,
+        any
+      >;
+      return Object.entries(form).reduce(
+        (prev, [key, value]) => ({
+          ...prev,
+          [`form.${key}`]: value,
+        }),
+        form,
+      );
+    } catch (e) {
+      return {};
+    }
+  }
+
+  get client() {
+    try {
+      return (JSON.parse(this.getAttribute('client')) || {}) as Record<
+        string,
+        any
+      >;
+    } catch (e) {
+      return {};
+    }
+  }
+
   get baseUrl() {
     return this.getAttribute('base-url') || undefined;
   }
@@ -164,10 +209,6 @@ class BaseDescopeWc extends HTMLElement {
     return theme || 'light';
   }
 
-  get telemetryKey() {
-    return this.getAttribute('telemetryKey') || undefined;
-  }
-
   get autoFocus(): AutoFocusOptions {
     const res = this.getAttribute('auto-focus') ?? 'true';
     if (res === 'skipFirstScreen') {
@@ -191,11 +232,12 @@ class BaseDescopeWc extends HTMLElement {
       'theme',
       'locale',
       'debug',
-      'telemetryKey',
       'redirect-url',
       'auto-focus',
       'preview',
       'storage-prefix',
+      'form',
+      'client',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
@@ -205,7 +247,7 @@ class BaseDescopeWc extends HTMLElement {
 
     if (this.theme && this.theme !== 'light' && this.theme !== 'dark') {
       throw Error(
-        'Supported theme values are "light", "dark", or leave empty for using the OS theme'
+        'Supported theme values are "light", "dark", or leave empty for using the OS theme',
       );
     }
   }
@@ -225,9 +267,7 @@ class BaseDescopeWc extends HTMLElement {
     }
   }
 
-  #createSdk(projectId: string, baseUrl: string, telemetryKey: string) {
-    const fpKey = telemetryKey || undefined;
-    const fpLoad = !!fpKey;
+  #createSdk(projectId: string, baseUrl: string) {
     this.sdk = createSdk({
       // Use persist tokens options in order to add existing tokens in outgoing requests (if they exists)
       persistTokens: true,
@@ -236,8 +276,6 @@ class BaseDescopeWc extends HTMLElement {
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
-      fpKey,
-      fpLoad,
     });
 
     // we are wrapping the next & start function so we can indicate the request status
@@ -259,23 +297,41 @@ class BaseDescopeWc extends HTMLElement {
   async #onFlowChange(
     currentState: FlowState,
     _prevState: FlowState,
-    isChanged: IsChanged<FlowState>
+    isChanged: IsChanged<FlowState>,
   ) {
-    const { projectId, baseUrl, telemetryKey } = currentState;
+    const { projectId, baseUrl } = currentState;
 
     const shouldCreateSdkInstance =
-      isChanged('projectId') ||
-      isChanged('baseUrl') ||
-      isChanged('telemetryKey');
+      isChanged('projectId') || isChanged('baseUrl');
 
     if (shouldCreateSdkInstance) {
       if (!projectId) return;
       // Initialize the sdk when got a new project id
-      this.#createSdk(projectId, baseUrl, telemetryKey);
+      this.#createSdk(projectId, baseUrl);
     }
 
     // update runtime state
     this.#updateExecState(currentState);
+  }
+
+  async #getIsFlowsVersionMismatch() {
+    const config = await this.#getConfig();
+
+    return config.isMissingConfig && (await this.#isPrevVerConfig());
+  }
+
+  async #isPrevVerConfig() {
+    const prevVerConfigUrl = getContentUrl(
+      this.projectId,
+      CONFIG_FILENAME,
+      PREV_VER_ASSETS_FOLDER,
+    );
+    try {
+      await fetchContent(prevVerConfigUrl, 'json');
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   // we want to get the config only if we don't have it already
@@ -284,48 +340,63 @@ class BaseDescopeWc extends HTMLElement {
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
-        projectConfig: body,
+        projectConfig: body as ProjectConfiguration,
         executionContext: { geo: headers['x-geo'] },
       };
     } catch (e) {
-      this.loggerWrapper.error(
-        'Cannot get config file',
-        'make sure that your projectId & flowId are correct'
-      );
+      return { isMissingConfig: true };
     }
-
-    return {};
   });
 
   async #loadFonts() {
     const { projectConfig } = await this.#getConfig();
-    projectConfig?.cssTemplate?.[this.theme]?.typography?.fontFamilies?.forEach(
-      (font: Record<string, any>) => loadFont(font.url)
-    );
+    const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    fonts &&
+      Object.values(fonts).forEach((font: Record<string, any>) =>
+        loadFont(font.url),
+      );
   }
 
-  #handleTheme() {
-    this.#loadTheme();
-    this.#applyTheme();
+  async #handleTheme() {
+    await this.#loadTheme();
+    await this.#applyTheme();
   }
 
   async #loadTheme() {
     const styleEle = document.createElement('style');
     const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
     try {
-      const { body } = await fetchContent(themeUrl, 'text');
-      styleEle.innerText = body;
+      const { body: theme } = await fetchContent(themeUrl, 'json');
+      styleEle.innerText =
+        (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+
+      const descopeUi = await BaseDescopeWc.descopeUI;
+      if (descopeUi?.componentsThemeManager) {
+        descopeUi.componentsThemeManager.themes = {
+          light: theme?.light?.components,
+          dark: theme?.dark?.components,
+        };
+      }
     } catch (e) {
       this.loggerWrapper.error(
         'Cannot fetch theme file',
-        'make sure that your projectId & flowId are correct'
+        'make sure that your projectId & flowId are correct',
       );
     }
     this.shadowRoot.appendChild(styleEle);
   }
 
-  #applyTheme() {
+  #handleComponentsContext(e: CustomEvent) {
+    this.#componentsContext = { ...e.detail, ...this.#componentsContext };
+  }
+
+  async #applyTheme() {
     this.rootElement.setAttribute('data-theme', this.theme);
+    const descopeUi = await BaseDescopeWc.descopeUI;
+    if (descopeUi?.componentsThemeManager) {
+      descopeUi.componentsThemeManager.currentThemeName = this.theme;
+    }
   }
 
   async getExecutionContext() {
@@ -341,11 +412,8 @@ class BaseDescopeWc extends HTMLElement {
 
   async #handleDebugMode({ isDebug }) {
     if (isDebug) {
-      // we are importing the debugger dynamically so we won't load it when it's not needed
-      await import('../debugger-wc');
-
       this.#debuggerEle = document.createElement(
-        'descope-debugger'
+        'descope-debugger',
       ) as HTMLElement & {
         updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
       };
@@ -360,6 +428,9 @@ class BaseDescopeWc extends HTMLElement {
         zIndex: 99999,
       });
 
+      // we are importing the debugger dynamically so we won't load it when it's not needed
+      await import('../debugger-wc');
+
       document.body.appendChild(this.#debuggerEle);
     } else {
       this.#disableDebugger();
@@ -371,18 +442,24 @@ class BaseDescopeWc extends HTMLElement {
       this.#debuggerEle?.updateData({ title, description });
   }
 
-  async getFlowConfig() {
+  async getProjectConfig(): Promise<ProjectConfiguration> {
     const { projectConfig } = await this.#getConfig();
+    return projectConfig;
+  }
 
-    const config = projectConfig?.flows?.[this.flowId] || {};
-    config.version ??= 0;
-    return config;
+  async getFlowConfig(): Promise<FlowConfig> {
+    const projectConfig = await this.getProjectConfig();
+
+    const flowConfig =
+      projectConfig?.flows?.[this.flowId] || ({} as FlowConfig);
+    flowConfig.version ??= 0;
+    return flowConfig;
   }
 
   async getTargetLocales() {
     const flowConfig = await this.getFlowConfig();
     return (flowConfig?.targetLocales || []).map((locale: string) =>
-      locale.toLowerCase()
+      locale.toLowerCase(),
     );
   }
 
@@ -392,7 +469,8 @@ class BaseDescopeWc extends HTMLElement {
       if (e.key !== 'Enter') return;
 
       e.preventDefault();
-      const buttons = this.rootElement.querySelectorAll('button');
+      const buttons: NodeListOf<HTMLButtonElement> =
+        this.rootElement.querySelectorAll('descope-button');
 
       // in case there is a single button on the page, click on it
       if (buttons.length === 1) {
@@ -401,7 +479,7 @@ class BaseDescopeWc extends HTMLElement {
       }
 
       const genericButtons = Array.from(buttons).filter(
-        (button) => button.getAttribute('data-type') === 'button'
+        (button) => button.getAttribute('data-type') === 'button',
       );
 
       // in case there is a single "generic" button on the page, click on it
@@ -411,8 +489,104 @@ class BaseDescopeWc extends HTMLElement {
     };
   }
 
+  async #getComponentsVersion() {
+    const version = (await this.#getConfig())?.projectConfig?.componentsVersion;
+
+    if (version) return version;
+
+    this.logger.error('Did not get components version, using latest version');
+
+    return 'latest';
+  }
+
+  static descopeUI: any;
+
+  async #loadDescopeUI() {
+    if (BaseDescopeWc.descopeUI) {
+      this.loggerWrapper.info(
+        'DescopeUI is already loading, probably multiple flows are running on the same page',
+      );
+      return;
+    }
+
+    BaseDescopeWc.descopeUI = new Promise((resolve) => {
+      if (globalThis.DescopeUI) {
+        resolve(globalThis.DescopeUI);
+        return;
+      }
+
+      const setupScript = (url: string) => {
+        const scriptEle = document.createElement('script');
+        scriptEle.id = 'load-descope-ui';
+        scriptEle.src = url;
+
+        return scriptEle;
+      };
+
+      const generateScriptUrl = (
+        urlTemplate: string,
+        componentsVersion: string,
+      ) =>
+        urlTemplate.replace(
+          UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
+          componentsVersion,
+        );
+
+      const attachEvents = (
+        scriptEle: HTMLScriptElement,
+        onError: () => void,
+      ) => {
+        const onErrorInternal = () => {
+          this.loggerWrapper.error(
+            'Cannot load DescopeUI',
+            `Make sure this URL is valid and return the correct script: "${scriptEle.src}"`,
+          );
+
+          onError();
+        };
+
+        scriptEle.addEventListener('load', () => {
+          if (!globalThis.DescopeUI) onErrorInternal();
+          resolve(globalThis.DescopeUI);
+        });
+
+        scriptEle.addEventListener('error', onErrorInternal);
+      };
+
+      (async () => {
+        const componentsVersion = await this.#getComponentsVersion();
+        const scriptEle = setupScript(
+          generateScriptUrl(UI_COMPONENTS_URL, componentsVersion),
+        );
+
+        // if we cannot load descope UI, we want to try from a fallback url
+        const onError = () => {
+          scriptEle.remove();
+
+          this.loggerWrapper.info(
+            'Trying to load DescopeUI from a fallback URL',
+          );
+
+          const fallbackScriptEle = setupScript(
+            generateScriptUrl(UI_COMPONENTS_FALLBACK_URL, componentsVersion),
+          );
+          attachEvents(fallbackScriptEle, () => {
+            resolve(undefined);
+          });
+          document.body.append(fallbackScriptEle);
+        };
+
+        attachEvents(scriptEle, onError);
+        document.body.append(scriptEle);
+      })();
+    });
+  }
+
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
+      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
+      this.#debugState.update({ isDebug: this.debug });
+
       if (this.#shouldMountInFormEle()) {
         this.#handleOuterForm();
         return;
@@ -420,7 +594,27 @@ class BaseDescopeWc extends HTMLElement {
 
       this.#validateAttrs();
 
-      this.#handleTheme();
+      if (await this.#getIsFlowsVersionMismatch()) {
+        this.loggerWrapper.error(
+          'This SDK version does not support your flows version',
+          'Make sure to upgrade your flows to the latest version or use an older SDK version',
+        );
+
+        return;
+      }
+
+      if ((await this.#getConfig()).isMissingConfig) {
+        this.loggerWrapper.error(
+          'Cannot get config file',
+          'Make sure that your projectId & flowId are correct',
+        );
+
+        return;
+      }
+
+      await this.#loadDescopeUI();
+
+      await this.#handleTheme();
 
       this.#loadFonts();
 
@@ -444,13 +638,19 @@ class BaseDescopeWc extends HTMLElement {
       // we want to update the state when user clicks on back in the browser
       window.addEventListener('popstate', this.#eventsCbRefs.popstate);
 
+      // adding event to listen to events coming from components (e.g. recaptcha risk token) that want to add data to the context
+      // this data will be sent to the server on the next request
+      window.addEventListener(
+        'components-context',
+        this.#eventsCbRefs.componentsContext,
+      );
+
       window.addEventListener(
         'visibilitychange',
-        this.#eventsCbRefs.visibilitychange
+        this.#eventsCbRefs.visibilitychange,
       );
 
       this.#flowState.subscribe(this.#onFlowChange.bind(this));
-      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
 
       this.#flowState.update({
         projectId: this.projectId,
@@ -464,7 +664,6 @@ class BaseDescopeWc extends HTMLElement {
         token,
         code,
         exchangeError,
-        telemetryKey: this.telemetryKey,
         redirectAuthCallbackUrl,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
@@ -473,8 +672,6 @@ class BaseDescopeWc extends HTMLElement {
         samlIdpUsername,
         ssoAppId,
       });
-
-      this.#debugState.update({ isDebug: this.debug });
 
       this.#init = true;
     }
@@ -485,12 +682,20 @@ class BaseDescopeWc extends HTMLElement {
     this.#debugState.unsubscribeAll();
     this.#disableDebugger();
     window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
+    window.removeEventListener(
+      'visibilitychange',
+      this.#eventsCbRefs.visibilitychange,
+    );
+    window.removeEventListener(
+      'components-context',
+      this.#eventsCbRefs.componentsContext,
+    );
   }
 
   attributeChangedCallback(
     attrName: string,
     oldValue: string,
-    newValue: string
+    newValue: string,
   ) {
     if (!this.shadowRoot.isConnected || !this.#init) return;
 

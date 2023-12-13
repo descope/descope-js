@@ -13,7 +13,7 @@ const decoratedCreateSdk = compose(
   withAnalytics,
   withNotifications,
   withLastLoggedInUser, // must be one before last due to TS types
-  withPersistTokens // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
+  withPersistTokens, // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
 )(createSdk);
 
 export type { UserResponse } from './types';
@@ -23,5 +23,10 @@ export {
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
 } from './enhancers/withPersistTokens/constants';
+
+export {
+  ensureFingerprintIds,
+  clearFingerprintData,
+} from './enhancers/withFingerprint/helpers';
 
 export default decoratedCreateSdk;

@@ -2,10 +2,11 @@ const initTemplate = document.createElement('template');
 initTemplate.innerHTML = `
 	<style>
 		:host {
+      all: initial;
 			width: 100%;
 			height: 100%;
 		}
-		
+
 		#wc-root {
 			height: 100%;
 			transition: opacity 300ms ease-in-out;

@@ -77,7 +77,6 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | theme          | **"light"** - Light theme</br>**"dark"** - Dark theme</br>**"os"** - Auto select a theme based on the OS theme settings                                                                                                                   | **"light"**   |
 | debug          | **"true"** - Enable debugger</br>**"false"** - Disable debugger                                                                                                                                                                           | **"false"**   |
 | preview        | **"true"** - Run flow in a preview mode</br>**"false"** - Do run flow in a preview mode                                                                                                                                                   | **"false"**   |
-| telemetryKey   | **String** - Telemetry public key provided by Descope Inc                                                                                                                                                                                 | **""**        |
 | auto-focus     | **"true"** - Automatically focus on the first input of each screen</br>**"false"** - Do not automatically focus on screen's inputs</br>**"skipFirstScreen"** - Automatically focus on the first input of each screen, except first screen | **"true"**    |
 | storage-prefix | **String** - A prefix to add to the key of the local storage when persisting tokens                                                                                                                                                       | **""**        |
 |                |                                                                                                                                                                                                                                           |               |
@@ -93,8 +92,7 @@ Usage example:
 ```javascript
 function translateError(error) {
   const translationMap = {
-    SAMLStartFailed:
-      'No es posible iniciar sesión en este momento, por favor intenta nuevamente más tarde',
+    SAMLStartFailed: 'No es posible iniciar sesión en este momento, por favor intenta nuevamente más tarde',
   };
   return translationMap[error.type] || error.text;
 }
@@ -134,9 +132,7 @@ Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('error', (e) =>
-  alert(`Error! - ${e.detail.errorMessage}`)
-);
+descopeWcEle.addEventListener('error', (e) => alert(`Error! - ${e.detail.errorMessage}`));
 ```
 
 ### `success` - Fired when the flow is completed successfully. The event detail contains the flow result.
@@ -145,7 +141,5 @@ Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('success', (e) =>
-  alert(`Success! - ${JSON.stringify(e.detail)}`)
-);
+descopeWcEle.addEventListener('success', (e) => alert(`Success! - ${JSON.stringify(e.detail)}`));
 ```

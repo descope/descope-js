@@ -48,7 +48,7 @@ function resetUrlParam(paramName: string) {
 
 export async function fetchContent<T extends 'text' | 'json'>(
   url: string,
-  returnType: T
+  returnType: T,
 ): Promise<{
   body: T extends 'json' ? Record<string, any> : string;
   headers: Record<string, string>;
@@ -66,9 +66,13 @@ export async function fetchContent<T extends 'text' | 'json'>(
 
 const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); // preventing duplicate separators
 
-export function getContentUrl(projectId: string, filename: string) {
+export function getContentUrl(
+  projectId: string,
+  filename: string,
+  assetsFolder = ASSETS_FOLDER,
+) {
   const url = new URL(BASE_CONTENT_URL);
-  url.pathname = pathJoin(url.pathname, projectId, ASSETS_FOLDER, filename);
+  url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
 
   return url.toString();
 }
@@ -126,13 +130,13 @@ export function clearExchangeErrorFromUrl() {
 
 export function getRedirectAuthFromUrl() {
   const redirectAuthCodeChallenge = getUrlParam(
-    URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME
+    URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   );
   const redirectAuthCallbackUrl = getUrlParam(
-    URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME
+    URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
   );
   const redirectAuthInitiator = getUrlParam(
-    URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME
+    URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   );
   return {
     redirectAuthCodeChallenge,
@@ -187,39 +191,10 @@ export const createIsChanged =
   (attrName: keyof T) =>
     state[attrName] !== prevState[attrName];
 
-/**
- * in order to be able to run scripts that are part of the components, we are adding a script tag next to the component's element
- * in order to avoid cloning the scripts, each tag contains a ref-id and the actual scripts are placed under the "scripts" section
- * here we are going over the script refs, finding the actual script, generating a function out of it, binding the element to the function so we can access it from the script
- * we are returning an array of functions that can be triggered later on
- */
-export const generateFnsFromScriptTags = (
-  template: DocumentFragment,
-  context?: Record<string, string>
-) => {
-  const scriptFns = Array.from(
-    template.querySelectorAll('script[data-id]')
-  ).map((script) => {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const scriptId = script.getAttribute('data-id');
-    const scriptContent = template.getElementById(scriptId)?.innerHTML;
-
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const fn = Function(scriptContent).bind(script.previousSibling, context);
-    script.remove();
-
-    return fn;
-  });
-
-  template.querySelector('scripts')?.remove();
-
-  return scriptFns;
-};
-
 export const getElementDescopeAttributes = (ele: HTMLElement) =>
   Array.from(ele?.attributes || []).reduce((acc, attr) => {
     const descopeAttrName = new RegExp(
-      `^${DESCOPE_ATTRIBUTE_PREFIX}(\\S+)$`
+      `^${DESCOPE_ATTRIBUTE_PREFIX}(\\S+)$`,
     ).exec(attr.name)?.[1];
 
     return !descopeAttrName
@@ -329,17 +304,17 @@ export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
 export const handleAutoFocus = (
   ele: HTMLElement,
   autoFocus: AutoFocusOptions,
-  isFirstScreen: boolean
+  isFirstScreen: boolean,
 ) => {
   if (
     autoFocus === true ||
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
     // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector(
-      'input:not([aria-hidden="true"])'
-    );
-    firstVisibleInput?.focus();
+    const firstVisibleInput: HTMLInputElement = ele.querySelector('*[name]');
+    setTimeout(() => {
+      firstVisibleInput?.focus();
+    });
   }
 };
 
@@ -362,7 +337,7 @@ export const handleAutoFocus = (
 export function timeoutPromise<T>(
   timeout: number,
   promise: Promise<T>,
-  fallback?: T
+  fallback?: T,
 ): Promise<T> {
   return new Promise((resolve, reject) => {
     let expired = false;
@@ -394,7 +369,7 @@ export function timeoutPromise<T>(
 export const getChromiumVersion = (): number => {
   const brands = (navigator as any)?.userAgentData?.brands;
   const found = brands?.find(
-    ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
+    ({ brand, version }) => brand === 'Chromium' && parseFloat(version),
   );
   return found ? found.version : 0;
 };
@@ -407,7 +382,7 @@ export const showFirstScreenOnExecutionInit = (
   oidcIdpStateId: string,
   samlIdpStateId: string,
   samlIdpUsername: string,
-  ssoAppId: string
+  ssoAppId: string,
 ): boolean => {
   const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
   const optimizeIfMissingSAMLParams =
@@ -451,7 +426,7 @@ export const injectSamlIdpForm = (
   url: string,
   samlResponse: string,
   relayState: string,
-  submitCallback: (form: HTMLFormElement) => void
+  submitCallback: (form: HTMLFormElement) => void,
 ) => {
   const formEle = document.createElement('form');
   formEle.method = 'POST';
