@@ -24,6 +24,7 @@ import {
   State,
   submitForm,
   withMemCache,
+  getFirstNonEmptyValue,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -831,6 +832,25 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
+  // handle storing passwords in password managers
+  #handleStoreCredentials(formData = {}) {
+    const idFields = ['externalId', 'email', 'phone'];
+    const passwordFields = ['newPassword', 'password'];
+
+    const id = getFirstNonEmptyValue(formData, idFields);
+    const password = getFirstNonEmptyValue(formData, passwordFields);
+
+    if (id && password) {
+      try {
+        const cred = new globalThis.PasswordCredential({ id, password });
+
+        navigator?.credentials?.store?.(cred);
+      } catch (e) {
+        this.loggerWrapper.error('Could not store credentials', e.message);
+      }
+    }
+  }
+
   async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
@@ -862,6 +882,8 @@ class DescopeWc extends BaseDescopeWc {
       );
 
       this.#handleSdkResponse(sdkResp);
+
+      this.#handleStoreCredentials(formData);
     }
   }
 

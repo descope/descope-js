@@ -3286,4 +3286,37 @@ describe('web-component', () => {
       expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
     });
   });
+
+  describe('password managers', () => {
+    it('should store password in password manager', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      Object.assign(navigator, { credentials: { store: jest.fn() } });
+      globalThis.PasswordCredential = class {
+        constructor(obj) {
+          Object.assign(this, obj);
+        }
+      };
+      pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email" value="1@1.com"></input><input id="password" name="password" value="pass"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          expect(navigator.credentials.store).toHaveBeenCalledWith({
+            id: '1@1.com',
+            password: 'pass',
+          }),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+  });
 });
