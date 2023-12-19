@@ -11,10 +11,6 @@ type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never;
 
-export type FlowConfig = {
-  startScreenId?: string;
-};
-
 export enum Direction {
   backward = 'backward',
   forward = 'forward',
@@ -51,7 +47,6 @@ export type FlowState = {
   exchangeError: string;
   webauthnTransactionId: string;
   webauthnOptions: string;
-  telemetryKey: string;
   redirectAuthCodeChallenge: string;
   redirectAuthCallbackUrl: string;
   redirectAuthInitiator: string;
@@ -110,6 +105,7 @@ export interface ClientConditionResult {
 export interface ClientCondition {
   operator: Operator;
   key: string;
+  predicate?: string | number;
   met: ClientConditionResult;
   unmet?: ClientConditionResult;
 }
@@ -118,9 +114,13 @@ export type AutoFocusOptions = true | false | 'skipFirstScreen';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-export type Key = 'lastAuth.loginId' | 'idpInitiated' | 'externalToken';
+export type Key =
+  | 'lastAuth.loginId'
+  | 'idpInitiated'
+  | 'externalToken'
+  | 'abTestingKey';
 
-type CheckFunction = (ctx: Context) => boolean;
+type CheckFunction = (ctx: Context, predicate?: string | number) => boolean;
 
 export type ConditionsMap = {
   [key in Key]: {
@@ -132,10 +132,49 @@ export interface Context {
   loginId?: string;
   code?: string;
   token?: string;
+  abTestingKey?: number;
 }
 
 export interface ILogger {
   info(title: string, description: string, state: any): void;
   warn(title: string, description?: string): void;
   error(title: string, description?: string, ...optionalParams: any[]): void;
+}
+
+export type DescopeUI = Record<string, () => Promise<void>> & {
+  componentsThemeManager: Record<string, any>;
+};
+
+type Font = {
+  family: string[];
+  label: string;
+  url?: string;
+};
+
+type ThemeTemplate = {
+  fonts: {
+    font1: Font;
+    font2: Font;
+  };
+};
+
+export type FlowConfig = {
+  startScreenId?: string;
+  version: number;
+  targetLocales?: string[];
+  conditions?: ClientCondition[];
+  condition?: ClientCondition;
+  fingerprintEnabled?: boolean;
+  fingerprintKey?: string;
+};
+
+export interface ProjectConfiguration {
+  componentsVersion: string;
+  cssTemplate: {
+    dark: ThemeTemplate;
+    light: ThemeTemplate;
+  };
+  flows: {
+    [key: string]: FlowConfig; // dynamic key names for flows
+  };
 }

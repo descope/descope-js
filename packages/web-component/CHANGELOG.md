@@ -2,6 +2,141 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.0](https://github.com/descope/descope-js/compare/web-component-3.3.1...web-component-3.4.0) (2023-12-19)
+
+
+### Features
+
+* support password managers RELEASE ([#337](https://github.com/descope/descope-js/issues/337)) ([b1c3e48](https://github.com/descope/descope-js/commit/b1c3e48c3afb01884533015a37f669381695b24e))
+
+## [3.3.1](https://github.com/descope/descope-js/compare/web-component-3.3.0...web-component-3.3.1) (2023-12-13)
+
+
+### Bug Fixes
+
+* issue 4907 RELEASE ([#334](https://github.com/descope/descope-js/issues/334)) ([e81d572](https://github.com/descope/descope-js/commit/e81d572731d5c2ae1be96da55c57b5222d917dcf))
+
+## [3.3.0](https://github.com/descope/descope-js/compare/web-component-3.2.0...web-component-3.3.0) (2023-12-11)
+
+
+### Features
+
+* support dynamic attribute values RELEASE ([#333](https://github.com/descope/descope-js/issues/333)) ([7d0119a](https://github.com/descope/descope-js/commit/7d0119a1f02c2110a47db97d7f563cd13c3ead41))
+
+## [3.2.0](https://github.com/descope/descope-js/compare/web-component-3.1.6...web-component-3.2.0) (2023-12-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.0`
+
+### Features
+
+* add form and client custom flow inputs override ([#329](https://github.com/descope/descope-js/issues/329)) ([0d31a8d](https://github.com/descope/descope-js/commit/0d31a8dbd0e8e889e387fbc07246368f0cb6754d))
+
+## [3.1.6](https://github.com/descope/descope-js/compare/web-component-3.1.5...web-component-3.1.6) (2023-12-05)
+
+
+### Bug Fixes
+
+* issue 4877 RELEASE ([#327](https://github.com/descope/descope-js/issues/327)) ([bf7eb80](https://github.com/descope/descope-js/commit/bf7eb802f6eb774dd6ee10826c8e66627162ade8))
+
+## [3.1.5](https://github.com/descope/descope-js/compare/web-component-3.1.4...web-component-3.1.5) (2023-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.7.2`
+
+### Bug Fixes
+
+* replace jsDelivr with static.descope.com RELEASE ([#325](https://github.com/descope/descope-js/issues/325)) ([77191f1](https://github.com/descope/descope-js/commit/77191f1bab5726246e8a8618b9a4d34a3dd7192e))
+
+## [3.1.4](https://github.com/descope/descope-js/compare/web-component-3.1.3...web-component-3.1.4) (2023-11-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.7.1`
+
+### Bug Fixes
+
+* added tslib as a dep to web-js RELEASE ([#324](https://github.com/descope/descope-js/issues/324)) ([246242f](https://github.com/descope/descope-js/commit/246242ffce9626af4129678bb6221baa58366c43))
+
+## [3.1.3](https://github.com/descope/descope-js/compare/web-component-3.1.2...web-component-3.1.3) (2023-11-29)
+
+
+### Bug Fixes
+
+* issue 4817 RELEASE ([#323](https://github.com/descope/descope-js/issues/323)) ([9c57f17](https://github.com/descope/descope-js/commit/9c57f17a7a62af80875f13caebc17b885754e4eb))
+
+## [3.1.2](https://github.com/descope/descope-js/compare/web-component-3.1.1...web-component-3.1.2) (2023-11-22)
+
+
+### Bug Fixes
+
+* issue 4762 RELEASE ([#322](https://github.com/descope/descope-js/issues/322)) ([1dd6d1d](https://github.com/descope/descope-js/commit/1dd6d1de28a33e2dd8248dfbc81a1b369fde8ff6))
+
+## [3.1.1](https://github.com/descope/descope-js/compare/web-component-3.1.0...web-component-3.1.1) (2023-11-21)
+
+
+### Bug Fixes
+
+* issue 4743 RELEASE ([#321](https://github.com/descope/descope-js/issues/321)) ([bbbcbcd](https://github.com/descope/descope-js/commit/bbbcbcdc38c01022674fc770f5e3254296a20f13))
+
+## [3.1.0](https://github.com/descope/descope-js/compare/web-component-3.0.0...web-component-3.1.0) (2023-11-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.7.0`
+
+### Features
+
+* WC now initializes fingerprint according to config ([#301](https://github.com/descope/descope-js/issues/301)) ([cc5d01d](https://github.com/descope/descope-js/commit/cc5d01d1087d0a1523cb3bcb6b9e4887fdf07765))
+
+## [3.0.0](https://github.com/descope/descope-js/compare/web-component-2.11.8...web-component-3.0.0) (2023-11-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.7`
+
+### ⚠ BREAKING CHANGES
+
+* Use web components UI (#293)
+
+### Features
+
+* Use web components UI ([#293](https://github.com/descope/descope-js/issues/293)) ([2d0fed7](https://github.com/descope/descope-js/commit/2d0fed7cee3f25b2d4d18a41e0531eba2f3aa8cb))
+
+
+### Bug Fixes
+
+* Input query selector ([#300](https://github.com/descope/descope-js/issues/300)) ([0ac9314](https://github.com/descope/descope-js/commit/0ac9314fe7476ece850f77b3960848b07b9cf33e))
+
+### [2.11.8](https://github.com/descope/descope-js/compare/web-component-2.11.7...web-component-2.11.8) (2023-11-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.6`
+### [2.11.7](https://github.com/descope/descope-js/compare/web-component-2.11.6...web-component-2.11.7) (2023-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.5`
+### [2.11.6](https://github.com/descope/descope-js/compare/web-component-2.11.5...web-component-2.11.6) (2023-10-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.4`
+### [2.11.5](https://github.com/descope/descope-js/compare/web-component-2.11.4...web-component-2.11.5) (2023-10-14)
+
+### [2.11.4](https://github.com/descope/descope-js/compare/web-component-2.11.3...web-component-2.11.4) (2023-10-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.6.3`
+
+### Bug Fixes
+
+* Autofill bug in getChromiumVersion function ([#286](https://github.com/descope/descope-js/issues/286)) ([7d1e2b8](https://github.com/descope/descope-js/commit/7d1e2b8308f23dfac9977e75fd165d175213ab17))
+
 ### [2.11.3](https://github.com/descope/descope-js/compare/web-component-2.11.2...web-component-2.11.3) (2023-09-08)
 
 ### Dependency Updates

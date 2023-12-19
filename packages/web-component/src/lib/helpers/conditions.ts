@@ -15,6 +15,12 @@ const conditionsMap: ConditionsMap = {
     'is-true': (ctx) => !!ctx.token,
     'is-false': (ctx) => !ctx.token,
   },
+  abTestingKey: {
+    'greater-than': (ctx, predicate: number) =>
+      (ctx.abTestingKey || 0) > predicate,
+    'less-than': (ctx, predicate: number) =>
+      (ctx.abTestingKey || 0) < predicate,
+  },
 };
 
 export const calculateCondition = (
@@ -25,7 +31,9 @@ export const calculateCondition = (
   if (!checkFunc) {
     return {};
   }
-  const conditionResult = checkFunc(ctx) ? condition.met : condition.unmet;
+  const conditionResult = checkFunc(ctx, condition.predicate)
+    ? condition.met
+    : condition.unmet;
   return {
     startScreenId: conditionResult?.screenId,
     conditionInteractionId: conditionResult?.interactionId,
@@ -37,12 +45,12 @@ export const calculateConditions = (
   ctx: Context,
   conditions?: ClientCondition[]
 ) => {
-  const conditionResult = conditions?.find(({ key, operator }) => {
+  const conditionResult = conditions?.find(({ key, operator, predicate }) => {
     if (key === elseInteractionId) {
       return true;
     }
     const checkFunc = conditionsMap[key]?.[operator];
-    return !!checkFunc?.(ctx);
+    return !!checkFunc?.(ctx, predicate);
   });
   return !conditionResult
     ? {}

@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.2.0...core-js-sdk-2.3.0) (2023-12-09)
+
+
+### Features
+
+* add form and client custom flow inputs override ([#329](https://github.com/descope/descope-js/issues/329)) ([0d31a8d](https://github.com/descope/descope-js/commit/0d31a8dbd0e8e889e387fbc07246368f0cb6754d))
+
+## [2.2.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.1.0...core-js-sdk-2.2.0) (2023-12-04)
+
+
+### Features
+
+* Given/Family name support ([#326](https://github.com/descope/descope-js/issues/326)) ([3caebb1](https://github.com/descope/descope-js/commit/3caebb1129ba07a239f2a7c578c541569e718722))
+
+## [2.1.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.0.0...core-js-sdk-2.1.0) (2023-11-21)
+
+
+### Features
+
+* Add `status` to the user response RELEASE ([#318](https://github.com/descope/descope-js/issues/318)) ([0865665](https://github.com/descope/descope-js/commit/086566564b4fed5d9ffde01ac32343e65e0ee076))
+
+## [2.0.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.10.1...core-js-sdk-2.0.0) (2023-11-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use web components UI (#293)
+
+### Features
+
+* Use web components UI ([#293](https://github.com/descope/descope-js/issues/293)) ([2d0fed7](https://github.com/descope/descope-js/commit/2d0fed7cee3f25b2d4d18a41e0531eba2f3aa8cb))
+
+### [1.10.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.10.0...core-js-sdk-1.10.1) (2023-11-01)
+
+## [1.10.0](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.3...core-js-sdk-1.10.0) (2023-10-26)
+
+
+### Features
+
+* support also custom oauth providers ([#294](https://github.com/descope/descope-js/issues/294)) ([3a4b205](https://github.com/descope/descope-js/commit/3a4b20531676d518239d4b7f4aa5abbfc57aea42))
+
+### [1.9.3](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.2...core-js-sdk-1.9.3) (2023-10-16)
+
 ### [1.9.2](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.1...core-js-sdk-1.9.2) (2023-09-08)
 
 ### [1.9.1](https://github.com/descope/descope-js/compare/core-js-sdk-1.9.0...core-js-sdk-1.9.1) (2023-09-08)

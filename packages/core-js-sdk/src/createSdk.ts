@@ -11,7 +11,7 @@ type SdkConfig = {
   logger?: Logger;
   baseUrl?: string;
   hooks?: Hooks;
-  cookiePolicy?: RequestCredentials;
+  cookiePolicy?: RequestCredentials | null;
   baseHeaders?: HeadersInit;
   fetch?: Fetch;
 };

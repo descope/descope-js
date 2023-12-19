@@ -37,6 +37,9 @@ export type MaskedEmail = {
 export type User = {
   email?: string;
   name?: string;
+  givenName?: string;
+  middleName?: string;
+  familyName?: string;
   phone?: string;
 };
 
@@ -54,6 +57,7 @@ export type UserResponse = User & {
   SAML: boolean;
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
+  status: string;
 };
 
 /** A tenant association mapping  */
@@ -239,6 +243,8 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  abTestingKey?: number;
+  client?: Record<string, any>;
 };
 
 export type ResponseData = Record<string, any>;

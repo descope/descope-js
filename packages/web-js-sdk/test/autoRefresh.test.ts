@@ -2,6 +2,7 @@ import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
+import { MAX_TIMEOUT } from '../src/constants';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
   debug: jest.fn(),
@@ -169,5 +170,33 @@ describe('autoRefresh', () => {
     const event = new Event('visibilitychange');
     document.dispatchEvent(event);
     expect(refreshSpy).not.toBeCalled();
+  });
+
+  it('should refresh token with max timeout if session token is too large', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const authInfoWith1MonthExpiration = {
+      ...authInfo,
+      sessionJwt: getFutureSessionToken(30 * 24 * 60 * 60 * 1000),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfoWith1MonthExpiration));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+    expect(timeoutTimer).toBe(MAX_TIMEOUT);
+    // ensure logger called
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Timeout is too large/)
+    );
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Setting refresh timer for/)
+    );
+    loggerDebugMock.mockClear();
   });
 });

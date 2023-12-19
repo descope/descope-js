@@ -55,6 +55,20 @@ describe('oauth', () => {
       );
     });
 
+    it('should run start with provider name', () => {
+      sdk.oauth.start('test', 'http://redirecturl.com/');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.oauth.start,
+        {},
+        {
+          queryParams: {
+            provider: 'test',
+            redirectURL: 'http://redirecturl.com/',
+          },
+        }
+      );
+    });
+
     it('should override the redirect url when provided and login options', () => {
       sdk.oauth.start.facebook(
         'http://redirecturl.com/',

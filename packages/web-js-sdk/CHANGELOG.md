@@ -2,6 +2,65 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.8.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.7.2...web-js-sdk-1.8.0) (2023-12-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.3.0`
+
+### Features
+
+* add form and client custom flow inputs override ([#329](https://github.com/descope/descope-js/issues/329)) ([0d31a8d](https://github.com/descope/descope-js/commit/0d31a8dbd0e8e889e387fbc07246368f0cb6754d))
+
+## [1.7.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.7.1...web-js-sdk-1.7.2) (2023-12-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.2.0`
+## [1.7.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.7.0...web-js-sdk-1.7.1) (2023-11-30)
+
+
+### Bug Fixes
+
+* added tslib as a dep to web-js RELEASE ([#324](https://github.com/descope/descope-js/issues/324)) ([246242f](https://github.com/descope/descope-js/commit/246242ffce9626af4129678bb6221baa58366c43))
+
+## [1.7.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.7...web-js-sdk-1.7.0) (2023-11-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.1.0`
+
+### Features
+
+* WC now initializes fingerprint according to config ([#301](https://github.com/descope/descope-js/issues/301)) ([cc5d01d](https://github.com/descope/descope-js/commit/cc5d01d1087d0a1523cb3bcb6b9e4887fdf07765))
+
+## [1.6.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.6...web-js-sdk-1.6.7) (2023-11-12)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.0.0`
+### [1.6.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.5...web-js-sdk-1.6.6) (2023-11-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.10.1`
+### [1.6.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.4...web-js-sdk-1.6.5) (2023-10-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.10.0`
+### [1.6.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.3...web-js-sdk-1.6.4) (2023-10-16)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `1.9.3`
+### [1.6.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.2...web-js-sdk-1.6.3) (2023-10-03)
+
+
+### Bug Fixes
+
+* large session expiration consideration  ([#287](https://github.com/descope/descope-js/issues/287)) ([022e0a0](https://github.com/descope/descope-js/commit/022e0a09945b95b3bee5d87abbb3c049e2975c41))
+
 ### [1.6.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.6.1...web-js-sdk-1.6.2) (2023-09-08)
 
 ### Dependency Updates

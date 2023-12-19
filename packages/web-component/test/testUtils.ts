@@ -1,3 +1,5 @@
+import { fireEvent } from '@testing-library/dom';
+
 // eslint-disable-next-line import/prefer-default-export
 export const generateSdkResponse = ({
   ok = true,
@@ -42,3 +44,17 @@ export const generateSdkResponse = ({
     errorDescription: requestErrorDescription,
   },
 });
+
+export const invokeScriptOnload = () => {
+  const origAppend = document.body.append;
+
+  const spyAppend = jest.spyOn(document.body, 'append');
+  spyAppend.mockImplementation((ele: any) => {
+    setTimeout(() => {
+      if (ele.localName === 'script') {
+        fireEvent(ele, new Event('load'));
+      }
+    });
+    origAppend.bind(document.body)(ele);
+  });
+};

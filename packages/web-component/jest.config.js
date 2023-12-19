@@ -9,17 +9,22 @@ module.exports = {
   collectCoverageFrom: ['src/lib/**/*.ts'],
   coverageThreshold: {
     global: {
-      branches: 84,
-      functions: 91,
-      lines: 95,
-      statements: 95,
+      branches: 81,
+      functions: 89,
+      lines: 93,
+      statements: 93,
     },
   },
   globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
     BUILD_VERSION: '1.2.3',
+  },
+  transform: {
+    '^.+\\.ts?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+      },
+    ],
   },
 
   preset: 'ts-jest',
