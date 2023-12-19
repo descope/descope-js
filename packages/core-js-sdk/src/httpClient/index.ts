@@ -58,19 +58,27 @@ const createHttpClient = ({
 
     const { path, body, headers, queryParams, method, token } = requestConfig;
 
+    const requestInit: RequestInit = {
+      headers: mergeHeaders(
+        createAuthorizationHeader(projectId, token),
+        createDescopeHeaders(),
+        baseConfig?.baseHeaders || {},
+        headers,
+      ),
+      method,
+      body: serializeBody(body),
+    };
+
+    // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
+    // so we allow the caller to omit by specifying null
+    // See https://github.com/cloudflare/workerd/blob/main/src/workerd/api/http.h#L591
+    if (cookiePolicy !== null) {
+      requestInit.credentials = cookiePolicy || 'include';
+    }
+
     const res = await fetchWithLogger(
       urlBuilder({ path, baseUrl, queryParams }),
-      {
-        headers: mergeHeaders(
-          createAuthorizationHeader(projectId, token),
-          createDescopeHeaders(),
-          baseConfig?.baseHeaders || {},
-          headers
-        ),
-        method,
-        body: serializeBody(body),
-        credentials: cookiePolicy || 'include',
-      }
+      requestInit,
     );
 
     if (hooks?.afterRequest) {

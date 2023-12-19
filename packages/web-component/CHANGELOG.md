@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.0](https://github.com/descope/descope-js/compare/web-component-3.3.1...web-component-3.4.0) (2023-12-19)
+
+
+### Features
+
+* support password managers RELEASE ([#337](https://github.com/descope/descope-js/issues/337)) ([b1c3e48](https://github.com/descope/descope-js/commit/b1c3e48c3afb01884533015a37f669381695b24e))
+
 ## [3.3.1](https://github.com/descope/descope-js/compare/web-component-3.3.0...web-component-3.3.1) (2023-12-13)
 
 

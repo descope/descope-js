@@ -443,3 +443,8 @@ export const injectSamlIdpForm = (
 };
 
 export const submitForm = (formEle: HTMLFormElement) => formEle?.submit();
+
+export const getFirstNonEmptyValue = (obj: object, keys: string[]) => {
+  const firstNonEmptyKey = keys.find((key) => obj[key]);
+  return firstNonEmptyKey ? obj[firstNonEmptyKey] : null;
+};
