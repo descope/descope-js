@@ -21,12 +21,12 @@ export type HttpClient = {
   post: (
     path: string,
     body?: any,
-    config?: HttpClientReqConfig
+    config?: HttpClientReqConfig,
   ) => Promise<Response>;
   put: (
     path: string,
     body?: any,
-    config?: HttpClientReqConfig
+    config?: HttpClientReqConfig,
   ) => Promise<Response>;
   delete: (path: string, config?: HttpClientReqConfig) => Promise<Response>;
   hooks?: Hooks;
@@ -41,7 +41,7 @@ export type CreateHttpClientConfig = {
   baseConfig?: { baseHeaders: HeadersInit };
   logger?: Logger;
   hooks?: Hooks;
-  cookiePolicy?: RequestCredentials;
+  cookiePolicy?: RequestCredentials | null;
   fetch?: Fetch;
 };
 
@@ -58,7 +58,7 @@ export type RequestConfig = {
 export type BeforeRequest = (config: RequestConfig) => RequestConfig;
 export type AfterRequest = (
   req: RequestConfig,
-  res: Response
+  res: Response,
 ) => void | Promise<void>;
 
 /** Hooks before and after the request is made */
