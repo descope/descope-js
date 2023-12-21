@@ -16,7 +16,7 @@ describe('sdk', () => {
   describe('refresh', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.refresh({ a: 'b' })).toThrow(
-        '"token" must be string or undefined'
+        '"token" must be string or undefined',
       );
     });
     it('should send the correct request', () => {
@@ -37,7 +37,7 @@ describe('sdk', () => {
         {},
         {
           token: 'token',
-        }
+        },
       );
     });
   });
@@ -45,7 +45,7 @@ describe('sdk', () => {
   describe('selectTenant', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.selectTenant('tenantId', { a: 'b' })).toThrow(
-        '"token" must be string or undefined'
+        '"token" must be string or undefined',
       );
     });
     it('should send the correct request', () => {
@@ -68,7 +68,7 @@ describe('sdk', () => {
         },
         {
           token: 'token',
-        }
+        },
       );
     });
   });
@@ -119,13 +119,13 @@ describe('sdk', () => {
     it('should return empty permissions for tenant', () => {
       (jwtDecode as jest.Mock).mockImplementation(() => mock);
       expect(
-        sdk.getJwtPermissions('jwt', 'C2EdY4UXXzKPV0EKdZFJbuKKmvtl')
+        sdk.getJwtPermissions('jwt', 'C2EdY4UXXzKPV0EKdZFJbuKKmvtl'),
       ).toStrictEqual([]);
     });
     it('should return two roles for tenant', () => {
       (jwtDecode as jest.Mock).mockImplementation(() => mock);
       expect(
-        sdk.getJwtRoles('jwt', 'C2EdY4UXXzKPV0EKdZFJbuKKmvtl')
+        sdk.getJwtRoles('jwt', 'C2EdY4UXXzKPV0EKdZFJbuKKmvtl'),
       ).toStrictEqual(['abc', 'xyz']);
     });
     it('should return a list of tenants', () => {
@@ -140,7 +140,7 @@ describe('sdk', () => {
   describe('logout', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.logout({ a: 'b' })).toThrow(
-        '"token" must be string or undefined'
+        '"token" must be string or undefined',
       );
     });
 
@@ -164,7 +164,7 @@ describe('sdk', () => {
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.logout,
         {},
-        { token: 'token' }
+        { token: 'token' },
       );
     });
   });
@@ -172,7 +172,7 @@ describe('sdk', () => {
   describe('logoutAll', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.logoutAll({ a: 'b' })).toThrow(
-        '"token" must be string or undefined'
+        '"token" must be string or undefined',
       );
     });
     it('should send the correct request', () => {
@@ -191,7 +191,7 @@ describe('sdk', () => {
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.logoutAll,
         {},
-        { token: 'token' }
+        { token: 'token' },
       );
     });
   });
@@ -199,7 +199,7 @@ describe('sdk', () => {
   describe('me', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.me({ a: 'b' })).toThrow(
-        '"token" must be string or undefined'
+        '"token" must be string or undefined',
       );
     });
     it('should send the correct request', () => {

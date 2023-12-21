@@ -244,6 +244,7 @@ export type Options = {
   samlIdpUsername?: string;
   ssoAppId?: string;
   abTestingKey?: number;
+  startOptionsVersion?: number;
   client?: Record<string, any>;
 };
 

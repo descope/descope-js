@@ -129,9 +129,9 @@ describe('webauthnConditionalUi', () => {
       () =>
         expect(screen.getByShadowPlaceholderText('test')).toHaveAttribute(
           'name',
-          'user-test'
+          'user-test',
         ),
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
   });
 
@@ -150,7 +150,7 @@ describe('webauthnConditionalUi', () => {
 
     const input = await waitFor(
       () => screen.getByShadowPlaceholderText('test'),
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
 
     await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'), {
@@ -177,7 +177,7 @@ describe('webauthnConditionalUi', () => {
 
     const input = await waitFor(
       () => screen.getByShadowPlaceholderText('test'),
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
 
     await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'));
@@ -198,7 +198,7 @@ describe('webauthnConditionalUi', () => {
         action: RESPONSE_ACTIONS.webauthnCreate,
         webAuthnTransactionId: 't1',
         webAuthnOptions: 'options',
-      })
+      }),
     );
     isConditionalLoginSupportedMock.mockReturnValueOnce(true);
     isWebauthnSupportedMock.mockReturnValueOnce(true);
@@ -233,7 +233,7 @@ describe('webauthnConditionalUi', () => {
         action: RESPONSE_ACTIONS.webauthnCreate,
         webAuthnTransactionId: 't1',
         webAuthnOptions: 'options',
-      })
+      }),
     );
     isConditionalLoginSupportedMock.mockReturnValueOnce(true);
     isWebauthnSupportedMock.mockReturnValueOnce(true);
@@ -254,9 +254,9 @@ describe('webauthnConditionalUi', () => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Webauthn start failed',
           '',
-          expect.any(Error)
+          expect.any(Error),
         ),
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
   });
 
@@ -280,7 +280,7 @@ describe('webauthnConditionalUi', () => {
           response: 'response',
           transactionId: 'transactionId',
         }),
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
   });
 
@@ -300,7 +300,7 @@ describe('webauthnConditionalUi', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(document.querySelector('form')).toBeInTheDocument()
+      expect(document.querySelector('form')).toBeInTheDocument(),
     );
 
     Object.defineProperty(navigator, 'userAgent', {
@@ -325,7 +325,7 @@ describe('webauthnConditionalUi', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
-      expect(document.querySelector('form')).not.toBeInTheDocument()
+      expect(document.querySelector('form')).not.toBeInTheDocument(),
     );
 
     Object.defineProperty(navigator, 'userAgent', {
@@ -341,7 +341,7 @@ describe('webauthnConditionalUi', () => {
     document.body.innerHTML = `<form><h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc></form>`;
 
     await waitFor(() =>
-      expect(document.querySelectorAll('form').length).toBe(1)
+      expect(document.querySelectorAll('form').length).toBe(1),
     );
   });
 });

@@ -31,7 +31,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() + 1000,
-      })
+      }),
     );
 
     await ensureFingerprintIds('123');
@@ -51,7 +51,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() - 1000,
-      })
+      }),
     );
 
     await ensureFingerprintIds('123');
@@ -83,7 +83,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() - 1000,
-      })
+      }),
     );
 
     const requestId = getFingerprintData()[VISITOR_REQUEST_ID_PARAM];
@@ -104,7 +104,7 @@ describe('fingerprintUtils', () => {
       JSON.stringify({
         value: mockFingerprint,
         expiry: new Date().getTime() + 1000,
-      })
+      }),
     );
 
     clearFingerprintData();
