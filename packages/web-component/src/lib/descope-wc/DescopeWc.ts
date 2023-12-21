@@ -61,7 +61,7 @@ class DescopeWc extends BaseDescopeWc {
     updateOnlyOnChange: false,
   });
 
-  #currentInterval: NodeJS.Timeout;
+  #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
 
@@ -162,10 +162,6 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       ssoAppId,
     } = currentState;
-
-    if (this.#currentInterval) {
-      this.#resetCurrentInterval();
-    }
 
     let startScreenId: string;
     let conditionInteractionId: string;
@@ -367,19 +363,13 @@ class DescopeWc extends BaseDescopeWc {
       this.#handleSdkResponse(sdkResp);
     }
 
-    if (action === RESPONSE_ACTIONS.poll) {
-      this.#currentInterval = setInterval(async () => {
-        const sdkResp = await this.sdk.flow.next(
-          executionId,
-          stepId,
-          CUSTOM_INTERACTIONS.polling,
-          flowConfig.version,
-          projectConfig.componentsVersion,
-          {},
-        );
-        this.#handleSdkResponse(sdkResp);
-      }, 2000);
-    }
+    this.#handlePollingResponse(
+      executionId,
+      stepId,
+      action,
+      flowConfig.version,
+      projectConfig.componentsVersion,
+    );
 
     // if there is no screen id (possibly due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
@@ -475,14 +465,45 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
-  #resetCurrentInterval = () => {
-    clearInterval(this.#currentInterval);
-    this.#currentInterval = null;
+  #handlePollingResponse = (
+    executionId,
+    stepId,
+    action,
+    flowVersion,
+    componentsVersion,
+  ) => {
+    if (action === RESPONSE_ACTIONS.poll) {
+      // schedule next polling request for 2 seconds from now
+      this.#pollingTimeout = setTimeout(async () => {
+        const sdkResp = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          CUSTOM_INTERACTIONS.polling,
+          flowVersion,
+          componentsVersion,
+          {},
+        );
+        this.#handleSdkResponse(sdkResp);
+        const { action: nextAction } = sdkResp?.data ?? {};
+        // will poll again if needed
+        this.#handlePollingResponse(
+          executionId,
+          stepId,
+          flowVersion,
+          nextAction,
+          componentsVersion,
+        );
+      }, 2000);
+    }
+  };
+
+  #resetPollingTimeout = () => {
+    clearTimeout(this.#pollingTimeout);
+    this.#pollingTimeout = null;
   };
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
-      this.#resetCurrentInterval();
       this.#dispatch('error', sdkResp?.error);
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -508,7 +529,6 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       setLastAuth(lastAuth);
-      this.#resetCurrentInterval();
       this.#dispatch('success', authInfo);
       return;
     }
