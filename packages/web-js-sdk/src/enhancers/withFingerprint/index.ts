@@ -24,7 +24,7 @@ export const withFingerprint =
     if (!IS_BROWSER) {
       // eslint-disable-next-line no-console
       console.warn(
-        'Fingerprint is a client side only capability and will not work when running in the server'
+        'Fingerprint is a client side only capability and will not work when running in the server',
       );
       return createSdk(config);
     }
@@ -33,7 +33,7 @@ export const withFingerprint =
     if (fpKey && fpLoad) {
       ensureFingerprintIds(fpKey).catch(
         // istanbul ignore next
-        () => null
+        () => null,
       );
     }
 

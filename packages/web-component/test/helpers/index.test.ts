@@ -20,7 +20,7 @@ describe('helpers', () => {
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
           ok: false,
-        })
+        }),
       );
 
       expect(fetchContent('url', 'text')).rejects.toThrow();
@@ -31,7 +31,7 @@ describe('helpers', () => {
           ok: true,
           text: () => 'text',
           headers: new Headers({ h: '1' }),
-        })
+        }),
       );
 
       expect(fetchContent('url', 'text')).resolves.toMatchObject({
@@ -45,7 +45,7 @@ describe('helpers', () => {
           ok: true,
           text: () => 'text',
           headers: new Headers({ h: '1' }),
-        })
+        }),
       );
       fetchContent('url', 'text');
       expect(mockFetch).toHaveBeenCalledWith(expect.any(String), {
@@ -72,7 +72,7 @@ describe('helpers', () => {
     expect(pushState).toHaveBeenCalledWith(
       {},
       '',
-      `http://localhost/?${URL_RUN_IDS_PARAM_NAME}=exec_step`
+      `http://localhost/?${URL_RUN_IDS_PARAM_NAME}=exec_step`,
     );
   });
 
@@ -101,28 +101,28 @@ describe('helpers', () => {
     it('should return "false" on firefox', () => {
       mockBrowser(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0',
-        ''
+        '',
       );
       expect(isChromium()).toBe(false);
     });
     it('should return "true" on chrome', () => {
       mockBrowser(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-        'Google Inc.'
+        'Google Inc.',
       );
       expect(isChromium()).toBe(true);
     });
     it('should return "false" on safari', () => {
       mockBrowser(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15',
-        'Apple Computer, Inc.'
+        'Apple Computer, Inc.',
       );
       expect(isChromium()).toBe(false);
     });
     it('should return "true" on edge', () => {
       mockBrowser(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43',
-        'Google Inc.'
+        'Google Inc.',
       );
       expect(isChromium()).toBe(true);
     });
@@ -172,7 +172,7 @@ describe('handleAutoFocus', () => {
         querySelector: () => ({ focus: focusFn }),
       } as never as HTMLElement,
       true,
-      false
+      false,
     );
 
     await waitFor(() => expect(focusFn).toBeCalled());
@@ -186,7 +186,7 @@ describe('handleAutoFocus', () => {
         querySelector: () => ({ focus: focusFn }),
       } as never as HTMLElement,
       false,
-      true
+      true,
     );
 
     setTimeout(() => expect(focusFn).not.toBeCalled());
@@ -200,7 +200,7 @@ describe('handleAutoFocus', () => {
         querySelector: () => ({ focus: focusFn }),
       } as never as HTMLElement,
       'skipFirstScreen',
-      true
+      true,
     );
 
     setTimeout(() => expect(focusFn).not.toBeCalled());
@@ -214,7 +214,7 @@ describe('handleAutoFocus', () => {
         querySelector: () => ({ focus: focusFn }),
       } as never as HTMLElement,
       'skipFirstScreen',
-      false
+      false,
     );
 
     await waitFor(() => expect(focusFn).toBeCalled());

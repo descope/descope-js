@@ -55,37 +55,37 @@ describe('Flows', () => {
   describe('next', () => {
     it('should throw an error when executionId is not a string', () => {
       expect(() => sdk.flow.next(undefined, 's1', 'a1')).toThrow(
-        '"executionId" must be a string'
+        '"executionId" must be a string',
       );
     });
 
     it('should throw an error when executionId is empty', () => {
       expect(() => sdk.flow.next('', 's1', 'a1')).toThrow(
-        '"executionId" must not be empty'
+        '"executionId" must not be empty',
       );
     });
 
     it('should throw an error when stepId is not a string', () => {
       expect(() => sdk.flow.next('f1', undefined, 'a1')).toThrow(
-        '"stepId" must be a string'
+        '"stepId" must be a string',
       );
     });
 
     it('should throw an error when stepId is empty', () => {
       expect(() => sdk.flow.next('f1', '', 'a1')).toThrow(
-        '"stepId" must not be empty'
+        '"stepId" must not be empty',
       );
     });
 
     it('should throw an error when interactionId is not a string', () => {
       expect(() => sdk.flow.next('f1', 's1', undefined)).toThrow(
-        '"interactionId" must be a string'
+        '"interactionId" must be a string',
       );
     });
 
     it('should throw an error when interactionId is empty', () => {
       expect(() => sdk.flow.next('f1', 's1', '')).toThrow(
-        '"interactionId" must not be empty'
+        '"interactionId" must not be empty',
       );
     });
 

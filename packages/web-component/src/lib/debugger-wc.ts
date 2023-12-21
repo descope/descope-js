@@ -191,7 +191,7 @@ class Debugger extends HTMLElement {
       </div>
       <div class="chevron"></div>
     </div>
-  `
+  `,
       )
       .join('');
   }
@@ -225,7 +225,7 @@ class Debugger extends HTMLElement {
       this.#rootEle,
       Number.parseInt(this.#rootEle.style.left, 10),
       Number.parseInt(this.#rootEle.style.top, 10),
-      { top: 'all', bottom: 100, left: 100, right: 100 }
+      { top: 'all', bottom: 100, left: 100, right: 100 },
     );
     this.#rootEle.style.top = `${top}px`;
     this.#rootEle.style.left = `${left}px`;
