@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.4.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.3.0...core-js-sdk-2.4.0) (2023-12-21)
+
+
+### Features
+
+* allow caller to omit cookiePolicy ([#336](https://github.com/descope/descope-js/issues/336)) ([016eaa8](https://github.com/descope/descope-js/commit/016eaa88f02379fb9f9a9e6596b00c48572e9ca0)), closes [/github.com/cloudflare/workerd/blob/main/src/workerd/api/http.h#L591](https://github.com/descope//github.com/cloudflare/workerd/blob/main/src/workerd/api/http.h/issues/L591) [#338](https://github.com/descope/descope-js/issues/338)
+
+
+### Bug Fixes
+
+* Redirect url ([#299](https://github.com/descope/descope-js/issues/299)) ([e1ea11e](https://github.com/descope/descope-js/commit/e1ea11ead5ffe85f8c8cf5d2d1db704a2a5c26f9))
+
 ## [2.3.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.2.0...core-js-sdk-2.3.0) (2023-12-09)
 
 
