@@ -95,6 +95,7 @@ const setElementConfig = (
   logger?: { error: (message: string, description: string) => void }
 ) => {
   if (!componentsConfig) {
+    console.log('missing components config')
     return;
   }
   // collect components that needs configuration from DOM

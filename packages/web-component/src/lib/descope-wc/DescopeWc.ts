@@ -46,7 +46,7 @@ import BaseDescopeWc from './BaseDescopeWc';
 
 const DYNAMIC_DATA_MOCK = {
   tenant: {
-    'default-value': '1',
+    'default-value': 't1',
     data: [
       {
         label: 'tenant1',
@@ -182,7 +182,6 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       ssoAppId,
     } = currentState;
-
     if (this.#currentInterval) {
       this.#resetCurrentInterval();
     }
@@ -234,7 +233,7 @@ class DescopeWc extends BaseDescopeWc {
           ssoAppId,
         )
       ) {
-        const inputs: Record<string, any> = {};
+       const inputs: Record<string, any> = {};
         let exists = false;
         if (code) {
           exists = true;
@@ -264,9 +263,6 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           exists ? inputs : undefined,
         );
-
-        // todo: where to add this mock?
-        Object.assign(sdkResp.screen, { componentsConfig: DYNAMIC_DATA_MOCK });
 
         this.#handleSdkResponse(sdkResp);
         if (sdkResp?.data?.status !== 'completed') {
@@ -577,7 +573,8 @@ class DescopeWc extends BaseDescopeWc {
       redirectTo: redirect?.url,
       screenId: screen?.id,
       screenState: screen?.state,
-      screenComponentsConfig: screen?.componentsConfig,
+      screenComponentsConfig: DYNAMIC_DATA_MOCK,
+      // screenComponentsConfig: screen?.componentsConfig,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
       samlIdpResponseUrl: samlIdpResponse?.url,
@@ -752,7 +749,8 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
-      screenComponentsConfig,
+      // screenComponentsConfig,
+      Object.assign({}, screenComponentsConfig || {}, DYNAMIC_DATA_MOCK),
       this.errorTransformer,
       this.loggerWrapper,
     );
