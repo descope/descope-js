@@ -143,6 +143,7 @@ export type PasswordPolicyResponse = {
 export enum DeliveryPhone {
   sms = 'sms',
   whatsapp = 'whatsapp',
+  embedded = 'Embedded',
 }
 
 export enum DeliveryEmail {
