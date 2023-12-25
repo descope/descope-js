@@ -24,6 +24,7 @@ import {
   State,
   submitForm,
   withMemCache,
+  getFirstNonEmptyValue,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -50,19 +51,19 @@ const DYNAMIC_DATA_MOCK = {
     data: [
       {
         label: 'tenant1',
-        value: 't1'
+        value: 't1',
       },
       {
         label: 'tenant2',
-        value: 't2'
+        value: 't2',
       },
       {
         label: 'tenant3',
-        value: 't3'
-      }
-    ]
-  }
-}
+        value: 't3',
+      },
+    ],
+  },
+};
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -233,17 +234,6 @@ class DescopeWc extends BaseDescopeWc {
           ssoAppId,
         )
       ) {
-       const inputs: Record<string, any> = {};
-        let exists = false;
-        if (code) {
-          exists = true;
-          inputs.exchangeCode = code;
-          inputs.idpInitiated = true;
-        }
-        if (token) {
-          exists = true;
-          inputs.token = token;
-        }
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
@@ -253,6 +243,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
@@ -261,7 +252,11 @@ class DescopeWc extends BaseDescopeWc {
           '',
           flowConfig.version,
           projectConfig.componentsVersion,
-          exists ? inputs : undefined,
+          {
+            ...this.form,
+            ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
+            ...(token ? { token } : {}),
+          },
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -425,6 +420,10 @@ class DescopeWc extends BaseDescopeWc {
       direction: getAnimationDirection(+stepId, +prevState.stepId),
       screenState: {
         ...screenState,
+        form: {
+          ...this.form,
+          ...screenState?.form,
+        },
         lastAuth: {
           loginId,
           name: this.sdk.getLastUserDisplayName() || loginId,
@@ -469,6 +468,7 @@ class DescopeWc extends BaseDescopeWc {
             lastAuth,
             preview: this.preview,
             abTestingKey,
+            client: this.client,
             ...(redirectUrl && { redirectUrl }),
           },
           conditionInteractionId,
@@ -476,6 +476,7 @@ class DescopeWc extends BaseDescopeWc {
           version,
           componentsVersion,
           {
+            ...this.form,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(token && { token }),
@@ -675,7 +676,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async loadDescopeUiComponents(clone: DocumentFragment) {
-    const descopeUI = await this.descopeUI;
+    const descopeUI = await BaseDescopeWc.descopeUI;
     if (!descopeUI) return;
 
     const descopeUiComponentsList = getDescopeUiComponentsList(clone);
@@ -696,6 +697,7 @@ class DescopeWc extends BaseDescopeWc {
           return undefined;
         }
         try {
+          // eslint-disable-next-line @typescript-eslint/return-await
           return await descopeUI[tag]();
         } catch (e) {
           // this error is thrown when trying to register a component which is already registered
@@ -715,8 +717,14 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlUrl, htmlLocaleUrl, direction, next, screenState, screenComponentsConfig } =
-      currentState;
+    const {
+      htmlUrl,
+      htmlLocaleUrl,
+      direction,
+      next,
+      screenState,
+      screenComponentsConfig,
+    } = currentState;
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);
@@ -750,7 +758,7 @@ class DescopeWc extends BaseDescopeWc {
       clone,
       screenState,
       // screenComponentsConfig,
-      Object.assign({}, screenComponentsConfig || {}, DYNAMIC_DATA_MOCK),
+      { ...screenComponentsConfig || {}, ...DYNAMIC_DATA_MOCK},
       this.errorTransformer,
       this.loggerWrapper,
     );
@@ -855,6 +863,25 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
+  // handle storing passwords in password managers
+  #handleStoreCredentials(formData = {}) {
+    const idFields = ['externalId', 'email', 'phone'];
+    const passwordFields = ['newPassword', 'password'];
+
+    const id = getFirstNonEmptyValue(formData, idFields);
+    const password = getFirstNonEmptyValue(formData, passwordFields);
+
+    if (id && password) {
+      try {
+        const cred = new globalThis.PasswordCredential({ id, password });
+
+        navigator?.credentials?.store?.(cred);
+      } catch (e) {
+        this.loggerWrapper.error('Could not store credentials', e.message);
+      }
+    }
+  }
+
   async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
@@ -886,6 +913,8 @@ class DescopeWc extends BaseDescopeWc {
       );
 
       this.#handleSdkResponse(sdkResp);
+
+      this.#handleStoreCredentials(formData);
     }
   }
 

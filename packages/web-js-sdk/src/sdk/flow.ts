@@ -13,9 +13,12 @@ type Options = Pick<
   | 'ssoAppId'
   | 'preview'
   | 'abTestingKey'
+  | 'client'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
+
+const START_OPTIONS_VERSION_PREFER_START_REDIRECT_URL = 1;
 
 export default (coreSdk: CoreSdk) => ({
   ...coreSdk.flow,
@@ -23,12 +26,12 @@ export default (coreSdk: CoreSdk) => ({
   start: async (...args: ReplaceParam<CoreSdkFlowStartArgs, '1', Options>) => {
     const webAuthnSupport = await isSupported();
     const decoratedOptions = {
-      redirectUrl: window.location.href, // for backward compatibility
       location: window.location.href,
       ...args[1],
       deviceInfo: {
         webAuthnSupport,
       },
+      startOptionsVersion: START_OPTIONS_VERSION_PREFER_START_REDIRECT_URL,
     };
 
     args[1] = decoratedOptions;

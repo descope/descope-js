@@ -1,6 +1,7 @@
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
+  HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
 
@@ -76,6 +77,19 @@ const replaceElementTemplates = (
   });
 };
 
+const replaceTemplateDynamicAttrValues = (
+  baseEle: DocumentFragment,
+  screenState?: Record<string, any>,
+) => {
+  const eleList = baseEle.querySelectorAll(`[${HAS_DYNAMIC_VALUES_ATTR_NAME}]`);
+  eleList.forEach((ele: HTMLElement) => {
+    Array.from(ele.attributes).forEach((attr) => {
+      // eslint-disable-next-line no-param-reassign
+      attr.value = applyTemplates(attr.value, screenState);
+    });
+  });
+};
+
 const replaceProvisionURL = (
   baseEle: DocumentFragment,
   provisionUrl?: string,
@@ -92,10 +106,9 @@ const replaceProvisionURL = (
 const setElementConfig = (
   baseEle: DocumentFragment,
   componentsConfig: ComponentsConfig,
-  logger?: { error: (message: string, description: string) => void }
+  logger?: { error: (message: string, description: string) => void },
 ) => {
   if (!componentsConfig) {
-    console.log('missing components config')
     return;
   }
   // collect components that needs configuration from DOM
@@ -103,24 +116,26 @@ const setElementConfig = (
     baseEle.querySelectorAll(`[name=${componentName}]`).forEach((comp) => {
       const config = componentsConfig[componentName];
 
-      Object.keys(config).forEach(attr => {
+      Object.keys(config).forEach((attr) => {
         let value = config[attr];
-  
+
         if (typeof value !== 'string') {
           try {
-            value = JSON.stringify(value)
-          }
-          catch(e) {
-            logger.error(`Could not stringify value "${value}" for "${attr}"`, e.message);
+            value = JSON.stringify(value);
+          } catch (e) {
+            logger.error(
+              `Could not stringify value "${value}" for "${attr}"`,
+              e.message,
+            );
             value = '';
           }
         }
-  
+
         comp.setAttribute(attr, value);
       });
-    })
+    });
   });
-}
+};
 
 /**
  * Update a screen template based on the screen state
@@ -147,7 +162,8 @@ export const updateTemplateFromScreenState = (
   replaceElementMessage(baseEle, 'error-message', errorText);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
-  setElementConfig(baseEle, screenComponentsConfig, logger)
+  setElementConfig(baseEle, screenComponentsConfig, logger);
+  replaceTemplateDynamicAttrValues(baseEle, screenState);
 };
 
 /**

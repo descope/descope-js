@@ -185,7 +185,7 @@ export type FlowAction =
   | 'webauthnGet'
   | 'none';
 
-export type ComponentsConfig = Record<string, any>
+export type ComponentsConfig = Record<string, any>;
 
 /** Flow response with flow execution details */
 export type FlowResponse = {
@@ -247,6 +247,8 @@ export type Options = {
   samlIdpUsername?: string;
   ssoAppId?: string;
   abTestingKey?: number;
+  startOptionsVersion?: number;
+  client?: Record<string, any>;
 };
 
 export type ResponseData = Record<string, any>;

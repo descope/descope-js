@@ -36,7 +36,7 @@ describe('fingerprint', () => {
         headers: { test2: '123' },
         queryParams: { test2: '123' },
         token: 'session1',
-      }
+      },
     );
 
     expect(mockFetch).toHaveBeenCalledWith(
@@ -50,7 +50,7 @@ describe('fingerprint', () => {
         }),
         method: 'POST',
         credentials: 'include',
-      }
+      },
     );
   });
 
@@ -76,7 +76,7 @@ describe('fingerprint', () => {
     createSdk({ projectId: 'pid' });
 
     expect(warnSpy).not.toHaveBeenCalledWith(
-      'Fingerprint is a client side only capability and will not work when running in the server'
+      'Fingerprint is a client side only capability and will not work when running in the server',
     );
   });
 
@@ -101,7 +101,7 @@ describe('fingerprint', () => {
     jest.resetModules();
 
     expect(warnSpy).toHaveBeenCalledWith(
-      'Fingerprint is a client side only capability and will not work when running in the server'
+      'Fingerprint is a client side only capability and will not work when running in the server',
     );
   });
 });

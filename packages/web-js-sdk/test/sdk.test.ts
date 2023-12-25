@@ -18,11 +18,10 @@ describe('sdk', () => {
       expect.objectContaining({
         href: 'https://api.descope.com/v1/flow/start',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
-        redirectUrl: 'http://localhost/',
         location: 'http://localhost/',
         deviceInfo: { webAuthnSupport: false },
       },
@@ -41,6 +40,7 @@ describe('sdk', () => {
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
         redirectUrl: 'http://custom.redirect',
+        startOptionsVersion: 1,
       },
       flowId: 'id',
     });
@@ -57,7 +57,7 @@ describe('sdk', () => {
       expect.objectContaining({
         href: 'https://api.descope.com/v1/flow/start',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {

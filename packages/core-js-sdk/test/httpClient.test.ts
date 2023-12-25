@@ -53,7 +53,7 @@ describe('httpClient', () => {
           ...descopeHeaders,
         }),
         method: 'GET',
-      }
+      },
     );
   });
 
@@ -69,7 +69,7 @@ describe('httpClient', () => {
         text: expect.any(Function),
         json: expect.any(Function),
         clone: expect.any(Function),
-      })
+      }),
     );
   });
 
@@ -103,7 +103,7 @@ describe('httpClient', () => {
           'x-descope-sdk-version': globalThis.BUILD_VERSION,
         }),
         method: 'GET',
-      }
+      },
     );
   });
 
@@ -132,7 +132,35 @@ describe('httpClient', () => {
           ...descopeHeaders,
         }),
         method: 'GET',
-      }
+      },
+    );
+  });
+
+  it('should omit cookiePolicy when null is provided', () => {
+    const httpClient = createHttpClient({
+      baseUrl: 'http://descope.com',
+      projectId: '456',
+      baseConfig: { baseHeaders: { test: '123' } },
+      cookiePolicy: null,
+    });
+
+    httpClient.get('1/2/3', {
+      headers: { test2: '123' },
+      queryParams: { test2: '123' },
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      {
+        body: undefined,
+        headers: new Headers({
+          test2: '123',
+          test: '123',
+          Authorization: 'Bearer 456',
+          ...descopeHeaders,
+        }),
+        method: 'GET',
+      },
     );
   });
 
@@ -154,7 +182,7 @@ describe('httpClient', () => {
           ...descopeHeaders,
         }),
         method: 'GET',
-      }
+      },
     );
   });
 
@@ -179,9 +207,9 @@ describe('httpClient', () => {
             ...descopeHeaders,
           }),
           method: method.toUpperCase(),
-        }
+        },
       );
-    }
+    },
   );
 
   it('http delete called with correct parameters', () => {
@@ -203,13 +231,13 @@ describe('httpClient', () => {
           ...descopeHeaders,
         }),
         method: 'delete'.toUpperCase(),
-      }
+      },
     );
   });
 
   it('should not throw when not providing config or logger', () => {
     expect(
-      createHttpClient({ baseUrl: 'http://descope.com', projectId: '456' }).get
+      createHttpClient({ baseUrl: 'http://descope.com', projectId: '456' }).get,
     ).not.toThrow();
   });
 });
@@ -247,7 +275,7 @@ describe('createFetchLogger', () => {
         'Method: POST',
         'Headers: {"test":"123"}',
         'Body: reqBody',
-      ].join('\n')
+      ].join('\n'),
     );
   });
 
@@ -285,7 +313,7 @@ describe('createFetchLogger', () => {
         'Status: 200 OK',
         'Headers: {"header":"header"}',
         'Body: resBody',
-      ].join('\n')
+      ].join('\n'),
     );
   });
 
@@ -323,7 +351,7 @@ describe('createFetchLogger', () => {
         'Status: 200 OK',
         'Headers: {"header":"header"}',
         'Body: resBody',
-      ].join('\n')
+      ].join('\n'),
     );
   });
 

@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.1](https://github.com/descope/descope-js/compare/web-component-3.4.0...web-component-3.4.1) (2023-12-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.1`
+
+### Bug Fixes
+
+* Redirect url ([#299](https://github.com/descope/descope-js/issues/299)) ([e1ea11e](https://github.com/descope/descope-js/commit/e1ea11ead5ffe85f8c8cf5d2d1db704a2a5c26f9))
+
+## [3.4.0](https://github.com/descope/descope-js/compare/web-component-3.3.1...web-component-3.4.0) (2023-12-19)
+
+
+### Features
+
+* support password managers RELEASE ([#337](https://github.com/descope/descope-js/issues/337)) ([b1c3e48](https://github.com/descope/descope-js/commit/b1c3e48c3afb01884533015a37f669381695b24e))
+
+## [3.3.1](https://github.com/descope/descope-js/compare/web-component-3.3.0...web-component-3.3.1) (2023-12-13)
+
+
+### Bug Fixes
+
+* issue 4907 RELEASE ([#334](https://github.com/descope/descope-js/issues/334)) ([e81d572](https://github.com/descope/descope-js/commit/e81d572731d5c2ae1be96da55c57b5222d917dcf))
+
+## [3.3.0](https://github.com/descope/descope-js/compare/web-component-3.2.0...web-component-3.3.0) (2023-12-11)
+
+
+### Features
+
+* support dynamic attribute values RELEASE ([#333](https://github.com/descope/descope-js/issues/333)) ([7d0119a](https://github.com/descope/descope-js/commit/7d0119a1f02c2110a47db97d7f563cd13c3ead41))
+
+## [3.2.0](https://github.com/descope/descope-js/compare/web-component-3.1.6...web-component-3.2.0) (2023-12-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.0`
+
+### Features
+
+* add form and client custom flow inputs override ([#329](https://github.com/descope/descope-js/issues/329)) ([0d31a8d](https://github.com/descope/descope-js/commit/0d31a8dbd0e8e889e387fbc07246368f0cb6754d))
+
 ## [3.1.6](https://github.com/descope/descope-js/compare/web-component-3.1.5...web-component-3.1.6) (2023-12-05)
 
 
