@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.5.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.5.0...core-js-sdk-2.5.1) (2023-12-27)
+
+
+### Bug Fixes
+
+* Remove embedded from DeliveryPhone RELEASE ([#343](https://github.com/descope/descope-js/issues/343)) ([d1e4a42](https://github.com/descope/descope-js/commit/d1e4a42c6138bfafc66c3d76e2cfdf3ef01d4693))
+
 ## [2.5.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.4.0...core-js-sdk-2.5.0) (2023-12-27)
 
 
