@@ -851,39 +851,58 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  async #handleFormSubmit(
+    submitter: HTMLElement,
+    submitterId: string,
+    next: NextFn,
+  ) {
+    const formData = await this.#getFormData();
+    const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+    const contextArgs = this.getComponentsContext();
+
+    const actionArgs = {
+      ...contextArgs,
+      ...eleDescopeAttrs,
+      ...formData,
+      // 'origin' is required to start webauthn. For now we'll add it to every request
+      origin: window.location.origin,
+    };
+
+    const flowConfig = await this.getFlowConfig();
+    const projectConfig = await this.getProjectConfig();
+    const sdkResp = await next(
+      submitterId,
+      flowConfig.version,
+      projectConfig.componentsVersion,
+      actionArgs,
+    );
+
+    this.#handleSdkResponse(sdkResp);
+
+    this.#handleStoreCredentials(formData);
+  }
+
   async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
       this.#validateInputs()
     ) {
-      const submitterId = submitter?.getAttribute('id');
-
       this.#handleSubmitButtonLoader(submitter);
+      const submitterId = submitter?.getAttribute('id');
+      this.#handleFormSubmit(submitter, submitterId, next);
+    }
+  }
 
-      const formData = await this.#getFormData();
-      const eleDescopeAttrs = getElementDescopeAttributes(submitter);
-      const contextArgs = this.getComponentsContext();
-
-      const actionArgs = {
-        ...contextArgs,
-        ...eleDescopeAttrs,
-        ...formData,
-        // 'origin' is required to start webauthn. For now we'll add it to every request
-        origin: window.location.origin,
-      };
-
-      const flowConfig = await this.getFlowConfig();
-      const projectConfig = await this.getProjectConfig();
-      const sdkResp = await next(
-        submitterId,
-        flowConfig.version,
-        projectConfig.componentsVersion,
-        actionArgs,
-      );
-
-      this.#handleSdkResponse(sdkResp);
-
-      this.#handleStoreCredentials(formData);
+  async #handleAutoSubmit(
+    submitter: HTMLElement,
+    interactionId: string,
+    next: NextFn,
+  ) {
+    if (
+      submitter.getAttribute('formnovalidate') === 'true' ||
+      this.#validateInputs()
+    ) {
+      this.#handleFormSubmit(submitter, interactionId, next);
     }
   }
 
@@ -899,6 +918,14 @@ class DescopeWc extends BaseDescopeWc {
         button.onclick = () => {
           this.#handleSubmit(button, next);
         };
+      });
+
+    this.rootElement
+      .querySelectorAll(`descope-passcode[auto-submit="true"]`)
+      .forEach((passcode: HTMLElement) => {
+        passcode.addEventListener('valid', () => {
+          this.#handleAutoSubmit(passcode, CUSTOM_INTERACTIONS.verifyOtp, next);
+        });
       });
   }
 
