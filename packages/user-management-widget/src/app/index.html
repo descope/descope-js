@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Descope WC demo app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Uncomment next section if you want to test CSP -->
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self' static.descope.com api.descope.com;
+    style-src 'unsafe-inline' fonts.googleapis.com;
+    img-src static.descope.com content.app.descope.com;
+    font-src fonts.gstatic.com;
+    script-src 'self' static.descope.com cdn.jsdelivr.net;
+  "
+    /> -->
+    <style>
+      body {
+        background-color: antiquewhite;
+        position: relative;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        width: 500px;
+        min-height: 300px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="../lib/index.ts"></script>
+    <div class="login-container">
+      <user-management-widget
+        project-id="<project-id>"
+        flow-id="<flow-id>"
+        base-url="<base-url>"
+        locale="<locale>"
+        debug="true"
+      ></user-management-widget>
+      <user-management-widget
+        project-id="<project-id>"
+        flow-id="<flow-id>"
+        base-url="<base-url>"
+        locale="<locale>"
+        debug="true"
+      ></user-management-widget>
+    </div>
+  </body>
+</html>
