@@ -5,8 +5,8 @@ declare global {
   interface HTMLElement {
     attributeChangedCallback(
       attrName: string,
-      oldValue: string,
-      newValue: string,
+      oldValue: string | null,
+      newValue: string | null,
     ): void;
     connectedCallback(): void;
   }
@@ -14,15 +14,6 @@ declare global {
 
 const initMixin = (superclass: CustomElementConstructor) =>
   class InitMixinClass extends compose(themeMixin)(superclass) {
-    rootElement: HTMLElement;
-
-    constructor() {
-      super();
-
-      this.attachShadow({ mode: 'open' }).innerHTML = '<div id="root"></div>';
-      this.rootElement = this.shadowRoot.getElementById('root');
-    }
-
     // eslint-disable-next-line class-methods-use-this
     async getTemplate() {
       const template = document.createElement('template');
@@ -37,7 +28,7 @@ const initMixin = (superclass: CustomElementConstructor) =>
       const template = await this.getTemplate();
       await this.loadDescopeUiComponents(template.content);
 
-      this.rootElement.append(template.content.cloneNode(true));
+      this.contentRootElement.append(template.content.cloneNode(true));
     }
   };
 

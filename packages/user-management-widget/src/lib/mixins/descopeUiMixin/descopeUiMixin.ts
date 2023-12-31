@@ -203,9 +203,9 @@ export const descopeUiMixin = createSingletonMixin(
 
           this.#getDescopeUiLoadingScript().then((scriptEle) => {
             // eslint-disable-next-line no-param-reassign
-            scriptEle.onerror = this.logger.error;
+            scriptEle!.onerror = this.logger.error;
             // eslint-disable-next-line no-param-reassign
-            scriptEle.onload = () => {
+            scriptEle!.onload = () => {
               this.logger.debug('DescopeUI was loaded');
               res(globalThis.DescopeUI);
             };

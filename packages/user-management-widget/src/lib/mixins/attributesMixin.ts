@@ -2,7 +2,7 @@ import { compose } from '../helpers/compose';
 import { createSingletonMixin } from '../helpers/mixins';
 import { createValidateAttributesMixin } from './createValidateAttributesMixin';
 
-const onMissingAttr = (attrName: string, value: string) =>
+const onMissingAttr = (attrName: string, value: string | null) =>
   !value && `${attrName} cannot be empty`;
 
 export const attributesMixin = createSingletonMixin(

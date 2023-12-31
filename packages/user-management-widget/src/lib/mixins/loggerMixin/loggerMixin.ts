@@ -28,7 +28,7 @@ export const loggerMixin = createSingletonMixin(
         }, {}) as Logger;
       }
 
-      get logger() {
+      get logger(): Logger {
         return this.#logger;
       }
     },

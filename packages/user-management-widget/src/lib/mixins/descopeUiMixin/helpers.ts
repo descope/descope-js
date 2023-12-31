@@ -15,7 +15,7 @@ export const generateScriptUrl = (
 
 export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
   ...Array.from(clone.querySelectorAll('*')).reduce<Set<string>>(
-    (acc, el: HTMLElement) =>
+    (acc, el: Element) =>
       el.localName.startsWith('descope-') ? acc.add(el.localName) : acc,
     new Set(),
   ),

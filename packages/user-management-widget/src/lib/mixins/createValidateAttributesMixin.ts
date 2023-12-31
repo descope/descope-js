@@ -1,21 +1,25 @@
 import { compose } from '../helpers/compose';
-import { initMixin } from './initMixin';
+import { initLifecycleMixin } from './initLifecycleMixin';
 import { loggerMixin } from './loggerMixin';
 
 type OnAttrErrorFn = (
   attrName: string,
-  value: string,
-  prevValue: string,
+  value: string | null,
+  prevValue: string | null,
 ) => false | string;
 
 export const createValidateAttributesMixin =
   (mappings: Record<string, OnAttrErrorFn | string>) =>
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(loggerMixin, initMixin)(superclass);
+    const BaseClass = compose(loggerMixin, initLifecycleMixin)(superclass);
     const mappingsNames = Object.keys(mappings);
 
     return class ValidateAttributesMixinClass extends BaseClass {
-      #handleError(attrName: string, newValue: string, oldValue: string) {
+      #handleError(
+        attrName: string,
+        newValue: string | null,
+        oldValue: string | null,
+      ) {
         const onError = mappings[attrName];
 
         const error =
@@ -30,8 +34,8 @@ export const createValidateAttributesMixin =
 
       attributeChangedCallback = (
         attrName: string,
-        oldValue: string,
-        newValue: string,
+        oldValue: string | null,
+        newValue: string | null,
       ) => {
         super.attributeChangedCallback?.(attrName, oldValue, newValue);
 

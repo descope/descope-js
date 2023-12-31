@@ -3,15 +3,16 @@ import { createSingletonMixin } from '../../helpers/mixins';
 import { configMixin } from '../configMixin';
 import { createValidateAttributesMixin } from '../createValidateAttributesMixin';
 import { descopeUiMixin } from '../descopeUiMixin/descopeUiMixin';
-import { initMixin } from '../initMixin';
+import { initElementMixin } from '../initElementMixin';
+import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { THEME_FILENAME } from './constants';
 import { loadFont } from './helpers';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
-const themeValidation = (_: string, theme: string) =>
-  theme &&
+const themeValidation = (_: string, theme: string | null) =>
+  (theme || false) &&
   theme !== 'light' &&
   theme !== 'dark' &&
   'Supported theme values are "light", "dark", or leave empty for using the OS theme';
@@ -21,9 +22,10 @@ export const themeMixin = createSingletonMixin(
     const BaseClass = compose(
       createValidateAttributesMixin({ theme: themeValidation }),
       staticResourcesMixin,
-      initMixin,
+      initLifecycleMixin,
       descopeUiMixin,
       configMixin,
+      initElementMixin,
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
@@ -80,7 +82,7 @@ export const themeMixin = createSingletonMixin(
         styleEle.innerText =
           (theme?.light?.globals || '') + (theme?.dark?.globals || '');
 
-        this.shadowRoot.appendChild(styleEle);
+        this.shadowRoot!.appendChild(styleEle);
       }
 
       async #loadComponentsStyle() {
@@ -98,7 +100,8 @@ export const themeMixin = createSingletonMixin(
 
       async #loadFonts() {
         const { projectConfig } = await this.config;
-        const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
+        const fonts: Record<string, any> | undefined =
+          projectConfig?.cssTemplate?.[this.theme]?.fonts;
         if (fonts) {
           Object.values(fonts).forEach((font: Record<string, any>) => {
             if (font.url) {
@@ -110,10 +113,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #applyTheme() {
-        this.shadowRoot.firstElementChild?.setAttribute(
-          'data-theme',
-          this.theme,
-        );
+        this.contentRootElement.setAttribute('data-theme', this.theme);
         const descopeUi = await this.descopeUi;
         if (descopeUi?.componentsThemeManager) {
           descopeUi.componentsThemeManager.currentThemeName = this.theme;

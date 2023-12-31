@@ -1,14 +1,14 @@
 import { createSingletonMixin } from '../helpers/mixins';
 
-export const initMixin = createSingletonMixin(
+export const initLifecycleMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class InitMixinClass extends superclass {
+    class InitLifecycleMixinClass extends superclass {
       #isInit = true;
 
       connectedCallback() {
         super.connectedCallback?.();
 
-        if (this.shadowRoot.isConnected) {
+        if (this.shadowRoot?.isConnected) {
           // the init function is running once, on the first time the component is connected
           if (this.#isInit) {
             this.#isInit = false;
