@@ -1,6 +1,6 @@
 /** Default Descope API URL */
 export const BASE_URL_REGION_PLACEHOLDER = '<region>';
-export const DEFAULT_BASE_API_URL = `https://api.${BASE_URL_REGION_PLACEHOLDER}.descope.com`;
+export const DEFAULT_BASE_API_URL = `https://api.${BASE_URL_REGION_PLACEHOLDER}descope.com`;
 
 /** Default magic link polling interval for checking if the user clicked on the magic link */
 export const ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS = 1000; // 1 second
