@@ -5,7 +5,7 @@ export const urlBuilder = ({
   path,
   baseUrl,
   queryParams,
-  projectId
+  projectId,
 }: {
   path: string;
   baseUrl: string;
