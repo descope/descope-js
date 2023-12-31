@@ -8,3 +8,4 @@ export const ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS = 1000 * 60 * 10; // 10 minut
 
 /** API paths to the Descope service */
 export { default as apiPaths } from './apiPaths';
+export const BASE_URL_REGION_PLACEHOLDER = '<region>';
