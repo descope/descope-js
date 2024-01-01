@@ -77,7 +77,7 @@ const createHttpClient = ({
     }
 
     const res = await fetchWithLogger(
-      urlBuilder({ path, baseUrl, queryParams }),
+      urlBuilder({ path, baseUrl, queryParams, projectId }),
       requestInit,
     );
 

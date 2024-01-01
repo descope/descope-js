@@ -240,6 +240,34 @@ describe('httpClient', () => {
       createHttpClient({ baseUrl: 'http://descope.com', projectId: '456' }).get,
     ).not.toThrow();
   });
+
+  it('should extract region from the project id', () => {
+    const httpClient = createHttpClient({
+      baseUrl: 'http://api.<region>.descope.com',
+      projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+
+    httpClient.get('1/2/3', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL('http://api.use1.descope.com/1/2/3'),
+      expect.anything(),
+    );
+  });
+
+  it('should extract region from the project id when region is not provided', () => {
+    const httpClient = createHttpClient({
+      baseUrl: 'http://api.<region>.descope.com',
+      projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+
+    httpClient.get('1/2/3', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL('http://api.descope.com/1/2/3'),
+      expect.anything(),
+    );
+  });
 });
 
 describe('createFetchLogger', () => {

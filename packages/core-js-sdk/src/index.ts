@@ -34,6 +34,7 @@ export type {
   TOTPResponse,
   URLResponse,
   UserResponse,
+  LoginOptions,
 } from './sdk/types';
 export * from './utils';
 export { default as HttpStatusCodes } from './constants/httpStatusCodes';
