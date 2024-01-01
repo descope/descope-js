@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.4](https://github.com/descope/descope-js/compare/web-component-3.4.3...web-component-3.4.4) (2023-12-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.4`
+## [3.4.3](https://github.com/descope/descope-js/compare/web-component-3.4.2...web-component-3.4.3) (2023-12-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.3`
+## [3.4.2](https://github.com/descope/descope-js/compare/web-component-3.4.1...web-component-3.4.2) (2023-12-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.2`
+## [3.4.1](https://github.com/descope/descope-js/compare/web-component-3.4.0...web-component-3.4.1) (2023-12-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.1`
+
+### Bug Fixes
+
+* Redirect url ([#299](https://github.com/descope/descope-js/issues/299)) ([e1ea11e](https://github.com/descope/descope-js/commit/e1ea11ead5ffe85f8c8cf5d2d1db704a2a5c26f9))
+
 ## [3.4.0](https://github.com/descope/descope-js/compare/web-component-3.3.1...web-component-3.4.0) (2023-12-19)
 
 
