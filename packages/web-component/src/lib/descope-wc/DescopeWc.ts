@@ -45,25 +45,25 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
-const DYNAMIC_DATA_MOCK = {
-  tenant: {
-    'default-value': 't1',
-    data: [
-      {
-        label: 'tenant1',
-        value: 't1',
-      },
-      {
-        label: 'tenant2',
-        value: 't2',
-      },
-      {
-        label: 'tenant3',
-        value: 't3',
-      },
-    ],
-  },
-};
+// const DYNAMIC_DATA_MOCK = {
+//   tenant: {
+//     'default-value': 't1',
+//     data: [
+//       {
+//         label: 'tenant1',
+//         value: 't1',
+//       },
+//       {
+//         label: 'tenant2',
+//         value: 't2',
+//       },
+//       {
+//         label: 'tenant3',
+//         value: 't3',
+//       },
+//     ],
+//   },
+// };
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -757,8 +757,8 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
-      // screenComponentsConfig,
-      { ...(screenComponentsConfig || {}), ...DYNAMIC_DATA_MOCK },
+      screenComponentsConfig,
+      // { ...(screenComponentsConfig || {}), ...DYNAMIC_DATA_MOCK },
       this.errorTransformer,
       this.loggerWrapper,
     );
