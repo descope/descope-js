@@ -921,7 +921,7 @@ class DescopeWc extends BaseDescopeWc {
       });
 
     this.rootElement
-      .querySelectorAll(`descope-passcode[auto-submit="true"]`)
+      .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
       .forEach((passcode: HTMLElement) => {
         passcode.addEventListener('valid', () => {
           this.#handleAutoSubmit(passcode, CUSTOM_INTERACTIONS.verifyOtp, next);
