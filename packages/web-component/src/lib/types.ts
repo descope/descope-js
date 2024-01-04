@@ -49,6 +49,7 @@ export type FlowState = {
   webauthnOptions: string;
   redirectAuthCodeChallenge: string;
   redirectAuthCallbackUrl: string;
+  redirectAuthBackupCallbackUri: string;
   redirectAuthInitiator: string;
   oidcIdpStateId: string;
   deferredRedirect: boolean;
