@@ -690,6 +690,36 @@ describe('web-component', () => {
     await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
   });
 
+  it('When there is a passcode with auto-submit enabled, it auto-submits on input event if value is valid', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    globalThis.DescopeUI = {
+      'descope-passcode': jest.fn(),
+    };
+
+    pageContent =
+      '<descope-passcode data-auto-submit="true" data-testid="otp-code"></descope-passcode><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const codeComponent = screen.getByShadowTestId(
+      'otp-code',
+    ) as HTMLInputElement;
+    codeComponent.checkValidity = jest.fn(() => true);
+
+    fireEvent.input(codeComponent);
+
+    expect(startMock).toHaveBeenCalled();
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+  });
+
   it('should update the page messages when page is remaining the same but the state is updated', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(
