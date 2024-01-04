@@ -2171,7 +2171,11 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: null,
+            },
             tenant: undefined,
             lastAuth: {},
             samlIdpStateId: null,
