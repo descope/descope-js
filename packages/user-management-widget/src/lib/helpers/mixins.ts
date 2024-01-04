@@ -17,6 +17,8 @@ const getFunctionHash = (fn: Function) => {
 
 type Mixin = (superclass: CustomElementConstructor) => CustomElementConstructor;
 
+// because a single mixin can be a dependency for many other mixins, a mixin can be loaded multiple times
+// some mixins should not be loaded multiple times, wrapping a mixin with this fn ensures it will load only once
 export const createSingletonMixin = <T extends Mixin>(mixin: T): T => {
   const mixinNameSym = Symbol(getFunctionHash(mixin));
 

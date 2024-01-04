@@ -8,6 +8,7 @@ import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { THEME_FILENAME } from './constants';
 import { loadFont } from './helpers';
+import mockTheme from './mockTheme';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
@@ -86,7 +87,8 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadComponentsStyle() {
-        const theme = await this.#themeResource;
+        // TODO: remove mock
+        const theme = { ...await this.#themeResource, ...mockTheme};
         if (!theme) return;
 
         const descopeUi = await this.descopeUi;
@@ -100,10 +102,10 @@ export const themeMixin = createSingletonMixin(
 
       async #loadFonts() {
         const { projectConfig } = await this.config;
-        const fonts: Record<string, any> | undefined =
+        const fonts: Record<string, { url?: string }> | undefined =
           projectConfig?.cssTemplate?.[this.theme]?.fonts;
         if (fonts) {
-          Object.values(fonts).forEach((font: Record<string, any>) => {
+          Object.values(fonts).forEach((font) => {
             if (font.url) {
               this.logger.debug(`Loading font from URL "${font.url}"`);
               loadFont(font.url);
@@ -113,7 +115,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #applyTheme() {
-        this.contentRootElement.setAttribute('data-theme', this.theme);
+        this.rootElement.setAttribute('data-theme', this.theme);
         const descopeUi = await this.descopeUi;
         if (descopeUi?.componentsThemeManager) {
           descopeUi.componentsThemeManager.currentThemeName = this.theme;

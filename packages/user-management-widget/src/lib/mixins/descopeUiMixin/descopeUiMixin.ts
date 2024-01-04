@@ -185,8 +185,8 @@ export const descopeUiMixin = createSingletonMixin(
         return undefined;
       }
 
-      async loadDescopeUiComponents(clone: DocumentFragment) {
-        const descopeUiComponentsList = getDescopeUiComponentsList(clone);
+      async loadDescopeUiComponents(fragmentOrComponentNames: DocumentFragment | string[]) {
+        const descopeUiComponentsList = Array.isArray(fragmentOrComponentNames) ? fragmentOrComponentNames : getDescopeUiComponentsList(fragmentOrComponentNames);
 
         return Promise.all(
           descopeUiComponentsList.map((componentName: string) =>
