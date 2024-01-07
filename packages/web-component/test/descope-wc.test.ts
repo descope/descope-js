@@ -17,6 +17,7 @@ import {
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
@@ -2144,9 +2145,11 @@ describe('web-component', () => {
 
       const challenge = window.btoa('hash');
       const callback = 'https://mycallback.com';
+      const backupCallback = 'myapp://auth';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      const encodedBackupCallback = encodeURIComponent(backupCallback);
+      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2159,7 +2162,11 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: backupCallback,
+            },
             tenant: undefined,
             lastAuth: {},
           },
@@ -2194,7 +2201,11 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: null,
+            },
             tenant: undefined,
             lastAuth: {},
             samlIdpStateId: null,
