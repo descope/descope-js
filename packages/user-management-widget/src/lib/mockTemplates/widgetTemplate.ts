@@ -27,8 +27,9 @@ export default `
       st-host-width="auto"
     >
       <descope-button id="reset" mode="primary" variant="outline" size="md">Reset Password</descope-button>
-      <descope-button id="delete" mode="primary" variant="outline" size="md">Delete User</descope-button>
-      <descope-button id="add" mode="primary" variant="contained" size="md">Add User</descope-button>        </descope-container>
+      <descope-button id="delete" mode="primary" variant="outline" size="md">Delete</descope-button>
+      <descope-button id="add" mode="primary" variant="contained" size="md">+ User</descope-button>
+    </descope-container>
     </descope-container>
     <descope-grid
       bordered="true"
@@ -38,9 +39,8 @@ export default `
       style="width: 100%"
     >
       <descope-grid-selection-column frozen auto-width></descope-grid-selection-column>
-      <descope-grid-column path="loginId" header="Login ID" resizable></descope-grid-column>
-      <descope-grid-status-column path="status" header="Status" resizable status='["Active", "Inactive"]'></descope-grid-status-column>
-      <descope-grid-column path="displayName" header="Name" resizable></descope-grid-column>
+      <descope-grid-column path="id" header="Login ID" resizable></descope-grid-column>
+      <descope-grid-column path="firstName" header="Name" resizable></descope-grid-column>
       <descope-grid-column path="email" header="Email" resizable></descope-grid-column>
       <descope-grid-column path="phone" header="Phone" resizable></descope-grid-column>
     </descope-grid>
