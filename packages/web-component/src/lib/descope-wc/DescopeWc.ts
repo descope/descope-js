@@ -821,7 +821,7 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
+  #handleSubmitButtonLoader(submitter: HTMLElement) {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
@@ -853,59 +853,52 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async #handleFormSubmit(
-    submitter: HTMLElement,
-    submitterId: string,
-    next: NextFn,
-  ) {
-    const formData = await this.#getFormData();
-    const eleDescopeAttrs = getElementDescopeAttributes(submitter);
-    const contextArgs = this.getComponentsContext();
-
-    const actionArgs = {
-      ...contextArgs,
-      ...eleDescopeAttrs,
-      ...formData,
-      // 'origin' is required to start webauthn. For now we'll add it to every request
-      origin: window.location.origin,
-    };
-
-    const flowConfig = await this.getFlowConfig();
-    const projectConfig = await this.getProjectConfig();
-    const sdkResp = await next(
-      submitterId,
-      flowConfig.version,
-      projectConfig.componentsVersion,
-      actionArgs,
-    );
-
-    this.#handleSdkResponse(sdkResp);
-
-    this.#handleStoreCredentials(formData);
-  }
-
-  async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
+  async #handleSubmit(submitter: HTMLElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
       this.#validateInputs()
     ) {
-      this.#handleSubmitButtonLoader(submitter);
       const submitterId = submitter?.getAttribute('id');
-      this.#handleFormSubmit(submitter, submitterId, next);
+      this.#handleSubmitButtonLoader(submitter);
+
+      const formData = await this.#getFormData();
+      const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+      const contextArgs = this.getComponentsContext();
+
+      const actionArgs = {
+        ...contextArgs,
+        ...eleDescopeAttrs,
+        ...formData,
+        // 'origin' is required to start webauthn. For now we'll add it to every request
+        origin: window.location.origin,
+      };
+
+      const flowConfig = await this.getFlowConfig();
+      const projectConfig = await this.getProjectConfig();
+      const sdkResp = await next(
+        submitterId,
+        flowConfig.version,
+        projectConfig.componentsVersion,
+        actionArgs,
+      );
+
+      this.#handleSdkResponse(sdkResp);
+
+      this.#handleStoreCredentials(formData);
     }
   }
 
-  async #handleAutoSubmit(
-    submitter: HTMLElement,
-    interactionId: string,
-    next: NextFn,
-  ) {
-    if (
-      submitter.getAttribute('formnovalidate') === 'true' ||
-      this.#validateInputs()
-    ) {
-      this.#handleFormSubmit(submitter, interactionId, next);
-    }
+  #addPasscodeAutoSubmitListeners(next: NextFn) {
+    this.rootElement
+      .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
+      .forEach((passcode: HTMLInputElement) => {
+        passcode.addEventListener('input', () => {
+          const isValid = passcode.checkValidity?.();
+          if (isValid) {
+            this.#handleSubmit(passcode, next);
+          }
+        });
+      });
   }
 
   #hydrate(next: NextFn) {
@@ -922,20 +915,7 @@ class DescopeWc extends BaseDescopeWc {
         };
       });
 
-    this.rootElement
-      .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
-      .forEach((passcode: HTMLInputElement) => {
-        passcode.addEventListener('input', () => {
-          const isValid = passcode.checkValidity?.();
-          if (isValid) {
-            this.#handleAutoSubmit(
-              passcode,
-              CUSTOM_INTERACTIONS.verifyOtp,
-              next,
-            );
-          }
-        });
-      });
+    this.#addPasscodeAutoSubmitListeners(next);
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {

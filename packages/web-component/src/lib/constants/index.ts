@@ -33,7 +33,6 @@ export const RESPONSE_ACTIONS = {
 export const CUSTOM_INTERACTIONS = {
   submit: 'submit',
   polling: 'polling',
-  verifyOtp: 'verifyOtp',
 };
 
 export const HAS_DYNAMIC_VALUES_ATTR_NAME = 'data-has-dynamic-attr-values';
