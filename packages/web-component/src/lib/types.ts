@@ -26,6 +26,7 @@ export interface LastAuthState {
 export interface ScreenState {
   errorText?: string;
   errorType?: string;
+  componentsConfig: ComponentsConfig;
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;

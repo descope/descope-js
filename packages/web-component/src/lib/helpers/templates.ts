@@ -145,7 +145,7 @@ const setElementConfig = (
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
-  screenComponentsConfig?: ComponentsConfig,
+  componentsConfig?: ComponentsConfig,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
@@ -162,7 +162,7 @@ export const updateTemplateFromScreenState = (
   replaceElementMessage(baseEle, 'error-message', errorText);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
   replaceElementTemplates(baseEle, screenState);
-  setElementConfig(baseEle, screenComponentsConfig, logger);
+  setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
 };
 

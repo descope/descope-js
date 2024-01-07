@@ -45,25 +45,6 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
-// const DYNAMIC_DATA_MOCK = {
-//   tenant: {
-//     'default-value': 't1',
-//     data: [
-//       {
-//         label: 'tenant1',
-//         value: 't1',
-//       },
-//       {
-//         label: 'tenant2',
-//         value: 't2',
-//       },
-//       {
-//         label: 'tenant3',
-//         value: 't3',
-//       },
-//     ],
-//   },
-// };
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -574,7 +555,6 @@ class DescopeWc extends BaseDescopeWc {
       redirectTo: redirect?.url,
       screenId: screen?.id,
       screenState: screen?.state,
-      // screenComponentsConfig: DYNAMIC_DATA_MOCK,
       screenComponentsConfig: screen?.componentsConfig,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
@@ -723,7 +703,6 @@ class DescopeWc extends BaseDescopeWc {
       direction,
       next,
       screenState,
-      screenComponentsConfig,
     } = currentState;
 
     const stepTemplate = document.createElement('template');
@@ -757,8 +736,7 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
-      screenComponentsConfig,
-      // { ...(screenComponentsConfig || {}), ...DYNAMIC_DATA_MOCK },
+      screenState.componentsConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
