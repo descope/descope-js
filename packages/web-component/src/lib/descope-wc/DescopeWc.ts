@@ -152,6 +152,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOptions,
       redirectAuthCodeChallenge,
       redirectAuthCallbackUrl,
+      redirectAuthBackupCallbackUri,
       redirectAuthInitiator,
       oidcIdpStateId,
       locale,
@@ -178,6 +179,7 @@ class DescopeWc extends BaseDescopeWc {
         ? {
             callbackUrl: redirectAuthCallbackUrl,
             codeChallenge: redirectAuthCodeChallenge,
+            backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
 
