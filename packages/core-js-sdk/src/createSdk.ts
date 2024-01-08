@@ -30,7 +30,7 @@ const withMultipleHooks =
         beforeRequest?: BeforeRequest | BeforeRequest[];
         afterRequest?: AfterRequest | AfterRequest[];
       };
-    },
+    }
   ) => {
     const beforeRequestHooks = [].concat(config.hooks?.beforeRequest || []);
     const afterRequestHooks = [].concat(config.hooks?.afterRequest || []);
@@ -39,12 +39,12 @@ const withMultipleHooks =
       beforeRequestHooks?.reduce((acc, fn) => fn(acc), config);
     const afterRequest: AfterRequest = async (req, res) => {
       const results = await Promise.allSettled(
-        afterRequestHooks?.map((fn) => fn(req, res?.clone())),
+        afterRequestHooks?.map((fn) => fn(req, res?.clone()))
       );
       // eslint-disable-next-line no-console
       results.forEach(
         (result) =>
-          result.status === 'rejected' && config.logger?.error(result.reason),
+          result.status === 'rejected' && config.logger?.error(result.reason)
       );
     };
 
@@ -72,7 +72,7 @@ export default withSdkConfigValidations(
           cookiePolicy,
           baseConfig: { baseHeaders },
           fetch,
-        }),
-      ),
-  ),
+        })
+      )
+  )
 );
