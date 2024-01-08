@@ -7,6 +7,8 @@ export type Sdk = ReturnType<typeof createSdk>;
 
 export type SdkFlowNext = Sdk['flow']['next'];
 
+export type ComponentsConfig = Record<string, any>;
+
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never;
@@ -24,6 +26,7 @@ export interface LastAuthState {
 export interface ScreenState {
   errorText?: string;
   errorType?: string;
+  componentsConfig?: ComponentsConfig;
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;

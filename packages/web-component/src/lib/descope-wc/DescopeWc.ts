@@ -163,7 +163,6 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       ssoAppId,
     } = currentState;
-
     if (this.#currentInterval) {
       this.#resetCurrentInterval();
     }
@@ -730,6 +729,7 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
+      screenState.componentsConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
