@@ -34,24 +34,10 @@
   <body>
     <script type="module" src="../lib/descope-wc/index.ts"></script>
     <div class="login-container">
-      <!-- <descope-wc
+      <descope-wc
         project-id="<project-id>"
         flow-id="<flow-id>"
         base-url="<base-url>"
-        locale="<locale>"
-        debug="true"
-      ></descope-wc> -->
-      <descope-wc
-        project-id="P2Z7E5t7guVNDNpljcc2DGLD6WyG"
-        flow-id="sign-up-or-in"
-        base-url="http://localhost:8000"
-        locale="<locale>"
-        debug="true"
-      ></descope-wc>
-      <descope-wc
-        project-id="P2Z7E5t7guVNDNpljcc2DGLD6WyG"
-        flow-id="post-auth-flow"
-        base-url="http://localhost:8000"
         locale="<locale>"
         debug="true"
       ></descope-wc>
@@ -70,10 +56,8 @@
       descopeWcEle.addEventListener('error', (e) =>
         alert(`Error! - ${e.detail.errorMessage}`),
       );
-      descopeWcEle.addEventListener(
-        'success',
-        (e) => console.log('success', JSON.stringify(e.detail)),
-        // alert(`Success! - ${JSON.stringify(e.detail)}`),
+      descopeWcEle.addEventListener('success', (e) =>
+        alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
     </script>
   </body>
