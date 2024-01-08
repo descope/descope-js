@@ -3332,7 +3332,7 @@ describe('web-component', () => {
   });
 
   describe('componentsConfig', () => {
-    it('should bla', async () => {
+    it('should parse componentsConfig values to screen components', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValue(
         generateSdkResponse({
