@@ -3,7 +3,7 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
-import { ComponentsConfig, ScreenState } from '../types';
+import { ComponentsConfig, ILogger, ScreenState } from '../types';
 
 const replaceElementMessage = (
   baseEle: DocumentFragment,
@@ -106,7 +106,7 @@ const replaceProvisionURL = (
 const setElementConfig = (
   baseEle: DocumentFragment,
   componentsConfig: ComponentsConfig,
-  logger?: { error: (message: string, description: string) => void },
+  logger?: ILogger,
 ) => {
   if (!componentsConfig) {
     return;
