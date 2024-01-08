@@ -821,7 +821,7 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
+  #handleSubmitButtonLoader(submitter: HTMLElement) {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
@@ -853,13 +853,12 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
+  async #handleSubmit(submitter: HTMLElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
       this.#validateInputs()
     ) {
       const submitterId = submitter?.getAttribute('id');
-
       this.#handleSubmitButtonLoader(submitter);
 
       const formData = await this.#getFormData();
@@ -889,6 +888,19 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #addPasscodeAutoSubmitListeners(next: NextFn) {
+    this.rootElement
+      .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
+      .forEach((passcode: HTMLInputElement) => {
+        passcode.addEventListener('input', () => {
+          const isValid = passcode.checkValidity?.();
+          if (isValid) {
+            this.#handleSubmit(passcode, next);
+          }
+        });
+      });
+  }
+
   #hydrate(next: NextFn) {
     // hydrating the page
     // Adding event listeners to all buttons without the exclude attribute
@@ -902,6 +914,8 @@ class DescopeWc extends BaseDescopeWc {
           this.#handleSubmit(button, next);
         };
       });
+
+    this.#addPasscodeAutoSubmitListeners(next);
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {
