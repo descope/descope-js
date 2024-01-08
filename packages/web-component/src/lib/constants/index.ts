@@ -8,6 +8,8 @@ export const URL_CODE_PARAM_NAME = 'code';
 export const URL_ERR_PARAM_NAME = 'err';
 export const URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME = 'ra-challenge';
 export const URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME = 'ra-callback';
+export const URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME =
+  'ra-backup-callback';
 export const URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME = 'ra-initiator';
 export const DESCOPE_ATTRIBUTE_PREFIX = 'data-descope-';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_FIELD = 'data-exclude-field';

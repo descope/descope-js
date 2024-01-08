@@ -8,6 +8,7 @@ import {
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
@@ -135,12 +136,16 @@ export function getRedirectAuthFromUrl() {
   const redirectAuthCallbackUrl = getUrlParam(
     URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
   );
+  const redirectAuthBackupCallbackUri = getUrlParam(
+    URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
+  );
   const redirectAuthInitiator = getUrlParam(
     URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   );
   return {
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
+    redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
   };
 }
@@ -148,6 +153,7 @@ export function getRedirectAuthFromUrl() {
 export function clearRedirectAuthFromUrl() {
   resetUrlParam(URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME);
   resetUrlParam(URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME);
+  resetUrlParam(URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME);
   resetUrlParam(URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME);
 }
 
@@ -229,11 +235,13 @@ export const handleUrlParams = () => {
   const {
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
+    redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
   } = getRedirectAuthFromUrl();
   if (
     redirectAuthCodeChallenge ||
     redirectAuthCallbackUrl ||
+    redirectAuthBackupCallbackUri ||
     redirectAuthInitiator
   ) {
     clearRedirectAuthFromUrl();
@@ -267,6 +275,7 @@ export const handleUrlParams = () => {
     exchangeError,
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
+    redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
     oidcIdpStateId,
     samlIdpStateId,

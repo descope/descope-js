@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.5.0](https://github.com/descope/descope-js/compare/web-component-3.4.4...web-component-3.5.0) (2024-01-04)
+
+
+### Features
+
+* add backup callback to redirect auth RELEASE ([#347](https://github.com/descope/descope-js/issues/347)) ([646599f](https://github.com/descope/descope-js/commit/646599f01fe9400547cc81a83dd509d89dd34ad6))
+
 ## [3.4.4](https://github.com/descope/descope-js/compare/web-component-3.4.3...web-component-3.4.4) (2023-12-31)
 
 ### Dependency Updates
