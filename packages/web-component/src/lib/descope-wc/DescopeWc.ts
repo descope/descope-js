@@ -45,7 +45,6 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
-
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
   errorTransformer:
@@ -144,7 +143,6 @@ class DescopeWc extends BaseDescopeWc {
       action,
       screenId,
       screenState,
-      screenComponentsConfig,
       redirectTo,
       redirectUrl,
       token,
@@ -410,7 +408,6 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      screenComponentsConfig,
       htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
       htmlLocaleUrl:
         filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
@@ -555,7 +552,6 @@ class DescopeWc extends BaseDescopeWc {
       redirectTo: redirect?.url,
       screenId: screen?.id,
       screenState: screen?.state,
-      screenComponentsConfig: screen?.componentsConfig,
       webauthnTransactionId: webauthn?.transactionId,
       webauthnOptions: webauthn?.options,
       samlIdpResponseUrl: samlIdpResponse?.url,
@@ -697,13 +693,8 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const {
-      htmlUrl,
-      htmlLocaleUrl,
-      direction,
-      next,
-      screenState,
-    } = currentState;
+    const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
+      currentState;
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);

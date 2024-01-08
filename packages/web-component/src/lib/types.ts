@@ -26,7 +26,7 @@ export interface LastAuthState {
 export interface ScreenState {
   errorText?: string;
   errorType?: string;
-  componentsConfig: ComponentsConfig;
+  componentsConfig?: ComponentsConfig;
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
@@ -45,7 +45,6 @@ export type FlowState = {
   redirectUrl: string;
   screenId: string;
   screenState: ScreenState;
-  screenComponentsConfig: ComponentsConfig;
   token: string;
   code: string;
   exchangeError: string;
@@ -67,7 +66,6 @@ export type FlowState = {
 
 export type StepState = {
   screenState: ScreenState;
-  screenComponentsConfig: ComponentsConfig;
   htmlUrl: string;
   htmlLocaleUrl: string;
   next: NextFn;
