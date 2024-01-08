@@ -18,7 +18,7 @@ describe('sdk', () => {
       expect.objectContaining({
         href: 'https://api.descope.com/v1/flow/start',
       }),
-      expect.any(Object),
+      expect.any(Object)
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
@@ -63,7 +63,7 @@ describe('sdk', () => {
       options: {
         tenant: 'yo',
         preview: true,
-      },
+      }
     });
   });
 
