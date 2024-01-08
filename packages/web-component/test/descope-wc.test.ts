@@ -3319,4 +3319,31 @@ describe('web-component', () => {
       );
     });
   });
+
+  describe('componentsConfig', () => {
+    it('should bla', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsConfig: { customComponent: { value: 'val1' } },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="customComponent">`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => screen.getByShadowDisplayValue('val1'), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+  });
 });
