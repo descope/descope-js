@@ -60,12 +60,12 @@ export default [
     ],
     external,
   },
-  // {
-  //   input: './dist/dts/descope-wc/index.d.ts',
-  //   output: [{ file: 'dist/index.d.ts', format: 'esm' }],
-  //   plugins: [
-  //     dts(),
-  //     del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/esm/dts'] }),
-  //   ],
-  // },
+  {
+    input: './dist/dts/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    plugins: [
+      dts(),
+      del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/esm/dts'] }),
+    ],
+  },
 ];

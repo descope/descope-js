@@ -36,15 +36,12 @@ const stateMixin = createStateManagementMixin({
       state.selectedUsersIds = [];
     },
     updateTable: (state, { payload }) => {
-      // eslint-disable-next-line no-param-reassign
       state.usersList = payload;
     },
     setFilter: (state, { payload }) => {
-      // eslint-disable-next-line no-param-reassign
       state.filter = payload;
     },
     setSelectedUsersIds: (state, { payload }) => {
-      // eslint-disable-next-line no-param-reassign
       state.selectedUsersIds = payload;
     }
   }

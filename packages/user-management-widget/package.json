@@ -2,9 +2,9 @@
   "name": "@descope/user-management-widget",
   "version": "1.0.0",
   "author": "Descope Team <info@descope.com>",
-  "homepage": "https://github.com/descope/web-component",
+  "homepage": "https://github.com/descope/descope-js",
   "bugs": {
-    "url": "https://github.com/descope/web-component/issues",
+    "url": "https://github.com/descope/descope-js/issues",
     "email": "help@descope.com"
   },
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/descope/web-component.git"
+    "url": "https://github.com/descope/descope-js.git"
   },
   "files": [
     "dist"
