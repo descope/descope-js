@@ -17,6 +17,7 @@ import {
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
@@ -198,7 +199,7 @@ describe('web-component', () => {
         ok: false,
         requestErrorMessage: 'Not found',
         requestErrorDescription: 'Not found',
-      })
+      }),
     );
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
@@ -216,9 +217,9 @@ describe('web-component', () => {
               errorMessage: 'Not found',
               errorDescription: 'Not found',
             },
-          })
+          }),
         ),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
 
     wcEle.removeEventListener('error', onError);
@@ -253,13 +254,13 @@ describe('web-component', () => {
     });
 
     const themeStyleEle = shadowEle?.querySelector(
-      'style:last-child'
+      'style:last-child',
     ) as HTMLStyleElement;
     expect(themeStyleEle.innerText).toContain(
-      (themeContent as any).light.globals
+      (themeContent as any).light.globals,
     );
     expect(themeStyleEle.innerText).toContain(
-      (themeContent as any).dark.globals
+      (themeContent as any).dark.globals,
     );
   });
 
@@ -304,7 +305,7 @@ describe('web-component', () => {
     expect(autoFocusSpy).toBeCalledWith(
       expect.any(HTMLElement),
       'skipFirstScreen',
-      true
+      true,
     );
     autoFocusSpy.mockClear();
 
@@ -314,10 +315,10 @@ describe('web-component', () => {
         expect(autoFocusSpy).toBeCalledWith(
           expect.any(HTMLElement),
           'skipFirstScreen',
-          false
+          false,
         );
       },
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -342,17 +343,17 @@ describe('web-component', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
+      expect.any(Object),
     );
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(themeUrlPathRegex),
-      expect.any(Object)
+      expect.any(Object),
     );
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(configUrlPathRegex),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -379,7 +380,7 @@ describe('web-component', () => {
     });
 
     await expect(descope.connectedCallback.bind(descope)).rejects.toThrow(
-      'project-id cannot be empty'
+      'project-id cannot be empty',
     );
   });
 
@@ -405,7 +406,7 @@ describe('web-component', () => {
     });
 
     await expect(descope.connectedCallback.bind(descope)).rejects.toThrow(
-      'flow-id cannot be empty'
+      'flow-id cannot be empty',
     );
   });
 
@@ -481,8 +482,8 @@ describe('web-component', () => {
         {
           email: '',
           origin: 'http://localhost',
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -511,8 +512,8 @@ describe('web-component', () => {
         {
           t1: false,
           origin: 'http://localhost',
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -541,8 +542,8 @@ describe('web-component', () => {
         {
           t1: true,
           origin: 'http://localhost',
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -590,8 +591,8 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
           token,
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -643,8 +644,8 @@ describe('web-component', () => {
         'click',
         1,
         '1.2.3',
-        expect.any(Object)
-      )
+        expect.any(Object),
+      ),
     );
   });
 
@@ -692,10 +693,40 @@ describe('web-component', () => {
     await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
   });
 
+  it('When there is a passcode with auto-submit enabled, it auto-submits on input event if value is valid', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    globalThis.DescopeUI = {
+      'descope-passcode': jest.fn(),
+    };
+
+    pageContent =
+      '<descope-passcode data-auto-submit="true" data-testid="otp-code"></descope-passcode><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const codeComponent = screen.getByShadowTestId(
+      'otp-code',
+    ) as HTMLInputElement;
+    codeComponent.checkValidity = jest.fn(() => true);
+
+    fireEvent.input(codeComponent);
+
+    expect(startMock).toHaveBeenCalled();
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+  });
+
   it('should update the page messages when page is remaining the same but the state is updated', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(
-      generateSdkResponse({ screenState: { errorText: 'Error!' } })
+      generateSdkResponse({ screenState: { errorText: 'Error!' } }),
     );
 
     pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
@@ -715,14 +746,14 @@ describe('web-component', () => {
         screen.getByShadowText('Error!', {
           selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
         }),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
   it('should update page inputs according to screen state', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(
-      generateSdkResponse({ screenState: { inputs: { email: 'email1' } } })
+      generateSdkResponse({ screenState: { inputs: { email: 'email1' } } }),
     );
 
     pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="email">`;
@@ -768,7 +799,7 @@ describe('web-component', () => {
           image: 'data:;base64,example',
           origin: 'http://localhost',
         }),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -795,13 +826,13 @@ describe('web-component', () => {
           image: '',
           origin: 'http://localhost',
         }),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
   it('should update page templates according to screen state', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } })
+      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
     );
 
     pageContent = `<div>Loaded1</div><descope-text class="descope-text">hey {{user.name}}!</descope-text>`;
@@ -816,7 +847,7 @@ describe('web-component', () => {
 
   it('should update page templates according to last auth login ID when there is only login Id', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } })
+      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
     );
     getLastUserLoginIdMock.mockReturnValue('not john');
 
@@ -832,7 +863,7 @@ describe('web-component', () => {
 
   it('should update page templates according to last auth name when there is only login Id', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } })
+      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
     );
     getLastUserLoginIdMock.mockReturnValue('not john');
 
@@ -848,7 +879,7 @@ describe('web-component', () => {
 
   it('should update page templates according to last auth name when there is login Id and name', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } })
+      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
     );
     getLastUserLoginIdMock.mockReturnValue('not john');
     getLastUserDisplayNameMock.mockReturnValue('Niros!');
@@ -867,7 +898,7 @@ describe('web-component', () => {
 
   it('should update totp link href according to screen state', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { totp: { provisionUrl: 'url1' } } })
+      generateSdkResponse({ screenState: { totp: { provisionUrl: 'url1' } } }),
     );
 
     pageContent = `<div>Loaded1</div><descope-link data-type="totp-link">Provision URL</descope-link>`;
@@ -902,7 +933,7 @@ describe('web-component', () => {
 
   it('should update root css var according to screen state', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { totp: { image: 'base-64-text' } } })
+      generateSdkResponse({ screenState: { totp: { image: 'base-64-text' } } }),
     );
 
     const spyGet = jest.spyOn(customElements, 'get');
@@ -924,7 +955,7 @@ describe('web-component', () => {
         expect(rootEle).toHaveStyle({
           '--url': 'url(data:image/jpg;base64,base-64-text)',
         }),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -948,7 +979,7 @@ describe('web-component', () => {
     fireEvent.popState(window);
 
     await waitFor(() =>
-      expect(logSpy).toHaveBeenCalledWith('No screen was found to show', '')
+      expect(logSpy).toHaveBeenCalledWith('No screen was found to show', ''),
     );
   });
 
@@ -973,9 +1004,9 @@ describe('web-component', () => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Cannot get config file',
           'Make sure that your projectId & flowId are correct',
-          expect.any(Error)
+          expect.any(Error),
         ),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -1001,7 +1032,7 @@ describe('web-component', () => {
     const spyAddEventListener = jest.spyOn(rootEle, 'addEventListener');
 
     spyAddEventListener.mockImplementationOnce(
-      (_, cb) => typeof cb === 'function' && cb({} as Event)
+      (_, cb) => typeof cb === 'function' && cb({} as Event),
     );
 
     await waitFor(() => screen.findByShadowText('It updated!'), {
@@ -1020,7 +1051,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
         token: 'token1',
-      })
+      }),
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -1038,7 +1069,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
         exchangeCode: 'code1',
-      })
+      }),
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -1056,7 +1087,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
         exchangeError: 'err1',
-      })
+      }),
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -1085,7 +1116,7 @@ describe('web-component', () => {
         attr1: 'attr1',
         attr2: 'attr2',
         origin: 'http://localhost',
-      })
+      }),
     );
   });
 
@@ -1096,7 +1127,7 @@ describe('web-component', () => {
       () =>
         new Promise((res) => {
           resolve = res;
-        })
+        }),
     );
 
     pageContent = `<descope-button type="button" id="123" ${DESCOPE_ATTRIBUTE_PREFIX}attr1='attr1' ${DESCOPE_ATTRIBUTE_PREFIX}attr2='attr2'>Click</descope-button>`;
@@ -1110,14 +1141,17 @@ describe('web-component', () => {
     fireEvent.click(screen.getByShadowText('Click'));
 
     await waitFor(() =>
-      expect(screen.getByShadowText('Click')).toHaveAttribute('loading', 'true')
+      expect(screen.getByShadowText('Click')).toHaveAttribute(
+        'loading',
+        'true',
+      ),
     );
 
     resolve(generateSdkResponse({ screenId: '1' }));
 
     await waitFor(
       () => expect(screen.getByShadowText('Click')).not.toHaveClass('loading'),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -1126,7 +1160,7 @@ describe('web-component', () => {
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
         redirectUrl: 'https://myurl.com',
-      })
+      }),
     );
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
@@ -1135,11 +1169,11 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(window.location.assign).toHaveBeenCalledWith(
-          'https://myurl.com'
+          'https://myurl.com',
         ),
       {
         timeout: WAIT_TIMEOUT,
-      }
+      },
     );
   });
 
@@ -1148,7 +1182,7 @@ describe('web-component', () => {
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
         redirectUrl: 'https://myurl.com',
-      })
+      }),
     );
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
@@ -1158,7 +1192,7 @@ describe('web-component', () => {
       () => expect(window.location.assign).toHaveBeenCalledTimes(1),
       {
         timeout: WAIT_TIMEOUT,
-      }
+      },
     );
   });
 
@@ -1166,7 +1200,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
-      })
+      }),
     );
 
     const errorSpy = jest.spyOn(console, 'error');
@@ -1178,9 +1212,9 @@ describe('web-component', () => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Did not get redirect url',
           '',
-          expect.any(Error)
+          expect.any(Error),
         ),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -1189,7 +1223,7 @@ describe('web-component', () => {
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
         redirectUrl: 'https://myurl.com',
-      })
+      }),
     );
 
     // Start hidden (in background)
@@ -1209,7 +1243,7 @@ describe('web-component', () => {
       timeout: WAIT_TIMEOUT,
     });
     expect(window.location.assign).not.toHaveBeenCalledWith(
-      'https://myurl.com'
+      'https://myurl.com',
     );
 
     // Back to the foreground
@@ -1218,11 +1252,11 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(window.location.assign).toHaveBeenCalledWith(
-          'https://myurl.com'
+          'https://myurl.com',
         ),
       {
         timeout: WAIT_TIMEOUT,
-      }
+      },
     );
   });
 
@@ -1231,7 +1265,7 @@ describe('web-component', () => {
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
         redirectUrl: 'https://myurl.com',
-      })
+      }),
     );
 
     // Start hidden (in background)
@@ -1253,11 +1287,11 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(window.location.assign).toHaveBeenCalledWith(
-          'https://myurl.com'
+          'https://myurl.com',
         ),
       {
         timeout: WAIT_TIMEOUT,
-      }
+      },
     );
   });
 
@@ -1265,7 +1299,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.webauthnCreate,
-      })
+      }),
     );
 
     const errorSpy = jest.spyOn(console, 'error');
@@ -1277,9 +1311,9 @@ describe('web-component', () => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Did not get webauthn transaction id or options',
           '',
-          expect.any(Error)
+          expect.any(Error),
         ),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -1289,21 +1323,21 @@ describe('web-component', () => {
         action: RESPONSE_ACTIONS.webauthnCreate,
         webAuthnTransactionId: 't1',
         webAuthnOptions: 'options',
-      })
+      }),
     );
     pageContent = '<span>It works!</span>';
 
     nextMock.mockReturnValueOnce(generateSdkResponse());
 
     sdk.webauthn.helpers.create.mockReturnValueOnce(
-      Promise.resolve('webauthn-response')
+      Promise.resolve('webauthn-response'),
     );
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
 
     await waitFor(
       () => expect(sdk.webauthn.helpers.create).toHaveBeenCalled(),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
     expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
       transactionId: 't1',
@@ -1317,7 +1351,7 @@ describe('web-component', () => {
         action: RESPONSE_ACTIONS.webauthnGet,
         webAuthnTransactionId: 't1',
         webAuthnOptions: 'options',
-      })
+      }),
     );
 
     pageContent = '<span>It works!</span>';
@@ -1325,7 +1359,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse());
 
     sdk.webauthn.helpers.get.mockReturnValueOnce(
-      Promise.resolve('webauthn-response-get')
+      Promise.resolve('webauthn-response-get'),
     );
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
@@ -1345,7 +1379,7 @@ describe('web-component', () => {
         action: RESPONSE_ACTIONS.webauthnGet,
         webAuthnTransactionId: 't1',
         webAuthnOptions: 'options',
-      })
+      }),
     );
 
     pageContent = '<span>It works!</span>';
@@ -1353,7 +1387,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse());
 
     sdk.webauthn.helpers.get.mockReturnValueOnce(
-      Promise.reject(new DOMException('', 'NotAllowedError'))
+      Promise.reject(new DOMException('', 'NotAllowedError')),
     );
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
@@ -1381,8 +1415,8 @@ describe('web-component', () => {
 
     await waitFor(() =>
       expect(
-        document.head.querySelector(`link[href="font.url"]`)
-      ).toBeInTheDocument()
+        document.head.querySelector(`link[href="font.url"]`),
+      ).toBeInTheDocument(),
     );
   });
 
@@ -1408,7 +1442,7 @@ describe('web-component', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -1504,7 +1538,7 @@ describe('web-component', () => {
     });
 
     await expect(descope.connectedCallback.bind(descope)).rejects.toThrow(
-      `Supported theme values are "light", "dark", or leave empty for using the OS theme`
+      `Supported theme values are "light", "dark", or leave empty for using the OS theme`,
     );
   });
 
@@ -1523,7 +1557,7 @@ describe('web-component', () => {
     const buttonEle = await screen.findByShadowText('click');
 
     const inputEle = screen.getByShadowPlaceholderText(
-      'email'
+      'email',
     ) as HTMLInputElement;
 
     inputEle.reportValidity = jest.fn();
@@ -1558,8 +1592,8 @@ describe('web-component', () => {
         '',
         0,
         '1.2.3',
-        {}
-      )
+        {},
+      ),
     );
   });
 
@@ -1584,8 +1618,8 @@ describe('web-component', () => {
         '',
         0,
         '1.2.3',
-        { email: 'test', 'form.email': 'test' }
-      )
+        { email: 'test', 'form.email': 'test' },
+      ),
     );
   });
 
@@ -1607,7 +1641,7 @@ describe('web-component', () => {
           stepId: 's1',
           screenId: '1',
           action: RESPONSE_ACTIONS.poll,
-        })
+        }),
       );
 
       nextMock.mockReturnValueOnce(generateSdkResponse());
@@ -1631,7 +1665,7 @@ describe('web-component', () => {
       nextMock.mockReturnValueOnce(
         generateSdkResponse({
           action: RESPONSE_ACTIONS.poll,
-        })
+        }),
       );
 
       pageContent = '<div data-type="polling">...</div><span>It works!</span>';
@@ -1644,7 +1678,7 @@ describe('web-component', () => {
           expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 2000),
         {
           timeout: WAIT_TIMEOUT,
-        }
+        },
       );
     });
 
@@ -1654,7 +1688,7 @@ describe('web-component', () => {
       nextMock.mockReturnValueOnce(
         generateSdkResponse({
           action: RESPONSE_ACTIONS.poll,
-        })
+        }),
       );
 
       pageContent =
@@ -1670,11 +1704,11 @@ describe('web-component', () => {
             CUSTOM_INTERACTIONS.polling,
             1,
             '1.2.3',
-            {}
+            {},
           ),
         {
           timeout: WAIT_TIMEOUT,
-        }
+        },
       );
 
       // Reset mock to ensure it is triggered again with polling
@@ -1682,7 +1716,7 @@ describe('web-component', () => {
       nextMock.mockReturnValueOnce(
         generateSdkResponse({
           action: RESPONSE_ACTIONS.poll,
-        })
+        }),
       );
 
       // Click another button, which returns the same screen
@@ -1697,11 +1731,11 @@ describe('web-component', () => {
             CUSTOM_INTERACTIONS.polling,
             1,
             '1.2.3',
-            {}
+            {},
           ),
         {
           timeout: WAIT_TIMEOUT,
-        }
+        },
       );
     });
 
@@ -1713,7 +1747,7 @@ describe('web-component', () => {
       nextMock.mockReturnValue(
         generateSdkResponse({
           action: RESPONSE_ACTIONS.poll,
-        })
+        }),
       );
 
       pageContent = '<div data-type="polling">...</div><span>It works!</span>';
@@ -1735,12 +1769,12 @@ describe('web-component', () => {
         .mockReturnValueOnce(
           generateSdkResponse({
             action: RESPONSE_ACTIONS.poll,
-          })
+          }),
         )
         .mockReturnValueOnce(
           generateSdkResponse({
             status: 'completed',
-          })
+          }),
         );
 
       pageContent = '<div data-type="polling">...</div><span>It works!</span>';
@@ -1761,11 +1795,11 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' })
+            expect.objectContaining({ detail: 'auth info' }),
           ),
         {
           timeout: WAIT_TIMEOUT,
-        }
+        },
       );
 
       wcEle.removeEventListener('success', onSuccess);
@@ -1780,7 +1814,7 @@ describe('web-component', () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       localStorage.setItem(
         DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-        '{"authMethod":"otp"}'
+        '{"authMethod":"otp"}',
       );
       getLastUserLoginIdMock.mockReturnValue('abc');
 
@@ -1816,7 +1850,7 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -1824,7 +1858,7 @@ describe('web-component', () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       localStorage.setItem(
         DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-        '{"authMethod":"otp"}'
+        '{"authMethod":"otp"}',
       );
 
       configContent = {
@@ -1859,7 +1893,7 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -1867,7 +1901,7 @@ describe('web-component', () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       localStorage.setItem(
         DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-        '{"authMethod":"otp"}'
+        '{"authMethod":"otp"}',
       );
       getLastUserLoginIdMock.mockReturnValue('abc');
 
@@ -1924,15 +1958,15 @@ describe('web-component', () => {
           'interactionId',
           1,
           '1.2.3',
-          { origin: 'http://localhost' }
-        )
+          { origin: 'http://localhost' },
+        ),
       );
     });
     it('Should call start with code and idpInitiated when idpInitiated condition is met', async () => {
       window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
       localStorage.setItem(
         DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-        '{"authMethod":"otp"}'
+        '{"authMethod":"otp"}',
       );
       getLastUserLoginIdMock.mockReturnValue('abc');
       configContent = {
@@ -1978,8 +2012,8 @@ describe('web-component', () => {
           {
             exchangeCode: 'code1',
             idpInitiated: true,
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -2016,7 +2050,7 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -2024,7 +2058,7 @@ describe('web-component', () => {
       window.location.search = `?${URL_TOKEN_PARAM_NAME}=code1`;
       localStorage.setItem(
         DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-        '{"authMethod":"otp"}'
+        '{"authMethod":"otp"}',
       );
       getLastUserLoginIdMock.mockReturnValue('abc');
       configContent = {
@@ -2068,8 +2102,8 @@ describe('web-component', () => {
           undefined,
           {
             token: 'code1',
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -2105,7 +2139,7 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -2116,9 +2150,11 @@ describe('web-component', () => {
 
       const challenge = window.btoa('hash');
       const callback = 'https://mycallback.com';
+      const backupCallback = 'myapp://auth';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      const encodedBackupCallback = encodeURIComponent(backupCallback);
+      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2132,7 +2168,11 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: backupCallback,
+            },
             tenant: undefined,
             lastAuth: {},
           },
@@ -2140,8 +2180,8 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          {}
-        )
+          {},
+        ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -2168,7 +2208,11 @@ describe('web-component', () => {
             abTestingKey,
             oidcIdpStateId: null,
             oidcLoginHint: null,
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: null,
+            },
             tenant: undefined,
             lastAuth: {},
             samlIdpStateId: null,
@@ -2180,8 +2224,8 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          { token }
-        )
+          { token },
+        ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -2218,8 +2262,8 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          {}
-        )
+          {},
+        ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -2345,8 +2389,8 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          {}
-        )
+          {},
+        ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -2385,8 +2429,8 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          {}
-        )
+          {},
+        ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -2453,8 +2497,8 @@ describe('web-component', () => {
           '',
           0,
           '1.2.3',
-          {}
-        )
+          {},
+        ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -2496,8 +2540,8 @@ describe('web-component', () => {
         '1.2.3',
         {
           externalId: 'dummyUser',
-        }
-      )
+        },
+      ),
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -2580,8 +2624,8 @@ describe('web-component', () => {
         {
           exchangeCode: 'code1',
           idpInitiated: true,
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -2644,8 +2688,8 @@ describe('web-component', () => {
         {
           exchangeCode: 'code1',
           idpInitiated: true,
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -2653,7 +2697,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     localStorage.setItem(
       DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-      '{"authMethod":"otp"}'
+      '{"authMethod":"otp"}',
     );
     getLastUserLoginIdMock.mockReturnValue('abc');
 
@@ -2703,14 +2747,14 @@ describe('web-component', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
   it('Should fetch else screen when else is met', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     localStorage.setItem(
       DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-      '{"authMethod":"otp"}'
+      '{"authMethod":"otp"}',
     );
     getLastUserLoginIdMock.mockReturnValue('');
 
@@ -2766,7 +2810,7 @@ describe('web-component', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(htmlUrlPathRegex),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -2777,7 +2821,7 @@ describe('web-component', () => {
       generateSdkResponse({
         ok: true,
         status: 'completed',
-      })
+      }),
     );
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id=1></descope-wc>`;
@@ -2791,9 +2835,9 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' })
+          expect.objectContaining({ detail: 'auth info' }),
         ),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
 
     wcEle.removeEventListener('success', onSuccess);
@@ -2807,7 +2851,7 @@ describe('web-component', () => {
         screenState: {
           form: { varName: 'varValue' },
         },
-      })
+      }),
     );
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id=1></descope-wc>`;
@@ -2816,12 +2860,12 @@ describe('web-component', () => {
       () => screen.getByShadowPlaceholderText('email'),
       {
         timeout: WAIT_TIMEOUT,
-      }
+      },
     );
 
     await waitFor(
       () => expect(inputEle).toHaveAttribute('testAttr', 'varValue'),
-      { timeout: WAIT_TIMEOUT }
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -2847,17 +2891,17 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -2893,20 +2937,20 @@ describe('web-component', () => {
 
         expect(fetchMock).toHaveBeenCalledWith(
           expect.stringMatching(htmlUrlPathRegex),
-          expect.any(Object)
+          expect.any(Object),
         );
 
         expect(fetchMock).toHaveBeenCalledWith(
           expect.stringMatching(themeUrlPathRegex),
-          expect.any(Object)
+          expect.any(Object),
         );
 
         expect(fetchMock).toHaveBeenCalledWith(
           expect.stringMatching(configUrlPathRegex),
-          expect.any(Object)
+          expect.any(Object),
         );
       },
-      WAIT_TIMEOUT
+      WAIT_TIMEOUT,
     );
 
     it('should fetch the data from the correct path when locale provided and not part of target locales', async () => {
@@ -2939,17 +2983,17 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -2988,17 +3032,17 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       Object.defineProperty(navigator, 'language', {
@@ -3041,17 +3085,17 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       Object.defineProperty(navigator, 'language', {
@@ -3095,17 +3139,17 @@ describe('web-component', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       Object.defineProperty(navigator, 'language', {
@@ -3154,29 +3198,29 @@ describe('web-component', () => {
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
       const htmlUrlFallbackPathRegex = new RegExp(
-        `//[^/]+${expectedHtmlFallbackPath}$`
+        `//[^/]+${expectedHtmlFallbackPath}$`,
       );
       const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
       const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(htmlUrlFallbackPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(themeUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringMatching(configUrlPathRegex),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       Object.defineProperty(navigator, 'language', {
@@ -3198,7 +3242,7 @@ describe('web-component', () => {
           samlIdpResponseUrl: samlUrl,
           samlIdpResponseSamlResponse: 'saml-response-dummy-value',
           samlIdpResponseRelayState: 'saml-relay-state-dummy-value',
-        })
+        }),
       );
 
       const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
@@ -3217,14 +3261,14 @@ describe('web-component', () => {
         },
         {
           timeout: 6000,
-        }
+        },
       )) as HTMLFormElement;
 
       expect(form).toBeInTheDocument();
 
       // validate inputs exist
       const inputSamlResponse = document.querySelector(
-        `form[action="${samlUrl}"] input[role="saml-response"]`
+        `form[action="${samlUrl}"] input[role="saml-response"]`,
       );
       expect(inputSamlResponse).toBeInTheDocument();
       expect(inputSamlResponse).not.toBeVisible();
@@ -3232,7 +3276,7 @@ describe('web-component', () => {
 
       // validate inputs are hidden
       const inputSamlRelayState = document.querySelector(
-        `form[action="${samlUrl}"] input[role="saml-relay-state"]`
+        `form[action="${samlUrl}"] input[role="saml-relay-state"]`,
       );
       expect(inputSamlRelayState).toBeInTheDocument();
       expect(inputSamlRelayState).not.toBeVisible();
@@ -3242,7 +3286,7 @@ describe('web-component', () => {
         () => {
           expect(mockSubmitForm).toHaveBeenCalledTimes(1);
         },
-        { timeout: 6000 }
+        { timeout: 6000 },
       );
     });
 
@@ -3251,7 +3295,7 @@ describe('web-component', () => {
         generateSdkResponse({
           ok: true,
           executionId: 'e1',
-        })
+        }),
       );
       nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
@@ -3272,7 +3316,7 @@ describe('web-component', () => {
         () => screen.findAllByShadowDisplayValue(samlIdpEmailAddress),
         {
           timeout: 6000,
-        }
+        },
       );
 
       expect(inputs.length).toBe(2);
@@ -3298,8 +3342,8 @@ describe('web-component', () => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Cannot load DescopeUI',
           expect.any(String),
-          expect.any(Error)
-        )
+          expect.any(Error),
+        ),
       );
     });
     it('should try to load all descope component on the page', async () => {
@@ -3318,9 +3362,9 @@ describe('web-component', () => {
       await waitFor(
         () =>
           Object.keys(globalThis.DescopeUI).forEach((key) =>
-            expect(globalThis.DescopeUI[key]).toHaveBeenCalled()
+            expect(globalThis.DescopeUI[key]).toHaveBeenCalled(),
           ),
-        { timeout: WAIT_TIMEOUT }
+        { timeout: WAIT_TIMEOUT },
       );
     });
     it('should log an error if descope component is missing', async () => {
@@ -3338,9 +3382,9 @@ describe('web-component', () => {
           expect(errorSpy).toHaveBeenCalledWith(
             'Cannot load UI component "descope-button1"',
             expect.any(String),
-            expect.any(Error)
+            expect.any(Error),
           ),
-        { timeout: 5100 }
+        { timeout: 5100 },
       );
     });
     it('should not load components which are already loaded', async () => {
@@ -3351,7 +3395,7 @@ describe('web-component', () => {
 
       customElements.define(
         'descope-test-button',
-        class extends HTMLElement {}
+        class extends HTMLElement {},
       );
 
       const DescopeUI = { 'descope-test-button': jest.fn() };
@@ -3395,8 +3439,35 @@ describe('web-component', () => {
             id: '1@1.com',
             password: 'pass',
           }),
-        { timeout: WAIT_TIMEOUT }
+        { timeout: WAIT_TIMEOUT },
       );
+    });
+  });
+
+  describe('componentsConfig', () => {
+    it('should parse componentsConfig values to screen components', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsConfig: { customComponent: { value: 'val1' } },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="customComponent">`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => screen.getByShadowDisplayValue('val1'), {
+        timeout: WAIT_TIMEOUT,
+      });
     });
   });
 });

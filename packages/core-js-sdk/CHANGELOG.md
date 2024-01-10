@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.7.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.6.0...core-js-sdk-2.7.0) (2024-01-08)
+
+
+### Features
+
+* componentsConfig ([#331](https://github.com/descope/descope-js/issues/331)) ([9bfd05b](https://github.com/descope/descope-js/commit/9bfd05b99d6dffa0db8fff2f002105548904bc09))
+
+## [2.6.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.5.1...core-js-sdk-2.6.0) (2023-12-31)
+
+
+### Features
+
+* Extract region from project ID ([#344](https://github.com/descope/descope-js/issues/344)) ([bfd167a](https://github.com/descope/descope-js/commit/bfd167a659be634bf207682c9798a9c0299be815))
+
 ## [2.5.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.5.0...core-js-sdk-2.5.1) (2023-12-27)
 
 
