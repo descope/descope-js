@@ -162,6 +162,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
       ssoAppId,
+      oidcLoginHint,
     } = currentState;
     if (this.#currentInterval) {
       this.#resetCurrentInterval();
@@ -213,6 +214,7 @@ class DescopeWc extends BaseDescopeWc {
           samlIdpStateId,
           samlIdpUsername,
           ssoAppId,
+          oidcLoginHint,
         )
       ) {
         const sdkResp = await this.sdk.flow.start(
@@ -224,6 +226,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            oidcLoginHint,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
@@ -237,6 +240,7 @@ class DescopeWc extends BaseDescopeWc {
             ...this.form,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(token ? { token } : {}),
+            ...(oidcLoginHint ? { externalId: oidcLoginHint } : {}),
           },
         );
 
@@ -414,12 +418,13 @@ class DescopeWc extends BaseDescopeWc {
       htmlLocaleUrl:
         filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
       samlIdpUsername,
+      oidcLoginHint,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId is not empty, this optimization doesn't happen
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint is not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (
       showFirstScreenOnExecutionInit(
@@ -428,6 +433,7 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpStateId,
         samlIdpUsername,
         ssoAppId,
+        oidcLoginHint,
       )
     ) {
       stepStateUpdate.next = (
@@ -445,6 +451,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            oidcLoginHint,
             lastAuth,
             preview: this.preview,
             abTestingKey,
