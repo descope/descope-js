@@ -59,6 +59,7 @@ export type FlowState = {
   samlIdpResponseRelayState: string;
   samlIdpUsername: string;
   ssoAppId: string;
+  oidcLoginHint: string;
 };
 
 export type StepState = {
@@ -68,6 +69,7 @@ export type StepState = {
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
+  oidcLoginHint: string;
 };
 
 export type DebugState = {

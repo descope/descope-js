@@ -243,6 +243,7 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  oidcLoginHint?: string;
   abTestingKey?: number;
   startOptionsVersion?: number;
   client?: Record<string, any>;

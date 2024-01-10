@@ -13,6 +13,7 @@ import {
   SAML_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  OIDC_LOGIN_HINT_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -48,7 +49,7 @@ function resetUrlParam(paramName: string) {
 
 export async function fetchContent<T extends 'text' | 'json'>(
   url: string,
-  returnType: T,
+  returnType: T
 ): Promise<{
   body: T extends 'json' ? Record<string, any> : string;
   headers: Record<string, string>;
@@ -69,7 +70,7 @@ const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); /
 export function getContentUrl(
   projectId: string,
   filename: string,
-  assetsFolder = ASSETS_FOLDER,
+  assetsFolder = ASSETS_FOLDER
 ) {
   const url = new URL(BASE_CONTENT_URL);
   url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
@@ -130,13 +131,13 @@ export function clearExchangeErrorFromUrl() {
 
 export function getRedirectAuthFromUrl() {
   const redirectAuthCodeChallenge = getUrlParam(
-    URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
+    URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME
   );
   const redirectAuthCallbackUrl = getUrlParam(
-    URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+    URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME
   );
   const redirectAuthInitiator = getUrlParam(
-    URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
+    URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME
   );
   return {
     redirectAuthCodeChallenge,
@@ -183,6 +184,14 @@ export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getOIDCLoginHintParamFromUrl() {
+  return getUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
+}
+
+export function clearOIDCLoginHintParamFromUrl() {
+  resetUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -194,7 +203,7 @@ export const createIsChanged =
 export const getElementDescopeAttributes = (ele: HTMLElement) =>
   Array.from(ele?.attributes || []).reduce((acc, attr) => {
     const descopeAttrName = new RegExp(
-      `^${DESCOPE_ATTRIBUTE_PREFIX}(\\S+)$`,
+      `^${DESCOPE_ATTRIBUTE_PREFIX}(\\S+)$`
     ).exec(attr.name)?.[1];
 
     return !descopeAttrName
@@ -259,6 +268,11 @@ export const handleUrlParams = () => {
     clearSSOAppIdParamFromUrl();
   }
 
+  const oidcLoginHint = getOIDCLoginHintParamFromUrl();
+  if (oidcLoginHint) {
+    clearOIDCLoginHintParamFromUrl();
+  }
+
   return {
     executionId,
     stepId,
@@ -272,6 +286,7 @@ export const handleUrlParams = () => {
     samlIdpStateId,
     samlIdpUsername,
     ssoAppId,
+    oidcLoginHint,
   };
 };
 
@@ -304,7 +319,7 @@ export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
 export const handleAutoFocus = (
   ele: HTMLElement,
   autoFocus: AutoFocusOptions,
-  isFirstScreen: boolean,
+  isFirstScreen: boolean
 ) => {
   if (
     autoFocus === true ||
@@ -337,7 +352,7 @@ export const handleAutoFocus = (
 export function timeoutPromise<T>(
   timeout: number,
   promise: Promise<T>,
-  fallback?: T,
+  fallback?: T
 ): Promise<T> {
   return new Promise((resolve, reject) => {
     let expired = false;
@@ -369,7 +384,7 @@ export function timeoutPromise<T>(
 export const getChromiumVersion = (): number => {
   const brands = (navigator as any)?.userAgentData?.brands;
   const found = brands?.find(
-    ({ brand, version }) => brand === 'Chromium' && parseFloat(version),
+    ({ brand, version }) => brand === 'Chromium' && parseFloat(version)
   );
   return found ? found.version : 0;
 };
@@ -383,16 +398,19 @@ export const showFirstScreenOnExecutionInit = (
   samlIdpStateId: string,
   samlIdpUsername: string,
   ssoAppId: string,
+  oidcLoginHint: string
 ): boolean => {
   const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
   const optimizeIfMissingSAMLParams =
     startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
   const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
+  const optimizeIfMissingOIDCLoginHintParams = startScreenId && !oidcLoginHint; // return true if oidcLoginHint is empty
 
   return (
     optimizeIfMissingOIDCParams &&
     optimizeIfMissingSAMLParams &&
-    optimizeIfMissingSSOParams
+    optimizeIfMissingSSOParams &&
+    optimizeIfMissingOIDCLoginHintParams
   );
 };
 
@@ -426,7 +444,7 @@ export const injectSamlIdpForm = (
   url: string,
   samlResponse: string,
   relayState: string,
-  submitCallback: (form: HTMLFormElement) => void,
+  submitCallback: (form: HTMLFormElement) => void
 ) => {
   const formEle = document.createElement('form');
   formEle.method = 'POST';
