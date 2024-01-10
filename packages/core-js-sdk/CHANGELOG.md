@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.7.0...core-js-sdk-2.8.0) (2024-01-10)
+
+
+### Features
+
+* support oidc login hint ([#349](https://github.com/descope/descope-js/issues/349)) ([c3d53b7](https://github.com/descope/descope-js/commit/c3d53b7208db916478e9ac71a57180ea210224cc))
+
 ## [2.7.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.6.0...core-js-sdk-2.7.0) (2024-01-08)
 
 
