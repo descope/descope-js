@@ -25,6 +25,7 @@ import {
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
+  OIDC_LOGIN_HINT_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -573,6 +574,7 @@ describe('web-component', () => {
           lastAuth: {},
           redirectUrl: 'http://custom.url',
           oidcIdpStateId: null,
+          oidcLoginHint: null,
           preview: false,
           samlIdpStateId: null,
           samlIdpUsername: null,
@@ -1943,6 +1945,7 @@ describe('web-component', () => {
             abTestingKey,
             lastAuth: { authMethod: 'otp' },
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -1993,6 +1996,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2083,6 +2087,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             redirectAuth: undefined,
             tenant: undefined,
             lastAuth: { authMethod: 'otp' },
@@ -2158,6 +2163,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2201,6 +2207,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             redirectAuth: {
               callbackUrl: callback,
               codeChallenge: challenge,
@@ -2242,6 +2249,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: 'abcdefgh',
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2368,6 +2376,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2407,6 +2416,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: 'dummyUser',
             ssoAppId: null,
@@ -2474,6 +2484,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: 'abcdefgh',
@@ -2494,6 +2505,76 @@ describe('web-component', () => {
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
+  });
+
+  it('should call start with oidc idp with oidcLoginHint flag and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+
+    const oidcStateId = 'abcdefgh';
+    const encodedOidcStateId = encodeURIComponent(oidcStateId);
+    const oidcLoginHint = 'dummyUser';
+    const encodedOidcLoginHint = encodeURIComponent(oidcLoginHint);
+    window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_LOGIN_HINT_PARAM_NAME}=${encodedOidcLoginHint}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          abTestingKey,
+          oidcIdpStateId: 'abcdefgh',
+          oidcLoginHint: 'dummyUser',
+          samlIdpStateId: null,
+          samlIdpUsername: null,
+          ssoAppId: null,
+          client: {},
+          tenant: undefined,
+          redirectAuth: undefined,
+          lastAuth: {},
+        },
+        undefined,
+        '',
+        0,
+        '1.2.3',
+        {
+          externalId: 'dummyUser',
+        },
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with oidc idp with loginHint when there is a start screen is configured', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      flows: {
+        'sign-in': { startScreenId: 'screen-0' },
+      },
+    };
+
+    pageContent =
+      '<descope-button>click</descope-button><span>It works!</span>';
+
+    const oidcLoginHint = 'abcdefgh';
+    const encodedOidcLoginHint = encodeURIComponent(oidcLoginHint);
+    window.location.search = `?${OIDC_LOGIN_HINT_PARAM_NAME}=${encodedOidcLoginHint}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
   it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
@@ -2527,6 +2608,7 @@ describe('web-component', () => {
         {
           abTestingKey,
           oidcIdpStateId: null,
+          oidcLoginHint: null,
           samlIdpStateId: null,
           samlIdpUsername: null,
           ssoAppId: null,
@@ -2590,6 +2672,7 @@ describe('web-component', () => {
         {
           abTestingKey,
           oidcIdpStateId: null,
+          oidcLoginHint: null,
           samlIdpStateId: null,
           samlIdpUsername: null,
           ssoAppId: null,

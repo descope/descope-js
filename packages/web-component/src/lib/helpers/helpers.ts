@@ -14,6 +14,7 @@ import {
   SAML_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  OIDC_LOGIN_HINT_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -189,6 +190,14 @@ export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getOIDCLoginHintParamFromUrl() {
+  return getUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
+}
+
+export function clearOIDCLoginHintParamFromUrl() {
+  resetUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -267,6 +276,11 @@ export const handleUrlParams = () => {
     clearSSOAppIdParamFromUrl();
   }
 
+  const oidcLoginHint = getOIDCLoginHintParamFromUrl();
+  if (oidcLoginHint) {
+    clearOIDCLoginHintParamFromUrl();
+  }
+
   return {
     executionId,
     stepId,
@@ -281,6 +295,7 @@ export const handleUrlParams = () => {
     samlIdpStateId,
     samlIdpUsername,
     ssoAppId,
+    oidcLoginHint,
   };
 };
 
@@ -392,16 +407,19 @@ export const showFirstScreenOnExecutionInit = (
   samlIdpStateId: string,
   samlIdpUsername: string,
   ssoAppId: string,
+  oidcLoginHint: string,
 ): boolean => {
   const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
   const optimizeIfMissingSAMLParams =
     startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
   const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
+  const optimizeIfMissingOIDCLoginHintParams = startScreenId && !oidcLoginHint; // return true if oidcLoginHint is empty
 
   return (
     optimizeIfMissingOIDCParams &&
     optimizeIfMissingSAMLParams &&
-    optimizeIfMissingSSOParams
+    optimizeIfMissingSSOParams &&
+    optimizeIfMissingOIDCLoginHintParams
   );
 };
 
