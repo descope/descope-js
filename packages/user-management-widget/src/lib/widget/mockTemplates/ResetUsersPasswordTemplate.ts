@@ -17,7 +17,6 @@ export default `
     st-justify-content="flex-end"
     st-gap="1rem"
     st-host-width="100%"
-    st-background-color="#eeeef0"
     st-horizontal-padding="0rem"
     st-vertical-padding="0rem"
   >

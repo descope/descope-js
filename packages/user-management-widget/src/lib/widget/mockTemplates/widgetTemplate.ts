@@ -23,7 +23,7 @@ export default `
       st-horizontal-padding="0rem"
       st-vertical-padding="0rem"
       st-justify-content="flex-end"
-      st-gap="1rem"
+      st-gap="0.5em"
       st-host-width="auto"
     >
       <descope-button id="reset" mode="primary" variant="outline" size="md">Reset Password</descope-button>
@@ -39,10 +39,10 @@ export default `
       style="width: 100%"
     >
       <descope-grid-selection-column frozen auto-width></descope-grid-selection-column>
-      <descope-grid-column path="id" header="Login ID" resizable></descope-grid-column>
-      <descope-grid-column path="firstName" header="Name" resizable></descope-grid-column>
-      <descope-grid-column path="email" header="Email" resizable></descope-grid-column>
-      <descope-grid-column path="phone" header="Phone" resizable></descope-grid-column>
+      <descope-grid-text-column path="loginIds" header="Login ID" resizable></descope-grid-text-column>
+      <descope-grid-text-column path="name" header="Name" resizable></descope-grid-text-column>
+      <descope-grid-text-column path="email" header="Email" resizable></descope-grid-text-column>
+      <descope-grid-text-column path="phone" header="Phone" resizable></descope-grid-text-column>
     </descope-grid>
   </descope-container>
 `;

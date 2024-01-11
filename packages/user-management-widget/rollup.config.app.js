@@ -37,11 +37,9 @@ export default {
       transform: (contents) =>
         contents
           .replaceAll('<project-id>', process.env.DESCOPE_PROJECT_ID || '')
-          .replaceAll(
-            '<flow-id>',
-            process.env.DESCOPE_FLOW_ID || 'sign-up-or-in',
-          )
+          .replaceAll('<flow-id>',process.env.DESCOPE_FLOW_ID || 'sign-up-or-in')
           .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
+          .replaceAll('<mgmt-key>', process.env.DESCOPE_MGMT_KEY || '')
           .replaceAll('<locale>', process.env.DESCOPE_LOCALE || ''),
     }),
   ],

@@ -1,4 +1,4 @@
-import { pathJoin } from '../../helpers';
+import { pathJoin } from '../../helpers/generic';
 import { compose } from '../../helpers/compose';
 import { createSingletonMixin } from '../../helpers/mixins';
 import { attributesMixin } from '../attributesMixin';
