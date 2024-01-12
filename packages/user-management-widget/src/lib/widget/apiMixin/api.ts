@@ -2,8 +2,7 @@ import createWebSdk from '@descope/web-js-sdk';
 import { CreateUser, SearchUsers } from './types';
 import { apiPaths } from './apiPaths';
 
-// TODO: error handling
-export const createSdk = (config: Parameters<typeof createWebSdk>[0], managementKey: string) => {
+export const createSdk = (config: Parameters<typeof createWebSdk>[0], managementKey: string, tenant: string) => {
   const webSdk = createWebSdk(config);
 
   const search: SearchUsers = async ({
@@ -25,7 +24,10 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
         emails,
         phones,
       },
-      { token: managementKey },
+      {
+        token: managementKey,
+        queryParams: { tenant }
+      },
     );
 
     if (!res.ok) {
@@ -38,7 +40,13 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
   };
 
   const del = async (loginIds: string[]) => {
-    const res = await webSdk.httpClient.post(apiPaths.user.delete, { loginId: loginIds[0] }, { token: managementKey });
+    const res = await webSdk.httpClient.post(
+      apiPaths.user.delete,
+      { loginId: loginIds[0] },
+      {
+        token: managementKey,
+        queryParams: { tenant }
+      });
 
     if (!res.ok) {
       throw Error(res.statusText);
@@ -81,7 +89,10 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
         verifiedPhone,
         additionalLoginIds,
       },
-      { token: managementKey },
+      {
+        token: managementKey,
+        queryParams: { tenant }
+      },
     );
 
     if (!res.ok) {
@@ -103,11 +114,3 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
 };
 
 export type Api = ReturnType<typeof createSdk>
-
-
-// get custom attributes and show it in the table
-// add sorting capability
-// edit user? yael
-// displayed vs total num of users
-// in case total > displayed, we should fetch users from the server for sort & filter
-// data & header in the table should use text component

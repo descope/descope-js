@@ -24,3 +24,6 @@ export const kebabCase = (str: string) =>
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .replace(/[\s_.]+/g, '-')
     .toLowerCase();
+
+export const isObjEmpty = (obj: object) => Object.keys(obj).length === 0 && obj.constructor === Object;
+

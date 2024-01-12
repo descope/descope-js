@@ -1,9 +1,9 @@
 import { pathJoin } from '../../helpers/generic';
 import { compose } from '../../helpers/compose';
 import { createSingletonMixin } from '../../helpers/mixins';
-import { attributesMixin } from '../attributesMixin';
 import { loggerMixin } from '../loggerMixin';
 import { ASSETS_FOLDER, BASE_CONTENT_URL } from './constants';
+import { projectIdMixin } from '../projectIdMixin';
 
 type Format = 'text' | 'json';
 
@@ -20,7 +20,7 @@ export function getResourceUrl(
 
 export const staticResourcesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(loggerMixin, attributesMixin)(superclass);
+    const BaseClass = compose(loggerMixin, projectIdMixin)(superclass);
 
     return class StaticResourcesMixinClass extends BaseClass {
       async fetchStaticResource<F extends Format>(

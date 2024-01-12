@@ -16,11 +16,8 @@ export const createStateManagementMixin = <State, CaseReducers extends SliceCase
 
         subscribe: (cb: (state: any) => void) => Unsubscribe;
 
-        constructor(...args) {
+        constructor(...args: any) {
           super(...args);
-
-
-          // TODO: do we need multiple slices?
 
           const store = configureStore({
             reducer: slice.reducer,

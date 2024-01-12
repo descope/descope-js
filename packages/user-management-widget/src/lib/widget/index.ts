@@ -1,6 +1,6 @@
 import { compose } from '../helpers/compose';
 import { debuggerMixin } from '../mixins/debuggerMixin';
-import { modalMixin } from '../mixins/modalMixin/modalMixin';
+import { modalMixin } from '../mixins/modalMixin';
 import { themeMixin } from '../mixins/themeMixin';
 import widgetTemplate from './mockTemplates/widgetTemplate';
 import createUserTemplate from './mockTemplates/createUserTemplate';
@@ -23,7 +23,13 @@ declare global {
 }
 
 const initMixin = (superclass: CustomElementConstructor) =>
-  class InitMixinClass extends compose(themeMixin, debuggerMixin, stateMixin, modalMixin, apiMixin)(superclass) {
+  class InitMixinClass extends compose(
+    themeMixin,
+    debuggerMixin,
+    stateMixin,
+    modalMixin,
+    apiMixin
+  )(superclass) {
     addUserModal;
 
     deleteUsersModal;
@@ -80,7 +86,7 @@ const initMixin = (superclass: CustomElementConstructor) =>
       });
     }
 
-    initDeleteButton(){
+    initDeleteButton() {
       this.deleteButton = this.shadowRoot?.getElementById('delete');
       this.deleteButton.setAttribute('disabled', 'true');
       this.deleteButton?.addEventListener('click', () => {
@@ -90,7 +96,7 @@ const initMixin = (superclass: CustomElementConstructor) =>
       });
     }
 
-    initAddButton(){
+    initAddButton() {
       this.addButton = this.shadowRoot?.getElementById('add');
       this.addButton?.addEventListener('click', () => this.addUserModal.showModal());
     }
@@ -110,7 +116,7 @@ const initMixin = (superclass: CustomElementConstructor) =>
       this.search?.addEventListener('input', (e) => this.actions.setFilter(e.target.value));
     }
 
-    initUsersTable(){
+    initUsersTable() {
       this.usersTable = this.shadowRoot?.querySelector('descope-grid') as HTMLElement & { data: Record<string, string> };
       this.usersTable?.addEventListener('selected-items-changed', (e) => this.actions.setSelectedUsersIds(e.detail.value.map(({ loginIds }) => loginIds)));
     }
