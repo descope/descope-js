@@ -17,6 +17,7 @@ import { GridDriver } from './drivers/GridDriver';
 import { User } from './apiMixin/types';
 import { TextFieldDriver } from './drivers/TextFieldDriver';
 import { TextDriver } from './drivers/TextDriver';
+import { formMixin } from '../mixins/formMixin';
 
 declare global {
   interface HTMLElement {
@@ -35,7 +36,8 @@ const initMixin = (superclass: CustomElementConstructor) =>
     debuggerMixin,
     stateMixin,
     modalMixin,
-    apiMixin
+    apiMixin,
+    formMixin
   )(superclass) {
     addUserModal: ModalDriver;
 
@@ -64,9 +66,11 @@ const initMixin = (superclass: CustomElementConstructor) =>
 
       const submitButton = new ButtonDriver(() => this.addUserModal.ele.querySelector('#modal-submit'), { logger: this.logger });
       submitButton.onClick(async () => {
-        this.actions.createUser(this.addUserModal.getFormData());
-        this.addUserModal.close();
-        this.addUserModal.resetFormData();
+        if (this.validateForm(this.addUserModal.ele)) {
+          this.actions.createUser(this.getFormData(this.addUserModal.ele));
+          this.addUserModal.close();
+          this.resetFormData(this.addUserModal.ele);
+        }
       });
     }
 

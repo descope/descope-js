@@ -10,7 +10,7 @@ export default `
   st-vertical-padding="0rem"
 >
   <descope-text variant="h3" mode="surface">New User</descope-text>
-  <descope-text-field name="loginId" label="Login Id" bordered="true"></descope-text-field>
+  <descope-text-field name="loginId" label="Login Id" bordered="true" required="true"></descope-text-field>
   <descope-email-field name="email" label="Email" bordered="true"></descope-email-field>
   <descope-text-field name="displayName" label="Name" bordered="true"></descope-text-field>
   <descope-phone-field name="phone" label="Phone" bordered="true"></descope-phone-field>
