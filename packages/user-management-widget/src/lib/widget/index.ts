@@ -10,6 +10,13 @@ import { stateMixin } from './state/stateMixin';
 import { getFilteredUsers, getIsUsersSelected, getSelectedUsersDetailsForDisplay, getSelectedUsersIds } from './state/selectors';
 import { createTemplate } from '../helpers/dom';
 import { apiMixin } from './apiMixin';
+import { ModalDriver } from './drivers/ModalDriver';
+import { State } from './state/types';
+import { ButtonDriver } from './drivers/ButtonDriver';
+import { GridDriver } from './drivers/GridDriver';
+import { User } from './apiMixin/types';
+import { TextFieldDriver } from './drivers/TextFieldDriver';
+import { TextDriver } from './drivers/TextDriver';
 
 declare global {
   interface HTMLElement {
@@ -30,119 +37,139 @@ const initMixin = (superclass: CustomElementConstructor) =>
     modalMixin,
     apiMixin
   )(superclass) {
-    addUserModal;
+    addUserModal: ModalDriver;
 
-    deleteUsersModal;
+    deleteUsersModal: ModalDriver;
 
-    resetUsersPasswordModal;
+    resetUsersPasswordModal: ModalDriver;
 
-    addButton;
+    addButton: ButtonDriver;
 
-    deleteButton;
+    deleteButton: ButtonDriver;
 
-    resetPasswordButton;
+    resetPasswordButton: ButtonDriver;
 
-    usersTable;
+    usersTable: GridDriver<User>;
 
-    search;
+    searchInput: TextFieldDriver;
 
-    state;
+    state: State;
 
-    // TODO: replace modal mixin with modal driver
     async initCreateUserModal() {
-      const modalTemplate = createTemplate(createUserTemplate);
-      this.addUserModal = this.createModal('create-user-modal');
-      this.addUserModal.setModalContent(modalTemplate.content);
-      this.addUserModal.attachModalEvent('click', '#modal-cancel', () => this.addUserModal.closeModal());
-      this.addUserModal.attachModalEvent('click', '#modal-submit', async () => {
-        this.actions.createUser(this.addUserModal.getModalFormData());
-        this.addUserModal.closeModal();
-        this.addUserModal.setModalFormData({ email: '', displayName: '', phone: '', loginId: '' });
+      this.addUserModal = this.createModal();
+      this.addUserModal.setContent(createTemplate(createUserTemplate));
+
+      const cancelButton = new ButtonDriver(() => this.addUserModal.ele.querySelector('#modal-cancel'), { logger: this.logger });
+      cancelButton.onClick(() => this.addUserModal.close());
+
+      const submitButton = new ButtonDriver(() => this.addUserModal.ele.querySelector('#modal-submit'), { logger: this.logger });
+      submitButton.onClick(async () => {
+        this.actions.createUser(this.addUserModal.getFormData());
+        this.addUserModal.close();
+        this.addUserModal.resetFormData();
       });
     }
 
     async initDeleteUserModal() {
-      const modalTemplate = createTemplate(deleteUserTemplate);
-      this.deleteUsersModal = this.createModal('delete-user-modal');
-      this.deleteUsersModal.setModalContent(modalTemplate.content);
-      this.deleteUsersModal.attachModalEvent('click', '#modal-cancel', () => this.deleteUsersModal.closeModal());
-      this.deleteUsersModal.attachModalEvent('click', '#modal-submit', () => {
+      this.deleteUsersModal = this.createModal();
+      this.deleteUsersModal.setContent(createTemplate(deleteUserTemplate));
+
+      const cancelButton = new ButtonDriver(() => this.deleteUsersModal.ele.querySelector('#modal-cancel'), { logger: this.logger });
+      cancelButton.onClick(() => this.deleteUsersModal.close());
+
+      const submitButton = new ButtonDriver(() => this.deleteUsersModal.ele.querySelector('#modal-submit'), { logger: this.logger });
+      submitButton.onClick(() => {
         const selectedUsersIds = getSelectedUsersIds(this.state);
         selectedUsersIds.forEach((userIds: string[]) => {
           this.actions.deleteUser(userIds);
         });
-        this.deleteUsersModal.closeModal();
+        this.deleteUsersModal.close();
       });
     }
 
     async initResetUsersPasswordModal() {
-      const modalTemplate = createTemplate(ResetUsersPasswordTemplate);
-      this.resetUsersPasswordModal = this.createModal('reset-user-password-modal');
-      this.resetUsersPasswordModal.setModalContent(modalTemplate.content);
-      this.resetUsersPasswordModal.attachModalEvent('click', '#modal-cancel', () => this.resetUsersPasswordModal.closeModal());
-      this.resetUsersPasswordModal.attachModalEvent('click', '#modal-submit', () => {
+      this.resetUsersPasswordModal = this.createModal();
+      this.resetUsersPasswordModal.setContent(createTemplate(ResetUsersPasswordTemplate));
+
+      const submitButton = new ButtonDriver(() => this.resetUsersPasswordModal.ele.querySelector('#modal-cancel'), { logger: this.logger });
+      submitButton.onClick(() => this.resetUsersPasswordModal.close());
+
+      const cancelButton = new ButtonDriver(() => this.resetUsersPasswordModal.ele.querySelector('#modal-submit'), { logger: this.logger });
+      cancelButton.onClick(() => {
         //TODO: reset password
-        this.resetUsersPasswordModal.closeModal();
+        this.resetUsersPasswordModal.close();
       });
     }
 
     initDeleteButton() {
-      this.deleteButton = this.shadowRoot?.getElementById('delete');
-      this.deleteButton.setAttribute('disabled', 'true');
-      this.deleteButton?.addEventListener('click', () => {
+      this.deleteButton = new ButtonDriver(this.shadowRoot?.getElementById('delete'), { logger: this.logger });
+      //TODO: do we want to call subscribe with init state instead?
+      this.deleteButton.disable();
+      this.deleteButton.onClick(() => {
         const userDetails = getSelectedUsersDetailsForDisplay(this.state);
-        this.deleteUsersModal.modal.querySelector('#body-text').innerHTML = `Delete ${userDetails}?`;
-        this.deleteUsersModal.showModal();
+        new TextDriver(this.deleteUsersModal.ele.querySelector('#body-text'), { logger: this.logger }).text = `Delete ${userDetails}?`;
+        this.deleteUsersModal.open();
       });
     }
 
     initAddButton() {
-      this.addButton = this.shadowRoot?.getElementById('add');
-      this.addButton?.addEventListener('click', () => this.addUserModal.showModal());
+      this.addButton = new ButtonDriver(this.shadowRoot?.getElementById('add'), { logger: this.logger });
+      this.addButton.onClick(() => this.addUserModal.open());
     }
 
     initResetPasswordButton() {
-      this.resetPasswordButton = this.shadowRoot?.getElementById('reset');
-      this.resetPasswordButton.setAttribute('disabled', 'true');
-      this.resetPasswordButton?.addEventListener('click', () => {
+      this.resetPasswordButton = new ButtonDriver(this.shadowRoot?.getElementById('reset'), { logger: this.logger });
+      this.resetPasswordButton.disable();
+      this.resetPasswordButton?.onClick(() => {
         const userDetails = getSelectedUsersDetailsForDisplay(this.state);
-        this.resetUsersPasswordModal.modal.querySelector('#body-text').innerHTML = `Reset password for ${userDetails}?`;
-        this.resetUsersPasswordModal.showModal();
+        new TextDriver(this.resetUsersPasswordModal.ele.querySelector('#body-text'), { logger: this.logger }).text = `Reset password for ${userDetails}?`;
+        this.resetUsersPasswordModal.open();
       });
     }
 
     initSearchInput() {
-      this.search = this.shadowRoot?.getElementById('search');
-      this.search?.addEventListener('input', (e) => this.actions.setFilter(e.target.value));
+      // currently we are doing it on client side because we assume there will not be more than 10000 users per tenant
+      this.searchInput = new TextFieldDriver(this.shadowRoot?.getElementById('search'), { logger: this.logger });
+      this.searchInput.onInput((e: InputEvent & { target: HTMLInputElement }) => this.actions.setFilter(e.target.value));
     }
 
     initUsersTable() {
-      this.usersTable = this.shadowRoot?.querySelector('descope-grid') as HTMLElement & { data: Record<string, string> };
-      this.usersTable?.addEventListener('selected-items-changed', (e) => this.actions.setSelectedUsersIds(e.detail.value.map(({ loginIds }) => loginIds)));
+      this.usersTable = new GridDriver(this.shadowRoot?.querySelector('descope-grid'), { logger: this.logger });
+      this.usersTable.onSelectedItemsChange((e) => this.actions.setSelectedUsersIds(e.detail.value.map(({ loginIds }) => loginIds)));
+    }
+
+    async loadWidgetTemplate() {
+      const template = createTemplate(widgetTemplate);
+      await this.loadDescopeUiComponents(template);
+      this.contentRootElement.append(template.content.cloneNode(true));
+    }
+
+    onStateChange(state: State) {
+      this.state = state;
+      this.usersTable.data = getFilteredUsers(state);
+
+      if (getIsUsersSelected(state)) {
+        this.deleteButton.enable();
+        this.resetPasswordButton.enable();
+      } else {
+        this.deleteButton.disable();
+        this.resetPasswordButton.disable();
+      }
     }
 
     async initWidget() {
-      const template = createTemplate(widgetTemplate);
-      await this.loadDescopeUiComponents(template.content);
-      this.contentRootElement.append(template.content.cloneNode(true));
+      await this.loadWidgetTemplate();
 
       this.initAddButton();
       this.initDeleteButton();
       this.initResetPasswordButton();
       this.initSearchInput();
       this.initUsersTable();
-
       this.initCreateUserModal();
       this.initDeleteUserModal();
       this.initResetUsersPasswordModal();
 
-      this.subscribe((state) => {
-        this.state = state;
-        this.usersTable.data = getFilteredUsers(state);
-
-        this.deleteButton.setAttribute('disabled', !getIsUsersSelected(state));
-        this.resetPasswordButton.setAttribute('disabled', !getIsUsersSelected(state));
-      });
+      this.subscribe(this.onStateChange.bind(this));
     }
 
     async init() {

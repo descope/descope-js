@@ -13,8 +13,8 @@ export const generateScriptUrl = (
 ) =>
   urlTemplate.replace(UI_COMPONENTS_URL_VERSION_PLACEHOLDER, componentsVersion);
 
-export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
-  ...Array.from(clone.querySelectorAll('*')).reduce<Set<string>>(
+export const getDescopeUiComponentsList = (template: HTMLTemplateElement) => [
+  ...Array.from(template.content.querySelectorAll('*')).reduce<Set<string>>(
     (acc, el: Element) =>
       el.localName.startsWith('descope-') ? acc.add(el.localName) : acc,
     new Set(),

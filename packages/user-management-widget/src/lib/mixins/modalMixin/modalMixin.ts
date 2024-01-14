@@ -4,32 +4,26 @@ import { initLifecycleMixin } from '../initLifecycleMixin';
 import { compose } from '../../helpers/compose';
 import { initElementMixin } from '../initElementMixin';
 import { descopeUiMixin } from '../descopeUiMixin/descopeUiMixin';
-import { Modal } from './Modal';
 import { createModalEle } from './helpers';
 import { MODAL_ELE_TAG } from './constants';
+import { ModalDriver } from '../../widget/drivers/ModalDriver';
 
 export const modalMixin = createSingletonMixin(
-  <T extends CustomElementConstructor>(superclass: T) =>
-    class ModalMixinClass extends compose(initLifecycleMixin, initElementMixin, descopeUiMixin)(superclass) {
+  <T extends CustomElementConstructor>(superclass: T) => {
+    const BaseClass = compose(initLifecycleMixin, initElementMixin, descopeUiMixin)(superclass);
+    return class ModalMixinClass extends BaseClass {
 
-      #ModalWrapper: any;
-
-      constructor() {
-        super();
-
+      #ModalDriverWrapper = (() => {
         const loadDescopeUiComponents = this.loadDescopeUiComponents.bind(this);
-
-        this.#ModalWrapper = class ModalWrapper extends Modal {
-          setModalContent(template: DocumentFragment) {
+        return class ModalDriverWrapper extends ModalDriver {
+          setContent(template: HTMLTemplateElement) {
             loadDescopeUiComponents(template);
-            super.setModalContent(template);
+            super.setContent(template);
           }
         };
-      }
+      })();
 
-      #modals: Record<string, Modal> = {};
-
-      createModal(id: string, config?: Record<string, string>) {
+      createModal(config?: Record<string, string>) {
         const baseConfig = {};
 
         const modal = createModalEle({
@@ -39,23 +33,13 @@ export const modalMixin = createSingletonMixin(
 
         this.rootElement.append(modal);
 
-        this.#modals[id] = new this.#ModalWrapper(modal);
-
-        return this.#modals[id];
-      }
-
-      removeModal(id: string) {
-        this.getModal(id)?.modal.remove();
-        delete this.#modals[id];
-      }
-
-      getModal(id: string) {
-        return this.#modals[id];
+        return new this.#ModalDriverWrapper(modal, { logger: this.logger });
       }
 
       async init() {
         await super.init?.();
         await this.loadDescopeUiComponents([MODAL_ELE_TAG]);
       }
-    }
+    };
+  }
 );
