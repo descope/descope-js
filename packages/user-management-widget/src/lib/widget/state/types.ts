@@ -15,6 +15,10 @@ export type State = {
     loading: boolean,
     error: unknown
   },
+  expireUserPassword: {
+    loading: boolean,
+    error: unknown
+  },
   filter: string,
   selectedUsersIds: string[][]
 }

@@ -1,14 +1,12 @@
 import { compose } from '../helpers/compose';
 import { createSingletonMixin } from '../helpers/mixins';
+import { missingAttrValidator } from './createValidateAttributesMixin/commonValidators';
 import { createValidateAttributesMixin } from './createValidateAttributesMixin';
-
-const onMissingAttr = (attrName: string, value: string | null) =>
-  !value && `${attrName} cannot be empty`;
 
 export const projectIdMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
-      createValidateAttributesMixin({ 'project-id': onMissingAttr }),
+      createValidateAttributesMixin({ 'project-id': missingAttrValidator }),
     )(superclass);
 
     return class ProjectIdMixinClass extends BaseClass {

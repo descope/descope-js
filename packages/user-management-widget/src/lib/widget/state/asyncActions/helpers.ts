@@ -9,7 +9,7 @@ type ExtractedArg<T> = T extends AsyncThunk<any, infer U, any> ? U : never;
 export const buildAsyncReducer = <T extends AsyncThunk<any, any, any>>(
   action: T,
   getStatusStateSection: (state: State) => { loading: boolean, error: unknown },
-  onFulfilled: (state: State, action: PayloadAction<any, string, {
+  onFulfilled?: (state: State, action: PayloadAction<any, string, {
     arg:ExtractedArg<T>;
     requestId: string;
     requestStatus: 'fulfilled';
@@ -21,7 +21,7 @@ export const buildAsyncReducer = <T extends AsyncThunk<any, any, any>>(
   });
   builder.addCase(action.fulfilled, (state, action) => {
     getStatusStateSection(state).loading = false;
-    onFulfilled(state, action);
+    onFulfilled?.(state, action);
   });
   builder.addCase(action.rejected, (state, action) => {
     getStatusStateSection(state).loading = false;

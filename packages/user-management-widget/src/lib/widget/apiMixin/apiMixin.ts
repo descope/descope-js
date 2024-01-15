@@ -1,5 +1,7 @@
 import { compose } from '../../helpers/compose';
 import { createSingletonMixin } from '../../helpers/mixins';
+import { createValidateAttributesMixin } from '../../mixins/createValidateAttributesMixin';
+import { missingAttrValidator } from '../../mixins/createValidateAttributesMixin/commonValidators';
 import { loggerMixin } from '../../mixins/loggerMixin';
 import { observeAttributesMixin } from '../../mixins/observeAttributesMixin';
 import { projectIdMixin } from '../../mixins/projectIdMixin';
@@ -10,7 +12,8 @@ export const apiMixin = createSingletonMixin(
     const BaseClass = compose(
       projectIdMixin,
       observeAttributesMixin,
-      loggerMixin
+      loggerMixin,
+      createValidateAttributesMixin({ 'tenant': missingAttrValidator }),
     )(superclass);
 
     return class InitLifecycleMixinClass extends BaseClass {
@@ -29,7 +32,6 @@ export const apiMixin = createSingletonMixin(
         return this.getAttribute('mgmt-key');
       }
 
-      //TODO: is this mandatory?
       get tenant() {
         return this.getAttribute('tenant');
       }

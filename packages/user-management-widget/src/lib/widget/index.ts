@@ -100,7 +100,10 @@ const initMixin = (superclass: CustomElementConstructor) =>
 
       const cancelButton = new ButtonDriver(() => this.resetUsersPasswordModal.ele.querySelector('#modal-submit'), { logger: this.logger });
       cancelButton.onClick(() => {
-        //TODO: reset password
+        const selectedUsersIds = getSelectedUsersIds(this.state);
+        selectedUsersIds.forEach((userIds: string[]) => {
+          this.actions.expireUserPassword(userIds);
+        });
         this.resetUsersPasswordModal.close();
       });
     }
@@ -149,6 +152,7 @@ const initMixin = (superclass: CustomElementConstructor) =>
     }
 
     onStateChange(state: State) {
+      console.log(state);
       this.state = state;
       this.usersTable.data = getFilteredUsers(state);
 

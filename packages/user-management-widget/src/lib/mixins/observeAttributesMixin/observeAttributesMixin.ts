@@ -16,7 +16,7 @@ export const observeAttributesMixin = createSingletonMixin(<T extends CustomElem
 
     async init() {
       await super.init?.();
-
+      
       observeAttributes(this, (attrName: string) => {
         this.#observeMappings[attrName]?.forEach((cb: OnAttrChange) => {
           cb(attrName, this.getAttribute(attrName));
@@ -28,6 +28,7 @@ export const observeAttributesMixin = createSingletonMixin(<T extends CustomElem
       if (!this.#observeMappings[attrName]) {
         this.#observeMappings[attrName] = [];
       }
+
       const idx = this.#observeMappings[attrName].push(onAttrChange);
 
       return () => this.#observeMappings[attrName].splice(idx, 1);

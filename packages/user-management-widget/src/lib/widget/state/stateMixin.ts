@@ -2,6 +2,7 @@
 import { createStateManagementMixin } from '../../mixins/createStateManagementMixin';
 import { createUser } from './asyncActions/createUser';
 import { deleteUser } from './asyncActions/deleteUser';
+import { expireUserPassword } from './asyncActions/expireUserPassword';
 import { searchUser } from './asyncActions/searchUsers';
 import { State } from './types';
 
@@ -16,6 +17,10 @@ const initialState: State = {
     error: null
   },
   deleteUser: {
+    loading: false,
+    error: null
+  },
+  expireUserPassword: {
     loading: false,
     error: null
   },
@@ -38,11 +43,13 @@ export const stateMixin = createStateManagementMixin({
     createUser.reducer(builder);
     deleteUser.reducer(builder);
     searchUser.reducer(builder);
+    expireUserPassword.reducer(builder);
   },
   asyncActions: {
     searchUsers: searchUser.action,
     createUser: createUser.action,
-    deleteUser: deleteUser.action
+    deleteUser: deleteUser.action,
+    expireUserPassword: expireUserPassword.action
   }
 });
 

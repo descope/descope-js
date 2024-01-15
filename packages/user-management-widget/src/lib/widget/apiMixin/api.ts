@@ -104,11 +104,29 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
     return json.user;
   };
 
+
+  const expirePassword = async (loginIds: string[]) => {
+    const res = await webSdk.httpClient.post(
+      apiPaths.user.expirePassword,
+      { loginId: loginIds[0] },
+      {
+        token: managementKey,
+        queryParams: { tenant }
+      });
+
+    if (!res.ok) {
+      throw Error(res.statusText);
+    }
+
+    return res.json();
+  };
+
   return {
     user: {
       search,
       delete: del,
-      create
+      create,
+      expirePassword
     }
   };
 };

@@ -1,7 +1,7 @@
-import { compose } from '../helpers/compose';
-import { observeAttributesMixin } from './observeAttributesMixin/observeAttributesMixin';
-import { initLifecycleMixin } from './initLifecycleMixin';
-import { loggerMixin } from './loggerMixin';
+import { compose } from '../../helpers/compose';
+import { observeAttributesMixin } from '../observeAttributesMixin/observeAttributesMixin';
+import { initLifecycleMixin } from '../initLifecycleMixin';
+import { loggerMixin } from '../loggerMixin';
 
 export type CheckValueFn = (
   attrName: string,
@@ -35,6 +35,13 @@ export const createValidateAttributesMixin =
           super(...args);
 
           this.observeAttributes(mappingsNames, this.#handleError.bind(this));
+        }
+
+        async init() {
+          await super.init?.();
+
+          // check attributes initial values
+          mappingsNames.forEach(attr => this.#handleError(attr, this.getAttribute(attr)));
         }
       };
     };
