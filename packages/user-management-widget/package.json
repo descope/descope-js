@@ -1,6 +1,6 @@
 {
   "name": "@descope/user-management-widget",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
-  "description": "Descope WC",
+  "description": "Descope user management widget",
   "scripts": {
     "start": "npx nx run user-management-widget:build && rollup -c rollup.config.app.serve.js -w",
     "build-app": "rollup -c rollup.config.app.js",

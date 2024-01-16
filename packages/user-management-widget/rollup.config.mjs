@@ -13,6 +13,8 @@ const input = './src/lib/index.ts';
 const external = (id) =>
   !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
+const { PRODUCTION } = process.env
+
 export default [
   {
     input,
@@ -27,6 +29,9 @@ export default [
       define({
         replacements: {
           BUILD_VERSION: JSON.stringify(packageJson.version),
+          'process.env.NODE_ENV': JSON.stringify(
+            PRODUCTION ? 'production' : 'development'
+          )
         },
       }),
       typescript({
