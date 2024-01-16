@@ -1,12 +1,8 @@
 import { BaseDriver } from './BaseDriver';
 
-// type EventCb = (e: Event) => void
-
 export class ModalDriver extends BaseDriver {
 
   #modalContent: HTMLTemplateElement;
-
-  // #modalEvents: { event: string, querySelector: string, cb: EventCb }[] = [];
 
   close() {
     this.ele?.removeAttribute('opened');

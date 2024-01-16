@@ -26,7 +26,7 @@ export type State = {
     data: Record<string, string>
   },
   filter: string,
-  selectedUsersIds: string[][],
+  selectedUsersLoginIds: string[][],
   notifications : Notification[]
 }
 

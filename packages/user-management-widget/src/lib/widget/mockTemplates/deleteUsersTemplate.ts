@@ -9,7 +9,7 @@ export default `
   st-horizontal-padding="0rem"
   st-vertical-padding="0rem"
 >
-  <descope-text variant="h3" mode="surface">Delete User</descope-text>
+  <descope-text variant="h3" mode="surface">Delete Users</descope-text>
   <descope-text id="body-text" variant="body1" mode="surface">Delete user</descope-text>
 
   <descope-container

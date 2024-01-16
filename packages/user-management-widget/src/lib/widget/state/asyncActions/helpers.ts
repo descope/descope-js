@@ -65,10 +65,10 @@ export const withRequestStatus = (getStateSection: (state: State) => { loading: 
   }
 });
 
-export const withNotifications = ({ getErrorMsg, getSuccessMsg }: { getErrorMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string, getSuccessMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string }): AsyncReducerConfig<any> =>
+export const withNotifications = ({ getErrorMsg, getSuccessMsg }: { getErrorMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string, getSuccessMsg?: (action?: FulfilledAction<AsyncThunk<any, any, any>>) => string }): AsyncReducerConfig<any> =>
 ({
-  onFulfilled: (state) => {
-    if (getSuccessMsg) state.notifications.push({ type: 'success', msg: getSuccessMsg() });
+  onFulfilled: (state, action) => {
+    if (getSuccessMsg) state.notifications.push({ type: 'success', msg: getSuccessMsg(action) });
   },
   onRejected: (state, action) => {
     if (getErrorMsg) state.notifications.push({ type: 'error', msg: getErrorMsg(action) });

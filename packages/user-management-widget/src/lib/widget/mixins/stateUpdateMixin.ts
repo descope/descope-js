@@ -5,11 +5,13 @@ import { initMixin } from './initMixin';
 import { getFilteredUsers, getIsUsersSelected, getNotifications } from '../state/selectors';
 import { stateMixin } from './stateManagementMixin';
 import { State } from '../state/types';
+import { notificationsMixin } from '../../mixins/notificationsMixin';
 
 export const stateUpdateMixin = createSingletonMixin((superclass: CustomElementConstructor) =>
   class StateUpdateMixinClass extends compose(
     initMixin,
-    stateMixin
+    stateMixin,
+    notificationsMixin
   )(superclass) {
 
     #onStateChange(state: State) {
@@ -32,8 +34,19 @@ export const stateUpdateMixin = createSingletonMixin((superclass: CustomElementC
 
     #handleNotifications = withMemCache((notifications: ReturnType<typeof getNotifications>) => {
       if (notifications.length) {
-        // eslint-disable-next-line no-console
-        console.log(JSON.stringify(notifications, null, 4));
+        notifications.forEach(({ type, msg }) => {
+          const notification = this.createNotification({
+            mode: type,
+            duration: 3000,
+            'has-close-button': true,
+            position: 'bottom-start',
+            size: 'sm',
+            icon: type
+          });
+          notification.setContent(msg);
+          notification.show();
+        });
+
         // when there is a selection update from the table we get a double notification
         // this is why we are wrapping the clearNotifications action with timeout;
         setTimeout(() => this.actions.clearNotifications());

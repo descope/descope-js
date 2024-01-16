@@ -7,7 +7,7 @@ import createUserTemplate from '../mockTemplates/createUserTemplate';
 import deleteUserTemplate from '../mockTemplates/deleteUsersTemplate';
 import ResetUsersPasswordTemplate from '../mockTemplates/ResetUsersPasswordTemplate';
 import { stateMixin } from './stateManagementMixin';
-import { getSelectedUsersDetailsForDisplay, getSelectedUsersIds } from '../state/selectors';
+import { getSelectedUsersDetailsForDisplay, getSelectedUsersLoginIds, getSelectedUsersUserIds } from '../state/selectors';
 import { createTemplate } from '../../helpers/dom';
 import { apiMixin } from './apiMixin';
 import { ModalDriver } from '../drivers/ModalDriver';
@@ -73,10 +73,8 @@ export const initMixin = createSingletonMixin((superclass: CustomElementConstruc
 
       const submitButton = new ButtonDriver(() => this.deleteUsersModal.ele.querySelector('#modal-submit'), { logger: this.logger });
       submitButton.onClick(() => {
-        const selectedUsersIds = getSelectedUsersIds(this.state);
-        selectedUsersIds.forEach((userIds: string[]) => {
-          this.actions.deleteUser(userIds);
-        });
+        const selectedUsersUserIds = getSelectedUsersUserIds(this.state);
+        this.actions.deleteUsers(selectedUsersUserIds);
         this.deleteUsersModal.close();
       });
     }
@@ -90,7 +88,7 @@ export const initMixin = createSingletonMixin((superclass: CustomElementConstruc
 
       const cancelButton = new ButtonDriver(() => this.resetUsersPasswordModal.ele.querySelector('#modal-submit'), { logger: this.logger });
       cancelButton.onClick(() => {
-        const selectedUsersIds = getSelectedUsersIds(this.state);
+        const selectedUsersIds = getSelectedUsersLoginIds(this.state);
         selectedUsersIds.forEach((userIds: string[]) => {
           this.actions.expireUserPassword(userIds);
         });

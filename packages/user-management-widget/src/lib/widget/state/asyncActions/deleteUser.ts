@@ -3,25 +3,32 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
 import { buildAsyncReducer, withNotifications, withRequestStatus } from './helpers';
+import { pluralize } from '../../../helpers/generic';
 
 const action = createAsyncThunk
   <any, FirstParameter<Sdk['user']['delete']>, ThunkConfigExtraApi>
   (
     'users/delete',
-    (arg, { extra: { api } }) => api.user.delete(arg)
+    (arg, { extra: { api } }) => api.user.deleteBatch(arg)
   );
 
 const reducer = buildAsyncReducer(action)({
   // eslint-disable-next-line @typescript-eslint/no-shadow
   onFulfilled: (state, action) => {
-    state.usersList.data = state.usersList.data.filter(user => !user.loginIds.every(loginId => action.meta.arg.includes(loginId)));
-    state.selectedUsersIds = state.selectedUsersIds.filter(loginIds => !loginIds.every(loginId => action.meta.arg.includes(loginId)));
+    state.usersList.data = state.usersList.data.filter(user => !action.meta.arg.includes(user.userId));
+    state.selectedUsersLoginIds = [];
   }
 },
   withRequestStatus((state: State) => state.deleteUser),
-  withNotifications({ getSuccessMsg: () => 'User/s deleted successfully' }),
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  withNotifications({
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    getSuccessMsg: (action) => pluralize(action.meta.arg.length)`${['', 2]} ${['U', 'u']}ser${['', 's']} deleted successfully`,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    getErrorMsg: (action) => pluralize(action.meta.arg.length)`Failed to delete user${['', 's']}`,
+  }),
 
 );
 
-export const deleteUser = { action, reducer };
+export const deleteUsers = { action, reducer };
 

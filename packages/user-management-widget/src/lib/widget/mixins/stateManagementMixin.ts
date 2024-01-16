@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createStateManagementMixin } from '../../mixins/createStateManagementMixin';
-import { createUser, deleteUser, expireUserPassword, searchUser, getCustomAttributes } from '../state/asyncActions';
+import { createUser, deleteUsers, expireUserPassword, searchUser, getCustomAttributes } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 
 export const stateMixin = createStateManagementMixin({
@@ -11,7 +11,7 @@ export const stateMixin = createStateManagementMixin({
       state.filter = payload?.toLowerCase();
     },
     setSelectedUsersIds: (state, { payload }) => {
-      state.selectedUsersIds = payload;
+      state.selectedUsersLoginIds = payload;
     },
     clearNotifications: (state) => {
       state.notifications = [];
@@ -19,7 +19,7 @@ export const stateMixin = createStateManagementMixin({
   },
   extraReducers: (builder) => {
     createUser.reducer(builder);
-    deleteUser.reducer(builder);
+    deleteUsers.reducer(builder);
     searchUser.reducer(builder);
     expireUserPassword.reducer(builder);
     getCustomAttributes.reducer(builder);
@@ -27,7 +27,7 @@ export const stateMixin = createStateManagementMixin({
   asyncActions: {
     searchUsers: searchUser.action,
     createUser: createUser.action,
-    deleteUser: deleteUser.action,
+    deleteUsers: deleteUsers.action,
     expireUserPassword: expireUserPassword.action,
     getCustomAttributes: getCustomAttributes.action,
   }

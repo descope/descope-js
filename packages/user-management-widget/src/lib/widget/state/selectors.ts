@@ -3,10 +3,13 @@ import { State } from './types';
 
 const getUsersList = (state: State) => state.usersList.data;
 const getFilter = (state: State) => state.filter;
-export const getSelectedUsersIds = (state: State) => state.selectedUsersIds;
+export const getSelectedUsersLoginIds = (state: State) => state.selectedUsersLoginIds;
 export const getNotifications = (state: State) => state.notifications;
 
-const getSelectedUsers = createSelector(getSelectedUsersIds, getUsersList, (selected, users) => users.filter(user => selected.includes(user.loginIds)));
+export const getSelectedUsersUserIds = createSelector(getUsersList, getSelectedUsersLoginIds, (users, selectedLoginIds) =>
+  users.filter(user => selectedLoginIds.includes(user.loginIds)).map(user => user.userId));
+
+const getSelectedUsers = createSelector(getSelectedUsersLoginIds, getUsersList, (selected, users) => users.filter(user => selected.includes(user.loginIds)));
 
 const isFilterMatchesString = (filter: string, value: any) => value.toString().toLowerCase().includes(filter);
 
@@ -25,7 +28,7 @@ export const getFilteredUsers = createSelector(getUsersList, getFilter, (users, 
   }));
 });
 
-export const getIsUsersSelected = createSelector(getSelectedUsersIds, (selected) => !!selected.length);
+export const getIsUsersSelected = createSelector(getSelectedUsersLoginIds, (selected) => !!selected.length);
 
 export const getSelectedUsersDetailsForDisplay = createSelector(getSelectedUsers, (selectedUsers) => {
   if (selectedUsers.length === 1) {

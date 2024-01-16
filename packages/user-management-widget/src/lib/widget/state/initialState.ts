@@ -25,6 +25,6 @@ export const initialState: State = {
     data: {}
   },
   filter: '',
-  selectedUsersIds: [],
+  selectedUsersLoginIds: [],
   notifications: []
 };
