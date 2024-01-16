@@ -1,18 +1,20 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Api } from '../../apiMixin/api';
-import { FirstParameter, ThunkConfigExtraApi } from '../types';
-import { buildAsyncReducer } from './helpers';
+import { Sdk } from '../../api/sdk';
+import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
+import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk
-<any, FirstParameter<Api['user']['expirePassword']>, ThunkConfigExtraApi>
-(
-  'users/expirePassword',
-  (arg, { extra: { api } }) => api.user.expirePassword(arg)
-);
+  <any, FirstParameter<Sdk['user']['expirePassword']>, ThunkConfigExtraApi>
+  (
+    'users/expirePassword',
+    (arg, { extra: { api } }) => api.user.expirePassword(arg)
+  );
 
 // eslint-disable-next-line @typescript-eslint/no-shadow
-const reducer = buildAsyncReducer(action, (state) => state.expireUserPassword);
+const reducer = buildAsyncReducer(action)(
+  withRequestStatus((state: State) => state.expireUserPassword)
+  );
 
 export const expireUserPassword = { action, reducer };
 

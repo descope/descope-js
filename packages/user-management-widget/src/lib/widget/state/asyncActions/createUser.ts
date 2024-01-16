@@ -1,18 +1,25 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-shadow */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Api } from '../../apiMixin/api';
-import { FirstParameter, ThunkConfigExtraApi } from '../types';
-import { buildAsyncReducer } from './helpers';
+import { Sdk } from '../../api/sdk';
+import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
+import { buildAsyncReducer, withNotifications, withRequestStatus } from './helpers';
 
-export const action = createAsyncThunk
-  <any, FirstParameter<Api['user']['create']>, ThunkConfigExtraApi>
+const action = createAsyncThunk
+  <any, FirstParameter<Sdk['user']['create']>, ThunkConfigExtraApi>
   (
     'users/create',
     (arg, { extra: { api } }) => api.user.create(arg)
   );
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
-const reducer = buildAsyncReducer(action, (state) => state.createUser, (state, action) => {
-  state.usersList.data.push(action.payload);
-});
+const reducer = buildAsyncReducer(action)(
+  {
+    onFulfilled: (state, action) => {
+      state.usersList.data.push(action.payload);
+    }
+  },
+  withRequestStatus((state: State) => state.createUser),
+  withNotifications({ getSuccessMsg: () => 'User/s created successfully' }),
+);
 
 export const createUser = { action, reducer };

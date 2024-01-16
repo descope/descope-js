@@ -1,30 +1,76 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-param-reassign */
 
-import { ActionReducerMapBuilder, AsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, AsyncThunk, PayloadAction, SerializedError } from '@reduxjs/toolkit';
 import { State } from '../types';
 
 type ExtractedArg<T> = T extends AsyncThunk<any, infer U, any> ? U : never;
 
+type FulfilledAction<T extends AsyncThunk<any, any, any>> = PayloadAction<any, string, {
+  arg: ExtractedArg<T>;
+  requestId: string;
+}, never>
+
+type RejectedAction<T extends AsyncThunk<any, any, any>> = PayloadAction<any, string, {
+  arg: ExtractedArg<T>;
+  requestId: string;
+}, SerializedError>
+
+type PendingAction<T extends AsyncThunk<any, any, any>> = PayloadAction<unknown, string, {
+  arg: ExtractedArg<T>;
+  requestId: string;
+}>
+
+type AsyncReducerConfig<T extends AsyncThunk<any, any, any>> = {
+  onFulfilled?: (state: State, action: FulfilledAction<T>) => void,
+  onRejected?: (state: State, action: RejectedAction<T>) => void,
+  onPending?: (state: State, action: PendingAction<T>) => void,
+}
+
 export const buildAsyncReducer = <T extends AsyncThunk<any, any, any>>(
   action: T,
-  getStatusStateSection: (state: State) => { loading: boolean, error: unknown },
-  onFulfilled?: (state: State, action: PayloadAction<any, string, {
-    arg:ExtractedArg<T>;
-    requestId: string;
-    requestStatus: 'fulfilled';
-  }, never>) => void
-) => (builder: ActionReducerMapBuilder<State>) => {
-  builder.addCase(action.pending, (state) => {
-    getStatusStateSection(state).loading = true;
-    getStatusStateSection(state).error = null;
+) => (...args: AsyncReducerConfig<T>[]) => (builder: ActionReducerMapBuilder<State>) => {
+
+  builder.addCase(action.pending, (state, action) => {
+    args.forEach(({ onPending }) => {
+      onPending?.(state, action);
+    });
   });
+
   builder.addCase(action.fulfilled, (state, action) => {
-    getStatusStateSection(state).loading = false;
-    onFulfilled?.(state, action);
+    args.forEach(({ onFulfilled }) => {
+      onFulfilled?.(state, action);
+    });
   });
+
   builder.addCase(action.rejected, (state, action) => {
-    getStatusStateSection(state).loading = false;
-    getStatusStateSection(state).error = action.error;
+    args.forEach(({ onRejected }) => {
+      onRejected?.(state, action);
+    });
   });
 };
+
+export const withRequestStatus = (getStateSection: (state: State) => { loading: boolean, error: unknown }): AsyncReducerConfig<any> =>
+({
+  onFulfilled: (state) => {
+    getStateSection(state).loading = false;
+  },
+  onPending: (state) => {
+    getStateSection(state).loading = true;
+    getStateSection(state).error = null;
+  },
+  onRejected: (state, action) => {
+    getStateSection(state).loading = false;
+    getStateSection(state).error = action.error;
+  }
+});
+
+export const withNotifications = ({ getErrorMsg, getSuccessMsg }: { getErrorMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string, getSuccessMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string }): AsyncReducerConfig<any> =>
+({
+  onFulfilled: (state) => {
+    if (getSuccessMsg) state.notifications.push({ type: 'success', msg: getSuccessMsg() });
+  },
+  onRejected: (state, action) => {
+    if (getErrorMsg) state.notifications.push({ type: 'error', msg: getErrorMsg(action) });
+  }
+});

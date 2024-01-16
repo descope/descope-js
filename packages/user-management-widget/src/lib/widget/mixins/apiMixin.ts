@@ -5,7 +5,7 @@ import { missingAttrValidator } from '../../mixins/createValidateAttributesMixin
 import { loggerMixin } from '../../mixins/loggerMixin';
 import { observeAttributesMixin } from '../../mixins/observeAttributesMixin';
 import { projectIdMixin } from '../../mixins/projectIdMixin';
-import { Api, createSdk } from './api';
+import { Sdk, createSdk } from '../api/sdk';
 
 export const apiMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
@@ -17,19 +17,15 @@ export const apiMixin = createSingletonMixin(
     )(superclass);
 
     return class InitLifecycleMixinClass extends BaseClass {
-      #api: Api;
+      #api: Sdk;
 
       #createSdk() {
         this.logger.debug('creating an sdk instance');
-        this.#api = createSdk({ projectId: this.projectId, baseUrl: this.baseUrl }, this.mgmtKey, this.tenant);
+        this.#api = createSdk({ projectId: this.projectId, baseUrl: this.baseUrl }, this.tenant);
       }
 
       get baseUrl() {
         return this.getAttribute('base-url');
-      }
-
-      get mgmtKey() {
-        return this.getAttribute('mgmt-key');
       }
 
       get tenant() {
@@ -51,7 +47,6 @@ export const apiMixin = createSingletonMixin(
           [
             'project-id',
             'base-url',
-            'mgmt-key',
             'tenant'
           ],
           () => {

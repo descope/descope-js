@@ -26,7 +26,6 @@ export default `
       st-gap="0.5em"
       st-host-width="auto"
     >
-      <descope-button id="reset" mode="primary" variant="outline" size="md">Reset Password</descope-button>
       <descope-button id="delete" mode="primary" variant="outline" size="md">Delete</descope-button>
       <descope-button id="add" mode="primary" variant="contained" size="md">+ User</descope-button>
     </descope-container>

@@ -1,3 +1,7 @@
+import createWebSdk from '@descope/web-js-sdk';
+
+export type Sdk = ReturnType<typeof createWebSdk>
+
 type CustomAttributeType = string | boolean | number;
 
 type CustomAttributes = Record<string, CustomAttributeType>
@@ -7,6 +11,8 @@ type UserStatus = 'enabled' | 'disabled' | 'invited';
 type Tenant = AssociatedTenant & {
   tenantName: string
 }
+
+export type HttpClient = Sdk['httpClient']
 
 export type AssociatedTenant = {
   tenantId: string;

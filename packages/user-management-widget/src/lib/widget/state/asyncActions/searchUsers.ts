@@ -1,19 +1,23 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Api } from '../../apiMixin/api';
-import { FirstParameter, RemoveVoid, ThunkConfigExtraApi } from '../types';
-import { buildAsyncReducer } from './helpers';
+import { Sdk } from '../../api/sdk';
+import { FirstParameter, RemoveVoid, State, ThunkConfigExtraApi } from '../types';
+import { buildAsyncReducer, withRequestStatus } from './helpers';
 
-export const action = createAsyncThunk
-  <any, FirstParameter<Api['user']['search']> | void, ThunkConfigExtraApi>
+const action = createAsyncThunk
+  <any, FirstParameter<Sdk['user']['search']> | void, ThunkConfigExtraApi>
   (
     'users/search',
     (arg, { extra: { api } }) => api.user.search(arg as RemoveVoid<typeof arg>)
   );
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
-const reducer = buildAsyncReducer(action, (state) => state.usersList, (state, action) => {
-  state.usersList.data = (action.payload);
-});
+const reducer = buildAsyncReducer(action)({
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  onFulfilled: (state, action) => {
+    state.usersList.data = action.payload;
+  }
+},
+withRequestStatus((state: State) => state.usersList)
+);
 
 export const searchUser = { action, reducer };

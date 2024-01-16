@@ -4,6 +4,8 @@ import { State } from './types';
 const getUsersList = (state: State) => state.usersList.data;
 const getFilter = (state: State) => state.filter;
 export const getSelectedUsersIds = (state: State) => state.selectedUsersIds;
+export const getNotifications = (state: State) => state.notifications;
+
 const getSelectedUsers = createSelector(getSelectedUsersIds, getUsersList, (selected, users) => users.filter(user => selected.includes(user.loginIds)));
 
 const isFilterMatchesString = (filter: string, value: any) => value.toString().toLowerCase().includes(filter);

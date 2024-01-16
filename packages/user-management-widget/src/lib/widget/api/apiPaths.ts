@@ -4,5 +4,6 @@ export const apiPaths = {
     delete: '/v1/mgmt/user/delete',
     create: '/v1/mgmt/user/create',
     expirePassword: '/v1/mgmt/user/password/expire',
+    customAttributes: '/v1/mgmt/user/customattributes',
   }
 };

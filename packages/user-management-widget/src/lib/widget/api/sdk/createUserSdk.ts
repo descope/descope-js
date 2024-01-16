@@ -1,9 +1,7 @@
-import createWebSdk from '@descope/web-js-sdk';
-import { CreateUser, SearchUsers } from './types';
-import { apiPaths } from './apiPaths';
+import { CreateUser, HttpClient, SearchUsers } from '../types';
+import { apiPaths } from '../apiPaths';
 
-export const createSdk = (config: Parameters<typeof createWebSdk>[0], managementKey: string, tenant: string) => {
-  const webSdk = createWebSdk(config);
+export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, tenant: string }) => {
 
   const search: SearchUsers = async ({
     page,
@@ -13,7 +11,7 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
     emails,
     phones,
   } = {}) => {
-    const res = await webSdk.httpClient.post(
+    const res = await httpClient.post(
       apiPaths.user.search,
       {
         limit,
@@ -25,7 +23,6 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
         phones,
       },
       {
-        token: managementKey,
         queryParams: { tenant }
       },
     );
@@ -40,11 +37,10 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
   };
 
   const del = async (loginIds: string[]) => {
-    const res = await webSdk.httpClient.post(
+    const res = await httpClient.post(
       apiPaths.user.delete,
       { loginId: loginIds[0] },
       {
-        token: managementKey,
         queryParams: { tenant }
       });
 
@@ -61,7 +57,6 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
     phone,
     displayName,
     roles,
-    userTenants,
     customAttributes,
     picture,
     verifiedEmail,
@@ -71,7 +66,7 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
     familyName,
     additionalLoginIds,
   }) => {
-    const res = await webSdk.httpClient.post(
+    const res = await httpClient.post(
       apiPaths.user.create,
       {
         loginId,
@@ -82,7 +77,7 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
         middleName,
         familyName,
         roleNames: roles,
-        userTenants,
+        userTenants: [{ tenantId: tenant }],
         customAttributes,
         picture,
         verifiedEmail,
@@ -90,7 +85,6 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
         additionalLoginIds,
       },
       {
-        token: managementKey,
         queryParams: { tenant }
       },
     );
@@ -104,13 +98,25 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
     return json.user;
   };
 
-
   const expirePassword = async (loginIds: string[]) => {
-    const res = await webSdk.httpClient.post(
+    const res = await httpClient.post(
       apiPaths.user.expirePassword,
       { loginId: loginIds[0] },
       {
-        token: managementKey,
+        queryParams: { tenant }
+      });
+
+    if (!res.ok) {
+      throw Error(res.statusText);
+    }
+
+    return res.json();
+  };
+
+  const getCustomAttributes = async () => {
+    const res = await httpClient.get(
+      apiPaths.user.customAttributes,
+      {
         queryParams: { tenant }
       });
 
@@ -122,13 +128,10 @@ export const createSdk = (config: Parameters<typeof createWebSdk>[0], management
   };
 
   return {
-    user: {
-      search,
-      delete: del,
-      create,
-      expirePassword
-    }
+    search,
+    delete: del,
+    create,
+    expirePassword,
+    getCustomAttributes
   };
 };
-
-export type Api = ReturnType<typeof createSdk>

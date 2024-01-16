@@ -28,6 +28,8 @@ export const createStateManagementMixin = <State, CaseReducers extends SliceCase
                 },
                 serializableCheck: false,
               }),
+              // change to true if we want to debug redux
+              devTools: false
           });
 
           const wrapAction = <F extends (...args: any[]) => any>(action: F) =>
