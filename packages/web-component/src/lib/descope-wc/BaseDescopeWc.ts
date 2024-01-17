@@ -269,8 +269,6 @@ class BaseDescopeWc extends HTMLElement {
 
   #createSdk(projectId: string, baseUrl: string) {
     this.sdk = createSdk({
-      // Use persist tokens options in order to add existing tokens in outgoing requests (if they exists)
-      persistTokens: true,
       preview: this.preview,
       storagePrefix: this.storagePrefix,
       ...BaseDescopeWc.sdkConfigOverrides,

@@ -22,7 +22,8 @@ describe('persistTokens', () => {
   afterEach(() => {
     localStorage.setItem('DSR', '');
   });
-  it('should get refresh token from local storage', () => {
+
+  it('should add refresh token to requests also when persistTokens is false', () => {
     const sdk = createSdk({ projectId: 'pid', persistTokens: true });
     localStorage.setItem('DSR', authInfo.refreshJwt);
     sdk.httpClient.get('1/2/3');
@@ -37,7 +38,46 @@ describe('persistTokens', () => {
         }),
         method: 'GET',
         credentials: 'include',
-      }
+      },
+    );
+
+    expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
+  });
+
+  it('should not store tokens when persistTokens is false', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: false,
+    });
+    await sdk.httpClient.get('1/2/3');
+
+    expect(localStorage.getItem('DSR')).toBeFalsy();
+    expect(localStorage.getItem('Ds')).toBeFalsy();
+  });
+
+  it('should get refresh token from local storage', () => {
+    const mockFetch = jest.fn().mockReturnValue(new Promise(() => {}));
+    global.fetch = mockFetch;
+    const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+    localStorage.setItem('DSR', authInfo.refreshJwt);
+    sdk.httpClient.get('1/2/3');
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL(`https://api.descope.com/1/2/3`),
+      {
+        body: undefined,
+        headers: new Headers({
+          Authorization: `Bearer pid:${authInfo.refreshJwt}`,
+          ...descopeHeaders,
+        }),
+        method: 'GET',
+        credentials: 'include',
+      },
     );
 
     expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
@@ -228,7 +268,7 @@ describe('persistTokens', () => {
       jest.resetModules();
 
       expect(warnSpy).toHaveBeenCalledWith(
-        'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server'
+        'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server',
       );
     });
   });

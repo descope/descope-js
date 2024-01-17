@@ -22,7 +22,9 @@ const sdk = descopeSdk({
   projectId: myProjectId,
   /* Persist tokens that returned after successful authentication (e.g. sdk.otp.verify.email(...),
   sdk.refresh(...), flow.next(...), etc.) in browser storage. In addition, this will
-  make `sdk.getSessionToken()` available, see usage bellow bellow */
+  make `sdk.getSessionToken()` available, see usage bellow bellow.
+  Note: Tokens stored in the browser are automatically added to requests, regardless of the persistTokens value.
+  */
   persistTokens: true,
   /* Pass `sessionTokenViaCookie: true` to store the session token in a cookie when using `persistTokens`. By default, the sdk will set the session token in the browser storage.
   Notes:
