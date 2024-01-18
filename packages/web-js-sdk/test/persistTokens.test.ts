@@ -37,7 +37,7 @@ describe('persistTokens', () => {
         }),
         method: 'GET',
         credentials: 'include',
-      }
+      },
     );
 
     expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
@@ -60,7 +60,6 @@ describe('persistTokens', () => {
     await new Promise(process.nextTick);
 
     expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
-      domain: authInfo.cookieDomain,
       path: authInfo.cookiePath,
       expires: new Date(authInfo.cookieExpiration * 1000),
       sameSite: 'Strict',
@@ -228,7 +227,7 @@ describe('persistTokens', () => {
       jest.resetModules();
 
       expect(warnSpy).toHaveBeenCalledWith(
-        'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server'
+        'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server',
       );
     });
   });

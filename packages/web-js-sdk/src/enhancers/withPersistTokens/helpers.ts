@@ -18,13 +18,13 @@ import {
 function setJwtTokenCookie(
   name: string,
   value: string,
-  { cookiePath, cookieDomain, cookieExpiration }: Partial<JWTResponse>
+  { cookiePath, cookieExpiration }: Partial<JWTResponse>,
 ) {
   if (value) {
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
+    // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
     Cookies.set(name, value, {
       path: cookiePath,
-      domain: cookieDomain,
       expires,
       sameSite: 'Strict',
       secure: true,
@@ -35,7 +35,7 @@ function setJwtTokenCookie(
 export const persistTokens = (
   { refreshJwt, sessionJwt, ...cookieParams } = {} as Partial<JWTResponse>,
   sessionTokenViaCookie = false,
-  storagePrefix = ''
+  storagePrefix = '',
 ) => {
   // persist refresh token
   refreshJwt &&
