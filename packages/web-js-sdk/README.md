@@ -28,7 +28,8 @@ const sdk = descopeSdk({
   Notes:
     - This option is relevant only when `persistTokens` is true.
     - The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5) cookie. It will be sent only over HTTPS connections.
-In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol. */
+In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
+    - The session token cookie will be stored on the domain that runs the code (e.i. current domain).*/
   */
   sessionTokenViaCookie: false,
   /* Automatically schedule a call refresh session call after a successful authentication:
