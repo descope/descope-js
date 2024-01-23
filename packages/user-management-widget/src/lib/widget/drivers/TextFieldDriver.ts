@@ -8,4 +8,14 @@ export class TextFieldDriver extends BaseDriver {
 
     return () => this.ele?.removeEventListener('input', cb);
   }
+
+  get value(){
+    return (<HTMLInputElement>this.ele)?.value;
+  }
+
+  set value(value: string){
+    if(this.ele){
+      (<HTMLInputElement>this.ele).value = value;
+    }
+  }
 }

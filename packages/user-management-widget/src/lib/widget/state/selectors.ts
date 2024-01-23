@@ -16,7 +16,6 @@ const isFilterMatchesString = (filter: string, value: any) => value.toString().t
 export const getFilteredUsers = createSelector(getUsersList, getFilter, (users, filter) => {
   if (!filter.length) return users;
 
-  // TODO: filter by relevant fields only?
   return users.filter(user => Object.keys(user).some(key => {
     const value = user[key];
 

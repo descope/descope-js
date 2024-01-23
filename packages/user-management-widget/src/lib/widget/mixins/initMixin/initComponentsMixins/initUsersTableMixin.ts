@@ -28,7 +28,9 @@ export const initUsersTableMixin = createSingletonMixin(<T extends CustomElement
       await super.onWidgetRootReady?.();
 
       this.#initUsersTable();
-
+      // because we are not waiting for the rest calls,
+      // we need to make sure the table is updated with the received users
+      this.#onUsersListUpdate(getFilteredUsers(this.state));
       this.subscribe(this.#onUsersListUpdate.bind(this), getFilteredUsers);
     }
   });

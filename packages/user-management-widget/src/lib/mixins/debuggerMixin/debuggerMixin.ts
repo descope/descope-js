@@ -1,12 +1,12 @@
 import { compose } from '../../helpers/compose';
 import { createSingletonMixin } from '../../helpers/mixins';
 import { initLifecycleMixin } from '../initLifecycleMixin';
-import { INTERNAL_LOG_EVENTS } from '../loggerMixin';
+import { LogLevel, loggerMixin } from '../loggerMixin';
 import { DebuggerMessage } from './types';
 
 export const debuggerMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class DebuggerMixinClass extends compose(initLifecycleMixin)(superclass) {
+    class DebuggerMixinClass extends compose(initLifecycleMixin, loggerMixin)(superclass) {
 
       #debuggerEle: (HTMLElement & {
         updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
@@ -62,16 +62,17 @@ export const debuggerMixin = createSingletonMixin(
         else this.#disableDebugger();
       }
 
+      onLogEvent(logLevel: LogLevel, args: any[]) {
+        super.onLogEvent?.(logLevel, args);
+        if (logLevel === 'error') {
+          this.#updateDebuggerMessages(args[0] || 'Error', args[1]);
+        }
+      }
+
       async init() {
         await super.init?.();
 
         this.#handleDebugMode();
-
-        //TODO: think about events mixin?
-        this.addEventListener(INTERNAL_LOG_EVENTS.error, (e) => {
-          const { detail } = e as CustomEvent<[string, string]>;
-          this.#updateDebuggerMessages(...detail);
-        });
       }
 
       #updateDebuggerMessages(title: string, description: string) {

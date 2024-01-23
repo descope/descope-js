@@ -88,7 +88,7 @@ export const themeMixin = createSingletonMixin(
 
       async #loadComponentsStyle() {
         // TODO: remove mock
-        const theme = { ...await this.#themeResource, ...mockTheme};
+        const theme = { ...await this.#themeResource, ...mockTheme };
         if (!theme) return;
 
         const descopeUi = await this.descopeUi;
@@ -125,10 +125,10 @@ export const themeMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        await this.#loadGlobalStyle();
-        await this.#loadComponentsStyle();
-        await this.#loadFonts();
-        await this.#applyTheme();
+        this.#loadGlobalStyle();
+        this.#loadComponentsStyle();
+        this.#loadFonts();
+        this.#applyTheme();
       }
     };
   },

@@ -14,7 +14,6 @@ export const initWidgetRootMixin = createSingletonMixin(<T extends CustomElement
       const template = createTemplate(widgetTemplate);
       await this.loadDescopeUiComponents(template);
       this.contentRootElement.append(template.content.cloneNode(true));
-
       this.onWidgetRootReady();
     }
 

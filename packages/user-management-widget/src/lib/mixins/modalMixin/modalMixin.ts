@@ -37,8 +37,8 @@ export const modalMixin = createSingletonMixin(
       }
 
       async init() {
+        this.loadDescopeUiComponents([MODAL_ELE_TAG]);
         await super.init?.();
-        await this.loadDescopeUiComponents([MODAL_ELE_TAG]);
       }
     };
   }

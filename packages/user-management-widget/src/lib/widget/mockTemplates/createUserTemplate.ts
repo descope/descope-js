@@ -1,4 +1,3 @@
-// TODO: remove
 export default `
 <descope-container
   direction="column"

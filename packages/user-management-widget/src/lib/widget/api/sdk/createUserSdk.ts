@@ -10,6 +10,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
     statuses,
     emails,
     phones,
+    text
   } = {}) => {
     const res = await httpClient.post(
       apiPaths.user.search,
@@ -21,6 +22,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
         statuses,
         emails,
         phones,
+        text
       },
       {
         queryParams: { tenant }
@@ -45,7 +47,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
       });
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     return res.json();
@@ -90,7 +92,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
     );
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     const json = await res.json();
@@ -107,7 +109,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
       });
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     return res.json();
@@ -121,7 +123,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
       });
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     return res.json();

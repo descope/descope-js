@@ -23,7 +23,6 @@ export const initMixin = createSingletonMixin(<T extends CustomElementConstructo
       await super.init?.();
 
       this.actions.searchUsers();
-      this.actions.getCustomAttributes();
     }
   });
 

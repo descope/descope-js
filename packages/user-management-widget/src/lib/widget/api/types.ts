@@ -53,6 +53,7 @@ export type SearchUsers = (config: {
   statuses?: UserStatus,
   emails?: string[],
   phones?: string[],
+  text?: string
 }) => Promise<User[]>
 
 export type CreateUser = (config: {

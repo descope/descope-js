@@ -35,6 +35,6 @@ export const initCreateUserModalMixin = createSingletonMixin(<T extends CustomEl
     async onWidgetRootReady() {
       await super.onWidgetRootReady?.();
 
-      await this.#initCreateUserModal();
+      this.#initCreateUserModal();
     }
   });

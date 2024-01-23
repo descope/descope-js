@@ -61,7 +61,7 @@ export const notificationsMixin = createSingletonMixin(
 
       async init() {
         await super.init?.();
-        await this.loadDescopeUiComponents([NOTIFICATION_ELE_TAG]);
+        this.loadDescopeUiComponents([NOTIFICATION_ELE_TAG]);
       }
     };
   }
