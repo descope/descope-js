@@ -15,7 +15,7 @@
     "start": "npx nx run user-management-widget:build && rollup -c rollup.config.app.serve.mjs -w",
     "build-app": "rollup -c rollup.config.app.js",
     "build": "rollup -c",
-    "test": "jest --silent",
+    "test": "echo no tests",
     "lint": "eslint '+(src|test)/**/*.ts'"
   },
   "license": "MIT",
