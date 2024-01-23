@@ -17,6 +17,7 @@ import {
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
   URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
   URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
@@ -24,6 +25,7 @@ import {
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
+  OIDC_LOGIN_HINT_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -572,6 +574,7 @@ describe('web-component', () => {
           lastAuth: {},
           redirectUrl: 'http://custom.url',
           oidcIdpStateId: null,
+          oidcLoginHint: null,
           preview: false,
           samlIdpStateId: null,
           samlIdpUsername: null,
@@ -688,6 +691,36 @@ describe('web-component', () => {
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
     await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
+  });
+
+  it('When there is a passcode with auto-submit enabled, it auto-submits on input event if value is valid', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    globalThis.DescopeUI = {
+      'descope-passcode': jest.fn(),
+    };
+
+    pageContent =
+      '<descope-passcode data-auto-submit="true" data-testid="otp-code"></descope-passcode><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const codeComponent = screen.getByShadowTestId(
+      'otp-code',
+    ) as HTMLInputElement;
+    codeComponent.checkValidity = jest.fn(() => true);
+
+    fireEvent.input(codeComponent);
+
+    expect(startMock).toHaveBeenCalled();
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
   });
 
   it('should update the page messages when page is remaining the same but the state is updated', async () => {
@@ -1599,33 +1632,43 @@ describe('web-component', () => {
       jest.useRealTimers();
     });
 
-    it('When action type is "poll" - check that interval is removed properly', async () => {
-      jest.spyOn(global, 'clearInterval');
+    it('Should clear timeout when user clicks a button', async () => {
+      jest.spyOn(global, 'clearTimeout');
 
-      startMock.mockReturnValueOnce(
-        generateSdkResponse({
-          executionId: 'e1',
-          stepId: 's1',
-          screenId: '1',
-          action: RESPONSE_ACTIONS.poll,
-        }),
-      );
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
-      nextMock.mockReturnValueOnce(generateSdkResponse());
-
-      pageContent = '<div>hey</div>';
+      pageContent =
+        '<descope-button id="submitterId">click</descope-button><span>It works!</span>';
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
       jest.runAllTimers();
 
-      await waitFor(() => expect(clearInterval).toHaveBeenCalled(), {
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 10000,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() =>
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          'submitterId',
+          1,
+          '1.2.3',
+          expect.any(Object),
+        ),
+      );
+
+      await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {
         timeout: 8000,
       });
     });
 
-    it('When has polling element - next with "polling", and check that interval is set properly', async () => {
-      jest.spyOn(global, 'setInterval');
+    it('When has polling element - next with "polling", and check that timeout is set properly', async () => {
+      jest.spyOn(global, 'setTimeout');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -1642,7 +1685,7 @@ describe('web-component', () => {
 
       await waitFor(
         () =>
-          expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 2000),
+          expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 2000),
         {
           timeout: WAIT_TIMEOUT,
         },
@@ -1707,7 +1750,7 @@ describe('web-component', () => {
     });
 
     it('When has polling element, and next poll returns polling response', async () => {
-      jest.spyOn(global, 'setInterval');
+      jest.spyOn(global, 'setTimeout');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -1728,7 +1771,7 @@ describe('web-component', () => {
     });
 
     it('When has polling element, and next poll returns completed response', async () => {
-      jest.spyOn(global, 'setInterval');
+      jest.spyOn(global, 'setTimeout');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -1912,6 +1955,7 @@ describe('web-component', () => {
             abTestingKey,
             lastAuth: { authMethod: 'otp' },
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -1962,6 +2006,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2052,6 +2097,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             redirectAuth: undefined,
             tenant: undefined,
             lastAuth: { authMethod: 'otp' },
@@ -2114,9 +2160,11 @@ describe('web-component', () => {
 
       const challenge = window.btoa('hash');
       const callback = 'https://mycallback.com';
+      const backupCallback = 'myapp://auth';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      const encodedBackupCallback = encodeURIComponent(backupCallback);
+      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2125,11 +2173,16 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: backupCallback,
+            },
             tenant: undefined,
             lastAuth: {},
           },
@@ -2164,7 +2217,12 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
-            redirectAuth: { callbackUrl: callback, codeChallenge: challenge },
+            oidcLoginHint: null,
+            redirectAuth: {
+              callbackUrl: callback,
+              codeChallenge: challenge,
+              backupCallbackUri: null,
+            },
             tenant: undefined,
             lastAuth: {},
             samlIdpStateId: null,
@@ -2201,6 +2259,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: 'abcdefgh',
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2327,6 +2386,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: null,
             ssoAppId: null,
@@ -2366,6 +2426,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: 'dummyUser',
             ssoAppId: null,
@@ -2433,6 +2494,7 @@ describe('web-component', () => {
           {
             abTestingKey,
             oidcIdpStateId: null,
+            oidcLoginHint: null,
             samlIdpStateId: null,
             samlIdpUsername: null,
             ssoAppId: 'abcdefgh',
@@ -2453,6 +2515,76 @@ describe('web-component', () => {
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
+  });
+
+  it('should call start with oidc idp with oidcLoginHint flag and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+
+    const oidcStateId = 'abcdefgh';
+    const encodedOidcStateId = encodeURIComponent(oidcStateId);
+    const oidcLoginHint = 'dummyUser';
+    const encodedOidcLoginHint = encodeURIComponent(oidcLoginHint);
+    window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_LOGIN_HINT_PARAM_NAME}=${encodedOidcLoginHint}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          abTestingKey,
+          oidcIdpStateId: 'abcdefgh',
+          oidcLoginHint: 'dummyUser',
+          samlIdpStateId: null,
+          samlIdpUsername: null,
+          ssoAppId: null,
+          client: {},
+          tenant: undefined,
+          redirectAuth: undefined,
+          lastAuth: {},
+        },
+        undefined,
+        '',
+        0,
+        '1.2.3',
+        {
+          externalId: 'dummyUser',
+        },
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with oidc idp with loginHint when there is a start screen is configured', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      flows: {
+        'sign-in': { startScreenId: 'screen-0' },
+      },
+    };
+
+    pageContent =
+      '<descope-button>click</descope-button><span>It works!</span>';
+
+    const oidcLoginHint = 'abcdefgh';
+    const encodedOidcLoginHint = encodeURIComponent(oidcLoginHint);
+    window.location.search = `?${OIDC_LOGIN_HINT_PARAM_NAME}=${encodedOidcLoginHint}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
   it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
@@ -2486,6 +2618,7 @@ describe('web-component', () => {
         {
           abTestingKey,
           oidcIdpStateId: null,
+          oidcLoginHint: null,
           samlIdpStateId: null,
           samlIdpUsername: null,
           ssoAppId: null,
@@ -2549,6 +2682,7 @@ describe('web-component', () => {
         {
           abTestingKey,
           oidcIdpStateId: null,
+          oidcLoginHint: null,
           samlIdpStateId: null,
           samlIdpUsername: null,
           ssoAppId: null,
@@ -3317,6 +3451,33 @@ describe('web-component', () => {
           }),
         { timeout: WAIT_TIMEOUT },
       );
+    });
+  });
+
+  describe('componentsConfig', () => {
+    it('should parse componentsConfig values to screen components', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsConfig: { customComponent: { value: 'val1' } },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="customComponent">`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => screen.getByShadowDisplayValue('val1'), {
+        timeout: WAIT_TIMEOUT,
+      });
     });
   });
 });

@@ -185,6 +185,8 @@ export type FlowAction =
   | 'webauthnGet'
   | 'none';
 
+export type ComponentsConfig = Record<string, any>;
+
 /** Flow response with flow execution details */
 export type FlowResponse = {
   // current execution identifier
@@ -203,6 +205,7 @@ export type FlowResponse = {
     id: string;
     // extra dynamic state required for rendering screen
     state: Record<string, any>;
+    componentsConfig: ComponentsConfig;
   };
   // redirect data - if action is 'redirect'
   redirect?: {
@@ -243,6 +246,7 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  oidcLoginHint?: string;
   abTestingKey?: number;
   startOptionsVersion?: number;
   client?: Record<string, any>;

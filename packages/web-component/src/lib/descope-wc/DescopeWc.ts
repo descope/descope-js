@@ -61,7 +61,7 @@ class DescopeWc extends BaseDescopeWc {
     updateOnlyOnChange: false,
   });
 
-  #currentInterval: NodeJS.Timeout;
+  #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
 
@@ -152,6 +152,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOptions,
       redirectAuthCodeChallenge,
       redirectAuthCallbackUrl,
+      redirectAuthBackupCallbackUri,
       redirectAuthInitiator,
       oidcIdpStateId,
       locale,
@@ -161,11 +162,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
       ssoAppId,
+      oidcLoginHint,
     } = currentState;
-
-    if (this.#currentInterval) {
-      this.#resetCurrentInterval();
-    }
 
     let startScreenId: string;
     let conditionInteractionId: string;
@@ -179,6 +177,7 @@ class DescopeWc extends BaseDescopeWc {
         ? {
             callbackUrl: redirectAuthCallbackUrl,
             codeChallenge: redirectAuthCodeChallenge,
+            backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
 
@@ -212,6 +211,7 @@ class DescopeWc extends BaseDescopeWc {
           samlIdpStateId,
           samlIdpUsername,
           ssoAppId,
+          oidcLoginHint,
         )
       ) {
         const sdkResp = await this.sdk.flow.start(
@@ -223,6 +223,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            oidcLoginHint,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
@@ -236,6 +237,7 @@ class DescopeWc extends BaseDescopeWc {
             ...this.form,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(token ? { token } : {}),
+            ...(oidcLoginHint ? { externalId: oidcLoginHint } : {}),
           },
         );
 
@@ -367,19 +369,13 @@ class DescopeWc extends BaseDescopeWc {
       this.#handleSdkResponse(sdkResp);
     }
 
-    if (action === RESPONSE_ACTIONS.poll) {
-      this.#currentInterval = setInterval(async () => {
-        const sdkResp = await this.sdk.flow.next(
-          executionId,
-          stepId,
-          CUSTOM_INTERACTIONS.polling,
-          flowConfig.version,
-          projectConfig.componentsVersion,
-          {},
-        );
-        this.#handleSdkResponse(sdkResp);
-      }, 2000);
-    }
+    this.#handlePollingResponse(
+      executionId,
+      stepId,
+      action,
+      flowConfig.version,
+      projectConfig.componentsVersion,
+    );
 
     // if there is no screen id (possibly due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
@@ -413,12 +409,13 @@ class DescopeWc extends BaseDescopeWc {
       htmlLocaleUrl:
         filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
       samlIdpUsername,
+      oidcLoginHint,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId is not empty, this optimization doesn't happen
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint is not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (
       showFirstScreenOnExecutionInit(
@@ -427,6 +424,7 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpStateId,
         samlIdpUsername,
         ssoAppId,
+        oidcLoginHint,
       )
     ) {
       stepStateUpdate.next = (
@@ -444,6 +442,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            oidcLoginHint,
             lastAuth,
             preview: this.preview,
             abTestingKey,
@@ -475,14 +474,45 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
-  #resetCurrentInterval = () => {
-    clearInterval(this.#currentInterval);
-    this.#currentInterval = null;
+  #handlePollingResponse = (
+    executionId,
+    stepId,
+    action,
+    flowVersion,
+    componentsVersion,
+  ) => {
+    if (action === RESPONSE_ACTIONS.poll) {
+      // schedule next polling request for 2 seconds from now
+      this.#pollingTimeout = setTimeout(async () => {
+        const sdkResp = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          CUSTOM_INTERACTIONS.polling,
+          flowVersion,
+          componentsVersion,
+          {},
+        );
+        this.#handleSdkResponse(sdkResp);
+        const { action: nextAction } = sdkResp?.data ?? {};
+        // will poll again if needed
+        this.#handlePollingResponse(
+          executionId,
+          stepId,
+          flowVersion,
+          nextAction,
+          componentsVersion,
+        );
+      }, 2000);
+    }
+  };
+
+  #resetPollingTimeout = () => {
+    clearTimeout(this.#pollingTimeout);
+    this.#pollingTimeout = null;
   };
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
-      this.#resetCurrentInterval();
       this.#dispatch('error', sdkResp?.error);
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -508,7 +538,6 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       setLastAuth(lastAuth);
-      this.#resetCurrentInterval();
       this.#dispatch('success', authInfo);
       return;
     }
@@ -728,6 +757,7 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
+      screenState.componentsConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
@@ -819,7 +849,7 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
+  #handleSubmitButtonLoader(submitter: HTMLElement) {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
@@ -851,13 +881,12 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
+  async #handleSubmit(submitter: HTMLElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
       this.#validateInputs()
     ) {
       const submitterId = submitter?.getAttribute('id');
-
       this.#handleSubmitButtonLoader(submitter);
 
       const formData = await this.#getFormData();
@@ -887,6 +916,19 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #addPasscodeAutoSubmitListeners(next: NextFn) {
+    this.rootElement
+      .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
+      .forEach((passcode: HTMLInputElement) => {
+        passcode.addEventListener('input', () => {
+          const isValid = passcode.checkValidity?.();
+          if (isValid) {
+            this.#handleSubmit(passcode, next);
+          }
+        });
+      });
+  }
+
   #hydrate(next: NextFn) {
     // hydrating the page
     // Adding event listeners to all buttons without the exclude attribute
@@ -900,6 +942,8 @@ class DescopeWc extends BaseDescopeWc {
           this.#handleSubmit(button, next);
         };
       });
+
+    this.#addPasscodeAutoSubmitListeners(next);
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {
