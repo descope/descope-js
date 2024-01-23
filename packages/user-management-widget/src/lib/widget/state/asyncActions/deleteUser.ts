@@ -6,7 +6,7 @@ import { buildAsyncReducer, withNotifications, withRequestStatus } from './helpe
 import { pluralize } from '../../../helpers/generic';
 
 const action = createAsyncThunk
-  <any, FirstParameter<Sdk['user']['delete']>, ThunkConfigExtraApi>
+  <any, FirstParameter<Sdk['user']['deleteBatch']>, ThunkConfigExtraApi>
   (
     'users/delete',
     (arg, { extra: { api } }) => api.user.deleteBatch(arg)

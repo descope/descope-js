@@ -36,21 +36,6 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
     return json.users;
   };
 
-  const del = async (loginIds: string[]) => {
-    const res = await httpClient.post(
-      apiPaths.user.delete,
-      { loginId: loginIds[0] },
-      {
-        queryParams: { tenant }
-      });
-
-    if (!res.ok) {
-      throw Error(res.statusText);
-    }
-
-    return res.json();
-  };
-
   const deleteBatch = async (userIds: string[]) => {
     const res = await httpClient.post(
       apiPaths.user.deleteBatch,
@@ -144,7 +129,6 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
 
   return {
     search,
-    delete: del,
     deleteBatch,
     create,
     expirePassword,
