@@ -152,6 +152,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOptions,
       redirectAuthCodeChallenge,
       redirectAuthCallbackUrl,
+      redirectAuthBackupCallbackUri,
       redirectAuthInitiator,
       oidcIdpStateId,
       locale,
@@ -161,6 +162,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
       ssoAppId,
+      oidcLoginHint,
     } = currentState;
 
     let startScreenId: string;
@@ -175,6 +177,7 @@ class DescopeWc extends BaseDescopeWc {
         ? {
             callbackUrl: redirectAuthCallbackUrl,
             codeChallenge: redirectAuthCodeChallenge,
+            backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
 
@@ -208,6 +211,7 @@ class DescopeWc extends BaseDescopeWc {
           samlIdpStateId,
           samlIdpUsername,
           ssoAppId,
+          oidcLoginHint,
         )
       ) {
         const sdkResp = await this.sdk.flow.start(
@@ -219,6 +223,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            oidcLoginHint,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
@@ -232,6 +237,7 @@ class DescopeWc extends BaseDescopeWc {
             ...this.form,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(token ? { token } : {}),
+            ...(oidcLoginHint ? { externalId: oidcLoginHint } : {}),
           },
         );
 
@@ -403,12 +409,13 @@ class DescopeWc extends BaseDescopeWc {
       htmlLocaleUrl:
         filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
       samlIdpUsername,
+      oidcLoginHint,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId is not empty, this optimization doesn't happen
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint is not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (
       showFirstScreenOnExecutionInit(
@@ -417,6 +424,7 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpStateId,
         samlIdpUsername,
         ssoAppId,
+        oidcLoginHint,
       )
     ) {
       stepStateUpdate.next = (
@@ -434,6 +442,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpStateId,
             samlIdpUsername,
             ssoAppId,
+            oidcLoginHint,
             lastAuth,
             preview: this.preview,
             abTestingKey,
@@ -748,6 +757,7 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
+      screenState.componentsConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
@@ -839,7 +849,7 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #handleSubmitButtonLoader(submitter: HTMLButtonElement) {
+  #handleSubmitButtonLoader(submitter: HTMLElement) {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
@@ -871,13 +881,12 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async #handleSubmit(submitter: HTMLButtonElement, next: NextFn) {
+  async #handleSubmit(submitter: HTMLElement, next: NextFn) {
     if (
       submitter.getAttribute('formnovalidate') === 'true' ||
       this.#validateInputs()
     ) {
       const submitterId = submitter?.getAttribute('id');
-
       this.#handleSubmitButtonLoader(submitter);
 
       const formData = await this.#getFormData();
@@ -907,6 +916,19 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #addPasscodeAutoSubmitListeners(next: NextFn) {
+    this.rootElement
+      .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
+      .forEach((passcode: HTMLInputElement) => {
+        passcode.addEventListener('input', () => {
+          const isValid = passcode.checkValidity?.();
+          if (isValid) {
+            this.#handleSubmit(passcode, next);
+          }
+        });
+      });
+  }
+
   #hydrate(next: NextFn) {
     // hydrating the page
     // Adding event listeners to all buttons without the exclude attribute
@@ -920,6 +942,8 @@ class DescopeWc extends BaseDescopeWc {
           this.#handleSubmit(button, next);
         };
       });
+
+    this.#addPasscodeAutoSubmitListeners(next);
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {

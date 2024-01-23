@@ -13,7 +13,10 @@ export const urlBuilder = ({
   projectId: string;
 }) => {
   const region = projectId.slice(1, -27);
-  baseUrl = baseUrl.replace(BASE_URL_REGION_PLACEHOLDER, region ? region + '.' : '');
+  baseUrl = baseUrl.replace(
+    BASE_URL_REGION_PLACEHOLDER,
+    region ? region + '.' : '',
+  );
   const url = new URL(path, baseUrl);
   if (queryParams) url.search = new URLSearchParams(queryParams).toString();
 

@@ -2,6 +2,34 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.7.0](https://github.com/descope/descope-js/compare/web-component-3.6.0...web-component-3.7.0) (2024-01-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.9.0`
+
+### Features
+
+* support oidc login hint ([#349](https://github.com/descope/descope-js/issues/349)) ([c3d53b7](https://github.com/descope/descope-js/commit/c3d53b7208db916478e9ac71a57180ea210224cc))
+
+## [3.6.0](https://github.com/descope/descope-js/compare/web-component-3.5.0...web-component-3.6.0) (2024-01-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.8.5`
+
+### Features
+
+* add auto-submit optional behavior to code input OTP ([#346](https://github.com/descope/descope-js/issues/346)) ([418cc26](https://github.com/descope/descope-js/commit/418cc26fa79e5006e4db148bf8690c96ae9a71ed))
+* componentsConfig ([#331](https://github.com/descope/descope-js/issues/331)) ([9bfd05b](https://github.com/descope/descope-js/commit/9bfd05b99d6dffa0db8fff2f002105548904bc09))
+
+## [3.5.0](https://github.com/descope/descope-js/compare/web-component-3.4.4...web-component-3.5.0) (2024-01-04)
+
+
+### Features
+
+* add backup callback to redirect auth RELEASE ([#347](https://github.com/descope/descope-js/issues/347)) ([646599f](https://github.com/descope/descope-js/commit/646599f01fe9400547cc81a83dd509d89dd34ad6))
+
 ## [3.4.4](https://github.com/descope/descope-js/compare/web-component-3.4.3...web-component-3.4.4) (2023-12-31)
 
 ### Dependency Updates

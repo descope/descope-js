@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.9.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.8.5...web-js-sdk-1.9.0) (2024-01-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.8.0`
+
+### Features
+
+* support oidc login hint ([#349](https://github.com/descope/descope-js/issues/349)) ([c3d53b7](https://github.com/descope/descope-js/commit/c3d53b7208db916478e9ac71a57180ea210224cc))
+
+## [1.8.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.8.4...web-js-sdk-1.8.5) (2024-01-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.7.0`
 ## [1.8.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.8.3...web-js-sdk-1.8.4) (2023-12-31)
 
 ### Dependency Updates
