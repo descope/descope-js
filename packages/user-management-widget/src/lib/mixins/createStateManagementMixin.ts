@@ -1,8 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, configureStore } from '@reduxjs/toolkit';
-import type { CreateSliceOptions, SliceCaseReducers, SliceSelectors } from '@reduxjs/toolkit';
+import { createSlice, configureStore, unwrapResult } from '@reduxjs/toolkit';
+import type { CreateSliceOptions, Draft, SliceCaseReducers, SliceSelectors } from '@reduxjs/toolkit';
 import type { Unsubscribe } from 'redux'; //  workaround for https://github.com/microsoft/TypeScript/issues/42873
 import { createSingletonMixin } from '../helpers/mixins';
+import { compose } from '../helpers/compose';
+import { loggerMixin } from './loggerMixin';
 
 export const createStateManagementMixin = <State, CaseReducers extends SliceCaseReducers<State>, Name extends string, Selectors extends SliceSelectors<State>, ReducerPath extends string = Name, AsyncActions extends Record<string, any> = {}>
   (options: CreateSliceOptions<State, CaseReducers, Name, ReducerPath, Selectors> & { asyncActions?: AsyncActions }) => createSingletonMixin(
@@ -11,10 +13,12 @@ export const createStateManagementMixin = <State, CaseReducers extends SliceCase
 
       const allActions = { ...slice.actions, ...options.asyncActions };
 
-      return class StateManagementMixinClass extends superclass {
+      return class StateManagementMixinClass extends compose(loggerMixin)(superclass) {
         actions: typeof allActions;
 
-        subscribe: (cb: (state: any) => void) => Unsubscribe;
+        subscribe: <SelectorR = State extends Draft<infer S> ? S : State>
+          (cb: (state: SelectorR) => void, selector?: (state: State) => SelectorR) => Unsubscribe;
+
 
         constructor(...args: any) {
           super(...args);
@@ -28,13 +32,23 @@ export const createStateManagementMixin = <State, CaseReducers extends SliceCase
                 },
                 serializableCheck: false,
               }),
-              // change to true if we want to debug redux
-              devTools: false
+            // change to true if we want to debug redux
+            devTools: false
           });
 
           const wrapAction = <F extends (...args: any[]) => any>(action: F) =>
-            (...arg: any[]) => store.dispatch(action(...arg)) as F;
+            (async (...arg: any[]) => {
+              const result = await store.dispatch(action(...arg));
 
+              // we want to unwrap the result, so in case of an error we can log it
+              try {
+                unwrapResult(result);
+              } catch (e) {
+                this.logger.error(e.message, result.type, e.stack);
+              }
+
+              return result;
+            }) as F;
 
           const actions = Object.keys(allActions).reduce((acc, actionName) => {
             acc[actionName] = wrapAction(allActions[actionName]);
@@ -44,7 +58,7 @@ export const createStateManagementMixin = <State, CaseReducers extends SliceCase
 
           this.actions = actions;
 
-          this.subscribe = (cb: (state: any) => void) => store.subscribe(() => cb(store.getState()));
+          this.subscribe = (cb, selector = (state) => state as any) => store.subscribe(() => cb(selector(store.getState())));
         }
       };
     },

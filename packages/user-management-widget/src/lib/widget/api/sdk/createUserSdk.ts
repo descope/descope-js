@@ -28,7 +28,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
     );
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     const json = await res.json();

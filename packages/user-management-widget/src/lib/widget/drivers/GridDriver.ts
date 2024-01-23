@@ -1,6 +1,9 @@
 import { BaseDriver } from './BaseDriver';
 
 export class GridDriver<T extends any> extends BaseDriver {
+
+  nodeName = 'descope-grid';
+
   onSelectedItemsChange(cb: (e: CustomEvent<{ value: T[] }>) => void) {
     this.ele?.addEventListener('selected-items-changed', cb);
 

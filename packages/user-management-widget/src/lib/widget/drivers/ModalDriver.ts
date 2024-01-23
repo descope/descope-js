@@ -4,11 +4,19 @@ export class ModalDriver extends BaseDriver {
 
   #modalContent: HTMLTemplateElement;
 
+  beforeOpen: undefined | (() => void);
+
+  afterClose:  undefined | (() => void);
+
+  nodeName = 'descope-modal';
+
   close() {
     this.ele?.removeAttribute('opened');
+    this.afterClose?.();
   }
 
   open() {
+    this.beforeOpen?.();
     this.ele?.setAttribute('opened', 'true');
   }
 

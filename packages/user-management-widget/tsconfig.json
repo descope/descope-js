@@ -17,6 +17,6 @@
     "typeRoots": ["./node_modules/@types", "./node_modules/@descope/*"]
   },
 
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "./src/lib/custom.d.ts"],
   "exclude": ["node_modules", "build", "dist"]
 }

@@ -15,7 +15,7 @@ const action = createAsyncThunk
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.usersList.data.push(action.payload);
+      state.usersList.data.unshift(action.payload);
     }
   },
   withRequestStatus((state: State) => state.createUser),

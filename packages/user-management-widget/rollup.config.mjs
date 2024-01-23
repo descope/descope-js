@@ -5,6 +5,7 @@ import dts from 'rollup-plugin-dts';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import define from 'rollup-plugin-define';
+import svg from 'rollup-plugin-svg-import';
 
 import packageJson from './package.json' assert { type: 'json' };
 import { SourceMap } from 'module';
@@ -40,6 +41,7 @@ export default [
       commonjs(),
       nodeResolve(),
       terser(),
+      svg()
     ],
   },
   {
@@ -62,7 +64,10 @@ export default [
       commonjs(),
       nodeResolve(),
       terser(),
+      svg()
+
     ],
+
     external,
   },
   {

@@ -26,5 +26,5 @@ export const initialState: State = {
   },
   filter: '',
   selectedUsersLoginIds: [],
-  notifications: []
+  notifications: [],
 };

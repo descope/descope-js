@@ -1,6 +1,9 @@
 import { BaseDriver } from './BaseDriver';
 
 export class ButtonDriver extends BaseDriver {
+
+  nodeName = 'descope-button';
+
   onClick(cb: (e: Event) => void) {
     this.ele?.addEventListener('click', cb);
 
