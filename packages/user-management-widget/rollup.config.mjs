@@ -1,14 +1,14 @@
-import typescript from '@rollup/plugin-typescript';
-import del from 'rollup-plugin-delete';
-import { terser } from 'rollup-plugin-terser';
-import dts from 'rollup-plugin-dts';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import banner from 'rollup-plugin-banner';
 import define from 'rollup-plugin-define';
+import del from 'rollup-plugin-delete';
+import dts from 'rollup-plugin-dts';
 import svg from 'rollup-plugin-svg-import';
+import { terser } from 'rollup-plugin-terser';
 
 import packageJson from './package.json' assert { type: 'json' };
-import { SourceMap } from 'module';
 
 const input = './src/lib/index.ts';
 const external = (id) =>
@@ -41,7 +41,8 @@ export default [
       commonjs(),
       nodeResolve(),
       terser(),
-      svg()
+      svg(),
+      banner.default('<%= pkg.name %> v<%= pkg.version %>')
     ],
   },
   {
@@ -64,8 +65,8 @@ export default [
       commonjs(),
       nodeResolve(),
       terser(),
-      svg()
-
+      svg(),
+      banner.default('<%= pkg.name %> v<%= pkg.version %>')
     ],
 
     external,
