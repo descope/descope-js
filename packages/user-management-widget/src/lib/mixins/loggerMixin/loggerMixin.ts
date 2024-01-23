@@ -3,7 +3,7 @@ import { Logger } from './types';
 
 const logLevels = ['error', 'warn', 'info', 'debug'] as const;
 
-export type LogLevel = typeof logLevels[number]
+export type LogLevel = (typeof logLevels)[number];
 
 export const loggerMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -31,6 +31,6 @@ export const loggerMixin = createSingletonMixin(
       }
 
       // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-      onLogEvent(logLevel: LogLevel, data: any[]){}
+      onLogEvent(logLevel: LogLevel, data: any[]) {}
     },
 );

@@ -7,22 +7,28 @@ import { initLifecycleMixin } from '../../../../mixins/initLifecycleMixin';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import widgetTemplate from '../../../mockTemplates/widgetTemplate';
 
-export const initWidgetRootMixin = createSingletonMixin(<T extends CustomElementConstructor>(superclass: T) =>
-  class InitWidgetRootMixinClass extends compose(loggerMixin, initLifecycleMixin, descopeUiMixin, initElementMixin)(superclass) {
+export const initWidgetRootMixin = createSingletonMixin(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    class InitWidgetRootMixinClass extends compose(
+      loggerMixin,
+      initLifecycleMixin,
+      descopeUiMixin,
+      initElementMixin,
+    )(superclass) {
+      async #initWidgetRoot() {
+        const template = createTemplate(widgetTemplate);
+        await this.loadDescopeUiComponents(template);
+        this.contentRootElement.append(template.content.cloneNode(true));
+        this.onWidgetRootReady();
+      }
 
-    async #initWidgetRoot() {
-      const template = createTemplate(widgetTemplate);
-      await this.loadDescopeUiComponents(template);
-      this.contentRootElement.append(template.content.cloneNode(true));
-      this.onWidgetRootReady();
-    }
+      // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
+      async onWidgetRootReady() {}
 
-    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
-    async onWidgetRootReady() { }
+      async init() {
+        await super.init?.();
 
-    async init() {
-      await super.init?.();
-
-      this.#initWidgetRoot();
-    }
-  });
+        this.#initWidgetRoot();
+      }
+    },
+);

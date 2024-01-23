@@ -8,32 +8,46 @@ import { stateManagementMixin } from '../../stateManagementMixin';
 import { initDeleteUsersModalMixin } from './initDeleteUsersModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
-export const initDeleteUsersButtonMixin = createSingletonMixin(<T extends CustomElementConstructor>(superclass: T) =>
-  class InitDeleteUsersButtonMixinClass extends compose(loggerMixin, initWidgetRootMixin, stateManagementMixin, initDeleteUsersModalMixin)(superclass) {
+export const initDeleteUsersButtonMixin = createSingletonMixin(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    class InitDeleteUsersButtonMixinClass extends compose(
+      loggerMixin,
+      initWidgetRootMixin,
+      stateManagementMixin,
+      initDeleteUsersModalMixin,
+    )(superclass) {
+      deleteButton: ButtonDriver;
 
-    deleteButton: ButtonDriver;
-
-    #initDeleteButton() {
-      this.deleteButton = new ButtonDriver(this.shadowRoot?.querySelector('[data-id="delete-users"]'), { logger: this.logger });
-      this.deleteButton.disable();
-      this.deleteButton.onClick(() => {
-        this.deleteUsersModal.open();
-      });
-    }
-
-    #onIsUserSelectedUpdate = withMemCache((isSelected: ReturnType<typeof getIsUsersSelected>) => {
-      if (isSelected) {
-        this.deleteButton.enable();
-      } else {
+      #initDeleteButton() {
+        this.deleteButton = new ButtonDriver(
+          this.shadowRoot?.querySelector('[data-id="delete-users"]'),
+          { logger: this.logger },
+        );
         this.deleteButton.disable();
+        this.deleteButton.onClick(() => {
+          this.deleteUsersModal.open();
+        });
       }
-    });
 
-    async onWidgetRootReady() {
-      await super.onWidgetRootReady?.();
+      #onIsUserSelectedUpdate = withMemCache(
+        (isSelected: ReturnType<typeof getIsUsersSelected>) => {
+          if (isSelected) {
+            this.deleteButton.enable();
+          } else {
+            this.deleteButton.disable();
+          }
+        },
+      );
 
-      this.#initDeleteButton();
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
 
-      this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getIsUsersSelected);
-    }
-  });
+        this.#initDeleteButton();
+
+        this.subscribe(
+          this.#onIsUserSelectedUpdate.bind(this),
+          getIsUsersSelected,
+        );
+      }
+    },
+);

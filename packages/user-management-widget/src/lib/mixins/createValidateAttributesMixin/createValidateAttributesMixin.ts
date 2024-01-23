@@ -10,38 +10,39 @@ export type CheckValueFn = (
 
 export const createValidateAttributesMixin =
   (mappings: Record<string, CheckValueFn | string>) =>
-    <T extends CustomElementConstructor>(superclass: T) => {
-      const BaseClass = compose(loggerMixin, initLifecycleMixin, observeAttributesMixin)(superclass);
-      const mappingsNames = Object.keys(mappings);
+  <T extends CustomElementConstructor>(superclass: T) => {
+    const BaseClass = compose(
+      loggerMixin,
+      initLifecycleMixin,
+      observeAttributesMixin,
+    )(superclass);
+    const mappingsNames = Object.keys(mappings);
 
-      return class ValidateAttributesMixinClass extends BaseClass {
-        #handleError(
-          attrName: string,
-          newValue: string | null,
-        ) {
-          const onError = mappings[attrName];
+    return class ValidateAttributesMixinClass extends BaseClass {
+      #handleError(attrName: string, newValue: string | null) {
+        const onError = mappings[attrName];
 
-          const error =
-            typeof onError === 'function'
-              ? onError(attrName, newValue)
-              : onError;
+        const error =
+          typeof onError === 'function' ? onError(attrName, newValue) : onError;
 
-          if (error) {
-            this.logger.error(error);
-          }
+        if (error) {
+          this.logger.error(error);
         }
+      }
 
-        constructor(...args: any) {
-          super(...args);
+      constructor(...args: any) {
+        super(...args);
 
-          this.observeAttributes(mappingsNames, this.#handleError.bind(this));
-        }
+        this.observeAttributes(mappingsNames, this.#handleError.bind(this));
+      }
 
-        async init() {
-          await super.init?.();
+      async init() {
+        await super.init?.();
 
-          // check attributes initial values
-          mappingsNames.forEach(attr => this.#handleError(attr, this.getAttribute(attr)));
-        }
-      };
+        // check attributes initial values
+        mappingsNames.forEach((attr) =>
+          this.#handleError(attr, this.getAttribute(attr)),
+        );
+      }
     };
+  };

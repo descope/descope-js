@@ -13,7 +13,7 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
-      createValidateAttributesMixin({ 'tenant': missingAttrValidator }),
+      createValidateAttributesMixin({ tenant: missingAttrValidator }),
     )(superclass);
 
     return class InitLifecycleMixinClass extends BaseClass {
@@ -21,7 +21,10 @@ export const apiMixin = createSingletonMixin(
 
       #createSdk() {
         this.logger.debug('creating an sdk instance');
-        this.#api = createSdk({ projectId: this.projectId, baseUrl: this.baseUrl }, this.tenant);
+        this.#api = createSdk(
+          { projectId: this.projectId, baseUrl: this.baseUrl },
+          this.tenant,
+        );
       }
 
       get baseUrl() {
@@ -43,17 +46,12 @@ export const apiMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.observeAttributes(
-          [
-            'project-id',
-            'base-url',
-            'tenant'
-          ],
-          () => {
-            if (this.#api) {
-              this.#createSdk();
-            }
-          });
+        this.observeAttributes(['project-id', 'base-url', 'tenant'], () => {
+          if (this.#api) {
+            this.#createSdk();
+          }
+        });
       }
     };
-  });
+  },
+);

@@ -4,32 +4,32 @@ export const limitCoordinateToScreenBoundaries = (
   ele: HTMLElement,
   x: number,
   y: number,
-  boundaries: Boundaries = {}
+  boundaries: Boundaries = {},
 ) => [
-    Math.min(
-      Math.max(
-        x,
-        (boundaries.left === 'all' ? ele.offsetWidth : boundaries.left ?? 0) -
-        ele.offsetWidth
-      ),
-      window.innerWidth -
-      (boundaries.right === 'all' ? ele.offsetWidth : boundaries.right ?? 0)
+  Math.min(
+    Math.max(
+      x,
+      (boundaries.left === 'all' ? ele.offsetWidth : boundaries.left ?? 0) -
+        ele.offsetWidth,
     ),
-    Math.min(
-      Math.max(
-        y,
-        (boundaries.top === 'all' ? ele.offsetHeight : boundaries.top ?? 0) -
-        ele.offsetHeight
-      ),
-      window.innerHeight -
-      (boundaries.bottom === 'all' ? ele.offsetHeight : boundaries.bottom ?? 0)
+    window.innerWidth -
+      (boundaries.right === 'all' ? ele.offsetWidth : boundaries.right ?? 0),
+  ),
+  Math.min(
+    Math.max(
+      y,
+      (boundaries.top === 'all' ? ele.offsetHeight : boundaries.top ?? 0) -
+        ele.offsetHeight,
     ),
-  ];
+    window.innerHeight -
+      (boundaries.bottom === 'all' ? ele.offsetHeight : boundaries.bottom ?? 0),
+  ),
+];
 
 export const dragElement = (
   ele: HTMLElement,
   triggerEle?: HTMLElement,
-  keepVisible?: Boundaries
+  keepVisible?: Boundaries,
 ) => {
   let deltaX = 0;
   let deltaY = 0;
@@ -48,7 +48,7 @@ export const dragElement = (
       ele,
       ele.offsetLeft - deltaX,
       ele.offsetTop - deltaY,
-      keepVisible
+      keepVisible,
     );
     // eslint-disable-next-line no-param-reassign
     ele.style.top = `${top}px`;
@@ -89,7 +89,7 @@ type Target = {
   h: number;
   offsetWidth: number;
   offsetHeight: number;
-}
+};
 
 export const addOnResize = (ele: HTMLElement) => {
   // eslint-disable-next-line no-param-reassign

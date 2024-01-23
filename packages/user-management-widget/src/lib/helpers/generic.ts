@@ -25,13 +25,21 @@ export const kebabCase = (str: string) =>
     .replace(/[\s_.]+/g, '-')
     .toLowerCase();
 
-export const isObjEmpty = (obj: object) => Object.keys(obj).length === 0 && obj.constructor === Object;
+export const isObjEmpty = (obj: object) =>
+  Object.keys(obj).length === 0 && obj.constructor === Object;
 
-export const pluralize = (amount: number) => (strings: TemplateStringsArray, ...expressions:(string | number)[][]) => strings.reduce((acc, str, idx) => `${acc}${str}${expressions?.[idx]?.[amount > 1 ? 1 : 0] || ''}`, '');
+export const pluralize =
+  (amount: number) =>
+  (strings: TemplateStringsArray, ...expressions: (string | number)[][]) =>
+    strings.reduce(
+      (acc, str, idx) =>
+        `${acc}${str}${expressions?.[idx]?.[amount > 1 ? 1 : 0] || ''}`,
+      '',
+    );
 
 export const debounce = (fn: Function, ms = 300) => {
   let timeoutId: ReturnType<typeof setTimeout>;
-  return function debounced (this: any, ...args: any[]) {
+  return function debounced(this: any, ...args: any[]) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), ms);
   };

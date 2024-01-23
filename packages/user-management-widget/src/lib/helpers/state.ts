@@ -9,7 +9,7 @@ type StateObject = Record<string, any>;
 export type SubscribeCb<T> = (
   state: T,
   prevState: T,
-  isChanged: ReturnType<typeof createIsChanged>
+  isChanged: ReturnType<typeof createIsChanged>,
 ) => void | Promise<void>;
 type UpdateStateCb<T> = (state: T) => Partial<T>;
 type Subscribers<T> = Record<string, SubscribeCb<T>>;
@@ -18,7 +18,7 @@ export type IsChanged<T> = Parameters<SubscribeCb<T>>[2];
 
 function compareObjects(
   objectA: Record<string, any>,
-  objectB: Record<string, any>
+  objectB: Record<string, any>,
 ) {
   const aProperties = Object.getOwnPropertyNames(objectA);
   const bProperties = Object.getOwnPropertyNames(objectB);
@@ -79,7 +79,7 @@ class State<T extends StateObject> {
 
       setTimeout(() => {
         Object.values(this.#subscribers).forEach((cb) =>
-          cb(nextState, prevState, createIsChanged(nextState, prevState))
+          cb(nextState, prevState, createIsChanged(nextState, prevState)),
         );
       }, 0);
     }

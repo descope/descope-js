@@ -10,9 +10,12 @@ import { ModalDriver } from '../../widget/drivers/ModalDriver';
 
 export const modalMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(initLifecycleMixin, initElementMixin, descopeUiMixin)(superclass);
+    const BaseClass = compose(
+      initLifecycleMixin,
+      initElementMixin,
+      descopeUiMixin,
+    )(superclass);
     return class ModalMixinClass extends BaseClass {
-
       #ModalDriverWrapper = (() => {
         const loadDescopeUiComponents = this.loadDescopeUiComponents.bind(this);
         return class ModalDriverWrapper extends ModalDriver {
@@ -28,7 +31,7 @@ export const modalMixin = createSingletonMixin(
 
         const modal = createModalEle({
           ...baseConfig,
-          ...config
+          ...config,
         });
 
         this.rootElement.append(modal);
@@ -41,5 +44,5 @@ export const modalMixin = createSingletonMixin(
         await super.init?.();
       }
     };
-  }
+  },
 );

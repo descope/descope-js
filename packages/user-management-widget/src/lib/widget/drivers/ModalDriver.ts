@@ -1,12 +1,11 @@
 import { BaseDriver } from './BaseDriver';
 
 export class ModalDriver extends BaseDriver {
-
   #modalContent: HTMLTemplateElement;
 
   beforeOpen: undefined | (() => void);
 
-  afterClose:  undefined | (() => void);
+  afterClose: undefined | (() => void);
 
   nodeName = 'descope-modal';
 
@@ -23,7 +22,8 @@ export class ModalDriver extends BaseDriver {
   reset() {
     if (this.ele) this.ele.innerHTML = '';
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    this.#modalContent && this.ele?.append(this.#modalContent.content.cloneNode(true));
+    this.#modalContent &&
+      this.ele?.append(this.#modalContent.content.cloneNode(true));
   }
 
   setContent(template: HTMLTemplateElement) {

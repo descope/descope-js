@@ -1,7 +1,6 @@
 import { BaseDriver } from './BaseDriver';
 
 export class GridDriver<T extends any> extends BaseDriver {
-
   nodeName = 'descope-grid';
 
   onSelectedItemsChange(cb: (e: CustomEvent<{ value: T[] }>) => void) {
@@ -19,7 +18,6 @@ export class GridDriver<T extends any> extends BaseDriver {
   }
 
   set data(data: T[]) {
-    if (this.ele)
-      this.ele.data = data;
+    if (this.ele) this.ele.data = data;
   }
 }

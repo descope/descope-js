@@ -1,7 +1,6 @@
 import { BaseDriver } from './BaseDriver';
 
 export class NotificationDriver extends BaseDriver {
-
   nodeName = 'descope-notification';
 
   close() {

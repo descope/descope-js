@@ -14,7 +14,7 @@ const input = './src/lib/index.ts';
 const external = (id) =>
   !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
-const { PRODUCTION } = process.env
+const { PRODUCTION } = process.env;
 
 export default [
   {
@@ -31,8 +31,8 @@ export default [
         replacements: {
           BUILD_VERSION: JSON.stringify(packageJson.version),
           'process.env.NODE_ENV': JSON.stringify(
-            PRODUCTION ? 'production' : 'development'
-          )
+            PRODUCTION ? 'production' : 'development',
+          ),
         },
       }),
       typescript({
@@ -42,7 +42,7 @@ export default [
       nodeResolve(),
       terser(),
       svg(),
-      banner.default('<%= pkg.name %> v<%= pkg.version %>')
+      banner.default('<%= pkg.name %> v<%= pkg.version %>'),
     ],
   },
   {
@@ -66,7 +66,7 @@ export default [
       nodeResolve(),
       terser(),
       svg(),
-      banner.default('<%= pkg.name %> v<%= pkg.version %>')
+      banner.default('<%= pkg.name %> v<%= pkg.version %>'),
     ],
 
     external,

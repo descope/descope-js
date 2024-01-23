@@ -13,8 +13,6 @@ declare global {
 }
 
 const rootMixin = (superclass: CustomElementConstructor) =>
-  class RootMixinClass extends compose(
-    initMixin,
-  )(superclass) { };
+  class RootMixinClass extends compose(initMixin)(superclass) {};
 
 export const UserManagementWidget = compose(rootMixin)(HTMLElement);

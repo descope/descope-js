@@ -6,24 +6,32 @@ import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { debounce } from '../../../../helpers/generic';
 
-export const initFilterUsersInputMixin = createSingletonMixin(<T extends CustomElementConstructor>(superclass: T) =>
-  class InitFilterUsersInputMixinClass extends compose(loggerMixin, initWidgetRootMixin, stateManagementMixin)(superclass) {
+export const initFilterUsersInputMixin = createSingletonMixin(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    class InitFilterUsersInputMixinClass extends compose(
+      loggerMixin,
+      initWidgetRootMixin,
+      stateManagementMixin,
+    )(superclass) {
+      searchInput: TextFieldDriver;
 
-    searchInput: TextFieldDriver;
+      #onInput() {
+        this.actions.setFilter(this.searchInput.value);
+      }
 
-    #onInput() {
-      this.actions.setFilter(this.searchInput.value);
-    }
+      #initSearchInput() {
+        // currently we are doing it on client side because we assume there will not be more than 10000 users per tenant
+        this.searchInput = new TextFieldDriver(
+          this.shadowRoot?.querySelector('[data-id="search-input"]'),
+          { logger: this.logger },
+        );
+        this.searchInput.onInput(debounce(this.#onInput.bind(this), 500));
+      }
 
-    #initSearchInput() {
-      // currently we are doing it on client side because we assume there will not be more than 10000 users per tenant
-      this.searchInput = new TextFieldDriver(this.shadowRoot?.querySelector('[data-id="search-input"]'), { logger: this.logger });
-      this.searchInput.onInput(debounce(this.#onInput.bind(this), 500));
-    }
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
 
-    async onWidgetRootReady() {
-      await super.onWidgetRootReady?.();
-
-      this.#initSearchInput();
-    }
-  });
+        this.#initSearchInput();
+      }
+    },
+);

@@ -9,12 +9,12 @@ export class TextFieldDriver extends BaseDriver {
     return () => this.ele?.removeEventListener('input', cb);
   }
 
-  get value(){
+  get value() {
     return (<HTMLInputElement>this.ele)?.value;
   }
 
-  set value(value: string){
-    if(this.ele){
+  set value(value: string) {
+    if (this.ele) {
       (<HTMLInputElement>this.ele).value = value;
     }
   }

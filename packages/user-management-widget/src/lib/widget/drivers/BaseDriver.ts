@@ -1,9 +1,8 @@
 import { Logger } from '../../mixins/loggerMixin/types';
 
-type RefOrRefFn = Element | (() => HTMLElement)
+type RefOrRefFn = Element | (() => HTMLElement);
 
 export class BaseDriver {
-
   #ele: RefOrRefFn;
 
   logger: Logger | undefined;
@@ -24,8 +23,11 @@ export class BaseDriver {
       return null;
     }
 
-    if(ele?.localName !== this.nodeName) {
-      this.logger?.debug(`node name do not match, expected "${this.nodeName}", received "${ele.localName}" `, Error());
+    if (ele?.localName !== this.nodeName) {
+      this.logger?.debug(
+        `node name do not match, expected "${this.nodeName}", received "${ele.localName}" `,
+        Error(),
+      );
 
       return null;
     }

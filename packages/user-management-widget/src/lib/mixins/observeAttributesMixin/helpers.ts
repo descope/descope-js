@@ -1,4 +1,7 @@
-export const observeAttributes = (ele: HTMLElement, callback: (attrName: string) => void) => {
+export const observeAttributes = (
+  ele: HTMLElement,
+  callback: (attrName: string) => void,
+) => {
   // sync all attrs on init
   Array.from(ele.attributes).forEach((attr) => callback(attr.name));
 

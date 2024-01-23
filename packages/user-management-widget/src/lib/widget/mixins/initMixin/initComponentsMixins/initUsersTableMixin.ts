@@ -8,29 +8,41 @@ import { getFilteredUsers } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
-export const initUsersTableMixin = createSingletonMixin(<T extends CustomElementConstructor>(superclass: T) =>
-  class InitUsersTableMixinClass extends compose(stateManagementMixin, loggerMixin, initWidgetRootMixin)(superclass) {
+export const initUsersTableMixin = createSingletonMixin(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    class InitUsersTableMixinClass extends compose(
+      stateManagementMixin,
+      loggerMixin,
+      initWidgetRootMixin,
+    )(superclass) {
+      usersTable: GridDriver<User>;
 
-    usersTable: GridDriver<User>;
+      #initUsersTable() {
+        this.usersTable = new GridDriver(
+          this.shadowRoot?.querySelector('[data-id="users-table"]'),
+          { logger: this.logger },
+        );
+        this.usersTable.onSelectedItemsChange((e) => {
+          this.actions.setSelectedUsersIds(
+            e.detail.value.map(({ loginIds }) => loginIds),
+          );
+        });
+      }
 
-    #initUsersTable() {
-      this.usersTable = new GridDriver(this.shadowRoot?.querySelector('[data-id="users-table"]'), { logger: this.logger });
-      this.usersTable.onSelectedItemsChange((e) => {
-        this.actions.setSelectedUsersIds(e.detail.value.map(({ loginIds }) => loginIds));
-      });
-    }
+      #onUsersListUpdate = withMemCache(
+        (usersList: ReturnType<typeof getFilteredUsers>) => {
+          this.usersTable.data = usersList;
+        },
+      );
 
-    #onUsersListUpdate = withMemCache((usersList: ReturnType<typeof getFilteredUsers>) => {
-      this.usersTable.data = usersList;
-    });
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
 
-    async onWidgetRootReady() {
-      await super.onWidgetRootReady?.();
-
-      this.#initUsersTable();
-      // because we are not waiting for the rest calls,
-      // we need to make sure the table is updated with the received users
-      this.#onUsersListUpdate(getFilteredUsers(this.state));
-      this.subscribe(this.#onUsersListUpdate.bind(this), getFilteredUsers);
-    }
-  });
+        this.#initUsersTable();
+        // because we are not waiting for the rest calls,
+        // we need to make sure the table is updated with the received users
+        this.#onUsersListUpdate(getFilteredUsers(this.state));
+        this.subscribe(this.#onUsersListUpdate.bind(this), getFilteredUsers);
+      }
+    },
+);

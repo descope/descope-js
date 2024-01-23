@@ -5,19 +5,27 @@ import { ButtonDriver } from '../../../drivers/ButtonDriver';
 import { initCreateUserModalMixin } from './initCreateUserModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
-export const initCreateUserButtonMixin = createSingletonMixin(<T extends CustomElementConstructor>(superclass: T) =>
-  class InitCreateUserButtonMixinClass extends compose(loggerMixin, initCreateUserModalMixin, initWidgetRootMixin)(superclass) {
+export const initCreateUserButtonMixin = createSingletonMixin(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    class InitCreateUserButtonMixinClass extends compose(
+      loggerMixin,
+      initCreateUserModalMixin,
+      initWidgetRootMixin,
+    )(superclass) {
+      createButton: ButtonDriver;
 
-    createButton: ButtonDriver;
+      #initCreateButton() {
+        this.createButton = new ButtonDriver(
+          this.shadowRoot?.querySelector('[data-id="create-user"]'),
+          { logger: this.logger },
+        );
+        this.createButton.onClick(() => this.createUserModal.open());
+      }
 
-    #initCreateButton() {
-      this.createButton = new ButtonDriver(this.shadowRoot?.querySelector('[data-id="create-user"]'), { logger: this.logger });
-      this.createButton.onClick(() => this.createUserModal.open());
-    }
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
 
-    async onWidgetRootReady() {
-      await super.onWidgetRootReady?.();
-
-      this.#initCreateButton();
-    }
-  });
+        this.#initCreateButton();
+      }
+    },
+);

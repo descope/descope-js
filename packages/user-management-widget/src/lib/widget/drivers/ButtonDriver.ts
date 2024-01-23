@@ -1,7 +1,6 @@
 import { BaseDriver } from './BaseDriver';
 
 export class ButtonDriver extends BaseDriver {
-
   nodeName = 'descope-button';
 
   onClick(cb: (e: Event) => void) {
@@ -10,12 +9,11 @@ export class ButtonDriver extends BaseDriver {
     return () => this.ele?.removeEventListener('click', cb);
   }
 
-  disable(){
+  disable() {
     this.ele?.setAttribute('disabled', 'true');
   }
 
-  enable(){
+  enable() {
     this.ele?.removeAttribute('disabled');
   }
 }
-

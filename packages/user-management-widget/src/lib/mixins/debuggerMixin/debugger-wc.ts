@@ -119,8 +119,9 @@ template.innerHTML = `
   }
 </style>
 
-<div style="top:${INITIAL_POS_THRESHOLD}px; left:${window.innerWidth - INITIAL_WIDTH - INITIAL_POS_THRESHOLD
-  }px;" class="debugger">
+<div style="top:${INITIAL_POS_THRESHOLD}px; left:${
+  window.innerWidth - INITIAL_WIDTH - INITIAL_POS_THRESHOLD
+}px;" class="debugger">
   <div class="header">
     <span>Debugger messages</span>
   </div>
@@ -158,7 +159,8 @@ class Debugger extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot?.appendChild(template.content.cloneNode(true));
 
-    this.#rootEle = this.shadowRoot!.querySelector<HTMLDivElement>('.debugger')!;
+    this.#rootEle =
+      this.shadowRoot!.querySelector<HTMLDivElement>('.debugger')!;
     this.#contentEle = this.#rootEle.querySelector<HTMLDivElement>('.content')!;
     this.#headerEle = this.#rootEle.querySelector<HTMLDivElement>('.header')!;
   }
