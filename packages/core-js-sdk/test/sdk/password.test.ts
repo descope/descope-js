@@ -17,19 +17,19 @@ describe('password', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.password.signUp('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
     it('should throw an error when password is not a string', () => {
       expect(() => sdk.password.signUp('loginId')).toThrow(
-        '"password" must be a string'
+        '"password" must be a string',
       );
     });
 
     it('should throw an error when password is empty', () => {
       expect(() => sdk.password.signUp('loginId', '')).toThrow(
-        '"password" must not be empty'
+        '"password" must not be empty',
       );
     });
 
@@ -55,7 +55,7 @@ describe('password', () => {
           loginId: 'loginId',
           password: 'abcd1234',
           user: { name: 'John Doe' },
-        }
+        },
       );
 
       expect(resp).toEqual({
@@ -74,19 +74,19 @@ describe('password', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.password.signIn('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
     it('should throw an error when password is not a string', () => {
       expect(() => sdk.password.signIn('loginId')).toThrow(
-        '"password" must be a string'
+        '"password" must be a string',
       );
     });
 
     it('should throw an error when password is empty', () => {
       expect(() => sdk.password.signIn('loginId', '')).toThrow(
-        '"password" must not be empty'
+        '"password" must not be empty',
       );
     });
 
@@ -109,7 +109,7 @@ describe('password', () => {
         {
           loginId: 'loginId',
           password: 'abcd1234',
-        }
+        },
       );
 
       expect(resp).toEqual({
@@ -128,7 +128,7 @@ describe('password', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.password.sendReset('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
@@ -150,7 +150,42 @@ describe('password', () => {
         apiPaths.password.sendReset,
         {
           loginId: 'loginId',
-        }
+        },
+      );
+
+      expect(resp).toEqual({
+        code: 200,
+        data: httpRespJson,
+        ok: true,
+        response: httpResponse,
+      });
+    });
+
+    it('should send the correct request and response with template options', async () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      const resp = await sdk.password.sendReset('loginId', 'kuku', {
+        ble: 'blue',
+      });
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.password.sendReset,
+        {
+          loginId: 'loginId',
+          redirectUrl: 'kuku',
+          templateOptions: {
+            ble: 'blue',
+          },
+        },
       );
 
       expect(resp).toEqual({
@@ -169,19 +204,19 @@ describe('password', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.password.update('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
     it('should throw an error when newPassword is not a string', () => {
       expect(() => sdk.password.update('loginId')).toThrow(
-        '"newPassword" must be a string'
+        '"newPassword" must be a string',
       );
     });
 
     it('should throw an error when newPassword is empty', () => {
       expect(() => sdk.password.update('loginId', '')).toThrow(
-        '"newPassword" must not be empty'
+        '"newPassword" must not be empty',
       );
     });
 
@@ -203,7 +238,7 @@ describe('password', () => {
           loginId: 'loginId',
           newPassword: 'abcd1234',
         },
-        { token: 'token' }
+        { token: 'token' },
       );
 
       expect(resp).toEqual({
@@ -222,31 +257,31 @@ describe('password', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.password.replace('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
     it('should throw an error when oldPassword is not a string', () => {
       expect(() => sdk.password.replace('loginId')).toThrow(
-        '"oldPassword" must be a string'
+        '"oldPassword" must be a string',
       );
     });
 
     it('should throw an error when oldPassword is empty', () => {
       expect(() => sdk.password.replace('loginId', '')).toThrow(
-        '"oldPassword" must not be empty'
+        '"oldPassword" must not be empty',
       );
     });
 
     it('should throw an error when newPassword is not a string', () => {
       expect(() => sdk.password.replace('loginId', 'oldPassword')).toThrow(
-        '"newPassword" must be a string'
+        '"newPassword" must be a string',
       );
     });
 
     it('should throw an error when newPassword is empty', () => {
       expect(() => sdk.password.replace('loginId', 'oldPassword', '')).toThrow(
-        '"newPassword" must not be empty'
+        '"newPassword" must not be empty',
       );
     });
 
@@ -264,7 +299,7 @@ describe('password', () => {
       const resp = await sdk.password.replace(
         'loginId',
         'abcd1234',
-        'abcd12345'
+        'abcd12345',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.password.replace,
@@ -272,7 +307,7 @@ describe('password', () => {
           loginId: 'loginId',
           oldPassword: 'abcd1234',
           newPassword: 'abcd12345',
-        }
+        },
       );
 
       expect(resp).toEqual({

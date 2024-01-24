@@ -13,6 +13,7 @@ import {
   User,
   LoginOptions,
   UpdateOptions,
+  SignUpOptions,
 } from '../types';
 import { EnchantedLink, Routes, WaitForSessionConfig } from './types';
 import {
@@ -29,11 +30,11 @@ const normalizeWaitForSessionConfig = ({
 } = {}) => ({
   pollingIntervalMs: Math.max(
     pollingIntervalMs || ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
-    ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS
+    ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
   ),
   timeoutMs: Math.min(
     timeoutMs || ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
-    ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS
+    ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
   ),
 });
 
@@ -41,8 +42,8 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
   verify: withVerifyValidations(
     (token: string): Promise<SdkResponse<never>> =>
       transformResponse(
-        httpClient.post(apiPaths.enchantedLink.verify, { token })
-      )
+        httpClient.post(apiPaths.enchantedLink.verify, { token }),
+      ),
   ),
 
   signIn: withSignValidations(
@@ -50,7 +51,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       loginId: string,
       URI?: string,
       loginOptions?: LoginOptions,
-      token?: string
+      token?: string,
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
       transformResponse(
         httpClient.post(
@@ -60,15 +61,16 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             URI,
             loginOptions,
           },
-          { token }
-        )
-      )
+          { token },
+        ),
+      ),
   ) as EnchantedLink[Routes.signIn],
 
   signUpOrIn: withSignValidations(
     (
       loginId: string,
-      URI?: string
+      URI?: string,
+      signUpOptions?: SignUpOptions,
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
       transformResponse(
         httpClient.post(
@@ -76,16 +78,18 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
           {
             loginId,
             URI,
-          }
-        )
-      )
+            loginOptions: signUpOptions,
+          },
+        ),
+      ),
   ) as EnchantedLink[Routes.signIn],
 
   signUp: withSignValidations(
     (
       loginId: string,
       URI?: string,
-      user?: User
+      user?: User,
+      signUpOptions?: SignUpOptions,
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
       transformResponse(
         httpClient.post(
@@ -94,15 +98,16 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             loginId,
             URI,
             user,
-          }
-        )
-      )
+            loginOptions: signUpOptions,
+          },
+        ),
+      ),
   ) as EnchantedLink[Routes.signUp],
 
   waitForSession: withWaitForSessionValidations(
     (
       pendingRef: string,
-      config?: WaitForSessionConfig
+      config?: WaitForSessionConfig,
     ): Promise<SdkResponse<JWTResponse>> =>
       new Promise((resolve) => {
         const { pollingIntervalMs, timeoutMs } =
@@ -129,7 +134,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
           });
           clearInterval(interval);
         }, timeoutMs);
-      })
+      }),
   ),
 
   update: {
@@ -139,15 +144,15 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
         email: string,
         URI?: string,
         token?: string,
-        updateOptions?: UpdateOptions<T>
+        updateOptions?: UpdateOptions<T>,
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
         transformResponse(
           httpClient.post(
             apiPaths.enchantedLink.update.email,
             { loginId, email, URI, ...updateOptions },
-            { token }
-          )
-        )
+            { token },
+          ),
+        ),
     ),
   },
 });
