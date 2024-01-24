@@ -30,21 +30,26 @@ const withMultipleHooks =
         beforeRequest?: BeforeRequest | BeforeRequest[];
         afterRequest?: AfterRequest | AfterRequest[];
       };
-    }
+    },
   ) => {
-    const beforeRequestHooks = [].concat(config.hooks?.beforeRequest || []);
-    const afterRequestHooks = [].concat(config.hooks?.afterRequest || []);
+    const beforeRequest: BeforeRequest = (c) => {
+      // get the before hooks from the config while function is running
+      // because the hooks might change after sdk creation
+      const beforeRequestHooks = [].concat(config.hooks?.beforeRequest || []);
+      return beforeRequestHooks?.reduce((acc, fn) => fn(acc), c);
+    };
 
-    const beforeRequest: BeforeRequest = (config) =>
-      beforeRequestHooks?.reduce((acc, fn) => fn(acc), config);
     const afterRequest: AfterRequest = async (req, res) => {
+      // get the after hooks from the config while function is running
+      // because the hooks might change after sdk creation
+      const afterRequestHooks = [].concat(config.hooks?.afterRequest || []);
       const results = await Promise.allSettled(
-        afterRequestHooks?.map((fn) => fn(req, res?.clone()))
+        afterRequestHooks?.map((fn) => fn(req, res?.clone())),
       );
       // eslint-disable-next-line no-console
       results.forEach(
         (result) =>
-          result.status === 'rejected' && config.logger?.error(result.reason)
+          result.status === 'rejected' && config.logger?.error(result.reason),
       );
     };
 
@@ -72,7 +77,7 @@ export default withSdkConfigValidations(
           cookiePolicy,
           baseConfig: { baseHeaders },
           fetch,
-        })
-      )
-  )
+        }),
+      ),
+  ),
 );
