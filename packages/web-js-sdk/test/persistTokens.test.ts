@@ -3,6 +3,7 @@ import { getSessionToken } from '../src/enhancers/withPersistTokens/helpers';
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
+import { before } from 'node:test';
 
 const descopeHeaders = {
   'x-descope-sdk-name': 'web-js',
@@ -42,30 +43,95 @@ describe('persistTokens', () => {
 
     expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
   });
-  it('should set session token as cookie and refresh token to local storage when managing session token via cookie', async () => {
-    const mockFetch = jest
-      .fn()
-      .mockReturnValue(createMockReturnValue(authInfo));
-    global.fetch = mockFetch;
 
-    const setMock = jest.spyOn(Cookies, 'set');
-
-    const sdk = createSdk({
-      projectId: 'pid',
-      sessionTokenViaCookie: true,
-      persistTokens: true,
+  describe('set session token via cookie', () => {
+    beforeEach(() => {
+      delete window.location;
     });
-    await sdk.httpClient.get('1/2/3');
+    it('should set cookie domain when it is the same as current domain', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
 
-    await new Promise(process.nextTick);
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
 
-    expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
-      path: authInfo.cookiePath,
-      expires: new Date(authInfo.cookieExpiration * 1000),
-      sameSite: 'Strict',
-      secure: true,
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Strict',
+        secure: true,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
     });
-    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+
+    it('should set cookie domain when it is the a parent of cookie domain', async () => {
+      window.location = { hostname: `app.${authInfo.cookieDomain}` } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Strict',
+        secure: true,
+      });
+    });
+
+    it('should not set cookie domain when it does not match parent of cookie domain', async () => {
+      window.location = { hostname: `another.com` } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        // domain is undefined
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Strict',
+        secure: true,
+      });
+    });
   });
 
   it('should not set refresh if persistTokens is configured to false', async () => {
