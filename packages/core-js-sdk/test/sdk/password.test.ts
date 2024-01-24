@@ -181,7 +181,7 @@ describe('password', () => {
         apiPaths.password.sendReset,
         {
           loginId: 'loginId',
-          URI: 'kuku',
+          redirectUrl: 'kuku',
           templateOptions: {
             ble: 'blue',
           },

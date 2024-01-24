@@ -45,13 +45,13 @@ const withPassword = (httpClient: HttpClient) => ({
   sendReset: withSendResetValidations(
     (
       loginId: string,
-      URI?: string,
+      redirectUrl?: string,
       templateOptions?: TemplateOptions,
     ): Promise<SdkResponse<PasswordResetResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.sendReset, {
           loginId,
-          URI,
+          redirectUrl,
           templateOptions,
         }),
       ),
