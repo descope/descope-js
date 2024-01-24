@@ -173,7 +173,7 @@ describe('password', () => {
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
 
-      const resp = await sdk.password.sendReset('loginId', {
+      const resp = await sdk.password.sendReset('loginId', 'kuku', {
         ble: 'blue',
       });
 
@@ -181,6 +181,7 @@ describe('password', () => {
         apiPaths.password.sendReset,
         {
           loginId: 'loginId',
+          URI: 'kuku',
           templateOptions: {
             ble: 'blue',
           },

@@ -24,7 +24,7 @@ type SignUpFn<T extends ResponseData> = (
 type UpdatePhoneFn = <T extends boolean>(
   loginId: string,
   phone: string,
-  redirectUrl?: string,
+  URI?: string,
   token?: string,
   updateOptions?: UpdateOptions<T>,
 ) => Promise<SdkResponse<MaskedPhone>>;

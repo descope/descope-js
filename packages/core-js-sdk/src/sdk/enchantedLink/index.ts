@@ -49,7 +49,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
   signIn: withSignValidations(
     (
       loginId: string,
-      redirectUrl?: string,
+      URI?: string,
       loginOptions?: LoginOptions,
       token?: string,
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
@@ -58,7 +58,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
           pathJoin(apiPaths.enchantedLink.signIn, DeliveryMethods.email),
           {
             loginId,
-            redirectUrl,
+            URI,
             loginOptions,
           },
           { token },
