@@ -10,6 +10,7 @@ import {
   LoginOptions,
   MaskedEmail,
   UpdateOptions,
+  SignUpOptions,
 } from '../types';
 import { MagicLink, Routes } from './types';
 import {
@@ -22,7 +23,7 @@ import {
 const withMagicLink = (httpClient: HttpClient) => ({
   verify: withVerifyValidations(
     (token: string): Promise<SdkResponse<JWTResponse>> =>
-      transformResponse(httpClient.post(apiPaths.magicLink.verify, { token }))
+      transformResponse(httpClient.post(apiPaths.magicLink.verify, { token })),
   ),
 
   signIn: Object.keys(DeliveryMethods).reduce(
@@ -33,50 +34,58 @@ const withMagicLink = (httpClient: HttpClient) => ({
           loginId: string,
           URI?: string,
           loginOptions?: LoginOptions,
-          token?: string
+          token?: string,
         ) =>
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.magicLink.signIn, delivery),
               { loginId, URI, loginOptions },
-              { token }
-            )
-          )
+              { token },
+            ),
+          ),
       ),
     }),
-    {}
+    {},
   ) as MagicLink[Routes.signIn],
 
   signUp: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (loginId: string, URI?: string, user?: User) =>
+        (
+          loginId: string,
+          URI?: string,
+          user?: User,
+          signUpOptions?: SignUpOptions,
+        ) =>
           transformResponse(
             httpClient.post(pathJoin(apiPaths.magicLink.signUp, delivery), {
               loginId,
               URI,
               user,
-            })
-          )
+              loginOptions: signUpOptions,
+            }),
+          ),
       ),
     }),
-    {}
+    {},
   ) as MagicLink[Routes.signUp],
 
   signUpOrIn: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
-      [delivery]: withSignValidations((loginId: string, URI?: string) =>
-        transformResponse(
-          httpClient.post(pathJoin(apiPaths.magicLink.signUpOrIn, delivery), {
-            loginId,
-            URI,
-          })
-        )
+      [delivery]: withSignValidations(
+        (loginId: string, URI?: string, signUpOptions?: SignUpOptions) =>
+          transformResponse(
+            httpClient.post(pathJoin(apiPaths.magicLink.signUpOrIn, delivery), {
+              loginId,
+              URI,
+              loginOptions: signUpOptions,
+            }),
+          ),
       ),
     }),
-    {}
+    {},
   ) as MagicLink[Routes.signIn],
 
   update: {
@@ -86,15 +95,15 @@ const withMagicLink = (httpClient: HttpClient) => ({
         email: string,
         URI?: string,
         token?: string,
-        updateOptions? : UpdateOptions<T>
+        updateOptions?: UpdateOptions<T>,
       ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.magicLink.update.email,
             { loginId, email, URI, ...updateOptions },
-            { token }
-          )
-        )
+            { token },
+          ),
+        ),
     ),
     phone: Object.keys(DeliveryPhone).reduce(
       (acc, delivery) => ({
@@ -105,18 +114,18 @@ const withMagicLink = (httpClient: HttpClient) => ({
             phone: string,
             URI?: string,
             token?: string,
-            updateOptions? : UpdateOptions<T>
+            updateOptions?: UpdateOptions<T>,
           ) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.magicLink.update.phone, delivery),
                 { loginId, phone, URI, ...updateOptions },
-                { token }
-              )
-            )
+                { token },
+              ),
+            ),
         ),
       }),
-      {}
+      {},
     ) as MagicLink[Routes.updatePhone],
   },
 });

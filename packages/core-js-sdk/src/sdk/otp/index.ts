@@ -10,6 +10,7 @@ import {
   LoginOptions,
   MaskedEmail,
   UpdateOptions,
+  SignUpOptions,
 } from '../types';
 import {
   stringEmail,
@@ -22,16 +23,16 @@ import { Otp, Routes } from './types';
 const loginIdValidations = stringNonEmpty('loginId');
 const withVerifyValidations = withValidations(
   loginIdValidations,
-  stringNonEmpty('code')
+  stringNonEmpty('code'),
 );
 const withSignValidations = withValidations(loginIdValidations);
 const withUpdatePhoneValidations = withValidations(
   loginIdValidations,
-  stringPhone('phone')
+  stringPhone('phone'),
 );
 const withUpdateEmailValidations = withValidations(
   loginIdValidations,
-  stringEmail('email')
+  stringEmail('email'),
 );
 
 const withOtp = (httpClient: HttpClient) => ({
@@ -44,11 +45,11 @@ const withOtp = (httpClient: HttpClient) => ({
             httpClient.post(pathJoin(apiPaths.otp.verify, delivery), {
               code,
               loginId,
-            })
-          )
+            }),
+          ),
       ),
     }),
-    {}
+    {},
   ) as Otp[Routes.verify],
 
   signIn: Object.keys(DeliveryMethods).reduce(
@@ -60,41 +61,45 @@ const withOtp = (httpClient: HttpClient) => ({
             httpClient.post(
               pathJoin(apiPaths.otp.signIn, delivery),
               { loginId, loginOptions },
-              { token }
-            )
-          )
+              { token },
+            ),
+          ),
       ),
     }),
-    {}
+    {},
   ) as Otp[Routes.signIn],
 
   signUp: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
-      [delivery]: withSignValidations((loginId: string, user?: User) =>
-        transformResponse(
-          httpClient.post(pathJoin(apiPaths.otp.signUp, delivery), {
-            loginId,
-            user,
-          })
-        )
+      [delivery]: withSignValidations(
+        (loginId: string, user?: User, signUpOptions?: SignUpOptions) =>
+          transformResponse(
+            httpClient.post(pathJoin(apiPaths.otp.signUp, delivery), {
+              loginId,
+              user,
+              loginOptions: signUpOptions,
+            }),
+          ),
       ),
     }),
-    {}
+    {},
   ) as Otp[Routes.signUp],
 
   signUpOrIn: Object.keys(DeliveryMethods).reduce(
     (acc, delivery) => ({
       ...acc,
-      [delivery]: withSignValidations((loginId: string) =>
-        transformResponse(
-          httpClient.post(pathJoin(apiPaths.otp.signUpOrIn, delivery), {
-            loginId,
-          })
-        )
+      [delivery]: withSignValidations(
+        (loginId: string, signUpOptions?: SignUpOptions) =>
+          transformResponse(
+            httpClient.post(pathJoin(apiPaths.otp.signUpOrIn, delivery), {
+              loginId,
+              loginOptions: signUpOptions,
+            }),
+          ),
       ),
     }),
-    {}
+    {},
   ) as Otp[Routes.signIn],
 
   update: {
@@ -103,15 +108,15 @@ const withOtp = (httpClient: HttpClient) => ({
         loginId: string,
         email: string,
         token?: string,
-        updateOptions? : UpdateOptions<T>
+        updateOptions?: UpdateOptions<T>,
       ): Promise<SdkResponse<MaskedEmail>> =>
         transformResponse(
           httpClient.post(
             apiPaths.otp.update.email,
             { loginId, email, ...updateOptions },
-            { token }
-          )
-        )
+            { token },
+          ),
+        ),
     ),
     phone: Object.keys(DeliveryPhone).reduce(
       (acc, delivery) => ({
@@ -121,18 +126,18 @@ const withOtp = (httpClient: HttpClient) => ({
             loginId: string,
             phone: string,
             token?: string,
-            updateOptions? : UpdateOptions<T>
+            updateOptions?: UpdateOptions<T>,
           ) =>
             transformResponse(
               httpClient.post(
                 pathJoin(apiPaths.otp.update.phone, delivery),
                 { loginId, phone, ...updateOptions },
-                { token }
-              )
-            )
+                { token },
+              ),
+            ),
         ),
       }),
-      {}
+      {},
     ) as Otp[Routes.updatePhone],
   },
 });
