@@ -27,6 +27,7 @@
     "dist"
   ],
   "devDependencies": {
+    "@descope/web-components-ui": "^1.0.230",
     "@open-wc/rollup-plugin-html": "1.2.5",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
@@ -34,9 +35,9 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "5.17.0",
-    "@types/testing-library__jest-dom": "5.14.9",
     "@types/jest": "^29.0.0",
     "@types/node": "20.10.2",
+    "@types/testing-library__jest-dom": "5.14.9",
     "dotenv": "^16.0.3",
     "eslint": "8.52.0",
     "eslint-config-airbnb": "19.0.4",
@@ -72,13 +73,13 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "tslib": "2.6.2",
     "@descope/web-js-sdk": "workspace:*",
     "@reduxjs/toolkit": "^2.0.1",
-    "redux": "5.0.1",
     "immer": "^10.0.3",
+    "redux": "5.0.1",
+    "redux-thunk": "3.1.0",
     "reselect": "5.0.1",
-    "redux-thunk": "3.1.0"
+    "tslib": "2.6.2"
   },
   "overrides": {
     "terser": "5.21.0"

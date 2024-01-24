@@ -17,7 +17,7 @@ const reducer = buildAsyncReducer(action)({
     state.usersList.data = action.payload;
   }
 },
-withRequestStatus((state: State) => state.usersList)
+  withRequestStatus((state: State) => state.usersList)
 );
 
 export const searchUser = { action, reducer };
