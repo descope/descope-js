@@ -12,21 +12,21 @@ import {
 
 type SignInFn<T extends ResponseData> = (
   loginId: string,
-  uri: string
+  uri: string,
 ) => Promise<SdkResponse<T>>;
 
 type SignUpFn<T extends ResponseData> = (
   loginId: string,
   uri: string,
-  user?: User
+  user?: User,
 ) => Promise<SdkResponse<T>>;
 
-type UpdatePhoneFn =<T extends boolean> (
+type UpdatePhoneFn = <T extends boolean>(
   loginId: string,
   phone: string,
   URI?: string,
   token?: string,
-  updateOptions?: UpdateOptions<T>
+  updateOptions?: UpdateOptions<T>,
 ) => Promise<SdkResponse<MaskedPhone>>;
 
 type DeliveriesSignIn = DeliveriesMap<

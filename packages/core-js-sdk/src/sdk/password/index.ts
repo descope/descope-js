@@ -13,6 +13,7 @@ import {
   User,
   PasswordResetResponse,
   PasswordPolicyResponse,
+  TemplateOptions,
 } from '../types';
 
 const withPassword = (httpClient: HttpClient) => ({
@@ -20,15 +21,15 @@ const withPassword = (httpClient: HttpClient) => ({
     (
       loginId: string,
       password: string,
-      user?: User
+      user?: User,
     ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.signUp, {
           loginId,
           password,
           user,
-        })
-      )
+        }),
+      ),
   ),
 
   signIn: withSignValidations(
@@ -37,25 +38,30 @@ const withPassword = (httpClient: HttpClient) => ({
         httpClient.post(apiPaths.password.signIn, {
           loginId,
           password,
-        })
-      )
+        }),
+      ),
   ),
 
   sendReset: withSendResetValidations(
     (
       loginId: string,
-      redirectUrl?: string
+      redirectUrl?: string,
+      templateOptions?: TemplateOptions,
     ): Promise<SdkResponse<PasswordResetResponse>> =>
       transformResponse(
-        httpClient.post(apiPaths.password.sendReset, { loginId, redirectUrl })
-      )
+        httpClient.post(apiPaths.password.sendReset, {
+          loginId,
+          redirectUrl,
+          templateOptions,
+        }),
+      ),
   ),
 
   update: withUpdateValidation(
     (
       loginId: string,
       newPassword: string,
-      token?: string
+      token?: string,
     ): Promise<SdkResponse<never>> =>
       transformResponse(
         httpClient.post(
@@ -64,24 +70,24 @@ const withPassword = (httpClient: HttpClient) => ({
             loginId,
             newPassword,
           },
-          { token }
-        )
-      )
+          { token },
+        ),
+      ),
   ),
 
   replace: withReplaceValidation(
     (
       loginId: string,
       oldPassword: string,
-      newPassword: string
+      newPassword: string,
     ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.replace, {
           loginId,
           oldPassword,
           newPassword,
-        })
-      )
+        }),
+      ),
   ),
 
   policy: (): Promise<SdkResponse<PasswordPolicyResponse>> =>

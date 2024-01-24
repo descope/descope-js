@@ -12,13 +12,13 @@ describe('Magic Link', () => {
   describe('signUp', () => {
     it('should throw an error when loginId is not a string', () => {
       expect(() => sdk.magicLink.signUp.email(undefined)).toThrow(
-        '"loginId" must be a string'
+        '"loginId" must be a string',
       );
     });
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.magicLink.signUp.email('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
@@ -32,14 +32,42 @@ describe('Magic Link', () => {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
-        }
+        },
+      );
+    });
+
+    it('should send the correct request with sign up options', () => {
+      sdk.magicLink.signUp.email(
+        'loginId',
+        'http://some.thing.com',
+        {
+          name: 'John Doe',
+        },
+        {
+          templateOptions: {
+            ble: 'blue',
+          },
+        },
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.magicLink.signUp + '/email',
+        {
+          loginId: 'loginId',
+          URI: 'http://some.thing.com',
+          user: { name: 'John Doe' },
+          loginOptions: {
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+        },
       );
     });
   });
   describe('signIn', () => {
     it('should throw an error when loginId is not a string', () => {
       expect(() => sdk.magicLink.signUp.email(undefined)).toThrow(
-        '"loginId" must be a string'
+        '"loginId" must be a string',
       );
     });
 
@@ -52,7 +80,7 @@ describe('Magic Link', () => {
           URI: 'http://some.thing.com',
           loginOptions: undefined,
         },
-        { token: undefined }
+        { token: undefined },
       );
     });
 
@@ -64,7 +92,7 @@ describe('Magic Link', () => {
           stepup: true,
           customClaims: { k1: 'v1' },
         },
-        'token'
+        'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.magicLink.signIn + '/email',
@@ -76,7 +104,7 @@ describe('Magic Link', () => {
             customClaims: { k1: 'v1' },
           },
         },
-        { token: 'token' }
+        { token: 'token' },
       );
     });
 
@@ -88,7 +116,7 @@ describe('Magic Link', () => {
           mfa: true,
           customClaims: { k1: 'v1' },
         },
-        'token'
+        'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.magicLink.signIn + '/email',
@@ -100,7 +128,7 @@ describe('Magic Link', () => {
             customClaims: { k1: 'v1' },
           },
         },
-        { token: 'token' }
+        { token: 'token' },
       );
     });
 
@@ -111,7 +139,7 @@ describe('Magic Link', () => {
         {
           customClaims: { k1: 'v1' },
         },
-        'token'
+        'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.magicLink.signIn + '/email',
@@ -122,7 +150,7 @@ describe('Magic Link', () => {
             customClaims: { k1: 'v1' },
           },
         },
-        { token: 'token' }
+        { token: 'token' },
       );
     });
   });
@@ -130,13 +158,13 @@ describe('Magic Link', () => {
   describe('signUpOrIn', () => {
     it('should throw an error when loginId is not a string', () => {
       expect(() => sdk.magicLink.signUpOrIn.email(undefined)).toThrow(
-        '"loginId" must be a string'
+        '"loginId" must be a string',
       );
     });
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.magicLink.signUpOrIn.email('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
@@ -147,7 +175,27 @@ describe('Magic Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
-        }
+        },
+      );
+    });
+
+    it('should send the correct request with sign up options', () => {
+      sdk.magicLink.signUpOrIn.email('loginId', 'http://some.thing.com', {
+        templateOptions: {
+          ble: 'blue',
+        },
+      });
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.magicLink.signUpOrIn + '/email',
+        {
+          loginId: 'loginId',
+          URI: 'http://some.thing.com',
+          loginOptions: {
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+        },
       );
     });
   });
@@ -159,7 +207,7 @@ describe('Magic Link', () => {
 
     it('should throw an error when token is empty', () => {
       expect(() => sdk.magicLink.verify('')).toThrow(
-        '"token" must not be empty'
+        '"token" must not be empty',
       );
     });
 
@@ -169,7 +217,7 @@ describe('Magic Link', () => {
         apiPaths.magicLink.verify,
         {
           token: 'token',
-        }
+        },
       );
     });
   });
@@ -178,25 +226,25 @@ describe('Magic Link', () => {
     describe('email', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() => sdk.magicLink.update.email(1, '123456')).toThrow(
-          '"loginId" must be a string'
+          '"loginId" must be a string',
         );
       });
 
       it('should throw an error when loginId is empty', () => {
         expect(() => sdk.magicLink.update.email('', '123456')).toThrow(
-          '"loginId" must not be empty'
+          '"loginId" must not be empty',
         );
       });
 
       it('should throw an error when email is not a string', () => {
         expect(() => sdk.magicLink.update.email('loginId', 1)).toThrow(
-          '"email" must be a string'
+          '"email" must be a string',
         );
       });
 
       it('should throw an error when email is not in email format', () => {
         expect(() => sdk.magicLink.update.email('loginId', 'nonEmail')).toThrow(
-          '"nonEmail" is not a valid email'
+          '"nonEmail" is not a valid email',
         );
       });
 
@@ -216,7 +264,7 @@ describe('Magic Link', () => {
           'new@email.com',
           'new@email.com',
           'token',
-          { addToLoginIDs: true, onMergeUseExisting: true }
+          { addToLoginIDs: true, onMergeUseExisting: true },
         );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.magicLink.update.email,
@@ -227,7 +275,47 @@ describe('Magic Link', () => {
             addToLoginIDs: true,
             onMergeUseExisting: true,
           },
-          { token: 'token' }
+          { token: 'token' },
+        );
+      });
+
+      it('should send the correct request with template options', () => {
+        const httpRespJson = { response: 'response' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        sdk.magicLink.update.email(
+          'loginId',
+          'new@email.com',
+          'new@email.com',
+          'token',
+          {
+            addToLoginIDs: true,
+            onMergeUseExisting: true,
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+        );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.magicLink.update.email,
+          {
+            email: 'new@email.com',
+            loginId: 'loginId',
+            URI: 'new@email.com',
+            addToLoginIDs: true,
+            onMergeUseExisting: true,
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+          { token: 'token' },
         );
       });
 
@@ -245,7 +333,7 @@ describe('Magic Link', () => {
         const resp = await sdk.magicLink.update.email(
           'loginId',
           'new@email.com',
-          'new@email.com'
+          'new@email.com',
         );
 
         expect(resp).toEqual({
@@ -260,25 +348,25 @@ describe('Magic Link', () => {
     describe('phone', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() => sdk.magicLink.update.phone.sms(1, '123456')).toThrow(
-          '"loginId" must be a string'
+          '"loginId" must be a string',
         );
       });
 
       it('should throw an error when loginId is empty', () => {
         expect(() => sdk.magicLink.update.phone.sms('', '123456')).toThrow(
-          '"loginId" must not be empty'
+          '"loginId" must not be empty',
         );
       });
 
       it('should throw an error when phone is not a string', () => {
         expect(() => sdk.magicLink.update.phone.sms('loginId', 1)).toThrow(
-          '"phone" must be a string'
+          '"phone" must be a string',
         );
       });
 
       it('should throw an error when phone is not in phone format', () => {
         expect(() =>
-          sdk.magicLink.update.phone.sms('loginId', 'nonPhone')
+          sdk.magicLink.update.phone.sms('loginId', 'nonPhone'),
         ).toThrow('"nonPhone" is not a valid phone number');
       });
 
@@ -297,7 +385,7 @@ describe('Magic Link', () => {
           'loginId',
           '+9720000000',
           'http://some.thing.com',
-          'token'
+          'token',
         );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.magicLink.update.phone + '/sms',
@@ -306,7 +394,7 @@ describe('Magic Link', () => {
             loginId: 'loginId',
             URI: 'http://some.thing.com',
           },
-          { token: 'token' }
+          { token: 'token' },
         );
       });
 
@@ -324,7 +412,7 @@ describe('Magic Link', () => {
         const resp = await sdk.magicLink.update.phone.sms(
           'loginId',
           '+9720000000',
-          'http://some.thing.com'
+          'http://some.thing.com',
         );
 
         expect(resp).toEqual({
