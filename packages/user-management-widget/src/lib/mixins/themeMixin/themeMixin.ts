@@ -8,7 +8,6 @@ import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { THEME_FILENAME } from './constants';
 import { loadFont } from './helpers';
-import mockTheme from './mockTheme';
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
@@ -87,8 +86,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadComponentsStyle() {
-        // TODO: remove mock
-        const theme = { ...await this.#themeResource, ...mockTheme};
+        const theme = { ...(await this.#themeResource) } as Record<string, any>;
         if (!theme) return;
 
         const descopeUi = await this.descopeUi;
@@ -125,10 +123,10 @@ export const themeMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        await this.#loadGlobalStyle();
-        await this.#loadComponentsStyle();
-        await this.#loadFonts();
-        await this.#applyTheme();
+        this.#loadGlobalStyle();
+        this.#loadComponentsStyle();
+        this.#loadFonts();
+        this.#applyTheme();
       }
     };
   },

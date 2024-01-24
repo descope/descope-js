@@ -185,8 +185,12 @@ export const descopeUiMixin = createSingletonMixin(
         return undefined;
       }
 
-      async loadDescopeUiComponents(templateOrComponentNames: HTMLTemplateElement | string[]) {
-        const descopeUiComponentsList = Array.isArray(templateOrComponentNames) ? templateOrComponentNames : getDescopeUiComponentsList(templateOrComponentNames);
+      async loadDescopeUiComponents(
+        templateOrComponentNames: HTMLTemplateElement | string[],
+      ) {
+        const descopeUiComponentsList = Array.isArray(templateOrComponentNames)
+          ? templateOrComponentNames
+          : getDescopeUiComponentsList(templateOrComponentNames);
 
         return Promise.all(
           descopeUiComponentsList.map((componentName: string) =>

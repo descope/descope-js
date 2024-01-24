@@ -627,12 +627,14 @@ class BaseDescopeWc extends HTMLElement {
         code,
         exchangeError,
         redirectAuthCallbackUrl,
+        redirectAuthBackupCallbackUri,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
         ssoAppId,
+        oidcLoginHint,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
@@ -665,12 +667,14 @@ class BaseDescopeWc extends HTMLElement {
         code,
         exchangeError,
         redirectAuthCallbackUrl,
+        redirectAuthBackupCallbackUri,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
         ssoAppId,
+        oidcLoginHint,
       });
 
       this.#init = true;

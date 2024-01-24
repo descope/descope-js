@@ -15,8 +15,7 @@ export const initElementMixin = createSingletonMixin(
       constructor(...rest) {
         super(...rest);
 
-        this.attachShadow({ mode: 'open' }).innerHTML =
-          `
+        this.attachShadow({ mode: 'open' }).innerHTML = `
           <div id="${ROOT_ID}">
             <div id="${CONTENT_ROOT_ID}"></div>
           </div>
@@ -24,8 +23,7 @@ export const initElementMixin = createSingletonMixin(
 
         this.contentRootElement =
           this.shadowRoot?.getElementById(CONTENT_ROOT_ID)!;
-        this.rootElement =
-          this.shadowRoot?.getElementById(ROOT_ID)!;
+        this.rootElement = this.shadowRoot?.getElementById(ROOT_ID)!;
       }
     },
 );

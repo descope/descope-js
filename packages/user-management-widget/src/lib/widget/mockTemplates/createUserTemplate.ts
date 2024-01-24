@@ -1,4 +1,3 @@
-// TODO: remove
 export default `
 <descope-container
   direction="column"
@@ -23,8 +22,8 @@ export default `
     st-horizontal-padding="0rem"
     st-vertical-padding="0rem"
   >
-  <descope-button id="modal-cancel" mode="primary" variant="outline" size="md">Cancel</descope-button>
-  <descope-button id="modal-submit" mode="primary" variant="contained" size="md">Create</descope-button>
+  <descope-button data-id="modal-cancel" mode="primary" variant="outline" size="md">Cancel</descope-button>
+  <descope-button data-id="modal-submit" mode="primary" variant="contained" size="md">Create</descope-button>
   </descope-container>
 </descope-container>
 `;

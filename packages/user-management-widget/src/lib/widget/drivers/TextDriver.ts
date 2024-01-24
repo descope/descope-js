@@ -1,6 +1,8 @@
 import { BaseDriver } from './BaseDriver';
 
 export class TextDriver extends BaseDriver {
+  nodeName = 'descope-text';
+
   get ele() {
     return super.ele as Element & { innerText: string };
   }

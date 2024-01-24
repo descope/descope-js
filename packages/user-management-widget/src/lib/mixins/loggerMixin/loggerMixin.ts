@@ -1,17 +1,9 @@
 import { createSingletonMixin } from '../../helpers/mixins';
 import { Logger } from './types';
 
-const logLevels = ['error', 'warn', 'info', 'debug'];
+const logLevels = ['error', 'warn', 'info', 'debug'] as const;
 
-// TODO: think how we can prevent from internal events to leak outside, maybe events mixin?
-export const INTERNAL_LOG_EVENTS = logLevels.reduce(
-  (acc, logLevel) => {
-    acc[logLevel] = `logger-${logLevel}`;
-
-    return acc;
-  },
-  {} as Record<keyof Logger, string>,
-);
+export type LogLevel = (typeof logLevels)[number];
 
 export const loggerMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -21,8 +13,8 @@ export const loggerMixin = createSingletonMixin(
       #wrapLogger(logger: Partial<Logger>) {
         return logLevels.reduce((acc, logLevel) => {
           acc[logLevel] = (...args: any[]) => {
-            //TODO: internal/external events mixin?
-            this.dispatchEvent(new CustomEvent(INTERNAL_LOG_EVENTS[logLevel], { detail: args }));
+            // this.dispatchEvent(new CustomEvent(INTERNAL_LOG_EVENTS[logLevel], { detail: args }));
+            this.onLogEvent(logLevel, args);
             logger[logLevel]?.(...args);
           };
 
@@ -37,5 +29,8 @@ export const loggerMixin = createSingletonMixin(
       get logger(): Logger {
         return this.#logger;
       }
+
+      // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+      onLogEvent(logLevel: LogLevel, data: any[]) {}
     },
 );

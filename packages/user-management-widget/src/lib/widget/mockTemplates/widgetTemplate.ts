@@ -1,4 +1,3 @@
-// TODO: remove
 export default `
 <descope-container
   direction="column"
@@ -16,7 +15,7 @@ export default `
     st-gap="0rem"
     st-justify-content="space-between"
   >
-    <descope-text-field id="search" placeholder="Search" size="md" bordered="true"></descope-text-field>
+    <descope-text-field data-id="search-input" placeholder="Search" size="md" bordered="true"></descope-text-field>
 
     <descope-container
       direction="row"
@@ -26,11 +25,12 @@ export default `
       st-gap="0.5em"
       st-host-width="auto"
     >
-      <descope-button id="delete" mode="primary" variant="outline" size="md">Delete</descope-button>
-      <descope-button id="add" mode="primary" variant="contained" size="md">+ User</descope-button>
+      <descope-button data-id="delete-users" mode="primary" variant="outline" size="md">Delete</descope-button>
+      <descope-button data-id="create-user" mode="primary" variant="contained" size="md">+ User</descope-button>
     </descope-container>
     </descope-container>
     <descope-grid
+      data-id="users-table"
       bordered="true"
       size="xs"
       column-reordering-allowed

@@ -6,8 +6,9 @@ import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import dotenv from 'dotenv';
 import define from 'rollup-plugin-define';
+import svg from 'rollup-plugin-svg-import';
 
-const packageJson = require('./package.json');
+import packageJson from './package.json' assert { type: 'json' };
 
 dotenv.config();
 
@@ -32,12 +33,16 @@ export default {
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify('development'),
     }),
+    svg(),
     html({
       minify: false,
       transform: (contents) =>
         contents
           .replaceAll('<project-id>', process.env.DESCOPE_PROJECT_ID || '')
-          .replaceAll('<flow-id>',process.env.DESCOPE_FLOW_ID || 'sign-up-or-in')
+          .replaceAll(
+            '<flow-id>',
+            process.env.DESCOPE_FLOW_ID || 'sign-up-or-in',
+          )
           .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
           .replaceAll('<locale>', process.env.DESCOPE_LOCALE || '')
           .replaceAll('<tenant>', process.env.DESCOPE_TENANT || ''),

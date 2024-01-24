@@ -11,4 +11,3 @@ export type Boundaries = {
   right?: Boundary;
   bottom?: Boundary;
 };
-

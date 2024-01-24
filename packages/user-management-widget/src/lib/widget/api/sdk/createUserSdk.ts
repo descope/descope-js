@@ -1,8 +1,13 @@
 import { CreateUser, HttpClient, SearchUsers } from '../types';
 import { apiPaths } from '../apiPaths';
 
-export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, tenant: string }) => {
-
+export const createUserSdk = ({
+  httpClient,
+  tenant,
+}: {
+  httpClient: HttpClient;
+  tenant: string;
+}) => {
   const search: SearchUsers = async ({
     page,
     limit = 10000,
@@ -10,6 +15,7 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
     statuses,
     emails,
     phones,
+    text,
   } = {}) => {
     const res = await httpClient.post(
       apiPaths.user.search,
@@ -21,14 +27,15 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
         statuses,
         emails,
         phones,
+        text,
       },
       {
-        queryParams: { tenant }
+        queryParams: { tenant },
       },
     );
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     const json = await res.json();
@@ -36,31 +43,17 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
     return json.users;
   };
 
-  const del = async (loginIds: string[]) => {
-    const res = await httpClient.post(
-      apiPaths.user.delete,
-      { loginId: loginIds[0] },
-      {
-        queryParams: { tenant }
-      });
-
-    if (!res.ok) {
-      throw Error(res.statusText);
-    }
-
-    return res.json();
-  };
-
   const deleteBatch = async (userIds: string[]) => {
     const res = await httpClient.post(
       apiPaths.user.deleteBatch,
       { userIds },
       {
-        queryParams: { tenant }
-      });
+        queryParams: { tenant },
+      },
+    );
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     return res.json();
@@ -100,12 +93,12 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
         additionalLoginIds,
       },
       {
-        queryParams: { tenant }
+        queryParams: { tenant },
       },
     );
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     const json = await res.json();
@@ -118,25 +111,24 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
       apiPaths.user.expirePassword,
       { loginId: loginIds[0] },
       {
-        queryParams: { tenant }
-      });
+        queryParams: { tenant },
+      },
+    );
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     return res.json();
   };
 
   const getCustomAttributes = async () => {
-    const res = await httpClient.get(
-      apiPaths.user.customAttributes,
-      {
-        queryParams: { tenant }
-      });
+    const res = await httpClient.get(apiPaths.user.customAttributes, {
+      queryParams: { tenant },
+    });
 
     if (!res.ok) {
-      throw Error(res.statusText);
+      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
     }
 
     return res.json();
@@ -144,10 +136,9 @@ export const createUserSdk = ({ httpClient, tenant }: { httpClient: HttpClient, 
 
   return {
     search,
-    delete: del,
     deleteBatch,
     create,
     expirePassword,
-    getCustomAttributes
+    getCustomAttributes,
   };
 };

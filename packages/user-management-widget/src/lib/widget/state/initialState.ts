@@ -1,30 +1,29 @@
-
 import { State } from './types';
 
 export const initialState: State = {
   usersList: {
     data: [],
     loading: false,
-    error: null
+    error: null,
   },
   createUser: {
     loading: false,
-    error: null
+    error: null,
   },
   deleteUser: {
     loading: false,
-    error: null
+    error: null,
   },
   expireUserPassword: {
     loading: false,
-    error: null
+    error: null,
   },
   customAttributes: {
     loading: false,
     error: null,
-    data: {}
+    data: {},
   },
   filter: '',
   selectedUsersLoginIds: [],
-  notifications: []
+  notifications: [],
 };

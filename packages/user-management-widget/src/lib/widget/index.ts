@@ -1,6 +1,5 @@
 import { compose } from '../helpers/compose';
-import { initMixin } from './mixins/initMixin';
-import { stateUpdateMixin } from './mixins/stateUpdateMixin';
+import { initMixin } from './mixins/initMixin/initMixin';
 
 declare global {
   interface HTMLElement {
@@ -14,9 +13,6 @@ declare global {
 }
 
 const rootMixin = (superclass: CustomElementConstructor) =>
-  class RootMixinClass extends compose(
-    initMixin,
-    stateUpdateMixin
-  )(superclass) { };
+  class RootMixinClass extends compose(initMixin)(superclass) {};
 
 export const UserManagementWidget = compose(rootMixin)(HTMLElement);

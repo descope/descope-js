@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.7.0...core-js-sdk-2.8.0) (2024-01-10)
+
+
+### Features
+
+* support oidc login hint ([#349](https://github.com/descope/descope-js/issues/349)) ([c3d53b7](https://github.com/descope/descope-js/commit/c3d53b7208db916478e9ac71a57180ea210224cc))
+
+## [2.7.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.6.0...core-js-sdk-2.7.0) (2024-01-08)
+
+
+### Features
+
+* componentsConfig ([#331](https://github.com/descope/descope-js/issues/331)) ([9bfd05b](https://github.com/descope/descope-js/commit/9bfd05b99d6dffa0db8fff2f002105548904bc09))
+
+## [2.6.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.5.1...core-js-sdk-2.6.0) (2023-12-31)
+
+
+### Features
+
+* Extract region from project ID ([#344](https://github.com/descope/descope-js/issues/344)) ([bfd167a](https://github.com/descope/descope-js/commit/bfd167a659be634bf207682c9798a9c0299be815))
+
+## [2.5.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.5.0...core-js-sdk-2.5.1) (2023-12-27)
+
+
+### Bug Fixes
+
+* Remove embedded from DeliveryPhone RELEASE ([#343](https://github.com/descope/descope-js/issues/343)) ([d1e4a42](https://github.com/descope/descope-js/commit/d1e4a42c6138bfafc66c3d76e2cfdf3ef01d4693))
+
+## [2.5.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.4.0...core-js-sdk-2.5.0) (2023-12-27)
+
+
+### Features
+
+* Add embedded delivery method ([#341](https://github.com/descope/descope-js/issues/341)) ([31b9f3c](https://github.com/descope/descope-js/commit/31b9f3c68406bfe5b9415f614a6adbeb3add2278))
+
+
+### Bug Fixes
+
+* export login options RELEASE ([#342](https://github.com/descope/descope-js/issues/342)) ([ea69548](https://github.com/descope/descope-js/commit/ea69548baa83a1672438f506dfeb040fad130a3b))
+
 ## [2.4.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.3.0...core-js-sdk-2.4.0) (2023-12-21)
 
 

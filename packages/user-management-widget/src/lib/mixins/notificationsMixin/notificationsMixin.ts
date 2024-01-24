@@ -11,17 +11,20 @@ import { NotificationDriver } from '../../widget/drivers/NotificationDriver';
 
 export const notificationsMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(initLifecycleMixin, initElementMixin, descopeUiMixin)(superclass);
+    const BaseClass = compose(
+      initLifecycleMixin,
+      initElementMixin,
+      descopeUiMixin,
+    )(superclass);
     return class NotificationsMixinClass extends BaseClass {
-
       #NotificationDriverWrapper = (() => {
         const loadDescopeUiComponents = this.loadDescopeUiComponents.bind(this);
         return class NotificationDriverWrapper extends NotificationDriver {
           setContent(templateOrString: HTMLTemplateElement | string) {
-
-            const template = typeof templateOrString === 'string' ?
-              createTemplate(templateOrString) :
-              templateOrString;
+            const template =
+              typeof templateOrString === 'string'
+                ? createTemplate(templateOrString)
+                : templateOrString;
 
             loadDescopeUiComponents(template);
             super.setContent(template);
@@ -29,40 +32,45 @@ export const notificationsMixin = createSingletonMixin(
         };
       })();
 
-      createNotification(config?: {
-        mode: 'success' | 'error',
-        duration: number,
-        'has-close-button'?: boolean,
-        position?: 'top-stretch' |
-        'top-start' |
-        'top-center' |
-        'top-end' |
-        'middle' |
-        'bottom-start' |
-        'bottom-center' |
-        'bottom-end' |
-        'bottom-stretch'
-        size: 'xs' | 'sm' | 'md' | 'lg',
-        icon?: 'success' | 'error',
-      } & {
-        [key: string]: string | boolean | number
-      }) {
+      createNotification(
+        config?: {
+          mode: 'success' | 'error';
+          duration: number;
+          'has-close-button'?: boolean;
+          position?:
+            | 'top-stretch'
+            | 'top-start'
+            | 'top-center'
+            | 'top-end'
+            | 'middle'
+            | 'bottom-start'
+            | 'bottom-center'
+            | 'bottom-end'
+            | 'bottom-stretch';
+          size: 'xs' | 'sm' | 'md' | 'lg';
+          icon?: 'success' | 'error';
+        } & {
+          [key: string]: string | boolean | number;
+        },
+      ) {
         const baseConfig = {};
 
         const notification = createNotificationEle({
           ...baseConfig,
-          ...config
+          ...config,
         });
 
         this.rootElement.append(notification);
 
-        return new this.#NotificationDriverWrapper(notification, { logger: this.logger });
+        return new this.#NotificationDriverWrapper(notification, {
+          logger: this.logger,
+        });
       }
 
       async init() {
         await super.init?.();
-        await this.loadDescopeUiComponents([NOTIFICATION_ELE_TAG]);
+        this.loadDescopeUiComponents([NOTIFICATION_ELE_TAG]);
       }
     };
-  }
+  },
 );
