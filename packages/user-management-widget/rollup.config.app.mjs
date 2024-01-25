@@ -38,14 +38,17 @@ export default {
       minify: false,
       transform: (contents) =>
         contents
-          .replaceAll('<project-id>', process.env.DESCOPE_PROJECT_ID || '')
+          .replaceAll(
+            '<project-id>',
+            process.env.DESCOPE_PROJECT_ID || 'mockProjectId',
+          )
           .replaceAll(
             '<flow-id>',
             process.env.DESCOPE_FLOW_ID || 'sign-up-or-in',
           )
           .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
           .replaceAll('<locale>', process.env.DESCOPE_LOCALE || '')
-          .replaceAll('<tenant>', process.env.DESCOPE_TENANT || ''),
+          .replaceAll('<tenant>', process.env.DESCOPE_TENANT || 'mockTenant'),
     }),
   ],
 };

@@ -5,24 +5,6 @@ import { mockUsers } from './mocks/mockUsers';
 import { createSdk } from '../src/lib/widget/api/sdk';
 import { pluralize } from '../src/lib/helpers/generic';
 import '../src/lib/index';
-// import '@descope/web-components-ui';
-
-// globalThis.DescopeUI = {
-//   'descope-button': () => { },
-//   'descope-container': () => { },
-//   'descope-grid': () => { },
-//   'descope-grid-text-column': () => { },
-//   'descope-grid-selection-column': () => { },
-//   'descope-modal': () => { },
-//   'descope-notification': () => { },
-//   'descope-text-field': () => { },
-//   'descope-text': () => { },
-//   'descope-phone-field': () => { },
-//   'descope-email-field': () => { }
-// };
-
-// const widgetTagName = 'descope-user-management-widget';
-// const template = `<${widgetTagName} project-id="p1" tenant="tplMockTenant"></${widgetTagName}>`;
 
 const origAppend = document.body.append;
 
@@ -97,7 +79,6 @@ describe('user-management-widget', () => {
     document.getElementsByTagName('head')[0].innerHTML = '';
     document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
-    // jest.resetAllMocks();
     mockHttpClient.reset();
   });
 
@@ -180,74 +161,6 @@ describe('user-management-widget', () => {
       );
     });
   });
-
-  // describe.skip('widget', () => {
-  //   it('should have shadow root', async () => {
-  //     addWidget();
-  //     const shadowEle = document.getElementsByTagName(
-  //       'user-management-widget',
-  //     )[0].shadowRoot;
-  //     await waitFor(() => expect(shadowEle).toBeTruthy(), { timeout: 5000 });
-  //   });
-
-  //   it('should fetch users on load', async () => {
-  //     addWidget();
-
-  //     await waitFor(
-  //       () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
-  //       { timeout: 5000 },
-  //     );
-  //     await waitFor(
-  //       () =>
-  //         expect(mockHttpClient.post).toHaveBeenCalledWith(
-  //           apiPaths.user.search,
-  //           {
-  //             customAttributes: undefined,
-  //             emails: undefined,
-  //             limit: 10000,
-  //             page: undefined,
-  //             phones: undefined,
-  //             statuses: undefined,
-  //             withTestUser: false,
-  //           },
-  //           {
-  //             queryParams: {
-  //               tenant: 'tplMockTenant',
-  //             },
-  //           },
-  //         ),
-  //       { timeout: 5000 },
-  //     );
-  //   });
-
-  //   it('should have add button', async () => {
-  //     addWidget();
-  //     const userAddButton = await waitFor(
-  //       () => screen.findByShadowText('+ User'),
-  //       { timeout: 5000 },
-  //     );
-  //     await waitFor(() => expect(userAddButton).toBeInTheDocument());
-  //   });
-
-  //   it.skip('should have delete button', async () => {
-  //     document.body.innerHTML = template;
-  //     const userDeleteButton = await waitFor(
-  //       () => screen.findAllByRole('button'),
-  //       { timeout: 5000 },
-  //     );
-  //     await waitFor(() => expect(userDeleteButton).toBeDisabled());
-  //     // await waitFor(() => expect(userDeleteButton.textContent).toBe('Delete'));
-  //   });
-
-  //   it('should have search input', async () => {
-  //     addWidget();
-  //     const userSearchInput = await waitFor(
-  //       () => screen.findByShadowPlaceholderText('Search'),
-  //       { timeout: 5000 },
-  //     );
-  //     await waitFor(() => expect(userSearchInput).toBeInTheDocument());
-  //   });
-  // });
 
   describe('utils', () => {
     it('should pluralize messages', () => {

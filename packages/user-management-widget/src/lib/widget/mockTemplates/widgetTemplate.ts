@@ -15,7 +15,7 @@ export default `
     st-gap="0rem"
     st-justify-content="space-between"
   >
-    <descope-text-field data-id="search-input" placeholder="Search" size="md" bordered="true"></descope-text-field>
+    <descope-text-field data-testid="search-input" data-id="search-input" placeholder="Search" size="md" bordered="true"></descope-text-field>
 
     <descope-container
       direction="row"
@@ -25,8 +25,8 @@ export default `
       st-gap="0.5em"
       st-host-width="auto"
     >
-      <descope-button data-id="delete-users" mode="primary" variant="outline" size="md">Delete</descope-button>
-      <descope-button data-id="create-user" mode="primary" variant="contained" size="md">+ User</descope-button>
+      <descope-button data-testid="delete-users-trigger" data-id="delete-users" mode="primary" variant="outline" size="md">Delete</descope-button>
+      <descope-button data-testid="create-user-trigger" data-id="create-user" mode="primary" variant="contained" size="md">+ User</descope-button>
     </descope-container>
     </descope-container>
     <descope-grid

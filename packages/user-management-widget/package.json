@@ -16,8 +16,9 @@
     "build-app": "rollup -c rollup.config.app.js",
     "build": "rollup -c",
     "test": "jest --silent",
-    "test:e2e": "npx playwright test",
-    "test:ui": "playwright test --ui",
+    "test:e2e:build": "rollup -c rollup.config.app.test.mjs",
+    "test:e2e": "npm run test:e2e:build && npx playwright test",
+    "test:ui": "npm run test:e2e:build && playwright test --ui",
     "lint": "eslint '+(src|test)/**/*.ts'"
   },
   "license": "MIT",

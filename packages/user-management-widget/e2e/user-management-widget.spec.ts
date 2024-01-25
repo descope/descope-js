@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mockUsers, mockNewUser } from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
+import { ApiPaths, apiPaths } from '../src/lib/widget/api/apiPaths';
 
 const configContent = {
   flows: {
@@ -9,66 +10,77 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
+const apiPath = (path: keyof ApiPaths) => {
+  return `**/*${apiPaths.user[path]}?tenant=*`;
+};
+
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
+    await page.addInitScript(() =>
       window.localStorage.setItem(
         'base.ui.components.url',
         'http://localhost:8765/umd/index.js',
-      );
-    });
-
-    await page.route('*/**/config.json', async (route) => {
-      const json = configContent;
-      await route.fulfill({ json });
-    });
-
-    await page.route('*/**/theme.json', async (route) => {
-      const json = mockTheme;
-      await route.fulfill({ json });
-    });
-
-    await page.route('**/*v1/mgmt/user/search?tenant=*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ users: mockUsers }),
-      });
-    });
-
-    await page.route('**/*v1/mgmt/user/create?tenant=*', async (route) => {
-      const json = { user: mockNewUser };
-      await route.fulfill({ json });
-    });
+      ),
+    );
 
     await page.route(
-      '**/*/v1/mgmt/user/delete/batch?tenant=*',
-      async (route) => {
-        const json = { tenant: 'mockTenant' };
-        await route.fulfill({ json });
-      },
+      '*/**/config.json',
+      async (route) => await route.fulfill({ json: configContent }),
+    );
+
+    await page.route(
+      '*/**/theme.json',
+      async (route) => await route.fulfill({ json: mockTheme }),
+    );
+
+    await page.route(
+      apiPath('create'),
+      async (route) => await route.fulfill({ json: { user: mockNewUser } }),
+    );
+
+    await page.route(
+      apiPath('search'),
+      async (route) =>
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ users: mockUsers }),
+        }),
+    );
+
+    await page.route(
+      apiPath('deleteBatch'),
+      async (route) => await route.fulfill({ json: { tenant: 'mockTenant' } }),
     );
 
     await page.goto('http://localhost:5555');
   });
 
   test('users table', async ({ page }) => {
+    // user with multiple loginIds
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
     ).toBeVisible();
+    await expect(
+      page.locator(`text=${mockUsers[0]['loginIds'][1]}`).first(),
+    ).toBeVisible();
+
+    // user with single loginId
     await expect(
       page.locator(`text=${mockUsers[1]['loginIds'][0]}`).first(),
     ).toBeVisible();
   });
 
-  test('add user', async ({ page }) => {
-    const openAddUserModalButton = page.locator('text=+ User');
-    const createUserLoginIdInput = page.getByLabel('Login Id');
-    const createUserEmailInput = page.getByLabel('Email');
-    const createUserButton = page.locator('text=Create');
+  test('create user', async ({ page }) => {
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
 
     // open add user modal
     await openAddUserModalButton.click();
+
+    const createUserLoginIdInput = page.getByLabel('Login Id');
+    const createUserEmailInput = page.getByLabel('Email');
 
     // submit login id
     await createUserLoginIdInput.fill('someLoginId@test.com');
@@ -77,6 +89,9 @@ test.describe('widget', () => {
     await createUserEmailInput.fill('someEmail@test.com');
 
     // click modal create button
+    const createUserButton = page
+      .getByTestId('create-user-modal-submit')
+      .first();
     await createUserButton.click();
 
     // update grid items
@@ -89,22 +104,16 @@ test.describe('widget', () => {
   });
 
   test('delete users', async ({ page }) => {
-    const deleteUserTrigger = page
-      .locator('#content-root descope-button')
-      .filter({ hasText: 'Delete' })
-      .getByRole('button');
-
+    const deleteUserTrigger = page.getByTestId('delete-users-trigger').first();
     const deleteUserModalButton = page
-      .locator('descope-container')
-      .filter({ hasText: 'Delete 2 users?' })
-      .locator('vaadin-button')
-      .nth(1);
+      .getByTestId('delete-users-modal-submit')
+      .first();
 
     // delete button initial state is disabled
     expect(deleteUserTrigger).toBeDisabled();
 
     // select all items
-    await page.locator('vaadin-grid-cell-content').first().click();
+    await page.locator('descope-checkbox').first().click();
 
     // delete button is enabled on selection
     expect(deleteUserTrigger).toBeEnabled();
@@ -131,13 +140,14 @@ test.describe('widget', () => {
     ).toBeVisible();
 
     // update grid items
-    await expect(page.locator('#items')).toBeEmpty();
+    await expect(page.locator('descope-grid').locator('#items')).toBeEmpty();
   });
 
   test('search users', async ({ page }) => {
     const searchInput = page
-      .locator('#content-root descope-text-field')
-      .locator('input');
+      .getByTestId('search-input')
+      .locator('input')
+      .first();
 
     // focus search input
     await searchInput.focus();
@@ -154,19 +164,13 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
-    const deleteUserTrigger = page
-      .locator('#content-root descope-button')
-      .filter({ hasText: 'Delete' })
-      .getByRole('button');
-
+    const deleteUserTrigger = page.getByTestId('delete-users-trigger').first();
     const deleteUserModalButton = page
-      .locator('descope-container')
-      .filter({ hasText: 'Delete 2 users?' })
-      .locator('vaadin-button')
-      .nth(1);
+      .getByTestId('delete-users-modal-submit')
+      .first();
 
     // select all items
-    await page.locator('vaadin-grid-cell-content').first().click();
+    await page.locator('descope-checkbox').first().click();
 
     // delete users
     await deleteUserTrigger.click();

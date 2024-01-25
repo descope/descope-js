@@ -1,6 +1,6 @@
 export const mockUsers = [
   {
-    loginIds: ['user1@user1.com'],
+    loginIds: ['user1@user1.com', 'userX@userX.com'],
     userId: 'U2b2Jq9PXd6OBWIe7jOJ8aFbouGy',
     name: '',
     email: 'user1@user1.com',
