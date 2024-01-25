@@ -8,7 +8,7 @@ describe('createSdk', () => {
     jest.clearAllMocks();
   });
 
-  it('should call "beforeRequest" and "afterRequest"', async () => {
+  it('should call "beforeRequest"', async () => {
     mockFetch.mockReturnValueOnce(
       Promise.resolve({
         ok: true,
@@ -19,17 +19,37 @@ describe('createSdk', () => {
     );
 
     const beforeRequestHook = jest.fn().mockImplementation((config) => config);
-    const afterRequestHook = jest.fn();
     const sdk = createSdk({
       projectId: '123',
       hooks: {
         beforeRequest: beforeRequestHook,
-        afterRequest: afterRequestHook,
       },
     });
 
     await sdk.otp.signIn.email('1@1.com');
     expect(beforeRequestHook).toHaveBeenCalled();
+  });
+
+  it('should call "afterRequest"', async () => {
+    mockFetch.mockReturnValueOnce(
+      Promise.resolve({
+        ok: true,
+        json: () => ({ data: 'data' }),
+        text: () => '{"data": "data"}',
+        headers: new Headers({ h: '1' }),
+      }),
+    );
+
+    const afterRequestHook = jest.fn();
+
+    const sdk = createSdk({
+      projectId: '123',
+      hooks: {
+        afterRequest: afterRequestHook,
+      },
+    });
+
+    await sdk.otp.signIn.email('1@1.com');
     expect(afterRequestHook).toHaveBeenCalled();
   });
 });
