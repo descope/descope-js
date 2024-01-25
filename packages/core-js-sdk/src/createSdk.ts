@@ -32,11 +32,11 @@ const withMultipleHooks =
       };
     },
   ) => {
-    const beforeRequest: BeforeRequest = (c) => {
+    const beforeRequest: BeforeRequest = (conf) => {
       // get the before hooks from the config while function is running
       // because the hooks might change after sdk creation
       const beforeRequestHooks = [].concat(config.hooks?.beforeRequest || []);
-      return beforeRequestHooks?.reduce((acc, fn) => fn(acc), c);
+      return beforeRequestHooks?.reduce((acc, fn) => fn(acc), conf);
     };
 
     const afterRequest: AfterRequest = async (req, res) => {
