@@ -15,7 +15,7 @@ import {
   UpdateOptions,
   SignUpOptions,
 } from '../types';
-import { EnchantedLink, Routes, WaitForSessionConfig } from './types';
+import { WaitForSessionConfig } from './types';
 import {
   withWaitForSessionValidations,
   withSignValidations,
@@ -64,7 +64,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
           { token },
         ),
       ),
-  ) as EnchantedLink[Routes.signIn],
+  ),
 
   signUpOrIn: withSignValidations(
     (
@@ -82,7 +82,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
           },
         ),
       ),
-  ) as EnchantedLink[Routes.signIn],
+  ),
 
   signUp: withSignValidations(
     (
@@ -102,7 +102,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
           },
         ),
       ),
-  ) as EnchantedLink[Routes.signUp],
+  ),
 
   waitForSession: withWaitForSessionValidations(
     (
