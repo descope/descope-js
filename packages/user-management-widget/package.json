@@ -16,6 +16,8 @@
     "build-app": "rollup -c rollup.config.app.js",
     "build": "rollup -c",
     "test": "jest --silent",
+    "test:e2e": "npx playwright test",
+    "test:ui": "playwright test --ui",
     "lint": "eslint '+(src|test)/**/*.ts'"
   },
   "license": "MIT",
@@ -29,6 +31,7 @@
   "devDependencies": {
     "@descope/web-components-ui": "^1.0.232",
     "@open-wc/rollup-plugin-html": "1.2.5",
+    "@playwright/test": "^1.41.1",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.0",
