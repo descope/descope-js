@@ -17,7 +17,7 @@ describe('otp', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.otp.signUp.email('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
@@ -28,7 +28,31 @@ describe('otp', () => {
         {
           loginId: 'loginId',
           user: { name: 'John Doe' },
-        }
+        },
+      );
+    });
+
+    it('should send the correct request with sign up options', () => {
+      sdk.otp.signUp.email(
+        'loginId',
+        { name: 'John Doe' },
+        {
+          templateOptions: {
+            ble: 'blue',
+          },
+        },
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.otp.signUp + '/email',
+        {
+          loginId: 'loginId',
+          user: { name: 'John Doe' },
+          loginOptions: {
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+        },
       );
     });
 
@@ -61,7 +85,7 @@ describe('otp', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.otp.signUp.email('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
@@ -73,7 +97,7 @@ describe('otp', () => {
           loginId: 'loginId',
           loginOptions: undefined,
         },
-        { token: undefined }
+        { token: undefined },
       );
     });
 
@@ -81,7 +105,7 @@ describe('otp', () => {
       sdk.otp.signIn.email(
         'loginId',
         { stepup: true, customClaims: { k1: 'v1' } },
-        'token'
+        'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.otp.signIn + '/email',
@@ -89,7 +113,7 @@ describe('otp', () => {
           loginId: 'loginId',
           loginOptions: { stepup: true, customClaims: { k1: 'v1' } },
         },
-        { token: 'token' }
+        { token: 'token' },
       );
     });
 
@@ -122,7 +146,7 @@ describe('otp', () => {
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.otp.signUpOrIn.email('')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
@@ -132,7 +156,26 @@ describe('otp', () => {
         apiPaths.otp.signUpOrIn + '/email',
         {
           loginId: 'loginId',
-        }
+        },
+      );
+    });
+
+    it('should send the correct request with sign up options', () => {
+      sdk.otp.signUpOrIn.email('loginId', {
+        templateOptions: {
+          ble: 'blue',
+        },
+      });
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.otp.signUpOrIn + '/email',
+        {
+          loginId: 'loginId',
+          loginOptions: {
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+        },
       );
     });
 
@@ -161,25 +204,25 @@ describe('otp', () => {
   describe('verify', () => {
     it('should throw an error when loginId is not a string', () => {
       expect(() => sdk.otp.verify.email(1, '123456')).toThrow(
-        '"loginId" must be a string'
+        '"loginId" must be a string',
       );
     });
 
     it('should throw an error when loginId is empty', () => {
       expect(() => sdk.otp.verify.email('', '123456')).toThrow(
-        '"loginId" must not be empty'
+        '"loginId" must not be empty',
       );
     });
 
     it('should throw an error when code is not a string', () => {
       expect(() => sdk.otp.verify.email('loginId', 1)).toThrow(
-        '"code" must be a string'
+        '"code" must be a string',
       );
     });
 
     it('should throw an error when code is empty', () => {
       expect(() => sdk.otp.verify.email('loginId', '')).toThrow(
-        '"code" must not be empty'
+        '"code" must not be empty',
       );
     });
 
@@ -190,7 +233,7 @@ describe('otp', () => {
         {
           code: '123456',
           loginId: 'loginId',
-        }
+        },
       );
     });
 
@@ -220,25 +263,25 @@ describe('otp', () => {
     describe('email', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() => sdk.otp.update.email(1, '123456')).toThrow(
-          '"loginId" must be a string'
+          '"loginId" must be a string',
         );
       });
 
       it('should throw an error when loginId is empty', () => {
         expect(() => sdk.otp.update.email('', '123456')).toThrow(
-          '"loginId" must not be empty'
+          '"loginId" must not be empty',
         );
       });
 
       it('should throw an error when email is not a string', () => {
         expect(() => sdk.otp.update.email('loginId', 1)).toThrow(
-          '"email" must be a string'
+          '"email" must be a string',
         );
       });
 
       it('should throw an error when email is not in emil format', () => {
         expect(() => sdk.otp.update.email('loginId', 'nonEmail')).toThrow(
-          '"nonEmail" is not a valid email'
+          '"nonEmail" is not a valid email',
         );
       });
 
@@ -260,7 +303,36 @@ describe('otp', () => {
             email: 'new@email.com',
             loginId: 'loginId',
           },
-          { token: 'token' }
+          { token: 'token' },
+        );
+      });
+
+      it('should send the correct request with template options', () => {
+        const httpRespJson = { response: 'response' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        sdk.otp.update.email('loginId', 'new@email.com', 'token', {
+          templateOptions: {
+            ble: 'blue',
+          },
+        });
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.otp.update.email,
+          {
+            email: 'new@email.com',
+            loginId: 'loginId',
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+          { token: 'token' },
         );
       });
 
@@ -289,25 +361,25 @@ describe('otp', () => {
     describe('phone', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() => sdk.otp.update.phone.sms(1, '123456')).toThrow(
-          '"loginId" must be a string'
+          '"loginId" must be a string',
         );
       });
 
       it('should throw an error when loginId is empty', () => {
         expect(() => sdk.otp.update.phone.sms('', '123456')).toThrow(
-          '"loginId" must not be empty'
+          '"loginId" must not be empty',
         );
       });
 
       it('should throw an error when email is not a string', () => {
         expect(() => sdk.otp.update.phone.sms('loginId', 1)).toThrow(
-          '"phone" must be a string'
+          '"phone" must be a string',
         );
       });
 
       it('should throw an error when email is not in emil format', () => {
         expect(() => sdk.otp.update.phone.sms('loginId', 'nonPhone')).toThrow(
-          '"nonPhone" is not a valid phone number'
+          '"nonPhone" is not a valid phone number',
         );
       });
 
@@ -325,7 +397,7 @@ describe('otp', () => {
         const resp = await sdk.otp.update.phone.sms(
           'loginId',
           '+9720000000',
-          'token'
+          'token',
         );
         expect(resp.data.maskedPhone).toEqual('**99');
         expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -334,7 +406,7 @@ describe('otp', () => {
             phone: '+9720000000',
             loginId: 'loginId',
           },
-          { token: 'token' }
+          { token: 'token' },
         );
       });
 
