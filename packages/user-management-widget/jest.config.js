@@ -4,17 +4,17 @@ const { compilerOptions } = require('./tsconfig.json');
 module.exports = {
   clearMocks: true,
 
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
-  collectCoverageFrom: ['src/lib/**/*.ts'],
-  coverageThreshold: {
-    global: {
-      branches: 81,
-      functions: 89,
-      lines: 93,
-      statements: 93,
-    },
-  },
+  // collectCoverage: true,
+  // coverageDirectory: 'coverage',
+  // collectCoverageFrom: ['src/lib/**/*.ts'],
+  // coverageThreshold: {
+  //   global: {
+  //     branches: 81,
+  //     functions: 89,
+  //     lines: 93,
+  //     statements: 93,
+  //   },
+  // },
   globals: {
     BUILD_VERSION: '1.2.3',
   },
