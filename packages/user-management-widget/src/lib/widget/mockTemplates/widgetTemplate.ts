@@ -40,6 +40,7 @@ export default `
       <descope-grid-selection-column frozen auto-width></descope-grid-selection-column>
       <descope-grid-text-column path="loginIds" header="Login ID" resizable></descope-grid-text-column>
       <descope-grid-text-column path="name" header="Name" resizable></descope-grid-text-column>
+      <descope-grid-text-column path="status" header="Status" resizable></descope-grid-text-column>
       <descope-grid-text-column path="email" header="Email" resizable></descope-grid-text-column>
       <descope-grid-text-column path="phone" header="Phone" resizable></descope-grid-text-column>
     </descope-grid>

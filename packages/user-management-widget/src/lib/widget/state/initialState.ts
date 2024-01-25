@@ -23,7 +23,7 @@ export const initialState: State = {
     error: null,
     data: {},
   },
-  filter: '',
+  searchParams: { text: '', sort: [] },
   selectedUsersLoginIds: [],
   notifications: [],
 };

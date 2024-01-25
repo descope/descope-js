@@ -1,6 +1,7 @@
 import { Logger } from '../../mixins/loggerMixin/types';
 
-type RefOrRefFn = Element | (() => HTMLElement);
+type Empty = null | undefined;
+type RefOrRefFn = Element | (() => HTMLElement | Empty) | Empty;
 
 export class BaseDriver {
   #ele: RefOrRefFn;
@@ -18,7 +19,11 @@ export class BaseDriver {
   get ele() {
     const ele = typeof this.#ele === 'function' ? this.#ele() : this.#ele;
     if (!ele) {
-      this.logger?.debug(`no element for driver `, Error());
+      this.logger?.debug(
+        `no element for driver `,
+        this.constructor.name,
+        new Error(),
+      );
 
       return null;
     }

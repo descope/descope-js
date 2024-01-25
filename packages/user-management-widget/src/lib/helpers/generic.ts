@@ -37,7 +37,7 @@ export const pluralize =
       '',
     );
 
-export const debounce = (fn: Function, ms = 300) => {
+export const debounce = (fn: Function, ms = 500) => {
   let timeoutId: ReturnType<typeof setTimeout>;
   return function debounced(this: any, ...args: any[]) {
     clearTimeout(timeoutId);

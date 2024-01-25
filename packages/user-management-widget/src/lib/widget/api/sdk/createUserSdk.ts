@@ -16,6 +16,7 @@ export const createUserSdk = ({
     emails,
     phones,
     text,
+    sort,
   } = {}) => {
     const res = await httpClient.post(
       apiPaths.user.search,
@@ -28,6 +29,7 @@ export const createUserSdk = ({
         emails,
         phones,
         text,
+        sort,
       },
       {
         queryParams: { tenant },

@@ -46,6 +46,8 @@ export type User = {
   familyName: string;
 };
 
+export type SortParams = { field: string; desc: boolean };
+
 export type SearchUsers = (config: {
   page?: number;
   limit?: number;
@@ -54,6 +56,7 @@ export type SearchUsers = (config: {
   emails?: string[];
   phones?: string[];
   text?: string;
+  sort?: SortParams[];
 }) => Promise<User[]>;
 
 export type CreateUser = (config: {
