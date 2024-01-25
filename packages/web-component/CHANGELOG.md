@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.7.1](https://github.com/descope/descope-js/compare/web-component-3.7.0...web-component-3.7.1) (2024-01-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.9.1`
+
+### Bug Fixes
+
+* change polling to timeout ([#340](https://github.com/descope/descope-js/issues/340)) ([7eab691](https://github.com/descope/descope-js/commit/7eab691406285f36a5d496df50503b53d8e82041))
+
 ## [3.7.0](https://github.com/descope/descope-js/compare/web-component-3.6.0...web-component-3.7.0) (2024-01-10)
 
 ### Dependency Updates
