@@ -12,43 +12,40 @@ import packageJson from './package.json' assert { type: 'json' };
 
 dotenv.config();
 
+const htmlPlugin = html({
+  minify: false,
+  transform: (contents) =>
+    contents
+      .replaceAll('<project-id>', process.env.DESCOPE_PROJECT_ID || '')
+      .replaceAll('<flow-id>', process.env.DESCOPE_FLOW_ID || 'sign-up-or-in')
+      .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
+      .replaceAll('<locale>', process.env.DESCOPE_LOCALE || '')
+      .replaceAll('<tenant>', process.env.DESCOPE_TENANT || ''),
+});
+
+export const plugins = [
+  define({
+    replacements: {
+      BUILD_VERSION: JSON.stringify(packageJson.version),
+    },
+  }),
+  del({ targets: 'build' }),
+  typescript({
+    declaration: false,
+    declarationDir: 'build',
+  }),
+  commonjs(),
+  nodeResolve(),
+  replace({
+    preventAssignment: true,
+    'process.env.NODE_ENV': JSON.stringify('development'),
+  }),
+  svg(),
+];
+
 export default {
   preserveSymlinks: true,
   input: 'src/app/index.html',
   output: { dir: 'build', format: 'esm', sourcemap: true },
-  plugins: [
-    define({
-      replacements: {
-        BUILD_VERSION: JSON.stringify(packageJson.version),
-      },
-    }),
-    del({ targets: 'build' }),
-    typescript({
-      declaration: false,
-      declarationDir: 'build',
-    }),
-    commonjs(),
-    nodeResolve(),
-    replace({
-      preventAssignment: true,
-      'process.env.NODE_ENV': JSON.stringify('development'),
-    }),
-    svg(),
-    html({
-      minify: false,
-      transform: (contents) =>
-        contents
-          .replaceAll(
-            '<project-id>',
-            process.env.DESCOPE_PROJECT_ID || 'mockProjectId',
-          )
-          .replaceAll(
-            '<flow-id>',
-            process.env.DESCOPE_FLOW_ID || 'sign-up-or-in',
-          )
-          .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
-          .replaceAll('<locale>', process.env.DESCOPE_LOCALE || '')
-          .replaceAll('<tenant>', process.env.DESCOPE_TENANT || 'mockTenant'),
-    }),
-  ],
+  plugins: [...plugins, htmlPlugin],
 };

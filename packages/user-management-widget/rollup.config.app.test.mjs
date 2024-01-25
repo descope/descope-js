@@ -1,7 +1,17 @@
+import html from '@open-wc/rollup-plugin-html';
 import conf from './rollup.config.app.mjs';
+import { plugins } from './rollup.config.app.mjs';
 
-// If TS type errors remove bs-recipes references in package-lock.json due to bad global React typings
 export default {
   ...conf,
-  plugins: [...conf.plugins],
+  plugins: [
+    ...plugins,
+    html({
+      minify: false,
+      transform: (contents) =>
+        contents
+          .replaceAll('<project-id>', 'mockProjectId')
+          .replaceAll('<tenant>', 'mockTenant'),
+    }),
+  ],
 };
