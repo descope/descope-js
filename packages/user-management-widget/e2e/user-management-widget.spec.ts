@@ -127,7 +127,7 @@ test.describe('widget', () => {
 
     // show notification
     await expect(
-      page.locator('text=2 users deleted successfully'),
+      page.locator(`text=${mockUsers.length} users deleted successfully`),
     ).toBeVisible();
 
     // update grid items
@@ -183,7 +183,7 @@ test.describe('widget', () => {
 
     // show notification
     await expect(
-      page.locator('text=2 users deleted successfully'),
+      page.locator(`text=${mockUsers.length} users deleted successfully`),
     ).toBeVisible();
 
     // click close button
@@ -191,7 +191,7 @@ test.describe('widget', () => {
 
     // notification closed
     await expect(
-      page.locator('text=2 users deleted successfully'),
+      page.locator(`text=${mockUsers.length} users deleted successfully`),
     ).toBeHidden();
   });
 });
