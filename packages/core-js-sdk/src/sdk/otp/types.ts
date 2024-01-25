@@ -11,20 +11,30 @@ import {
   Deliveries,
   DeliveryMethods,
   SdkFn,
+  LoginOptions,
+  SignUpOptions,
 } from '../types';
 
 type VerifyFn = (
   loginId: string,
-  code: string
+  code: string,
 ) => Promise<SdkResponse<JWTResponse>>;
 
 type SignInFn<T extends ResponseData> = (
-  loginId: string
+  loginId: string,
+  loginOptions?: LoginOptions,
+  token?: string,
 ) => Promise<SdkResponse<T>>;
 
 type SignUpFn<T extends ResponseData> = (
   loginId: string,
-  user?: User
+  user?: User,
+  signUpOptions?: SignUpOptions,
+) => Promise<SdkResponse<T>>;
+
+type SignUpOrInFn<T extends ResponseData> = (
+  loginId: string,
+  signUpOptions?: SignUpOptions,
 ) => Promise<SdkResponse<T>>;
 
 type DeliveriesSignIn = DeliveriesMap<
@@ -37,11 +47,16 @@ type DeliveriesSignUp = DeliveriesMap<
   SignUpFn<MaskedPhone>
 >;
 
+type DeliveriesSignUpOrIn = DeliveriesMap<
+  SignUpOrInFn<MaskedEmail>,
+  SignUpOrInFn<MaskedPhone>
+>;
+
 type UpdatePhoneFn = <T extends boolean>(
   loginId: string,
   phone: string,
   token?: string,
-  updateOptions?: UpdateOptions<T>
+  updateOptions?: UpdateOptions<T>,
 ) => Promise<SdkResponse<MaskedPhone>>;
 
 // We locate this here because if we put it in types.ts
@@ -55,6 +70,7 @@ type DeliveriesWithFunc<T extends SdkFn> = {
 export enum Routes {
   signUp = 'signup',
   signIn = 'signin',
+  signInOrIn = 'signuporin',
   verify = 'verify',
   updatePhone = 'updatePhone',
 }
@@ -63,5 +79,6 @@ export type Otp = {
   [Routes.verify]: DeliveriesWithFunc<VerifyFn>;
   [Routes.signIn]: Deliveries<DeliveriesSignIn>;
   [Routes.signUp]: Deliveries<DeliveriesSignUp>;
+  [Routes.signInOrIn]: Deliveries<DeliveriesSignUpOrIn>;
   [Routes.updatePhone]: DeliveriesPhone<UpdatePhoneFn>;
 };

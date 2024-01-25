@@ -86,7 +86,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
       ),
     }),
     {},
-  ) as MagicLink[Routes.signIn],
+  ) as MagicLink[Routes.signUpOrIn],
 
   update: {
     email: withUpdateEmailValidations(
