@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { Sdk } from '../api/sdk';
-import { User } from '../api/types';
+import { SortParams, User } from '../api/types';
 
 export type State = {
   usersList: {
@@ -25,7 +25,7 @@ export type State = {
     error: unknown;
     data: Record<string, string>;
   };
-  filter: string;
+  searchParams: { text: string; sort: SortParams[] };
   selectedUsersLoginIds: string[][];
   notifications: Notification[];
 };

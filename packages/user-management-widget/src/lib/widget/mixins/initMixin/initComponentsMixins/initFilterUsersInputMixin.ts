@@ -15,9 +15,9 @@ export const initFilterUsersInputMixin = createSingletonMixin(
     )(superclass) {
       searchInput: TextFieldDriver;
 
-      #onInput() {
-        this.actions.setFilter(this.searchInput.value);
-      }
+      #onInput = debounce(() => {
+        this.actions.searchUsers({ text: this.searchInput.value });
+      });
 
       #initSearchInput() {
         // currently we are doing it on client side because we assume there will not be more than 10000 users per tenant
@@ -25,7 +25,7 @@ export const initFilterUsersInputMixin = createSingletonMixin(
           this.shadowRoot?.querySelector('[data-id="search-input"]'),
           { logger: this.logger },
         );
-        this.searchInput.onInput(debounce(this.#onInput.bind(this), 500));
+        this.searchInput.onInput(this.#onInput);
       }
 
       async onWidgetRootReady() {

@@ -1,10 +1,10 @@
 import { compose } from '../../../../helpers/compose';
-import { withMemCache } from '../../../../helpers/generic';
+import { debounce, withMemCache } from '../../../../helpers/generic';
 import { createSingletonMixin } from '../../../../helpers/mixins';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { User } from '../../../api/types';
-import { GridDriver } from '../../../drivers/GridDriver';
-import { getFilteredUsers } from '../../../state/selectors';
+import { GridDriver } from '../../../drivers/gridDrivers/GridDriver';
+import { getUsersList } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -30,8 +30,23 @@ export const initUsersTableMixin = createSingletonMixin(
       }
 
       #onUsersListUpdate = withMemCache(
-        (usersList: ReturnType<typeof getFilteredUsers>) => {
+        (usersList: ReturnType<typeof getUsersList>) => {
           this.usersTable.data = usersList;
+        },
+      );
+
+      #onColumnSortChange = debounce(
+        (
+          ele: HTMLElement & { path: string },
+          detail: { value: 'asc' | 'desc' | null },
+        ) => {
+          const sort = [];
+          const { value } = detail;
+          if (value) {
+            const field = ele.path;
+            sort.push({ field, desc: value === 'desc' });
+          }
+          this.actions.searchUsers({ sort });
         },
       );
 
@@ -39,10 +54,16 @@ export const initUsersTableMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initUsersTable();
+        this.usersTable.columns.forEach((column) => {
+          column.onDirectionChange((e: MouseEvent) => {
+            this.#onColumnSortChange(e.target, e.detail);
+          });
+        });
+
         // because we are not waiting for the rest calls,
         // we need to make sure the table is updated with the received users
-        this.#onUsersListUpdate(getFilteredUsers(this.state));
-        this.subscribe(this.#onUsersListUpdate.bind(this), getFilteredUsers);
+        this.#onUsersListUpdate(getUsersList(this.state));
+        this.subscribe(this.#onUsersListUpdate.bind(this), getUsersList);
       }
     },
 );
