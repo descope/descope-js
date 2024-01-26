@@ -8,6 +8,9 @@ import '../src/lib/index';
 
 const origAppend = document.body.append;
 
+const mockProjectId = 'mockProjectId';
+const mockTenant = 'mockTenant';
+
 export const mockHttpClient = {
   get: jest.fn(),
   post: jest.fn(),
@@ -84,7 +87,7 @@ describe('user-management-widget', () => {
 
   describe('sdk', () => {
     it('search', async () => {
-      const sdk = createSdk({ projectId: 'p1' }, 'mockTenant');
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
       const result = await sdk.user.search({});
 
       await waitFor(
@@ -105,19 +108,22 @@ describe('user-management-widget', () => {
           },
           {
             queryParams: {
-              tenant: 'mockTenant',
+              tenant: mockTenant,
             },
           },
         ),
       );
 
-      expect(result[0].loginIds[0]).toEqual('user1@user1.com');
-      expect(result[1].loginIds[0]).toEqual('user2@user2.com');
+      expect(result[0].loginIds[0]).toEqual(mockUsers[0]['loginIds'][0]);
+      expect(result[1].loginIds[0]).toEqual(mockUsers[1]['loginIds'][0]);
     });
 
     it('deleteBatch', async () => {
-      const sdk = createSdk({ projectId: 'p1' }, 'mockTenant');
-      const loginIds = ['user1@user1.com', 'user2@user2.com'];
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const loginIds = [
+        mockUsers[0]['loginIds'][0],
+        mockUsers[1]['loginIds'][0],
+      ];
 
       await sdk.user.deleteBatch(loginIds);
 
@@ -131,7 +137,7 @@ describe('user-management-widget', () => {
           { userIds: loginIds },
           {
             queryParams: {
-              tenant: 'mockTenant',
+              tenant: mockTenant,
             },
           },
         ),
@@ -139,8 +145,8 @@ describe('user-management-widget', () => {
     });
 
     it('expirePassword', async () => {
-      const sdk = createSdk({ projectId: 'p1' }, 'mockTenant');
-      const loginId = 'user1@user1.com';
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const loginId = mockUsers[0]['loginIds'][0];
 
       await sdk.user.expirePassword([loginId]);
 
@@ -154,7 +160,7 @@ describe('user-management-widget', () => {
           { loginId },
           {
             queryParams: {
-              tenant: 'mockTenant',
+              tenant: mockTenant,
             },
           },
         ),

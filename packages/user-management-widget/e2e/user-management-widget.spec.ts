@@ -14,6 +14,8 @@ const apiPath = (path: keyof ApiPaths) => {
   return `**/*${apiPaths.user[path]}?tenant=*`;
 };
 
+const MODAL_TIMEOUT = 500;
+
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() =>
@@ -38,14 +40,12 @@ test.describe('widget', () => {
       async (route) => await route.fulfill({ json: { user: mockNewUser } }),
     );
 
-    await page.route(
-      apiPath('search'),
-      async (route) =>
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ users: mockUsers }),
-        }),
+    await page.route(apiPath('search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ users: mockUsers }),
+      }),
     );
 
     await page.route(
@@ -61,6 +61,7 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
     ).toBeVisible();
+
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][1]}`).first(),
     ).toBeVisible();
@@ -129,7 +130,7 @@ test.describe('widget', () => {
     await deleteUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete modal closed
     await expect(page.locator('Delete Users')).toBeHidden();
@@ -156,11 +157,12 @@ test.describe('widget', () => {
     await searchInput.fill('user2');
 
     // wait for results to filter
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // only search results shown in grid
-    await expect(page.locator('text=user1@user1.com').nth(0)).toBeHidden();
-    await expect(page.locator('text=user1@user1.com').nth(1)).toBeHidden();
+    await expect(
+      page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
+    ).toBeHidden();
   });
 
   test('close notification', async ({ page }) => {
@@ -183,7 +185,7 @@ test.describe('widget', () => {
     await deleteUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // show notification
     await expect(

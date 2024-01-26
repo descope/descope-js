@@ -10,6 +10,7 @@ export default {
       minify: false,
       transform: (contents) =>
         contents
+          .replaceAll('<base-url>', '')
           .replaceAll('<project-id>', 'mockProjectId')
           .replaceAll('<tenant>', 'mockTenant'),
     }),
