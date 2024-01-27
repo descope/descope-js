@@ -3,7 +3,7 @@ import { BaseDriver } from '../BaseDriver';
 export class GridTextColumnDriver extends BaseDriver {
   nodeName = 'descope-grid-text-column';
 
-  onDirectionChange(
+  onSortDirectionChange(
     cb: (e: CustomEvent<{ value: 'asc' | 'desc' | null }>) => void,
   ) {
     this.ele?.addEventListener('direction-changed', cb);

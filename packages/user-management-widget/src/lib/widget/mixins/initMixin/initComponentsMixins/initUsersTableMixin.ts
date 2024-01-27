@@ -55,7 +55,7 @@ export const initUsersTableMixin = createSingletonMixin(
 
         this.#initUsersTable();
         this.usersTable.columns.forEach((column) => {
-          column.onDirectionChange((e: MouseEvent) => {
+          column.onSortDirectionChange((e: MouseEvent) => {
             this.#onColumnSortChange(e.target, e.detail);
           });
         });
