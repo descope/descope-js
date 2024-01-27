@@ -2,7 +2,7 @@ import { compose } from '../../helpers/compose';
 import { createSingletonMixin } from '../../helpers/mixins';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { loggerMixin } from '../loggerMixin';
-import { observeAttributes } from './helpers';
+import { attributesObserver } from './helpers';
 
 type OnAttrChange = (attrName: string, value: string | null) => void;
 
@@ -15,7 +15,7 @@ export const observeAttributesMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        observeAttributes(this, (attrName: string) => {
+        attributesObserver(this, (attrName: string) => {
           this.#observeMappings[attrName]?.forEach((cb: OnAttrChange) => {
             cb(attrName, this.getAttribute(attrName));
           });

@@ -1,4 +1,4 @@
-export const observeAttributes = (
+export const attributesObserver = (
   ele: HTMLElement,
   callback: (attrName: string) => void,
 ) => {
