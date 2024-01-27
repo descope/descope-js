@@ -13,7 +13,6 @@ export const loggerMixin = createSingletonMixin(
       #wrapLogger(logger: Partial<Logger>) {
         return logLevels.reduce((acc, logLevel) => {
           acc[logLevel] = (...args: any[]) => {
-            // this.dispatchEvent(new CustomEvent(INTERNAL_LOG_EVENTS[logLevel], { detail: args }));
             this.onLogEvent(logLevel, args);
             logger[logLevel]?.(...args);
           };
