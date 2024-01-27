@@ -17,7 +17,7 @@
     "build": "rollup -c",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest --silent",
-    "test:e2e": "DESCOPE_PROJECT_ID=pid DESCOPE_TENANT=tid npm run build:app && npx playwright test",
+    "test:e2e": "DESCOPE_PROJECT_ID=pid DESCOPE_TENANT=tid npx playwright install --with-deps && npm run build:app && npx playwright test",
     "test:e2e:ui": "npm run test:e2e -- --ui",
     "lint": "eslint '+(src|test)/**/*.ts'"
   },
