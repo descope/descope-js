@@ -40,13 +40,13 @@ test.describe('widget', () => {
       async (route) => await route.fulfill({ json: { user: mockNewUser } }),
     );
 
-    await page.route(apiPath('search'), async (route) =>
-      route.fulfill({
+    await page.route(apiPath('search'), async (route) => {
+      return route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ users: mockUsers }),
-      }),
-    );
+      });
+    });
 
     await page.route(
       apiPath('deleteBatch'),
@@ -145,6 +145,18 @@ test.describe('widget', () => {
   });
 
   test('search users', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+
+    await page.route(apiPath('search'), async (route) => {
+      const { text } = route.request().postDataJSON();
+      expect(text).toEqual('mockSearchString');
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ users: [mockUsers[1]] }),
+      });
+    });
+
     const searchInput = page
       .getByTestId('search-input')
       .locator('input')
@@ -154,10 +166,10 @@ test.describe('widget', () => {
     await searchInput.focus();
 
     // enter search string
-    await searchInput.fill('user2');
+    await searchInput.fill('mockSearchString');
 
     // wait for results to filter
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // await page.waitForTimeout(5000);
 
     // only search results shown in grid
     await expect(
