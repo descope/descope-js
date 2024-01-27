@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.8.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.8.1...core-js-sdk-2.8.2) (2024-01-25)
+
+
+### Bug Fixes
+
+* update types RELEASE ([#359](https://github.com/descope/descope-js/issues/359)) ([b99a54c](https://github.com/descope/descope-js/commit/b99a54ca1590214d922170703ff07db4de1d55e5))
+
+## [2.8.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.8.0...core-js-sdk-2.8.1) (2024-01-25)
+
 ## [2.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.7.0...core-js-sdk-2.8.0) (2024-01-10)
 
 
