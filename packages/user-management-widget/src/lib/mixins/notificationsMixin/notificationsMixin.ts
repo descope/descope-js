@@ -48,7 +48,7 @@ export const notificationsMixin = createSingletonMixin(
             | 'bottom-end'
             | 'bottom-stretch';
           size: 'xs' | 'sm' | 'md' | 'lg';
-          icon?: 'success' | 'error';
+          bordered?: boolean;
         } & {
           [key: string]: string | boolean | number;
         },
