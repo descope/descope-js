@@ -21,9 +21,6 @@ export const stateManagementMixin = createSingletonMixin(
         name: 'widget',
         initialState,
         reducers: {
-          setFilter: (state, { payload }) => {
-            state.filter = payload?.toLowerCase();
-          },
           setSelectedUsersIds: (state, { payload }) => {
             state.selectedUsersLoginIds = payload;
           },
