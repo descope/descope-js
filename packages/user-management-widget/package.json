@@ -13,13 +13,12 @@
   "description": "Descope user management widget",
   "scripts": {
     "start": "npx nx run user-management-widget:build && rollup -c rollup.config.app.serve.mjs -w",
-    "build-app": "rollup -c rollup.config.app.js",
+    "build:app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest --silent",
-    "test:e2e:build": "rollup -c rollup.config.app.test.mjs",
-    "test:e2e": "npm run test:e2e:build && npx playwright test",
-    "test:ui": "npm run test:e2e:build && playwright test --ui",
+    "test:e2e": "DESCOPE_PROJECT_ID=pid DESCOPE_TENANT=tid npm run build:app && npx playwright test",
+    "test:e2e:ui": "npm run test:e2e -- --ui",
     "lint": "eslint '+(src|test)/**/*.ts'"
   },
   "license": "MIT",
