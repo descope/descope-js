@@ -59,16 +59,16 @@ test.describe('widget', () => {
   test('users table', async ({ page }) => {
     // user with multiple loginIds
     await expect(
-      page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
+      page.locator(`text=xxx${mockUsers[0]['loginIds'][0]}`).first(),
     ).toBeVisible();
 
     await expect(
-      page.locator(`text=${mockUsers[0]['loginIds'][1]}`).first(),
+      page.locator(`text=yyy${mockUsers[0]['loginIds'][1]}`).first(),
     ).toBeVisible();
 
     // user with single loginId
     await expect(
-      page.locator(`text=${mockUsers[1]['loginIds'][0]}`).first(),
+      page.locator(`text=zzz${mockUsers[1]['loginIds'][0]}`).first(),
     ).toBeVisible();
   });
 
