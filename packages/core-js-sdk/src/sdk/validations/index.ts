@@ -34,8 +34,8 @@ export const isStringOrUndefinedValidator = (fieldName: string) => [
 ];
 
 export const stringNonEmpty = (fieldName: string) => [
-  isString(`"${fieldName}" must be a string`),
   isNotEmpty(`"${fieldName}" must not be empty`),
+  isString(`"${fieldName}" must be a string`),
 ];
 export const stringEmail = (fieldName: string) => [
   isString(`"${fieldName}" must be a string`),
