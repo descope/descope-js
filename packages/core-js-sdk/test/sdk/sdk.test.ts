@@ -220,4 +220,44 @@ describe('sdk', () => {
       });
     });
   });
+
+  describe('history', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.history({ a: 'b' })).toThrow(
+        '"token" must be string or undefined',
+      );
+    });
+    it('should send the correct request', () => {
+      const httpRespJson = [
+        {
+          userId: 'some-id-1',
+          loginTime: 12,
+          city: 'aa-1',
+          country: 'bb-1',
+          ip: 'cc-1',
+        },
+        {
+          userId: 'some-id-2',
+          loginTime: 21,
+          city: 'aa-2',
+          country: 'bb-2',
+          ip: 'cc-2',
+        },
+      ];
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.get.mockResolvedValue(httpResponse);
+
+      sdk.history('token');
+      expect(mockHttpClient.get).toHaveBeenCalledWith(apiPaths.history, {
+        token: 'token',
+      });
+    });
+  });
 });
