@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mockUsers, mockNewUser } from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
-import { ApiPaths, apiPaths } from '../src/lib/widget/api/apiPaths';
+import { apiPaths } from '../src/lib/widget/api/apiPaths';
 
 const configContent = {
   flows: {
@@ -10,9 +10,7 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const apiPath = (path: keyof ApiPaths) => {
-  return `**/*${apiPaths.user[path]}?tenant=*`;
-};
+const apiPath = (path: string) => `**/*${apiPaths.user[path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
 
@@ -25,32 +23,28 @@ test.describe('widget', () => {
       ),
     );
 
-    await page.route(
-      '*/**/config.json',
-      async (route) => await route.fulfill({ json: configContent }),
+    await page.route('*/**/config.json', async (route) =>
+      route.fulfill({ json: configContent }),
     );
 
-    await page.route(
-      '*/**/theme.json',
-      async (route) => await route.fulfill({ json: mockTheme }),
+    await page.route('*/**/theme.json', async (route) =>
+      route.fulfill({ json: mockTheme }),
     );
 
-    await page.route(
-      apiPath('create'),
-      async (route) => await route.fulfill({ json: { user: mockNewUser } }),
+    await page.route(apiPath('create'), async (route) =>
+      route.fulfill({ json: { user: mockNewUser } }),
     );
 
-    await page.route(apiPath('search'), async (route) => {
-      return route.fulfill({
+    await page.route(apiPath('search'), async (route) =>
+      route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ users: mockUsers }),
-      });
-    });
+      }),
+    );
 
-    await page.route(
-      apiPath('deleteBatch'),
-      async (route) => await route.fulfill({ json: { tenant: 'mockTenant' } }),
+    await page.route(apiPath('deleteBatch'), async (route) =>
+      route.fulfill({ json: { tenant: 'mockTenant' } }),
     );
 
     await page.goto('http://localhost:5555');
