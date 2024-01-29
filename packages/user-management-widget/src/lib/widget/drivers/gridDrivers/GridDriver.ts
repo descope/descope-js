@@ -1,10 +1,12 @@
 import { BaseDriver } from '../BaseDriver';
+import { GridCustomColumnDriver } from './GridCustomColumnDriver';
 import { GridTextColumnDriver } from './GridTextColumnDriver';
 
 const columnRegex = /^descope-grid-([^-]+)-column$/;
 
 const driversMapping = {
   text: GridTextColumnDriver,
+  custom: GridCustomColumnDriver,
 };
 
 export class GridDriver<T extends any> extends BaseDriver {

@@ -1,11 +1,19 @@
 import { createSelector } from 'reselect';
 import { State } from './types';
+import { userStatusMappings } from './constants';
 
-export const getUsersList = (state: State) => state.usersList.data;
+export const getRawUsersList = (state: State) => state.usersList.data;
 export const getSelectedUsersLoginIds = (state: State) =>
   state.selectedUsersLoginIds;
 export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
+
+export const getUsersList = createSelector(getRawUsersList, (users) =>
+  users.map((user) => ({
+    ...user,
+    status: userStatusMappings[user.status] || user.status,
+  })),
+);
 
 export const getSelectedUsersUserIds = createSelector(
   getUsersList,

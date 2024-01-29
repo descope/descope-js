@@ -39,10 +39,14 @@ export default `
     >
       <descope-grid-selection-column frozen auto-width></descope-grid-selection-column>
       <descope-grid-text-column path="loginIds" header="Login ID" resizable></descope-grid-text-column>
-      <descope-grid-text-column path="name" header="Name" resizable></descope-grid-text-column>
-      <descope-grid-text-column path="status" header="Status" resizable></descope-grid-text-column>
-      <descope-grid-text-column path="email" header="Email" resizable></descope-grid-text-column>
-      <descope-grid-text-column path="phone" header="Phone" resizable></descope-grid-text-column>
+      <descope-grid-text-column sortable="true" path="name" header="Name" resizable></descope-grid-text-column>
+      <descope-grid-custom-column sortable="true" path="status" header="Status" resizable>
+        <descope-badge mode="default" pattern="invited" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
+        <descope-badge mode="primary" pattern="active" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
+        <descope-badge mode="error" pattern="disabled" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
+      </descope-grid-custom-column>
+      <descope-grid-text-column sortable="true" path="email" header="Email" resizable></descope-grid-text-column>
+      <descope-grid-text-column sortable="true" path="phone" header="Phone" resizable></descope-grid-text-column>
     </descope-grid>
   </descope-container>
 `;
