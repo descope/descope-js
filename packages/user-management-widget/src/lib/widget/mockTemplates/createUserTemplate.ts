@@ -8,8 +8,8 @@ export default `
   st-horizontal-padding="0rem"
   st-vertical-padding="0rem"
 >
-  <descope-text variant="h3" mode="surface">New User</descope-text>
-  <descope-text-field name="loginId" label="Login Id" bordered="true" required="true"></descope-text-field>
+  <descope-text variant="subtitle1" mode="surface">New User</descope-text>
+  <descope-text-field name="loginId" label="Login ID" bordered="true" required="true" size="sm"></descope-text-field>
   <descope-email-field name="email" label="Email" bordered="true"></descope-email-field>
   <descope-text-field name="displayName" label="Name" bordered="true"></descope-text-field>
   <descope-phone-field name="phone" label="Phone" bordered="true"></descope-phone-field>
@@ -19,11 +19,11 @@ export default `
     st-justify-content="flex-end"
     st-gap="1rem"
     st-host-width="100%"
-    st-horizontal-padding="0rem"
-    st-vertical-padding="0rem"
+    st-horizontal-padding="0.75rem"
+    st-vertical-padding="0.75rem"
   >
-  <descope-button data-testid="create-user-modal-cancel" data-id="modal-cancel" mode="primary" variant="outline" size="md">Cancel</descope-button>
-  <descope-button data-testid="create-user-modal-submit" data-id="modal-submit" mode="primary" variant="contained" size="md">Create</descope-button>
+  <descope-button data-testid="create-user-modal-cancel" data-id="modal-cancel" mode="primary" variant="link" size="sm">Cancel</descope-button>
+  <descope-button data-testid="create-user-modal-submit" data-id="modal-submit" mode="primary" variant="contained" size="sm">Create</descope-button>
   </descope-container>
 </descope-container>
 `;

@@ -2,10 +2,10 @@ export default `
 <descope-container
   direction="column"
   space-between="md"
-  st-horizontal-padding="1.5rem"
-  st-vertical-padding="4rem"
+  st-horizontal-padding="1rem"
+  st-vertical-padding="1rem"
   st-align-items="safe center"
-  st-gap="2rem"
+  st-gap="1rem"
 >
   <descope-container
     direction="row"
@@ -15,7 +15,7 @@ export default `
     st-gap="0rem"
     st-justify-content="space-between"
   >
-    <descope-text-field data-testid="search-input" data-id="search-input" placeholder="Search" size="md" bordered="true"></descope-text-field>
+    <descope-text-field data-testid="search-input" data-id="search-input" placeholder="Search" size="sm" bordered="true"></descope-text-field>
 
     <descope-container
       direction="row"
@@ -25,14 +25,13 @@ export default `
       st-gap="0.5em"
       st-host-width="auto"
     >
-      <descope-button data-testid="delete-users-trigger" data-id="delete-users" mode="primary" variant="outline" size="md">Delete</descope-button>
-      <descope-button data-testid="create-user-trigger" data-id="create-user" mode="primary" variant="contained" size="md">+ User</descope-button>
+      <descope-button data-testid="delete-users-trigger" data-id="delete-users" mode="primary" variant="outline" size="sm">Delete</descope-button>
+      <descope-button data-testid="create-user-trigger" data-id="create-user" mode="primary" variant="contained" size="sm">+ User</descope-button>
     </descope-container>
     </descope-container>
     <descope-grid
       data-id="users-table"
-      bordered="true"
-      size="xs"
+      size="sm"
       column-reordering-allowed
       st-host-height="300px"
       style="width: 100%"
