@@ -25,7 +25,7 @@ Few repos exposes examples. Refer to packages README to run them
 #### Notes
 
 - **Pull Request** title (which is used as the squash & merge commit messages) must met [conventional commits](https://www.conventionalcommits.org) (e.g. "fix: ..." / "chore: ...", "feat: ...")
-- **Release new versions** is done by merging a commit message containing the word `RELEASE` (e.g. `chore: ... RELEASE`)
+- **Release new versions** is done by merging a commit message containing the word `RELEASE` (e.g. `chore: [...] RELEASE`)
 
 ## Contact Us
 
