@@ -1,0 +1,1 @@
+# @descope/user-management-widget
