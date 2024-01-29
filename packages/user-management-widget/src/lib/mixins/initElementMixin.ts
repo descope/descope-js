@@ -16,6 +16,12 @@ export const initElementMixin = createSingletonMixin(
         super(...rest);
 
         this.attachShadow({ mode: 'open' }).innerHTML = `
+
+          <style>
+            #${ROOT_ID}, #${CONTENT_ROOT_ID} {
+              height: 100%;
+            }
+          </style>
           <div id="${ROOT_ID}">
             <div id="${CONTENT_ROOT_ID}"></div>
           </div>
