@@ -22,6 +22,7 @@ export const mockHttpClient = {
         ok: true,
         status: 200,
         json: () => Promise.resolve({ users: mockUsers }),
+        text: () => Promise.resolve(JSON.stringify({ users: mockUsers })),
       }),
     ),
 };
