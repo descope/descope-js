@@ -213,7 +213,7 @@ importers:
       reselect: 5.0.1
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.237
+      '@descope/web-components-ui': 1.0.238
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 24.1.0_rollup@2.79.1
@@ -2258,8 +2258,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.237:
-    resolution: {integrity: sha512-qcA5ArIRgsRXSUVwO6iNQc+Utlxtc1+XB8Mf/NSV49AC9mRcbjZFNbJH9elBdCqbYXf8/5rhwktSSOLMvs/oJw==}
+  /@descope/web-components-ui/1.0.238:
+    resolution: {integrity: sha512-AB5o/0rJJJu9geNv0pKmJKgxt3zqSEIbhe9gZt/D85InpzEsQvqOkL5MT9r6qNNrO7Jczq7veEC1tD+pwHfSTA==}
     dependencies:
       '@vaadin/button': 24.3.4
       '@vaadin/checkbox': 24.3.4
