@@ -34,6 +34,7 @@ export type {
   TOTPResponse,
   URLResponse,
   UserResponse,
+  UserHistoryResponse,
   LoginOptions,
 } from './sdk/types';
 export * from './utils';

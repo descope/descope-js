@@ -16,7 +16,7 @@ import withOtp from './otp';
 import withSaml from './saml';
 import withTotp from './totp';
 import withPassword from './password';
-import { JWTResponse, UserResponse } from './types';
+import { JWTResponse, UserHistoryResponse, UserResponse } from './types';
 import {
   stringNonEmpty,
   withValidations,
@@ -90,6 +90,16 @@ export default (httpClient: HttpClient) => ({
    */
   me: withOptionalTokenValidations((token?: string) =>
     transformResponse<UserResponse>(httpClient.get(apiPaths.me, { token })),
+  ),
+  /**
+   * Returns the current user authentication history
+   * @param token A valid refresh token
+   * @returns The current user authentication history
+   */
+  history: withOptionalTokenValidations((token?: string) =>
+    transformResponse<UserHistoryResponse>(
+      httpClient.get(apiPaths.history, { token }),
+    ),
   ),
   /**
    * Checks if the given JWT is still valid but DOES NOT check for signature
