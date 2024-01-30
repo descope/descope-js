@@ -1,5 +1,11 @@
-import { CreateUser, HttpClient, SearchUsers } from '../types';
+import {
+  CreateUserConfig,
+  HttpClient,
+  SearchUsersConfig,
+  User,
+} from '../types';
 import { apiPaths } from '../apiPaths';
+import { withErrorHandler } from './helpers';
 
 export const createUserSdk = ({
   httpClient,
@@ -8,7 +14,7 @@ export const createUserSdk = ({
   httpClient: HttpClient;
   tenant: string;
 }) => {
-  const search: SearchUsers = async ({
+  const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
     page,
     limit = 10000,
     customAttributes,
@@ -36,9 +42,7 @@ export const createUserSdk = ({
       },
     );
 
-    if (!res.ok) {
-      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
-    }
+    await withErrorHandler(res);
 
     const json = await res.json();
 
@@ -54,14 +58,12 @@ export const createUserSdk = ({
       },
     );
 
-    if (!res.ok) {
-      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
-    }
+    await withErrorHandler(res);
 
     return res.json();
   };
 
-  const create: CreateUser = async ({
+  const create: (config: CreateUserConfig) => Promise<User[]> = async ({
     loginId,
     email,
     phone,
@@ -75,6 +77,10 @@ export const createUserSdk = ({
     middleName,
     familyName,
     additionalLoginIds,
+    sendSMS,
+    sendMail,
+    inviteUrl,
+    invite,
   }) => {
     const res = await httpClient.post(
       apiPaths.user.create,
@@ -93,15 +99,17 @@ export const createUserSdk = ({
         verifiedEmail,
         verifiedPhone,
         additionalLoginIds,
+        sendSMS,
+        sendMail,
+        inviteUrl,
+        invite,
       },
       {
         queryParams: { tenant },
       },
     );
 
-    if (!res.ok) {
-      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
-    }
+    await withErrorHandler(res);
 
     const json = await res.json();
 
@@ -117,9 +125,7 @@ export const createUserSdk = ({
       },
     );
 
-    if (!res.ok) {
-      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
-    }
+    await withErrorHandler(res);
 
     return res.json();
   };
@@ -129,9 +135,7 @@ export const createUserSdk = ({
       queryParams: { tenant },
     });
 
-    if (!res.ok) {
-      throw Error(`Fetch failed: ${res.status} ${res.statusText}`);
-    }
+    await withErrorHandler(res);
 
     return res.json();
   };

@@ -38,7 +38,7 @@ export const initNotificationsMixin = createSingletonMixin(
       #createNotification(type: Notification['type']) {
         return this.createNotification({
           mode: type,
-          duration: 3000,
+          duration: type === 'error' ? 0 : 3000,
           position: 'bottom-start',
           size: 'sm',
         });
