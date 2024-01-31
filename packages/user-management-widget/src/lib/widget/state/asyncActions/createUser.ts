@@ -24,7 +24,14 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.createUser),
   withNotifications({
     getSuccessMsg: () => 'User created successfully',
-    getErrorMsg: () => 'Failed to create user',
+    getErrorMsg: (action) => {
+      const errorMsg = action.error?.message;
+      return `
+      <div>
+        <div>Failed to create user</div>
+        ${errorMsg}
+      </div>`;
+    },
   }),
 );
 
