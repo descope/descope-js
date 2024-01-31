@@ -13,6 +13,9 @@ import { initLifecycleMixin } from '../../../../mixins/initLifecycleMixin';
 type Notifications = ReturnType<typeof getNotifications>;
 type Notification = Notifications[0];
 
+const SUCCESS_NOTIFICATION_DURATION = 3000;
+const ERROR_NOTIFICATION_DURATION = 0;
+
 const notificationTypesIcons = {
   success: checkmark(),
   error: warning(),
@@ -38,7 +41,10 @@ export const initNotificationsMixin = createSingletonMixin(
       #createNotification(type: Notification['type']) {
         return this.createNotification({
           mode: type,
-          duration: 3000,
+          duration:
+            type === 'error'
+              ? ERROR_NOTIFICATION_DURATION
+              : SUCCESS_NOTIFICATION_DURATION,
           position: 'bottom-start',
           size: 'sm',
         });
