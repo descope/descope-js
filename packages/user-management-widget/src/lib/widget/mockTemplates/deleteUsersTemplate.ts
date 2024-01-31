@@ -20,6 +20,7 @@ export default `
     st-host-width="100%"
     st-horizontal-padding="0rem"
     st-vertical-padding="0rem"
+    st-background-color="none"
   >
   <descope-button data-testid="delete-users-modal-cancel" data-id="modal-cancel" mode="primary" variant="link" size="md">Cancel</descope-button>
   <descope-button data-testid="delete-users-modal-submit" data-id="modal-submit" mode="error" variant="contained" size="md">Delete</descope-button>
