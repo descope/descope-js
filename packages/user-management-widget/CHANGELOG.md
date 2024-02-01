@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.6](https://github.com/descope/descope-js/compare/user-management-widget-0.0.5...user-management-widget-0.0.6) (2024-01-31)
+
+
+### Bug Fixes
+
+* ErrorHandling RELEASE ([#371](https://github.com/descope/descope-js/issues/371)) ([6cd35e5](https://github.com/descope/descope-js/commit/6cd35e5fcd3c556253c94fc80842cf7749a4a8ea))
+* Widget container background color ([#370](https://github.com/descope/descope-js/issues/370)) ([1ed9279](https://github.com/descope/descope-js/commit/1ed927968185747d7a7bf4834cebc2b681e63691))
+
 ## [0.0.5](https://github.com/descope/descope-js/compare/user-management-widget-0.0.4...user-management-widget-0.0.5) (2024-01-29)
 
 ### Dependency Updates
