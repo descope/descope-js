@@ -618,6 +618,37 @@ describe('web-component', () => {
     await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
+  it('When there is a single "sso" button and pressing on enter, it clicks the button', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<descope-button id="noClick">No Click</descope-button><descope-button id="click" data-type="sso">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const rootEle = document
+      .getElementsByTagName('descope-wc')[0]
+      .shadowRoot.querySelector('#wc-root');
+
+    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
+
+    await waitFor(() =>
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'click',
+        1,
+        '1.2.3',
+        expect.any(Object),
+      ),
+    );
+  });
+
   it('When there is a single "generic" button and pressing on enter, it clicks the button', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
