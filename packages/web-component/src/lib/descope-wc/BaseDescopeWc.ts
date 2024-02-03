@@ -485,6 +485,15 @@ class BaseDescopeWc extends HTMLElement {
       // in case there is a single "generic" button on the page, click on it
       if (genericButtons.length === 1) {
         genericButtons[0].click();
+      } else if (genericButtons.length === 0) {
+        const ssoButtons = Array.from(buttons).filter(
+          (button) => button.getAttribute('data-type') === 'sso',
+        );
+
+        // in case there is a single "sso" button on the page, click on it
+        if (ssoButtons.length === 1) {
+          ssoButtons[0].click();
+        }
       }
     };
   }
