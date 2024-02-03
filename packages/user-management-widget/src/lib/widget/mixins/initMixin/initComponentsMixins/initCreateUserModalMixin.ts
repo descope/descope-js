@@ -39,7 +39,12 @@ export const initCreateUserModalMixin = createSingletonMixin(
         );
         submitButton.onClick(async () => {
           if (this.validateForm(this.createUserModal.ele)) {
-            this.actions.createUser(this.getFormData(this.createUserModal.ele));
+            this.actions.createUser({
+              ...this.getFormData(this.createUserModal.ele),
+              invite: true,
+              verifiedEmail: true,
+              verifiedPhone: true,
+            });
             this.createUserModal.close();
             this.resetFormData(this.createUserModal.ele);
           }

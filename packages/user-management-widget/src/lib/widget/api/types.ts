@@ -48,7 +48,7 @@ export type User = {
 
 export type SortParams = { field: string; desc: boolean };
 
-export type SearchUsers = (config: {
+export type SearchUsersConfig = {
   page?: number;
   limit?: number;
   customAttributes?: CustomAttributes;
@@ -57,9 +57,9 @@ export type SearchUsers = (config: {
   phones?: string[];
   text?: string;
   sort?: SortParams[];
-}) => Promise<User[]>;
+};
 
-export type CreateUser = (config: {
+export type CreateUserConfig = {
   loginId: string;
   email?: string;
   phone?: string;
@@ -74,4 +74,8 @@ export type CreateUser = (config: {
   middleName?: string;
   familyName?: string;
   additionalLoginIds?: string[];
-}) => Promise<User[]>;
+  inviteUrl?: string;
+  sendMail?: boolean; // send invite via mail, default is according to project settings
+  sendSMS?: boolean; // send invite via text message, default is according to project settings
+  invite?: boolean;
+};
