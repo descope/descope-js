@@ -1,4 +1,4 @@
-import { createOrValidator, createValidation } from './core';
+import { createValidation } from './core';
 import { Validator } from './types';
 import {
   isEmail,
@@ -19,7 +19,7 @@ export const withValidations =
   <T extends Array<any>, U>(fn: (...args: T) => U) =>
   (...args: T): U => {
     argsRules.forEach((rulesArr, i) =>
-      createValidation(...rulesArr).validate(args[i])
+      createValidation(...rulesArr).validate(args[i]),
     );
 
     return fn(...args);
