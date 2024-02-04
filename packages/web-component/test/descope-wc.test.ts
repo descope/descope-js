@@ -702,6 +702,50 @@ describe('web-component', () => {
     await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
   });
 
+  it('When there are multiple "sso" buttons and pressing on enter, it does not click any button', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<button id="1" data-type="sso">Click</button><button id="2" data-type="sso">Click</button><input id="email" name="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const rootEle = document
+      .getElementsByTagName('descope-wc')[0]
+      .shadowRoot.querySelector('#wc-root');
+
+    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
+
+    await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
+  });
+
+  it('When there are multiple "generic" and "sso" buttons and pressing on enter, it does not click any button', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<button id="1" data-type="button">Click</button><button id="1" data-type="button">Click</button><button id="1" data-type="sso">Click</button><button id="2" data-type="sso">Click</button><input id="email" name="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const rootEle = document
+      .getElementsByTagName('descope-wc')[0]
+      .shadowRoot.querySelector('#wc-root');
+
+    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
+
+    await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
+  });
+
   it('When there are multiple button and pressing on enter, it does not clicks any button', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
