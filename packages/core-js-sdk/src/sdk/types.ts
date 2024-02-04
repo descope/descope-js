@@ -60,6 +60,14 @@ export type UserResponse = User & {
   status: string;
 };
 
+export type UserHistoryResponse = {
+  userId: string;
+  loginTime: number;
+  city: string;
+  country: string;
+  ip: string;
+};
+
 /** A tenant association mapping  */
 export type UserTenant = {
   tenantId: string;

@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.9.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.9.3...web-js-sdk-1.9.4) (2024-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.9.0`
+## [1.9.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.9.2...web-js-sdk-1.9.3) (2024-01-29)
+
+
+### Bug Fixes
+
+* DS cookie domain RELEASE ([#353](https://github.com/descope/descope-js/issues/353)) ([d45d663](https://github.com/descope/descope-js/commit/d45d66329de017b06cb0495ef5855e76ca1a9fd9))
+
 ## [1.9.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.9.1...web-js-sdk-1.9.2) (2024-01-25)
 
 ### Dependency Updates

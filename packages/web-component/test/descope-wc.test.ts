@@ -1632,43 +1632,33 @@ describe('web-component', () => {
       jest.useRealTimers();
     });
 
-    it('Should clear timeout when user clicks a button', async () => {
-      jest.spyOn(global, 'clearTimeout');
+    it('When action type is "poll" - check that interval is removed properly', async () => {
+      jest.spyOn(global, 'clearInterval');
 
-      startMock.mockReturnValueOnce(generateSdkResponse());
-      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          executionId: 'e1',
+          stepId: 's1',
+          screenId: '1',
+          action: RESPONSE_ACTIONS.poll,
+        }),
+      );
 
-      pageContent =
-        '<descope-button id="submitterId">click</descope-button><span>It works!</span>';
+      nextMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<div>hey</div>';
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
       jest.runAllTimers();
 
-      await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 10000,
-      });
-
-      fireEvent.click(screen.getByShadowText('click'));
-
-      await waitFor(() =>
-        expect(nextMock).toHaveBeenCalledWith(
-          '0',
-          '0',
-          'submitterId',
-          1,
-          '1.2.3',
-          expect.any(Object),
-        ),
-      );
-
-      await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {
+      await waitFor(() => expect(clearInterval).toHaveBeenCalled(), {
         timeout: 8000,
       });
     });
 
-    it('When has polling element - next with "polling", and check that timeout is set properly', async () => {
-      jest.spyOn(global, 'setTimeout');
+    it('When has polling element - next with "polling", and check that interval is set properly', async () => {
+      jest.spyOn(global, 'setInterval');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -1685,7 +1675,7 @@ describe('web-component', () => {
 
       await waitFor(
         () =>
-          expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 2000),
+          expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 2000),
         {
           timeout: WAIT_TIMEOUT,
         },
@@ -1750,7 +1740,7 @@ describe('web-component', () => {
     });
 
     it('When has polling element, and next poll returns polling response', async () => {
-      jest.spyOn(global, 'setTimeout');
+      jest.spyOn(global, 'setInterval');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -1771,7 +1761,7 @@ describe('web-component', () => {
     });
 
     it('When has polling element, and next poll returns completed response', async () => {
-      jest.spyOn(global, 'setTimeout');
+      jest.spyOn(global, 'setInterval');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
