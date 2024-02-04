@@ -28,6 +28,10 @@
         position: relative;
         top: 50%;
         transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
     </style>
   </head>
@@ -41,6 +45,7 @@
         locale="<locale>"
         debug="true"
       ></descope-wc>
+      <div class="loading">Loading ...</div>
     </div>
     <script>
       // Translate or modify the error as needed
@@ -59,6 +64,20 @@
       descopeWcEle.addEventListener('success', (e) =>
         alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
+      descopeWcEle.addEventListener('page-updated', (e) => {
+        const { stepId, isFirst } = e.detail;
+        console.debug('Page updated', { stepId, isFirst });
+
+        if (isFirst) {
+          // remove loading
+          const loading = document.querySelector('.loading');
+          if (loading) {
+            loading.remove();
+            // alternatively, you can hide it
+            // loading.style.display = 'none';
+          }
+        }
+      });
     </script>
   </body>
 </html>

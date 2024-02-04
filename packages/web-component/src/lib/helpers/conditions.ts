@@ -25,7 +25,7 @@ const conditionsMap: ConditionsMap = {
 
 export const calculateCondition = (
   condition: ClientCondition,
-  ctx: Context
+  ctx: Context,
 ) => {
   const checkFunc = conditionsMap[condition?.key]?.[condition.operator];
   if (!checkFunc) {
@@ -36,6 +36,7 @@ export const calculateCondition = (
     : condition.unmet;
   return {
     startScreenId: conditionResult?.screenId,
+    startStepId: conditionResult?.stepId,
     conditionInteractionId: conditionResult?.interactionId,
   };
 };
@@ -43,7 +44,7 @@ export const calculateCondition = (
 /* eslint-disable import/prefer-default-export */
 export const calculateConditions = (
   ctx: Context,
-  conditions?: ClientCondition[]
+  conditions?: ClientCondition[],
 ) => {
   const conditionResult = conditions?.find(({ key, operator, predicate }) => {
     if (key === elseInteractionId) {
@@ -56,6 +57,7 @@ export const calculateConditions = (
     ? {}
     : {
         startScreenId: conditionResult.met.screenId,
+        startStepId: conditionResult.met.stepId,
         conditionInteractionId: conditionResult.met.interactionId,
       };
 };
