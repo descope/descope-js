@@ -30,10 +30,10 @@ const reducer = buildAsyncReducer(action)(
   withNotifications({
     // eslint-disable-next-line @typescript-eslint/no-shadow
     getSuccessMsg: (action) =>
-      pluralize(action.meta.arg.length)`${['', 2]} ${['U', 'u']}ser${[
-        '',
-        's',
-      ]} deleted successfully`,
+      pluralize(action.meta.arg.length)`${['', action.meta.arg.length]} ${[
+        'U',
+        'u',
+      ]}ser${['', 's']} deleted successfully`,
     // eslint-disable-next-line @typescript-eslint/no-shadow
     getErrorMsg: (action) =>
       pluralize(action.meta.arg.length)`Failed to delete user${['', 's']}`,

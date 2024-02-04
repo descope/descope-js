@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { compose } from '../../helpers/compose';
 import { createSingletonMixin } from '../../helpers/mixins';
 import { configMixin } from '../configMixin';
@@ -64,10 +65,11 @@ export const themeMixin = createSingletonMixin(
       }
 
       get #themeResource() {
-        // eslint-disable-next-line no-underscore-dangle
         if (!this.#_themeResource) {
-          // eslint-disable-next-line no-underscore-dangle
           this.#_themeResource = this.#fetchTheme();
+          this.#_themeResource.then((theme) =>
+            this.logger.debug('Fetched theme', theme),
+          );
         }
 
         // eslint-disable-next-line no-underscore-dangle
