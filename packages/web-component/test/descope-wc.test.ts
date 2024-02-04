@@ -1636,7 +1636,6 @@ describe('web-component', () => {
       jest.spyOn(global, 'clearTimeout');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
-      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
       pageContent =
         '<descope-button id="submitterId">click</descope-button><span>It works!</span>';
@@ -1649,10 +1648,37 @@ describe('web-component', () => {
         timeout: 10000,
       });
 
+      /*  next returns
+         - a poll response
+         - another poll response
+         - a screen response
+      */
+      nextMock
+        .mockReturnValueOnce(
+          generateSdkResponse({
+            executionId: 'e1',
+            stepId: 's1',
+            screenId: '1',
+            action: RESPONSE_ACTIONS.poll,
+          }),
+        )
+        .mockReturnValueOnce(
+          generateSdkResponse({
+            action: RESPONSE_ACTIONS.poll,
+          }),
+        )
+        .mockReturnValueOnce(
+          generateSdkResponse({
+            screenId: '2',
+          }),
+        );
+
       fireEvent.click(screen.getByShadowText('click'));
 
+      // first call is the click call
       await waitFor(() =>
-        expect(nextMock).toHaveBeenCalledWith(
+        expect(nextMock).toHaveBeenNthCalledWith(
+          1,
           '0',
           '0',
           'submitterId',
@@ -1660,6 +1686,40 @@ describe('web-component', () => {
           '1.2.3',
           expect.any(Object),
         ),
+      );
+
+      // first call is the click call
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenNthCalledWith(
+            2,
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
+            expect.any(Object),
+          ),
+        {
+          timeout: 8000,
+        },
+      );
+
+      // second call is the click call
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenNthCalledWith(
+            3,
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
+            expect.any(Object),
+          ),
+        {
+          timeout: 8000,
+        },
       );
 
       await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {

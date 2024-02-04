@@ -498,8 +498,8 @@ class DescopeWc extends BaseDescopeWc {
         this.#handlePollingResponse(
           executionId,
           stepId,
-          flowVersion,
           nextAction,
+          flowVersion,
           componentsVersion,
         );
       }, 2000);
