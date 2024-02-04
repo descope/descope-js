@@ -60,6 +60,14 @@ export type UserResponse = User & {
   status: string;
 };
 
+export type UserHistoryResponse = {
+  userId: string;
+  loginTime: number;
+  city: string;
+  country: string;
+  ip: string;
+};
+
 /** A tenant association mapping  */
 export type UserTenant = {
   tenantId: string;
@@ -67,11 +75,20 @@ export type UserTenant = {
   tenantName: string;
 };
 
+export type TemplateOptions = Record<string, string>; // for providing messaging template options (templates that are being sent via email / text message)
+
 /** Login options to be added to the different authentication methods */
 export type LoginOptions = {
   stepup?: boolean;
   mfa?: boolean;
   customClaims?: Record<string, any>;
+  templateOptions?: TemplateOptions;
+};
+
+/** Sign Up options to be added to the different authentication methods */
+export type SignUpOptions = {
+  customClaims?: Record<string, any>;
+  templateOptions?: TemplateOptions;
 };
 
 /** Authentication info result from the various JWT validations  */
@@ -291,4 +308,5 @@ export type Logger = Pick<Console, 'debug' | 'log' | 'error' | 'warn'>;
 export type UpdateOptions<T extends boolean> = {
   addToLoginIDs?: T;
   onMergeUseExisting?: T extends true ? boolean : never;
+  templateOptions?: TemplateOptions;
 };

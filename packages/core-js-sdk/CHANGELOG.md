@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.9.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.9.0...core-js-sdk-2.9.1) (2024-02-04)
+
+## [2.9.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.8.2...core-js-sdk-2.9.0) (2024-01-29)
+
+
+### Features
+
+* Add user history support for auth apis RELEASE ([#369](https://github.com/descope/descope-js/issues/369)) ([f80636f](https://github.com/descope/descope-js/commit/f80636f7af8944d405fcb3fe6a073ed56460b1e9))
+
+## [2.8.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.8.1...core-js-sdk-2.8.2) (2024-01-25)
+
+
+### Bug Fixes
+
+* update types RELEASE ([#359](https://github.com/descope/descope-js/issues/359)) ([b99a54c](https://github.com/descope/descope-js/commit/b99a54ca1590214d922170703ff07db4de1d55e5))
+
+## [2.8.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.8.0...core-js-sdk-2.8.1) (2024-01-25)
+
 ## [2.8.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.7.0...core-js-sdk-2.8.0) (2024-01-10)
 
 
