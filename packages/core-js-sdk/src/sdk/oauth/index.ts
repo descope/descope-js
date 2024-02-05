@@ -15,7 +15,7 @@ const withOauth = (httpClient: HttpClient) => ({
       token?: string,
     ) => {
       return transformResponse(
-        httpClient.post(apiPaths.oauth.start, loginOptions, {
+        httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
           queryParams: {
             provider,
             ...(redirectUrl && { redirectURL: redirectUrl }),
@@ -33,7 +33,7 @@ const withOauth = (httpClient: HttpClient) => ({
           token?: string,
         ) =>
           transformResponse(
-            httpClient.post(apiPaths.oauth.start, loginOptions, {
+            httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
               queryParams: {
                 provider,
                 ...(redirectUrl && { redirectURL: redirectUrl }),
