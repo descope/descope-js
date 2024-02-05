@@ -67,7 +67,6 @@ export type FlowState = {
 };
 
 export type StepState = {
-  id: string;
   screenState: ScreenState;
   htmlUrl: string;
   htmlLocaleUrl: string;
@@ -106,7 +105,6 @@ type Operator =
 
 export interface ClientConditionResult {
   screenId: string;
-  stepId: string;
   interactionId: string;
 }
 
@@ -168,7 +166,6 @@ type ThemeTemplate = {
 
 export type FlowConfig = {
   startScreenId?: string;
-  startStepId?: string;
   version: number;
   targetLocales?: string[];
   conditions?: ClientCondition[];

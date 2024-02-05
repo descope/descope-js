@@ -166,7 +166,6 @@ class DescopeWc extends BaseDescopeWc {
     } = currentState;
 
     let startScreenId: string;
-    let startStepId: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
     const loginId = this.sdk.getLastUserLoginId();
@@ -191,22 +190,22 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       if (flowConfig.conditions) {
-        ({ startScreenId, conditionInteractionId, startStepId } =
-          calculateConditions(
-            { loginId, code, token, abTestingKey },
-            flowConfig.conditions,
-          ));
+        ({ startScreenId, conditionInteractionId } = calculateConditions(
+          { loginId, code, token, abTestingKey },
+          flowConfig.conditions,
+        ));
       } else if (flowConfig.condition) {
-        ({ startScreenId, conditionInteractionId, startStepId } =
-          calculateCondition(flowConfig.condition, {
+        ({ startScreenId, conditionInteractionId } = calculateCondition(
+          flowConfig.condition,
+          {
             loginId,
             code,
             token,
             abTestingKey,
-          }));
+          },
+        ));
       } else {
         startScreenId = flowConfig.startScreenId;
-        startStepId = flowConfig.startStepId;
       }
 
       // As an optimization - we want to show the first screen if it is possible
@@ -390,7 +389,6 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     const readyScreenId = startScreenId || screenId;
-    const readyStepId = startStepId || stepId;
 
     // get the right filename according to the user locale and flow target locales
     const filenameWithLocale: string = await this.getHtmlFilenameWithLocale(
@@ -400,7 +398,6 @@ class DescopeWc extends BaseDescopeWc {
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
-      id: readyStepId,
       direction: getAnimationDirection(+stepId, +prevState.stepId),
       screenState: {
         ...screenState,
@@ -796,10 +793,12 @@ class DescopeWc extends BaseDescopeWc {
       handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
 
       this.#hydrate(next);
-      this.#dispatch('page-updated', {
-        stepId: currentState.id,
-        isFirst: isFirstScreen,
-      });
+      if (isFirstScreen) {
+        // Dispatch when the first page is ready
+        // So user can show a loader until his event is triggered
+        this.#dispatch('page-ready', {});
+      }
+      this.#dispatch('page-updated', {});
       const loader = this.rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );

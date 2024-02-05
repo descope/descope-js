@@ -11,8 +11,7 @@
     style-src 'unsafe-inline' fonts.googleapis.com;
     img-src static.descope.com content.app.descope.com;
     font-src fonts.gstatic.com;
-    script-src 'self' static.descope.com;
-  "
+    script-src 'self' static.descope.com;"
     /> -->
     <style>
       body {
@@ -64,18 +63,13 @@
       descopeWcEle.addEventListener('success', (e) =>
         alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
-      descopeWcEle.addEventListener('page-updated', (e) => {
-        const { stepId, isFirst } = e.detail;
-        console.debug('Page updated', { stepId, isFirst });
-
-        if (isFirst) {
-          // remove loading
-          const loading = document.querySelector('.loading');
-          if (loading) {
-            loading.remove();
-            // alternatively, you can hide it
-            // loading.style.display = 'none';
-          }
+      descopeWcEle.addEventListener('page-ready', () => {
+        // Remove loading
+        const loading = document.querySelector('.loading');
+        if (loading) {
+          loading.remove();
+          // Alternatively, it can be hidden
+          // loading.style.display = 'none';
         }
       });
     </script>

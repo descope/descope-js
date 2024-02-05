@@ -457,6 +457,42 @@ describe('web-component', () => {
     expect(nextMock).toBeCalledTimes(1);
   });
 
+  it('should call the page-ready cb when page is loaded', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<span>First Page</span><descope-button>click</descope-button>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    const pageReady = jest.fn();
+
+    const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+    wcEle.addEventListener('page-ready', pageReady);
+
+    await waitFor(() => screen.getByShadowText('First Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // Should called after the page is loaded
+    expect(pageReady).toBeCalledTimes(1);
+
+    pageContent = '<span>Second Page</span>';
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => screen.getByShadowText('Second Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // Should NOT be called again after the second page is updated
+    expect(pageReady).toBeCalledTimes(1);
+
+    wcEle.removeEventListener('page-ready', pageReady);
+  });
+
   it('When submitting it calls next with the button id', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));

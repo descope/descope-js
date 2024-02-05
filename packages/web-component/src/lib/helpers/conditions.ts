@@ -36,7 +36,6 @@ export const calculateCondition = (
     : condition.unmet;
   return {
     startScreenId: conditionResult?.screenId,
-    startStepId: conditionResult?.stepId,
     conditionInteractionId: conditionResult?.interactionId,
   };
 };
@@ -57,7 +56,6 @@ export const calculateConditions = (
     ? {}
     : {
         startScreenId: conditionResult.met.screenId,
-        startStepId: conditionResult.met.stepId,
         conditionInteractionId: conditionResult.met.interactionId,
       };
 };
