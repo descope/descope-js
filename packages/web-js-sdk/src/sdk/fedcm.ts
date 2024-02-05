@@ -1,5 +1,4 @@
 import { JWTResponse, SdkResponse, LoginOptions } from '@descope/core-js-sdk';
-import { IS_BROWSER } from '../constants';
 import { CoreSdk } from '../types';
 
 /**
@@ -9,32 +8,14 @@ interface OneTapConfig {
   /** Whether to auto select. Optional. */
   auto_select?: boolean;
 
-  /** Login URI. Optional. */
-  login_uri?: string;
-
-  /** Native callback function to handle the response. Optional. */
-  native_callback?: (response: CredentialResponse) => void;
-
   /** Whether to cancel on tap outside. Optional. */
   cancel_on_tap_outside?: boolean;
 
   /** ID of the prompt parent. Optional. */
   prompt_parent_id?: string;
 
-  /** Nonce. Optional. */
-  nonce?: string;
-
   /** Context. Optional. */
-  context?: string;
-
-  /** Domain for the state cookie. Optional. */
-  state_cookie_domain?: string;
-
-  /** UX mode. Optional. */
-  ux_mode?: string;
-
-  /** Allowed parent origin. Can be a string or an array of strings. Optional. */
-  allowed_parent_origin?: string | string[];
+  context?: 'signin' | 'signup' | 'use';
 
   /** Callback function to handle the intermediate iframe close event. Optional. */
   intermediate_iframe_close_callback?: () => void;
@@ -69,9 +50,6 @@ interface CredentialResponse {
     | 'btn_confirm'
     | 'btn_add_session'
     | 'btn_confirm_add_session';
-
-  /** Client ID. */
-  clientId: string;
 }
 
 type OneTapInitialize = ({
@@ -82,7 +60,7 @@ type OneTapInitialize = ({
   client_id: string;
   callback: (res: CredentialResponse) => void;
   nonce: string;
-}) => void;
+} & OneTapConfig) => void;
 /**
  * Constructs a higher level FedCM API that wraps the functions from code-js-sdk.
  * @param sdk The CoreSdk instance.
@@ -111,11 +89,14 @@ const createFedCM = (sdk: CoreSdk) => ({
       // initialize google client
       googleClient.initialize({
         ...oneTapConfig,
+        itp_support: oneTapConfig?.itp_support ?? true,
+        use_fedcm_for_prompt: oneTapConfig?.use_fedcm_for_prompt ?? true,
         client_id: clientId,
         callback,
         nonce,
       });
 
+      // Decide how to handle https://developers.google.com/identity/gsi/web/reference/js-reference#PromptMomentNotification
       googleClient.prompt();
     });
   },
