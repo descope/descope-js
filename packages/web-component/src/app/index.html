@@ -63,14 +63,11 @@
       descopeWcEle.addEventListener('success', (e) =>
         alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
-      descopeWcEle.addEventListener('page-ready', () => {
-        // Remove loading
-        const loading = document.querySelector('.loading');
-        if (loading) {
-          loading.remove();
-          // Alternatively, it can be hidden
-          // loading.style.display = 'none';
-        }
+      descopeWcEle.addEventListener('ready', () => {
+        // Remove/hide loading
+        document.querySelector('.loading')?.remove();
+        // Alternatively, it can be hidden. For example:
+        // document.querySelector('.loading')?.style.display = 'none';
       });
     </script>
   </body>

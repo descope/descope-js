@@ -796,7 +796,7 @@ class DescopeWc extends BaseDescopeWc {
       if (isFirstScreen) {
         // Dispatch when the first page is ready
         // So user can show a loader until his event is triggered
-        this.#dispatch('page-ready', {});
+        this.#dispatch('ready', {});
       }
       this.#dispatch('page-updated', {});
       const loader = this.rootElement.querySelector(

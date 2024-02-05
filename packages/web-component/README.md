@@ -144,16 +144,16 @@ const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 descopeWcEle.addEventListener('success', (e) => alert(`Success! - ${JSON.stringify(e.detail)}`));
 ```
 
-### `page-ready` - Fired when the page is ready.
+### `ready` - Fired when the page is ready.
 
-This event is useful for showing a loading indication before the page is loading.
+This event is useful for showing/hiding a loading indication before the page is loading.
 Note: in cases where the flow involves redirection to a non-initial stage of the process, such as with Magic Link or OAuth, this event is also dispatched.
 
 Usage example:
 
 ```javascript
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-descopeWcEle.addEventListener('page-ready', () => {
-  // Hide the loading indication
+descopeWcEle.addEventListener('ready', () => {
+  // Remove/hide the loading indication
 });
 ```
