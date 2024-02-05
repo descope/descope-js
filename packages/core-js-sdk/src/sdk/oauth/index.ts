@@ -12,16 +12,20 @@ const withOauth = (httpClient: HttpClient) => ({
       provider: string,
       redirectUrl?: string,
       loginOptions?: LoginOptions,
-      token?: string
+      token?: string,
     ) => {
       return transformResponse(
-        httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
-          queryParams: {
-            provider,
-            ...(redirectUrl && { redirectURL: redirectUrl }),
+        httpClient.post(
+          apiPaths.oauth.start,
+          { loginOptions },
+          {
+            queryParams: {
+              provider,
+              ...(redirectUrl && { redirectURL: redirectUrl }),
+            },
+            token,
           },
-          token,
-        })
+        ),
       );
     },
     Object.keys(OAuthProviders).reduce(
@@ -30,25 +34,49 @@ const withOauth = (httpClient: HttpClient) => ({
         [provider]: (
           redirectUrl?: string,
           loginOptions?: LoginOptions,
-          token?: string
+          token?: string,
         ) =>
           transformResponse(
-            httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
-              queryParams: {
-                provider,
-                ...(redirectUrl && { redirectURL: redirectUrl }),
+            httpClient.post(
+              apiPaths.oauth.start,
+              { loginOptions },
+              {
+                queryParams: {
+                  provider,
+                  ...(redirectUrl && { redirectURL: redirectUrl }),
+                },
+                token,
               },
-              token,
-            })
+            ),
           ),
       }),
-      {}
-    ) as Oauth['start']
+      {},
+    ) as Oauth['start'],
   ),
   exchange: withExchangeValidations(
     (code: string): Promise<SdkResponse<JWTResponse>> =>
-      transformResponse(httpClient.post(apiPaths.oauth.exchange, { code }))
+      transformResponse(httpClient.post(apiPaths.oauth.exchange, { code })),
   ),
+  startNative: (provider: string, loginOptions?: LoginOptions) =>
+    transformResponse(
+      httpClient.post(apiPaths.oauth.startNative, { provider, loginOptions }),
+    ),
+  finishNative: (
+    provider: string,
+    stateId: string,
+    user?: string,
+    code?: string,
+    idToken?: string,
+  ) =>
+    transformResponse(
+      httpClient.post(apiPaths.oauth.finishNative, {
+        provider,
+        stateId,
+        user,
+        code,
+        idToken,
+      }),
+    ),
 });
 
 export default withOauth;
