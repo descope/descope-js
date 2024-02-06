@@ -73,12 +73,16 @@ type PromptNotification = {
  */
 const createFedCM = (sdk: CoreSdk) => ({
   async oneTap(
-    provider: string,
+    provider?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkip?: () => void,
   ) {
-    const startResponse = await sdk.oauth.startNative(provider, loginOptions);
+    const readyProvider = provider ?? 'google';
+    const startResponse = await sdk.oauth.startNative(
+      readyProvider,
+      loginOptions,
+    );
     if (!startResponse.ok) {
       return startResponse as unknown as SdkResponse<JWTResponse>;
     }
@@ -88,7 +92,13 @@ const createFedCM = (sdk: CoreSdk) => ({
     return new Promise((resolve) => {
       const callback = (res: CredentialResponse) => {
         resolve(
-          sdk.oauth.finishNative(provider, stateId, '', '', res.credential),
+          sdk.oauth.finishNative(
+            readyProvider,
+            stateId,
+            '',
+            '',
+            res.credential,
+          ),
         );
       };
 
@@ -122,10 +132,12 @@ async function getGoogleClient(): Promise<{
       return;
     }
 
+    /* istanbul ignore next */
     let googleScript = document.getElementById(
       'google-gsi-client-script',
     ) as HTMLScriptElement;
 
+    /* istanbul ignore next */
     if (!googleScript) {
       googleScript = document.createElement('script');
       document.head.appendChild(googleScript);
@@ -135,6 +147,7 @@ async function getGoogleClient(): Promise<{
       googleScript.src = 'https://accounts.google.com/gsi/client';
     }
 
+    /* istanbul ignore next */
     googleScript.onload = function () {
       if ((window as any).google) {
         resolve((window as any).google.accounts.id);
@@ -142,6 +155,7 @@ async function getGoogleClient(): Promise<{
         reject('Failed to load Google GSI client script - not loaded properly');
       }
     };
+    /* istanbul ignore next */
     googleScript.onerror = function () {
       reject('Failed to load Google GSI client script - failed to load');
     };

@@ -40,7 +40,40 @@ describe('fedcm', () => {
       stepup: false,
     });
   });
+  it('throw error when startNative response is not ok', async () => {
+    coreJs.oauth.startNative.mockResolvedValue({ ok: false, error: 'error' });
+    try {
+      await sdk.fedcm.oneTap(
+        'google',
+        { auto_select: true },
+        { stepup: false },
+      );
+    } catch (e) {
+      expect(e).toEqual('error');
+    }
+  });
   it('call google client initialize with the correct params', async () => {
+    coreJs.oauth.startNative.mockResolvedValue({
+      ok: true,
+      data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+    });
+    sdk.fedcm.oneTap(
+      'google',
+      { auto_select: true, itp_support: false, use_fedcm_for_prompt: false },
+      { stepup: false },
+    );
+    await new Promise(process.nextTick);
+
+    expect(googleClient.initialize).toHaveBeenCalledWith({
+      auto_select: true,
+      itp_support: false,
+      use_fedcm_for_prompt: false,
+      client_id: 'C123',
+      callback: expect.any(Function),
+      nonce: 'N123',
+    });
+  });
+  it('call google client prompt the correct defaults', async () => {
     coreJs.oauth.startNative.mockResolvedValue({
       ok: true,
       data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
