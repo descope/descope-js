@@ -61,6 +61,11 @@ type OneTapInitialize = ({
   callback: (res: CredentialResponse) => void;
   nonce: string;
 } & OneTapConfig) => void;
+
+type PromptNotification = {
+  isSkippedMoment: () => boolean;
+};
+
 /**
  * Constructs a higher level FedCM API that wraps the functions from code-js-sdk.
  * @param sdk The CoreSdk instance.
@@ -71,6 +76,7 @@ const createFedCM = (sdk: CoreSdk) => ({
     provider: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
+    onSkip?: () => void,
   ) {
     const startResponse = await sdk.oauth.startNative(provider, loginOptions);
     if (!startResponse.ok) {
@@ -97,7 +103,11 @@ const createFedCM = (sdk: CoreSdk) => ({
       });
 
       // Decide how to handle https://developers.google.com/identity/gsi/web/reference/js-reference#PromptMomentNotification
-      googleClient.prompt();
+      googleClient.prompt((notification) => {
+        if (notification?.isSkippedMoment()) {
+          onSkip?.();
+        }
+      });
     });
   },
 });
@@ -105,7 +115,7 @@ const createFedCM = (sdk: CoreSdk) => ({
 // Helpers functions
 async function getGoogleClient(): Promise<{
   initialize: OneTapInitialize;
-  prompt: () => void;
+  prompt: (cb: (notification: PromptNotification) => void) => void;
 }> {
   return new Promise((resolve, reject) => {
     let googleScript = document.getElementById(
