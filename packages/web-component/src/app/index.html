@@ -11,8 +11,7 @@
     style-src 'unsafe-inline' fonts.googleapis.com;
     img-src static.descope.com content.app.descope.com;
     font-src fonts.gstatic.com;
-    script-src 'self' static.descope.com;
-  "
+    script-src 'self' static.descope.com;"
     /> -->
     <style>
       body {
@@ -28,6 +27,10 @@
         position: relative;
         top: 50%;
         transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
     </style>
   </head>
@@ -41,6 +44,7 @@
         locale="<locale>"
         debug="true"
       ></descope-wc>
+      <div class="loading">Loading ...</div>
     </div>
     <script>
       // Translate or modify the error as needed
@@ -59,6 +63,12 @@
       descopeWcEle.addEventListener('success', (e) =>
         alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
+      descopeWcEle.addEventListener('ready', () => {
+        // Remove/hide loading
+        document.querySelector('.loading')?.remove();
+        // Alternatively, it can be hidden. For example:
+        // document.querySelector('.loading')?.style.display = 'none';
+      });
     </script>
   </body>
 </html>
