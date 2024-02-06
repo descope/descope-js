@@ -197,7 +197,12 @@ class DescopeWc extends BaseDescopeWc {
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
-          { loginId, code, token, abTestingKey },
+          {
+            loginId,
+            code,
+            token,
+            abTestingKey,
+          },
         ));
       } else {
         startScreenId = flowConfig.startScreenId;
@@ -788,6 +793,11 @@ class DescopeWc extends BaseDescopeWc {
       handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
 
       this.#hydrate(next);
+      if (isFirstScreen) {
+        // Dispatch when the first page is ready
+        // So user can show a loader until his event is triggered
+        this.#dispatch('ready', {});
+      }
       this.#dispatch('page-updated', {});
       const loader = this.rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
