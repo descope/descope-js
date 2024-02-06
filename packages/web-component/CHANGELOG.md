@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.8.0](https://github.com/descope/descope-js/compare/web-component-3.7.6...web-component-3.8.0) (2024-02-06)
+
+
+### Features
+
+* Add page-updated event ([#375](https://github.com/descope/descope-js/issues/375)) RELEASE ([705b4eb](https://github.com/descope/descope-js/commit/705b4eb267c8f8c7115bff39c76ba2ca015df216))
+
+
+### Bug Fixes
+
+* Add polling execution flag 4 ([#374](https://github.com/descope/descope-js/issues/374)) ([2c99d20](https://github.com/descope/descope-js/commit/2c99d20cbcd969418f0fd65e9eabecf5cea9eefe))
+
 ## [3.7.6](https://github.com/descope/descope-js/compare/web-component-3.7.5...web-component-3.7.6) (2024-02-04)
 
 ### Dependency Updates
