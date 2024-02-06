@@ -119,6 +119,7 @@ async function getGoogleClient(): Promise<{
   return new Promise((resolve, reject) => {
     if ((window as any).google) {
       resolve((window as any).google.accounts.id);
+      return;
     }
 
     let googleScript = document.getElementById(
