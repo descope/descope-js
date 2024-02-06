@@ -102,7 +102,6 @@ const createFedCM = (sdk: CoreSdk) => ({
         nonce,
       });
 
-      // Decide how to handle https://developers.google.com/identity/gsi/web/reference/js-reference#PromptMomentNotification
       googleClient.prompt((notification) => {
         if (notification?.isSkippedMoment()) {
           onSkip?.();
@@ -118,21 +117,23 @@ async function getGoogleClient(): Promise<{
   prompt: (cb: (notification: PromptNotification) => void) => void;
 }> {
   return new Promise((resolve, reject) => {
+    if ((window as any).google) {
+      resolve((window as any).google.accounts.id);
+    }
+
     let googleScript = document.getElementById(
       'google-gsi-client-script',
     ) as HTMLScriptElement;
+
     if (!googleScript) {
       googleScript = document.createElement('script');
-      googleScript.src = 'https://accounts.google.com/gsi/client';
+      document.head.appendChild(googleScript);
       googleScript.async = true;
       googleScript.defer = true;
       googleScript.id = 'google-gsi-client-script';
-      document.head.appendChild(googleScript);
-    } else if ((window as any).google) {
-      resolve((window as any).google.accounts.id);
-    } else {
-      reject('Failed to load Google GSI client script - already loading');
+      googleScript.src = 'https://accounts.google.com/gsi/client';
     }
+
     googleScript.onload = function () {
       if ((window as any).google) {
         resolve((window as any).google.accounts.id);
