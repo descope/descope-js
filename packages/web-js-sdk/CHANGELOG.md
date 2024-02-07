@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.9.5...web-js-sdk-1.10.0) (2024-02-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.10.0`
+
+### Features
+
+* OneTap support ([#376](https://github.com/descope/descope-js/issues/376)) ([343fb04](https://github.com/descope/descope-js/commit/343fb04c35904d24cfa855b55048dd3bef212edc))
+
 ## [1.9.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.9.4...web-js-sdk-1.9.5) (2024-02-04)
 
 ### Dependency Updates
