@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.10.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.9.1...core-js-sdk-2.10.0) (2024-02-07)
+
+
+### Features
+
+* OneTap support ([#376](https://github.com/descope/descope-js/issues/376)) ([343fb04](https://github.com/descope/descope-js/commit/343fb04c35904d24cfa855b55048dd3bef212edc))
+
 ## [2.9.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.9.0...core-js-sdk-2.9.1) (2024-02-04)
 
 ## [2.9.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.8.2...core-js-sdk-2.9.0) (2024-01-29)
