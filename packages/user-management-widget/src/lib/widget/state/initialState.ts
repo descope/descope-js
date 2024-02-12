@@ -26,7 +26,7 @@ export const initialState: State = {
   tenantRoles: {
     loading: false,
     error: null,
-    data: {},
+    data: [],
   },
   searchParams: { text: '', sort: [] },
   selectedUsersLoginIds: [],
