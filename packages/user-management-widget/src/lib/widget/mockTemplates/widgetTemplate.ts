@@ -1,51 +1,136 @@
 export default `
 <descope-container
+  data-editor-type="container"
   direction="column"
+  id="ROOT"
   space-between="md"
   st-horizontal-padding="1rem"
   st-vertical-padding="1rem"
   st-align-items="safe center"
+  st-justify-content="safe center"
+  st-host-width="100%"
   st-gap="1rem"
->
-  <descope-container
+  ><descope-container
+    data-editor-type="container"
     direction="row"
+    id="HeaderContainer"
     st-horizontal-padding="0rem"
     st-vertical-padding="0rem"
-    st-align-items="safe center"
-    st-gap="0rem"
+    st-align-items="start"
     st-justify-content="space-between"
-  >
-    <descope-text-field data-testid="search-input" data-id="search-input" placeholder="Search" size="sm" bordered="true"></descope-text-field>
-
-    <descope-container
+    st-background-color="#ffffff00"
+    st-host-width="100%"
+    st-gap="0rem"
+    ><descope-text-field
+      bordered="true"
+      full-width="false"
+      id="Search"
+      label=""
+      max="100"
+      name=""
+      placeholder="Search"
+      required="false"
+      size="sm"
+      data-testid="search-input"
+      data-id="search-input"
+    ></descope-text-field
+    ><descope-container
+      data-editor-type="container"
       direction="row"
+      id="ButtonsContainer"
       st-horizontal-padding="0rem"
       st-vertical-padding="0rem"
+      st-align-items="start"
       st-justify-content="flex-end"
-      st-gap="0.5em"
+      st-background-color="#ffffff00"
       st-host-width="auto"
-    >
-      <descope-button data-testid="delete-users-trigger" data-id="delete-users" mode="primary" variant="outline" size="sm">Delete</descope-button>
-      <descope-button data-testid="create-user-trigger" data-id="create-user" mode="primary" variant="contained" size="sm">+ User</descope-button>
-    </descope-container>
-    </descope-container>
-    <descope-grid
-      data-id="users-table"
-      size="sm"
-      column-reordering-allowed
-      st-host-height="300px"
-      style="width: 100%"
-    >
-      <descope-grid-selection-column frozen auto-width></descope-grid-selection-column>
-      <descope-grid-text-column path="loginIds" header="Login ID" resizable></descope-grid-text-column>
-      <descope-grid-text-column sortable="true" path="name" header="Name" resizable></descope-grid-text-column>
-      <descope-grid-custom-column sortable="true" path="status" header="Status" resizable>
-        <descope-badge mode="default" pattern="invited" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
-        <descope-badge mode="primary" pattern="active" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
-        <descope-badge mode="error" pattern="disabled" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
-      </descope-grid-custom-column>
-      <descope-grid-text-column sortable="true" path="email" header="Email" resizable></descope-grid-text-column>
-      <descope-grid-text-column sortable="true" path="phone" header="Phone" resizable></descope-grid-text-column>
-    </descope-grid>
-  </descope-container>
+      st-gap="0.5rem"
+      ><descope-button
+        data-type="button"
+        formnovalidate="false"
+        full-width="false"
+        id="DeleteUsers"
+        shape=""
+        size="sm"
+        variant="outline"
+        data-testid="delete-users-trigger"
+        data-id="delete-users"
+        mode="primary"
+        square="false"
+        >Delete</descope-button
+      ><descope-button
+        data-type="button"
+        formnovalidate="false"
+        full-width="false"
+        id="CreateUser"
+        shape=""
+        size="sm"
+        variant="contained"
+        data-testid="create-user-trigger"
+        data-id="create-user"
+        mode="primary"
+        square="false"
+        >+ User</descope-button
+      ></descope-container
+    ></descope-container
+  ><descope-grid
+    data-id="users-table"
+    size="sm"
+    column-reordering-allowed="true"
+    st-host-height="300px"
+    style="width: 100%"
+    ><descope-grid-selection-column
+      frozen="true"
+      auto-width="true"
+    ></descope-grid-selection-column
+    ><descope-grid-text-column
+      path="loginIds"
+      header="Login ID"
+      resizable="true"
+    ></descope-grid-text-column
+    ><descope-grid-custom-column
+      sortable="true"
+      path="status"
+      header="Status"
+      resizable="true"
+      ><descope-badge
+        mode="default"
+        bordered="true"
+        size="xs"
+        data-pattern="invited"
+        st-text-transform="capitalize"
+      ></descope-badge
+      ><descope-badge
+        mode="primary"
+        bordered="true"
+        size="xs"
+        data-pattern="active"
+        st-text-transform="capitalize"
+      ></descope-badge
+      ><descope-badge
+        mode="error"
+        bordered="true"
+        size="xs"
+        data-pattern="disabled"
+        st-text-transform="capitalize"
+      ></descope-badge></descope-grid-custom-column
+    ><descope-grid-text-column
+      sortable="true"
+      path="name"
+      header="Name"
+      resizable="true"
+    ></descope-grid-text-column
+    ><descope-grid-text-column
+      sortable="true"
+      path="email"
+      header="Email"
+      resizable="true"
+    ></descope-grid-text-column
+    ><descope-grid-text-column
+      sortable="true"
+      path="phone"
+      header="Phone"
+      resizable="true"
+    ></descope-grid-text-column></descope-grid
+></descope-container>
 `;
