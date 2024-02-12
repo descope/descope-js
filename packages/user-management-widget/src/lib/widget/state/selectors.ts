@@ -3,6 +3,7 @@ import { State } from './types';
 import { userStatusMappings } from './constants';
 
 export const getRawUsersList = (state: State) => state.usersList.data;
+export const getRawTenantRoles = (state: State) => state.tenantRoles.data;
 export const getSelectedUsersLoginIds = (state: State) =>
   state.selectedUsersLoginIds;
 export const getNotifications = (state: State) => state.notifications;
@@ -12,7 +13,16 @@ export const getUsersList = createSelector(getRawUsersList, (users) =>
   users.map((user) => ({
     ...user,
     status: userStatusMappings[user.status] || user.status,
+    roles: user.roleNames
+      .concat(user.userTenants?.[0]?.roleNames)
+      .filter(Boolean)
+      .sort()
+      .join(', '),
   })),
+);
+
+export const getTenantRoles = createSelector(getRawTenantRoles, (roles) =>
+  roles.map(({ name }) => ({ value: name, label: name })),
 );
 
 export const getSelectedUsersUserIds = createSelector(

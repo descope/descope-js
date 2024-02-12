@@ -23,6 +23,11 @@ export const initialState: State = {
     error: null,
     data: {},
   },
+  tenantRoles: {
+    loading: false,
+    error: null,
+    data: {},
+  },
   searchParams: { text: '', sort: [] },
   selectedUsersLoginIds: [],
   notifications: [],

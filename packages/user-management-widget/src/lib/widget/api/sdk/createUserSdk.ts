@@ -140,11 +140,22 @@ export const createUserSdk = ({
     return res.json();
   };
 
+  const getTenantRoles = async () => {
+    const res = await httpClient.get(apiPaths.user.allRoles, {
+      queryParams: { tenant },
+    });
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
   return {
     search,
     deleteBatch,
     create,
     expirePassword,
     getCustomAttributes,
+    getTenantRoles,
   };
 };

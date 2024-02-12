@@ -1,3 +1,4 @@
+import { initCreateUserRoleMultiSelectMixin } from './initComponentsMixins/initCreateUserRoleMultiSelectMixin';
 import { compose } from '../../../helpers/compose';
 import { createSingletonMixin } from '../../../helpers/mixins';
 import { debuggerMixin } from '../../../mixins/debuggerMixin';
@@ -17,12 +18,14 @@ export const initMixin = createSingletonMixin(
       initCreateUserButtonMixin,
       initDeleteUsersButtonMixin,
       initFilterUsersInputMixin,
+      initCreateUserRoleMultiSelectMixin,
       initNotificationsMixin,
     )(superclass) {
       async init() {
         await super.init?.();
 
         this.actions.searchUsers();
+        this.actions.getTenantRoles();
       }
     },
 );
