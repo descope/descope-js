@@ -40,26 +40,22 @@ test.describe('widget', () => {
         json: {
           roles: [
             {
-              name: "Tenant Admin",
-              description: "",
-              permissionNames: [
-                'Role 1',
-              ],
+              name: 'Tenant Admin',
+              description: '',
+              permissionNames: ['Role 1'],
               createdTime: 1706819237,
-              tenantId: ""
+              tenantId: '',
             },
             {
-              name: "Role 1",
-              description: "",
-              permissionNames: [
-                "Role 1",
-              ],
+              name: 'Role 1',
+              description: '',
+              permissionNames: ['Role 1'],
               createdTime: 1707732871,
-              tenantId: "T2c3U06xbKDpNR0LQEFkqjTVyohh"
+              tenantId: 'T2c3U06xbKDpNR0LQEFkqjTVyohh',
             },
-          ]
-        }
-      })
+          ],
+        },
+      }),
     );
 
     await page.route(apiPath('search'), async (route) =>
