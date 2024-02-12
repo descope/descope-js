@@ -36,6 +36,8 @@ export default {
   oauth: {
     start: '/v1/auth/oauth/authorize',
     exchange: '/v1/auth/oauth/exchange',
+    startNative: 'v1/auth/oauth/native/start',
+    finishNative: 'v1/auth/oauth/native/finish',
   },
   saml: {
     start: '/v1/auth/saml/authorize',
