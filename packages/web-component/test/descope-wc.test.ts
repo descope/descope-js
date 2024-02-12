@@ -3595,8 +3595,6 @@ describe('web-component', () => {
   it(
     'There are no multiple calls to submit',
     async () => {
-      jest.useRealTimers();
-
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
@@ -3615,8 +3613,6 @@ describe('web-component', () => {
         code: 'Enter',
         charCode: 13,
       });
-
-      await new Promise(process.nextTick);
 
       await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1));
     },
