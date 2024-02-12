@@ -29,4 +29,6 @@ export {
   clearFingerprintData,
 } from './enhancers/withFingerprint/helpers';
 
+export type { OneTapConfig } from './sdk/fedcm';
+
 export default decoratedCreateSdk;
