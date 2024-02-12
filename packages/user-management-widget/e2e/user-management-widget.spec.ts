@@ -35,6 +35,33 @@ test.describe('widget', () => {
       route.fulfill({ json: { user: mockNewUser } }),
     );
 
+    await page.route(apiPath('allRoles'), async (route) =>
+      route.fulfill({
+        json: {
+          roles: [
+            {
+              name: "Tenant Admin",
+              description: "",
+              permissionNames: [
+                'Role 1',
+              ],
+              createdTime: 1706819237,
+              tenantId: ""
+            },
+            {
+              name: "Role 1",
+              description: "",
+              permissionNames: [
+                "Role 1",
+              ],
+              createdTime: 1707732871,
+              tenantId: "T2c3U06xbKDpNR0LQEFkqjTVyohh"
+            },
+          ]
+        }
+      })
+    );
+
     await page.route(apiPath('search'), async (route) =>
       route.fulfill({
         status: 200,
