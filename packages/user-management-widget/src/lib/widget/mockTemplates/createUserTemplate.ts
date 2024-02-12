@@ -1,31 +1,113 @@
 export default `
 <descope-container
+  data-editor-type="container"
   direction="column"
-  st-justify-content="safe center"
-  st-gap="1rem"
-  st-host-width="100%"
-  st-background-color="none"
+  id="ROOT"
+  space-between="md"
   st-horizontal-padding="0rem"
   st-vertical-padding="0rem"
-  st-border-radius="sm"
->
-  <descope-text variant="subtitle1" mode="surface">New User</descope-text>
-  <descope-text-field name="loginId" label="Login ID" bordered="true" required="true" size="sm"></descope-text-field>
-  <descope-email-field name="email" label="Email" bordered="true"></descope-email-field>
-  <descope-text-field name="displayName" label="Name" bordered="true"></descope-text-field>
-  <descope-phone-field name="phone" label="Phone" bordered="true"></descope-phone-field>
-
-  <descope-container
+  st-align-items="start"
+  st-justify-content="safe center"
+  st-background-color="#80808000"
+  st-host-width="100%"
+  st-gap="1rem"
+  ><descope-text
+    full-width="false"
+    id="titleText"
+    italic="false"
+    mode="primary"
+    text-align="center"
+    variant="subtitle1"
+    >New User</descope-text
+  ><descope-text-field
+    bordered="true"
+    full-width="true"
+    id="loginIdInput"
+    label="Login ID"
+    max="100"
+    name="loginId"
+    placeholder=""
+    required="true"
+    size="sm"
+  ></descope-text-field
+  ><descope-email-field
+    bordered="true"
+    data-errormessage-pattern-mismatch="Must be a valid email"
+    full-width="true"
+    id="emailInput"
+    label="Email"
+    max="100"
+    name="email"
+    pattern="^[\\w\\.\\%\\+\\-]+@[\\w\\.\\-]+\\.[A-Za-z]{2,}$"
+    placeholder=""
+    required="false"
+    size="sm"
+  ></descope-email-field
+  ><descope-text-field
+    bordered="true"
+    full-width="true"
+    id="nameInput"
+    label="Name"
+    max="100"
+    name="displayName"
+    placeholder=""
+    required="false"
+    size="sm"
+  ></descope-text-field
+  ><descope-phone-field
+    bordered="true"
+    country-input-placeholder=""
+    data-errormessage-missing-value="Required"
+    data-errormessage-pattern-mismatch-too-short="Please enter a valid phone"
+    default-code="autoDetect"
+    full-width="true"
+    id="phoneInput"
+    label="Phone"
+    maxlength="20"
+    minlength="6"
+    name="phone"
+    phone-input-placeholder=""
+    size="sm"
+    type="tel"
+  ></descope-phone-field
+  ><descope-container
+    data-editor-type="container"
     direction="row"
+    id="buttonsContainer"
+    st-horizontal-padding="0rem"
+    st-vertical-padding="0rem"
+    st-align-items="start"
     st-justify-content="flex-end"
-    st-gap="1rem"
+    st-background-color="#ffffff00"
     st-host-width="100%"
-    st-horizontal-padding="0.75rem"
-    st-vertical-padding="0.75rem"
-    st-background-color="none"
-  >
-  <descope-button data-testid="create-user-modal-cancel" data-id="modal-cancel" mode="primary" variant="link" size="sm">Cancel</descope-button>
-  <descope-button data-testid="create-user-modal-submit" data-id="modal-submit" mode="primary" variant="contained" size="sm">Create</descope-button>
-  </descope-container>
-</descope-container>
+    st-gap="0.5rem"
+    ><descope-button
+      data-type="button"
+      formnovalidate="false"
+      full-width="false"
+      id="cancelButton"
+      shape=""
+      size="sm"
+      variant="outline"
+      data-testid="create-user-modal-cancel"
+      data-id="modal-cancel"
+      mode="primary"
+      square="false"
+      >Cancel</descope-button
+    ><descope-button
+      data-type="button"
+      formnovalidate="false"
+      full-width="false"
+      id="submitButton"
+      shape=""
+      size="sm"
+      variant="contained"
+      data-testid="create-user-modal-submit"
+      data-id="modal-submit"
+      mode="primary"
+      square="false"
+      >Create</descope-button
+    ></descope-container
+  ></descope-container
+>
 `;
