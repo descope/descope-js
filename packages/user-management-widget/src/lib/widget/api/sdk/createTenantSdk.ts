@@ -9,7 +9,7 @@ export const createTenantSdk = ({
   httpClient: HttpClient;
   tenant: string;
 }) => {
-  const getTenantRoles = async (): Promise<{roles: Role[]}> => {
+  const getTenantRoles = async (): Promise<{ roles: Role[] }> => {
     const res = await httpClient.get(apiPaths.tenant.roles, {
       queryParams: { tenant },
     });

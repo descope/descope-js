@@ -10,7 +10,7 @@ export const createSdk = (
 
   return {
     user: createUserSdk({ httpClient: webSdk.httpClient, tenant }),
-    tenant: createTenantSdk({ httpClient: webSdk.httpClient, tenant })
+    tenant: createTenantSdk({ httpClient: webSdk.httpClient, tenant }),
   };
 };
 

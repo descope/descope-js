@@ -22,4 +22,4 @@ export default {
       tenantId: 't1',
     },
   ],
-}
+};

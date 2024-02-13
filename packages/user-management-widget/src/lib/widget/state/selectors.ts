@@ -16,11 +16,13 @@ export const getUsersList = createSelector(getRawUsersList, (users) =>
     roles: user.roleNames
       .concat(user.userTenants?.[0]?.roleNames)
       .filter(Boolean)
-      .sort()
+      .sort(),
   })),
 );
 
-export const getTenantRoles = createSelector(getRawTenantRoles, (roles) => roles
+export const getTenantRoles = createSelector(
+  getRawTenantRoles,
+  (roles) => roles,
 );
 
 export const getSelectedUsersUserIds = createSelector(

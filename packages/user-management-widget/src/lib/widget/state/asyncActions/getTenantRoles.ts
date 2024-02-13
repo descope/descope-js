@@ -7,7 +7,9 @@ const action = createAsyncThunk<
   any,
   FirstParameter<Sdk['tenant']['getTenantRoles']>,
   ThunkConfigExtraApi
->('tenant/getTenantRoles', (_, { extra: { api } }) => api.tenant.getTenantRoles());
+>('tenant/getTenantRoles', (_, { extra: { api } }) =>
+  api.tenant.getTenantRoles(),
+);
 
 const reducer = buildAsyncReducer(action)(
   {

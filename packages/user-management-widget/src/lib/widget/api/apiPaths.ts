@@ -8,5 +8,5 @@ export const apiPaths = {
   },
   tenant: {
     roles: '/v1/mgmt/role/all',
-  }
+  },
 };

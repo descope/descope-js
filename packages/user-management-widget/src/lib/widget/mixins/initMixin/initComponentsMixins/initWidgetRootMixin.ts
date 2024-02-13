@@ -32,7 +32,7 @@ export const initWidgetRootMixin = createSingletonMixin(
         await Promise.all([
           this.#initWidgetRoot(),
           this.actions.searchUsers(),
-          this.actions.getTenantRoles()
+          this.actions.getTenantRoles(),
         ]);
 
         this.onWidgetRootReady();

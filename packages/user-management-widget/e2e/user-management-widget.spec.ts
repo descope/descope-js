@@ -11,7 +11,8 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const apiPath = (prop: 'user' | 'tenant', path: string) => `**/*${apiPaths[prop][path]}?tenant=*`;
+const apiPath = (prop: 'user' | 'tenant', path: string) =>
+  `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
 
