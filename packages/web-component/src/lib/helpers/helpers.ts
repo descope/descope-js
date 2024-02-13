@@ -475,3 +475,17 @@ export const getFirstNonEmptyValue = (obj: object, keys: string[]) => {
   const firstNonEmptyKey = keys.find((key) => obj[key]);
   return firstNonEmptyKey ? obj[firstNonEmptyKey] : null;
 };
+
+export const leadingDebounce = <T extends (...args: any[]) => void>(
+  func: T,
+  wait = 100,
+) => {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(...args) {
+    if (!timeout) func.apply(this, args);
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      timeout = null;
+    }, wait);
+  } as T;
+};
