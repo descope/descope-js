@@ -466,7 +466,10 @@ class BaseDescopeWc extends HTMLElement {
   #handleKeyPress() {
     // we want to simulate submit when the user presses Enter
     this.rootElement.onkeydown = (e) => {
-      if (e.key !== 'Enter') return;
+      // we do not want to submit the form if the focus is on a link element
+      const isLinkEleFocused =
+        !!this.shadowRoot.activeElement?.getAttribute('href');
+      if (e.key !== 'Enter' || isLinkEleFocused) return;
 
       e.preventDefault();
       const buttons: NodeListOf<HTMLButtonElement> =
