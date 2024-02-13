@@ -3592,6 +3592,33 @@ describe('web-component', () => {
     });
   });
 
+  it(
+    'There are no multiple calls to submit',
+    async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+      fireEvent.keyDown(screen.getByShadowText('click'), {
+        key: 'Enter',
+        code: 'Enter',
+        charCode: 13,
+      });
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1));
+    },
+    WAIT_TIMEOUT,
+  );
+
   describe('password managers', () => {
     it('should store password in password manager', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
