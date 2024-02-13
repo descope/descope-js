@@ -13,10 +13,7 @@ export const getUsersList = createSelector(getRawUsersList, (users) =>
   users.map((user) => ({
     ...user,
     status: userStatusMappings[user.status] || user.status,
-    roles: user.roleNames
-      .concat(user.userTenants?.[0]?.roleNames)
-      .filter(Boolean)
-      .sort(),
+    roles: user.roleNames.sort(),
   })),
 );
 
