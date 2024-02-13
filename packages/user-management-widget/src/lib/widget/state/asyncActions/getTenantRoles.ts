@@ -5,9 +5,9 @@ import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
-  FirstParameter<Sdk['user']['getTenantRoles']>,
+  FirstParameter<Sdk['tenant']['getTenantRoles']>,
   ThunkConfigExtraApi
->('users/getTenantRoles', (_, { extra: { api } }) => api.user.getTenantRoles());
+>('tenant/getTenantRoles', (_, { extra: { api } }) => api.tenant.getTenantRoles());
 
 const reducer = buildAsyncReducer(action)(
   {
@@ -17,9 +17,7 @@ const reducer = buildAsyncReducer(action)(
       state.tenantRoles.data = action.payload.roles;
     },
   },
-  withRequestStatus((state: State) => state.customAttributes),
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  withRequestStatus((state) => state.customAttributes),
+  withRequestStatus((state: State) => state.tenantRoles),
 );
 
 export const getTenantRoles = { action, reducer };

@@ -20,8 +20,6 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.customAttributes),
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  withRequestStatus((state) => state.customAttributes),
 );
 
 export const getCustomAttributes = { action, reducer };

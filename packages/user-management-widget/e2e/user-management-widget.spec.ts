@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { mockUsers, mockNewUser } from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
+import mockRoles from '../test/mocks/mockRoles';
 
 const configContent = {
   flows: {
@@ -10,7 +11,7 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const apiPath = (path: string) => `**/*${apiPaths.user[path]}?tenant=*`;
+const apiPath = (prop: 'user' | 'tenant', path: string) => `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
 
@@ -31,34 +32,15 @@ test.describe('widget', () => {
       route.fulfill({ json: mockTheme }),
     );
 
-    await page.route(apiPath('create'), async (route) =>
+    await page.route(apiPath('user', 'create'), async (route) =>
       route.fulfill({ json: { user: mockNewUser } }),
     );
 
-    await page.route(apiPath('allRoles'), async (route) =>
-      route.fulfill({
-        json: {
-          roles: [
-            {
-              name: 'Tenant Admin',
-              description: '',
-              permissionNames: ['Role 1'],
-              createdTime: 1706819237,
-              tenantId: '',
-            },
-            {
-              name: 'Role 1',
-              description: '',
-              permissionNames: ['Role 1'],
-              createdTime: 1707732871,
-              tenantId: 'T2c3U06xbKDpNR0LQEFkqjTVyohh',
-            },
-          ],
-        },
-      }),
+    await page.route(apiPath('tenant', 'allRoles'), async (route) =>
+      route.fulfill({ json: mockRoles }),
     );
 
-    await page.route(apiPath('search'), async (route) =>
+    await page.route(apiPath('user', 'search'), async (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -66,7 +48,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.route(apiPath('deleteBatch'), async (route) =>
+    await page.route(apiPath('user', 'deleteBatch'), async (route) =>
       route.fulfill({ json: { tenant: 'mockTenant' } }),
     );
 
@@ -164,7 +146,7 @@ test.describe('widget', () => {
   test('search users', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    await page.route(apiPath('search'), async (route) => {
+    await page.route(apiPath('user', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
       return route.fulfill({

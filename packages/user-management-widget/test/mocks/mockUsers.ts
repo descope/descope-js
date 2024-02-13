@@ -11,8 +11,8 @@ export const mockUsers = [
     userTenants: [
       {
         tenantId: 't1',
-        roleNames: ['Tenant Admin'],
-        tenantName: 'TE1',
+        roleNames: ['Tenant Admin', 'Role 2'],
+        tenantName: 't1',
       },
     ],
     status: 'invited',
@@ -43,8 +43,8 @@ export const mockUsers = [
     userTenants: [
       {
         tenantId: 't1',
-        roleNames: ['Tenant Admin'],
-        tenantName: 'TE1',
+        roleNames: ['Tenant Admin', 'Role 1'],
+        tenantName: 't1',
       },
     ],
     status: 'invited',
@@ -76,9 +76,9 @@ export const mockNewUser = {
   roleNames: [],
   userTenants: [
     {
-      tenantId: 'T2bPVFSvYLyRDaQW7fibIuEWPLno',
-      roleNames: [],
-      tenantName: 'T1',
+      tenantId: 't1',
+      roleNames: ['Role 1'],
+      tenantName: 't1',
     },
   ],
   status: 'invited',

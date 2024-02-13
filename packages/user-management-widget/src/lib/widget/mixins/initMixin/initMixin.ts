@@ -23,9 +23,6 @@ export const initMixin = createSingletonMixin(
     )(superclass) {
       async init() {
         await super.init?.();
-
-        this.actions.searchUsers();
-        this.actions.getTenantRoles();
       }
     },
 );

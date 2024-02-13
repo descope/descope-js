@@ -9,13 +9,12 @@ export default `
   st-vertical-padding="0rem"
   st-border-radius="sm"
 >
-  <descope-combo-box bordered="true" data-id="roles-multiselect"></descope-combo-box>
-
   <descope-text variant="subtitle1" mode="surface">New User</descope-text>
   <descope-text-field name="loginId" label="Login ID" bordered="true" required="true" size="sm"></descope-text-field>
   <descope-email-field name="email" label="Email" bordered="true"></descope-email-field>
   <descope-text-field name="displayName" label="Name" bordered="true"></descope-text-field>
   <descope-phone-field name="phone" label="Phone" bordered="true"></descope-phone-field>
+  <descope-multi-select-combo-box name="roles" label="Roles" bordered="true" item-label-path="data-name" item-value-path="data-id" data-id="roles-multiselect"></descope-multi-select-combo-box>
 
   <descope-container
     direction="row"
