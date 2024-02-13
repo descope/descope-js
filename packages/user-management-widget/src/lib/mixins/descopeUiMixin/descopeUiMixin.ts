@@ -109,7 +109,7 @@ export const descopeUiMixin = createSingletonMixin(
       }
 
       async #getDescopeUiLoadingScript() {
-        if (!document.getElementById(DESCOPE_UI_SCRIPT_ID)) {
+        if (!document.querySelector(`script#${DESCOPE_UI_SCRIPT_ID}`)) {
           this.logger.debug(
             'DescopeUI loading script does not exist, creating it',
             this,
