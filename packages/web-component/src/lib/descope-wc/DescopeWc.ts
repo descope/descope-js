@@ -25,6 +25,7 @@ import {
   submitForm,
   withMemCache,
   getFirstNonEmptyValue,
+  leadingDebounce,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -891,40 +892,47 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async #handleSubmit(submitter: HTMLElement, next: NextFn) {
-    if (
-      submitter.getAttribute('formnovalidate') === 'true' ||
-      this.#validateInputs()
-    ) {
-      const submitterId = submitter?.getAttribute('id');
-      this.#handleSubmitButtonLoader(submitter);
+  // we are wrapping this function with a leading debounce,
+  // to prevent a scenario where we are calling it multiple times
+  // this can caused by focusing on a button and pressing enter
+  // in this case, the button will be clicked, but because we have the auto-submit mechanism
+  // it will submit the form once again and we will end up with 2 identical calls for next
+  #handleSubmit = leadingDebounce(
+    async (submitter: HTMLElement, next: NextFn) => {
+      if (
+        submitter.getAttribute('formnovalidate') === 'true' ||
+        this.#validateInputs()
+      ) {
+        const submitterId = submitter?.getAttribute('id');
+        this.#handleSubmitButtonLoader(submitter);
 
-      const formData = await this.#getFormData();
-      const eleDescopeAttrs = getElementDescopeAttributes(submitter);
-      const contextArgs = this.getComponentsContext();
+        const formData = await this.#getFormData();
+        const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+        const contextArgs = this.getComponentsContext();
 
-      const actionArgs = {
-        ...contextArgs,
-        ...eleDescopeAttrs,
-        ...formData,
-        // 'origin' is required to start webauthn. For now we'll add it to every request
-        origin: window.location.origin,
-      };
+        const actionArgs = {
+          ...contextArgs,
+          ...eleDescopeAttrs,
+          ...formData,
+          // 'origin' is required to start webauthn. For now we'll add it to every request
+          origin: window.location.origin,
+        };
 
-      const flowConfig = await this.getFlowConfig();
-      const projectConfig = await this.getProjectConfig();
-      const sdkResp = await next(
-        submitterId,
-        flowConfig.version,
-        projectConfig.componentsVersion,
-        actionArgs,
-      );
+        const flowConfig = await this.getFlowConfig();
+        const projectConfig = await this.getProjectConfig();
+        const sdkResp = await next(
+          submitterId,
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          actionArgs,
+        );
 
-      this.#handleSdkResponse(sdkResp);
+        this.#handleSdkResponse(sdkResp);
 
-      this.#handleStoreCredentials(formData);
-    }
-  }
+        this.#handleStoreCredentials(formData);
+      }
+    },
+  );
 
   #addPasscodeAutoSubmitListeners(next: NextFn) {
     this.rootElement
