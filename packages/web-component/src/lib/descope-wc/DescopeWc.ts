@@ -604,14 +604,14 @@ class DescopeWc extends BaseDescopeWc {
         window.location.origin,
       ); // when using conditional UI we need to call start without identifier
       if (!startResp.ok) {
-        this.loggerWrapper.error(
+        this.loggerWrapper.warn(
           'Webauthn start failed',
           startResp?.error?.errorMessage,
         );
       }
       return startResp.data;
     } catch (err) {
-      this.loggerWrapper.error('Webauthn start failed', err.message);
+      this.loggerWrapper.warn('Webauthn start failed', err.message);
     }
 
     return undefined;
