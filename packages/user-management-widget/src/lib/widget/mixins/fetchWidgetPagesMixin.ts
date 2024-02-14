@@ -19,7 +19,7 @@ export const fetchWidgetPagesMixin = createSingletonMixin(
 
       async fetchWidgetPage(filename: string) {
         const res = await this.fetchStaticResource(
-          `${WIDGET_PAGES_BASE_DIR}/${this.widgetId}/${filename}`,
+          `${this.widgetId}/${filename}`,
           'text',
         );
         return res.body;

@@ -23,7 +23,7 @@ export const initCreateUserModalMixin = createSingletonMixin(
       async #initCreateUserModal() {
         this.createUserModal = this.createModal();
         this.createUserModal.setContent(
-          createTemplate(await this.fetchWidgetPage('create-user.html')),
+          createTemplate(await this.fetchWidgetPage('create-user-modal.html')),
         );
 
         const cancelButton = new ButtonDriver(
