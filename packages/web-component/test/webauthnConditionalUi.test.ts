@@ -242,7 +242,7 @@ describe('webauthnConditionalUi', () => {
       data: { options: 'options', transactionId: 'transactionId' },
     });
 
-    const errorSpy = jest.spyOn(console, 'error');
+    const warnSpi = jest.spyOn(console, 'warn');
 
     pageContent =
       '<button>click</button><input name=test autocomplete="webauthn" placeholder="test"></input><span>It works!</span>';
@@ -251,10 +251,9 @@ describe('webauthnConditionalUi', () => {
 
     await waitFor(
       () =>
-        expect(errorSpy).toHaveBeenCalledWith(
+        expect(warnSpi).toHaveBeenCalledWith(
           'Webauthn start failed',
           '',
-          expect.any(Error),
         ),
       { timeout: 3000 },
     );
