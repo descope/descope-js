@@ -4,8 +4,6 @@ import { createValidateAttributesMixin } from '../../mixins/createValidateAttrib
 import { missingAttrValidator } from '../../mixins/createValidateAttributesMixin/commonValidators';
 import { staticResourcesMixin } from '../../mixins/staticResourcesMixin';
 
-const WIDGET_PAGES_BASE_DIR = 'user-management-widget';
-
 export const fetchWidgetPagesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
