@@ -61,4 +61,4 @@ jobs:
       - name: Test
         run: pnpm run test
       - name: E2E
-        run: nx affected --target test:e2e
+        run: pnpm nx affected --target test:e2e
