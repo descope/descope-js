@@ -4,7 +4,7 @@ export class MultiSelectDriver extends BaseDriver {
   nodeName = 'descope-multi-select-combo-box';
 
   setData(data: { label: string; value: string }[]) {
-    this.ele?.setAttribute('data', JSON.stringify(data));
+    this.ele?.setAttribute('data', JSON.stringify(data.toSorted()));
   }
 
   setDefaultValues(vals: Record<string, string>) {
