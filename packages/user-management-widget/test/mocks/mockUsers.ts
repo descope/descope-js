@@ -7,14 +7,7 @@ export const mockUsers = [
     phone: '1234',
     verifiedEmail: true,
     verifiedPhone: false,
-    roleNames: [],
-    userTenants: [
-      {
-        tenantId: 't1',
-        roleNames: ['Tenant Admin'],
-        tenantName: 'TE1',
-      },
-    ],
+    roleNames: ['Tenant Admin', 'Role 2'],
     status: 'invited',
     externalIds: ['externalId1@externalId1.com'],
     picture: '',
@@ -39,14 +32,7 @@ export const mockUsers = [
     phone: '',
     verifiedEmail: true,
     verifiedPhone: false,
-    roleNames: [],
-    userTenants: [
-      {
-        tenantId: 't1',
-        roleNames: ['Tenant Admin'],
-        tenantName: 'TE1',
-      },
-    ],
+    roleNames: ['Tenant Admin', 'Role 1'],
     status: 'invited',
     externalIds: ['externalId2@externalId2.com'],
     picture: '',
@@ -76,9 +62,9 @@ export const mockNewUser = {
   roleNames: [],
   userTenants: [
     {
-      tenantId: 'T2bPVFSvYLyRDaQW7fibIuEWPLno',
-      roleNames: [],
-      tenantName: 'T1',
+      tenantId: 't1',
+      roleNames: ['Role 1'],
+      tenantName: 't1',
     },
   ],
   status: 'invited',
