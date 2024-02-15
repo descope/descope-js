@@ -45,7 +45,8 @@ export default {
           )
           .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
           .replaceAll('<locale>', process.env.DESCOPE_LOCALE || '')
-          .replaceAll('<tenant>', process.env.DESCOPE_TENANT || ''),
+          .replaceAll('<tenant>', process.env.DESCOPE_TENANT || '')
+          .replaceAll('<widget-id>', process.env.DESCOPE_WIDGET_ID || ''),
     }),
   ],
 };

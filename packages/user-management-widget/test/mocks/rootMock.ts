@@ -16,7 +16,6 @@ export default `
     st-justify-content="space-between"
   >
     <descope-text-field data-testid="search-input" data-id="search-input" placeholder="Search" size="sm" bordered="true"></descope-text-field>
-
     <descope-container
       direction="row"
       st-horizontal-padding="0rem"

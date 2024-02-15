@@ -5,7 +5,7 @@ import { descopeUiMixin } from '../../../../mixins/descopeUiMixin/descopeUiMixin
 import { initElementMixin } from '../../../../mixins/initElementMixin';
 import { initLifecycleMixin } from '../../../../mixins/initLifecycleMixin';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
-import widgetTemplate from '../../../mockTemplates/widgetTemplate';
+import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 
 export const initWidgetRootMixin = createSingletonMixin(
@@ -15,10 +15,13 @@ export const initWidgetRootMixin = createSingletonMixin(
       initLifecycleMixin,
       descopeUiMixin,
       initElementMixin,
+      fetchWidgetPagesMixin,
       stateManagementMixin,
     )(superclass) {
       async #initWidgetRoot() {
-        const template = createTemplate(widgetTemplate);
+        const template = createTemplate(
+          await this.fetchWidgetPage('root.html'),
+        );
         await this.loadDescopeUiComponents(template);
         this.contentRootElement.append(template.content.cloneNode(true));
       }
