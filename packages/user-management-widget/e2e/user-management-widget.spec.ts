@@ -72,7 +72,7 @@ test.describe('widget', () => {
     ).toBeVisible();
   });
 
-  test.only('create user', async ({ page }) => {
+  test('create user', async ({ page }) => {
     const openAddUserModalButton = page
       .getByTestId('create-user-trigger')
       .first();
