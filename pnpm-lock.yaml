@@ -25,6 +25,7 @@ importers:
       lint-staged: ^15.0.0
       ngx-deploy-npm: ^7.0.0
       nx: 17.0.1
+      playwright: ^1.41.2
       prettier: ^3.0.0
       ts-jest: 29.1.1
       ts-node: 10.9.1
@@ -54,6 +55,7 @@ importers:
       lint-staged: 15.1.0
       ngx-deploy-npm: 7.1.0_tslib@2.6.2
       nx: 17.0.1
+      playwright: 1.41.2
       prettier: 3.1.0
       ts-jest: 29.1.1_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.1_szihm2xadouqvwby43t64mrn4e
@@ -213,7 +215,7 @@ importers:
       reselect: 5.0.1
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.238
+      '@descope/web-components-ui': 1.0.248
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 24.1.0_rollup@2.79.1
@@ -2258,8 +2260,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.238:
-    resolution: {integrity: sha512-AB5o/0rJJJu9geNv0pKmJKgxt3zqSEIbhe9gZt/D85InpzEsQvqOkL5MT9r6qNNrO7Jczq7veEC1tD+pwHfSTA==}
+  /@descope/web-components-ui/1.0.248:
+    resolution: {integrity: sha512-jCbogRqXbPwhqyPtWaIAeQPxJoRVG2GnxgxOAIzABC7KFrM2RwqXeRXZ7wohFyuFTgfEDZ9enwJ1SoyAuEkuxQ==}
     dependencies:
       '@vaadin/button': 24.3.4
       '@vaadin/checkbox': 24.3.4
@@ -2268,6 +2270,7 @@ packages:
       '@vaadin/dialog': 24.3.4
       '@vaadin/email-field': 24.3.4
       '@vaadin/grid': 24.3.4
+      '@vaadin/multi-select-combo-box': 24.3.4
       '@vaadin/notification': 24.3.4
       '@vaadin/number-field': 24.3.4
       '@vaadin/password-field': 24.3.4
@@ -4715,6 +4718,23 @@ packages:
     resolution: {integrity: sha512-3w8plRNQfmriSGPdB6oNc1mSS6Ma6SNJlokO8t7ZpY8KTOIjtXp9RC/TapltH2Fljablczvx4epa/v6Z64dmhg==}
     dependencies:
       lit: 3.1.1
+    dev: true
+
+  /@vaadin/multi-select-combo-box/24.3.4:
+    resolution: {integrity: sha512-35BlqMDcCl/g/1rSMqCUnAfauYnWRXRLgET1ai7/WOe5dlqxaHCWt1ndvNnHGOtvGgrGb71YiVxBx80zHPtIjw==}
+    dependencies:
+      '@polymer/polymer': 3.5.1
+      '@vaadin/a11y-base': 24.3.4
+      '@vaadin/combo-box': 24.3.4
+      '@vaadin/component-base': 24.3.4
+      '@vaadin/field-base': 24.3.4
+      '@vaadin/input-container': 24.3.4
+      '@vaadin/item': 24.3.4
+      '@vaadin/lit-renderer': 24.3.4
+      '@vaadin/overlay': 24.3.4
+      '@vaadin/vaadin-lumo-styles': 24.3.4
+      '@vaadin/vaadin-material-styles': 24.3.4
+      '@vaadin/vaadin-themable-mixin': 24.3.4
     dev: true
 
   /@vaadin/notification/24.3.4:
@@ -10828,12 +10848,28 @@ packages:
     hasBin: true
     dev: true
 
+  /playwright-core/1.41.2:
+    resolution: {integrity: sha512-VaTvwCA4Y8kxEe+kfm2+uUUw5Lubf38RxF7FpBxLPmGe5sdNkSg5e3ChEigaGrX7qdqT3pt2m/98LiyvU2x6CA==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dev: true
+
   /playwright/1.41.1:
     resolution: {integrity: sha512-gdZAWG97oUnbBdRL3GuBvX3nDDmUOuqzV/D24dytqlKt+eI5KbwusluZRGljx1YoJKZ2NRPaeWiFTeGZO7SosQ==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
       playwright-core: 1.41.1
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
+  /playwright/1.41.2:
+    resolution: {integrity: sha512-v0bOa6H2GJChDL8pAeLa/LZC4feoAMbSQm1/jF/ySsWWoaNItvrMP7GEkvEEFyCTUYKMxjQKaTSg5up7nR6/8A==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dependencies:
+      playwright-core: 1.41.2
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

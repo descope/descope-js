@@ -6,6 +6,7 @@ import { initElementMixin } from '../../../../mixins/initElementMixin';
 import { initLifecycleMixin } from '../../../../mixins/initLifecycleMixin';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
+import { stateManagementMixin } from '../../stateManagementMixin';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -15,6 +16,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       descopeUiMixin,
       initElementMixin,
       fetchWidgetPagesMixin,
+      stateManagementMixin,
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
@@ -22,7 +24,6 @@ export const initWidgetRootMixin = createSingletonMixin(
         );
         await this.loadDescopeUiComponents(template);
         this.contentRootElement.append(template.content.cloneNode(true));
-        this.onWidgetRootReady();
       }
 
       // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
@@ -31,7 +32,13 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.#initWidgetRoot();
+        await Promise.all([
+          this.#initWidgetRoot(),
+          this.actions.searchUsers(),
+          this.actions.getTenantRoles(),
+        ]);
+
+        this.onWidgetRootReady();
       }
     },
 );

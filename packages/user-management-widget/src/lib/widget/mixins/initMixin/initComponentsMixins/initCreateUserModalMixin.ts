@@ -31,7 +31,10 @@ export const initCreateUserModalMixin = createSingletonMixin(
             this.createUserModal.ele?.querySelector('[data-id="modal-cancel"]'),
           { logger: this.logger },
         );
-        cancelButton.onClick(() => this.createUserModal.close());
+        cancelButton.onClick(() => {
+          this.createUserModal.close();
+          this.resetFormData(this.createUserModal.ele);
+        });
 
         const submitButton = new ButtonDriver(
           () =>

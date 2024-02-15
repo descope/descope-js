@@ -49,6 +49,8 @@ jobs:
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
       - name: Build
         run: pnpm run build
@@ -58,3 +60,5 @@ jobs:
         run: pnpm run lint
       - name: Test
         run: pnpm run test
+      - name: E2E
+        run: pnpm nx affected --target test:e2e
