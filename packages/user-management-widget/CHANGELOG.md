@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.0](https://github.com/descope/descope-js/compare/user-management-widget-0.0.9...user-management-widget-0.1.0) (2024-02-15)
+
+
+### Features
+
+* UMW Roles ([#381](https://github.com/descope/descope-js/issues/381)) ([bddc350](https://github.com/descope/descope-js/commit/bddc3508cc80a5d0f38ec8caa1d6005aeffaf614))
+
+
+### Bug Fixes
+
+* Widget pages from s3 RELEASE ([#382](https://github.com/descope/descope-js/issues/382)) ([b4acafe](https://github.com/descope/descope-js/commit/b4acafe5486686e592a8c407cb7f8eb26c720f8c))
+
 ## [0.0.9](https://github.com/descope/descope-js/compare/user-management-widget-0.0.8...user-management-widget-0.0.9) (2024-02-07)
 
 ### Dependency Updates
