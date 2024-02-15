@@ -10,6 +10,7 @@ import {
   expireUserPassword,
   getCustomAttributes,
   searchUser,
+  getTenantRoles,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -34,6 +35,7 @@ export const stateManagementMixin = createSingletonMixin(
           searchUser.reducer(builder);
           expireUserPassword.reducer(builder);
           getCustomAttributes.reducer(builder);
+          getTenantRoles.reducer(builder);
         },
         asyncActions: {
           searchUsers: searchUser.action,
@@ -41,6 +43,7 @@ export const stateManagementMixin = createSingletonMixin(
           deleteUsers: deleteUsers.action,
           expireUserPassword: expireUserPassword.action,
           getCustomAttributes: getCustomAttributes.action,
+          getTenantRoles: getTenantRoles.action,
         },
       }),
       initLifecycleMixin,

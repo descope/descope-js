@@ -6,4 +6,7 @@ export const apiPaths = {
     expirePassword: '/v1/mgmt/user/password/expire',
     customAttributes: '/v1/mgmt/user/customattributes',
   },
+  tenant: {
+    roles: '/v1/mgmt/role/all',
+  },
 };

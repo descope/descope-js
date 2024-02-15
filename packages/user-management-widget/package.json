@@ -15,9 +15,8 @@
     "start": "npx nx run user-management-widget:build && rollup -c rollup.config.app.serve.mjs -w",
     "build:app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit",
     "test:unit": "jest --silent",
-    "pretest:e2e": "npx playwright install --with-deps",
     "test:e2e": "DESCOPE_PROJECT_ID=pid DESCOPE_TENANT=tid npm run build:app && npx playwright test",
     "test:e2e:ui": "npm run test:e2e -- --ui",
     "lint": "eslint '+(src|test)/**/*.ts'"

@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { Sdk } from '../api/sdk';
-import { SortParams, User } from '../api/types';
+import { Role, SortParams, User } from '../api/types';
 
 export type State = {
   usersList: {
@@ -24,6 +24,11 @@ export type State = {
     loading: boolean;
     error: unknown;
     data: Record<string, string>;
+  };
+  tenantRoles: {
+    loading: boolean;
+    error: unknown;
+    data: Role[];
   };
   searchParams: { text: string; sort: SortParams[] };
   selectedUsersLoginIds: string[][];

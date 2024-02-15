@@ -46,6 +46,14 @@ export type User = {
   familyName: string;
 };
 
+export type Role = {
+  name: string;
+  description: string;
+  permissionNames: string[];
+  createdTime: Date;
+  tenantId: string;
+};
+
 export type SortParams = { field: string; desc: boolean };
 
 export type SearchUsersConfig = {
