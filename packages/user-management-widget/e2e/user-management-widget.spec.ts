@@ -37,7 +37,7 @@ test.describe('widget', () => {
       route.fulfill({ json: { user: mockNewUser } }),
     );
 
-    await page.route(apiPath('tenant', 'allRoles'), async (route) =>
+    await page.route(apiPath('tenant', 'roles'), async (route) =>
       route.fulfill({ json: mockRoles }),
     );
 
@@ -72,7 +72,7 @@ test.describe('widget', () => {
     ).toBeVisible();
   });
 
-  test('create user', async ({ page }) => {
+  test.only('create user', async ({ page }) => {
     const openAddUserModalButton = page
       .getByTestId('create-user-trigger')
       .first();
@@ -89,8 +89,11 @@ test.describe('widget', () => {
     // submit email
     await createUserEmailInput.fill('someEmail@test.com');
 
+    await page.pause();
     // click modal create button
     const createUserButton = page
+      .locator('descope-button')
+      .filter({ hasText: 'Create' })
       .getByTestId('create-user-modal-submit')
       .first();
     await createUserButton.click();
