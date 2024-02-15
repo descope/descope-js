@@ -3,6 +3,9 @@ import { mockUsers, mockNewUser } from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import mockRoles from '../test/mocks/mockRoles';
+import rootMock from '../test/mocks/rootMock';
+import createUserModalMock from '../test/mocks/createUserModalMock';
+import deleteUserModalMock from '../test/mocks/deleteUserModalMock';
 
 const configContent = {
   flows: {
@@ -31,6 +34,18 @@ test.describe('widget', () => {
 
     await page.route('*/**/theme.json', async (route) =>
       route.fulfill({ json: mockTheme }),
+    );
+
+    await page.route('*/**/root.html', async (route) =>
+      route.fulfill({ body: rootMock }),
+    );
+
+    await page.route('*/**/create-user-modal.html', async (route) =>
+      route.fulfill({ body: createUserModalMock }),
+    );
+
+    await page.route('*/**/delete-users-modal.html', async (route) =>
+      route.fulfill({ body: deleteUserModalMock }),
     );
 
     await page.route(apiPath('user', 'create'), async (route) =>

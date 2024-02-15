@@ -5,6 +5,9 @@ import { mockUsers } from './mocks/mockUsers';
 import { createSdk } from '../src/lib/widget/api/sdk';
 import { pluralize } from '../src/lib/helpers/generic';
 import '../src/lib/index';
+import rootMock from './mocks/rootMock';
+import createUserModalMock from './mocks/createUserModalMock';
+import deleteUserModalMock from './mocks/deleteUserModalMock';
 
 const origAppend = document.body.append;
 
@@ -71,6 +74,15 @@ describe('user-management-widget', () => {
         }
         case url.endsWith('config.json'): {
           return { ...res, json: () => configContent };
+        }
+        case url.endsWith('root.html'): {
+          return { ...res, text: () => rootMock };
+        }
+        case url.endsWith('create-user-modal.html'): {
+          return { ...res, text: () => createUserModalMock };
+        }
+        case url.endsWith('delete-user-modal.html'): {
+          return { ...res, text: () => deleteUserModalMock };
         }
         default: {
           return { ok: false };
