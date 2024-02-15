@@ -32,7 +32,6 @@
   "devDependencies": {
     "@descope/web-components-ui": "latest",
     "@open-wc/rollup-plugin-html": "1.2.5",
-    "@playwright/test": "^1.41.1",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.0",
