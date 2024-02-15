@@ -16,7 +16,7 @@ export const apiMixin = createSingletonMixin(
       createValidateAttributesMixin({ tenant: missingAttrValidator }),
     )(superclass);
 
-    return class InitLifecycleMixinClass extends BaseClass {
+    return class ApiMixinClass extends BaseClass {
       #api: Sdk;
 
       #createSdk() {

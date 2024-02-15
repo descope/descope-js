@@ -6,7 +6,6 @@ import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { modalMixin } from '../../../../mixins/modalMixin';
 import { ButtonDriver } from '../../../drivers/ButtonDriver';
 import { ModalDriver } from '../../../drivers/ModalDriver';
-import createUserTemplate from '../../../mockTemplates/createUserTemplate';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -23,7 +22,9 @@ export const initCreateUserModalMixin = createSingletonMixin(
 
       async #initCreateUserModal() {
         this.createUserModal = this.createModal();
-        this.createUserModal.setContent(createTemplate(createUserTemplate));
+        this.createUserModal.setContent(
+          createTemplate(await this.fetchWidgetPage('create-user-modal.html')),
+        );
 
         const cancelButton = new ButtonDriver(
           () =>

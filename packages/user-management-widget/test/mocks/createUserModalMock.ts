@@ -15,7 +15,6 @@ export default `
   <descope-text-field name="displayName" label="Name" bordered="true"></descope-text-field>
   <descope-phone-field name="phone" label="Phone" bordered="true"></descope-phone-field>
   <descope-multi-select-combo-box name="roles" label="Roles" bordered="true" item-label-path="data-name" item-value-path="data-id" data-id="roles-multiselect"></descope-multi-select-combo-box>
-
   <descope-container
     direction="row"
     st-justify-content="flex-end"
