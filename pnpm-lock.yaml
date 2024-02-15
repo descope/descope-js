@@ -243,7 +243,7 @@ importers:
         version: 2.6.2
     devDependencies:
       '@descope/web-components-ui':
-        specifier: 1.0.248
+        specifier: latest
         version: 1.0.248
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
