@@ -11,18 +11,35 @@ import {
   setLastUserDisplayName,
 } from './helpers';
 
+// Asaf - fix/remove types here
+type SdkReturnType<P> = P extends { storeLastAuthenticatedUser: true }
+  ? ReturnType<CreateWebSdk> & {
+      getLastUserLoginId: typeof getLastUserLoginId;
+      getLastUserDisplayName: typeof getLastUserDisplayName;
+    }
+  : ReturnType<CreateWebSdk>;
+
 /**
  * Adds last logged in user to flow start request
  */
 // eslint-disable-next-line import/exports-last
 export const withLastLoggedInUser =
   <T extends CreateWebSdk>(createSdk: T) =>
-  (
-    config: Parameters<T>[0]
-  ): ReturnType<T> & {
-    getLastUserLoginId: typeof getLastUserLoginId;
-    getLastUserDisplayName: typeof getLastUserDisplayName;
-  } => {
+  <A = true>({
+    storeLastAuthenticatedUser = true as A,
+    ...config
+  }: Parameters<T>[0] & {
+    storeLastAuthenticatedUser?: A;
+  }): ReturnType<T> &
+    (typeof storeLastAuthenticatedUser extends true
+      ? {
+          getLastUserLoginId: typeof getLastUserLoginId;
+          getLastUserDisplayName: typeof getLastUserDisplayName;
+        }
+      : {}) => {
+    if (!storeLastAuthenticatedUser) {
+      return createSdk(config) as any;
+    }
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const userDetails = await getUserFromResponse(res);
       const loginId = userDetails?.loginIds?.[0];

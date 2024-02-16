@@ -3,12 +3,7 @@ import {
   LOCAL_STORAGE_LAST_USER_LOGIN_ID,
 } from '../src/enhancers/withLastLoggedInUser/constants';
 import createSdk from '../src/index';
-import {
-  authInfo,
-  completedFlowResponse,
-  completedFlowResponseWithNoName,
-  flowResponse,
-} from './mocks';
+import { authInfo, completedFlowResponse, flowResponse } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
@@ -33,7 +28,7 @@ describe('lastLoggedInUser', () => {
       expect.objectContaining({
         href: 'https://api.descope.com/v1/flow/start',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
       options: {
@@ -56,18 +51,18 @@ describe('lastLoggedInUser', () => {
       expect.objectContaining({
         href: 'https://api.descope.com/v1/flow/start',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBe(
-      completedFlowResponse.authInfo.user.loginIds[0]
+      completedFlowResponse.authInfo.user.loginIds[0],
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_DISPLAY_NAME)).toBe(
-      completedFlowResponse.authInfo.user.name
+      completedFlowResponse.authInfo.user.name,
     );
   });
   it('should set local storage on completed next response', async () => {
     const mockReturnVal = Promise.resolve(
-      createMockReturnValue(completedFlowResponse)
+      createMockReturnValue(completedFlowResponse),
     );
     const mockFetch = jest.fn().mockReturnValue(mockReturnVal);
     global.fetch = mockFetch;
@@ -75,13 +70,13 @@ describe('lastLoggedInUser', () => {
     await sdk.flow.next('id', 'stepId', 'interactionId');
     expect(mockFetch).toBeCalledWith(
       expect.objectContaining({ href: 'https://api.descope.com/v1/flow/next' }),
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBe(
-      completedFlowResponse.authInfo.user.loginIds[0]
+      completedFlowResponse.authInfo.user.loginIds[0],
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_DISPLAY_NAME)).toBe(
-      completedFlowResponse.authInfo.user.name
+      completedFlowResponse.authInfo.user.name,
     );
   });
   it('should remove last user data on logout', async () => {
@@ -103,7 +98,32 @@ describe('lastLoggedInUser', () => {
 
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBeFalsy();
     expect(
-      localStorage.getItem(LOCAL_STORAGE_LAST_USER_DISPLAY_NAME)
+      localStorage.getItem(LOCAL_STORAGE_LAST_USER_DISPLAY_NAME),
     ).toBeFalsy();
+  });
+
+  it('should not set local storage when flag is false', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(completedFlowResponse));
+    global.fetch = mockFetch;
+    const sdk = createSdk({
+      projectId: 'pid',
+      storeLastAuthenticatedUser: false,
+    });
+    await sdk.flow.start('id');
+    expect(mockFetch).toBeCalledWith(
+      expect.objectContaining({
+        href: 'https://api.descope.com/v1/flow/start',
+      }),
+      expect.any(Object),
+    );
+    expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBeFalsy();
+    expect(
+      localStorage.getItem(LOCAL_STORAGE_LAST_USER_DISPLAY_NAME),
+    ).toBeFalsy();
+
+    expect((sdk as any).getLastUserLoginId).toBeFalsy();
+    expect((sdk as any).getLastUserDisplayName).toBeFalsy();
   });
 });

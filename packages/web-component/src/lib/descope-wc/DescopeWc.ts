@@ -169,7 +169,8 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenId: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
-    const loginId = this.sdk.getLastUserLoginId();
+    // Asaf - see how to fix IDE typing
+    const loginId = this.sdk?.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
 
@@ -408,7 +409,7 @@ class DescopeWc extends BaseDescopeWc {
         },
         lastAuth: {
           loginId,
-          name: this.sdk.getLastUserDisplayName() || loginId,
+          name: this.sdk?.getLastUserDisplayName() || loginId,
         },
       },
       htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
@@ -543,7 +544,9 @@ class DescopeWc extends BaseDescopeWc {
     const { status, authInfo, lastAuth } = sdkResp.data;
 
     if (status === 'completed') {
-      setLastAuth(lastAuth);
+      if (this.storeLastAuthenticatedUser) {
+        setLastAuth(lastAuth);
+      }
       this.#dispatch('success', authInfo);
       return;
     }
