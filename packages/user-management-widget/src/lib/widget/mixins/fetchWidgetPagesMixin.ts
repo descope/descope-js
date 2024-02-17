@@ -4,6 +4,8 @@ import { createValidateAttributesMixin } from '../../mixins/createValidateAttrib
 import { missingAttrValidator } from '../../mixins/createValidateAttributesMixin/commonValidators';
 import { staticResourcesMixin } from '../../mixins/staticResourcesMixin';
 
+const WIDGET_PAGES_BASE_DIR = 'user-management-widget';
+
 export const fetchWidgetPagesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
@@ -17,7 +19,7 @@ export const fetchWidgetPagesMixin = createSingletonMixin(
 
       async fetchWidgetPage(filename: string) {
         const res = await this.fetchStaticResource(
-          `${this.widgetId}/${filename}`,
+          `${WIDGET_PAGES_BASE_DIR}/${this.widgetId}/${filename}`,
           'text',
         );
         return res.body;
