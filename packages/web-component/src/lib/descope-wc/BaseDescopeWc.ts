@@ -476,8 +476,19 @@ class BaseDescopeWc extends HTMLElement {
         this.rootElement.querySelectorAll('descope-button');
 
       // in case there is a single button on the page, click on it
-      if (buttons.length === 1) {
+      if (
+        buttons.length === 1 &&
+        buttons[0].getAttribute('auto-submit') !== 'false'
+      ) {
         buttons[0].click();
+        return;
+      }
+
+      const autoSubmitButtons = Array.from(buttons).filter(
+        (button) => button.getAttribute('auto-submit') === 'true',
+      );
+      if (autoSubmitButtons.length === 1) {
+        autoSubmitButtons[0].click();
         return;
       }
 
