@@ -476,8 +476,19 @@ class BaseDescopeWc extends HTMLElement {
         this.rootElement.querySelectorAll('descope-button');
 
       // in case there is a single button on the page, click on it
-      if (buttons.length === 1) {
+      if (
+        buttons.length === 1 &&
+        buttons[0].getAttribute('auto-submit') !== 'false'
+      ) {
         buttons[0].click();
+        return;
+      }
+
+      const autoSubmitButtons = Array.from(buttons).filter(
+        (button) => button.getAttribute('auto-submit') === 'true',
+      );
+      if (autoSubmitButtons.length === 1) {
+        autoSubmitButtons[0].click();
         return;
       }
 
@@ -487,7 +498,9 @@ class BaseDescopeWc extends HTMLElement {
 
       // in case there is a single "generic" button on the page, click on it
       if (genericButtons.length === 1) {
-        genericButtons[0].click();
+        if (genericButtons[0].getAttribute('auto-submit') !== 'false') {
+          genericButtons[0].click();
+        }
       } else if (genericButtons.length === 0) {
         const ssoButtons = Array.from(buttons).filter(
           (button) => button.getAttribute('data-type') === 'sso',
@@ -495,7 +508,9 @@ class BaseDescopeWc extends HTMLElement {
 
         // in case there is a single "sso" button on the page, click on it
         if (ssoButtons.length === 1) {
-          ssoButtons[0].click();
+          if (ssoButtons[0].getAttribute('auto-submit') !== 'false') {
+            ssoButtons[0].click();
+          }
         }
       }
     };
