@@ -680,28 +680,6 @@ describe('web-component', () => {
     );
   });
 
-  it('When there is a single "generic" button with auto-submit false and pressing on enter, it does not clicks the button', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
-
-    pageContent =
-      '<descope-button id="noClick">No Click</descope-button><descope-button id="click" data-type="button" auto-submit="false">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('It works!'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    const rootEle = document
-      .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
-
-    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
-
-    await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
-  });
-
   it('When there are multiple "generic" buttons and pressing on enter, it does not click any button', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
@@ -722,28 +700,6 @@ describe('web-component', () => {
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
     await waitFor(() => expect(nextMock).not.toHaveBeenCalled());
-  });
-
-  it('When there are multiple "generic" buttons and pressing on enter on auto-submit, it does click the button', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
-
-    pageContent =
-      '<descope-button id="1" data-type="button">Click</descope-button><descope-button id="2" data-type="button" auto-submit="true">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    const rootEle = document
-      .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
-
-    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
-
-    await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
   it('When there are multiple "sso" buttons and pressing on enter, it does not click any button', async () => {
@@ -3662,6 +3618,40 @@ describe('web-component', () => {
     },
     WAIT_TIMEOUT,
   );
+
+  it('Multiple buttons with auto-submit true, correct button is being called upon enter', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<descope-button id="submitterId" auto-submit="true" data-type="button">click</descope-button><descope-button id="submitterId2" data-type="button">click2</descope-button><input id="email" name="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const rootEle = document
+      .getElementsByTagName('descope-wc')[0]
+      .shadowRoot.querySelector('#wc-root');
+
+    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
+
+    await waitFor(() =>
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submitterId',
+        1,
+        '1.2.3',
+        {
+          email: '',
+          origin: 'http://localhost',
+        },
+      ),
+    );
+  });
 
   describe('password managers', () => {
     it('should store password in password manager', async () => {
