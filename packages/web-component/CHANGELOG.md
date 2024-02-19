@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.8.4](https://github.com/descope/descope-js/compare/web-component-3.8.3...web-component-3.8.4) (2024-02-19)
+
+
+### Bug Fixes
+
+* Auto submit upon enter ([#387](https://github.com/descope/descope-js/issues/387)) ([0cce415](https://github.com/descope/descope-js/commit/0cce415e9320b6d198583f36a5933110f09fc9d0))
+
 ## [3.8.3](https://github.com/descope/descope-js/compare/web-component-3.8.2...web-component-3.8.3) (2024-02-15)
 
 ## [3.8.2](https://github.com/descope/descope-js/compare/web-component-3.8.1...web-component-3.8.2) (2024-02-13)
