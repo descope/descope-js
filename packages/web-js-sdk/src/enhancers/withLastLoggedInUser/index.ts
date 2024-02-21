@@ -11,14 +11,6 @@ import {
   setLastUserDisplayName,
 } from './helpers';
 
-// Asaf - fix/remove types here
-type SdkReturnType<P> = P extends { storeLastAuthenticatedUser: true }
-  ? ReturnType<CreateWebSdk> & {
-      getLastUserLoginId: typeof getLastUserLoginId;
-      getLastUserDisplayName: typeof getLastUserDisplayName;
-    }
-  : ReturnType<CreateWebSdk>;
-
 /**
  * Adds last logged in user to flow start request
  */
