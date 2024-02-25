@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.10.0...core-js-sdk-2.11.0) (2024-02-25)
+
+
+### Features
+
+* Add access keys custom claims ([#389](https://github.com/descope/descope-js/issues/389)) RELEASE ([518ac98](https://github.com/descope/descope-js/commit/518ac98a283a5d76480e2e9df8f50af312d01094))
+
 ## [2.10.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.9.1...core-js-sdk-2.10.0) (2024-02-07)
 
 
