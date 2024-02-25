@@ -27,7 +27,7 @@ export const initCreateUserRoleMultiSelectMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
         this.#initMultiSelect();
-        this.rolesMultiSelect.setData(
+        await this.rolesMultiSelect.setData(
           getTenantRoles(this.state).map(({ name }) => ({
             value: name,
             label: name,
