@@ -17,14 +17,14 @@ describe('accesskey', () => {
     mockHttpClient.reset();
   });
 
-  describe('start', () => {
+  describe('exchange', () => {
     it('should throw an error when accessKey is not a string', () => {
       expect(sdk.accessKey.exchange).toThrow('"accessKey" must be a string');
     });
 
     it('should throw an error when accessKey is empty', () => {
       expect(() => sdk.accessKey.exchange('')).toThrow(
-        '"accessKey" must not be empty'
+        '"accessKey" must not be empty',
       );
     });
 
@@ -39,14 +39,17 @@ describe('accesskey', () => {
       };
       mockHttpClient.get.mockResolvedValue(httpResponse);
 
-      sdk.accessKey.exchange('key');
+      const loginOptions = { customClaims: { k1: 'v1' } };
+      sdk.accessKey.exchange('key', loginOptions);
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.accessKey.exchange,
-        {},
+        {
+          loginOptions,
+        },
         {
           token: 'key',
-        }
+        },
       );
     });
 
