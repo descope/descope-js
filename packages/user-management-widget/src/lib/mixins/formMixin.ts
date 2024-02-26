@@ -46,7 +46,6 @@ export const formMixin = createSingletonMixin(
         this.getFormInputs(rootEle).forEach((input) => {
           // eslint-disable-next-line no-param-reassign
           input.value = '';
-          input.removeAttribute('invalid');
         });
       }
     },
