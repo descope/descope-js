@@ -19,7 +19,7 @@ export const initCreateUserRoleMultiSelectMixin = createSingletonMixin(
 
       #initMultiSelect() {
         this.rolesMultiSelect = new MultiSelectDriver(
-          this.shadowRoot?.querySelector('[data-id="roles-multiselect"]'),
+          () => this.shadowRoot?.querySelector('[data-id="roles-multiselect"]'),
           { logger: this.logger },
         );
       }
