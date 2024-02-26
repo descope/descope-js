@@ -1,7 +1,6 @@
 import { Logger } from '../../mixins/loggerMixin/types';
-
-type Empty = null | undefined;
-type RefOrRefFn = Element | (() => HTMLElement | Empty) | Empty;
+import { waitForElement } from './helpers';
+import { RefOrRefFn } from './types';
 
 export class BaseDriver {
   #ele: RefOrRefFn;
@@ -14,6 +13,10 @@ export class BaseDriver {
   constructor(refOrRefFn: RefOrRefFn, config: { logger: Logger }) {
     this.#ele = refOrRefFn;
     this.logger = config.logger;
+  }
+
+  get asyncEle() {
+    return waitForElement(this.#ele, 1000);
   }
 
   get ele() {
