@@ -1,4 +1,3 @@
-import { initCreateUserRoleMultiSelectMixin } from './initComponentsMixins/initCreateUserRoleMultiSelectMixin';
 import { compose } from '../../../helpers/compose';
 import { createSingletonMixin } from '../../../helpers/mixins';
 import { debuggerMixin } from '../../../mixins/debuggerMixin';
@@ -8,6 +7,7 @@ import { initDeleteUsersButtonMixin } from './initComponentsMixins/initDeleteUse
 import { initFilterUsersInputMixin } from './initComponentsMixins/initFilterUsersInputMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
 import { initUsersTableMixin } from './initComponentsMixins/initUsersTableMixin';
+import { initEditUserButtonMixin } from './initComponentsMixins/initEditUsersButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -17,8 +17,8 @@ export const initMixin = createSingletonMixin(
       initUsersTableMixin,
       initCreateUserButtonMixin,
       initDeleteUsersButtonMixin,
+      initEditUserButtonMixin,
       initFilterUsersInputMixin,
-      initCreateUserRoleMultiSelectMixin,
       initNotificationsMixin,
     )(superclass) {
       async init() {

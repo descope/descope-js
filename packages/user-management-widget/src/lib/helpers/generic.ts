@@ -2,7 +2,7 @@
 export const pathJoin = (...paths: string[]) =>
   paths.join('/').replace(/\/+/g, '/');
 
-const compareArrays = (array1: any[], array2: any[]) =>
+export const compareArrays = (array1: any[], array2: any[]) =>
   array1.length === array2.length &&
   array1.every((value: any, index: number) => value === array2[index]);
 

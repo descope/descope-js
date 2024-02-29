@@ -6,6 +6,8 @@ import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { modalMixin } from '../../../../mixins/modalMixin';
 import { ButtonDriver } from '../../../drivers/ButtonDriver';
 import { ModalDriver } from '../../../drivers/ModalDriver';
+import { MultiSelectDriver } from '../../../drivers/MultiSelectDriver';
+import { getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -19,6 +21,8 @@ export const initCreateUserModalMixin = createSingletonMixin(
       initWidgetRootMixin,
     )(superclass) {
       createUserModal: ModalDriver;
+
+      #rolesMultiSelect: MultiSelectDriver;
 
       async #initCreateUserModal() {
         this.createUserModal = this.createModal();
@@ -53,7 +57,24 @@ export const initCreateUserModalMixin = createSingletonMixin(
             this.resetFormData(this.createUserModal.ele);
           }
         });
+
+        this.#rolesMultiSelect = new MultiSelectDriver(
+          () => this.createUserModal.ele?.querySelector('[data-id="roles-multiselect"]'),
+          { logger: this.logger },
+        );
+
+        this.#updateRolesMultiSelect();
+
       }
+
+      #updateRolesMultiSelect = async () => {
+        await this.#rolesMultiSelect.setData(
+          getTenantRoles(this.state).map(({ name }) => ({
+            value: name,
+            label: name,
+          })),
+        );
+      };
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();

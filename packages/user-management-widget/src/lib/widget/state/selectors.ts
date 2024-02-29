@@ -3,7 +3,7 @@ import { State } from './types';
 import { userStatusMappings } from './constants';
 
 export const getRawUsersList = (state: State) => state.usersList.data;
-export const getRawTenantRoles = (state: State) => state.tenantRoles.data;
+export const getTenantRoles = (state: State) => state.tenantRoles.data;
 export const getSelectedUsersLoginIds = (state: State) =>
   state.selectedUsersLoginIds;
 export const getNotifications = (state: State) => state.notifications;
@@ -17,11 +17,6 @@ export const getUsersList = createSelector(getRawUsersList, (users) =>
   })),
 );
 
-export const getTenantRoles = createSelector(
-  getRawTenantRoles,
-  (roles) => roles,
-);
-
 export const getSelectedUsersUserIds = createSelector(
   getUsersList,
   getSelectedUsersLoginIds,
@@ -31,7 +26,7 @@ export const getSelectedUsersUserIds = createSelector(
       .map((user) => user.userId),
 );
 
-const getSelectedUsers = createSelector(
+export const getSelectedUsers = createSelector(
   getSelectedUsersLoginIds,
   getUsersList,
   (selected, users) => users.filter((user) => selected.includes(user.loginIds)),
@@ -40,6 +35,11 @@ const getSelectedUsers = createSelector(
 export const getIsUsersSelected = createSelector(
   getSelectedUsersLoginIds,
   (selected) => !!selected.length,
+);
+
+export const getIsSingleUsersSelected = createSelector(
+  getSelectedUsersLoginIds,
+  (selected) => selected.length === 1,
 );
 
 export const getSelectedUsersDetailsForDisplay = createSelector(
