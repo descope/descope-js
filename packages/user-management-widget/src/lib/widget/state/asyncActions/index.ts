@@ -4,3 +4,4 @@ export * from './expireUserPassword';
 export * from './getCustomAttributes';
 export * from './searchUsers';
 export * from './getTenantRoles';
+export * from './updateUser';

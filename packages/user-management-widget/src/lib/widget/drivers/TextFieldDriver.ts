@@ -18,4 +18,12 @@ export class TextFieldDriver extends BaseDriver {
       (<HTMLInputElement>this.ele).value = value;
     }
   }
+
+  disable() {
+    this.ele?.setAttribute('disabled', 'true');
+  }
+
+  enable() {
+    this.ele?.removeAttribute('disabled');
+  }
 }

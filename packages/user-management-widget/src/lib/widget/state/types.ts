@@ -12,6 +12,10 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  updateUser: {
+    loading: boolean;
+    error: unknown;
+  };
   deleteUser: {
     loading: boolean;
     error: unknown;
