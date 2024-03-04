@@ -18,13 +18,11 @@ DESCOPE_WIDGET_ID=  # default: user-management-widget
 Use the DescopeWC in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/web-component@3.8.5/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@descope/web-component@latest/dist/index.min.js"></script>
 <descope-wc
   project-id="<project-id>"
   flow-id="<flow-id>"
   base-url="<base-url>"
-  locale="<locale>"
-  debug="true"
 ></descope-wc>
 
 ```
