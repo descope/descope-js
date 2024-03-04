@@ -59,12 +59,14 @@ export const initCreateUserModalMixin = createSingletonMixin(
         });
 
         this.#rolesMultiSelect = new MultiSelectDriver(
-          () => this.createUserModal.ele?.querySelector('[data-id="roles-multiselect"]'),
+          () =>
+            this.createUserModal.ele?.querySelector(
+              '[data-id="roles-multiselect"]',
+            ),
           { logger: this.logger },
         );
 
         this.#updateRolesMultiSelect();
-
       }
 
       #updateRolesMultiSelect = async () => {
