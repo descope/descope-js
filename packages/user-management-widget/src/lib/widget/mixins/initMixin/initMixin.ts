@@ -11,6 +11,7 @@ import { initEditUserButtonMixin } from './initComponentsMixins/initEditUsersBut
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
+    // @ts-ignore
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
