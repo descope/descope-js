@@ -1,4 +1,3 @@
-import { compose } from '../helpers/compose';
 import { createSingletonMixin } from '../helpers/mixins';
 import { loggerMixin } from './loggerMixin';
 
@@ -6,7 +5,7 @@ type ElementOrEmpty = Element | null | undefined;
 
 export const formMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class FormMixinClass extends compose(loggerMixin)(superclass) {
+    class FormMixinClass extends loggerMixin(superclass) {
       validateForm(rootEle: ElementOrEmpty) {
         return this.getFormInputs(rootEle).every((input: HTMLInputElement) => {
           input.reportValidity?.();
@@ -37,8 +36,11 @@ export const formMixin = createSingletonMixin(
 
       setFormData(rootEle: ElementOrEmpty, data: Record<string, any>) {
         this.getFormInputs(rootEle).forEach((input) => {
-          // eslint-disable-next-line no-param-reassign
-          input.value = data[input.getAttribute('name')!];
+          // eslint-disable-next-line no-prototype-builtins
+          if (data.hasOwnProperty(input.getAttribute('name')!)) {
+            // eslint-disable-next-line no-param-reassign
+            input.value = data[input.getAttribute('name')!];
+          }
         });
       }
 

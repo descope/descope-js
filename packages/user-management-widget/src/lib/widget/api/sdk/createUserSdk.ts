@@ -2,6 +2,7 @@ import {
   CreateUserConfig,
   HttpClient,
   SearchUsersConfig,
+  UpdateUserConfig,
   User,
 } from '../types';
 import { apiPaths } from '../apiPaths';
@@ -116,6 +117,50 @@ export const createUserSdk = ({
     return json.user;
   };
 
+  const update: (config: UpdateUserConfig) => Promise<User[]> = async ({
+    loginId,
+    email,
+    phone,
+    displayName,
+    roles,
+    customAttributes,
+    picture,
+    verifiedEmail,
+    verifiedPhone,
+    givenName,
+    middleName,
+    familyName,
+    additionalLoginIds,
+  }) => {
+    const res = await httpClient.post(
+      apiPaths.user.update,
+      {
+        loginId,
+        email,
+        phone,
+        displayName,
+        givenName,
+        middleName,
+        familyName,
+        roleNames: roles,
+        customAttributes,
+        picture,
+        verifiedEmail,
+        verifiedPhone,
+        additionalLoginIds,
+      },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    const json = await res.json();
+
+    return json.user;
+  };
+
   const expirePassword = async (loginIds: string[]) => {
     const res = await httpClient.post(
       apiPaths.user.expirePassword,
@@ -144,6 +189,7 @@ export const createUserSdk = ({
     search,
     deleteBatch,
     create,
+    update,
     expirePassword,
     getCustomAttributes,
   };
