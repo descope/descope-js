@@ -11,6 +11,7 @@ import {
   getCustomAttributes,
   searchUser,
   getTenantRoles,
+  updateUser,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -31,6 +32,7 @@ export const stateManagementMixin = createSingletonMixin(
         },
         extraReducers: (builder) => {
           createUser.reducer(builder);
+          updateUser.reducer(builder);
           deleteUsers.reducer(builder);
           searchUser.reducer(builder);
           expireUserPassword.reducer(builder);
@@ -40,6 +42,7 @@ export const stateManagementMixin = createSingletonMixin(
         asyncActions: {
           searchUsers: searchUser.action,
           createUser: createUser.action,
+          updateUser: updateUser.action,
           deleteUsers: deleteUsers.action,
           expireUserPassword: expireUserPassword.action,
           getCustomAttributes: getCustomAttributes.action,

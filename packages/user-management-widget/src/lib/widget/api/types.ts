@@ -67,14 +67,13 @@ export type SearchUsersConfig = {
   sort?: SortParams[];
 };
 
-export type CreateUserConfig = {
-  loginId: string;
+export type UpdateUserConfig = {
+  loginId?: string;
   email?: string;
   phone?: string;
   displayName?: string;
   roles?: string[];
-  userTenants?: AssociatedTenant[];
-  customAttributes?: Record<string, CustomAttributeType>;
+  customAttributes?: CustomAttributes;
   picture?: string;
   verifiedEmail?: boolean;
   verifiedPhone?: boolean;
@@ -82,8 +81,12 @@ export type CreateUserConfig = {
   middleName?: string;
   familyName?: string;
   additionalLoginIds?: string[];
+  userTenants?: AssociatedTenant[];
+};
+
+export type CreateUserConfig = {
   inviteUrl?: string;
   sendMail?: boolean; // send invite via mail, default is according to project settings
   sendSMS?: boolean; // send invite via text message, default is according to project settings
   invite?: boolean;
-};
+} & UpdateUserConfig;
