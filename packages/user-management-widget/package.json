@@ -1,6 +1,6 @@
 {
   "name": "@descope/user-management-widget",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -85,7 +85,8 @@
     "redux": "5.0.1",
     "redux-thunk": "3.1.0",
     "reselect": "5.0.1",
-    "tslib": "2.6.2"
+    "tslib": "2.6.2",
+    "libphonenumber-js": "1.10.57"
   },
   "overrides": {
     "terser": "5.21.0"

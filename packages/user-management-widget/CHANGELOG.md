@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/descope/descope-js/compare/user-management-widget-0.1.4...user-management-widget-0.2.0) (2024-03-04)
+
+
+### Features
+
+* UMW edit user ([#395](https://github.com/descope/descope-js/issues/395)) RELEASE ([c402ff9](https://github.com/descope/descope-js/commit/c402ff96b46213e427e33f8ba5040cb58c3ac1f5))
+
 ## [0.1.4](https://github.com/descope/descope-js/compare/user-management-widget-0.1.3...user-management-widget-0.1.4) (2024-02-26)
 
 ## [0.1.3](https://github.com/descope/descope-js/compare/user-management-widget-0.1.2...user-management-widget-0.1.3) (2024-02-26)

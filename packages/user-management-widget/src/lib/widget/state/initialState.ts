@@ -10,6 +10,10 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  updateUser: {
+    loading: false,
+    error: null,
+  },
   deleteUser: {
     loading: false,
     error: null,
