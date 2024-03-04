@@ -40,8 +40,8 @@ importers:
         specifier: 17.0.1
         version: 17.0.1
       '@types/jest':
-        specifier: 29.5.6
-        version: 29.5.6
+        specifier: 29.5.12
+        version: 29.5.12
       '@types/node':
         specifier: 20.10.2
         version: 20.10.2
@@ -4374,6 +4374,13 @@ packages:
     dependencies:
       expect: 29.5.0
       pretty-format: 29.5.0
+    dev: true
+
+  /@types/jest@29.5.12:
+    resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
+    dependencies:
+      expect: 29.7.0
+      pretty-format: 29.7.0
     dev: true
 
   /@types/jest@29.5.6:
