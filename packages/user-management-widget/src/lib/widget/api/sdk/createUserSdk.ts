@@ -130,7 +130,7 @@ export const createUserSdk = ({
     givenName,
     middleName,
     familyName,
-    additionalLoginIds
+    additionalLoginIds,
   }) => {
     const res = await httpClient.post(
       apiPaths.user.update,
@@ -160,17 +160,6 @@ export const createUserSdk = ({
 
     return json.user;
   };
-
-
-
-
-
-
-
-
-
-
-
 
   const expirePassword = async (loginIds: string[]) => {
     const res = await httpClient.post(

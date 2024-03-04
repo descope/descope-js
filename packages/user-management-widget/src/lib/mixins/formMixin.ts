@@ -1,4 +1,3 @@
-import { compose } from '../helpers/compose';
 import { createSingletonMixin } from '../helpers/mixins';
 import { loggerMixin } from './loggerMixin';
 
