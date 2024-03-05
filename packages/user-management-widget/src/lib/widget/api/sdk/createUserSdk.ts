@@ -175,6 +175,34 @@ export const createUserSdk = ({
     return res.json();
   };
 
+  const enable = async (loginIds: string[]) => {
+    const res = await httpClient.post(
+      apiPaths.user.enable,
+      { loginId: loginIds[0], status: 'enabled' },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
+  const disable = async (loginIds: string[]) => {
+    const res = await httpClient.post(
+      apiPaths.user.enable,
+      { loginId: loginIds[0], status: 'disabled' },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
   const getCustomAttributes = async () => {
     const res = await httpClient.get(apiPaths.user.customAttributes, {
       queryParams: { tenant },
@@ -190,6 +218,8 @@ export const createUserSdk = ({
     deleteBatch,
     create,
     update,
+    enable,
+    disable,
     expirePassword,
     getCustomAttributes,
   };

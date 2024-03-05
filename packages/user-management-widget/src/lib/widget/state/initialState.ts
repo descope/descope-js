@@ -18,6 +18,14 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  enableUser: {
+    loading: false,
+    error: null,
+  },
+  disableUser: {
+    loading: false,
+    error: null,
+  },
   expireUserPassword: {
     loading: false,
     error: null,
