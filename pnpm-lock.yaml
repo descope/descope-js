@@ -70,8 +70,8 @@ importers:
         specifier: ^15.0.0
         version: 15.1.0
       ngx-deploy-npm:
-        specifier: ^7.0.0
-        version: 7.1.0(@nx/devkit@18.0.7)(tslib@2.6.2)
+        specifier: ^8.0.0
+        version: 8.0.1(@nx/devkit@18.0.7)(tslib@2.6.2)
       nx:
         specifier: 17.3.2
         version: 17.3.2
@@ -11071,8 +11071,8 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /ngx-deploy-npm@7.1.0(@nx/devkit@18.0.7)(tslib@2.6.2):
-    resolution: {integrity: sha512-zUv/C9giRVrhmOu3dIG3tjjN+1/bOV5xQzPGgXBZL74M5dgZo+/Dui1JxrVCZH9m8QogR4Zg+0Xq6FeXo2xKrg==}
+  /ngx-deploy-npm@8.0.1(@nx/devkit@18.0.7)(tslib@2.6.2):
+    resolution: {integrity: sha512-JVgC7OYaa7oqvuVFkm7W+LJ+8+ihmr09NdmIVBcuUAKMzG2rvsnFGc7ymHQJ4RBK2iRVV4oOHtsaruqCBIHprA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@nx/devkit': "^16.0.0 ||\_^17.0.0 ||\_^18.0.0"
