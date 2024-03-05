@@ -3,7 +3,7 @@ import { BaseDriver } from './BaseDriver';
 export class ModalDriver extends BaseDriver {
   #modalContent: HTMLTemplateElement;
 
-  beforeOpen: undefined | (() => void);
+  beforeOpen: undefined | (() => void | Promise<void>);
 
   afterClose: undefined | (() => void);
 
@@ -14,8 +14,8 @@ export class ModalDriver extends BaseDriver {
     this.afterClose?.();
   }
 
-  open() {
-    this.beforeOpen?.();
+  async open() {
+    await this.beforeOpen?.();
     this.ele?.setAttribute('opened', 'true');
   }
 
