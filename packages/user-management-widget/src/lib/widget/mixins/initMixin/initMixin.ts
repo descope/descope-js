@@ -14,6 +14,7 @@ import { initRemovePasskeyButtonMixin } from './initComponentsMixins/initRemoveP
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
+    /* @ts-ignore */
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
