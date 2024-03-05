@@ -51,6 +51,11 @@ export const getIsSingleUsersSelected = createSelector(
   (selected) => selected.length === 1,
 );
 
+export const getSelectedUserLoginId = createSelector(
+  getSelectedUsersLoginIds,
+  (loginIds) => loginIds?.[0]?.[0],
+);
+
 export const getIsSelectedUsersEnabled = createSelector(
   getSelectedUsersEnabled,
   (statuses) =>

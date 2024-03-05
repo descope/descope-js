@@ -8,7 +8,10 @@ import { ButtonDriver } from '../../../drivers/ButtonDriver';
 import { ModalDriver } from '../../../drivers/ModalDriver';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { getSelectedUsersDetailsForDisplay } from '../../../state/selectors';
+import {
+  getSelectedUserLoginId,
+  getSelectedUsersDetailsForDisplay,
+} from '../../../state/selectors';
 import { TextDriver } from '../../../drivers/TextDriver';
 
 export const initDisableUserModalMixin = createSingletonMixin(
@@ -43,14 +46,9 @@ export const initDisableUserModalMixin = createSingletonMixin(
         );
 
         submitButton.onClick(() => {
-          if (this.validateForm(this.disableUserModal.ele)) {
-            const { loginId } = this.getFormData(this.disableUserModal.ele);
-            this.actions.updateUser({
-              // we are joining the ids in order to display it so we need to split it back
-              loginId: loginId.split(', ')[0],
-            });
-            this.disableUserModal.close();
-          }
+          const selectedUsersLoginId = getSelectedUserLoginId(this.state);
+          this.actions.disableUser(selectedUsersLoginId);
+          this.disableUserModal.close();
         });
       }
 

@@ -9,8 +9,8 @@ import { ModalDriver } from '../../../drivers/ModalDriver';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import {
+  getSelectedUserLoginId,
   getSelectedUsersDetailsForDisplay,
-  getSelectedUsersUserIds,
 } from '../../../state/selectors';
 import { TextDriver } from '../../../drivers/TextDriver';
 
@@ -42,8 +42,8 @@ export const initEnableUserModalMixin = createSingletonMixin(
         );
 
         submitButton.onClick(() => {
-          const selectedUsersUserIds = getSelectedUsersUserIds(this.state);
-          this.actions.enableUser(selectedUsersUserIds);
+          const selectedUsersLoginId = getSelectedUserLoginId(this.state);
+          this.actions.enableUser(selectedUsersLoginId);
           this.enableUserModal.close();
         });
       }

@@ -20,10 +20,10 @@ const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
       const userIdx = state.usersList.data.findIndex((user) =>
-        compareArrays(user.loginIds, action.payload.loginIds),
+        compareArrays(user.loginIds, action.payload.user.loginIds),
       );
       if (userIdx !== -1) {
-        state.usersList.data[userIdx] = action.payload;
+        state.usersList.data[userIdx] = action.payload.user;
       }
     },
   },
