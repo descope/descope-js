@@ -26,6 +26,15 @@ export const getSelectedUsersUserIds = createSelector(
       .map((user) => user.userId),
 );
 
+export const getSelectedUsersEnabled = createSelector(
+  getUsersList,
+  getSelectedUsersLoginIds,
+  (users, selectedLoginIds) =>
+    users
+      .filter((user) => selectedLoginIds.includes(user.loginIds))
+      .map((user) => user.status),
+);
+
 export const getSelectedUsers = createSelector(
   getSelectedUsersLoginIds,
   getUsersList,
@@ -40,6 +49,24 @@ export const getIsUsersSelected = createSelector(
 export const getIsSingleUsersSelected = createSelector(
   getSelectedUsersLoginIds,
   (selected) => selected.length === 1,
+);
+
+export const getIsSelectedUsersEnabled = createSelector(
+  getSelectedUsersEnabled,
+  (statuses) =>
+    statuses.length === 1 &&
+    statuses.includes(userStatusMappings.enabled) &&
+    !statuses.includes('disabled') &&
+    !statuses.includes('invited'),
+);
+
+export const getIsSelectedUsersDisabled = createSelector(
+  getSelectedUsersEnabled,
+  (statuses) =>
+    statuses.length === 1 &&
+    statuses.includes('disabled') &&
+    !statuses.includes(userStatusMappings.enabled) &&
+    !statuses.includes('invited'),
 );
 
 export const getSelectedUsersDetailsForDisplay = createSelector(
