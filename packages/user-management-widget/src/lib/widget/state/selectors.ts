@@ -17,28 +17,25 @@ export const getUsersList = createSelector(getRawUsersList, (users) =>
   })),
 );
 
-export const getSelectedUsersUserIds = createSelector(
-  getUsersList,
-  getSelectedUsersLoginIds,
-  (users, selectedLoginIds) =>
-    users
-      .filter((user) => selectedLoginIds.includes(user.loginIds))
-      .map((user) => user.userId),
-);
-
-export const getSelectedUsersEnabled = createSelector(
-  getUsersList,
-  getSelectedUsersLoginIds,
-  (users, selectedLoginIds) =>
-    users
-      .filter((user) => selectedLoginIds.includes(user.loginIds))
-      .map((user) => user.status),
-);
-
 export const getSelectedUsers = createSelector(
   getSelectedUsersLoginIds,
   getUsersList,
   (selected, users) => users.filter((user) => selected.includes(user.loginIds)),
+);
+
+export const getSelectedUsersUserIds = createSelector(
+  getSelectedUsers,
+  (users) => users.map((user) => user.userId),
+);
+
+export const getSelectedUsersStatus = createSelector(
+  getSelectedUsers,
+  (users) => users.map((user) => user.status),
+);
+
+export const getSelectedUsersEditable = createSelector(
+  getSelectedUsers,
+  (selectedUsers) => selectedUsers.every((user) => user.editable),
 );
 
 export const getIsUsersSelected = createSelector(
@@ -53,25 +50,23 @@ export const getIsSingleUsersSelected = createSelector(
 
 export const getSelectedUserLoginId = createSelector(
   getSelectedUsersLoginIds,
-  (loginIds) => loginIds?.[0]?.[0],
+  (loginIds) => loginIds?.[0]?.[0] as string,
 );
 
 export const getIsSelectedUsersEnabled = createSelector(
-  getSelectedUsersEnabled,
-  (statuses) =>
-    statuses.length === 1 &&
-    statuses.includes(userStatusMappings.enabled) &&
-    !statuses.includes('disabled') &&
-    !statuses.includes('invited'),
+  getIsSingleUsersSelected,
+  getSelectedUsersStatus,
+  (isSingleUser, statuses) =>
+    isSingleUser &&
+    statuses.every((status) => status === userStatusMappings.enabled),
 );
 
 export const getIsSelectedUsersDisabled = createSelector(
-  getSelectedUsersEnabled,
-  (statuses) =>
-    statuses.length === 1 &&
-    statuses.includes('disabled') &&
-    !statuses.includes(userStatusMappings.enabled) &&
-    !statuses.includes('invited'),
+  getIsSingleUsersSelected,
+  getSelectedUsersStatus,
+  (isSingleUser, statuses) =>
+    isSingleUser &&
+    statuses.every((status) => status === userStatusMappings.disabled),
 );
 
 export const getSelectedUsersDetailsForDisplay = createSelector(

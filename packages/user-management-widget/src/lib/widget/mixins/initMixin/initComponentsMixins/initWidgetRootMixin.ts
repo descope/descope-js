@@ -27,7 +27,7 @@ export const initWidgetRootMixin = createSingletonMixin(
                   <descope-text-field bordered="true" data-id="search-input" data-testid="search-input" full-width="false" id="search" label="" max="100" name="" placeholder="Search" required="false" size="sm"></descope-text-field>
                   <descope-container data-editor-type="container" direction="row" id="buttonsContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="flex-end" st-background-color="#ffffff00" st-host-width="auto" st-gap="0.5rem">
                     <descope-button data-id="delete-users" data-testid="delete-users-trigger" data-type="button" formNoValidate="false" full-width="false" id="deleteUsers" shape="" size="sm" variant="outline" mode="primary" square="false">Delete</descope-button>
-                    <descope-button data-id="reset-password" data-testid="reset-password-trigger" data-type="button" formNoValidate="false" full-width="false" id="resetPassword" shape="" size="sm" variant="outline" mode="primary" square="false">Reset Password</descope-button>
+                    <!-- descope-button data-id="reset-password" data-testid="reset-password-trigger" data-type="button" formNoValidate="false" full-width="false" id="resetPassword" shape="" size="sm" variant="outline" mode="primary" square="false">Reset Password</!-->
                     <descope-button data-id="remove-passkey" data-testid="remove-passkey-trigger" data-type="button" formNoValidate="false" full-width="false" id="removePasskey" shape="" size="sm" variant="outline" mode="primary" square="false">Remove Passkey</descope-button>
                     <descope-button data-id="disable-user" data-testid="disable-user-trigger" data-type="button" formNoValidate="false" full-width="false" id="disableUser" shape="" size="sm" variant="outline" mode="primary" square="false">Disable</descope-button>
                     <descope-button data-id="enable-user" data-testid="enable-user-trigger" data-type="button" formNoValidate="false" full-width="false" id="enableUser" shape="" size="sm" variant="outline" mode="primary" square="false">Activate</descope-button>
@@ -46,6 +46,7 @@ export const initWidgetRootMixin = createSingletonMixin(
                   <descope-grid-text-column header="Name" path="name" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Email" path="email" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Phone" path="phone" resizable="true" sortable="true"></descope-grid-text-column>
+                  <descope-grid-text-column header="Roles" path="roles" resizable="true" sortable="true"></descope-grid-text-column>
               </descope-grid>
           </descope-container>
           `,

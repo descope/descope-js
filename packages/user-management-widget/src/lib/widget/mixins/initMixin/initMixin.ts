@@ -10,10 +10,10 @@ import { initUsersTableMixin } from './initComponentsMixins/initUsersTableMixin'
 import { initEditUserButtonMixin } from './initComponentsMixins/initEditUsersButtonMixin';
 import { initEnableUserButtonMixin } from './initComponentsMixins/initEnableUserButtonMixin';
 import { initDisableUserButtonMixin } from './initComponentsMixins/initDisableUserButtonMixin';
+import { initRemovePasskeyButtonMixin } from './initComponentsMixins/initRemovePasskeyButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    // @ts-ignore
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
@@ -23,6 +23,7 @@ export const initMixin = createSingletonMixin(
       initEditUserButtonMixin,
       initEnableUserButtonMixin,
       initDisableUserButtonMixin,
+      initRemovePasskeyButtonMixin,
       initFilterUsersInputMixin,
       initNotificationsMixin,
     )(superclass) {

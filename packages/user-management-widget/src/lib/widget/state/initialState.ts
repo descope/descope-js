@@ -26,6 +26,10 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  removePasskey: {
+    loading: false,
+    error: null,
+  },
   expireUserPassword: {
     loading: false,
     error: null,

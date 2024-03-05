@@ -175,6 +175,20 @@ export const createUserSdk = ({
     return res.json();
   };
 
+  const removePasskey = async (loginId: string) => {
+    const res = await httpClient.post(
+      apiPaths.user.removePasskey,
+      { loginId },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
   const enable = async (loginId: string) => {
     const res = await httpClient.post(
       apiPaths.user.enable,
@@ -220,6 +234,7 @@ export const createUserSdk = ({
     update,
     enable,
     disable,
+    removePasskey,
     expirePassword,
     getCustomAttributes,
   };
