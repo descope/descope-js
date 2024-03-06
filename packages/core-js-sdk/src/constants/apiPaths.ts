@@ -48,6 +48,9 @@ export default {
     signUp: '/v1/auth/totp/signup',
     update: '/v1/auth/totp/update',
   },
+  notp: {
+    signUpOrIn: '/v1/auth/notp/signup-in',
+  },
   webauthn: {
     signUp: {
       start: '/v1/auth/webauthn/signup/start',
