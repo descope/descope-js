@@ -1,6 +1,7 @@
 import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
+  ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
   PREV_VER_ASSETS_FOLDER,
   THEME_FILENAME,
   UI_COMPONENTS_FALLBACK_URL,
@@ -469,7 +470,12 @@ class BaseDescopeWc extends HTMLElement {
       // we do not want to submit the form if the focus is on a link element
       const isLinkEleFocused =
         !!this.shadowRoot.activeElement?.getAttribute('href');
-      if (e.key !== 'Enter' || isLinkEleFocused) return;
+      const isIgnoredElementFocused = ELEMENTS_TO_IGNORE_ENTER_KEY_ON.includes(
+        this.shadowRoot.activeElement?.localName ?? '',
+      );
+
+      if (e.key !== 'Enter' || isLinkEleFocused || isIgnoredElementFocused)
+        return;
 
       e.preventDefault();
       const buttons: NodeListOf<HTMLButtonElement> =
