@@ -43,9 +43,9 @@ export const initEnableUserButtonMixin = createSingletonMixin(
       );
 
       async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
         this.#initEnableButton();
+
+        await super.onWidgetRootReady?.();
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),

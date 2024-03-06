@@ -43,9 +43,9 @@ export const initDisableUserButtonMixin = createSingletonMixin(
       );
 
       async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
         this.#initDisableButton();
+
+        await super.onWidgetRootReady?.();
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),

@@ -42,9 +42,9 @@ export const initEditUserButtonMixin = createSingletonMixin(
       );
 
       async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
         this.#initEditButton();
+
+        await super.onWidgetRootReady?.();
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),
