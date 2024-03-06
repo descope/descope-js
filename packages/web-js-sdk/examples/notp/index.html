@@ -31,8 +31,9 @@
         if (step ===0) {
           // Step 0
           sdk = Descope({ projectId: input, baseUrl: 'http://localhost:8000' });
-          h1Ele.innerText = "What's your email?";
+          h1Ele.innerText = "What's your phone?";
           inputEle.value = '';
+          input.placeholder = 'e.g. +1234567890';
         } else if (step === 1) {
           // Step 1
           h1Ele.innerText = "Click on button or scan QR code to sign up or sign in";
@@ -53,6 +54,7 @@
           // Add a link with the redirectUrl
           const a = document.createElement('a')
           a.setAttribute('href', redirectUrl);
+          a.setAttribute('target', '_blank');
           const continueNode = document.createTextNode('Continue');
           a.appendChild(continueNode)
 
@@ -73,6 +75,27 @@
 
           // change text button to "Check pendingRef"
           formEle.getElementsByTagName('button')[0].innerText = 'Check pendingRef';
+        } else if (step === 2) {
+          // Step 2
+          // show loading spinner
+          const p = document.createElement('p');
+          p.appendChild(document.createTextNode('Checking pendingRef...'));
+          document.body.appendChild(p);
+
+          const res = await sdk.notp.getSession(pendingRefState);
+
+          if (!res.ok) {
+            alert(JSON.stringify(res, null, 4));
+            return;
+          }
+
+          // remove loader
+          document.body.removeChild(p);
+
+          // show data to user
+          const p2 = document.createElement('p');
+          p2.appendChild(document.createTextNode(JSON.stringify(res.data, null, 4)));
+          document.body.appendChild(p2);
         }
 
         step++;

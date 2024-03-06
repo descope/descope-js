@@ -50,6 +50,7 @@ export default {
   },
   notp: {
     signUpOrIn: '/v1/auth/notp/signup-in',
+    session: '/v1/auth/notp/pending-session',
   },
   webauthn: {
     signUp: {
