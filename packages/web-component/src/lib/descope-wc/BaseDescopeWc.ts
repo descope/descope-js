@@ -471,7 +471,7 @@ class BaseDescopeWc extends HTMLElement {
       const isLinkEleFocused =
         !!this.shadowRoot.activeElement?.getAttribute('href');
       const isIgnoredElementFocused = ELEMENTS_TO_IGNORE_ENTER_KEY_ON.includes(
-        this.shadowRoot.activeElement?.tagName?.toLowerCase() ?? '',
+        this.shadowRoot.activeElement?.localName ?? '',
       );
 
       if (e.key !== 'Enter' || isLinkEleFocused || isIgnoredElementFocused)
