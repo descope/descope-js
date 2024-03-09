@@ -781,6 +781,12 @@ class DescopeWc extends BaseDescopeWc {
         screenState?.totp?.image,
       );
 
+      // put the notp variable on the root element, which is the top level 'div' inside the shadowroot
+      setTOTPVariable(
+        this.shadowRoot.querySelector('div'),
+        screenState?.notp?.image,
+      );
+
       this.rootElement.replaceChildren(clone);
 
       // we need to wait for all components to render before we can set its value

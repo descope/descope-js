@@ -161,6 +161,7 @@ export const updateTemplateFromScreenState = (
   }
   replaceElementMessage(baseEle, 'error-message', errorText);
   replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
+  replaceProvisionURL(baseEle, screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
