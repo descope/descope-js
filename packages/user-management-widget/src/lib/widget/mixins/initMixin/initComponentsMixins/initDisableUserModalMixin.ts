@@ -75,7 +75,7 @@ export const initDisableUserModalMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        await this.#initEnableUserModal();
+        await this.#initDisableUserModal();
       }
     },
 );

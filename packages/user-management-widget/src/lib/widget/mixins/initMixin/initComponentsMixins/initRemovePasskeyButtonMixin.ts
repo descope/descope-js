@@ -34,7 +34,7 @@ export const initRemovePasskeyButtonMixin = createSingletonMixin(
 
       #onIsUserSelectedUpdate = withMemCache(
         (isSingleUserSelected: ReturnType<typeof getIsSingleUsersSelected>) => {
-          if (isDisabled) {
+          if (isSingleUserSelected) {
             this.removePasskeyButton.enable();
           } else {
             this.removePasskeyButton.disable();
@@ -43,9 +43,9 @@ export const initRemovePasskeyButtonMixin = createSingletonMixin(
       );
 
       async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
         this.#initRemovePasskeyButton();
+
+        await super.onWidgetRootReady?.();
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),
