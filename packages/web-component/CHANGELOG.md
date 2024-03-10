@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.8.9](https://github.com/descope/descope-js/compare/web-component-3.8.8...web-component-3.8.9) (2024-03-06)
+
+
+### Bug Fixes
+
+* RELEASE Ignore enter key press on certain elements ([#393](https://github.com/descope/descope-js/issues/393)) ([1db38db](https://github.com/descope/descope-js/commit/1db38dbfee609d27bcfac966a5ad6995893ee37f))
+
 ## [3.8.8](https://github.com/descope/descope-js/compare/web-component-3.8.7...web-component-3.8.8) (2024-03-05)
 
 ### Dependency Updates
