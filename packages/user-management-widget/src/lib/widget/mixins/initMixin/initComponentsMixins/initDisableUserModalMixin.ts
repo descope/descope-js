@@ -52,7 +52,7 @@ export const initDisableUserModalMixin = createSingletonMixin(
         });
       }
 
-      async #initEnableUserModal() {
+      async #initDisableUserModal() {
         this.disableUserModal = this.createModal();
         this.disableUserModal.setContent(
           createTemplate(await this.fetchWidgetPage('disable-user-modal.html')),
