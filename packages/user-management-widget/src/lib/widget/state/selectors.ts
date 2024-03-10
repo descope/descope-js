@@ -33,7 +33,7 @@ export const getSelectedUsersStatus = createSelector(
   (users) => users.map((user) => user.status),
 );
 
-export const getSelectedUsersEditable = createSelector(
+export const getIsSelectedUsersEditable = createSelector(
   getSelectedUsers,
   (selectedUsers) => selectedUsers.every((user) => user.editable),
 );
