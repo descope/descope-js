@@ -33,7 +33,7 @@ export const initRemovePasskeyButtonMixin = createSingletonMixin(
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (isDisabled: ReturnType<typeof getIsSingleUsersSelected>) => {
+        (isSingleUserSelected: ReturnType<typeof getIsSingleUsersSelected>) => {
           if (isDisabled) {
             this.removePasskeyButton.enable();
           } else {
