@@ -24,8 +24,8 @@ export const mockHttpClient = {
       mockHttpClient[key].mockResolvedValue({
         ok: true,
         status: 200,
-        json: () => Promise.resolve({ roles: mockRoles }),
-        text: () => Promise.resolve(JSON.stringify({ roles: mockRoles })),
+        json: () => Promise.resolve({ roles: mockRoles.roles }),
+        text: () => Promise.resolve(JSON.stringify({ roles: mockRoles.roles })),
       }),
     ),
 };
@@ -122,13 +122,16 @@ describe('role-management-widget', () => {
         ),
       );
 
-      expect(result[0].name).toEqual(mockRoles[0]['name']);
-      expect(result[1].name).toEqual(mockRoles[1]['name']);
+      expect(result[0].name).toEqual(mockRoles.roles[0]['name']);
+      expect(result[1].name).toEqual(mockRoles.roles[1]['name']);
     });
 
     it('deleteBatch', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
-      const roleNames = [mockRoles[0]['name'], mockRoles[1]['name']];
+      const roleNames = [
+        mockRoles.roles[0]['name'],
+        mockRoles.roles[1]['name'],
+      ];
 
       await sdk.role.deleteBatch(roleNames);
 
@@ -153,13 +156,13 @@ describe('role-management-widget', () => {
   describe('utils', () => {
     it('should pluralize messages', () => {
       expect(
-        pluralize(1)`${['', 2]}${['U', 'u']}ser${[
+        pluralize(1)`${['', 2]}${['R', 'r']}ole${[
           '',
           's',
         ]} deleted successfully`,
       ).toEqual('Role deleted successfully');
       expect(
-        pluralize(2)`${['', 2]} ${['U', 'u']}ser${[
+        pluralize(2)`${['', 2]} ${['R', 'r']}ole${[
           '',
           's',
         ]} deleted successfully`,
