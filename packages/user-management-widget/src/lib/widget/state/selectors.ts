@@ -81,32 +81,26 @@ export const getCanEnable = createSelector(
   getIsSingleUsersSelected,
   getIsSelectedUsersDisabled,
   getIsSelectedUsersEditable,
-  (isSingleUser, isUsersDisabled, isUsersEditable) => {
-    return isSingleUser && isUsersDisabled && isUsersEditable
-  }
+  (isSingleUser, isUsersDisabled, isUsersEditable) =>
+    isSingleUser && isUsersDisabled && isUsersEditable,
 );
 
 export const getCanDisable = createSelector(
   getIsSingleUsersSelected,
   getIsSelectedUsersEnabled,
   getIsSelectedUsersEditable,
-  (isSingleUser, isUsersEnabled, isUsersEditable) => {
-    return isSingleUser && isUsersEnabled && isUsersEditable
-  }
+  (isSingleUser, isUsersEnabled, isUsersEditable) =>
+    isSingleUser && isUsersEnabled && isUsersEditable,
 );
 
 export const getCanEdit = createSelector(
   getIsSingleUsersSelected,
   getIsSelectedUsersEditable,
-  (isSingleUser, isUsersEditable) => {
-    return isSingleUser && isUsersEditable
-  }
+  (isSingleUser, isUsersEditable) => isSingleUser && isUsersEditable,
 );
 
 export const getCanRemovePasskey = createSelector(
   getIsSingleUsersSelected,
   getIsSelectedUsersEditable,
-  (isSingleUser, isUsersEditable) => {
-    return isSingleUser && isUsersEditable
-  }
+  (isSingleUser, isUsersEditable) => isSingleUser && isUsersEditable,
 );

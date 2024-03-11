@@ -36,7 +36,10 @@ const unflatten = (formData: Partial<User>) =>
 const flatten = (
   vals: Record<string, string | boolean | number>,
   keyPrefix: string,
-) => Object.fromEntries(Object.entries(vals).map(([key, val]) => [`${keyPrefix}${key}`, val]));
+) =>
+  Object.fromEntries(
+    Object.entries(vals).map(([key, val]) => [`${keyPrefix}${key}`, val]),
+  );
 
 const formatPhoneNumber = (phoneNumber: string) => {
   if (!phoneNumber) return phoneNumber;

@@ -47,10 +47,7 @@ export const initDisableUserButtonMixin = createSingletonMixin(
 
         await super.onWidgetRootReady?.();
 
-        this.subscribe(
-          this.#onIsUserSelectedUpdate.bind(this),
-          getCanDisable,
-        );
+        this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanDisable);
       }
     },
 );

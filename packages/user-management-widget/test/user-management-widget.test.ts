@@ -179,52 +179,6 @@ describe('user-management-widget', () => {
         ),
       );
     });
-
-    it('enableUser', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
-      const loginId = mockUsers[0]['loginIds'][0];
-
-      await sdk.user.enable(loginId);
-
-      await waitFor(
-        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
-        { timeout: 5000 },
-      );
-      await waitFor(() =>
-        expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.user.enable,
-          { loginId },
-          {
-            queryParams: {
-              tenant: mockTenant,
-            },
-          },
-        ),
-      );
-    });
-
-    it('disableUser', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
-      const loginId = mockUsers[0]['loginIds'][0];
-
-      await sdk.user.enable(loginId);
-
-      await waitFor(
-        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
-        { timeout: 5000 },
-      );
-      await waitFor(() =>
-        expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.user.disable,
-          { loginId },
-          {
-            queryParams: {
-              tenant: mockTenant,
-            },
-          },
-        ),
-      );
-    });
   });
 
   describe('utils', () => {

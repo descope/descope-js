@@ -46,10 +46,7 @@ export const initEditUserButtonMixin = createSingletonMixin(
 
         await super.onWidgetRootReady?.();
 
-        this.subscribe(
-          this.#onIsUserSelectedUpdate.bind(this),
-          getCanEdit,
-        );
+        this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanEdit);
       }
     },
 );
