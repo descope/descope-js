@@ -12,6 +12,21 @@ import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
 import { getSelectedUsers, getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { User } from '../../../api/types';
+
+const handleCustomAttributes = (formData: Partial<User>) =>
+  Object.entries(formData).reduce((acc, [key, value]) => {
+    if (key.startsWith('customAttributes.')) {
+      const customKey = key.split('.')[1];
+      if (!acc['customAttributes']) {
+        acc['customAttributes'] = {};
+      }
+      acc['customAttributes'][customKey] = value;
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
 
 const formatPhoneNumber = (phoneNumber: string) => {
   if (!phoneNumber) return phoneNumber;
@@ -63,7 +78,7 @@ export const initEditUserModalMixin = createSingletonMixin(
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
-              ...formData,
+              ...handleCustomAttributes(formData),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -89,6 +104,12 @@ export const initEditUserModalMixin = createSingletonMixin(
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
           roles: userDetails?.roles,
+          ...Object.fromEntries(
+            Object.entries(userDetails.customAttributes).map(([key, val]) => [
+              `customAttributes.${key}`,
+              val,
+            ]),
+          ),
         };
 
         this.setFormData(this.editUserModal.ele, formData);
