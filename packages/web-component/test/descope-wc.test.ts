@@ -1536,12 +1536,12 @@ describe('web-component', () => {
 
     pageContent = '<div>hey</div>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="bob.url"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="base.url"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('hey'));
     expect(ensureFingerprintIds).toHaveBeenCalledWith(
       'fp-public-key',
-      'bob.url',
+      'base.url',
     );
   });
 
