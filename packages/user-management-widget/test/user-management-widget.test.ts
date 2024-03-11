@@ -1,3 +1,4 @@
+import { enableUser } from './../src/lib/widget/state/asyncActions/enableUser';
 import '@testing-library/jest-dom';
 import { waitFor } from '@testing-library/dom';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -8,6 +9,9 @@ import '../src/lib/index';
 import rootMock from './mocks/rootMock';
 import createUserModalMock from './mocks/createUserModalMock';
 import deleteUserModalMock from './mocks/deleteUserModalMock';
+import enableUserModalMock from './mocks/enableUserModalMock';
+import disableUserModalMock from './mocks/disableUserModalMock';
+import removePasskeyModalMock from './mocks/removePasskeyModalMock';
 
 const origAppend = document.body.append;
 
@@ -83,6 +87,15 @@ describe('user-management-widget', () => {
         }
         case url.endsWith('delete-user-modal.html'): {
           return { ...res, text: () => deleteUserModalMock };
+        }
+        case url.endsWith('enable-user-modal.html'): {
+          return { ...res, text: () => enableUserModalMock };
+        }
+        case url.endsWith('disable-user-modal.html'): {
+          return { ...res, text: () => disableUserModalMock };
+        }
+        case url.endsWith('remove-passkey-modal.html'): {
+          return { ...res, text: () => removePasskeyModalMock };
         }
         default: {
           return { ok: false };
@@ -179,6 +192,52 @@ describe('user-management-widget', () => {
         ),
       );
     });
+
+    it('enableUser', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const loginId = mockUsers[0]['loginIds'][0];
+
+      await sdk.user.enable(loginId);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.user.enable,
+          { loginId },
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });
+
+    it('disableUser', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const loginId = mockUsers[0]['loginIds'][0];
+
+      await sdk.user.enable(loginId);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.user.disable,
+          { loginId },
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });    
   });
 
   describe('utils', () => {

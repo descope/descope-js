@@ -4,7 +4,7 @@ import { createSingletonMixin } from '../../../../helpers/mixins';
 import { formMixin } from '../../../../mixins/formMixin';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { getIsSingleUsersSelected } from '../../../state/selectors';
+import { getCanRemovePasskey } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initRemovePasskeyModalMixin } from './initRemovePasskeyModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -33,8 +33,8 @@ export const initRemovePasskeyButtonMixin = createSingletonMixin(
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (isSingleUserSelected: ReturnType<typeof getIsSingleUsersSelected>) => {
-          if (isSingleUserSelected) {
+        (canRemovePasskey: ReturnType<typeof getCanRemovePasskey>) => {
+          if (canRemovePasskey) {
             this.removePasskeyButton.enable();
           } else {
             this.removePasskeyButton.disable();
@@ -49,7 +49,7 @@ export const initRemovePasskeyButtonMixin = createSingletonMixin(
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),
-          getIsSingleUsersSelected,
+          getCanRemovePasskey,
         );
       }
     },

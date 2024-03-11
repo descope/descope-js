@@ -4,7 +4,7 @@ import { createSingletonMixin } from '../../../../helpers/mixins';
 import { formMixin } from '../../../../mixins/formMixin';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { getIsSelectedUsersDisabled } from '../../../state/selectors';
+import { getCanEnable } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initEnableUserModalMixin } from './initEnableUserModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -33,8 +33,8 @@ export const initEnableUserButtonMixin = createSingletonMixin(
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (isDisabled: ReturnType<typeof getIsSelectedUsersDisabled>) => {
-          if (isDisabled) {
+        (canEnable: ReturnType<typeof getCanEnable>) => {
+          if (canEnable) {
             this.enableButton.enable();
           } else {
             this.enableButton.disable();
@@ -49,7 +49,7 @@ export const initEnableUserButtonMixin = createSingletonMixin(
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),
-          getIsSelectedUsersDisabled,
+          getCanEnable,
         );
       }
     },

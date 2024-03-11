@@ -62,10 +62,8 @@ export const getIsSelectedUsersEnabled = createSelector(
 );
 
 export const getIsSelectedUsersDisabled = createSelector(
-  getIsSingleUsersSelected,
   getSelectedUsersStatus,
-  (isSingleUser, statuses) =>
-    isSingleUser &&
+  (statuses) =>
     statuses.every((status) => status === userStatusMappings.disabled),
 );
 
@@ -77,4 +75,38 @@ export const getSelectedUsersDetailsForDisplay = createSelector(
     }
     return `${selectedUsers.length} users`;
   },
+);
+
+export const getCanEnable = createSelector(
+  getIsSingleUsersSelected,
+  getIsSelectedUsersDisabled,
+  getIsSelectedUsersEditable,
+  (isSingleUser, isUsersDisabled, isUsersEditable) => {
+    return isSingleUser && isUsersDisabled && isUsersEditable
+  }
+);
+
+export const getCanDisable = createSelector(
+  getIsSingleUsersSelected,
+  getIsSelectedUsersEnabled,
+  getIsSelectedUsersEditable,
+  (isSingleUser, isUsersEnabled, isUsersEditable) => {
+    return isSingleUser && isUsersEnabled && isUsersEditable
+  }
+);
+
+export const getCanEdit = createSelector(
+  getIsSingleUsersSelected,
+  getIsSelectedUsersEditable,
+  (isSingleUser, isUsersEditable) => {
+    return isSingleUser && isUsersEditable
+  }
+);
+
+export const getCanRemovePasskey = createSelector(
+  getIsSingleUsersSelected,
+  getIsSelectedUsersEditable,
+  (isSingleUser, isUsersEditable) => {
+    return isSingleUser && isUsersEditable
+  }
 );
