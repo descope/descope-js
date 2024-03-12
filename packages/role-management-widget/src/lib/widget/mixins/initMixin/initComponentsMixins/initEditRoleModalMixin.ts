@@ -7,7 +7,6 @@ import { modalMixin } from '../../../../mixins/modalMixin';
 import { ButtonDriver } from '../../../drivers/ButtonDriver';
 import { ModalDriver } from '../../../drivers/ModalDriver';
 import { MultiSelectDriver } from '../../../drivers/MultiSelectDriver';
-import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
 import {
   getSelectedRoles,
   getTenantPermissions,
@@ -25,8 +24,6 @@ export const initEditRoleModalMixin = createSingletonMixin(
       initWidgetRootMixin,
     )(superclass) {
       editRoleModal: ModalDriver;
-
-      #idInput: TextFieldDriver;
 
       #permissionsMultiSelect: MultiSelectDriver;
 
@@ -65,7 +62,7 @@ export const initEditRoleModalMixin = createSingletonMixin(
 
       #updatePermissionsMultiSelect = async () => {
         await this.#permissionsMultiSelect.setData(
-          getTenantPermissions(this.state).map(({ name }) => ({
+          getTenantPermissions(this.state)?.map(({ name }) => ({
             value: name,
             label: name,
           })),
@@ -99,18 +96,13 @@ export const initEditRoleModalMixin = createSingletonMixin(
             //     <descope-button data-id="modal-submit" data-testid="edit-role-modal-submit" data-type="button" formNoValidate="false" full-width="false" id="editRoleSubmitButton" shape="" size="sm" variant="contained" mode="primary" square="false">Edit Role</descope-button>
             //   </descope-container>
             // </descope-container>
-            // `
+            // `,
             await this.fetchWidgetPage('edit-role-modal.html'),
           ),
         );
 
         this.#initCancelButton();
         this.#initSubmitButton();
-
-        this.#idInput = new TextFieldDriver(
-          this.editRoleModal.ele?.querySelector('[name="loginId"]'),
-          { logger: this.logger },
-        );
 
         this.#permissionsMultiSelect = new MultiSelectDriver(
           () =>
@@ -122,7 +114,6 @@ export const initEditRoleModalMixin = createSingletonMixin(
 
         this.editRoleModal.beforeOpen = async () => {
           await this.#updatePermissionsMultiSelect();
-          this.#idInput.disable();
           this.#updateModalData();
         };
       }

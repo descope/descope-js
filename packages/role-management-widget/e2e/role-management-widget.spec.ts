@@ -60,6 +60,10 @@ test.describe('widget', () => {
       route.fulfill({ json: mockNewRole }),
     );
 
+    await page.route(apiPath('role', 'update'), async (route) =>
+      route.fulfill({ json: mockNewRole }),
+    );
+
     await page.route(apiPath('tenant', 'permissions'), async (route) =>
       route.fulfill({ json: mockRolesPermissions }),
     );
@@ -128,9 +132,67 @@ test.describe('widget', () => {
     await expect(page.locator('text=Role created successfully')).toBeVisible();
   });
 
+  test('edit role', async ({ page }) => {
+    await page.getByTestId('edit-role-trigger').first().isDisabled();
+    await page.locator('descope-checkbox').last().click();
+    await page.getByTestId('edit-role-trigger').first().isEnabled();
+
+    // open edit role modal
+    const openEditRoleModalButton = page
+      .getByTestId('edit-role-trigger')
+      .first();
+    await openEditRoleModalButton.click();
+
+    const editRoleNameInput = page.getByLabel('Name');
+    const editRoleDescriptionInput = page.getByLabel('Description');
+
+    await expect(
+      page.locator(`text=${mockRoles.roles[2].name}`).first(),
+    ).toBeVisible();
+
+    await expect(
+      page.locator(`text=${mockRoles.roles[2].description}`).first(),
+    ).toBeVisible();
+
+    await page.locator(`id=toggleButton`).last().click();
+    await expect(
+      page.locator(`text=${mockRolesPermissions.permissions[0].name}`).last(),
+    ).toBeVisible();
+    await expect(
+      page.locator(`text=${mockRolesPermissions.permissions[1].name}`).last(),
+    ).toBeVisible();
+    await expect(
+      page.locator(`text=${mockRolesPermissions.permissions[2].name}`).last(),
+    ).toBeVisible();
+
+    // submit name
+    await editRoleNameInput.last().fill('some role name');
+
+    // submit description
+    await editRoleDescriptionInput.last().fill('some role desc');
+
+    // click modal edit button
+    const editRoleButton = page
+      .locator('descope-button')
+      .filter({ hasText: 'Edit' })
+      .getByTestId('edit-role-modal-submit')
+      .first();
+    await editRoleButton.click();
+
+    // update grid items
+    await expect(
+      page.locator(`text=${mockNewRole['name']}`).first(),
+    ).toBeVisible();
+
+    // show notification
+    await expect(page.locator('text=Role updated successfully')).toBeVisible();
+  });
+
   test('delete roles', async ({ page }) => {
-    const deleteRoleTrigger = page.getByTestId('delete-roles-trigger').first();
-    const deleteRoleModalButton = page
+    const deleteRoleTrigger = await page
+      .getByTestId('delete-roles-trigger')
+      .first();
+    const deleteRoleModalButton = await page
       .getByTestId('delete-roles-modal-submit')
       .first();
 

@@ -39,7 +39,7 @@ export const initCreateRoleModalMixin = createSingletonMixin(
             //     <descope-button data-id="modal-submit" data-testid="create-role-modal-submit" data-type="button" formNoValidate="false" full-width="false" id="createRoleSubmitButton" shape="" size="sm" variant="contained" mode="primary" square="false">Create</descope-button>
             //   </descope-container>
             // </descope-container>
-            // `
+            // `,
             await this.fetchWidgetPage('create-role-modal.html'),
           ),
         );
@@ -82,7 +82,7 @@ export const initCreateRoleModalMixin = createSingletonMixin(
 
       #updatePermissionsMultiSelect = async () => {
         await this.#permissionsMultiSelect.setData(
-          getTenantPermissions(this.state).map(({ name }) => ({
+          getTenantPermissions(this.state)?.map(({ name }) => ({
             value: name,
             label: name,
           })),

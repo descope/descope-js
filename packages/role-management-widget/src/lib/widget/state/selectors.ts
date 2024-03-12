@@ -6,7 +6,7 @@ export const getSelectedRolesIds = (state: State) => state.selectedRolesIds;
 export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
 export const getTenantPermissions = (state: State) =>
-  state.tenantPermissions.data;
+  state.tenantPermissions.data || [];
 
 export const getRolesList = createSelector(getRawRolesList, (roles) =>
   roles.map((role) => ({

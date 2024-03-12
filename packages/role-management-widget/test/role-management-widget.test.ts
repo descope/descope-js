@@ -7,6 +7,7 @@ import { pluralize } from '../src/lib/helpers/generic';
 import '../src/lib/index';
 import rootMock from './mocks/rootMock';
 import createRoleModalMock from './mocks/createRoleModalMock';
+import editRoleModalMock from './mocks/editRoleModalMock';
 import deleteRoleModalMock from './mocks/deleteRoleModalMock';
 
 const origAppend = document.body.append;
@@ -80,6 +81,9 @@ describe('role-management-widget', () => {
         }
         case url.endsWith('create-role-modal.html'): {
           return { ...res, text: () => createRoleModalMock };
+        }
+        case url.endsWith('edit-role-modal.html'): {
+          return { ...res, text: () => editRoleModalMock };
         }
         case url.endsWith('delete-roles-modal.html'): {
           return { ...res, text: () => deleteRoleModalMock };

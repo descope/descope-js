@@ -16,7 +16,7 @@ export const mockRoles = {
     },
     {
       name: 'Role 2',
-      description: '',
+      description: 'lulu',
       permissionNames: ['Permission 2'],
       createdTime: 1707732871,
       tenantId: 't1',
@@ -32,14 +32,16 @@ export const mockNewRole = {
   tenantId: 't1',
 };
 
-export const mockRolesPermissions = [
-  {
-    name: 'permission 1',
-  },
-  {
-    name: 'permission 2',
-  },
-  {
-    name: 'permission 3',
-  },
-];
+export const mockRolesPermissions = {
+  permissions: [
+    {
+      name: 'Permission 1',
+    },
+    {
+      name: 'Permission 2',
+    },
+    {
+      name: 'Permission 3',
+    },
+  ],
+};
