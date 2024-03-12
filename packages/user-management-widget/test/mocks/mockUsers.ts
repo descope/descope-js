@@ -211,7 +211,7 @@ export const updatedUser = {
   ...{
     name: 'updated name',
     email: 'updated@email.com',
-    phone: `${mockUsers[0].phone.replace('+', '')}555`,
+    phone: `+9725554444`,
     roles: ['Role 2'],
   },
 };

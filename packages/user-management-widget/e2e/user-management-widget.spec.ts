@@ -253,10 +253,11 @@ test.describe('widget', () => {
     // edit name
     await editUserNameInput.fill(updatedUser.name);
 
-    await editUserPhoneInput.click();
-    await page.keyboard.type('555');
+    await page.pause();
+    await editUserPhoneInput.focus();
+    await page.keyboard.type('5554444');
 
-    await editUserRolesInput.click();
+    await editUserRolesInput.focus();
     await page.keyboard.press('Backspace');
 
     // click modal create button
