@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Descope Management Widget demo app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Uncomment next section if you want to test CSP -->
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self' static.descope.com api.descope.com;
+    style-src 'unsafe-inline' fonts.googleapis.com;
+    img-src static.descope.com content.app.descope.com;
+    font-src fonts.gstatic.com;
+    script-src 'self' static.descope.com cdn.jsdelivr.net;
+  "
+    /> -->
+    <style>
+      body {
+        background-color: antiquewhite;
+        position: relative;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        width: 80%;
+        min-height: 300px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="../lib/index.ts"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@descope/web-component"></script> -->
+    <div class="login-container">
+      <!-- <descope-wc
+      project-id="<project-id>"
+      base-url="<base-url>"
+      flow-id="sign-up-or-in"
+      debug="false"
+    ></descope-wc> -->
+      <descope-role-management-widget
+        project-id="<project-id>"
+        base-url="<base-url>"
+        tenant="<tenant>"
+        widget-id="<widget-id>"
+        debug="false"
+      ></descope-role-management-widget>
+    </div>
+  </body>
+</html>
