@@ -493,9 +493,7 @@ test.describe('widget', () => {
     await searchInput.fill('mockSearchString');
 
     // wait for results to filter
-    // await page.waitForTimeout(5000);
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.waitForTimeout(5000);
 
     // only search results shown in grid
     await expect(
