@@ -4,6 +4,8 @@ import {
   mockNewUser,
   mockDisabledUser,
   mockEnabledUser,
+  mockUpdatedUsers,
+  updatedUser,
 } from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -14,6 +16,7 @@ import deleteUserModalMock from '../test/mocks/deleteUserModalMock';
 import enableUserModalMock from '../test/mocks/enableUserModalMock';
 import disableUserModalMock from '../test/mocks/disableUserModalMock';
 import removePasskeyModalMock from '../test/mocks/removePasskeyModalMock';
+import editUserModalMock from '../test/mocks/editUserModalMock';
 
 const configContent = {
   flows: {
@@ -53,6 +56,10 @@ test.describe('widget', () => {
       route.fulfill({ body: createUserModalMock }),
     );
 
+    await page.route('*/**/edit-user-modal.html', async (route) =>
+      route.fulfill({ body: editUserModalMock }),
+    );
+
     await page.route('*/**/delete-users-modal.html', async (route) =>
       route.fulfill({ body: deleteUserModalMock }),
     );
@@ -71,6 +78,10 @@ test.describe('widget', () => {
 
     await page.route(apiPath('user', 'create'), async (route) =>
       route.fulfill({ json: { user: mockNewUser } }),
+    );
+
+    await page.route(apiPath('user', 'update'), async (route) =>
+      route.fulfill({ json: { user: updatedUser } }),
     );
 
     await page.route(apiPath('tenant', 'roles'), async (route) =>
@@ -108,6 +119,80 @@ test.describe('widget', () => {
     ).toBeVisible();
   });
 
+  test('editable user', async ({ page }) => {
+    await page.route(apiPath('user', 'status'), async (route) =>
+      route.fulfill({ json: { user: mockDisabledUser } }),
+    );
+
+    const createUserTrigger = page
+      .locator('descope-button')
+      .getByTestId('create-user-trigger')
+      .first();
+
+    const editUserTrigger = page
+      .locator('descope-button')
+      .getByTestId('edit-user-trigger')
+      .first();
+
+    const enableUserTrigger = page
+      .locator('descope-button')
+      .getByTestId('enable-user-trigger')
+      .first();
+
+    const disableUserTrigger = page
+      .locator('descope-button')
+      .getByTestId('disable-user-trigger')
+      .first();
+
+    const removePasskeyTrigger = page
+      .locator('descope-button')
+      .getByTestId('remove-passkey-trigger')
+      .first();
+
+    // initial buttons state
+    expect(createUserTrigger).toBeEnabled();
+    expect(editUserTrigger).toBeDisabled();
+    expect(enableUserTrigger).toBeDisabled();
+    expect(disableUserTrigger).toBeDisabled();
+    expect(removePasskeyTrigger).toBeDisabled();
+
+    // wait for widget state
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select non-editable user (editable: false)
+    await page.locator('descope-checkbox').nth(4).click();
+
+    expect(createUserTrigger).toBeEnabled();
+    expect(editUserTrigger).toBeDisabled();
+    expect(enableUserTrigger).toBeDisabled();
+    expect(disableUserTrigger).toBeDisabled();
+    expect(removePasskeyTrigger).toBeDisabled();
+
+    // de-select non-editable user
+    await page.locator('descope-checkbox').nth(4).click();
+
+    // select enabled and editable user
+    await page.locator('descope-checkbox').nth(1).click();
+
+    expect(createUserTrigger).toBeEnabled();
+    expect(editUserTrigger).toBeEnabled();
+    expect(enableUserTrigger).toBeDisabled();
+    expect(disableUserTrigger).toBeEnabled();
+    expect(removePasskeyTrigger).toBeEnabled();
+
+    // de-select enabled and editable user
+    await page.locator('descope-checkbox').nth(1).click();
+
+    // select disabled and editable user
+    await page.locator('descope-checkbox').nth(2).click();
+
+    expect(createUserTrigger).toBeEnabled();
+    expect(editUserTrigger).toBeEnabled();
+    expect(enableUserTrigger).toBeEnabled();
+    expect(disableUserTrigger).toBeDisabled();
+    expect(removePasskeyTrigger).toBeEnabled();
+  });
+
   test('create user', async ({ page }) => {
     const openAddUserModalButton = page
       .getByTestId('create-user-trigger')
@@ -116,8 +201,8 @@ test.describe('widget', () => {
     // open add user modal
     await openAddUserModalButton.click();
 
-    const createUserLoginIdInput = page.getByLabel('Login Id');
-    const createUserEmailInput = page.getByLabel('Email');
+    const createUserLoginIdInput = page.getByLabel('Login Id').first();
+    const createUserEmailInput = page.getByLabel('Email').first();
 
     // submit login id
     await createUserLoginIdInput.fill('someLoginId@test.com');
@@ -140,6 +225,62 @@ test.describe('widget', () => {
 
     // show notification
     await expect(page.locator('text=User created successfully')).toBeVisible();
+  });
+
+  test('edit user', async ({ page }) => {
+    const openEditUserModalButton = page
+      .getByTestId('edit-user-trigger')
+      .first();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select user
+    await page.locator('descope-checkbox').nth(1).click();
+
+    // open add user modal
+    await openEditUserModalButton.click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    const editUserEmailInput = page.getByLabel('Email').last();
+    const editUserNameInput = page.getByLabel('Name').last();
+    const editUserPhoneInput = page.getByLabel('Phone').last();
+    const editUserRolesInput = page.getByLabel('Roles').last();
+
+    // edit email
+    await editUserEmailInput.fill(updatedUser.email);
+
+    // edit name
+    await editUserNameInput.fill(updatedUser.name);
+
+    await editUserPhoneInput.click();
+    await page.keyboard.type('555');
+
+    await editUserRolesInput.click();
+    await page.keyboard.press('Backspace');
+
+    // click modal create button
+    const editUserButton = page
+      .locator('descope-button')
+      .filter({ hasText: 'Edit User' })
+      .getByTestId('edit-user-modal-submit')
+      .first();
+
+    await editUserButton.click();
+
+    // update grid items
+    await expect(
+      page.locator(`text=${updatedUser.name}`).first(),
+    ).toBeVisible();
+    await expect(
+      page.locator(`text=${updatedUser.email}`).first(),
+    ).toBeVisible();
+    await expect(
+      page.locator(`text=${updatedUser.phone}`).first(),
+    ).toBeVisible();
+
+    // show notification
+    await expect(page.locator('text=User updated successfully')).toBeVisible();
   });
 
   test('delete users', async ({ page }) => {

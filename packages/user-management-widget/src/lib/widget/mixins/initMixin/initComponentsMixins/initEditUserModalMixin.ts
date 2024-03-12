@@ -46,7 +46,7 @@ const formatPhoneNumber = (phoneNumber: string) => {
 
   const parsedPhone = parsePhone(phoneNumber);
   const splitCodeRegex = new RegExp(
-    `(\\+?${parsedPhone.countryCallingCode})(.*)`,
+    `(\\+?${parsedPhone?.countryCallingCode})(.*)`,
   );
 
   return parsedPhone.number.replace(splitCodeRegex, '$1-$2');

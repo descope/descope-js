@@ -1,10 +1,12 @@
+import parsePhone from 'libphonenumber-js/min';
+
 export const mockUsers = [
   {
     loginIds: ['loginId1@loginId1.com', 'loginIdX1@loginIdX1.com'],
     userId: 'U2b2Jq9PXd6OBWIe7jOJ8aFbouGy',
     name: '',
     email: 'email1@email1.com',
-    phone: '1234',
+    phone: '+9725485454',
     verifiedEmail: true,
     verifiedPhone: false,
     roleNames: ['Tenant Admin', 'Role 2'],
@@ -63,6 +65,32 @@ export const mockUsers = [
     status: 'invited',
     editable: true,
     externalIds: ['externalId3@externalId3.com'],
+    picture: '',
+    test: false,
+    customAttributes: {},
+    createdTime: 1705407436,
+    TOTP: false,
+    SAML: false,
+    OAuth: {},
+    webauthn: false,
+    password: false,
+    ssoAppIds: [],
+    givenName: '',
+    middleName: '',
+    familyName: '',
+  },
+  {
+    loginIds: ['loginId4@loginId4.com'],
+    userId: 'U2b2JrD8oh48LiA9XF23bryn7d74',
+    name: '',
+    email: 'email4@email4.com',
+    phone: '',
+    verifiedEmail: true,
+    verifiedPhone: false,
+    roleNames: ['Tenant Admin', 'Role 1'],
+    status: 'invited',
+    editable: false,
+    externalIds: ['externalId4@externalId4.com'],
     picture: '',
     test: false,
     customAttributes: {},
@@ -165,4 +193,25 @@ export const mockEnabledUser = {
   givenName: '',
   middleName: '',
   familyName: '',
+};
+
+export const formatPhoneNumber = (phoneNumber: string) => {
+  if (!phoneNumber) return phoneNumber;
+
+  const parsedPhone = parsePhone(phoneNumber);
+  const splitCodeRegex = new RegExp(
+    `(\\+?${parsedPhone?.countryCallingCode})(.*)`,
+  );
+
+  return parsedPhone.number.replace(splitCodeRegex, '$1-$2');
+};
+
+export const updatedUser = {
+  ...mockUsers[0],
+  ...{
+    name: 'updated name',
+    email: 'updated@email.com',
+    phone: `${mockUsers[0].phone.replace('+', '')}555`,
+    roles: ['Role 2'],
+  },
 };
