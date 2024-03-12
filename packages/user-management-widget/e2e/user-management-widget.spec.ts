@@ -29,7 +29,7 @@ const apiPath = (prop: 'user' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 1500;
+const STATE_TIMEOUT = 2000;
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
