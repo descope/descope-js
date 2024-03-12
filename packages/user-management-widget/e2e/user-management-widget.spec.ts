@@ -101,6 +101,7 @@ test.describe('widget', () => {
     );
 
     await page.goto('http://localhost:5555');
+    await page.waitForTimeout(STATE_TIMEOUT);
   });
 
   test('users table', async ({ page }) => {
@@ -168,6 +169,8 @@ test.describe('widget', () => {
     expect(disableUserTrigger).toBeDisabled();
     expect(removePasskeyTrigger).toBeDisabled();
 
+    await page.waitForTimeout(STATE_TIMEOUT);
+
     // de-select non-editable user
     await page.locator('descope-checkbox').nth(4).click();
 
@@ -179,6 +182,8 @@ test.describe('widget', () => {
     expect(enableUserTrigger).toBeDisabled();
     expect(disableUserTrigger).toBeEnabled();
     expect(removePasskeyTrigger).toBeEnabled();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // de-select enabled and editable user
     await page.locator('descope-checkbox').nth(1).click();
@@ -489,6 +494,8 @@ test.describe('widget', () => {
 
     // wait for results to filter
     // await page.waitForTimeout(5000);
+
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // only search results shown in grid
     await expect(
