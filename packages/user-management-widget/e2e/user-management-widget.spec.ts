@@ -1,11 +1,19 @@
 import { test, expect } from '@playwright/test';
-import { mockUsers, mockNewUser } from '../test/mocks/mockUsers';
+import {
+  mockUsers,
+  mockNewUser,
+  mockDisabledUser,
+  mockEnabledUser,
+} from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import mockRoles from '../test/mocks/mockRoles';
 import rootMock from '../test/mocks/rootMock';
 import createUserModalMock from '../test/mocks/createUserModalMock';
 import deleteUserModalMock from '../test/mocks/deleteUserModalMock';
+import enableUserModalMock from '../test/mocks/enableUserModalMock';
+import disableUserModalMock from '../test/mocks/disableUserModalMock';
+import removePasskeyModalMock from '../test/mocks/removePasskeyModalMock';
 
 const configContent = {
   flows: {
@@ -18,6 +26,7 @@ const apiPath = (prop: 'user' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
+const STATE_TIMEOUT = 1500;
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -46,6 +55,18 @@ test.describe('widget', () => {
 
     await page.route('*/**/delete-users-modal.html', async (route) =>
       route.fulfill({ body: deleteUserModalMock }),
+    );
+
+    await page.route('*/**/enable-user-modal.html', async (route) =>
+      route.fulfill({ body: enableUserModalMock }),
+    );
+
+    await page.route('*/**/disable-user-modal.html', async (route) =>
+      route.fulfill({ body: disableUserModalMock }),
+    );
+
+    await page.route('*/**/remove-passkey-modal.html', async (route) =>
+      route.fulfill({ body: removePasskeyModalMock }),
     );
 
     await page.route(apiPath('user', 'create'), async (route) =>
@@ -104,7 +125,6 @@ test.describe('widget', () => {
     // submit email
     await createUserEmailInput.fill('someEmail@test.com');
 
-    await page.pause();
     // click modal create button
     const createUserButton = page
       .locator('descope-button')
@@ -160,6 +180,145 @@ test.describe('widget', () => {
 
     // update grid items
     await expect(page.locator('descope-grid').locator('#items')).toBeEmpty();
+  });
+
+  test('disable user', async ({ page }) => {
+    await page.route(apiPath('user', 'status'), async (route) =>
+      route.fulfill({ json: { user: mockDisabledUser } }),
+    );
+
+    const disableUserTrigger = page
+      .locator('descope-button')
+      .getByTestId('disable-user-trigger')
+      .first();
+    const disableUserModalButton = page
+      .getByTestId('disable-user-modal-submit')
+      .first();
+
+    // disable user button initial state is disabled
+    expect(disableUserTrigger).toBeDisabled();
+
+    // wait for widget state
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select first user (status: active)
+    await page.locator('descope-checkbox').nth(1).click();
+
+    // disable user button is enabled on selection
+    expect(disableUserTrigger).toBeEnabled();
+
+    // disable user
+    await disableUserTrigger.click();
+
+    // show disable user modal
+    const disableUserModal = page.locator('text=Disable User');
+    expect(disableUserModal).toBeVisible();
+
+    // click modal activate button
+    await disableUserModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // disable modal closed
+    await expect(page.locator('Disable')).toBeHidden();
+
+    // show notification
+    await expect(page.locator(`text=User disabled successfully`)).toBeVisible();
+  });
+
+  test('enable user', async ({ page }) => {
+    await page.route(apiPath('user', 'status'), async (route) =>
+      route.fulfill({ json: { user: mockEnabledUser } }),
+    );
+
+    const enableUserTrigger = page
+      .locator('descope-button')
+      .getByTestId('enable-user-trigger')
+      .first();
+    const enableUserModalButton = page
+      .getByTestId('enable-user-modal-submit')
+      .first();
+
+    // enable user button initial state is disabled
+    expect(enableUserTrigger).toBeDisabled();
+
+    // wait for widget state
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select first user (status: active)
+    await page.locator('descope-checkbox').nth(2).click();
+
+    // enable user button is enabled on selection
+    expect(enableUserTrigger).toBeEnabled();
+
+    // enable user
+    await enableUserTrigger.click();
+
+    // show enable user modal
+    const enableUserModal = page.locator('text=Activate User');
+    expect(enableUserModal).toBeVisible();
+
+    // click modal activate button
+    await enableUserModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // enable modal closed
+    await expect(page.locator('Activate')).toBeHidden();
+
+    // show notification
+    await expect(page.locator(`text=User enabled successfully`)).toBeVisible();
+  });
+
+  test('remove passkey', async ({ page }) => {
+    await page.route(apiPath('user', 'removePasskey'), async (route) =>
+      route.fulfill({ json: {} }),
+    );
+
+    const removePasskeyTrigger = page
+      .locator('descope-button')
+      .getByTestId('remove-passkey-trigger')
+      .first();
+    const removePasskeyModalButton = page
+      .getByTestId('remove-passkey-modal-submit')
+      .first();
+
+    // enable user button initial state is disabled
+    expect(removePasskeyTrigger).toBeDisabled();
+
+    // wait for widget state
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select first user (status: active)
+    await page.locator('descope-checkbox').nth(2).click();
+
+    // enable user button is enabled on selection
+    expect(removePasskeyTrigger).toBeEnabled();
+
+    // enable user
+    await removePasskeyTrigger.click();
+
+    // show enable user modal
+    const removePasskeyModal = page.locator('text=Remove passkey for');
+    expect(removePasskeyModal).toBeVisible();
+
+    // click modal activate button
+    await removePasskeyModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // enable modal closed
+    await expect(page.locator('Remove passkey for')).toBeHidden();
+
+    // show notification
+    await expect(
+      page.locator(`text=Successfully removed user's passkey`),
+    ).toBeVisible();
+
+    // update grid items
   });
 
   test('search users', async ({ page }) => {

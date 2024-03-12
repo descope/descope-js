@@ -191,7 +191,7 @@ export const createUserSdk = ({
 
   const enable = async (loginId: string) => {
     const res = await httpClient.post(
-      apiPaths.user.enable,
+      apiPaths.user.status,
       { loginId, status: 'enabled' },
       {
         queryParams: { tenant },
@@ -205,7 +205,7 @@ export const createUserSdk = ({
 
   const disable = async (loginId: string) => {
     const res = await httpClient.post(
-      apiPaths.user.enable,
+      apiPaths.user.status,
       { loginId, status: 'disabled' },
       {
         queryParams: { tenant },
