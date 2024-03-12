@@ -12,13 +12,41 @@ import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
 import { getSelectedUsers, getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { User } from '../../../api/types';
+
+const unflattenKeys = ['customAttributes'];
+
+const unflatten = (formData: Partial<User>) =>
+  Object.entries(formData).reduce((acc, [key, value]) => {
+    const [prefix, ...rest] = key.split('.');
+
+    if (!unflattenKeys.includes(prefix)) {
+      return Object.assign(acc, { [key]: value });
+    }
+
+    if (!acc[prefix]) {
+      acc[prefix] = {};
+    }
+
+    acc[prefix][rest.join('.')] = value;
+
+    return acc;
+  }, {});
+
+const flatten = (
+  vals: Record<string, string | boolean | number>,
+  keyPrefix: string,
+) =>
+  Object.fromEntries(
+    Object.entries(vals).map(([key, val]) => [`${keyPrefix}${key}`, val]),
+  );
 
 const formatPhoneNumber = (phoneNumber: string) => {
   if (!phoneNumber) return phoneNumber;
 
   const parsedPhone = parsePhone(phoneNumber);
   const splitCodeRegex = new RegExp(
-    `(\\+?${parsedPhone.countryCallingCode})(.*)`,
+    `(\\+?${parsedPhone?.countryCallingCode})(.*)`,
   );
 
   return parsedPhone.number.replace(splitCodeRegex, '$1-$2');
@@ -63,7 +91,7 @@ export const initEditUserModalMixin = createSingletonMixin(
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
-              ...formData,
+              ...unflatten(formData),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -89,6 +117,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
           roles: userDetails?.roles,
+          ...flatten(userDetails.customAttributes, 'customAttributes.'),
         };
 
         this.setFormData(this.editUserModal.ele, formData);

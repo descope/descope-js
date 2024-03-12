@@ -31,7 +31,7 @@ export const initUsersTableMixin = createSingletonMixin(
 
       #onUsersListUpdate = withMemCache(
         (usersList: ReturnType<typeof getUsersList>) => {
-          this.usersTable.data = usersList;
+          this.usersTable.data = usersList as User[];
         },
       );
 

@@ -40,9 +40,9 @@ export const initDeleteUsersButtonMixin = createSingletonMixin(
       );
 
       async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
         this.#initDeleteButton();
+
+        await super.onWidgetRootReady?.();
 
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),
