@@ -33,6 +33,7 @@ export type User = {
   externalIds: string[];
   picture: string;
   test: boolean;
+  editable: boolean;
   customAttributes: CustomAttributes;
   createdTime: number;
   TOTP: boolean;

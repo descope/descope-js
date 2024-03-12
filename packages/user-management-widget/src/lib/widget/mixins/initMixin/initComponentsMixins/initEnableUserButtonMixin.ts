@@ -4,49 +4,50 @@ import { createSingletonMixin } from '../../../../helpers/mixins';
 import { formMixin } from '../../../../mixins/formMixin';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { getCanEdit } from '../../../state/selectors';
+import { getCanEnable } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { initEditUserModalMixin } from './initEditUserModalMixin';
+import { initEnableUserModalMixin } from './initEnableUserModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
-export const initEditUserButtonMixin = createSingletonMixin(
+export const initEnableUserButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class InitEditUserButtonMixinClass extends compose(
+    class InitEnableUserButtonMixinClass extends compose(
       loggerMixin,
       initWidgetRootMixin,
       stateManagementMixin,
-      initEditUserModalMixin,
+      initEnableUserModalMixin,
       formMixin,
     )(superclass) {
-      editButton: ButtonDriver;
+      enableButton: ButtonDriver;
 
-      #initEditButton() {
-        this.editButton = new ButtonDriver(
-          this.shadowRoot?.querySelector('[data-id="edit-user"]'),
+      #initEnableButton() {
+        this.enableButton = new ButtonDriver(
+          this.shadowRoot?.querySelector('[data-id="enable-user"]'),
           { logger: this.logger },
         );
-        this.editButton.disable();
-        this.editButton.onClick(() => {
-          this.editUserModal.open();
+
+        this.enableButton.disable();
+        this.enableButton.onClick(() => {
+          this.enableUserModal.open();
         });
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (canEdit: ReturnType<typeof getCanEdit>) => {
-          if (canEdit) {
-            this.editButton.enable();
+        (canEnable: ReturnType<typeof getCanEnable>) => {
+          if (canEnable) {
+            this.enableButton.enable();
           } else {
-            this.editButton.disable();
+            this.enableButton.disable();
           }
         },
       );
 
       async onWidgetRootReady() {
-        this.#initEditButton();
+        this.#initEnableButton();
 
         await super.onWidgetRootReady?.();
 
-        this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanEdit);
+        this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanEnable);
       }
     },
 );

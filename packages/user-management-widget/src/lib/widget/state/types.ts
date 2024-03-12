@@ -20,6 +20,18 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  enableUser: {
+    loading: boolean;
+    error: unknown;
+  };
+  disableUser: {
+    loading: boolean;
+    error: unknown;
+  };
+  removePasskey: {
+    loading: boolean;
+    error: unknown;
+  };
   expireUserPassword: {
     loading: boolean;
     error: unknown;
