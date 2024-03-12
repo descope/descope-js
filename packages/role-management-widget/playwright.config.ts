@@ -26,7 +26,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5555',
+    baseURL: 'http://localhost:5556',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -77,11 +77,11 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'npx serve node_modules/@descope/web-components-ui/dist -p 8765',
+      command: 'npx serve node_modules/@descope/web-components-ui/dist -p 8766',
     },
     {
-      command: 'npx serve build -l 5555',
-      url: 'http://localhost:5555',
+      command: 'npx serve build -l 5556',
+      url: 'http://localhost:5556',
       reuseExistingServer: !process.env.CI,
     },
   ],
