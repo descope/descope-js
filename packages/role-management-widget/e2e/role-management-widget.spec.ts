@@ -8,6 +8,7 @@ import {
 } from '../test/mocks/mockRoles';
 import rootMock from '../test/mocks/rootMock';
 import createRoleModalMock from '../test/mocks/createRoleModalMock';
+import editRoleModalMock from '../test/mocks/editRoleModalMock';
 import deleteRoleModalMock from '../test/mocks/deleteRoleModalMock';
 
 const configContent = {
@@ -47,12 +48,16 @@ test.describe('widget', () => {
       route.fulfill({ body: createRoleModalMock }),
     );
 
+    await page.route('*/**/edit-role-modal.html', async (route) =>
+      route.fulfill({ body: editRoleModalMock }),
+    );
+
     await page.route('*/**/delete-roles-modal.html', async (route) =>
       route.fulfill({ body: deleteRoleModalMock }),
     );
 
     await page.route(apiPath('role', 'create'), async (route) =>
-      route.fulfill({ json: { mockNewRole } }),
+      route.fulfill({ json: mockNewRole }),
     );
 
     await page.route(apiPath('tenant', 'permissions'), async (route) =>
@@ -63,7 +68,7 @@ test.describe('widget', () => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ roles: mockRoles }),
+        body: JSON.stringify({ roles: mockRoles.roles }),
       }),
     );
 
@@ -76,7 +81,15 @@ test.describe('widget', () => {
 
   test('roles table', async ({ page }) => {
     await expect(
-      page.locator(`text=${mockRoles[0]['name']}`).first(),
+      page.locator(`text=${mockRoles.roles[0]['name']}`).first(),
+    ).toBeVisible();
+
+    await expect(
+      page.locator(`text=${mockRoles.roles[1]['name']}`).first(),
+    ).toBeVisible();
+
+    await expect(
+      page.locator(`text=${mockRoles.roles[2]['name']}`).first(),
     ).toBeVisible();
   });
 
@@ -88,14 +101,14 @@ test.describe('widget', () => {
     // open add role modal
     await openAddRoleModalButton.click();
 
-    const createRoleNameInput = page.getByLabel('Name');
-    const createRoleDescriptionInput = page.getByLabel('Description');
+    const createRoleNameInput = page.getByText('Name');
+    const createRoleDescriptionInput = page.getByText('Description');
 
     // submit name
-    await createRoleNameInput.fill('some role name');
+    await (await createRoleNameInput.all()).at(1).fill('some role name');
 
     // submit description
-    await createRoleDescriptionInput.fill('some role desc');
+    await (await createRoleDescriptionInput.all()).at(1).fill('some role desc');
 
     await page.pause();
     // click modal create button
@@ -181,7 +194,7 @@ test.describe('widget', () => {
 
     // only search results shown in grid
     await expect(
-      page.locator(`text=${mockRoles[0]['name']}`).first(),
+      page.locator(`text=${mockRoles.roles[0]['name']}`).first(),
     ).toBeHidden();
   });
 

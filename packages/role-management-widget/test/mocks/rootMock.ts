@@ -1,51 +1,22 @@
 export default `
-<descope-container
-  direction="column"
-  space-between="md"
-  st-horizontal-padding="1rem"
-  st-vertical-padding="1rem"
-  st-align-items="safe center"
-  st-gap="1rem"
->
-  <descope-container
-    direction="row"
-    st-horizontal-padding="0rem"
-    st-vertical-padding="0rem"
-    st-align-items="safe center"
-    st-gap="0rem"
-    st-justify-content="space-between"
-  >
-    <descope-text-field data-testid="search-input" data-id="search-input" placeholder="Search" size="sm" bordered="true"></descope-text-field>
-    <descope-container
-      direction="row"
-      st-horizontal-padding="0rem"
-      st-vertical-padding="0rem"
-      st-justify-content="flex-end"
-      st-gap="0.5em"
-      st-host-width="auto"
-    >
-      <descope-button data-testid="delete-roles-trigger" data-id="delete-roles" mode="primary" variant="outline" size="sm">Delete</descope-button>
-      <descope-button data-testid="create-role-trigger" data-id="create-role" mode="primary" variant="contained" size="sm">+ Role</descope-button>
+<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="1rem" st-vertical-padding="1rem" st-align-items="safe center" st-justify-content="safe center" st-host-width="100%" st-gap="1rem">
+    <descope-container data-editor-type="container" direction="row" id="headerContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="space-between" st-background-color="#ffffff00" st-host-width="100%" st-gap="0rem">
+        <descope-text-field bordered="true" data-id="search-input" data-testid="search-input" full-width="false" id="search" label="" max="100" name="" placeholder="Search" required="false" size="sm"></descope-text-field>
+        <descope-container data-editor-type="container" direction="row" id="buttonsContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="flex-end" st-background-color="#ffffff00" st-host-width="auto" st-gap="0.5rem">
+            <descope-button data-id="delete-roles" data-testid="delete-roles-trigger" data-type="button" formNoValidate="false" full-width="false" id="deleteRoles" shape="" size="sm" variant="outline" mode="primary" square="false">Delete</descope-button>
+            <descope-button data-id="create-role" data-testid="create-role-trigger" data-type="button" formNoValidate="false" full-width="false" id="createRole" shape="" size="sm" variant="contained" mode="primary" square="false">+ Role</descope-button>
+            <descope-button data-id="edit-role" data-testid="edit-role-trigger" data-type="button" formNoValidate="false" full-width="false" id="editRole" shape="" size="sm" variant="contained" mode="primary" square="false">Edit Role</descope-button>
+        </descope-container>
     </descope-container>
-    </descope-container>
-    <descope-grid
-      data-id="roles-table"
-      size="sm"
-      column-reordering-allowed
-      st-host-height="300px"
-      style="width: 100%"
-    >
-      <descope-grid-selection-column frozen auto-width></descope-grid-selection-column>
-      <descope-grid-text-column path="loginIds" header="Login ID" resizable></descope-grid-text-column>
-      <descope-grid-text-column sortable="true" path="name" header="Name" resizable></descope-grid-text-column>
-      <descope-grid-text-column path="roles" header="Roles" resizable></descope-grid-text-column>
-      <descope-grid-custom-column sortable="true" path="status" header="Status" resizable>
-        <descope-badge mode="default" data-pattern="invited" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
-        <descope-badge mode="primary" data-pattern="active" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
-        <descope-badge mode="error" data-pattern="disabled" bordered="true" size="xs" st-text-transform="capitalize"></descope-badge>
-      </descope-grid-custom-column>
-      <descope-grid-text-column sortable="true" path="email" header="Email" resizable></descope-grid-text-column>
-      <descope-grid-text-column sortable="true" path="phone" header="Phone" resizable></descope-grid-text-column>
+    <descope-grid column-reordering-allowed="true" data-id="roles-table" size="sm" st-host-height="300px" style="width:100%">
+        <descope-grid-selection-column auto-width="true" frozen="true"></descope-grid-selection-column>
+        <descope-grid-text-column header="Name" path="name" resizable="true" sortable="true"></descope-grid-text-column>
+        <descope-grid-text-column header="Description" path="description" resizable="true" sortable="true"></descope-grid-text-column>
+        <descope-grid-text-column header="Permissions" path="permissionNames" resizable="true"></descope-grid-text-column>
+        <descope-grid-custom-column header="Editable" path="editable" resizable="true">
+          <descope-badge bordered="true" data-pattern="no" mode="default" size="xs" st-text-transform="capitalize"></descope-badge>
+          <descope-badge bordered="true" data-pattern="yes" mode="primary" size="xs" st-text-transform="capitalize"></descope-badge>
+        </descope-grid-custom-column>
     </descope-grid>
-  </descope-container>
+</descope-container>
 `;
