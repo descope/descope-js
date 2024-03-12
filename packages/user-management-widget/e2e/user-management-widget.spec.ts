@@ -125,6 +125,8 @@ test.describe('widget', () => {
       route.fulfill({ json: { user: mockDisabledUser } }),
     );
 
+    await page.waitForTimeout(STATE_TIMEOUT);
+
     const createUserTrigger = page
       .locator('descope-button')
       .getByTestId('create-user-trigger')
