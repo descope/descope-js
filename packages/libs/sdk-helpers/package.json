@@ -24,7 +24,7 @@
   "description": "Descope JavaScript SDK helpers",
   "scripts": {
     "build": "rimraf dist && rollup -c",
-    "test": "jest",
+    "test": "echo no tests yet",
     "lint": "eslint '+(src|test|examples)/**/*.ts'"
   },
   "license": "MIT",
