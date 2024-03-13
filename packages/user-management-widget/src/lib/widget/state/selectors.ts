@@ -8,6 +8,8 @@ export const getSelectedUsersLoginIds = (state: State) =>
   state.selectedUsersLoginIds;
 export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
+export const getCustomAttributes = (state: State) =>
+  state.customAttributes.data;
 
 export const getUsersList = createSelector(getRawUsersList, (users) =>
   users.map((user) => ({

@@ -12,9 +12,13 @@ import {
 import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import parsePhone from 'libphonenumber-js/min';
 import { User } from '../../../api/types';
-import { getSelectedUsers, getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import {
+  getCustomAttributes,
+  getSelectedUsers,
+  getTenantRoles,
+} from '../../../state/selectors';
 
 const unflattenKeys = ['customAttributes'];
 
@@ -110,6 +114,31 @@ export const initEditUserModalMixin = createSingletonMixin(
         );
       };
 
+      // hide and disable fields according to user permissions
+      #updateCustomFields() {
+        const customAttrs = getCustomAttributes(this.state);
+
+        this.getFormFieldNames(this.editUserModal.ele).forEach(
+          (fieldName: string) => {
+            const [prefix, name] = fieldName.split('.');
+
+            if (prefix !== 'customAttributes') {
+              return;
+            }
+
+            const matchingCustomAttr = customAttrs.find(
+              (attr) => attr.name === name,
+            );
+
+            if (!matchingCustomAttr) {
+              this.removeFormField(this.editUserModal.ele, fieldName);
+            } else if (!matchingCustomAttr.editable) {
+              this.disableFormField(this.editUserModal.ele, fieldName);
+            }
+          },
+        );
+      }
+
       #updateModalData = () => {
         const userDetails = getSelectedUsers(this.state)?.[0];
 
@@ -151,6 +180,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
           this.#updateModalData();
+          this.#updateCustomFields();
         };
       }
 

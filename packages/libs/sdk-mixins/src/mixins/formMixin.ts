@@ -50,5 +50,21 @@ export const formMixin = createSingletonMixin(
           input.value = '';
         });
       }
+
+      getFormFieldNames(rootEle: ElementOrEmpty) {
+        return this.getFormInputs(rootEle).map((ele) => ele.name);
+      }
+
+      disableFormField(rootEle: ElementOrEmpty, name: string) {
+        this.getFormInputs(rootEle)
+          .find((input) => input.name === name)
+          ?.setAttribute('disabled', 'true');
+      }
+
+      removeFormField(rootEle: ElementOrEmpty, name: string) {
+        this.getFormInputs(rootEle)
+          .find((input) => input.name === name)
+          ?.remove();
+      }
     },
 );

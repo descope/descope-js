@@ -17,6 +17,7 @@ import enableUserModalMock from '../test/mocks/enableUserModalMock';
 import disableUserModalMock from '../test/mocks/disableUserModalMock';
 import removePasskeyModalMock from '../test/mocks/removePasskeyModalMock';
 import editUserModalMock from '../test/mocks/editUserModalMock';
+import mockCustomAttributes from '../test/mocks/mockCustomAttributes';
 
 const configContent = {
   flows: {
@@ -86,6 +87,10 @@ test.describe('widget', () => {
 
     await page.route(apiPath('tenant', 'roles'), async (route) =>
       route.fulfill({ json: mockRoles }),
+    );
+
+    await page.route(apiPath('user', 'customattributes'), async (route) =>
+      route.fulfill({ json: mockCustomAttributes }),
     );
 
     await page.route(apiPath('user', 'search'), async (route) =>
