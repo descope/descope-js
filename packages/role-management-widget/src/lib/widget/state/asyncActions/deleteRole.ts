@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { pluralize } from '@descope/sdk-helpers';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
 import {
@@ -7,7 +8,6 @@ import {
   withNotifications,
   withRequestStatus,
 } from './helpers';
-import { pluralize } from '../../../helpers/generic';
 
 const action = createAsyncThunk<
   any,

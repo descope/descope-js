@@ -1,20 +1,21 @@
 /* eslint-disable no-param-reassign */
-import { compose } from '../../helpers/compose';
-import { createSingletonMixin } from '../../helpers/mixins';
-import { createStateManagementMixin } from '../../mixins/createStateManagementMixin';
-import { initLifecycleMixin } from '../../mixins/initLifecycleMixin';
-import { loggerMixin } from '../../mixins/loggerMixin';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  createStateManagementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import {
   createUser,
   deleteUsers,
+  disableUser,
+  enableUser,
   expireUserPassword,
   getCustomAttributes,
-  searchUser,
   getTenantRoles,
-  updateUser,
-  enableUser,
-  disableUser,
   removePasskey,
+  searchUser,
+  updateUser,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';

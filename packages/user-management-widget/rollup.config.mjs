@@ -1,7 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
-import banner from 'rollup-plugin-banner';
+import banner from 'rollup-plugin-banner2';
 import define from 'rollup-plugin-define';
 import del from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
@@ -23,6 +23,8 @@ export default [
       dir: 'dist',
       format: 'iife',
       sourcemap: true,
+      name: 'descope-user-management-widget',
+      extend: true,
     },
     inlineDynamicImports: true,
     plugins: [
@@ -42,7 +44,13 @@ export default [
       nodeResolve(),
       terser(),
       svg(),
-      banner.default('<%= pkg.name %> v<%= pkg.version %>'),
+      banner(
+        () => `
+      /**
+       * ${packageJson.name} v${packageJson.version}
+       */
+      `,
+      ),
     ],
   },
   {
@@ -66,7 +74,13 @@ export default [
       nodeResolve(),
       terser(),
       svg(),
-      banner.default('<%= pkg.name %> v<%= pkg.version %>'),
+      banner(
+        () => `
+      /**
+       * ${packageJson.name} v${packageJson.version}
+       */
+      `,
+      ),
     ],
 
     external,

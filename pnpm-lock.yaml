@@ -150,8 +150,310 @@ importers:
       ts-node: 10.9.2_typescript@4.9.5
       typescript: 4.9.5
 
+  packages/core-js-sdk/dist/cjs:
+    specifiers: {}
+
+  packages/libs/sdk-component-drivers:
+    specifiers:
+      '@descope/sdk-helpers': workspace:*
+      '@open-wc/rollup-plugin-html': 1.2.5
+      '@rollup/plugin-commonjs': 24.1.0
+      '@rollup/plugin-node-resolve': ^15.0.0
+      '@rollup/plugin-replace': ^5.0.2
+      '@rollup/plugin-terser': ^0.4.0
+      '@rollup/plugin-typescript': ^11.0.0
+      '@types/jest': ^29.0.0
+      '@types/js-cookie': ^3.0.2
+      '@types/lodash.get': ^4.4.7
+      '@types/node': 20.11.19
+      '@typescript-eslint/parser': ^7.0.0
+      eslint: 8.52.0
+      eslint-config-airbnb-typescript: 17.1.0
+      eslint-config-prettier: 9.1.0
+      eslint-config-standard: 17.1.0
+      eslint-import-resolver-typescript: 3.6.1
+      eslint-plugin-import: 2.28.1
+      eslint-plugin-jest: 27.4.2
+      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-formatting: 3.1.0
+      eslint-plugin-n: 15.7.0
+      eslint-plugin-no-only-tests: 3.1.0
+      eslint-plugin-prefer-arrow: 1.2.3
+      eslint-plugin-prettier: 4.2.1
+      eslint-plugin-promise: 6.1.1
+      http-server: ^14.0.0
+      jest: ^29.0.0
+      jest-environment-jsdom: ^29.0.0
+      lint-staged: ^15.0.0
+      prettier: ^3.0.0
+      pretty-quick: ^3.1.3
+      rimraf: ^5.0.0
+      rollup: ^3.0.0
+      rollup-plugin-auto-external: ^2.0.0
+      rollup-plugin-browsersync: ^1.3.3
+      rollup-plugin-delete: ^2.0.0
+      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-esbuild: ^5.0.0
+      rollup-plugin-inject-process-env: ^1.3.1
+      rollup-plugin-livereload: ^2.0.5
+      ts-jest: ^29.0.0
+      ts-node: 10.9.2
+      tslib: 2.6.2
+      typescript: ^4.5.3
+    dependencies:
+      '@descope/sdk-helpers': link:../sdk-helpers
+      tslib: 2.6.2
+    devDependencies:
+      '@open-wc/rollup-plugin-html': 1.2.5
+      '@rollup/plugin-commonjs': 24.1.0_rollup@3.21.0
+      '@rollup/plugin-node-resolve': 15.0.2_rollup@3.21.0
+      '@rollup/plugin-replace': 5.0.2_rollup@3.21.0
+      '@rollup/plugin-terser': 0.4.1_rollup@3.21.0
+      '@rollup/plugin-typescript': 11.1.0_qg2iy7bpgipnhmjgd6ykszyjf4
+      '@types/jest': 29.5.12
+      '@types/js-cookie': 3.0.3
+      '@types/lodash.get': 4.4.7
+      '@types/node': 20.11.19
+      '@typescript-eslint/parser': 7.2.0_a3vhf2jlnnjnbmpqqovi7mhg4a
+      eslint: 8.52.0
+      eslint-config-airbnb-typescript: 17.1.0_wxl4p2tsai53vvr6wv7j6neo4e
+      eslint-config-prettier: 9.1.0_eslint@8.52.0
+      eslint-config-standard: 17.1.0_6m74rr2dtf6ig5jkdzzncfzrae
+      eslint-import-resolver-typescript: 3.6.1_wxl4p2tsai53vvr6wv7j6neo4e
+      eslint-plugin-import: 2.28.1_gghe5zhfqchmqro2wgmzkt4nf4
+      eslint-plugin-jest: 27.4.2_jkpsjs3u6qu7opgxivnvjmwfre
+      eslint-plugin-jest-dom: 4.0.3_eslint@8.52.0
+      eslint-plugin-jest-formatting: 3.1.0_eslint@8.52.0
+      eslint-plugin-n: 15.7.0_eslint@8.52.0
+      eslint-plugin-no-only-tests: 3.1.0
+      eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
+      eslint-plugin-prettier: 4.2.1_py7uwnhrbr4sutwe3vsbwv3q2e
+      eslint-plugin-promise: 6.1.1_eslint@8.52.0
+      http-server: 14.1.1
+      jest: 29.7.0_vtsu26dut3ym3262betabmhb5u
+      jest-environment-jsdom: 29.7.0
+      lint-staged: 15.1.0
+      prettier: 3.1.0
+      pretty-quick: 3.1.3_prettier@3.1.0
+      rimraf: 5.0.1
+      rollup: 3.21.0
+      rollup-plugin-auto-external: 2.0.0_rollup@3.21.0
+      rollup-plugin-browsersync: 1.3.3
+      rollup-plugin-delete: 2.0.0
+      rollup-plugin-dts: 5.3.0_zjv3lieumqk2o4i37bwstp2eii
+      rollup-plugin-esbuild: 5.0.0_rollup@3.21.0
+      rollup-plugin-inject-process-env: 1.3.1
+      rollup-plugin-livereload: 2.0.5
+      ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
+      ts-node: 10.9.2_rpeshylcpkwcwprt3vp22j2jpy
+      typescript: 4.9.5
+
+  packages/libs/sdk-component-drivers/dist/cjs:
+    specifiers: {}
+
+  packages/libs/sdk-helpers:
+    specifiers:
+      '@rollup/plugin-commonjs': 24.1.0
+      '@rollup/plugin-node-resolve': ^15.0.0
+      '@rollup/plugin-replace': ^5.0.2
+      '@rollup/plugin-terser': ^0.4.0
+      '@rollup/plugin-typescript': ^11.0.0
+      '@types/jest': ^29.0.0
+      '@types/js-cookie': ^3.0.2
+      '@types/lodash.get': ^4.4.7
+      '@types/node': 20.11.19
+      '@typescript-eslint/parser': ^7.0.0
+      eslint: 8.52.0
+      eslint-config-airbnb-typescript: 17.1.0
+      eslint-config-prettier: 9.1.0
+      eslint-config-standard: 17.1.0
+      eslint-import-resolver-typescript: 3.6.1
+      eslint-plugin-import: 2.28.1
+      eslint-plugin-jest: 27.4.2
+      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-formatting: 3.1.0
+      eslint-plugin-n: 15.7.0
+      eslint-plugin-no-only-tests: 3.1.0
+      eslint-plugin-prefer-arrow: 1.2.3
+      eslint-plugin-prettier: 4.2.1
+      eslint-plugin-promise: 6.1.1
+      http-server: ^14.0.0
+      jest: ^29.0.0
+      jest-environment-jsdom: ^29.0.0
+      lint-staged: ^15.0.0
+      prettier: ^3.0.0
+      pretty-quick: ^3.1.3
+      rimraf: ^5.0.0
+      rollup: ^3.0.0
+      rollup-plugin-auto-external: ^2.0.0
+      rollup-plugin-browsersync: ^1.3.3
+      rollup-plugin-delete: ^2.0.0
+      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-esbuild: ^5.0.0
+      rollup-plugin-inject-process-env: ^1.3.1
+      rollup-plugin-livereload: ^2.0.5
+      ts-jest: ^29.0.0
+      ts-node: 10.9.2
+      tslib: 2.6.2
+      typescript: ^4.5.3
+    dependencies:
+      tslib: 2.6.2
+    devDependencies:
+      '@rollup/plugin-commonjs': 24.1.0_rollup@3.21.0
+      '@rollup/plugin-node-resolve': 15.0.2_rollup@3.21.0
+      '@rollup/plugin-replace': 5.0.2_rollup@3.21.0
+      '@rollup/plugin-terser': 0.4.1_rollup@3.21.0
+      '@rollup/plugin-typescript': 11.1.0_qg2iy7bpgipnhmjgd6ykszyjf4
+      '@types/jest': 29.5.12
+      '@types/js-cookie': 3.0.3
+      '@types/lodash.get': 4.4.7
+      '@types/node': 20.11.19
+      '@typescript-eslint/parser': 7.2.0_a3vhf2jlnnjnbmpqqovi7mhg4a
+      eslint: 8.52.0
+      eslint-config-airbnb-typescript: 17.1.0_wxl4p2tsai53vvr6wv7j6neo4e
+      eslint-config-prettier: 9.1.0_eslint@8.52.0
+      eslint-config-standard: 17.1.0_6m74rr2dtf6ig5jkdzzncfzrae
+      eslint-import-resolver-typescript: 3.6.1_wxl4p2tsai53vvr6wv7j6neo4e
+      eslint-plugin-import: 2.28.1_gghe5zhfqchmqro2wgmzkt4nf4
+      eslint-plugin-jest: 27.4.2_jkpsjs3u6qu7opgxivnvjmwfre
+      eslint-plugin-jest-dom: 4.0.3_eslint@8.52.0
+      eslint-plugin-jest-formatting: 3.1.0_eslint@8.52.0
+      eslint-plugin-n: 15.7.0_eslint@8.52.0
+      eslint-plugin-no-only-tests: 3.1.0
+      eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
+      eslint-plugin-prettier: 4.2.1_py7uwnhrbr4sutwe3vsbwv3q2e
+      eslint-plugin-promise: 6.1.1_eslint@8.52.0
+      http-server: 14.1.1
+      jest: 29.7.0_vtsu26dut3ym3262betabmhb5u
+      jest-environment-jsdom: 29.7.0
+      lint-staged: 15.1.0
+      prettier: 3.1.0
+      pretty-quick: 3.1.3_prettier@3.1.0
+      rimraf: 5.0.1
+      rollup: 3.21.0
+      rollup-plugin-auto-external: 2.0.0_rollup@3.21.0
+      rollup-plugin-browsersync: 1.3.3
+      rollup-plugin-delete: 2.0.0
+      rollup-plugin-dts: 5.3.0_zjv3lieumqk2o4i37bwstp2eii
+      rollup-plugin-esbuild: 5.0.0_rollup@3.21.0
+      rollup-plugin-inject-process-env: 1.3.1
+      rollup-plugin-livereload: 2.0.5
+      ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
+      ts-node: 10.9.2_rpeshylcpkwcwprt3vp22j2jpy
+      typescript: 4.9.5
+
+  packages/libs/sdk-helpers/dist/cjs:
+    specifiers: {}
+
+  packages/libs/sdk-mixins:
+    specifiers:
+      '@descope/sdk-component-drivers': workspace:*
+      '@descope/sdk-helpers': workspace:*
+      '@open-wc/rollup-plugin-html': 1.2.5
+      '@reduxjs/toolkit': ^2.0.1
+      '@rollup/plugin-commonjs': 24.1.0
+      '@rollup/plugin-node-resolve': ^15.0.0
+      '@rollup/plugin-replace': ^5.0.2
+      '@rollup/plugin-terser': ^0.4.0
+      '@rollup/plugin-typescript': ^11.0.0
+      '@types/jest': ^29.0.0
+      '@types/js-cookie': ^3.0.2
+      '@types/lodash.get': ^4.4.7
+      '@types/node': 20.11.19
+      '@typescript-eslint/parser': ^7.0.0
+      eslint: 8.52.0
+      eslint-config-airbnb-typescript: 17.1.0
+      eslint-config-prettier: 9.1.0
+      eslint-config-standard: 17.1.0
+      eslint-import-resolver-typescript: 3.6.1
+      eslint-plugin-import: 2.28.1
+      eslint-plugin-jest: 27.4.2
+      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-formatting: 3.1.0
+      eslint-plugin-n: 15.7.0
+      eslint-plugin-no-only-tests: 3.1.0
+      eslint-plugin-prefer-arrow: 1.2.3
+      eslint-plugin-prettier: 4.2.1
+      eslint-plugin-promise: 6.1.1
+      http-server: ^14.0.0
+      jest: ^29.0.0
+      jest-environment-jsdom: ^29.0.0
+      lint-staged: ^15.0.0
+      prettier: ^3.0.0
+      pretty-quick: ^3.1.3
+      redux: 5.0.1
+      rimraf: ^5.0.0
+      rollup: ^3.0.0
+      rollup-plugin-auto-external: ^2.0.0
+      rollup-plugin-browsersync: ^1.3.3
+      rollup-plugin-delete: ^2.0.0
+      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-esbuild: ^5.0.0
+      rollup-plugin-inject-process-env: ^1.3.1
+      rollup-plugin-livereload: ^2.0.5
+      ts-jest: ^29.0.0
+      ts-node: 10.9.2
+      tslib: 2.6.2
+      typescript: ^4.5.3
+    dependencies:
+      '@descope/sdk-component-drivers': link:../sdk-component-drivers
+      '@descope/sdk-helpers': link:../sdk-helpers
+      tslib: 2.6.2
+    devDependencies:
+      '@open-wc/rollup-plugin-html': 1.2.5
+      '@reduxjs/toolkit': 2.0.1
+      '@rollup/plugin-commonjs': 24.1.0_rollup@3.21.0
+      '@rollup/plugin-node-resolve': 15.0.2_rollup@3.21.0
+      '@rollup/plugin-replace': 5.0.2_rollup@3.21.0
+      '@rollup/plugin-terser': 0.4.1_rollup@3.21.0
+      '@rollup/plugin-typescript': 11.1.0_qg2iy7bpgipnhmjgd6ykszyjf4
+      '@types/jest': 29.5.12
+      '@types/js-cookie': 3.0.3
+      '@types/lodash.get': 4.4.7
+      '@types/node': 20.11.19
+      '@typescript-eslint/parser': 7.2.0_a3vhf2jlnnjnbmpqqovi7mhg4a
+      eslint: 8.52.0
+      eslint-config-airbnb-typescript: 17.1.0_wxl4p2tsai53vvr6wv7j6neo4e
+      eslint-config-prettier: 9.1.0_eslint@8.52.0
+      eslint-config-standard: 17.1.0_6m74rr2dtf6ig5jkdzzncfzrae
+      eslint-import-resolver-typescript: 3.6.1_wxl4p2tsai53vvr6wv7j6neo4e
+      eslint-plugin-import: 2.28.1_gghe5zhfqchmqro2wgmzkt4nf4
+      eslint-plugin-jest: 27.4.2_jkpsjs3u6qu7opgxivnvjmwfre
+      eslint-plugin-jest-dom: 4.0.3_eslint@8.52.0
+      eslint-plugin-jest-formatting: 3.1.0_eslint@8.52.0
+      eslint-plugin-n: 15.7.0_eslint@8.52.0
+      eslint-plugin-no-only-tests: 3.1.0
+      eslint-plugin-prefer-arrow: 1.2.3_eslint@8.52.0
+      eslint-plugin-prettier: 4.2.1_py7uwnhrbr4sutwe3vsbwv3q2e
+      eslint-plugin-promise: 6.1.1_eslint@8.52.0
+      http-server: 14.1.1
+      jest: 29.7.0_vtsu26dut3ym3262betabmhb5u
+      jest-environment-jsdom: 29.7.0
+      lint-staged: 15.1.0
+      prettier: 3.1.0
+      pretty-quick: 3.1.3_prettier@3.1.0
+      redux: 5.0.1
+      rimraf: 5.0.1
+      rollup: 3.21.0
+      rollup-plugin-auto-external: 2.0.0_rollup@3.21.0
+      rollup-plugin-browsersync: 1.3.3
+      rollup-plugin-delete: 2.0.0
+      rollup-plugin-dts: 5.3.0_zjv3lieumqk2o4i37bwstp2eii
+      rollup-plugin-esbuild: 5.0.0_rollup@3.21.0
+      rollup-plugin-inject-process-env: 1.3.1
+      rollup-plugin-livereload: 2.0.5
+      ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
+      ts-node: 10.9.2_rpeshylcpkwcwprt3vp22j2jpy
+      typescript: 4.9.5
+
+  packages/libs/sdk-mixins/dist/cjs:
+    specifiers: {}
+
   packages/role-management-widget:
     specifiers:
+      '@descope/sdk-component-drivers': workspace:*
+      '@descope/sdk-helpers': workspace:*
+      '@descope/sdk-mixins': workspace:*
       '@descope/web-components-ui': latest
       '@descope/web-js-sdk': workspace:*
       '@open-wc/rollup-plugin-html': 1.2.5
@@ -185,7 +487,6 @@ importers:
       immer: ^10.0.3
       jest: ^29.0.0
       jest-environment-jsdom: ^29.0.0
-      libphonenumber-js: 1.10.57
       lint-staged: ^15.0.0
       prettier: ^3.0.0
       pretty-quick: ^3.1.3
@@ -193,7 +494,7 @@ importers:
       redux-thunk: 3.1.0
       reselect: 5.0.1
       rollup: ^2.78.0
-      rollup-plugin-banner: 0.2.1
+      rollup-plugin-banner2: ^1.2.2
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-define: ^1.0.1
       rollup-plugin-delete: ^2.0.0
@@ -208,10 +509,12 @@ importers:
       tslib: 2.6.2
       typescript: ^4.5.3
     dependencies:
+      '@descope/sdk-component-drivers': link:../libs/sdk-component-drivers
+      '@descope/sdk-helpers': link:../libs/sdk-helpers
+      '@descope/sdk-mixins': link:../libs/sdk-mixins
       '@descope/web-js-sdk': link:../web-js-sdk
       '@reduxjs/toolkit': 2.0.1
       immer: 10.0.3
-      libphonenumber-js: 1.10.57
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
       reselect: 5.0.1
@@ -251,7 +554,7 @@ importers:
       prettier: 3.1.0
       pretty-quick: 3.1.3_prettier@3.1.0
       rollup: 2.79.1
-      rollup-plugin-banner: 0.2.1
+      rollup-plugin-banner2: 1.2.2
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@2.79.1
       rollup-plugin-delete: 2.0.0
@@ -267,6 +570,9 @@ importers:
 
   packages/user-management-widget:
     specifiers:
+      '@descope/sdk-component-drivers': workspace:*
+      '@descope/sdk-helpers': workspace:*
+      '@descope/sdk-mixins': workspace:*
       '@descope/web-components-ui': latest
       '@descope/web-js-sdk': workspace:*
       '@open-wc/rollup-plugin-html': 1.2.5
@@ -308,7 +614,7 @@ importers:
       redux-thunk: 3.1.0
       reselect: 5.0.1
       rollup: ^2.78.0
-      rollup-plugin-banner: 0.2.1
+      rollup-plugin-banner2: ^1.2.2
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-define: ^1.0.1
       rollup-plugin-delete: ^2.0.0
@@ -323,6 +629,9 @@ importers:
       tslib: 2.6.2
       typescript: ^4.5.3
     dependencies:
+      '@descope/sdk-component-drivers': link:../libs/sdk-component-drivers
+      '@descope/sdk-helpers': link:../libs/sdk-helpers
+      '@descope/sdk-mixins': link:../libs/sdk-mixins
       '@descope/web-js-sdk': link:../web-js-sdk
       '@reduxjs/toolkit': 2.0.1
       immer: 10.0.3
@@ -366,7 +675,7 @@ importers:
       prettier: 3.1.0
       pretty-quick: 3.1.3_prettier@3.1.0
       rollup: 2.79.1
-      rollup-plugin-banner: 0.2.1
+      rollup-plugin-banner2: 1.2.2
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@2.79.1
       rollup-plugin-delete: 2.0.0
@@ -573,6 +882,9 @@ importers:
       ts-jest: 29.1.0_doipufordlnvh5g4adbwayvyvy
       ts-node: 10.9.2_rpeshylcpkwcwprt3vp22j2jpy
       typescript: 4.9.5
+
+  packages/web-js-sdk/dist/cjs:
+    specifiers: {}
 
 packages:
 
@@ -3853,7 +4165,6 @@ packages:
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
       reselect: 5.0.1
-    dev: false
 
   /@rollup/plugin-commonjs/24.1.0_rollup@2.79.1:
     resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
@@ -5312,7 +5623,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -7667,6 +7978,18 @@ packages:
         optional: true
     dev: true
 
+  /follow-redirects/1.15.2_debug@4.3.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.2
+    dev: true
+
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
@@ -7678,7 +8001,7 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       cross-spawn: 7.0.3
-      signal-exit: 4.0.2
+      signal-exit: 4.1.0
     dev: true
 
   /form-data/4.0.0:
@@ -8112,7 +8435,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -8204,7 +8527,6 @@ packages:
 
   /immer/10.0.3:
     resolution: {integrity: sha512-pwupu3eWfouuaowscykeckFmVTpqbzW+rXFCX8rQLkZzM9ftBmU/++Ra+o+L27mz03zJTlyV4UUr+fdKNffo4A==}
-    dev: false
 
   /immutable/3.8.2:
     resolution: {integrity: sha512-15gZoQ38eYjEjxkorfbcgBKBL6R7T459OuK+CpcWt7O3KF4uPCx2tD0uFETlUDIyo+1789crbMhTvQBSR5yBMg==}
@@ -10050,10 +10372,6 @@ packages:
       p-locate: 6.0.0
     dev: true
 
-  /lodash._reinterpolate/3.0.0:
-    resolution: {integrity: sha512-xYHt68QRoYGjeeM/XOE1uJtvXQAgvszfBhjV4yvsQH0u2i9I6cI6c6/eG4Hh3UAOVn0y/xAXwmTzEay49Q//HA==}
-    dev: true
-
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: true
@@ -10108,19 +10426,6 @@ packages:
 
   /lodash.startcase/4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}
-    dev: true
-
-  /lodash.template/4.5.0:
-    resolution: {integrity: sha512-84vYFxIkmidUiFxidA/KjjH9pAycqW+h980j7Fuz5qxRtO9pgB7MDFTdys1N7A5mcucRiDyEq4fusljItR1T/A==}
-    dependencies:
-      lodash._reinterpolate: 3.0.0
-      lodash.templatesettings: 4.2.0
-    dev: true
-
-  /lodash.templatesettings/4.2.0:
-    resolution: {integrity: sha512-stgLz+i3Aa9mZgnjr/O+v9ruKZsPsndy7qPZOchbqk2cnTU1ZaldKK+v7m54WoKIyxiuMZTKT2H81F8BeAc3ZQ==}
-    dependencies:
-      lodash._reinterpolate: 3.0.0
     dev: true
 
   /lodash.uniq/4.5.0:
@@ -11253,11 +11558,9 @@ packages:
       redux: ^5.0.0
     dependencies:
       redux: 5.0.1
-    dev: false
 
   /redux/5.0.1:
     resolution: {integrity: sha512-M9/ELqF6fy8FwmkpnF0S3YKOqMyoWJ4+CS5Efg2ct3oY9daQvd/Pc71FpGZsVsbl3Cpb+IIcjBDUnnyBdQbq4w==}
-    dev: false
 
   /regenerate-unicode-properties/10.1.0:
     resolution: {integrity: sha512-d1VudCLoIGitcU/hEg2QqvyGZQmdC0Lf8BqdOMXGFSvJP4bNV1+XqbPQeHHLD51Jh4QJJ225dlIFvY4Ly6MXmQ==}
@@ -11343,7 +11646,6 @@ packages:
 
   /reselect/5.0.1:
     resolution: {integrity: sha512-D72j2ubjgHpvuCiORWkOUxndHJrxDaSolheiz5CO+roz8ka97/4msh2E8F5qay4GawR5vzBt5MkbDHT+Rdy/Wg==}
-    dev: false
 
   /resolve-cwd/3.0.0:
     resolution: {integrity: sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg==}
@@ -11460,10 +11762,11 @@ packages:
       semver: 5.7.1
     dev: true
 
-  /rollup-plugin-banner/0.2.1:
-    resolution: {integrity: sha512-Bs1uIPCsGpKIkNOwmBsCqn+dJ/xaojWk9PNlvd+1MEScddr1yUQlO6McAXi72wJyNWYL+9u9EI2JAZMpLRH92w==}
+  /rollup-plugin-banner2/1.2.2:
+    resolution: {integrity: sha512-ShlyRFlJfh7fxHT0rkmIxBv+lIWfdvaWcZmra7xAQFGAHHnd7f93zoa0wdDWHrguR9vR+BxWKToabR6DJQHC9g==}
+    engines: {node: '>=12.13.0'}
     dependencies:
-      lodash.template: 4.5.0
+      magic-string: 0.25.9
     dev: true
 
   /rollup-plugin-browsersync/1.3.3:
@@ -11811,11 +12114,6 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
-    dev: true
-
-  /signal-exit/4.0.2:
-    resolution: {integrity: sha512-MY2/qGx4enyjprQnFaZsHib3Yadh3IXyV2C321GY0pjGfVBu4un0uDJkwgdxqO+Rdx8JMT8IfJIRwbYVz3Ob3Q==}
-    engines: {node: '>=14'}
     dev: true
 
   /signal-exit/4.1.0:

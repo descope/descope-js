@@ -1,10 +1,14 @@
-import { compose } from '../../../../helpers/compose';
-import { createTemplate } from '../../../../helpers/dom';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { descopeUiMixin } from '../../../../mixins/descopeUiMixin/descopeUiMixin';
-import { initElementMixin } from '../../../../mixins/initElementMixin';
-import { initLifecycleMixin } from '../../../../mixins/initLifecycleMixin';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import {
+  descopeUiMixin,
+  initElementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 

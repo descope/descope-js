@@ -1,18 +1,20 @@
-import { compose } from '../../../../helpers/compose';
-import { createTemplate } from '../../../../helpers/dom';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { formMixin } from '../../../../mixins/formMixin';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { modalMixin } from '../../../../mixins/modalMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { ModalDriver } from '../../../drivers/ModalDriver';
-import { stateManagementMixin } from '../../stateManagementMixin';
-import { initWidgetRootMixin } from './initWidgetRootMixin';
+import {
+  ButtonDriver,
+  ModalDriver,
+  TextDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import {
   getSelectedUserLoginId,
   getSelectedUsersDetailsForDisplay,
 } from '../../../state/selectors';
-import { TextDriver } from '../../../drivers/TextDriver';
+import { stateManagementMixin } from '../../stateManagementMixin';
+import { initWidgetRootMixin } from './initWidgetRootMixin';
 
 export const initEnableUserModalMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
