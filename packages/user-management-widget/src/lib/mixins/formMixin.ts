@@ -26,6 +26,10 @@ export const formMixin = createSingletonMixin(
         ) as HTMLInputElement[];
       }
 
+      getFormFieldNames(rootEle: ElementOrEmpty) {
+        return this.getFormInputs(rootEle).map((ele) => ele.name);
+      }
+
       getFormData(rootEle: ElementOrEmpty): any {
         return this.getFormInputs(rootEle).reduce(
           (acc, input) =>
@@ -49,6 +53,18 @@ export const formMixin = createSingletonMixin(
           // eslint-disable-next-line no-param-reassign
           input.value = '';
         });
+      }
+
+      disableFormField(rootEle: ElementOrEmpty, name: string) {
+        this.getFormInputs(rootEle)
+          .find((input) => input.name === name)
+          ?.setAttribute('disabled', 'true');
+      }
+
+      removeFormField(rootEle: ElementOrEmpty, name: string) {
+        this.getFormInputs(rootEle)
+          .find((input) => input.name === name)
+          ?.remove();
       }
     },
 );

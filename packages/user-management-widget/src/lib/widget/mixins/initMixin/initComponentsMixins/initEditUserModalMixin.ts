@@ -9,7 +9,11 @@ import { ButtonDriver } from '../../../drivers/ButtonDriver';
 import { ModalDriver } from '../../../drivers/ModalDriver';
 import { MultiSelectDriver } from '../../../drivers/MultiSelectDriver';
 import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
-import { getSelectedUsers, getTenantRoles } from '../../../state/selectors';
+import {
+  getCustomAttributes,
+  getSelectedUsers,
+  getTenantRoles,
+} from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { User } from '../../../api/types';
@@ -123,6 +127,31 @@ export const initEditUserModalMixin = createSingletonMixin(
         this.setFormData(this.editUserModal.ele, formData);
       };
 
+      // hide and disable fields according to user permissions
+      #updateCustomFields() {
+        const customAttrs = getCustomAttributes(this.state);
+
+        this.getFormFieldNames(this.editUserModal.ele).forEach(
+          (fieldName: string) => {
+            const [prefix, name] = fieldName.split('.');
+
+            if (prefix !== 'customAttributes') {
+              return;
+            }
+
+            const matchingCustomAttr = customAttrs.find(
+              (attr) => attr.name === name,
+            );
+
+            if (!matchingCustomAttr) {
+              this.removeFormField(this.editUserModal.ele, fieldName);
+            } else if (!matchingCustomAttr.editable) {
+              this.disableFormField(this.editUserModal.ele, fieldName);
+            }
+          },
+        );
+      }
+
       async #initEditUserModal() {
         this.editUserModal = this.createModal();
         this.editUserModal.setContent(
@@ -149,6 +178,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
           this.#updateModalData();
+          this.#updateCustomFields();
         };
       }
 

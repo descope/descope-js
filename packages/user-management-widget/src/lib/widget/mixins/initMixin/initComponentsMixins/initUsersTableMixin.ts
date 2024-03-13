@@ -4,7 +4,7 @@ import { createSingletonMixin } from '../../../../helpers/mixins';
 import { loggerMixin } from '../../../../mixins/loggerMixin';
 import { User } from '../../../api/types';
 import { GridDriver } from '../../../drivers/gridDrivers/GridDriver';
-import { getUsersList } from '../../../state/selectors';
+import { getCustomAttributes, getUsersList } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -50,6 +50,18 @@ export const initUsersTableMixin = createSingletonMixin(
         },
       );
 
+      #onCustomAttrsUpdate = withMemCache(
+        (customAttrs: ReturnType<typeof getCustomAttributes>) => {
+          this.usersTable.filterColumns((col) => {
+            const [prefix, name] = col.path?.split('.') || [];
+            return (
+              prefix !== 'customAttributes' ||
+              !!customAttrs.find((attr) => attr.name === name)
+            );
+          });
+        },
+      );
+
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
@@ -63,6 +75,11 @@ export const initUsersTableMixin = createSingletonMixin(
         // because we are not waiting for the rest calls,
         // we need to make sure the table is updated with the received users
         this.#onUsersListUpdate(getUsersList(this.state));
+        this.#onCustomAttrsUpdate(getCustomAttributes(this.state));
+        this.subscribe(
+          this.#onCustomAttrsUpdate.bind(this),
+          getCustomAttributes,
+        );
         this.subscribe(this.#onUsersListUpdate.bind(this), getUsersList);
       }
     },
