@@ -1,9 +1,12 @@
-import { compose } from '../../../../helpers/compose';
-import { debounce, withMemCache } from '../../../../helpers/generic';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
+import { GridDriver } from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  debounce,
+  withMemCache,
+} from '@descope/sdk-helpers';
+import { loggerMixin } from '@descope/sdk-mixins';
 import { User } from '../../../api/types';
-import { GridDriver } from '../../../drivers/gridDrivers/GridDriver';
 import { getUsersList } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';

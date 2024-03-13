@@ -1,8 +1,10 @@
-import { compose } from '../../../../helpers/compose';
-import { withMemCache } from '../../../../helpers/generic';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
+import { ButtonDriver } from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
+import { loggerMixin } from '@descope/sdk-mixins';
 import { getIsRolesSelected } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initDeleteRolesModalMixin } from './initDeleteRolesModalMixin';

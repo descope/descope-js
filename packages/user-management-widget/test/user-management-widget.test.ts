@@ -1,13 +1,13 @@
-import '@testing-library/jest-dom';
+import { pluralize } from '@descope/sdk-helpers';
 import { waitFor } from '@testing-library/dom';
-import { apiPaths } from '../src/lib/widget/api/apiPaths';
-import { mockUsers } from './mocks/mockUsers';
-import { createSdk } from '../src/lib/widget/api/sdk';
-import { pluralize } from '../src/lib/helpers/generic';
+import '@testing-library/jest-dom';
 import '../src/lib/index';
-import rootMock from './mocks/rootMock';
+import { apiPaths } from '../src/lib/widget/api/apiPaths';
+import { createSdk } from '../src/lib/widget/api/sdk';
 import createUserModalMock from './mocks/createUserModalMock';
 import deleteUserModalMock from './mocks/deleteUserModalMock';
+import { mockUsers } from './mocks/mockUsers';
+import rootMock from './mocks/rootMock';
 
 const origAppend = document.body.append;
 

@@ -1,15 +1,16 @@
 /* eslint-disable no-param-reassign */
-import { compose } from '../../helpers/compose';
-import { createSingletonMixin } from '../../helpers/mixins';
-import { createStateManagementMixin } from '../../mixins/createStateManagementMixin';
-import { initLifecycleMixin } from '../../mixins/initLifecycleMixin';
-import { loggerMixin } from '../../mixins/loggerMixin';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  createStateManagementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import {
   createRole,
   deleteRoles,
+  getTenantPermissions,
   searchRole,
   updateRole,
-  getTenantPermissions,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -53,7 +54,7 @@ export const stateManagementMixin = createSingletonMixin(
       constructor(...args: any) {
         super(...args);
 
-        this.subscribe((state) => {
+        this.subscribe((state: typeof initialState) => {
           this.logger.debug('State update:', state);
           this.state = state;
         });
