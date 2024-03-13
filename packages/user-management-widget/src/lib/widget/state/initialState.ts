@@ -37,7 +37,7 @@ export const initialState: State = {
   customAttributes: {
     loading: false,
     error: null,
-    data: {},
+    data: [],
   },
   tenantRoles: {
     loading: false,
