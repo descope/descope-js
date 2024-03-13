@@ -1,6 +1,14 @@
+import { compareArrays } from '@descope/sdk-helpers';
 import { BaseDriver } from '../BaseDriver';
 import { GridCustomColumnDriver } from './GridCustomColumnDriver';
 import { GridTextColumnDriver } from './GridTextColumnDriver';
+
+type Column = {
+  path: string;
+  header: string;
+  type: string;
+  attrs: Record<string, string>;
+};
 
 const columnRegex = /^descope-grid-([^-]+)-column$/;
 
@@ -19,7 +27,7 @@ export class GridDriver<T extends any> extends BaseDriver {
   }
 
   get ele() {
-    return super.ele as Element & { data: T[] };
+    return super.ele as Element & { data: T[]; columns: Column[] };
   }
 
   get data() {
@@ -42,5 +50,12 @@ export class GridDriver<T extends any> extends BaseDriver {
 
       return acc;
     }, []);
+  }
+
+  filterColumns(filterFn: (col: Column) => boolean) {
+    const filteredColumns = this.ele.columns.filter(filterFn);
+    if (!compareArrays(filteredColumns, this.ele.columns)) {
+      this.ele.columns = filteredColumns;
+    }
   }
 }
