@@ -1,3 +1,4 @@
+import { compareArrays } from '@descope/sdk-helpers';
 import { BaseDriver } from '../BaseDriver';
 import { GridCustomColumnDriver } from './GridCustomColumnDriver';
 import { GridTextColumnDriver } from './GridTextColumnDriver';
@@ -52,6 +53,9 @@ export class GridDriver<T extends any> extends BaseDriver {
   }
 
   filterColumns(filterFn: (col: Column) => boolean) {
-    this.ele.columns = this.ele.columns.filter(filterFn);
+    const filteredColumns = this.ele.columns.filter(filterFn);
+    if (!compareArrays(filteredColumns, this.ele.columns)) {
+      this.ele.columns = filteredColumns;
+    }
   }
 }
