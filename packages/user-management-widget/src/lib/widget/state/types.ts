@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { Sdk } from '../api/sdk';
-import { Role, SortParams, User } from '../api/types';
+import { CustomAttr, Role, SortParams, User } from '../api/types';
 
 export type State = {
   usersList: {
@@ -39,7 +39,7 @@ export type State = {
   customAttributes: {
     loading: boolean;
     error: unknown;
-    data: Record<string, string>;
+    data: CustomAttr[];
   };
   tenantRoles: {
     loading: boolean;

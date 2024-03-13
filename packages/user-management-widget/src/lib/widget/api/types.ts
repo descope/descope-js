@@ -19,6 +19,17 @@ export type AssociatedTenant = {
   roleNames: string[];
 };
 
+export type CustomAttr = {
+  name: string;
+  type: number;
+  options: string[];
+  displayName: string;
+  defaultValue: Record<string, string>;
+  ViewPermissions: string[];
+  EditPermissions: string[];
+  editable: boolean;
+};
+
 export type User = {
   loginIds: string[];
   userId: string;
