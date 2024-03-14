@@ -253,5 +253,7 @@ class Debugger extends HTMLElement {
   }
 }
 
-customElements.define('descope-debugger', Debugger);
+if (!customElements.get('descope-debugger')) {
+  customElements.define('descope-debugger', Debugger);
+}
 export default Debugger;
