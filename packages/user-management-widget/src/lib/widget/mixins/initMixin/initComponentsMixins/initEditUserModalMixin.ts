@@ -1,18 +1,24 @@
+import {
+  ButtonDriver,
+  ModalDriver,
+  MultiSelectDriver,
+  TextFieldDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import parsePhone from 'libphonenumber-js/min';
-import { compose } from '../../../../helpers/compose';
-import { createTemplate } from '../../../../helpers/dom';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { formMixin } from '../../../../mixins/formMixin';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { modalMixin } from '../../../../mixins/modalMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { ModalDriver } from '../../../drivers/ModalDriver';
-import { MultiSelectDriver } from '../../../drivers/MultiSelectDriver';
-import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
-import { getSelectedUsers, getTenantRoles } from '../../../state/selectors';
+import { User } from '../../../api/types';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { User } from '../../../api/types';
+import {
+  getCustomAttributes,
+  getSelectedUsers,
+  getTenantRoles,
+} from '../../../state/selectors';
 
 const unflattenKeys = ['customAttributes'];
 
@@ -108,6 +114,31 @@ export const initEditUserModalMixin = createSingletonMixin(
         );
       };
 
+      // hide and disable fields according to user permissions
+      #updateCustomFields() {
+        const customAttrs = getCustomAttributes(this.state);
+
+        this.getFormFieldNames(this.editUserModal.ele).forEach(
+          (fieldName: string) => {
+            const [prefix, name] = fieldName.split('.');
+
+            if (prefix !== 'customAttributes') {
+              return;
+            }
+
+            const matchingCustomAttr = customAttrs.find(
+              (attr) => attr.name === name,
+            );
+
+            if (!matchingCustomAttr) {
+              this.removeFormField(this.editUserModal.ele, fieldName);
+            } else if (!matchingCustomAttr.editable) {
+              this.disableFormField(this.editUserModal.ele, fieldName);
+            }
+          },
+        );
+      }
+
       #updateModalData = () => {
         const userDetails = getSelectedUsers(this.state)?.[0];
 
@@ -149,6 +180,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
           this.#updateModalData();
+          this.#updateCustomFields();
         };
       }
 

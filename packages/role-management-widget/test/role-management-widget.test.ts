@@ -1,14 +1,14 @@
-import '@testing-library/jest-dom';
+import { pluralize } from '@descope/sdk-helpers';
 import { waitFor } from '@testing-library/dom';
-import { apiPaths } from '../src/lib/widget/api/apiPaths';
-import { mockRoles } from './mocks/mockRoles';
-import { createSdk } from '../src/lib/widget/api/sdk';
-import { pluralize } from '../src/lib/helpers/generic';
+import '@testing-library/jest-dom';
 import '../src/lib/index';
-import rootMock from './mocks/rootMock';
+import { apiPaths } from '../src/lib/widget/api/apiPaths';
+import { createSdk } from '../src/lib/widget/api/sdk';
 import createRoleModalMock from './mocks/createRoleModalMock';
-import editRoleModalMock from './mocks/editRoleModalMock';
 import deleteRoleModalMock from './mocks/deleteRoleModalMock';
+import editRoleModalMock from './mocks/editRoleModalMock';
+import { mockRoles } from './mocks/mockRoles';
+import rootMock from './mocks/rootMock';
 
 const origAppend = document.body.append;
 
