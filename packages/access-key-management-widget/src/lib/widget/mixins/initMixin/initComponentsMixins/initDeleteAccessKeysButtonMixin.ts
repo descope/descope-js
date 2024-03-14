@@ -1,5 +1,9 @@
 import { ButtonDriver } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin, withMemCache } from '@descope/sdk-helpers';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { getIsAccessKeysSelected } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';

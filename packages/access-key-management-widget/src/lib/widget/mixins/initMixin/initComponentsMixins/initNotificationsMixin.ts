@@ -1,5 +1,13 @@
-import { compose, createSingletonMixin, withMemCache } from '@descope/sdk-helpers';
-import { initLifecycleMixin, loggerMixin, notificationsMixin } from '@descope/sdk-mixins';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
+import {
+  initLifecycleMixin,
+  loggerMixin,
+  notificationsMixin,
+} from '@descope/sdk-mixins';
 import checkmark from '../../../../assets/checkmark.svg';
 import close from '../../../../assets/close.svg';
 import warning from '../../../../assets/warning.svg';

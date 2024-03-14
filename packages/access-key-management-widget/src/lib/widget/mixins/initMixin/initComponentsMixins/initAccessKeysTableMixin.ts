@@ -1,5 +1,10 @@
 import { GridDriver } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin, debounce, withMemCache } from '@descope/sdk-helpers';
+import {
+  compose,
+  createSingletonMixin,
+  debounce,
+  withMemCache,
+} from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { AccessKey } from '../../../api/types';
 import { getAccessKeysList } from '../../../state/selectors';

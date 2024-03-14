@@ -1,5 +1,13 @@
-import { ButtonDriver, ModalDriver, MultiSelectDriver } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin, createTemplate } from '@descope/sdk-helpers';
+import {
+  ButtonDriver,
+  ModalDriver,
+  MultiSelectDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
 import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
