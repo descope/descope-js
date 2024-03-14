@@ -2,6 +2,7 @@ import {
   ButtonDriver,
   ModalDriver,
   MultiSelectDriver,
+  SingleSelectDriver,
 } from '@descope/sdk-component-drivers';
 import {
   compose,
@@ -26,7 +27,7 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
 
       #rolesMultiSelect: MultiSelectDriver;
 
-      #expirationMultiSelect: MultiSelectDriver;
+      #expirationSingleSelect: SingleSelectDriver;
 
       async #initCreateAccessKeyModal() {
         this.createAccessKeyModal = this.createModal();
@@ -36,7 +37,7 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
             <descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="1rem">
               <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle1">New Access Key</descope-text>
               <descope-text-field bordered="true" full-width="true" id="name" label="Name" max="100" name="name" placeholder="Name" required="true" size="sm"></descope-text-field>
-              <descope-multi-select-combo-box bordered="true" data-id="expiration-multiselect" full-width="true" id="expirationInput" required="true" item-label-path="data-name" item-value-path="data-id" label="Expiration" name="expiration" size="sm" allow-custom-value="false" clear-button-visible="true"></descope-multi-select-combo-box>
+              <descope-combo-box bordered="true" data-id="expiration-combobox" full-width="true" id="expirationInput" required="true" item-label-path="data-name" item-value-path="data-id" label="Expiration" name="expiration" size="sm" allow-custom-value="false" default-value="30"></descope-combo-box>
               <descope-multi-select-combo-box bordered="true" data-id="roles-multiselect" full-width="true" id="rolesInput" item-label-path="data-name" item-value-path="data-id" label="Roles" name="roleNames" size="sm" allow-custom-value="false" clear-button-visible="true"></descope-multi-select-combo-box>
               <descope-container data-editor-type="container" direction="row" id="buttonsContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="flex-end" st-background-color="#ffffff00" st-host-width="100%" st-gap="0.5rem">
                 <descope-button data-id="modal-cancel" data-testid="create-access-key-modal-cancel" data-type="button" formNoValidate="false" full-width="false" id="createAccessKeyCancelButton" shape="" size="sm" variant="outline" mode="primary" square="false">Cancel</descope-button>
@@ -87,15 +88,15 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
 
         this.#updateRolesMultiSelect();
 
-        this.#expirationMultiSelect = new MultiSelectDriver(
+        this.#expirationSingleSelect = new SingleSelectDriver(
           () =>
             this.createAccessKeyModal.ele?.querySelector(
-              '[data-id="expiration-multiselect"]',
+              '[data-id="expiration-combobox"]',
             ),
           { logger: this.logger },
         );
 
-        this.#updateExpirationMultiSelect();
+        this.#updateExpirationSingleSelect();
       }
 
       #updateRolesMultiSelect = async () => {
@@ -107,8 +108,8 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
         );
       };
 
-      #updateExpirationMultiSelect = async () => {
-        await this.#expirationMultiSelect.setData([
+      #updateExpirationSingleSelect = async () => {
+        await this.#expirationSingleSelect.setData([
           {
             value: '90',
             label: '90 Days',
