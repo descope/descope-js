@@ -13,7 +13,7 @@ export const getAccessKeysList = createSelector(
   (accessKeys) =>
     accessKeys.map((accessKey) => ({
       ...accessKey,
-      expireTime: !accessKey?.expireTime
+      expireTimeFormatted: !accessKey?.expireTime
         ? 'Never'
         : new Date((accessKey?.expireTime || 0) * 1000).toLocaleString(),
       status:

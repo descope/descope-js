@@ -20,9 +20,11 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    onFulfilled: (state) => {
+    onFulfilled: (state, action) => {
       state.accessKeysList.data.forEach((accessKey) => {
-        accessKey.status = 'inactive';
+        if (action.meta.arg.includes(accessKey.id)) {
+          accessKey.status = 'inactive';
+        }
       });
     },
   },

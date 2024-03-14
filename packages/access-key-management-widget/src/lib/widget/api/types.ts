@@ -11,6 +11,7 @@ export type AccessKey = {
   status: string;
   createdTime: Date;
   expireTime: number;
+  expireTimeFormatted: string;
   createdBy: string;
   clientId: string;
   boundUserId: string;

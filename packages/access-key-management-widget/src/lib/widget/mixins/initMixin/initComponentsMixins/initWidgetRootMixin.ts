@@ -1,5 +1,14 @@
-import { compose, createSingletonMixin, createTemplate } from '@descope/sdk-helpers';
-import { descopeUiMixin, initElementMixin, initLifecycleMixin, loggerMixin } from '@descope/sdk-mixins';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import {
+  descopeUiMixin,
+  initElementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 
@@ -35,10 +44,9 @@ export const initWidgetRootMixin = createSingletonMixin(
                     <descope-badge bordered="true" data-pattern="active" mode="primary" size="xs" st-text-transform="capitalize"></descope-badge>
                   </descope-grid-custom-column>
                   <descope-grid-text-column header="Created By" path="createdBy" resizable="true" sortable="true"></descope-grid-text-column>
-                  <descope-grid-text-column header="Expiration Time" path="expireTime" resizable="true" sortable="true"></descope-grid-text-column>
+                  <descope-grid-text-column header="Expiration Time" path="expireTimeFormatted" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Roles" path="roleNames" resizable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Client ID" path="clientId" resizable="true" sortable="true"></descope-grid-text-column>
-                  <descope-grid-text-column header="ID" path="id" resizable="true" sortable="true"></descope-grid-text-column>
               </descope-grid>
           </descope-container>
               `,
