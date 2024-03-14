@@ -1,14 +1,18 @@
-import { compose } from '../../../../helpers/compose';
-import { withMemCache } from '../../../../helpers/generic';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { notificationsMixin } from '../../../../mixins/notificationsMixin';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
+import {
+  initLifecycleMixin,
+  loggerMixin,
+  notificationsMixin,
+} from '@descope/sdk-mixins';
+import checkmark from '../../../../assets/checkmark.svg';
+import close from '../../../../assets/close.svg';
+import warning from '../../../../assets/warning.svg';
 import { getNotifications } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import checkmark from '../../../../assets/checkmark.svg';
-import warning from '../../../../assets/warning.svg';
-import close from '../../../../assets/close.svg';
-import { initLifecycleMixin } from '../../../../mixins/initLifecycleMixin';
 
 type Notifications = ReturnType<typeof getNotifications>;
 type Notification = Notifications[0];

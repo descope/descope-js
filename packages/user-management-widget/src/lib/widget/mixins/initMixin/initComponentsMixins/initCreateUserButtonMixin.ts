@@ -1,7 +1,6 @@
-import { compose } from '../../../../helpers/compose';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
+import { ButtonDriver } from '@descope/sdk-component-drivers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import { loggerMixin } from '@descope/sdk-mixins';
 import { initCreateUserModalMixin } from './initCreateUserModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 

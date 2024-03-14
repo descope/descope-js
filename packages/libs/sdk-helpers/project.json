@@ -1,0 +1,17 @@
+{
+  "name": "sdk-helpers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdk-helpers/src",
+  "projectType": "library",
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": false,
+        "preset": "conventional"
+      }
+    }
+  },
+  "tags": []
+}
