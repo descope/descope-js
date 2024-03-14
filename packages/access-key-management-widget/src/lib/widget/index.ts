@@ -1,4 +1,4 @@
-import { compose } from '../helpers/compose';
+import { compose } from '@descope/sdk-helpers';
 import { initMixin } from './mixins/initMixin/initMixin';
 
 const rootMixin = (superclass: CustomElementConstructor) =>

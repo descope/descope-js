@@ -1,14 +1,12 @@
-import { compose } from '../../../helpers/compose';
-import { createSingletonMixin } from '../../../helpers/mixins';
-import { debuggerMixin } from '../../../mixins/debuggerMixin';
-import { themeMixin } from '../../../mixins/themeMixin';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
+import { initAccessKeysTableMixin } from './initComponentsMixins/initAccessKeysTableMixin';
+import { initActivateAccessKeysButtonMixin } from './initComponentsMixins/initActivateAccessKeysButtonMixin';
 import { initCreateAccessKeyButtonMixin } from './initComponentsMixins/initCreateAccessKeyButtonMixin';
+import { initDeactivateAccessKeysButtonMixin } from './initComponentsMixins/initDeactivateAccessKeysButtonMixin';
 import { initDeleteAccessKeysButtonMixin } from './initComponentsMixins/initDeleteAccessKeysButtonMixin';
 import { initFilterAccessKeysInputMixin } from './initComponentsMixins/initFilterAccessKeysInputMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
-import { initAccessKeysTableMixin } from './initComponentsMixins/initAccessKeysTableMixin';
-import { initActivateAccessKeysButtonMixin } from './initComponentsMixins/initActivateAccessKeysButtonMixin';
-import { initDeactivateAccessKeysButtonMixin } from './initComponentsMixins/initDeactivateAccessKeysButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>

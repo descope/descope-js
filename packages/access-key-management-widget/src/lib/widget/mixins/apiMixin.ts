@@ -1,10 +1,5 @@
-import { compose } from '../../helpers/compose';
-import { createSingletonMixin } from '../../helpers/mixins';
-import { createValidateAttributesMixin } from '../../mixins/createValidateAttributesMixin';
-import { missingAttrValidator } from '../../mixins/createValidateAttributesMixin/commonValidators';
-import { loggerMixin } from '../../mixins/loggerMixin';
-import { observeAttributesMixin } from '../../mixins/observeAttributesMixin';
-import { projectIdMixin } from '../../mixins/projectIdMixin';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import { createValidateAttributesMixin, loggerMixin, observeAttributesMixin, projectIdMixin } from '@descope/sdk-mixins';
 import { Sdk, createSdk } from '../api/sdk';
 
 export const apiMixin = createSingletonMixin(
@@ -13,7 +8,7 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
-      createValidateAttributesMixin({ tenant: missingAttrValidator }),
+      createValidateAttributesMixin({ tenant: createValidateAttributesMixin.missingAttrValidator }),
     )(superclass);
 
     return class ApiMixinClass extends BaseClass {

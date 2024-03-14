@@ -3,7 +3,7 @@
 // import { apiPaths } from '../src/lib/widget/api/apiPaths';
 // import { mockRoles } from './mocks/mockRoles';
 // import { createSdk } from '../src/lib/widget/api/sdk';
-// import { pluralize } from '../src/lib/helpers/generic';
+// import { pluralize } from '@descope/sdk-helpers';
 // import '../src/lib/index';
 // import rootMock from './mocks/rootMock';
 // import createRoleModalMock from './mocks/createAccessKeyModalMock';
