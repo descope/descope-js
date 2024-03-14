@@ -41,9 +41,9 @@ export const initWidgetRootMixin = createSingletonMixin(
                   </descope-grid-custom-column>
                   <descope-grid-text-column header="Created By" path="createdBy" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Expiration Time" path="expireTime" resizable="true" sortable="true"></descope-grid-text-column>
+                  <descope-grid-text-column header="Roles" path="roleNames" resizable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Client ID" path="clientId" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="ID" path="id" resizable="true" sortable="true"></descope-grid-text-column>
-                  <descope-grid-text-column header="Roles" path="roleNames" resizable="true"></descope-grid-text-column>
               </descope-grid>
           </descope-container>
               `,
