@@ -1,5 +1,10 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { createValidateAttributesMixin, loggerMixin, observeAttributesMixin, projectIdMixin } from '@descope/sdk-mixins';
+import {
+  createValidateAttributesMixin,
+  loggerMixin,
+  observeAttributesMixin,
+  projectIdMixin,
+} from '@descope/sdk-mixins';
 import { Sdk, createSdk } from '../api/sdk';
 
 export const apiMixin = createSingletonMixin(
@@ -8,7 +13,9 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
-      createValidateAttributesMixin({ tenant: createValidateAttributesMixin.missingAttrValidator }),
+      createValidateAttributesMixin({
+        tenant: createValidateAttributesMixin.missingAttrValidator,
+      }),
     )(superclass);
 
     return class ApiMixinClass extends BaseClass {

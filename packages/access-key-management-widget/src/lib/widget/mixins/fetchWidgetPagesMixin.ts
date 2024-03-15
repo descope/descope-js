@@ -1,5 +1,8 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { createValidateAttributesMixin, staticResourcesMixin } from '@descope/sdk-mixins';
+import {
+  createValidateAttributesMixin,
+  staticResourcesMixin,
+} from '@descope/sdk-mixins';
 
 const WIDGET_PAGES_BASE_DIR = 'access-key-management-widget';
 
@@ -7,7 +10,9 @@ export const fetchWidgetPagesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
       staticResourcesMixin,
-      createValidateAttributesMixin({ 'widget-id': createValidateAttributesMixin.missingAttrValidator }),
+      createValidateAttributesMixin({
+        'widget-id': createValidateAttributesMixin.missingAttrValidator,
+      }),
     )(superclass);
     return class FetchWidgetPagesMixinClass extends BaseClass {
       get widgetId() {

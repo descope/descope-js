@@ -1,6 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { createStateManagementMixin, initLifecycleMixin, loggerMixin } from '@descope/sdk-mixins';
+import {
+  createStateManagementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import {
   activateAccessKeys,
   createAccessKey,

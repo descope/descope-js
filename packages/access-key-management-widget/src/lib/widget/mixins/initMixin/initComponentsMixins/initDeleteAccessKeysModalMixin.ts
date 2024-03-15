@@ -1,5 +1,13 @@
-import { ButtonDriver, ModalDriver, TextDriver } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin, createTemplate } from '@descope/sdk-helpers';
+import {
+  ButtonDriver,
+  ModalDriver,
+  TextDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
 import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import {
   getSelectedAccessKeys,

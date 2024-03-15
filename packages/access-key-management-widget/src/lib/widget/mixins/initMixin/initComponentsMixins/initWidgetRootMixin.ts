@@ -1,5 +1,14 @@
-import { compose, createSingletonMixin, createTemplate } from '@descope/sdk-helpers';
-import { descopeUiMixin, initElementMixin, initLifecycleMixin, loggerMixin } from '@descope/sdk-mixins';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import {
+  descopeUiMixin,
+  initElementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 
