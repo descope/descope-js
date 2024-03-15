@@ -38,7 +38,7 @@ export const initWidgetRootMixin = createSingletonMixin(
               <descope-grid column-reordering-allowed="true" data-id="access-keys-table" size="sm" st-host-height="300px" style="width:100%">
                   <descope-grid-selection-column auto-width="true" frozen="true"></descope-grid-selection-column>
                   <descope-grid-text-column header="Name" path="name" resizable="true" sortable="true"></descope-grid-text-column>
-                  <descope-grid-custom-column header="Status" path="status" resizable="true">
+                  <descope-grid-custom-column header="Status" path="status" resizable="true" sortable="true">
                     <descope-badge bordered="true" data-pattern="inactive" mode="default" size="xs" st-text-transform="capitalize"></descope-badge>
                     <descope-badge bordered="true" data-pattern="expired" mode="default" size="xs" st-text-transform="capitalize"></descope-badge>
                     <descope-badge bordered="true" data-pattern="active" mode="primary" size="xs" st-text-transform="capitalize"></descope-badge>
@@ -46,7 +46,7 @@ export const initWidgetRootMixin = createSingletonMixin(
                   <descope-grid-text-column header="Created By" path="createdBy" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Expiration Time" path="expireTimeFormatted" resizable="true" sortable="true"></descope-grid-text-column>
                   <descope-grid-text-column header="Roles" path="roleNames" resizable="true"></descope-grid-text-column>
-                  <descope-grid-text-column header="Client ID" path="clientId" resizable="true" sortable="true"></descope-grid-text-column>
+                  <descope-grid-text-column header="Client ID" path="clientId" resizable="true"></descope-grid-text-column>
               </descope-grid>
           </descope-container>
               `,
