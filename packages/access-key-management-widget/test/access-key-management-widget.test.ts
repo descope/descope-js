@@ -88,13 +88,13 @@ describe('access-key-management-widget', () => {
         case url.endsWith('created-access-key-modal.html'): {
           return { ...res, text: () => createdAccessKeyModalMock };
         }
-        case url.endsWith('activate-access-key-modal.html'): {
+        case url.endsWith('activate-access-keys-modal.html'): {
           return { ...res, text: () => activateAccessKeyModalMock };
         }
-        case url.endsWith('deactivate-access-key-modal.html'): {
+        case url.endsWith('deactivate-access-keys-modal.html'): {
           return { ...res, text: () => deactivateAccessKeyModalMock };
         }
-        case url.endsWith('delete-access-key-modal.html'): {
+        case url.endsWith('delete-access-keys-modal.html'): {
           return { ...res, text: () => deleteAccessKeyModalMock };
         }
         default: {

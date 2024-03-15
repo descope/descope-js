@@ -265,7 +265,6 @@ test.describe('widget', () => {
     // edit name
     await editUserNameInput.fill(updatedUser.name);
 
-    await page.pause();
     await editUserPhoneInput.focus();
     await page.keyboard.type('5554444');
 

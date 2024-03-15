@@ -35,7 +35,7 @@ const reducer = buildAsyncReducer(action)(
       pluralize(action.meta.arg.length)`${['', action.meta.arg.length]} ${[
         'A',
         'a',
-      ]}cess key${['', 's']} deleted successfully`,
+      ]}ccess key${['', 's']} deleted successfully`,
     // eslint-disable-next-line @typescript-eslint/no-shadow
     getErrorMsg: (action) =>
       pluralize(action.meta.arg.length)`Failed to delete access key${[
