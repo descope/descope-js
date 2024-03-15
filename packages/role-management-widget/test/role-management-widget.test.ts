@@ -7,7 +7,7 @@ import { createSdk } from '../src/lib/widget/api/sdk';
 import createRoleModalMock from './mocks/createRoleModalMock';
 import deleteRoleModalMock from './mocks/deleteRoleModalMock';
 import editRoleModalMock from './mocks/editRoleModalMock';
-import { mockRoles } from './mocks/mockRoles';
+import { mockEditRole, mockNewRole, mockRoles } from './mocks/mockRoles';
 import rootMock from './mocks/rootMock';
 
 const origAppend = document.body.append;
@@ -147,6 +147,50 @@ describe('role-management-widget', () => {
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.role.deleteBatch,
           { roleNames },
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });
+
+    it('create', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+
+      await sdk.role.create(mockNewRole);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.role.create,
+          { ...mockNewRole, tenantId: mockTenant, createdTime: undefined },
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });
+
+    it('edit', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+
+      await sdk.role.update(mockEditRole);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.role.update,
+          { ...mockEditRole, tenantId: mockTenant },
           {
             queryParams: {
               tenant: mockTenant,

@@ -1,3 +1,5 @@
+import { UpdateRoleConfig } from '../../src/lib/widget/api/types';
+
 export const mockRoles = {
   roles: [
     {
@@ -30,6 +32,13 @@ export const mockNewRole = {
   permissionNames: ['Permission New'],
   createdTime: 1707732872,
   tenantId: 't1',
+};
+
+export const mockEditRole: UpdateRoleConfig = {
+  name: 'Role New',
+  newName: 'role new name',
+  description: 'Desc New',
+  permissionNames: ['Permission New'],
 };
 
 export const mockRolesPermissions = {
