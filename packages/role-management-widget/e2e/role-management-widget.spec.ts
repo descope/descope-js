@@ -114,7 +114,6 @@ test.describe('widget', () => {
     // submit description
     await (await createRoleDescriptionInput.all()).at(1).fill('some role desc');
 
-    await page.pause();
     // click modal create button
     const createRoleButton = page
       .locator('descope-button')

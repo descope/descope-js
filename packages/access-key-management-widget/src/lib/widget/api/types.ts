@@ -11,9 +11,9 @@ export type AccessKey = {
   status: string;
   createdTime: Date;
   expireTime: number;
+  expireTimeFormatted: string;
   createdBy: string;
   clientId: string;
-  boundUserId: string;
 };
 
 export type SortParams = { field: string; desc: boolean };
@@ -27,7 +27,7 @@ export type SearchAccessKeyConfig = {
 
 export type CreateAccessKeyConfig = {
   name: string;
-  expiration: string[];
+  expiration: string;
   roleNames: string[];
   userId: string;
 };

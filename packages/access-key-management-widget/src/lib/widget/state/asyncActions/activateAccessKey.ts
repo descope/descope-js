@@ -20,9 +20,11 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    onFulfilled: (state) => {
+    onFulfilled: (state, action) => {
       state.accessKeysList.data.forEach((accessKey) => {
-        accessKey.status = 'active';
+        if (action.meta.arg.includes(accessKey.id)) {
+          accessKey.status = 'active';
+        }
       });
     },
   },
@@ -34,7 +36,7 @@ const reducer = buildAsyncReducer(action)(
       pluralize(action.meta.arg.length)`${['', action.meta.arg.length]} ${[
         'A',
         'a',
-      ]}cess key${['', 's']} activated successfully`,
+      ]}ccess key${['', 's']} activated successfully`,
     // eslint-disable-next-line @typescript-eslint/no-shadow
     getErrorMsg: (action) =>
       pluralize(action.meta.arg.length)`Failed to activate access key${[

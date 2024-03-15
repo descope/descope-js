@@ -3,13 +3,15 @@ import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import {
   mockRoles,
-  mockNewRole,
-  mockRolesPermissions,
-} from '../test/mocks/mockRoles';
+  mockAccessKeys,
+  mockNewAccessKey,
+} from '../test/mocks/mockAccessKeys';
 import rootMock from '../test/mocks/rootMock';
-import createRoleModalMock from '../test/mocks/createAccessKeyModalMock';
-import editRoleModalMock from '../test/mocks/editRoleModalMock';
-import deleteRoleModalMock from '../test/mocks/deleteAccessKeyModalMock';
+import createAccessKeyModalMock from '../test/mocks/createAccessKeyModalMock';
+import createdAccessKeyModalMock from '../test/mocks/createdAccessKeyModalMock';
+import deleteAccessKeyModalMock from '../test/mocks/deleteAccessKeyModalMock';
+import activateAccessKeyModalMock from '../test/mocks/activateAccessKeyModalMock';
+import deactivateAccessKeyModalMock from '../test/mocks/deactivateAccessKeyModalMock';
 
 const configContent = {
   flows: {
@@ -18,10 +20,11 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const apiPath = (prop: 'role' | 'tenant', path: string) =>
+const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
+const cleartext = 'aaaaaaaaaaaaaa';
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -44,202 +47,278 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMock }),
     );
 
-    await page.route('*/**/create-role-modal.html', async (route) =>
-      route.fulfill({ body: createRoleModalMock }),
+    await page.route('*/**/create-access-key-modal.html', async (route) =>
+      route.fulfill({ body: createAccessKeyModalMock }),
     );
 
-    await page.route('*/**/edit-role-modal.html', async (route) =>
-      route.fulfill({ body: editRoleModalMock }),
+    await page.route('*/**/created-access-key-modal.html', async (route) =>
+      route.fulfill({ body: createdAccessKeyModalMock }),
     );
 
-    await page.route('*/**/delete-roles-modal.html', async (route) =>
-      route.fulfill({ body: deleteRoleModalMock }),
+    await page.route('*/**/delete-access-keys-modal.html', async (route) =>
+      route.fulfill({ body: deleteAccessKeyModalMock }),
     );
 
-    await page.route(apiPath('role', 'create'), async (route) =>
-      route.fulfill({ json: mockNewRole }),
+    await page.route('*/**/activate-access-keys-modal.html', async (route) =>
+      route.fulfill({ body: activateAccessKeyModalMock }),
     );
 
-    await page.route(apiPath('role', 'update'), async (route) =>
-      route.fulfill({ json: mockNewRole }),
+    await page.route('*/**/deactivate-access-keys-modal.html', async (route) =>
+      route.fulfill({ body: deactivateAccessKeyModalMock }),
     );
 
-    await page.route(apiPath('tenant', 'permissions'), async (route) =>
-      route.fulfill({ json: mockRolesPermissions }),
+    await page.route(apiPath('accesskey', 'create'), async (route) =>
+      route.fulfill({ json: { key: mockNewAccessKey, cleartext } }),
     );
 
-    await page.route(apiPath('role', 'search'), async (route) =>
+    await page.route(apiPath('accesskey', 'activate'), async (route) =>
+      route.fulfill({ json: mockNewAccessKey }),
+    );
+
+    await page.route(apiPath('tenant', 'roles'), async (route) =>
+      route.fulfill({ json: mockRoles }),
+    );
+
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ roles: mockRoles.roles }),
+        body: JSON.stringify({ keys: mockAccessKeys.keys }),
       }),
     );
 
-    await page.route(apiPath('role', 'deleteBatch'), async (route) =>
+    await page.route(apiPath('accesskey', 'deleteBatch'), async (route) =>
+      route.fulfill({ json: { tenant: 'mockTenant' } }),
+    );
+
+    await page.route(apiPath('accesskey', 'activate'), async (route) =>
+      route.fulfill({ json: { tenant: 'mockTenant' } }),
+    );
+
+    await page.route(apiPath('accesskey', 'deactivate'), async (route) =>
       route.fulfill({ json: { tenant: 'mockTenant' } }),
     );
 
     await page.goto('http://localhost:5556');
   });
 
-  test('roles table', async ({ page }) => {
+  test('access keys table', async ({ page }) => {
     await expect(
-      page.locator(`text=${mockRoles.roles[0]['name']}`).first(),
+      page.locator(`text=${mockAccessKeys.keys[0]['name']}`).first(),
     ).toBeVisible();
 
     await expect(
-      page.locator(`text=${mockRoles.roles[1]['name']}`).first(),
+      page.locator(`text=${mockAccessKeys.keys[1]['name']}`).first(),
     ).toBeVisible();
 
     await expect(
-      page.locator(`text=${mockRoles.roles[2]['name']}`).first(),
+      page.locator(`text=${mockAccessKeys.keys[2]['name']}`).first(),
     ).toBeVisible();
   });
 
-  test('create role', async ({ page }) => {
-    const openAddRoleModalButton = page
-      .getByTestId('create-role-trigger')
+  test('create access key', async ({ page, context }) => {
+    const openAddAccessKeyModalButton = page
+      .getByTestId('create-access-key-trigger')
       .first();
 
-    // open add role modal
-    await openAddRoleModalButton.click();
+    // open add access key modal
+    await openAddAccessKeyModalButton.click();
 
-    const createRoleNameInput = page.getByText('Name');
-    const createRoleDescriptionInput = page.getByText('Description');
+    const createAccessKeyNameInput = page.getByText('Name');
 
     // submit name
-    await (await createRoleNameInput.all()).at(1).fill('some role name');
+    await (await createAccessKeyNameInput.all())
+      .at(1)
+      .fill('some access key name');
 
-    // submit description
-    await (await createRoleDescriptionInput.all()).at(1).fill('some role desc');
-
-    await page.pause();
     // click modal create button
-    const createRoleButton = page
+    const createAccessKeyButton = page
       .locator('descope-button')
       .filter({ hasText: 'Create' })
-      .getByTestId('create-role-modal-submit')
+      .getByTestId('create-access-key-modal-submit')
       .first();
-    await createRoleButton.click();
-
-    // update grid items
-    await expect(
-      page.locator(`text=${mockNewRole['name']}`).first(),
-    ).toBeVisible();
+    await createAccessKeyButton.click();
 
     // show notification
-    await expect(page.locator('text=Role created successfully')).toBeVisible();
-  });
-
-  test('edit role', async ({ page }) => {
-    await page.getByTestId('edit-role-trigger').first().isDisabled();
-    await page.locator('descope-checkbox').last().click();
-    await page.getByTestId('edit-role-trigger').first().isEnabled();
-
-    // open edit role modal
-    const openEditRoleModalButton = page
-      .getByTestId('edit-role-trigger')
-      .first();
-    await openEditRoleModalButton.click();
-
-    const editRoleNameInput = page.getByLabel('Name');
-    const editRoleDescriptionInput = page.getByLabel('Description');
-
     await expect(
-      page.locator(`text=${mockRoles.roles[2].name}`).first(),
+      page.locator('text=Access Key created successfully'),
     ).toBeVisible();
 
-    await expect(
-      page.locator(`text=${mockRoles.roles[2].description}`).first(),
-    ).toBeVisible();
+    const generatedAccessKeyNameInput = page.getByText('Generated Key');
+    expect(await generatedAccessKeyNameInput.first().inputValue()).toEqual(
+      cleartext,
+    );
 
-    await page.locator(`id=toggleButton`).last().click();
-    await expect(
-      page.locator(`text=${mockRolesPermissions.permissions[0].name}`).last(),
-    ).toBeVisible();
-    await expect(
-      page.locator(`text=${mockRolesPermissions.permissions[1].name}`).last(),
-    ).toBeVisible();
-    await expect(
-      page.locator(`text=${mockRolesPermissions.permissions[2].name}`).last(),
-    ).toBeVisible();
-
-    // submit name
-    await editRoleNameInput.last().fill('some role name');
-
-    // submit description
-    await editRoleDescriptionInput.last().fill('some role desc');
-
-    // click modal edit button
-    const editRoleButton = page
+    // click modal create button
+    const closeCreatedAccessKeyButton = page
       .locator('descope-button')
-      .filter({ hasText: 'Edit' })
-      .getByTestId('edit-role-modal-submit')
+      .filter({ hasText: 'Copy to clipboard & close' })
+      .getByTestId('created-access-key-modal-close')
       .first();
-    await editRoleButton.click();
+    await closeCreatedAccessKeyButton.click();
 
     // update grid items
     await expect(
-      page.locator(`text=${mockNewRole['name']}`).first(),
+      page.locator(`text=${mockNewAccessKey['name']}`).first(),
     ).toBeVisible();
 
-    // show notification
-    await expect(page.locator('text=Role updated successfully')).toBeVisible();
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+    const handle = await page.evaluateHandle(() =>
+      navigator.clipboard.readText(),
+    );
+    const clipboardContent = await handle.jsonValue();
+
+    // Check that the clipboard contains correct UUID
+    expect(clipboardContent).toEqual(cleartext);
   });
 
-  test('delete roles', async ({ page }) => {
-    const deleteRoleTrigger = await page
-      .getByTestId('delete-roles-trigger')
+  test('delete access keys', async ({ page }) => {
+    const deleteAccessKeyTrigger = await page
+      .getByTestId('delete-access-keys-trigger')
       .first();
-    const deleteRoleModalButton = await page
-      .getByTestId('delete-roles-modal-submit')
+    const deleteAccessKeyModalButton = await page
+      .getByTestId('delete-access-keys-modal-submit')
       .first();
 
     // delete button initial state is disabled
-    expect(deleteRoleTrigger).toBeDisabled();
+    expect(deleteAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
 
     // delete button is enabled on selection
-    expect(deleteRoleTrigger).toBeEnabled();
+    expect(deleteAccessKeyTrigger).toBeEnabled();
 
-    // delete roles
-    await deleteRoleTrigger.click();
+    // delete access keys
+    await deleteAccessKeyTrigger.click();
 
-    // show delete roles modal
-    const deleteRoleModal = page.locator('text=Delete Roles');
-    expect(deleteRoleModal).toBeVisible();
+    // show delete access keys modal
+    const deleteAccessKeyModal = page.locator('text=Delete Access Keys');
+    expect(deleteAccessKeyModal).toBeVisible();
 
     // click modal delete button
-    await deleteRoleModalButton.click();
+    await deleteAccessKeyModalButton.click();
 
     // wait for modal to close
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete modal closed
-    await expect(page.locator('Delete Roles')).toBeHidden();
+    await expect(page.locator('Delete Access Keys')).toBeHidden();
 
     // show notification
     await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
+      page.locator(
+        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
+      ),
     ).toBeVisible();
 
     // update grid items
     await expect(page.locator('descope-grid').locator('#items')).toBeEmpty();
   });
 
-  test('search roles', async ({ page }) => {
+  test('deactivate access keys', async ({ page }) => {
+    const deactivateAccessKeyTrigger = await page
+      .getByTestId('deactivate-access-keys-trigger')
+      .first();
+    const deactivateAccessKeyModalButton = await page
+      .getByTestId('deactivate-access-keys-modal-submit')
+      .first();
+
+    // deactivate button initial state is disabled
+    expect(deactivateAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    // deactivate button is enabled on selection
+    expect(deactivateAccessKeyTrigger).toBeEnabled();
+
+    // deactivate access keys
+    await deactivateAccessKeyTrigger.click();
+
+    // show deactivate access keys modal
+    const deactivateAccessKeyModal = page.locator(
+      'text=Deactivate Access Keys',
+    );
+    expect(deactivateAccessKeyModal).toBeVisible();
+
+    const deactivateAccessKeyQ = page.locator('text=Deactivate 3 access keys?');
+    expect(deactivateAccessKeyQ).toBeVisible();
+
+    // click modal deactivate button
+    await deactivateAccessKeyModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // deactivate modal closed
+    await expect(page.locator('Deactivate Access Keys')).toBeHidden();
+
+    // show notification
+    await expect(
+      page.locator(
+        `text=${mockAccessKeys.keys.length} access keys deactivated successfully`,
+      ),
+    ).toBeVisible();
+
+    // update grid items
+    await expect(page.locator('descope-grid').locator('#items')).toBeEmpty();
+  });
+
+  test('activate access keys', async ({ page }) => {
+    const activateAccessKeyTrigger = await page
+      .getByTestId('activate-access-keys-trigger')
+      .first();
+    const activateAccessKeyModalButton = await page
+      .getByTestId('activate-access-keys-modal-submit')
+      .first();
+
+    // activate button initial state is disabled
+    expect(activateAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    // activate button is enabled on selection
+    expect(activateAccessKeyTrigger).toBeEnabled();
+
+    // activate access keys
+    await activateAccessKeyTrigger.click();
+
+    const activateAccessKeyQ = page.locator('text=Activate 3 access keys?');
+    expect(activateAccessKeyQ).toBeVisible();
+
+    // click modal activate button
+    await activateAccessKeyModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // activate modal closed
+    await expect(page.locator('Activate Access Keys')).toBeHidden();
+
+    // show notification
+    await expect(
+      page.locator(
+        `text=${mockAccessKeys.keys.length} access keys activated successfully`,
+      ),
+    ).toBeVisible();
+
+    // update grid items
+    await expect(page.locator('descope-grid').locator('#items')).toBeEmpty();
+  });
+
+  test('search access keys', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    await page.route(apiPath('role', 'search'), async (route) => {
+    await page.route(apiPath('accesskey', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ roles: [mockRoles[1]] }),
+        body: JSON.stringify({ keys: [mockAccessKeys[1]] }),
       });
     });
 
@@ -256,35 +335,39 @@ test.describe('widget', () => {
 
     // only search results shown in grid
     await expect(
-      page.locator(`text=${mockRoles.roles[0]['name']}`).first(),
-    ).toBeHidden();
+      page.locator(`text=${mockAccessKeys.keys[1]['name']}`).first(),
+    ).toBeVisible();
   });
 
   test('close notification', async ({ page }) => {
-    const deleteRoleTrigger = page.getByTestId('delete-roles-trigger').first();
-    const deleteRoleModalButton = page
-      .getByTestId('delete-roles-modal-submit')
+    const deleteAccessKeyTrigger = page
+      .getByTestId('delete-access-keys-trigger')
+      .first();
+    const deleteAccessKeyModalButton = page
+      .getByTestId('delete-access-keys-modal-submit')
       .first();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
 
-    // delete roles
-    await deleteRoleTrigger.click();
+    // delete access keys
+    await deleteAccessKeyTrigger.click();
 
-    // show delete roles modal
-    const deleteRoleModal = page.locator('text=Delete Roles');
-    expect(deleteRoleModal).toBeVisible();
+    // show delete access keys modal
+    const deleteAccessKeyModal = page.locator('text=Delete Access Keys');
+    expect(deleteAccessKeyModal).toBeVisible();
 
     // click modal delete button
-    await deleteRoleModalButton.click();
+    await deleteAccessKeyModalButton.click();
 
     // wait for modal to close
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     // show notification
     await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
+      page.locator(
+        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
+      ),
     ).toBeVisible();
 
     // click close button
@@ -292,7 +375,9 @@ test.describe('widget', () => {
 
     // notification closed
     await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
+      page.locator(
+        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
+      ),
     ).toBeHidden();
   });
 });

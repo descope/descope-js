@@ -1,3 +1,5 @@
+import { CreateAccessKeyConfig } from '../../src/lib/widget/api/types';
+
 export const mockAccessKeys = {
   keys: [
     {
@@ -15,8 +17,11 @@ export const mockAccessKeys = {
   ],
 };
 
-export const mockNewAccessKey = {
+export const mockNewAccessKey: CreateAccessKeyConfig = {
   name: 'Access Key New',
+  expiration: '0',
+  userId: 'some user id',
+  roleNames: ['aa', 'bb'],
 };
 
 export const mockRoles = {

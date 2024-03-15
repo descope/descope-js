@@ -18,7 +18,6 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      // action.payload.cleartext - display in modal
       state.accessKeysList.data.unshift(action.payload.key);
     },
   },

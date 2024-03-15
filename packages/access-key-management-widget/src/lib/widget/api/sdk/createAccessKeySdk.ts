@@ -65,7 +65,7 @@ export const createAccessKeySdk = ({
     userId,
   }) => {
     const expireTime = new Date();
-    expireTime.setDate(expireTime.getDate() + +expiration[0]);
+    expireTime.setDate(expireTime.getDate() + +expiration);
     const res = await httpClient.post(
       apiPaths.accesskey.create,
       {
