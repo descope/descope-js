@@ -40,17 +40,33 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], browserName: 'chromium' },
+      use: {
+        ...devices['Desktop Chrome'],
+        browserName: 'chromium',
+        contextOptions: {
+          // chromium-specific permissions
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
+      },
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], browserName: 'firefox' },
+      use: {
+        ...devices['Desktop Firefox'],
+        browserName: 'firefox',
+      },
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'], browserName: 'webkit' },
+      use: {
+        ...devices['Desktop Safari'],
+        browserName: 'webkit',
+        contextOptions: {
+          permissions: ['clipboard-read'],
+        },
+      },
     },
 
     /* Test against mobile viewports. */

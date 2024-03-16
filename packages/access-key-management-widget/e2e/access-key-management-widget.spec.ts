@@ -116,7 +116,7 @@ test.describe('widget', () => {
     ).toBeVisible();
   });
 
-  test('create access key', async ({ page, context }) => {
+  test('create access key', async ({ page, browserName }) => {
     const openAddAccessKeyModalButton = page
       .getByTestId('create-access-key-trigger')
       .first();
@@ -124,12 +124,23 @@ test.describe('widget', () => {
     // open add access key modal
     await openAddAccessKeyModalButton.click();
 
-    const createAccessKeyNameInput = page.getByText('Name');
+    const expirationInput = page.getByText('Expiration');
+    expect(await expirationInput.last().inputValue()).toEqual('30 Days');
 
     // submit name
-    await (await createAccessKeyNameInput.all())
-      .at(1)
-      .fill('some access key name');
+    const createAccessKeyNameInput = page.getByText('Name');
+    await createAccessKeyNameInput.last().fill('some access key name');
+
+    await page.locator(`id=toggleButton`).last().click();
+    await expect(
+      page.locator(`text=${mockRoles.roles[0].name}`).last(),
+    ).toBeVisible();
+    await expect(
+      page.locator(`text=${mockRoles.roles[1].name}`).last(),
+    ).toBeVisible();
+    await expect(
+      page.locator(`text=${mockRoles.roles[2].name}`).last(),
+    ).toBeVisible();
 
     // click modal create button
     const createAccessKeyButton = page
@@ -162,15 +173,12 @@ test.describe('widget', () => {
       page.locator(`text=${mockNewAccessKey['name']}`).first(),
     ).toBeVisible();
 
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-
-    const handle = await page.evaluateHandle(() =>
-      navigator.clipboard.readText(),
-    );
-    const clipboardContent = await handle.jsonValue();
-
-    // Check that the clipboard contains correct UUID
-    expect(clipboardContent).toEqual(cleartext);
+    if (browserName !== 'firefox') {
+      const clipboardContent = await page.evaluate(
+        'navigator.clipboard.readText()',
+      );
+      expect(clipboardContent).toEqual(cleartext);
+    }
   });
 
   test('delete access keys', async ({ page }) => {

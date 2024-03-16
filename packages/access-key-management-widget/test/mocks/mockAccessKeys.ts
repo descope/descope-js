@@ -1,18 +1,39 @@
-import { CreateAccessKeyConfig } from '../../src/lib/widget/api/types';
+import {
+  AccessKey,
+  CreateAccessKeyConfig,
+} from '../../src/lib/widget/api/types';
 
-export const mockAccessKeys = {
+export const mockAccessKeys: Record<string, AccessKey[]> = {
   keys: [
     {
       id: '1',
       name: 'Access Key 1',
+      clientId: 'Client id 1',
+      createdBy: 'created by 1',
+      roleNames: [],
+      createdTime: new Date(),
+      expireTime: new Date().getTime(),
+      status: 'active',
     },
     {
       id: '2',
       name: 'Access Key 2',
+      clientId: 'Client id 2',
+      createdBy: 'created by 2',
+      roleNames: [],
+      createdTime: new Date(),
+      expireTime: new Date().getTime(),
+      status: 'active',
     },
     {
       id: '3',
       name: 'Access Key 3',
+      clientId: 'Client id 3',
+      createdBy: 'created by 3',
+      roleNames: [],
+      createdTime: new Date(),
+      expireTime: new Date().getTime(),
+      status: 'active',
     },
   ],
 };
