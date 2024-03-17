@@ -114,6 +114,7 @@ importers:
       rollup-plugin-livereload: ^2.0.5
       rollup-plugin-svg-import: 3.0.0
       rollup-plugin-terser: 7.0.2
+      serve: 14.2.1
       shadow-dom-testing-library: ^1.2.0
       string-to-arraybuffer: ^1.0.2
       ts-jest: ^29.0.0
@@ -132,7 +133,7 @@ importers:
       reselect: 5.0.1
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.265
+      '@descope/web-components-ui': 1.0.266
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 24.1.0_rollup@2.79.1
@@ -174,6 +175,7 @@ importers:
       rollup-plugin-livereload: 2.0.5
       rollup-plugin-svg-import: 3.0.0_rollup@2.79.1
       rollup-plugin-terser: 7.0.2_rollup@2.79.1
+      serve: 14.2.1
       shadow-dom-testing-library: 1.10.0_@testing-library+dom@9.2.0
       string-to-arraybuffer: 1.0.2
       ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
@@ -640,7 +642,7 @@ importers:
       reselect: 5.0.1
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.265
+      '@descope/web-components-ui': 1.0.266
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 24.1.0_rollup@2.79.1
@@ -762,7 +764,7 @@ importers:
       reselect: 5.0.1
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.265
+      '@descope/web-components-ui': 1.0.266
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 24.1.0_rollup@2.79.1
@@ -2784,8 +2786,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.265:
-    resolution: {integrity: sha512-Bj7cXizi3Qnt+/OBilImFq942xDggGbbcm6/AgIMSgqxpniGET5G/h9giqsmPMkyZbduBx04J2yJcu2pEIVS+w==}
+  /@descope/web-components-ui/1.0.266:
+    resolution: {integrity: sha512-ZQiqXb1V6KdNvfTtqonZL50Y5RLPlrBXSVfMUJpx+TdPw6jBne+KhS03NkPy/0gEMOdUsUHNFfIaGOpzhOENgg==}
     dependencies:
       '@vaadin/button': 24.3.4
       '@vaadin/checkbox': 24.3.4
