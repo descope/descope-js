@@ -1,14 +1,16 @@
-import { pluralize } from '@descope/sdk-helpers';
-import { waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
-import '../src/lib/index';
+import { waitFor } from '@testing-library/dom';
+import { pluralize } from '@descope/sdk-helpers';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
+import { mockAccessKeys, mockNewAccessKey } from './mocks/mockAccessKeys';
 import { createSdk } from '../src/lib/widget/api/sdk';
-import createRoleModalMock from './mocks/createRoleModalMock';
-import deleteRoleModalMock from './mocks/deleteRoleModalMock';
-import editRoleModalMock from './mocks/editRoleModalMock';
-import { mockEditRole, mockNewRole, mockRoles } from './mocks/mockRoles';
+import '../src/lib/index';
 import rootMock from './mocks/rootMock';
+import createAccessKeyModalMock from './mocks/createAccessKeyModalMock';
+import createdAccessKeyModalMock from './mocks/createdAccessKeyModalMock';
+import deleteAccessKeyModalMock from './mocks/deleteAccessKeyModalMock';
+import activateAccessKeyModalMock from './mocks/activateAccessKeyModalMock';
+import deactivateAccessKeyModalMock from './mocks/deactivateAccessKeyModalMock';
 
 const origAppend = document.body.append;
 
@@ -25,8 +27,9 @@ export const mockHttpClient = {
       mockHttpClient[key].mockResolvedValue({
         ok: true,
         status: 200,
-        json: () => Promise.resolve({ roles: mockRoles.roles }),
-        text: () => Promise.resolve(JSON.stringify({ roles: mockRoles.roles })),
+        json: () => Promise.resolve({ keys: mockAccessKeys.keys }),
+        text: () =>
+          Promise.resolve(JSON.stringify({ keys: mockAccessKeys.keys })),
       }),
     ),
 };
@@ -37,15 +40,15 @@ jest.mock('@descope/web-js-sdk', () => ({
   default: jest.fn(() => ({ httpClient: mockHttpClient })),
 }));
 
-jest.mock('../src/lib/widget/api/sdk/createRoleSdk', () => {
+jest.mock('../src/lib/widget/api/sdk/createAccessKeySdk', () => {
   const actualModule = jest.requireActual(
-    '../src/lib/widget/api/sdk/createRoleSdk',
+    '../src/lib/widget/api/sdk/createAccessKeySdk',
   );
   return {
     __esModule: true,
-    createRoleSdk: jest.fn((props) => {
-      actualModule.createRoleSdk(props);
-      return actualModule.createRoleSdk(props);
+    createAccessKeySdk: jest.fn((props) => {
+      actualModule.createAccessKeySdk(props);
+      return actualModule.createAccessKeySdk(props);
     }),
   };
 });
@@ -61,7 +64,7 @@ const configContent = {
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
 
-describe('role-management-widget', () => {
+describe('access-key-management-widget', () => {
   beforeEach(() => {
     fetchMock.mockImplementation((url: string) => {
       const res = {
@@ -79,14 +82,20 @@ describe('role-management-widget', () => {
         case url.endsWith('root.html'): {
           return { ...res, text: () => rootMock };
         }
-        case url.endsWith('create-role-modal.html'): {
-          return { ...res, text: () => createRoleModalMock };
+        case url.endsWith('create-access-key-modal.html'): {
+          return { ...res, text: () => createAccessKeyModalMock };
         }
-        case url.endsWith('edit-role-modal.html'): {
-          return { ...res, text: () => editRoleModalMock };
+        case url.endsWith('created-access-key-modal.html'): {
+          return { ...res, text: () => createdAccessKeyModalMock };
         }
-        case url.endsWith('delete-roles-modal.html'): {
-          return { ...res, text: () => deleteRoleModalMock };
+        case url.endsWith('activate-access-keys-modal.html'): {
+          return { ...res, text: () => activateAccessKeyModalMock };
+        }
+        case url.endsWith('deactivate-access-keys-modal.html'): {
+          return { ...res, text: () => deactivateAccessKeyModalMock };
+        }
+        case url.endsWith('delete-access-keys-modal.html'): {
+          return { ...res, text: () => deleteAccessKeyModalMock };
         }
         default: {
           return { ok: false };
@@ -105,7 +114,7 @@ describe('role-management-widget', () => {
   describe('sdk', () => {
     it('search', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
-      const result = await sdk.role.search({});
+      const result = await sdk.accesskey.search({});
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -113,7 +122,7 @@ describe('role-management-widget', () => {
       );
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.role.search,
+          apiPaths.accesskey.search,
           {
             limit: 10000,
             page: undefined,
@@ -126,18 +135,15 @@ describe('role-management-widget', () => {
         ),
       );
 
-      expect(result[0].name).toEqual(mockRoles.roles[0]['name']);
-      expect(result[1].name).toEqual(mockRoles.roles[1]['name']);
+      expect(result[0].id).toEqual(mockAccessKeys.keys[0]['id']);
+      expect(result[1].id).toEqual(mockAccessKeys.keys[1]['id']);
     });
 
     it('deleteBatch', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
-      const roleNames = [
-        mockRoles.roles[0]['name'],
-        mockRoles.roles[1]['name'],
-      ];
+      const ids = [mockAccessKeys.keys[0]['id'], mockAccessKeys.keys[1]['id']];
 
-      await sdk.role.deleteBatch(roleNames);
+      await sdk.accesskey.deleteBatch(ids);
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -145,8 +151,54 @@ describe('role-management-widget', () => {
       );
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.role.deleteBatch,
-          { roleNames },
+          apiPaths.accesskey.deleteBatch,
+          { ids },
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });
+
+    it('activate', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const ids = [mockAccessKeys.keys[0]['id'], mockAccessKeys.keys[1]['id']];
+
+      await sdk.accesskey.activate(ids);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.accesskey.activate,
+          { ids },
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });
+
+    it('deactivate', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const ids = [mockAccessKeys.keys[0]['id'], mockAccessKeys.keys[1]['id']];
+
+      await sdk.accesskey.deactivate(ids);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.accesskey.deactivate,
+          { ids },
           {
             queryParams: {
               tenant: mockTenant,
@@ -159,7 +211,7 @@ describe('role-management-widget', () => {
     it('create', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
 
-      await sdk.role.create(mockNewRole);
+      await sdk.accesskey.create(mockNewAccessKey);
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -167,30 +219,13 @@ describe('role-management-widget', () => {
       );
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.role.create,
-          { ...mockNewRole, tenantId: mockTenant, createdTime: undefined },
+          apiPaths.accesskey.create,
           {
-            queryParams: {
-              tenant: mockTenant,
-            },
+            name: mockNewAccessKey.name,
+            userId: mockNewAccessKey.userId,
+            roleNames: mockNewAccessKey.roleNames,
+            expireTime: 0,
           },
-        ),
-      );
-    });
-
-    it('edit', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
-
-      await sdk.role.update(mockEditRole);
-
-      await waitFor(
-        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
-        { timeout: 5000 },
-      );
-      await waitFor(() =>
-        expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.role.update,
-          { ...mockEditRole, tenantId: mockTenant },
           {
             queryParams: {
               tenant: mockTenant,
@@ -204,17 +239,17 @@ describe('role-management-widget', () => {
   describe('utils', () => {
     it('should pluralize messages', () => {
       expect(
-        pluralize(1)`${['', 2]}${['R', 'r']}ole${[
+        pluralize(1)`${['', 2]}${['A', 'a']}ccess key${[
           '',
           's',
         ]} deleted successfully`,
-      ).toEqual('Role deleted successfully');
+      ).toEqual('Access key deleted successfully');
       expect(
-        pluralize(2)`${['', 2]} ${['R', 'r']}ole${[
+        pluralize(2)`${['', 2]} ${['A', 'a']}ccess key${[
           '',
           's',
         ]} deleted successfully`,
-      ).toEqual('2 roles deleted successfully');
+      ).toEqual('2 access keys deleted successfully');
     });
   });
 });

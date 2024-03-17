@@ -114,7 +114,6 @@ test.describe('widget', () => {
     // submit description
     await (await createRoleDescriptionInput.all()).at(1).fill('some role desc');
 
-    await page.pause();
     // click modal create button
     const createRoleButton = page
       .locator('descope-button')
@@ -195,6 +194,8 @@ test.describe('widget', () => {
     const deleteRoleModalButton = await page
       .getByTestId('delete-roles-modal-submit')
       .first();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete button initial state is disabled
     expect(deleteRoleTrigger).toBeDisabled();

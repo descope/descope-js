@@ -1,6 +1,6 @@
 {
-  "name": "@descope/user-management-widget",
-  "version": "0.3.0",
+  "name": "@descope/access-key-management-widget",
+  "version": "0.1.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -10,9 +10,9 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
-  "description": "Descope user management widget",
+  "description": "Descope access key management widget",
   "scripts": {
-    "start": "npx nx run user-management-widget:build && rollup -c rollup.config.app.serve.mjs -w",
+    "start": "npx nx run access-key-management-widget:build && rollup -c rollup.config.app.serve.mjs -w",
     "build:app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
     "test": "npm run test:unit",
@@ -40,7 +40,7 @@
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "5.17.0",
     "@types/jest": "^29.0.0",
-    "@types/node": "20.11.20",
+    "@types/node": "20.11.19",
     "@types/testing-library__jest-dom": "5.14.9",
     "dotenv": "^16.0.3",
     "eslint": "8.52.0",
@@ -84,13 +84,12 @@
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
     "@descope/sdk-component-drivers": "workspace:*",
-    "tslib": "2.6.2",
-    "libphonenumber-js": "1.10.57",
-    "reselect": "5.0.1",
     "@reduxjs/toolkit": "^2.0.1",
+    "immer": "^10.0.3",
     "redux": "5.0.1",
     "redux-thunk": "3.1.0",
-    "immer": "^10.0.3"
+    "reselect": "5.0.1",
+    "tslib": "2.6.2"
   },
   "overrides": {
     "terser": "5.21.0"

@@ -26,7 +26,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5555',
+    baseURL: 'http://localhost:5557',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -44,6 +44,10 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         browserName: 'chromium',
         screenshot: 'only-on-failure',
+        contextOptions: {
+          // chromium-specific permissions
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
       },
     },
 
@@ -51,8 +55,8 @@ export default defineConfig({
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        browserName: 'firefox',
         screenshot: 'only-on-failure',
+        browserName: 'firefox',
       },
     },
 
@@ -62,6 +66,9 @@ export default defineConfig({
         ...devices['Desktop Safari'],
         browserName: 'webkit',
         screenshot: 'only-on-failure',
+        contextOptions: {
+          permissions: ['clipboard-read'],
+        },
       },
     },
 
@@ -89,11 +96,11 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'npx serve node_modules/@descope/web-components-ui/dist -p 8765',
+      command: 'npx serve node_modules/@descope/web-components-ui/dist -p 8767',
     },
     {
-      command: 'npx serve build -l 5555',
-      url: 'http://localhost:5555',
+      command: 'npx serve build -l 5557',
+      url: 'http://localhost:5557',
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },
