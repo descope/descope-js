@@ -10,7 +10,7 @@ import {
   deleteUsers,
   disableUser,
   enableUser,
-  expireUserPassword,
+  setTempUserPassword,
   getCustomAttributes,
   getTenantRoles,
   removePasskey,
@@ -41,7 +41,7 @@ export const stateManagementMixin = createSingletonMixin(
           disableUser.reducer(builder);
           deleteUsers.reducer(builder);
           searchUser.reducer(builder);
-          expireUserPassword.reducer(builder);
+          setTempUserPassword.reducer(builder);
           removePasskey.reducer(builder);
           getCustomAttributes.reducer(builder);
           getTenantRoles.reducer(builder);
@@ -53,10 +53,10 @@ export const stateManagementMixin = createSingletonMixin(
           enableUser: enableUser.action,
           disableUser: disableUser.action,
           deleteUsers: deleteUsers.action,
-          expireUserPassword: expireUserPassword.action,
           removePasskey: removePasskey.action,
           getCustomAttributes: getCustomAttributes.action,
           getTenantRoles: getTenantRoles.action,
+          setTempUserPassword: setTempUserPassword.action,
         },
       }),
       initLifecycleMixin,

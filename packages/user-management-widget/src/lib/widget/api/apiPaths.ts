@@ -8,6 +8,7 @@ export const apiPaths = {
     setTempPassword: '/v1/mgmt/user/password/set/temporary',
     removePasskey: '/v1/mgmt/user/passkeys/delete',
     expirePassword: '/v1/mgmt/user/password/expire',
+    tempPassword: '/v1/mgmt/user/password/set/temporary',
     customAttributes: '/v1/mgmt/user/customattributes',
   },
   tenant: {
