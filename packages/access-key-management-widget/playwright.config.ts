@@ -43,6 +43,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         browserName: 'chromium',
+        screenshot: 'only-on-failure',
         contextOptions: {
           // chromium-specific permissions
           permissions: ['clipboard-read', 'clipboard-write'],
@@ -54,6 +55,7 @@ export default defineConfig({
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
+        screenshot: 'only-on-failure',
         browserName: 'firefox',
       },
     },
@@ -63,6 +65,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Safari'],
         browserName: 'webkit',
+        screenshot: 'only-on-failure',
         contextOptions: {
           permissions: ['clipboard-read'],
         },

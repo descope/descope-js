@@ -71,10 +71,6 @@ test.describe('widget', () => {
       route.fulfill({ json: { key: mockNewAccessKey, cleartext } }),
     );
 
-    await page.route(apiPath('accesskey', 'activate'), async (route) =>
-      route.fulfill({ json: mockNewAccessKey }),
-    );
-
     await page.route(apiPath('tenant', 'roles'), async (route) =>
       route.fulfill({ json: mockRoles }),
     );
@@ -117,12 +113,16 @@ test.describe('widget', () => {
   });
 
   test('create access key', async ({ page, browserName }) => {
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     const openAddAccessKeyModalButton = page
       .getByTestId('create-access-key-trigger')
       .first();
 
     // open add access key modal
     await openAddAccessKeyModalButton.click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     const expirationInput = page.getByText('Expiration');
     expect(await expirationInput.last().inputValue()).toEqual('30 Days');
@@ -228,6 +228,8 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
       .first();
@@ -277,6 +279,8 @@ test.describe('widget', () => {
   });
 
   test('activate access keys', async ({ page }) => {
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     const activateAccessKeyTrigger = await page
       .getByTestId('activate-access-keys-trigger')
       .first();
