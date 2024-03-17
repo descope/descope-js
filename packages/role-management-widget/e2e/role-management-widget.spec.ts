@@ -195,6 +195,8 @@ test.describe('widget', () => {
       .getByTestId('delete-roles-modal-submit')
       .first();
 
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     // delete button initial state is disabled
     expect(deleteRoleTrigger).toBeDisabled();
 

@@ -189,6 +189,8 @@ test.describe('widget', () => {
       .getByTestId('delete-access-keys-modal-submit')
       .first();
 
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     // delete button initial state is disabled
     expect(deleteAccessKeyTrigger).toBeDisabled();
 
