@@ -102,6 +102,7 @@ export default defineConfig({
       command: 'npx serve build -l 5557',
       url: 'http://localhost:5557',
       reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
     },
   ],
 });
