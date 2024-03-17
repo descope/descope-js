@@ -4,7 +4,6 @@ import {
   mockNewUser,
   mockDisabledUser,
   mockEnabledUser,
-  mockUpdatedUsers,
   updatedUser,
 } from '../test/mocks/mockUsers';
 import mockTheme from '../test/mocks/mockTheme';
@@ -176,13 +175,13 @@ test.describe('widget', () => {
     expect(disableUserTrigger).toBeDisabled();
     expect(removePasskeyTrigger).toBeDisabled();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // de-select non-editable user
     await page.locator('descope-checkbox').nth(4).click();
 
     // select enabled and editable user
     await page.locator('descope-checkbox').nth(1).click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     expect(createUserTrigger).toBeEnabled();
     expect(editUserTrigger).toBeEnabled();
