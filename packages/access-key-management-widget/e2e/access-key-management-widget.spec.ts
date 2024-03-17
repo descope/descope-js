@@ -143,12 +143,17 @@ test.describe('widget', () => {
       page.locator(`text=${mockRoles.roles[2].name}`).last(),
     ).toBeVisible();
 
+    await page.keyboard.press('Escape');
+
     // click modal create button
     const createAccessKeyButton = page
       .locator('descope-button')
       .filter({ hasText: 'Create' })
       .getByTestId('create-access-key-modal-submit')
-      .first();
+      .last();
+
+    await expect(createAccessKeyButton).toBeVisible();
+
     await createAccessKeyButton.click();
 
     // show notification
@@ -231,14 +236,14 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
+    await page.waitForTimeout(STATE_TIMEOUT);
+
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
       .first();
     const deactivateAccessKeyModalButton = await page
       .getByTestId('deactivate-access-keys-modal-submit')
       .first();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // deactivate button initial state is disabled
     expect(deactivateAccessKeyTrigger).toBeDisabled();
