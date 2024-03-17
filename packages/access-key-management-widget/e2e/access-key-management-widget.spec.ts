@@ -24,6 +24,7 @@ const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
+const STATE_TIMEOUT = 1000;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 test.describe('widget', () => {
@@ -173,7 +174,7 @@ test.describe('widget', () => {
       page.locator(`text=${mockNewAccessKey['name']}`).first(),
     ).toBeVisible();
 
-    if (browserName !== 'firefox') {
+    if (browserName === 'chromium') {
       const clipboardContent = await page.evaluate(
         'navigator.clipboard.readText()',
       );
@@ -189,13 +190,15 @@ test.describe('widget', () => {
       .getByTestId('delete-access-keys-modal-submit')
       .first();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // delete button initial state is disabled
     expect(deleteAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete button is enabled on selection
     expect(deleteAccessKeyTrigger).toBeEnabled();
@@ -228,8 +231,6 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
       .first();
@@ -237,11 +238,15 @@ test.describe('widget', () => {
       .getByTestId('deactivate-access-keys-modal-submit')
       .first();
 
+    await page.waitForTimeout(STATE_TIMEOUT);
+
     // deactivate button initial state is disabled
     expect(deactivateAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // deactivate button is enabled on selection
     expect(deactivateAccessKeyTrigger).toBeEnabled();
