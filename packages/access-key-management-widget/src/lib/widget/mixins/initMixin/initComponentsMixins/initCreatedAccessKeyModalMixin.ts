@@ -34,7 +34,7 @@ export const initCreatedAccessKeyModalMixin = createSingletonMixin(
             //   </descope-container>
             // </descope-container>
             // `,
-            await this.fetchWidgetPage('create-access-key-modal.html'),
+            await this.fetchWidgetPage('created-access-key-modal.html'),
           ),
         );
 
