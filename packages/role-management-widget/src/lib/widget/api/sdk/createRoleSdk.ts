@@ -16,7 +16,7 @@ export const createRoleSdk = ({
 }: {
   httpClient: HttpClient;
   tenant: string;
-  mock: string;
+  mock: boolean;
 }) => {
   const search: (config: SearchRolesConfig) => Promise<Role[]> = async ({
     page,
