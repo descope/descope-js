@@ -15,6 +15,7 @@ import {
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
+  DESCOPE_IDP_INITIATED_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -182,6 +183,14 @@ export function clearSAMLIDPUsernameParamFromUrl() {
   resetUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
 }
 
+export function getDescopeIDPInitiatedParamFromUrl() {
+  return getUrlParam(DESCOPE_IDP_INITIATED_PARAM_NAME);
+}
+
+export function clearDescopeIDPInitiatedParamFromUrl() {
+  resetUrlParam(DESCOPE_IDP_INITIATED_PARAM_NAME);
+}
+
 export function getSSOAppIdParamFromUrl() {
   return getUrlParam(SSO_APP_ID_PARAM_NAME);
 }
@@ -271,6 +280,11 @@ export const handleUrlParams = () => {
     clearSAMLIDPUsernameParamFromUrl();
   }
 
+  const descopeIdpInitiated = getDescopeIDPInitiatedParamFromUrl();
+  if (descopeIdpInitiated) {
+    clearDescopeIDPInitiatedParamFromUrl();
+  }
+
   const ssoAppId = getSSOAppIdParamFromUrl();
   if (ssoAppId) {
     clearSSOAppIdParamFromUrl();
@@ -280,6 +294,8 @@ export const handleUrlParams = () => {
   if (oidcLoginHint) {
     clearOIDCLoginHintParamFromUrl();
   }
+
+  const idpInitiatedVal = descopeIdpInitiated === 'true';
 
   return {
     executionId,
@@ -294,6 +310,7 @@ export const handleUrlParams = () => {
     oidcIdpStateId,
     samlIdpStateId,
     samlIdpUsername,
+    descopeIdpInitiated: idpInitiatedVal,
     ssoAppId,
     oidcLoginHint,
   };

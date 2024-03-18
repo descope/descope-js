@@ -26,6 +26,7 @@ import {
   SSO_APP_ID_PARAM_NAME,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
+  DESCOPE_IDP_INITIATED_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -2578,6 +2579,45 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+        ),
+      );
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
+    it('should call start with descope idp initiated flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const descopeIdpInitiated = 'true';
+      window.location.search = `?${DESCOPE_IDP_INITIATED_PARAM_NAME}=${descopeIdpInitiated}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            abTestingKey,
+            oidcIdpStateId: null,
+            oidcLoginHint: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
+            client: {},
+            tenant: undefined,
+            redirectAuth: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          0,
+          '1.2.3',
+          {
+            idpInitiated: true,
+          },
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
