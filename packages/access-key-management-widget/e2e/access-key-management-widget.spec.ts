@@ -305,6 +305,8 @@ test.describe('widget', () => {
     // select all items
     await page.locator('descope-checkbox').first().click();
 
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     // activate button is enabled on selection
     expect(activateAccessKeyTrigger).toBeEnabled();
 
