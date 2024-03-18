@@ -15,6 +15,8 @@ import deleteUserModalMock from '../test/mocks/deleteUserModalMock';
 import enableUserModalMock from '../test/mocks/enableUserModalMock';
 import disableUserModalMock from '../test/mocks/disableUserModalMock';
 import removePasskeyModalMock from '../test/mocks/removePasskeyModalMock';
+import resetPasswordModalMock from '../test/mocks/resetPasswordModalMock';
+import generatedPasswordModalMock from '../test/mocks/generatedPasswordModalMock';
 import editUserModalMock from '../test/mocks/editUserModalMock';
 import mockCustomAttributes from '../test/mocks/mockCustomAttributes';
 
@@ -74,6 +76,14 @@ test.describe('widget', () => {
 
     await page.route('*/**/remove-passkey-modal.html', async (route) =>
       route.fulfill({ body: removePasskeyModalMock }),
+    );
+
+    await page.route('*/**/reset-password-modal.html', async (route) =>
+      route.fulfill({ body: resetPasswordModalMock }),
+    );
+
+    await page.route('*/**/generated-password-modal.html', async (route) =>
+      route.fulfill({ body: generatedPasswordModalMock }),
     );
 
     await page.route(apiPath('user', 'create'), async (route) =>
@@ -469,8 +479,79 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=Successfully removed user's passkey`),
     ).toBeVisible();
+  });
 
-    // update grid items
+  test('reset password', async ({ page, browserName }) => {
+    const cleartext = 'aaaaaaaa';
+    await page.route(apiPath('user', 'setTempPassword'), async (route) =>
+      route.fulfill({ json: { cleartext } }),
+    );
+
+    const resetPasswordTrigger = page
+      .locator('descope-button')
+      .getByTestId('reset-password-trigger')
+      .first();
+    const resetPasswordModalButton = page
+      .getByTestId('reset-user-password-modal-submit')
+      .first();
+
+    // enable user button initial state is disabled
+    expect(resetPasswordTrigger).toBeDisabled();
+
+    // wait for widget state
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select first user (status: active)
+    await page.locator('descope-checkbox').nth(2).click();
+
+    // enable user button is enabled on selection
+    expect(resetPasswordTrigger).toBeEnabled();
+
+    // enable user
+    await resetPasswordTrigger.click();
+
+    // show enable user modal
+    const resetPasswordModal = page.locator('text=Reset User Password');
+    expect(resetPasswordModal).toBeVisible();
+
+    const resetPasswordModalMessage = page.locator(
+      `text=Reset password for ${mockUsers[1].email}`,
+    );
+    expect(resetPasswordModalMessage).toBeVisible();
+
+    // click modal button
+    await resetPasswordModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // enable modal closed
+    await expect(page.locator('Reset User Password')).toBeHidden();
+
+    // show notification
+    await expect(
+      page.locator(`text=Successfully reset user password`),
+    ).toBeVisible();
+
+    const generatedPasswordInput = page.getByText('Generated Password');
+    expect(await generatedPasswordInput.first().inputValue()).toEqual(
+      cleartext,
+    );
+
+    // click modal button
+    const closeGeneratedPasswordButton = page
+      .locator('descope-button')
+      .filter({ hasText: 'Copy to clipboard & close' })
+      .getByTestId('generated-password-modal-close')
+      .first();
+    await closeGeneratedPasswordButton.click();
+
+    if (browserName === 'chromium') {
+      const clipboardContent = await page.evaluate(
+        'navigator.clipboard.readText()',
+      );
+      expect(clipboardContent).toEqual(cleartext);
+    }
   });
 
   test('search users', async ({ page }) => {

@@ -9,6 +9,7 @@ import { initFilterUsersInputMixin } from './initComponentsMixins/initFilterUser
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
 import { initRemovePasskeyButtonMixin } from './initComponentsMixins/initRemovePasskeyButtonMixin';
 import { initUsersTableMixin } from './initComponentsMixins/initUsersTableMixin';
+import { initResetPasswordButtonMixin } from './initComponentsMixins/initResetPasswordButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -22,6 +23,7 @@ export const initMixin = createSingletonMixin(
       initEditUserButtonMixin,
       initEnableUserButtonMixin,
       initDisableUserButtonMixin,
+      initResetPasswordButtonMixin,
       initRemovePasskeyButtonMixin,
       initFilterUsersInputMixin,
       initNotificationsMixin,
