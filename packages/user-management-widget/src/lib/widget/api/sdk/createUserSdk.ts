@@ -162,11 +162,11 @@ export const createUserSdk = ({
     return json.user;
   };
 
-  const setTempPassword = async (loginIds: string[]) => {
+  const setTempPassword = async (loginId: string) => {
     const res = await httpClient.post(
       apiPaths.user.setTempPassword,
       {
-        loginId: loginIds,
+        loginId,
       },
       {
         queryParams: { tenant },
