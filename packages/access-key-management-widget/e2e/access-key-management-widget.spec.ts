@@ -25,7 +25,7 @@ const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 1000;
+const STATE_TIMEOUT = 2000;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 test.describe('widget', () => {
@@ -95,6 +95,19 @@ test.describe('widget', () => {
 
     await page.route(apiPath('accesskey', 'deactivate'), async (route) =>
       route.fulfill({ json: { tenant: 'mockTenant' } }),
+    );
+
+    await page.route('**/auth/me', async (route) =>
+      route.fulfill({
+        json: {
+          userTenants: [
+            {
+              tenantId: 'tid',
+              roleNames: ['Tenant Admin'],
+            },
+          ],
+        },
+      }),
     );
 
     await page.goto('http://localhost:5557');
@@ -290,7 +303,7 @@ test.describe('widget', () => {
   });
 
   test('activate access keys', async ({ page }) => {
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     const activateAccessKeyTrigger = await page
       .getByTestId('activate-access-keys-trigger')
@@ -304,6 +317,8 @@ test.describe('widget', () => {
 
     // select all items
     await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // activate button is enabled on selection
     expect(activateAccessKeyTrigger).toBeEnabled();
