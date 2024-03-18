@@ -114,7 +114,6 @@ export const getCanResetPassword = createSelector(
 );
 
 export const getCanDelete = createSelector(
-  getIsSingleUsersSelected,
   getIsSelectedUsersEditable,
-  (isSingleUser, isUsersEditable) => isSingleUser && isUsersEditable,
+  (isUsersEditable) => isUsersEditable,
 );
