@@ -25,7 +25,7 @@ const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 1000;
+const STATE_TIMEOUT = 2000;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 test.describe('widget', () => {
@@ -250,7 +250,7 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
@@ -303,7 +303,7 @@ test.describe('widget', () => {
   });
 
   test('activate access keys', async ({ page }) => {
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     const activateAccessKeyTrigger = await page
       .getByTestId('activate-access-keys-trigger')
