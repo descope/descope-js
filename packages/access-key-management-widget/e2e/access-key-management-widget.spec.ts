@@ -4,6 +4,7 @@ import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import {
   mockRoles,
   mockAccessKeys,
+  mockAccessKeysWithNonEditable,
   mockNewAccessKey,
 } from '../test/mocks/mockAccessKeys';
 import rootMock from '../test/mocks/rootMock';
@@ -403,5 +404,65 @@ test.describe('widget', () => {
         `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
       ),
     ).toBeHidden();
+  });
+
+  test('deactivate access keys for non editable key', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeysWithNonEditable.keys }),
+      }),
+    );
+    page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const deactivateAccessKeyTrigger = await page
+      .getByTestId('deactivate-access-keys-trigger')
+      .first();
+
+    // deactivate button initial state is disabled
+    expect(deactivateAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // deactivate button is disabled on selection
+    expect(deactivateAccessKeyTrigger).toBeDisabled();
+  });
+
+  test('activate access keys for non editable key', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeysWithNonEditable.keys }),
+      }),
+    );
+    page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const activateAccessKeyTrigger = await page
+      .getByTestId('activate-access-keys-trigger')
+      .first();
+
+    // activate button initial state is disabled
+    expect(activateAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // activate button is disabled on selection
+    expect(activateAccessKeyTrigger).toBeDisabled();
   });
 });
