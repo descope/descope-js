@@ -27,7 +27,7 @@ export const initAccessKeysTableMixin = createSingletonMixin(
         );
         this.accessKeysTable.onSelectedItemsChange((e) => {
           this.actions.setSelectedAccessKeysIds(
-            e.detail.value.map(({ name }) => name),
+            e.detail.value.map(({ id }) => id),
           );
         });
       }
