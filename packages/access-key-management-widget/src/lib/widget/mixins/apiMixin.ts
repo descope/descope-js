@@ -26,6 +26,7 @@ export const apiMixin = createSingletonMixin(
         this.#api = createSdk(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.tenant,
+          this.mock,
         );
       }
 
@@ -35,6 +36,10 @@ export const apiMixin = createSingletonMixin(
 
       get tenant() {
         return this.getAttribute('tenant');
+      }
+
+      get mock() {
+        return this.getAttribute('mock');
       }
 
       get api() {

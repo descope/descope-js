@@ -6,13 +6,16 @@ import {
 } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
+import { accessKey } from './mocks';
 
 export const createAccessKeySdk = ({
   httpClient,
   tenant,
+  mock,
 }: {
   httpClient: HttpClient;
   tenant: string;
+  mock: boolean;
 }) => {
   const search: (
     config: SearchAccessKeyConfig,
@@ -22,6 +25,10 @@ export const createAccessKeySdk = ({
     text,
     sort,
   } = {}) => {
+    if (mock) {
+      return accessKey.search({ page, limit, text, sort });
+    }
+
     const res = await httpClient.post(
       apiPaths.accesskey.search,
       {
@@ -43,6 +50,9 @@ export const createAccessKeySdk = ({
   };
 
   const deleteBatch = async (ids: string[]) => {
+    if (mock) {
+      return accessKey.deleteBatch();
+    }
     const res = await httpClient.post(
       apiPaths.accesskey.deleteBatch,
       { ids },
@@ -58,20 +68,28 @@ export const createAccessKeySdk = ({
 
   const create: (
     config: CreateAccessKeyConfig,
-  ) => Promise<AccessKey[]> = async ({
+  ) => Promise<{ cleartext: string; key: AccessKey }> = async ({
     name,
     expiration,
     roleNames,
     userId,
   }) => {
-    const expireTime = new Date();
-    expireTime.setDate(expireTime.getDate() + +expiration);
+    const expirationTime = new Date();
+    expirationTime.setDate(expirationTime.getDate() + +expiration);
+    const expireTime =
+      expiration[0] === '0' ? 0 : Math.floor(expirationTime.getTime() / 1000);
+    if (mock) {
+      return accessKey.create(
+        { name, expiration, roleNames, userId },
+        expireTime,
+      );
+    }
+
     const res = await httpClient.post(
       apiPaths.accesskey.create,
       {
         name,
-        expireTime:
-          expiration[0] === '0' ? 0 : Math.floor(expireTime.getTime() / 1000),
+        expireTime,
         roleNames,
         userId,
       },
@@ -88,6 +106,9 @@ export const createAccessKeySdk = ({
   };
 
   const activate = async (ids: string[]) => {
+    if (mock) {
+      return accessKey.activate();
+    }
     const res = await httpClient.post(
       apiPaths.accesskey.activate,
       {
@@ -105,6 +126,9 @@ export const createAccessKeySdk = ({
   };
 
   const deactivate = async (ids: string[]) => {
+    if (mock) {
+      return accessKey.deactivate();
+    }
     const res = await httpClient.post(
       apiPaths.accesskey.deactivate,
       {
