@@ -6,7 +6,7 @@ import {
 } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
-import { mockSearch, mockDeleteBatch, mockCreate, mockActivate, mockDeactivate } from './mocks';
+import { accessKey } from './mocks';
 
 export const createAccessKeySdk = ({
   httpClient,
@@ -26,7 +26,7 @@ export const createAccessKeySdk = ({
     sort,
   } = {}) => {
     if (mock) {
-      return mockSearch({ page, limit, text, sort });
+      return accessKey.search({ page, limit, text, sort });
     }
 
     const res = await httpClient.post(
@@ -51,7 +51,7 @@ export const createAccessKeySdk = ({
 
   const deleteBatch = async (ids: string[]) => {
     if (mock) {
-      return mockDeleteBatch();
+      return accessKey.deleteBatch();
     }
     const res = await httpClient.post(
       apiPaths.accesskey.deleteBatch,
@@ -79,7 +79,7 @@ export const createAccessKeySdk = ({
     const expireTime =
       expiration[0] === '0' ? 0 : Math.floor(expirationTime.getTime() / 1000);
     if (mock) {
-      return mockCreate(
+      return accessKey.create(
         { name, expiration, roleNames, userId },
         expireTime,
       );
@@ -107,7 +107,7 @@ export const createAccessKeySdk = ({
 
   const activate = async (ids: string[]) => {
     if (mock) {
-      return mockActivate();
+      return accessKey.activate();
     }
     const res = await httpClient.post(
       apiPaths.accesskey.activate,
@@ -127,7 +127,7 @@ export const createAccessKeySdk = ({
 
   const deactivate = async (ids: string[]) => {
     if (mock) {
-      return mockDeactivate();
+      return accessKey.deactivate();
     }
     const res = await httpClient.post(
       apiPaths.accesskey.deactivate,

@@ -26,7 +26,7 @@ export const apiMixin = createSingletonMixin(
         this.#api = createSdk(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.tenant,
-          this.mock,
+          this.mock === 'true',
         );
       }
 
