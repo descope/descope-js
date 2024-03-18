@@ -11,6 +11,10 @@
         "push": false,
         "preset": "conventional"
       }
+    },
+    "build:app": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "tags": []
