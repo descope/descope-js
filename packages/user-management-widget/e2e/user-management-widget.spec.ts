@@ -479,8 +479,59 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=Successfully removed user's passkey`),
     ).toBeVisible();
+  });
 
-    // update grid items
+  test('reset password', async ({ page }) => {
+    const cleartext = 'aaaaaaaa';
+    await page.route(apiPath('user', 'setTempPassword'), async (route) =>
+      route.fulfill({ json: { cleartext } }),
+    );
+
+    const resetPasswordTrigger = page
+      .locator('descope-button')
+      .getByTestId('reset-password-trigger')
+      .first();
+    const resetPasswordModalButton = page
+      .getByTestId('reset-user-password-modal-submit')
+      .first();
+
+    // enable user button initial state is disabled
+    expect(resetPasswordTrigger).toBeDisabled();
+
+    // wait for widget state
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select first user (status: active)
+    await page.locator('descope-checkbox').nth(2).click();
+
+    // enable user button is enabled on selection
+    expect(resetPasswordTrigger).toBeEnabled();
+
+    // enable user
+    await resetPasswordTrigger.click();
+
+    // show enable user modal
+    const resetPasswordModal = page.locator('text=Reset User Password');
+    expect(resetPasswordModal).toBeVisible();
+
+    const resetPasswordModalMessage = page.locator(
+      `text=Reset password for ${mockUsers[1].email}`,
+    );
+    expect(resetPasswordModalMessage).toBeVisible();
+
+    // click modal activate button
+    await resetPasswordModalButton.click();
+
+    // wait for modal to close
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // enable modal closed
+    await expect(page.locator('Reset User Password')).toBeHidden();
+
+    // show notification
+    await expect(
+      page.locator(`text=Successfully reset user password`),
+    ).toBeVisible();
   });
 
   test('search users', async ({ page }) => {

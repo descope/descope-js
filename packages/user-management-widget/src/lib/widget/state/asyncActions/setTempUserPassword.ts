@@ -20,7 +20,7 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.setTempUserPassword),
   withNotifications({
-    getSuccessMsg: () => `User's password was reset successfully`,
+    getSuccessMsg: () => `Successfully reset user password`,
     // eslint-disable-next-line @typescript-eslint/no-shadow
     getErrorMsg: (action) => {
       const errorMsg = action.error?.message;
