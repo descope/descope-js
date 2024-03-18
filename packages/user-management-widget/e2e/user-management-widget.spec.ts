@@ -329,6 +329,11 @@ test.describe('widget', () => {
     // select all items
     await page.locator('descope-checkbox').first().click();
 
+    // delete button is disabled on selection (due to non editable user)
+    expect(deleteUserTrigger).toBeDisabled();
+
+    await page.locator('descope-checkbox').nth(4).click();
+
     // delete button is enabled on selection
     expect(deleteUserTrigger).toBeEnabled();
 
@@ -350,7 +355,7 @@ test.describe('widget', () => {
 
     // show notification
     await expect(
-      page.locator(`text=${mockUsers.length} users deleted successfully`),
+      page.locator(`text=${mockUsers.length - 1} users deleted successfully`),
     ).toBeVisible();
 
     // update grid items
@@ -608,6 +613,7 @@ test.describe('widget', () => {
 
     // select all items
     await page.locator('descope-checkbox').first().click();
+    await page.locator('descope-checkbox').nth(4).click();
 
     // delete users
     await deleteUserTrigger.click();
@@ -624,7 +630,7 @@ test.describe('widget', () => {
 
     // show notification
     await expect(
-      page.locator(`text=${mockUsers.length} users deleted successfully`),
+      page.locator(`text=${mockUsers.length - 1} users deleted successfully`),
     ).toBeVisible();
 
     // click close button
