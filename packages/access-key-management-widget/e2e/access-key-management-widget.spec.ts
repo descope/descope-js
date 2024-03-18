@@ -250,7 +250,7 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
@@ -317,6 +317,8 @@ test.describe('widget', () => {
 
     // select all items
     await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // activate button is enabled on selection
     expect(activateAccessKeyTrigger).toBeEnabled();
