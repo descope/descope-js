@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/user-management-widget-0.3.0...user-management-widget-0.4.0) (2024-03-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.6`
+* `sdk-helpers` updated to version `0.1.0`
+* `sdk-mixins` updated to version `0.1.0`
+* `sdk-component-drivers` updated to version `0.1.0`
+
+### Features
+
+* Add access keys management widget ([#421](https://github.com/descope/descope-js/issues/421)) ([1f7868d](https://github.com/descope/descope-js/commit/1f7868db53aa65d2c3f447f7968f9fc7a741105a))
+* added reset pass to UMW ([#425](https://github.com/descope/descope-js/issues/425)) ([4ba0bfa](https://github.com/descope/descope-js/commit/4ba0bfa251fa4f0b0d6acc63256348ba6d10c893))
+* Edit/View Permissions for admin widget ([#418](https://github.com/descope/descope-js/issues/418)) ([95ed565](https://github.com/descope/descope-js/commit/95ed565692f759ec3313f4ae215a6f881dd59375))
+* Widget mocks ([#429](https://github.com/descope/descope-js/issues/429)) ([1b83a6d](https://github.com/descope/descope-js/commit/1b83a6d375f7cccd2d4e9c24d7a9e9ddbe797674))
+
+
+### Bug Fixes
+
+* block delete for non editable RELEASE ([#434](https://github.com/descope/descope-js/issues/434)) ([f6def54](https://github.com/descope/descope-js/commit/f6def54a3c027b89fd17510d1c2b18d920de8955))
+
 ## [0.3.0](https://github.com/descope/descope-js/compare/user-management-widget-0.2.4...user-management-widget-0.3.0) (2024-03-12)
 
 
