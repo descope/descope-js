@@ -481,7 +481,7 @@ test.describe('widget', () => {
     ).toBeVisible();
   });
 
-  test('reset password', async ({ page }) => {
+  test('reset password', async ({ page, browserName }) => {
     const cleartext = 'aaaaaaaa';
     await page.route(apiPath('user', 'setTempPassword'), async (route) =>
       route.fulfill({ json: { cleartext } }),
@@ -519,7 +519,7 @@ test.describe('widget', () => {
     );
     expect(resetPasswordModalMessage).toBeVisible();
 
-    // click modal activate button
+    // click modal button
     await resetPasswordModalButton.click();
 
     // wait for modal to close
@@ -532,6 +532,26 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=Successfully reset user password`),
     ).toBeVisible();
+
+    const generatedPasswordInput = page.getByText('Generated Password');
+    expect(await generatedPasswordInput.first().inputValue()).toEqual(
+      cleartext,
+    );
+
+    // click modal button
+    const closeGeneratedPasswordButton = page
+      .locator('descope-button')
+      .filter({ hasText: 'Copy to clipboard & close' })
+      .getByTestId('generated-password-modal-close')
+      .first();
+    await closeGeneratedPasswordButton.click();
+
+    if (browserName === 'chromium') {
+      const clipboardContent = await page.evaluate(
+        'navigator.clipboard.readText()',
+      );
+      expect(clipboardContent).toEqual(cleartext);
+    }
   });
 
   test('search users', async ({ page }) => {

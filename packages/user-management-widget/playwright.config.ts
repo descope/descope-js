@@ -44,6 +44,10 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         browserName: 'chromium',
         screenshot: 'only-on-failure',
+        contextOptions: {
+          // chromium-specific permissions
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
       },
     },
 
