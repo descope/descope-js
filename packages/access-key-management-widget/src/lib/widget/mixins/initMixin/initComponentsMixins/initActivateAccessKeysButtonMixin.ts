@@ -32,8 +32,8 @@ export const initActivateAccessKeysButtonMixin = createSingletonMixin(
       }
 
       #onIsAccessKeySelectedUpdate = withMemCache(
-        (editable: ReturnType<typeof getIsAccessKeysEditable>) => {
-          if (editable) {
+        (isEditable: ReturnType<typeof getIsAccessKeysEditable>) => {
+          if (isEditable) {
             this.activateButton.enable();
           } else {
             this.activateButton.disable();

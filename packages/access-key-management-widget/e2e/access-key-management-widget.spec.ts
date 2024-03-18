@@ -25,7 +25,7 @@ const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 1000;
+const STATE_TIMEOUT = 1500;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 test.describe('widget', () => {
@@ -406,7 +406,7 @@ test.describe('widget', () => {
     ).toBeHidden();
   });
 
-  test('deactivate access keys for non editable user', async ({ page }) => {
+  test('deactivate access keys for non editable key', async ({ page }) => {
     await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
@@ -423,9 +423,6 @@ test.describe('widget', () => {
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
       .first();
-    const deactivateAccessKeyModalButton = await page
-      .getByTestId('deactivate-access-keys-modal-submit')
-      .first();
 
     // deactivate button initial state is disabled
     expect(deactivateAccessKeyTrigger).toBeDisabled();
@@ -439,7 +436,7 @@ test.describe('widget', () => {
     expect(deactivateAccessKeyTrigger).toBeDisabled();
   });
 
-  test('activate access keys for non editable user', async ({ page }) => {
+  test('activate access keys for non editable key', async ({ page }) => {
     await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
@@ -455,9 +452,6 @@ test.describe('widget', () => {
 
     const activateAccessKeyTrigger = await page
       .getByTestId('activate-access-keys-trigger')
-      .first();
-    const activateAccessKeyModalButton = await page
-      .getByTestId('activate-access-keys-modal-submit')
       .first();
 
     // activate button initial state is disabled

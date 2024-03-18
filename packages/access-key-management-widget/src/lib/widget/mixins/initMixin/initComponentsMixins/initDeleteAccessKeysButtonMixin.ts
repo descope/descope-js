@@ -5,7 +5,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { getIsAccessKeysEditable } from '../../../state/selectors';
+import { getIsAccessKeysSelected } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initDeleteAccessKeysModalMixin } from './initDeleteAccessKeysModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -32,8 +32,8 @@ export const initDeleteAccessKeysButtonMixin = createSingletonMixin(
       }
 
       #onIsAccessKeySelectedUpdate = withMemCache(
-        (editable: ReturnType<typeof getIsAccessKeysEditable>) => {
-          if (editable) {
+        (isSelected: ReturnType<typeof getIsAccessKeysSelected>) => {
+          if (isSelected) {
             this.deleteButton.enable();
           } else {
             this.deleteButton.disable();
@@ -48,7 +48,7 @@ export const initDeleteAccessKeysButtonMixin = createSingletonMixin(
 
         this.subscribe(
           this.#onIsAccessKeySelectedUpdate.bind(this),
-          getIsAccessKeysEditable,
+          getIsAccessKeysSelected,
         );
       }
     },
