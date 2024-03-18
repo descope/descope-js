@@ -20,6 +20,12 @@ export default {
     define({
       replacements: {
         BUILD_VERSION: JSON.stringify(packageJson.version),
+        DESCOPE_PROJECT_ID: JSON.stringify(
+          process.env.DESCOPE_PROJECT_ID || '',
+        ),
+        DESCOPE_BASE_URL: JSON.stringify(process.env.DESCOPE_BASE_URL || ''),
+        DESCOPE_TENANT: JSON.stringify(process.env.DESCOPE_TENANT || ''),
+        DESCOPE_WIDGET_ID: JSON.stringify(process.env.DESCOPE_WIDGET_ID || ''),
       },
     }),
     del({ targets: 'build' }),
@@ -36,17 +42,6 @@ export default {
     svg(),
     html({
       minify: false,
-      transform: (contents) =>
-        contents
-          .replaceAll('<project-id>', process.env.DESCOPE_PROJECT_ID || '')
-          .replaceAll(
-            '<flow-id>',
-            process.env.DESCOPE_FLOW_ID || 'sign-up-or-in',
-          )
-          .replaceAll('<base-url>', process.env.DESCOPE_BASE_URL || '')
-          .replaceAll('<locale>', process.env.DESCOPE_LOCALE || '')
-          .replaceAll('<tenant>', process.env.DESCOPE_TENANT || '')
-          .replaceAll('<widget-id>', process.env.DESCOPE_WIDGET_ID || ''),
     }),
   ],
 };
