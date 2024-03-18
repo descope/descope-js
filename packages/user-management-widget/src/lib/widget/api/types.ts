@@ -33,6 +33,7 @@ export type User = {
   externalIds: string[];
   picture: string;
   test: boolean;
+  editable: boolean;
   customAttributes: CustomAttributes;
   createdTime: number;
   TOTP: boolean;
@@ -90,3 +91,14 @@ export type CreateUserConfig = {
   sendSMS?: boolean; // send invite via text message, default is according to project settings
   invite?: boolean;
 } & UpdateUserConfig;
+
+export type CustomAttr = {
+  name: string;
+  type: number;
+  options: string[];
+  displayName: string;
+  defaultValue: Record<string, string>;
+  ViewPermissions: string[];
+  EditPermissions: string[];
+  editable: boolean;
+};

@@ -40,17 +40,29 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], browserName: 'chromium' },
+      use: {
+        ...devices['Desktop Chrome'],
+        browserName: 'chromium',
+        screenshot: 'only-on-failure',
+      },
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], browserName: 'firefox' },
+      use: {
+        ...devices['Desktop Firefox'],
+        browserName: 'firefox',
+        screenshot: 'only-on-failure',
+      },
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'], browserName: 'webkit' },
+      use: {
+        ...devices['Desktop Safari'],
+        browserName: 'webkit',
+        screenshot: 'only-on-failure',
+      },
     },
 
     /* Test against mobile viewports. */
@@ -83,6 +95,7 @@ export default defineConfig({
       command: 'npx serve build -l 5555',
       url: 'http://localhost:5555',
       reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
     },
   ],
 });

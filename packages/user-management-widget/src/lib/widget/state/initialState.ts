@@ -18,6 +18,18 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  enableUser: {
+    loading: false,
+    error: null,
+  },
+  disableUser: {
+    loading: false,
+    error: null,
+  },
+  removePasskey: {
+    loading: false,
+    error: null,
+  },
   expireUserPassword: {
     loading: false,
     error: null,
@@ -25,7 +37,7 @@ export const initialState: State = {
   customAttributes: {
     loading: false,
     error: null,
-    data: {},
+    data: [],
   },
   tenantRoles: {
     loading: false,

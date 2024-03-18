@@ -1,10 +1,11 @@
-import { compose } from '../../../../helpers/compose';
-import { withMemCache } from '../../../../helpers/generic';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { formMixin } from '../../../../mixins/formMixin';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { getIsSingleUsersSelected } from '../../../state/selectors';
+import { ButtonDriver } from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
+import { formMixin, loggerMixin } from '@descope/sdk-mixins';
+import { getCanEdit } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initEditUserModalMixin } from './initEditUserModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -32,8 +33,8 @@ export const initEditUserButtonMixin = createSingletonMixin(
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (isSelected: ReturnType<typeof getIsSingleUsersSelected>) => {
-          if (isSelected) {
+        (canEdit: ReturnType<typeof getCanEdit>) => {
+          if (canEdit) {
             this.editButton.enable();
           } else {
             this.editButton.disable();
@@ -42,14 +43,11 @@ export const initEditUserButtonMixin = createSingletonMixin(
       );
 
       async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
         this.#initEditButton();
 
-        this.subscribe(
-          this.#onIsUserSelectedUpdate.bind(this),
-          getIsSingleUsersSelected,
-        );
+        await super.onWidgetRootReady?.();
+
+        this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanEdit);
       }
     },
 );

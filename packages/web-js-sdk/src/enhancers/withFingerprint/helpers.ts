@@ -1,6 +1,12 @@
-import { load } from '@fingerprintjs/fingerprintjs-pro';
+import {
+  load,
+  defaultEndpoint,
+  defaultScriptUrlPattern,
+} from '@fingerprintjs/fingerprintjs-pro';
 import {
   FP_EP_URL,
+  FP_CF_ENDPOINT_PATH,
+  FP_CF_SCRIPT_PATH,
   FP_STORAGE_KEY,
   STORAGE_TTL_MS,
   VISITOR_REQUEST_ID_PARAM,
@@ -63,7 +69,10 @@ const getFPFromStorage = (returnExpired = false): FingerprintObject => {
  * NOTE: Using fingerprintJS data has cost, use considerably.
  * @param fpKey FingerprintJS API key
  */
-export const ensureFingerprintIds = async (fpKey: string) => {
+export const ensureFingerprintIds = async (
+  fpKey: string,
+  baseUrl = FP_EP_URL,
+) => {
   try {
     if (getFPFromStorage()) {
       // FP is already in storage, no need to
@@ -71,17 +80,36 @@ export const ensureFingerprintIds = async (fpKey: string) => {
     }
 
     const sessionId = generateUUID();
-    const agentP = load({ apiKey: fpKey, endpoint: FP_EP_URL });
+
+    const endpointUrl = new URL(baseUrl);
+    endpointUrl.pathname = FP_CF_ENDPOINT_PATH;
+
+    const patterUrl = new URL(baseUrl);
+    patterUrl.pathname = FP_CF_SCRIPT_PATH;
+    const scriptUrlPattern =
+      patterUrl.toString() +
+      '?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>';
+
+    // load from FingerprintJS
+    const agentP = load({
+      apiKey: fpKey,
+      endpoint: [
+        endpointUrl.toString(),
+        defaultEndpoint, // Fallback to default endpoint in case of error
+      ],
+      scriptUrlPattern: [
+        scriptUrlPattern,
+        defaultScriptUrlPattern, // Fallback to default CDN in case of error
+      ],
+    });
+
     const agent = await agentP;
     const { requestId } = await agent.get({ linkedId: sessionId });
     const fpData = createFingerprintObject(sessionId, requestId);
     setFPToStorage(fpData);
   } catch (ex) {
-    // istanbul ignore next
-    if (global.FB_DEBUG) {
-      // eslint-disable-next-line no-console
-      console.error(ex);
-    }
+    // eslint-disable-next-line no-console
+    console.warn('Could not load fingerprint', ex);
   }
 };
 

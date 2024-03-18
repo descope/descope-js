@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/descope/descope-js/compare/user-management-widget-0.2.4...user-management-widget-0.3.0) (2024-03-12)
+
+
+### Features
+
+* AdminWidget Enable/Disable user ([#409](https://github.com/descope/descope-js/issues/409)) ([6a27740](https://github.com/descope/descope-js/commit/6a27740127f8937a71e84af7fa3cf79fae3d284e))
+
+## [0.2.4](https://github.com/descope/descope-js/compare/user-management-widget-0.2.3...user-management-widget-0.2.4) (2024-03-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.5`
 ## [0.2.3](https://github.com/descope/descope-js/compare/user-management-widget-0.2.2...user-management-widget-0.2.3) (2024-03-05)
 
 ### Dependency Updates

@@ -1,24 +1,58 @@
+import {
+  ButtonDriver,
+  ModalDriver,
+  MultiSelectDriver,
+  TextFieldDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import parsePhone from 'libphonenumber-js/min';
-import { compose } from '../../../../helpers/compose';
-import { createTemplate } from '../../../../helpers/dom';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { formMixin } from '../../../../mixins/formMixin';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { modalMixin } from '../../../../mixins/modalMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { ModalDriver } from '../../../drivers/ModalDriver';
-import { MultiSelectDriver } from '../../../drivers/MultiSelectDriver';
-import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
-import { getSelectedUsers, getTenantRoles } from '../../../state/selectors';
+import { User } from '../../../api/types';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import {
+  getCustomAttributes,
+  getSelectedUsers,
+  getTenantRoles,
+} from '../../../state/selectors';
+
+const unflattenKeys = ['customAttributes'];
+
+const unflatten = (formData: Partial<User>) =>
+  Object.entries(formData).reduce((acc, [key, value]) => {
+    const [prefix, ...rest] = key.split('.');
+
+    if (!unflattenKeys.includes(prefix)) {
+      return Object.assign(acc, { [key]: value });
+    }
+
+    if (!acc[prefix]) {
+      acc[prefix] = {};
+    }
+
+    acc[prefix][rest.join('.')] = value;
+
+    return acc;
+  }, {});
+
+const flatten = (
+  vals: Record<string, string | boolean | number>,
+  keyPrefix: string,
+) =>
+  Object.fromEntries(
+    Object.entries(vals).map(([key, val]) => [`${keyPrefix}${key}`, val]),
+  );
 
 const formatPhoneNumber = (phoneNumber: string) => {
   if (!phoneNumber) return phoneNumber;
 
   const parsedPhone = parsePhone(phoneNumber);
   const splitCodeRegex = new RegExp(
-    `(\\+?${parsedPhone.countryCallingCode})(.*)`,
+    `(\\+?${parsedPhone?.countryCallingCode})(.*)`,
   );
 
   return parsedPhone.number.replace(splitCodeRegex, '$1-$2');
@@ -63,7 +97,7 @@ export const initEditUserModalMixin = createSingletonMixin(
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
-              ...formData,
+              ...unflatten(formData),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -80,6 +114,31 @@ export const initEditUserModalMixin = createSingletonMixin(
         );
       };
 
+      // hide and disable fields according to user permissions
+      #updateCustomFields() {
+        const customAttrs = getCustomAttributes(this.state);
+
+        this.getFormFieldNames(this.editUserModal.ele).forEach(
+          (fieldName: string) => {
+            const [prefix, name] = fieldName.split('.');
+
+            if (prefix !== 'customAttributes') {
+              return;
+            }
+
+            const matchingCustomAttr = customAttrs.find(
+              (attr) => attr.name === name,
+            );
+
+            if (!matchingCustomAttr) {
+              this.removeFormField(this.editUserModal.ele, fieldName);
+            } else if (!matchingCustomAttr.editable) {
+              this.disableFormField(this.editUserModal.ele, fieldName);
+            }
+          },
+        );
+      }
+
       #updateModalData = () => {
         const userDetails = getSelectedUsers(this.state)?.[0];
 
@@ -89,6 +148,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
           roles: userDetails?.roles,
+          ...flatten(userDetails.customAttributes, 'customAttributes.'),
         };
 
         this.setFormData(this.editUserModal.ele, formData);
@@ -120,6 +180,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
           this.#updateModalData();
+          this.#updateCustomFields();
         };
       }
 

@@ -4,6 +4,7 @@ import {
   SearchUsersConfig,
   UpdateUserConfig,
   User,
+  CustomAttr,
 } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
@@ -175,14 +176,58 @@ export const createUserSdk = ({
     return res.json();
   };
 
-  const getCustomAttributes = async () => {
+  const removePasskey = async (loginId: string) => {
+    const res = await httpClient.post(
+      apiPaths.user.removePasskey,
+      { loginId },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
+  const enable = async (loginId: string) => {
+    const res = await httpClient.post(
+      apiPaths.user.status,
+      { loginId, status: 'enabled' },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
+  const disable = async (loginId: string) => {
+    const res = await httpClient.post(
+      apiPaths.user.status,
+      { loginId, status: 'disabled' },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
+  const getCustomAttributes = async (): Promise<CustomAttr[]> => {
     const res = await httpClient.get(apiPaths.user.customAttributes, {
       queryParams: { tenant },
     });
 
     await withErrorHandler(res);
 
-    return res.json();
+    const json = await res.json();
+
+    return json.data;
   };
 
   return {
@@ -190,6 +235,9 @@ export const createUserSdk = ({
     deleteBatch,
     create,
     update,
+    enable,
+    disable,
+    removePasskey,
     expirePassword,
     getCustomAttributes,
   };
