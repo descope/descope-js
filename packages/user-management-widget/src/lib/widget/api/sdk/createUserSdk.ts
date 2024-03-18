@@ -162,10 +162,12 @@ export const createUserSdk = ({
     return json.user;
   };
 
-  const expirePassword = async (loginIds: string[]) => {
+  const setTempPassword = async (loginId: string) => {
     const res = await httpClient.post(
-      apiPaths.user.expirePassword,
-      { loginId: loginIds[0] },
+      apiPaths.user.setTempPassword,
+      {
+        loginId,
+      },
       {
         queryParams: { tenant },
       },
@@ -238,7 +240,7 @@ export const createUserSdk = ({
     enable,
     disable,
     removePasskey,
-    expirePassword,
+    setTempPassword,
     getCustomAttributes,
   };
 };

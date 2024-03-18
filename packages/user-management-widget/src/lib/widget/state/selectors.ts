@@ -106,3 +106,9 @@ export const getCanRemovePasskey = createSelector(
   getIsSelectedUsersEditable,
   (isSingleUser, isUsersEditable) => isSingleUser && isUsersEditable,
 );
+
+export const getCanResetPassword = createSelector(
+  getIsSingleUsersSelected,
+  getIsSelectedUsersEditable,
+  (isSingleUser, isUsersEditable) => isSingleUser && isUsersEditable,
+);
