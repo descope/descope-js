@@ -164,7 +164,7 @@ export const createUserSdk = ({
 
   const setTempPassword = async (loginIds: string[]) => {
     const res = await httpClient.post(
-      apiPaths.user.tempPassword,
+      apiPaths.user.setTempPassword,
       {
         loginId: loginIds,
       },

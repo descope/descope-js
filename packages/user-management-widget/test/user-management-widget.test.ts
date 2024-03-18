@@ -161,7 +161,7 @@ describe('user-management-widget', () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
       const loginId = mockUsers[0]['loginIds'][0];
 
-      await sdk.user.expirePassword([loginId]);
+      await sdk.user.setTempPassword([loginId]);
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -169,7 +169,7 @@ describe('user-management-widget', () => {
       );
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.user.expirePassword,
+          apiPaths.user.setTempPassword,
           { loginId },
           {
             queryParams: {
