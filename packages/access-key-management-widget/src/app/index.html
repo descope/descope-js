@@ -68,6 +68,8 @@
       };
 
       (async () => {
+        const isMock = /[&?]mock=([^&]+)/.exec(location.search)?.[1];
+
         const shouldLogin = await getShouldLogin();
         const rootEle = document.querySelector('.container');
 
@@ -79,6 +81,9 @@
         widgetEle.setAttribute('tenant', DESCOPE_TENANT);
         widgetEle.setAttribute('widget-id', DESCOPE_WIDGET_ID);
         widgetEle.setAttribute('debug', 'false');
+        if (isMock) {
+          widgetEle.setAttribute('mock', 'true');
+        }
 
         if (shouldLogin) {
           const flowEle = document.createElement('descope-wc');

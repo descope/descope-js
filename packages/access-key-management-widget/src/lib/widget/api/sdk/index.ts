@@ -5,12 +5,17 @@ import { createTenantSdk } from './createTenantSdk';
 export const createSdk = (
   config: Parameters<typeof createWebSdk>[0],
   tenant: string,
+  mock: boolean,
 ) => {
   const webSdk = createWebSdk({ ...config, persistTokens: true });
 
   return {
-    accesskey: createAccessKeySdk({ httpClient: webSdk.httpClient, tenant }),
-    tenant: createTenantSdk({ httpClient: webSdk.httpClient, tenant }),
+    accesskey: createAccessKeySdk({
+      httpClient: webSdk.httpClient,
+      tenant,
+      mock,
+    }),
+    tenant: createTenantSdk({ httpClient: webSdk.httpClient, tenant, mock }),
   };
 };
 

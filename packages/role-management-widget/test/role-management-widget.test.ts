@@ -104,7 +104,7 @@ describe('role-management-widget', () => {
 
   describe('sdk', () => {
     it('search', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const result = await sdk.role.search({});
 
       await waitFor(
@@ -131,7 +131,7 @@ describe('role-management-widget', () => {
     });
 
     it('deleteBatch', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const roleNames = [
         mockRoles.roles[0]['name'],
         mockRoles.roles[1]['name'],
@@ -157,7 +157,7 @@ describe('role-management-widget', () => {
     });
 
     it('create', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
 
       await sdk.role.create(mockNewRole);
 
@@ -179,7 +179,7 @@ describe('role-management-widget', () => {
     });
 
     it('edit', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
 
       await sdk.role.update(mockEditRole);
 
