@@ -70,7 +70,7 @@
       (async () => {
         const isMock = /[&?]mock=([^&]+)/.exec(location.search)?.[1];
 
-        const shouldLogin = await getShouldLogin();
+        const shouldLogin = (await getShouldLogin()) && !isMock;
         const rootEle = document.querySelector('.container');
 
         const widgetEle = document.createElement(
