@@ -237,7 +237,7 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
