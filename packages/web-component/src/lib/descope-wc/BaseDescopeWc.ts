@@ -681,6 +681,7 @@ class BaseDescopeWc extends HTMLElement {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
+        descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
       } = handleUrlParams();
@@ -721,6 +722,7 @@ class BaseDescopeWc extends HTMLElement {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
+        descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
       });
