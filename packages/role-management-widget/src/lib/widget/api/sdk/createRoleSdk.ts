@@ -7,13 +7,16 @@ import {
 } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
+import { role } from './mocks';
 
 export const createRoleSdk = ({
   httpClient,
   tenant,
+  mock,
 }: {
   httpClient: HttpClient;
   tenant: string;
+  mock: string;
 }) => {
   const search: (config: SearchRolesConfig) => Promise<Role[]> = async ({
     page,
@@ -21,6 +24,9 @@ export const createRoleSdk = ({
     text,
     sort,
   } = {}) => {
+    if (mock) {
+      return role.search({ page, limit, text, sort }, tenant);
+    }
     const res = await httpClient.post(
       apiPaths.role.search,
       {
@@ -42,6 +48,9 @@ export const createRoleSdk = ({
   };
 
   const deleteBatch = async (roleNames: string[]) => {
+    if (mock) {
+      return role.deleteBatch();
+    }
     const res = await httpClient.post(
       apiPaths.role.deleteBatch,
       { roleNames },
@@ -60,6 +69,9 @@ export const createRoleSdk = ({
     description,
     permissionNames,
   }) => {
+    if (mock) {
+      return role.create({ name, description, permissionNames }, tenant);
+    }
     const res = await httpClient.post(
       apiPaths.role.create,
       {
@@ -86,6 +98,12 @@ export const createRoleSdk = ({
     description,
     permissionNames,
   }) => {
+    if (mock) {
+      return role.update(
+        { name, newName, description, permissionNames },
+        tenant,
+      );
+    }
     const res = await httpClient.post(
       apiPaths.role.update,
       {
