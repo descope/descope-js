@@ -100,7 +100,7 @@ describe('user-management-widget', () => {
 
   describe('sdk', () => {
     it('search', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const result = await sdk.user.search({});
 
       await waitFor(
@@ -132,7 +132,7 @@ describe('user-management-widget', () => {
     });
 
     it('deleteBatch', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const loginIds = [
         mockUsers[0]['loginIds'][0],
         mockUsers[1]['loginIds'][0],
@@ -158,7 +158,7 @@ describe('user-management-widget', () => {
     });
 
     it('expirePassword', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const loginId = mockUsers[0]['loginIds'][0];
 
       await sdk.user.setTempPassword(loginId);

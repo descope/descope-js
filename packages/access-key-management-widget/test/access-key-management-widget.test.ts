@@ -113,7 +113,7 @@ describe('access-key-management-widget', () => {
 
   describe('sdk', () => {
     it('search', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const result = await sdk.accesskey.search({});
 
       await waitFor(
@@ -140,7 +140,7 @@ describe('access-key-management-widget', () => {
     });
 
     it('deleteBatch', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const ids = [mockAccessKeys.keys[0]['id'], mockAccessKeys.keys[1]['id']];
 
       await sdk.accesskey.deleteBatch(ids);
@@ -163,7 +163,7 @@ describe('access-key-management-widget', () => {
     });
 
     it('activate', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const ids = [mockAccessKeys.keys[0]['id'], mockAccessKeys.keys[1]['id']];
 
       await sdk.accesskey.activate(ids);
@@ -186,7 +186,7 @@ describe('access-key-management-widget', () => {
     });
 
     it('deactivate', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const ids = [mockAccessKeys.keys[0]['id'], mockAccessKeys.keys[1]['id']];
 
       await sdk.accesskey.deactivate(ids);
@@ -209,7 +209,7 @@ describe('access-key-management-widget', () => {
     });
 
     it('create', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
 
       await sdk.accesskey.create(mockNewAccessKey);
 

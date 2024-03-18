@@ -8,13 +8,16 @@ import {
 } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
+import { user } from './mocks';
 
 export const createUserSdk = ({
   httpClient,
   tenant,
+  mock,
 }: {
   httpClient: HttpClient;
   tenant: string;
+  mock: boolean;
 }) => {
   const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
     page,
@@ -26,6 +29,18 @@ export const createUserSdk = ({
     text,
     sort,
   } = {}) => {
+    if (mock) {
+      return user.search({
+        page,
+        limit,
+        customAttributes,
+        statuses,
+        emails,
+        phones,
+        text,
+        sort,
+      });
+    }
     const res = await httpClient.post(
       apiPaths.user.search,
       {
@@ -52,6 +67,9 @@ export const createUserSdk = ({
   };
 
   const deleteBatch = async (userIds: string[]) => {
+    if (mock) {
+      return user.deleteBatch();
+    }
     const res = await httpClient.post(
       apiPaths.user.deleteBatch,
       { userIds },
@@ -84,6 +102,27 @@ export const createUserSdk = ({
     inviteUrl,
     invite,
   }) => {
+    if (mock) {
+      return user.create({
+        loginId,
+        email,
+        phone,
+        displayName,
+        roles,
+        customAttributes,
+        picture,
+        verifiedEmail,
+        verifiedPhone,
+        givenName,
+        middleName,
+        familyName,
+        additionalLoginIds,
+        sendSMS,
+        sendMail,
+        inviteUrl,
+        invite,
+      });
+    }
     const res = await httpClient.post(
       apiPaths.user.create,
       {
@@ -133,6 +172,23 @@ export const createUserSdk = ({
     familyName,
     additionalLoginIds,
   }) => {
+    if (mock) {
+      return user.update({
+        loginId,
+        email,
+        phone,
+        displayName,
+        roles,
+        customAttributes,
+        picture,
+        verifiedEmail,
+        verifiedPhone,
+        givenName,
+        middleName,
+        familyName,
+        additionalLoginIds,
+      });
+    }
     const res = await httpClient.post(
       apiPaths.user.update,
       {
@@ -163,6 +219,9 @@ export const createUserSdk = ({
   };
 
   const setTempPassword = async (loginId: string) => {
+    if (mock) {
+      return user.setTempPassword();
+    }
     const res = await httpClient.post(
       apiPaths.user.setTempPassword,
       {
@@ -179,6 +238,9 @@ export const createUserSdk = ({
   };
 
   const removePasskey = async (loginId: string) => {
+    if (mock) {
+      return user.removePasskey();
+    }
     const res = await httpClient.post(
       apiPaths.user.removePasskey,
       { loginId },
@@ -193,6 +255,9 @@ export const createUserSdk = ({
   };
 
   const enable = async (loginId: string) => {
+    if (mock) {
+      return user.enable();
+    }
     const res = await httpClient.post(
       apiPaths.user.status,
       { loginId, status: 'enabled' },
@@ -207,6 +272,9 @@ export const createUserSdk = ({
   };
 
   const disable = async (loginId: string) => {
+    if (mock) {
+      return user.disable();
+    }
     const res = await httpClient.post(
       apiPaths.user.status,
       { loginId, status: 'disabled' },
@@ -221,6 +289,9 @@ export const createUserSdk = ({
   };
 
   const getCustomAttributes = async (): Promise<CustomAttr[]> => {
+    if (mock) {
+      return user.getCustomAttributes();
+    }
     const res = await httpClient.get(apiPaths.user.customAttributes, {
       queryParams: { tenant },
     });
