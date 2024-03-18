@@ -114,6 +114,19 @@ test.describe('widget', () => {
       route.fulfill({ json: { tenant: 'mockTenant' } }),
     );
 
+    await page.route('**/auth/me', async (route) =>
+      route.fulfill({
+        json: {
+          userTenants: [
+            {
+              tenantId: 'tid',
+              roleNames: ['Tenant Admin'],
+            },
+          ],
+        },
+      }),
+    );
+
     await page.goto('http://localhost:5555');
     await page.waitForTimeout(STATE_TIMEOUT);
   });
