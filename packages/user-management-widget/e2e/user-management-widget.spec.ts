@@ -15,6 +15,8 @@ import deleteUserModalMock from '../test/mocks/deleteUserModalMock';
 import enableUserModalMock from '../test/mocks/enableUserModalMock';
 import disableUserModalMock from '../test/mocks/disableUserModalMock';
 import removePasskeyModalMock from '../test/mocks/removePasskeyModalMock';
+import resetPasswordModalMock from '../test/mocks/resetPasswordModalMock';
+import generatedPasswordModalMock from '../test/mocks/generatedPasswordModalMock';
 import editUserModalMock from '../test/mocks/editUserModalMock';
 import mockCustomAttributes from '../test/mocks/mockCustomAttributes';
 
@@ -74,6 +76,14 @@ test.describe('widget', () => {
 
     await page.route('*/**/remove-passkey-modal.html', async (route) =>
       route.fulfill({ body: removePasskeyModalMock }),
+    );
+
+    await page.route('*/**/reset-password-modal.html', async (route) =>
+      route.fulfill({ body: resetPasswordModalMock }),
+    );
+
+    await page.route('*/**/generated-password-modal.html', async (route) =>
+      route.fulfill({ body: generatedPasswordModalMock }),
     );
 
     await page.route(apiPath('user', 'create'), async (route) =>
