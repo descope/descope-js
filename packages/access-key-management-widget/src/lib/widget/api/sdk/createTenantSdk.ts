@@ -1,7 +1,7 @@
 import { HttpClient, Role } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
-import { tenants } from './mocks';
+import { mockGetTenantRoles } from './mocks';
 
 export const createTenantSdk = ({
   httpClient,
@@ -16,7 +16,7 @@ export const createTenantSdk = ({
     roles: Role[];
   }> => {
     if (mock) {
-      return tenants.getTenantRoles(tenant);
+      return mockGetTenantRoles(tenant);
     }
 
     const res = await httpClient.get(apiPaths.tenant.roles, {

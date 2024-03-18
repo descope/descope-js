@@ -5,10 +5,9 @@ import {
   SearchAccessKeyConfig,
 } from '../types';
 
-const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
-  text,
-  sort,
-} = {}) =>
+const mockSearch: (
+  config: SearchAccessKeyConfig,
+) => Promise<AccessKey[]> = async ({ text, sort } = {}) =>
   new Promise((resolve) => {
     const keys: AccessKey[] = [];
     for (let i = 1; i < 9; i += 1) {
@@ -40,7 +39,7 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
     );
   });
 
-const create: (
+const mockCreate: (
   config: CreateAccessKeyConfig,
   expireTime: number,
 ) => Promise<{ cleartext: string; key: AccessKey }> = async (
@@ -66,13 +65,13 @@ const create: (
   });
 };
 
-const activate = async () => {};
+const mockActivate = async () => {};
 
-const deactivate = async () => {};
+const mockDeactivate = async () => {};
 
-const deleteBatch = async () => {};
+const mockDeleteBatch = async () => {};
 
-const getTenantRoles = (
+const mockGetTenantRoles = (
   tenant: string,
 ): Promise<{
   roles: Role[];
@@ -91,14 +90,11 @@ const getTenantRoles = (
     resolve({ roles });
   });
 
-const accessKey = {
-  search,
-  create,
-  activate,
-  deactivate,
-  deleteBatch,
+export {
+  mockSearch,
+  mockCreate,
+  mockActivate,
+  mockDeactivate,
+  mockDeleteBatch,
+  mockGetTenantRoles,
 };
-const tenants = {
-  getTenantRoles,
-};
-export { accessKey, tenants };
