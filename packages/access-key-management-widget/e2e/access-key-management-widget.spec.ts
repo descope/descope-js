@@ -25,7 +25,7 @@ const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
 const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 1500;
+const STATE_TIMEOUT = 1000;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 test.describe('widget', () => {
