@@ -48,6 +48,14 @@
         widget-id="<widget-id>"
         debug="false"
       ></descope-user-management-widget>
+      <script>
+        var param = /[&?]mock=([^&]+)/.exec(location.search);
+        if (param) {
+          document.getElementsByTagName(
+            'descope-user-management-widget',
+          )[0].mock = param[1];
+        }
+      </script>
     </div>
   </body>
 </html>

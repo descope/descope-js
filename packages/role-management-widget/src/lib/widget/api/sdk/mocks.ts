@@ -40,10 +40,8 @@ const search: (
 const create: (
   config: CreateRoleConfig,
   tenantId: string,
-) => Promise<Role> = async (
-  { name, description, permissionNames },
-  tenantId,
-) => new Promise((resolve) => {
+) => Promise<Role> = async ({ name, description, permissionNames }, tenantId) =>
+  new Promise((resolve) => {
     resolve({
       name,
       description,
@@ -59,7 +57,8 @@ const update: (
 ) => Promise<Role & { oldName: string }> = async (
   { name, newName, description, permissionNames },
   tenantId,
-) => new Promise((resolve) => {
+) =>
+  new Promise((resolve) => {
     resolve({
       name: newName,
       description,
