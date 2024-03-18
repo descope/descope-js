@@ -5,7 +5,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { getIsUsersSelected } from '../../../state/selectors';
+import { getCanDelete } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initDeleteUsersModalMixin } from './initDeleteUsersModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -32,8 +32,8 @@ export const initDeleteUsersButtonMixin = createSingletonMixin(
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (isSelected: ReturnType<typeof getIsUsersSelected>) => {
-          if (isSelected) {
+        (canDelete: ReturnType<typeof getCanDelete>) => {
+          if (canDelete) {
             this.deleteButton.enable();
           } else {
             this.deleteButton.disable();
@@ -46,10 +46,7 @@ export const initDeleteUsersButtonMixin = createSingletonMixin(
 
         await super.onWidgetRootReady?.();
 
-        this.subscribe(
-          this.#onIsUserSelectedUpdate.bind(this),
-          getIsUsersSelected,
-        );
+        this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanDelete);
       }
     },
 );
