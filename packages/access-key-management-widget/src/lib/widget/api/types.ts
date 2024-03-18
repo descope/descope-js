@@ -14,6 +14,7 @@ export type AccessKey = {
   expireTimeFormatted?: string;
   createdBy: string;
   clientId: string;
+  editable: boolean;
 };
 
 export type SortParams = { field: string; desc: boolean };

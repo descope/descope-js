@@ -32,7 +32,7 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
-  expireUserPassword: {
+  setTempUserPassword: {
     loading: boolean;
     error: unknown;
   };

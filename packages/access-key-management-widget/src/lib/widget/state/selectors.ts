@@ -28,12 +28,18 @@ export const getSelectedAccessKeys = createSelector(
   getSelectedAccessKeysIds,
   getAccessKeysList,
   (selected, accessKeys) =>
-    accessKeys.filter((accessKey) => selected.includes(accessKey.name)),
+    accessKeys.filter((accessKey) => selected.includes(accessKey.id)),
 );
 
 export const getIsAccessKeysSelected = createSelector(
   getSelectedAccessKeysIds,
   (selected) => !!selected.length,
+);
+
+export const getIsAccessKeysEditable = createSelector(
+  getSelectedAccessKeys,
+  (selectedAccessKeys) =>
+    selectedAccessKeys.every((accessKey) => accessKey.editable),
 );
 
 export const getIsSingleAccessKeysSelected = createSelector(

@@ -30,7 +30,7 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
-  expireUserPassword: {
+  setTempUserPassword: {
     loading: false,
     error: null,
   },

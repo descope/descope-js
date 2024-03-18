@@ -1,6 +1,6 @@
 export * from './createUser';
 export * from './deleteUser';
-export * from './expireUserPassword';
+export * from './setTempUserPassword';
 export * from './getCustomAttributes';
 export * from './searchUsers';
 export * from './getTenantRoles';
