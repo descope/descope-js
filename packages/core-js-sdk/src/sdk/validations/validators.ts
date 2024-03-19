@@ -11,7 +11,7 @@ const validateEmail = regexMatch(
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 );
 
-// A polyfill for lodash.get, because it may not integrate well in various runtime environments (Edge).
+// A replacement for lodash.get, because it may not integrate well in various runtime environments (Edge).
 // Implementation is based on https://gist.github.com/dfkaye/59263b51cf1e0b633181c5f44ae2066a
 const get = (object: any, pathName: string, defaultValue?: any) => {
   // Coerce pathName to a string (even it turns into "[object Object]").

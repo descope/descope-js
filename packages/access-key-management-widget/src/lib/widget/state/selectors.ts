@@ -42,6 +42,12 @@ export const getIsAccessKeysEditable = createSelector(
     selectedAccessKeys.every((accessKey) => accessKey.editable),
 );
 
+export const getCanModifyAccessKeys = createSelector(
+  getIsAccessKeysEditable,
+  getIsAccessKeysSelected,
+  (isEditable, isSelected) => isEditable && isSelected,
+);
+
 export const getIsSingleAccessKeysSelected = createSelector(
   getSelectedAccessKeysIds,
   (selected) => selected.length === 1,
