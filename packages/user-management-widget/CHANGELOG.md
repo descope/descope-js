@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.6](https://github.com/descope/descope-js/compare/user-management-widget-0.4.5...user-management-widget-0.4.6) (2024-03-19)
+
+
+### Bug Fixes
+
+* user enable/disable RELEASE ([#444](https://github.com/descope/descope-js/issues/444)) ([6f68abd](https://github.com/descope/descope-js/commit/6f68abda573ef03d334277881c77233f24818e12))
+
 ## [0.4.5](https://github.com/descope/descope-js/compare/user-management-widget-0.4.4...user-management-widget-0.4.5) (2024-03-19)
 
 ### Dependency Updates
