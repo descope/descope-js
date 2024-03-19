@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.1...sdk-mixins-0.1.2) (2024-03-19)
+
+
+### Bug Fixes
+
+* Enforce light theme in widgets RELEASE ([#445](https://github.com/descope/descope-js/issues/445)) ([fa4c49a](https://github.com/descope/descope-js/commit/fa4c49a53371b5303ee205e5a8941e250779263a))
+
 ## [0.1.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.0...sdk-mixins-0.1.1) (2024-03-19)
 
 ### Dependency Updates
