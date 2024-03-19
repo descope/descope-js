@@ -30,17 +30,20 @@ export const themeMixin = createSingletonMixin(
 
     return class ThemeMixinClass extends BaseClass {
       get theme(): ThemeOptions {
-        const theme = this.getAttribute('theme') as ThemeOptions | null;
+        return 'light';
+        // for now we use only light since dark theme is not well supported in widgets, should enable below once supported
 
-        if (theme === 'os') {
-          const isOsDark =
-            window.matchMedia &&
-            window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
+        // const theme = this.getAttribute('theme') as ThemeOptions | null;
 
-          return isOsDark ? 'dark' : 'light';
-        }
+        // if (theme === 'os') {
+        //   const isOsDark =
+        //     window.matchMedia &&
+        //     window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
 
-        return theme || 'light';
+        //   return isOsDark ? 'dark' : 'light';
+        // }
+
+        // return theme || 'light';
       }
 
       #_themeResource: Promise<void | Record<string, any>>;
