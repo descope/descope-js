@@ -29,6 +29,7 @@ export const initDeleteUsersModalMixin = createSingletonMixin(
       async #initDeleteUserModal() {
         this.deleteUsersModal = this.createModal();
         this.deleteUsersModal.setContent(
+          // await import('../../../../../../test/mocks/deleteUserModalMock').then(module => module.default)
           createTemplate(await this.fetchWidgetPage('delete-users-modal.html')),
         );
 
