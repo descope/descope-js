@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.8...web-js-sdk-1.10.9) (2024-03-19)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.11.5`
+
+### Bug Fixes
+
+* polyfil lodash get ([#439](https://github.com/descope/descope-js/issues/439)) RELEASE ([007734f](https://github.com/descope/descope-js/commit/007734f949f23bb48bf0a3bd427a07eafee88c23))
+
 ## [1.10.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.7...web-js-sdk-1.10.8) (2024-03-19)
 
 
