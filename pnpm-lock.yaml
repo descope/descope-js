@@ -104,7 +104,7 @@ importers:
       pretty-quick: ^3.1.3
       redux: 5.0.1
       redux-thunk: 3.1.0
-      reselect: 5.0.1
+      reselect: 5.1.0
       rollup: ^2.78.0
       rollup-plugin-banner2: ^1.2.2
       rollup-plugin-browsersync: ^1.3.3
@@ -130,7 +130,7 @@ importers:
       immer: 10.0.3
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
-      reselect: 5.0.1
+      reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
       '@descope/web-components-ui': 1.0.267
@@ -601,7 +601,7 @@ importers:
       pretty-quick: ^3.1.3
       redux: 5.0.1
       redux-thunk: 3.1.0
-      reselect: 5.0.1
+      reselect: 5.1.0
       rollup: ^2.78.0
       rollup-plugin-banner2: ^1.2.2
       rollup-plugin-browsersync: ^1.3.3
@@ -627,7 +627,7 @@ importers:
       immer: 10.0.3
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
-      reselect: 5.0.1
+      reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
       '@descope/web-components-ui': 1.0.267
@@ -723,7 +723,7 @@ importers:
       pretty-quick: ^3.1.3
       redux: 5.0.1
       redux-thunk: 3.1.0
-      reselect: 5.0.1
+      reselect: 5.1.0
       rollup: ^2.78.0
       rollup-plugin-banner2: ^1.2.2
       rollup-plugin-browsersync: ^1.3.3
@@ -750,7 +750,7 @@ importers:
       libphonenumber-js: 1.10.57
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
-      reselect: 5.0.1
+      reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
       '@descope/web-components-ui': 1.0.267
@@ -4293,7 +4293,7 @@ packages:
       immer: 10.0.3
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
-      reselect: 5.0.1
+      reselect: 5.1.0
 
   /@rollup/plugin-commonjs/24.1.0_rollup@2.79.1:
     resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
@@ -12042,8 +12042,8 @@ packages:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
     dev: true
 
-  /reselect/5.0.1:
-    resolution: {integrity: sha512-D72j2ubjgHpvuCiORWkOUxndHJrxDaSolheiz5CO+roz8ka97/4msh2E8F5qay4GawR5vzBt5MkbDHT+Rdy/Wg==}
+  /reselect/5.1.0:
+    resolution: {integrity: sha512-aw7jcGLDpSgNDyWBQLv2cedml85qd95/iszJjN988zX1t7AVRJi19d9kto5+W7oCfQ94gyo40dVbT6g2k4/kXg==}
 
   /resolve-cwd/3.0.0:
     resolution: {integrity: sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg==}
