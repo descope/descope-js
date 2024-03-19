@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.7...web-js-sdk-1.10.8) (2024-03-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.9.0 ([#438](https://github.com/descope/descope-js/issues/438)) ([c6c51ba](https://github.com/descope/descope-js/commit/c6c51bafb3b55c903fb5ad24588fc05c3b5a2b77))
+
 ## [1.10.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.6...web-js-sdk-1.10.7) (2024-03-19)
 
 ### Dependency Updates
