@@ -162,9 +162,25 @@ const setTempPassword = async () =>
 
 const removePasskey = async () => {};
 
-const enable = async () => {};
+const enable = async (loginId: string) =>
+  new Promise((resolve) => {
+    resolve({
+      user: {
+        loginIds: [loginId],
+        status: 'enabled',
+      },
+    });
+  });
 
-const disable = async () => {};
+const disable = async (loginId: string) =>
+  new Promise((resolve) => {
+    resolve({
+      user: {
+        loginIds: [loginId],
+        status: 'disabled',
+      },
+    });
+  });
 
 const getTenantRoles = (
   tenant: string,
