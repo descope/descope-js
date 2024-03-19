@@ -29,6 +29,7 @@ export const initCreateUserModalMixin = createSingletonMixin(
       async #initCreateUserModal() {
         this.createUserModal = this.createModal();
         this.createUserModal.setContent(
+          // await import('../../../../../../test/mocks/createUserModalMock').then(module => module.default)
           createTemplate(await this.fetchWidgetPage('create-user-modal.html')),
         );
 
