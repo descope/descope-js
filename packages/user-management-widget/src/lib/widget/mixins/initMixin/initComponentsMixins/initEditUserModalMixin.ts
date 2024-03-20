@@ -157,8 +157,10 @@ export const initEditUserModalMixin = createSingletonMixin(
       async #initEditUserModal() {
         this.editUserModal = this.createModal();
         this.editUserModal.setContent(
-          // await import('../../../../../../test/mocks/editUserModalMock').then(module => module.default)
-          createTemplate(await this.fetchWidgetPage('edit-user-modal.html')),
+          createTemplate(
+            // await import('../../../../../../test/mocks/editUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('edit-user-modal.html'),
+          ),
         );
 
         this.#initCancelButton();
