@@ -44,7 +44,7 @@ const flatten = (
   keyPrefix: string,
 ) =>
   Object.fromEntries(
-    Object.entries(vals).map(([key, val]) => [`${keyPrefix}${key}`, val]),
+    Object.entries(vals || {}).map(([key, val]) => [`${keyPrefix}${key}`, val]),
   );
 
 const formatPhoneNumber = (phoneNumber: string) => {
