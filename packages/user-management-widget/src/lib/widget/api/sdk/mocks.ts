@@ -49,14 +49,15 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
     });
     resolve(
       users.filter(
-        (role) =>
-          role.name.toLowerCase().includes(text.toLowerCase()) ||
-          role.phone.toLowerCase().includes(text.toLowerCase()) ||
-          role.status.toLowerCase().includes(text.toLowerCase()) ||
-          role.familyName.toLowerCase().includes(text.toLowerCase()) ||
-          role.givenName.toLowerCase().includes(text.toLowerCase()) ||
-          role.middleName.toLowerCase().includes(text.toLowerCase()) ||
-          role.email.toLowerCase().includes(text.toLowerCase()),
+        (user) =>
+          user.name.toLowerCase().includes(text.toLowerCase()) ||
+          user.phone.toLowerCase().includes(text.toLowerCase()) ||
+          user.status.toLowerCase().includes(text.toLowerCase()) ||
+          text.toLowerCase() === 'active' ||
+          user.familyName.toLowerCase().includes(text.toLowerCase()) ||
+          user.givenName.toLowerCase().includes(text.toLowerCase()) ||
+          user.middleName.toLowerCase().includes(text.toLowerCase()) ||
+          user.email.toLowerCase().includes(text.toLowerCase()),
       ),
     );
   });
