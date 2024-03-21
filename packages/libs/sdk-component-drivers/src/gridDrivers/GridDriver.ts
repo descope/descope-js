@@ -27,7 +27,11 @@ export class GridDriver<T extends any> extends BaseDriver {
   }
 
   get ele() {
-    return super.ele as Element & { data: T[]; columns: Column[] };
+    return super.ele as Element & {
+      data: T[];
+      columns: Column[];
+      renderColumn: ({ path, header, type, attrs }) => string;
+    };
   }
 
   get data() {
@@ -57,5 +61,9 @@ export class GridDriver<T extends any> extends BaseDriver {
     if (!compareArrays(filteredColumns, this.ele.columns)) {
       this.ele.columns = filteredColumns;
     }
+  }
+
+  set renderColumn(renderFn: ({ path, header, type, attrs }) => string) {
+    this.ele.renderColumn = renderFn;
   }
 }

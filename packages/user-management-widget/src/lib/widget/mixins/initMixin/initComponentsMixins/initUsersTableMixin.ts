@@ -20,6 +20,42 @@ export const initUsersTableMixin = createSingletonMixin(
     )(superclass) {
       usersTable: GridDriver<User>;
 
+      // we want to keep the column configuration to make sure the table is rendered in the same way
+      #setCustomRenderers() {
+        const getColumnByPath = (path: string) =>
+          this.usersTable.ele?.querySelector(`[path="${path}"]`);
+        // relevant for selection column which does not have a path
+        const getColumnByType = (type: string) => {
+          const tagName = `descope-grid-${type}-column`;
+
+          return this.usersTable.ele?.querySelector(tagName);
+        };
+
+        const origRenderColumn = this.usersTable.renderColumn;
+
+        this.usersTable.renderColumn = ({ path, header, type, attrs }) => {
+          const currentColumn = getColumnByPath(path) || getColumnByType(type);
+
+          if (!currentColumn) {
+            return origRenderColumn({ path, header, type, attrs });
+          }
+
+          const newColumn = currentColumn.cloneNode(true) as HTMLElement;
+
+          const newAttrs: Record<string, string> = {
+            ...attrs,
+            header,
+          };
+
+          // update the column with the new attributes
+          Object.entries(newAttrs).forEach(([key, value]) => {
+            newColumn.setAttribute(key, value);
+          });
+
+          return newColumn.outerHTML;
+        };
+      }
+
       #initUsersTable() {
         this.usersTable = new GridDriver(
           this.shadowRoot?.querySelector('[data-id="users-table"]'),
@@ -30,6 +66,7 @@ export const initUsersTableMixin = createSingletonMixin(
             e.detail.value.map(({ loginIds }) => loginIds),
           );
         });
+        this.#setCustomRenderers();
       }
 
       #onUsersListUpdate = withMemCache(
