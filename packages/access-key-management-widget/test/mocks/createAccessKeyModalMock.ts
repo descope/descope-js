@@ -1,5 +1,5 @@
 export default `
-<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.8rem">
+<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.5rem">
   <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">New Access Key</descope-text>
   <descope-text-field bordered="true" full-width="true" id="name" label="Name" max="100" name="name" placeholder="Name" required="true" size="sm"></descope-text-field>
   <descope-combo-box bordered="true" data-id="expiration-combobox" full-width="true" id="expirationInput" required="true" item-label-path="data-name" item-value-path="data-id" label="Expiration" name="expiration" size="sm" allow-custom-value="false" default-value="30">

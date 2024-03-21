@@ -1,5 +1,5 @@
 export default `
-<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.8rem">
+<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.5rem">
   <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">Access key was created</descope-text>
   <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="body1">Make sure to copy it now, since it won't be available again in the future.</descope-text>
   <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="body1">Your new access key is:</descope-text>

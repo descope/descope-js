@@ -1,5 +1,5 @@
 export default `
-<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" border-radius="sm" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.8rem">
+<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" border-radius="sm" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.5rem">
   <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">Activate User</descope-text>
   <descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" border-radius="sm" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0rem">
     <descope-text full-width="false" id="bodyText" italic="false" mode="primary" text-align="center" variant="body1" data-id="body-text"></descope-text>
