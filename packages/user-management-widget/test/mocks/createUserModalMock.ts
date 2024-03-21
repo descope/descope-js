@@ -1,6 +1,6 @@
 export default `
 <descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="1rem">
-  <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle1">New User</descope-text>
+  <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">New User</descope-text>
   <descope-text-field bordered="true" full-width="true" id="loginIdInput" label="Login ID" max="100" name="loginId" placeholder="Enter email or phone" required="true" size="sm"></descope-text-field>
   <descope-text-field border-radius="sm" bordered="true" full-width="true" id="nameInput" label="Name" max="100" name="displayName" placeholder="Enter name" required="false" size="sm"></descope-text-field>
   <descope-email-field bordered="true" data-errormessage-pattern-mismatch="Must be a valid email" full-width="true" id="emailInput" label="Email" max="100" name="email" placeholder="Not required if used as login ID" required="false" size="sm"></descope-email-field>
