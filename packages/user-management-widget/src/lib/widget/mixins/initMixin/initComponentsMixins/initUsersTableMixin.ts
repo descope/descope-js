@@ -21,7 +21,7 @@ export const initUsersTableMixin = createSingletonMixin(
       usersTable: GridDriver<User>;
 
       // we want to keep the column configuration to make sure the table is rendered in the same way
-      #setCustomRenderers() {
+      #setCustomRenderer() {
         const getColumnByPath = (path: string) =>
           this.usersTable.ele?.querySelector(`[path="${path}"]`);
         // relevant for selection column which does not have a path
@@ -66,7 +66,7 @@ export const initUsersTableMixin = createSingletonMixin(
             e.detail.value.map(({ loginIds }) => loginIds),
           );
         });
-        this.#setCustomRenderers();
+        this.#setCustomRenderer();
       }
 
       #onUsersListUpdate = withMemCache(
