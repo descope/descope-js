@@ -73,7 +73,11 @@ export const getSelectedUsersDetailsForDisplay = createSelector(
   getSelectedUsers,
   (selectedUsers) => {
     if (selectedUsers.length === 1) {
-      return selectedUsers[0].email;
+      return (
+        selectedUsers[0].name ||
+        selectedUsers[0].email ||
+        selectedUsers[0].loginIds?.[0]
+      );
     }
     return `${selectedUsers.length} users`;
   },
