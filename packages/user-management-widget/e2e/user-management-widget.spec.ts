@@ -632,12 +632,10 @@ test.describe('widget', () => {
       page.locator(`text=Successfully reset user password`),
     ).toBeVisible();
 
-    const generatedPasswordInput = page.getByTestId(
-      'generated-password-key-input',
-    );
-    expect(await generatedPasswordInput.first().inputValue()).toEqual(
-      cleartext,
-    );
+    const generatedPasswordInput = page
+      .getByPlaceholder('Generated password')
+      .last();
+    expect(await generatedPasswordInput.inputValue()).toEqual(cleartext);
 
     // click modal button
     const closeGeneratedPasswordButton = page
