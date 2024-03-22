@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.12](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.11...access-key-management-widget-0.1.12) (2024-03-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.15`
+* `sdk-helpers` updated to version `0.1.7`
+* `sdk-mixins` updated to version `0.1.8`
+* `sdk-component-drivers` updated to version `0.1.7`
 ## [0.1.11](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.10...access-key-management-widget-0.1.11) (2024-03-22)
 
 ### Dependency Updates
