@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-helpers",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-helpers",
   "bugs": {
@@ -40,7 +40,7 @@
     "authentication"
   ],
   "devDependencies": {
-    "@rollup/plugin-commonjs": "24.1.0",
+    "@rollup/plugin-commonjs": "25.0.7",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.0",
