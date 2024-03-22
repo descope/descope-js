@@ -175,7 +175,9 @@ test.describe('widget', () => {
       page.locator('text=Access Key created successfully'),
     ).toBeVisible();
 
-    const generatedAccessKeyNameInput = page.getByText('Generated Key');
+    const generatedAccessKeyNameInput = page.getByTestId(
+      'created-access-key-input',
+    );
     expect(await generatedAccessKeyNameInput.first().inputValue()).toEqual(
       cleartext,
     );

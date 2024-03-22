@@ -105,7 +105,7 @@ export const initUsersTableMixin = createSingletonMixin(
             const [prefix, name] = col.path?.split('.') || [];
             return (
               prefix !== 'customAttributes' ||
-              !!customAttrs.find((attr) => attr.name === name)
+              !!customAttrs?.find((attr) => attr.name === name)
             );
           });
         },

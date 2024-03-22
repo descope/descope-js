@@ -348,10 +348,10 @@ test.describe('widget', () => {
     await editUserRolesInput.focus();
     await page.keyboard.press('Backspace');
 
-    // click modal create button
+    // click modal button
     const editUserButton = page
       .locator('descope-button')
-      .filter({ hasText: 'Edit User' })
+      .filter({ hasText: 'Edit' })
       .getByTestId('edit-user-modal-submit')
       .first();
 
@@ -586,7 +586,7 @@ test.describe('widget', () => {
       .getByTestId('reset-password-trigger')
       .first();
     const resetPasswordModalButton = page
-      .getByTestId('reset-user-password-modal-submit')
+      .getByTestId('reset-password-modal-submit')
       .first();
 
     // enable user button initial state is disabled
@@ -614,7 +614,7 @@ test.describe('widget', () => {
     expect(resetPasswordModal).toBeVisible();
 
     const resetPasswordModalMessage = page.locator(
-      `text=Reset password for ${mockUsers[1].email}`,
+      `text=This will generate a new temporary password for ${mockUsers[1].email}`,
     );
     expect(resetPasswordModalMessage).toBeVisible();
 
@@ -632,7 +632,9 @@ test.describe('widget', () => {
       page.locator(`text=Successfully reset user password`),
     ).toBeVisible();
 
-    const generatedPasswordInput = page.getByText('Generated Password');
+    const generatedPasswordInput = page.getByTestId(
+      'generated-password-key-input',
+    );
     expect(await generatedPasswordInput.first().inputValue()).toEqual(
       cleartext,
     );
