@@ -1,6 +1,6 @@
 export default `
 <descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.5rem">
-  <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">Edit Role</descope-text>
+  <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">Edit role</descope-text>
   <descope-text-field bordered="true" full-width="true" id="name" label="Name" max="100" name="name" placeholder="Name" required="true" size="sm" data-testid="edit-role-input-name"></descope-text-field>
   <descope-text-field bordered="true" full-width="true" id="description" label="Description" max="1024" name="description" placeholder="Description" required="false" size="sm" data-testid="edit-role-input-desc"></descope-text-field>
   <descope-multi-select-combo-box bordered="true" data-id="permissions-multiselect" full-width="true" id="permissionsInput" item-label-path="data-name" item-value-path="data-id" label="Permissions" name="permissionNames" size="sm" allow-custom-value="false" clear-button-visible="true" data-testid="create-role-input-permissions"></descope-multi-select-combo-box>

@@ -533,7 +533,7 @@ test.describe('widget', () => {
     expect(resetPasswordModal).toBeVisible();
 
     const resetPasswordModalMessage = page.locator(
-      `text=Reset password for ${mockUsers[1].email}`,
+      `text=This will generate a new temporary password for ${mockUsers[1].email}`,
     );
     expect(resetPasswordModalMessage).toBeVisible();
 
