@@ -551,7 +551,9 @@ test.describe('widget', () => {
       page.locator(`text=Successfully reset user password`),
     ).toBeVisible();
 
-    const generatedPasswordInput = page.getByText('Generated Password');
+    const generatedPasswordInput = page.getByTestId(
+      'generated-password-key-input',
+    );
     expect(await generatedPasswordInput.first().inputValue()).toEqual(
       cleartext,
     );
