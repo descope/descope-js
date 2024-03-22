@@ -61,12 +61,21 @@ export const initUsersTableMixin = createSingletonMixin(
           this.shadowRoot?.querySelector('[data-id="users-table"]'),
           { logger: this.logger },
         );
+
         this.usersTable.onSelectedItemsChange((e) => {
           this.actions.setSelectedUsersIds(
             e.detail.value.map(({ loginIds }) => loginIds),
           );
         });
+
+        // every time the columns change, we are re-rendering the table, so we need to re-register the sort event
+        this.usersTable.onColumnsChange(
+          this.#registerSortColumnEvent.bind(this),
+        );
+
         this.#setCustomRenderer();
+
+        this.#registerSortColumnEvent();
       }
 
       #onUsersListUpdate = withMemCache(
@@ -102,15 +111,18 @@ export const initUsersTableMixin = createSingletonMixin(
         },
       );
 
-      async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
-        this.#initUsersTable();
+      #registerSortColumnEvent() {
         this.usersTable.columns.forEach((column) => {
           column.onSortDirectionChange((e: MouseEvent) => {
             this.#onColumnSortChange(e.target, e.detail);
           });
         });
+      }
+
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
+
+        this.#initUsersTable();
 
         // because we are not waiting for the rest calls,
         // we need to make sure the table is updated with the received users
