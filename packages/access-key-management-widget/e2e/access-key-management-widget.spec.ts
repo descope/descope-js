@@ -175,10 +175,10 @@ test.describe('widget', () => {
       page.locator('text=Access Key created successfully'),
     ).toBeVisible();
 
-    const generatedAccessKeyNameInput = page.getByText('Generated Key');
-    expect(await generatedAccessKeyNameInput.first().inputValue()).toEqual(
-      cleartext,
-    );
+    const generatedAccessKeyNameInput = page
+      .getByPlaceholder('Generated Key')
+      .last();
+    expect(await generatedAccessKeyNameInput.inputValue()).toEqual(cleartext);
 
     // click modal create button
     const closeCreatedAccessKeyButton = page

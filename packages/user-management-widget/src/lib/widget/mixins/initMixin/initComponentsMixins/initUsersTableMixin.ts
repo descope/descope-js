@@ -20,16 +20,62 @@ export const initUsersTableMixin = createSingletonMixin(
     )(superclass) {
       usersTable: GridDriver<User>;
 
+      // we want to keep the column configuration to make sure the table is rendered in the same way
+      #setCustomRenderer() {
+        const getColumnByPath = (path: string) =>
+          this.usersTable.ele?.querySelector(`[path="${path}"]`);
+        // relevant for selection column which does not have a path
+        const getColumnByType = (type: string) => {
+          const tagName = `descope-grid-${type}-column`;
+
+          return this.usersTable.ele?.querySelector(tagName);
+        };
+
+        const origRenderColumn = this.usersTable.renderColumn;
+
+        this.usersTable.renderColumn = ({ path, header, type, attrs }) => {
+          const currentColumn = getColumnByPath(path) || getColumnByType(type);
+
+          if (!currentColumn) {
+            return origRenderColumn({ path, header, type, attrs });
+          }
+
+          const newColumn = currentColumn.cloneNode(true) as HTMLElement;
+
+          const newAttrs: Record<string, string> = {
+            ...attrs,
+            header,
+          };
+
+          // update the column with the new attributes
+          Object.entries(newAttrs).forEach(([key, value]) => {
+            newColumn.setAttribute(key, value);
+          });
+
+          return newColumn.outerHTML;
+        };
+      }
+
       #initUsersTable() {
         this.usersTable = new GridDriver(
           this.shadowRoot?.querySelector('[data-id="users-table"]'),
           { logger: this.logger },
         );
+
         this.usersTable.onSelectedItemsChange((e) => {
           this.actions.setSelectedUsersIds(
             e.detail.value.map(({ loginIds }) => loginIds),
           );
         });
+
+        // every time the columns change, we are re-rendering the table, so we need to re-register the sort event
+        this.usersTable.onColumnsChange(
+          this.#registerSortColumnEvent.bind(this),
+        );
+
+        this.#setCustomRenderer();
+
+        this.#registerSortColumnEvent();
       }
 
       #onUsersListUpdate = withMemCache(
@@ -59,21 +105,24 @@ export const initUsersTableMixin = createSingletonMixin(
             const [prefix, name] = col.path?.split('.') || [];
             return (
               prefix !== 'customAttributes' ||
-              !!customAttrs.find((attr) => attr.name === name)
+              !!customAttrs?.find((attr) => attr.name === name)
             );
           });
         },
       );
 
-      async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-
-        this.#initUsersTable();
+      #registerSortColumnEvent() {
         this.usersTable.columns.forEach((column) => {
           column.onSortDirectionChange((e: MouseEvent) => {
             this.#onColumnSortChange(e.target, e.detail);
           });
         });
+      }
+
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
+
+        this.#initUsersTable();
 
         // because we are not waiting for the rest calls,
         // we need to make sure the table is updated with the received users

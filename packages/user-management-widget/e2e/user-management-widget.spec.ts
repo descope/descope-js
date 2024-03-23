@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import {
   mockUsers,
   mockNewUser,
@@ -32,6 +32,41 @@ const apiPath = (prop: 'user' | 'tenant', path: string) =>
 
 const MODAL_TIMEOUT = 500;
 const STATE_TIMEOUT = 2000;
+
+const getTableBodyCellContentLocatorByIndex = async (
+  page: Page,
+  rowIdx: number,
+  columnIdx: number,
+) => {
+  const slotName = await page
+    .locator('tbody')
+    .locator('tr')
+    .nth(rowIdx)
+    .locator('td')
+    .nth(columnIdx)
+    .locator('slot')
+    .evaluate((e: HTMLSlotElement) => e.name);
+
+  return page.locator(`vaadin-grid-cell-content[slot="${slotName}"]`);
+};
+
+const getTableHeadCellContentLocatorByIndex = async (
+  page: Page,
+  columnIdx: number,
+) => {
+  const tableCellId = await page
+    .locator('thead')
+    .locator('tr')
+    .locator('th')
+    .nth(columnIdx)
+    .evaluate((e) => e.id);
+  const slotName = tableCellId.replace(
+    'vaadin-grid-cell',
+    'vaadin-grid-cell-content',
+  );
+
+  return page.locator(`vaadin-grid-cell-content[slot="${slotName}"]`);
+};
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -186,11 +221,16 @@ test.describe('widget', () => {
     expect(disableUserTrigger).toBeDisabled();
     expect(removePasskeyTrigger).toBeDisabled();
 
-    // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select non-editable user (editable: false)
-    await page.locator('descope-checkbox').nth(4).click();
+    const NonEditableUserCheckbox = await getTableBodyCellContentLocatorByIndex(
+      page,
+      3,
+      0,
+    );
+    await NonEditableUserCheckbox.click();
+
+    // wait for widget state
+    await page.waitForTimeout(MODAL_TIMEOUT);
 
     expect(createUserTrigger).toBeEnabled();
     expect(editUserTrigger).toBeDisabled();
@@ -199,10 +239,15 @@ test.describe('widget', () => {
     expect(removePasskeyTrigger).toBeDisabled();
 
     // de-select non-editable user
-    await page.locator('descope-checkbox').nth(4).click();
+    await NonEditableUserCheckbox.click();
 
     // select enabled and editable user
-    await page.locator('descope-checkbox').nth(1).click();
+    const editableUserCheckbox = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await editableUserCheckbox.click();
 
     await page.waitForTimeout(STATE_TIMEOUT);
 
@@ -215,10 +260,15 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // de-select enabled and editable user
-    await page.locator('descope-checkbox').nth(1).click();
+    await editableUserCheckbox.click();
 
     // select disabled and editable user
-    await page.locator('descope-checkbox').nth(2).click();
+    const disabledUserCheckbox = await getTableBodyCellContentLocatorByIndex(
+      page,
+      1,
+      0,
+    );
+    await disabledUserCheckbox.click();
 
     expect(createUserTrigger).toBeEnabled();
     expect(editUserTrigger).toBeEnabled();
@@ -269,7 +319,12 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // select user
-    await page.locator('descope-checkbox').nth(1).click();
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
 
     // open add user modal
     await openEditUserModalButton.click();
@@ -327,12 +382,18 @@ test.describe('widget', () => {
     expect(deleteUserTrigger).toBeDisabled();
 
     // select all items
-    await page.locator('descope-checkbox').first().click();
+    const selectAll = await getTableHeadCellContentLocatorByIndex(page, 0);
+    await selectAll.click();
 
     // delete button is disabled on selection (due to non editable user)
     expect(deleteUserTrigger).toBeDisabled();
 
-    await page.locator('descope-checkbox').nth(4).click();
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      3,
+      0,
+    );
+    await cellContentLocator.click();
 
     // delete button is enabled on selection
     expect(deleteUserTrigger).toBeEnabled();
@@ -382,7 +443,12 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // select first user (status: active)
-    await page.locator('descope-checkbox').nth(1).click();
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
 
     // disable user button is enabled on selection
     expect(disableUserTrigger).toBeEnabled();
@@ -426,8 +492,13 @@ test.describe('widget', () => {
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
 
-    // select first user (status: active)
-    await page.locator('descope-checkbox').nth(2).click();
+    // select second user (status: disabled)
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      1,
+      0,
+    );
+    await cellContentLocator.click();
 
     // enable user button is enabled on selection
     expect(enableUserTrigger).toBeEnabled();
@@ -471,8 +542,13 @@ test.describe('widget', () => {
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
 
-    // select first user (status: active)
-    await page.locator('descope-checkbox').nth(2).click();
+    // select second user
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      1,
+      0,
+    );
+    await cellContentLocator.click();
 
     // enable user button is enabled on selection
     expect(removePasskeyTrigger).toBeEnabled();
@@ -519,8 +595,13 @@ test.describe('widget', () => {
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
 
-    // select first user (status: active)
-    await page.locator('descope-checkbox').nth(2).click();
+    // select second user (status: active)
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      1,
+      0,
+    );
+    await cellContentLocator.click();
 
     // enable user button is enabled on selection
     expect(resetPasswordTrigger).toBeEnabled();
@@ -533,7 +614,7 @@ test.describe('widget', () => {
     expect(resetPasswordModal).toBeVisible();
 
     const resetPasswordModalMessage = page.locator(
-      `text=Reset password for ${mockUsers[1].email}`,
+      `text=This will generate a new temporary password for ${mockUsers[1].email}`,
     );
     expect(resetPasswordModalMessage).toBeVisible();
 
@@ -551,10 +632,10 @@ test.describe('widget', () => {
       page.locator(`text=Successfully reset user password`),
     ).toBeVisible();
 
-    const generatedPasswordInput = page.getByText('Generated Password');
-    expect(await generatedPasswordInput.first().inputValue()).toEqual(
-      cleartext,
-    );
+    const generatedPasswordInput = page
+      .getByPlaceholder('Generated password')
+      .last();
+    expect(await generatedPasswordInput.inputValue()).toEqual(cleartext);
 
     // click modal button
     const closeGeneratedPasswordButton = page
@@ -612,8 +693,11 @@ test.describe('widget', () => {
       .first();
 
     // select all items
-    await page.locator('descope-checkbox').first().click();
-    await page.locator('descope-checkbox').nth(4).click();
+    const selectAll = await getTableHeadCellContentLocatorByIndex(page, 0);
+    await selectAll.click();
+
+    const lastUser = await getTableBodyCellContentLocatorByIndex(page, 3, 0);
+    await lastUser.click();
 
     // delete users
     await deleteUserTrigger.click();
