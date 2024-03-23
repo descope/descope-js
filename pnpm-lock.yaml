@@ -89,7 +89,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -154,7 +154,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
       eslint-plugin-import: 2.29.1_44kqb2ye3uwgkksvxto6rjaaty
       eslint-plugin-jest: 27.9.0_54vgpcpyba2arvndnh5upshace
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_jyotygk32a6hl7ybu6viuy2kkq
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -200,7 +200,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -243,7 +243,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_nbzuvdqlqxhye6wyxz64bskaxi
       eslint-plugin-import: 2.29.1_4fqcf5mnemzcmuzilevssz37bu
       eslint-plugin-jest: 27.9.0_vdcunyuxtmvixyodbvm5quaxv4
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_eslint@8.57.0
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -287,7 +287,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -334,7 +334,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_nbzuvdqlqxhye6wyxz64bskaxi
       eslint-plugin-import: 2.29.1_4fqcf5mnemzcmuzilevssz37bu
       eslint-plugin-jest: 27.9.0_54vgpcpyba2arvndnh5upshace
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_eslint@8.57.0
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -378,7 +378,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -423,7 +423,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_nbzuvdqlqxhye6wyxz64bskaxi
       eslint-plugin-import: 2.29.1_4fqcf5mnemzcmuzilevssz37bu
       eslint-plugin-jest: 27.9.0_54vgpcpyba2arvndnh5upshace
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_eslint@8.57.0
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -471,7 +471,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -521,7 +521,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_nbzuvdqlqxhye6wyxz64bskaxi
       eslint-plugin-import: 2.29.1_4fqcf5mnemzcmuzilevssz37bu
       eslint-plugin-jest: 27.9.0_54vgpcpyba2arvndnh5upshace
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_eslint@8.57.0
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -576,7 +576,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -641,7 +641,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
       eslint-plugin-import: 2.29.1_44kqb2ye3uwgkksvxto6rjaaty
       eslint-plugin-jest: 27.9.0_54vgpcpyba2arvndnh5upshace
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_jyotygk32a6hl7ybu6viuy2kkq
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -697,7 +697,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -764,7 +764,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
       eslint-plugin-import: 2.29.1_44kqb2ye3uwgkksvxto6rjaaty
       eslint-plugin-jest: 27.9.0_54vgpcpyba2arvndnh5upshace
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_jyotygk32a6hl7ybu6viuy2kkq
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -814,7 +814,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -862,7 +862,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
       eslint-plugin-import: 2.29.1_44kqb2ye3uwgkksvxto6rjaaty
       eslint-plugin-jest: 27.9.0_vdcunyuxtmvixyodbvm5quaxv4
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_jyotygk32a6hl7ybu6viuy2kkq
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -908,7 +908,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1
       eslint-plugin-import: 2.29.1
       eslint-plugin-jest: 27.9.0
-      eslint-plugin-jest-dom: 4.0.3
+      eslint-plugin-jest-dom: 5.1.0
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-n: 15.7.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -958,7 +958,7 @@ importers:
       eslint-import-resolver-typescript: 3.6.1_nbzuvdqlqxhye6wyxz64bskaxi
       eslint-plugin-import: 2.29.1_4fqcf5mnemzcmuzilevssz37bu
       eslint-plugin-jest: 27.9.0_vdcunyuxtmvixyodbvm5quaxv4
-      eslint-plugin-jest-dom: 4.0.3_eslint@8.57.0
+      eslint-plugin-jest-dom: 5.1.0_eslint@8.57.0
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.57.0
       eslint-plugin-n: 15.7.0_eslint@8.57.0
       eslint-plugin-no-only-tests: 3.1.0
@@ -4124,20 +4124,6 @@ packages:
 
   /@socket.io/component-emitter/3.1.0:
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
-    dev: true
-
-  /@testing-library/dom/8.20.0:
-    resolution: {integrity: sha512-d9ULIT+a4EXLX3UU8FBjauG9NnsZHkHztXoIcTsOKoOw030fyjheN9svkTULjJxtYag9DZz5Jz5qkWZDPxTFwA==}
-    engines: {node: '>=12'}
-    dependencies:
-      '@babel/code-frame': 7.23.5
-      '@babel/runtime': 7.23.5
-      '@types/aria-query': 5.0.1
-      aria-query: 5.1.3
-      chalk: 4.1.2
-      dom-accessibility-api: 0.5.16
-      lz-string: 1.5.0
-      pretty-format: 27.5.1
     dev: true
 
   /@testing-library/dom/9.2.0:
@@ -7400,14 +7386,33 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-jest-dom/4.0.3_eslint@8.57.0:
-    resolution: {integrity: sha512-9j+n8uj0+V0tmsoS7bYC7fLhQmIvjRqRYEcbDSi+TKPsTThLLXCyj5swMSSf/hTleeMktACnn+HFqXBr5gbcbA==}
+  /eslint-plugin-jest-dom/5.1.0_eslint@8.57.0:
+    resolution: {integrity: sha512-JIXZp+E/h/aGlP/rQc4tuOejiHlZXg65qw8JAJMIJA5VsdjOkss/SYcRSqBrQuEOytEM8JvngUjcz31d1RrCrA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0, npm: '>=6', yarn: '>=1'}
     peerDependencies:
+      '@testing-library/dom': ^8.0.0 || ^9.0.0
       eslint: ^6.8.0 || ^7.0.0 || ^8.0.0
+    peerDependenciesMeta:
+      '@testing-library/dom':
+        optional: true
     dependencies:
       '@babel/runtime': 7.23.5
-      '@testing-library/dom': 8.20.0
+      eslint: 8.57.0
+      requireindex: 1.2.0
+    dev: true
+
+  /eslint-plugin-jest-dom/5.1.0_jyotygk32a6hl7ybu6viuy2kkq:
+    resolution: {integrity: sha512-JIXZp+E/h/aGlP/rQc4tuOejiHlZXg65qw8JAJMIJA5VsdjOkss/SYcRSqBrQuEOytEM8JvngUjcz31d1RrCrA==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0, npm: '>=6', yarn: '>=1'}
+    peerDependencies:
+      '@testing-library/dom': ^8.0.0 || ^9.0.0
+      eslint: ^6.8.0 || ^7.0.0 || ^8.0.0
+    peerDependenciesMeta:
+      '@testing-library/dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.5
+      '@testing-library/dom': 9.2.0
       eslint: 8.57.0
       requireindex: 1.2.0
     dev: true
