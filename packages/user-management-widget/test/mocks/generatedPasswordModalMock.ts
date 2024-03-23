@@ -5,7 +5,7 @@ export default `
   <descope-text full-width="false" id="bodyText" italic="false" mode="primary" text-align="center" variant="body1">The user's new temporary password is:</descope-text>
   <descope-text-field bordered="true" full-width="true" id="generated-password" label="" max="100" name="generated-password" placeholder="Generated password" required="true" size="sm" readonly data-testid="generated-password-key-input"></descope-text-field>
   <descope-container data-editor-type="container" direction="row" id="buttonsContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="flex-end" st-background-color="#ffffff00" st-host-width="100%" st-gap="0rem">
-    <descope-button data-id="modal-close" data-testid="generated-password-modal-close" data-type="button" formNoValidate="false" full-width="false" id="generatedPasswrodCancelButton" shape="" size="xs" variant="contained" mode="primary" square="false">Copy to clipboard & close</descope-button>
+    <descope-button data-id="modal-close" data-testid="generated-password-modal-close" data-type="button" formNoValidate="false" full-width="false" id="generatedPasswordCancelButton" shape="" size="xs" variant="contained" mode="primary" square="false">Copy to clipboard & close</descope-button>
   </descope-container>
 </descope-container>
 `;
