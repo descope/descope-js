@@ -9,9 +9,9 @@ export default `
     <span data-name="Never" data-id="0">Never</span>
   </descope-combo-box>
   <descope-multi-select-combo-box bordered="true" data-id="roles-multiselect" full-width="true" id="rolesInput" item-label-path="data-name" item-value-path="data-id" label="Roles" name="roleNames" size="sm" allow-custom-value="false" clear-button-visible="true"></descope-multi-select-combo-box>
-  <descope-container data-editor-type="container" direction="row" id="buttonsContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="flex-end" st-background-color="#ffffff00" st-host-width="100%" st-gap="0.5rem">
-    <descope-button data-id="modal-cancel" data-testid="create-access-key-modal-cancel" data-type="button" formNoValidate="false" full-width="false" id="createAccessKeyCancelButton" shape="" size="sm" variant="outline" mode="primary" square="false">Cancel</descope-button>
-    <descope-button data-id="modal-submit" data-testid="create-access-key-modal-submit" data-type="button" formNoValidate="false" full-width="false" id="createAccessKeySubmitButton" shape="" size="sm" variant="contained" mode="primary" square="false">Create</descope-button>
+  <descope-container data-editor-type="container" direction="row" id="buttonsContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="flex-end" st-background-color="#ffffff00" st-host-width="100%" st-gap="0rem">
+    <descope-button data-id="modal-cancel" data-testid="create-access-key-modal-cancel" data-type="button" formNoValidate="false" full-width="false" id="createAccessKeyCancelButton" shape="" size="xs" variant="link" mode="primary" square="false">Cancel</descope-button>
+    <descope-button data-id="modal-submit" data-testid="create-access-key-modal-submit" data-type="button" formNoValidate="false" full-width="false" id="createAccessKeySubmitButton" shape="" size="xs" variant="contained" mode="primary" square="false">Create</descope-button>
   </descope-container>
 </descope-container>
 `;
