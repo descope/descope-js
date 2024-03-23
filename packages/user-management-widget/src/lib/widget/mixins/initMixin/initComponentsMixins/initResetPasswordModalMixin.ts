@@ -81,7 +81,7 @@ export const initResetPasswordModalMixin = createSingletonMixin(
 
         this.resetPasswordModal.beforeOpen = async () => {
           const userDetails = getSelectedUsersDetailsForDisplay(this.state);
-          description.text = `Reset password for ${userDetails}?`;
+          description.text = `This will generate a new temporary password for ${userDetails}?`;
         };
       }
 
