@@ -1,7 +1,8 @@
 export default `
-<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.5rem">
+<descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="safe center" st-background-color="#80808000" st-host-width="100%" st-gap="0.75rem">
    <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">Edit user</descope-text>
    <descope-text-field bordered="true" full-width="true" id="loginIdInput" label="Login ID" max="100" name="loginId" placeholder="" required="true" size="sm"></descope-text-field>
+   <descope-text full-width="false" id="userDetailsHeader" italic="false" mode="primary" text-align="center" variant="body1">User Details</descope-text>
    <descope-email-field bordered="true" data-errormessage-pattern-mismatch="Must be a valid email" full-width="true" id="emailInput" label="Email" max="100" name="email" placeholder="Not required if used as login ID" required="false" size="sm"></descope-email-field>
    <descope-text-field bordered="true" full-width="true" id="nameInput" label="Name" max="100" name="displayName" placeholder="Enter name" required="false" size="sm" border-radius="sm"></descope-text-field>
    <descope-phone-field bordered="true" country-input-placeholder="Not required if used as login ID" data-errormessage-missing-value="Required" data-errormessage-pattern-mismatch-too-short="Please enter a valid phone" default-code="autoDetect" full-width="true" id="phoneInput" label="Phone" maxlength="20" minlength="6" name="phone" phone-input-placeholder="" size="sm" type="tel"></descope-phone-field>
