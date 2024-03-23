@@ -110,7 +110,7 @@ importers:
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-define: ^1.0.1
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^4.2.2
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-livereload: ^2.0.5
       rollup-plugin-svg-import: 3.0.0
       rollup-plugin-terser: 7.0.2
@@ -171,7 +171,7 @@ importers:
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@4.13.0
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 4.2.3_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-livereload: 2.0.5
       rollup-plugin-svg-import: 3.0.0_rollup@4.13.0
       rollup-plugin-terser: 7.0.2_rollup@4.13.0
@@ -217,7 +217,7 @@ importers:
       rollup: ^4.0.0
       rollup-plugin-auto-external: ^2.0.0
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-esbuild: ^5.0.0
       rollup-plugin-inject-process-env: ^1.3.1
       rollup-plugin-livereload: ^2.0.5
@@ -259,7 +259,7 @@ importers:
       rollup: 4.13.0
       rollup-plugin-auto-external: 2.0.0_rollup@4.13.0
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 5.3.0_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-esbuild: 5.0.0_uhpvwdtwowb426g27ifnlj7z3u
       rollup-plugin-inject-process-env: 1.3.1
       rollup-plugin-livereload: 2.0.5
@@ -305,7 +305,7 @@ importers:
       rollup-plugin-auto-external: ^2.0.0
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-esbuild: ^5.0.0
       rollup-plugin-inject-process-env: ^1.3.1
       rollup-plugin-livereload: ^2.0.5
@@ -352,7 +352,7 @@ importers:
       rollup-plugin-auto-external: 2.0.0_rollup@4.13.0
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 5.3.0_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-esbuild: 5.0.0_rollup@4.13.0
       rollup-plugin-inject-process-env: 1.3.1
       rollup-plugin-livereload: 2.0.5
@@ -396,7 +396,7 @@ importers:
       rollup-plugin-auto-external: ^2.0.0
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-esbuild: ^5.0.0
       rollup-plugin-inject-process-env: ^1.3.1
       rollup-plugin-livereload: ^2.0.5
@@ -441,7 +441,7 @@ importers:
       rollup-plugin-auto-external: 2.0.0_rollup@4.13.0
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 5.3.0_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-esbuild: 5.0.0_rollup@4.13.0
       rollup-plugin-inject-process-env: 1.3.1
       rollup-plugin-livereload: 2.0.5
@@ -490,7 +490,7 @@ importers:
       rollup-plugin-auto-external: ^2.0.0
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-esbuild: ^5.0.0
       rollup-plugin-inject-process-env: ^1.3.1
       rollup-plugin-livereload: ^2.0.5
@@ -540,7 +540,7 @@ importers:
       rollup-plugin-auto-external: 2.0.0_rollup@4.13.0
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 5.3.0_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-esbuild: 5.0.0_rollup@4.13.0
       rollup-plugin-inject-process-env: 1.3.1
       rollup-plugin-livereload: 2.0.5
@@ -597,7 +597,7 @@ importers:
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-define: ^1.0.1
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^4.2.2
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-livereload: ^2.0.5
       rollup-plugin-svg-import: 3.0.0
       rollup-plugin-terser: 7.0.2
@@ -658,7 +658,7 @@ importers:
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@4.13.0
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 4.2.3_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-livereload: 2.0.5
       rollup-plugin-svg-import: 3.0.0_rollup@4.13.0
       rollup-plugin-terser: 7.0.2_rollup@4.13.0
@@ -719,7 +719,7 @@ importers:
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-define: ^1.0.1
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^4.2.2
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-livereload: ^2.0.5
       rollup-plugin-svg-import: 3.0.0
       rollup-plugin-terser: 7.0.2
@@ -781,7 +781,7 @@ importers:
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@4.13.0
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 4.2.3_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-livereload: 2.0.5
       rollup-plugin-svg-import: 3.0.0_rollup@4.13.0
       rollup-plugin-terser: 7.0.2_rollup@4.13.0
@@ -830,7 +830,7 @@ importers:
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-define: ^1.0.1
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^4.2.2
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-livereload: ^2.0.5
       rollup-plugin-terser: 7.0.2
       shadow-dom-testing-library: ^1.2.0
@@ -878,7 +878,7 @@ importers:
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-define: 1.0.1_rollup@4.13.0
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 4.2.3_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-livereload: 2.0.5
       rollup-plugin-terser: 7.0.2_rollup@4.13.0
       shadow-dom-testing-library: 1.10.0_@testing-library+dom@9.2.0
@@ -927,7 +927,7 @@ importers:
       rollup-plugin-auto-external: ^2.0.0
       rollup-plugin-browsersync: ^1.3.3
       rollup-plugin-delete: ^2.0.0
-      rollup-plugin-dts: ^5.1.1
+      rollup-plugin-dts: ^6.0.0
       rollup-plugin-esbuild: ^5.0.0
       rollup-plugin-inject-process-env: ^1.3.1
       rollup-plugin-livereload: ^2.0.5
@@ -976,7 +976,7 @@ importers:
       rollup-plugin-auto-external: 2.0.0_rollup@4.13.0
       rollup-plugin-browsersync: 1.3.3
       rollup-plugin-delete: 2.0.0
-      rollup-plugin-dts: 5.3.0_aagvyrts6txqzczcpv7fmax2ti
+      rollup-plugin-dts: 6.1.0_aagvyrts6txqzczcpv7fmax2ti
       rollup-plugin-esbuild: 5.0.0_rollup@4.13.0
       rollup-plugin-inject-process-env: 1.3.1
       rollup-plugin-livereload: 2.0.5
@@ -10191,22 +10191,8 @@ packages:
       sourcemap-codec: 1.4.8
     dev: true
 
-  /magic-string/0.26.7:
-    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
-    engines: {node: '>=12'}
-    dependencies:
-      sourcemap-codec: 1.4.8
-    dev: true
-
   /magic-string/0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
-    engines: {node: '>=12'}
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
-
-  /magic-string/0.30.0:
-    resolution: {integrity: sha512-LA+31JYDJLs82r2ScLrlz1GjSgu66ZV518eyWT+S8VhyQn/JL0u9MeBOvQMGYiPk1DBiSN9DDMOcXvigJZaViQ==}
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -11465,28 +11451,14 @@ packages:
       del: 5.1.0
     dev: true
 
-  /rollup-plugin-dts/4.2.3_aagvyrts6txqzczcpv7fmax2ti:
-    resolution: {integrity: sha512-jlcpItqM2efqfIiKzDB/IKOS9E9fDvbkJSGw5GtK/PqPGS9eC3R3JKyw2VvpTktZA+TNgJRMu1NTv244aTUzzQ==}
-    engines: {node: '>=v12.22.12'}
+  /rollup-plugin-dts/6.1.0_aagvyrts6txqzczcpv7fmax2ti:
+    resolution: {integrity: sha512-ijSCPICkRMDKDLBK9torss07+8dl9UpY9z1N/zTeA1cIqdzMlpkV3MOOC7zukyvQfDyxa1s3Dl2+DeiP/G6DOw==}
+    engines: {node: '>=16'}
     peerDependencies:
-      rollup: ^2.55
-      typescript: ^4.1
+      rollup: ^3.29.4 || ^4
+      typescript: ^4.5 || ^5.0
     dependencies:
-      magic-string: 0.26.7
-      rollup: 4.13.0
-      typescript: 4.9.5
-    optionalDependencies:
-      '@babel/code-frame': 7.23.5
-    dev: true
-
-  /rollup-plugin-dts/5.3.0_aagvyrts6txqzczcpv7fmax2ti:
-    resolution: {integrity: sha512-8FXp0ZkyZj1iU5klkIJYLjIq/YZSwBoERu33QBDxm/1yw5UU4txrEtcmMkrq+ZiKu3Q4qvPCNqc3ovX6rjqzbQ==}
-    engines: {node: '>=v14'}
-    peerDependencies:
-      rollup: ^3.0.0
-      typescript: ^4.1 || ^5.0
-    dependencies:
-      magic-string: 0.30.0
+      magic-string: 0.30.8
       rollup: 4.13.0
       typescript: 4.9.5
     optionalDependencies:
