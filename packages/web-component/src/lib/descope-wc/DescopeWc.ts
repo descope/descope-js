@@ -410,7 +410,6 @@ class DescopeWc extends BaseDescopeWc {
         },
         lastAuth: {
           loginId,
-          // @ts-ignore
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },

@@ -3032,6 +3032,8 @@ describe('web-component', () => {
   });
 
   it('should not store last auth when use last authenticated user is false', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
     pageContent = '<input id="email" name="email"></input>';
 
     startMock.mockReturnValue(
