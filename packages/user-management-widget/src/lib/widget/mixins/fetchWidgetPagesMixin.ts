@@ -1,14 +1,18 @@
-import { compose } from '../../helpers/compose';
-import { createSingletonMixin } from '../../helpers/mixins';
-import { createValidateAttributesMixin } from '../../mixins/createValidateAttributesMixin';
-import { missingAttrValidator } from '../../mixins/createValidateAttributesMixin/commonValidators';
-import { staticResourcesMixin } from '../../mixins/staticResourcesMixin';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  createValidateAttributesMixin,
+  staticResourcesMixin,
+} from '@descope/sdk-mixins';
+
+const WIDGET_PAGES_BASE_DIR = 'user-management-widget';
 
 export const fetchWidgetPagesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
       staticResourcesMixin,
-      createValidateAttributesMixin({ 'widget-id': missingAttrValidator }),
+      createValidateAttributesMixin({
+        'widget-id': createValidateAttributesMixin.missingAttrValidator,
+      }),
     )(superclass);
     return class FetchWidgetPagesMixinClass extends BaseClass {
       get widgetId() {
@@ -17,7 +21,7 @@ export const fetchWidgetPagesMixin = createSingletonMixin(
 
       async fetchWidgetPage(filename: string) {
         const res = await this.fetchStaticResource(
-          `${this.widgetId}/${filename}`,
+          `${WIDGET_PAGES_BASE_DIR}/${this.widgetId}/${filename}`,
           'text',
         );
         return res.body;

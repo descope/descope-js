@@ -1,13 +1,13 @@
-import '@testing-library/jest-dom';
+import { pluralize } from '@descope/sdk-helpers';
 import { waitFor } from '@testing-library/dom';
-import { apiPaths } from '../src/lib/widget/api/apiPaths';
-import { mockUsers } from './mocks/mockUsers';
-import { createSdk } from '../src/lib/widget/api/sdk';
-import { pluralize } from '../src/lib/helpers/generic';
+import '@testing-library/jest-dom';
 import '../src/lib/index';
-import rootMock from './mocks/rootMock';
+import { apiPaths } from '../src/lib/widget/api/apiPaths';
+import { createSdk } from '../src/lib/widget/api/sdk';
 import createUserModalMock from './mocks/createUserModalMock';
 import deleteUserModalMock from './mocks/deleteUserModalMock';
+import { mockUsers } from './mocks/mockUsers';
+import rootMock from './mocks/rootMock';
 
 const origAppend = document.body.append;
 
@@ -100,7 +100,7 @@ describe('user-management-widget', () => {
 
   describe('sdk', () => {
     it('search', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const result = await sdk.user.search({});
 
       await waitFor(
@@ -132,7 +132,7 @@ describe('user-management-widget', () => {
     });
 
     it('deleteBatch', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const loginIds = [
         mockUsers[0]['loginIds'][0],
         mockUsers[1]['loginIds'][0],
@@ -158,10 +158,10 @@ describe('user-management-widget', () => {
     });
 
     it('expirePassword', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant);
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const loginId = mockUsers[0]['loginIds'][0];
 
-      await sdk.user.expirePassword([loginId]);
+      await sdk.user.setTempPassword(loginId);
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -169,7 +169,7 @@ describe('user-management-widget', () => {
       );
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
-          apiPaths.user.expirePassword,
+          apiPaths.user.setTempPassword,
           { loginId },
           {
             queryParams: {

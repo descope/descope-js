@@ -1,11 +1,14 @@
-import { compose } from '../../../../helpers/compose';
-import { createTemplate } from '../../../../helpers/dom';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { modalMixin } from '../../../../mixins/modalMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { ModalDriver } from '../../../drivers/ModalDriver';
-import { TextDriver } from '../../../drivers/TextDriver';
+import {
+  ButtonDriver,
+  ModalDriver,
+  TextDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import {
   getSelectedUsersDetailsForDisplay,
   getSelectedUsersUserIds,
@@ -26,7 +29,10 @@ export const initDeleteUsersModalMixin = createSingletonMixin(
       async #initDeleteUserModal() {
         this.deleteUsersModal = this.createModal();
         this.deleteUsersModal.setContent(
-          createTemplate(await this.fetchWidgetPage('delete-users-modal.html')),
+          createTemplate(
+            // await import('../../../../../../test/mocks/deleteUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('delete-users-modal.html'),
+          ),
         );
 
         const cancelButton = new ButtonDriver(

@@ -18,8 +18,8 @@ export default [
     output: {
       dir: 'dist',
       format: 'iife',
+      inlineDynamicImports: true,
     },
-    inlineDynamicImports: true,
     plugins: [
       del({ targets: 'dist' }),
       define({

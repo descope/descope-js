@@ -159,6 +159,7 @@ class DescopeWc extends BaseDescopeWc {
       locale,
       samlIdpStateId,
       samlIdpUsername,
+      descopeIdpInitiated,
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
@@ -186,7 +187,7 @@ class DescopeWc extends BaseDescopeWc {
     // if there is no execution id we should start a new flow
     if (!executionId) {
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
-        ensureFingerprintIds(flowConfig.fingerprintKey);
+        await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
       } else {
         clearFingerprintData();
       }
@@ -243,6 +244,7 @@ class DescopeWc extends BaseDescopeWc {
           {
             ...this.form,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
+            ...(descopeIdpInitiated && { idpInitiated: true }),
             ...(token ? { token } : {}),
             ...(oidcLoginHint ? { externalId: oidcLoginHint } : {}),
           },
@@ -465,6 +467,7 @@ class DescopeWc extends BaseDescopeWc {
             ...this.form,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
+            ...(descopeIdpInitiated && { idpInitiated: true }),
             ...(token && { token }),
           },
         );

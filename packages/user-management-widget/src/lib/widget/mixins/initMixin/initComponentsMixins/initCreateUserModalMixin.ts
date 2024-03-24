@@ -1,11 +1,15 @@
-import { compose } from '../../../../helpers/compose';
-import { createTemplate } from '../../../../helpers/dom';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { formMixin } from '../../../../mixins/formMixin';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { modalMixin } from '../../../../mixins/modalMixin';
-import { ButtonDriver } from '../../../drivers/ButtonDriver';
-import { ModalDriver } from '../../../drivers/ModalDriver';
+import {
+  ButtonDriver,
+  ModalDriver,
+  MultiSelectDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  createTemplate,
+} from '@descope/sdk-helpers';
+import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { getCustomAttributes, getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -20,10 +24,15 @@ export const initCreateUserModalMixin = createSingletonMixin(
     )(superclass) {
       createUserModal: ModalDriver;
 
+      #rolesMultiSelect: MultiSelectDriver;
+
       async #initCreateUserModal() {
         this.createUserModal = this.createModal();
         this.createUserModal.setContent(
-          createTemplate(await this.fetchWidgetPage('create-user-modal.html')),
+          createTemplate(
+            // await import('../../../../../../test/mocks/createUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('create-user-modal.html'),
+          ),
         );
 
         const cancelButton = new ButtonDriver(
@@ -53,7 +62,56 @@ export const initCreateUserModalMixin = createSingletonMixin(
             this.resetFormData(this.createUserModal.ele);
           }
         });
+
+        this.#rolesMultiSelect = new MultiSelectDriver(
+          () =>
+            this.createUserModal.ele?.querySelector(
+              '[data-id="roles-multiselect"]',
+            ),
+          { logger: this.logger },
+        );
+
+        this.#updateRolesMultiSelect();
+
+        this.createUserModal.beforeOpen = async () => {
+          await this.#updateRolesMultiSelect();
+          this.#updateCustomFields();
+        };
       }
+
+      // hide and disable fields according to user permissions
+      #updateCustomFields() {
+        const customAttrs = getCustomAttributes(this.state);
+
+        this.getFormFieldNames(this.createUserModal.ele).forEach(
+          (fieldName: string) => {
+            const [prefix, name] = fieldName.split('.');
+
+            if (prefix !== 'customAttributes') {
+              return;
+            }
+
+            const matchingCustomAttr = customAttrs.find(
+              (attr) => attr.name === name,
+            );
+
+            if (!matchingCustomAttr) {
+              this.removeFormField(this.createUserModal.ele, fieldName);
+            } else if (!matchingCustomAttr.editable) {
+              this.disableFormField(this.createUserModal.ele, fieldName);
+            }
+          },
+        );
+      }
+
+      #updateRolesMultiSelect = async () => {
+        await this.#rolesMultiSelect.setData(
+          getTenantRoles(this.state).map(({ name }) => ({
+            value: name,
+            label: name,
+          })),
+        );
+      };
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();

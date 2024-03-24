@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.15](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.14...core-js-sdk-2.11.15) (2024-03-24)
+
+## [2.11.14](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.13...core-js-sdk-2.11.14) (2024-03-23)
+
+## [2.11.13](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.12...core-js-sdk-2.11.13) (2024-03-23)
+
+## [2.11.12](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.11...core-js-sdk-2.11.12) (2024-03-23)
+
+## [2.11.11](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.10...core-js-sdk-2.11.11) (2024-03-23)
+
+## [2.11.10](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.9...core-js-sdk-2.11.10) (2024-03-23)
+
+## [2.11.9](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.8...core-js-sdk-2.11.9) (2024-03-22)
+
+## [2.11.8](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.7...core-js-sdk-2.11.8) (2024-03-22)
+
+## [2.11.7](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.6...core-js-sdk-2.11.7) (2024-03-22)
+
+## [2.11.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.5...core-js-sdk-2.11.6) (2024-03-19)
+
+## [2.11.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.4...core-js-sdk-2.11.5) (2024-03-19)
+
+
+### Bug Fixes
+
+* polyfil lodash get ([#439](https://github.com/descope/descope-js/issues/439)) RELEASE ([007734f](https://github.com/descope/descope-js/commit/007734f949f23bb48bf0a3bd427a07eafee88c23))
+
+## [2.11.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.3...core-js-sdk-2.11.4) (2024-03-19)
+
+## [2.11.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.2...core-js-sdk-2.11.3) (2024-03-05)
+
+## [2.11.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.1...core-js-sdk-2.11.2) (2024-03-05)
+
+## [2.11.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.0...core-js-sdk-2.11.1) (2024-03-04)
+
+## [2.11.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.10.0...core-js-sdk-2.11.0) (2024-02-25)
+
+
+### Features
+
+* Add access keys custom claims ([#389](https://github.com/descope/descope-js/issues/389)) RELEASE ([518ac98](https://github.com/descope/descope-js/commit/518ac98a283a5d76480e2e9df8f50af312d01094))
+
 ## [2.10.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.9.1...core-js-sdk-2.10.0) (2024-02-07)
 
 

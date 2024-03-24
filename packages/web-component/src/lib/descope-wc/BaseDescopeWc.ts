@@ -1,6 +1,7 @@
 import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
+  ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
   PREV_VER_ASSETS_FOLDER,
   THEME_FILENAME,
   UI_COMPONENTS_FALLBACK_URL,
@@ -356,6 +357,24 @@ class BaseDescopeWc extends HTMLElement {
     }
   });
 
+  async #fetchTheme() {
+    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
+    try {
+      const { body } = await fetchContent(themeUrl, 'json');
+
+      return body;
+    } catch (e) {
+      this.loggerWrapper.error(
+        'Cannot fetch theme file',
+        'make sure that your projectId & flowId are correct',
+      );
+
+      return undefined;
+    }
+  }
+
+  #theme: Promise<Record<string, any>>;
+
   async #loadFonts() {
     const { projectConfig } = await this.#getConfig();
     const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
@@ -373,25 +392,20 @@ class BaseDescopeWc extends HTMLElement {
 
   async #loadTheme() {
     const styleEle = document.createElement('style');
-    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
-    try {
-      const { body: theme } = await fetchContent(themeUrl, 'json');
-      styleEle.innerText =
-        (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+    const theme = await this.#theme;
 
-      const descopeUi = await BaseDescopeWc.descopeUI;
-      if (descopeUi?.componentsThemeManager) {
-        descopeUi.componentsThemeManager.themes = {
-          light: theme?.light?.components,
-          dark: theme?.dark?.components,
-        };
-      }
-    } catch (e) {
-      this.loggerWrapper.error(
-        'Cannot fetch theme file',
-        'make sure that your projectId & flowId are correct',
-      );
+    styleEle.innerText =
+      (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+
+    const descopeUi = await BaseDescopeWc.descopeUI;
+
+    if (descopeUi?.componentsThemeManager) {
+      descopeUi.componentsThemeManager.themes = {
+        light: theme?.light?.components,
+        dark: theme?.dark?.components,
+      };
     }
+
     this.shadowRoot.appendChild(styleEle);
   }
 
@@ -477,15 +491,31 @@ class BaseDescopeWc extends HTMLElement {
       // we do not want to submit the form if the focus is on a link element
       const isLinkEleFocused =
         !!this.shadowRoot.activeElement?.getAttribute('href');
-      if (e.key !== 'Enter' || isLinkEleFocused) return;
+      const isIgnoredElementFocused = ELEMENTS_TO_IGNORE_ENTER_KEY_ON.includes(
+        this.shadowRoot.activeElement?.localName ?? '',
+      );
+
+      if (e.key !== 'Enter' || isLinkEleFocused || isIgnoredElementFocused)
+        return;
 
       e.preventDefault();
       const buttons: NodeListOf<HTMLButtonElement> =
         this.rootElement.querySelectorAll('descope-button');
 
       // in case there is a single button on the page, click on it
-      if (buttons.length === 1) {
+      if (
+        buttons.length === 1 &&
+        buttons[0].getAttribute('auto-submit') !== 'false'
+      ) {
         buttons[0].click();
+        return;
+      }
+
+      const autoSubmitButtons = Array.from(buttons).filter(
+        (button) => button.getAttribute('auto-submit') === 'true',
+      );
+      if (autoSubmitButtons.length === 1) {
+        autoSubmitButtons[0].click();
         return;
       }
 
@@ -495,7 +525,9 @@ class BaseDescopeWc extends HTMLElement {
 
       // in case there is a single "generic" button on the page, click on it
       if (genericButtons.length === 1) {
-        genericButtons[0].click();
+        if (genericButtons[0].getAttribute('auto-submit') !== 'false') {
+          genericButtons[0].click();
+        }
       } else if (genericButtons.length === 0) {
         const ssoButtons = Array.from(buttons).filter(
           (button) => button.getAttribute('data-type') === 'sso',
@@ -503,7 +535,9 @@ class BaseDescopeWc extends HTMLElement {
 
         // in case there is a single "sso" button on the page, click on it
         if (ssoButtons.length === 1) {
-          ssoButtons[0].click();
+          if (ssoButtons[0].getAttribute('auto-submit') !== 'false') {
+            ssoButtons[0].click();
+          }
         }
       }
     };
@@ -614,6 +648,8 @@ class BaseDescopeWc extends HTMLElement {
 
       this.#validateAttrs();
 
+      this.#theme = this.#fetchTheme();
+
       if (await this.#getIsFlowsVersionMismatch()) {
         this.loggerWrapper.error(
           'This SDK version does not support your flows version',
@@ -632,11 +668,11 @@ class BaseDescopeWc extends HTMLElement {
         return;
       }
 
+      this.#loadFonts();
+
       await this.#loadDescopeUI();
 
       await this.#handleTheme();
-
-      this.#loadFonts();
 
       this.#handleKeyPress();
 
@@ -653,6 +689,7 @@ class BaseDescopeWc extends HTMLElement {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
+        descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
       } = handleUrlParams();
@@ -693,6 +730,7 @@ class BaseDescopeWc extends HTMLElement {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
+        descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
       });

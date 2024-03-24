@@ -22,7 +22,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 4 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'blob' : 'line',
+  reporter: process.env.CI ? 'html' : 'line',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -40,17 +40,33 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], browserName: 'chromium' },
+      use: {
+        ...devices['Desktop Chrome'],
+        browserName: 'chromium',
+        screenshot: 'only-on-failure',
+        contextOptions: {
+          // chromium-specific permissions
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
+      },
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], browserName: 'firefox' },
+      use: {
+        ...devices['Desktop Firefox'],
+        browserName: 'firefox',
+        screenshot: 'only-on-failure',
+      },
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'], browserName: 'webkit' },
+      use: {
+        ...devices['Desktop Safari'],
+        browserName: 'webkit',
+        screenshot: 'only-on-failure',
+      },
     },
 
     /* Test against mobile viewports. */
@@ -83,6 +99,7 @@ export default defineConfig({
       command: 'npx serve build -l 5555',
       url: 'http://localhost:5555',
       reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
     },
   ],
 });

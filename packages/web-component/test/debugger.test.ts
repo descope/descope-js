@@ -98,8 +98,8 @@ describe('debugger', () => {
       };
 
       switch (true) {
-        case url.endsWith('theme.css'): {
-          return { ...res, text: () => '' };
+        case url.endsWith('theme.json'): {
+          return { ...res, json: () => ({}) };
         }
         case url.endsWith('.html'): {
           return { ...res, text: () => pageContent };

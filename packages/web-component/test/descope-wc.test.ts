@@ -26,6 +26,7 @@ import {
   SSO_APP_ID_PARAM_NAME,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
+  DESCOPE_IDP_INITIATED_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -685,7 +686,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="1" data-type="button">Click</button><button id="2" data-type="button">Click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="1" data-type="button">Click</descope-button><descope-button id="2" data-type="button">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -707,7 +708,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="1" data-type="sso">Click</button><button id="2" data-type="sso">Click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="1" data-type="sso">Click</descope-button><descope-button id="2" data-type="sso">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -729,7 +730,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="1" data-type="button">Click</button><button id="1" data-type="button">Click</button><button id="1" data-type="sso">Click</button><button id="2" data-type="sso">Click</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="1" data-type="button">Click</descope-button><descope-button id="1" data-type="button">Click</descope-button><descope-button id="1" data-type="sso">Click</descope-button><descope-button id="2" data-type="sso">Click</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -751,7 +752,7 @@ describe('web-component', () => {
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<button id="buttonId">Click</button><button id="buttonId1">Click2</button><input id="email" name="email"></input><span>It works!</span>';
+      '<descope-button id="buttonId">Click</descope-button><descope-button id="buttonId1">Click2</descope-button><input id="email" name="email"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -1536,10 +1537,13 @@ describe('web-component', () => {
 
     pageContent = '<div>hey</div>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="base.url"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('hey'));
-    expect(ensureFingerprintIds).toHaveBeenCalledWith('fp-public-key');
+    expect(ensureFingerprintIds).toHaveBeenCalledWith(
+      'fp-public-key',
+      'base.url',
+    );
   });
 
   it('it should set the theme based on the user parameter', async () => {
@@ -1651,7 +1655,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
     pageContent =
-      '<button id="submitterId">click</button><input id="email" name="email"></input><span>hey</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
@@ -1837,7 +1841,7 @@ describe('web-component', () => {
       );
 
       pageContent =
-        '<div data-type="polling">...</div><button>click</button><span>It works!</span>';
+        '<div data-type="polling">...</div><descope-button>click</descope-button><span>It works!</span>';
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
       // Wait for first polling
@@ -2575,6 +2579,45 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+        ),
+      );
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
+    it('should call start with descope idp initiated flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const descopeIdpInitiated = 'true';
+      window.location.search = `?${DESCOPE_IDP_INITIATED_PARAM_NAME}=${descopeIdpInitiated}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            abTestingKey,
+            oidcIdpStateId: null,
+            oidcLoginHint: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
+            client: {},
+            tenant: undefined,
+            redirectAuth: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          0,
+          '1.2.3',
+          {
+            idpInitiated: true,
+          },
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -3618,6 +3661,40 @@ describe('web-component', () => {
     },
     WAIT_TIMEOUT,
   );
+
+  it('Multiple buttons with auto-submit true, correct button is being called upon enter', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    pageContent =
+      '<descope-button id="submitterId" auto-submit="true" data-type="button">click</descope-button><descope-button id="submitterId2" data-type="button">click2</descope-button><input id="email" name="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const rootEle = document
+      .getElementsByTagName('descope-wc')[0]
+      .shadowRoot.querySelector('#wc-root');
+
+    fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
+
+    await waitFor(() =>
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'submitterId',
+        1,
+        '1.2.3',
+        {
+          email: '',
+          origin: 'http://localhost',
+        },
+      ),
+    );
+  });
 
   describe('password managers', () => {
     it('should store password in password manager', async () => {
