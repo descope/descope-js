@@ -122,8 +122,5 @@ describe('lastLoggedInUser', () => {
     expect(
       localStorage.getItem(LOCAL_STORAGE_LAST_USER_DISPLAY_NAME),
     ).toBeFalsy();
-
-    expect((sdk as any).getLastUserLoginId).toBeFalsy();
-    expect((sdk as any).getLastUserDisplayName).toBeFalsy();
   });
 });

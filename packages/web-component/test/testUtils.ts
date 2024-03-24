@@ -18,6 +18,7 @@ export const generateSdkResponse = ({
   samlIdpResponseUrl = '',
   samlIdpResponseSamlResponse = '',
   samlIdpResponseRelayState = '',
+  lastAuth = {},
 } = {}) => ({
   ok,
   data: {
@@ -38,6 +39,7 @@ export const generateSdkResponse = ({
       samlResponse: samlIdpResponseSamlResponse,
       relayState: samlIdpResponseRelayState,
     },
+    lastAuth,
   },
   error: {
     errorMessage: requestErrorMessage,

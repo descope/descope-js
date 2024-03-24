@@ -170,8 +170,7 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenId: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
-    // @ts-ignore
-    const loginId = this.sdk?.getLastUserLoginId();
+    const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
 
