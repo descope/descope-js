@@ -546,7 +546,9 @@ class DescopeWc extends BaseDescopeWc {
     const { status, authInfo, lastAuth } = sdkResp.data;
 
     if (status === 'completed') {
-      setLastAuth(lastAuth);
+      if (this.storeLastAuthenticatedUser) {
+        setLastAuth(lastAuth);
+      }
       this.#dispatch('success', authInfo);
       return;
     }

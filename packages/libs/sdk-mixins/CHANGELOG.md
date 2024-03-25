@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.14](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.13...sdk-mixins-0.1.14) (2024-03-24)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.13`
+* `sdk-component-drivers` updated to version `0.1.13`
+
+### Bug Fixes
+
+* change style so notifications will be displayed inside the widget ([#466](https://github.com/descope/descope-js/issues/466)) ([00316ee](https://github.com/descope/descope-js/commit/00316ee2d7c0a22712a932ce4e2de0c531145676))
+
 ## [0.1.13](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.12...sdk-mixins-0.1.13) (2024-03-23)
 
 ### Dependency Updates
