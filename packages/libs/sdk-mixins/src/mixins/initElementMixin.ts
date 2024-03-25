@@ -23,6 +23,7 @@ export const initElementMixin = createSingletonMixin(
             }
             #${ROOT_ID} {
               position: relative;
+              height: fit-content;
             }
           </style>
           <div id="${ROOT_ID}">
