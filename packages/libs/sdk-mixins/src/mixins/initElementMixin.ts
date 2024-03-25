@@ -24,9 +24,6 @@ export const initElementMixin = createSingletonMixin(
             #${ROOT_ID} {
               position: relative;
             }
-            #${CONTENT_ROOT_ID} {
-              display: flex;
-            }
           </style>
           <div id="${ROOT_ID}">
             <div id="${CONTENT_ROOT_ID}"></div>
