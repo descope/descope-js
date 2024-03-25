@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.16](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.15...sdk-mixins-0.1.16) (2024-03-25)
+
+
+### Bug Fixes
+
+* widget root container height to fit content RELEASE ([#472](https://github.com/descope/descope-js/issues/472)) ([2a7dd1d](https://github.com/descope/descope-js/commit/2a7dd1d1f5847e67445e8941f80206db693c8ef1))
+
 ## [0.1.15](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.14...sdk-mixins-0.1.15) (2024-03-25)
 
 ## [0.1.14](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.13...sdk-mixins-0.1.14) (2024-03-24)
