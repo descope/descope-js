@@ -92,6 +92,6 @@
     "immer": "^10.0.3"
   },
   "overrides": {
-    "terser": "5.28.1"
+    "terser": "5.29.1"
   }
 }
