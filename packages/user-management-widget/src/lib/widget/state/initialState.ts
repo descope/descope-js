@@ -10,18 +10,34 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  updateUser: {
+    loading: false,
+    error: null,
+  },
   deleteUser: {
     loading: false,
     error: null,
   },
-  expireUserPassword: {
+  enableUser: {
+    loading: false,
+    error: null,
+  },
+  disableUser: {
+    loading: false,
+    error: null,
+  },
+  removePasskey: {
+    loading: false,
+    error: null,
+  },
+  setTempUserPassword: {
     loading: false,
     error: null,
   },
   customAttributes: {
     loading: false,
     error: null,
-    data: {},
+    data: [],
   },
   tenantRoles: {
     loading: false,

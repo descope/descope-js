@@ -17,12 +17,23 @@ import {
 // eslint-disable-next-line import/exports-last
 export const withLastLoggedInUser =
   <T extends CreateWebSdk>(createSdk: T) =>
-  (
-    config: Parameters<T>[0]
-  ): ReturnType<T> & {
+  ({
+    storeLastAuthenticatedUser = true,
+    ...config
+  }: Parameters<T>[0] & {
+    storeLastAuthenticatedUser?: boolean;
+  }): ReturnType<T> & {
     getLastUserLoginId: typeof getLastUserLoginId;
     getLastUserDisplayName: typeof getLastUserDisplayName;
   } => {
+    if (!storeLastAuthenticatedUser) {
+      // We assign getLastUserLoginId and getLastUserDisplayName to the sdk
+      // To keep the return type consistent
+      return Object.assign(createSdk(config), {
+        getLastUserLoginId,
+        getLastUserDisplayName,
+      }) as any;
+    }
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const userDetails = await getUserFromResponse(res);
       const loginId = userDetails?.loginIds?.[0];

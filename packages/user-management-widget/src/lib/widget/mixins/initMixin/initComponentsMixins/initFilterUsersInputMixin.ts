@@ -1,10 +1,8 @@
-import { compose } from '../../../../helpers/compose';
-import { createSingletonMixin } from '../../../../helpers/mixins';
-import { loggerMixin } from '../../../../mixins/loggerMixin';
-import { TextFieldDriver } from '../../../drivers/TextFieldDriver';
-import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { TextFieldDriver } from '@descope/sdk-component-drivers';
+import { compose, createSingletonMixin, debounce } from '@descope/sdk-helpers';
+import { loggerMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { debounce } from '../../../../helpers/generic';
+import { initWidgetRootMixin } from './initWidgetRootMixin';
 
 export const initFilterUsersInputMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>

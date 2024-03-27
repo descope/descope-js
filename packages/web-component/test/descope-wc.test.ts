@@ -26,6 +26,7 @@ import {
   SSO_APP_ID_PARAM_NAME,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
+  DESCOPE_IDP_INITIATED_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -1536,10 +1537,13 @@ describe('web-component', () => {
 
     pageContent = '<div>hey</div>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="base.url"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('hey'));
-    expect(ensureFingerprintIds).toHaveBeenCalledWith('fp-public-key');
+    expect(ensureFingerprintIds).toHaveBeenCalledWith(
+      'fp-public-key',
+      'base.url',
+    );
   });
 
   it('it should set the theme based on the user parameter', async () => {
@@ -2583,6 +2587,45 @@ describe('web-component', () => {
       await waitFor(() => expect(window.location.search).toBe(''));
     });
 
+    it('should call start with descope idp initiated flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = '<span>It works!</span>';
+
+      const descopeIdpInitiated = 'true';
+      window.location.search = `?${DESCOPE_IDP_INITIATED_PARAM_NAME}=${descopeIdpInitiated}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            abTestingKey,
+            oidcIdpStateId: null,
+            oidcLoginHint: null,
+            samlIdpStateId: null,
+            samlIdpUsername: null,
+            ssoAppId: null,
+            client: {},
+            tenant: undefined,
+            redirectAuth: undefined,
+            lastAuth: {},
+          },
+          undefined,
+          '',
+          0,
+          '1.2.3',
+          {
+            idpInitiated: true,
+          },
+        ),
+      );
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
     it('should call start with ssoAppId when there is a start screen is configured', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
@@ -2986,6 +3029,42 @@ describe('web-component', () => {
     );
 
     wcEle.removeEventListener('success', onSuccess);
+  });
+
+  it('should not store last auth when use last authenticated user is false', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+        lastAuth: { authMethod: 'otp' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1 store-last-authenticated-user="false">
+    </descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ detail: 'auth info' }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    expect(
+      localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY),
+    ).toBeNull();
   });
 
   it('should update dynamic attribute values', async () => {

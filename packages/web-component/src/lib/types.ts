@@ -63,6 +63,7 @@ export type FlowState = {
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
   samlIdpUsername: string;
+  descopeIdpInitiated: boolean;
   ssoAppId: string;
   oidcLoginHint: string;
 };

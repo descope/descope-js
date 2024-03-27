@@ -1,6 +1,7 @@
 import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
+  ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
   PREV_VER_ASSETS_FOLDER,
   THEME_FILENAME,
   UI_COMPONENTS_FALLBACK_URL,
@@ -55,6 +56,7 @@ class BaseDescopeWc extends HTMLElement {
       'preview',
       'redirect-url',
       'auto-focus',
+      'store-last-authenticated-user',
     ];
   }
 
@@ -217,6 +219,11 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get storeLastAuthenticatedUser() {
+    const res = this.getAttribute('store-last-authenticated-user') ?? 'true';
+    return res === 'true';
+  }
+
   get storagePrefix() {
     return this.getAttribute('storage-prefix') || '';
   }
@@ -234,6 +241,7 @@ class BaseDescopeWc extends HTMLElement {
       'debug',
       'redirect-url',
       'auto-focus',
+      'store-last-authenticated-user',
       'preview',
       'storage-prefix',
       'form',
@@ -273,6 +281,7 @@ class BaseDescopeWc extends HTMLElement {
       persistTokens: true,
       preview: this.preview,
       storagePrefix: this.storagePrefix,
+      storeLastAuthenticatedUser: this.storeLastAuthenticatedUser,
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
@@ -348,6 +357,24 @@ class BaseDescopeWc extends HTMLElement {
     }
   });
 
+  async #fetchTheme() {
+    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
+    try {
+      const { body } = await fetchContent(themeUrl, 'json');
+
+      return body;
+    } catch (e) {
+      this.loggerWrapper.error(
+        'Cannot fetch theme file',
+        'make sure that your projectId & flowId are correct',
+      );
+
+      return undefined;
+    }
+  }
+
+  #theme: Promise<Record<string, any>>;
+
   async #loadFonts() {
     const { projectConfig } = await this.#getConfig();
     const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
@@ -365,25 +392,20 @@ class BaseDescopeWc extends HTMLElement {
 
   async #loadTheme() {
     const styleEle = document.createElement('style');
-    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
-    try {
-      const { body: theme } = await fetchContent(themeUrl, 'json');
-      styleEle.innerText =
-        (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+    const theme = await this.#theme;
 
-      const descopeUi = await BaseDescopeWc.descopeUI;
-      if (descopeUi?.componentsThemeManager) {
-        descopeUi.componentsThemeManager.themes = {
-          light: theme?.light?.components,
-          dark: theme?.dark?.components,
-        };
-      }
-    } catch (e) {
-      this.loggerWrapper.error(
-        'Cannot fetch theme file',
-        'make sure that your projectId & flowId are correct',
-      );
+    styleEle.innerText =
+      (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+
+    const descopeUi = await BaseDescopeWc.descopeUI;
+
+    if (descopeUi?.componentsThemeManager) {
+      descopeUi.componentsThemeManager.themes = {
+        light: theme?.light?.components,
+        dark: theme?.dark?.components,
+      };
     }
+
     this.shadowRoot.appendChild(styleEle);
   }
 
@@ -469,7 +491,12 @@ class BaseDescopeWc extends HTMLElement {
       // we do not want to submit the form if the focus is on a link element
       const isLinkEleFocused =
         !!this.shadowRoot.activeElement?.getAttribute('href');
-      if (e.key !== 'Enter' || isLinkEleFocused) return;
+      const isIgnoredElementFocused = ELEMENTS_TO_IGNORE_ENTER_KEY_ON.includes(
+        this.shadowRoot.activeElement?.localName ?? '',
+      );
+
+      if (e.key !== 'Enter' || isLinkEleFocused || isIgnoredElementFocused)
+        return;
 
       e.preventDefault();
       const buttons: NodeListOf<HTMLButtonElement> =
@@ -621,6 +648,8 @@ class BaseDescopeWc extends HTMLElement {
 
       this.#validateAttrs();
 
+      this.#theme = this.#fetchTheme();
+
       if (await this.#getIsFlowsVersionMismatch()) {
         this.loggerWrapper.error(
           'This SDK version does not support your flows version',
@@ -639,11 +668,11 @@ class BaseDescopeWc extends HTMLElement {
         return;
       }
 
+      this.#loadFonts();
+
       await this.#loadDescopeUI();
 
       await this.#handleTheme();
-
-      this.#loadFonts();
 
       this.#handleKeyPress();
 
@@ -660,6 +689,7 @@ class BaseDescopeWc extends HTMLElement {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
+        descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
       } = handleUrlParams();
@@ -700,6 +730,7 @@ class BaseDescopeWc extends HTMLElement {
         oidcIdpStateId,
         samlIdpStateId,
         samlIdpUsername,
+        descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
       });

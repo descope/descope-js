@@ -1,16 +1,21 @@
 /* eslint-disable no-param-reassign */
-import { compose } from '../../helpers/compose';
-import { createSingletonMixin } from '../../helpers/mixins';
-import { createStateManagementMixin } from '../../mixins/createStateManagementMixin';
-import { initLifecycleMixin } from '../../mixins/initLifecycleMixin';
-import { loggerMixin } from '../../mixins/loggerMixin';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  createStateManagementMixin,
+  initLifecycleMixin,
+  loggerMixin,
+} from '@descope/sdk-mixins';
 import {
   createUser,
   deleteUsers,
-  expireUserPassword,
+  disableUser,
+  enableUser,
+  setTempUserPassword,
   getCustomAttributes,
-  searchUser,
   getTenantRoles,
+  removePasskey,
+  searchUser,
+  updateUser,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -31,19 +36,27 @@ export const stateManagementMixin = createSingletonMixin(
         },
         extraReducers: (builder) => {
           createUser.reducer(builder);
+          updateUser.reducer(builder);
+          enableUser.reducer(builder);
+          disableUser.reducer(builder);
           deleteUsers.reducer(builder);
           searchUser.reducer(builder);
-          expireUserPassword.reducer(builder);
+          setTempUserPassword.reducer(builder);
+          removePasskey.reducer(builder);
           getCustomAttributes.reducer(builder);
           getTenantRoles.reducer(builder);
         },
         asyncActions: {
           searchUsers: searchUser.action,
           createUser: createUser.action,
+          updateUser: updateUser.action,
+          enableUser: enableUser.action,
+          disableUser: disableUser.action,
           deleteUsers: deleteUsers.action,
-          expireUserPassword: expireUserPassword.action,
+          removePasskey: removePasskey.action,
           getCustomAttributes: getCustomAttributes.action,
           getTenantRoles: getTenantRoles.action,
+          setTempUserPassword: setTempUserPassword.action,
         },
       }),
       initLifecycleMixin,
