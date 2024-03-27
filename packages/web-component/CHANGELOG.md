@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.8.31](https://github.com/descope/descope-js/compare/web-component-3.8.30...web-component-3.8.31) (2024-03-27)
+
+
+### Bug Fixes
+
+* Do not submit form when textarea focused RELEASE ([#477](https://github.com/descope/descope-js/issues/477)) ([ebb71eb](https://github.com/descope/descope-js/commit/ebb71eb87770cfb56a18b7a719b546fc6c0daf35))
+
+## [3.8.30](https://github.com/descope/descope-js/compare/web-component-3.8.29...web-component-3.8.30) (2024-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.23`
 ## [3.8.29](https://github.com/descope/descope-js/compare/web-component-3.8.28...web-component-3.8.29) (2024-03-24)
 
 ### Dependency Updates
