@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.17](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.16...sdk-mixins-0.1.17) (2024-03-27)
+
+
+### Bug Fixes
+
+* widgets dark theme RELEASE ([#478](https://github.com/descope/descope-js/issues/478)) ([6f9c485](https://github.com/descope/descope-js/commit/6f9c4851c7cd12709ae57b91e1a346c0a33dbfb7))
+
 ## [0.1.16](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.15...sdk-mixins-0.1.16) (2024-03-25)
 
 
