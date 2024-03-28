@@ -9,7 +9,7 @@ export default `
         <descope-button data-id="create-access-key" data-testid="create-access-key-trigger" data-type="button" formNoValidate="false" full-width="false" id="createAccessKey" shape="" size="sm" variant="contained" mode="primary" square="false">+ Access Key</descope-button>
     </descope-container>
   </descope-container>
-  <descope-grid column-reordering-allowed="true" data-id="access-keys-table" size="sm" st-host-height="300px" style="width:100%">
+  <descope-grid bordered="true" column-reordering-allowed="true" data-id="access-keys-table" size="sm" st-host-height="300px" style="width:100%">
     <descope-grid-selection-column auto-width="true" frozen="true"></descope-grid-selection-column>
     <descope-grid-text-column header="Name" path="name" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-custom-column header="Status" path="status" resizable="true" sortable="true">

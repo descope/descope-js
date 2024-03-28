@@ -8,6 +8,7 @@ import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { THEME_FILENAME } from './constants';
 import { loadFont } from './helpers';
+import { observeAttributesMixin } from '../observeAttributesMixin';
 
 const themeValidation = (_: string, theme: string | null) =>
   (theme || false) &&
@@ -26,6 +27,7 @@ export const themeMixin = createSingletonMixin(
       descopeUiMixin,
       configMixin,
       initElementMixin,
+      observeAttributesMixin,
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
@@ -128,6 +130,11 @@ export const themeMixin = createSingletonMixin(
         this.#loadComponentsStyle();
         this.#loadFonts();
         this.#applyTheme();
+
+        this.observeAttributes(['theme'], () => {
+          this.#loadFonts();
+          this.#applyTheme();
+        });
       }
     };
   },
