@@ -12,7 +12,7 @@ export default `
       <descope-button data-id="create-user" data-testid="create-user-trigger" data-type="button" formNoValidate="false" full-width="false" id="createUser" shape="" size="sm" variant="contained" mode="primary" square="false">+ User</descope-button>
     </descope-container>
   </descope-container>
-  <descope-grid column-reordering-allowed="true" data-id="users-table" size="sm" st-host-height="300px" style="width:100%">
+  <descope-grid bordered="true" column-reordering-allowed="true" data-id="users-table" size="sm" st-host-height="300px" style="width:100%">
     <descope-grid-selection-column auto-width="true" frozen="true"></descope-grid-selection-column>
     <descope-grid-text-column header="Login ID" path="loginIds" resizable="true"></descope-grid-text-column>
     <descope-grid-custom-column header="Status" path="status" resizable="true" sortable="true">
