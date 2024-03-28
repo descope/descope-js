@@ -8,7 +8,7 @@ export default `
             <descope-button data-id="create-role" data-testid="create-role-trigger" data-type="button" formNoValidate="false" full-width="false" id="createRole" shape="" size="sm" variant="contained" mode="primary" square="false">+ Role</descope-button>
         </descope-container>
     </descope-container>
-    <descope-grid column-reordering-allowed="true" data-id="roles-table" size="sm" st-host-height="300px" style="width:100%">
+    <descope-grid bordered="true" column-reordering-allowed="true" data-id="roles-table" size="sm" st-host-height="300px" style="width:100%">
         <descope-grid-selection-column auto-width="true" frozen="true"></descope-grid-selection-column>
         <descope-grid-text-column header="Name" path="name" resizable="true" sortable="true"></descope-grid-text-column>
         <descope-grid-text-column header="Description" path="description" resizable="true" sortable="true"></descope-grid-text-column>
