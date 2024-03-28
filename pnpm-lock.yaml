@@ -133,7 +133,7 @@ importers:
       reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.277
+      '@descope/web-components-ui': 1.0.278
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -209,7 +209,7 @@ importers:
       eslint-plugin-promise: 6.1.1
       jest: ^29.0.0
       jest-environment-jsdom: ^29.4.3
-      jwt-decode: 3.1.2
+      jwt-decode: 4.0.0
       lint-staged: ^15.0.0
       prettier: ^3.0.0
       pretty-quick: ^4.0.0
@@ -225,7 +225,7 @@ importers:
       ts-node: 10.9.2
       typescript: ^4.5.3
     dependencies:
-      jwt-decode: 3.1.2
+      jwt-decode: 4.0.0
     devDependencies:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -620,7 +620,7 @@ importers:
       reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.277
+      '@descope/web-components-ui': 1.0.278
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -743,7 +743,7 @@ importers:
       reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.277
+      '@descope/web-components-ui': 1.0.278
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -2487,8 +2487,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.277:
-    resolution: {integrity: sha512-UH5Ua0Gig4h8UXkVxwting5/pBIqJ88XmexDU3nuXu8FTxY1iKFbFjU40ZIYf4M41zLAvebl0i+5m95rm4Lkrg==}
+  /@descope/web-components-ui/1.0.278:
+    resolution: {integrity: sha512-wO0GIUlqlR1w+22DYlOpD3g/AafAtyB3dGq5AlhqdafYh0E/X9adRaMaUBTwgLQu6lk1s2IFRog+RL1YtXEOQg==}
     dependencies:
       '@vaadin/button': 24.3.4
       '@vaadin/checkbox': 24.3.4
@@ -10004,8 +10004,9 @@ packages:
     engines: {'0': node >= 0.2.0}
     dev: true
 
-  /jwt-decode/3.1.2:
-    resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
+  /jwt-decode/4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
     dev: false
 
   /kleur/3.0.3:
