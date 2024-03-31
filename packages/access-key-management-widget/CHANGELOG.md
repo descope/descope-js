@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.26](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.25...access-key-management-widget-0.1.26) (2024-03-31)
+
+
+### Bug Fixes
+
+* issue 6069 RELEASE ([#482](https://github.com/descope/descope-js/issues/482)) ([5b68211](https://github.com/descope/descope-js/commit/5b682116a952028d15c1b846366e724b32ef59a2))
+
 ## [0.1.25](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.24...access-key-management-widget-0.1.25) (2024-03-28)
 
 ### Dependency Updates
