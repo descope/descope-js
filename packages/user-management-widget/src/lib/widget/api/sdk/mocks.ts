@@ -13,7 +13,7 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
 }) =>
   new Promise((resolve) => {
     const users: User[] = [];
-    for (let i = 1; i < 9; i += 1) {
+    for (let i = 1; i < 10; i += 1) {
       users.push({
         loginIds: [`user${i}@company.com`],
         externalIds: [`user${i}@company.com`],

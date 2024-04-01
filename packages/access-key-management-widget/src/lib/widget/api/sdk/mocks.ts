@@ -11,7 +11,7 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
 } = {}) =>
   new Promise((resolve) => {
     const keys: AccessKey[] = [];
-    for (let i = 1; i < 9; i += 1) {
+    for (let i = 1; i < 10; i += 1) {
       keys.push({
         id: `access-key-id-${i}`,
         name: `Access Key ${i}`,

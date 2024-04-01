@@ -12,7 +12,7 @@ const search: (
 ) => Promise<Role[]> = async ({ text, sort }, tenantId) =>
   new Promise((resolve) => {
     const roles: Role[] = [];
-    for (let i = 1; i < 9; i += 1) {
+    for (let i = 1; i < 10; i += 1) {
       roles.push({
         name: `Role ${i}`,
         description: `Role description ${i}`,
