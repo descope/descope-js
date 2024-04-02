@@ -164,6 +164,7 @@ export type PasswordPolicyResponse = {
 /** Phone delivery methods which are currently supported */
 export enum DeliveryPhone {
   sms = 'sms',
+  voice = 'voice',
   whatsapp = 'whatsapp',
 }
 
@@ -302,7 +303,7 @@ export type DeliveriesPhone<T extends Record<DeliveryPhone, SdkFn> | SdkFn> = {
   [S in DeliveryPhone]: T extends Record<DeliveryPhone, SdkFn> ? T[S] : T;
 };
 
-/** Map different functions to email vs phone (sms, whatsapp) */
+/** Map different functions to email vs phone (sms, whatsapp, voice) */
 export type DeliveriesMap<EmailFn extends SdkFn, PhoneFn extends SdkFn> = {
   [S in DeliveryMethods]: S extends 'email' ? EmailFn : PhoneFn;
 };
