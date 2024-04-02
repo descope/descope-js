@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.12.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.15...core-js-sdk-2.12.0) (2024-04-02)
+
+
+### Features
+
+* OTP voice support RELEASE ([#487](https://github.com/descope/descope-js/issues/487)) ([ddc6345](https://github.com/descope/descope-js/commit/ddc634517a9742314e18947790c71ec98a8f5997))
+
 ## [2.11.15](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.14...core-js-sdk-2.11.15) (2024-03-24)
 
 ## [2.11.14](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.13...core-js-sdk-2.11.14) (2024-03-23)
