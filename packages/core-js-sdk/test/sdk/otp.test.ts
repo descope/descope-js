@@ -358,7 +358,7 @@ describe('otp', () => {
       });
     });
 
-    describe('phone', () => {
+    describe('phone sms', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() => sdk.otp.update.phone.sms(1, '123456')).toThrow(
           '"loginId" must be a string',
@@ -422,6 +422,80 @@ describe('otp', () => {
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
         const resp = await sdk.otp.update.phone.sms('loginId', '+9720000000');
+
+        expect(resp).toEqual({
+          code: 200,
+          data: httpRespJson,
+          ok: true,
+          response: httpResponse,
+        });
+      });
+    });
+
+    describe('phone voice', () => {
+      it('should throw an error when loginId is not a string', () => {
+        expect(() => sdk.otp.update.phone.voice(1, '123456')).toThrow(
+          '"loginId" must be a string',
+        );
+      });
+
+      it('should throw an error when loginId is empty', () => {
+        expect(() => sdk.otp.update.phone.voice('', '123456')).toThrow(
+          '"loginId" must not be empty',
+        );
+      });
+
+      it('should throw an error when email is not a string', () => {
+        expect(() => sdk.otp.update.phone.voice('loginId', 1)).toThrow(
+          '"phone" must be a string',
+        );
+      });
+
+      it('should throw an error when email is not in emil format', () => {
+        expect(() => sdk.otp.update.phone.voice('loginId', 'nonPhone')).toThrow(
+          '"nonPhone" is not a valid phone number',
+        );
+      });
+
+      it('should send the correct request', async () => {
+        const httpRespJson = { response: 'response', maskedPhone: '**99' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        const resp = await sdk.otp.update.phone.voice(
+          'loginId',
+          '+9720000000',
+          'token',
+        );
+        expect(resp.data.maskedPhone).toEqual('**99');
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.otp.update.phone + '/voice',
+          {
+            phone: '+9720000000',
+            loginId: 'loginId',
+          },
+          { token: 'token' },
+        );
+      });
+
+      it('should return the correct response', async () => {
+        const httpRespJson = { response: 'response' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        const resp = await sdk.otp.update.phone.voice('loginId', '+9720000000');
 
         expect(resp).toEqual({
           code: 200,
