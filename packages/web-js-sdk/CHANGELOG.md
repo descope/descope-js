@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.25](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.24...web-js-sdk-1.10.25) (2024-04-02)
+
 ## [1.10.24](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.23...web-js-sdk-1.10.24) (2024-03-28)
 
 ## [1.10.23](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.22...web-js-sdk-1.10.23) (2024-03-27)
