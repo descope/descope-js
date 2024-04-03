@@ -133,7 +133,7 @@ importers:
       reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.279
+      '@descope/web-components-ui': 1.0.281
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -620,7 +620,7 @@ importers:
       reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.279
+      '@descope/web-components-ui': 1.0.281
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -743,7 +743,7 @@ importers:
       reselect: 5.1.0
       tslib: 2.6.2
     devDependencies:
-      '@descope/web-components-ui': 1.0.279
+      '@descope/web-components-ui': 1.0.281
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
@@ -890,7 +890,7 @@ importers:
   packages/web-js-sdk:
     specifiers:
       '@descope/core-js-sdk': workspace:*
-      '@fingerprintjs/fingerprintjs-pro': 3.9.1
+      '@fingerprintjs/fingerprintjs-pro': 3.9.2
       '@open-wc/rollup-plugin-html': 1.2.5
       '@rollup/plugin-commonjs': 25.0.7
       '@rollup/plugin-node-resolve': ^15.0.0
@@ -937,7 +937,7 @@ importers:
       typescript: ^4.5.3
     dependencies:
       '@descope/core-js-sdk': link:../core-js-sdk
-      '@fingerprintjs/fingerprintjs-pro': 3.9.1
+      '@fingerprintjs/fingerprintjs-pro': 3.9.2
       js-cookie: 3.0.5
       tslib: 2.6.2
     devDependencies:
@@ -2487,16 +2487,19 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.279:
-    resolution: {integrity: sha512-aTvJb2fsOvapIAGOspJY2ADLrT46L80/r682XmpVkqYL9zbC3k8OxBy5md04NHTaOuuMXdcOzWCHOyUkFtr9TQ==}
+  /@descope/web-components-ui/1.0.281:
+    resolution: {integrity: sha512-5U3H4F+RPVdcAF42P8fzgL0IYJ0n4r4e4Mp6FF36WddMsJCUcCCzmmEJSSdg9GvqxyP50DafBJHjIjnWRyNNqw==}
     dependencies:
       '@vaadin/button': 24.3.4
       '@vaadin/checkbox': 24.3.4
       '@vaadin/combo-box': 24.3.4
+      '@vaadin/custom-field': 24.3.4
       '@vaadin/date-picker': 24.3.4
       '@vaadin/dialog': 24.3.4
       '@vaadin/email-field': 24.3.4
       '@vaadin/grid': 24.3.4
+      '@vaadin/icon': 24.3.4
+      '@vaadin/icons': 24.3.4
       '@vaadin/multi-select-combo-box': 24.3.4
       '@vaadin/notification': 24.3.4
       '@vaadin/number-field': 24.3.4
@@ -2755,8 +2758,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@fingerprintjs/fingerprintjs-pro/3.9.1:
-    resolution: {integrity: sha512-ixtPAhEb1OlOjrBEJROZ/9GWiCFX76OX7X0b1Z61GTkisgNdS9YRFXCnEZcQfKK43THzNQ5ZH235hqM46Fk1QA==}
+  /@fingerprintjs/fingerprintjs-pro/3.9.2:
+    resolution: {integrity: sha512-H8CkfBp8LAfH8m7QU/BWvn+wBew6PWwN7SpChw7nTQfuDDzd7RtUGmF/O1b00Url6/MmGRsOM6bjZUrH8N49BA==}
     dependencies:
       tslib: 2.6.2
     dev: false
@@ -4913,6 +4916,20 @@ packages:
       lit: 3.1.1
     dev: true
 
+  /@vaadin/custom-field/24.3.4:
+    resolution: {integrity: sha512-5RMhqbIuKDj3rSEr7qeLLqLL6HHEwXLDDHSJzO4hTJY9KK39Ce3haC7WZNzVuJyJouu5u0ynJ8REVLPcIlDnPQ==}
+    dependencies:
+      '@open-wc/dedupe-mixin': 1.4.0
+      '@polymer/polymer': 3.5.1
+      '@vaadin/a11y-base': 24.3.4
+      '@vaadin/component-base': 24.3.4
+      '@vaadin/field-base': 24.3.4
+      '@vaadin/vaadin-lumo-styles': 24.3.4
+      '@vaadin/vaadin-material-styles': 24.3.4
+      '@vaadin/vaadin-themable-mixin': 24.3.4
+      lit: 3.1.1
+    dev: true
+
   /@vaadin/date-picker/24.3.4:
     resolution: {integrity: sha512-5aHtQ/uovBm5KhtqQoO1WHP9L7Quz9PtyzLVrXnpLNtX6eVrZRDHLKyuoo6WVQwRlbCf6snVLgMYYr+Zyg+4rg==}
     dependencies:
@@ -4989,6 +5006,13 @@ packages:
       '@vaadin/vaadin-lumo-styles': 24.3.4
       '@vaadin/vaadin-themable-mixin': 24.3.4
       lit: 3.1.1
+    dev: true
+
+  /@vaadin/icons/24.3.4:
+    resolution: {integrity: sha512-HK4c1Kq1tHabgGO6o/qLePi67lYBqkn7XD0M92fc6cwFSi8IerxEuKNaF71ZF8+32PXqhwT1IKgka2S9iUea8w==}
+    dependencies:
+      '@polymer/polymer': 3.5.1
+      '@vaadin/icon': 24.3.4
     dev: true
 
   /@vaadin/input-container/24.3.4:
