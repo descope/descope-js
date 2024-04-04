@@ -14,4 +14,4 @@ jobs:
       - uses: deepakputhraya/action-pr-title@master
         with:
           regex: '([a-z])+(\(.+\))?!?:.+'
-          allowed_prefixes: 'build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test'
+          allowed_prefixes: 'build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,doc'
