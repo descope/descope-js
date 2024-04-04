@@ -10,47 +10,28 @@ In the widget package create an `.env` file which includes;
 DESCOPE_BASE_URL=   # env base url
 DESCOPE_PROJECT_ID= # project ID
 DESCOPE_TENANT=     # tenant ID
-DEBUG_MODE=         # default: "false"
-DESCOPE_THEME=      # default: "light"
-DESCOPE_WIDGET_ID=  # default: "access-key-management-widget"
-```
-
-### Authenticate
-
-Use the DescopeWC in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
-
-```
-<script src="https://cdn.jsdelivr.net/npm/@descope/access-key-management-widget/dist/index.js"></script>
-<descope-wc
-  base-url="<DESCOPE_BASE_URL>"
-  project-id="<DESCOPE_PROJECT_ID>"
-  tenant-id="<DESCOPE_TENANT>"
-  debug="<DEBUG_MODE>"
-  theme="<DESCOPE_THEME>""
-  widget-id="<DESCOPE_WIDGET_ID>"
-></descope-wc>
+DESCOPE_WIDGET_ID=  # default: "role-management-widget"
 ```
 
 ### Start the widget
 
-run `npm start` to load the widget.
+run `npm start` to start the widget.
 
-After authentication, comment out DescopeWC and remove restore the widget's web-component in `index.html`.
+### Authenticate
 
-The widget should now run.
+In order to work with the widget, you must be logged in as the tenant admin
+In case you are not authenticated, a login flow will run first, and after logging in, the widget will be rendered
 
 ## Architecture
 
-## Project Sturcture
+## Project Structure
 
 - `/app` - contains `index.html`
 - `/lib` - widget's source code
-- `lib/mixins` - generic mixins (shared logic to reuse by other widgets)
 - `lib/widget` - widget related implementations
 - `lib/widget/api` - Logic related to API calls
-- `lib/widget/drivers` - An SDK for component interaction
 - `lib/widget/mixins` - Widget specific logic
-- `lib/widget/state` - State managment logic
+- `lib/widget/state` - State management logic
 
 ### API
 
@@ -68,7 +49,7 @@ Functions that create mixins, can get a configuration, and returns the mixin fun
 
 #### Singleton Mixin
 
-Since mixins are composeable, in some cases we want to make sure a mixin is loaded only once. For example: When there is no need for its logic to run multiple times when composed in different mixins.
+Since mixins are composable, in some cases we want to make sure a mixin is loaded only once. For example: When there is no need for its logic to run multiple times when composed in different mixins.
 
 For this case we have a wrapper function (`createSingletonMixin`) to ensure that a mixin is loaded only once, regardless how many times it will be composed.
 
@@ -78,15 +59,15 @@ Mixins should be wrapped with the `createSingletonMixin` wrapper function, unles
 
 We're using several tools to handle the widget's state:
 
-- [Redux Toolkit](https://redux-toolkit.js.org/) for the widget's state managment.
+- [Redux Toolkit](https://redux-toolkit.js.org/) for the widget's state management.
 - [Redux Thunk](https://github.com/reduxjs/redux-thunk) for API calls and async operations we're using
-- [Reselect](https://github.com/reduxjs/reselect) to compute derived data without hitting performence or triggering state recalculation when state is not mutated.
+- [Reselect](https://github.com/reduxjs/reselect) to compute derived data without hitting performance or triggering state recalculation when state is not mutated.
 
 ### Drivers
 
 An abstraction layer that provides an API for components, and enables handling interactions with components within the widget.
 
-The motiviation to use drivers is to decouple the widget's code from the component's implementation, and therefore it's important to interact with components only using drivers (and not relying on component's implenentation details).
+The motivation to use drivers is to decouple the widget's code from the component's implementation, and therefore it's important to interact with components only using drivers (and not relying on component's implementation details).
 
 ### UI Components
 
