@@ -10,7 +10,9 @@ In the widget package create an `.env` file which includes;
 DESCOPE_BASE_URL=   # env base url
 DESCOPE_PROJECT_ID= # project ID
 DESCOPE_TENANT=     # tenant ID
-DESCOPE_WIDGET_ID=  # default: access-key-management-widget
+DEBUG_MODE=         # default: "false"
+DESCOPE_THEME=      # default: "light"
+DESCOPE_WIDGET_ID=  # default: "access-key-management-widget"
 ```
 
 ### Authenticate
@@ -20,15 +22,12 @@ Use the DescopeWC in this package's `index.html`. Comment out the widget web-com
 ```
 <script src="https://cdn.jsdelivr.net/npm/@descope/access-key-management-widget/dist/index.js"></script>
 <descope-wc
-  project-id="<project-id>"
-  flow-id="<flow-id>"
-  tenant-id="<tenant-id>"
-  //debug: boolean
-  debug="false"
-  //theme: light/dark
-  theme=light
-  base-url="<base-url>"
-  widget-id="access-key-management-widget"
+  base-url="<DESCOPE_BASE_URL>"
+  project-id="<DESCOPE_PROJECT_ID>"
+  tenant-id="<DESCOPE_TENANT>"
+  debug="<DEBUG_MODE>"
+  theme="<DESCOPE_THEME>""
+  widget-id="<DESCOPE_WIDGET_ID>"
 ></descope-wc>
 ```
 
