@@ -18,13 +18,18 @@ DESCOPE_WIDGET_ID=  # default: access-key-management-widget
 Use the DescopeWC in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/web-component@latest/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@descope/access-key-management-widget/dist/index.js"></script>
 <descope-wc
   project-id="<project-id>"
   flow-id="<flow-id>"
+  tenant-id="<tenant-id>"
+  //debug: boolean
+  debug="false"
+  //theme: light/dark
+  theme=light
   base-url="<base-url>"
+  widget-id="access-key-management-widget"
 ></descope-wc>
-
 ```
 
 ### Start the widget
