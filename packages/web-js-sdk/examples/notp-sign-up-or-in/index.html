@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -6,7 +6,9 @@
   </head>
   <body>
     <div>
+      <h2>NOTP Sign Up Or In</h2>
       <h1>What's your project ID?</h1>
+      <h4>P2eaLQZXWWPuQ2qKfXZY55kr4EYF</h4>
       <form>
         <input name="input" type="text" />
         <button type="submit">Submit</button>
@@ -21,6 +23,7 @@
 
       const formEle = document.getElementsByTagName('form')[0];
       const h1Ele = document.getElementsByTagName('h1')[0];
+      const h4Ele = document.getElementsByTagName('h4')[0];
       const inputEle = document.getElementsByTagName('input')[0];
 
       formEle.onsubmit = async function (e) {
@@ -28,15 +31,17 @@
         const input = new FormData(e.target).get('input');
         console.log('step', step);
         console.log('input', input);
-        if (step ===0) {
+        if (step === 0) {
           // Step 0
           sdk = Descope({ projectId: input, baseUrl: 'http://localhost:8000' });
           h1Ele.innerText = "What's your phone?";
+          h4Ele.innerText = '+972545365008';
           inputEle.value = '';
           input.placeholder = 'e.g. +1234567890';
         } else if (step === 1) {
           // Step 1
-          h1Ele.innerText = "Click on button or scan QR code to sign up or sign in";
+          h1Ele.innerText =
+            'Click on button or scan QR code to sign up or sign in';
 
           const res = await sdk.notp.signUpOrIn(input);
           console.log('res', res);
@@ -44,19 +49,19 @@
             alert(JSON.stringify(res, null, 4));
             return;
           }
-          const { image, pendingRef, redirectUrl } = res.data;
+          const { QRCode, pendingRef, redirectUrl } = res.data;
 
           // create a new image element with the base64 string image
           const img = new Image();
-          img.src = `data:image/png;base64, ${image}`;
+          img.src = `data:image/png;base64, ${QRCode}`;
           document.body.appendChild(img);
 
           // Add a link with the redirectUrl
-          const a = document.createElement('a')
+          const a = document.createElement('a');
           a.setAttribute('href', redirectUrl);
           a.setAttribute('target', '_blank');
           const continueNode = document.createTextNode('Continue');
-          a.appendChild(continueNode)
+          a.appendChild(continueNode);
 
           // put the link in a paragraph
           const aWrapper = document.createElement('p');
@@ -67,6 +72,26 @@
           const p = document.createElement('p');
           p.appendChild(document.createTextNode(`pendingRef: ${pendingRef}`));
           document.body.appendChild(p);
+
+          // add another p with text of text query param of redirectUrl
+          const p2 = document.createElement('p');
+          const url = new URL(redirectUrl);
+          const text = url.searchParams.get('text');
+          p2.appendChild(document.createTextNode(`text: ${text}`));
+          document.body.appendChild(p2);
+
+          // add copy button to copy the text
+          const button = document.createElement('button');
+          button.innerText = 'Copy text';
+          button.onclick = () => {
+            navigator.clipboard.writeText(text);
+          };
+
+          // put the button in a paragraph
+          const buttonWrapper = document.createElement('p');
+          buttonWrapper.appendChild(button);
+          document.body.appendChild(buttonWrapper);
+
           // save pendingRef
           pendingRefState = pendingRef;
 
@@ -74,7 +99,8 @@
           inputEle.style.display = 'none';
 
           // change text button to "Check pendingRef"
-          formEle.getElementsByTagName('button')[0].innerText = 'Check pendingRef';
+          formEle.getElementsByTagName('button')[0].innerText =
+            'Check pendingRef';
         } else if (step === 2) {
           // Step 2
           // show loading spinner
@@ -94,7 +120,9 @@
 
           // show data to user
           const p2 = document.createElement('p');
-          p2.appendChild(document.createTextNode(JSON.stringify(res.data, null, 4)));
+          p2.appendChild(
+            document.createTextNode(JSON.stringify(res.data, null, 4)),
+          );
           document.body.appendChild(p2);
         }
 
