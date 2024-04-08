@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.8.37](https://github.com/descope/descope-js/compare/web-component-3.8.36...web-component-3.8.37) (2024-04-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.29`
 ## [3.8.36](https://github.com/descope/descope-js/compare/web-component-3.8.35...web-component-3.8.36) (2024-04-05)
 
 ### Dependency Updates
