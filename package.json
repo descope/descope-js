@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "postbuild:ci_": "pnpm -r $(npm run print-affected:ci | tail -n 1 | sed 's/, / --filter /g;s/^/--filter /') exec pwd | sed 's/$/\\//' | xargs -I {} rsync -av --progress {} /Users/nirgurarie/dev/monorepo-playground/dist/packages/ --exclude node_modules",
     "build": "nx affected --target build",
     "build:ci": "pnpm affected:ci --target build --parallel 1",
