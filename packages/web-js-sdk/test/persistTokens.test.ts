@@ -3,7 +3,6 @@ import { getSessionToken } from '../src/enhancers/withPersistTokens/helpers';
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
-import { before } from 'node:test';
 
 const descopeHeaders = {
   'x-descope-sdk-name': 'web-js',
