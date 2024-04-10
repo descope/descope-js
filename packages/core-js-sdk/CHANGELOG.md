@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.12.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.0...core-js-sdk-2.12.1) (2024-04-10)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** allow path in baseurl ([#498](https://github.com/descope/descope-js/issues/498)) ([ea7c7a5](https://github.com/descope/descope-js/commit/ea7c7a56ea994cc09698c820a82e785757a3cc99))
+
 ## [2.12.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.15...core-js-sdk-2.12.0) (2024-04-02)
 
 
