@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.31](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.30...web-js-sdk-1.10.31) (2024-04-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.12.1`
+
+### Bug Fixes
+
+* do not clear tokens for management api RELEASE ([#503](https://github.com/descope/descope-js/issues/503)) ([e615427](https://github.com/descope/descope-js/commit/e615427031e7ddd02d9507fb941f11ec83cb5616))
+
 ## [1.10.30](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.29...web-js-sdk-1.10.30) (2024-04-09)
 
 ## [1.10.29](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.28...web-js-sdk-1.10.29) (2024-04-08)
