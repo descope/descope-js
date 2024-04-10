@@ -24,10 +24,10 @@ export const initWidgetRootMixin = createSingletonMixin(
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
-          await import('../../../../../../test/mocks/rootMock').then(
-            (module) => module.default,
-          ),
-          // await this.fetchWidgetPage('root.html'),
+          // await import('../../../../../../test/mocks/rootMock').then(
+          //   (module) => module.default,
+          // ),
+          await this.fetchWidgetPage('root.html'),
         );
         await this.loadDescopeUiComponents(template);
         this.contentRootElement.append(template.content.cloneNode(true));
