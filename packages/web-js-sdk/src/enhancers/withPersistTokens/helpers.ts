@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { BeforeRequestHook } from '../../types';
 import { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
 import {
+  getTokenExpiration,
   getLocalStorage,
   removeLocalStorage,
   setLocalStorage,
@@ -87,6 +88,19 @@ export function getSessionToken(prefix: string = ''): string {
     getLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`) ||
     ''
   );
+}
+
+/**
+ * Returns whether the given token is expired, without validating it.
+ * @param token the token to check
+ * @returns whether the token is expired or not
+ */
+export function isTokenExpired(token?: string): boolean {
+  if (!token) {
+    return true;
+  }
+  const expiration = getTokenExpiration(token);
+  return expiration ? expiration < new Date() : true;
 }
 
 /** Remove both the localStorage refresh JWT and the session cookie */

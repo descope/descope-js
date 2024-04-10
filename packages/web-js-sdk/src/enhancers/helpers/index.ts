@@ -18,6 +18,7 @@ export const addHooks = <Config extends CoreSdkConfig>(
 };
 
 export { compose } from './compose';
+export { getTokenExpiration } from './token';
 
 /**
  * Extract auth info (JWT response) from fetch response

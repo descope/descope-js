@@ -9,6 +9,7 @@ import {
   clearTokens,
   getRefreshToken,
   getSessionToken,
+  isTokenExpired,
   persistTokens,
 } from './helpers';
 import { PersistTokensOptions } from './types';
@@ -27,6 +28,8 @@ export const withPersistTokens =
     ? ReturnType<T> & {
         getRefreshToken: () => string;
         getSessionToken: () => string;
+        isRefreshTokenExpired: () => boolean;
+        isSessionTokenExpired: () => boolean;
       }
     : ReturnType<T> => {
     if (!isPersistTokens || !IS_BROWSER) {
@@ -66,10 +69,14 @@ export const withPersistTokens =
 
     const refreshToken = () => getRefreshToken(storagePrefix);
     const sessionToken = () => getSessionToken(storagePrefix);
+    const isRefreshTokenExpired = () => isTokenExpired(refreshToken());
+    const isSessionTokenExpired = () => isTokenExpired(sessionToken());
 
     return Object.assign(wrappedSdk, {
       getRefreshToken: refreshToken,
       getSessionToken: sessionToken,
+      isRefreshTokenExpired,
+      isSessionTokenExpired,
     }) as any;
   };
 

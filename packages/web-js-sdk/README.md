@@ -77,6 +77,9 @@ if (!res.ok) {
 // Get session token
 // Can be used to pass token to server on header
 const sessionToken = sdk.getSessionToken();
+
+// Check for session expiration
+const isExpired = sdk.isSessionTokenExpired();
 ```
 
 ### Run Example

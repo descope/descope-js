@@ -1,12 +1,12 @@
 import { SdkFnWrapper, wrapWith } from '@descope/core-js-sdk';
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook } from '../../types';
-import { addHooks, getAuthInfoFromResponse } from '../helpers';
 import {
-  createTimerFunctions,
+  addHooks,
+  getAuthInfoFromResponse,
   getTokenExpiration,
-  millisecondsUntilDate,
-} from './helpers';
+} from '../helpers';
+import { createTimerFunctions, millisecondsUntilDate } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
 import { MAX_TIMEOUT } from '../../constants';
