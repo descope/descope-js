@@ -20,36 +20,36 @@ export const initFilterAuditInputMixin = createSingletonMixin(
 
       #onInput = debounce(() => {
         const timePeriod = this.rangeInput.value;
-        const today = new Date();
+        const now = new Date();
         let from: number;
         switch (timePeriod) {
           case 'minuets15':
-            from = today.setMinutes(today.getMinutes() - 15);
+            from = now.setMinutes(now.getMinutes() - 15);
             break;
           case 'hour':
-            from = today.setHours(today.getHours() - 1);
+            from = now.setHours(now.getHours() - 1);
             break;
           case 'hour6':
-            from = today.setHours(today.getHours() - 6);
+            from = now.setHours(now.getHours() - 6);
             break;
           case 'day':
-            from = today.setDate(today.getDate() - 1);
+            from = now.setDate(now.getDate() - 1);
             break;
           case 'day3':
-            from = today.setDate(today.getDate() - 3);
+            from = now.setDate(now.getDate() - 3);
             break;
           case 'week':
-            from = today.setDate(today.getDate() - 7);
+            from = now.setDate(now.getDate() - 7);
             break;
           case 'week2':
-            from = today.setDate(today.getDate() - 14);
+            from = now.setDate(now.getDate() - 14);
             break;
           case 'month':
-            from = today.setMonth(today.getMonth() - 1);
+            from = now.setMonth(now.getMonth() - 1);
             break;
           default:
             // default to one day
-            from = today.setDate(today.getDate() - 1);
+            from = now.setDate(now.getDate() - 1);
         }
 
         this.actions.searchAudit({
