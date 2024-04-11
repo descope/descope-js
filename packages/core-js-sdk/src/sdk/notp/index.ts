@@ -1,5 +1,6 @@
 import { apiPaths } from '../../constants';
 import { HttpClient } from '../../httpClient';
+import { normalizeWaitForSessionConfig } from '../../utils';
 import { transformResponse } from '../helpers';
 import {
   JWTResponse,
@@ -7,6 +8,7 @@ import {
   SdkResponse,
   SignUpOptions,
   User,
+  WaitForSessionConfig,
 } from '../types';
 import { stringNonEmpty, string, withValidations } from '../validations';
 import { NOTPResponse } from './types';
@@ -14,7 +16,8 @@ import { NOTPResponse } from './types';
 const loginIdValidations = string('loginId');
 
 const withSignValidations = withValidations(loginIdValidations);
-export const withWaitForSessionValidations = withValidations(
+
+const withWaitForSessionValidations = withValidations(
   stringNonEmpty('pendingRef'),
 );
 
@@ -59,14 +62,37 @@ const withNotp = (httpClient: HttpClient) => ({
         ),
       ),
   ),
-  // ASAF - add poll?
-  getSession: withWaitForSessionValidations(
-    (pendingRef: string): Promise<SdkResponse<SdkResponse<JWTResponse>>> =>
-      transformResponse(
-        httpClient.post(apiPaths.notp.session, {
-          pendingRef,
-        }),
-      ),
+  waitForSession: withWaitForSessionValidations(
+    (
+      pendingRef: string,
+      config?: WaitForSessionConfig,
+    ): Promise<SdkResponse<JWTResponse>> =>
+      new Promise((resolve) => {
+        const { pollingIntervalMs, timeoutMs } =
+          normalizeWaitForSessionConfig(config);
+        let timeout: NodeJS.Timeout | undefined;
+        const interval = setInterval(async () => {
+          const resp = await httpClient.post(apiPaths.notp.session, {
+            pendingRef,
+          });
+          if (resp.ok) {
+            clearInterval(interval);
+            if (timeout) clearTimeout(timeout);
+            resolve(transformResponse(Promise.resolve(resp)));
+          }
+        }, pollingIntervalMs);
+
+        timeout = setTimeout(() => {
+          resolve({
+            error: {
+              errorDescription: `Session polling timeout exceeded: ${timeoutMs}ms`,
+              errorCode: '0',
+            },
+            ok: false,
+          });
+          clearInterval(interval);
+        }, timeoutMs);
+      }),
   ),
 });
 

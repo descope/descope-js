@@ -137,6 +137,25 @@ const setElementConfig = (
   });
 };
 
+const setImageVariable = (
+  rootEle: HTMLElement,
+  name: string,
+  image?: string,
+) => {
+  const imageVarName = (
+    customElements.get(name) as CustomElementConstructor & {
+      cssVarList: Record<string, string>;
+    }
+  )?.cssVarList.url;
+
+  if (image && imageVarName) {
+    rootEle?.style?.setProperty(
+      imageVarName,
+      `url(data:image/jpg;base64,${image})`,
+    );
+  }
+};
+
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
@@ -180,18 +199,11 @@ export const updateScreenFromScreenState = (
 };
 
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
-  const totpVarName = (
-    customElements.get('descope-totp-image') as CustomElementConstructor & {
-      cssVarList: Record<string, string>;
-    }
-  )?.cssVarList.url;
+  setImageVariable(rootEle, 'descope-totp-image', image);
+};
 
-  if (image && totpVarName) {
-    rootEle?.style?.setProperty(
-      totpVarName,
-      `url(data:image/jpg;base64,${image})`,
-    );
-  }
+export const setNOTPVariable = (rootEle: HTMLElement, image?: string) => {
+  setImageVariable(rootEle, 'descope-notp-image', image);
 };
 
 export const setPhoneAutoDetectDefaultCode = (

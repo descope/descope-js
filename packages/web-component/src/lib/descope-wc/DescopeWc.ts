@@ -34,6 +34,7 @@ import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
   getDescopeUiComponentsList,
+  setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
@@ -780,17 +781,11 @@ class DescopeWc extends BaseDescopeWc {
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
 
-      // put the totp variable on the root element, which is the top level 'div' inside the shadowroot
-      setTOTPVariable(
-        this.shadowRoot.querySelector('div'),
-        screenState?.totp?.image,
-      );
+      // put the totp and notp variable on the root element, which is the top level 'div' inside the shadowroot
+      const rootElement = this.shadowRoot.querySelector('div');
+      setTOTPVariable(rootElement, screenState?.totp?.image);
 
-      // put the notp variable on the root element, which is the top level 'div' inside the shadowroot
-      setTOTPVariable(
-        this.shadowRoot.querySelector('div'),
-        screenState?.notp?.image,
-      );
+      setNOTPVariable(rootElement, screenState?.notp?.image);
 
       this.rootElement.replaceChildren(clone);
 

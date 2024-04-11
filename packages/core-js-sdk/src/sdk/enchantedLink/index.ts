@@ -1,9 +1,10 @@
 import {
   apiPaths,
-  ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
-  ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
+  MAX_POLLING_TIMEOUT_MS,
+  MIN_POLLING_INTERVAL_MS,
 } from '../../constants';
 import { HttpClient } from '../../httpClient';
+import { normalizeWaitForSessionConfig } from '../../utils';
 import { pathJoin, transformResponse } from '../helpers';
 import {
   DeliveryMethods,
@@ -14,29 +15,14 @@ import {
   LoginOptions,
   UpdateOptions,
   SignUpOptions,
+  WaitForSessionConfig,
 } from '../types';
-import { WaitForSessionConfig } from './types';
 import {
   withWaitForSessionValidations,
   withSignValidations,
   withVerifyValidations,
   withUpdateEmailValidations,
 } from './validations';
-
-/** Polling configuration with defaults and normalizing checks */
-const normalizeWaitForSessionConfig = ({
-  pollingIntervalMs = ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
-  timeoutMs = ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
-} = {}) => ({
-  pollingIntervalMs: Math.max(
-    pollingIntervalMs || ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
-    ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
-  ),
-  timeoutMs: Math.min(
-    timeoutMs || ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
-    ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
-  ),
-});
 
 const withEnchantedLink = (httpClient: HttpClient) => ({
   verify: withVerifyValidations(

@@ -311,6 +311,12 @@ export type DeliveriesMap<EmailFn extends SdkFn, PhoneFn extends SdkFn> = {
 /** Logger type that supports the given levels (debug, log, error) */
 export type Logger = Pick<Console, 'debug' | 'log' | 'error' | 'warn'>;
 
+/** Polling configuration for session waiting */
+export type WaitForSessionConfig = {
+  pollingIntervalMs: number;
+  timeoutMs: number;
+};
+
 export type UpdateOptions<T extends boolean> = {
   addToLoginIDs?: T;
   onMergeUseExisting?: T extends true ? boolean : never;
