@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Descope Audit Management Widget</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Uncomment next section if you want to test CSP -->
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self' static.descope.com api.descope.com;
+    style-src 'unsafe-inline' fonts.googleapis.com;
+    img-src static.descope.com content.app.descope.com;
+    font-src fonts.gstatic.com;
+    script-src 'self' static.descope.com cdn.jsdelivr.net;
+  "
+    /> -->
+    <style>
+      body {
+        background-color: antiquewhite;
+        position: relative;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        width: 80%;
+        min-height: 300px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="../lib/index.ts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@descope/web-component"></script>
+
+    <div class="container"></div>
+
+    <script type="module">
+      import createSdk from '@descope/web-js-sdk';
+
+      const sdk = createSdk({
+        projectId: DESCOPE_PROJECT_ID,
+        baseUrl: DESCOPE_BASE_URL,
+        persistTokens: true,
+      });
+
+      const getShouldLogin = async () => {
+        const res = await sdk.me();
+
+        if (!res.ok) {
+          console.log('User is not logged in');
+          return true;
+        }
+
+        const userRoles =
+          res.data?.userTenants?.find(
+            (tenant) => tenant.tenantId === DESCOPE_TENANT,
+          )?.roleNames || [];
+
+        if (!userRoles.includes('Tenant Admin')) {
+          console.log('User is not tenant admin, received roles:', userRoles);
+          return true;
+        }
+
+        return false;
+      };
+
+      (async () => {
+        const isMock = /[&?]mock=([^&]+)/.exec(location.search)?.[1];
+
+        const shouldLogin = (await getShouldLogin()) && !isMock;
+        const rootEle = document.querySelector('.container');
+
+        const widgetEle = document.createElement(
+          'descope-audit-management-widget',
+        );
+        widgetEle.setAttribute('project-id', DESCOPE_PROJECT_ID);
+        widgetEle.setAttribute('base-url', DESCOPE_BASE_URL);
+        widgetEle.setAttribute('tenant', DESCOPE_TENANT);
+        widgetEle.setAttribute('widget-id', DESCOPE_WIDGET_ID);
+        widgetEle.setAttribute('debug', 'false');
+        if (isMock) {
+          widgetEle.setAttribute('mock', 'true');
+        }
+
+        if (shouldLogin) {
+          const flowEle = document.createElement('descope-wc');
+          flowEle.setAttribute('project-id', DESCOPE_PROJECT_ID);
+          flowEle.setAttribute('base-url', DESCOPE_BASE_URL);
+          flowEle.setAttribute('flow-id', 'sign-up-or-in');
+          flowEle.setAttribute('debug', 'false');
+          flowEle.addEventListener('success', () => {
+            flowEle.remove();
+            rootEle.appendChild(widgetEle);
+          });
+
+          rootEle.appendChild(flowEle);
+        } else {
+          rootEle.appendChild(widgetEle);
+        }
+      })();
+    </script>
+  </body>
+</html>
