@@ -90,12 +90,13 @@ const replaceTemplateDynamicAttrValues = (
   });
 };
 
-const replaceProvisionURL = (
+const replaceHrefByDataType = (
   baseEle: DocumentFragment,
+  dataType: string,
   provisionUrl?: string,
 ) => {
   const eleList = baseEle.querySelectorAll(
-    `[${ELEMENT_TYPE_ATTRIBUTE}="totp-link"]`,
+    `[${ELEMENT_TYPE_ATTRIBUTE}="${dataType}"]`,
   );
   eleList.forEach((ele: HTMLLinkElement) => {
     // eslint-disable-next-line no-param-reassign
@@ -179,8 +180,8 @@ export const updateTemplateFromScreenState = (
     logger.error('Error transforming error message', e.message);
   }
   replaceElementMessage(baseEle, 'error-message', errorText);
-  replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
-  replaceProvisionURL(baseEle, screenState?.notp?.redirectUrl);
+  replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
+  replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
