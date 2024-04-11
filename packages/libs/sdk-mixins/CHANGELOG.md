@@ -2,6 +2,59 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.23](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.22...sdk-mixins-0.1.23) (2024-04-09)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.19`
+* `sdk-component-drivers` updated to version `0.1.19`
+
+### Bug Fixes
+
+* issue 6179 RELEASE ([#499](https://github.com/descope/descope-js/issues/499)) ([8d9fa34](https://github.com/descope/descope-js/commit/8d9fa34e20b9e018436be10eaa932621d7c7166e))
+
+## [0.1.22](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.21...sdk-mixins-0.1.22) (2024-04-08)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.18`
+* `sdk-component-drivers` updated to version `0.1.18`
+## [0.1.21](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.20...sdk-mixins-0.1.21) (2024-04-05)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.17`
+* `sdk-component-drivers` updated to version `0.1.17`
+## [0.1.20](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.19...sdk-mixins-0.1.20) (2024-04-04)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.16`
+* `sdk-component-drivers` updated to version `0.1.16`
+## [0.1.19](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.18...sdk-mixins-0.1.19) (2024-04-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.15`
+* `sdk-component-drivers` updated to version `0.1.15`
+## [0.1.18](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.17...sdk-mixins-0.1.18) (2024-03-28)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.14`
+* `sdk-component-drivers` updated to version `0.1.14`
+
+### Bug Fixes
+
+* widget fixes RELEASE ([#480](https://github.com/descope/descope-js/issues/480)) ([fed3eba](https://github.com/descope/descope-js/commit/fed3ebac82d19fb146ea53c239b7063fd9d76e02))
+
+## [0.1.17](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.16...sdk-mixins-0.1.17) (2024-03-27)
+
+
+### Bug Fixes
+
+* widgets dark theme RELEASE ([#478](https://github.com/descope/descope-js/issues/478)) ([6f9c485](https://github.com/descope/descope-js/commit/6f9c4851c7cd12709ae57b91e1a346c0a33dbfb7))
+
 ## [0.1.16](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.15...sdk-mixins-0.1.16) (2024-03-25)
 
 

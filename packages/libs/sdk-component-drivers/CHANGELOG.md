@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.19](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.18...sdk-component-drivers-0.1.19) (2024-04-09)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.19`
+
+### Bug Fixes
+
+* issue 6179 RELEASE ([#499](https://github.com/descope/descope-js/issues/499)) ([8d9fa34](https://github.com/descope/descope-js/commit/8d9fa34e20b9e018436be10eaa932621d7c7166e))
+
+## [0.1.18](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.17...sdk-component-drivers-0.1.18) (2024-04-08)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.18`
+## [0.1.17](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.16...sdk-component-drivers-0.1.17) (2024-04-05)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.17`
+## [0.1.16](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.15...sdk-component-drivers-0.1.16) (2024-04-04)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.16`
+## [0.1.15](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.14...sdk-component-drivers-0.1.15) (2024-04-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.15`
+## [0.1.14](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.13...sdk-component-drivers-0.1.14) (2024-03-28)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.14`
 ## [0.1.13](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.12...sdk-component-drivers-0.1.13) (2024-03-24)
 
 ### Dependency Updates

@@ -412,4 +412,20 @@ describe('createFetchLogger', () => {
     expect(resp.text()).resolves.toBe('{"body": "body"}');
     expect(resp.json()).resolves.toEqual({ body: 'body' });
   });
+
+  it('should allow using baseurl with path', () => {
+    const httpClient = createHttpClient({
+      baseUrl: 'http://descope.com/auth/ds',
+      projectId: '456',
+    });
+
+    httpClient.get('1/2/3', {
+      queryParams: { test2: '123' },
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL('http://descope.com/auth/ds/1/2/3?test2=123'),
+      expect.anything(),
+    );
+  });
 });

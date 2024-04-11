@@ -8,6 +8,7 @@ import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { THEME_FILENAME } from './constants';
 import { loadFont } from './helpers';
+import { observeAttributesMixin } from '../observeAttributesMixin';
 
 const themeValidation = (_: string, theme: string | null) =>
   (theme || false) &&
@@ -26,24 +27,22 @@ export const themeMixin = createSingletonMixin(
       descopeUiMixin,
       configMixin,
       initElementMixin,
+      observeAttributesMixin,
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
       get theme(): ThemeOptions {
-        return 'light';
-        // for now we use only light since dark theme is not well supported in widgets, should enable below once supported
+        const theme = this.getAttribute('theme') as ThemeOptions | null;
 
-        // const theme = this.getAttribute('theme') as ThemeOptions | null;
+        if (theme === 'os') {
+          const isOsDark =
+            window.matchMedia &&
+            window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
 
-        // if (theme === 'os') {
-        //   const isOsDark =
-        //     window.matchMedia &&
-        //     window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
+          return isOsDark ? 'dark' : 'light';
+        }
 
-        //   return isOsDark ? 'dark' : 'light';
-        // }
-
-        // return theme || 'light';
+        return theme || 'light';
       }
 
       #_themeResource: Promise<void | Record<string, any>>;
@@ -131,6 +130,11 @@ export const themeMixin = createSingletonMixin(
         this.#loadComponentsStyle();
         this.#loadFonts();
         this.#applyTheme();
+
+        this.observeAttributes(['theme'], () => {
+          this.#loadFonts();
+          this.#applyTheme();
+        });
       }
     };
   },

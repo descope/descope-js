@@ -2,6 +2,58 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.8.39](https://github.com/descope/descope-js/compare/web-component-3.8.38...web-component-3.8.39) (2024-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.31`
+## [3.8.38](https://github.com/descope/descope-js/compare/web-component-3.8.37...web-component-3.8.38) (2024-04-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.30`
+## [3.8.37](https://github.com/descope/descope-js/compare/web-component-3.8.36...web-component-3.8.37) (2024-04-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.29`
+## [3.8.36](https://github.com/descope/descope-js/compare/web-component-3.8.35...web-component-3.8.36) (2024-04-05)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.28`
+## [3.8.35](https://github.com/descope/descope-js/compare/web-component-3.8.34...web-component-3.8.35) (2024-04-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.27`
+## [3.8.34](https://github.com/descope/descope-js/compare/web-component-3.8.33...web-component-3.8.34) (2024-04-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.26`
+## [3.8.33](https://github.com/descope/descope-js/compare/web-component-3.8.32...web-component-3.8.33) (2024-04-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.25`
+## [3.8.32](https://github.com/descope/descope-js/compare/web-component-3.8.31...web-component-3.8.32) (2024-03-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.24`
+## [3.8.31](https://github.com/descope/descope-js/compare/web-component-3.8.30...web-component-3.8.31) (2024-03-27)
+
+
+### Bug Fixes
+
+* Do not submit form when textarea focused RELEASE ([#477](https://github.com/descope/descope-js/issues/477)) ([ebb71eb](https://github.com/descope/descope-js/commit/ebb71eb87770cfb56a18b7a719b546fc6c0daf35))
+
+## [3.8.30](https://github.com/descope/descope-js/compare/web-component-3.8.29...web-component-3.8.30) (2024-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.23`
 ## [3.8.29](https://github.com/descope/descope-js/compare/web-component-3.8.28...web-component-3.8.29) (2024-03-24)
 
 ### Dependency Updates

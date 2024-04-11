@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.31](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.30...web-js-sdk-1.10.31) (2024-04-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.12.1`
+
+### Bug Fixes
+
+* do not clear tokens for management api RELEASE ([#503](https://github.com/descope/descope-js/issues/503)) ([e615427](https://github.com/descope/descope-js/commit/e615427031e7ddd02d9507fb941f11ec83cb5616))
+
+## [1.10.30](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.29...web-js-sdk-1.10.30) (2024-04-09)
+
+## [1.10.29](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.28...web-js-sdk-1.10.29) (2024-04-08)
+
+## [1.10.28](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.27...web-js-sdk-1.10.28) (2024-04-05)
+
+## [1.10.27](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.26...web-js-sdk-1.10.27) (2024-04-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.9.2 ([#488](https://github.com/descope/descope-js/issues/488)) ([d865eff](https://github.com/descope/descope-js/commit/d865efff3e8c85e81205a2ccb0f46b25112b263b))
+
+## [1.10.26](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.25...web-js-sdk-1.10.26) (2024-04-02)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.12.0`
+## [1.10.25](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.24...web-js-sdk-1.10.25) (2024-04-02)
+
+## [1.10.24](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.23...web-js-sdk-1.10.24) (2024-03-28)
+
+## [1.10.23](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.22...web-js-sdk-1.10.23) (2024-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.9.1 ([#475](https://github.com/descope/descope-js/issues/475)) ([1b0c6f0](https://github.com/descope/descope-js/commit/1b0c6f09f4b255e08c585cc85e5ec18b98c0fe25))
+
 ## [1.10.22](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.21...web-js-sdk-1.10.22) (2024-03-24)
 
 ## [1.10.21](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.20...web-js-sdk-1.10.21) (2024-03-24)
