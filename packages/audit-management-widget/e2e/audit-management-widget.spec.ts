@@ -80,8 +80,8 @@ test.describe('widget', () => {
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('');
-      const today = new Date();
-      const expectedFrom = today.setDate(today.getDate() - 2);
+      const now = new Date();
+      const expectedFrom = now.setDate(now.getDate() - 2);
       expect(from).toBeGreaterThan(new Date(expectedFrom).getTime());
 
       return route.fulfill({
@@ -107,8 +107,8 @@ test.describe('widget', () => {
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
-      const today = new Date();
-      const expectedFrom = today.setDate(today.getDate() - 2);
+      const now = new Date();
+      const expectedFrom = now.setDate(now.getDate() - 2);
       expect(from).toBeGreaterThan(new Date(expectedFrom).getTime());
 
       return route.fulfill({
@@ -149,8 +149,8 @@ test.describe('widget', () => {
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
-      const today = new Date();
-      const expectedFrom = today.setHours(today.getHours() - 2);
+      const now = new Date();
+      const expectedFrom = now.setHours(now.getHours() - 2);
       expect(from).toBeGreaterThan(new Date(expectedFrom).getTime());
 
       return route.fulfill({
