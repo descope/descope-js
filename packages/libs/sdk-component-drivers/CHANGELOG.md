@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.19...sdk-component-drivers-0.2.0) (2024-04-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.20`
+
+### Features
+
+* Audit widget RELEASE ([#502](https://github.com/descope/descope-js/issues/502)) ([d04199b](https://github.com/descope/descope-js/commit/d04199bc0d99083202f19cd28f0c2316cb19eb94))
+
 ## [0.1.19](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.1.18...sdk-component-drivers-0.1.19) (2024-04-09)
 
 ### Dependency Updates
