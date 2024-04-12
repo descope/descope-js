@@ -1,8 +1,8 @@
 // @ts-nocheck
 import {
   apiPaths,
-  ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
-  ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
+  MAX_POLLING_TIMEOUT_MS,
+  MIN_POLLING_INTERVAL_MS,
 } from '../../src/constants';
 import createSdk from '../../src/sdk';
 import { mockHttpClient } from '../utils';
@@ -301,7 +301,7 @@ describe('Enchanted Link', () => {
       sdk.enchantedLink.waitForSession('123456', { timeoutMs: 9999999999 });
       expect(timeoutSpy).toHaveBeenCalledWith(
         expect.any(Function),
-        ENCHANTED_LINK_MAX_POLLING_TIMEOUT_MS,
+        MAX_POLLING_TIMEOUT_MS,
       );
     });
 
@@ -310,7 +310,7 @@ describe('Enchanted Link', () => {
       sdk.enchantedLink.waitForSession('123456', { timeoutMs: 0 });
       expect(timeoutSpy).toHaveBeenCalledWith(
         expect.any(Function),
-        ENCHANTED_LINK_MIN_POLLING_INTERVAL_MS,
+        MIN_POLLING_INTERVAL_MS,
       );
     });
 

@@ -31,6 +31,7 @@ export interface ScreenState {
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
   totp?: { image?: string; provisionUrl?: string };
+  notp?: { image?: string; redirectUrl?: string };
 }
 
 export type FlowState = {
