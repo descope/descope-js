@@ -972,12 +972,19 @@ describe('web-component', () => {
     });
   });
 
-  it('should update totp link href according to screen state', async () => {
+  it('should update totp and notp link href according to screen state', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { totp: { provisionUrl: 'url1' } } }),
+      generateSdkResponse({
+        screenState: {
+          totp: { provisionUrl: 'url1' },
+          notp: { redirectUrl: 'url2' },
+        },
+      }),
     );
 
-    pageContent = `<div>Loaded1</div><descope-link data-type="totp-link">Provision URL</descope-link>`;
+    pageContent = `<div>Loaded1</div>
+      <descope-link data-type="totp-link">Provision URL</descope-link>
+      <descope-link data-type="notp-link">Redirect URL</descope-link>`;
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -988,6 +995,9 @@ describe('web-component', () => {
 
     const totpLink = screen.getByShadowText('Provision URL');
     expect(totpLink).toHaveAttribute('href', 'url1');
+
+    const notpLink = screen.getByShadowText('Redirect URL');
+    expect(notpLink).toHaveAttribute('href', 'url2');
   });
 
   it('should disable webauthn buttons when its not supported in the browser', async () => {
