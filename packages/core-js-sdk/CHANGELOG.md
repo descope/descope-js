@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.13.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.2...core-js-sdk-2.13.0) (2024-04-12)
+
+
+### Features
+
+* NOTP ([#505](https://github.com/descope/descope-js/issues/505)) RELEASE ([c1f1d79](https://github.com/descope/descope-js/commit/c1f1d79b311532fec6d5779dbdadf3f239b7df46))
+
 ## [2.12.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.1...core-js-sdk-2.12.2) (2024-04-11)
 
 ## [2.12.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.0...core-js-sdk-2.12.1) (2024-04-10)
