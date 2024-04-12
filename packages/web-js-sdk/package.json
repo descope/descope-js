@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-js-sdk",
-  "version": "1.10.31",
+  "version": "1.10.32",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-js-sdk",
   "bugs": {
@@ -59,7 +59,7 @@
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-jest": "27.9.0",
-    "eslint-plugin-jest-dom": "5.1.0",
+    "eslint-plugin-jest-dom": "5.2.0",
     "eslint-plugin-jest-formatting": "3.1.0",
     "eslint-plugin-n": "16.6.2",
     "eslint-plugin-no-only-tests": "3.1.0",
