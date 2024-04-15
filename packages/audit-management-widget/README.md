@@ -24,7 +24,7 @@ Use the `descope-audit-management-widget` in this package's `index.html`. Commen
 <descope-audit-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
-  tenant-id="<DESCOPE_TENANT>"
+  tenant="<DESCOPE_TENANT>"
   debug="<DEBUG_MODE>"
   theme="<DESCOPE_THEME>"
   widget-id="<DESCOPE_WIDGET_ID>"
