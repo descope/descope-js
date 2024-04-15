@@ -774,9 +774,9 @@ class DescopeWc extends BaseDescopeWc {
       screenState.form.email = currentState.samlIdpUsername;
     }
 
-    const formAttr = this.getAttribute('form');
+    const formAttr = this.getAttribute('form') || '';
     let flowInputs: Record<string, string> = {};
-    if (formAttr.includes('.disabled')) {
+    if (formAttr?.includes('.disabled')) {
       try {
         flowInputs = JSON.parse(this.getAttribute('form')) || {};
       } catch (e) {
