@@ -103,6 +103,29 @@ const replaceProvisionURL = (
   });
 };
 
+const enableDisableInputs = (
+  baseEle: DocumentFragment,
+  formData: Record<string, string>,
+) => {
+  Object.keys(formData).forEach((inputName) => {
+    if (inputName.endsWith('.disabled')) {
+      const eleName = (name: string, isFormAttr?: boolean) =>
+        `[name="${isFormAttr ? 'form.' : ''}${name.split('.disabled')[0]}"]`;
+
+      const eles = [
+        // all pre-defined inputs (e.g. name="email")
+        ...baseEle.querySelectorAll(eleName(inputName)),
+        // all form inputs (e.g. name="form.xxx")
+        ...baseEle.querySelectorAll(eleName(inputName, true)),
+      ];
+
+      eles.forEach((ele) => {
+        ele.setAttribute('disabled', formData[inputName]);
+      });
+    }
+  });
+};
+
 const setElementConfig = (
   baseEle: DocumentFragment,
   componentsConfig: ComponentsConfig,
@@ -146,6 +169,7 @@ export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
   componentsConfig?: ComponentsConfig,
+  flowInputs?: Record<string, string>,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
@@ -164,6 +188,7 @@ export const updateTemplateFromScreenState = (
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
+  enableDisableInputs(baseEle, flowInputs);
 };
 
 /**

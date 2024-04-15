@@ -155,13 +155,16 @@ class BaseDescopeWc extends HTMLElement {
         string,
         any
       >;
-      return Object.entries(form).reduce(
-        (prev, [key, value]) => ({
+      return Object.entries(form).reduce((prev, [key, value]) => {
+        // filter out flow inputs that defines input state (and not value)
+        if (key.endsWith('.disabled')) {
+          return prev;
+        }
+        return {
           ...prev,
           [`form.${key}`]: value,
-        }),
-        form,
-      );
+        };
+      }, form);
     } catch (e) {
       return {};
     }

@@ -765,10 +765,22 @@ class DescopeWc extends BaseDescopeWc {
       screenState.form.email = currentState.samlIdpUsername;
     }
 
+    const formAttr = this.getAttribute('form');
+    let flowInputs: Record<string, string> = {};
+    if (formAttr.includes('.disabled')) {
+      try {
+        flowInputs = JSON.parse(this.getAttribute('form')) || {};
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to parse attribute: "form"');
+      }
+    }
+
     updateTemplateFromScreenState(
       clone,
       screenState,
       screenState.componentsConfig,
+      flowInputs,
       this.errorTransformer,
       this.loggerWrapper,
     );
