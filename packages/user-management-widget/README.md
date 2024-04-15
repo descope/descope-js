@@ -7,11 +7,11 @@
 In the widget package create an `.env` file which includes;
 
 ```
-DESCOPE_BASE_URL=   # env base url
-DESCOPE_PROJECT_ID= # project ID
+DESCOPE_BASE_URL=   # env base url, default: "https://app.descope.com"
+DESCOPE_PROJECT_ID= # your Descope's project ID
 DESCOPE_TENANT=     # tenant ID
-DEBUG_MODE=         # default: "false"
-DESCOPE_THEME=      # default: "light"
+DEBUG_MODE=         # "true" / "false", default: "false"
+DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 DESCOPE_WIDGET_ID=  # default: "user-management-widget"
 ```
 
