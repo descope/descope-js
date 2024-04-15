@@ -96,6 +96,7 @@ Object.defineProperty(window, 'location', {
   value: new URL(window.location.origin),
 });
 window.location.assign = jest.fn();
+window.open = jest.fn();
 
 Object.defineProperty(window, 'PublicKeyCredential', { value: TestClass });
 
@@ -1379,6 +1380,35 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       },
     );
+  });
+
+  it('When response has "openInNewTabUrl" it opens the URL in a new window', async () => {
+    nextMock.mockReturnValueOnce(
+      generateSdkResponse({
+        openInNewTabUrl: 'https://loremipsumurl.com',
+      }),
+    );
+
+    pageContent = '<span>It works!</span>';
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    // Make sure url is opened in a new tab
+    await waitFor(
+      () =>
+        expect(window.open).toHaveBeenCalledWith(
+          'https://loremipsumurl.com',
+          '_blank',
+        ),
+      {
+        timeout: WAIT_TIMEOUT,
+      },
+    );
+
+    // Should also show the screen
+    await waitFor(() => screen.findByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
   });
 
   it('When action type is "webauthnCreate" and webauthnTransactionId is missing should log an error ', async () => {

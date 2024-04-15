@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.13.0...core-js-sdk-2.14.0) (2024-04-15)
+
+
+### Features
+
+* add open in a new tab ([#519](https://github.com/descope/descope-js/issues/519)) RELEASE ([dec2bd7](https://github.com/descope/descope-js/commit/dec2bd7ad0167f1bc51f60db90e76d535b9d66e2))
+
 ## [2.13.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.2...core-js-sdk-2.13.0) (2024-04-12)
 
 
