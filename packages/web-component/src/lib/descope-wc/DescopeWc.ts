@@ -146,6 +146,7 @@ class DescopeWc extends BaseDescopeWc {
       screenId,
       screenState,
       redirectTo,
+      openInNewTabUrl,
       redirectUrl,
       token,
       code,
@@ -285,6 +286,11 @@ class DescopeWc extends BaseDescopeWc {
         exchangeError: undefined,
       }); // should happen after handleSdkResponse, otherwise we will not have screen id on the next run
       return;
+    }
+
+    if (openInNewTabUrl) {
+      window.open(openInNewTabUrl, '_blank');
+      // We are continuing since there may be more actions to handle (screen, etc.)
     }
 
     const samlProps = [
@@ -561,6 +567,7 @@ class DescopeWc extends BaseDescopeWc {
       action,
       screen,
       redirect,
+      openInNewTabUrl,
       webauthn,
       error,
       samlIdpResponse,
@@ -592,6 +599,7 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       action,
       redirectTo: redirect?.url,
+      openInNewTabUrl,
       screenId: screen?.id,
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,

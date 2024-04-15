@@ -240,6 +240,8 @@ export type FlowResponse = {
     samlResponse: string;
     relayState: string;
   };
+  // a URL to open in a new tab
+  openInNewTabUrl?: string;
   // webauthn data - if action is one of 'webauthnCreate', 'webauthnGet'
   webauthn?: {
     transactionId: string;
