@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.13.0...core-js-sdk-2.14.0) (2024-04-15)
+
+
+### Features
+
+* add open in a new tab ([#519](https://github.com/descope/descope-js/issues/519)) RELEASE ([dec2bd7](https://github.com/descope/descope-js/commit/dec2bd7ad0167f1bc51f60db90e76d535b9d66e2))
+
+## [2.13.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.2...core-js-sdk-2.13.0) (2024-04-12)
+
+
+### Features
+
+* NOTP ([#505](https://github.com/descope/descope-js/issues/505)) RELEASE ([c1f1d79](https://github.com/descope/descope-js/commit/c1f1d79b311532fec6d5779dbdadf3f239b7df46))
+
+## [2.12.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.1...core-js-sdk-2.12.2) (2024-04-11)
+
+## [2.12.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.12.0...core-js-sdk-2.12.1) (2024-04-10)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** allow path in baseurl ([#498](https://github.com/descope/descope-js/issues/498)) ([ea7c7a5](https://github.com/descope/descope-js/commit/ea7c7a56ea994cc09698c820a82e785757a3cc99))
+
 ## [2.12.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.11.15...core-js-sdk-2.12.0) (2024-04-02)
 
 

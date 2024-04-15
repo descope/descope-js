@@ -34,6 +34,7 @@ import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
   getDescopeUiComponentsList,
+  setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
@@ -145,6 +146,7 @@ class DescopeWc extends BaseDescopeWc {
       screenId,
       screenState,
       redirectTo,
+      openInNewTabUrl,
       redirectUrl,
       token,
       code,
@@ -284,6 +286,11 @@ class DescopeWc extends BaseDescopeWc {
         exchangeError: undefined,
       }); // should happen after handleSdkResponse, otherwise we will not have screen id on the next run
       return;
+    }
+
+    if (openInNewTabUrl) {
+      window.open(openInNewTabUrl, '_blank');
+      // We are continuing since there may be more actions to handle (screen, etc.)
     }
 
     const samlProps = [
@@ -560,6 +567,7 @@ class DescopeWc extends BaseDescopeWc {
       action,
       screen,
       redirect,
+      openInNewTabUrl,
       webauthn,
       error,
       samlIdpResponse,
@@ -591,6 +599,7 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       action,
       redirectTo: redirect?.url,
+      openInNewTabUrl,
       screenId: screen?.id,
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
@@ -792,11 +801,11 @@ class DescopeWc extends BaseDescopeWc {
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
 
-      // put the totp variable on the root element, which is the top level 'div' inside the shadowroot
-      setTOTPVariable(
-        this.shadowRoot.querySelector('div'),
-        screenState?.totp?.image,
-      );
+      // put the totp and notp variable on the root element, which is the top level 'div' inside the shadowroot
+      const rootElement = this.shadowRoot.querySelector('div');
+      setTOTPVariable(rootElement, screenState?.totp?.image);
+
+      setNOTPVariable(rootElement, screenState?.notp?.image);
 
       this.rootElement.replaceChildren(clone);
 

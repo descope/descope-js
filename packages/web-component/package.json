@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "3.8.38",
+  "version": "3.10.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-component",
   "bugs": {
@@ -12,8 +12,8 @@
   "types": "dist/index.d.ts",
   "description": "Descope WC",
   "scripts": {
-    "start": "npx nx run web-component:build && rollup -c rollup.config.app.serve.js -w",
-    "build-app": "rollup -c rollup.config.app.js",
+    "start": "npx nx run web-component:build && rollup -c rollup.config.app.serve.mjs -w",
+    "build-app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
     "test": "jest --silent",
     "lint": "eslint '+(src|test)/**/*.ts'"
@@ -46,7 +46,7 @@
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-jest": "27.9.0",
-    "eslint-plugin-jest-dom": "5.1.0",
+    "eslint-plugin-jest-dom": "5.2.0",
     "eslint-plugin-jest-formatting": "3.1.0",
     "eslint-plugin-n": "16.6.2",
     "eslint-plugin-no-only-tests": "3.1.0",

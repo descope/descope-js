@@ -90,12 +90,13 @@ const replaceTemplateDynamicAttrValues = (
   });
 };
 
-const replaceProvisionURL = (
+const replaceHrefByDataType = (
   baseEle: DocumentFragment,
+  dataType: string,
   provisionUrl?: string,
 ) => {
   const eleList = baseEle.querySelectorAll(
-    `[${ELEMENT_TYPE_ATTRIBUTE}="totp-link"]`,
+    `[${ELEMENT_TYPE_ATTRIBUTE}="${dataType}"]`,
   );
   eleList.forEach((ele: HTMLLinkElement) => {
     // eslint-disable-next-line no-param-reassign
@@ -160,6 +161,25 @@ const setElementConfig = (
   });
 };
 
+const setImageVariable = (
+  rootEle: HTMLElement,
+  name: string,
+  image?: string,
+) => {
+  const imageVarName = (
+    customElements.get(name) as CustomElementConstructor & {
+      cssVarList: Record<string, string>;
+    }
+  )?.cssVarList.url;
+
+  if (image && imageVarName) {
+    rootEle?.style?.setProperty(
+      imageVarName,
+      `url(data:image/jpg;base64,${image})`,
+    );
+  }
+};
+
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
@@ -184,7 +204,8 @@ export const updateTemplateFromScreenState = (
     logger.error('Error transforming error message', e.message);
   }
   replaceElementMessage(baseEle, 'error-message', errorText);
-  replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
+  replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
+  replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
@@ -204,18 +225,11 @@ export const updateScreenFromScreenState = (
 };
 
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
-  const totpVarName = (
-    customElements.get('descope-totp-image') as CustomElementConstructor & {
-      cssVarList: Record<string, string>;
-    }
-  )?.cssVarList.url;
+  setImageVariable(rootEle, 'descope-totp-image', image);
+};
 
-  if (image && totpVarName) {
-    rootEle?.style?.setProperty(
-      totpVarName,
-      `url(data:image/jpg;base64,${image})`,
-    );
-  }
+export const setNOTPVariable = (rootEle: HTMLElement, image?: string) => {
+  setImageVariable(rootEle, 'descope-notp-image', image);
 };
 
 export const setPhoneAutoDetectDefaultCode = (
