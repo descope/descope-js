@@ -17,18 +17,18 @@ DESCOPE_WIDGET_ID=  # default: "user-management-widget"
 
 ### Example
 
-Use the DescopeWC in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
+Use the `descope-user-management-widget` in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
 
 ```
 <script src="https://cdn.jsdelivr.net/npm/@descope/user-management-widget/dist/index.js"></script>
-<descope-wc
+<descope-user-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
   tenant-id="<DESCOPE_TENANT>"
   debug="<DEBUG_MODE>"
-  theme="<DESCOPE_THEME>""
+  theme="<DESCOPE_THEME>"
   widget-id="<DESCOPE_WIDGET_ID>"
-></descope-wc>
+></descope-user-management-widget>
 ```
 
 ### Start the widget
