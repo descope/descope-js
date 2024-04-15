@@ -12,7 +12,7 @@
   "types": "dist/index.d.ts",
   "description": "Descope WC",
   "scripts": {
-    "start": "npx nx run web-component:build && rollup -c rollup.config.app.serve.mjs -w --bundleConfigAsCjs",
+    "start": "npx nx run web-component:build && rollup -c rollup.config.app.serve.mjs -w",
     "build-app": "rollup -c rollup.config.app.js",
     "build": "rollup -c",
     "test": "jest --silent",
