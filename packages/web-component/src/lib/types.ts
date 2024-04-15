@@ -43,6 +43,7 @@ export type FlowState = {
   executionId: string;
   action: string;
   redirectTo: string;
+  openInNewTabUrl?: string;
   redirectUrl: string;
   screenId: string;
   screenState: ScreenState;
