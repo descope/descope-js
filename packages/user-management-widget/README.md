@@ -10,7 +10,25 @@ In the widget package create an `.env` file which includes;
 DESCOPE_BASE_URL=   # env base url
 DESCOPE_PROJECT_ID= # project ID
 DESCOPE_TENANT=     # tenant ID
-DESCOPE_WIDGET_ID=  # default: "role-management-widget"
+DEBUG_MODE=         # default: "false"
+DESCOPE_THEME=      # default: "light"
+DESCOPE_WIDGET_ID=  # default: "user-management-widget"
+```
+
+### Example
+
+Use the DescopeWC in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@descope/user-management-widget/dist/index.js"></script>
+<descope-wc
+  base-url="<DESCOPE_BASE_URL>"
+  project-id="<DESCOPE_PROJECT_ID>"
+  tenant-id="<DESCOPE_TENANT>"
+  debug="<DEBUG_MODE>"
+  theme="<DESCOPE_THEME>""
+  widget-id="<DESCOPE_WIDGET_ID>"
+></descope-wc>
 ```
 
 ### Start the widget
