@@ -7,22 +7,29 @@
 In the widget package create an `.env` file which includes;
 
 ```
-DESCOPE_BASE_URL=   # env base url
-DESCOPE_PROJECT_ID= # project ID
+DESCOPE_BASE_URL=   # env base url, default: "https://app.descope.com"
+DESCOPE_PROJECT_ID= # your Descope's project ID
 DESCOPE_TENANT=     # tenant ID
+DEBUG_MODE=         # "true" / "false", default: "false"
+DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 DESCOPE_WIDGET_ID=  # default: "audit-management-widget"
 ```
 
-### Start the widget
+### Example
 
-run `npm start` to start the widget.
+Use the `descope-audit-management-widget` in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
 
-### Authenticate
-
-In order to work with the widget, you must be logged in as the tenant admin
-In case you are not authenticated, a login flow will run first, and after logging in, the widget will be rendered
-
-## Architecture
+```
+<script src="https://cdn.jsdelivr.net/npm/@descope/audit-management-widget/dist/index.js"></script>
+<descope-audit-management-widget
+  base-url="<DESCOPE_BASE_URL>"
+  project-id="<DESCOPE_PROJECT_ID>"
+  tenant="<DESCOPE_TENANT>"
+  debug="<DEBUG_MODE>"
+  theme="<DESCOPE_THEME>"
+  widget-id="<DESCOPE_WIDGET_ID>"
+></descope-audit-management-widget>
+```
 
 ## Project Structure
 
