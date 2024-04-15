@@ -3831,4 +3831,22 @@ describe('web-component', () => {
       });
     });
   });
+
+  describe('Input Flows', () => {
+    it('should disable pre-populated input', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku">`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":"123", "kuku.disabled":"true"}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => screen.getByShadowDisplayValue('123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+  });
 });
