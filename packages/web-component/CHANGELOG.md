@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.10.0](https://github.com/descope/descope-js/compare/web-component-3.9.0...web-component-3.10.0) (2024-04-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.34`
+
+### Features
+
+* add open in a new tab ([#519](https://github.com/descope/descope-js/issues/519)) RELEASE ([dec2bd7](https://github.com/descope/descope-js/commit/dec2bd7ad0167f1bc51f60db90e76d535b9d66e2))
+
 ## [3.9.0](https://github.com/descope/descope-js/compare/web-component-3.8.40...web-component-3.9.0) (2024-04-12)
 
 ### Dependency Updates
