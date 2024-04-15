@@ -13,7 +13,7 @@
   "description": "Descope WC",
   "scripts": {
     "start": "npx nx run web-component:build && rollup -c rollup.config.app.serve.mjs -w",
-    "build-app": "rollup -c rollup.config.app.js",
+    "build-app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
     "test": "jest --silent",
     "lint": "eslint '+(src|test)/**/*.ts'"
