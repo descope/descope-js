@@ -39,7 +39,10 @@ import initTemplate from './initTemplate';
 // this is replaced in build time
 declare const BUILD_VERSION: string;
 
-const extractNestedAttribute = (formData: Record<string, any>, attr: string) =>
+const extractNestedAttribute = (
+  formData: Record<string, string | Record<string, string>>,
+  attr: string,
+) =>
   Object.fromEntries(
     Object.entries(formData).map(([name, values]) => [name, values[attr]]),
   );
