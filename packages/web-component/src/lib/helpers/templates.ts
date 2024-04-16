@@ -5,6 +5,8 @@ import {
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
 
+const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
+
 const replaceElementMessage = (
   baseEle: DocumentFragment,
   eleType: string,
@@ -112,7 +114,9 @@ const enableDisableInputs = (
     const eles = baseEle.querySelectorAll(`[name="${name}"]`);
     eles.forEach((ele) => {
       Object.keys(formData[name]).forEach((attr) => {
-        ele.setAttribute(attr, formData[name][attr]);
+        if (ALLOWED_INPUT_CONFIG_ATTRS.includes(attr)) {
+          ele.setAttribute(attr, formData[name][attr]);
+        }
       });
     });
   });

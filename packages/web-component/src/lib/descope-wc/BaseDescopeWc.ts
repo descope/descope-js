@@ -171,7 +171,7 @@ class BaseDescopeWc extends HTMLElement {
         // enforce a single type of configuration, return an empty object if some values
         // are in objects and others are string
       } else if (
-        vals.some((j) => typeof j === 'object') &&
+        vals.some((j) => typeof j === 'object' && j !== null) &&
         vals.some((j) => typeof j === 'string')
       ) {
         // eslint-disable-next-line no-console
