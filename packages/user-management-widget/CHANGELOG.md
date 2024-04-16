@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.40](https://github.com/descope/descope-js/compare/user-management-widget-0.4.39...user-management-widget-0.4.40) (2024-04-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency libphonenumber-js to v1.10.59 ([#522](https://github.com/descope/descope-js/issues/522)) ([111fa26](https://github.com/descope/descope-js/commit/111fa26719accc8064dc7802310018db1867ebd3))
+
+## [0.4.39](https://github.com/descope/descope-js/compare/user-management-widget-0.4.38...user-management-widget-0.4.39) (2024-04-15)
+
 ## [0.4.38](https://github.com/descope/descope-js/compare/user-management-widget-0.4.37...user-management-widget-0.4.38) (2024-04-15)
 
 ### Dependency Updates
