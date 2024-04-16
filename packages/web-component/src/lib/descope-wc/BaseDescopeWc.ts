@@ -157,16 +157,26 @@ class BaseDescopeWc extends HTMLElement {
       >;
 
       let formData = form;
+      const vals = Object.values(form);
 
       // transform values to object structure if needed:
       // we want to support the existing API for simple value replacement, and allow using
       // a new API for more complex settings (like attribute overrides).
       // the existing API consists of key/value map (e.g. `'{"email":"my@email.com"}'`)
       // while the new API is a structured object (e.g. `'{ "email": { "value": "my@email.com", "disabled": "true" } }'`)
-      if (Object.values(form).every((p) => typeof p === 'string')) {
+      if (vals.every((s) => typeof s === 'string')) {
         formData = Object.fromEntries(
           Object.keys(form).map((key) => [key, { value: form[key] }]),
         );
+        // enforce a single type of configuration, return an empty object if some values
+        // are in objects and others are string
+      } else if (
+        vals.some((j) => typeof j === 'object') &&
+        vals.some((j) => typeof j === 'string')
+      ) {
+        // eslint-disable-next-line no-console
+        console.error('flow inputs `form` attribute mismatch configuration');
+        return {};
       }
 
       return Object.entries(formData).reduce(
