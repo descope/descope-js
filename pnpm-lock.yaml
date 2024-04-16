@@ -828,7 +828,7 @@ importers:
       immer: ^10.0.3
       jest: ^29.0.0
       jest-environment-jsdom: ^29.0.0
-      libphonenumber-js: 1.10.58
+      libphonenumber-js: 1.10.59
       lint-staged: ^15.0.0
       prettier: ^3.0.0
       pretty-quick: ^4.0.0
@@ -858,7 +858,7 @@ importers:
       '@descope/web-js-sdk': link:../web-js-sdk
       '@reduxjs/toolkit': 2.0.1
       immer: 10.0.3
-      libphonenumber-js: 1.10.58
+      libphonenumber-js: 1.10.59
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
       reselect: 5.1.0
@@ -10846,8 +10846,8 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libphonenumber-js/1.10.58:
-    resolution: {integrity: sha512-53A0IpJFL9LdHbpeatwizf8KSwPICrqn9H0g3Y7WQ+Jgeu9cQ4Ew3WrRtrLBu/CX2lXd5+rgT01/tGlkbkzOjw==}
+  /libphonenumber-js/1.10.59:
+    resolution: {integrity: sha512-HeTsOrDF/hWhEiKqZVwg9Cqlep5x2T+IYDENvT2VRj3iX8JQ7Y+omENv+AIn0vC8m6GYhivfCed5Cgfw27r5SA==}
     dev: false
 
   /lilconfig/2.1.0:
