@@ -39,6 +39,11 @@ import initTemplate from './initTemplate';
 // this is replaced in build time
 declare const BUILD_VERSION: string;
 
+const extractNestedAttribute = (formData: Record<string, any>, attr: string) =>
+  Object.fromEntries(
+    Object.entries(formData).map(([name, values]) => [name, values[attr]]),
+  );
+
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends HTMLElement {
   logger: ILogger = console;
@@ -159,24 +164,15 @@ class BaseDescopeWc extends HTMLElement {
       let formData = form;
       const vals = Object.values(form);
 
-      // transform values to object structure if needed:
-      // we want to support the existing API for simple value replacement, and allow using
-      // a new API for more complex settings (like attribute overrides).
-      // the existing API consists of key/value map (e.g. `'{"email":"my@email.com"}'`)
-      // while the new API is a structured object (e.g. `'{ "email": { "value": "my@email.com", "disabled": "true" } }'`)
-      if (vals.every((s) => typeof s === 'string')) {
+      // transform values to object structure if needed
+      if (vals.some((s) => typeof s === 'string')) {
         formData = Object.fromEntries(
-          Object.keys(form).map((key) => [key, { value: form[key] }]),
+          Object.keys(form).map((key) =>
+            typeof form[key] !== 'string'
+              ? [key, form[key]]
+              : [key, { value: form[key] }],
+          ),
         );
-        // enforce a single type of configuration, return an empty object if some values
-        // are in objects and others are string
-      } else if (
-        vals.some((j) => typeof j === 'object' && j !== null) &&
-        vals.some((j) => typeof j === 'string')
-      ) {
-        // eslint-disable-next-line no-console
-        console.error('flow inputs `form` attribute mismatch configuration');
-        return {};
       }
 
       return Object.entries(formData).reduce(
@@ -191,14 +187,8 @@ class BaseDescopeWc extends HTMLElement {
     }
   }
 
-  getFormAttr(attr: string) {
-    return Object.fromEntries(
-      Object.entries(this.form).map(([name, values]) => [name, values[attr]]),
-    );
-  }
-
-  get formValues() {
-    return this.getFormAttr('value');
+  get formConfigValues() {
+    return extractNestedAttribute(this.form, 'value');
   }
 
   get client() {

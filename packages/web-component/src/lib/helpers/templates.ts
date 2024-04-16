@@ -110,12 +110,13 @@ const enableDisableInputs = (
   baseEle: DocumentFragment,
   formData: Record<string, string>,
 ) => {
-  Object.keys(formData).forEach((name) => {
+  Object.entries(formData).forEach(([name, config]) => {
     const eles = baseEle.querySelectorAll(`[name="${name}"]`);
+
     eles.forEach((ele) => {
-      Object.keys(formData[name]).forEach((attr) => {
-        if (ALLOWED_INPUT_CONFIG_ATTRS.includes(attr)) {
-          ele.setAttribute(attr, formData[name][attr]);
+      Object.entries(config).forEach(([attrName, attrValue]) => {
+        if (ALLOWED_INPUT_CONFIG_ATTRS.includes(attrName)) {
+          ele.setAttribute(attrName, attrValue);
         }
       });
     });
