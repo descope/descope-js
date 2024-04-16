@@ -3833,7 +3833,7 @@ describe('web-component', () => {
   });
 
   describe('Input Flows', () => {
-    it('should pre-populated input', async () => {
+    it('should pre-populated input with string value', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku">`;
@@ -3849,12 +3849,28 @@ describe('web-component', () => {
       });
     });
 
+    it('should pre-populated input with object value', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku">`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":{"value":"456"}}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => screen.getByShadowDisplayValue('456'), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+
     it('should disable pre-populated input', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku">`;
 
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":"123", "kuku.disabled":"true"}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":{"value":"123", "disabled":"true"}}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('Loaded'), {
         timeout: WAIT_TIMEOUT,

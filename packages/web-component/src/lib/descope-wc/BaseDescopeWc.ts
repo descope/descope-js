@@ -155,19 +155,40 @@ class BaseDescopeWc extends HTMLElement {
         string,
         any
       >;
-      return Object.entries(form).reduce((prev, [key, value]) => {
-        // filter out flow inputs that defines input state (and not value)
-        if (key.endsWith('.disabled')) {
-          return prev;
-        }
-        return {
+
+      let formData = form;
+
+      // transform values to object structure if needed:
+      // we want to support the existing API for simple value replacement, and allow using
+      // a new API for more complex settings (like attribute overrides).
+      // the existing API consists of key/value map (e.g. `'{"email":"my@email.com"}'`)
+      // while the new API is a structured object (e.g. `'{ "email": { "value": "my@email.com", "disabled": "true" } }'`)
+      if (Object.values(form).every((p) => typeof p === 'string')) {
+        formData = Object.fromEntries(
+          Object.keys(form).map((key) => [key, { value: form[key] }]),
+        );
+      }
+
+      return Object.entries(formData).reduce(
+        (prev, [name, value]) => ({
           ...prev,
-          [`form.${key}`]: value,
-        };
-      }, form);
+          [`form.${name}`]: value,
+        }),
+        formData,
+      );
     } catch (e) {
       return {};
     }
+  }
+
+  getFormAttr(attr: string) {
+    return Object.fromEntries(
+      Object.entries(this.form).map(([name, values]) => [name, values[attr]]),
+    );
+  }
+
+  get formValues() {
+    return this.getFormAttr('value');
   }
 
   get client() {

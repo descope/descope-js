@@ -108,22 +108,13 @@ const enableDisableInputs = (
   baseEle: DocumentFragment,
   formData: Record<string, string>,
 ) => {
-  Object.keys(formData).forEach((inputName) => {
-    if (inputName.endsWith('.disabled')) {
-      const eleName = (name: string, isFormAttr?: boolean) =>
-        `[name="${isFormAttr ? 'form.' : ''}${name.split('.disabled')[0]}"]`;
-
-      const eles = [
-        // all pre-defined inputs (e.g. name="email")
-        ...baseEle.querySelectorAll(eleName(inputName)),
-        // all form inputs (e.g. name="form.xxx")
-        ...baseEle.querySelectorAll(eleName(inputName, true)),
-      ];
-
-      eles.forEach((ele) => {
-        ele.setAttribute('disabled', formData[inputName]);
+  Object.keys(formData).forEach((name) => {
+    const eles = baseEle.querySelectorAll(`[name="${name}"]`);
+    eles.forEach((ele) => {
+      Object.keys(formData[name]).forEach((attr) => {
+        ele.setAttribute(attr, formData[name][attr]);
       });
-    }
+    });
   });
 };
 

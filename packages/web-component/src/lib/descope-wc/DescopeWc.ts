@@ -243,7 +243,7 @@ class DescopeWc extends BaseDescopeWc {
           flowConfig.version,
           projectConfig.componentsVersion,
           {
-            ...this.form,
+            ...this.formValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(descopeIdpInitiated && { idpInitiated: true }),
             ...(token ? { token } : {}),
@@ -412,7 +412,7 @@ class DescopeWc extends BaseDescopeWc {
       screenState: {
         ...screenState,
         form: {
-          ...this.form,
+          ...this.formValues,
           ...screenState?.form,
         },
         lastAuth: {
@@ -469,7 +469,7 @@ class DescopeWc extends BaseDescopeWc {
           version,
           componentsVersion,
           {
-            ...this.form,
+            ...this.formValues,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(descopeIdpInitiated && { idpInitiated: true }),
@@ -774,22 +774,11 @@ class DescopeWc extends BaseDescopeWc {
       screenState.form.email = currentState.samlIdpUsername;
     }
 
-    const formAttr = this.getAttribute('form') || '';
-    let flowInputs: Record<string, string> = {};
-    if (formAttr?.includes('.disabled')) {
-      try {
-        flowInputs = JSON.parse(this.getAttribute('form')) || {};
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to parse attribute: "form"');
-      }
-    }
-
     updateTemplateFromScreenState(
       clone,
       screenState,
       screenState.componentsConfig,
-      flowInputs,
+      this.form,
       this.errorTransformer,
       this.loggerWrapper,
     );
