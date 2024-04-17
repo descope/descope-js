@@ -11,6 +11,10 @@ export class AvatarDriver extends BaseDriver {
     this.ele?.setAttribute('img', imgUrl);
   }
 
+  get flowId() {
+    return this.ele?.getAttribute('flow-id');
+  }
+
   onClick(cb: (e: Event) => void) {
     this.ele?.addEventListener('click', cb);
 

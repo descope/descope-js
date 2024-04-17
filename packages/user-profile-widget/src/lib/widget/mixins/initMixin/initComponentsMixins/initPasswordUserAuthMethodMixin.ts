@@ -37,7 +37,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: 'test-widget',
+            flowId: this.passwordUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
           }),
         );

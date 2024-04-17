@@ -14,4 +14,8 @@ export class UserAuthMethodDriver extends BaseDriver {
 
     return () => this.ele?.removeEventListener('button-clicked', cb);
   }
+
+  get flowId() {
+    return this.ele?.getAttribute('flow-id');
+  }
 }

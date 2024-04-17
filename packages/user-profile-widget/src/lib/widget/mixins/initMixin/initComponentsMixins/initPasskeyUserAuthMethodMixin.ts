@@ -42,7 +42,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: 'test-widget',
+            flowId: this.passkeyUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
           }),
         );

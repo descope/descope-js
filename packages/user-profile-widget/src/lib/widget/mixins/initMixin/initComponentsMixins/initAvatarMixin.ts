@@ -42,7 +42,7 @@ export const initAvatarMixin = createSingletonMixin(
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: 'update-pic',
+            flowId: this.avatar.flowId,
             baseUrl: this.baseUrl,
           }),
         );
