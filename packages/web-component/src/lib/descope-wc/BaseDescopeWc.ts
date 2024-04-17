@@ -399,7 +399,10 @@ class BaseDescopeWc extends HTMLElement {
 
     const descopeUi = await BaseDescopeWc.descopeUI;
 
-    if (descopeUi?.componentsThemeManager) {
+    if (
+      descopeUi?.componentsThemeManager &&
+      !descopeUi.componentsThemeManager.hasThemes
+    ) {
       descopeUi.componentsThemeManager.themes = {
         light: theme?.light?.components,
         dark: theme?.dark?.components,
