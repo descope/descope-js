@@ -5,7 +5,7 @@ export const createSdk = (
   config: Parameters<typeof createWebSdk>[0],
   tenant: string,
   mock: boolean,
-  widgetId: string,
+  widgetId?: string,
 ) => {
   const webSdk = createWebSdk({
     ...config,
