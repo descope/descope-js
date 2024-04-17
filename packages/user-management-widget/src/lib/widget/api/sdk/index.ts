@@ -7,7 +7,13 @@ export const createSdk = (
   tenant: string,
   mock: boolean,
 ) => {
-  const webSdk = createWebSdk({ ...config, persistTokens: true });
+  const webSdk = createWebSdk({
+    ...config,
+    persistTokens: true,
+    baseHeaders: {
+      'x-descope-widget-id': 'user-management-widget',
+    },
+  });
 
   return {
     user: createUserSdk({ httpClient: webSdk.httpClient, tenant, mock }),
