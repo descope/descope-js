@@ -778,7 +778,7 @@ class DescopeWc extends BaseDescopeWc {
       clone,
       screenState,
       screenState.componentsConfig,
-      this.form,
+      this.formConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
