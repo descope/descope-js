@@ -6,12 +6,14 @@ export const createSdk = (
   config: Parameters<typeof createWebSdk>[0],
   tenant: string,
   mock: boolean,
+  widgetId: string,
 ) => {
   const webSdk = createWebSdk({
     ...config,
     persistTokens: true,
     baseHeaders: {
-      'x-descope-widget-id': 'access-key-management-widget',
+      'x-descope-widget-type': 'access-key-management-widget',
+      'x-descope-widget-id': widgetId,
     },
   });
 

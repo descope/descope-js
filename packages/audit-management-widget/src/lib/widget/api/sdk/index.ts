@@ -5,12 +5,14 @@ export const createSdk = (
   config: Parameters<typeof createWebSdk>[0],
   tenant: string,
   mock: boolean,
+  widgetId: string,
 ) => {
   const webSdk = createWebSdk({
     ...config,
     persistTokens: true,
     baseHeaders: {
-      'x-descope-widget-id': 'audit-management-widget',
+      'x-descope-widget-type': 'audit-management-widget',
+      'x-descope-widget-id': widgetId,
     },
   });
 
