@@ -18,7 +18,7 @@ test.describe('widget', () => {
     await page.addInitScript(() => {
       window.localStorage.setItem(
         'base.ui.components.url',
-        'http://localhost:8765/umd/index.js',
+        'http://localhost:8770/umd/index.js',
       );
 
       window.customElements.define(
