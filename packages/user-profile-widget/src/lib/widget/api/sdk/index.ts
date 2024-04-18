@@ -1,5 +1,6 @@
 import createWebSdk from '@descope/web-js-sdk';
 import { createUserSdk } from './createUserSdk';
+import '@descope/core-js-sdk';
 
 export const createSdk = (
   config: Parameters<typeof createWebSdk>[0],

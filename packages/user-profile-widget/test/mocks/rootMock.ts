@@ -6,7 +6,7 @@ export default `
 <descope-container data-editor-type="container" st-gap="32px" direction="column" id="headerContainer" st-horizontal-padding="0rem" st-vertical-padding="1rem" st-align-items="start" st-justify-content="space-between" st-host-width="100%" st-gap="0rem">
   <descope-text full-width="false" id="titleText" italic="false" mode="primary" text-align="center" variant="subtitle2">Personal Information</descope-text>
   <descope-user-attribute edit-flow-id="test-widget" delete-flow-id="test-widget" data-id="email" placeholder="Add an email" full-width="true" label="Email"></descope-user-attribute>
-  <descope-user-attribute edit-flow-id="test-widget" delete-flow-id="test-widget" data-id="name" full-width="true" label="Name" value="Nir Gur Arie"></descope-user-attribute>
+  <descope-user-attribute edit-flow-id="test-widget" delete-flow-id="test-widget" data-id="name" full-width="true" label="Name"></descope-user-attribute>
   <descope-user-attribute edit-flow-id="test-widget" delete-flow-id="test-widget" data-id="phone" placeholder="Add a phone number" full-width="true" label="Phone"></descope-user-attribute>
 </descope-container>
 <descope-divider></descope-divider>

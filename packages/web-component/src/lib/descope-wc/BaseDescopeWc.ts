@@ -81,6 +81,9 @@ class BaseDescopeWc extends HTMLElement {
     info: (message: string, description = '', state: any = {}) => {
       this.logger.info(message, description, state);
     },
+    debug: (message: string, description = '') => {
+      this.logger.debug(message, description);
+    },
   };
 
   #flowState = new State<FlowState>({ deferredRedirect: false } as FlowState);
@@ -560,7 +563,7 @@ class BaseDescopeWc extends HTMLElement {
 
   async #loadDescopeUI() {
     if (BaseDescopeWc.descopeUI) {
-      this.loggerWrapper.info(
+      this.loggerWrapper.debug(
         'DescopeUI is already loading, probably multiple flows are running on the same page',
       );
       return;

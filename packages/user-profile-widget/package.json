@@ -93,6 +93,9 @@
     "redux-thunk": "3.1.0",
     "immer": "^10.0.3"
   },
+  "optionalDependencies": {
+    "@descope/core-js-sdk": "workspace:*"
+  },
   "overrides": {
     "terser": "5.29.1"
   }
