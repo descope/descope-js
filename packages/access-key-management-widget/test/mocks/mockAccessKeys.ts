@@ -15,6 +15,7 @@ export const mockAccessKeys: Record<string, AccessKey[]> = {
       expireTime: new Date().getTime(),
       status: 'active',
       editable: true,
+      boundUserId: 'Bound User 1',
     },
     {
       id: '2',
@@ -26,6 +27,7 @@ export const mockAccessKeys: Record<string, AccessKey[]> = {
       expireTime: new Date().getTime(),
       status: 'active',
       editable: true,
+      boundUserId: 'Bound User 2',
     },
     {
       id: '3',
@@ -37,6 +39,7 @@ export const mockAccessKeys: Record<string, AccessKey[]> = {
       expireTime: new Date().getTime(),
       status: 'active',
       editable: true,
+      boundUserId: 'Bound User 2',
     },
   ],
 };
@@ -53,6 +56,7 @@ export const mockAccessKeysWithNonEditable: Record<string, AccessKey[]> = {
       expireTime: new Date().getTime(),
       status: 'active',
       editable: true,
+      boundUserId: 'Bound User 1',
     },
     {
       id: '2',
@@ -64,6 +68,7 @@ export const mockAccessKeysWithNonEditable: Record<string, AccessKey[]> = {
       expireTime: new Date().getTime(),
       status: 'active',
       editable: true,
+      boundUserId: 'Bound User 2',
     },
     {
       id: '3',
@@ -75,6 +80,7 @@ export const mockAccessKeysWithNonEditable: Record<string, AccessKey[]> = {
       expireTime: new Date().getTime(),
       status: 'active',
       editable: false,
+      boundUserId: 'Bound User 3',
     },
   ],
 };
