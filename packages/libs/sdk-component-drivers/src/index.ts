@@ -6,3 +6,7 @@ export * from './SingleSelectDriver';
 export * from './NotificationDriver';
 export * from './TextDriver';
 export * from './TextFieldDriver';
+export * from './AvatarDriver';
+export * from './UserAttributeDriver';
+export * from './UserAuthMethodDriver';
+export * from './FlowDriver';
