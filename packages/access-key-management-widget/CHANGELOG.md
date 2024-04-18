@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.39](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.38...access-key-management-widget-0.1.39) (2024-04-18)
+
+
+### Bug Fixes
+
+* Add bound user id RELEASE ([#527](https://github.com/descope/descope-js/issues/527)) ([d245f41](https://github.com/descope/descope-js/commit/d245f413dee22f914e406338d865445adb835df2))
+
 ## [0.1.38](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.37...access-key-management-widget-0.1.38) (2024-04-15)
 
 ## [0.1.37](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.36...access-key-management-widget-0.1.37) (2024-04-15)
