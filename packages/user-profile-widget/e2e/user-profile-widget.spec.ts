@@ -105,7 +105,7 @@ test.describe('widget', () => {
 
     logout.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     expect(isLoggedOut).toBe(true);
   });
