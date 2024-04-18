@@ -140,6 +140,7 @@ export default `
 		st-gap="2rem"
 	>
 		<descope-button
+      data-id="logout"
 			auto-submit="true"
 			data-type="button"
 			formnovalidate="false"
