@@ -1,27 +1,18 @@
-export const transformFlowInputFormData = (data: string) => {
+export const transformFlowInputFormData = (formData: string) => {
   try {
-    const form = JSON.parse(data);
+    const data = JSON.parse(formData);
 
-    let formData = form;
-    const vals = Object.values(form);
-
-    // transform values to object structure if needed
-    if (vals.some((s) => typeof s === 'string')) {
-      formData = Object.fromEntries(
-        Object.keys(form).map((key) =>
-          typeof form[key] !== 'string'
-            ? [key, form[key]]
-            : [key, { value: form[key] }],
-        ),
-      );
-    }
-
-    return Object.entries(formData).reduce(
-      (prev, [name, value]) => ({
-        ...prev,
-        [`form.${name}`]: value,
-      }),
-      formData,
+    return Object.fromEntries(
+      Object.keys(data)
+        .map((key) =>
+          typeof data[key] !== 'string'
+            ? [key, data[key]]
+            : [key, { value: data[key] }],
+        )
+        .flatMap(([name, value]) => [
+          [name, value],
+          [`form.${name}`, value],
+        ]),
     );
   } catch (e) {
     return {};
