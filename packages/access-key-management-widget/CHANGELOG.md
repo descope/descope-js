@@ -2,6 +2,39 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.38](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.37...access-key-management-widget-0.1.38) (2024-04-15)
+
+## [0.1.37](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.36...access-key-management-widget-0.1.37) (2024-04-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.34`
+## [0.1.36](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.35...access-key-management-widget-0.1.36) (2024-04-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.33`
+## [0.1.35](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.34...access-key-management-widget-0.1.35) (2024-04-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.32`
+* `sdk-helpers` updated to version `0.1.20`
+* `sdk-mixins` updated to version `0.2.0`
+* `sdk-component-drivers` updated to version `0.2.0`
+## [0.1.34](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.33...access-key-management-widget-0.1.34) (2024-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.31`
+## [0.1.33](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.32...access-key-management-widget-0.1.33) (2024-04-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.30`
+* `sdk-helpers` updated to version `0.1.19`
+* `sdk-mixins` updated to version `0.1.23`
+* `sdk-component-drivers` updated to version `0.1.19`
 ## [0.1.32](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.31...access-key-management-widget-0.1.32) (2024-04-08)
 
 ### Dependency Updates

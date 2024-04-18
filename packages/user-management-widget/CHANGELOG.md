@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.40](https://github.com/descope/descope-js/compare/user-management-widget-0.4.39...user-management-widget-0.4.40) (2024-04-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency libphonenumber-js to v1.10.59 ([#522](https://github.com/descope/descope-js/issues/522)) ([111fa26](https://github.com/descope/descope-js/commit/111fa26719accc8064dc7802310018db1867ebd3))
+
+## [0.4.39](https://github.com/descope/descope-js/compare/user-management-widget-0.4.38...user-management-widget-0.4.39) (2024-04-15)
+
+## [0.4.38](https://github.com/descope/descope-js/compare/user-management-widget-0.4.37...user-management-widget-0.4.38) (2024-04-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.34`
+## [0.4.37](https://github.com/descope/descope-js/compare/user-management-widget-0.4.36...user-management-widget-0.4.37) (2024-04-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.33`
+## [0.4.36](https://github.com/descope/descope-js/compare/user-management-widget-0.4.35...user-management-widget-0.4.36) (2024-04-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.32`
+* `sdk-helpers` updated to version `0.1.20`
+* `sdk-mixins` updated to version `0.2.0`
+* `sdk-component-drivers` updated to version `0.2.0`
+## [0.4.35](https://github.com/descope/descope-js/compare/user-management-widget-0.4.34...user-management-widget-0.4.35) (2024-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.31`
+## [0.4.34](https://github.com/descope/descope-js/compare/user-management-widget-0.4.33...user-management-widget-0.4.34) (2024-04-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.30`
+* `sdk-helpers` updated to version `0.1.19`
+* `sdk-mixins` updated to version `0.1.23`
+* `sdk-component-drivers` updated to version `0.1.19`
 ## [0.4.33](https://github.com/descope/descope-js/compare/user-management-widget-0.4.32...user-management-widget-0.4.33) (2024-04-08)
 
 ### Dependency Updates

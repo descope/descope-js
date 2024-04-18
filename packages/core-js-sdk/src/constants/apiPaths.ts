@@ -48,6 +48,12 @@ export default {
     signUp: '/v1/auth/totp/signup',
     update: '/v1/auth/totp/update',
   },
+  notp: {
+    signIn: '/v1/auth/notp/whatsapp/signin',
+    signUp: '/v1/auth/notp/whatsapp/signup',
+    signUpOrIn: '/v1/auth/notp/whatsapp/signup-in',
+    session: '/v1/auth/notp/pending-session',
+  },
   webauthn: {
     signUp: {
       start: '/v1/auth/webauthn/signup/start',

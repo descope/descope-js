@@ -1,4 +1,5 @@
 import { BASE_URL_REGION_PLACEHOLDER } from '../constants';
+import { pathJoin } from '../sdk/helpers';
 
 /** Build URL with given parts */
 export const urlBuilder = ({
@@ -17,7 +18,8 @@ export const urlBuilder = ({
     BASE_URL_REGION_PLACEHOLDER,
     region ? region + '.' : '',
   );
-  const url = new URL(path, baseUrl);
+  const url = new URL(baseUrl);
+  url.pathname = pathJoin(url.pathname, path);
   if (queryParams) url.search = new URLSearchParams(queryParams).toString();
 
   return url;

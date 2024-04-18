@@ -24,6 +24,7 @@ import {
 } from './validations';
 import withWebauthn from './webauthn';
 import { isString, isStringOrUndefined } from './validations/validators';
+import withNotp from './notp';
 
 const withJwtValidations = withValidations(stringNonEmpty('token'));
 const withOptionalTokenValidations = withValidations(
@@ -39,6 +40,7 @@ export default (httpClient: HttpClient) => ({
   oauth: withOauth(httpClient),
   saml: withSaml(httpClient),
   totp: withTotp(httpClient),
+  notp: withNotp(httpClient),
   webauthn: withWebauthn(httpClient),
   password: withPassword(httpClient),
   flow: withFlow(httpClient),
