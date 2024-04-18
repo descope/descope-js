@@ -60,8 +60,10 @@
           )?.roleNames || [];
 
         if (!userRoles.includes('Tenant Admin')) {
-          console.log('User is not tenant admin, received roles:', userRoles);
-          return true;
+          console.log(
+            'User is not tenant admin, continue as bound user, received roles:',
+            userRoles,
+          );
         }
 
         return false;
