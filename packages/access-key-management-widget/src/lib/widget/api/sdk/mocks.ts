@@ -22,6 +22,7 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
         roleNames: [`Role ${i}`],
         status: 'active',
         clientId: `Client ID ${i}`,
+        boundUserId: `User ${i}`,
       });
     }
     sort.forEach((s) => {
@@ -61,6 +62,7 @@ const create: (
         roleNames,
         status: 'active',
         clientId: `Client ID ${i}`,
+        boundUserId: userId || `User ${i}`,
       },
     });
   });

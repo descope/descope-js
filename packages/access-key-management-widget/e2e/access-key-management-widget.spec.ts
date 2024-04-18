@@ -375,7 +375,11 @@ test.describe('widget', () => {
 
     // only search results shown in grid
     await expect(
-      page.locator(`text=${mockAccessKeys.keys[1]['name']}`).first(),
+      page.locator(`text=${mockAccessKeys.keys[1].name}`).first(),
+    ).toBeVisible();
+
+    await expect(
+      page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
     ).toBeVisible();
   });
 
