@@ -1,6 +1,6 @@
 {
   "name": "@descope/role-management-widget",
-  "version": "0.1.39",
+  "version": "0.1.40",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -92,6 +92,6 @@
     "immer": "^10.0.3"
   },
   "overrides": {
-    "terser": "5.29.2"
+    "terser": "5.30.0"
   }
 }
