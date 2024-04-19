@@ -1,6 +1,6 @@
 {
   "name": "@descope/audit-management-widget",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -92,6 +92,6 @@
     "immer": "^10.0.3"
   },
   "overrides": {
-    "terser": "5.28.1"
+    "terser": "5.30.0"
   }
 }

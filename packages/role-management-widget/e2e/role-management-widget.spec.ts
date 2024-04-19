@@ -177,6 +177,8 @@ test.describe('widget', () => {
       page.locator(`text=${mockRolesPermissions.permissions[2].name}`).last(),
     ).toBeVisible();
 
+    await page.locator(`id=toggleButton`).last().click();
+
     // submit name
     await editRoleNameInput.last().fill('some role name');
 

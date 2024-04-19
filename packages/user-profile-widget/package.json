@@ -1,6 +1,6 @@
 {
   "name": "@descope/user-profile-widget",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -97,6 +97,6 @@
     "@descope/core-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.29.1"
+    "terser": "5.30.0"
   }
 }
