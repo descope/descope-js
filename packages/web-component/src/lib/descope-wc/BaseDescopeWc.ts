@@ -35,6 +35,10 @@ import {
   FlowConfig,
 } from '../types';
 import initTemplate from './initTemplate';
+import {
+  extractNestedAttribute,
+  transformFlowInputFormData,
+} from '../helpers/flowInputs';
 
 // this is replaced in build time
 declare const BUILD_VERSION: string;
@@ -69,6 +73,10 @@ class BaseDescopeWc extends HTMLElement {
   };
 
   #init = false;
+
+  formConfig = transformFlowInputFormData(this.getAttribute('form'));
+
+  formConfigValues = extractNestedAttribute(this.formConfig, 'value');
 
   loggerWrapper = {
     error: (message: string, description = '') => {
@@ -150,24 +158,6 @@ class BaseDescopeWc extends HTMLElement {
 
   get flowId() {
     return this.getAttribute('flow-id');
-  }
-
-  get form() {
-    try {
-      const form = (JSON.parse(this.getAttribute('form')) || {}) as Record<
-        string,
-        any
-      >;
-      return Object.entries(form).reduce(
-        (prev, [key, value]) => ({
-          ...prev,
-          [`form.${key}`]: value,
-        }),
-        form,
-      );
-    } catch (e) {
-      return {};
-    }
   }
 
   get client() {

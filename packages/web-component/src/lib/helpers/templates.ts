@@ -5,6 +5,8 @@ import {
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
 
+const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
+
 const replaceElementMessage = (
   baseEle: DocumentFragment,
   eleType: string,
@@ -104,6 +106,23 @@ const replaceHrefByDataType = (
   });
 };
 
+const setFormConfigValues = (
+  baseEle: DocumentFragment,
+  formData: Record<string, string>,
+) => {
+  Object.entries(formData).forEach(([name, config]) => {
+    const eles = baseEle.querySelectorAll(`[name="${name}"]`);
+
+    eles.forEach((ele) => {
+      Object.entries(config).forEach(([attrName, attrValue]) => {
+        if (ALLOWED_INPUT_CONFIG_ATTRS.includes(attrName)) {
+          ele.setAttribute(attrName, attrValue);
+        }
+      });
+    });
+  });
+};
+
 const setElementConfig = (
   baseEle: DocumentFragment,
   componentsConfig: ComponentsConfig,
@@ -166,6 +185,7 @@ export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
   componentsConfig?: ComponentsConfig,
+  flowInputs?: Record<string, string>,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
@@ -185,6 +205,7 @@ export const updateTemplateFromScreenState = (
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
+  setFormConfigValues(baseEle, flowInputs);
 };
 
 /**
