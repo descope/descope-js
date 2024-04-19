@@ -12,9 +12,6 @@ const action = createAsyncThunk<
 >('users/logout', (arg, { extra: { api } }) => api.user.logout());
 
 const reducer = buildAsyncReducer(action)({
-  onFulfilled: (state) => {
-    state.me.data = {};
-  },
 });
 
 export const logout = { action, reducer };
