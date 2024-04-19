@@ -13,7 +13,14 @@ export const loadDevTheme = async () => {
 
   // eslint-disable-next-line no-console
   console.warn('Trying to load DescopeDev.js from', descopeDevUrl);
-  await import(descopeDevUrl);
+  const scriptEle = document.createElement('script');
+  scriptEle.src = descopeDevUrl;
+  document.body.appendChild(scriptEle);
+
+  await new Promise((resolve, reject) => {
+    scriptEle.onload = resolve;
+    scriptEle.onerror = reject;
+  });
 
   if (globalThis.DescopeDev) {
     const { themeToStyle, defaultTheme, darkTheme } = globalThis.DescopeDev;
