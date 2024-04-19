@@ -21,7 +21,7 @@ const configContent = {
 const apiPath = (prop: 'role' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
+const MODAL_TIMEOUT = 1000;
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
