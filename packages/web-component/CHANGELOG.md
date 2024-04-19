@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.11.0](https://github.com/descope/descope-js/compare/web-component-3.10.2...web-component-3.11.0) (2024-04-19)
+
+
+### Features
+
+* Disable email input component using flow input ([#520](https://github.com/descope/descope-js/issues/520)) ([2f21f40](https://github.com/descope/descope-js/commit/2f21f40848d9dc600694f0889759b9d82c9b7c89))
+
 ## [3.10.2](https://github.com/descope/descope-js/compare/web-component-3.10.1...web-component-3.10.2) (2024-04-18)
 
 ## [3.10.1](https://github.com/descope/descope-js/compare/web-component-3.10.0...web-component-3.10.1) (2024-04-18)
