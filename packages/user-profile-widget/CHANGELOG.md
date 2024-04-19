@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.4...user-profile-widget-0.0.5) (2024-04-19)
+
+
+### Bug Fixes
+
+* UPW - fix logout in mock mode RELEASE ([#535](https://github.com/descope/descope-js/issues/535)) ([5af479f](https://github.com/descope/descope-js/commit/5af479ff512b7133d669fcb4a734ff997c6c4a2e))
+
 ## [0.0.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.3...user-profile-widget-0.0.4) (2024-04-19)
 
 ### Dependency Updates
