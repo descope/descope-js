@@ -106,7 +106,7 @@ const replaceHrefByDataType = (
   });
 };
 
-const enableDisableInputs = (
+const setFormConfigValues = (
   baseEle: DocumentFragment,
   formData: Record<string, string>,
 ) => {
@@ -205,7 +205,7 @@ export const updateTemplateFromScreenState = (
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
-  enableDisableInputs(baseEle, flowInputs);
+  setFormConfigValues(baseEle, flowInputs);
 };
 
 /**
