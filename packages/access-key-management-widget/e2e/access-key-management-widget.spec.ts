@@ -157,6 +157,8 @@ test.describe('widget', () => {
       page.locator(`text=${mockRoles.roles[2].name}`).last(),
     ).toBeVisible();
 
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     await page.keyboard.press('Escape');
 
     // click modal create button

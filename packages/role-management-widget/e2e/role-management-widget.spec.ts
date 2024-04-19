@@ -177,6 +177,10 @@ test.describe('widget', () => {
       page.locator(`text=${mockRolesPermissions.permissions[2].name}`).last(),
     ).toBeVisible();
 
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await page.keyboard.press('Escape');
+
     // submit name
     await editRoleNameInput.last().fill('some role name');
 
