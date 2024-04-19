@@ -3831,4 +3831,88 @@ describe('web-component', () => {
       });
     });
   });
+
+  describe('Input Flows', () => {
+    it('should pre-populate input with flat structure config structure', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku"/>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":"123"}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => screen.getByShadowDisplayValue('123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+
+    it('should pre-populate input with nested config structure', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku"/>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":{"value":"456"}}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => screen.getByShadowDisplayValue('456'), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+
+    it('should disable pre-populated input', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku"/>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":{"value":"123", "disabled":"true"}}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowDisplayValue('123')).toHaveAttribute(
+            'disabled',
+            'true',
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+    });
+
+    it('should pre-populate and disable input with combined nested/flat config structure', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="kuku"/><input class="descope-input" name="email"/>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc form='{"kuku":{"value":"456", "disabled":"true"}, "email": "my@email.com"}' flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => screen.getByShadowDisplayValue('456'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowDisplayValue('456')).toHaveAttribute(
+            'disabled',
+            'true',
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+    });
+  });
 });

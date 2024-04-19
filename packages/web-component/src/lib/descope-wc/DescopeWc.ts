@@ -243,7 +243,7 @@ class DescopeWc extends BaseDescopeWc {
           flowConfig.version,
           projectConfig.componentsVersion,
           {
-            ...this.form,
+            ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(descopeIdpInitiated && { idpInitiated: true }),
             ...(token ? { token } : {}),
@@ -412,7 +412,7 @@ class DescopeWc extends BaseDescopeWc {
       screenState: {
         ...screenState,
         form: {
-          ...this.form,
+          ...this.formConfigValues,
           ...screenState?.form,
         },
         lastAuth: {
@@ -469,7 +469,7 @@ class DescopeWc extends BaseDescopeWc {
           version,
           componentsVersion,
           {
-            ...this.form,
+            ...this.formConfigValues,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(descopeIdpInitiated && { idpInitiated: true }),
@@ -778,6 +778,7 @@ class DescopeWc extends BaseDescopeWc {
       clone,
       screenState,
       screenState.componentsConfig,
+      this.formConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
