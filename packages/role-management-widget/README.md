@@ -19,16 +19,9 @@ DESCOPE_WIDGET_ID=  # default: "role-management-widget"
 
 Use the `descope-role-management-widget` in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
 
-```
+```html
 <script src="https://cdn.jsdelivr.net/npm/@descope/role-management-widget/dist/index.js"></script>
-<descope-role-management-widget
-  base-url="<DESCOPE_BASE_URL>"
-  project-id="<DESCOPE_PROJECT_ID>"
-  tenant="<DESCOPE_TENANT>"
-  debug="<DEBUG_MODE>"
-  theme="<DESCOPE_THEME>"
-  widget-id="<DESCOPE_WIDGET_ID>"
-></descope-role-management-widget>
+<descope-role-management-widget base-url="<DESCOPE_BASE_URL>" project-id="<DESCOPE_PROJECT_ID>" tenant="<DESCOPE_TENANT>" debug="<DEBUG_MODE>" theme="<DESCOPE_THEME>" widget-id="<DESCOPE_WIDGET_ID>"></descope-role-management-widget>
 ```
 
 ### Start the widget

@@ -19,17 +19,14 @@ DESCOPE_WIDGET_ID=  # default: "access-key-management-widget"
 
 Use the `descope-access-key-management-widget` in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
 
-```
+```html
 <script src="https://cdn.jsdelivr.net/npm/@descope/access-key-management-widget/dist/index.js"></script>
-<descope-access-key-management-widget
-  base-url="<DESCOPE_BASE_URL>"
-  project-id="<DESCOPE_PROJECT_ID>"
-  tenant="<DESCOPE_TENANT>"
-  debug="<DEBUG_MODE>"
-  theme="<DESCOPE_THEME>"
-  widget-id="<DESCOPE_WIDGET_ID>"
-></descope-access-key-management-widget>
+<descope-access-key-management-widget base-url="<DESCOPE_BASE_URL>" project-id="<DESCOPE_PROJECT_ID>" tenant="<DESCOPE_TENANT>" debug="<DEBUG_MODE>" theme="<DESCOPE_THEME>" widget-id="<DESCOPE_WIDGET_ID>"></descope-access-key-management-widget>
 ```
+
+Use widget-id `access-key-management-widget` for admin view, to manage all tenant users' access keys.
+
+Use widget-id `user-access-key-management-widget` for user view, to mange access key for the logged-in tenant's user.
 
 ### Start the widget
 
