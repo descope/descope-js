@@ -1,6 +1,6 @@
 {
   "name": "@descope/access-key-management-widget",
-  "version": "0.1.38",
+  "version": "0.1.42",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -92,6 +92,6 @@
     "tslib": "2.6.2"
   },
   "overrides": {
-    "terser": "5.29.2"
+    "terser": "5.30.0"
   }
 }

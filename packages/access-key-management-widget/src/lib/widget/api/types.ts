@@ -16,6 +16,7 @@ export type AccessKey = {
   createdBy: string;
   clientId: string;
   editable: boolean;
+  boundUserId: string;
 };
 
 export type SortParams = { field: string; desc: boolean };
