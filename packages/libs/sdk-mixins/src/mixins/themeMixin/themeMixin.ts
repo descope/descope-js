@@ -7,8 +7,9 @@ import { initElementMixin } from '../initElementMixin';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { THEME_FILENAME } from './constants';
-import { loadFont } from './helpers';
+import { loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
+import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 
 const themeValidation = (_: string, theme: string | null) =>
   (theme || false) &&
@@ -49,12 +50,46 @@ export const themeMixin = createSingletonMixin(
 
       async #fetchTheme() {
         try {
-          const { body } = await this.fetchStaticResource(
+          const { body: fetchedTheme } = await this.fetchStaticResource(
             THEME_FILENAME,
             'json',
           );
 
-          return body;
+          // In development mode, we sometimes want to override the UI components URL
+          // The override components might have a different theme, so we need to merge it with the project theme in order to see the components correctly
+          if (process.env.NODE_ENV === 'development') {
+            if (localStorage?.getItem(UI_COMPONENTS_URL_KEY)) {
+              try {
+                this.logger.warn(
+                  'You are in DEV mode, and UI components override URL was found\ntrying to merge project theme with the default theme of the UI components',
+                );
+                const devTheme = await loadDevTheme();
+
+                if (devTheme) {
+                  fetchedTheme.light.components = {
+                    ...devTheme.light.components,
+                    ...fetchedTheme.light.components,
+                  };
+                  fetchedTheme.dark.components = {
+                    ...devTheme.dark.components,
+                    ...fetchedTheme.dark.components,
+                  };
+
+                  this.logger.warn('Theme was merged successfully');
+
+                  // eslint-disable-next-line no-console
+                  console.log(
+                    '%cNOTICE! This is not the theme that will be used in production!\n\nMake sure to test it without the override UI components URL!',
+                    'color: black; background-color:yellow; font-size: x-large',
+                  );
+                }
+              } catch (e) {
+                this.logger.error('Failed to merge UI components theme\n', e);
+              }
+            }
+          }
+
+          return fetchedTheme;
         } catch (e) {
           this.logger.error(
             'Cannot fetch theme file',

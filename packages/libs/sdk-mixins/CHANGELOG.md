@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.1...sdk-mixins-0.2.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* theme mixin RELEASE ([#529](https://github.com/descope/descope-js/issues/529)) ([4e1746e](https://github.com/descope/descope-js/commit/4e1746e5db30acea0a4f8776975471d305399d8c))
+
+## [0.2.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.0...sdk-mixins-0.2.1) (2024-04-18)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.2.1`
+
+### Bug Fixes
+
+* User profile ([#526](https://github.com/descope/descope-js/issues/526)) ([d9ecd41](https://github.com/descope/descope-js/commit/d9ecd41bb1e96f142d33e5f127964851fe5b1fe7))
+
 ## [0.2.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.1.23...sdk-mixins-0.2.0) (2024-04-11)
 
 ### Dependency Updates

@@ -31,6 +31,10 @@ Use the `descope-access-key-management-widget` in this package's `index.html`. C
 ></descope-access-key-management-widget>
 ```
 
+Use widget-id `access-key-management-widget` for admin view, to manage all tenant users' access keys.
+
+Use widget-id `user-access-key-management-widget` for user view, to mange access key for the logged-in tenant's user.
+
 ### Start the widget
 
 run `npm start` to start the widget.
