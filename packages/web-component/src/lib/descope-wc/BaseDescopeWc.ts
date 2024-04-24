@@ -74,10 +74,6 @@ class BaseDescopeWc extends HTMLElement {
 
   #init = false;
 
-  formConfig = transformFlowInputFormData(this.getAttribute('form'));
-
-  formConfigValues = extractNestedAttribute(this.formConfig, 'value');
-
   loggerWrapper = {
     error: (message: string, description = '') => {
       this.logger.error(message, description, new Error());
@@ -223,6 +219,14 @@ class BaseDescopeWc extends HTMLElement {
 
   get preview() {
     return !!this.getAttribute('preview');
+  }
+
+  get formConfig() {
+    return transformFlowInputFormData(this.getAttribute('form'));
+  }
+
+  get formConfigValues() {
+    return extractNestedAttribute(this.formConfig, 'value');
   }
 
   #validateAttrs() {

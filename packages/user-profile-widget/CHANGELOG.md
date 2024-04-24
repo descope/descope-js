@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.10](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.9...user-profile-widget-0.0.10) (2024-04-24)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.11.5`
+## [0.0.9](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.8...user-profile-widget-0.0.9) (2024-04-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.37`
+* `web-component` updated to version `3.11.4`
+* `sdk-helpers` updated to version `0.1.22`
+* `sdk-mixins` updated to version `0.2.4`
+* `sdk-component-drivers` updated to version `0.2.3`
+## [0.0.8](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.7...user-profile-widget-0.0.8) (2024-04-23)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.11.3`
+## [0.0.7](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.6...user-profile-widget-0.0.7) (2024-04-22)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.11.2`
+## [0.0.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.5...user-profile-widget-0.0.6) (2024-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.36`
+* `web-component` updated to version `3.11.1`
+* `sdk-helpers` updated to version `0.1.21`
+* `sdk-mixins` updated to version `0.2.3`
+* `sdk-component-drivers` updated to version `0.2.2`
+* `core-js-sdk` updated to version `2.14.1`
 ## [0.0.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.4...user-profile-widget-0.0.5) (2024-04-19)
 
 
