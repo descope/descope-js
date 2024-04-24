@@ -97,6 +97,6 @@
     "@descope/core-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.30.2"
+    "terser": "5.30.3"
   }
 }
