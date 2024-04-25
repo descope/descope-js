@@ -20,8 +20,7 @@ const me: () => Promise<User> = async () =>
       familyName: '',
       givenName: '',
       middleName: '',
-      picture:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzmudcbKkbOue75DaM9HDDrt0W39SJLBH-3HPK3s-K1w&s',
+      picture: undefined,
       password: true,
       SAML: false,
       test: false,
