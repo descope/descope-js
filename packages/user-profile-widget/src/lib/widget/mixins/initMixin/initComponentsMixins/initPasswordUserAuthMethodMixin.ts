@@ -35,11 +35,14 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.passwordUserAuthMethod.flowId,
-            baseUrl: this.baseUrl,
-          }),
+          createFlowTemplate(
+            {
+              projectId: this.projectId,
+              flowId: this.passwordUserAuthMethod.flowId,
+              baseUrl: this.baseUrl,
+            },
+            this.mock === 'true',
+          ),
         );
         this.#flow.onSuccess(() => {
           this.#modal.close();

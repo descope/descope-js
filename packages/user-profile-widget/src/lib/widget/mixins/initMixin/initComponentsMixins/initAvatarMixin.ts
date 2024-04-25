@@ -40,11 +40,14 @@ export const initAvatarMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.avatar.flowId,
-            baseUrl: this.baseUrl,
-          }),
+          createFlowTemplate(
+            {
+              projectId: this.projectId,
+              flowId: this.avatar.flowId,
+              baseUrl: this.baseUrl,
+            },
+            this.mock === 'true',
+          ),
         );
         this.#flow.onSuccess(() => {
           this.#modal.close();

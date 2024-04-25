@@ -44,11 +44,14 @@ export const initNameUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.nameUserAttr.editFlowId,
-            baseUrl: this.baseUrl,
-          }),
+          createFlowTemplate(
+            {
+              projectId: this.projectId,
+              flowId: this.nameUserAttr.editFlowId,
+              baseUrl: this.baseUrl,
+            },
+            this.mock === 'true',
+          ),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -68,11 +71,14 @@ export const initNameUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.nameUserAttr.deleteFlowId,
-            baseUrl: this.baseUrl,
-          }),
+          createFlowTemplate(
+            {
+              projectId: this.projectId,
+              flowId: this.nameUserAttr.deleteFlowId,
+              baseUrl: this.baseUrl,
+            },
+            this.mock === 'true',
+          ),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();
