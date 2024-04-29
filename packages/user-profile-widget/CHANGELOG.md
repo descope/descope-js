@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.15](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.14...user-profile-widget-0.0.15) (2024-04-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.41`
+* `web-component` updated to version `3.11.9`
+* `sdk-helpers` updated to version `0.1.26`
+* `sdk-mixins` updated to version `0.2.8`
+* `sdk-component-drivers` updated to version `0.2.7`
+* `core-js-sdk` updated to version `2.14.4`
+## [0.0.14](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.13...user-profile-widget-0.0.14) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.40`
+* `web-component` updated to version `3.11.8`
+* `sdk-helpers` updated to version `0.1.25`
+* `sdk-mixins` updated to version `0.2.7`
+* `sdk-component-drivers` updated to version `0.2.6`
+* `core-js-sdk` updated to version `2.14.3`
+## [0.0.13](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.12...user-profile-widget-0.0.13) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.39`
+* `web-component` updated to version `3.11.7`
+* `sdk-helpers` updated to version `0.1.24`
+* `sdk-mixins` updated to version `0.2.6`
+* `sdk-component-drivers` updated to version `0.2.5`
+* `core-js-sdk` updated to version `2.14.2`
+## [0.0.12](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.11...user-profile-widget-0.0.12) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.38`
+* `web-component` updated to version `3.11.6`
+* `sdk-helpers` updated to version `0.1.23`
+* `sdk-mixins` updated to version `0.2.5`
+* `sdk-component-drivers` updated to version `0.2.4`
+## [0.0.11](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.10...user-profile-widget-0.0.11) (2024-04-25)
+
 ## [0.0.10](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.9...user-profile-widget-0.0.10) (2024-04-24)
 
 ### Dependency Updates
