@@ -27,6 +27,7 @@ export const apiMixin = createSingletonMixin(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.tenant,
           this.mock === 'true',
+          this.widgetId,
         );
       }
 
@@ -36,6 +37,10 @@ export const apiMixin = createSingletonMixin(
 
       get tenant() {
         return this.getAttribute('tenant');
+      }
+
+      get widgetId() {
+        return this.getAttribute('widget-id');
       }
 
       get mock() {
