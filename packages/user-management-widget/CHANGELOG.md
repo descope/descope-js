@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.53](https://github.com/descope/descope-js/compare/user-management-widget-0.4.52...user-management-widget-0.4.53) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.43`
+* `sdk-helpers` updated to version `0.1.28`
+* `sdk-mixins` updated to version `0.2.10`
+* `sdk-component-drivers` updated to version `0.2.9`
 ## [0.4.52](https://github.com/descope/descope-js/compare/user-management-widget-0.4.51...user-management-widget-0.4.52) (2024-04-30)
 
 ### Dependency Updates
