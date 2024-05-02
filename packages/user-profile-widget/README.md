@@ -17,7 +17,7 @@ DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 ### Example
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/user-profile-widget/dist/index.js"></script>
+<script src="https://static.descope.com/npm/@descope/user-profile-widget@0.0.17/dist/index.js"></script>
 <descope-user-profile-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"

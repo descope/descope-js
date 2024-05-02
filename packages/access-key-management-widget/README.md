@@ -18,7 +18,7 @@ DESCOPE_WIDGET_ID=  # default: "access-key-management-widget"
 ### Example
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/access-key-management-widget/dist/index.js"></script>
+<script src="https://static.descope.com/npm/@descope/access-key-management-widget@0.1.53/dist/index.js"></script>
 <descope-access-key-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"

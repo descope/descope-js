@@ -18,7 +18,7 @@ DESCOPE_WIDGET_ID=  # default: "user-management-widget"
 ### Example
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/user-management-widget/dist/index.js"></script>
+<script src="https://static.descope.com/npm/@descope/user-management-widget@0.4.53/dist/index.js"></script>
 <descope-user-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"

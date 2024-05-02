@@ -18,7 +18,7 @@ DESCOPE_WIDGET_ID=  # default: "audit-management-widget"
 ### Example
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/audit-management-widget/dist/index.js"></script>
+<script src="https://static.descope.com/npm/@descope/audit-management-widget@0.1.16/dist/index.js"></script>
 <descope-audit-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
