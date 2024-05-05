@@ -80,7 +80,15 @@ export function getContentUrl(
   return url.toString();
 }
 
-export function getAnimationDirection(currentIdx: number, prevIdx: number) {
+export function getAnimationDirection(
+  currentIdxStr: string,
+  prevIdxStr: string,
+) {
+  if (!prevIdxStr) return undefined;
+
+  const currentIdx = +currentIdxStr;
+  const prevIdx = +prevIdxStr;
+
   if (Number.isNaN(currentIdx) || Number.isNaN(prevIdx)) return undefined;
   if (currentIdx > prevIdx) return Direction.forward;
   if (currentIdx < prevIdx) return Direction.backward;
