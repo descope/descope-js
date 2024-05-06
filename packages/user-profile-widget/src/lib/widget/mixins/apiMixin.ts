@@ -1,6 +1,5 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
-  createValidateAttributesMixin,
   loggerMixin,
   observeAttributesMixin,
   projectIdMixin,
@@ -13,9 +12,6 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
-      createValidateAttributesMixin({
-        tenant: createValidateAttributesMixin.missingAttrValidator,
-      }),
     )(superclass);
 
     return class ApiMixinClass extends BaseClass {
@@ -25,7 +21,6 @@ export const apiMixin = createSingletonMixin(
         this.logger.debug('creating an sdk instance');
         this.#api = createSdk(
           { projectId: this.projectId, baseUrl: this.baseUrl },
-          this.tenant,
           this.mock === 'true',
           this.widgetId,
         );
@@ -33,10 +28,6 @@ export const apiMixin = createSingletonMixin(
 
       get baseUrl() {
         return this.getAttribute('base-url');
-      }
-
-      get tenant() {
-        return this.getAttribute('tenant');
       }
 
       get widgetId() {
@@ -58,7 +49,7 @@ export const apiMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.observeAttributes(['project-id', 'base-url', 'tenant'], () => {
+        this.observeAttributes(['project-id', 'base-url'], () => {
           if (this.#api) {
             this.#createSdk();
           }
