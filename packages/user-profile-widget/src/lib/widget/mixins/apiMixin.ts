@@ -22,11 +22,16 @@ export const apiMixin = createSingletonMixin(
         this.#api = createSdk(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.mock === 'true',
+          this.widgetId,
         );
       }
 
       get baseUrl() {
         return this.getAttribute('base-url');
+      }
+
+      get widgetId() {
+        return this.getAttribute('widget-id');
       }
 
       get mock() {

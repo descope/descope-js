@@ -17,8 +17,6 @@ DESCOPE_WIDGET_ID=  # default: "user-management-widget"
 
 ### Example
 
-Use the `descope-user-management-widget` in this package's `index.html`. Comment out the widget web-component from `index.html` and paste this:
-
 ```
 <script src="https://cdn.jsdelivr.net/npm/@descope/user-management-widget/dist/index.js"></script>
 <descope-user-management-widget
