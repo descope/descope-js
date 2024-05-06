@@ -408,7 +408,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
-      direction: getAnimationDirection(+stepId, +prevState.stepId),
+      direction: getAnimationDirection(stepId, prevState.stepId),
       screenState: {
         ...screenState,
         form: {
