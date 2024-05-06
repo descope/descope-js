@@ -9,7 +9,6 @@ import rootMock from './mocks/rootMock';
 const origAppend = document.body.append;
 
 const mockProjectId = 'mockProjectId';
-const mockTenant = 'mockTenant';
 
 export const mockHttpClient = {
   get: jest.fn(),
@@ -91,7 +90,7 @@ describe('user-profile-widget', () => {
 
   describe('sdk', () => {
     it('me', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
+      const sdk = createSdk({ projectId: mockProjectId }, false);
       const result = await sdk.user.me();
 
       await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
