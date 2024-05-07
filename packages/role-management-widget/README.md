@@ -18,7 +18,8 @@ DESCOPE_WIDGET_ID=  # default: "role-management-widget"
 ### Example
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/role-management-widget/dist/index.js"></script>
+<script src="https://static.descope.com/npm/@descope/role-management-widget@0.1.51/dist/index.js
+"></script>
 <descope-role-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
