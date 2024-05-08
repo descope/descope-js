@@ -898,6 +898,9 @@ class DescopeWc extends BaseDescopeWc {
 
     if (id && password) {
       try {
+        if (!globalThis.PasswordCredential) {
+          return;
+        }
         const cred = new globalThis.PasswordCredential({ id, password });
 
         navigator?.credentials?.store?.(cred);
