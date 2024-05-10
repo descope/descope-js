@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.20](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.19...user-profile-widget-0.0.20) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+* `web-component` updated to version `3.11.14`
+* `sdk-helpers` updated to version `0.1.30`
+* `sdk-mixins` updated to version `0.2.12`
+* `sdk-component-drivers` updated to version `0.2.11`
+* `core-js-sdk` updated to version `2.14.7`
+## [0.0.19](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.18...user-profile-widget-0.0.19) (2024-05-06)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.11.13`
+
+### Bug Fixes
+
+* remove tenant ([#563](https://github.com/descope/descope-js/issues/563)) ([bca7b86](https://github.com/descope/descope-js/commit/bca7b860337388d534610dd0d904ad99f719b5a7))
+* UPW_redirect_flow RELEASE ([#565](https://github.com/descope/descope-js/issues/565)) ([e456a23](https://github.com/descope/descope-js/commit/e456a23843e7e6730080df52643b3d473ce4eebc))
+
 ## [0.0.18](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.17...user-profile-widget-0.0.18) (2024-05-02)
 
 ### Dependency Updates

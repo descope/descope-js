@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.11.14](https://github.com/descope/descope-js/compare/web-component-3.11.13...web-component-3.11.14) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+## [3.11.13](https://github.com/descope/descope-js/compare/web-component-3.11.12...web-component-3.11.13) (2024-05-06)
+
+
+### Bug Fixes
+
+* Fix issue when flow does not rendered because of wrong animation direction RELEASE ([#562](https://github.com/descope/descope-js/issues/562)) ([db09731](https://github.com/descope/descope-js/commit/db097310ee872ededba9e3dbaeb91ff56fa573ed))
+
 ## [3.11.12](https://github.com/descope/descope-js/compare/web-component-3.11.11...web-component-3.11.12) (2024-05-02)
 
 ### Dependency Updates
