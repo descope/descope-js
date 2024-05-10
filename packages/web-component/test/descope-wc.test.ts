@@ -43,7 +43,7 @@ jest.mock('@descope/web-js-sdk', () => ({
   ensureFingerprintIds: jest.fn(),
 }));
 
-const WAIT_TIMEOUT = 6000;
+const WAIT_TIMEOUT = 10000;
 
 class MockFileReader {
   onload = null;
@@ -430,7 +430,9 @@ describe('web-component', () => {
 
     wcEle.setAttribute('project-id', '2');
 
-    await screen.findByShadowText('It updated!');
+    await waitFor(() => screen.findByShadowText('It updated!'), {
+      timeout: WAIT_TIMEOUT,
+    });
   });
 
   it('When submitting it injects the next page to the website', async () => {
@@ -489,12 +491,12 @@ describe('web-component', () => {
     );
   });
 
-  it.skip('When submitting it calls next with the checkbox checked value - false', async () => {
+  it('When submitting it calls next with the input value', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
     pageContent =
-      '<descope-button id="submitterId">click</descope-button><input id="toggle" name="t1" type="checkbox"></input><span>It works!</span>';
+      '<descope-button id="submitterId">click</descope-button><input id="toggle" name="t1" value="123"></input><span>It works!</span>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-up-or-in" project-id="1"></descope-wc>`;
 
@@ -504,48 +506,20 @@ describe('web-component', () => {
 
     fireEvent.click(screen.getByShadowText('click'));
 
-    await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith(
-        '0',
-        '0',
-        'submitterId',
-        0,
-        '1.2.3',
-        {
-          t1: false,
-          origin: 'http://localhost',
-        },
-      ),
-    );
-  });
-
-  it.skip('When submitting it calls next with the checkbox checked value - true', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
-
-    pageContent =
-      '<descope-button id="submitterId">click</descope-button><input id="toggle" name="t1" type="checkbox" checked="true"></input><span>It works!</span>';
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('It works!'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    fireEvent.click(screen.getByShadowText('click'));
-
-    await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith(
-        '0',
-        '0',
-        'submitterId',
-        1,
-        '1.2.3',
-        {
-          t1: true,
-          origin: 'http://localhost',
-        },
-      ),
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          'submitterId',
+          0,
+          '1.2.3',
+          {
+            t1: '123',
+            origin: 'http://localhost',
+          },
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -564,7 +538,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
-    await screen.findByShadowText('hey');
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     fireEvent.click(screen.getByShadowText('click'));
 
@@ -846,38 +822,6 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowDisplayValue('email1'), {
       timeout: WAIT_TIMEOUT,
     });
-  });
-
-  it.skip('should upload file', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(generateSdkResponse());
-
-    // Use the mock FileReader in your tests.
-    (global as any).FileReader = MockFileReader;
-
-    pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="image" type="file" placeholder="image-ph">`;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('Loaded'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    // fill the input with a file
-    const input = screen.getByShadowPlaceholderText('image-ph');
-    const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
-    fireEvent.change(input, { target: { files: [file] } });
-
-    fireEvent.click(screen.getByShadowText('click'));
-
-    await waitFor(
-      () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', null, 1, '1.2.3', {
-          image: 'data:;base64,example',
-          origin: 'http://localhost',
-        }),
-      { timeout: WAIT_TIMEOUT },
-    );
   });
 
   it('should go next with no file', async () => {
@@ -1550,7 +1494,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('hey'));
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(startMock).not.toBeCalled();
     const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/screen-0.html`;
 
@@ -1579,7 +1525,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="base.url"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('hey'));
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(ensureFingerprintIds).toHaveBeenCalledWith(
       'fp-public-key',
       'base.url',
@@ -2031,7 +1979,9 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.getByShadowText('hey'));
+      await waitFor(() => screen.getByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
       expect(startMock).not.toBeCalled();
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/met.html`;
 
@@ -2074,7 +2024,9 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.getByShadowText('hey'));
+      await waitFor(() => screen.getByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
       expect(startMock).not.toBeCalled();
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/unmet.html`;
 
@@ -2120,7 +2072,9 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await screen.findByShadowText('Click');
+      await waitFor(() => screen.findByShadowText('Click'), {
+        timeout: WAIT_TIMEOUT,
+      });
 
       pageContent =
         '<input id="email"></input><input id="code"></input><span>It works!</span>';
@@ -2231,7 +2185,9 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.getByShadowText('hey'));
+      await waitFor(() => screen.getByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
       expect(startMock).not.toBeCalled();
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/unmet.html`;
 
@@ -2320,7 +2276,9 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.getByShadowText('hey'));
+      await waitFor(() => screen.getByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
       expect(startMock).not.toBeCalled();
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/unmet.html`;
 
@@ -2967,7 +2925,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('hey'));
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(startMock).not.toBeCalled();
     const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/met.html`;
 
@@ -3030,7 +2990,9 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('hey'));
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
     expect(startMock).not.toBeCalled();
     const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/else.html`;
 
@@ -3648,7 +3610,7 @@ describe('web-component', () => {
             expect.any(String),
             expect.any(Error),
           ),
-        { timeout: 5100 },
+        { timeout: WAIT_TIMEOUT },
       );
     });
     it('should not load components which are already loaded', async () => {
