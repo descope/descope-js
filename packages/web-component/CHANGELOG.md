@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.11.16](https://github.com/descope/descope-js/compare/web-component-3.11.15...web-component-3.11.16) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.47`
+
+### Bug Fixes
+
+* trying to fix PasswordCredential error ([#568](https://github.com/descope/descope-js/issues/568)) ([6fcb72d](https://github.com/descope/descope-js/commit/6fcb72de4a3028be5bb46738945e6a11db3af4dc))
+
+## [3.11.15](https://github.com/descope/descope-js/compare/web-component-3.11.14...web-component-3.11.15) (2024-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.46`
 ## [3.11.14](https://github.com/descope/descope-js/compare/web-component-3.11.13...web-component-3.11.14) (2024-05-07)
 
 ### Dependency Updates
