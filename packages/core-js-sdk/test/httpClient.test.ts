@@ -57,6 +57,28 @@ describe('httpClient', () => {
     );
   });
 
+  it('should call fetch with multiple params when calling "get"', () => {
+    httpClient.get('1/2/3', {
+      headers: { test2: '123' },
+      queryParams: { test2: '123', test3: '456', test4: '789' },
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      new URL('http://descope.com/1/2/3?test2=123&test3=456&test4=789'),
+      {
+        body: undefined,
+        credentials: 'include',
+        headers: new Headers({
+          test2: '123',
+          test: '123',
+          Authorization: 'Bearer 456',
+          ...descopeHeaders,
+        }),
+        method: 'GET',
+      },
+    );
+  });
+
   it('should call the "afterHook"', async () => {
     await hookedHttpClient.post('1/2/3', {
       headers: { test2: '123' },
