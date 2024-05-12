@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.48](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.47...web-js-sdk-1.10.48) (2024-05-12)
+
+
+### Bug Fixes
+
+* wrap visibility change in condition ([#561](https://github.com/descope/descope-js/issues/561)) RELEASE ([b40ff22](https://github.com/descope/descope-js/commit/b40ff22045b087ea75fad48c41f93a5ecf3427f8))
+
 ## [1.10.47](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.46...web-js-sdk-1.10.47) (2024-05-12)
 
 ### Dependency Updates
