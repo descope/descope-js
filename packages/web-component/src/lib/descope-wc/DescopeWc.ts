@@ -408,7 +408,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
-      direction: getAnimationDirection(+stepId, +prevState.stepId),
+      direction: getAnimationDirection(stepId, prevState.stepId),
       screenState: {
         ...screenState,
         form: {
@@ -898,6 +898,9 @@ class DescopeWc extends BaseDescopeWc {
 
     if (id && password) {
       try {
+        if (!globalThis.PasswordCredential) {
+          return;
+        }
         const cred = new globalThis.PasswordCredential({ id, password });
 
         navigator?.credentials?.store?.(cred);

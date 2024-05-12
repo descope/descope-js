@@ -80,7 +80,15 @@ export function getContentUrl(
   return url.toString();
 }
 
-export function getAnimationDirection(currentIdx: number, prevIdx: number) {
+export function getAnimationDirection(
+  currentIdxStr: string,
+  prevIdxStr: string,
+) {
+  if (!prevIdxStr) return undefined;
+
+  const currentIdx = +currentIdxStr;
+  const prevIdx = +prevIdxStr;
+
   if (Number.isNaN(currentIdx) || Number.isNaN(prevIdx)) return undefined;
   if (currentIdx > prevIdx) return Direction.forward;
   if (currentIdx < prevIdx) return Direction.backward;
@@ -439,32 +447,6 @@ export const showFirstScreenOnExecutionInit = (
     optimizeIfMissingOIDCLoginHintParams
   );
 };
-
-export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
-  new Promise((resolve) => {
-    switch (input.type) {
-      case 'checkbox': {
-        resolve(input.checked);
-        break;
-      }
-      case 'file': {
-        const reader = new FileReader();
-        if (input.files?.length) {
-          reader.onload = (e: any) => {
-            const contents = e.target.result;
-            resolve(contents);
-          };
-          reader.readAsDataURL(input.files[0]);
-        } else {
-          resolve(null);
-        }
-        break;
-      }
-      default: {
-        resolve(input.value);
-      }
-    }
-  });
 
 export const injectSamlIdpForm = (
   url: string,

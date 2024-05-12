@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.11.16](https://github.com/descope/descope-js/compare/web-component-3.11.15...web-component-3.11.16) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.47`
+
+### Bug Fixes
+
+* trying to fix PasswordCredential error ([#568](https://github.com/descope/descope-js/issues/568)) ([6fcb72d](https://github.com/descope/descope-js/commit/6fcb72de4a3028be5bb46738945e6a11db3af4dc))
+
+## [3.11.15](https://github.com/descope/descope-js/compare/web-component-3.11.14...web-component-3.11.15) (2024-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.46`
+## [3.11.14](https://github.com/descope/descope-js/compare/web-component-3.11.13...web-component-3.11.14) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+## [3.11.13](https://github.com/descope/descope-js/compare/web-component-3.11.12...web-component-3.11.13) (2024-05-06)
+
+
+### Bug Fixes
+
+* Fix issue when flow does not rendered because of wrong animation direction RELEASE ([#562](https://github.com/descope/descope-js/issues/562)) ([db09731](https://github.com/descope/descope-js/commit/db097310ee872ededba9e3dbaeb91ff56fa573ed))
+
 ## [3.11.12](https://github.com/descope/descope-js/compare/web-component-3.11.11...web-component-3.11.12) (2024-05-02)
 
 ### Dependency Updates
