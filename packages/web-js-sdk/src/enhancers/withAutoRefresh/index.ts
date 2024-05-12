@@ -9,7 +9,7 @@ import {
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
-import { IS_BROWSER, MAX_TIMEOUT } from '../../constants';
+import { MAX_TIMEOUT } from '../../constants';
 
 // The amount of time (ms) to trigger the refresh before session expires
 const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
@@ -31,18 +31,16 @@ export const withAutoRefresh =
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpiration: Date;
     let refreshToken: string;
-    if (IS_BROWSER) {
-      document.addEventListener('visibilitychange', () => {
-        // tab becomes visible and the session is expired, do a refresh
-        if (
-          document.visibilityState === 'visible' &&
-          new Date() > sessionExpiration
-        ) {
-          logger.debug('Expiration time passed, refreshing session');
-          sdk.refresh(refreshToken);
-        }
-      });
-    }
+    document.addEventListener('visibilitychange', () => {
+      // tab becomes visible and the session is expired, do a refresh
+      if (
+        document.visibilityState === 'visible' &&
+        new Date() > sessionExpiration
+      ) {
+        logger.debug('Expiration time passed, refreshing session');
+        sdk.refresh(refreshToken);
+      }
+    });
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const { refreshJwt, sessionJwt } = await getAuthInfoFromResponse(res);
@@ -59,17 +57,17 @@ export const withAutoRefresh =
 
         if (timeout > MAX_TIMEOUT) {
           logger.debug(
-            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`,
+            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`
           );
           timeout = MAX_TIMEOUT;
         }
         clearAllTimers();
 
         const refreshTimeStr = new Date(
-          Date.now() + timeout,
+          Date.now() + timeout
         ).toLocaleTimeString('en-US', { hour12: false });
         logger.debug(
-          `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
+          `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`
         );
 
         setTimer(() => {
