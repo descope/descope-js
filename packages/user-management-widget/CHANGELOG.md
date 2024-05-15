@@ -2,6 +2,92 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.60](https://github.com/descope/descope-js/compare/user-management-widget-0.4.59...user-management-widget-0.4.60) (2024-05-15)
+
+## [0.4.59](https://github.com/descope/descope-js/compare/user-management-widget-0.4.58...user-management-widget-0.4.59) (2024-05-13)
+
+## [0.4.58](https://github.com/descope/descope-js/compare/user-management-widget-0.4.57...user-management-widget-0.4.58) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.48`
+## [0.4.57](https://github.com/descope/descope-js/compare/user-management-widget-0.4.56...user-management-widget-0.4.57) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.47`
+## [0.4.56](https://github.com/descope/descope-js/compare/user-management-widget-0.4.55...user-management-widget-0.4.56) (2024-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.46`
+* `sdk-helpers` updated to version `0.1.31`
+* `sdk-mixins` updated to version `0.2.13`
+* `sdk-component-drivers` updated to version `0.2.12`
+## [0.4.55](https://github.com/descope/descope-js/compare/user-management-widget-0.4.54...user-management-widget-0.4.55) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+* `sdk-helpers` updated to version `0.1.30`
+* `sdk-mixins` updated to version `0.2.12`
+* `sdk-component-drivers` updated to version `0.2.11`
+## [0.4.54](https://github.com/descope/descope-js/compare/user-management-widget-0.4.53...user-management-widget-0.4.54) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.44`
+* `sdk-helpers` updated to version `0.1.29`
+* `sdk-mixins` updated to version `0.2.11`
+* `sdk-component-drivers` updated to version `0.2.10`
+## [0.4.53](https://github.com/descope/descope-js/compare/user-management-widget-0.4.52...user-management-widget-0.4.53) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.43`
+* `sdk-helpers` updated to version `0.1.28`
+* `sdk-mixins` updated to version `0.2.10`
+* `sdk-component-drivers` updated to version `0.2.9`
+## [0.4.52](https://github.com/descope/descope-js/compare/user-management-widget-0.4.51...user-management-widget-0.4.52) (2024-04-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.42`
+* `sdk-helpers` updated to version `0.1.27`
+* `sdk-mixins` updated to version `0.2.9`
+* `sdk-component-drivers` updated to version `0.2.8`
+## [0.4.51](https://github.com/descope/descope-js/compare/user-management-widget-0.4.50...user-management-widget-0.4.51) (2024-04-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.41`
+* `sdk-helpers` updated to version `0.1.26`
+* `sdk-mixins` updated to version `0.2.8`
+* `sdk-component-drivers` updated to version `0.2.7`
+## [0.4.50](https://github.com/descope/descope-js/compare/user-management-widget-0.4.49...user-management-widget-0.4.50) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.40`
+* `sdk-helpers` updated to version `0.1.25`
+* `sdk-mixins` updated to version `0.2.7`
+* `sdk-component-drivers` updated to version `0.2.6`
+## [0.4.49](https://github.com/descope/descope-js/compare/user-management-widget-0.4.48...user-management-widget-0.4.49) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.39`
+* `sdk-helpers` updated to version `0.1.24`
+* `sdk-mixins` updated to version `0.2.6`
+* `sdk-component-drivers` updated to version `0.2.5`
+## [0.4.48](https://github.com/descope/descope-js/compare/user-management-widget-0.4.47...user-management-widget-0.4.48) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.38`
+* `sdk-helpers` updated to version `0.1.23`
+* `sdk-mixins` updated to version `0.2.5`
+* `sdk-component-drivers` updated to version `0.2.4`
 ## [0.4.47](https://github.com/descope/descope-js/compare/user-management-widget-0.4.46...user-management-widget-0.4.47) (2024-04-24)
 
 ### Dependency Updates

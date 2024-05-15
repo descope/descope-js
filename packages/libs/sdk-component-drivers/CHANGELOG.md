@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.12](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.11...sdk-component-drivers-0.2.12) (2024-05-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.31`
+## [0.2.11](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.10...sdk-component-drivers-0.2.11) (2024-05-07)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.30`
+## [0.2.10](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.9...sdk-component-drivers-0.2.10) (2024-05-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.29`
+## [0.2.9](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.8...sdk-component-drivers-0.2.9) (2024-05-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.28`
+## [0.2.8](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.7...sdk-component-drivers-0.2.8) (2024-04-30)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.27`
+## [0.2.7](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.6...sdk-component-drivers-0.2.7) (2024-04-28)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.26`
+## [0.2.6](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.5...sdk-component-drivers-0.2.6) (2024-04-27)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.25`
+## [0.2.5](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.4...sdk-component-drivers-0.2.5) (2024-04-27)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.24`
+## [0.2.4](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.3...sdk-component-drivers-0.2.4) (2024-04-27)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.23`
 ## [0.2.3](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.2...sdk-component-drivers-0.2.3) (2024-04-24)
 
 ### Dependency Updates

@@ -2,6 +2,92 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.23](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.22...audit-management-widget-0.1.23) (2024-05-15)
+
+## [0.1.22](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.21...audit-management-widget-0.1.22) (2024-05-13)
+
+## [0.1.21](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.20...audit-management-widget-0.1.21) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.48`
+## [0.1.20](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.19...audit-management-widget-0.1.20) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.47`
+## [0.1.19](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.18...audit-management-widget-0.1.19) (2024-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.46`
+* `sdk-helpers` updated to version `0.1.31`
+* `sdk-mixins` updated to version `0.2.13`
+* `sdk-component-drivers` updated to version `0.2.12`
+## [0.1.18](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.17...audit-management-widget-0.1.18) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+* `sdk-helpers` updated to version `0.1.30`
+* `sdk-mixins` updated to version `0.2.12`
+* `sdk-component-drivers` updated to version `0.2.11`
+## [0.1.17](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.16...audit-management-widget-0.1.17) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.44`
+* `sdk-helpers` updated to version `0.1.29`
+* `sdk-mixins` updated to version `0.2.11`
+* `sdk-component-drivers` updated to version `0.2.10`
+## [0.1.16](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.15...audit-management-widget-0.1.16) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.43`
+* `sdk-helpers` updated to version `0.1.28`
+* `sdk-mixins` updated to version `0.2.10`
+* `sdk-component-drivers` updated to version `0.2.9`
+## [0.1.15](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.14...audit-management-widget-0.1.15) (2024-04-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.42`
+* `sdk-helpers` updated to version `0.1.27`
+* `sdk-mixins` updated to version `0.2.9`
+* `sdk-component-drivers` updated to version `0.2.8`
+## [0.1.14](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.13...audit-management-widget-0.1.14) (2024-04-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.41`
+* `sdk-helpers` updated to version `0.1.26`
+* `sdk-mixins` updated to version `0.2.8`
+* `sdk-component-drivers` updated to version `0.2.7`
+## [0.1.13](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.12...audit-management-widget-0.1.13) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.40`
+* `sdk-helpers` updated to version `0.1.25`
+* `sdk-mixins` updated to version `0.2.7`
+* `sdk-component-drivers` updated to version `0.2.6`
+## [0.1.12](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.11...audit-management-widget-0.1.12) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.39`
+* `sdk-helpers` updated to version `0.1.24`
+* `sdk-mixins` updated to version `0.2.6`
+* `sdk-component-drivers` updated to version `0.2.5`
+## [0.1.11](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.10...audit-management-widget-0.1.11) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.38`
+* `sdk-helpers` updated to version `0.1.23`
+* `sdk-mixins` updated to version `0.2.5`
+* `sdk-component-drivers` updated to version `0.2.4`
 ## [0.1.10](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.9...audit-management-widget-0.1.10) (2024-04-24)
 
 ### Dependency Updates

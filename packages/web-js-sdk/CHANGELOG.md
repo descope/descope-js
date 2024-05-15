@@ -2,6 +2,57 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.10.48](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.47...web-js-sdk-1.10.48) (2024-05-12)
+
+
+### Bug Fixes
+
+* wrap visibility change in condition ([#561](https://github.com/descope/descope-js/issues/561)) RELEASE ([b40ff22](https://github.com/descope/descope-js/commit/b40ff22045b087ea75fad48c41f93a5ecf3427f8))
+
+## [1.10.47](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.46...web-js-sdk-1.10.47) (2024-05-12)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.9`
+## [1.10.46](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.45...web-js-sdk-1.10.46) (2024-05-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.8`
+## [1.10.45](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.44...web-js-sdk-1.10.45) (2024-05-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.7`
+## [1.10.44](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.43...web-js-sdk-1.10.44) (2024-05-02)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.6`
+## [1.10.43](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.42...web-js-sdk-1.10.43) (2024-05-02)
+
+## [1.10.42](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.41...web-js-sdk-1.10.42) (2024-04-30)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.5`
+## [1.10.41](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.40...web-js-sdk-1.10.41) (2024-04-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.4`
+## [1.10.40](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.39...web-js-sdk-1.10.40) (2024-04-27)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.3`
+## [1.10.39](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.38...web-js-sdk-1.10.39) (2024-04-27)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.2`
+## [1.10.38](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.37...web-js-sdk-1.10.38) (2024-04-27)
+
 ## [1.10.37](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.36...web-js-sdk-1.10.37) (2024-04-24)
 
 

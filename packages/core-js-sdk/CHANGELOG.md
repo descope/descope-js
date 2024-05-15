@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.9](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.8...core-js-sdk-2.14.9) (2024-05-12)
+
+
+### Bug Fixes
+
+* Replace URL building with string based operations ([#572](https://github.com/descope/descope-js/issues/572)) RELEASE ([c137d52](https://github.com/descope/descope-js/commit/c137d522262eaa98131745587f3f2446eeb349e1))
+
+## [2.14.8](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.7...core-js-sdk-2.14.8) (2024-05-11)
+
+## [2.14.7](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.6...core-js-sdk-2.14.7) (2024-05-07)
+
+## [2.14.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.5...core-js-sdk-2.14.6) (2024-05-02)
+
+## [2.14.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.4...core-js-sdk-2.14.5) (2024-04-30)
+
+## [2.14.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.3...core-js-sdk-2.14.4) (2024-04-28)
+
+## [2.14.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.2...core-js-sdk-2.14.3) (2024-04-27)
+
+## [2.14.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.1...core-js-sdk-2.14.2) (2024-04-27)
+
 ## [2.14.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.0...core-js-sdk-2.14.1) (2024-04-21)
 
 ## [2.14.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.13.0...core-js-sdk-2.14.0) (2024-04-15)

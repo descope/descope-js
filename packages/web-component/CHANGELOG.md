@@ -2,6 +2,75 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.11.18](https://github.com/descope/descope-js/compare/web-component-3.11.17...web-component-3.11.18) (2024-05-13)
+
+## [3.11.17](https://github.com/descope/descope-js/compare/web-component-3.11.16...web-component-3.11.17) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.48`
+## [3.11.16](https://github.com/descope/descope-js/compare/web-component-3.11.15...web-component-3.11.16) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.47`
+
+### Bug Fixes
+
+* trying to fix PasswordCredential error ([#568](https://github.com/descope/descope-js/issues/568)) ([6fcb72d](https://github.com/descope/descope-js/commit/6fcb72de4a3028be5bb46738945e6a11db3af4dc))
+
+## [3.11.15](https://github.com/descope/descope-js/compare/web-component-3.11.14...web-component-3.11.15) (2024-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.46`
+## [3.11.14](https://github.com/descope/descope-js/compare/web-component-3.11.13...web-component-3.11.14) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+## [3.11.13](https://github.com/descope/descope-js/compare/web-component-3.11.12...web-component-3.11.13) (2024-05-06)
+
+
+### Bug Fixes
+
+* Fix issue when flow does not rendered because of wrong animation direction RELEASE ([#562](https://github.com/descope/descope-js/issues/562)) ([db09731](https://github.com/descope/descope-js/commit/db097310ee872ededba9e3dbaeb91ff56fa573ed))
+
+## [3.11.12](https://github.com/descope/descope-js/compare/web-component-3.11.11...web-component-3.11.12) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.44`
+## [3.11.11](https://github.com/descope/descope-js/compare/web-component-3.11.10...web-component-3.11.11) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.43`
+## [3.11.10](https://github.com/descope/descope-js/compare/web-component-3.11.9...web-component-3.11.10) (2024-04-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.42`
+## [3.11.9](https://github.com/descope/descope-js/compare/web-component-3.11.8...web-component-3.11.9) (2024-04-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.41`
+## [3.11.8](https://github.com/descope/descope-js/compare/web-component-3.11.7...web-component-3.11.8) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.40`
+## [3.11.7](https://github.com/descope/descope-js/compare/web-component-3.11.6...web-component-3.11.7) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.39`
+## [3.11.6](https://github.com/descope/descope-js/compare/web-component-3.11.5...web-component-3.11.6) (2024-04-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.38`
 ## [3.11.5](https://github.com/descope/descope-js/compare/web-component-3.11.4...web-component-3.11.5) (2024-04-24)
 
 ## [3.11.4](https://github.com/descope/descope-js/compare/web-component-3.11.3...web-component-3.11.4) (2024-04-24)
