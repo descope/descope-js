@@ -1,3 +1,4 @@
+import { transformSetCookie } from './helpers';
 import createFetchLogger from './helpers/createFetchLogger';
 import {
   CreateHttpClientConfig,
@@ -83,6 +84,19 @@ const createHttpClient = ({
 
     if (hooks?.afterRequest) {
       await hooks.afterRequest(config, res?.clone());
+    }
+
+    if (hooks.transformResponse) {
+      // we want to make sure cloning the response will keep the transformed json data
+      const hookResponse = res?.clone();
+      const json = await res.json();
+      const cookies = transformSetCookie(res.headers.get('set-cookie'));
+      return hooks.transformResponse({
+        ...res,
+        clone: () => hookResponse,
+        json: () => Promise.resolve(json),
+        cookies,
+      });
     }
 
     return res;

@@ -1,5 +1,6 @@
 import createHttpClient from '../src/httpClient';
 import createFetchLogger from '../src/httpClient/helpers/createFetchLogger';
+import { ExtendedResponse } from '../src/httpClient/types';
 
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
@@ -17,6 +18,20 @@ const httpClient = createHttpClient({
   baseConfig: { baseHeaders: { test: '123' } },
 });
 
+const transformResponse = async (response: ExtendedResponse) => {
+  const data = await response.json();
+
+  if (response.cookies.DSR) {
+    data.refreshJwt = response.cookies.DSR;
+  }
+
+  if (response.cookies.DS) {
+    data.sessionJwt = response.cookies.DS;
+  }
+
+  return response;
+};
+
 const hookedHttpClient = createHttpClient({
   baseUrl: 'http://descope.com',
   projectId: '456',
@@ -28,6 +43,7 @@ const hookedHttpClient = createHttpClient({
       return config;
     },
     afterRequest: afterRequestHook,
+    transformResponse,
   },
 });
 
@@ -449,5 +465,20 @@ describe('createFetchLogger', () => {
       new URL('http://descope.com/auth/ds/1/2/3?test2=123'),
       expect.anything(),
     );
+  });
+
+  it('should transform the response if "transformResponse hook is provided"', async () => {
+    mockFetch.mockReturnValue({
+      text: () => JSON.stringify({ test: 123 }),
+      headers: new Headers({ 'set-cookie': 'DSR=123; DS=456' }),
+    });
+
+    const res = await hookedHttpClient.post('1/2/3', {});
+
+    expect(await res.json()).toEqual({
+      test: 123,
+      refreshJwt: '123',
+      sessionJwt: '456',
+    });
   });
 });
