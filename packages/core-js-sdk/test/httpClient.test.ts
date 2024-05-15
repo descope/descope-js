@@ -58,7 +58,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123'),
+      'http://descope.com/1/2/3?test2=123',
       {
         body: undefined,
         credentials: 'include',
@@ -80,7 +80,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&test3=456&test4=789'),
+      'http://descope.com/1/2/3?test2=123&test3=456&test4=789',
       {
         body: undefined,
         credentials: 'include',
@@ -129,7 +129,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      'http://descope.com/1/2/3?test2=123&moshe=yakov',
       {
         body: undefined,
         credentials: 'include',
@@ -155,11 +155,11 @@ describe('httpClient', () => {
 
     httpClient.get('1/2/3', {
       headers: { test2: '123' },
-      queryParams: { test2: '123' },
+      queryParams: { test2: '123', moshe: 'yakov' },
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      'http://descope.com/1/2/3?test2=123&moshe=yakov',
       {
         body: undefined,
         credentials: 'same-origin',
@@ -188,7 +188,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      'http://descope.com/1/2/3?test2=123',
       {
         body: undefined,
         headers: new Headers({
@@ -210,18 +210,15 @@ describe('httpClient', () => {
 
     httpClient.get('1/2/3', { token: null });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3'),
-      {
-        body: undefined,
-        credentials: 'include',
-        headers: new Headers({
-          Authorization: 'Bearer 456',
-          ...descopeHeaders,
-        }),
-        method: 'GET',
-      },
-    );
+    expect(mockFetch).toHaveBeenCalledWith('http://descope.com/1/2/3', {
+      body: undefined,
+      credentials: 'include',
+      headers: new Headers({
+        Authorization: 'Bearer 456',
+        ...descopeHeaders,
+      }),
+      method: 'GET',
+    });
   });
 
   it.each(['post', 'put'])(
@@ -234,7 +231,7 @@ describe('httpClient', () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        new URL('http://descope.com/1/2/3?test2=123'),
+        'http://descope.com/1/2/3?test2=123',
         {
           body: JSON.stringify('aaa'),
           credentials: 'include',
@@ -258,7 +255,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123'),
+      'http://descope.com/1/2/3?test2=123',
       {
         body: undefined,
         credentials: 'include',
@@ -288,7 +285,7 @@ describe('httpClient', () => {
     httpClient.get('1/2/3', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://api.use1.descope.com/1/2/3'),
+      'http://api.use1.descope.com/1/2/3',
       expect.anything(),
     );
   });
@@ -302,7 +299,7 @@ describe('httpClient', () => {
     httpClient.get('1/2/3', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://api.descope.com/1/2/3'),
+      'http://api.descope.com/1/2/3',
       expect.anything(),
     );
   });
@@ -462,7 +459,7 @@ describe('createFetchLogger', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/auth/ds/1/2/3?test2=123'),
+      'http://descope.com/auth/ds/1/2/3?test2=123',
       expect.anything(),
     );
   });
