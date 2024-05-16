@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.11.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.49...web-js-sdk-1.11.0) (2024-05-16)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.15.0`
+
+### Features
+
+* Transform resp hook ([#581](https://github.com/descope/descope-js/issues/581)) RELEASE ([2bf1289](https://github.com/descope/descope-js/commit/2bf12891bc4130d31fd9f60ce15772adc20ca39f))
+
 ## [1.10.49](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.48...web-js-sdk-1.10.49) (2024-05-15)
 
 ### Dependency Updates
