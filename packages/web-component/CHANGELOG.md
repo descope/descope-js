@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.11.20](https://github.com/descope/descope-js/compare/web-component-3.11.19...web-component-3.11.20) (2024-05-16)
+
+
+### Bug Fixes
+
+* Fix EnrichedText dynamic value replacement RELEASE ([#578](https://github.com/descope/descope-js/issues/578)) ([df69dab](https://github.com/descope/descope-js/commit/df69dab6974680dbff25edc58e7e4e7512e05d04))
+
 ## [3.11.19](https://github.com/descope/descope-js/compare/web-component-3.11.18...web-component-3.11.19) (2024-05-15)
 
 ### Dependency Updates
