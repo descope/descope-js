@@ -87,7 +87,6 @@ const createHttpClient = ({
     }
 
     if (hooks?.transformResponse) {
-      // we want to make sure cloning the response will keep the transformed json data
       const json = await res.json();
       const cookies = transformSetCookie(res.headers?.get('set-cookie') || '');
       const mutableResponse = {
@@ -95,6 +94,7 @@ const createHttpClient = ({
         json: () => Promise.resolve(json),
         cookies,
       };
+      // we want to make sure cloning the response will keep the transformed json data
       mutableResponse.clone = () => mutableResponse;
       return hooks.transformResponse(mutableResponse);
     }
