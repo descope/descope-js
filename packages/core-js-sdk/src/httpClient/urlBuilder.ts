@@ -1,7 +1,4 @@
 import { BASE_URL_REGION_PLACEHOLDER } from '../constants';
-import { pathJoin } from '../sdk/helpers';
-
-const schemeSeparator = '://';
 
 /** Build URL with given parts */
 export const urlBuilder = ({
@@ -15,26 +12,19 @@ export const urlBuilder = ({
   queryParams?: { [key: string]: string };
   projectId: string;
 }) => {
-  // NOTE: many URL and URLSearchParams functions and fields are NOT SUPPORTED by the react-native runtime
+  // NOTE: many URL and URLSearchParams functions and fields are NOT SUPPORTED by the react-native runtime.
+  // To add insult to injury - it adds a trailing slash almost no matter what the input is:
+  // https://github.com/facebook/react-native/blob/main/packages/react-native/Libraries/Blob/URL.js#L144
   // Do not replace unless testing with all of the core-dependent projects
   const region = projectId.slice(1, -27);
   baseUrl = baseUrl.replace(
     BASE_URL_REGION_PLACEHOLDER,
     region ? region + '.' : '',
   );
-  // extract scheme and host from base URL
-  const schemeEndIndex =
-    baseUrl.indexOf(schemeSeparator) + schemeSeparator.length;
-  let firstSlashIndex = baseUrl.substring(schemeEndIndex).indexOf('/');
-  if (firstSlashIndex === -1) firstSlashIndex = baseUrl.length;
-  const schemeAndHost = baseUrl.substring(0, firstSlashIndex);
-
-  // extract a path from the base URL if one exists and append the given path
-  let pathname = baseUrl.substring(firstSlashIndex, baseUrl.length);
-  pathname = pathJoin(pathname, path);
-
-  // join them back together
-  let url = `${schemeAndHost}${pathname}`;
+  // append path to base
+  let url = path
+    ? `${baseUrl.replace(/\/$/, '')}/${path?.replace(/^\//, '')}`
+    : baseUrl;
 
   // add query params if given
   if (queryParams) {
@@ -47,5 +37,5 @@ export const urlBuilder = ({
     });
   }
 
-  return new URL(url);
+  return url;
 };

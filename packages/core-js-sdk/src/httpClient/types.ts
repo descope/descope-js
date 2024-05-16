@@ -7,6 +7,8 @@ type HttpClientReqConfig = {
   token?: string;
 };
 
+export type ExtendedResponse = Response & { cookies: Record<string, string> };
+
 /** HTTP methods we use in the client */
 export enum HTTPMethods {
   get = 'GET',
@@ -56,6 +58,7 @@ export type RequestConfig = {
 };
 
 export type BeforeRequest = (config: RequestConfig) => RequestConfig;
+
 export type AfterRequest = (
   req: RequestConfig,
   res: Response,
@@ -65,4 +68,7 @@ export type AfterRequest = (
 export type Hooks = {
   beforeRequest?: BeforeRequest;
   afterRequest?: AfterRequest;
+  transformResponse?: (
+    mutableResponse: ExtendedResponse,
+  ) => Promise<ExtendedResponse>;
 };

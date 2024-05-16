@@ -25,9 +25,7 @@ describe('lastLoggedInUser', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.start('id', { tenant: 'yo' });
     expect(mockFetch).toBeCalledWith(
-      expect.objectContaining({
-        href: 'https://api.descope.com/v1/flow/start',
-      }),
+      'https://api.descope.com/v1/flow/start',
       expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
@@ -48,9 +46,7 @@ describe('lastLoggedInUser', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.start('id');
     expect(mockFetch).toBeCalledWith(
-      expect.objectContaining({
-        href: 'https://api.descope.com/v1/flow/start',
-      }),
+      'https://api.descope.com/v1/flow/start',
       expect.any(Object),
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBe(
@@ -69,7 +65,7 @@ describe('lastLoggedInUser', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.next('id', 'stepId', 'interactionId');
     expect(mockFetch).toBeCalledWith(
-      expect.objectContaining({ href: 'https://api.descope.com/v1/flow/next' }),
+      'https://api.descope.com/v1/flow/next',
       expect.any(Object),
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBe(
@@ -113,9 +109,7 @@ describe('lastLoggedInUser', () => {
     });
     await sdk.flow.start('id');
     expect(mockFetch).toBeCalledWith(
-      expect.objectContaining({
-        href: 'https://api.descope.com/v1/flow/start',
-      }),
+      'https://api.descope.com/v1/flow/start',
       expect.any(Object),
     );
     expect(localStorage.getItem(LOCAL_STORAGE_LAST_USER_LOGIN_ID)).toBeFalsy();
