@@ -1,5 +1,7 @@
+import { DEFAULT_BASE_API_URL } from '../src/constants';
 import createHttpClient from '../src/httpClient';
 import createFetchLogger from '../src/httpClient/helpers/createFetchLogger';
+import { ExtendedResponse } from '../src/httpClient/types';
 
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
@@ -17,6 +19,20 @@ const httpClient = createHttpClient({
   baseConfig: { baseHeaders: { test: '123' } },
 });
 
+const transformResponse = async (response: ExtendedResponse) => {
+  const data = await response.json();
+
+  if (response.cookies.DSR) {
+    data.refreshJwt = response.cookies.DSR;
+  }
+
+  if (response.cookies.DS) {
+    data.sessionJwt = response.cookies.DS;
+  }
+
+  return response;
+};
+
 const hookedHttpClient = createHttpClient({
   baseUrl: 'http://descope.com',
   projectId: '456',
@@ -28,6 +44,7 @@ const hookedHttpClient = createHttpClient({
       return config;
     },
     afterRequest: afterRequestHook,
+    transformResponse,
   },
 });
 
@@ -42,7 +59,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123'),
+      'http://descope.com/1/2/3?test2=123',
       {
         body: undefined,
         credentials: 'include',
@@ -64,7 +81,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&test3=456&test4=789'),
+      'http://descope.com/1/2/3?test2=123&test3=456&test4=789',
       {
         body: undefined,
         credentials: 'include',
@@ -113,7 +130,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      'http://descope.com/1/2/3?test2=123&moshe=yakov',
       {
         body: undefined,
         credentials: 'include',
@@ -139,11 +156,11 @@ describe('httpClient', () => {
 
     httpClient.get('1/2/3', {
       headers: { test2: '123' },
-      queryParams: { test2: '123' },
+      queryParams: { test2: '123', moshe: 'yakov' },
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      'http://descope.com/1/2/3?test2=123&moshe=yakov',
       {
         body: undefined,
         credentials: 'same-origin',
@@ -172,7 +189,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123&moshe=yakov'),
+      'http://descope.com/1/2/3?test2=123',
       {
         body: undefined,
         headers: new Headers({
@@ -194,18 +211,15 @@ describe('httpClient', () => {
 
     httpClient.get('1/2/3', { token: null });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3'),
-      {
-        body: undefined,
-        credentials: 'include',
-        headers: new Headers({
-          Authorization: 'Bearer 456',
-          ...descopeHeaders,
-        }),
-        method: 'GET',
-      },
-    );
+    expect(mockFetch).toHaveBeenCalledWith('http://descope.com/1/2/3', {
+      body: undefined,
+      credentials: 'include',
+      headers: new Headers({
+        Authorization: 'Bearer 456',
+        ...descopeHeaders,
+      }),
+      method: 'GET',
+    });
   });
 
   it.each(['post', 'put'])(
@@ -218,7 +232,7 @@ describe('httpClient', () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        new URL('http://descope.com/1/2/3?test2=123'),
+        'http://descope.com/1/2/3?test2=123',
         {
           body: JSON.stringify('aaa'),
           credentials: 'include',
@@ -242,7 +256,7 @@ describe('httpClient', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/1/2/3?test2=123'),
+      'http://descope.com/1/2/3?test2=123',
       {
         body: undefined,
         credentials: 'include',
@@ -265,28 +279,28 @@ describe('httpClient', () => {
 
   it('should extract region from the project id', () => {
     const httpClient = createHttpClient({
-      baseUrl: 'http://api.<region>.descope.com',
+      baseUrl: DEFAULT_BASE_API_URL,
       projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
     });
 
     httpClient.get('1/2/3', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://api.use1.descope.com/1/2/3'),
+      'https://api.use1.descope.com/1/2/3',
       expect.anything(),
     );
   });
 
   it('should extract region from the project id when region is not provided', () => {
     const httpClient = createHttpClient({
-      baseUrl: 'http://api.<region>.descope.com',
+      baseUrl: DEFAULT_BASE_API_URL,
       projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
     });
 
     httpClient.get('1/2/3', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://api.descope.com/1/2/3'),
+      'https://api.descope.com/1/2/3',
       expect.anything(),
     );
   });
@@ -446,8 +460,23 @@ describe('createFetchLogger', () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL('http://descope.com/auth/ds/1/2/3?test2=123'),
+      'http://descope.com/auth/ds/1/2/3?test2=123',
       expect.anything(),
     );
+  });
+
+  it('should transform the response if "transformResponse hook is provided"', async () => {
+    mockFetch.mockReturnValue({
+      text: () => JSON.stringify({ test: 123 }),
+      headers: new Headers({ 'set-cookie': 'DSR=123; DS=456' }),
+    });
+
+    const res = await hookedHttpClient.post('1/2/3', {});
+
+    expect(await res.json()).toEqual({
+      test: 123,
+      refreshJwt: '123',
+      sessionJwt: '456',
+    });
   });
 });
