@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.63](https://github.com/descope/descope-js/compare/user-management-widget-0.4.62...user-management-widget-0.4.63) (2024-05-16)
+
+
+### Bug Fixes
+
+* UMW custom attrs flattening ([#579](https://github.com/descope/descope-js/issues/579)) ([68179ef](https://github.com/descope/descope-js/commit/68179ef8228b2cecf78600447a575fb0047da982))
+
 ## [0.4.62](https://github.com/descope/descope-js/compare/user-management-widget-0.4.61...user-management-widget-0.4.62) (2024-05-16)
 
 ### Dependency Updates
