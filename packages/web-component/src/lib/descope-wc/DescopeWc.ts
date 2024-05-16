@@ -658,6 +658,51 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #handleDescopePassword() {
+    const component = this.rootElement.querySelector('descope-password');
+
+    if (!component) {
+      return;
+    }
+
+    const origInput = component.querySelector('input');
+    const slotInput = document.createElement('slot');
+
+    slotInput.setAttribute('name', 'input');
+    slotInput.setAttribute('slot', 'input');
+    component.appendChild(slotInput);
+
+    origInput.setAttribute('name', 'input');
+    origInput.setAttribute('slot', 'input');
+    this.appendChild(origInput);
+  }
+
+  #handleDescopeNewPassword() {
+    const component = this.rootElement.querySelector('descope-new-password');
+
+    if (!component) {
+      return;
+    }
+
+    // const origInput = component.querySelector('input');
+    // const origInput = component.shadowRoot.querySelector('descope-new-password-internal');
+    const origInput = component.shadowRoot.querySelector('descope-new-password-internal').querySelector('input')
+    const origConfirm = component.shadowRoot.querySelector('descope-new-password-internal').querySelectorAll('input')[1]
+    const slotInput = document.createElement('slot');
+
+    slotInput.setAttribute('name', 'input');
+    slotInput.setAttribute('slot', 'input');
+    component.appendChild(slotInput);
+
+    origInput.setAttribute('name', 'input');
+    origInput.setAttribute('slot', 'input');
+
+    origConfirm.setAttribute('name', 'input');
+    origConfirm.setAttribute('slot', 'input');
+    
+    this.appendChild(origInput);
+  }
+
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
     this.#conditionalUiAbortController?.abort();
 
@@ -799,9 +844,11 @@ class DescopeWc extends BaseDescopeWc {
       this.rootElement.replaceChildren(clone);
 
       // we need to wait for all components to render before we can set its value
-      setTimeout(() =>
-        updateScreenFromScreenState(this.rootElement, screenState),
-      );
+      setTimeout(() => {
+        updateScreenFromScreenState(this.rootElement, screenState);
+        this.#handleDescopePassword();
+        this.#handleDescopeNewPassword();
+      });
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
@@ -844,6 +891,9 @@ class DescopeWc extends BaseDescopeWc {
   #validateInputs() {
     return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
       (input: HTMLInputElement) => {
+        if (input.localName === 'slot') {
+          return true;
+        }
         input.reportValidity?.();
         return input.checkValidity?.();
       },
@@ -896,7 +946,8 @@ class DescopeWc extends BaseDescopeWc {
     const id = getFirstNonEmptyValue(formData, idFields);
     const password = getFirstNonEmptyValue(formData, passwordFields);
 
-    if (id && password) {
+    // PasswordCredential not supported in Firefox
+    if (id && password && globalThis.PasswordCredential) {
       try {
         if (!globalThis.PasswordCredential) {
           return;
