@@ -55,7 +55,7 @@ export const initCreateUserModalMixin = createSingletonMixin(
           if (this.validateForm(this.createUserModal.ele)) {
             const formData = this.getFormData(this.createUserModal.ele);
             this.actions.createUser({
-              ...unflatten(formData),
+              ...unflatten(formData, 'customAttributes'),
               invite: true,
               verifiedEmail: true,
               verifiedPhone: true,

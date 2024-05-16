@@ -15,7 +15,7 @@ export const getCustomAttributes = (state: State) =>
 export const getUsersList = createSelector(getRawUsersList, (users) =>
   users.map((user) => ({
     ...user,
-    ...flatten(user?.customAttributes, 'customAttributes.'),
+    ...flatten(user?.customAttributes, 'customAttributes'),
     status: userStatusMappings[user.status] || user.status,
     roles: user.roleNames,
   })),

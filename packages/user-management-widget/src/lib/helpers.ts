@@ -1,12 +1,10 @@
 import { User } from './widget/api/types';
 
-const unflattenKeys = ['customAttributes'];
-
-export const unflatten = (formData: Partial<User>) =>
+export const unflatten = (formData: Partial<User>, keyPrefix: string) =>
   Object.entries(formData).reduce((acc, [key, value]) => {
     const [prefix, ...rest] = key.split('.');
 
-    if (!unflattenKeys.includes(prefix)) {
+    if (keyPrefix !== prefix) {
       return Object.assign(acc, { [key]: value });
     }
 
@@ -24,5 +22,8 @@ export const flatten = (
   keyPrefix: string,
 ) =>
   Object.fromEntries(
-    Object.entries(vals || {}).map(([key, val]) => [`${keyPrefix}${key}`, val]),
+    Object.entries(vals || {}).map(([key, val]) => [
+      `${keyPrefix}.${key}`,
+      val,
+    ]),
   );

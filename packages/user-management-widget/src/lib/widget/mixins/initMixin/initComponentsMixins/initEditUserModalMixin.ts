@@ -70,7 +70,7 @@ export const initEditUserModalMixin = createSingletonMixin(
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
-              ...unflatten(formData),
+              ...unflatten(formData, 'customAttributes'),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -121,7 +121,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
           roles: userDetails?.roles,
-          ...flatten(userDetails.customAttributes, 'customAttributes.'),
+          ...flatten(userDetails.customAttributes, 'customAttributes'),
         };
 
         this.setFormData(this.editUserModal.ele, formData);
