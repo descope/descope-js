@@ -1,3 +1,4 @@
+import { DEFAULT_BASE_API_URL } from '../src/constants';
 import createHttpClient from '../src/httpClient';
 import createFetchLogger from '../src/httpClient/helpers/createFetchLogger';
 import { ExtendedResponse } from '../src/httpClient/types';
@@ -278,28 +279,28 @@ describe('httpClient', () => {
 
   it('should extract region from the project id', () => {
     const httpClient = createHttpClient({
-      baseUrl: 'http://api.<region>.descope.com',
+      baseUrl: DEFAULT_BASE_API_URL,
       projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
     });
 
     httpClient.get('1/2/3', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://api.use1.descope.com/1/2/3',
+      'https://api.use1.descope.com/1/2/3',
       expect.anything(),
     );
   });
 
   it('should extract region from the project id when region is not provided', () => {
     const httpClient = createHttpClient({
-      baseUrl: 'http://api.<region>.descope.com',
+      baseUrl: DEFAULT_BASE_API_URL,
       projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
     });
 
     httpClient.get('1/2/3', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://api.descope.com/1/2/3',
+      'https://api.descope.com/1/2/3',
       expect.anything(),
     );
   });

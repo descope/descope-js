@@ -18,7 +18,7 @@ export const urlBuilder = ({
   // Do not replace unless testing with all of the core-dependent projects
   const region = projectId.slice(1, -27);
   baseUrl = baseUrl.replace(
-    BASE_URL_REGION_PLACEHOLDER + '.',
+    BASE_URL_REGION_PLACEHOLDER,
     region ? region + '.' : '',
   );
   // append path to base
