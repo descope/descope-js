@@ -144,6 +144,7 @@ class BaseDescopeWc extends HTMLElement {
   #handleOuterForm() {
     const wc = this.shadowRoot.host;
     const form = document.createElement('form');
+    form.style.width = '100%';
     wc.parentElement.appendChild(form);
     form.appendChild(wc);
   }
