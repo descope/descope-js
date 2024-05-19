@@ -658,48 +658,20 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  #handleDescopePassword() {
-    const component = this.rootElement.querySelector('descope-password');
-
-    if (!component) {
+  #handleDescopePassword(ele: Element) {
+    if (!ele) {
       return;
     }
 
-    const origInput = component.querySelector('input');
+    const origInput = ele.querySelector('input');
     const slotInput = document.createElement('slot');
+    const id = origInput.getAttribute('id');
 
-    slotInput.setAttribute('name', 'input');
-    slotInput.setAttribute('slot', 'input');
-    component.appendChild(slotInput);
+    slotInput.setAttribute('name', `input-${id}`);
+    slotInput.setAttribute('slot', `input`);
+    ele.appendChild(slotInput);
 
-    origInput.setAttribute('name', 'input');
-    origInput.setAttribute('slot', 'input');
-    this.appendChild(origInput);
-  }
-
-  #handleDescopeNewPassword() {
-    const component = this.rootElement.querySelector('descope-new-password');
-
-    if (!component) {
-      return;
-    }
-
-    // const origInput = component.querySelector('input');
-    // const origInput = component.shadowRoot.querySelector('descope-new-password-internal');
-    const origInput = component.shadowRoot.querySelector('descope-new-password-internal').querySelector('input')
-    const origConfirm = component.shadowRoot.querySelector('descope-new-password-internal').querySelectorAll('input')[1]
-    const slotInput = document.createElement('slot');
-
-    slotInput.setAttribute('name', 'input');
-    slotInput.setAttribute('slot', 'input');
-    component.appendChild(slotInput);
-
-    origInput.setAttribute('name', 'input');
-    origInput.setAttribute('slot', 'input');
-
-    origConfirm.setAttribute('name', 'input');
-    origConfirm.setAttribute('slot', 'input');
-    
+    origInput.setAttribute('slot', `input-${id}`);
     this.appendChild(origInput);
   }
 
@@ -846,8 +818,9 @@ class DescopeWc extends BaseDescopeWc {
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
-        this.#handleDescopePassword();
-        this.#handleDescopeNewPassword();
+
+        const eles = this.rootElement.querySelectorAll('descope-password');
+        eles.forEach((ele) => this.#handleDescopePassword(ele));
       });
 
       // If before html url was empty, we deduce its the first time a screen is shown
