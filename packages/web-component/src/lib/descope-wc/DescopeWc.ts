@@ -664,15 +664,18 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     const origInput = ele.querySelector('input');
+    const origInputStyle = ele.querySelector('style');
     const slotInput = document.createElement('slot');
-    const id = origInput.getAttribute('id');
+    const id = `input-${origInput.getAttribute('id')}`;
 
-    slotInput.setAttribute('name', `input-${id}`);
+    slotInput.setAttribute('name', id);
     slotInput.setAttribute('slot', `input`);
     ele.appendChild(slotInput);
 
-    origInput.setAttribute('slot', `input-${id}`);
+    origInput.setAttribute('slot', id);
+    origInputStyle.setAttribute('data-style-id', id)
     this.appendChild(origInput);
+    this.appendChild(origInputStyle);
   }
 
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
@@ -821,6 +824,8 @@ class DescopeWc extends BaseDescopeWc {
 
         const eles = this.rootElement.querySelectorAll('descope-password');
         eles.forEach((ele) => this.#handleDescopePassword(ele));
+        setTimeout(() => {
+        }, 1000);
       });
 
       // If before html url was empty, we deduce its the first time a screen is shown
