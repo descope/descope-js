@@ -673,7 +673,7 @@ class DescopeWc extends BaseDescopeWc {
     ele.appendChild(slotInput);
 
     origInput.setAttribute('slot', id);
-    origInputStyle.setAttribute('data-style-id', id)
+    origInputStyle.setAttribute('data-style-id', id);
     this.appendChild(origInput);
     this.appendChild(origInputStyle);
   }
@@ -824,8 +824,7 @@ class DescopeWc extends BaseDescopeWc {
 
         const eles = this.rootElement.querySelectorAll('descope-password');
         eles.forEach((ele) => this.#handleDescopePassword(ele));
-        setTimeout(() => {
-        }, 1000);
+        setTimeout(() => {}, 1000);
       });
 
       // If before html url was empty, we deduce its the first time a screen is shown
