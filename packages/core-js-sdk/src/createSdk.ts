@@ -29,6 +29,7 @@ const withMultipleHooks =
       hooks?: {
         beforeRequest?: BeforeRequest | BeforeRequest[];
         afterRequest?: AfterRequest | AfterRequest[];
+        transformResponse?: Hooks['transformResponse'];
       };
     },
   ) => {
@@ -53,7 +54,14 @@ const withMultipleHooks =
       );
     };
 
-    return createSdk({ ...config, hooks: { beforeRequest, afterRequest } });
+    return createSdk({
+      ...config,
+      hooks: {
+        beforeRequest,
+        afterRequest,
+        transformResponse: config.hooks?.transformResponse,
+      },
+    });
   };
 
 /** Descope SDK client */
