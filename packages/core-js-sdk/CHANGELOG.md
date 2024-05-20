@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.16.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.15.1...core-js-sdk-2.16.0) (2024-05-20)
+
+
+### Features
+
+* Add loginOptions to password sign in ([#587](https://github.com/descope/descope-js/issues/587)) ([6eb562a](https://github.com/descope/descope-js/commit/6eb562a763fbf35de1da21ab0443d81ed46d1529))
+
 ## [2.15.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.15.0...core-js-sdk-2.15.1) (2024-05-18)
 
 ## [2.15.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.10...core-js-sdk-2.15.0) (2024-05-16)
