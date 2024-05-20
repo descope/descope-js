@@ -102,13 +102,22 @@ describe('password', () => {
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
 
-      const resp = await sdk.password.signIn('loginId', 'abcd1234');
+      const resp = await sdk.password.signIn('loginId', 'abcd1234', {
+        customClaims: {
+          claim1: 'yes',
+        },
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.password.signIn,
         {
           loginId: 'loginId',
           password: 'abcd1234',
+          loginOptions: {
+            customClaims: {
+              claim1: 'yes',
+            },
+          },
         },
       );
 
