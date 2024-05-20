@@ -663,6 +663,12 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    const isExternalInput = ele.getAttribute('external-input') === 'true';
+
+    if (!isExternalInput) {
+      return;
+    }
+
     const origInput = ele.querySelector('input');
     const origInputStyle = ele.querySelector('style');
     const slotInput = document.createElement('slot');
