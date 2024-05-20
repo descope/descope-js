@@ -824,7 +824,6 @@ class DescopeWc extends BaseDescopeWc {
 
         const eles = this.rootElement.querySelectorAll('descope-password');
         eles.forEach((ele) => this.#handleDescopePassword(ele));
-        setTimeout(() => {}, 1000);
       });
 
       // If before html url was empty, we deduce its the first time a screen is shown
