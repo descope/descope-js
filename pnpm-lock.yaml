@@ -388,9 +388,6 @@ importers:
       ts-node: 10.9.2_typescript@4.9.5
       typescript: 4.9.5
 
-  packages/core-js-sdk/dist/cjs:
-    specifiers: {}
-
   packages/libs/sdk-component-drivers:
     specifiers:
       '@descope/sdk-helpers': workspace:*
@@ -484,9 +481,6 @@ importers:
       ts-node: 10.9.2_misjo77sqtw74jgpkxp7bulu2q
       typescript: 4.9.5
 
-  packages/libs/sdk-component-drivers/dist/cjs:
-    specifiers: {}
-
   packages/libs/sdk-helpers:
     specifiers:
       '@rollup/plugin-commonjs': 25.0.7
@@ -575,9 +569,6 @@ importers:
       ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_misjo77sqtw74jgpkxp7bulu2q
       typescript: 4.9.5
-
-  packages/libs/sdk-helpers/dist/cjs:
-    specifiers: {}
 
   packages/libs/sdk-mixins:
     specifiers:
@@ -677,9 +668,6 @@ importers:
       ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_misjo77sqtw74jgpkxp7bulu2q
       typescript: 4.9.5
-
-  packages/libs/sdk-mixins/dist/cjs:
-    specifiers: {}
 
   packages/role-management-widget:
     specifiers:
@@ -1244,9 +1232,6 @@ importers:
       ts-jest: 29.1.0_doipufordlnvh5g4adbwayvyvy
       ts-node: 10.9.2_misjo77sqtw74jgpkxp7bulu2q
       typescript: 4.9.5
-
-  packages/web-js-sdk/dist/cjs:
-    specifiers: {}
 
 packages:
 
@@ -3597,6 +3582,7 @@ packages:
     dependencies:
       '@nx/eslint-plugin': 18.3.4_xi2a3wvdc7gxj67a6agco6jlm4
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3616,6 +3602,7 @@ packages:
     dependencies:
       '@nx/jest': 18.3.4_koyq7ktzwuxm7hmlizuvu3dsw4
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3635,6 +3622,7 @@ packages:
     dependencies:
       '@nx/js': 18.3.4_xdtg7qnjbijlz3ri5eq6jmpjau
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3651,6 +3639,7 @@ packages:
     dependencies:
       '@nx/js': 18.3.4_zmu6efr7yi2zr2tvisvhsmkdt4
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3667,6 +3656,7 @@ packages:
     dependencies:
       '@nx/eslint': 18.3.4_poh7ivip74xcfrlttgpuwgppxy
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3754,6 +3744,7 @@ packages:
       semver: 7.6.0
       tslib: 2.6.2
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3781,6 +3772,7 @@ packages:
       tslib: 2.6.2
       typescript: 5.4.5
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3810,6 +3802,7 @@ packages:
       tslib: 2.6.2
       yargs-parser: 21.1.1
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3845,7 +3838,7 @@ packages:
       '@phenomnomnominal/tsquery': 5.0.1_typescript@5.4.5
       babel-plugin-const-enum: 1.2.0_@babel+core@7.23.5
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2
+      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.23.5
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -3863,6 +3856,7 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.2
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3894,7 +3888,7 @@ packages:
       '@phenomnomnominal/tsquery': 5.0.1_typescript@4.9.5
       babel-plugin-const-enum: 1.2.0_@babel+core@7.23.5
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2
+      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.23.5
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -3912,6 +3906,7 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.2
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3927,6 +3922,7 @@ packages:
     dependencies:
       '@nx/eslint': 18.3.4_poh7ivip74xcfrlttgpuwgppxy
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -6181,7 +6177,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -6294,9 +6290,16 @@ packages:
       - supports-color
     dev: true
 
-  /babel-plugin-transform-typescript-metadata/0.3.2:
+  /babel-plugin-transform-typescript-metadata/0.3.2_@babel+core@7.23.5:
     resolution: {integrity: sha512-mWEvCQTgXQf48yDqgN7CH50waTyYBeP2Lpqx4nNWab9sxEpdXVeKgfj1qYI2/TgUPQtNFZ85i3PemRtnXVYYJg==}
+    peerDependencies:
+      '@babel/core': ^7
+      '@babel/traverse': ^7
+    peerDependenciesMeta:
+      '@babel/traverse':
+        optional: true
     dependencies:
+      '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
@@ -8858,6 +8861,18 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: true
+
+  /follow-redirects/1.15.2_debug@4.3.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.2
     dev: true
 
   /for-each/0.3.3:

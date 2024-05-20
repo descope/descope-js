@@ -92,6 +92,6 @@
     "tslib": "2.6.2"
   },
   "overrides": {
-    "terser": "5.30.4"
+    "terser": "5.31.0"
   }
 }
