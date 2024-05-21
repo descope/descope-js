@@ -7,6 +7,7 @@ import {
   PasswordPolicyResponse,
   PasswordResetResponse,
   SdkResponse,
+  SignUpOptions,
   TemplateOptions,
   User,
 } from '../types';
@@ -23,12 +24,14 @@ const withPassword = (httpClient: HttpClient) => ({
       loginId: string,
       password: string,
       user?: User,
+      signUpOptions?: SignUpOptions,
     ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.signUp, {
           loginId,
           password,
           user,
+          loginOptions: signUpOptions,
         }),
       ),
   ),
