@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.0...core-js-sdk-2.17.1) (2024-05-21)
+
+## [2.17.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.16.0...core-js-sdk-2.17.0) (2024-05-21)
+
+
+### Features
+
+* Add sign up options to password sign up ([#590](https://github.com/descope/descope-js/issues/590)) RELEASE ([41cb9d1](https://github.com/descope/descope-js/commit/41cb9d1eb016e8f8bcebf9cb5486ba308ae8f07b))
+
 ## [2.16.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.15.1...core-js-sdk-2.16.0) (2024-05-20)
 
 
