@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.12.0](https://github.com/descope/descope-js/compare/web-component-3.11.25...web-component-3.12.0) (2024-05-22)
+
+
+### Features
+
+* use base url for static content ([#593](https://github.com/descope/descope-js/issues/593)) ([3d42936](https://github.com/descope/descope-js/commit/3d4293646c49714b78b7d740d39c376873f0658c))
+
 ## [3.11.25](https://github.com/descope/descope-js/compare/web-component-3.11.24...web-component-3.11.25) (2024-05-21)
 
 ### Dependency Updates
