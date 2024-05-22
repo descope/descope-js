@@ -1540,14 +1540,14 @@ describe('web-component', () => {
 
     pageContent = '<div>hey</div>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="base.url"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="http://base.url"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('hey'), {
       timeout: WAIT_TIMEOUT,
     });
     expect(ensureFingerprintIds).toHaveBeenCalledWith(
       'fp-public-key',
-      'base.url',
+      'http://base.url',
     );
   });
 
