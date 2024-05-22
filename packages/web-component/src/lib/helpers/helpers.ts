@@ -16,6 +16,7 @@ import {
   SSO_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
+  OVERRIDE_CONTENT_URL,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -69,12 +70,18 @@ export async function fetchContent<T extends 'text' | 'json'>(
 
 const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); // preventing duplicate separators
 
-export function getContentUrl(
-  projectId: string,
-  filename: string,
+export function getContentUrl({
+  projectId,
+  filename,
   assetsFolder = ASSETS_FOLDER,
-) {
-  const url = new URL(BASE_CONTENT_URL);
+  baseUrl = BASE_CONTENT_URL,
+}: {
+  projectId: string;
+  filename: string;
+  assetsFolder?: string;
+  baseUrl?: string;
+}) {
+  const url = new URL(OVERRIDE_CONTENT_URL || baseUrl);
   url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
 
   return url.toString();

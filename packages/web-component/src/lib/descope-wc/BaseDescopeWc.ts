@@ -328,11 +328,12 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   async #isPrevVerConfig() {
-    const prevVerConfigUrl = getContentUrl(
-      this.projectId,
-      CONFIG_FILENAME,
-      PREV_VER_ASSETS_FOLDER,
-    );
+    const prevVerConfigUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: CONFIG_FILENAME,
+      assetsFolder: PREV_VER_ASSETS_FOLDER,
+      baseUrl: this.baseUrl,
+    });
     try {
       await fetchContent(prevVerConfigUrl, 'json');
       return true;
@@ -343,7 +344,11 @@ class BaseDescopeWc extends HTMLElement {
 
   // we want to get the config only if we don't have it already
   #getConfig = withMemCache(async () => {
-    const configUrl = getContentUrl(this.projectId, CONFIG_FILENAME);
+    const configUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: CONFIG_FILENAME,
+      baseUrl: this.baseUrl,
+    });
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
@@ -356,7 +361,11 @@ class BaseDescopeWc extends HTMLElement {
   });
 
   async #fetchTheme() {
-    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
+    const themeUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: THEME_FILENAME,
+      baseUrl: this.baseUrl,
+    });
     try {
       const { body } = await fetchContent(themeUrl, 'json');
 

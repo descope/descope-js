@@ -420,9 +420,18 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
+      htmlUrl: getContentUrl({
+        projectId,
+        filename: `${readyScreenId}.html`,
+        baseUrl: this.baseUrl,
+      }),
       htmlLocaleUrl:
-        filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
+        filenameWithLocale &&
+        getContentUrl({
+          projectId,
+          filename: filenameWithLocale,
+          baseUrl: this.baseUrl,
+        }),
       samlIdpUsername,
       oidcLoginHint,
     };
