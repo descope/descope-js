@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.17](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.16...sdk-mixins-0.2.17) (2024-05-22)
+
+
+### Bug Fixes
+
+* use base url for static content in widgets RELEASE ([#594](https://github.com/descope/descope-js/issues/594)) ([853f517](https://github.com/descope/descope-js/commit/853f517a2360d9c5be8766df68a6231f4a23e945))
+
 ## [0.2.16](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.15...sdk-mixins-0.2.16) (2024-05-21)
 
 ### Dependency Updates
