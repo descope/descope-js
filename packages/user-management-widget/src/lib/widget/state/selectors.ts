@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { flatten } from '../../helpers';
 import { State } from './types';
 import { userStatusMappings } from './constants';
 
@@ -14,6 +15,7 @@ export const getCustomAttributes = (state: State) =>
 export const getUsersList = createSelector(getRawUsersList, (users) =>
   users.map((user) => ({
     ...user,
+    ...flatten(user?.customAttributes, 'customAttributes'),
     status: userStatusMappings[user.status] || user.status,
     roles: user.roleNames,
   })),

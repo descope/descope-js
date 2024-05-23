@@ -2,6 +2,67 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.12.0](https://github.com/descope/descope-js/compare/web-component-3.11.25...web-component-3.12.0) (2024-05-22)
+
+
+### Features
+
+* use base url for static content ([#593](https://github.com/descope/descope-js/issues/593)) ([3d42936](https://github.com/descope/descope-js/commit/3d4293646c49714b78b7d740d39c376873f0658c))
+
+## [3.11.25](https://github.com/descope/descope-js/compare/web-component-3.11.24...web-component-3.11.25) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.4`
+## [3.11.24](https://github.com/descope/descope-js/compare/web-component-3.11.23...web-component-3.11.24) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.3`
+
+### Bug Fixes
+
+* component context override order ([#591](https://github.com/descope/descope-js/issues/591)) ([4850845](https://github.com/descope/descope-js/commit/4850845f00025175a314991166ef29dc5e7a2562))
+
+## [3.11.23](https://github.com/descope/descope-js/compare/web-component-3.11.22...web-component-3.11.23) (2024-05-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.2`
+
+### Bug Fixes
+
+* issue 6494 ([#586](https://github.com/descope/descope-js/issues/586)) ([7363f2e](https://github.com/descope/descope-js/commit/7363f2e9c4fd97d7ee87663cb8eeb825d13094fe))
+
+## [3.11.22](https://github.com/descope/descope-js/compare/web-component-3.11.21...web-component-3.11.22) (2024-05-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.1`
+## [3.11.21](https://github.com/descope/descope-js/compare/web-component-3.11.20...web-component-3.11.21) (2024-05-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.0`
+## [3.11.20](https://github.com/descope/descope-js/compare/web-component-3.11.19...web-component-3.11.20) (2024-05-16)
+
+
+### Bug Fixes
+
+* Fix EnrichedText dynamic value replacement RELEASE ([#578](https://github.com/descope/descope-js/issues/578)) ([df69dab](https://github.com/descope/descope-js/commit/df69dab6974680dbff25edc58e7e4e7512e05d04))
+
+## [3.11.19](https://github.com/descope/descope-js/compare/web-component-3.11.18...web-component-3.11.19) (2024-05-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.49`
+## [3.11.18](https://github.com/descope/descope-js/compare/web-component-3.11.17...web-component-3.11.18) (2024-05-13)
+
+## [3.11.17](https://github.com/descope/descope-js/compare/web-component-3.11.16...web-component-3.11.17) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.48`
 ## [3.11.16](https://github.com/descope/descope-js/compare/web-component-3.11.15...web-component-3.11.16) (2024-05-12)
 
 ### Dependency Updates

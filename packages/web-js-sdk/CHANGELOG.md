@@ -2,6 +2,53 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.11.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.3...web-js-sdk-1.11.4) (2024-05-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.17.1`
+## [1.11.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.2...web-js-sdk-1.11.3) (2024-05-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.17.0`
+## [1.11.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.1...web-js-sdk-1.11.2) (2024-05-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.16.0`
+## [1.11.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.0...web-js-sdk-1.11.1) (2024-05-18)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.15.1`
+## [1.11.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.49...web-js-sdk-1.11.0) (2024-05-16)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.15.0`
+
+### Features
+
+* Transform resp hook ([#581](https://github.com/descope/descope-js/issues/581)) RELEASE ([2bf1289](https://github.com/descope/descope-js/commit/2bf12891bc4130d31fd9f60ce15772adc20ca39f))
+
+## [1.10.49](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.48...web-js-sdk-1.10.49) (2024-05-15)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.14.10`
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.9.4 ([#577](https://github.com/descope/descope-js/issues/577)) ([ea83d21](https://github.com/descope/descope-js/commit/ea83d215fc0d943dcaf37cc1f9737edc531043e7))
+
+## [1.10.48](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.47...web-js-sdk-1.10.48) (2024-05-12)
+
+
+### Bug Fixes
+
+* wrap visibility change in condition ([#561](https://github.com/descope/descope-js/issues/561)) RELEASE ([b40ff22](https://github.com/descope/descope-js/commit/b40ff22045b087ea75fad48c41f93a5ecf3427f8))
+
 ## [1.10.47](https://github.com/descope/descope-js/compare/web-js-sdk-1.10.46...web-js-sdk-1.10.47) (2024-05-12)
 
 ### Dependency Updates
