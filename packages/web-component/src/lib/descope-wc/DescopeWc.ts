@@ -288,11 +288,6 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    if (openInNewTabUrl) {
-      window.open(openInNewTabUrl, '_blank');
-      // We are continuing since there may be more actions to handle (screen, etc.)
-    }
-
     const samlProps = [
       'samlIdpResponseUrl',
       'samlIdpResponseSamlResponse',
@@ -434,6 +429,7 @@ class DescopeWc extends BaseDescopeWc {
         }),
       samlIdpUsername,
       oidcLoginHint,
+      openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -752,8 +748,14 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
-      currentState;
+    const {
+      htmlUrl,
+      htmlLocaleUrl,
+      direction,
+      next,
+      screenState,
+      openInNewTabUrl,
+    } = currentState;
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);
@@ -838,6 +840,13 @@ class DescopeWc extends BaseDescopeWc {
           {},
         );
         this.#handleSdkResponse(response);
+      }
+
+      // open in a new tab should be done after the screen is rendered
+      // because in some cases, the page will have a loader that
+      // should run during the redirect process
+      if (openInNewTabUrl && !prevState.openInNewTabUrl) {
+        window.open(openInNewTabUrl, '_blank');
       }
     };
 
