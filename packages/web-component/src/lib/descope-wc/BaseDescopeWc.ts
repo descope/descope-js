@@ -172,6 +172,10 @@ class BaseDescopeWc extends HTMLElement {
     return this.getAttribute('base-url') || undefined;
   }
 
+  get baseStaticUrl() {
+    return this.getAttribute('base-static-url');
+  }
+
   get tenant() {
     return this.getAttribute('tenant') || undefined;
   }
@@ -332,7 +336,7 @@ class BaseDescopeWc extends HTMLElement {
       projectId: this.projectId,
       filename: CONFIG_FILENAME,
       assetsFolder: PREV_VER_ASSETS_FOLDER,
-      baseUrl: this.baseUrl,
+      baseUrl: this.baseStaticUrl,
     });
     try {
       await fetchContent(prevVerConfigUrl, 'json');
@@ -347,7 +351,7 @@ class BaseDescopeWc extends HTMLElement {
     const configUrl = getContentUrl({
       projectId: this.projectId,
       filename: CONFIG_FILENAME,
-      baseUrl: this.baseUrl,
+      baseUrl: this.baseStaticUrl,
     });
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
@@ -364,7 +368,7 @@ class BaseDescopeWc extends HTMLElement {
     const themeUrl = getContentUrl({
       projectId: this.projectId,
       filename: THEME_FILENAME,
-      baseUrl: this.baseUrl,
+      baseUrl: this.baseStaticUrl,
     });
     try {
       const { body } = await fetchContent(themeUrl, 'json');

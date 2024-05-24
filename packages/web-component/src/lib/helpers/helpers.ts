@@ -74,14 +74,14 @@ export function getContentUrl({
   projectId,
   filename,
   assetsFolder = ASSETS_FOLDER,
-  baseUrl = BASE_CONTENT_URL,
+  baseUrl,
 }: {
   projectId: string;
   filename: string;
   assetsFolder?: string;
   baseUrl?: string;
 }) {
-  const url = new URL(OVERRIDE_CONTENT_URL || baseUrl);
+  const url = new URL(OVERRIDE_CONTENT_URL || baseUrl || BASE_CONTENT_URL);
   url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
 
   return url.toString();

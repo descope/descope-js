@@ -46,7 +46,7 @@ export const staticResourcesMixin = createSingletonMixin(
         const resourceUrl = getResourceUrl({
           projectId: this.projectId,
           filename,
-          baseUrl: this.baseUrl,
+          baseUrl: this.baseStaticUrl,
         });
         const res = await fetch(resourceUrl, { cache: 'default' });
         if (!res.ok) {
@@ -59,6 +59,10 @@ export const staticResourcesMixin = createSingletonMixin(
           body: await res[format](),
           headers: Object.fromEntries(res.headers.entries()),
         };
+      }
+
+      get baseStaticUrl() {
+        return this.getAttribute('base-static-url');
       }
     };
   },
