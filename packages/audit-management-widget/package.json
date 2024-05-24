@@ -38,7 +38,7 @@
     "@rollup/plugin-replace": "^5.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/dom": "^10.0.0",
-    "@testing-library/jest-dom": "5.17.0",
+    "@testing-library/jest-dom": "6.4.3",
     "@types/jest": "^29.0.0",
     "@types/node": "20.12.8",
     "@types/testing-library__jest-dom": "5.14.9",
