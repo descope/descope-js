@@ -418,14 +418,14 @@ class DescopeWc extends BaseDescopeWc {
       htmlUrl: getContentUrl({
         projectId,
         filename: `${readyScreenId}.html`,
-        baseUrl: this.baseUrl,
+        baseUrl: this.baseStaticUrl,
       }),
       htmlLocaleUrl:
         filenameWithLocale &&
         getContentUrl({
           projectId,
           filename: filenameWithLocale,
-          baseUrl: this.baseUrl,
+          baseUrl: this.baseStaticUrl,
         }),
       samlIdpUsername,
       oidcLoginHint,
