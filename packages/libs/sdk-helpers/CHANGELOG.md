@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.36](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.35...sdk-helpers-0.1.36) (2024-05-25)
+
 ## [0.1.35](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.34...sdk-helpers-0.1.35) (2024-05-23)
 
 ## [0.1.34](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.33...sdk-helpers-0.1.34) (2024-05-21)
