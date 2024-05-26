@@ -48,6 +48,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
             projectId: this.projectId,
             flowId: this.nameUserAttr.editFlowId,
             baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -72,6 +73,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
             projectId: this.projectId,
             flowId: this.nameUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

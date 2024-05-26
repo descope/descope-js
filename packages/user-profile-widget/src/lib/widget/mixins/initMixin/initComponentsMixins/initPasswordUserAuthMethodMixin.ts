@@ -39,6 +39,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
             projectId: this.projectId,
             flowId: this.passwordUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
           }),
         );
         this.#flow.onSuccess(() => {
