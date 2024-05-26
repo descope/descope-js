@@ -25,3 +25,4 @@ export * from './mixins/initElementMixin';
 export * from './mixins/initLifecycleMixin';
 export * from './mixins/projectIdMixin';
 export * from './mixins/baseUrlMixin';
+export * from './mixins/baseStaticUrlMixin';
