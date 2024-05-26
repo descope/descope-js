@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.12.5](https://github.com/descope/descope-js/compare/web-component-3.12.4...web-component-3.12.5) (2024-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.6`
+## [3.12.4](https://github.com/descope/descope-js/compare/web-component-3.12.3...web-component-3.12.4) (2024-05-24)
+
+## [3.12.3](https://github.com/descope/descope-js/compare/web-component-3.12.2...web-component-3.12.3) (2024-05-24)
+
+## [3.12.2](https://github.com/descope/descope-js/compare/web-component-3.12.1...web-component-3.12.2) (2024-05-24)
+
+
+### Bug Fixes
+
+* add base-static-url param RELEASE ([#596](https://github.com/descope/descope-js/issues/596)) ([2c41fbd](https://github.com/descope/descope-js/commit/2c41fbd7faf58648223e87d2dcb9b1ced1e30985))
+
 ## [3.12.1](https://github.com/descope/descope-js/compare/web-component-3.12.0...web-component-3.12.1) (2024-05-23)
 
 ### Dependency Updates
