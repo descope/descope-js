@@ -24,6 +24,9 @@ export default {
           process.env.DESCOPE_PROJECT_ID || '',
         ),
         DESCOPE_BASE_URL: JSON.stringify(process.env.DESCOPE_BASE_URL || ''),
+        DESCOPE_BASE_STATIC_URL: JSON.stringify(
+          process.env.DESCOPE_BASE_STATIC_URL || '',
+        ),
         DESCOPE_WIDGET_ID: JSON.stringify(process.env.DESCOPE_WIDGET_ID || ''),
       },
     }),

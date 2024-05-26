@@ -8,7 +8,11 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  baseStaticUrlMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { getName, getPicture } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -21,6 +25,7 @@ export const initAvatarMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       modalMixin,
+      baseStaticUrlMixin,
     )(superclass) {
       avatar: AvatarDriver;
 
@@ -44,6 +49,7 @@ export const initAvatarMixin = createSingletonMixin(
             projectId: this.projectId,
             flowId: this.avatar.flowId,
             baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
           }),
         );
         this.#flow.onSuccess(() => {
