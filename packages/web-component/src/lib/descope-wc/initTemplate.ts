@@ -5,7 +5,7 @@ initTemplate.innerHTML = `
       all: initial;
 			width: 100%;
 			height: 100%;
-      display: inline-block;
+      display: block;
 		}
 
 		#wc-root {
