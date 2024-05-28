@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.42](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.41...user-profile-widget-0.0.42) (2024-05-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.12.7`
 ## [0.0.41](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.40...user-profile-widget-0.0.41) (2024-05-28)
 
 ### Dependency Updates
