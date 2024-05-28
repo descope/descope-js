@@ -669,19 +669,18 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    const origInput = ele.querySelector('input');
-    const origInputStyle = ele.querySelector('style');
-    const slotInput = document.createElement('slot');
+    const origInput = ele.shadowRoot.querySelector('input');
     const id = `input-${origInput.getAttribute('id')}`;
 
-    slotInput.setAttribute('name', id);
-    slotInput.setAttribute('slot', `input`);
-    ele.appendChild(slotInput);
+    const invisibleInput = ele.querySelector('input');
+    const slot = document.createElement('slot');
 
-    origInput.setAttribute('slot', id);
-    origInputStyle.setAttribute('data-style-id', id);
-    this.appendChild(origInput);
-    this.appendChild(origInputStyle);
+    slot.setAttribute('name', id);
+    slot.setAttribute('slot', 'suffix');
+    ele.appendChild(slot);
+    
+    invisibleInput.setAttribute('slot', id);
+    this.appendChild(invisibleInput);
   }
 
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
@@ -829,6 +828,10 @@ class DescopeWc extends BaseDescopeWc {
         updateScreenFromScreenState(this.rootElement, screenState);
 
         const eles = this.rootElement.querySelectorAll('descope-password');
+
+        // remove existing external inputs
+        document.querySelectorAll('[data-hidden-input="true"]').forEach(ele => ele.remove());
+        // handle external input workaround for password components
         eles.forEach((ele) => this.#handleDescopePassword(ele));
       });
 
