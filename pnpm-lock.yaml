@@ -1139,7 +1139,7 @@ importers:
   packages/web-js-sdk:
     specifiers:
       '@descope/core-js-sdk': workspace:*
-      '@fingerprintjs/fingerprintjs-pro': 3.9.4
+      '@fingerprintjs/fingerprintjs-pro': 3.9.5
       '@open-wc/rollup-plugin-html': 1.2.5
       '@rollup/plugin-commonjs': 25.0.7
       '@rollup/plugin-node-resolve': ^15.0.0
@@ -1186,7 +1186,7 @@ importers:
       typescript: ^4.5.3
     dependencies:
       '@descope/core-js-sdk': link:../core-js-sdk
-      '@fingerprintjs/fingerprintjs-pro': 3.9.4
+      '@fingerprintjs/fingerprintjs-pro': 3.9.5
       js-cookie: 3.0.5
       tslib: 2.6.2
     devDependencies:
@@ -2998,8 +2998,8 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     dev: true
 
-  /@fingerprintjs/fingerprintjs-pro/3.9.4:
-    resolution: {integrity: sha512-mPscxSZHTyps9zH/eRD5M/QmVmFfVZUwOq4kaWQVQodEq0PuMh6gnDS8LGQUwTJlOhu0a0MIMq58kILFmPxsDQ==}
+  /@fingerprintjs/fingerprintjs-pro/3.9.5:
+    resolution: {integrity: sha512-pQ/2zenqRqeHFKtPeDv5OUwLulqqXFGBweKB1948DBAGv95+ePMSSosp723+lSsEz0fbo43qyNGuyEjoJlFzZw==}
     dependencies:
       tslib: 2.6.2
     dev: false
