@@ -65,9 +65,9 @@ DESCOPE_BASE_URL
 DESCOPE_LOCALE=<locale>
 ```
 
-1. Run the sample `pnpm run start`
+1. Run the sample `pnpm run start` / `pnpm run start-web-sample`
 
-NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` (this is a temporary solution until we improve the process to fit to monorepo).
+NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` / `pnpm run start-web-sample` (this is a temporary solution until we improve the process to fit to monorepo).
 
 ## Optional Attributes
 
