@@ -30,7 +30,6 @@ export const withAutoRefresh =
     // we need to hold the expiration time and the refresh token in order to refresh the session
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpiration: Date;
-    let refreshToken: string;
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
         // tab becomes visible and the session is expired, do a refresh
@@ -39,13 +38,13 @@ export const withAutoRefresh =
           new Date() > sessionExpiration
         ) {
           logger.debug('Expiration time passed, refreshing session');
-          sdk.refresh(refreshToken);
+          sdk.refresh();
         }
       });
     }
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
-      const { refreshJwt, sessionJwt } = await getAuthInfoFromResponse(res);
+      const { sessionJwt } = await getAuthInfoFromResponse(res);
 
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
@@ -53,7 +52,6 @@ export const withAutoRefresh =
         clearAllTimers();
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
-        refreshToken = refreshJwt;
         let timeout =
           millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
 
@@ -74,7 +72,7 @@ export const withAutoRefresh =
 
         setTimer(() => {
           logger.debug('Refreshing session due to timer');
-          sdk.refresh(refreshJwt);
+          sdk.refresh();
         }, timeout);
       }
     };
