@@ -91,6 +91,11 @@ function addDescopeFlowToPage() {
     console.log('User logged in', event.detail);
     // remove descope-wc from login container
     descopeWc.remove();
+    // trigger afterRequest hook so that sdk can store the tokens and handle auto-refresh
+    await sdk.httpClient.hooks.afterRequest(
+      {},
+      new Response(JSON.stringify(event.detail)),
+    );
     // add a div with user name and logout button
     addUserToPage(event.detail?.user);
   });
