@@ -4,6 +4,7 @@ type FlowConfig = {
   projectId: string;
   flowId: string;
   baseUrl?: string;
+  baseStaticUrl?: string;
 };
 
 export const createFlowTemplate = (

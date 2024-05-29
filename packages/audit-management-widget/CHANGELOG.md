@@ -2,6 +2,90 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.40](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.39...audit-management-widget-0.1.40) (2024-05-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.9`
+* `sdk-helpers` updated to version `0.1.38`
+* `sdk-mixins` updated to version `0.2.23`
+* `sdk-component-drivers` updated to version `0.2.19`
+## [0.1.39](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.38...audit-management-widget-0.1.39) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.8`
+## [0.1.38](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.37...audit-management-widget-0.1.38) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.7`
+* `sdk-helpers` updated to version `0.1.37`
+* `sdk-mixins` updated to version `0.2.22`
+* `sdk-component-drivers` updated to version `0.2.18`
+## [0.1.37](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.36...audit-management-widget-0.1.37) (2024-05-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.2.21`
+
+### Bug Fixes
+
+* base static url for widgets RELEASE ([#599](https://github.com/descope/descope-js/issues/599)) ([d2aa32c](https://github.com/descope/descope-js/commit/d2aa32c3339d552fe9307c3cdd6e21919d44ce78))
+
+## [0.1.36](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.35...audit-management-widget-0.1.36) (2024-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.6`
+* `sdk-helpers` updated to version `0.1.36`
+* `sdk-mixins` updated to version `0.2.20`
+* `sdk-component-drivers` updated to version `0.2.17`
+## [0.1.35](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.34...audit-management-widget-0.1.35) (2024-05-24)
+
+## [0.1.34](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.33...audit-management-widget-0.1.34) (2024-05-24)
+
+## [0.1.33](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.32...audit-management-widget-0.1.33) (2024-05-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.2.19`
+## [0.1.32](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.31...audit-management-widget-0.1.32) (2024-05-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.5`
+* `sdk-helpers` updated to version `0.1.35`
+* `sdk-mixins` updated to version `0.2.18`
+* `sdk-component-drivers` updated to version `0.2.16`
+## [0.1.31](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.30...audit-management-widget-0.1.31) (2024-05-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.2.17`
+
+### Bug Fixes
+
+* use base url for static content in widgets RELEASE ([#594](https://github.com/descope/descope-js/issues/594)) ([853f517](https://github.com/descope/descope-js/commit/853f517a2360d9c5be8766df68a6231f4a23e945))
+
+## [0.1.30](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.29...audit-management-widget-0.1.30) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.4`
+* `sdk-helpers` updated to version `0.1.34`
+* `sdk-mixins` updated to version `0.2.16`
+* `sdk-component-drivers` updated to version `0.2.15`
+## [0.1.29](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.28...audit-management-widget-0.1.29) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.3`
+## [0.1.28](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.27...audit-management-widget-0.1.28) (2024-05-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.2`
 ## [0.1.27](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.26...audit-management-widget-0.1.27) (2024-05-18)
 
 ### Dependency Updates

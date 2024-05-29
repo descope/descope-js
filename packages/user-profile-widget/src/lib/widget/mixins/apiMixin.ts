@@ -1,5 +1,6 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  baseUrlMixin,
   loggerMixin,
   observeAttributesMixin,
   projectIdMixin,
@@ -12,6 +13,7 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
+      baseUrlMixin,
     )(superclass);
 
     return class ApiMixinClass extends BaseClass {
@@ -24,10 +26,6 @@ export const apiMixin = createSingletonMixin(
           this.mock === 'true',
           this.widgetId,
         );
-      }
-
-      get baseUrl() {
-        return this.getAttribute('base-url');
       }
 
       get widgetId() {

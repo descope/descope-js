@@ -2,6 +2,90 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.77](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.76...access-key-management-widget-0.1.77) (2024-05-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.9`
+* `sdk-helpers` updated to version `0.1.38`
+* `sdk-mixins` updated to version `0.2.23`
+* `sdk-component-drivers` updated to version `0.2.19`
+## [0.1.76](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.75...access-key-management-widget-0.1.76) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.8`
+## [0.1.75](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.74...access-key-management-widget-0.1.75) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.7`
+* `sdk-helpers` updated to version `0.1.37`
+* `sdk-mixins` updated to version `0.2.22`
+* `sdk-component-drivers` updated to version `0.2.18`
+## [0.1.74](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.73...access-key-management-widget-0.1.74) (2024-05-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.2.21`
+
+### Bug Fixes
+
+* base static url for widgets RELEASE ([#599](https://github.com/descope/descope-js/issues/599)) ([d2aa32c](https://github.com/descope/descope-js/commit/d2aa32c3339d552fe9307c3cdd6e21919d44ce78))
+
+## [0.1.73](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.72...access-key-management-widget-0.1.73) (2024-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.6`
+* `sdk-helpers` updated to version `0.1.36`
+* `sdk-mixins` updated to version `0.2.20`
+* `sdk-component-drivers` updated to version `0.2.17`
+## [0.1.72](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.71...access-key-management-widget-0.1.72) (2024-05-24)
+
+## [0.1.71](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.70...access-key-management-widget-0.1.71) (2024-05-24)
+
+## [0.1.70](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.69...access-key-management-widget-0.1.70) (2024-05-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.2.19`
+## [0.1.69](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.68...access-key-management-widget-0.1.69) (2024-05-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.5`
+* `sdk-helpers` updated to version `0.1.35`
+* `sdk-mixins` updated to version `0.2.18`
+* `sdk-component-drivers` updated to version `0.2.16`
+## [0.1.68](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.67...access-key-management-widget-0.1.68) (2024-05-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.2.17`
+
+### Bug Fixes
+
+* use base url for static content in widgets RELEASE ([#594](https://github.com/descope/descope-js/issues/594)) ([853f517](https://github.com/descope/descope-js/commit/853f517a2360d9c5be8766df68a6231f4a23e945))
+
+## [0.1.67](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.66...access-key-management-widget-0.1.67) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.4`
+* `sdk-helpers` updated to version `0.1.34`
+* `sdk-mixins` updated to version `0.2.16`
+* `sdk-component-drivers` updated to version `0.2.15`
+## [0.1.66](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.65...access-key-management-widget-0.1.66) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.3`
+## [0.1.65](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.64...access-key-management-widget-0.1.65) (2024-05-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.2`
 ## [0.1.64](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.63...access-key-management-widget-0.1.64) (2024-05-18)
 
 ### Dependency Updates

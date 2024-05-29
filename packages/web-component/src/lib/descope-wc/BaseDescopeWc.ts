@@ -144,6 +144,7 @@ class BaseDescopeWc extends HTMLElement {
   #handleOuterForm() {
     const wc = this.shadowRoot.host;
     const form = document.createElement('form');
+    form.style.width = '100%';
     wc.parentElement.appendChild(form);
     form.appendChild(wc);
   }
@@ -169,6 +170,10 @@ class BaseDescopeWc extends HTMLElement {
 
   get baseUrl() {
     return this.getAttribute('base-url') || undefined;
+  }
+
+  get baseStaticUrl() {
+    return this.getAttribute('base-static-url');
   }
 
   get tenant() {
@@ -327,11 +332,12 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   async #isPrevVerConfig() {
-    const prevVerConfigUrl = getContentUrl(
-      this.projectId,
-      CONFIG_FILENAME,
-      PREV_VER_ASSETS_FOLDER,
-    );
+    const prevVerConfigUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: CONFIG_FILENAME,
+      assetsFolder: PREV_VER_ASSETS_FOLDER,
+      baseUrl: this.baseStaticUrl,
+    });
     try {
       await fetchContent(prevVerConfigUrl, 'json');
       return true;
@@ -342,7 +348,11 @@ class BaseDescopeWc extends HTMLElement {
 
   // we want to get the config only if we don't have it already
   #getConfig = withMemCache(async () => {
-    const configUrl = getContentUrl(this.projectId, CONFIG_FILENAME);
+    const configUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: CONFIG_FILENAME,
+      baseUrl: this.baseStaticUrl,
+    });
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
@@ -355,7 +365,11 @@ class BaseDescopeWc extends HTMLElement {
   });
 
   async #fetchTheme() {
-    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
+    const themeUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: THEME_FILENAME,
+      baseUrl: this.baseStaticUrl,
+    });
     try {
       const { body } = await fetchContent(themeUrl, 'json');
 
@@ -410,7 +424,7 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   #handleComponentsContext(e: CustomEvent) {
-    this.#componentsContext = { ...e.detail, ...this.#componentsContext };
+    this.#componentsContext = { ...this.#componentsContext, ...e.detail };
   }
 
   async #applyTheme() {

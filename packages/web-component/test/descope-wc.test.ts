@@ -359,6 +359,23 @@ describe('web-component', () => {
     );
   });
 
+  it('should fetch the data from the correct base static url', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" base-static-url="http://base.url/pages"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^http:\/\/base.url\/pages.*\.html/),
+      expect.any(Object),
+    );
+  });
+
   it('should throw an error project-id is missing', async () => {
     class Test extends DescopeWc {
       constructor() {
@@ -1523,14 +1540,14 @@ describe('web-component', () => {
 
     pageContent = '<div>hey</div>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="base.url"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="http://base.url"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('hey'), {
       timeout: WAIT_TIMEOUT,
     });
     expect(ensureFingerprintIds).toHaveBeenCalledWith(
       'fp-public-key',
-      'base.url',
+      'http://base.url',
     );
   });
 

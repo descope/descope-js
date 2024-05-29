@@ -2,6 +2,86 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.12.9](https://github.com/descope/descope-js/compare/web-component-3.12.8...web-component-3.12.9) (2024-05-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.9`
+## [3.12.8](https://github.com/descope/descope-js/compare/web-component-3.12.7...web-component-3.12.8) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.8`
+## [3.12.7](https://github.com/descope/descope-js/compare/web-component-3.12.6...web-component-3.12.7) (2024-05-28)
+
+
+### Bug Fixes
+
+* issue 6600 RELEASE ([#602](https://github.com/descope/descope-js/issues/602)) ([6d60184](https://github.com/descope/descope-js/commit/6d60184e5c0806e711b7a9265869c39661dd158f))
+
+## [3.12.6](https://github.com/descope/descope-js/compare/web-component-3.12.5...web-component-3.12.6) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.7`
+## [3.12.5](https://github.com/descope/descope-js/compare/web-component-3.12.4...web-component-3.12.5) (2024-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.6`
+## [3.12.4](https://github.com/descope/descope-js/compare/web-component-3.12.3...web-component-3.12.4) (2024-05-24)
+
+## [3.12.3](https://github.com/descope/descope-js/compare/web-component-3.12.2...web-component-3.12.3) (2024-05-24)
+
+## [3.12.2](https://github.com/descope/descope-js/compare/web-component-3.12.1...web-component-3.12.2) (2024-05-24)
+
+
+### Bug Fixes
+
+* add base-static-url param RELEASE ([#596](https://github.com/descope/descope-js/issues/596)) ([2c41fbd](https://github.com/descope/descope-js/commit/2c41fbd7faf58648223e87d2dcb9b1ced1e30985))
+
+## [3.12.1](https://github.com/descope/descope-js/compare/web-component-3.12.0...web-component-3.12.1) (2024-05-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.5`
+
+### Bug Fixes
+
+* open tab url timing ([#573](https://github.com/descope/descope-js/issues/573)) RELEASE ([92dee94](https://github.com/descope/descope-js/commit/92dee944c95a5a32fa0094b9675d895d2b588269))
+
+## [3.12.0](https://github.com/descope/descope-js/compare/web-component-3.11.25...web-component-3.12.0) (2024-05-22)
+
+
+### Features
+
+* use base url for static content ([#593](https://github.com/descope/descope-js/issues/593)) ([3d42936](https://github.com/descope/descope-js/commit/3d4293646c49714b78b7d740d39c376873f0658c))
+
+## [3.11.25](https://github.com/descope/descope-js/compare/web-component-3.11.24...web-component-3.11.25) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.4`
+## [3.11.24](https://github.com/descope/descope-js/compare/web-component-3.11.23...web-component-3.11.24) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.3`
+
+### Bug Fixes
+
+* component context override order ([#591](https://github.com/descope/descope-js/issues/591)) ([4850845](https://github.com/descope/descope-js/commit/4850845f00025175a314991166ef29dc5e7a2562))
+
+## [3.11.23](https://github.com/descope/descope-js/compare/web-component-3.11.22...web-component-3.11.23) (2024-05-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.2`
+
+### Bug Fixes
+
+* issue 6494 ([#586](https://github.com/descope/descope-js/issues/586)) ([7363f2e](https://github.com/descope/descope-js/commit/7363f2e9c4fd97d7ee87663cb8eeb825d13094fe))
+
 ## [3.11.22](https://github.com/descope/descope-js/compare/web-component-3.11.21...web-component-3.11.22) (2024-05-18)
 
 ### Dependency Updates
