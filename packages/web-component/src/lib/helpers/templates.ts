@@ -72,7 +72,7 @@ const replaceElementTemplates = (
   baseEle: DocumentFragment,
   screenState?: Record<string, any>,
 ) => {
-  const eleList = baseEle.querySelectorAll('descope-text,descope-link,descope-enriched-text');
+  const eleList = baseEle.querySelectorAll('descope-text,descope-link,descope-enriched-text,descope-code-snippet');
   eleList.forEach((inEle: HTMLElement) => {
     // eslint-disable-next-line no-param-reassign
     inEle.textContent = applyTemplates(inEle.textContent, screenState);
