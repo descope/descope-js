@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "3.12.8",
+  "version": "3.12.9",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-component",
   "bugs": {
@@ -36,7 +36,7 @@
     "@testing-library/jest-dom": "6.4.5",
     "@types/testing-library__jest-dom": "5.14.9",
     "@types/jest": "^29.0.0",
-    "@types/node": "20.12.10",
+    "@types/node": "20.12.11",
     "dotenv": "^16.0.3",
     "eslint": "8.57.0",
     "eslint-config-airbnb": "19.0.4",
@@ -48,7 +48,7 @@
     "eslint-plugin-jest": "28.5.0",
     "eslint-plugin-jest-dom": "5.4.0",
     "eslint-plugin-jest-formatting": "3.1.0",
-    "eslint-plugin-n": "17.4.0",
+    "eslint-plugin-n": "17.5.1",
     "eslint-plugin-no-only-tests": "3.1.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-prettier": "5.1.3",
