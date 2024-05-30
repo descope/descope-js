@@ -3,15 +3,25 @@ import { authInfo } from './mocks';
 import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
 import { MAX_TIMEOUT } from '../src/constants';
+import jwtDecode from 'jwt-decode';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
   debug: jest.fn(),
 }));
 
+jest.mock('jwt-decode', () => jest.fn());
+
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
 describe('autoRefresh', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (jwtDecode as jest.Mock).mockImplementation(
+      jest.requireActual('jwt-decode'),
+    );
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -183,6 +193,40 @@ describe('autoRefresh', () => {
     expect(loggerDebugMock).toHaveBeenCalledWith(
       'Expiration time passed, refreshing session',
     );
+  });
+
+  it('should handle a case where jwt decoding fail', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+
+    // mock 'jwt-decode' to throw an error
+    (jwtDecode as jest.Mock).mockImplementationOnce(() => {
+      throw new Error('Invalid token');
+    });
+
+    await sdk.httpClient.get('1/2/3');
+
+    // ensure logger called
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /^Could not extract expiration time from session token/,
+      ),
+    );
+    // ensure refresh not called
+    expect(refreshSpy).not.toBeCalled();
+
+    // ensure setTimeout is not called
+    expect(setTimeoutSpy).not.toBeCalled();
   });
 
   it('should refresh token when visibilitychange event and session is not expired', async () => {

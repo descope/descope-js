@@ -57,6 +57,10 @@ export const withAutoRefresh =
         clearAllTimers();
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
+        if (!sessionExpiration) {
+          logger.debug('Could not extract expiration time from session token');
+          return;
+        }
         refreshToken = refreshJwt;
         let timeout =
           millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
