@@ -10,6 +10,7 @@ import {
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
 import { IS_BROWSER, MAX_TIMEOUT } from '../../constants';
+import { getRefreshToken } from '../withPersistTokens/helpers';
 
 // The amount of time (ms) to trigger the refresh before session expires
 const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
@@ -39,7 +40,10 @@ export const withAutoRefresh =
           new Date() > sessionExpiration
         ) {
           logger.debug('Expiration time passed, refreshing session');
-          sdk.refresh(refreshToken);
+          // We prefer the persisted refresh token over the one from the response
+          // for a case that the token was refreshed from another tab, this mostly relevant
+          // when the project uses token rotation
+          sdk.refresh(getRefreshToken() || refreshToken);
         }
       });
     }
@@ -78,7 +82,10 @@ export const withAutoRefresh =
 
         setTimer(() => {
           logger.debug('Refreshing session due to timer');
-          sdk.refresh(refreshJwt);
+          // We prefer the persisted refresh token over the one from the response
+          // for a case that the token was refreshed from another tab, this mostly relevant
+          // when the project uses token rotation
+          sdk.refresh(getRefreshToken() || refreshJwt);
         }, timeout);
       }
     };
