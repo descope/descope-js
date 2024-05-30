@@ -11,53 +11,47 @@ const loginContainer = document.querySelector('.login-container');
 
 async function main() {
   // show loading message
-  const loadingDiv = document.createElement('div');
-  loadingDiv.textContent = 'Loading...';
-  loginContainer.appendChild(loadingDiv);
+  loginContainer.innerHTML = `<div>Loading...</div>`;
 
   // first try to refresh token, this will also trigger the auto-refresh mechanism
   const refreshRes = await sdk.refresh();
   let userAuthenticated = refreshRes.ok;
-  if (userAuthenticated) {
-    // user is authenticated
-    console.log('User is authenticated');
-    // remove loading message
-    loadingDiv.remove();
-
-    // get user name
-    const userRes = await sdk.me();
-    if (!userRes.ok) {
-      console.error('Error fetching user details', userRes.error);
-      // add a div with error message
-      addErrorMessageToPage('Error fetching user details');
-      return;
-    }
-    // add a div with user name and logout button
-    addUserToPage(userRes.data);
+  if (!userAuthenticated) {
+    // user is not authenticated
+    console.log('User is not authenticated');
+    // show login flow
+    addDescopeFlowToPage();
     return;
   }
-  // user is not authenticated
-  console.log('User is not authenticated');
-  // remove loading message
-  loadingDiv.remove();
 
-  // show login flow
-  addDescopeFlowToPage();
+  // user is authenticated
+  console.log('User is authenticated');
+
+  // get user name
+  const userRes = await sdk.me();
+  if (!userRes.ok) {
+    console.error('Error fetching user details', userRes.error);
+    // add a div with error message
+    addErrorMessageToPage('Error fetching user details');
+    return;
+  }
+
+  // add a div with user name and logout button
+  addUserToPage(userRes.data);
 }
 
 async function addUserToPage(user) {
-  const userDiv = document.createElement('div');
-  userDiv.textContent = `Welcome ${user?.name || user?.loginIds?.[0] || ''}`;
-  loginContainer.appendChild(userDiv);
-  const logoutButton = document.createElement('button');
-  logoutButton.textContent = 'Logout';
+  loginContainer.innerHTML = `
+    <div>Welcome ${user?.name || user?.loginIds?.[0] || ''}</div>
+    <button>Logout</button>
+  `;
+
+  const logoutButton = loginContainer.querySelector('button');
   logoutButton.onclick = async () => {
     await sdk.logout();
     // reload the page
     window.location.reload();
   };
-  // add logout button to login container
-  loginContainer.appendChild(logoutButton);
 
   // in case of session token is missing, reload the page
   // this may happen if the user logs out from another tab or the refresh token is revoked/expired
@@ -70,21 +64,21 @@ async function addUserToPage(user) {
 }
 
 async function addErrorMessageToPage(message) {
-  const errorDiv = document.createElement('div');
-  errorDiv.textContent = message;
-  loginContainer.appendChild(errorDiv);
+  // add a div with error message
+  loginContainer.innerHTML = `<div style="color:red">${message}</div>`;
 }
 
 function addDescopeFlowToPage() {
-  const descopeWc = document.createElement('descope-wc');
-  descopeWc.setAttribute('project-id', process.env.DESCOPE_PROJECT_ID);
-  descopeWc.setAttribute(
-    'flow-id',
-    process.env.DESCOPE_FLOW_ID || 'sign-up-or-in',
-  );
-  descopeWc.setAttribute('base-url', process.env.DESCOPE_BASE_URL);
-  descopeWc.setAttribute('debug', 'true');
-  loginContainer.appendChild(descopeWc);
+  loginContainer.innerHTML = `
+    <descope-wc
+      project-id="${process.env.DESCOPE_PROJECT_ID}"
+      flow-id="${process.env.DESCOPE_FLOW_ID || 'sign-up-or-in'}"
+      base-url="${process.env.DESCOPE_BASE_URL}"
+      debug="true"
+    ></descope-wc>
+  `;
+
+  const descopeWc = document.querySelector('descope-wc');
 
   // listen for login event
   descopeWc.addEventListener('success', async (event) => {
