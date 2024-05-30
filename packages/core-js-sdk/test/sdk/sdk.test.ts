@@ -108,6 +108,12 @@ describe('sdk', () => {
       },
     };
 
+    const mockNoTenantsToken = {
+      permissions: ['p1', 'p2'],
+      roles: ['r1', 'r2'],
+      dct: 't1',
+    };
+
     it('should return two permissions', () => {
       (jwtDecode as jest.Mock).mockImplementation(() => mock);
       expect(sdk.getJwtPermissions('jwt')).toStrictEqual(['foo', 'bar']);
@@ -134,6 +140,22 @@ describe('sdk', () => {
         'C2EdY4UXXzKPV0EKdZFJbuKKmvtl',
         'C2EdY4UXXzKPV0EKdZFJbuKKmvtm',
       ]);
+    });
+    it('should return current tenant permissions', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => mockNoTenantsToken);
+      expect(sdk.getJwtPermissions('jwt', 't1')).toStrictEqual(['p1', 'p2']);
+    });
+    it('should return current tenant roles', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => mockNoTenantsToken);
+      expect(sdk.getJwtRoles('jwt', 't1')).toStrictEqual(['r1', 'r2']);
+    });
+    it('should return empty tenant permissions if tenant does not match', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => mockNoTenantsToken);
+      expect(sdk.getJwtPermissions('jwt', 't2')).toStrictEqual([]);
+    });
+    it('should return empty tenant roles if tenant does not match', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => mockNoTenantsToken);
+      expect(sdk.getJwtRoles('jwt', 't2')).toStrictEqual([]);
     });
   });
 
