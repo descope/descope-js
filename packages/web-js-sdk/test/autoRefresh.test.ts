@@ -44,9 +44,9 @@ describe('autoRefresh', () => {
     const timeoutFn = setTimeoutSpy.mock.calls[0][0];
     const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
 
-    // ensure refresh called without refresh token
+    // ensure refresh called with refresh token
     timeoutFn();
-    expect(refreshSpy).toBeCalledWith();
+    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
 
     // check refresh called around 20 seconds before session token expiration
     const expectedTimer = 1663190448000 - new Date().getTime();
@@ -178,7 +178,7 @@ describe('autoRefresh', () => {
     // trigger visibilitychange event and ensure refresh called
     const event = new Event('visibilitychange');
     document.dispatchEvent(event);
-    expect(refreshSpy).toBeCalledWith();
+    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
 
     expect(loggerDebugMock).toHaveBeenCalledWith(
       'Expiration time passed, refreshing session',
