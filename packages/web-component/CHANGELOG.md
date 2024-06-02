@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.13.3](https://github.com/descope/descope-js/compare/web-component-3.13.2...web-component-3.13.3) (2024-05-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.12`
+## [3.13.2](https://github.com/descope/descope-js/compare/web-component-3.13.1...web-component-3.13.2) (2024-05-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.11`
+## [3.13.1](https://github.com/descope/descope-js/compare/web-component-3.13.0...web-component-3.13.1) (2024-05-30)
+
+## [3.13.0](https://github.com/descope/descope-js/compare/web-component-3.12.10...web-component-3.13.0) (2024-05-30)
+
+
+### Features
+
+* Replace dynamic values on code snippet RELEASE ([#610](https://github.com/descope/descope-js/issues/610)) ([b3e0f2d](https://github.com/descope/descope-js/commit/b3e0f2d2556f164a9bcd867be5d23bda97392f2d))
+
+## [3.12.10](https://github.com/descope/descope-js/compare/web-component-3.12.9...web-component-3.12.10) (2024-05-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.10`
 ## [3.12.9](https://github.com/descope/descope-js/compare/web-component-3.12.8...web-component-3.12.9) (2024-05-29)
 
 ### Dependency Updates

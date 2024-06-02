@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-js-sdk",
-  "version": "1.11.9",
+  "version": "1.11.12",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-js-sdk",
   "bugs": {
@@ -61,7 +61,7 @@
     "eslint-plugin-jest": "28.5.0",
     "eslint-plugin-jest-dom": "5.4.0",
     "eslint-plugin-jest-formatting": "3.1.0",
-    "eslint-plugin-n": "17.5.1",
+    "eslint-plugin-n": "17.6.0",
     "eslint-plugin-no-only-tests": "3.1.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-prettier": "5.1.3",
@@ -89,6 +89,7 @@
     "@descope/core-js-sdk": "workspace:*",
     "@fingerprintjs/fingerprintjs-pro": "3.9.5",
     "js-cookie": "3.0.5",
+    "jwt-decode": "3.1.2",
     "tslib": "2.6.2"
   },
   "overrides": {

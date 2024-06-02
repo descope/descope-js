@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.11.12](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.11...web-js-sdk-1.11.12) (2024-05-31)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.18.1`
+## [1.11.11](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.10...web-js-sdk-1.11.11) (2024-05-30)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.18.0`
+## [1.11.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.9...web-js-sdk-1.11.10) (2024-05-30)
+
+
+### Bug Fixes
+
+* fix jwt decode on auto-refresh ([#611](https://github.com/descope/descope-js/issues/611)) ([d18756d](https://github.com/descope/descope-js/commit/d18756d5ad3eec33f1aaf97de61e6601ccab73ac))
+* make auto refresh to not use the request refresh ([#607](https://github.com/descope/descope-js/issues/607)) RELEASE ([5e97ca2](https://github.com/descope/descope-js/commit/5e97ca22e5e80e4f8c86a04b9bfbfb111aedefc6))
+
 ## [1.11.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.8...web-js-sdk-1.11.9) (2024-05-29)
 
 ### Dependency Updates

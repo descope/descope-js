@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.18.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.0...core-js-sdk-2.18.1) (2024-05-31)
+
+## [2.18.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.4...core-js-sdk-2.18.0) (2024-05-30)
+
+
+### Features
+
+* get auth claims by current tenant if it matches ([#612](https://github.com/descope/descope-js/issues/612)) ([a0942c8](https://github.com/descope/descope-js/commit/a0942c8b3fec7350c520dcf301dd5d6e269854d5))
+
 ## [2.17.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.3...core-js-sdk-2.17.4) (2024-05-29)
 
 ## [2.17.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.2...core-js-sdk-2.17.3) (2024-05-28)
