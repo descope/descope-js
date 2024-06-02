@@ -1,64 +1,74 @@
 <!doctype html>
 <html>
+  <head>
+    <title>Descope WC demo app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Uncomment next section if you want to test CSP -->
 
-<head>
-  <title>Descope WC demo app</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Uncomment next section if you want to test CSP -->
-
-  <!-- <meta
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="connect-src 'self' static.descope.com api.descope.com;
     style-src 'unsafe-inline' fonts.googleapis.com;
     img-src static.descope.com content.app.descope.com;
     font-src fonts.gstatic.com;
-    script-src 'self' static.descope.com;
-  "
+    script-src 'self' static.descope.com;"
     /> -->
-  <style>
-    body {
-      background-color: antiquewhite;
-      position: relative;
-      height: 100vh;
-      margin: 0;
-    }
+    <style>
+      body {
+        background-color: antiquewhite;
+        position: relative;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        width: 500px;
+        min-height: 300px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="../lib/descope-wc/index.ts"></script>
+    <div class="login-container">
+      <descope-wc
+        project-id="<project-id>"
+        flow-id="<flow-id>"
+        base-url="<base-url>"
+        locale="<locale>"
+        debug="true"
+      ></descope-wc>
+      <div class="loading">Loading ...</div>
+    </div>
+    <script>
+      // Translate or modify the error as needed
+      function translateError(error) {
+        const translationMap = {
+          SAMLStartFailed: 'Failed to start SAML flow',
+        };
+        return translationMap[error.type] || error.text;
+      }
+      const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 
-    .login-container {
-      width: 50%;
-      min-height: 300px;
-      margin: auto;
-      position: relative;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-  </style>
-</head>
-
-<body>
-  <script type="module" src="../lib/descope-wc/index.ts"></script>
-  <div class="login-container">
-    <descope-wc project-id="<project-id>" flow-id="<flow-id>" base-url="<base-url>" locale="<locale>" debug="true"
-      xstyle="height:200px!important;display:block!important;overflow:scroll;"></descope-wc>
-  </div>
-  <script>
-    // Translate or modify the error as needed
-    function translateError(error) {
-      const translationMap = {
-        SAMLStartFailed: 'Failed to start SAML flow',
-      };
-      return translationMap[error.type] || error.text;
-    }
-   
-    const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
-
-    descopeWcEle.errorTransformer = translateError;
-    descopeWcEle.addEventListener('error', (e) =>
-      alert(`Error! - ${e.detail.errorMessage}`),
-    );
-    descopeWcEle.addEventListener('success', (e) =>
-      alert(`Success! - ${JSON.stringify(e.detail)}`),
-    );
-  </script>
-</body>
-
+      descopeWcEle.errorTransformer = translateError;
+      descopeWcEle.addEventListener('error', (e) =>
+        alert(`Error! - ${e.detail.errorMessage}`),
+      );
+      descopeWcEle.addEventListener('success', (e) =>
+        alert(`Success! - ${JSON.stringify(e.detail)}`),
+      );
+      descopeWcEle.addEventListener('ready', () => {
+        // Remove/hide loading
+        document.querySelector('.loading')?.remove();
+        // Alternatively, it can be hidden. For example:
+        // document.querySelector('.loading')?.style.display = 'none';
+      });
+    </script>
+  </body>
 </html>
