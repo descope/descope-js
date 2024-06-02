@@ -674,18 +674,21 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    const origInput = ele.shadowRoot.querySelector('input');
-    const id = `input-${origInput.getAttribute('id')}`;
+    const origInputs = ele.querySelectorAll('input');
 
-    const invisibleInput = ele.querySelector('input');
-    const slot = document.createElement('slot');
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
 
-    slot.setAttribute('name', id);
-    slot.setAttribute('slot', 'suffix');
-    ele.appendChild(slot);
-    
-    invisibleInput.setAttribute('slot', id);
-    this.appendChild(invisibleInput);
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
   }
 
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
@@ -838,12 +841,20 @@ class DescopeWc extends BaseDescopeWc {
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
 
-        const eles = this.rootElement.querySelectorAll('descope-password');
+        const passwordEles =
+          this.rootElement.querySelectorAll('descope-password');
+        const newPasswordEles = this.rootElement.querySelectorAll(
+          'descope-new-password',
+        );
 
         // remove existing external inputs
-        document.querySelectorAll('[data-hidden-input="true"]').forEach(ele => ele.remove());
+        document
+          .querySelectorAll('[data-hidden-input="true"]')
+          .forEach((ele) => ele.remove());
         // handle external input workaround for password components
-        eles.forEach((ele) => this.#handleDescopePassword(ele));
+        [...passwordEles, ...newPasswordEles].forEach((ele) =>
+          this.#handleDescopePassword(ele),
+        );
       });
 
       // If before html url was empty, we deduce its the first time a screen is shown
