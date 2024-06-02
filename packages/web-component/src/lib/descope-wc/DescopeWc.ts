@@ -668,9 +668,7 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    const isExternalInput = ele.getAttribute('external-input') === 'true';
-
-    if (!isExternalInput) {
+    if (ele.getAttribute('external-input') !== 'true') {
       return;
     }
 
@@ -961,7 +959,7 @@ class DescopeWc extends BaseDescopeWc {
     const password = getFirstNonEmptyValue(formData, passwordFields);
 
     // PasswordCredential not supported in Firefox
-    if (id && password && globalThis.PasswordCredential) {
+    if (id && password) {
       try {
         if (!globalThis.PasswordCredential) {
           return;
