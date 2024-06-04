@@ -26,6 +26,7 @@ import {
   withMemCache,
   getFirstNonEmptyValue,
   leadingDebounce,
+  handleReportValidityOnBlur,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -819,6 +820,10 @@ class DescopeWc extends BaseDescopeWc {
 
       handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
 
+      if (this.validateOnBlur) {
+        handleReportValidityOnBlur(this.rootElement);
+      }
+
       this.#hydrate(next);
       if (isFirstScreen) {
         // Dispatch when the first page is ready
@@ -860,12 +865,15 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #validateInputs() {
-    return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
+    let isValid = true;
+    Array.from(this.shadowRoot.querySelectorAll('*[name]')).forEach(
       (input: HTMLInputElement) => {
         input.reportValidity?.();
-        return input.checkValidity?.();
+        isValid = input.checkValidity?.();
       },
     );
+
+    return isValid;
   }
 
   async #getFormData() {

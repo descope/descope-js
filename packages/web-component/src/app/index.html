@@ -19,14 +19,15 @@
         position: relative;
         height: 100vh;
         margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       .login-container {
         width: 500px;
         min-height: 300px;
         margin: auto;
         position: relative;
-        top: 50%;
-        transform: translateY(-50%);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -43,6 +44,7 @@
         base-url="<base-url>"
         locale="<locale>"
         debug="true"
+        validate-on-blur="false"
       ></descope-wc>
       <div class="loading">Loading ...</div>
     </div>
