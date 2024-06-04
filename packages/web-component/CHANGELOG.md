@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.14.0](https://github.com/descope/descope-js/compare/web-component-3.13.3...web-component-3.14.0) (2024-06-04)
+
+
+### Features
+
+* Handle Password External Inputs RELEASE ([#582](https://github.com/descope/descope-js/issues/582)) ([dd03cb5](https://github.com/descope/descope-js/commit/dd03cb5874c21e4745324b8f25ae62d1896cab0e))
+
 ## [3.13.3](https://github.com/descope/descope-js/compare/web-component-3.13.2...web-component-3.13.3) (2024-05-31)
 
 ### Dependency Updates
