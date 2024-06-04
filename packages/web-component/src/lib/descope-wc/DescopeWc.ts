@@ -663,6 +663,32 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #handleDescopePassword(ele: Element) {
+    if (!ele) {
+      return;
+    }
+
+    if (ele.getAttribute('external-input') !== 'true') {
+      return;
+    }
+
+    const origInputs = ele.querySelectorAll('input');
+
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
+  }
+
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
     this.#conditionalUiAbortController?.abort();
 
@@ -810,9 +836,24 @@ class DescopeWc extends BaseDescopeWc {
       this.rootElement.replaceChildren(clone);
 
       // we need to wait for all components to render before we can set its value
-      setTimeout(() =>
-        updateScreenFromScreenState(this.rootElement, screenState),
-      );
+      setTimeout(() => {
+        updateScreenFromScreenState(this.rootElement, screenState);
+
+        const passwordEles =
+          this.rootElement.querySelectorAll('descope-password');
+        const newPasswordEles = this.rootElement.querySelectorAll(
+          'descope-new-password',
+        );
+
+        // remove existing external inputs
+        document
+          .querySelectorAll('[data-hidden-input="true"]')
+          .forEach((ele) => ele.remove());
+        // handle external input workaround for password components
+        [...passwordEles, ...newPasswordEles].forEach((ele) =>
+          this.#handleDescopePassword(ele),
+        );
+      });
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
@@ -862,6 +903,9 @@ class DescopeWc extends BaseDescopeWc {
   #validateInputs() {
     return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
       (input: HTMLInputElement) => {
+        if (input.localName === 'slot') {
+          return true;
+        }
         input.reportValidity?.();
         return input.checkValidity?.();
       },
@@ -914,6 +958,7 @@ class DescopeWc extends BaseDescopeWc {
     const id = getFirstNonEmptyValue(formData, idFields);
     const password = getFirstNonEmptyValue(formData, passwordFields);
 
+    // PasswordCredential not supported in Firefox
     if (id && password) {
       try {
         if (!globalThis.PasswordCredential) {
