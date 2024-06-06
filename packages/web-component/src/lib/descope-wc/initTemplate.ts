@@ -11,6 +11,7 @@ initTemplate.innerHTML = `
 		#wc-root {
 			height: 100%;
 			transition: opacity 300ms ease-in-out;
+      display: flex;
 		}
 
 		#wc-root[data-theme] {

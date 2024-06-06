@@ -61,6 +61,7 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'validate-on-blur',
     ];
   }
 
@@ -145,6 +146,7 @@ class BaseDescopeWc extends HTMLElement {
     const wc = this.shadowRoot.host;
     const form = document.createElement('form');
     form.style.width = '100%';
+    form.style.height = '100%';
     wc.parentElement.appendChild(form);
     form.appendChild(wc);
   }
@@ -213,6 +215,10 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get validateOnBlur() {
+    return this.getAttribute('validate-on-blur') === 'true';
+  }
+
   get storeLastAuthenticatedUser() {
     const res = this.getAttribute('store-last-authenticated-user') ?? 'true';
     return res === 'true';
@@ -248,6 +254,7 @@ class BaseDescopeWc extends HTMLElement {
       'storage-prefix',
       'form',
       'client',
+      'validate-on-blur',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {

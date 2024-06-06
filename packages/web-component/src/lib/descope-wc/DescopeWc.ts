@@ -26,6 +26,7 @@ import {
   withMemCache,
   getFirstNonEmptyValue,
   leadingDebounce,
+  handleReportValidityOnBlur,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -859,6 +860,10 @@ class DescopeWc extends BaseDescopeWc {
       const isFirstScreen = !prevState.htmlUrl;
 
       handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+
+      if (this.validateOnBlur) {
+        handleReportValidityOnBlur(this.rootElement);
+      }
 
       this.#hydrate(next);
       if (isFirstScreen) {
