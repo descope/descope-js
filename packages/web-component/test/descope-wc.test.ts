@@ -3717,6 +3717,56 @@ describe('web-component', () => {
     WAIT_TIMEOUT,
   );
 
+  it('should call report validity on blur when validate-on-blur is set to true', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input name="email" id="email" placeholder="email"></input>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" validate-on-blur="true"></descope-wc>`;
+
+    const emailInput = await waitFor(
+      () => screen.getByShadowPlaceholderText('email'),
+      {
+        timeout: WAIT_TIMEOUT,
+      },
+    );
+
+    (<HTMLInputElement>emailInput).reportValidity = jest.fn();
+
+    fireEvent.blur(emailInput);
+
+    await waitFor(() =>
+      expect(
+        (<HTMLInputElement>emailInput).reportValidity,
+      ).toHaveBeenCalledTimes(1),
+    );
+  });
+
+  it('should not call report validity on blur by default', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input name="email" id="email" placeholder="email"></input>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+    const emailInput = await waitFor(
+      () => screen.getByShadowPlaceholderText('email'),
+      {
+        timeout: WAIT_TIMEOUT,
+      },
+    );
+
+    (<HTMLInputElement>emailInput).reportValidity = jest.fn();
+
+    fireEvent.blur(emailInput);
+
+    await waitFor(() =>
+      expect(
+        (<HTMLInputElement>emailInput).reportValidity,
+      ).not.toHaveBeenCalled(),
+    );
+  });
+
   it('Multiple buttons with auto-submit true, correct button is being called upon enter', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));

@@ -374,6 +374,23 @@ export const handleAutoFocus = (
   }
 };
 
+export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
+  rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
+    ele.addEventListener('blur', () => {
+      // reportValidity also focus the element if it's invalid
+      // in order to prevent this we need to override the focus method
+      const origFocus = ele.focus;
+      // eslint-disable-next-line no-param-reassign
+      ele.focus = () => {};
+      ele.reportValidity?.();
+      setTimeout(() => {
+        // eslint-disable-next-line no-param-reassign
+        ele.focus = origFocus;
+      });
+    });
+  });
+};
+
 /**
  * To return a fallback value in case the timeout expires and the promise
  * isn't fulfilled:
