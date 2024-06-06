@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.15.0](https://github.com/descope/descope-js/compare/web-component-3.14.1...web-component-3.15.0) (2024-06-06)
+
+
+### Features
+
+* added validate on blur option, report validity on all inputs upon submit, and small layout fixes RELEASE ([#617](https://github.com/descope/descope-js/issues/617)) ([eaf4e72](https://github.com/descope/descope-js/commit/eaf4e723572d8269cdce887f11922f8a65003485))
+
 ## [3.14.1](https://github.com/descope/descope-js/compare/web-component-3.14.0...web-component-3.14.1) (2024-06-05)
 
 ### Dependency Updates
