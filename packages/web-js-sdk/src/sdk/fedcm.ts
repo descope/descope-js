@@ -1,5 +1,11 @@
-import { JWTResponse, SdkResponse, LoginOptions } from '@descope/core-js-sdk';
+import {
+  JWTResponse,
+  SdkResponse,
+  LoginOptions,
+  UserResponse,
+} from '@descope/core-js-sdk';
 import { CoreSdk } from '../types';
+import { IS_BROWSER } from '../constants';
 
 /**
  * Configuration for OneTap.
@@ -50,6 +56,40 @@ interface CredentialResponse {
     | 'btn_confirm'
     | 'btn_add_session'
     | 'btn_confirm_add_session';
+}
+
+interface FedCMAssertionResponse {
+  token: string;
+  error: {
+    code: string;
+    url: string;
+  };
+}
+
+interface IdentityProviderConfig {
+  configURL: string;
+  clientId: string;
+}
+
+type IdentityCredentialRequestOptionsContext =
+  | 'signin'
+  | 'signup'
+  | 'use'
+  | 'continue';
+
+interface IdentityProviderRequestOptions extends IdentityProviderConfig {
+  nonce?: string;
+  loginHint?: string;
+  domainHint?: string;
+}
+
+interface IdentityCredentialRequestOptions {
+  providers: IdentityProviderRequestOptions[];
+  context?: IdentityCredentialRequestOptionsContext;
+}
+
+interface FedCMCredentialRequestOptions {
+  identity?: IdentityCredentialRequestOptions;
 }
 
 type OneTapInitialize = ({
@@ -118,6 +158,28 @@ const createFedCM = (sdk: CoreSdk) => ({
         }
       });
     });
+  },
+  async launch(
+    configUrl: string,
+    clientId: string,
+    context?: IdentityCredentialRequestOptionsContext,
+  ): Promise<SdkResponse<UserResponse>> {
+    const req: FedCMCredentialRequestOptions = {
+      identity: {
+        context: context || 'signin',
+        providers: [
+          {
+            configURL: configUrl,
+            clientId,
+          },
+        ],
+      },
+    };
+    const res = await navigator.credentials?.get(req as any);
+    return sdk.me((res as any as FedCMAssertionResponse).token);
+  },
+  isSupported(): boolean {
+    return IS_BROWSER && 'IdentityCredential' in window;
   },
 });
 
