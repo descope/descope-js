@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.2...core-js-sdk-2.19.0) (2024-06-16)
+
+
+### Features
+
+* HTTP Client buildUrl function RELEASE ([#631](https://github.com/descope/descope-js/issues/631)) ([b399cf7](https://github.com/descope/descope-js/commit/b399cf74f2e0e86d536a00bf77a19d7287f9f822))
+
 ## [2.18.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.1...core-js-sdk-2.18.2) (2024-06-05)
 
 ## [2.18.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.0...core-js-sdk-2.18.1) (2024-05-31)
