@@ -12,7 +12,8 @@ export const mockHttpClient = {
           json: () => Promise.resolve({ body: 'body' }),
         }),
         status: 200,
-      })
+      }),
     ),
+  buildUrl: jest.fn(),
 };
 mockHttpClient.reset();

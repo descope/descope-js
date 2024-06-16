@@ -140,6 +140,9 @@ const createHttpClient = ({
         token,
       }),
     hooks,
+    buildUrl: (path, queryParams) => {
+      return urlBuilder({ projectId, baseUrl, path, queryParams });
+    },
   };
 };
 
