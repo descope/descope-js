@@ -1,5 +1,7 @@
 import { JWTResponse, SdkResponse, LoginOptions } from '@descope/core-js-sdk';
 import { CoreSdk } from '../types';
+import { IS_BROWSER } from '../constants';
+import { apiPaths } from '../apiPaths';
 
 /**
  * Configuration for OneTap.
@@ -52,6 +54,40 @@ interface CredentialResponse {
     | 'btn_confirm_add_session';
 }
 
+interface FedCMAssertionResponse {
+  token: string;
+  error: {
+    code: string;
+    url: string;
+  };
+}
+
+interface IdentityProviderConfig {
+  configURL: string;
+  clientId: string;
+}
+
+type IdentityCredentialRequestOptionsContext =
+  | 'signin'
+  | 'signup'
+  | 'use'
+  | 'continue';
+
+interface IdentityProviderRequestOptions extends IdentityProviderConfig {
+  nonce?: string;
+  loginHint?: string;
+  domainHint?: string;
+}
+
+interface IdentityCredentialRequestOptions {
+  providers: IdentityProviderRequestOptions[];
+  context?: IdentityCredentialRequestOptionsContext;
+}
+
+interface FedCMCredentialRequestOptions {
+  identity?: IdentityCredentialRequestOptions;
+}
+
 type OneTapInitialize = ({
   client_id,
   callback,
@@ -71,7 +107,7 @@ type PromptNotification = {
  * @param sdk The CoreSdk instance.
  * @returns The FedCM API.
  */
-const createFedCM = (sdk: CoreSdk) => ({
+const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   async oneTap(
     provider?: string,
     oneTapConfig?: OneTapConfig,
@@ -118,6 +154,29 @@ const createFedCM = (sdk: CoreSdk) => ({
         }
       });
     });
+  },
+  async launch(
+    context?: IdentityCredentialRequestOptionsContext,
+  ): Promise<SdkResponse<JWTResponse>> {
+    const configURL = sdk.httpClient.buildUrl(
+      projectId + apiPaths.fedcm.config,
+    );
+    const req: FedCMCredentialRequestOptions = {
+      identity: {
+        context: context || 'signin',
+        providers: [
+          {
+            configURL,
+            clientId: projectId,
+          },
+        ],
+      },
+    };
+    const res = await navigator.credentials?.get(req as any);
+    return sdk.refresh((res as any as FedCMAssertionResponse).token);
+  },
+  isSupported(): boolean {
+    return IS_BROWSER && 'IdentityCredential' in window;
   },
 });
 
