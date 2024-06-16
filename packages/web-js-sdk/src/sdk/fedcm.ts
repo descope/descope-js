@@ -111,7 +111,7 @@ type PromptNotification = {
  * @param sdk The CoreSdk instance.
  * @returns The FedCM API.
  */
-const createFedCM = (sdk: CoreSdk) => ({
+const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   async oneTap(
     provider?: string,
     oneTapConfig?: OneTapConfig,
@@ -160,17 +160,18 @@ const createFedCM = (sdk: CoreSdk) => ({
     });
   },
   async launch(
-    configUrl: string,
-    clientId: string,
     context?: IdentityCredentialRequestOptionsContext,
+    configUrl?: string,
   ): Promise<SdkResponse<UserResponse>> {
+    const readyConfigUrl =
+      sdk.httpClient.buildUrl(projectId + '/fedcm/config') ?? configUrl;
     const req: FedCMCredentialRequestOptions = {
       identity: {
         context: context || 'signin',
         providers: [
           {
-            configURL: configUrl,
-            clientId,
+            configURL: readyConfigUrl,
+            clientId: projectId,
           },
         ],
       },
