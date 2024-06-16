@@ -161,16 +161,14 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   },
   async launch(
     context?: IdentityCredentialRequestOptionsContext,
-    configUrl?: string,
   ): Promise<SdkResponse<UserResponse>> {
-    const readyConfigUrl =
-      sdk.httpClient.buildUrl(projectId + '/fedcm/config') ?? configUrl;
+    const configURL = sdk.httpClient.buildUrl(projectId + '/fedcm/config');
     const req: FedCMCredentialRequestOptions = {
       identity: {
         context: context || 'signin',
         providers: [
           {
-            configURL: readyConfigUrl,
+            configURL,
             clientId: projectId,
           },
         ],

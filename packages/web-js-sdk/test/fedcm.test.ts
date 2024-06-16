@@ -1,4 +1,5 @@
 import createSdk from '../src/index';
+import webauthn from '../src/sdk/webauthn';
 
 const coreJs = {
   oauth: {
@@ -7,6 +8,11 @@ const coreJs = {
   },
   webauthn: {},
   me: jest.fn(),
+  httpClient: {
+    buildUrl: jest
+      .fn()
+      .mockReturnValue('http://localhost:3000/P123/fedcm/config'),
+  },
 };
 
 jest.mock('@descope/core-js-sdk', () => ({
@@ -15,7 +21,7 @@ jest.mock('@descope/core-js-sdk', () => ({
   __esModule: true,
 }));
 
-const sdk = createSdk({ projectId: 'P123' });
+const sdk = createSdk({ projectId: 'P123', baseUrl: 'http://localhost:3000' });
 
 const googleClient = {
   initialize: jest.fn(),
@@ -134,19 +140,17 @@ describe('fedcm', () => {
       global.navigator.credentials = { get: mockGet };
       mockGet.mockResolvedValue({ token: 'mockToken' });
 
-      const configUrl = 'mockConfigUrl';
-      const clientId = 'mockClientId';
       const context = 'signin';
 
-      await sdk.fedcm.launch(configUrl, clientId, context);
+      await sdk.fedcm.launch(context);
 
       expect(mockGet).toHaveBeenCalledWith({
         identity: {
           context: context,
           providers: [
             {
-              configURL: configUrl,
-              clientId,
+              configURL: 'http://localhost:3000/P123/fedcm/config',
+              clientId: 'P123',
             },
           ],
         },
@@ -160,11 +164,9 @@ describe('fedcm', () => {
       mockGet.mockResolvedValue({ token: 'mockToken' });
       coreJs.me.mockResolvedValue({ ok: true, data: { token: 'mockToken2' } });
 
-      const configUrl = 'mockConfigUrl';
-      const clientId = 'mockClientId';
       const context = 'signin';
 
-      const response = await sdk.fedcm.launch(configUrl, clientId, context);
+      const response = await sdk.fedcm.launch(context);
 
       expect(coreJs.me).toHaveBeenCalledWith('mockToken');
       expect(response).toEqual({ ok: true, data: { token: 'mockToken2' } });
