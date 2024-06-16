@@ -32,6 +32,7 @@ export type HttpClient = {
   ) => Promise<Response>;
   delete: (path: string, config?: HttpClientReqConfig) => Promise<Response>;
   hooks?: Hooks;
+  buildUrl: (path: string, queryParams?: { [key: string]: string }) => string;
 };
 
 export type Fetch = typeof fetch;
