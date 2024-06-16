@@ -7,7 +7,7 @@ const coreJs = {
     finishNative: jest.fn(),
   },
   webauthn: {},
-  me: jest.fn(),
+  refresh: jest.fn(),
   httpClient: {
     buildUrl: jest
       .fn()
@@ -157,18 +157,21 @@ describe('fedcm', () => {
       });
     });
 
-    it('should return user response from sdk.me', async () => {
+    it('should return user response from sdk.refresh', async () => {
       const mockGet = jest.fn();
       // @ts-ignore
       global.navigator.credentials = { get: mockGet };
       mockGet.mockResolvedValue({ token: 'mockToken' });
-      coreJs.me.mockResolvedValue({ ok: true, data: { token: 'mockToken2' } });
+      coreJs.refresh.mockResolvedValue({
+        ok: true,
+        data: { token: 'mockToken2' },
+      });
 
       const context = 'signin';
 
       const response = await sdk.fedcm.launch(context);
 
-      expect(coreJs.me).toHaveBeenCalledWith('mockToken');
+      expect(coreJs.refresh).toHaveBeenCalledWith('mockToken');
       expect(response).toEqual({ ok: true, data: { token: 'mockToken2' } });
     });
   });
