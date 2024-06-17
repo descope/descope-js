@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.15.4](https://github.com/descope/descope-js/compare/web-component-3.15.3...web-component-3.15.4) (2024-06-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.12.0`
+
+### Bug Fixes
+
+* Export form field RELEASE ([#632](https://github.com/descope/descope-js/issues/632)) ([404ba7c](https://github.com/descope/descope-js/commit/404ba7c0249ccd0b77eb109c774c19a5ec0f0258))
+
 ## [3.15.3](https://github.com/descope/descope-js/compare/web-component-3.15.2...web-component-3.15.3) (2024-06-16)
 
 ### Dependency Updates
