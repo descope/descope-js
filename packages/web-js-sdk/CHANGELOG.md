@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.12.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.16...web-js-sdk-1.12.0) (2024-06-17)
+
+
+### Features
+
+* FedCM launch ([#623](https://github.com/descope/descope-js/issues/623)) ([1bf04fa](https://github.com/descope/descope-js/commit/1bf04fadfc89fc7e5580be36b929d524dc7403a0))
+
 ## [1.11.16](https://github.com/descope/descope-js/compare/web-js-sdk-1.11.15...web-js-sdk-1.11.16) (2024-06-16)
 
 ### Dependency Updates
