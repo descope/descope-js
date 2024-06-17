@@ -233,7 +233,11 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   get formConfig() {
-    return transformFlowInputFormData(this.getAttribute('form'));
+    return transformFlowInputFormData(this.form);
+  }
+
+  get form() {
+    return this.getAttribute('form');
   }
 
   get formConfigValues() {
