@@ -256,7 +256,7 @@ export const createUserSdk = ({
 
   const enable = async (loginId: string) => {
     if (mock) {
-      return user.enable();
+      return user.enable(loginId);
     }
     const res = await httpClient.post(
       apiPaths.user.status,
@@ -273,7 +273,7 @@ export const createUserSdk = ({
 
   const disable = async (loginId: string) => {
     if (mock) {
-      return user.disable();
+      return user.disable(loginId);
     }
     const res = await httpClient.post(
       apiPaths.user.status,

@@ -164,6 +164,7 @@ export type PasswordPolicyResponse = {
 /** Phone delivery methods which are currently supported */
 export enum DeliveryPhone {
   sms = 'sms',
+  voice = 'voice',
   whatsapp = 'whatsapp',
 }
 
@@ -239,6 +240,8 @@ export type FlowResponse = {
     samlResponse: string;
     relayState: string;
   };
+  // a URL to open in a new tab
+  openInNewTabUrl?: string;
   // webauthn data - if action is one of 'webauthnCreate', 'webauthnGet'
   webauthn?: {
     transactionId: string;
@@ -303,13 +306,19 @@ export type DeliveriesPhone<T extends Record<DeliveryPhone, SdkFn> | SdkFn> = {
   [S in DeliveryPhone]: T extends Record<DeliveryPhone, SdkFn> ? T[S] : T;
 };
 
-/** Map different functions to email vs phone (sms, whatsapp) */
+/** Map different functions to email vs phone (sms, whatsapp, voice) */
 export type DeliveriesMap<EmailFn extends SdkFn, PhoneFn extends SdkFn> = {
   [S in DeliveryMethods]: S extends 'email' ? EmailFn : PhoneFn;
 };
 
 /** Logger type that supports the given levels (debug, log, error) */
 export type Logger = Pick<Console, 'debug' | 'log' | 'error' | 'warn'>;
+
+/** Polling configuration for session waiting */
+export type WaitForSessionConfig = {
+  pollingIntervalMs: number;
+  timeoutMs: number;
+};
 
 export type UpdateOptions<T extends boolean> = {
   addToLoginIDs?: T;

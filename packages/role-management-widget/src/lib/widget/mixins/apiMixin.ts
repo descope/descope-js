@@ -1,5 +1,6 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  baseUrlMixin,
   createValidateAttributesMixin,
   loggerMixin,
   observeAttributesMixin,
@@ -13,6 +14,7 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
+      baseUrlMixin,
       createValidateAttributesMixin({
         tenant: createValidateAttributesMixin.missingAttrValidator,
       }),
@@ -27,15 +29,16 @@ export const apiMixin = createSingletonMixin(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.tenant,
           this.mock === 'true',
+          this.widgetId,
         );
-      }
-
-      get baseUrl() {
-        return this.getAttribute('base-url');
       }
 
       get tenant() {
         return this.getAttribute('tenant');
+      }
+
+      get widgetId() {
+        return this.getAttribute('widget-id');
       }
 
       get mock() {

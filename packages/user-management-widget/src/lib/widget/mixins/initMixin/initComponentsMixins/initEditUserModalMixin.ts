@@ -11,7 +11,6 @@ import {
 } from '@descope/sdk-helpers';
 import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import parsePhone from 'libphonenumber-js/min';
-import { User } from '../../../api/types';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import {
@@ -19,33 +18,7 @@ import {
   getSelectedUsers,
   getTenantRoles,
 } from '../../../state/selectors';
-
-const unflattenKeys = ['customAttributes'];
-
-const unflatten = (formData: Partial<User>) =>
-  Object.entries(formData).reduce((acc, [key, value]) => {
-    const [prefix, ...rest] = key.split('.');
-
-    if (!unflattenKeys.includes(prefix)) {
-      return Object.assign(acc, { [key]: value });
-    }
-
-    if (!acc[prefix]) {
-      acc[prefix] = {};
-    }
-
-    acc[prefix][rest.join('.')] = value;
-
-    return acc;
-  }, {});
-
-const flatten = (
-  vals: Record<string, string | boolean | number>,
-  keyPrefix: string,
-) =>
-  Object.fromEntries(
-    Object.entries(vals).map(([key, val]) => [`${keyPrefix}${key}`, val]),
-  );
+import { flatten, unflatten } from '../../../../helpers';
 
 const formatPhoneNumber = (phoneNumber: string) => {
   if (!phoneNumber) return phoneNumber;
@@ -97,7 +70,7 @@ export const initEditUserModalMixin = createSingletonMixin(
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
-              ...unflatten(formData),
+              ...unflatten(formData, 'customAttributes'),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -148,7 +121,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
           roles: userDetails?.roles,
-          ...flatten(userDetails.customAttributes, 'customAttributes.'),
+          ...flatten(userDetails.customAttributes, 'customAttributes'),
         };
 
         this.setFormData(this.editUserModal.ele, formData);
@@ -157,7 +130,10 @@ export const initEditUserModalMixin = createSingletonMixin(
       async #initEditUserModal() {
         this.editUserModal = this.createModal();
         this.editUserModal.setContent(
-          createTemplate(await this.fetchWidgetPage('edit-user-modal.html')),
+          createTemplate(
+            // await import('../../../../../../test/mocks/editUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('edit-user-modal.html'),
+          ),
         );
 
         this.#initCancelButton();

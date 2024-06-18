@@ -10,7 +10,7 @@ export function getLastAuth(loginId: string) {
     try {
       Object.assign(
         lastAuth,
-        JSON.parse(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY))
+        JSON.parse(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)),
       );
     } catch (e) {
       /* empty */
@@ -21,7 +21,7 @@ export function getLastAuth(loginId: string) {
 
 // save last auth to local storage
 export function setLastAuth(
-  lastAuth: NextFnReturnPromiseValue['data']['lastAuth']
+  lastAuth: NextFnReturnPromiseValue['data']['lastAuth'],
 ) {
   if (!lastAuth?.authMethod) {
     return;
@@ -29,7 +29,7 @@ export function setLastAuth(
   if (IS_LOCAL_STORAGE) {
     localStorage.setItem(
       DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-      JSON.stringify(lastAuth)
+      JSON.stringify(lastAuth),
     );
   }
 }

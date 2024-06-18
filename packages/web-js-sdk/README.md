@@ -39,6 +39,10 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
   Note: due to browser limitation, the maximum interval for the refresh has an upper bound of 2^32 - 1 milliseconds (approximately 24.8 days).
   */
   autoRefresh: true,
+  /* Disable storing the last authenticated user details on the browser storage (default is true).
+  Note: Disabling this flag may cause features related to the last-authenticated user to not function properly.
+  */
+  storeLastAuthenticatedUser: false, // default is true
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {

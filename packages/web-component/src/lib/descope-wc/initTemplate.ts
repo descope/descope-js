@@ -5,11 +5,13 @@ initTemplate.innerHTML = `
       all: initial;
 			width: 100%;
 			height: 100%;
+      display: block;
 		}
 
 		#wc-root {
 			height: 100%;
 			transition: opacity 300ms ease-in-out;
+      display: flex;
 		}
 
 		#wc-root[data-theme] {

@@ -29,7 +29,10 @@ export const initDeleteUsersModalMixin = createSingletonMixin(
       async #initDeleteUserModal() {
         this.deleteUsersModal = this.createModal();
         this.deleteUsersModal.setContent(
-          createTemplate(await this.fetchWidgetPage('delete-users-modal.html')),
+          createTemplate(
+            // await import('../../../../../../test/mocks/deleteUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('delete-users-modal.html'),
+          ),
         );
 
         const cancelButton = new ButtonDriver(

@@ -26,6 +26,7 @@ import {
   withMemCache,
   getFirstNonEmptyValue,
   leadingDebounce,
+  handleReportValidityOnBlur,
   getUserLocale,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
@@ -35,6 +36,7 @@ import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
   getDescopeUiComponentsList,
+  setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
@@ -141,6 +143,7 @@ class DescopeWc extends BaseDescopeWc {
       screenId,
       screenState,
       redirectTo,
+      openInNewTabUrl,
       redirectUrl,
       token,
       code,
@@ -238,7 +241,7 @@ class DescopeWc extends BaseDescopeWc {
           flowConfig.version,
           projectConfig.componentsVersion,
           {
-            ...this.form,
+            ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(descopeIdpInitiated && { idpInitiated: true }),
             ...(token ? { token } : {}),
@@ -398,11 +401,11 @@ class DescopeWc extends BaseDescopeWc {
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
-      direction: getAnimationDirection(+stepId, +prevState.stepId),
+      direction: getAnimationDirection(stepId, prevState.stepId),
       screenState: {
         ...screenState,
         form: {
-          ...this.form,
+          ...this.formConfigValues,
           ...screenState?.form,
         },
         lastAuth: {
@@ -410,11 +413,21 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
+      htmlUrl: getContentUrl({
+        projectId,
+        filename: `${readyScreenId}.html`,
+        baseUrl: this.baseStaticUrl,
+      }),
       htmlLocaleUrl:
-        filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
+        filenameWithLocale &&
+        getContentUrl({
+          projectId,
+          filename: filenameWithLocale,
+          baseUrl: this.baseStaticUrl,
+        }),
       samlIdpUsername,
       oidcLoginHint,
+      openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -460,7 +473,7 @@ class DescopeWc extends BaseDescopeWc {
           version,
           componentsVersion,
           {
-            ...this.form,
+            ...this.formConfigValues,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(descopeIdpInitiated && { idpInitiated: true }),
@@ -544,7 +557,9 @@ class DescopeWc extends BaseDescopeWc {
     const { status, authInfo, lastAuth } = sdkResp.data;
 
     if (status === 'completed') {
-      setLastAuth(lastAuth);
+      if (this.storeLastAuthenticatedUser) {
+        setLastAuth(lastAuth);
+      }
       this.#dispatch('success', authInfo);
       return;
     }
@@ -556,6 +571,7 @@ class DescopeWc extends BaseDescopeWc {
       action,
       screen,
       redirect,
+      openInNewTabUrl,
       webauthn,
       error,
       samlIdpResponse,
@@ -587,6 +603,7 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       action,
       redirectTo: redirect?.url,
+      openInNewTabUrl,
       screenId: screen?.id,
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
@@ -643,6 +660,32 @@ class DescopeWc extends BaseDescopeWc {
         );
       });
     }
+  }
+
+  #handleDescopePassword(ele: Element) {
+    if (!ele) {
+      return;
+    }
+
+    if (ele.getAttribute('external-input') !== 'true') {
+      return;
+    }
+
+    const origInputs = ele.querySelectorAll('input');
+
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
   }
 
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
@@ -730,8 +773,14 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
-      currentState;
+    const {
+      htmlUrl,
+      htmlLocaleUrl,
+      direction,
+      next,
+      screenState,
+      openInNewTabUrl,
+    } = currentState;
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);
@@ -765,6 +814,7 @@ class DescopeWc extends BaseDescopeWc {
       clone,
       screenState,
       screenState.componentsConfig,
+      this.formConfig,
       this.errorTransformer,
       this.loggerWrapper,
     );
@@ -776,23 +826,42 @@ class DescopeWc extends BaseDescopeWc {
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
 
-      // put the totp variable on the root element, which is the top level 'div' inside the shadowroot
-      setTOTPVariable(
-        this.shadowRoot.querySelector('div'),
-        screenState?.totp?.image,
-      );
+      // put the totp and notp variable on the root element, which is the top level 'div' inside the shadowroot
+      const rootElement = this.shadowRoot.querySelector('div');
+      setTOTPVariable(rootElement, screenState?.totp?.image);
+
+      setNOTPVariable(rootElement, screenState?.notp?.image);
 
       this.rootElement.replaceChildren(clone);
 
       // we need to wait for all components to render before we can set its value
-      setTimeout(() =>
-        updateScreenFromScreenState(this.rootElement, screenState),
-      );
+      setTimeout(() => {
+        updateScreenFromScreenState(this.rootElement, screenState);
+
+        const passwordEles =
+          this.rootElement.querySelectorAll('descope-password');
+        const newPasswordEles = this.rootElement.querySelectorAll(
+          'descope-new-password',
+        );
+
+        // remove existing external inputs
+        document
+          .querySelectorAll('[data-hidden-input="true"]')
+          .forEach((ele) => ele.remove());
+        // handle external input workaround for password components
+        [...passwordEles, ...newPasswordEles].forEach((ele) =>
+          this.#handleDescopePassword(ele),
+        );
+      });
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
 
       handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+
+      if (this.validateOnBlur) {
+        handleReportValidityOnBlur(this.rootElement);
+      }
 
       this.#hydrate(next);
       if (isFirstScreen) {
@@ -816,6 +885,13 @@ class DescopeWc extends BaseDescopeWc {
         );
         this.#handleSdkResponse(response);
       }
+
+      // open in a new tab should be done after the screen is rendered
+      // because in some cases, the page will have a loader that
+      // should run during the redirect process
+      if (openInNewTabUrl && !prevState.openInNewTabUrl) {
+        window.open(openInNewTabUrl, '_blank');
+      }
     };
 
     // no animation
@@ -830,6 +906,9 @@ class DescopeWc extends BaseDescopeWc {
   #validateInputs() {
     return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
       (input: HTMLInputElement) => {
+        if (input.localName === 'slot') {
+          return true;
+        }
         input.reportValidity?.();
         return input.checkValidity?.();
       },
@@ -882,8 +961,12 @@ class DescopeWc extends BaseDescopeWc {
     const id = getFirstNonEmptyValue(formData, idFields);
     const password = getFirstNonEmptyValue(formData, passwordFields);
 
+    // PasswordCredential not supported in Firefox
     if (id && password) {
       try {
+        if (!globalThis.PasswordCredential) {
+          return;
+        }
         const cred = new globalThis.PasswordCredential({ id, password });
 
         navigator?.credentials?.store?.(cred);

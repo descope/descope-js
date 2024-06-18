@@ -13,7 +13,7 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
 }) =>
   new Promise((resolve) => {
     const users: User[] = [];
-    for (let i = 1; i < 9; i += 1) {
+    for (let i = 1; i < 10; i += 1) {
       users.push({
         loginIds: [`user${i}@company.com`],
         externalIds: [`user${i}@company.com`],
@@ -49,14 +49,15 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
     });
     resolve(
       users.filter(
-        (role) =>
-          role.name.toLowerCase().includes(text.toLowerCase()) ||
-          role.phone.toLowerCase().includes(text.toLowerCase()) ||
-          role.status.toLowerCase().includes(text.toLowerCase()) ||
-          role.familyName.toLowerCase().includes(text.toLowerCase()) ||
-          role.givenName.toLowerCase().includes(text.toLowerCase()) ||
-          role.middleName.toLowerCase().includes(text.toLowerCase()) ||
-          role.email.toLowerCase().includes(text.toLowerCase()),
+        (user) =>
+          user.name.toLowerCase().includes(text.toLowerCase()) ||
+          user.phone.toLowerCase().includes(text.toLowerCase()) ||
+          user.status.toLowerCase().includes(text.toLowerCase()) ||
+          text.toLowerCase() === 'active' ||
+          user.familyName.toLowerCase().includes(text.toLowerCase()) ||
+          user.givenName.toLowerCase().includes(text.toLowerCase()) ||
+          user.middleName.toLowerCase().includes(text.toLowerCase()) ||
+          user.email.toLowerCase().includes(text.toLowerCase()),
       ),
     );
   });
@@ -162,9 +163,25 @@ const setTempPassword = async () =>
 
 const removePasskey = async () => {};
 
-const enable = async () => {};
+const enable = async (loginId: string) =>
+  new Promise((resolve) => {
+    resolve({
+      user: {
+        loginIds: [loginId],
+        status: 'enabled',
+      },
+    });
+  });
 
-const disable = async () => {};
+const disable = async (loginId: string) =>
+  new Promise((resolve) => {
+    resolve({
+      user: {
+        loginIds: [loginId],
+        status: 'disabled',
+      },
+    });
+  });
 
 const getTenantRoles = (
   tenant: string,

@@ -9,12 +9,14 @@ export type AccessKey = {
   name: string;
   roleNames: string[];
   status: string;
-  createdTime: Date;
+  createdTime: number;
   expireTime: number;
   expireTimeFormatted?: string;
+  createdTimeFormatted?: string;
   createdBy: string;
   clientId: string;
   editable: boolean;
+  boundUserId: string;
 };
 
 export type SortParams = { field: string; desc: boolean };

@@ -41,4 +41,5 @@ export const HAS_DYNAMIC_VALUES_ATTR_NAME = 'data-has-dynamic-attr-values';
 
 export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
   'descope-multi-select-combo-box',
+  'descope-text-area',
 ];

@@ -5,6 +5,8 @@ import {
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
 
+const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
+
 const replaceElementMessage = (
   baseEle: DocumentFragment,
   eleType: string,
@@ -70,7 +72,7 @@ const replaceElementTemplates = (
   baseEle: DocumentFragment,
   screenState?: Record<string, any>,
 ) => {
-  const eleList = baseEle.querySelectorAll('descope-text,descope-link');
+  const eleList = baseEle.querySelectorAll('descope-text,descope-link,descope-enriched-text,descope-code-snippet');
   eleList.forEach((inEle: HTMLElement) => {
     // eslint-disable-next-line no-param-reassign
     inEle.textContent = applyTemplates(inEle.textContent, screenState);
@@ -90,16 +92,34 @@ const replaceTemplateDynamicAttrValues = (
   });
 };
 
-const replaceProvisionURL = (
+const replaceHrefByDataType = (
   baseEle: DocumentFragment,
+  dataType: string,
   provisionUrl?: string,
 ) => {
   const eleList = baseEle.querySelectorAll(
-    `[${ELEMENT_TYPE_ATTRIBUTE}="totp-link"]`,
+    `[${ELEMENT_TYPE_ATTRIBUTE}="${dataType}"]`,
   );
   eleList.forEach((ele: HTMLLinkElement) => {
     // eslint-disable-next-line no-param-reassign
     ele.setAttribute('href', provisionUrl);
+  });
+};
+
+const setFormConfigValues = (
+  baseEle: DocumentFragment,
+  formData: Record<string, string>,
+) => {
+  Object.entries(formData).forEach(([name, config]) => {
+    const eles = baseEle.querySelectorAll(`[name="${name}"]`);
+
+    eles.forEach((ele) => {
+      Object.entries(config).forEach(([attrName, attrValue]) => {
+        if (ALLOWED_INPUT_CONFIG_ATTRS.includes(attrName)) {
+          ele.setAttribute(attrName, attrValue);
+        }
+      });
+    });
   });
 };
 
@@ -137,6 +157,25 @@ const setElementConfig = (
   });
 };
 
+const setImageVariable = (
+  rootEle: HTMLElement,
+  name: string,
+  image?: string,
+) => {
+  const imageVarName = (
+    customElements.get(name) as CustomElementConstructor & {
+      cssVarList: Record<string, string>;
+    }
+  )?.cssVarList.url;
+
+  if (image && imageVarName) {
+    rootEle?.style?.setProperty(
+      imageVarName,
+      `url(data:image/jpg;base64,${image})`,
+    );
+  }
+};
+
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
@@ -146,6 +185,7 @@ export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
   componentsConfig?: ComponentsConfig,
+  flowInputs?: Record<string, string>,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
@@ -160,10 +200,12 @@ export const updateTemplateFromScreenState = (
     logger.error('Error transforming error message', e.message);
   }
   replaceElementMessage(baseEle, 'error-message', errorText);
-  replaceProvisionURL(baseEle, screenState?.totp?.provisionUrl);
+  replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
+  replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
+  setFormConfigValues(baseEle, flowInputs);
 };
 
 /**
@@ -179,18 +221,11 @@ export const updateScreenFromScreenState = (
 };
 
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
-  const totpVarName = (
-    customElements.get('descope-totp-image') as CustomElementConstructor & {
-      cssVarList: Record<string, string>;
-    }
-  )?.cssVarList.url;
+  setImageVariable(rootEle, 'descope-totp-image', image);
+};
 
-  if (image && totpVarName) {
-    rootEle?.style?.setProperty(
-      totpVarName,
-      `url(data:image/jpg;base64,${image})`,
-    );
-  }
+export const setNOTPVariable = (rootEle: HTMLElement, image?: string) => {
+  setImageVariable(rootEle, 'descope-notp-image', image);
 };
 
 export const setPhoneAutoDetectDefaultCode = (

@@ -58,6 +58,7 @@ export const initRemovePasskeyModalMixin = createSingletonMixin(
         this.removePasskeyModal = this.createModal();
         this.removePasskeyModal.setContent(
           createTemplate(
+            // await import('../../../../../../test/mocks/removePasskeyModalMock').then(module => module.default)
             await this.fetchWidgetPage('remove-passkey-modal.html'),
           ),
         );

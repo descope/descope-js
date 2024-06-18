@@ -9,7 +9,8 @@ import {
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
-import { MAX_TIMEOUT } from '../../constants';
+import { IS_BROWSER, MAX_TIMEOUT } from '../../constants';
+import { getRefreshToken } from '../withPersistTokens/helpers';
 
 // The amount of time (ms) to trigger the refresh before session expires
 const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
@@ -31,16 +32,21 @@ export const withAutoRefresh =
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpiration: Date;
     let refreshToken: string;
-    document.addEventListener('visibilitychange', () => {
-      // tab becomes visible and the session is expired, do a refresh
-      if (
-        document.visibilityState === 'visible' &&
-        new Date() > sessionExpiration
-      ) {
-        logger.debug('Expiration time passed, refreshing session');
-        sdk.refresh(refreshToken);
-      }
-    });
+    if (IS_BROWSER) {
+      document.addEventListener('visibilitychange', () => {
+        // tab becomes visible and the session is expired, do a refresh
+        if (
+          document.visibilityState === 'visible' &&
+          new Date() > sessionExpiration
+        ) {
+          logger.debug('Expiration time passed, refreshing session');
+          // We prefer the persisted refresh token over the one from the response
+          // for a case that the token was refreshed from another tab, this mostly relevant
+          // when the project uses token rotation
+          sdk.refresh(getRefreshToken() || refreshToken);
+        }
+      });
+    }
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const { refreshJwt, sessionJwt } = await getAuthInfoFromResponse(res);
@@ -51,28 +57,35 @@ export const withAutoRefresh =
         clearAllTimers();
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
+        if (!sessionExpiration) {
+          logger.debug('Could not extract expiration time from session token');
+          return;
+        }
         refreshToken = refreshJwt;
         let timeout =
           millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
 
         if (timeout > MAX_TIMEOUT) {
           logger.debug(
-            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`
+            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`,
           );
           timeout = MAX_TIMEOUT;
         }
         clearAllTimers();
 
         const refreshTimeStr = new Date(
-          Date.now() + timeout
+          Date.now() + timeout,
         ).toLocaleTimeString('en-US', { hour12: false });
         logger.debug(
-          `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`
+          `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
         );
 
         setTimer(() => {
           logger.debug('Refreshing session due to timer');
-          sdk.refresh(refreshJwt);
+          // We prefer the persisted refresh token over the one from the response
+          // for a case that the token was refreshed from another tab, this mostly relevant
+          // when the project uses token rotation
+          sdk.refresh(getRefreshToken() || refreshJwt);
         }, timeout);
       }
     };

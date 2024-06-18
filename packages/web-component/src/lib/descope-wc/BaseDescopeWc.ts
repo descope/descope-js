@@ -35,6 +35,10 @@ import {
   FlowConfig,
 } from '../types';
 import initTemplate from './initTemplate';
+import {
+  extractNestedAttribute,
+  transformFlowInputFormData,
+} from '../helpers/flowInputs';
 
 // this is replaced in build time
 declare const BUILD_VERSION: string;
@@ -56,6 +60,8 @@ class BaseDescopeWc extends HTMLElement {
       'preview',
       'redirect-url',
       'auto-focus',
+      'store-last-authenticated-user',
+      'validate-on-blur',
     ];
   }
 
@@ -79,6 +85,9 @@ class BaseDescopeWc extends HTMLElement {
     },
     info: (message: string, description = '', state: any = {}) => {
       this.logger.info(message, description, state);
+    },
+    debug: (message: string, description = '') => {
+      this.logger.debug(message, description);
     },
   };
 
@@ -136,6 +145,8 @@ class BaseDescopeWc extends HTMLElement {
   #handleOuterForm() {
     const wc = this.shadowRoot.host;
     const form = document.createElement('form');
+    form.style.width = '100%';
+    form.style.height = '100%';
     wc.parentElement.appendChild(form);
     form.appendChild(wc);
   }
@@ -146,24 +157,6 @@ class BaseDescopeWc extends HTMLElement {
 
   get flowId() {
     return this.getAttribute('flow-id');
-  }
-
-  get form() {
-    try {
-      const form = (JSON.parse(this.getAttribute('form')) || {}) as Record<
-        string,
-        any
-      >;
-      return Object.entries(form).reduce(
-        (prev, [key, value]) => ({
-          ...prev,
-          [`form.${key}`]: value,
-        }),
-        form,
-      );
-    } catch (e) {
-      return {};
-    }
   }
 
   get client() {
@@ -179,6 +172,10 @@ class BaseDescopeWc extends HTMLElement {
 
   get baseUrl() {
     return this.getAttribute('base-url') || undefined;
+  }
+
+  get baseStaticUrl() {
+    return this.getAttribute('base-static-url');
   }
 
   get tenant() {
@@ -218,12 +215,33 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get validateOnBlur() {
+    return this.getAttribute('validate-on-blur') === 'true';
+  }
+
+  get storeLastAuthenticatedUser() {
+    const res = this.getAttribute('store-last-authenticated-user') ?? 'true';
+    return res === 'true';
+  }
+
   get storagePrefix() {
     return this.getAttribute('storage-prefix') || '';
   }
 
   get preview() {
     return !!this.getAttribute('preview');
+  }
+
+  get formConfig() {
+    return transformFlowInputFormData(this.form);
+  }
+
+  get form() {
+    return this.getAttribute('form');
+  }
+
+  get formConfigValues() {
+    return extractNestedAttribute(this.formConfig, 'value');
   }
 
   #validateAttrs() {
@@ -235,10 +253,12 @@ class BaseDescopeWc extends HTMLElement {
       'debug',
       'redirect-url',
       'auto-focus',
+      'store-last-authenticated-user',
       'preview',
       'storage-prefix',
       'form',
       'client',
+      'validate-on-blur',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
@@ -274,6 +294,7 @@ class BaseDescopeWc extends HTMLElement {
       persistTokens: true,
       preview: this.preview,
       storagePrefix: this.storagePrefix,
+      storeLastAuthenticatedUser: this.storeLastAuthenticatedUser,
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
@@ -322,11 +343,12 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   async #isPrevVerConfig() {
-    const prevVerConfigUrl = getContentUrl(
-      this.projectId,
-      CONFIG_FILENAME,
-      PREV_VER_ASSETS_FOLDER,
-    );
+    const prevVerConfigUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: CONFIG_FILENAME,
+      assetsFolder: PREV_VER_ASSETS_FOLDER,
+      baseUrl: this.baseStaticUrl,
+    });
     try {
       await fetchContent(prevVerConfigUrl, 'json');
       return true;
@@ -337,7 +359,11 @@ class BaseDescopeWc extends HTMLElement {
 
   // we want to get the config only if we don't have it already
   #getConfig = withMemCache(async () => {
-    const configUrl = getContentUrl(this.projectId, CONFIG_FILENAME);
+    const configUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: CONFIG_FILENAME,
+      baseUrl: this.baseStaticUrl,
+    });
     try {
       const { body, headers } = await fetchContent(configUrl, 'json');
       return {
@@ -350,7 +376,11 @@ class BaseDescopeWc extends HTMLElement {
   });
 
   async #fetchTheme() {
-    const themeUrl = getContentUrl(this.projectId, THEME_FILENAME);
+    const themeUrl = getContentUrl({
+      projectId: this.projectId,
+      filename: THEME_FILENAME,
+      baseUrl: this.baseStaticUrl,
+    });
     try {
       const { body } = await fetchContent(themeUrl, 'json');
 
@@ -391,7 +421,10 @@ class BaseDescopeWc extends HTMLElement {
 
     const descopeUi = await BaseDescopeWc.descopeUI;
 
-    if (descopeUi?.componentsThemeManager) {
+    if (
+      descopeUi?.componentsThemeManager &&
+      !descopeUi.componentsThemeManager.hasThemes
+    ) {
       descopeUi.componentsThemeManager.themes = {
         light: theme?.light?.components,
         dark: theme?.dark?.components,
@@ -402,7 +435,7 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   #handleComponentsContext(e: CustomEvent) {
-    this.#componentsContext = { ...e.detail, ...this.#componentsContext };
+    this.#componentsContext = { ...this.#componentsContext, ...e.detail };
   }
 
   async #applyTheme() {
@@ -549,7 +582,7 @@ class BaseDescopeWc extends HTMLElement {
 
   async #loadDescopeUI() {
     if (BaseDescopeWc.descopeUI) {
-      this.loggerWrapper.info(
+      this.loggerWrapper.debug(
         'DescopeUI is already loading, probably multiple flows are running on the same page',
       );
       return;

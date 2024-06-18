@@ -16,6 +16,7 @@ import {
   SSO_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
+  OVERRIDE_CONTENT_URL,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -69,18 +70,32 @@ export async function fetchContent<T extends 'text' | 'json'>(
 
 const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); // preventing duplicate separators
 
-export function getContentUrl(
-  projectId: string,
-  filename: string,
+export function getContentUrl({
+  projectId,
+  filename,
   assetsFolder = ASSETS_FOLDER,
-) {
-  const url = new URL(BASE_CONTENT_URL);
+  baseUrl,
+}: {
+  projectId: string;
+  filename: string;
+  assetsFolder?: string;
+  baseUrl?: string;
+}) {
+  const url = new URL(OVERRIDE_CONTENT_URL || baseUrl || BASE_CONTENT_URL);
   url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
 
   return url.toString();
 }
 
-export function getAnimationDirection(currentIdx: number, prevIdx: number) {
+export function getAnimationDirection(
+  currentIdxStr: string,
+  prevIdxStr: string,
+) {
+  if (!prevIdxStr) return undefined;
+
+  const currentIdx = +currentIdxStr;
+  const prevIdx = +prevIdxStr;
+
   if (Number.isNaN(currentIdx) || Number.isNaN(prevIdx)) return undefined;
   if (currentIdx > prevIdx) return Direction.forward;
   if (currentIdx < prevIdx) return Direction.backward;
@@ -359,6 +374,23 @@ export const handleAutoFocus = (
   }
 };
 
+export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
+  rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
+    ele.addEventListener('blur', () => {
+      // reportValidity also focus the element if it's invalid
+      // in order to prevent this we need to override the focus method
+      const origFocus = ele.focus;
+      // eslint-disable-next-line no-param-reassign
+      ele.focus = () => {};
+      ele.reportValidity?.();
+      setTimeout(() => {
+        // eslint-disable-next-line no-param-reassign
+        ele.focus = origFocus;
+      });
+    });
+  });
+};
+
 /**
  * To return a fallback value in case the timeout expires and the promise
  * isn't fulfilled:
@@ -439,32 +471,6 @@ export const showFirstScreenOnExecutionInit = (
     optimizeIfMissingOIDCLoginHintParams
   );
 };
-
-export const getInputValueByType = (input: HTMLInputElement): Promise<any> =>
-  new Promise((resolve) => {
-    switch (input.type) {
-      case 'checkbox': {
-        resolve(input.checked);
-        break;
-      }
-      case 'file': {
-        const reader = new FileReader();
-        if (input.files?.length) {
-          reader.onload = (e: any) => {
-            const contents = e.target.result;
-            resolve(contents);
-          };
-          reader.readAsDataURL(input.files[0]);
-        } else {
-          resolve(null);
-        }
-        break;
-      }
-      default: {
-        resolve(input.value);
-      }
-    }
-  });
 
 export const injectSamlIdpForm = (
   url: string,

@@ -11,17 +11,18 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
 } = {}) =>
   new Promise((resolve) => {
     const keys: AccessKey[] = [];
-    for (let i = 1; i < 9; i += 1) {
+    for (let i = 1; i < 10; i += 1) {
       keys.push({
         id: `access-key-id-${i}`,
         name: `Access Key ${i}`,
         createdBy: `User ${i}`,
         editable: true,
         expireTime: new Date().getTime() / 1000 + 60 * 60 * 24 * 30,
-        createdTime: new Date(),
+        createdTime: new Date().getTime() / 1000,
         roleNames: [`Role ${i}`],
         status: 'active',
         clientId: `Client ID ${i}`,
+        boundUserId: `User ${i}`,
       });
     }
     sort.forEach((s) => {
@@ -57,10 +58,11 @@ const create: (
         createdBy: userId || `User ${i}`,
         editable: true,
         expireTime,
-        createdTime: new Date(),
+        createdTime: new Date().getTime() / 1000,
         roleNames,
         status: 'active',
         clientId: `Client ID ${i}`,
+        boundUserId: userId || `User ${i}`,
       },
     });
   });

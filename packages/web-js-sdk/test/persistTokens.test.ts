@@ -3,7 +3,6 @@ import { getSessionToken } from '../src/enhancers/withPersistTokens/helpers';
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
-import { before } from 'node:test';
 
 const descopeHeaders = {
   'x-descope-sdk-name': 'web-js',
@@ -28,18 +27,15 @@ describe('persistTokens', () => {
     localStorage.setItem('DSR', authInfo.refreshJwt);
     sdk.httpClient.get('1/2/3');
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      new URL(`https://api.descope.com/1/2/3`),
-      {
-        body: undefined,
-        headers: new Headers({
-          Authorization: `Bearer pid:${authInfo.refreshJwt}`,
-          ...descopeHeaders,
-        }),
-        method: 'GET',
-        credentials: 'include',
-      },
-    );
+    expect(mockFetch).toHaveBeenCalledWith(`https://api.descope.com/1/2/3`, {
+      body: undefined,
+      headers: new Headers({
+        Authorization: `Bearer pid:${authInfo.refreshJwt}`,
+        ...descopeHeaders,
+      }),
+      method: 'GET',
+      credentials: 'include',
+    });
 
     expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
   });
