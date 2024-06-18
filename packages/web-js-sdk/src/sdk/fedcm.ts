@@ -118,6 +118,7 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     const startResponse = await sdk.oauth.startNative(
       readyProvider,
       loginOptions,
+      true,
     );
     if (!startResponse.ok) {
       return startResponse as unknown as SdkResponse<JWTResponse>;
