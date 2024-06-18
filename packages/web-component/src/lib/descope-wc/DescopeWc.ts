@@ -26,6 +26,7 @@ import {
   withMemCache,
   getFirstNonEmptyValue,
   leadingDebounce,
+  getUserLocale,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -93,12 +94,7 @@ class DescopeWc extends BaseDescopeWc {
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
     let filenameWithLocale: string;
-    let browserLocale = navigator.language;
-    if (browserLocale && browserLocale !== 'zh-TW') {
-      // zh-TW is the only locale that must have "-", for all others we need to have the first part
-      browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
-    }
-    const userLocale = (locale || browserLocale || '').toLowerCase(); // use provided locals, otherwise use browser locale
+    const userLocale = getUserLocale(locale) // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
 
     if (targetLocales.includes(userLocale)) {
@@ -235,6 +231,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
+            locale: getUserLocale(locale),
           },
           conditionInteractionId,
           '',
@@ -456,6 +453,7 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
+            locale: getUserLocale(locale),
           },
           conditionInteractionId,
           interactionId,
