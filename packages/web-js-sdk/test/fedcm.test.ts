@@ -44,9 +44,11 @@ describe('fedcm', () => {
       // mock startNative response to be ok
       coreJs.oauth.startNative.mockResolvedValue({ ok: true, data: {} });
       sdk.fedcm.oneTap('google', { auto_select: true }, { stepup: false });
-      expect(coreJs.oauth.startNative).toHaveBeenCalledWith('google', {
-        stepup: false,
-      });
+      expect(coreJs.oauth.startNative).toHaveBeenCalledWith(
+        'google',
+        { stepup: false },
+        true,
+      );
     });
     it('throw error when startNative response is not ok', async () => {
       coreJs.oauth.startNative.mockResolvedValue({ ok: false, error: 'error' });
