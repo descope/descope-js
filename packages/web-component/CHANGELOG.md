@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.16.0](https://github.com/descope/descope-js/compare/web-component-3.15.6...web-component-3.16.0) (2024-06-19)
+
+
+### Features
+
+* Dynamic href RELEASE ([#638](https://github.com/descope/descope-js/issues/638)) ([69c3da1](https://github.com/descope/descope-js/commit/69c3da14d286ca126acb45bbe0be7a8f91384f64))
+
 ## [3.15.6](https://github.com/descope/descope-js/compare/web-component-3.15.5...web-component-3.15.6) (2024-06-19)
 
 ### Dependency Updates
