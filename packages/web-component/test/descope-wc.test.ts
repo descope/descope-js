@@ -884,23 +884,6 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('hey john!'));
   });
 
-  it('should update page href attribute according to screen state', async () => {
-    startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
-    );
-
-    pageContent = `<div>Loaded1</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('Loaded1'), {
-      timeout: WAIT_TIMEOUT,
-    });
-    await waitFor(() =>
-      expect(screen.getByShadowText('ho!')).toHaveAttribute('href', 'john'),
-    );
-  });
-
   it('should update page templates according to last auth login ID when there is only login Id', async () => {
     startMock.mockReturnValue(
       generateSdkResponse({ screenState: { user: { name: 'john' } } }),
@@ -3974,5 +3957,22 @@ describe('web-component', () => {
         },
       );
     });
+  });
+
+  it('should update page href attribute according to screen state', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
+    );
+
+    pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Loaded123'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() =>
+      expect(screen.getByShadowText('ho!')).toHaveAttribute('href', 'john'),
+    );
   });
 });
