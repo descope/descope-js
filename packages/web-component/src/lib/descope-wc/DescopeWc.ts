@@ -96,7 +96,7 @@ class DescopeWc extends BaseDescopeWc {
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
     let filenameWithLocale: string;
-    const userLocale = getUserLocale(locale) // use provided locals, otherwise use browser locale
+    const userLocale = getUserLocale(locale); // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
 
     if (targetLocales.includes(userLocale)) {
