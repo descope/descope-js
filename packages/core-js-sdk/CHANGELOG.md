@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.20.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.2...core-js-sdk-2.20.0) (2024-06-19)
+
+
+### Features
+
+* Support implicit grant type for native ([#635](https://github.com/descope/descope-js/issues/635)) ([3a64bde](https://github.com/descope/descope-js/commit/3a64bdefc1c6384dc6999cf0079b2a2097b0c4db))
+
 ## [2.19.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.1...core-js-sdk-2.19.2) (2024-06-19)
 
 ## [2.19.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.0...core-js-sdk-2.19.1) (2024-06-18)
