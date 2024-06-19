@@ -49,9 +49,17 @@ const withOauth = (httpClient: HttpClient) => ({
     (code: string): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(httpClient.post(apiPaths.oauth.exchange, { code })),
   ),
-  startNative: (provider: string, loginOptions?: LoginOptions) =>
+  startNative: (
+    provider: string,
+    loginOptions?: LoginOptions,
+    implicit?: boolean,
+  ) =>
     transformResponse(
-      httpClient.post(apiPaths.oauth.startNative, { provider, loginOptions }),
+      httpClient.post(apiPaths.oauth.startNative, {
+        provider,
+        loginOptions,
+        implicit,
+      }),
     ),
   finishNative: (
     provider: string,
