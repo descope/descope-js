@@ -33,20 +33,24 @@ export const withPersistTokens =
       if (isPersistTokens) {
         // eslint-disable-next-line no-console
         console.warn(
-          'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server'
+          'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server',
         );
       }
       return createSdk(config) as any;
     }
 
-    const afterRequest: AfterRequestHook = async (_req, res) => {
+    const afterRequest: AfterRequestHook = async (req, res) => {
+      const isManagementApi = /^\/v\d+\/mgmt\//.test(req.path);
+
       if (res?.status === 401) {
-        clearTokens(storagePrefix);
+        if (!isManagementApi) {
+          clearTokens(storagePrefix);
+        }
       } else {
         persistTokens(
           await getAuthInfoFromResponse(res),
           sessionTokenViaCookie,
-          storagePrefix
+          storagePrefix,
         );
       }
     };
@@ -55,13 +59,13 @@ export const withPersistTokens =
       addHooks(config, {
         beforeRequest: beforeRequest(storagePrefix),
         afterRequest,
-      })
+      }),
     );
 
     const wrappedSdk = wrapWith(
       sdk,
       ['logout', 'logoutAll'],
-      wrapper(storagePrefix)
+      wrapper(storagePrefix),
     );
 
     const refreshToken = () => getRefreshToken(storagePrefix);

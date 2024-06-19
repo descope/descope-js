@@ -157,7 +157,7 @@ test.describe('widget', () => {
       page.locator(`text=${mockRoles.roles[2].name}`).last(),
     ).toBeVisible();
 
-    await page.keyboard.press('Escape');
+    await page.locator(`id=toggleButton`).last().click();
 
     // click modal create button
     const createAccessKeyButton = page
@@ -175,10 +175,10 @@ test.describe('widget', () => {
       page.locator('text=Access Key created successfully'),
     ).toBeVisible();
 
-    const generatedAccessKeyNameInput = page.getByText('Generated Key');
-    expect(await generatedAccessKeyNameInput.first().inputValue()).toEqual(
-      cleartext,
-    );
+    const generatedAccessKeyNameInput = page
+      .getByPlaceholder('Generated Key')
+      .last();
+    expect(await generatedAccessKeyNameInput.inputValue()).toEqual(cleartext);
 
     // click modal create button
     const closeCreatedAccessKeyButton = page
@@ -375,7 +375,11 @@ test.describe('widget', () => {
 
     // only search results shown in grid
     await expect(
-      page.locator(`text=${mockAccessKeys.keys[1]['name']}`).first(),
+      page.locator(`text=${mockAccessKeys.keys[1].name}`).first(),
+    ).toBeVisible();
+
+    await expect(
+      page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
     ).toBeVisible();
   });
 

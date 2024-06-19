@@ -7,6 +7,8 @@ type HttpClientReqConfig = {
   token?: string;
 };
 
+export type ExtendedResponse = Response & { cookies: Record<string, string> };
+
 /** HTTP methods we use in the client */
 export enum HTTPMethods {
   get = 'GET',
@@ -30,6 +32,7 @@ export type HttpClient = {
   ) => Promise<Response>;
   delete: (path: string, config?: HttpClientReqConfig) => Promise<Response>;
   hooks?: Hooks;
+  buildUrl: (path: string, queryParams?: { [key: string]: string }) => string;
 };
 
 export type Fetch = typeof fetch;
@@ -56,6 +59,7 @@ export type RequestConfig = {
 };
 
 export type BeforeRequest = (config: RequestConfig) => RequestConfig;
+
 export type AfterRequest = (
   req: RequestConfig,
   res: Response,
@@ -65,4 +69,7 @@ export type AfterRequest = (
 export type Hooks = {
   beforeRequest?: BeforeRequest;
   afterRequest?: AfterRequest;
+  transformResponse?: (
+    mutableResponse: ExtendedResponse,
+  ) => Promise<ExtendedResponse>;
 };

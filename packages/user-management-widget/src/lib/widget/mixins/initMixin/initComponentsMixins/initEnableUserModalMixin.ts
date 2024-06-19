@@ -53,7 +53,10 @@ export const initEnableUserModalMixin = createSingletonMixin(
       async #initEnableUserModal() {
         this.enableUserModal = this.createModal();
         this.enableUserModal.setContent(
-          createTemplate(await this.fetchWidgetPage('enable-user-modal.html')),
+          createTemplate(
+            // await import('../../../../../../test/mocks/enableUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('enable-user-modal.html'),
+          ),
         );
 
         this.#initCancelButton();

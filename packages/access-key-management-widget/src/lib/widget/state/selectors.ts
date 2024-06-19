@@ -16,6 +16,9 @@ export const getAccessKeysList = createSelector(
       expireTimeFormatted: !accessKey?.expireTime
         ? 'Never'
         : new Date((accessKey?.expireTime || 0) * 1000).toLocaleString(),
+      createdTimeFormatted: new Date(
+        (accessKey?.createdTime || 0) * 1000,
+      ).toLocaleString(),
       status:
         accessKey?.expireTime &&
         new Date((accessKey?.expireTime || 0) * 1000) < new Date()
@@ -40,6 +43,12 @@ export const getIsAccessKeysEditable = createSelector(
   getSelectedAccessKeys,
   (selectedAccessKeys) =>
     selectedAccessKeys.every((accessKey) => accessKey.editable),
+);
+
+export const getCanModifyAccessKeys = createSelector(
+  getIsAccessKeysEditable,
+  getIsAccessKeysSelected,
+  (isEditable, isSelected) => isEditable && isSelected,
 );
 
 export const getIsSingleAccessKeysSelected = createSelector(

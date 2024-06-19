@@ -31,6 +31,7 @@ export interface ScreenState {
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
   totp?: { image?: string; provisionUrl?: string };
+  notp?: { image?: string; redirectUrl?: string };
 }
 
 export type FlowState = {
@@ -42,6 +43,7 @@ export type FlowState = {
   executionId: string;
   action: string;
   redirectTo: string;
+  openInNewTabUrl?: string;
   redirectUrl: string;
   screenId: string;
   screenState: ScreenState;
@@ -75,6 +77,7 @@ export type StepState = {
   direction: Direction | undefined;
   samlIdpUsername: string;
   oidcLoginHint: string;
+  openInNewTabUrl?: string;
 };
 
 export type DebugState = {
@@ -145,6 +148,7 @@ export interface Context {
 export interface ILogger {
   info(title: string, description: string, state: any): void;
   warn(title: string, description?: string): void;
+  debug(title: string, description?: string): void;
   error(title: string, description?: string, ...optionalParams: any[]): void;
 }
 

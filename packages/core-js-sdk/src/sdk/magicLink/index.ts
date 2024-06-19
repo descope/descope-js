@@ -20,13 +20,15 @@ import {
   withUpdatePhoneValidations,
 } from './validations';
 
+const deliveryMethods = Object.keys(DeliveryMethods).filter(d => d !== DeliveryPhone.voice);
+
 const withMagicLink = (httpClient: HttpClient) => ({
   verify: withVerifyValidations(
     (token: string): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(httpClient.post(apiPaths.magicLink.verify, { token })),
   ),
 
-  signIn: Object.keys(DeliveryMethods).reduce(
+  signIn: deliveryMethods.reduce(
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
@@ -48,7 +50,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
     {},
   ) as MagicLink[Routes.signIn],
 
-  signUp: Object.keys(DeliveryMethods).reduce(
+  signUp: deliveryMethods.reduce(
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
@@ -71,7 +73,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
     {},
   ) as MagicLink[Routes.signUp],
 
-  signUpOrIn: Object.keys(DeliveryMethods).reduce(
+  signUpOrIn: deliveryMethods.reduce(
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
@@ -105,7 +107,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
           ),
         ),
     ),
-    phone: Object.keys(DeliveryPhone).reduce(
+    phone: Object.keys(DeliveryPhone).filter(d => d !== DeliveryPhone.voice).reduce(
       (acc, delivery) => ({
         ...acc,
         [delivery]: withUpdatePhoneValidations(

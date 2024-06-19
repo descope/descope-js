@@ -1,3 +1,4 @@
+import { transformSetCookie } from './helpers';
 import createFetchLogger from './helpers/createFetchLogger';
 import {
   CreateHttpClientConfig,
@@ -85,6 +86,19 @@ const createHttpClient = ({
       await hooks.afterRequest(config, res?.clone());
     }
 
+    if (hooks?.transformResponse) {
+      const json = await res.json();
+      const cookies = transformSetCookie(res.headers?.get('set-cookie') || '');
+      const mutableResponse = {
+        ...res,
+        json: () => Promise.resolve(json),
+        cookies,
+      };
+      // we want to make sure cloning the response will keep the transformed json data
+      mutableResponse.clone = () => mutableResponse;
+      return hooks.transformResponse(mutableResponse);
+    }
+
     return res;
   };
 
@@ -126,6 +140,9 @@ const createHttpClient = ({
         token,
       }),
     hooks,
+    buildUrl: (path, queryParams) => {
+      return urlBuilder({ projectId, baseUrl, path, queryParams });
+    },
   };
 };
 

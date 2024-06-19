@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { flatten } from '../../helpers';
 import { State } from './types';
 import { userStatusMappings } from './constants';
 
@@ -14,6 +15,7 @@ export const getCustomAttributes = (state: State) =>
 export const getUsersList = createSelector(getRawUsersList, (users) =>
   users.map((user) => ({
     ...user,
+    ...flatten(user?.customAttributes, 'customAttributes'),
     status: userStatusMappings[user.status] || user.status,
     roles: user.roleNames,
   })),
@@ -73,7 +75,11 @@ export const getSelectedUsersDetailsForDisplay = createSelector(
   getSelectedUsers,
   (selectedUsers) => {
     if (selectedUsers.length === 1) {
-      return selectedUsers[0].email;
+      return (
+        selectedUsers[0].name ||
+        selectedUsers[0].email ||
+        selectedUsers[0].loginIds?.[0]
+      );
     }
     return `${selectedUsers.length} users`;
   },
@@ -114,6 +120,6 @@ export const getCanResetPassword = createSelector(
 );
 
 export const getCanDelete = createSelector(
-  getIsSelectedUsersEditable,
-  (isUsersEditable) => isUsersEditable,
+  getIsUsersSelected,
+  (isUsersSelected) => isUsersSelected,
 );

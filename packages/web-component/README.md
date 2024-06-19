@@ -65,21 +65,22 @@ DESCOPE_BASE_URL
 DESCOPE_LOCALE=<locale>
 ```
 
-1. Run the sample `pnpm run start`
+1. Run the sample `pnpm run start` / `pnpm run start-web-sample`
 
-NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` (this is a temporary solution until we improve the process to fit to monorepo).
+NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` / `pnpm run start-web-sample` (this is a temporary solution until we improve the process to fit to monorepo).
 
 ## Optional Attributes
 
-| Attribute      | Available options                                                                                                                                                                                                                         | Default value |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| base-url       | Custom Descope base URL                                                                                                                                                                                                                   | **""**        |
-| theme          | **"light"** - Light theme</br>**"dark"** - Dark theme</br>**"os"** - Auto select a theme based on the OS theme settings                                                                                                                   | **"light"**   |
-| debug          | **"true"** - Enable debugger</br>**"false"** - Disable debugger                                                                                                                                                                           | **"false"**   |
-| preview        | **"true"** - Run flow in a preview mode</br>**"false"** - Do run flow in a preview mode                                                                                                                                                   | **"false"**   |
-| auto-focus     | **"true"** - Automatically focus on the first input of each screen</br>**"false"** - Do not automatically focus on screen's inputs</br>**"skipFirstScreen"** - Automatically focus on the first input of each screen, except first screen | **"true"**    |
-| storage-prefix | **String** - A prefix to add to the key of the local storage when persisting tokens                                                                                                                                                       | **""**        |
-|                |                                                                                                                                                                                                                                           |               |
+| Attribute                     | Available options                                                                                                                                                                                                                          | Default value |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| base-url                      | Custom Descope base URL                                                                                                                                                                                                                    | **""**        |
+| theme                         | **"light"** - Light theme</br>**"dark"** - Dark theme</br>**"os"** - Auto select a theme based on the OS theme settings                                                                                                                    | **"light"**   |
+| debug                         | **"true"** - Enable debugger</br>**"false"** - Disable debugger                                                                                                                                                                            | **"false"**   |
+| preview                       | **"true"** - Run flow in a preview mode</br>**"false"** - Do run flow in a preview mode                                                                                                                                                    | **"false"**   |
+| auto-focus                    | **"true"** - Automatically focus on the first input of each screen</br>**"false"** - Do not automatically focus on screen's inputs</br>**"skipFirstScreen"** - Automatically focus on the first input of each screen, except first screen  | **"true"**    |
+| storage-prefix                | **String** - A prefix to add to the key of the local storage when persisting tokens                                                                                                                                                        | **""**        |
+| store-last-authenticated-user | **"true"** - Stores last-authenticated user details in local storage when flow is completed</br>**"false"** - Do not store last-auth user details. Disabling this flag may cause last-authenticated user features to not function properly | **"true"**    |
+|                               |                                                                                                                                                                                                                                            |               |
 
 ## Optional Properties
 

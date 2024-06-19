@@ -10,7 +10,7 @@ const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
     ...coreSdk,
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),
-    fedcm: createFedCM(coreSdk),
+    fedcm: createFedCM(coreSdk, args[0].projectId),
   };
 };
 
