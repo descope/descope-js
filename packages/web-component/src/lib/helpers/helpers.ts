@@ -512,3 +512,12 @@ export const leadingDebounce = <T extends (...args: any[]) => void>(
     }, wait);
   } as T;
 };
+
+export function getUserLocale(locale: string) {
+  let browserLocale = navigator.language;
+    if (browserLocale && browserLocale !== 'zh-TW') {
+      // zh-TW is the only locale that must have "-", for all others we need to have the first part
+      browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
+    }
+  return (locale || browserLocale || '').toLowerCase();
+}
