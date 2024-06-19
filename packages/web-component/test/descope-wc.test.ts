@@ -577,7 +577,7 @@ describe('web-component', () => {
           client: {},
           redirectAuth: undefined,
           tenant: undefined,
-          locale: "en",
+          locale: 'en',
         },
         undefined,
         'submitterId',
@@ -2114,7 +2114,7 @@ describe('web-component', () => {
             redirectAuth: undefined,
             preview: false,
             tenant: undefined,
-            locale: "en",
+            locale: 'en',
           },
           conditionInteractionId,
           'interactionId',
@@ -2166,7 +2166,7 @@ describe('web-component', () => {
             tenant: undefined,
             client: {},
             lastAuth: { authMethod: 'otp' },
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2260,7 +2260,7 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2343,7 +2343,7 @@ describe('web-component', () => {
             },
             tenant: undefined,
             lastAuth: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2388,7 +2388,7 @@ describe('web-component', () => {
             samlIdpUsername: null,
             ssoAppId: null,
             client: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2427,7 +2427,7 @@ describe('web-component', () => {
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2555,7 +2555,7 @@ describe('web-component', () => {
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2596,7 +2596,7 @@ describe('web-component', () => {
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2634,7 +2634,7 @@ describe('web-component', () => {
             tenant: undefined,
             redirectAuth: undefined,
             lastAuth: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2705,7 +2705,7 @@ describe('web-component', () => {
             redirectAuth: undefined,
             lastAuth: {},
             client: {},
-            locale: "en",
+            locale: 'en',
           },
           undefined,
           '',
@@ -2747,7 +2747,7 @@ describe('web-component', () => {
           tenant: undefined,
           redirectAuth: undefined,
           lastAuth: {},
-          locale: "en",
+          locale: 'en',
         },
         undefined,
         '',
@@ -2831,7 +2831,7 @@ describe('web-component', () => {
           redirectAuth: undefined,
           tenant: undefined,
           lastAuth: {},
-          locale: "en",
+          locale: 'en',
         },
         undefined,
         '',
@@ -2896,7 +2896,7 @@ describe('web-component', () => {
           tenant: undefined,
           lastAuth: {},
           client: {},
-          locale: "en",
+          locale: 'en',
         },
         undefined,
         '',
@@ -3957,5 +3957,22 @@ describe('web-component', () => {
         },
       );
     });
+  });
+
+  it('should update page href attribute according to screen state', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
+    );
+
+    pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Loaded123'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() =>
+      expect(screen.getByShadowText('ho!')).toHaveAttribute('href', 'john'),
+    );
   });
 });
