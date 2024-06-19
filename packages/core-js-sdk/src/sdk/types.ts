@@ -275,6 +275,7 @@ export type Options = {
   abTestingKey?: number;
   startOptionsVersion?: number;
   client?: Record<string, any>;
+  locale?: string;
 };
 
 export type ResponseData = Record<string, any>;
