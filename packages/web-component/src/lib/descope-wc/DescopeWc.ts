@@ -664,7 +664,7 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  #handleDescopePassword(ele: Element) {
+  #handleExternalInputs(ele: Element) {
     if (!ele) {
       return;
     }
@@ -840,6 +840,8 @@ class DescopeWc extends BaseDescopeWc {
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
 
+        const emailEles =
+          this.rootElement.querySelectorAll('descope-email-field');
         const passwordEles =
           this.rootElement.querySelectorAll('descope-password');
         const newPasswordEles = this.rootElement.querySelectorAll(
@@ -851,8 +853,8 @@ class DescopeWc extends BaseDescopeWc {
           .querySelectorAll('[data-hidden-input="true"]')
           .forEach((ele) => ele.remove());
         // handle external input workaround for password components
-        [...passwordEles, ...newPasswordEles].forEach((ele) =>
-          this.#handleDescopePassword(ele),
+        [...emailEles, ...passwordEles, ...newPasswordEles].forEach((ele) =>
+          this.#handleExternalInputs(ele),
         );
       });
 
