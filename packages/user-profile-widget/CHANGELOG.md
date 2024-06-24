@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.62](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.61...user-profile-widget-0.0.62) (2024-06-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency reselect to v5.1.1 ([#644](https://github.com/descope/descope-js/issues/644)) ([e7f6699](https://github.com/descope/descope-js/commit/e7f669993e0b5b19a36f28ed6f4814c73029e7d6))
+
+## [0.0.61](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.60...user-profile-widget-0.0.61) (2024-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.1`
+* `web-component` updated to version `3.16.2`
+* `sdk-helpers` updated to version `0.1.45`
+* `sdk-mixins` updated to version `0.2.30`
+* `sdk-component-drivers` updated to version `0.2.26`
+
+### Bug Fixes
+
+* issue 641 RELEASE ([#642](https://github.com/descope/descope-js/issues/642)) ([b4f338b](https://github.com/descope/descope-js/commit/b4f338b93ba2e9e2929b9ad52d2ce1ba752b98c1))
+
+## [0.0.60](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.59...user-profile-widget-0.0.60) (2024-06-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.0`
+* `web-component` updated to version `3.16.1`
+* `sdk-helpers` updated to version `0.1.44`
+* `sdk-mixins` updated to version `0.2.29`
+* `sdk-component-drivers` updated to version `0.2.25`
+* `core-js-sdk` updated to version `2.20.0`
+## [0.0.59](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.58...user-profile-widget-0.0.59) (2024-06-19)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.16.0`
+## [0.0.58](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.57...user-profile-widget-0.0.58) (2024-06-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.12.2`
+* `web-component` updated to version `3.15.6`
+* `core-js-sdk` updated to version `2.19.2`
 ## [0.0.57](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.56...user-profile-widget-0.0.57) (2024-06-18)
 
 ### Dependency Updates
