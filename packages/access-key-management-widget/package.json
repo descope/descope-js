@@ -89,7 +89,7 @@
     "redux": "5.0.1",
     "redux-thunk": "3.1.0",
     "reselect": "5.1.1",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "overrides": {
     "terser": "5.31.0"
