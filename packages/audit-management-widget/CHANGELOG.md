@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.56](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.55...audit-management-widget-0.1.56) (2024-06-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.4`
+* `sdk-helpers` updated to version `0.1.48`
+* `sdk-mixins` updated to version `0.2.33`
+* `sdk-component-drivers` updated to version `0.2.29`
 ## [0.1.55](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.54...audit-management-widget-0.1.55) (2024-06-25)
 
 ### Dependency Updates
