@@ -71,7 +71,7 @@ importers:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': ^1.41.1
       '@reduxjs/toolkit': ^2.0.1
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
@@ -136,7 +136,7 @@ importers:
       '@descope/web-components-ui': 1.0.323
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
-      '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-typescript': 11.1.0_rstnxsrc2e776apjccrg6pn5ma
@@ -192,7 +192,7 @@ importers:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': ^1.41.1
       '@reduxjs/toolkit': ^2.0.1
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
@@ -257,7 +257,7 @@ importers:
       '@descope/web-components-ui': 1.0.323
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
-      '@rollup/plugin-commonjs': 25.0.8_rollup@2.79.1
+      '@rollup/plugin-commonjs': 26.0.1_rollup@2.79.1
       '@rollup/plugin-node-resolve': 15.0.2_rollup@2.79.1
       '@rollup/plugin-replace': 5.0.2_rollup@2.79.1
       '@rollup/plugin-typescript': 11.1.6_aoxa27p5cdq3ujhvuxc4rhju5q
@@ -306,7 +306,7 @@ importers:
   packages/core-js-sdk:
     specifiers:
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.2
       '@rollup/plugin-terser': ^0.4.0
@@ -349,7 +349,7 @@ importers:
       jwt-decode: 3.1.2
     devDependencies:
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-terser': 0.4.1_rollup@4.13.0
@@ -392,7 +392,7 @@ importers:
     specifiers:
       '@descope/sdk-helpers': workspace:*
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': 25.0.8
+      '@rollup/plugin-commonjs': 26.0.1
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.2
       '@rollup/plugin-terser': ^0.4.0
@@ -439,7 +439,7 @@ importers:
       tslib: 2.6.3
     devDependencies:
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': 25.0.8_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-terser': 0.4.1_rollup@4.13.0
@@ -483,7 +483,7 @@ importers:
 
   packages/libs/sdk-helpers:
     specifiers:
-      '@rollup/plugin-commonjs': 25.0.8
+      '@rollup/plugin-commonjs': 26.0.1
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.2
       '@rollup/plugin-terser': ^0.4.0
@@ -528,7 +528,7 @@ importers:
     dependencies:
       tslib: 2.6.3
     devDependencies:
-      '@rollup/plugin-commonjs': 25.0.8_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-terser': 0.4.1_rollup@4.13.0
@@ -576,7 +576,7 @@ importers:
       '@descope/sdk-helpers': workspace:*
       '@open-wc/rollup-plugin-html': 1.2.5
       '@reduxjs/toolkit': ^2.0.1
-      '@rollup/plugin-commonjs': 25.0.8
+      '@rollup/plugin-commonjs': 26.0.1
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.2
       '@rollup/plugin-terser': ^0.4.0
@@ -626,7 +626,7 @@ importers:
     devDependencies:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@reduxjs/toolkit': 2.0.1
-      '@rollup/plugin-commonjs': 25.0.8_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-terser': 0.4.1_rollup@4.13.0
@@ -679,7 +679,7 @@ importers:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': ^1.41.1
       '@reduxjs/toolkit': ^2.0.1
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
@@ -744,7 +744,7 @@ importers:
       '@descope/web-components-ui': 1.0.323
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
-      '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-typescript': 11.1.0_rstnxsrc2e776apjccrg6pn5ma
@@ -800,7 +800,7 @@ importers:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': ^1.41.1
       '@reduxjs/toolkit': ^2.0.1
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
@@ -867,7 +867,7 @@ importers:
       '@descope/web-components-ui': 1.0.323
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
-      '@rollup/plugin-commonjs': 25.0.7_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-typescript': 11.1.0_rstnxsrc2e776apjccrg6pn5ma
@@ -925,7 +925,7 @@ importers:
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': ^1.41.1
       '@reduxjs/toolkit': ^2.0.1
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.1.6
@@ -993,7 +993,7 @@ importers:
       '@descope/web-components-ui': 1.0.323
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
-      '@rollup/plugin-commonjs': 25.0.7_rollup@4.14.3
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.14.3
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.14.3
       '@rollup/plugin-replace': 5.0.2_rollup@4.14.3
       '@rollup/plugin-typescript': 11.1.6_xu3sspn2jnuawrqj7ezoiwohka
@@ -1043,7 +1043,7 @@ importers:
     specifiers:
       '@descope/web-js-sdk': workspace:*
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
@@ -1091,7 +1091,7 @@ importers:
       tslib: 2.6.3
     devDependencies:
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': 25.0.7_rollup@3.29.4
+      '@rollup/plugin-commonjs': 26.0.1_rollup@3.29.4
       '@rollup/plugin-node-resolve': 15.0.2_rollup@3.29.4
       '@rollup/plugin-replace': 5.0.2_rollup@3.29.4
       '@rollup/plugin-typescript': 11.1.0_ugbwe55pe7ygxljk5zdjjtrmya
@@ -1139,7 +1139,7 @@ importers:
       '@descope/core-js-sdk': workspace:*
       '@fingerprintjs/fingerprintjs-pro': 3.9.7
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': 25.0.8
+      '@rollup/plugin-commonjs': 26.0.1
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.2
       '@rollup/plugin-terser': ^0.4.0
@@ -1191,7 +1191,7 @@ importers:
       tslib: 2.6.3
     devDependencies:
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@rollup/plugin-commonjs': 25.0.8_rollup@4.13.0
+      '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
       '@rollup/plugin-node-resolve': 15.0.2_rollup@4.13.0
       '@rollup/plugin-replace': 5.0.2_rollup@4.13.0
       '@rollup/plugin-terser': 0.4.1_rollup@4.13.0
@@ -4127,63 +4127,9 @@ packages:
       redux-thunk: 3.1.0_redux@5.0.1
       reselect: 5.1.1
 
-  /@rollup/plugin-commonjs/25.0.7_rollup@3.29.4:
-    resolution: {integrity: sha512-nEvcR+LRjEjsaSsc4x3XZfCCvZIaSMenZu/OiwOKGN2UhQpAYI7ru7czFvyWbErlpoGjnSX3D5Ch5FcMA3kRWQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.68.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@3.29.4
-      commondir: 1.0.1
-      estree-walker: 2.0.2
-      glob: 8.1.0
-      is-reference: 1.2.1
-      magic-string: 0.30.8
-      rollup: 3.29.4
-    dev: true
-
-  /@rollup/plugin-commonjs/25.0.7_rollup@4.13.0:
-    resolution: {integrity: sha512-nEvcR+LRjEjsaSsc4x3XZfCCvZIaSMenZu/OiwOKGN2UhQpAYI7ru7czFvyWbErlpoGjnSX3D5Ch5FcMA3kRWQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.68.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@4.13.0
-      commondir: 1.0.1
-      estree-walker: 2.0.2
-      glob: 8.1.0
-      is-reference: 1.2.1
-      magic-string: 0.30.8
-      rollup: 4.13.0
-    dev: true
-
-  /@rollup/plugin-commonjs/25.0.7_rollup@4.14.3:
-    resolution: {integrity: sha512-nEvcR+LRjEjsaSsc4x3XZfCCvZIaSMenZu/OiwOKGN2UhQpAYI7ru7czFvyWbErlpoGjnSX3D5Ch5FcMA3kRWQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.68.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@4.14.3
-      commondir: 1.0.1
-      estree-walker: 2.0.2
-      glob: 8.1.0
-      is-reference: 1.2.1
-      magic-string: 0.30.8
-      rollup: 4.14.3
-    dev: true
-
-  /@rollup/plugin-commonjs/25.0.8_rollup@2.79.1:
-    resolution: {integrity: sha512-ZEZWTK5n6Qde0to4vS9Mr5x/0UZoqCxPVR9KRUjU4kA2sO7GEUn1fop0DAwpO6z0Nw/kJON9bDmSxdWxO/TT1A==}
-    engines: {node: '>=14.0.0'}
+  /@rollup/plugin-commonjs/26.0.1_rollup@2.79.1:
+    resolution: {integrity: sha512-UnsKoZK6/aGIH6AdkptXhNvhaqftcjq3zZdT+LY5Ftms6JR06nADcDsYp5hTU9E2lbJUEOhdlY5J4DNTneM+jQ==}
+    engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
@@ -4193,15 +4139,33 @@ packages:
       '@rollup/pluginutils': 5.1.0_rollup@2.79.1
       commondir: 1.0.1
       estree-walker: 2.0.2
-      glob: 8.1.0
+      glob: 10.4.2
       is-reference: 1.2.1
       magic-string: 0.30.8
       rollup: 2.79.1
     dev: true
 
-  /@rollup/plugin-commonjs/25.0.8_rollup@4.13.0:
-    resolution: {integrity: sha512-ZEZWTK5n6Qde0to4vS9Mr5x/0UZoqCxPVR9KRUjU4kA2sO7GEUn1fop0DAwpO6z0Nw/kJON9bDmSxdWxO/TT1A==}
-    engines: {node: '>=14.0.0'}
+  /@rollup/plugin-commonjs/26.0.1_rollup@3.29.4:
+    resolution: {integrity: sha512-UnsKoZK6/aGIH6AdkptXhNvhaqftcjq3zZdT+LY5Ftms6JR06nADcDsYp5hTU9E2lbJUEOhdlY5J4DNTneM+jQ==}
+    engines: {node: '>=16.0.0 || 14 >= 14.17'}
+    peerDependencies:
+      rollup: ^2.68.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.1.0_rollup@3.29.4
+      commondir: 1.0.1
+      estree-walker: 2.0.2
+      glob: 10.4.2
+      is-reference: 1.2.1
+      magic-string: 0.30.8
+      rollup: 3.29.4
+    dev: true
+
+  /@rollup/plugin-commonjs/26.0.1_rollup@4.13.0:
+    resolution: {integrity: sha512-UnsKoZK6/aGIH6AdkptXhNvhaqftcjq3zZdT+LY5Ftms6JR06nADcDsYp5hTU9E2lbJUEOhdlY5J4DNTneM+jQ==}
+    engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
@@ -4211,10 +4175,28 @@ packages:
       '@rollup/pluginutils': 5.1.0_rollup@4.13.0
       commondir: 1.0.1
       estree-walker: 2.0.2
-      glob: 8.1.0
+      glob: 10.4.2
       is-reference: 1.2.1
       magic-string: 0.30.8
       rollup: 4.13.0
+    dev: true
+
+  /@rollup/plugin-commonjs/26.0.1_rollup@4.14.3:
+    resolution: {integrity: sha512-UnsKoZK6/aGIH6AdkptXhNvhaqftcjq3zZdT+LY5Ftms6JR06nADcDsYp5hTU9E2lbJUEOhdlY5J4DNTneM+jQ==}
+    engines: {node: '>=16.0.0 || 14 >= 14.17'}
+    peerDependencies:
+      rollup: ^2.68.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.1.0_rollup@4.14.3
+      commondir: 1.0.1
+      estree-walker: 2.0.2
+      glob: 10.4.2
+      is-reference: 1.2.1
+      magic-string: 0.30.8
+      rollup: 4.14.3
     dev: true
 
   /@rollup/plugin-node-resolve/15.0.2_rollup@2.79.1:
@@ -9019,6 +9001,19 @@ packages:
       path-scurry: 1.7.0
     dev: true
 
+  /glob/10.4.2:
+    resolution: {integrity: sha512-GwMlUF6PkPo3Gk21UxkCohOv0PLcIXVtKyLlpEI28R/cO/4eNOdmLk3CMW1wROV/WR/EsZOWAfBbBOqYvs88/w==}
+    engines: {node: '>=16 || 14 >=14.18'}
+    hasBin: true
+    dependencies:
+      foreground-child: 3.1.1
+      jackspeak: 3.4.0
+      minimatch: 9.0.4
+      minipass: 7.1.2
+      package-json-from-dist: 1.0.0
+      path-scurry: 1.11.1
+    dev: true
+
   /glob/7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     dependencies:
@@ -9028,17 +9023,6 @@ packages:
       minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
-    dev: true
-
-  /glob/8.1.0:
-    resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      fs.realpath: 1.0.0
-      inflight: 1.0.6
-      inherits: 2.0.4
-      minimatch: 5.1.6
-      once: 1.4.0
     dev: true
 
   /global-directory/4.0.1:
@@ -9770,6 +9754,15 @@ packages:
 
   /jackspeak/2.2.1:
     resolution: {integrity: sha512-MXbxovZ/Pm42f6cDIDkl3xpwv1AGwObKwfmjs2nQePiy85tP3fatofl3FC1aBsOtP/6fq5SbtgHwWcMsLP+bDw==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@isaacs/cliui': 8.0.2
+    optionalDependencies:
+      '@pkgjs/parseargs': 0.11.0
+    dev: true
+
+  /jackspeak/3.4.0:
+    resolution: {integrity: sha512-JVYhQnN59LVPFCEcVa2C3CrEKYacvjRfqIQl+h8oi91aLYQVWRYbxjPcv1bUiUy/kLmQaANrYfNMCO3kuEDHfw==}
     engines: {node: '>=14'}
     dependencies:
       '@isaacs/cliui': 8.0.2
@@ -11038,6 +11031,11 @@ packages:
     engines: {node: 14 || >=16.14}
     dev: true
 
+  /lru-cache/10.2.2:
+    resolution: {integrity: sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==}
+    engines: {node: 14 || >=16.14}
+    dev: true
+
   /lru-cache/5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
     dependencies:
@@ -11234,6 +11232,11 @@ packages:
   /minipass/5.0.0:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
     engines: {node: '>=8'}
+    dev: true
+
+  /minipass/7.1.2:
+    resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
+    engines: {node: '>=16 || 14 >=14.17'}
     dev: true
 
   /mitt/1.2.0:
@@ -11658,6 +11661,10 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
+  /package-json-from-dist/1.0.0:
+    resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
+    dev: true
+
   /param-case/3.0.4:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
@@ -11754,6 +11761,14 @@ packages:
 
   /path-parse/1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
+    dev: true
+
+  /path-scurry/1.11.1:
+    resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
+    engines: {node: '>=16 || 14 >=14.18'}
+    dependencies:
+      lru-cache: 10.2.2
+      minipass: 7.1.2
     dev: true
 
   /path-scurry/1.7.0:

@@ -29,7 +29,7 @@
   ],
   "devDependencies": {
     "@open-wc/rollup-plugin-html": "1.2.5",
-    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-commonjs": "^26.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
