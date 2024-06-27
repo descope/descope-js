@@ -838,8 +838,9 @@ class DescopeWc extends BaseDescopeWc {
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
 
-        const emailEles =
-          this.rootElement.querySelectorAll('descope-email-field');
+        const emailEles = this.rootElement.querySelectorAll(
+          'descope-email-field',
+        );
         const passwordEles =
           this.rootElement.querySelectorAll('descope-password');
         const newPasswordEles = this.rootElement.querySelectorAll(
@@ -906,15 +907,18 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #validateInputs() {
-    return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
-      (input: HTMLInputElement) => {
+    let isValid = true;
+    Array.from(this.shadowRoot.querySelectorAll('*[name]'))
+      .reverse()
+      .forEach((input: HTMLInputElement) => {
         if (input.localName === 'slot') {
-          return true;
+          return;
         }
         input.reportValidity?.();
-        return input.checkValidity?.();
-      },
-    );
+        isValid = input.checkValidity?.();
+      });
+
+    return isValid;
   }
 
   async #getFormData() {
