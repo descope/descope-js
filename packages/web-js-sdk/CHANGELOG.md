@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.13.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.4...web-js-sdk-1.13.5) (2024-06-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.20.2`
+## [1.13.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.3...web-js-sdk-1.13.4) (2024-06-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.20.1`
+## [1.13.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.2...web-js-sdk-1.13.3) (2024-06-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [1.13.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.1...web-js-sdk-1.13.2) (2024-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.9.7 ([#646](https://github.com/descope/descope-js/issues/646)) ([383f25b](https://github.com/descope/descope-js/commit/383f25b15fa9871442867982399ca332a66090b3))
+
 ## [1.13.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.0...web-js-sdk-1.13.1) (2024-06-22)
 
 ## [1.13.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.12.2...web-js-sdk-1.13.0) (2024-06-19)

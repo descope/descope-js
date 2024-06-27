@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.66](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.65...user-profile-widget-0.0.66) (2024-06-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.20.2`
+* `web-js-sdk` updated to version `1.13.5`
+* `web-component` updated to version `3.16.6`
+* `sdk-helpers` updated to version `0.1.49`
+* `sdk-mixins` updated to version `0.2.34`
+* `sdk-component-drivers` updated to version `0.2.30`
+## [0.0.65](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.64...user-profile-widget-0.0.65) (2024-06-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.20.1`
+* `web-js-sdk` updated to version `1.13.4`
+* `web-component` updated to version `3.16.5`
+* `sdk-helpers` updated to version `0.1.48`
+* `sdk-mixins` updated to version `0.2.33`
+* `sdk-component-drivers` updated to version `0.2.29`
+## [0.0.64](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.63...user-profile-widget-0.0.64) (2024-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.3`
+* `web-component` updated to version `3.16.4`
+* `sdk-helpers` updated to version `0.1.47`
+* `sdk-mixins` updated to version `0.2.32`
+* `sdk-component-drivers` updated to version `0.2.28`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [0.0.63](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.62...user-profile-widget-0.0.63) (2024-06-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.2`
+* `web-component` updated to version `3.16.3`
+* `sdk-helpers` updated to version `0.1.46`
+* `sdk-mixins` updated to version `0.2.31`
+* `sdk-component-drivers` updated to version `0.2.27`
 ## [0.0.62](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.61...user-profile-widget-0.0.62) (2024-06-23)
 
 

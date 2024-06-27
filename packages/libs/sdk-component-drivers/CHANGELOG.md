@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.30](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.29...sdk-component-drivers-0.2.30) (2024-06-26)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.49`
+## [0.2.29](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.28...sdk-component-drivers-0.2.29) (2024-06-26)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.48`
+## [0.2.28](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.27...sdk-component-drivers-0.2.28) (2024-06-25)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.47`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [0.2.27](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.26...sdk-component-drivers-0.2.27) (2024-06-24)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.46`
 ## [0.2.26](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.25...sdk-component-drivers-0.2.26) (2024-06-22)
 
 ### Dependency Updates

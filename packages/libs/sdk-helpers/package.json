@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-helpers",
-  "version": "0.1.45",
+  "version": "0.1.49",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-helpers",
   "bugs": {
@@ -40,13 +40,13 @@
     "authentication"
   ],
   "devDependencies": {
-    "@rollup/plugin-commonjs": "25.0.8",
+    "@rollup/plugin-commonjs": "26.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": "20.14.0",
+    "@types/node": "20.14.1",
     "@types/js-cookie": "^3.0.2",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "8.57.0",
@@ -58,7 +58,7 @@
     "eslint-plugin-jest": "28.5.0",
     "eslint-plugin-jest-dom": "5.4.0",
     "eslint-plugin-jest-formatting": "3.1.0",
-    "eslint-plugin-n": "17.7.0",
+    "eslint-plugin-n": "17.8.0",
     "eslint-plugin-no-only-tests": "3.1.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-prettier": "5.1.3",
@@ -83,7 +83,7 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "overrides": {
     "terser": "^5.14.2"
