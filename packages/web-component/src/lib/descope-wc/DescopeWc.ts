@@ -247,6 +247,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(token ? { token } : {}),
             ...(oidcLoginHint ? { externalId: oidcLoginHint } : {}),
           },
+          this.startBaseUrl,
         );
 
         this.#handleSdkResponse(sdkResp);
@@ -479,6 +480,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(descopeIdpInitiated && { idpInitiated: true }),
             ...(token && { token }),
           },
+          this.startBaseUrl,
         );
     } else if (
       isChanged('projectId') ||
@@ -838,8 +840,9 @@ class DescopeWc extends BaseDescopeWc {
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
 
-        const emailEles =
-          this.rootElement.querySelectorAll('descope-email-field');
+        const emailEles = this.rootElement.querySelectorAll(
+          'descope-email-field',
+        );
         const passwordEles =
           this.rootElement.querySelectorAll('descope-password');
         const newPasswordEles = this.rootElement.querySelectorAll(

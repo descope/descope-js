@@ -22,17 +22,22 @@ const withFlow = (httpClient: HttpClient) => ({
       version?: number,
       componentsVersion?: string,
       input?: FlowInput,
+      baseUrl?: string,
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
-        httpClient.post(apiPaths.flow.start, {
-          flowId,
-          options,
-          conditionInteractionId,
-          interactionId,
-          version,
-          componentsVersion,
-          input,
-        }),
+        httpClient.post(
+          apiPaths.flow.start,
+          {
+            flowId,
+            options,
+            conditionInteractionId,
+            interactionId,
+            version,
+            componentsVersion,
+            input,
+          },
+          baseUrl ? { overrideBaseUrl: baseUrl } : undefined,
+        ),
       ),
   ),
   next: withNextValidations(

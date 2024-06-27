@@ -5,6 +5,7 @@ type HttpClientReqConfig = {
   headers?: HeadersInit;
   queryParams?: { [key: string]: string };
   token?: string;
+  overrideBaseUrl?: string;
 };
 
 export type ExtendedResponse = Response & { cookies: Record<string, string> };
@@ -56,6 +57,7 @@ export type RequestConfig = {
   body?: any;
   method: HTTPMethods;
   token?: string;
+  overrideBaseUrl?: string;
 };
 
 export type BeforeRequest = (config: RequestConfig) => RequestConfig;

@@ -20,9 +20,33 @@ describe('Flows', () => {
 
     it('should send the correct request', async () => {
       await sdk.flow.start('flow1');
-      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/start', {
-        flowId: 'flow1',
-      });
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/start',
+        {
+          flowId: 'flow1',
+        },
+        undefined,
+      );
+    });
+
+    it('should send the correct request custom base url', async () => {
+      await sdk.flow.start(
+        'flow1',
+        {},
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        'http://localhost:3000',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/start',
+        expect.objectContaining({
+          flowId: 'flow1',
+        }),
+        { overrideBaseUrl: 'http://localhost:3000' },
+      );
     });
 
     it('should return the correct response', async () => {

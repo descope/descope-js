@@ -62,6 +62,7 @@ class BaseDescopeWc extends HTMLElement {
       'auto-focus',
       'store-last-authenticated-user',
       'validate-on-blur',
+      'start-base-url',
     ];
   }
 
@@ -242,6 +243,10 @@ class BaseDescopeWc extends HTMLElement {
 
   get formConfigValues() {
     return extractNestedAttribute(this.formConfig, 'value');
+  }
+
+  get startBaseUrl() {
+    return this.getAttribute('start-base-url');
   }
 
   #validateAttrs() {

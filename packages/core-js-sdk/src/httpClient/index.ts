@@ -57,7 +57,8 @@ const createHttpClient = ({
       ? hooks.beforeRequest(config)
       : config;
 
-    const { path, body, headers, queryParams, method, token } = requestConfig;
+    const { path, body, headers, queryParams, method, token, overrideBaseUrl } =
+      requestConfig;
 
     const requestInit: RequestInit = {
       headers: mergeHeaders(
@@ -78,7 +79,12 @@ const createHttpClient = ({
     }
 
     const res = await fetchWithLogger(
-      urlBuilder({ path, baseUrl, queryParams, projectId }),
+      urlBuilder({
+        path,
+        baseUrl: overrideBaseUrl || baseUrl,
+        queryParams,
+        projectId,
+      }),
       requestInit,
     );
 
