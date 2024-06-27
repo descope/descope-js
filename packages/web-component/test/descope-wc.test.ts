@@ -588,6 +588,7 @@ describe('web-component', () => {
           origin: 'http://localhost',
           token,
         },
+        null,
       ),
     );
   });
@@ -1678,6 +1679,7 @@ describe('web-component', () => {
         0,
         '1.2.3',
         {},
+        null,
       ),
     );
   });
@@ -1704,6 +1706,7 @@ describe('web-component', () => {
         0,
         '1.2.3',
         { email: 'test', 'form.email': 'test' },
+        null,
       ),
     );
   });
@@ -2121,6 +2124,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           { origin: 'http://localhost' },
+          null,
         ),
       );
     });
@@ -2176,6 +2180,7 @@ describe('web-component', () => {
             exchangeCode: 'code1',
             idpInitiated: true,
           },
+          null,
         ),
       );
     });
@@ -2269,6 +2274,7 @@ describe('web-component', () => {
           {
             token: 'code1',
           },
+          null,
         ),
       );
     });
@@ -2350,6 +2356,7 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+          null,
         ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
@@ -2395,6 +2402,7 @@ describe('web-component', () => {
           0,
           '1.2.3',
           { token },
+          null,
         ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
@@ -2434,6 +2442,7 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+          null,
         ),
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
@@ -2562,6 +2571,7 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+          null,
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2603,6 +2613,7 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+          null,
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2643,6 +2654,7 @@ describe('web-component', () => {
           {
             idpInitiated: true,
           },
+          null,
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2712,6 +2724,7 @@ describe('web-component', () => {
           0,
           '1.2.3',
           {},
+          null,
         ),
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2756,6 +2769,7 @@ describe('web-component', () => {
         {
           externalId: 'dummyUser',
         },
+        null,
       ),
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
@@ -2841,6 +2855,7 @@ describe('web-component', () => {
           exchangeCode: 'code1',
           idpInitiated: true,
         },
+        null,
       ),
     );
   });
@@ -2906,6 +2921,7 @@ describe('web-component', () => {
           exchangeCode: 'code1',
           idpInitiated: true,
         },
+        null,
       ),
     );
   });
