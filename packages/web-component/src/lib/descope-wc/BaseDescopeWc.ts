@@ -264,6 +264,7 @@ class BaseDescopeWc extends HTMLElement {
       'form',
       'client',
       'validate-on-blur',
+      'start-base-url',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
