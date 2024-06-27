@@ -915,7 +915,9 @@ class DescopeWc extends BaseDescopeWc {
           return;
         }
         input.reportValidity?.();
-        isValid = input.checkValidity?.();
+        if (isValid) {
+          isValid = input.checkValidity?.();
+        }
       });
 
     return isValid;
