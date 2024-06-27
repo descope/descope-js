@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.17.0](https://github.com/descope/descope-js/compare/web-component-3.16.6...web-component-3.17.0) (2024-06-27)
+
+
+### Features
+
+* Support Email component external input ([#647](https://github.com/descope/descope-js/issues/647)) ([ee5ff83](https://github.com/descope/descope-js/commit/ee5ff83f44c33fe6cb8ebf654ec6b6dc81cd6561))
+
+
+### Bug Fixes
+
+* validate all inputs on submit RELEASE ([#655](https://github.com/descope/descope-js/issues/655)) ([f69c923](https://github.com/descope/descope-js/commit/f69c9230ab0ae568dbaa3bc77bee996cc804316b))
+
 ## [3.16.6](https://github.com/descope/descope-js/compare/web-component-3.16.5...web-component-3.16.6) (2024-06-26)
 
 ### Dependency Updates
