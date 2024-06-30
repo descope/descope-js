@@ -1,5 +1,5 @@
 import { apiPaths } from '../../constants';
-import { HttpClient } from '../../httpClient';
+import { HttpClient, jsonHeaders } from '../../httpClient';
 import { transformResponse } from '../helpers';
 import { FlowResponse, Options, SdkResponse } from '../types';
 import { stringNonEmpty, withValidations } from '../validations';
@@ -24,15 +24,19 @@ const withFlow = (httpClient: HttpClient) => ({
       input?: FlowInput,
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
-        httpClient.post(apiPaths.flow.start, {
-          flowId,
-          options,
-          conditionInteractionId,
-          interactionId,
-          version,
-          componentsVersion,
-          input,
-        }),
+        httpClient.post(
+          apiPaths.flow.start,
+          {
+            flowId,
+            options,
+            conditionInteractionId,
+            interactionId,
+            version,
+            componentsVersion,
+            input,
+          },
+          { headers: jsonHeaders },
+        ),
       ),
   ),
   next: withNextValidations(
@@ -45,14 +49,18 @@ const withFlow = (httpClient: HttpClient) => ({
       input?: FlowInput,
     ): Promise<SdkResponse<FlowResponse>> => {
       return transformResponse(
-        httpClient.post(apiPaths.flow.next, {
-          executionId,
-          stepId,
-          interactionId,
-          version,
-          componentsVersion,
-          input,
-        }),
+        httpClient.post(
+          apiPaths.flow.next,
+          {
+            executionId,
+            stepId,
+            interactionId,
+            version,
+            componentsVersion,
+            input,
+          },
+          { headers: jsonHeaders },
+        ),
       );
     },
   ),

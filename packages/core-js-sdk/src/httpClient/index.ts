@@ -146,5 +146,9 @@ const createHttpClient = ({
   };
 };
 
+export const jsonHeaders = {
+  'Content-Type': 'application/json',
+};
+
 export default createHttpClient;
 export type { HttpClient };
