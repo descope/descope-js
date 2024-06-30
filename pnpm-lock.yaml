@@ -133,7 +133,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.324
+      '@descope/web-components-ui': 1.0.327
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
@@ -254,7 +254,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.324
+      '@descope/web-components-ui': 1.0.327
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@2.79.1
@@ -741,7 +741,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.324
+      '@descope/web-components-ui': 1.0.327
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
@@ -864,7 +864,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.324
+      '@descope/web-components-ui': 1.0.327
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.13.0
@@ -990,7 +990,7 @@ importers:
     optionalDependencies:
       '@descope/core-js-sdk': link:../core-js-sdk
     devDependencies:
-      '@descope/web-components-ui': 1.0.324
+      '@descope/web-components-ui': 1.0.327
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.14.3
@@ -1137,7 +1137,7 @@ importers:
   packages/web-js-sdk:
     specifiers:
       '@descope/core-js-sdk': workspace:*
-      '@fingerprintjs/fingerprintjs-pro': 3.9.7
+      '@fingerprintjs/fingerprintjs-pro': 3.9.8
       '@open-wc/rollup-plugin-html': 1.2.5
       '@rollup/plugin-commonjs': 26.0.1
       '@rollup/plugin-node-resolve': ^15.0.0
@@ -1185,7 +1185,7 @@ importers:
       typescript: ^4.5.3
     dependencies:
       '@descope/core-js-sdk': link:../core-js-sdk
-      '@fingerprintjs/fingerprintjs-pro': 3.9.7
+      '@fingerprintjs/fingerprintjs-pro': 3.9.8
       js-cookie: 3.0.5
       jwt-decode: 3.1.2
       tslib: 2.6.3
@@ -2688,8 +2688,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.324:
-    resolution: {integrity: sha512-YgZ0iwJPv74RoCTIXWbLGgmDp+jOReqBJ42eAqfFLGO5WsWLwKZwRoj4GXEKdMgp+RB40wSHzMYdRZVym9f4qg==}
+  /@descope/web-components-ui/1.0.327:
+    resolution: {integrity: sha512-j7RmXpgLIRc/DfD/Um8p6Bx79tURDZ8/617tKog8E19Db7vR4of5uIHiCqIByomFyq88Yx9L0gZoYd3ySaNbZA==}
     requiresBuild: true
     dependencies:
       '@vaadin/avatar': 24.3.4
@@ -3001,8 +3001,8 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     dev: true
 
-  /@fingerprintjs/fingerprintjs-pro/3.9.7:
-    resolution: {integrity: sha512-UbWJ2wtzWS/FanueRCq6GKtM7Z6JifqLjbKfARJvr+oVLiPDMvzc8Zs6wV0nSdxkQ1SXrT7KD9ri7hg+r0QZ9g==}
+  /@fingerprintjs/fingerprintjs-pro/3.9.8:
+    resolution: {integrity: sha512-5FXxHbyp1KIGh3Kv0hpU/6DuQ0D4tlJZRIVuHduke2IEHbzhgTR3oGMg5J+nwDsVFl60YkZKuDyaZ74d4wvFtg==}
     dependencies:
       tslib: 2.6.3
     dev: false
