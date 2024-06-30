@@ -77,6 +77,6 @@
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.31.0"
+    "terser": "5.31.1"
   }
 }
