@@ -909,15 +909,20 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #validateInputs() {
-    return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
-      (input: HTMLInputElement) => {
+    let isValid = true;
+    Array.from(this.shadowRoot.querySelectorAll('*[name]'))
+      .reverse()
+      .forEach((input: HTMLInputElement) => {
         if (input.localName === 'slot') {
-          return true;
+          return;
         }
         input.reportValidity?.();
-        return input.checkValidity?.();
-      },
-    );
+        if (isValid) {
+          isValid = input.checkValidity?.();
+        }
+      });
+
+    return isValid;
   }
 
   async #getFormData() {

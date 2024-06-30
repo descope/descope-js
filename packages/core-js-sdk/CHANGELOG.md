@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.20.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.3...core-js-sdk-2.20.4) (2024-06-28)
+
+
+### Bug Fixes
+
+* Add an explicit empty check in after request for old react native ([#658](https://github.com/descope/descope-js/issues/658)) RELEASE ([57e4873](https://github.com/descope/descope-js/commit/57e48736fc7f0dece7926beb0df3ed565058e400))
+
+## [2.20.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.2...core-js-sdk-2.20.3) (2024-06-27)
+
 ## [2.20.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.1...core-js-sdk-2.20.2) (2024-06-26)
 
 ## [2.20.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.0...core-js-sdk-2.20.1) (2024-06-26)
