@@ -20,13 +20,9 @@ describe('Flows', () => {
 
     it('should send the correct request', async () => {
       await sdk.flow.start('flow1');
-      expect(mockHttpClient.post).toHaveBeenCalledWith(
-        '/v1/flow/start',
-        {
-          flowId: 'flow1',
-        },
-        { headers: { 'Content-Type': 'application/json' } },
-      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/start', {
+        flowId: 'flow1',
+      });
     });
 
     it('should return the correct response', async () => {
@@ -95,32 +91,24 @@ describe('Flows', () => {
 
     it('should send the correct request without input', async () => {
       await sdk.flow.next('e1', 's1', 'a1');
-      expect(mockHttpClient.post).toHaveBeenCalledWith(
-        '/v1/flow/next',
-        {
-          executionId: 'e1',
-          stepId: 's1',
-          interactionId: 'a1',
-        },
-        { headers: { 'Content-Type': 'application/json' } },
-      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/next', {
+        executionId: 'e1',
+        stepId: 's1',
+        interactionId: 'a1',
+      });
     });
 
     it('should send the correct request with input', () => {
       const input = { key1: 'val1' };
       sdk.flow.next('e1', 's1', 'a1', 'v1', 'cv1', input);
-      expect(mockHttpClient.post).toHaveBeenCalledWith(
-        '/v1/flow/next',
-        {
-          executionId: 'e1',
-          stepId: 's1',
-          interactionId: 'a1',
-          input,
-          version: 'v1',
-          componentsVersion: 'cv1',
-        },
-        { headers: { 'Content-Type': 'application/json' } },
-      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/next', {
+        executionId: 'e1',
+        stepId: 's1',
+        interactionId: 'a1',
+        input,
+        version: 'v1',
+        componentsVersion: 'cv1',
+      });
     });
 
     it('should return the correct response', async () => {

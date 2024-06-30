@@ -9,6 +9,10 @@ import {
 import { urlBuilder } from './urlBuilder';
 import { mergeHeaders, serializeBody } from './utils';
 
+const jsonHeaders = {
+  'Content-Type': 'application/json',
+};
+
 /**
  * Create a Bearer authorization header with concatenated projectId and token
  * @param projectId The project id to use in the header
@@ -34,6 +38,17 @@ const createDescopeHeaders = () => {
     'x-descope-sdk-name': 'core-js',
     'x-descope-sdk-version': BUILD_VERSION,
   };
+};
+
+const isJson = (item: any) => {
+  let value = typeof item !== 'string' ? JSON.stringify(item) : item;
+  try {
+    value = JSON.parse(value);
+  } catch (e) {
+    return false;
+  }
+
+  return typeof value === 'object' && value !== null;
 };
 
 /**
@@ -64,6 +79,7 @@ const createHttpClient = ({
         createAuthorizationHeader(projectId, token),
         createDescopeHeaders(),
         baseConfig?.baseHeaders || {},
+        isJson(body) ? jsonHeaders : {}, // add json content headers if body is json
         headers,
       ),
       method,
@@ -144,10 +160,6 @@ const createHttpClient = ({
       return urlBuilder({ projectId, baseUrl, path, queryParams });
     },
   };
-};
-
-export const jsonHeaders = {
-  'Content-Type': 'application/json',
 };
 
 export default createHttpClient;
