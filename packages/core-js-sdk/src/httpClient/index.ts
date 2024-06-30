@@ -7,7 +7,7 @@ import {
   RequestConfig,
 } from './types';
 import { urlBuilder } from './urlBuilder';
-import { mergeHeaders, serializeBody, serializeBody } from './utils';
+import { mergeHeaders, serializeBody } from './utils';
 
 const jsonHeaders = {
   'Content-Type': 'application/json',
