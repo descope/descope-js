@@ -7,7 +7,7 @@ import {
   RequestConfig,
 } from './types';
 import { urlBuilder } from './urlBuilder';
-import { mergeHeaders, serializeBody } from './utils';
+import { mergeHeaders, serializeBody, serializeBody } from './utils';
 
 const jsonHeaders = {
   'Content-Type': 'application/json',
@@ -40,8 +40,7 @@ const createDescopeHeaders = () => {
   };
 };
 
-const isJson = (item: any) => {
-  let value = typeof item !== 'string' ? JSON.stringify(item) : item;
+const isJson = (value?: string) => {
   try {
     value = JSON.parse(value);
   } catch (e) {
@@ -74,16 +73,17 @@ const createHttpClient = ({
 
     const { path, body, headers, queryParams, method, token } = requestConfig;
 
+    const serializedBody = serializeBody(body);
     const requestInit: RequestInit = {
       headers: mergeHeaders(
         createAuthorizationHeader(projectId, token),
         createDescopeHeaders(),
         baseConfig?.baseHeaders || {},
-        isJson(body) ? jsonHeaders : {}, // add json content headers if body is json
+        isJson(serializedBody) ? jsonHeaders : {}, // add json content headers if body is json
         headers,
       ),
       method,
-      body: serializeBody(body),
+      body: serializedBody,
     };
 
     // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
