@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.20.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.5...core-js-sdk-2.20.6) (2024-07-01)
+
+
+### Bug Fixes
+
+* add json content to flow api ([#659](https://github.com/descope/descope-js/issues/659)) ([79d35f0](https://github.com/descope/descope-js/commit/79d35f0b87c225e43d86694decf2ae1fc32e5ae8))
+
 ## [2.20.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.4...core-js-sdk-2.20.5) (2024-06-30)
 
 ## [2.20.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.3...core-js-sdk-2.20.4) (2024-06-28)
