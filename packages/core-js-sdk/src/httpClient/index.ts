@@ -9,6 +9,10 @@ import {
 import { urlBuilder } from './urlBuilder';
 import { mergeHeaders, serializeBody } from './utils';
 
+const jsonHeaders = {
+  'Content-Type': 'application/json',
+};
+
 /**
  * Create a Bearer authorization header with concatenated projectId and token
  * @param projectId The project id to use in the header
@@ -36,6 +40,16 @@ const createDescopeHeaders = () => {
   };
 };
 
+const isJson = (value?: string) => {
+  try {
+    value = JSON.parse(value);
+  } catch (e) {
+    return false;
+  }
+
+  return typeof value === 'object' && value !== null;
+};
+
 /**
  * Create the HTTP client used to send HTTP requests to the Descope API
  *
@@ -59,15 +73,17 @@ const createHttpClient = ({
 
     const { path, body, headers, queryParams, method, token } = requestConfig;
 
+    const serializedBody = serializeBody(body);
     const requestInit: RequestInit = {
       headers: mergeHeaders(
         createAuthorizationHeader(projectId, token),
         createDescopeHeaders(),
         baseConfig?.baseHeaders || {},
+        isJson(serializedBody) ? jsonHeaders : {}, // add json content headers if body is json
         headers,
       ),
       method,
-      body: serializeBody(body),
+      body: serializedBody,
     };
 
     // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
