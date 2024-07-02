@@ -80,18 +80,9 @@ class DescopeWc extends BaseDescopeWc {
 
   async loadScripts() {
     const flowConfig = await this.getFlowConfig();
-    // const scripts = flowConfig.sdkScripts;
-    const scripts = [
-      {
-        id: 'forter',
-        initArgs: {
-          // siteId: 'e220c68a6a',  // ??
-          siteId: 'e220c68a6a6d', // sandbox
-        },
-      },
-    ]
+    const scripts = flowConfig.sdkScripts;
 
-    const loadScript = async (scriptId) => {
+    const loadScript = async (scriptId: string) => {
       switch (scriptId) {
         case 'forter':
           const res = await import('./forter');
