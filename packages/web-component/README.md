@@ -41,8 +41,10 @@ render(){
 - Now you can add the custom element to your HTML
 
 ```html
-<descope-wc project-id="<project-id>" flow-id="<flow-id>"></descope-wc>
+<descope-wc project-id="<project-id>" flow-id="<flow-id>" form='{ "email": "predefinedname@domain.com", "myCustomInput": "12" }' client="+JSON.stringify({ browserName: window.navigator.appName, browserVersion: window.navigator.appVersion })+"></descope-wc>
 ```
+
+- Note: the `form` and `client` are optional parameters to add additional information that can be used in the flow. For more information [click here](https://docs.descope.com/knowledgebase/descopeflows/flowinputs/#HTML).
 
 ### Run Example
 
