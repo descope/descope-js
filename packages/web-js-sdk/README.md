@@ -43,6 +43,10 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
   Note: Disabling this flag may cause features related to the last-authenticated user to not function properly.
   */
   storeLastAuthenticatedUser: false, // default is true
+  /* Do not clear the last authenticated user details from the browser storage after logout (default is false).
+  Note: This flag is relevant only when `storeLastAuthenticatedUser` is true.
+  */
+  keepLastAuthenticatedUserAfterLogout: true // default is false
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
