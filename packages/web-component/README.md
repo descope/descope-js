@@ -41,8 +41,10 @@ render(){
 - Now you can add the custom element to your HTML
 
 ```html
-<descope-wc project-id="<project-id>" flow-id="<flow-id>"></descope-wc>
+<descope-wc project-id="<project-id>" flow-id="<flow-id>" form='{ "email": "predefinedname@domain.com", "myCustomInput": "12" }' client="+JSON.stringify({ browserName: window.navigator.appName, browserVersion: window.navigator.appVersion })+"></descope-wc>
 ```
+
+- Note: the `form` and `client` are optional parameters to add additional information that can be used in the flow. For more information [click here](https://docs.descope.com/knowledgebase/descopeflows/flowinputs/#HTML).
 
 ### Run Example
 
@@ -65,9 +67,9 @@ DESCOPE_BASE_URL
 DESCOPE_LOCALE=<locale>
 ```
 
-1. Run the sample `pnpm run start` / `pnpm run start-web-sample`
+1. Run the sample `pnpm run start`
 
-NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` / `pnpm run start-web-sample` (this is a temporary solution until we improve the process to fit to monorepo).
+NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` (this is a temporary solution until we improve the process to fit to monorepo).
 
 ## Optional Attributes
 
