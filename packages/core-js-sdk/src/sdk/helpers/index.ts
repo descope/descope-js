@@ -1,15 +1,21 @@
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { ResponseData, SdkResponse } from '../types';
 import HttpStatusCodes from '../../constants/httpStatusCodes';
+import { DESCOPE_CURRENT_TENANT_CLAIM } from '../../constants';
 
 function getJwtAuthorizationItems(
   token: string,
   tenant: string,
-  claim: string
+  claim: string,
 ): string[] {
   let claims: any = parseJwt(token);
   if (tenant) {
-    claims = claims?.tenants?.[tenant];
+    if (!claims?.tenants && claims?.[DESCOPE_CURRENT_TENANT_CLAIM] === tenant) {
+      // The token may have the current tenant in the "dct" claim and without the "tenants" claim
+      return claims?.[claim] || [];
+    } else {
+      claims = claims?.tenants?.[tenant];
+    }
   }
   const items = claims?.[claim];
   return Array.isArray(items) ? items : [];
@@ -71,10 +77,10 @@ export const pathJoin = (...args: string[]) =>
  */
 export async function transformResponse<
   T extends ResponseData,
-  S extends ResponseData = T
+  S extends ResponseData = T,
 >(
   response: Promise<Response>,
-  transform?: (data: T) => S
+  transform?: (data: T) => S,
 ): Promise<SdkResponse<S>> {
   const resp = await response;
 

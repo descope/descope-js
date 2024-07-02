@@ -121,10 +121,6 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.findByShadowPlaceholderText('test'), {
-      timeout: 3000,
-    });
-
     await waitFor(
       () =>
         expect(screen.getByShadowPlaceholderText('test')).toHaveAttribute(
@@ -250,11 +246,7 @@ describe('webauthnConditionalUi', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(
-      () =>
-        expect(warnSpi).toHaveBeenCalledWith(
-          'Webauthn start failed',
-          '',
-        ),
+      () => expect(warnSpi).toHaveBeenCalledWith('Webauthn start failed', ''),
       { timeout: 3000 },
     );
   });

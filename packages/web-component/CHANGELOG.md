@@ -2,6 +2,306 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.17.6](https://github.com/descope/descope-js/compare/web-component-3.17.5...web-component-3.17.6) (2024-07-02)
+
+## [3.17.5](https://github.com/descope/descope-js/compare/web-component-3.17.4...web-component-3.17.5) (2024-07-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.10`
+## [3.17.4](https://github.com/descope/descope-js/compare/web-component-3.17.3...web-component-3.17.4) (2024-06-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.9`
+## [3.17.3](https://github.com/descope/descope-js/compare/web-component-3.17.2...web-component-3.17.3) (2024-06-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.8`
+## [3.17.2](https://github.com/descope/descope-js/compare/web-component-3.17.1...web-component-3.17.2) (2024-06-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.7`
+## [3.17.1](https://github.com/descope/descope-js/compare/web-component-3.17.0...web-component-3.17.1) (2024-06-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.6`
+## [3.17.0](https://github.com/descope/descope-js/compare/web-component-3.16.6...web-component-3.17.0) (2024-06-27)
+
+
+### Features
+
+* Support Email component external input ([#647](https://github.com/descope/descope-js/issues/647)) ([ee5ff83](https://github.com/descope/descope-js/commit/ee5ff83f44c33fe6cb8ebf654ec6b6dc81cd6561))
+
+
+### Bug Fixes
+
+* validate all inputs on submit RELEASE ([#655](https://github.com/descope/descope-js/issues/655)) ([f69c923](https://github.com/descope/descope-js/commit/f69c9230ab0ae568dbaa3bc77bee996cc804316b))
+
+## [3.16.6](https://github.com/descope/descope-js/compare/web-component-3.16.5...web-component-3.16.6) (2024-06-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.5`
+## [3.16.5](https://github.com/descope/descope-js/compare/web-component-3.16.4...web-component-3.16.5) (2024-06-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.4`
+## [3.16.4](https://github.com/descope/descope-js/compare/web-component-3.16.3...web-component-3.16.4) (2024-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.3`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [3.16.3](https://github.com/descope/descope-js/compare/web-component-3.16.2...web-component-3.16.3) (2024-06-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.2`
+## [3.16.2](https://github.com/descope/descope-js/compare/web-component-3.16.1...web-component-3.16.2) (2024-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.1`
+## [3.16.1](https://github.com/descope/descope-js/compare/web-component-3.16.0...web-component-3.16.1) (2024-06-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.0`
+## [3.16.0](https://github.com/descope/descope-js/compare/web-component-3.15.6...web-component-3.16.0) (2024-06-19)
+
+
+### Features
+
+* Dynamic href RELEASE ([#638](https://github.com/descope/descope-js/issues/638)) ([69c3da1](https://github.com/descope/descope-js/commit/69c3da14d286ca126acb45bbe0be7a8f91384f64))
+
+## [3.15.6](https://github.com/descope/descope-js/compare/web-component-3.15.5...web-component-3.15.6) (2024-06-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.12.2`
+## [3.15.5](https://github.com/descope/descope-js/compare/web-component-3.15.4...web-component-3.15.5) (2024-06-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.12.1`
+## [3.15.4](https://github.com/descope/descope-js/compare/web-component-3.15.3...web-component-3.15.4) (2024-06-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.12.0`
+
+### Bug Fixes
+
+* Export form field RELEASE ([#632](https://github.com/descope/descope-js/issues/632)) ([404ba7c](https://github.com/descope/descope-js/commit/404ba7c0249ccd0b77eb109c774c19a5ec0f0258))
+
+## [3.15.3](https://github.com/descope/descope-js/compare/web-component-3.15.2...web-component-3.15.3) (2024-06-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.16`
+## [3.15.2](https://github.com/descope/descope-js/compare/web-component-3.15.1...web-component-3.15.2) (2024-06-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.15`
+## [3.15.1](https://github.com/descope/descope-js/compare/web-component-3.15.0...web-component-3.15.1) (2024-06-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.14`
+## [3.15.0](https://github.com/descope/descope-js/compare/web-component-3.14.1...web-component-3.15.0) (2024-06-06)
+
+
+### Features
+
+* added validate on blur option, report validity on all inputs upon submit, and small layout fixes RELEASE ([#617](https://github.com/descope/descope-js/issues/617)) ([eaf4e72](https://github.com/descope/descope-js/commit/eaf4e723572d8269cdce887f11922f8a65003485))
+
+## [3.14.1](https://github.com/descope/descope-js/compare/web-component-3.14.0...web-component-3.14.1) (2024-06-05)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.13`
+## [3.14.0](https://github.com/descope/descope-js/compare/web-component-3.13.3...web-component-3.14.0) (2024-06-04)
+
+
+### Features
+
+* Handle Password External Inputs RELEASE ([#582](https://github.com/descope/descope-js/issues/582)) ([dd03cb5](https://github.com/descope/descope-js/commit/dd03cb5874c21e4745324b8f25ae62d1896cab0e))
+
+## [3.13.3](https://github.com/descope/descope-js/compare/web-component-3.13.2...web-component-3.13.3) (2024-05-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.12`
+## [3.13.2](https://github.com/descope/descope-js/compare/web-component-3.13.1...web-component-3.13.2) (2024-05-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.11`
+## [3.13.1](https://github.com/descope/descope-js/compare/web-component-3.13.0...web-component-3.13.1) (2024-05-30)
+
+## [3.13.0](https://github.com/descope/descope-js/compare/web-component-3.12.10...web-component-3.13.0) (2024-05-30)
+
+
+### Features
+
+* Replace dynamic values on code snippet RELEASE ([#610](https://github.com/descope/descope-js/issues/610)) ([b3e0f2d](https://github.com/descope/descope-js/commit/b3e0f2d2556f164a9bcd867be5d23bda97392f2d))
+
+## [3.12.10](https://github.com/descope/descope-js/compare/web-component-3.12.9...web-component-3.12.10) (2024-05-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.10`
+## [3.12.9](https://github.com/descope/descope-js/compare/web-component-3.12.8...web-component-3.12.9) (2024-05-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.9`
+## [3.12.8](https://github.com/descope/descope-js/compare/web-component-3.12.7...web-component-3.12.8) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.8`
+## [3.12.7](https://github.com/descope/descope-js/compare/web-component-3.12.6...web-component-3.12.7) (2024-05-28)
+
+
+### Bug Fixes
+
+* issue 6600 RELEASE ([#602](https://github.com/descope/descope-js/issues/602)) ([6d60184](https://github.com/descope/descope-js/commit/6d60184e5c0806e711b7a9265869c39661dd158f))
+
+## [3.12.6](https://github.com/descope/descope-js/compare/web-component-3.12.5...web-component-3.12.6) (2024-05-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.7`
+## [3.12.5](https://github.com/descope/descope-js/compare/web-component-3.12.4...web-component-3.12.5) (2024-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.6`
+## [3.12.4](https://github.com/descope/descope-js/compare/web-component-3.12.3...web-component-3.12.4) (2024-05-24)
+
+## [3.12.3](https://github.com/descope/descope-js/compare/web-component-3.12.2...web-component-3.12.3) (2024-05-24)
+
+## [3.12.2](https://github.com/descope/descope-js/compare/web-component-3.12.1...web-component-3.12.2) (2024-05-24)
+
+
+### Bug Fixes
+
+* add base-static-url param RELEASE ([#596](https://github.com/descope/descope-js/issues/596)) ([2c41fbd](https://github.com/descope/descope-js/commit/2c41fbd7faf58648223e87d2dcb9b1ced1e30985))
+
+## [3.12.1](https://github.com/descope/descope-js/compare/web-component-3.12.0...web-component-3.12.1) (2024-05-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.5`
+
+### Bug Fixes
+
+* open tab url timing ([#573](https://github.com/descope/descope-js/issues/573)) RELEASE ([92dee94](https://github.com/descope/descope-js/commit/92dee944c95a5a32fa0094b9675d895d2b588269))
+
+## [3.12.0](https://github.com/descope/descope-js/compare/web-component-3.11.25...web-component-3.12.0) (2024-05-22)
+
+
+### Features
+
+* use base url for static content ([#593](https://github.com/descope/descope-js/issues/593)) ([3d42936](https://github.com/descope/descope-js/commit/3d4293646c49714b78b7d740d39c376873f0658c))
+
+## [3.11.25](https://github.com/descope/descope-js/compare/web-component-3.11.24...web-component-3.11.25) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.4`
+## [3.11.24](https://github.com/descope/descope-js/compare/web-component-3.11.23...web-component-3.11.24) (2024-05-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.3`
+
+### Bug Fixes
+
+* component context override order ([#591](https://github.com/descope/descope-js/issues/591)) ([4850845](https://github.com/descope/descope-js/commit/4850845f00025175a314991166ef29dc5e7a2562))
+
+## [3.11.23](https://github.com/descope/descope-js/compare/web-component-3.11.22...web-component-3.11.23) (2024-05-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.2`
+
+### Bug Fixes
+
+* issue 6494 ([#586](https://github.com/descope/descope-js/issues/586)) ([7363f2e](https://github.com/descope/descope-js/commit/7363f2e9c4fd97d7ee87663cb8eeb825d13094fe))
+
+## [3.11.22](https://github.com/descope/descope-js/compare/web-component-3.11.21...web-component-3.11.22) (2024-05-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.1`
+## [3.11.21](https://github.com/descope/descope-js/compare/web-component-3.11.20...web-component-3.11.21) (2024-05-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.11.0`
+## [3.11.20](https://github.com/descope/descope-js/compare/web-component-3.11.19...web-component-3.11.20) (2024-05-16)
+
+
+### Bug Fixes
+
+* Fix EnrichedText dynamic value replacement RELEASE ([#578](https://github.com/descope/descope-js/issues/578)) ([df69dab](https://github.com/descope/descope-js/commit/df69dab6974680dbff25edc58e7e4e7512e05d04))
+
+## [3.11.19](https://github.com/descope/descope-js/compare/web-component-3.11.18...web-component-3.11.19) (2024-05-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.49`
+## [3.11.18](https://github.com/descope/descope-js/compare/web-component-3.11.17...web-component-3.11.18) (2024-05-13)
+
+## [3.11.17](https://github.com/descope/descope-js/compare/web-component-3.11.16...web-component-3.11.17) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.48`
+## [3.11.16](https://github.com/descope/descope-js/compare/web-component-3.11.15...web-component-3.11.16) (2024-05-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.47`
+
+### Bug Fixes
+
+* trying to fix PasswordCredential error ([#568](https://github.com/descope/descope-js/issues/568)) ([6fcb72d](https://github.com/descope/descope-js/commit/6fcb72de4a3028be5bb46738945e6a11db3af4dc))
+
+## [3.11.15](https://github.com/descope/descope-js/compare/web-component-3.11.14...web-component-3.11.15) (2024-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.46`
+## [3.11.14](https://github.com/descope/descope-js/compare/web-component-3.11.13...web-component-3.11.14) (2024-05-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.45`
+## [3.11.13](https://github.com/descope/descope-js/compare/web-component-3.11.12...web-component-3.11.13) (2024-05-06)
+
+
+### Bug Fixes
+
+* Fix issue when flow does not rendered because of wrong animation direction RELEASE ([#562](https://github.com/descope/descope-js/issues/562)) ([db09731](https://github.com/descope/descope-js/commit/db097310ee872ededba9e3dbaeb91ff56fa573ed))
+
+## [3.11.12](https://github.com/descope/descope-js/compare/web-component-3.11.11...web-component-3.11.12) (2024-05-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.10.44`
 ## [3.11.11](https://github.com/descope/descope-js/compare/web-component-3.11.10...web-component-3.11.11) (2024-05-02)
 
 ### Dependency Updates

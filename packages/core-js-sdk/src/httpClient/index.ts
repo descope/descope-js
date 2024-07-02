@@ -1,3 +1,4 @@
+import { transformSetCookie } from './helpers';
 import createFetchLogger from './helpers/createFetchLogger';
 import {
   CreateHttpClientConfig,
@@ -7,6 +8,10 @@ import {
 } from './types';
 import { urlBuilder } from './urlBuilder';
 import { mergeHeaders, serializeBody } from './utils';
+
+const jsonHeaders = {
+  'Content-Type': 'application/json',
+};
 
 /**
  * Create a Bearer authorization header with concatenated projectId and token
@@ -35,6 +40,16 @@ const createDescopeHeaders = () => {
   };
 };
 
+const isJson = (value?: string) => {
+  try {
+    value = JSON.parse(value);
+  } catch (e) {
+    return false;
+  }
+
+  return typeof value === 'object' && value !== null;
+};
+
 /**
  * Create the HTTP client used to send HTTP requests to the Descope API
  *
@@ -58,15 +73,17 @@ const createHttpClient = ({
 
     const { path, body, headers, queryParams, method, token } = requestConfig;
 
+    const serializedBody = serializeBody(body);
     const requestInit: RequestInit = {
       headers: mergeHeaders(
         createAuthorizationHeader(projectId, token),
         createDescopeHeaders(),
         baseConfig?.baseHeaders || {},
+        isJson(serializedBody) ? jsonHeaders : {}, // add json content headers if body is json
         headers,
       ),
       method,
-      body: serializeBody(body),
+      body: serializedBody,
     };
 
     // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
@@ -83,6 +100,19 @@ const createHttpClient = ({
 
     if (hooks?.afterRequest) {
       await hooks.afterRequest(config, res?.clone());
+    }
+
+    if (hooks?.transformResponse) {
+      const json = await res.json();
+      const cookies = transformSetCookie(res.headers?.get('set-cookie') || '');
+      const mutableResponse = {
+        ...res,
+        json: () => Promise.resolve(json),
+        cookies,
+      };
+      // we want to make sure cloning the response will keep the transformed json data
+      mutableResponse.clone = () => mutableResponse;
+      return hooks.transformResponse(mutableResponse);
     }
 
     return res;
@@ -126,6 +156,9 @@ const createHttpClient = ({
         token,
       }),
     hooks,
+    buildUrl: (path, queryParams) => {
+      return urlBuilder({ projectId, baseUrl, path, queryParams });
+    },
   };
 };
 

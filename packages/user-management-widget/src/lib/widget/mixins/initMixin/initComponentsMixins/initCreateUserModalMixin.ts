@@ -9,6 +9,7 @@ import {
   createTemplate,
 } from '@descope/sdk-helpers';
 import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { unflatten } from '../../../../helpers';
 import { getCustomAttributes, getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -52,8 +53,9 @@ export const initCreateUserModalMixin = createSingletonMixin(
         );
         submitButton.onClick(async () => {
           if (this.validateForm(this.createUserModal.ele)) {
+            const formData = this.getFormData(this.createUserModal.ele);
             this.actions.createUser({
-              ...this.getFormData(this.createUserModal.ele),
+              ...unflatten(formData, 'customAttributes'),
               invite: true,
               verifiedEmail: true,
               verifiedPhone: true,

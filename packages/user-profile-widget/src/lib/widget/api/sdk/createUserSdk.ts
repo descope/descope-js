@@ -8,7 +8,6 @@ export const createUserSdk = ({
   mock,
 }: {
   httpClient: HttpClient;
-  tenant: string;
   mock: boolean;
 }) => {
   const me = async () => {

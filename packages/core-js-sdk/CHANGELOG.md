@@ -2,6 +2,103 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.20.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.5...core-js-sdk-2.20.6) (2024-07-01)
+
+
+### Bug Fixes
+
+* add json content to flow api ([#659](https://github.com/descope/descope-js/issues/659)) ([79d35f0](https://github.com/descope/descope-js/commit/79d35f0b87c225e43d86694decf2ae1fc32e5ae8))
+
+## [2.20.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.4...core-js-sdk-2.20.5) (2024-06-30)
+
+## [2.20.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.3...core-js-sdk-2.20.4) (2024-06-28)
+
+
+### Bug Fixes
+
+* Add an explicit empty check in after request for old react native ([#658](https://github.com/descope/descope-js/issues/658)) RELEASE ([57e4873](https://github.com/descope/descope-js/commit/57e48736fc7f0dece7926beb0df3ed565058e400))
+
+## [2.20.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.2...core-js-sdk-2.20.3) (2024-06-27)
+
+## [2.20.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.1...core-js-sdk-2.20.2) (2024-06-26)
+
+## [2.20.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.0...core-js-sdk-2.20.1) (2024-06-26)
+
+## [2.20.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.2...core-js-sdk-2.20.0) (2024-06-19)
+
+
+### Features
+
+* Support implicit grant type for native ([#635](https://github.com/descope/descope-js/issues/635)) ([3a64bde](https://github.com/descope/descope-js/commit/3a64bdefc1c6384dc6999cf0079b2a2097b0c4db))
+
+## [2.19.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.1...core-js-sdk-2.19.2) (2024-06-19)
+
+## [2.19.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.0...core-js-sdk-2.19.1) (2024-06-18)
+
+## [2.19.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.2...core-js-sdk-2.19.0) (2024-06-16)
+
+
+### Features
+
+* HTTP Client buildUrl function RELEASE ([#631](https://github.com/descope/descope-js/issues/631)) ([b399cf7](https://github.com/descope/descope-js/commit/b399cf74f2e0e86d536a00bf77a19d7287f9f822))
+
+## [2.18.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.1...core-js-sdk-2.18.2) (2024-06-05)
+
+## [2.18.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.18.0...core-js-sdk-2.18.1) (2024-05-31)
+
+## [2.18.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.4...core-js-sdk-2.18.0) (2024-05-30)
+
+
+### Features
+
+* get auth claims by current tenant if it matches ([#612](https://github.com/descope/descope-js/issues/612)) ([a0942c8](https://github.com/descope/descope-js/commit/a0942c8b3fec7350c520dcf301dd5d6e269854d5))
+
+## [2.17.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.3...core-js-sdk-2.17.4) (2024-05-29)
+
+## [2.17.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.2...core-js-sdk-2.17.3) (2024-05-28)
+
+## [2.17.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.1...core-js-sdk-2.17.2) (2024-05-25)
+
+## [2.17.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.17.0...core-js-sdk-2.17.1) (2024-05-21)
+
+## [2.17.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.16.0...core-js-sdk-2.17.0) (2024-05-21)
+
+
+### Features
+
+* Add sign up options to password sign up ([#590](https://github.com/descope/descope-js/issues/590)) RELEASE ([41cb9d1](https://github.com/descope/descope-js/commit/41cb9d1eb016e8f8bcebf9cb5486ba308ae8f07b))
+
+## [2.16.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.15.1...core-js-sdk-2.16.0) (2024-05-20)
+
+
+### Features
+
+* Add loginOptions to password sign in ([#587](https://github.com/descope/descope-js/issues/587)) ([6eb562a](https://github.com/descope/descope-js/commit/6eb562a763fbf35de1da21ab0443d81ed46d1529))
+
+## [2.15.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.15.0...core-js-sdk-2.15.1) (2024-05-18)
+
+## [2.15.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.10...core-js-sdk-2.15.0) (2024-05-16)
+
+
+### Features
+
+* Transform resp hook ([#581](https://github.com/descope/descope-js/issues/581)) RELEASE ([2bf1289](https://github.com/descope/descope-js/commit/2bf12891bc4130d31fd9f60ce15772adc20ca39f))
+
+## [2.14.10](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.9...core-js-sdk-2.14.10) (2024-05-15)
+
+## [2.14.9](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.8...core-js-sdk-2.14.9) (2024-05-12)
+
+
+### Bug Fixes
+
+* Replace URL building with string based operations ([#572](https://github.com/descope/descope-js/issues/572)) RELEASE ([c137d52](https://github.com/descope/descope-js/commit/c137d522262eaa98131745587f3f2446eeb349e1))
+
+## [2.14.8](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.7...core-js-sdk-2.14.8) (2024-05-11)
+
+## [2.14.7](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.6...core-js-sdk-2.14.7) (2024-05-07)
+
+## [2.14.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.5...core-js-sdk-2.14.6) (2024-05-02)
+
 ## [2.14.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.4...core-js-sdk-2.14.5) (2024-04-30)
 
 ## [2.14.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.14.3...core-js-sdk-2.14.4) (2024-04-28)

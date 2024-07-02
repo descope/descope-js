@@ -2,19 +2,21 @@ import { apiPaths } from '../../constants';
 import { HttpClient } from '../../httpClient';
 import { transformResponse } from '../helpers';
 import {
-  withSignValidations,
-  withSendResetValidations,
-  withUpdateValidation,
-  withReplaceValidation,
-} from './validations';
-import {
-  SdkResponse,
   JWTResponse,
-  User,
-  PasswordResetResponse,
+  LoginOptions,
   PasswordPolicyResponse,
+  PasswordResetResponse,
+  SdkResponse,
+  SignUpOptions,
   TemplateOptions,
+  User,
 } from '../types';
+import {
+  withReplaceValidation,
+  withSendResetValidations,
+  withSignValidations,
+  withUpdateValidation,
+} from './validations';
 
 const withPassword = (httpClient: HttpClient) => ({
   signUp: withSignValidations(
@@ -22,22 +24,29 @@ const withPassword = (httpClient: HttpClient) => ({
       loginId: string,
       password: string,
       user?: User,
+      signUpOptions?: SignUpOptions,
     ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.signUp, {
           loginId,
           password,
           user,
+          loginOptions: signUpOptions,
         }),
       ),
   ),
 
   signIn: withSignValidations(
-    (loginId: string, password: string): Promise<SdkResponse<JWTResponse>> =>
+    (
+      loginId: string,
+      password: string,
+      loginOptions?: LoginOptions,
+    ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.signIn, {
           loginId,
           password,
+          loginOptions,
         }),
       ),
   ),

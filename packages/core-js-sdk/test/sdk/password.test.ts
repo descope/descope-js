@@ -45,9 +45,18 @@ describe('password', () => {
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
 
-      const resp = await sdk.password.signUp('loginId', 'abcd1234', {
-        name: 'John Doe',
-      });
+      const resp = await sdk.password.signUp(
+        'loginId',
+        'abcd1234',
+        {
+          name: 'John Doe',
+        },
+        {
+          customClaims: {
+            claim1: 'yes',
+          },
+        },
+      );
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.password.signUp,
@@ -55,6 +64,11 @@ describe('password', () => {
           loginId: 'loginId',
           password: 'abcd1234',
           user: { name: 'John Doe' },
+          loginOptions: {
+            customClaims: {
+              claim1: 'yes',
+            },
+          },
         },
       );
 
@@ -102,13 +116,22 @@ describe('password', () => {
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
 
-      const resp = await sdk.password.signIn('loginId', 'abcd1234');
+      const resp = await sdk.password.signIn('loginId', 'abcd1234', {
+        customClaims: {
+          claim1: 'yes',
+        },
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.password.signIn,
         {
           loginId: 'loginId',
           password: 'abcd1234',
+          loginOptions: {
+            customClaims: {
+              claim1: 'yes',
+            },
+          },
         },
       );
 

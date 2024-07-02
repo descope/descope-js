@@ -130,13 +130,13 @@ describe('helpers', () => {
 
   describe('getAnimationDirection', () => {
     it('should return "forward" when the current state is greater than the next state', () => {
-      expect(getAnimationDirection(1, 2)).toEqual('backward');
+      expect(getAnimationDirection('1', '2')).toEqual('backward');
     });
     it('should return "backward" when the current state is less than the next state', () => {
-      expect(getAnimationDirection(2, 1)).toEqual('forward');
+      expect(getAnimationDirection('2', '1')).toEqual('forward');
     });
     it('should return "none" when the current state is equal to the next state', () => {
-      expect(getAnimationDirection(1, 1)).toEqual(undefined);
+      expect(getAnimationDirection('1', '1')).toEqual(undefined);
     });
   });
 

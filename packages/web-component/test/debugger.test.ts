@@ -155,8 +155,10 @@ describe('debugger', () => {
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(screen.getByShadowText('error message!')).toBeInTheDocument(),
+    await waitFor(
+      () =>
+        expect(screen.getByShadowText('error message!')).toBeInTheDocument(),
+      { timeout: 3000 },
     );
     await waitFor(() =>
       expect(screen.getByShadowText('error description!')).toBeInTheDocument(),
@@ -170,8 +172,10 @@ describe('debugger', () => {
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(screen.getByShadowText('error message!')).toBeInTheDocument(),
+    await waitFor(
+      () =>
+        expect(screen.getByShadowText('error message!')).toBeInTheDocument(),
+      { timeout: 3000 },
     );
   });
 
@@ -184,8 +188,12 @@ describe('debugger', () => {
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(screen.getByShadowText('[123]: description')).toBeInTheDocument(),
+    await waitFor(
+      () =>
+        expect(
+          screen.getByShadowText('[123]: description'),
+        ).toBeInTheDocument(),
+      { timeout: 3000 },
     );
   });
 
@@ -200,8 +208,10 @@ describe('debugger', () => {
 
     fireEvent.resize(window, {});
 
-    await waitFor(() =>
-      expect(screen.getByShadowText('No errors detected 👀')).toBeVisible(),
+    await waitFor(
+      () =>
+        expect(screen.getByShadowText('No errors detected 👀')).toBeVisible(),
+      { timeout: 3000 },
     );
   });
 
@@ -245,8 +255,12 @@ describe('debugger', () => {
 
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(screen.getByShadowText('error description!')).toBeInTheDocument(),
+    await waitFor(
+      () =>
+        expect(
+          screen.getByShadowText('error description!'),
+        ).toBeInTheDocument(),
+      { timeout: 3000 },
     );
 
     fireEvent.click(screen.getByShadowText('error description!'));

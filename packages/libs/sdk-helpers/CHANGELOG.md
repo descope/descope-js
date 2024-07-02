@@ -2,6 +2,57 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.51](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.50...sdk-helpers-0.1.51) (2024-06-30)
+
+## [0.1.50](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.49...sdk-helpers-0.1.50) (2024-06-27)
+
+## [0.1.49](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.48...sdk-helpers-0.1.49) (2024-06-26)
+
+## [0.1.48](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.47...sdk-helpers-0.1.48) (2024-06-26)
+
+## [0.1.47](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.46...sdk-helpers-0.1.47) (2024-06-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [0.1.46](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.45...sdk-helpers-0.1.46) (2024-06-24)
+
+## [0.1.45](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.44...sdk-helpers-0.1.45) (2024-06-22)
+
+## [0.1.44](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.43...sdk-helpers-0.1.44) (2024-06-19)
+
+## [0.1.43](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.42...sdk-helpers-0.1.43) (2024-06-18)
+
+## [0.1.42](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.41...sdk-helpers-0.1.42) (2024-06-12)
+
+## [0.1.41](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.40...sdk-helpers-0.1.41) (2024-06-05)
+
+## [0.1.40](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.39...sdk-helpers-0.1.40) (2024-05-31)
+
+## [0.1.39](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.38...sdk-helpers-0.1.39) (2024-05-30)
+
+## [0.1.38](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.37...sdk-helpers-0.1.38) (2024-05-29)
+
+## [0.1.37](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.36...sdk-helpers-0.1.37) (2024-05-28)
+
+## [0.1.36](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.35...sdk-helpers-0.1.36) (2024-05-25)
+
+## [0.1.35](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.34...sdk-helpers-0.1.35) (2024-05-23)
+
+## [0.1.34](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.33...sdk-helpers-0.1.34) (2024-05-21)
+
+## [0.1.33](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.32...sdk-helpers-0.1.33) (2024-05-18)
+
+## [0.1.32](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.31...sdk-helpers-0.1.32) (2024-05-15)
+
+## [0.1.31](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.30...sdk-helpers-0.1.31) (2024-05-11)
+
+## [0.1.30](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.29...sdk-helpers-0.1.30) (2024-05-07)
+
+## [0.1.29](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.28...sdk-helpers-0.1.29) (2024-05-02)
+
 ## [0.1.28](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.27...sdk-helpers-0.1.28) (2024-05-02)
 
 ## [0.1.27](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.26...sdk-helpers-0.1.27) (2024-04-30)

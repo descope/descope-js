@@ -1,5 +1,9 @@
 import createSdk from './createSdk';
-import { HTTPMethods, RequestConfig } from './httpClient/types';
+import {
+  HTTPMethods,
+  RequestConfig,
+  ExtendedResponse,
+} from './httpClient/types';
 import { OAuthProviders } from './sdk/oauth/types';
 import { DeliveryMethods } from './sdk/types';
 
@@ -41,7 +45,7 @@ export type {
 export * from './utils';
 export { default as HttpStatusCodes } from './constants/httpStatusCodes';
 export type { SdkFnWrapper } from './utils';
-export type { HTTPMethods, RequestConfig };
+export type { HTTPMethods, RequestConfig, ExtendedResponse };
 
 /** Type to restrict to valid delivery methods */
 export type DeliveryMethod = keyof typeof DeliveryMethods;

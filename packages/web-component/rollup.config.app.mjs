@@ -13,12 +13,21 @@ dotenv.config();
 
 export default {
   preserveSymlinks: true,
-  input: 'src/app/index.html',
+  input: process.env.HTML_FILE || 'src/app/index.html',
   output: { dir: 'build', format: 'esm', sourcemap: true },
   plugins: [
     define({
       replacements: {
         BUILD_VERSION: JSON.stringify(packageJson.version),
+        'process.env.DESCOPE_PROJECT_ID': JSON.stringify(
+          process.env.DESCOPE_PROJECT_ID || '',
+        ),
+        'process.env.DESCOPE_BASE_URL': JSON.stringify(
+          process.env.DESCOPE_BASE_URL || '',
+        ),
+        'process.env.DESCOPE_FLOW_ID': JSON.stringify(
+          process.env.DESCOPE_FLOW_ID || '',
+        ),
       },
     }),
     del({ targets: 'build' }),

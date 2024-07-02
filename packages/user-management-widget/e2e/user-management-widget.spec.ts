@@ -385,8 +385,8 @@ test.describe('widget', () => {
     const selectAll = await getTableHeadCellContentLocatorByIndex(page, 0);
     await selectAll.click();
 
-    // delete button is disabled on selection (due to non editable user)
-    expect(deleteUserTrigger).toBeDisabled();
+    // delete button is enabled on selection (even for non editable user)
+    expect(deleteUserTrigger).toBeEnabled();
 
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,

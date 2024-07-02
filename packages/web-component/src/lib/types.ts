@@ -77,6 +77,7 @@ export type StepState = {
   direction: Direction | undefined;
   samlIdpUsername: string;
   oidcLoginHint: string;
+  openInNewTabUrl?: string;
 };
 
 export type DebugState = {

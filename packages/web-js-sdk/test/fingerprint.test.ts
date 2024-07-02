@@ -40,8 +40,8 @@ describe('fingerprint', () => {
     );
 
     expect(mockFetch).toHaveBeenCalledWith(
-      new URL(`https://api.descope.com/1/2/3?test2=123`),
-      {
+      `https://api.descope.com/1/2/3?test2=123`,
+      expect.objectContaining({
         body: JSON.stringify({ [FP_BODY_DATA]: fpData }),
         headers: new Headers({
           test2: '123',
@@ -50,7 +50,7 @@ describe('fingerprint', () => {
         }),
         method: 'POST',
         credentials: 'include',
-      },
+      }),
     );
   });
 

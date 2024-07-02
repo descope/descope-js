@@ -7,6 +7,7 @@ import { initPhoneUserAttrMixin } from './initComponentsMixins/initPhoneUserAttr
 import { initPasskeyUserAuthMethodMixin } from './initComponentsMixins/initPasskeyUserAuthMethodMixin';
 import { initPasswordUserAuthMethodMixin } from './initComponentsMixins/initPasswordUserAuthMethodMixin';
 import { initLogoutMixin } from './initComponentsMixins/initLogoutMixin';
+import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -14,8 +15,9 @@ export const initMixin = createSingletonMixin(
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
-      initAvatarMixin,
+      flowRedirectUrlMixin, // This mixin must be before all other mixins that loads flows
       initEmailUserAttrMixin,
+      initAvatarMixin,
       initNameUserAttrMixin,
       initPhoneUserAttrMixin,
       initPasskeyUserAuthMethodMixin,

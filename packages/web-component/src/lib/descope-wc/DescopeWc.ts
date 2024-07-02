@@ -26,6 +26,8 @@ import {
   withMemCache,
   getFirstNonEmptyValue,
   leadingDebounce,
+  handleReportValidityOnBlur,
+  getUserLocale,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -94,12 +96,7 @@ class DescopeWc extends BaseDescopeWc {
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
     let filenameWithLocale: string;
-    let browserLocale = navigator.language;
-    if (browserLocale && browserLocale !== 'zh-TW') {
-      // zh-TW is the only locale that must have "-", for all others we need to have the first part
-      browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
-    }
-    const userLocale = (locale || browserLocale || '').toLowerCase(); // use provided locals, otherwise use browser locale
+    const userLocale = getUserLocale(locale); // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
 
     if (targetLocales.includes(userLocale)) {
@@ -237,6 +234,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
+            locale: getUserLocale(locale),
           },
           conditionInteractionId,
           '',
@@ -286,11 +284,6 @@ class DescopeWc extends BaseDescopeWc {
         exchangeError: undefined,
       }); // should happen after handleSdkResponse, otherwise we will not have screen id on the next run
       return;
-    }
-
-    if (openInNewTabUrl) {
-      window.open(openInNewTabUrl, '_blank');
-      // We are continuing since there may be more actions to handle (screen, etc.)
     }
 
     const samlProps = [
@@ -408,7 +401,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
-      direction: getAnimationDirection(+stepId, +prevState.stepId),
+      direction: getAnimationDirection(stepId, prevState.stepId),
       screenState: {
         ...screenState,
         form: {
@@ -420,11 +413,21 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      htmlUrl: getContentUrl(projectId, `${readyScreenId}.html`),
+      htmlUrl: getContentUrl({
+        projectId,
+        filename: `${readyScreenId}.html`,
+        baseUrl: this.baseStaticUrl,
+      }),
       htmlLocaleUrl:
-        filenameWithLocale && getContentUrl(projectId, filenameWithLocale),
+        filenameWithLocale &&
+        getContentUrl({
+          projectId,
+          filename: filenameWithLocale,
+          baseUrl: this.baseStaticUrl,
+        }),
       samlIdpUsername,
       oidcLoginHint,
+      openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -463,6 +466,7 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
+            locale: getUserLocale(locale),
           },
           conditionInteractionId,
           interactionId,
@@ -658,6 +662,32 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #handleExternalInputs(ele: Element) {
+    if (!ele) {
+      return;
+    }
+
+    if (ele.getAttribute('external-input') !== 'true') {
+      return;
+    }
+
+    const origInputs = ele.querySelectorAll('input');
+
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
+  }
+
   async #handleWebauthnConditionalUi(fragment: DocumentFragment, next: NextFn) {
     this.#conditionalUiAbortController?.abort();
 
@@ -743,8 +773,14 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlUrl, htmlLocaleUrl, direction, next, screenState } =
-      currentState;
+    const {
+      htmlUrl,
+      htmlLocaleUrl,
+      direction,
+      next,
+      screenState,
+      openInNewTabUrl,
+    } = currentState;
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);
@@ -799,14 +835,36 @@ class DescopeWc extends BaseDescopeWc {
       this.rootElement.replaceChildren(clone);
 
       // we need to wait for all components to render before we can set its value
-      setTimeout(() =>
-        updateScreenFromScreenState(this.rootElement, screenState),
-      );
+      setTimeout(() => {
+        updateScreenFromScreenState(this.rootElement, screenState);
+
+        const emailEles = this.rootElement.querySelectorAll(
+          'descope-email-field',
+        );
+        const passwordEles =
+          this.rootElement.querySelectorAll('descope-password');
+        const newPasswordEles = this.rootElement.querySelectorAll(
+          'descope-new-password',
+        );
+
+        // remove existing external inputs
+        document
+          .querySelectorAll('[data-hidden-input="true"]')
+          .forEach((ele) => ele.remove());
+        // handle external input workaround for password components
+        [...emailEles, ...passwordEles, ...newPasswordEles].forEach((ele) =>
+          this.#handleExternalInputs(ele),
+        );
+      });
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
 
       handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+
+      if (this.validateOnBlur) {
+        handleReportValidityOnBlur(this.rootElement);
+      }
 
       this.#hydrate(next);
       if (isFirstScreen) {
@@ -830,6 +888,13 @@ class DescopeWc extends BaseDescopeWc {
         );
         this.#handleSdkResponse(response);
       }
+
+      // open in a new tab should be done after the screen is rendered
+      // because in some cases, the page will have a loader that
+      // should run during the redirect process
+      if (openInNewTabUrl && !prevState.openInNewTabUrl) {
+        window.open(openInNewTabUrl, '_blank');
+      }
     };
 
     // no animation
@@ -842,12 +907,20 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #validateInputs() {
-    return Array.from(this.shadowRoot.querySelectorAll('*[name]')).every(
-      (input: HTMLInputElement) => {
+    let isValid = true;
+    Array.from(this.shadowRoot.querySelectorAll('*[name]'))
+      .reverse()
+      .forEach((input: HTMLInputElement) => {
+        if (input.localName === 'slot') {
+          return;
+        }
         input.reportValidity?.();
-        return input.checkValidity?.();
-      },
-    );
+        if (isValid) {
+          isValid = input.checkValidity?.();
+        }
+      });
+
+    return isValid;
   }
 
   async #getFormData() {
@@ -896,8 +969,12 @@ class DescopeWc extends BaseDescopeWc {
     const id = getFirstNonEmptyValue(formData, idFields);
     const password = getFirstNonEmptyValue(formData, passwordFields);
 
+    // PasswordCredential not supported in Firefox
     if (id && password) {
       try {
+        if (!globalThis.PasswordCredential) {
+          return;
+        }
         const cred = new globalThis.PasswordCredential({ id, password });
 
         navigator?.credentials?.store?.(cred);
