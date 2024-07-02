@@ -69,6 +69,8 @@ class DescopeWc extends BaseDescopeWc {
 
   #conditionalUiAbortController = null;
 
+  #isScriptLoaded = false;
+
   constructor() {
     const flowState = new State<FlowState>();
     super(flowState.update.bind(flowState));
@@ -76,10 +78,47 @@ class DescopeWc extends BaseDescopeWc {
     this.flowState = flowState;
   }
 
+  async loadScripts() {
+    const flowConfig = await this.getFlowConfig();
+    // const scripts = flowConfig.sdkScripts;
+    const scripts = [
+      {
+        id: 'forter',
+        initArgs: {
+          // siteId: 'e220c68a6a',  // ??
+          siteId: 'e220c68a6a6d', // sandbox
+        },
+      },
+    ]
+
+    const loadScript = async (scriptId) => {
+      switch (scriptId) {
+        case 'forter':
+          const res = await import('./forter');
+          return res.default;
+        default:
+          throw new Error(`Unknown script id: ${scriptId}`);
+      }
+    }
+
+    scripts?.forEach(async (script) => {
+      const module = await loadScript(script.id);
+      module((forterToken: string) => {
+        console.log('@@@ token', forterToken)
+        this.dispatchEvent(new CustomEvent('components-context', { detail: { forterToken }, bubbles: true, composed: true }));
+      }, script.initArgs as any)
+    });
+    // lets say that flow config contains forter ley
+  }
+
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
       this.stepState?.subscribe(this.onStepChange.bind(this));
+      if (!this.#isScriptLoaded) {
+        this.#isScriptLoaded = true;
+        this.loadScripts();
+      }
     }
     await super.connectedCallback();
   }
