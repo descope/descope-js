@@ -544,6 +544,9 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    sdkResp.data?.runnerLogs?.forEach((l) =>
+      this.loggerWrapper.info(l.title, l.log),
+    );
     const errorText = sdkResp.data?.screen?.state?.errorText;
     if (sdkResp.data?.error) {
       this.loggerWrapper.error(
