@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.14.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.10...web-js-sdk-1.14.0) (2024-07-03)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.21.0`
+
+### Features
+
+* Allow to keep last auth login ID after logout RELEASE ([#671](https://github.com/descope/descope-js/issues/671)) ([6d0bb6e](https://github.com/descope/descope-js/commit/6d0bb6eb5500f05ad759b7229244b64c9a811e87))
+
 ## [1.13.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.9...web-js-sdk-1.13.10) (2024-07-01)
 
 ### Dependency Updates
