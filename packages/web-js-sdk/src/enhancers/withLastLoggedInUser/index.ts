@@ -10,6 +10,7 @@ import {
   removeLastUserDisplayName,
   setLastUserDisplayName,
 } from './helpers';
+import { LastLoggedInUserOptions } from './types';
 
 /**
  * Adds last logged in user to flow start request
@@ -19,10 +20,9 @@ export const withLastLoggedInUser =
   <T extends CreateWebSdk>(createSdk: T) =>
   ({
     storeLastAuthenticatedUser = true,
+    keepLastAuthenticatedUserAfterLogout = false,
     ...config
-  }: Parameters<T>[0] & {
-    storeLastAuthenticatedUser?: boolean;
-  }): ReturnType<T> & {
+  }: Parameters<T>[0] & LastLoggedInUserOptions): ReturnType<T> & {
     getLastUserLoginId: typeof getLastUserLoginId;
     getLastUserDisplayName: typeof getLastUserDisplayName;
   } => {
@@ -47,7 +47,11 @@ export const withLastLoggedInUser =
     const sdk = createSdk(addHooks(config, { afterRequest }));
 
     let wrappedSdk = wrapWith(sdk, ['flow.start'], startWrapper);
-    wrappedSdk = wrapWith(wrappedSdk, ['logout', 'logoutAll'], logoutWrapper);
+    wrappedSdk = wrapWith(
+      wrappedSdk,
+      ['logout', 'logoutAll'],
+      logoutWrapper(keepLastAuthenticatedUserAfterLogout),
+    );
     return Object.assign(wrappedSdk, {
       getLastUserLoginId,
       getLastUserDisplayName,
@@ -75,10 +79,14 @@ const startWrapper: SdkFnWrapper<{}> =
     return resp;
   };
 
-const logoutWrapper: SdkFnWrapper<{}> =
+const logoutWrapper =
+  (keepOnLogout?: boolean): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
+    if (keepOnLogout) {
+      return resp;
+    }
 
     removeLastUserLoginId();
     removeLastUserDisplayName();
