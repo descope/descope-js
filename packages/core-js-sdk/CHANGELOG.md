@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.21.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.6...core-js-sdk-2.21.0) (2024-07-03)
+
+
+### Features
+
+* Log flow runner logs if they exists ([#672](https://github.com/descope/descope-js/issues/672)) ([811c088](https://github.com/descope/descope-js/commit/811c088d5fdd1efdd9622b57279f22d797b99e69))
+
+## [2.20.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.5...core-js-sdk-2.20.6) (2024-07-01)
+
+
+### Bug Fixes
+
+* add json content to flow api ([#659](https://github.com/descope/descope-js/issues/659)) ([79d35f0](https://github.com/descope/descope-js/commit/79d35f0b87c225e43d86694decf2ae1fc32e5ae8))
+
+## [2.20.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.4...core-js-sdk-2.20.5) (2024-06-30)
+
+## [2.20.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.3...core-js-sdk-2.20.4) (2024-06-28)
+
+
+### Bug Fixes
+
+* Add an explicit empty check in after request for old react native ([#658](https://github.com/descope/descope-js/issues/658)) RELEASE ([57e4873](https://github.com/descope/descope-js/commit/57e48736fc7f0dece7926beb0df3ed565058e400))
+
+## [2.20.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.2...core-js-sdk-2.20.3) (2024-06-27)
+
+## [2.20.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.1...core-js-sdk-2.20.2) (2024-06-26)
+
+## [2.20.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.0...core-js-sdk-2.20.1) (2024-06-26)
+
+## [2.20.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.2...core-js-sdk-2.20.0) (2024-06-19)
+
+
+### Features
+
+* Support implicit grant type for native ([#635](https://github.com/descope/descope-js/issues/635)) ([3a64bde](https://github.com/descope/descope-js/commit/3a64bdefc1c6384dc6999cf0079b2a2097b0c4db))
+
 ## [2.19.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.1...core-js-sdk-2.19.2) (2024-06-19)
 
 ## [2.19.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.19.0...core-js-sdk-2.19.1) (2024-06-18)

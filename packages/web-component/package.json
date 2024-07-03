@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "3.16.0",
+  "version": "3.18.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/web-component",
   "bugs": {
@@ -29,15 +29,15 @@
   ],
   "devDependencies": {
     "@open-wc/rollup-plugin-html": "1.2.5",
-    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-commonjs": "^26.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/dom": "^10.0.0",
-    "@testing-library/jest-dom": "6.4.5",
+    "@testing-library/jest-dom": "6.4.6",
     "@types/testing-library__jest-dom": "5.14.9",
     "@types/jest": "^29.0.0",
-    "@types/node": "20.12.12",
+    "@types/node": "20.14.2",
     "dotenv": "^16.0.3",
     "eslint": "8.57.0",
     "eslint-config-airbnb": "19.0.4",
@@ -46,10 +46,10 @@
     "eslint-config-standard": "17.1.0",
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-jest": "28.5.0",
+    "eslint-plugin-jest": "28.6.0",
     "eslint-plugin-jest-dom": "5.4.0",
     "eslint-plugin-jest-formatting": "3.1.0",
-    "eslint-plugin-n": "17.7.0",
+    "eslint-plugin-n": "17.8.1",
     "eslint-plugin-no-only-tests": "3.1.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-prettier": "5.1.3",
@@ -73,10 +73,10 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "tslib": "2.6.2",
+    "tslib": "2.6.3",
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
-    "terser": "5.31.0"
+    "terser": "5.31.1"
   }
 }

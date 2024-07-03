@@ -44,6 +44,8 @@ const withMultipleHooks =
       // get the after hooks from the config while function is running
       // because the hooks might change after sdk creation
       const afterRequestHooks = [].concat(config.hooks?.afterRequest || []);
+      // do not remove this check - on old versions of react-native it is required
+      if (afterRequestHooks.length == 0) return;
       const results = await Promise.allSettled(
         afterRequestHooks?.map((fn) => fn(req, res?.clone())),
       );

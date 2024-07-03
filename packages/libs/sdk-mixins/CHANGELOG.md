@@ -2,6 +2,59 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.36](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.35...sdk-mixins-0.2.36) (2024-06-30)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.51`
+* `sdk-component-drivers` updated to version `0.2.32`
+## [0.2.35](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.34...sdk-mixins-0.2.35) (2024-06-27)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.50`
+* `sdk-component-drivers` updated to version `0.2.31`
+## [0.2.34](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.33...sdk-mixins-0.2.34) (2024-06-26)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.49`
+* `sdk-component-drivers` updated to version `0.2.30`
+## [0.2.33](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.32...sdk-mixins-0.2.33) (2024-06-26)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.48`
+* `sdk-component-drivers` updated to version `0.2.29`
+## [0.2.32](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.31...sdk-mixins-0.2.32) (2024-06-25)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.47`
+* `sdk-component-drivers` updated to version `0.2.28`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [0.2.31](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.30...sdk-mixins-0.2.31) (2024-06-24)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.46`
+* `sdk-component-drivers` updated to version `0.2.27`
+## [0.2.30](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.29...sdk-mixins-0.2.30) (2024-06-22)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.45`
+* `sdk-component-drivers` updated to version `0.2.26`
+## [0.2.29](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.28...sdk-mixins-0.2.29) (2024-06-19)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.44`
+* `sdk-component-drivers` updated to version `0.2.25`
 ## [0.2.28](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.27...sdk-mixins-0.2.28) (2024-06-18)
 
 ### Dependency Updates

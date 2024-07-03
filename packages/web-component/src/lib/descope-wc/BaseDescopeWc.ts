@@ -61,6 +61,7 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
     ];
   }
@@ -224,6 +225,11 @@ class BaseDescopeWc extends HTMLElement {
     return res === 'true';
   }
 
+  get keepLastAuthenticatedUserAfterLogout() {
+    const res = this.getAttribute('keep-last-authenticated-user-after-logout');
+    return res === 'true';
+  }
+
   get storagePrefix() {
     return this.getAttribute('storage-prefix') || '';
   }
@@ -254,6 +260,7 @@ class BaseDescopeWc extends HTMLElement {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'keep-last-authenticated-user-after-logout',
       'preview',
       'storage-prefix',
       'form',
@@ -295,6 +302,8 @@ class BaseDescopeWc extends HTMLElement {
       preview: this.preview,
       storagePrefix: this.storagePrefix,
       storeLastAuthenticatedUser: this.storeLastAuthenticatedUser,
+      keepLastAuthenticatedUserAfterLogout:
+        this.keepLastAuthenticatedUserAfterLogout,
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,

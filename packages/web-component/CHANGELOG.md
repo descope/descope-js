@@ -2,6 +2,96 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.18.1](https://github.com/descope/descope-js/compare/web-component-3.18.0...web-component-3.18.1) (2024-07-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.14.1`
+## [3.18.0](https://github.com/descope/descope-js/compare/web-component-3.17.6...web-component-3.18.0) (2024-07-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.14.0`
+
+### Features
+
+* Allow to keep last auth login ID after logout RELEASE ([#671](https://github.com/descope/descope-js/issues/671)) ([6d0bb6e](https://github.com/descope/descope-js/commit/6d0bb6eb5500f05ad759b7229244b64c9a811e87))
+* Log flow runner logs if they exists ([#672](https://github.com/descope/descope-js/issues/672)) ([811c088](https://github.com/descope/descope-js/commit/811c088d5fdd1efdd9622b57279f22d797b99e69))
+
+## [3.17.6](https://github.com/descope/descope-js/compare/web-component-3.17.5...web-component-3.17.6) (2024-07-02)
+
+## [3.17.5](https://github.com/descope/descope-js/compare/web-component-3.17.4...web-component-3.17.5) (2024-07-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.10`
+## [3.17.4](https://github.com/descope/descope-js/compare/web-component-3.17.3...web-component-3.17.4) (2024-06-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.9`
+## [3.17.3](https://github.com/descope/descope-js/compare/web-component-3.17.2...web-component-3.17.3) (2024-06-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.8`
+## [3.17.2](https://github.com/descope/descope-js/compare/web-component-3.17.1...web-component-3.17.2) (2024-06-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.7`
+## [3.17.1](https://github.com/descope/descope-js/compare/web-component-3.17.0...web-component-3.17.1) (2024-06-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.6`
+## [3.17.0](https://github.com/descope/descope-js/compare/web-component-3.16.6...web-component-3.17.0) (2024-06-27)
+
+
+### Features
+
+* Support Email component external input ([#647](https://github.com/descope/descope-js/issues/647)) ([ee5ff83](https://github.com/descope/descope-js/commit/ee5ff83f44c33fe6cb8ebf654ec6b6dc81cd6561))
+
+
+### Bug Fixes
+
+* validate all inputs on submit RELEASE ([#655](https://github.com/descope/descope-js/issues/655)) ([f69c923](https://github.com/descope/descope-js/commit/f69c9230ab0ae568dbaa3bc77bee996cc804316b))
+
+## [3.16.6](https://github.com/descope/descope-js/compare/web-component-3.16.5...web-component-3.16.6) (2024-06-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.5`
+## [3.16.5](https://github.com/descope/descope-js/compare/web-component-3.16.4...web-component-3.16.5) (2024-06-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.4`
+## [3.16.4](https://github.com/descope/descope-js/compare/web-component-3.16.3...web-component-3.16.4) (2024-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.3`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.6.3 ([#651](https://github.com/descope/descope-js/issues/651)) ([a9e328c](https://github.com/descope/descope-js/commit/a9e328c78b450f3799fcc03652eaca3011efa0df))
+
+## [3.16.3](https://github.com/descope/descope-js/compare/web-component-3.16.2...web-component-3.16.3) (2024-06-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.2`
+## [3.16.2](https://github.com/descope/descope-js/compare/web-component-3.16.1...web-component-3.16.2) (2024-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.1`
+## [3.16.1](https://github.com/descope/descope-js/compare/web-component-3.16.0...web-component-3.16.1) (2024-06-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.13.0`
 ## [3.16.0](https://github.com/descope/descope-js/compare/web-component-3.15.6...web-component-3.16.0) (2024-06-19)
 
 

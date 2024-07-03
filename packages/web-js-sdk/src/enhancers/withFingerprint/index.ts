@@ -22,10 +22,7 @@ export const withFingerprint =
   <T extends CreateWebSdk>(createSdk: T) =>
   ({ fpKey, fpLoad, ...config }: Parameters<T>[0] & FingerprintOptions) => {
     if (!IS_BROWSER) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        'Fingerprint is a client side only capability and will not work when running in the server',
-      );
+      // Fingerprint is a client side only capability and will not work when running in the server (SSR)
       return createSdk(config);
     }
 
