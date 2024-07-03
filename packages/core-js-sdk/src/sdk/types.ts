@@ -257,6 +257,7 @@ export type FlowResponse = {
   // authentication information response, if response is authenticated
   authInfo?: JWTResponse;
   lastAuth?: Pick<LastAuth, 'authMethod' | 'oauthProvider'>;
+  runnerLogs?: { title?: string; log: string }[];
 };
 
 export type Options = {
