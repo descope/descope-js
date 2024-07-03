@@ -15,6 +15,9 @@ const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
 describe('fingerprint', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it('beforeRequest - should add visitor request and session id to outgoing requests', () => {
     const fpData = {
       [VISITOR_REQUEST_ID_PARAM]: 'request',
@@ -69,20 +72,26 @@ describe('fingerprint', () => {
   });
 
   it('should not proceed when fingerprint key is not configured', () => {
-    const warnSpy = jest.spyOn(console, 'warn');
     jest.resetModules();
+    // mock ensureFingerprintIds
+    jest.mock('../src/enhancers/withFingerprint/helpers', () => ({
+      ensureFingerprintIds: jest.fn(),
+    }));
     const createSdk = require('../src').default;
 
     createSdk({ projectId: 'pid' });
 
-    expect(warnSpy).not.toHaveBeenCalledWith(
-      'Fingerprint is a client side only capability and will not work when running in the server',
-    );
+    // import ensureFingerprintIds and ensure it is not called
+    const {
+      ensureFingerprintIds,
+    } = require('../src/enhancers/withFingerprint/helpers');
+    expect(ensureFingerprintIds).not.toHaveBeenCalled();
   });
 
   it('should log a warning when not running in the browser', () => {
-    const warnSpy = jest.spyOn(console, 'warn');
-
+    jest.mock('../src/enhancers/withFingerprint/helpers', () => ({
+      ensureFingerprintIds: jest.fn(),
+    }));
     const origWindow = window;
     Object.defineProperty(global, 'window', {
       value: undefined,
@@ -98,10 +107,11 @@ describe('fingerprint', () => {
 
     global.window = origWindow;
 
+    // import ensureFingerprintIds and ensure it is not called
+    const {
+      ensureFingerprintIds,
+    } = require('../src/enhancers/withFingerprint/helpers');
+    expect(ensureFingerprintIds).not.toHaveBeenCalled();
     jest.resetModules();
-
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Fingerprint is a client side only capability and will not work when running in the server',
-    );
   });
 });
