@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.21.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.6...core-js-sdk-2.21.0) (2024-07-03)
+
+
+### Features
+
+* Log flow runner logs if they exists ([#672](https://github.com/descope/descope-js/issues/672)) ([811c088](https://github.com/descope/descope-js/commit/811c088d5fdd1efdd9622b57279f22d797b99e69))
+
 ## [2.20.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.5...core-js-sdk-2.20.6) (2024-07-01)
 
 
