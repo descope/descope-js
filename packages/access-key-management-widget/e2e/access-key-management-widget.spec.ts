@@ -260,7 +260,7 @@ test.describe('widget', () => {
       .first();
 
     // deactivate button initial state is disabled
-    expect(deactivateAccessKeyTrigger).toBeDisabled();
+    await expect(deactivateAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
@@ -277,10 +277,10 @@ test.describe('widget', () => {
     const deactivateAccessKeyModal = page.locator(
       'text=Deactivate Access Keys',
     );
-    expect(deactivateAccessKeyModal).toBeVisible();
+    await expect(deactivateAccessKeyModal).toBeVisible();
 
     const deactivateAccessKeyQ = page.locator('text=Deactivate 3 access keys?');
-    expect(deactivateAccessKeyQ).toBeVisible();
+    await expect(deactivateAccessKeyQ).toBeVisible();
 
     // click modal deactivate button
     await deactivateAccessKeyModalButton.click();
@@ -313,7 +313,7 @@ test.describe('widget', () => {
       .first();
 
     // activate button initial state is disabled
-    expect(activateAccessKeyTrigger).toBeDisabled();
+    await expect(activateAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
@@ -321,13 +321,13 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // activate button is enabled on selection
-    expect(activateAccessKeyTrigger).toBeEnabled();
+    await expect(activateAccessKeyTrigger).toBeEnabled();
 
     // activate access keys
     await activateAccessKeyTrigger.click();
 
     const activateAccessKeyQ = page.locator('text=Activate 3 access keys?');
-    expect(activateAccessKeyQ).toBeVisible();
+    await expect(activateAccessKeyQ).toBeVisible();
 
     // click modal activate button
     await activateAccessKeyModalButton.click();
