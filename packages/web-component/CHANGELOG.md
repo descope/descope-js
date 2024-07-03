@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.18.0](https://github.com/descope/descope-js/compare/web-component-3.17.6...web-component-3.18.0) (2024-07-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.14.0`
+
+### Features
+
+* Allow to keep last auth login ID after logout RELEASE ([#671](https://github.com/descope/descope-js/issues/671)) ([6d0bb6e](https://github.com/descope/descope-js/commit/6d0bb6eb5500f05ad759b7229244b64c9a811e87))
+* Log flow runner logs if they exists ([#672](https://github.com/descope/descope-js/issues/672)) ([811c088](https://github.com/descope/descope-js/commit/811c088d5fdd1efdd9622b57279f22d797b99e69))
+
 ## [3.17.6](https://github.com/descope/descope-js/compare/web-component-3.17.5...web-component-3.17.6) (2024-07-02)
 
 ## [3.17.5](https://github.com/descope/descope-js/compare/web-component-3.17.4...web-component-3.17.5) (2024-07-01)
