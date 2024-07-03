@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.14.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.14.0...web-js-sdk-1.14.1) (2024-07-03)
+
+
+### Bug Fixes
+
+* Remove FP warn log on SSR ([#674](https://github.com/descope/descope-js/issues/674)) RELEASE ([64ab055](https://github.com/descope/descope-js/commit/64ab0554708fbd1e12b483933a3e3ca8fd11be45))
+
 ## [1.14.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.13.10...web-js-sdk-1.14.0) (2024-07-03)
 
 ### Dependency Updates
