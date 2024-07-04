@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.22.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.21.0...core-js-sdk-2.22.0) (2024-07-04)
+
+
+### Features
+
+* Add Patch method to HTTP client ([#675](https://github.com/descope/descope-js/issues/675)) RELEASE ([131b814](https://github.com/descope/descope-js/commit/131b814344671a8c9df77d4629961a6da03bdf0a))
+
 ## [2.21.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.20.6...core-js-sdk-2.21.0) (2024-07-03)
 
 
