@@ -15,12 +15,18 @@ export enum HTTPMethods {
   delete = 'DELETE',
   post = 'POST',
   put = 'PUT',
+  patch = 'PATCH',
 }
 
 /** HTTP Client type that implements the HTTP method calls. Descopers can provide their own HTTP client although required only in rare cases. */
 export type HttpClient = {
   get: (path: string, config?: HttpClientReqConfig) => Promise<Response>;
   post: (
+    path: string,
+    body?: any,
+    config?: HttpClientReqConfig,
+  ) => Promise<Response>;
+  patch: (
     path: string,
     body?: any,
     config?: HttpClientReqConfig,
