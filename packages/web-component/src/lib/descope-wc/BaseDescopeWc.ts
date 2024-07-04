@@ -726,6 +726,7 @@ class BaseDescopeWc extends HTMLElement {
         descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
+        oidcPrompt,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
@@ -767,6 +768,7 @@ class BaseDescopeWc extends HTMLElement {
         descopeIdpInitiated,
         ssoAppId,
         oidcLoginHint,
+        oidcPrompt,
       });
 
       this.#init = true;

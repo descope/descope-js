@@ -21,6 +21,7 @@ export const SAML_IDP_USERNAME_PARAM_NAME = 'saml_idp_username';
 export const DESCOPE_IDP_INITIATED_PARAM_NAME = 'descope_idp_initiated';
 export const SSO_APP_ID_PARAM_NAME = 'sso_app_id';
 export const OIDC_LOGIN_HINT_PARAM_NAME = 'oidc_login_hint';
+export const OIDC_PROMPT_PARAM_NAME = 'oidc_prompt';
 
 export const ELEMENT_TYPE_ATTRIBUTE = 'data-type';
 
