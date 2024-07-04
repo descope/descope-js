@@ -137,6 +137,15 @@ const createHttpClient = ({
         method: HTTPMethods.post,
         token,
       }),
+    patch: (path, body, { headers, queryParams, token } = {}) =>
+      sendRequest({
+        path,
+        headers,
+        queryParams,
+        body,
+        method: HTTPMethods.patch,
+        token,
+      }),
     put: (path, body, { headers, queryParams, token } = {}) =>
       sendRequest({
         path,
