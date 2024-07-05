@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.19.0](https://github.com/descope/descope-js/compare/web-component-3.18.3...web-component-3.19.0) (2024-07-05)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.0`
+
+### Features
+
+* add oidc prompt parameter RELEASE ([#676](https://github.com/descope/descope-js/issues/676)) ([b5f7bcf](https://github.com/descope/descope-js/commit/b5f7bcf30e1ed203821cd53ddfe7d7eb1c97f326))
+
 ## [3.18.3](https://github.com/descope/descope-js/compare/web-component-3.18.2...web-component-3.18.3) (2024-07-05)
 
 ### Dependency Updates
