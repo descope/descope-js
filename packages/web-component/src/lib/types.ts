@@ -67,6 +67,7 @@ export type FlowState = {
   descopeIdpInitiated: boolean;
   ssoAppId: string;
   oidcLoginHint: string;
+  oidcPrompt: string;
 };
 
 export type StepState = {
@@ -78,6 +79,7 @@ export type StepState = {
   samlIdpUsername: string;
   oidcLoginHint: string;
   openInNewTabUrl?: string;
+  oidcPrompt: string;
 };
 
 export type DebugState = {

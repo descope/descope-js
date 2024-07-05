@@ -17,6 +17,7 @@ import {
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OVERRIDE_CONTENT_URL,
+  OIDC_PROMPT_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -222,6 +223,14 @@ export function clearOIDCLoginHintParamFromUrl() {
   resetUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
 }
 
+export function getOIDCPromptParamFromUrl() {
+  return getUrlParam(OIDC_PROMPT_PARAM_NAME);
+}
+
+export function clearOIDCPromptParamFromUrl() {
+  resetUrlParam(OIDC_PROMPT_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -310,6 +319,11 @@ export const handleUrlParams = () => {
     clearOIDCLoginHintParamFromUrl();
   }
 
+  const oidcPrompt = getOIDCPromptParamFromUrl();
+  if (oidcPrompt) {
+    clearOIDCPromptParamFromUrl();
+  }
+
   const idpInitiatedVal = descopeIdpInitiated === 'true';
 
   return {
@@ -328,6 +342,7 @@ export const handleUrlParams = () => {
     descopeIdpInitiated: idpInitiatedVal,
     ssoAppId,
     oidcLoginHint,
+    oidcPrompt,
   };
 };
 
@@ -457,18 +472,21 @@ export const showFirstScreenOnExecutionInit = (
   samlIdpUsername: string,
   ssoAppId: string,
   oidcLoginHint: string,
+  oidcPrompt: string,
 ): boolean => {
   const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
   const optimizeIfMissingSAMLParams =
     startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
   const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
   const optimizeIfMissingOIDCLoginHintParams = startScreenId && !oidcLoginHint; // return true if oidcLoginHint is empty
+  const optimizeIfMissingOIDCPromptParams = startScreenId && !oidcPrompt; // return true if oidcPrompt is empty
 
   return (
     optimizeIfMissingOIDCParams &&
     optimizeIfMissingSAMLParams &&
     optimizeIfMissingSSOParams &&
-    optimizeIfMissingOIDCLoginHintParams
+    optimizeIfMissingOIDCLoginHintParams &&
+    optimizeIfMissingOIDCPromptParams
   );
 };
 
@@ -515,9 +533,9 @@ export const leadingDebounce = <T extends (...args: any[]) => void>(
 
 export function getUserLocale(locale: string) {
   let browserLocale = navigator.language;
-    if (browserLocale && browserLocale !== 'zh-TW') {
-      // zh-TW is the only locale that must have "-", for all others we need to have the first part
-      browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
-    }
+  if (browserLocale && browserLocale !== 'zh-TW') {
+    // zh-TW is the only locale that must have "-", for all others we need to have the first part
+    browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
+  }
   return (locale || browserLocale || '').toLowerCase();
 }
