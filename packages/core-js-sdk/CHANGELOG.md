@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.22.1...core-js-sdk-2.23.0) (2024-07-05)
+
+
+### Features
+
+* add oidc prompt parameter RELEASE ([#676](https://github.com/descope/descope-js/issues/676)) ([b5f7bcf](https://github.com/descope/descope-js/commit/b5f7bcf30e1ed203821cd53ddfe7d7eb1c97f326))
+
 ## [2.22.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.22.0...core-js-sdk-2.22.1) (2024-07-05)
 
 ## [2.22.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.21.0...core-js-sdk-2.22.0) (2024-07-04)
