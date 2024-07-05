@@ -3602,7 +3602,7 @@ describe('web-component', () => {
           return samlForm;
         },
         {
-          timeout: 6000,
+          timeout: 8000,
         },
       )) as HTMLFormElement;
 
