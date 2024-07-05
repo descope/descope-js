@@ -164,6 +164,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       ssoAppId,
       oidcLoginHint,
+      oidcPrompt,
     } = currentState;
 
     let startScreenId: string;
@@ -218,6 +219,7 @@ class DescopeWc extends BaseDescopeWc {
           samlIdpUsername,
           ssoAppId,
           oidcLoginHint,
+          oidcPrompt,
         )
       ) {
         const sdkResp = await this.sdk.flow.start(
@@ -230,6 +232,7 @@ class DescopeWc extends BaseDescopeWc {
             samlIdpUsername,
             ssoAppId,
             oidcLoginHint,
+            oidcPrompt,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
@@ -427,13 +430,14 @@ class DescopeWc extends BaseDescopeWc {
         }),
       samlIdpUsername,
       oidcLoginHint,
+      oidcPrompt,
       openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint is not empty, this optimization doesn't happen
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint, oidcPrompt is not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (
       showFirstScreenOnExecutionInit(
@@ -443,6 +447,7 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpUsername,
         ssoAppId,
         oidcLoginHint,
+        oidcPrompt,
       )
     ) {
       stepStateUpdate.next = (
@@ -467,6 +472,7 @@ class DescopeWc extends BaseDescopeWc {
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale),
+            oidcPrompt,
           },
           conditionInteractionId,
           interactionId,

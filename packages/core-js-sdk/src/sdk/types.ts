@@ -281,6 +281,7 @@ export type Options = {
   startOptionsVersion?: number;
   client?: Record<string, any>;
   locale?: string;
+  oidcPrompt?: string;
 };
 
 export type ResponseData = Record<string, any>;

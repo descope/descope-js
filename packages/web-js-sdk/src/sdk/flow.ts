@@ -16,6 +16,7 @@ type Options = Pick<
   | 'abTestingKey'
   | 'client'
   | 'locale'
+  | 'oidcPrompt'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
