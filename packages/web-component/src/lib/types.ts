@@ -177,10 +177,13 @@ export type FlowConfig = {
   condition?: ClientCondition;
   fingerprintEnabled?: boolean;
   fingerprintKey?: string;
-  sdkScripts?: [{
-    id: string;
-    initArgs?: Record<string, any>;
-  }]
+  sdkScripts?: [
+    {
+      id: string;
+      resultKey: string;
+      initArgs: Record<string, any>;
+    },
+  ];
 };
 
 export interface ProjectConfiguration {

@@ -8,6 +8,7 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
+  SDK_SCRIPT_RESULTS_KEY,
 } from '../constants';
 import {
   fetchContent,
@@ -83,23 +84,32 @@ class DescopeWc extends BaseDescopeWc {
     const scripts = flowConfig.sdkScripts;
 
     const loadScript = async (scriptId: string) => {
+      let res;
       switch (scriptId) {
         case 'forter':
-          const res = await import('./forter');
+          // eslint-disable-next-line no-case-declarations
+          res = await import('./forter');
           return res.default;
         default:
           throw new Error(`Unknown script id: ${scriptId}`);
       }
-    }
+    };
 
     scripts?.forEach(async (script) => {
       const module = await loadScript(script.id);
-      module((forterToken: string) => {
-        console.log('@@@ token', forterToken)
-        this.dispatchEvent(new CustomEvent('components-context', { detail: { forterToken }, bubbles: true, composed: true }));
-      }, script.initArgs as any)
+      module(script.initArgs as any, (result: string) => {
+        // update the context with the result, under the `resultKey` key
+        this.dispatchEvent(
+          new CustomEvent('components-context', {
+            detail: {
+              [`${SDK_SCRIPT_RESULTS_KEY}.${script.resultKey}`]: result,
+            },
+            bubbles: true,
+            composed: true,
+          }),
+        );
+      });
     });
-    // lets say that flow config contains forter ley
   }
 
   async connectedCallback() {

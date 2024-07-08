@@ -24,6 +24,8 @@ export const OIDC_LOGIN_HINT_PARAM_NAME = 'oidc_login_hint';
 
 export const ELEMENT_TYPE_ATTRIBUTE = 'data-type';
 
+export const SDK_SCRIPT_RESULTS_KEY = 'sdkScriptsResults';
+
 export const RESPONSE_ACTIONS = {
   redirect: 'redirect',
   poll: 'poll',
