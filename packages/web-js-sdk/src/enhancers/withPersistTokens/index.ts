@@ -31,10 +31,8 @@ export const withPersistTokens =
     : ReturnType<T> => {
     if (!isPersistTokens || !IS_BROWSER) {
       if (isPersistTokens) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server',
-        );
+        // Storing auth tokens in local storage and cookies are a client side only capabilities
+        // and will not be done when running in the server
       }
       return createSdk(config) as any;
     }
