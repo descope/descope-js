@@ -616,6 +616,26 @@ describe('web-component', () => {
     await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
+  it('should not load components which are already loaded', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent =
+      '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
+
+    customElements.define('descope-test-button', class extends HTMLElement {});
+
+    const DescopeUI = { 'descope-test-button': jest.fn() };
+    globalThis.DescopeUI = DescopeUI;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Button'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
+  });
+
   it('When there is a single "sso" button and pressing on enter, it clicks the button', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
@@ -3728,28 +3748,6 @@ describe('web-component', () => {
           ),
         { timeout: WAIT_TIMEOUT },
       );
-    });
-    it('should not load components which are already loaded', async () => {
-      startMock.mockReturnValue(generateSdkResponse());
-
-      pageContent =
-        '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
-
-      customElements.define(
-        'descope-test-button',
-        class extends HTMLElement {},
-      );
-
-      const DescopeUI = { 'descope-test-button': jest.fn() };
-      globalThis.DescopeUI = DescopeUI;
-
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-      await waitFor(() => screen.getByShadowText('Button'), {
-        timeout: WAIT_TIMEOUT,
-      });
-
-      expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
     });
 
     it('should call the ready cb when page is loaded', async () => {
