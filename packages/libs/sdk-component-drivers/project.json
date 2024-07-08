@@ -1,7 +1,7 @@
 {
   "name": "sdk-component-drivers",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/sdk-component-drivers/src",
+  "sourceRoot": "packages/libs/sdk-component-drivers/src",
   "projectType": "library",
   "targets": {
     "version": {

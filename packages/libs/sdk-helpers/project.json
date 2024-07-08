@@ -1,7 +1,7 @@
 {
   "name": "sdk-helpers",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/sdk-helpers/src",
+  "sourceRoot": "packages/libs/sdk-helpers/src",
   "projectType": "library",
   "targets": {
     "version": {
