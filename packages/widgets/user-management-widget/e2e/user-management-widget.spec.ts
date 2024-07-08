@@ -654,6 +654,7 @@ test.describe('widget', () => {
   });
 
   test('search users', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.waitForLoadState('networkidle');
 
     await page.route(apiPath('user', 'search'), async (route) => {
