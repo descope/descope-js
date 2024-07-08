@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.15.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.15.1...web-js-sdk-1.15.2) (2024-07-08)
+
+
+### Bug Fixes
+
+* remove console-warn ([#683](https://github.com/descope/descope-js/issues/683)) RELEASE ([177c16b](https://github.com/descope/descope-js/commit/177c16b190a4131f5551d642b00b87ae33318d02))
+
 ## [1.15.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.15.0...web-js-sdk-1.15.1) (2024-07-05)
 
 ### Dependency Updates
