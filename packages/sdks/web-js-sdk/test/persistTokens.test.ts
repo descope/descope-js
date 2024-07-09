@@ -268,7 +268,7 @@ describe('persistTokens', () => {
       expect(removeMock).toBeCalledWith('DS');
     });
 
-    it('should log a warning when not running in the browser', () => {
+    it('should not log a warning when not running in the browser', () => {
       const warnSpy = jest.spyOn(console, 'warn');
 
       const origWindow = window;
@@ -288,9 +288,7 @@ describe('persistTokens', () => {
 
       jest.resetModules();
 
-      expect(warnSpy).toHaveBeenCalledWith(
-        'Storing auth tokens in local storage and cookies are a client side only capabilities and will not be done when running in the server',
-      );
+      expect(warnSpy).not.toHaveBeenCalled();
     });
   });
 });
