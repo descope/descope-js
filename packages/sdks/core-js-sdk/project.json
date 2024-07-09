@@ -1,7 +1,7 @@
 {
-  "name": "sdk-helpers",
+  "name": "core-js-sdk",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/libs/sdk-helpers/src",
+  "sourceRoot": "packages/sdks/core-js-sdk/src",
   "projectType": "library",
   "targets": {
     "version": {
