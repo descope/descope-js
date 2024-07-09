@@ -1,7 +1,7 @@
 {
-  "name": "sdk-helpers",
+  "name": "audit-management-widget",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/libs/sdk-helpers/src",
+  "sourceRoot": "packages/widgets/audit-management-widget/src",
   "projectType": "library",
   "targets": {
     "version": {
@@ -11,6 +11,10 @@
         "push": false,
         "preset": "conventional"
       }
+    },
+    "build:app": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "tags": []

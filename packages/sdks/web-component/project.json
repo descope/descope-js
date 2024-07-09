@@ -1,7 +1,7 @@
 {
-  "name": "sdk-helpers",
+  "name": "web-component",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/libs/sdk-helpers/src",
+  "sourceRoot": "packages/sdks/web-component/src",
   "projectType": "library",
   "targets": {
     "version": {
