@@ -28,13 +28,13 @@ render(){
 
 ### In HTML file
 
-- Copy the file `@descope/web-js/sdk/dist/descope-wc.js` and place it where your HTML file is located
+- Copy the file `@descope/web-component/dist/index.js` rename it to `descope-wc.js` and place it where your HTML file is located
 
 - Add the following script tag to your HTML file
 
 ```html
 <head>
-  <script src="./my-lib.umd.production.min.js"></script>
+  <script src="./descope-wc.js"></script>
 </head>
 ```
 
@@ -50,9 +50,7 @@ render(){
 
 To run the example:
 
-1. Clone the repo
 1. Install dependencies `pnpm i`
-1. Go to package directory `cd packages/web-component`
 1. Create a `.env` file and the following variables:
 
 ```env
