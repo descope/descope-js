@@ -70,8 +70,6 @@ class DescopeWc extends BaseDescopeWc {
 
   #conditionalUiAbortController = null;
 
-  #isScriptLoaded = false;
-
   constructor() {
     const flowState = new State<FlowState>();
     super(flowState.update.bind(flowState));
@@ -88,7 +86,7 @@ class DescopeWc extends BaseDescopeWc {
       switch (scriptId) {
         case 'forter':
           // eslint-disable-next-line no-case-declarations
-          res = await import('./forter');
+          res = await import('./sdkScripts/forter');
           return res.default;
         default:
           throw new Error(`Unknown script id: ${scriptId}`);
@@ -97,18 +95,23 @@ class DescopeWc extends BaseDescopeWc {
 
     scripts?.forEach(async (script) => {
       const module = await loadScript(script.id);
-      module(script.initArgs as any, (result: string) => {
-        // update the context with the result, under the `resultKey` key
-        this.dispatchEvent(
-          new CustomEvent('components-context', {
-            detail: {
-              [`${SDK_SCRIPT_RESULTS_KEY}.${script.resultKey}`]: result,
-            },
-            bubbles: true,
-            composed: true,
-          }),
-        );
-      });
+      module(
+        script.initArgs as any,
+        { baseUrl: this.baseUrl },
+        (result: string) => {
+          // update the context with the result, under the `resultKey` key
+          this.dispatchEvent(
+            new CustomEvent('components-context', {
+              detail: {
+                [`${SDK_SCRIPT_RESULTS_KEY}.${script.id}_${script.resultKey}`]:
+                  result,
+              },
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        },
+      );
     });
   }
 
@@ -116,10 +119,6 @@ class DescopeWc extends BaseDescopeWc {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
       this.stepState?.subscribe(this.onStepChange.bind(this));
-      if (!this.#isScriptLoaded) {
-        this.#isScriptLoaded = true;
-        this.loadScripts();
-      }
     }
     await super.connectedCallback();
   }
@@ -224,6 +223,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
+      this.loadScripts();
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
         await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
       } else {
