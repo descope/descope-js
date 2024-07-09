@@ -27,7 +27,7 @@ importers:
       nx: 19.3.0
       playwright: ^1.41.2
       prettier: ^3.0.0
-      ts-jest: 29.1.5
+      ts-jest: 29.2.0
       ts-node: 10.9.2
       tslib: 2.6.3
       typescript: ~4.9.0
@@ -57,7 +57,7 @@ importers:
       nx: 19.3.0
       playwright: 1.41.2
       prettier: 3.1.0
-      ts-jest: 29.1.5_67xnt3v64q2pgz6kguni4h37hu
+      ts-jest: 29.2.0_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_njlwk2dqfhmjoa24mpyokjgziy
       typescript: 4.9.5
 
@@ -13608,8 +13608,8 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /ts-jest/29.1.5_67xnt3v64q2pgz6kguni4h37hu:
-    resolution: {integrity: sha512-UuClSYxM7byvvYfyWdFI+/2UxMmwNyJb0NPkZPQE2hew3RurV7l7zURgOHAd/1I1ZdPpe3GUsXNXAcN8TFKSIg==}
+  /ts-jest/29.2.0_67xnt3v64q2pgz6kguni4h37hu:
+    resolution: {integrity: sha512-eFmkE9MG0+oT6nqSOcUwL+2UUmK2IvhhUV8hFDsCHnc++v2WCCbQQZh5vvjsa8sgOY/g9T0325hmkEmi6rninA==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
