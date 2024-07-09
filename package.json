@@ -33,7 +33,7 @@
     "@nrwl/jest": "19.3.0",
     "@nrwl/js": "19.3.0",
     "@nrwl/linter": "19.3.0",
-    "@nrwl/workspace": "19.3.0",
+    "@nrwl/workspace": "19.4.2",
     "@types/jest": "29.5.12",
     "@types/node": "20.14.4",
     "@typescript-eslint/eslint-plugin": "7.13.1",
