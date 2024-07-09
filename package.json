@@ -32,7 +32,7 @@
     "@nrwl/eslint-plugin-nx": "19.3.0",
     "@nrwl/jest": "19.3.0",
     "@nrwl/js": "19.3.0",
-    "@nrwl/linter": "19.3.0",
+    "@nrwl/linter": "19.4.2",
     "@nrwl/workspace": "19.3.0",
     "@types/jest": "29.5.12",
     "@types/node": "20.14.4",
