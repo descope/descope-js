@@ -2,9 +2,9 @@
   "name": "@descope/web-js-sdk",
   "version": "1.15.2",
   "author": "Descope Team <info@descope.com>",
-  "homepage": "https://github.com/descope/web-js-sdk",
+  "homepage": "https://github.com/descope/descope-js",
   "bugs": {
-    "url": "https://github.com/descope/web-js-sdk/issues",
+    "url": "https://github.com/descope/descope-js/issues",
     "email": "help@descope.com"
   },
   "main": "dist/cjs/index.cjs.js",
@@ -32,7 +32,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/descope/web-js-sdk.git"
+    "url": "https://github.com/descope/descope-js.git"
   },
   "files": [
     "dist"

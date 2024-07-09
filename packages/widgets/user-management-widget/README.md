@@ -18,7 +18,8 @@ DESCOPE_WIDGET_ID=  # default: "user-management-widget"
 ### Example
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@descope/user-management-widget/dist/index.js"></script>
+// replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/user-management-widget
+<script src="https://static.descope.com/npm/@descope/user-management-widget@x.x.x/dist/index.js"></script>
 <descope-user-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
@@ -85,24 +86,8 @@ An abstraction layer that provides an API for components, and enables handling i
 
 The motivation to use drivers is to decouple the widget's code from the component's implementation, and therefore it's important to interact with components only using drivers (and not relying on component's implementation details).
 
-### UI Components
-
-Widget UI is composed of [`@descope/web-components-ui`](https://github.com/descope/web-components-ui), which is loaded during the widget init in runtime.
-
-For optimization, we load only the relevant components, defined on the widget screens DOM.
-
 ## Dev
 
 ### Use mock screens
 
 Since screen are fetched dynamically, when developing a new screen for the widget you will probably want to use mock templates. To do so, simply replace the call to `fetchWidgetPage` with a string which includes your HTML.
-
-### Use local components
-
-In some cases you want to make changes to components anf see how it affects the widget. To do so, you need to build [`web-components-ui`](https://github.com/descope/web-components-ui) and serve the `dist` folder from your machine (with `npx serve` or other util).
-
-Add the key `base.ui.components.url` to your localStorage and set its value to the URL of the served dist `umd/index.js` file.
-
-###
-
-Pay attention that _theme changes_ will not take affect until the components

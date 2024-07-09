@@ -87,9 +87,7 @@ const sessionToken = sdk.getSessionToken();
 
 To run the example:
 
-1. Clone the repo
 1. Install dependencies `pnpm i`
-1. Go to package directory `cd packages/web-js-sdk`
 1. Run the sample `pnpm run start`
 
 The browser open a tab with directory tree of available examples. Click on the desire directory and follow the instruction.
