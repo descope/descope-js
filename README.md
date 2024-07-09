@@ -3,14 +3,15 @@
 The Descope JS repo is composed of many npm packages that are used in Descope SDKs
 You can read more on the [Descope Website](https://descope.com).
 
-## Packages
+## Folder structure
 
-Descope provides few packages listed bellow.
-Please refer to the README and instructions of those SDKs for more detailed information.
+This repository hosts multiple packages, located in the `./packages` directory, organized as follows:
 
-- [core-js-sdk](/packages/core-js-sdk): Core SDK. Function that abstract http API usage.
-- [web-js-sdk](/packages/web-js-sdk): Web SDK. an SDK for browser usage.
-- [web-component](/packages/web-component): Web component. Exposes HTML [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) such as Descope flow.
+- ./widgets
+- ./sdks
+- ./libs
+
+For more detailed information, please consult the README and the specific instructions provided for each package.
 
 ## Contribution
 

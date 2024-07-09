@@ -1,7 +1,7 @@
 {
   "name": "sdk-mixins",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/sdk-mixins/src",
+  "sourceRoot": "packages/libs/sdk-mixins/src",
   "projectType": "library",
   "targets": {
     "version": {
