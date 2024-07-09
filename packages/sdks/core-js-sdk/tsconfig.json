@@ -14,7 +14,6 @@
     "isolatedModules": true,
     "declaration": true,
     "declarationDir": "dts",
-    "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types"]
   },
 
