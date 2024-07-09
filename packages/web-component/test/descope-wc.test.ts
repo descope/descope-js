@@ -1689,7 +1689,7 @@ describe('web-component', () => {
 
     pageContent = '<div>hey</div>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" form='{"email": "test"}' client='{"email": "test2"}'></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" form='{"email": "test", "nested": { "key": "value" }, "another": { "value": "a", "disabled": true }}' client='{"email": "test2", "nested": { "key": "value" }}'></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('hey'), {
       timeout: WAIT_TIMEOUT,
@@ -1699,13 +1699,20 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         expect.objectContaining({
-          client: { email: 'test2' },
+          client: { email: 'test2', nested: { key: 'value' } },
         }),
         undefined,
         '',
         0,
         '1.2.3',
-        { email: 'test', 'form.email': 'test' },
+        {
+          email: 'test',
+          'form.email': 'test',
+          'nested.key': 'value',
+          'form.nested.key': 'value',
+          another: 'a',
+          'form.another': 'a',
+        },
       ),
     );
   });
