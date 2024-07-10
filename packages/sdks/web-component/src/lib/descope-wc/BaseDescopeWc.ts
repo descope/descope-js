@@ -824,6 +824,10 @@ class BaseDescopeWc extends HTMLElement {
       });
 
       this.#debugState.update({ isDebug: this.debug });
+
+      if(attrName === 'theme'){
+        this.#applyTheme();
+      }
     }
   }
 }
