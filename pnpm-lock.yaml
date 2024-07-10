@@ -154,9 +154,6 @@ importers:
       ts-node: 10.9.2_njlwk2dqfhmjoa24mpyokjgziy
       typescript: 4.9.5
 
-  packages/libs/sdk-component-drivers/dist/cjs:
-    specifiers: {}
-
   packages/libs/sdk-helpers:
     specifiers:
       '@rollup/plugin-commonjs': 26.0.1
@@ -245,9 +242,6 @@ importers:
       ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_njlwk2dqfhmjoa24mpyokjgziy
       typescript: 4.9.5
-
-  packages/libs/sdk-helpers/dist/cjs:
-    specifiers: {}
 
   packages/libs/sdk-mixins:
     specifiers:
@@ -348,9 +342,6 @@ importers:
       ts-node: 10.9.2_njlwk2dqfhmjoa24mpyokjgziy
       typescript: 4.9.5
 
-  packages/libs/sdk-mixins/dist/cjs:
-    specifiers: {}
-
   packages/sdks/core-js-sdk:
     specifiers:
       '@open-wc/rollup-plugin-html': 1.2.5
@@ -435,9 +426,6 @@ importers:
       ts-jest: 29.1.5_g73jhrtw2a6rvki4qcae2rtkmy
       ts-node: 10.9.2_typescript@4.9.5
       typescript: 4.9.5
-
-  packages/sdks/core-js-sdk/dist/cjs:
-    specifiers: {}
 
   packages/sdks/web-component:
     specifiers:
@@ -633,9 +621,6 @@ importers:
       ts-node: 10.9.2_njlwk2dqfhmjoa24mpyokjgziy
       typescript: 4.9.5
 
-  packages/sdks/web-js-sdk/dist/cjs:
-    specifiers: {}
-
   packages/widgets/access-key-management-widget:
     specifiers:
       '@descope/sdk-component-drivers': workspace:*
@@ -708,7 +693,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.330
+      '@descope/web-components-ui': 1.0.331
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.14.3
@@ -829,7 +814,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.330
+      '@descope/web-components-ui': 1.0.331
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@2.79.1
@@ -950,7 +935,7 @@ importers:
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.330
+      '@descope/web-components-ui': 1.0.331
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.14.3
@@ -1037,7 +1022,7 @@ importers:
       immer: ^10.0.3
       jest: ^29.0.0
       jest-environment-jsdom: ^29.0.0
-      libphonenumber-js: 1.10.59
+      libphonenumber-js: 1.11.4
       lint-staged: ^15.0.0
       prettier: ^3.0.0
       pretty-quick: ^4.0.0
@@ -1067,13 +1052,13 @@ importers:
       '@descope/web-js-sdk': link:../../sdks/web-js-sdk
       '@reduxjs/toolkit': 2.0.1
       immer: 10.0.3
-      libphonenumber-js: 1.10.59
+      libphonenumber-js: 1.11.4
       redux: 5.0.1
       redux-thunk: 3.1.0_redux@5.0.1
       reselect: 5.1.1
       tslib: 2.6.3
     devDependencies:
-      '@descope/web-components-ui': 1.0.330
+      '@descope/web-components-ui': 1.0.331
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.14.3
@@ -1199,7 +1184,7 @@ importers:
     optionalDependencies:
       '@descope/core-js-sdk': link:../../sdks/core-js-sdk
     devDependencies:
-      '@descope/web-components-ui': 1.0.330
+      '@descope/web-components-ui': 1.0.331
       '@open-wc/rollup-plugin-html': 1.2.5
       '@playwright/test': 1.41.1
       '@rollup/plugin-commonjs': 26.0.1_rollup@4.14.3
@@ -2703,8 +2688,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/web-components-ui/1.0.330:
-    resolution: {integrity: sha512-A3t0K/FuqU9WRBg7DTsimhhQO34CSHo4dhHYoB/pBLilUGIq46WLK1uo4ax1hl7aJgl2dRq5fPk903zj0P+pTA==}
+  /@descope/web-components-ui/1.0.331:
+    resolution: {integrity: sha512-IPVgBD8cN2RHNg2LtWIbf+K0Pnh+21H944bRfzI0i0rIIu1nxogD53TeVVxYhlzTld6z2wpvDygn8iHbkdC2hw==}
     requiresBuild: true
     dependencies:
       '@vaadin/avatar': 24.3.4
@@ -3431,6 +3416,7 @@ packages:
     dependencies:
       '@nx/eslint-plugin': 19.3.0_ntziwrudtndeuix7qpybxmkeby
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3450,6 +3436,7 @@ packages:
     dependencies:
       '@nx/jest': 19.3.0_mcw5isiblgg2xl6dosjcqevzya
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3469,6 +3456,7 @@ packages:
     dependencies:
       '@nx/js': 19.3.0_av6xxst7x274alepgy6j4i4rfu
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3485,6 +3473,7 @@ packages:
     dependencies:
       '@nx/js': 19.3.0_awynpxk6ct43fk2clkm5ld73vi
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3501,6 +3490,7 @@ packages:
     dependencies:
       '@nx/eslint': 19.3.0_733pqwzvhlzvspolr355ocl25u
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3591,6 +3581,7 @@ packages:
       semver: 7.6.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3620,6 +3611,7 @@ packages:
       tslib: 2.6.3
       typescript: 5.4.5
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3649,6 +3641,7 @@ packages:
       tslib: 2.6.3
       yargs-parser: 21.1.1
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3683,7 +3676,7 @@ packages:
       '@nx/workspace': 19.3.0
       babel-plugin-const-enum: 1.2.0_@babel+core@7.23.5
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2
+      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.23.5
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -3701,6 +3694,7 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3731,7 +3725,7 @@ packages:
       '@nx/workspace': 19.3.0
       babel-plugin-const-enum: 1.2.0_@babel+core@7.23.5
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2
+      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.23.5
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -3749,6 +3743,7 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3764,6 +3759,7 @@ packages:
     dependencies:
       '@nx/eslint': 19.3.0_733pqwzvhlzvspolr355ocl25u
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -6008,9 +6004,16 @@ packages:
       - supports-color
     dev: true
 
-  /babel-plugin-transform-typescript-metadata/0.3.2:
+  /babel-plugin-transform-typescript-metadata/0.3.2_@babel+core@7.23.5:
     resolution: {integrity: sha512-mWEvCQTgXQf48yDqgN7CH50waTyYBeP2Lpqx4nNWab9sxEpdXVeKgfj1qYI2/TgUPQtNFZ85i3PemRtnXVYYJg==}
+    peerDependencies:
+      '@babel/core': ^7
+      '@babel/traverse': ^7
+    peerDependenciesMeta:
+      '@babel/traverse':
+        optional: true
     dependencies:
+      '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
@@ -8955,7 +8958,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.2_debug@4.3.2
+      follow-redirects: 1.15.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -10204,8 +10207,8 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libphonenumber-js/1.10.59:
-    resolution: {integrity: sha512-HeTsOrDF/hWhEiKqZVwg9Cqlep5x2T+IYDENvT2VRj3iX8JQ7Y+omENv+AIn0vC8m6GYhivfCed5Cgfw27r5SA==}
+  /libphonenumber-js/1.11.4:
+    resolution: {integrity: sha512-F/R50HQuWWYcmU/esP5jrH5LiWYaN7DpN0a/99U8+mnGGtnx8kmRE+649dQh3v+CowXXZc8vpkf5AmYkO0AQ7Q==}
     dev: false
 
   /lilconfig/2.1.0:
