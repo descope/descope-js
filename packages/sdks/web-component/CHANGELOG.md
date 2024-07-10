@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.19.3](https://github.com/descope/descope-js/compare/web-component-3.19.2...web-component-3.19.3) (2024-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.3`
+
+### Bug Fixes
+
+* nested form inputs do not work ([#700](https://github.com/descope/descope-js/issues/700)) ([c26282d](https://github.com/descope/descope-js/commit/c26282d4424604cb014440f011a2635891cf1413))
+
 ## [3.19.2](https://github.com/descope/descope-js/compare/web-component-3.19.1...web-component-3.19.2) (2024-07-08)
 
 ### Dependency Updates
