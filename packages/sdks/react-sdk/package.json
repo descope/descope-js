@@ -1,0 +1,128 @@
+{
+  "name": "@descope/react-sdk",
+  "version": "2.0.43",
+  "description": "Descope React SDK",
+  "author": "Descope Team <info@descope.com>",
+  "homepage": "https://github.com/descope/react-sdk",
+  "bugs": {
+    "url": "https://github.com/descope/react-sdk/issues",
+    "email": "help@descope.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/descope/react-sdk.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "require": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/cjs/index.cjs.js"
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "main": "dist/cjs/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "format": "prettier . -w --ignore-path .gitignore",
+    "format-check": "prettier . --check --ignore-path .gitignore",
+    "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
+    "leaks": "bash ./scripts/gitleaks/gitleaks.sh",
+    "lint": "eslint '+(src|examples)/**/*.+(ts|tsx)' --fix",
+    "prepublishOnly": "npm run build",
+    "start": "npm run build && rollup -c rollup.config.app.mjs -w",
+    "test": "jest"
+  },
+  "lint-staged": {
+    "+(src|examples)/**/*.{js,ts,jsx,tsx}": [
+      "npm run lint"
+    ]
+  },
+  "dependencies": {
+    "@descope/access-key-management-widget": "workspace:*",
+    "@descope/audit-management-widget": "workspace:*",
+    "@descope/role-management-widget": "workspace:*",
+    "@descope/user-management-widget": "workspace:*",
+    "@descope/user-profile-widget": "workspace:*",
+    "@descope/web-component": "workspace:*",
+    "@descope/web-js-sdk": "workspace:*",
+    "@descope/core-js-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@babel/core": "7.23.0",
+    "@babel/preset-env": "7.22.20",
+    "@babel/preset-react": "7.22.15",
+    "@babel/preset-typescript": "7.23.0",
+    "@open-wc/rollup-plugin-html": "^1.2.5",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-replace": "^5.0.0",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@testing-library/jest-dom": "5.17.0",
+    "@testing-library/react": "12.1.5",
+    "@testing-library/react-hooks": "8.0.1",
+    "@testing-library/user-event": "14.5.1",
+    "@types/jest": "^27.0.2",
+    "@types/react": "17.0.60",
+    "@types/node": "^16.0.0",
+    "@types/react-dom": "18.2.12",
+    "@types/react-router-dom": "^5.3.3",
+    "babel-jest": "27.5.1",
+    "eslint": "8.57.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-airbnb-typescript": "17.1.0",
+    "eslint-config-prettier": "8.10.0",
+    "eslint-config-standard": "17.1.0",
+    "eslint-import-resolver-typescript": "2.7.1",
+    "eslint-plugin-import": "2.28.1",
+    "eslint-plugin-jest": "27.4.2",
+    "eslint-plugin-jest-dom": "4.0.3",
+    "eslint-plugin-jest-formatting": "3.1.0",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-n": "15.7.0",
+    "eslint-plugin-no-only-tests": "3.1.0",
+    "eslint-plugin-prefer-arrow": "1.2.3",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-promise": "6.1.1",
+    "eslint-plugin-react": "7.33.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-testing-library": "5.11.1",
+    "jest": "^27.3.1",
+    "jest-extended": "^3.2.2",
+    "lint-staged": "^13.0.3",
+    "pretty-quick": "^3.1.3",
+    "react": "17.0.2",
+    "react-router": "^6.2.1",
+    "react-dom": "17.0.2",
+    "react-router-dom": "6.16.0",
+    "rollup": "^2.62.0",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-browsersync": "^1.3.3",
+    "rollup-plugin-define": "^1.0.1",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dotenv": "^0.5.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-serve": "^2.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "ts-jest": "^27.0.7",
+    "ts-node": "10.9.1",
+    "typescript": "^4.5.3",
+    "object-assign": "^4.1.1",
+    "scheduler": "^0.20.2",
+    "@remix-run/router": "^1.0.0",
+    "jest-environment-jsdom": "^27.3.1"
+  },
+  "peerDependencies": {
+    "@types/react": ">=17",
+    "react": ">=17"
+  }
+}
