@@ -4,7 +4,11 @@ const flattenFormObject = (obj: any, prefix = '') =>
       return { ...res, ...flattenFormObject(obj[el], `${prefix + el}.`) };
     }
     const v = typeof obj[el] === 'object' ? obj[el] : { value: obj[el] };
-    return { ...res, [prefix + el]: v, [`form.${prefix}${el}`]: v };
+    const fl = { ...res, [prefix + el]: v, [`form.${prefix}${el}`]: v };
+    if (el === 'displayName') {
+      return { ...fl, [`${prefix  }fullName`]: v, [`form.${prefix}fullName`]: v };
+    }
+    return fl;
   }, []);
 
 export const transformFlowInputFormData = (formData: string) => {
