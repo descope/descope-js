@@ -451,8 +451,8 @@ importers:
       '@testing-library/user-event': 14.5.2
       '@types/jest': ^27.0.2
       '@types/node': ^16.0.0
-      '@types/react': 17.0.60
-      '@types/react-dom': 18.2.12
+      '@types/react': 17.0.80
+      '@types/react-dom': 18.3.0
       '@types/react-router-dom': ^5.3.3
       babel-jest: 27.5.1
       eslint: 8.57.0
@@ -472,7 +472,7 @@ importers:
       eslint-plugin-prettier: 4.2.1
       eslint-plugin-promise: 6.1.1
       eslint-plugin-react: 7.33.2
-      eslint-plugin-react-hooks: 4.6.0
+      eslint-plugin-react-hooks: 4.6.2
       eslint-plugin-testing-library: 5.11.1
       jest: ^27.3.1
       jest-environment-jsdom: ^27.3.1
@@ -494,7 +494,7 @@ importers:
       rollup-plugin-livereload: ^2.0.5
       rollup-plugin-serve: ^2.0.0
       rollup-plugin-terser: ^7.0.2
-      scheduler: ^0.20.2
+      scheduler: ^0.23.0
       ts-jest: ^27.0.7
       ts-node: 10.9.1
       typescript: ^4.5.3
@@ -520,16 +520,16 @@ importers:
       '@rollup/plugin-typescript': 8.5.0_zptcx3kz3uwp66hzhyyt545weq
       '@testing-library/jest-dom': 5.17.0
       '@testing-library/react': 12.1.5_sfoxds7t5ydpegc3knd667wn6m
-      '@testing-library/react-hooks': 8.0.1_niwnejya6uo6b47sbv3fshnorm
+      '@testing-library/react-hooks': 8.0.1_3scdnhsmr7zu3cqadlewkavxvq
       '@testing-library/user-event': 14.5.2
       '@types/jest': 27.5.2
       '@types/node': 16.18.101
-      '@types/react': 17.0.60
-      '@types/react-dom': 18.2.12
+      '@types/react': 17.0.80
+      '@types/react-dom': 18.3.0
       '@types/react-router-dom': 5.3.3
       babel-jest: 27.5.1_@babel+core@7.24.7
       eslint: 8.57.0
-      eslint-config-airbnb: 19.0.4_cc2iponrunxf56hmpdei5jpgxm
+      eslint-config-airbnb: 19.0.4_y7256zh5lqcvtwglhjl3uzv2oa
       eslint-config-airbnb-typescript: 17.1.0_2n3u76iuncpptyqzqqmdn7hdpi
       eslint-config-prettier: 8.10.0_eslint@8.57.0
       eslint-config-standard: 17.1.0_ib55l44arkvaohmqs5mdfz5gde
@@ -545,7 +545,7 @@ importers:
       eslint-plugin-prettier: 4.2.1_yj4phfzozjl5ckftro2mloybyq
       eslint-plugin-promise: 6.1.1_eslint@8.57.0
       eslint-plugin-react: 7.33.2_eslint@8.57.0
-      eslint-plugin-react-hooks: 4.6.0_eslint@8.57.0
+      eslint-plugin-react-hooks: 4.6.2_eslint@8.57.0
       eslint-plugin-testing-library: 5.11.1_4lxgoysztp3gakdxqfzw7vhg4u
       jest: 27.5.1_ts-node@10.9.1
       jest-environment-jsdom: 27.5.1
@@ -567,7 +567,7 @@ importers:
       rollup-plugin-livereload: 2.0.5
       rollup-plugin-serve: 2.0.3
       rollup-plugin-terser: 7.0.2_rollup@2.79.1
-      scheduler: 0.20.2
+      scheduler: 0.23.2
       ts-jest: 27.1.5_ar3lhn3lypc6jffca2jwsjdcdm
       ts-node: 10.9.1_lnst3momxuwspp4em7iygbr4i4
       typescript: 4.9.5
@@ -5442,7 +5442,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react-hooks/8.0.1_niwnejya6uo6b47sbv3fshnorm:
+  /@testing-library/react-hooks/8.0.1_3scdnhsmr7zu3cqadlewkavxvq:
     resolution: {integrity: sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -5459,7 +5459,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.5
-      '@types/react': 17.0.60
+      '@types/react': 17.0.80
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-error-boundary: 3.1.4_react@17.0.2
@@ -5684,20 +5684,20 @@ packages:
   /@types/react-dom/17.0.25:
     resolution: {integrity: sha512-urx7A7UxkZQmThYA4So0NelOVjx3V4rNFVJwp0WZlbIK5eM4rNJDiN3R/E9ix0MBh6kAEojk/9YL+Te6D9zHNA==}
     dependencies:
-      '@types/react': 17.0.60
+      '@types/react': 17.0.80
     dev: true
 
-  /@types/react-dom/18.2.12:
-    resolution: {integrity: sha512-QWZuiA/7J/hPIGocXreCRbx7wyoeet9ooxfbSA+zbIWqyQEE7GMtRn4A37BdYyksnN+/NDnWgfxZH9UVGDw1hg==}
+  /@types/react-dom/18.3.0:
+    resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
     dependencies:
-      '@types/react': 17.0.60
+      '@types/react': 17.0.80
     dev: true
 
   /@types/react-router-dom/5.3.3:
     resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 17.0.60
+      '@types/react': 17.0.80
       '@types/react-router': 5.1.20
     dev: true
 
@@ -5705,14 +5705,14 @@ packages:
     resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 17.0.60
+      '@types/react': 17.0.80
     dev: true
 
-  /@types/react/17.0.60:
-    resolution: {integrity: sha512-pCH7bqWIfzHs3D+PDs3O/COCQJka+Kcw3RnO9rFA2zalqoXg7cNjJDh6mZ7oRtY1wmY4LVwDdAbA1F7Z8tv3BQ==}
+  /@types/react/17.0.80:
+    resolution: {integrity: sha512-LrgHIu2lEtIo8M7d1FcI3BdwXWoRQwMoXOZ7+dPTW0lYREjmlHl3P0U1VD0i/9tppOuv8/sam7sOjx34TxSFbA==}
     dependencies:
       '@types/prop-types': 15.7.12
-      '@types/scheduler': 0.23.0
+      '@types/scheduler': 0.16.8
       csstype: 3.1.3
     dev: true
 
@@ -5724,8 +5724,8 @@ packages:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
     dev: true
 
-  /@types/scheduler/0.23.0:
-    resolution: {integrity: sha512-YIoDCTH3Af6XM5VuwGG/QL/CJqga1Zm3NkU3HZ4ZHK2fRMPYP1VczsTUqtsf43PH/iJNVlPHAo2oWX7BSdB2Hw==}
+  /@types/scheduler/0.16.8:
+    resolution: {integrity: sha512-WZLiwShhwLRmeV6zH+GkbOFT6Z6VklCItrDioxUnv+u4Ll+8vKeFySoFyK/0ctcRpOmwAicELfmys1sDc/Rw+A==}
     dev: true
 
   /@types/semver/7.5.8:
@@ -8812,7 +8812,24 @@ packages:
       object.entries: 1.1.6
     dev: true
 
-  /eslint-config-airbnb/19.0.4_cc2iponrunxf56hmpdei5jpgxm:
+  /eslint-config-airbnb/19.0.4_jrbq5spb6ym3vlo5mnlvtmgpyy:
+    resolution: {integrity: sha512-T75QYQVQX57jiNgpF9r1KegMICE94VYwoFQyMGhrvc+lB8YF2E/M/PYDaQe1AJcWaEgqLE+ErXV1Og/+6Vyzew==}
+    engines: {node: ^10.12.0 || ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^7.32.0 || ^8.2.0
+      eslint-plugin-import: ^2.25.3
+      eslint-plugin-jsx-a11y: ^6.5.1
+      eslint-plugin-react: ^7.28.0
+      eslint-plugin-react-hooks: ^4.3.0
+    dependencies:
+      eslint: 8.57.0
+      eslint-config-airbnb-base: 15.0.0_jrbq5spb6ym3vlo5mnlvtmgpyy
+      eslint-plugin-import: 2.29.1_44kqb2ye3uwgkksvxto6rjaaty
+      object.assign: 4.1.5
+      object.entries: 1.1.6
+    dev: true
+
+  /eslint-config-airbnb/19.0.4_y7256zh5lqcvtwglhjl3uzv2oa:
     resolution: {integrity: sha512-T75QYQVQX57jiNgpF9r1KegMICE94VYwoFQyMGhrvc+lB8YF2E/M/PYDaQe1AJcWaEgqLE+ErXV1Og/+6Vyzew==}
     engines: {node: ^10.12.0 || ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -8827,24 +8844,7 @@ packages:
       eslint-plugin-import: 2.28.1_ryw5pgsiq2rjy5eoyqhatb73ja
       eslint-plugin-jsx-a11y: 6.9.0_eslint@8.57.0
       eslint-plugin-react: 7.33.2_eslint@8.57.0
-      eslint-plugin-react-hooks: 4.6.0_eslint@8.57.0
-      object.assign: 4.1.5
-      object.entries: 1.1.6
-    dev: true
-
-  /eslint-config-airbnb/19.0.4_jrbq5spb6ym3vlo5mnlvtmgpyy:
-    resolution: {integrity: sha512-T75QYQVQX57jiNgpF9r1KegMICE94VYwoFQyMGhrvc+lB8YF2E/M/PYDaQe1AJcWaEgqLE+ErXV1Og/+6Vyzew==}
-    engines: {node: ^10.12.0 || ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^7.32.0 || ^8.2.0
-      eslint-plugin-import: ^2.25.3
-      eslint-plugin-jsx-a11y: ^6.5.1
-      eslint-plugin-react: ^7.28.0
-      eslint-plugin-react-hooks: ^4.3.0
-    dependencies:
-      eslint: 8.57.0
-      eslint-config-airbnb-base: 15.0.0_jrbq5spb6ym3vlo5mnlvtmgpyy
-      eslint-plugin-import: 2.29.1_44kqb2ye3uwgkksvxto6rjaaty
+      eslint-plugin-react-hooks: 4.6.2_eslint@8.57.0
       object.assign: 4.1.5
       object.entries: 1.1.6
     dev: true
@@ -9561,8 +9561,8 @@ packages:
       eslint: 8.57.0
     dev: true
 
-  /eslint-plugin-react-hooks/4.6.0_eslint@8.57.0:
-    resolution: {integrity: sha512-oFc7Itz9Qxh2x4gNHStv3BqJq54ExXmfC+a1NjAta66IAN87Wu0R/QArgIS9qKzX3dXKPI9H5crl9QchNMY9+g==}
+  /eslint-plugin-react-hooks/4.6.2_eslint@8.57.0:
+    resolution: {integrity: sha512-QzliNJq4GinDBcD8gPB5v0wh6g8q3SUi6EFF0x8N/BL9PoVs0atuGc47ozMRyOWAKdwaZ5OnbOEa3WR+dSGKuQ==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
@@ -14576,6 +14576,12 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
+    dev: true
+
+  /scheduler/0.23.2:
+    resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
+    dependencies:
+      loose-envify: 1.4.0
     dev: true
 
   /secure-compare/3.0.1:
