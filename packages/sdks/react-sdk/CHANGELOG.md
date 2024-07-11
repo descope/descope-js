@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.48](https://github.com/descope/descope-js/compare/react-sdk-2.0.47...react-sdk-2.0.48) (2024-07-11)
+
 ## [2.0.47](https://github.com/descope/descope-js/compare/react-sdk-2.0.46...react-sdk-2.0.47) (2024-07-11)
 
 ## [2.0.46](https://github.com/descope/descope-js/compare/react-sdk-2.0.45...react-sdk-2.0.46) (2024-07-11)
