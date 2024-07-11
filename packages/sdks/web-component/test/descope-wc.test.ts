@@ -179,6 +179,37 @@ describe('web-component', () => {
     pageContent = '';
   });
 
+  it('should switch theme on the fly', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<button id="email">Button</button><span>It works!</span>';
+
+    const DescopeUI = {
+      componentsThemeManager: { currentThemeName: undefined },
+    };
+    globalThis.DescopeUI = DescopeUI;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc theme="light" flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Button'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc');
+    wc.setAttribute('theme', 'dark');
+
+    const rootEle = wc.shadowRoot.querySelector('#wc-root');
+
+    await waitFor(
+      () =>
+        expect(DescopeUI.componentsThemeManager.currentThemeName).toBe('dark'),
+      { timeout: 3000 },
+    );
+    await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'dark'), {
+      timeout: 3000,
+    });
+  }, 5000);
+
   it('should clear the flow query params after render', async () => {
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1&code=123456`;
     nextMock.mockReturnValue(generateSdkResponse({}));
@@ -635,37 +666,6 @@ describe('web-component', () => {
 
     expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
   });
-
-  it('should switch theme on the fly', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-
-    pageContent = '<button id="email">Button</button><span>It works!</span>';
-
-    const DescopeUI = {
-      componentsThemeManager: { currentThemeName: undefined },
-    };
-    globalThis.DescopeUI = DescopeUI;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc theme="light" flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('Button'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    const wc = document.querySelector('descope-wc');
-    wc.setAttribute('theme', 'dark');
-
-    const rootEle = wc.shadowRoot.querySelector('#wc-root');
-
-    await waitFor(
-      () =>
-        expect(DescopeUI.componentsThemeManager.currentThemeName).toBe('dark'),
-      { timeout: 3000 },
-    );
-    await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'dark'), {
-      timeout: 3000,
-    });
-  }, 5000);
 
   it('When there is a single "sso" button and pressing on enter, it clicks the button', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
