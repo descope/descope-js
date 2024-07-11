@@ -1,6 +1,6 @@
 {
   "name": "@descope/user-management-widget",
-  "version": "0.4.108",
+  "version": "0.4.109",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -40,7 +40,7 @@
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "6.4.6",
     "@types/jest": "^29.0.0",
-    "@types/node": "20.14.5",
+    "@types/node": "20.14.6",
     "@types/testing-library__jest-dom": "5.14.9",
     "dotenv": "^16.0.3",
     "eslint": "8.57.0",
@@ -85,7 +85,7 @@
     "@descope/sdk-mixins": "workspace:*",
     "@descope/sdk-component-drivers": "workspace:*",
     "tslib": "2.6.3",
-    "libphonenumber-js": "1.10.59",
+    "libphonenumber-js": "1.11.4",
     "reselect": "5.1.1",
     "@reduxjs/toolkit": "^2.0.1",
     "redux": "5.0.1",
