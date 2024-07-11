@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.19.5](https://github.com/descope/descope-js/compare/web-component-3.19.4...web-component-3.19.5) (2024-07-11)
+
+
+### Bug Fixes
+
+* form.displayName to populate properly ([#705](https://github.com/descope/descope-js/issues/705)) ([73b3af1](https://github.com/descope/descope-js/commit/73b3af1a1a5f943d61263b3b5128cc1b40aa8121))
+* issue7026 RELEASE ([#702](https://github.com/descope/descope-js/issues/702)) ([7ea3b2c](https://github.com/descope/descope-js/commit/7ea3b2c62e2f7a664ace8efa5bdc034d90312998))
+
 ## [3.19.4](https://github.com/descope/descope-js/compare/web-component-3.19.3...web-component-3.19.4) (2024-07-11)
 
 ### Dependency Updates
