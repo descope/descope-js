@@ -103,6 +103,8 @@ class DescopeWc extends BaseDescopeWc {
           this.dispatchEvent(
             new CustomEvent('components-context', {
               detail: {
+                // we store the result with script.id prefix to avoid conflicts with other scripts results
+                // that may have the same key
                 [`${SDK_SCRIPT_RESULTS_KEY}.${script.id}_${script.resultKey}`]:
                   result,
               },
