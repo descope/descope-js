@@ -446,7 +446,7 @@ importers:
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
       '@testing-library/jest-dom': 5.17.0
-      '@testing-library/react': 12.1.5
+      '@testing-library/react': 16.0.0
       '@testing-library/react-hooks': 8.0.1
       '@testing-library/user-event': 14.5.2
       '@types/jest': ^27.0.2
@@ -519,7 +519,7 @@ importers:
       '@rollup/plugin-replace': 5.0.2_rollup@2.79.1
       '@rollup/plugin-typescript': 11.1.6_zptcx3kz3uwp66hzhyyt545weq
       '@testing-library/jest-dom': 5.17.0
-      '@testing-library/react': 12.1.5_sfoxds7t5ydpegc3knd667wn6m
+      '@testing-library/react': 16.0.0_4zqeitcuao4am3fxhqxvodt6wi
       '@testing-library/react-hooks': 8.0.1_3scdnhsmr7zu3cqadlewkavxvq
       '@testing-library/user-event': 14.5.2
       '@types/jest': 27.5.2
@@ -5460,16 +5460,24 @@ packages:
       react-error-boundary: 3.1.4_react@17.0.2
     dev: true
 
-  /@testing-library/react/12.1.5_sfoxds7t5ydpegc3knd667wn6m:
-    resolution: {integrity: sha512-OfTXCJUFgjd/digLUuPxa0+/3ZxsQmE7ub9kcbW/wi96Bh3o/p5vrETcBGfP17NWPGqeYYl5LTRpwyGoMC4ysg==}
-    engines: {node: '>=12'}
+  /@testing-library/react/16.0.0_4zqeitcuao4am3fxhqxvodt6wi:
+    resolution: {integrity: sha512-guuxUKRWQ+FgNX0h0NS0FIq3Q3uLtWVpBzcLOggmfMoUpgBnzBzvLLd4fbm6yS8ydJd94cIfY4yP9qUQjM2KwQ==}
+    engines: {node: '>=18'}
     peerDependencies:
-      react: <18.0.0
-      react-dom: <18.0.0
+      '@testing-library/dom': ^10.0.0
+      '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
     dependencies:
       '@babel/runtime': 7.23.5
-      '@testing-library/dom': 8.20.1
-      '@types/react-dom': 17.0.25
+      '@types/react': 17.0.80
+      '@types/react-dom': 18.3.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: true
@@ -5670,12 +5678,6 @@ packages:
 
   /@types/prop-types/15.7.12:
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
-    dev: true
-
-  /@types/react-dom/17.0.25:
-    resolution: {integrity: sha512-urx7A7UxkZQmThYA4So0NelOVjx3V4rNFVJwp0WZlbIK5eM4rNJDiN3R/E9ix0MBh6kAEojk/9YL+Te6D9zHNA==}
-    dependencies:
-      '@types/react': 17.0.80
     dev: true
 
   /@types/react-dom/18.3.0:
