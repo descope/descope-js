@@ -578,4 +578,3 @@ If you need help you can email [Descope Support](mailto:support@descope.com)
 ## License
 
 The Descope SDK for React is licensed for use under the terms and conditions of the [MIT license Agreement](./LICENSE).
-

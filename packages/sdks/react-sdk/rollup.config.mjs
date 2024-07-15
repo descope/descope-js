@@ -71,21 +71,6 @@ export default [
       commonjs(),
       nodeResolve(),
       terser(),
-      function bla() {
-        return {
-          name: 'blabla',
-          buildEnd: () => {
-            // console.log(fs.readdirSync('./dist'))
-
-
-            const ls = spawn('ls', ['-lR', './dist']);
-
-            ls.stdout.on('data', (data) => {
-              console.log(`stdout: ${data}`);
-            });
-          },
-        }
-      }()
     ],
   },
   {
