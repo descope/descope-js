@@ -8,7 +8,6 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
-  SDK_SCRIPT_RESULTS_KEY,
 } from '../constants';
 import {
   fetchContent,
@@ -49,6 +48,7 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+import loadSdkScript, { getScriptResultPath } from './sdkScripts';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -77,24 +77,12 @@ class DescopeWc extends BaseDescopeWc {
     this.flowState = flowState;
   }
 
-  async loadScripts() {
+  async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
     const scripts = flowConfig.sdkScripts;
 
-    const loadScript = async (scriptId: string) => {
-      let res;
-      switch (scriptId) {
-        case 'forter':
-          // eslint-disable-next-line no-case-declarations
-          res = await import('./sdkScripts/forter');
-          return res.default;
-        default:
-          throw new Error(`Unknown script id: ${scriptId}`);
-      }
-    };
-
     scripts?.forEach(async (script) => {
-      const module = await loadScript(script.id);
+      const module = await loadSdkScript(script.id);
       module(
         script.initArgs as any,
         { baseUrl: this.baseUrl },
@@ -105,8 +93,7 @@ class DescopeWc extends BaseDescopeWc {
               detail: {
                 // we store the result with script.id prefix to avoid conflicts with other scripts results
                 // that may have the same key
-                [`${SDK_SCRIPT_RESULTS_KEY}.${script.id}_${script.resultKey}`]:
-                  result,
+                [getScriptResultPath(script.id, script.resultKey)]: result,
               },
               bubbles: true,
               composed: true,
@@ -226,7 +213,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      this.loadScripts();
+      this.loadSdkScripts();
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
         await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
       } else {

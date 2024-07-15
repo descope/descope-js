@@ -28,6 +28,7 @@ import {
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OIDC_PROMPT_PARAM_NAME,
+  SDK_SCRIPT_RESULTS_KEY,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -36,6 +37,10 @@ import * as helpers from '../src/lib/helpers/helpers';
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
+// We load forter script in the test because we mock it and ensure it is called properly
+import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
+
+jest.mock('../src/lib/descope-wc/sdkScripts/forter', () => jest.fn());
 
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
@@ -1602,6 +1607,70 @@ describe('web-component', () => {
     expect(ensureFingerprintIds).toHaveBeenCalledWith(
       'fp-public-key',
       'http://base.url',
+    );
+  });
+
+  it('should load sdk script when flow configured with sdk script', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    // We use specific connector which exists to test it all end to end
+    // but we override it above
+    const scriptId = 'forter';
+    const resultKey = 'some-result-key';
+    const resultValue = 'some-value';
+
+    configContent = {
+      flows: {
+        'sign-in': {
+          startScreenId: 'screen-0',
+          sdkScripts: [
+            {
+              id: scriptId,
+              initArgs: {
+                siteId: 'some-site-id',
+              },
+              resultKey,
+            },
+          ],
+        },
+      },
+    };
+
+    pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="http://base.url"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('Click'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // ensure loadForter is called
+    expect(loadForter).toHaveBeenCalledWith(
+      {
+        siteId: 'some-site-id',
+      },
+      expect.objectContaining({
+        baseUrl: 'http://base.url',
+      }),
+      expect.any(Function),
+    );
+
+    // trigger the callback, to simulate the script loaded
+    // get the 3rd argument of the first call to loadForter
+    const callback = (loadForter as jest.Mock).mock.calls[0][2];
+    callback(resultValue);
+
+    fireEvent.click(screen.getByShadowText('Click'));
+
+    await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+    // Get start input is the 6th argument of the first call to start
+    // ensure the result is passed to the start input
+    const startInput = startMock.mock.calls[0][6];
+    expect(startInput).toEqual(
+      expect.objectContaining({
+        [`${SDK_SCRIPT_RESULTS_KEY}.${scriptId}_${resultKey}`]: resultValue,
+      }),
     );
   });
 

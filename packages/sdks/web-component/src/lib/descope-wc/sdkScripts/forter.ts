@@ -17,7 +17,7 @@ const loadForter = async (
   const script = forterScript.replace(/{{SITE_ID}}/g, siteId);
   const scriptTag = document.createElement('script');
   scriptTag.setAttribute('type', 'text/javascript');
-  scriptTag.setAttribute('id', 'siteId');
+  scriptTag.setAttribute('id', siteId);
   scriptTag.text = script;
   document.body.appendChild(scriptTag);
 
