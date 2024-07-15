@@ -8371,7 +8371,7 @@ packages:
     dependencies:
       confusing-browser-globals: 1.0.11
       eslint: 8.57.0
-      eslint-plugin-import: 2.28.1_ryw5pgsiq2rjy5eoyqhatb73ja
+      eslint-plugin-import: 2.28.1_44kqb2ye3uwgkksvxto6rjaaty
       object.assign: 4.1.5
       object.entries: 1.1.6
       semver: 6.3.1
@@ -8402,7 +8402,7 @@ packages:
     dependencies:
       eslint: 8.57.0
       eslint-config-airbnb-base: 15.0.0_2n3u76iuncpptyqzqqmdn7hdpi
-      eslint-plugin-import: 2.28.1_ryw5pgsiq2rjy5eoyqhatb73ja
+      eslint-plugin-import: 2.28.1_44kqb2ye3uwgkksvxto6rjaaty
     dev: true
 
   /eslint-config-airbnb-typescript/18.0.0_jrbq5spb6ym3vlo5mnlvtmgpyy:
