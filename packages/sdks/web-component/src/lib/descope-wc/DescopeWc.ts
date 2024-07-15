@@ -70,7 +70,10 @@ class DescopeWc extends BaseDescopeWc {
   #conditionalUiAbortController = null;
 
   constructor() {
-    const flowState = new State<FlowState>();
+    const flowState = new State<FlowState>({
+      deferredRedirect: false,
+    } as FlowState);
+
     super(flowState.update.bind(flowState));
 
     this.flowState = flowState;
