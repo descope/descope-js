@@ -441,7 +441,7 @@ importers:
       '@descope/web-js-sdk': workspace:*
       '@open-wc/rollup-plugin-html': ^1.2.5
       '@remix-run/router': 1.17.0
-      '@rollup/plugin-commonjs': ^25.0.0
+      '@rollup/plugin-commonjs': ^26.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
@@ -514,7 +514,7 @@ importers:
       '@babel/preset-typescript': 7.24.7_@babel+core@7.24.7
       '@open-wc/rollup-plugin-html': 1.2.5
       '@remix-run/router': 1.17.0
-      '@rollup/plugin-commonjs': 25.0.8_rollup@2.79.1
+      '@rollup/plugin-commonjs': 26.0.1_rollup@2.79.1
       '@rollup/plugin-node-resolve': 15.0.2_rollup@2.79.1
       '@rollup/plugin-replace': 5.0.2_rollup@2.79.1
       '@rollup/plugin-typescript': 11.1.6_zptcx3kz3uwp66hzhyyt545weq
@@ -4397,24 +4397,6 @@ packages:
   /@remix-run/router/1.17.0:
     resolution: {integrity: sha512-2D6XaHEVvkCn682XBnipbJjgZUU7xjLtA4dGJRBVUKpEaDYOZMENZoZjAOSb7qirxt5RupjzZxz4fK2FO+EFPw==}
     engines: {node: '>=14.0.0'}
-    dev: true
-
-  /@rollup/plugin-commonjs/25.0.8_rollup@2.79.1:
-    resolution: {integrity: sha512-ZEZWTK5n6Qde0to4vS9Mr5x/0UZoqCxPVR9KRUjU4kA2sO7GEUn1fop0DAwpO6z0Nw/kJON9bDmSxdWxO/TT1A==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.68.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0_rollup@2.79.1
-      commondir: 1.0.1
-      estree-walker: 2.0.2
-      glob: 8.1.0
-      is-reference: 1.2.1
-      magic-string: 0.30.8
-      rollup: 2.79.1
     dev: true
 
   /@rollup/plugin-commonjs/26.0.1_rollup@2.79.1:
@@ -9937,18 +9919,6 @@ packages:
       minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
-    dev: true
-
-  /glob/8.1.0:
-    resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
-    engines: {node: '>=12'}
-    deprecated: Glob versions prior to v9 are no longer supported
-    dependencies:
-      fs.realpath: 1.0.0
-      inflight: 1.0.6
-      inherits: 2.0.4
-      minimatch: 5.1.6
-      once: 1.4.0
     dev: true
 
   /global-directory/4.0.1:
