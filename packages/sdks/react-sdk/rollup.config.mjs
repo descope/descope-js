@@ -7,7 +7,6 @@ import dts from 'rollup-plugin-dts';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import { spawn } from 'child_process';
 
 import packageJson from './package.json' assert { type: 'json' };
 
