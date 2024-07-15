@@ -152,6 +152,9 @@ importers:
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
 
+  packages/libs/sdk-component-drivers/dist/cjs:
+    specifiers: {}
+
   packages/libs/sdk-helpers:
     specifiers:
       '@rollup/plugin-commonjs': 26.0.1
@@ -240,6 +243,9 @@ importers:
       ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
+
+  packages/libs/sdk-helpers/dist/cjs:
+    specifiers: {}
 
   packages/libs/sdk-mixins:
     specifiers:
@@ -340,6 +346,9 @@ importers:
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
 
+  packages/libs/sdk-mixins/dist/cjs:
+    specifiers: {}
+
   packages/sdks/core-js-sdk:
     specifiers:
       '@open-wc/rollup-plugin-html': 1.2.5
@@ -425,6 +434,9 @@ importers:
       ts-node: 10.9.2_typescript@4.9.5
       typescript: 4.9.5
 
+  packages/sdks/core-js-sdk/dist/cjs:
+    specifiers: {}
+
   packages/sdks/react-sdk:
     specifiers:
       '@babel/core': 7.24.7
@@ -440,7 +452,7 @@ importers:
       '@descope/web-component': workspace:*
       '@descope/web-js-sdk': workspace:*
       '@open-wc/rollup-plugin-html': ^1.2.5
-      '@remix-run/router': ^1.0.0
+      '@remix-run/router': 1.2.0
       '@rollup/plugin-commonjs': ^25.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
@@ -482,8 +494,8 @@ importers:
       pretty-quick: ^3.1.3
       react: 18.3.1
       react-dom: 18.3.1
-      react-router: ^6.2.1
-      react-router-dom: 6.24.0
+      react-router: 6.8.1
+      react-router-dom: 6.8.1
       rollup: ^2.62.0
       rollup-plugin-auto-external: ^2.0.0
       rollup-plugin-browsersync: ^1.3.3
@@ -513,7 +525,7 @@ importers:
       '@babel/preset-react': 7.24.7_@babel+core@7.24.7
       '@babel/preset-typescript': 7.24.7_@babel+core@7.24.7
       '@open-wc/rollup-plugin-html': 1.2.5
-      '@remix-run/router': 1.9.0
+      '@remix-run/router': 1.2.0
       '@rollup/plugin-commonjs': 25.0.8_rollup@2.79.1
       '@rollup/plugin-node-resolve': 15.0.2_rollup@2.79.1
       '@rollup/plugin-replace': 5.0.2_rollup@2.79.1
@@ -555,8 +567,8 @@ importers:
       pretty-quick: 3.3.1
       react: 18.3.1
       react-dom: 18.3.1_react@18.3.1
-      react-router: 6.16.0_react@18.3.1
-      react-router-dom: 6.24.0_nnrd3gsncyragczmpvfhocinkq
+      react-router: 6.8.1_react@18.3.1
+      react-router-dom: 6.8.1_nnrd3gsncyragczmpvfhocinkq
       rollup: 2.79.1
       rollup-plugin-auto-external: 2.0.0_rollup@2.79.1
       rollup-plugin-browsersync: 1.3.3
@@ -571,6 +583,9 @@ importers:
       ts-jest: 29.1.5_hih3tqlb2njctj5r2xdpywrb6y
       ts-node: 10.9.1_6m5twgte6m5uy2mrfew2k7ssz4
       typescript: 4.9.5
+
+  packages/sdks/react-sdk/dist/cjs:
+    specifiers: {}
 
   packages/sdks/web-component:
     specifiers:
@@ -765,6 +780,9 @@ importers:
       ts-jest: 29.1.5_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
+
+  packages/sdks/web-js-sdk/dist/cjs:
+    specifiers: {}
 
   packages/widgets/access-key-management-widget:
     specifiers:
@@ -3832,7 +3850,6 @@ packages:
     dependencies:
       '@nx/eslint-plugin': 19.3.1_igvlr3wiov36khehhx7we4rgfm
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3852,7 +3869,6 @@ packages:
     dependencies:
       '@nx/jest': 19.3.1_nza2k6hyouv7j65c66o72jibf4
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3872,7 +3888,6 @@ packages:
     dependencies:
       '@nx/js': 19.3.1_7l6oq5g2zwq4xhj5x4uctdalva
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3889,7 +3904,6 @@ packages:
     dependencies:
       '@nx/js': 19.3.1_ynhtmlx3ip646t36amxlzvmdni
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3906,7 +3920,6 @@ packages:
     dependencies:
       '@nx/eslint': 19.3.1_sjshu6m4xqbznxz2y76l6ewv5u
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3997,7 +4010,6 @@ packages:
       semver: 7.6.0
       tslib: 2.6.3
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4027,7 +4039,6 @@ packages:
       tslib: 2.6.3
       typescript: 5.4.5
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4057,7 +4068,6 @@ packages:
       tslib: 2.6.3
       yargs-parser: 21.1.1
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4092,7 +4102,7 @@ packages:
       '@nx/workspace': 19.3.1
       babel-plugin-const-enum: 1.2.0_@babel+core@7.24.7
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.24.7
+      babel-plugin-transform-typescript-metadata: 0.3.2
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -4110,7 +4120,6 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.3
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4141,7 +4150,7 @@ packages:
       '@nx/workspace': 19.3.1
       babel-plugin-const-enum: 1.2.0_@babel+core@7.24.7
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.24.7
+      babel-plugin-transform-typescript-metadata: 0.3.2
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -4159,7 +4168,6 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.3
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4175,7 +4183,6 @@ packages:
     dependencies:
       '@nx/eslint': 19.3.1_sjshu6m4xqbznxz2y76l6ewv5u
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4394,14 +4401,14 @@ packages:
       redux-thunk: 3.1.0_redux@5.0.1
       reselect: 5.1.1
 
-  /@remix-run/router/1.17.0:
-    resolution: {integrity: sha512-2D6XaHEVvkCn682XBnipbJjgZUU7xjLtA4dGJRBVUKpEaDYOZMENZoZjAOSb7qirxt5RupjzZxz4fK2FO+EFPw==}
-    engines: {node: '>=14.0.0'}
+  /@remix-run/router/1.2.0:
+    resolution: {integrity: sha512-GO82KYYTWPRCgdNtnheaZG3LcViUlxRFlHM7ykh7N+ufoXi6PVIHoP+9RUG/vuzl2hr9i/h6EA1Eq+2HpqJ0gQ==}
+    engines: {node: '>=14'}
     dev: true
 
-  /@remix-run/router/1.9.0:
-    resolution: {integrity: sha512-bV63itrKBC0zdT27qYm6SDZHlkXwFL1xMBuhkn+X7l0+IIhNaH5wuuvZKp6eKhCD4KFhujhfhCT1YxXW6esUIA==}
-    engines: {node: '>=14.0.0'}
+  /@remix-run/router/1.3.2:
+    resolution: {integrity: sha512-t54ONhl/h75X94SWsHGQ4G/ZrCEguKSRQr7DrjTciJXW0YU1QhlwYeycvK5JgkzlxmvrK7wq1NB/PLtHxoiDcA==}
+    engines: {node: '>=14'}
     dev: true
 
   /@rollup/plugin-commonjs/25.0.8_rollup@2.79.1:
@@ -6793,16 +6800,9 @@ packages:
       - supports-color
     dev: true
 
-  /babel-plugin-transform-typescript-metadata/0.3.2_@babel+core@7.24.7:
+  /babel-plugin-transform-typescript-metadata/0.3.2:
     resolution: {integrity: sha512-mWEvCQTgXQf48yDqgN7CH50waTyYBeP2Lpqx4nNWab9sxEpdXVeKgfj1qYI2/TgUPQtNFZ85i3PemRtnXVYYJg==}
-    peerDependencies:
-      '@babel/core': ^7
-      '@babel/traverse': ^7
-    peerDependenciesMeta:
-      '@babel/traverse':
-        optional: true
     dependencies:
-      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.24.8
     dev: true
 
@@ -8738,7 +8738,7 @@ packages:
       debug: 3.2.7
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1_2n3u76iuncpptyqzqqmdn7hdpi
+      eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8766,7 +8766,7 @@ packages:
     dependencies:
       debug: 3.2.7
       eslint: 8.57.0
-      eslint-import-resolver-typescript: 3.6.1_2n3u76iuncpptyqzqqmdn7hdpi
+      eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10183,7 +10183,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -10962,7 +10962,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
+      ts-node: 10.9.2_@types+node@20.14.8
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -13039,36 +13039,26 @@ packages:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
     dev: true
 
-  /react-router-dom/6.24.0_nnrd3gsncyragczmpvfhocinkq:
-    resolution: {integrity: sha512-960sKuau6/yEwS8e+NVEidYQb1hNjAYM327gjEyXlc6r3Skf2vtwuJ2l7lssdegD2YjoKG5l8MsVyeTDlVeY8g==}
-    engines: {node: '>=14.0.0'}
+  /react-router-dom/6.8.1_nnrd3gsncyragczmpvfhocinkq:
+    resolution: {integrity: sha512-67EXNfkQgf34P7+PSb6VlBuaacGhkKn3kpE51+P6zYSG2kiRoumXEL6e27zTa9+PGF2MNXbgIUHTVlleLbIcHQ==}
+    engines: {node: '>=14'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
     dependencies:
-      '@remix-run/router': 1.17.0
+      '@remix-run/router': 1.3.2
       react: 18.3.1
       react-dom: 18.3.1_react@18.3.1
-      react-router: 6.24.0_react@18.3.1
+      react-router: 6.8.1_react@18.3.1
     dev: true
 
-  /react-router/6.16.0_react@18.3.1:
-    resolution: {integrity: sha512-VT4Mmc4jj5YyjpOi5jOf0I+TYzGpvzERy4ckNSvSh2RArv8LLoCxlsZ2D+tc7zgjxcY34oTz2hZaeX5RVprKqA==}
-    engines: {node: '>=14.0.0'}
+  /react-router/6.8.1_react@18.3.1:
+    resolution: {integrity: sha512-Jgi8BzAJQ8MkPt8ipXnR73rnD7EmZ0HFFb7jdQU24TynGW1Ooqin2KVDN9voSC+7xhqbbCd2cjGUepb6RObnyg==}
+    engines: {node: '>=14'}
     peerDependencies:
       react: '>=16.8'
     dependencies:
-      '@remix-run/router': 1.9.0
-      react: 18.3.1
-    dev: true
-
-  /react-router/6.24.0_react@18.3.1:
-    resolution: {integrity: sha512-sQrgJ5bXk7vbcC4BxQxeNa5UmboFm35we1AFK0VvQaz9g0LzxEIuLOhHIoZ8rnu9BO21ishGeL9no1WB76W/eg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.17.0
+      '@remix-run/router': 1.3.2
       react: 18.3.1
     dev: true
 
