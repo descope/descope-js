@@ -7,6 +7,7 @@ import dts from 'rollup-plugin-dts';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import { spawn } from 'child_process';
 
 import packageJson from './package.json' assert { type: 'json' };
 
@@ -70,6 +71,21 @@ export default [
       commonjs(),
       nodeResolve(),
       terser(),
+      function bla() {
+        return {
+          name: 'blabla',
+          buildEnd: () => {
+            // console.log(fs.readdirSync('./dist'))
+
+
+            const ls = spawn('ls', ['-lR', './dist']);
+
+            ls.stdout.on('data', (data) => {
+              console.log(`stdout: ${data}`);
+            });
+          },
+        }
+      }()
     ],
   },
   {
