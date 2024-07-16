@@ -152,9 +152,6 @@ importers:
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
 
-  packages/libs/sdk-component-drivers/dist/cjs:
-    specifiers: {}
-
   packages/libs/sdk-helpers:
     specifiers:
       '@rollup/plugin-commonjs': 26.0.1
@@ -243,9 +240,6 @@ importers:
       ts-jest: 29.1.2_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
-
-  packages/libs/sdk-helpers/dist/cjs:
-    specifiers: {}
 
   packages/libs/sdk-mixins:
     specifiers:
@@ -346,9 +340,6 @@ importers:
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
 
-  packages/libs/sdk-mixins/dist/cjs:
-    specifiers: {}
-
   packages/sdks/core-js-sdk:
     specifiers:
       '@open-wc/rollup-plugin-html': 1.2.5
@@ -433,9 +424,6 @@ importers:
       ts-jest: 29.1.5_g73jhrtw2a6rvki4qcae2rtkmy
       ts-node: 10.9.2_typescript@4.9.5
       typescript: 4.9.5
-
-  packages/sdks/core-js-sdk/dist/cjs:
-    specifiers: {}
 
   packages/sdks/react-sdk:
     specifiers:
@@ -583,9 +571,6 @@ importers:
       ts-jest: 29.1.5_hih3tqlb2njctj5r2xdpywrb6y
       ts-node: 10.9.1_6m5twgte6m5uy2mrfew2k7ssz4
       typescript: 4.9.5
-
-  packages/sdks/react-sdk/dist/cjs:
-    specifiers: {}
 
   packages/sdks/web-component:
     specifiers:
@@ -780,9 +765,6 @@ importers:
       ts-jest: 29.1.5_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
       typescript: 4.9.5
-
-  packages/sdks/web-js-sdk/dist/cjs:
-    specifiers: {}
 
   packages/widgets/access-key-management-widget:
     specifiers:
@@ -3850,6 +3832,7 @@ packages:
     dependencies:
       '@nx/eslint-plugin': 19.3.1_igvlr3wiov36khehhx7we4rgfm
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3869,6 +3852,7 @@ packages:
     dependencies:
       '@nx/jest': 19.3.1_nza2k6hyouv7j65c66o72jibf4
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3888,6 +3872,7 @@ packages:
     dependencies:
       '@nx/js': 19.3.1_7l6oq5g2zwq4xhj5x4uctdalva
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3904,6 +3889,7 @@ packages:
     dependencies:
       '@nx/js': 19.3.1_ynhtmlx3ip646t36amxlzvmdni
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -3920,6 +3906,7 @@ packages:
     dependencies:
       '@nx/eslint': 19.3.1_sjshu6m4xqbznxz2y76l6ewv5u
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4010,6 +3997,7 @@ packages:
       semver: 7.6.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4039,6 +4027,7 @@ packages:
       tslib: 2.6.3
       typescript: 5.4.5
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4068,6 +4057,7 @@ packages:
       tslib: 2.6.3
       yargs-parser: 21.1.1
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4102,7 +4092,7 @@ packages:
       '@nx/workspace': 19.3.1
       babel-plugin-const-enum: 1.2.0_@babel+core@7.24.7
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2
+      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.24.7
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -4120,6 +4110,7 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4150,7 +4141,7 @@ packages:
       '@nx/workspace': 19.3.1
       babel-plugin-const-enum: 1.2.0_@babel+core@7.24.7
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2
+      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.24.7
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -4168,6 +4159,7 @@ packages:
       tsconfig-paths: 4.2.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -4183,6 +4175,7 @@ packages:
     dependencies:
       '@nx/eslint': 19.3.1_sjshu6m4xqbznxz2y76l6ewv5u
     transitivePeerDependencies:
+      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -6795,9 +6788,16 @@ packages:
       - supports-color
     dev: true
 
-  /babel-plugin-transform-typescript-metadata/0.3.2:
+  /babel-plugin-transform-typescript-metadata/0.3.2_@babel+core@7.24.7:
     resolution: {integrity: sha512-mWEvCQTgXQf48yDqgN7CH50waTyYBeP2Lpqx4nNWab9sxEpdXVeKgfj1qYI2/TgUPQtNFZ85i3PemRtnXVYYJg==}
+    peerDependencies:
+      '@babel/core': ^7
+      '@babel/traverse': ^7
+    peerDependenciesMeta:
+      '@babel/traverse':
+        optional: true
     dependencies:
+      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.24.8
     dev: true
 
@@ -8733,7 +8733,7 @@ packages:
       debug: 3.2.7
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
+      eslint-import-resolver-typescript: 3.6.1_2n3u76iuncpptyqzqqmdn7hdpi
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8761,7 +8761,7 @@ packages:
     dependencies:
       debug: 3.2.7
       eslint: 8.57.0
-      eslint-import-resolver-typescript: 3.6.1_jrbq5spb6ym3vlo5mnlvtmgpyy
+      eslint-import-resolver-typescript: 3.6.1_2n3u76iuncpptyqzqqmdn7hdpi
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10178,7 +10178,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.2_debug@4.3.2
+      follow-redirects: 1.15.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -10957,7 +10957,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2_@types+node@20.14.8
+      ts-node: 10.9.2_raob6nhf2zl2bzjqecyjuyecwu
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
