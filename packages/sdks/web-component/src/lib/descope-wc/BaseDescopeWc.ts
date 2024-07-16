@@ -92,7 +92,7 @@ class BaseDescopeWc extends HTMLElement {
     },
   };
 
-  #flowState = new State<FlowState>({ deferredRedirect: false } as FlowState);
+  #flowState = new State<FlowState>();
 
   #debugState = new State<DebugState>();
 

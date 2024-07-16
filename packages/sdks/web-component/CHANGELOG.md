@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.19.6](https://github.com/descope/descope-js/compare/web-component-3.19.5...web-component-3.19.6) (2024-07-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.5`
+
+### Bug Fixes
+
+* Move deferredRedirect initialization to WC from base ([#736](https://github.com/descope/descope-js/issues/736)) RELEASE ([1c7a509](https://github.com/descope/descope-js/commit/1c7a509297a1a227bc223eca6094cd6880fba110))
+
 ## [3.19.5](https://github.com/descope/descope-js/compare/web-component-3.19.4...web-component-3.19.5) (2024-07-11)
 
 
