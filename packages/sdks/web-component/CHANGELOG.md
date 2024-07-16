@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.19.7](https://github.com/descope/descope-js/compare/web-component-3.19.6...web-component-3.19.7) (2024-07-16)
+
+
+### Bug Fixes
+
+* Fix poll errors RELEASE ([#740](https://github.com/descope/descope-js/issues/740)) ([3c00836](https://github.com/descope/descope-js/commit/3c00836670b3a7f80a3cb227e8a913cb98f357c8))
+
 ## [3.19.6](https://github.com/descope/descope-js/compare/web-component-3.19.5...web-component-3.19.6) (2024-07-15)
 
 ### Dependency Updates
