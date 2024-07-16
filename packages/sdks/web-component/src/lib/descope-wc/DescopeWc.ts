@@ -79,10 +79,29 @@ class DescopeWc extends BaseDescopeWc {
     this.flowState = flowState;
   }
 
+  #eventsCbRefs = {
+    visibilitychange: this.#syncStateWithVisibility.bind(this),
+  };
+
+  #syncStateWithVisibility() {
+    if (!document.hidden) {
+      // Defer the update a bit, it won't work otherwise
+      setTimeout(() => {
+        // Trigger state update that will redirect and pending deferred redirection
+        this.flowState.update({ deferredRedirect: false });
+      }, 300);
+    }
+  }
+
   async connectedCallback() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
       this.stepState?.subscribe(this.onStepChange.bind(this));
+
+      window.addEventListener(
+        'visibilitychange',
+        this.#eventsCbRefs.visibilitychange,
+      );
     }
     await super.connectedCallback();
   }
@@ -95,6 +114,11 @@ class DescopeWc extends BaseDescopeWc {
 
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
+
+    window.removeEventListener(
+      'visibilitychange',
+      this.#eventsCbRefs.visibilitychange,
+    );
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
@@ -513,14 +537,25 @@ class DescopeWc extends BaseDescopeWc {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.#pollingTimeout = setTimeout(async () => {
-        const sdkResp = await this.sdk.flow.next(
-          executionId,
-          stepId,
-          CUSTOM_INTERACTIONS.polling,
-          flowVersion,
-          componentsVersion,
-          {},
-        );
+        let sdkResp;
+        try {
+          sdkResp = await this.sdk.flow.next(
+            executionId,
+            stepId,
+            CUSTOM_INTERACTIONS.polling,
+            flowVersion,
+            componentsVersion,
+            {},
+          );
+        } catch (e) {
+          this.#handlePollingResponse(
+            executionId,
+            stepId,
+            action,
+            flowVersion,
+            componentsVersion,
+          );
+        }
         this.#handleSdkResponse(sdkResp);
         const { action: nextAction } = sdkResp?.data ?? {};
         // will poll again if needed
