@@ -110,7 +110,6 @@ class BaseDescopeWc extends HTMLElement {
 
   #eventsCbRefs = {
     popstate: this.#syncStateIdFromUrl.bind(this),
-    visibilitychange: this.#syncStateWithVisibility.bind(this),
     componentsContext: this.#handleComponentsContext.bind(this),
   };
 
@@ -283,16 +282,6 @@ class BaseDescopeWc extends HTMLElement {
   #syncStateIdFromUrl() {
     const { stepId, executionId } = getRunIdsFromUrl();
     this.#flowState.update({ stepId, executionId });
-  }
-
-  #syncStateWithVisibility() {
-    if (!document.hidden) {
-      // Defer the update a bit, it won't work otherwise
-      setTimeout(() => {
-        // Trigger state update that will redirect and pending deferred redirection
-        this.#flowState.update({ deferredRedirect: false });
-      }, 300);
-    }
   }
 
   #createSdk(projectId: string, baseUrl: string) {
@@ -739,11 +728,6 @@ class BaseDescopeWc extends HTMLElement {
         this.#eventsCbRefs.componentsContext,
       );
 
-      window.addEventListener(
-        'visibilitychange',
-        this.#eventsCbRefs.visibilitychange,
-      );
-
       this.#flowState.subscribe(this.#onFlowChange.bind(this));
 
       this.#flowState.update({
@@ -780,10 +764,6 @@ class BaseDescopeWc extends HTMLElement {
     this.#debugState.unsubscribeAll();
     this.#disableDebugger();
     window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
-    window.removeEventListener(
-      'visibilitychange',
-      this.#eventsCbRefs.visibilitychange,
-    );
     window.removeEventListener(
       'components-context',
       this.#eventsCbRefs.componentsContext,
