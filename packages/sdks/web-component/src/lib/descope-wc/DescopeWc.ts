@@ -513,14 +513,26 @@ class DescopeWc extends BaseDescopeWc {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.#pollingTimeout = setTimeout(async () => {
-        const sdkResp = await this.sdk.flow.next(
-          executionId,
-          stepId,
-          CUSTOM_INTERACTIONS.polling,
-          flowVersion,
-          componentsVersion,
-          {},
-        );
+        console.log('calling next from polling');
+        let sdkResp;
+        try {
+          sdkResp = await this.sdk.flow.next(
+            executionId,
+            stepId,
+            CUSTOM_INTERACTIONS.polling,
+            flowVersion,
+            componentsVersion,
+            {},
+          );
+        } catch (e) {
+          this.#handlePollingResponse(
+            executionId,
+            stepId,
+            action,
+            flowVersion,
+            componentsVersion,
+          );
+        }
         this.#handleSdkResponse(sdkResp);
         const { action: nextAction } = sdkResp?.data ?? {};
         // will poll again if needed
