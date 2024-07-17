@@ -445,7 +445,7 @@ importers:
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-typescript': ^11.0.0
-      '@testing-library/jest-dom': 5.17.0
+      '@testing-library/jest-dom': 6.4.6
       '@testing-library/react': 16.0.0
       '@testing-library/react-hooks': 8.0.1
       '@testing-library/user-event': 14.5.2
@@ -518,7 +518,7 @@ importers:
       '@rollup/plugin-node-resolve': 15.0.2_rollup@2.79.1
       '@rollup/plugin-replace': 5.0.2_rollup@2.79.1
       '@rollup/plugin-typescript': 11.1.6_zptcx3kz3uwp66hzhyyt545weq
-      '@testing-library/jest-dom': 5.17.0
+      '@testing-library/jest-dom': 6.4.6_pwihjj5c2zr3yqdkdomsmefeqe
       '@testing-library/react': 16.0.0_ma437sazqanxqsgjws34kond6i
       '@testing-library/react-hooks': 8.0.1_psuonouaqi5wuc37nxyknoubym
       '@testing-library/user-event': 14.5.2
@@ -5128,21 +5128,6 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/jest-dom/5.17.0:
-    resolution: {integrity: sha512-ynmNeT7asXyH3aSVv4vvX4Rb+0qjOhdNHnO/3vuZNqPmhDpV/+rCSGwQ7bLcmU2cJ4dvoheIO85LQj0IbJHEtg==}
-    engines: {node: '>=8', npm: '>=6', yarn: '>=1'}
-    dependencies:
-      '@adobe/css-tools': 4.4.0
-      '@babel/runtime': 7.23.5
-      '@types/testing-library__jest-dom': 5.14.9
-      aria-query: 5.3.0
-      chalk: 3.0.0
-      css.escape: 1.5.1
-      dom-accessibility-api: 0.5.16
-      lodash: 4.17.21
-      redent: 3.0.0
-    dev: true
-
   /@testing-library/jest-dom/6.4.6_pwihjj5c2zr3yqdkdomsmefeqe:
     resolution: {integrity: sha512-8qpnGVincVDLEcQXWaHOf6zmlbwTKc6Us6PPu4CRnPXCzo2OGBS5cwgMMOWdxDpEz1mkbvXHpEy99M5Yvt682w==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
@@ -5171,7 +5156,7 @@ packages:
       chalk: 3.0.0
       css.escape: 1.5.1
       dom-accessibility-api: 0.6.3
-      jest: 29.7.0_eo5qe2l5w6db42u2ik76wgkate
+      jest: 29.7.0_kzkcgcei2rtomtq5yz3kpbvkfy
       lodash: 4.17.21
       redent: 3.0.0
     dev: true
