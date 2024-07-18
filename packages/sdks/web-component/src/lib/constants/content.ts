@@ -11,5 +11,6 @@ export const ASSETS_FOLDER = 'v2-beta';
 export const PREV_VER_ASSETS_FOLDER = 'v2-alpha';
 
 // Those files are saved on a new folder to prevent breaking changes
-export const THEME_FILENAME = 'theme.json';
+export const THEME_DEFAULT_NAME = 'theme';
+export const THEME_DEFAULT_FILENAME = `${THEME_DEFAULT_NAME}.json`;
 export const CONFIG_FILENAME = 'config.json';

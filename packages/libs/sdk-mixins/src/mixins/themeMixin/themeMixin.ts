@@ -6,7 +6,7 @@ import { descopeUiMixin } from '../descopeUiMixin';
 import { initElementMixin } from '../initElementMixin';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
-import { THEME_FILENAME } from './constants';
+import { THEME_DEFAULT_FILENAME } from './constants';
 import { loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
@@ -46,12 +46,16 @@ export const themeMixin = createSingletonMixin(
         return theme || 'light';
       }
 
+      get styleName(): string {
+        return this.getAttribute('styleName') || THEME_DEFAULT_FILENAME;
+      }
+
       #_themeResource: Promise<void | Record<string, any>>;
 
       async #fetchTheme() {
         try {
           const { body: fetchedTheme } = await this.fetchStaticResource(
-            THEME_FILENAME,
+            `${this.styleName}.json`,
             'json',
           );
 

@@ -3,7 +3,7 @@ import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
   PREV_VER_ASSETS_FOLDER,
-  THEME_FILENAME,
+  THEME_DEFAULT_NAME,
   UI_COMPONENTS_FALLBACK_URL,
   UI_COMPONENTS_URL,
   UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
@@ -207,6 +207,10 @@ class BaseDescopeWc extends HTMLElement {
     return theme || 'light';
   }
 
+  get styleName(): string {
+    return this.getAttribute('styleName') || THEME_DEFAULT_NAME;
+  }
+
   get autoFocus(): AutoFocusOptions {
     const res = this.getAttribute('auto-focus') ?? 'true';
     if (res === 'skipFirstScreen') {
@@ -376,7 +380,7 @@ class BaseDescopeWc extends HTMLElement {
   async #fetchTheme() {
     const themeUrl = getContentUrl({
       projectId: this.projectId,
-      filename: THEME_FILENAME,
+      filename: `${this.styleName}.json`,
       baseUrl: this.baseStaticUrl,
     });
     try {

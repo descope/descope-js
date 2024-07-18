@@ -11,7 +11,7 @@ import {
   DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
-  THEME_FILENAME,
+  THEME_DEFAULT_FILENAME,
   URL_CODE_PARAM_NAME,
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
@@ -368,7 +368,7 @@ describe('web-component', () => {
     });
 
     const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
     const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
     const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3289,7 +3289,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3335,7 +3335,7 @@ describe('web-component', () => {
         });
 
         const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
-        const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+        const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
         const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
         const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3381,7 +3381,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3430,7 +3430,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3483,7 +3483,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-zh-tw.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3537,7 +3537,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3600,7 +3600,7 @@ describe('web-component', () => {
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
       const expectedHtmlFallbackPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
