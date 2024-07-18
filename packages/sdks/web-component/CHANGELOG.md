@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.19.9](https://github.com/descope/descope-js/compare/web-component-3.19.8...web-component-3.19.9) (2024-07-18)
+
+
+### Bug Fixes
+
+* polling timeout when click is response t triggers another polling ([#743](https://github.com/descope/descope-js/issues/743)) RELEASE ([fb92c03](https://github.com/descope/descope-js/commit/fb92c036cbca61a9c533f23075c8e14ed3c274e8))
+
 ## [3.19.8](https://github.com/descope/descope-js/compare/web-component-3.19.7...web-component-3.19.8) (2024-07-17)
 
 ### Dependency Updates
