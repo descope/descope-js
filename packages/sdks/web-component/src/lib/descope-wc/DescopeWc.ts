@@ -535,6 +535,11 @@ class DescopeWc extends BaseDescopeWc {
     componentsVersion,
   ) => {
     if (action === RESPONSE_ACTIONS.poll) {
+      // Reset polling, in case it was already set, this may happen
+      // when the user clicks on a button that triggers a polling action
+      // while the polling timeout is already running
+      this.#resetPollingTimeout();
+
       // schedule next polling request for 2 seconds from now
       this.#pollingTimeout = setTimeout(async () => {
         let sdkResp;
