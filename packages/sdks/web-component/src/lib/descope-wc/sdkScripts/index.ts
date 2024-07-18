@@ -1,7 +1,8 @@
 import { SDK_SCRIPT_RESULTS_KEY } from '../../constants';
 
-export function getScriptResultPath(scriptId: string, resultKey: string) {
-  return `${SDK_SCRIPT_RESULTS_KEY}.${scriptId}_${resultKey}`;
+export function getScriptResultPath(scriptId: string, resultKey?: string) {
+  const path = resultKey ? `${scriptId}_${resultKey}` : scriptId;
+  return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
 // this function should contain the script that will load the sdk scripts

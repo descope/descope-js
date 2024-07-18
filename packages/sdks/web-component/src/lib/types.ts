@@ -182,8 +182,8 @@ export type FlowConfig = {
   sdkScripts?: [
     {
       id: string;
-      resultKey: string;
       initArgs: Record<string, any>;
+      resultKey?: string;
     },
   ];
 };
