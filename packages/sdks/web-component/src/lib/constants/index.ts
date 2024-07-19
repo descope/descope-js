@@ -25,6 +25,8 @@ export const OIDC_PROMPT_PARAM_NAME = 'oidc_prompt';
 
 export const ELEMENT_TYPE_ATTRIBUTE = 'data-type';
 
+export const SDK_SCRIPT_RESULTS_KEY = 'sdkScriptsResults';
+
 export const RESPONSE_ACTIONS = {
   redirect: 'redirect',
   poll: 'poll',
