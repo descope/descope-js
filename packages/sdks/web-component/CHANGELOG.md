@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.20.0](https://github.com/descope/descope-js/compare/web-component-3.19.10...web-component-3.20.0) (2024-07-19)
+
+
+### Features
+
+* init sdk scripts support ([#668](https://github.com/descope/descope-js/issues/668)) RELEASE ([49a4232](https://github.com/descope/descope-js/commit/49a423226bd9abe2b4c65388fc308c9d15237813))
+
 ## [3.19.10](https://github.com/descope/descope-js/compare/web-component-3.19.9...web-component-3.19.10) (2024-07-19)
 
 
