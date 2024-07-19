@@ -1,3 +1,4 @@
+// Source: Forter team
 const forterScript = `
 (function () {
 var merchantConfig = {
