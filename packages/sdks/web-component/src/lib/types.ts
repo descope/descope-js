@@ -68,6 +68,7 @@ export type FlowState = {
   ssoAppId: string;
   oidcLoginHint: string;
   oidcPrompt: string;
+  oidcErrorRedirectUri: string;
 };
 
 export type StepState = {
@@ -80,6 +81,7 @@ export type StepState = {
   oidcLoginHint: string;
   openInNewTabUrl?: string;
   oidcPrompt: string;
+  oidcErrorRedirectUri: string;
 };
 
 export type DebugState = {

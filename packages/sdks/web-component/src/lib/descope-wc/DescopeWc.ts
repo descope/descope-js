@@ -220,6 +220,7 @@ class DescopeWc extends BaseDescopeWc {
       ssoAppId,
       oidcLoginHint,
       oidcPrompt,
+      oidcErrorRedirectUri,
     } = currentState;
 
     let startScreenId: string;
@@ -276,6 +277,7 @@ class DescopeWc extends BaseDescopeWc {
           ssoAppId,
           oidcLoginHint,
           oidcPrompt,
+          oidcErrorRedirectUri,
         )
       ) {
         const sdkResp = await this.sdk.flow.start(
@@ -289,6 +291,7 @@ class DescopeWc extends BaseDescopeWc {
             ssoAppId,
             oidcLoginHint,
             oidcPrompt,
+            oidcErrorRedirectUri,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
@@ -487,13 +490,14 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
+      oidcErrorRedirectUri,
       openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint, oidcPrompt is not empty, this optimization doesn't happen
+    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint, oidcPrompt, oidcErrorRedirectUri is not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (
       showFirstScreenOnExecutionInit(
@@ -504,6 +508,7 @@ class DescopeWc extends BaseDescopeWc {
         ssoAppId,
         oidcLoginHint,
         oidcPrompt,
+        oidcErrorRedirectUri,
       )
     ) {
       stepStateUpdate.next = (
@@ -529,6 +534,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale),
             oidcPrompt,
+            oidcErrorRedirectUri,
           },
           conditionInteractionId,
           interactionId,

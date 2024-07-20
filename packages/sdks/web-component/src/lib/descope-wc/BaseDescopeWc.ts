@@ -716,6 +716,7 @@ class BaseDescopeWc extends HTMLElement {
         ssoAppId,
         oidcLoginHint,
         oidcPrompt,
+        oidcErrorRedirectUri,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
@@ -753,6 +754,7 @@ class BaseDescopeWc extends HTMLElement {
         ssoAppId,
         oidcLoginHint,
         oidcPrompt,
+        oidcErrorRedirectUri,
       });
 
       this.#init = true;

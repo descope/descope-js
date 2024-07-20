@@ -18,6 +18,7 @@ import {
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OVERRIDE_CONTENT_URL,
   OIDC_PROMPT_PARAM_NAME,
+  OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction } from '../types';
 
@@ -231,6 +232,14 @@ export function clearOIDCPromptParamFromUrl() {
   resetUrlParam(OIDC_PROMPT_PARAM_NAME);
 }
 
+export function getOIDCErrorRedirectUriParamFromUrl() {
+  return getUrlParam(OIDC_ERROR_REDIRECT_URI_PARAM_NAME);
+}
+
+export function clearOIDCErrorRedirectUriParamFromUrl() {
+  resetUrlParam(OIDC_ERROR_REDIRECT_URI_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -324,6 +333,11 @@ export const handleUrlParams = () => {
     clearOIDCPromptParamFromUrl();
   }
 
+  const oidcErrorRedirectUri = getOIDCErrorRedirectUriParamFromUrl();
+  if (oidcErrorRedirectUri) {
+    clearOIDCErrorRedirectUriParamFromUrl();
+  }
+
   const idpInitiatedVal = descopeIdpInitiated === 'true';
 
   return {
@@ -343,6 +357,7 @@ export const handleUrlParams = () => {
     ssoAppId,
     oidcLoginHint,
     oidcPrompt,
+    oidcErrorRedirectUri,
   };
 };
 
@@ -473,6 +488,7 @@ export const showFirstScreenOnExecutionInit = (
   ssoAppId: string,
   oidcLoginHint: string,
   oidcPrompt: string,
+  oidcErrorRedirectUri: string,
 ): boolean => {
   const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
   const optimizeIfMissingSAMLParams =
@@ -480,13 +496,16 @@ export const showFirstScreenOnExecutionInit = (
   const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
   const optimizeIfMissingOIDCLoginHintParams = startScreenId && !oidcLoginHint; // return true if oidcLoginHint is empty
   const optimizeIfMissingOIDCPromptParams = startScreenId && !oidcPrompt; // return true if oidcPrompt is empty
+  const optimizeIfMissingOIDCErrorRedirectUriParams =
+    startScreenId && !oidcErrorRedirectUri; // return true if oidcErrorRedirectUri is empty
 
   return (
     optimizeIfMissingOIDCParams &&
     optimizeIfMissingSAMLParams &&
     optimizeIfMissingSSOParams &&
     optimizeIfMissingOIDCLoginHintParams &&
-    optimizeIfMissingOIDCPromptParams
+    optimizeIfMissingOIDCPromptParams &&
+    optimizeIfMissingOIDCErrorRedirectUriParams
   );
 };
 
