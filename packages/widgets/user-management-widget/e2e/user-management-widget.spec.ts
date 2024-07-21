@@ -337,9 +337,7 @@ test.describe('widget', () => {
     const editUserRolesInput = page.getByLabel('Roles').last();
 
     // clear previous email
-    await editUserEmailInput.focus();
-    await page.keyboard.press('Meta+A');
-    await page.keyboard.press('Backspace');
+    await editUserEmailInput.evaluate((e: HTMLInputElement) => (e.value = ''));
     // edit email
     await editUserEmailInput.fill(updatedUser.email);
 
