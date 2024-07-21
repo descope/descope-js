@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-mixins",
-  "version": "0.2.40",
+  "version": "0.2.42",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-mixins",
   "bugs": {
@@ -50,7 +50,7 @@
     "@types/node": "20.14.9",
     "@types/js-cookie": "^3.0.2",
     "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "8.57.0",
+    "eslint": "9.6.0",
     "eslint-config-airbnb-typescript": "18.0.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
