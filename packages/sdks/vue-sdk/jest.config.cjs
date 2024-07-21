@@ -11,6 +11,6 @@ module.exports = {
   testMatch: ['**/tests/**/*.test.ts'],
   setupFiles: ['./setupJest.js'],
   testEnvironmentOptions: {
-    customExportConditions: ["node", "node-addons"],
+    customExportConditions: ['node', 'node-addons'],
   },
 };
