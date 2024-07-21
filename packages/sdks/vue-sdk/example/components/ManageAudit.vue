@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-	<div class="manage-audit-wrapper">
-		<h1>Manage Audit</h1>
-		<AuditManagement :tenant="tenant" widget-id="audit-management-widget" />
-	</div>
+  <div class="manage-audit-wrapper">
+    <h1>Manage Audit</h1>
+    <AuditManagement :tenant="tenant" widget-id="audit-management-widget" />
+  </div>
 </template>
 
 <script setup>
@@ -14,6 +14,6 @@ const tenant = process.env.VUE_APP_DESCOPE_TENANT;
 
 <style>
 .manage-audit-wrapper {
-	margin: 20px;
+  margin: 20px;
 }
 </style>

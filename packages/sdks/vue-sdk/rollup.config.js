@@ -9,53 +9,53 @@ import dts from 'rollup-plugin-dts';
 const packageJson = require('./package.json');
 
 export default [
-	{
-		input: 'src/index.ts',
-		output: [
-			{
-				file: packageJson.module,
-				format: 'esm',
-				sourcemap: true
-			},
-			{
-				file: packageJson.main,
-				format: 'cjs',
-				exports: 'named',
-				sourcemap: true
-			}
-		],
-		plugins: [
-			vue({
-				template: {
-					isProduction: true
-				},
-				compileTemplate: true,
-				compilerOptions: {
-					isCustomElement: (tag) => tag.startsWith('descope-')
-				}
-			}),
-			typescript({
-				tsconfig: './tsconfig.json',
-				useTsconfigDeclarationDir: true
-			}),
-			define({
-				replacements: {
-					BUILD_VERSION: JSON.stringify(packageJson.version)
-				}
-			}),
-			autoExternal(),
-			terser()
-		]
-	},
-	{
-		input: './dist/dts/src/index.d.ts',
-		output: [{ file: packageJson.types, format: 'esm' }],
-		plugins: [
-			dts(),
-			del({
-				hook: 'buildEnd',
-				targets: ['./dist/dts']
-			})
-		]
-	}
+  {
+    input: 'src/index.ts',
+    output: [
+      {
+        file: packageJson.module,
+        format: 'esm',
+        sourcemap: true,
+      },
+      {
+        file: packageJson.main,
+        format: 'cjs',
+        exports: 'named',
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      vue({
+        template: {
+          isProduction: true,
+        },
+        compileTemplate: true,
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('descope-'),
+        },
+      }),
+      typescript({
+        tsconfig: './tsconfig.json',
+        useTsconfigDeclarationDir: true,
+      }),
+      define({
+        replacements: {
+          BUILD_VERSION: JSON.stringify(packageJson.version),
+        },
+      }),
+      autoExternal(),
+      terser(),
+    ],
+  },
+  {
+    input: './dist/dts/src/index.d.ts',
+    output: [{ file: packageJson.types, format: 'esm' }],
+    plugins: [
+      dts(),
+      del({
+        hook: 'buildEnd',
+        targets: ['./dist/dts'],
+      }),
+    ],
+  },
 ];

@@ -1,20 +1,20 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-	<div class="login-wrapper">
-		<p v-if="isLoading || isFlowLoading">Loading...</p>
-		<div v-else-if="isAuthenticated">
-			<h1>You are authenticated</h1>
-		</div>
-		<Descope
-			:flowId="flowId"
-			@success="handleSuccess"
-			@error="handleError"
-			@ready="handleReady"
-			:errorTransformer="errorTransformer"
-			:form="form"
-			:client="client"
-		/>
-	</div>
+  <div class="login-wrapper">
+    <p v-if="isLoading || isFlowLoading">Loading...</p>
+    <div v-else-if="isAuthenticated">
+      <h1>You are authenticated</h1>
+    </div>
+    <Descope
+      :flowId="flowId"
+      @success="handleSuccess"
+      @error="handleError"
+      @ready="handleReady"
+      :errorTransformer="errorTransformer"
+      :form="form"
+      :client="client"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -25,23 +25,23 @@ const router = useRouter();
 const isFlowLoading = ref(true);
 
 const handleError = (e) => {
-	console.log('Got error', e);
+  console.log('Got error', e);
 };
 
 const handleReady = () => {
-	isFlowLoading.value = false;
+  isFlowLoading.value = false;
 };
 
 const handleSuccess = (e) => {
-	console.log('Logged in', e);
-	router.push({ path: '/' });
+  console.log('Logged in', e);
+  router.push({ path: '/' });
 };
 
 const errorTransformer = (error) => {
-	const translationMap = {
-		SAMLStartFailed: 'Failed to start SAML flow'
-	};
-	return translationMap[error.type] || error.text;
+  const translationMap = {
+    SAMLStartFailed: 'Failed to start SAML flow',
+  };
+  return translationMap[error.type] || error.text;
 };
 
 const { isLoading, isAuthenticated } = useSession();
@@ -52,8 +52,8 @@ const client = { version: '1.0.1' }; // found in context key: client.version
 
 <style>
 .login-wrapper {
-	margin: 20px;
-	align-self: center;
-	max-width: 500px;
+  margin: 20px;
+  align-self: center;
+  max-width: 500px;
 }
 </style>

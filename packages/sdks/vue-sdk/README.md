@@ -27,11 +27,11 @@ import descope from '@descope/vue-sdk';
 
 const app = createApp(App);
 app.use(descope, {
-	projectId: 'my-project-id'
-	// If the Descope project manages the token response in cookies, a custom domain
-	// must be configured (e.g., https://auth.app.example.com)
-	// and should be set as the baseUrl property.
-	// baseUrl: https://auth.app.example.com'
+  projectId: 'my-project-id',
+  // If the Descope project manages the token response in cookies, a custom domain
+  // must be configured (e.g., https://auth.app.example.com)
+  // and should be set as the baseUrl property.
+  // baseUrl: https://auth.app.example.com'
 });
 app.mount('#app');
 ```
@@ -40,24 +40,19 @@ app.mount('#app');
 
 ```vue
 <template>
-	<p v-if="isFlowLoading">Loading...</p>
-	<Descope
-		flowId="my-flow-id"
-		@success="handleSuccess"
-		@error="handleError"
-		@ready="handleReady"
-	/>
-	<!-- additional props -->
-	<!-- theme="dark" theme can be "light", "dark" or "os", which auto select a theme based on the OS theme. Default is "light" -->
-	<!-- v-bind:debug="true" debug can be set to true to enable debug mode -->
-	<!-- locale="en" locale can be any supported locale which the flow's screen translated to, if not provided, the locale is taken from the browser's locale. -->
-	<!-- tenant="tenantId" tenant ID for SSO (SAML) login. If not provided, Descope will use the domain of available email to choose the tenant -->
-	<!-- redirectUrl="redirectUrl" Redirect URL for OAuth and SSO (will be used when redirecting back from the OAuth provider / IdP), or for "Magic Link" and "Enchanted Link" (will be used as a link in the message sent to the the user) -->
-	<!-- autoFocus="skipFirstScreen" autoFocus can be true, false or "skipFirstScreen". Default is true. - true: automatically focus on the first input of each screen - false: do not automatically focus on screen's inputs - "skipFirstScreen": automatically focus on the first input of each screen, except first screen -->
-	<!-- validateOnBlur can be true in order to show input validation errors on blur, in addition to on submit. Default is false.  -->
-	<!-- errorTransformer="errorTransformer" errorTransformer is a function that receives an error object and returns a string. The returned string will be displayed to the user. NOTE: errorTransformer is not required. If not provided, the error object will be displayed as is. -->
-	<!-- form="{ email: 'test@domain.com' }" form is an object the initial form context that is used in screens inputs in the flow execution. Used to inject predifined input values on flow start such as custom inputs, custom attrbiutes and other inputs. Keys passed can be accessed in flows actions, conditions and screens prefixed with "form.". NOTE: form is not required. If not provided, 'form' context key will be empty before user input. -->
-	<!-- client="{ version: '1.2.3' }" client is an object the initial client context in the flow execution. Keys passed can be accessed in flows actions and conditions prefixed with "client.". NOTE: client is not required. If not provided, context key will be empty. -->
+  <p v-if="isFlowLoading">Loading...</p>
+  <Descope flowId="my-flow-id" @success="handleSuccess" @error="handleError" @ready="handleReady" />
+  <!-- additional props -->
+  <!-- theme="dark" theme can be "light", "dark" or "os", which auto select a theme based on the OS theme. Default is "light" -->
+  <!-- v-bind:debug="true" debug can be set to true to enable debug mode -->
+  <!-- locale="en" locale can be any supported locale which the flow's screen translated to, if not provided, the locale is taken from the browser's locale. -->
+  <!-- tenant="tenantId" tenant ID for SSO (SAML) login. If not provided, Descope will use the domain of available email to choose the tenant -->
+  <!-- redirectUrl="redirectUrl" Redirect URL for OAuth and SSO (will be used when redirecting back from the OAuth provider / IdP), or for "Magic Link" and "Enchanted Link" (will be used as a link in the message sent to the the user) -->
+  <!-- autoFocus="skipFirstScreen" autoFocus can be true, false or "skipFirstScreen". Default is true. - true: automatically focus on the first input of each screen - false: do not automatically focus on screen's inputs - "skipFirstScreen": automatically focus on the first input of each screen, except first screen -->
+  <!-- validateOnBlur can be true in order to show input validation errors on blur, in addition to on submit. Default is false.  -->
+  <!-- errorTransformer="errorTransformer" errorTransformer is a function that receives an error object and returns a string. The returned string will be displayed to the user. NOTE: errorTransformer is not required. If not provided, the error object will be displayed as is. -->
+  <!-- form="{ email: 'test@domain.com' }" form is an object the initial form context that is used in screens inputs in the flow execution. Used to inject predifined input values on flow start such as custom inputs, custom attrbiutes and other inputs. Keys passed can be accessed in flows actions, conditions and screens prefixed with "form.". NOTE: form is not required. If not provided, 'form' context key will be empty before user input. -->
+  <!-- client="{ version: '1.2.3' }" client is an object the initial client context in the flow execution. Keys passed can be accessed in flows actions and conditions prefixed with "client.". NOTE: client is not required. If not provided, context key will be empty. -->
 </template>
 
 <script setup>
@@ -67,15 +62,15 @@ import { ref } from 'vue';
 const isFlowLoading = ref(true);
 
 const handleSuccess = (e) => {
-	console.log('Logged in!', e);
+  console.log('Logged in!', e);
 };
 
 const handleError = (e) => {
-	console.log('Could not log in', e);
+  console.log('Could not log in', e);
 };
 
 const handleReady = () => {
-	isFlowLoading.value = false;
+  isFlowLoading.value = false;
 };
 
 // let tenantId = '<tenantId>'; // replace with your tenant ID
@@ -146,13 +141,13 @@ import { getSessionToken } from '@descope/vue-sdk';
 // fetch data using back
 // Note: Descope backend SDKs support extracting session token from the Authorization header
 export const fetchData = async () => {
-	const sessionToken = getSessionToken();
-	const res = await fetch('/path/to/server/api', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
-	});
-	// ... use res
+  const sessionToken = getSessionToken();
+  const res = await fetch('/path/to/server/api', {
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  // ... use res
 };
 ```
 
@@ -172,8 +167,8 @@ import descope from '@descope/vue-sdk';
 const app = createApp(App);
 
 app.use(descope, {
-	projectId: 'project-id',
-	sessionTokenViaCookie: true
+  projectId: 'project-id',
+  sessionTokenViaCookie: true,
 });
 ```
 
@@ -196,13 +191,13 @@ import descope, { getSdk } from '../src';
 const app = createApp(App);
 
 app.use(descope, {
-	projectId: 'project-id'
+  projectId: 'project-id',
 });
 
 const sdk = getSdk();
 
 sdk?.onSessionTokenChange((newSession) => {
-	// here you can implement custom logic when the session is changing
+  // here you can implement custom logic when the session is changing
 });
 ```
 
@@ -272,7 +267,7 @@ Note:
 
 ```vue
 <template>
-	<UserManagement tenant="tenant-id" widget-id="user-management-widget" />
+  <UserManagement tenant="tenant-id" widget-id="user-management-widget" />
 </template>
 
 <script setup>
@@ -302,7 +297,7 @@ Note:
 
 ```vue
 <template>
-	<RoleManagement tenant="tenant-id" widget-id="role-management-widget" />
+  <RoleManagement tenant="tenant-id" widget-id="role-management-widget" />
 </template>
 
 <script setup>
@@ -327,17 +322,11 @@ The widget lets you:
 
 ```vue
 <template>
-	<!-- admin view: manage all tenant users' access keys -->
-	<AccessKeyManagement
-		tenant="tenant-id"
-		widget-id="access-key-management-widget"
-	/>
+  <!-- admin view: manage all tenant users' access keys -->
+  <AccessKeyManagement tenant="tenant-id" widget-id="access-key-management-widget" />
 
-	<!-- user view: mange access key for the logged-in tenant's user  -->
-	<AccessKeyManagement
-		tenant="tenant-id"
-		widget-id="user-access-key-management-widget"
-	/>
+  <!-- user view: mange access key for the logged-in tenant's user  -->
+  <AccessKeyManagement tenant="tenant-id" widget-id="user-access-key-management-widget" />
 </template>
 
 <script setup>
@@ -356,7 +345,7 @@ The `AuditManagement` widget lets you embed an audit table in your site.
 
 ```vue
 <template>
-	<AuditManagement tenant="tenant-id" widget-id="audit-management-widget" />
+  <AuditManagement tenant="tenant-id" widget-id="audit-management-widget" />
 </template>
 
 <script setup>
@@ -382,7 +371,7 @@ The widget lets you:
 
 ```vue
 <template>
-	<UserProfile widget-id="user-profile-widget" @logout="onLogout" />
+  <UserProfile widget-id="user-profile-widget" @logout="onLogout" />
 </template>
 
 <script setup>
@@ -456,11 +445,11 @@ The Descope SDK caches the user and session token in the frontend. If you update
 const sdk = useDescope();
 
 const handleUpdateUser = () => {
-	myBackendUpdateUser().then(() => {
-		sdk.me();
-		// or
-		sdk.refresh();
-	});
+  myBackendUpdateUser().then(() => {
+    sdk.me();
+    // or
+    sdk.refresh();
+  });
 };
 ```
 

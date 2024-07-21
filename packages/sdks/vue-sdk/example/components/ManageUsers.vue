@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-	<div class="manage-users-wrapper">
-		<h1>Manage Users</h1>
-		<UserManagement :tenant="tenant" widget-id="user-management-widget" />
-	</div>
+  <div class="manage-users-wrapper">
+    <h1>Manage Users</h1>
+    <UserManagement :tenant="tenant" widget-id="user-management-widget" />
+  </div>
 </template>
 
 <script setup>
@@ -14,6 +14,6 @@ const tenant = process.env.VUE_APP_DESCOPE_TENANT;
 
 <style>
 .manage-users-wrapper {
-	margin: 20px;
+  margin: 20px;
 }
 </style>

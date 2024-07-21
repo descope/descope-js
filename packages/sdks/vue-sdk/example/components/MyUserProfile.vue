@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-	<div class="user-profile-wrapper">
-		<h1>User Profile</h1>
-		<UserProfile @logout="onLogout" widget-id="user-profile-widget" />
-	</div>
+  <div class="user-profile-wrapper">
+    <h1>User Profile</h1>
+    <UserProfile @logout="onLogout" widget-id="user-profile-widget" />
+  </div>
 </template>
 
 <script setup>
@@ -14,6 +14,6 @@ const onLogout = () => (window.location.href = '/login');
 
 <style>
 .manage-users-wrapper {
-	margin: 20px;
+  margin: 20px;
 }
 </style>

@@ -1,18 +1,18 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-	<div class="manage-access-keys-wrapper">
-		<h1>Manage Access Keys</h1>
-		<AccessKeyManagement
-			:tenant="tenant"
-			widget-id="access-key-management-widget"
-		/>
+  <div class="manage-access-keys-wrapper">
+    <h1>Manage Access Keys</h1>
+    <AccessKeyManagement
+      :tenant="tenant"
+      widget-id="access-key-management-widget"
+    />
 
-		<h1>Manage My Access Keys</h1>
-		<AccessKeyManagement
-			:tenant="tenant"
-			widget-id="user-access-key-management-widget"
-		/>
-	</div>
+    <h1>Manage My Access Keys</h1>
+    <AccessKeyManagement
+      :tenant="tenant"
+      widget-id="user-access-key-management-widget"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -23,6 +23,6 @@ const tenant = process.env.VUE_APP_DESCOPE_TENANT;
 
 <style>
 .manage-access-keys-wrapper {
-	margin: 20px;
+  margin: 20px;
 }
 </style>
