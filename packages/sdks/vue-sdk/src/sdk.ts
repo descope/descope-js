@@ -1,3 +1,4 @@
+import '@descope/core-js-sdk';
 import createSdk from '@descope/web-js-sdk';
 import { IS_BROWSER } from './constants';
 import { wrapInTry } from './utils';
