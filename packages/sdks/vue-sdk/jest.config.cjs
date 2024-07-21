@@ -10,4 +10,7 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx,vue}'],
   testMatch: ['**/tests/**/*.test.ts'],
   setupFiles: ['./setupJest.js'],
+  testEnvironmentOptions: {
+    customExportConditions: ["node", "node-addons"],
+  },
 };

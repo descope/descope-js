@@ -22,6 +22,5 @@ module.exports = defineConfig({
       });
       return definitions;
     });
-    // config.resolve.symlinks(true)
   },
 });

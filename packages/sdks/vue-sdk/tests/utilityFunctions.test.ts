@@ -29,7 +29,7 @@ describe('utility functions', () => {
     const warnSpy = jest.spyOn(console, 'warn');
 
     const origWindow = window;
-    Object.defineProperty(global, 'window', {
+    Object.defineProperty(globalThis, 'window', {
       value: undefined,
       writable: true,
       configurable: true,
@@ -60,7 +60,7 @@ describe('utility functions', () => {
     const warnSpy = jest.spyOn(console, 'warn');
 
     const origWindow = window;
-    Object.defineProperty(global, 'window', {
+    Object.defineProperty(globalThis, 'window', {
       value: undefined,
       writable: true,
       configurable: true,
@@ -73,7 +73,7 @@ describe('utility functions', () => {
 
     getRefreshTokenLocal();
 
-    global.window = origWindow;
+    globalThis.window = origWindow;
     jest.resetModules();
 
     expect(warnSpy).toHaveBeenCalledWith(
