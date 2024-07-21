@@ -336,10 +336,11 @@ test.describe('widget', () => {
     const editUserPhoneInput = page.getByLabel('Phone').last();
     const editUserRolesInput = page.getByLabel('Roles').last();
 
-    // edit email
+    // clear previous email
     await editUserEmailInput.focus();
     await page.keyboard.press('Meta+A');
     await page.keyboard.press('Backspace');
+    // edit email
     await editUserEmailInput.fill(updatedUser.email);
 
     // edit name
