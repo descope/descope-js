@@ -15,6 +15,8 @@ export const DESCOPE_ATTRIBUTE_PREFIX = 'data-descope-';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_FIELD = 'data-exclude-field';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON = 'data-exclude-next';
 export const DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY = 'dls_last_auth';
+
+// SSO query params
 export const OIDC_IDP_STATE_ID_PARAM_NAME = 'state_id';
 export const SAML_IDP_STATE_ID_PARAM_NAME = 'saml_idp_state_id';
 export const SAML_IDP_USERNAME_PARAM_NAME = 'saml_idp_username';

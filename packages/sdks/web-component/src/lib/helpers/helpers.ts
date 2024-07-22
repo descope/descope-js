@@ -20,7 +20,7 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
 } from '../constants';
-import { AutoFocusOptions, Direction } from '../types';
+import { AutoFocusOptions, Direction, SSOQueryParams } from '../types';
 
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -350,14 +350,16 @@ export const handleUrlParams = () => {
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
-    oidcIdpStateId,
-    samlIdpStateId,
-    samlIdpUsername,
-    descopeIdpInitiated: idpInitiatedVal,
-    ssoAppId,
-    oidcLoginHint,
-    oidcPrompt,
-    oidcErrorRedirectUri,
+    ssoQueryParams: {
+      oidcIdpStateId,
+      samlIdpStateId,
+      samlIdpUsername,
+      descopeIdpInitiated: idpInitiatedVal,
+      ssoAppId,
+      oidcLoginHint,
+      oidcPrompt,
+      oidcErrorRedirectUri,
+    },
   };
 };
 
@@ -482,30 +484,25 @@ export const getChromiumVersion = (): number => {
 // - If there is any one else of the other params (like oidcIdpStateId, ..) - we can't skip this call because descope may decide not to show the first screen (in cases like a user is already logged in)
 export const showFirstScreenOnExecutionInit = (
   startScreenId: string,
-  oidcIdpStateId: string,
-  samlIdpStateId: string,
-  samlIdpUsername: string,
-  ssoAppId: string,
-  oidcLoginHint: string,
-  oidcPrompt: string,
-  oidcErrorRedirectUri: string,
+  {
+    oidcIdpStateId,
+    samlIdpStateId,
+    samlIdpUsername,
+    ssoAppId,
+    oidcLoginHint,
+    oidcPrompt,
+    oidcErrorRedirectUri,
+  }: SSOQueryParams,
 ): boolean => {
-  const optimizeIfMissingOIDCParams = startScreenId && !oidcIdpStateId; // return true if oidcIdpStateId is empty
-  const optimizeIfMissingSAMLParams =
-    startScreenId && !samlIdpStateId && !samlIdpUsername; // return true if both params are empty
-  const optimizeIfMissingSSOParams = startScreenId && !ssoAppId; // return true if ssoAppId is empty
-  const optimizeIfMissingOIDCLoginHintParams = startScreenId && !oidcLoginHint; // return true if oidcLoginHint is empty
-  const optimizeIfMissingOIDCPromptParams = startScreenId && !oidcPrompt; // return true if oidcPrompt is empty
-  const optimizeIfMissingOIDCErrorRedirectUriParams =
-    startScreenId && !oidcErrorRedirectUri; // return true if oidcErrorRedirectUri is empty
-
   return (
-    optimizeIfMissingOIDCParams &&
-    optimizeIfMissingSAMLParams &&
-    optimizeIfMissingSSOParams &&
-    optimizeIfMissingOIDCLoginHintParams &&
-    optimizeIfMissingOIDCPromptParams &&
-    optimizeIfMissingOIDCErrorRedirectUriParams
+    !!startScreenId &&
+    !oidcIdpStateId &&
+    !samlIdpStateId &&
+    !samlIdpUsername &&
+    !ssoAppId &&
+    !oidcLoginHint &&
+    !oidcPrompt &&
+    !oidcErrorRedirectUri
   );
 };
 

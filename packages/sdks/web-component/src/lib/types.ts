@@ -34,6 +34,32 @@ export interface ScreenState {
   notp?: { image?: string; redirectUrl?: string };
 }
 
+export type SSOQueryParams = {
+  oidcIdpStateId?: string;
+  samlIdpStateId?: string;
+  samlIdpUsername?: string;
+  descopeIdpInitiated?: boolean;
+  ssoAppId?: string;
+} & OIDCOptions;
+
+export type OIDCOptions = {
+  oidcLoginHint?: string;
+  oidcPrompt?: string;
+  oidcErrorRedirectUri?: string;
+};
+
+export const extractOIDCOptions = (params: SSOQueryParams): OIDCOptions => {
+  const {
+    oidcIdpStateId,
+    samlIdpStateId,
+    samlIdpUsername,
+    descopeIdpInitiated,
+    ssoAppId,
+    ...oidcOptions
+  } = params;
+  return oidcOptions;
+};
+
 export type FlowState = {
   flowId: string;
   projectId: string;
@@ -56,19 +82,12 @@ export type FlowState = {
   redirectAuthCallbackUrl: string;
   redirectAuthBackupCallbackUri: string;
   redirectAuthInitiator: string;
-  oidcIdpStateId: string;
   deferredRedirect: boolean;
   locale: string;
-  samlIdpStateId: string;
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
-  samlIdpUsername: string;
-  descopeIdpInitiated: boolean;
-  ssoAppId: string;
-  oidcLoginHint: string;
-  oidcPrompt: string;
-  oidcErrorRedirectUri: string;
+  ssoQueryParams: SSOQueryParams;
 };
 
 export type StepState = {
@@ -78,11 +97,8 @@ export type StepState = {
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
-  oidcLoginHint: string;
   openInNewTabUrl?: string;
-  oidcPrompt: string;
-  oidcErrorRedirectUri: string;
-};
+} & OIDCOptions;
 
 export type DebugState = {
   isDebug: boolean;
