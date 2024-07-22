@@ -437,6 +437,9 @@ importers:
       ts-node: 10.9.2_typescript@4.9.5
       typescript: 4.9.5
 
+  packages/sdks/core-js-sdk/dist/cjs:
+    specifiers: {}
+
   packages/sdks/react-sdk:
     specifiers:
       '@babel/core': 7.24.7
@@ -583,6 +586,9 @@ importers:
       ts-jest: 29.1.5_hih3tqlb2njctj5r2xdpywrb6y
       ts-node: 10.9.1_6m5twgte6m5uy2mrfew2k7ssz4
       typescript: 4.9.5
+
+  packages/sdks/react-sdk/dist/cjs:
+    specifiers: {}
 
   packages/sdks/web-component:
     specifiers:
@@ -777,6 +783,9 @@ importers:
       ts-jest: 29.1.5_67xnt3v64q2pgz6kguni4h37hu
       ts-node: 10.9.2_yhg52xf3cnmhk5otwlv37cvxwi
       typescript: 4.9.5
+
+  packages/sdks/web-js-sdk/dist/cjs:
+    specifiers: {}
 
   packages/web-js-sdk/dist/cjs:
     specifiers: {}
