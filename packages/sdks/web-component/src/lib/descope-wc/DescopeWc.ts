@@ -48,6 +48,7 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+import loadSdkScript, { getScriptResultPath } from './sdkScripts';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -91,6 +92,33 @@ class DescopeWc extends BaseDescopeWc {
         this.flowState.update({ deferredRedirect: false });
       }, 300);
     }
+  }
+
+  async loadSdkScripts() {
+    const flowConfig = await this.getFlowConfig();
+    const scripts = flowConfig.sdkScripts;
+
+    scripts?.forEach(async (script) => {
+      const module = await loadSdkScript(script.id);
+      module(
+        script.initArgs as any,
+        { baseUrl: this.baseUrl },
+        (result: string) => {
+          // update the context with the result, under the `resultKey` key
+          this.dispatchEvent(
+            new CustomEvent('components-context', {
+              detail: {
+                // we store the result with script.id prefix to avoid conflicts with other scripts results
+                // that may have the same key
+                [getScriptResultPath(script.id, script.resultKey)]: result,
+              },
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        },
+      );
+    });
   }
 
   async connectedCallback() {
@@ -212,6 +240,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
+      this.loadSdkScripts();
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
         await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
       } else {

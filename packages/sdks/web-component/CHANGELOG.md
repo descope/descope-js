@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.20.2](https://github.com/descope/descope-js/compare/web-component-3.20.1...web-component-3.20.2) (2024-07-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.8`
+## [3.20.1](https://github.com/descope/descope-js/compare/web-component-3.20.0...web-component-3.20.1) (2024-07-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.7`
+## [3.20.0](https://github.com/descope/descope-js/compare/web-component-3.19.10...web-component-3.20.0) (2024-07-19)
+
+
+### Features
+
+* init sdk scripts support ([#668](https://github.com/descope/descope-js/issues/668)) RELEASE ([49a4232](https://github.com/descope/descope-js/commit/49a423226bd9abe2b4c65388fc308c9d15237813))
+
+## [3.19.10](https://github.com/descope/descope-js/compare/web-component-3.19.9...web-component-3.19.10) (2024-07-19)
+
+
+### Bug Fixes
+
+* Revert "fix: polling timeout when click is response t triggers another polling" ([#745](https://github.com/descope/descope-js/issues/745)) RELEASE ([d16f853](https://github.com/descope/descope-js/commit/d16f85353fc9b95338d460e0659615eb53af1734)), closes [descope/descope-js#743](https://github.com/descope/descope-js/issues/743)
+
+## [3.19.9](https://github.com/descope/descope-js/compare/web-component-3.19.8...web-component-3.19.9) (2024-07-18)
+
+
+### Bug Fixes
+
+* polling timeout when click is response t triggers another polling ([#743](https://github.com/descope/descope-js/issues/743)) RELEASE ([fb92c03](https://github.com/descope/descope-js/commit/fb92c036cbca61a9c533f23075c8e14ed3c274e8))
+
 ## [3.19.8](https://github.com/descope/descope-js/compare/web-component-3.19.7...web-component-3.19.8) (2024-07-17)
 
 ### Dependency Updates

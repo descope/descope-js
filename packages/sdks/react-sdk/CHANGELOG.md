@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.57](https://github.com/descope/descope-js/compare/react-sdk-2.0.56...react-sdk-2.0.57) (2024-07-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.113`
+* `audit-management-widget` updated to version `0.1.76`
+* `role-management-widget` updated to version `0.1.111`
+* `user-management-widget` updated to version `0.4.114`
+* `user-profile-widget` updated to version `0.0.91`
+* `web-component` updated to version `3.20.2`
+* `web-js-sdk` updated to version `1.15.8`
+* `core-js-sdk` updated to version `2.23.4`
+## [2.0.56](https://github.com/descope/descope-js/compare/react-sdk-2.0.55...react-sdk-2.0.56) (2024-07-19)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.112`
+* `audit-management-widget` updated to version `0.1.75`
+* `role-management-widget` updated to version `0.1.110`
+* `user-management-widget` updated to version `0.4.113`
+* `user-profile-widget` updated to version `0.0.90`
+* `web-component` updated to version `3.20.1`
+* `web-js-sdk` updated to version `1.15.7`
+* `core-js-sdk` updated to version `2.23.3`
+## [2.0.55](https://github.com/descope/descope-js/compare/react-sdk-2.0.54...react-sdk-2.0.55) (2024-07-19)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.89`
+* `web-component` updated to version `3.20.0`
+## [2.0.54](https://github.com/descope/descope-js/compare/react-sdk-2.0.53...react-sdk-2.0.54) (2024-07-19)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.88`
+* `web-component` updated to version `3.19.10`
+## [2.0.53](https://github.com/descope/descope-js/compare/react-sdk-2.0.52...react-sdk-2.0.53) (2024-07-18)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.87`
+* `web-component` updated to version `3.19.9`
 ## [2.0.52](https://github.com/descope/descope-js/compare/react-sdk-2.0.51...react-sdk-2.0.52) (2024-07-17)
 
 ### Dependency Updates
