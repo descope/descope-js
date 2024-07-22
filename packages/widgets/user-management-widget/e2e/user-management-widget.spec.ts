@@ -680,13 +680,10 @@ test.describe('widget', () => {
     // enter search string
     await searchInput.fill('mockSearchString');
 
-    // wait for results to filter
-    await page.waitForTimeout(5000);
-
     // only search results shown in grid
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden();
+    ).toBeHidden({ timeout: 15000 });
   });
 
   test('close notification', async ({ page }) => {
