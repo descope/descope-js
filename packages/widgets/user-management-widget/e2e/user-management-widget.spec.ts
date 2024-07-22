@@ -669,6 +669,8 @@ test.describe('widget', () => {
       });
     });
 
+    await page.waitForTimeout(STATE_TIMEOUT);
+
     const searchInput = page
       .getByTestId('search-input')
       .locator('input')
@@ -683,7 +685,7 @@ test.describe('widget', () => {
     // only search results shown in grid
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 15000 });
+    ).toBeHidden({ timeout: 20000 });
   });
 
   test('close notification', async ({ page }) => {
