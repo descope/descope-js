@@ -63,6 +63,7 @@ class BaseDescopeWc extends HTMLElement {
       'store-last-authenticated-user',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
+      'style-name',
     ];
   }
 
@@ -208,7 +209,7 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   get styleName(): string {
-    return this.getAttribute('styleName') || THEME_DEFAULT_NAME;
+    return this.getAttribute('style-name') || THEME_DEFAULT_NAME;
   }
 
   get autoFocus(): AutoFocusOptions {
@@ -269,6 +270,7 @@ class BaseDescopeWc extends HTMLElement {
       'form',
       'client',
       'validate-on-blur',
+      'style-name',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {

@@ -396,6 +396,41 @@ describe('web-component', () => {
     );
   });
 
+  it('should fetch the data from the correct path with custom style name', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" style-name="test"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
+    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/test.json`;
+    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(htmlUrlPathRegex),
+      expect.any(Object),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(themeUrlPathRegex),
+      expect.any(Object),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(configUrlPathRegex),
+      expect.any(Object),
+    );
+  });
+
   it('should fetch the data from the correct base static url', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
