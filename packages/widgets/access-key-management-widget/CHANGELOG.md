@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.114](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.113...access-key-management-widget-0.1.114) (2024-07-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.9`
+* `sdk-helpers` updated to version `0.1.58`
+* `sdk-mixins` updated to version `0.2.43`
+* `sdk-component-drivers` updated to version `0.2.39`
+
+### Bug Fixes
+
+* Vue sdk RELEASE ([#749](https://github.com/descope/descope-js/issues/749)) ([a487b5e](https://github.com/descope/descope-js/commit/a487b5e378d679a71622c79eead6249e0b550f40))
+
 ## [0.1.113](https://github.com/descope/descope-js/compare/access-key-management-widget-0.1.112...access-key-management-widget-0.1.113) (2024-07-21)
 
 ### Dependency Updates
