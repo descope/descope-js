@@ -29,6 +29,7 @@ import {
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OIDC_PROMPT_PARAM_NAME,
   SDK_SCRIPT_RESULTS_KEY,
+  OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -54,6 +55,8 @@ const WAIT_TIMEOUT = 10000;
 const abTestingKey = getABTestingKey();
 
 const defaultOptionsValues = {
+  baseUrl: undefined,
+  deferredRedirect: false,
   abTestingKey,
   lastAuth: {},
   oidcIdpStateId: null,
@@ -2885,6 +2888,69 @@ describe('web-component', () => {
     const oidcPrompt = 'login';
     const encodedOidcPrompt = encodeURIComponent(oidcPrompt);
     window.location.search = `?${OIDC_PROMPT_PARAM_NAME}=${encodedOidcPrompt}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled());
+  });
+
+  it('should call start with oidc idp with oidcErrorRedirectUri flag and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+
+    const oidcStateId = 'abcdefgh';
+    const encodedOidcStateId = encodeURIComponent(oidcStateId);
+    const oidcErrorRedirectUri = 'https://some.test';
+    const encodedOidcErrorRedirectUri =
+      encodeURIComponent(oidcErrorRedirectUri);
+    window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          ...defaultOptionsValues,
+          oidcIdpStateId: 'abcdefgh',
+          oidcErrorRedirectUri: 'https://some.test',
+        },
+        undefined,
+        '',
+        0,
+        '1.2.3',
+        {},
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with oidc idp with oidcErrorRedirectUri when there is a start screen is configured', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      flows: {
+        'sign-in': { startScreenId: 'screen-0' },
+      },
+    };
+
+    pageContent =
+      '<descope-button>click</descope-button><span>It works!</span>';
+
+    const oidcErrorRedirectUri = 'https://some.test';
+    const encodedOidcErrorRedirectUri =
+      encodeURIComponent(oidcErrorRedirectUri);
+    window.location.search = `?${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
     await waitFor(() => expect(startMock).toHaveBeenCalled());
