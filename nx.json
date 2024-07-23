@@ -1,15 +1,11 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
-  "affected": {
-    "defaultBase": "origin/main"
-  },
+  "affected": { "defaultBase": "origin/main" },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
-      }
+      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
     }
   },
   "targetDefaults": {
@@ -41,8 +37,6 @@
     ],
     "sharedGlobals": []
   },
-  "workspaceLayout": {
-    "appsDir": "packages/**",
-    "libsDir": "packages/**"
-  }
+  "workspaceLayout": { "appsDir": "packages/**", "libsDir": "packages/**" },
+  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU="
 }

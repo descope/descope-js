@@ -282,6 +282,7 @@ export type Options = {
   client?: Record<string, any>;
   locale?: string;
   oidcPrompt?: string;
+  oidcErrorRedirectUri?: string;
 };
 
 export type ResponseData = Record<string, any>;

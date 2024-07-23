@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "3.20.2",
+  "version": "3.20.3",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -39,7 +39,7 @@
     "@types/jest": "^29.0.0",
     "@types/node": "20.14.9",
     "dotenv": "^16.0.3",
-    "eslint": "9.6.0",
+    "eslint": "8.57.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "18.0.0",
     "eslint-config-prettier": "9.1.0",

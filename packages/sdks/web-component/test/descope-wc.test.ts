@@ -29,6 +29,7 @@ import {
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OIDC_PROMPT_PARAM_NAME,
   SDK_SCRIPT_RESULTS_KEY,
+  OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -50,6 +51,27 @@ jest.mock('@descope/web-js-sdk', () => ({
 }));
 
 const WAIT_TIMEOUT = 10000;
+
+const abTestingKey = getABTestingKey();
+
+const defaultOptionsValues = {
+  baseUrl: undefined,
+  deferredRedirect: false,
+  abTestingKey,
+  lastAuth: {},
+  oidcIdpStateId: null,
+  oidcLoginHint: null,
+  oidcPrompt: null,
+  samlIdpStateId: null,
+  samlIdpUsername: null,
+  oidcErrorRedirectUri: null,
+  descopeIdpInitiated: false,
+  ssoAppId: null,
+  client: {},
+  redirectAuth: undefined,
+  tenant: undefined,
+  locale: 'en',
+};
 
 class MockFileReader {
   onload = null;
@@ -116,8 +138,6 @@ Object.defineProperty(window.history, 'replaceState', {
     window.location.href = url;
   },
 });
-
-const abTestingKey = getABTestingKey();
 
 class DescopeButton extends HTMLElement {
   constructor() {
@@ -637,20 +657,9 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         {
-          abTestingKey,
-          lastAuth: {},
+          ...defaultOptionsValues,
           redirectUrl: 'http://custom.url',
-          oidcIdpStateId: null,
-          oidcLoginHint: null,
-          oidcPrompt: null,
           preview: false,
-          samlIdpStateId: null,
-          samlIdpUsername: null,
-          ssoAppId: null,
-          client: {},
-          redirectAuth: undefined,
-          tenant: undefined,
-          locale: 'en',
         },
         undefined,
         'submitterId',
@@ -2274,19 +2283,9 @@ describe('web-component', () => {
         expect(startMock).toBeCalledWith(
           'sign-in',
           {
-            abTestingKey,
+            ...defaultOptionsValues,
             lastAuth: { authMethod: 'otp' },
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
-            redirectAuth: undefined,
             preview: false,
-            tenant: undefined,
-            locale: 'en',
           },
           conditionInteractionId,
           'interactionId',
@@ -2328,18 +2327,8 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            redirectAuth: undefined,
-            tenant: undefined,
-            client: {},
+            ...defaultOptionsValues,
             lastAuth: { authMethod: 'otp' },
-            locale: 'en',
           },
           undefined,
           '',
@@ -2423,18 +2412,8 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            redirectAuth: undefined,
-            tenant: undefined,
+            ...defaultOptionsValues,
             lastAuth: { authMethod: 'otp' },
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2503,22 +2482,12 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
+            ...defaultOptionsValues,
             redirectAuth: {
               callbackUrl: callback,
               codeChallenge: challenge,
               backupCallbackUri: backupCallback,
             },
-            tenant: undefined,
-            lastAuth: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2549,22 +2518,12 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
+            ...defaultOptionsValues,
             redirectAuth: {
               callbackUrl: callback,
               codeChallenge: challenge,
               backupCallbackUri: null,
             },
-            tenant: undefined,
-            lastAuth: {},
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2593,18 +2552,8 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
+            ...defaultOptionsValues,
             oidcIdpStateId: 'abcdefgh',
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
-            tenant: undefined,
-            redirectAuth: undefined,
-            lastAuth: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2722,18 +2671,8 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
+            ...defaultOptionsValues,
             samlIdpStateId: 'abcdefgh',
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
-            tenant: undefined,
-            redirectAuth: undefined,
-            lastAuth: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2764,18 +2703,9 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
+            ...defaultOptionsValues,
             samlIdpStateId: 'abcdefgh',
             samlIdpUsername: 'dummyUser',
-            ssoAppId: null,
-            client: {},
-            tenant: undefined,
-            redirectAuth: undefined,
-            lastAuth: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2803,18 +2733,8 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            samlIdpStateId: null,
-            samlIdpUsername: null,
-            ssoAppId: null,
-            client: {},
-            tenant: undefined,
-            redirectAuth: undefined,
-            lastAuth: {},
-            locale: 'en',
+            ...defaultOptionsValues,
+            descopeIdpInitiated: true,
           },
           undefined,
           '',
@@ -2875,18 +2795,8 @@ describe('web-component', () => {
         expect(startMock).toHaveBeenCalledWith(
           'sign-in',
           {
-            abTestingKey,
-            oidcIdpStateId: null,
-            oidcLoginHint: null,
-            oidcPrompt: null,
-            samlIdpStateId: null,
-            samlIdpUsername: null,
+            ...defaultOptionsValues,
             ssoAppId: 'abcdefgh',
-            tenant: undefined,
-            redirectAuth: undefined,
-            lastAuth: {},
-            client: {},
-            locale: 'en',
           },
           undefined,
           '',
@@ -2918,18 +2828,9 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         {
-          abTestingKey,
+          ...defaultOptionsValues,
           oidcIdpStateId: 'abcdefgh',
           oidcLoginHint: 'dummyUser',
-          oidcPrompt: null,
-          samlIdpStateId: null,
-          samlIdpUsername: null,
-          ssoAppId: null,
-          client: {},
-          tenant: undefined,
-          redirectAuth: undefined,
-          lastAuth: {},
-          locale: 'en',
         },
         undefined,
         '',
@@ -2990,17 +2891,8 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
         {
-          abTestingKey,
+          ...defaultOptionsValues,
           oidcIdpStateId: 'abcdefgh',
-          oidcLoginHint: null,
-          samlIdpStateId: null,
-          samlIdpUsername: null,
-          ssoAppId: null,
-          client: {},
-          tenant: undefined,
-          redirectAuth: undefined,
-          lastAuth: {},
-          locale: 'en',
           oidcPrompt: 'login',
         },
         undefined,
@@ -3044,6 +2936,69 @@ describe('web-component', () => {
     await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
+  it('should call start with oidc idp with oidcErrorRedirectUri flag and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+
+    const oidcStateId = 'abcdefgh';
+    const encodedOidcStateId = encodeURIComponent(oidcStateId);
+    const oidcErrorRedirectUri = 'https://some.test';
+    const encodedOidcErrorRedirectUri =
+      encodeURIComponent(oidcErrorRedirectUri);
+    window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          ...defaultOptionsValues,
+          oidcIdpStateId: 'abcdefgh',
+          oidcErrorRedirectUri: 'https://some.test',
+        },
+        undefined,
+        '',
+        0,
+        '1.2.3',
+        {},
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with oidc idp with oidcErrorRedirectUri when there is a start screen is configured', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      flows: {
+        'sign-in': { startScreenId: 'screen-0' },
+      },
+    };
+
+    pageContent =
+      '<descope-button>click</descope-button><span>It works!</span>';
+
+    const oidcErrorRedirectUri = 'https://some.test';
+    const encodedOidcErrorRedirectUri =
+      encodeURIComponent(oidcErrorRedirectUri);
+    window.location.search = `?${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => expect(startMock).toHaveBeenCalled());
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled());
+  });
+
   it('Should call start with code and idpInitiated when idpInitiated condition is met in multiple conditions', async () => {
     window.location.search = `?${URL_CODE_PARAM_NAME}=code1`;
     configContent = {
@@ -3072,20 +3027,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {
-          abTestingKey,
-          oidcIdpStateId: null,
-          oidcLoginHint: null,
-          oidcPrompt: null,
-          samlIdpStateId: null,
-          samlIdpUsername: null,
-          ssoAppId: null,
-          client: {},
-          redirectAuth: undefined,
-          tenant: undefined,
-          lastAuth: {},
-          locale: 'en',
-        },
+        defaultOptionsValues,
         undefined,
         '',
         1,
@@ -3138,20 +3080,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(startMock).toHaveBeenCalledWith(
         'sign-in',
-        {
-          abTestingKey,
-          oidcIdpStateId: null,
-          oidcLoginHint: null,
-          oidcPrompt: null,
-          samlIdpStateId: null,
-          samlIdpUsername: null,
-          ssoAppId: null,
-          redirectAuth: undefined,
-          tenant: undefined,
-          lastAuth: {},
-          client: {},
-          locale: 'en',
-        },
+        defaultOptionsValues,
         undefined,
         '',
         1,
