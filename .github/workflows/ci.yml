@@ -35,6 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.41.2-jammy
+      volumes:
+        - my_docker_volume:/volume_mount
+      options: --cpus 1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -62,12 +65,12 @@ jobs:
       #   uses: nrwl/nx-set-shas@v4
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps
-      - name: Cache npm dependencies
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            node_modules
-          key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+      # - name: Cache npm dependencies
+      #   uses: actions/cache/save@v4
+      #   with:
+      #     path: |
+      #       node_modules
+      #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Build
         run: pnpm run build
         env:
