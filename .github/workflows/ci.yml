@@ -40,7 +40,7 @@ jobs:
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Mark repository as safe
-        run: git config --global safe.directory '*'
+        run: git config --global safe.directory *
 
       # - name: Fetch all branches to container
       #   run: git fetch --all
