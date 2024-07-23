@@ -90,13 +90,8 @@ jobs:
       - name: Test
         run: pnpm run test
 
-      - name: Fetch all branches to container
-        run: git fetch --all
-
       - name: E2E
         run: pnpm run test:e2e
-        env:
-          HOME: /root
 
       - name: Upload HTML report
         if: always()
