@@ -51,7 +51,7 @@ jobs:
       - name: Set permission
         run: chmod -R 777 /usr/local
 
-      - run: chmod -R 777 /root/.config/git
+      # - run: chmod -R 777 /root/.config/git
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
