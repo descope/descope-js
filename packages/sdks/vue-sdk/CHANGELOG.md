@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.20](https://github.com/descope/descope-js/compare/vue-sdk-2.0.19...vue-sdk-2.0.20) (2024-07-23)
+
+
+### Bug Fixes
+
+* Update package.json RELEASE ([#753](https://github.com/descope/descope-js/issues/753)) ([1ae6243](https://github.com/descope/descope-js/commit/1ae624359261626a7bdddfcc2c87f8eb21137ba5))
+
 ## 0.0.1 (2024-07-23)
 
 ### Dependency Updates
