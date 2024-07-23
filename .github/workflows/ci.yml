@@ -11,8 +11,6 @@ jobs:
   gitleaks:
     name: 🔒 Run Git leaks
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.41.2-jammy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,6 +33,8 @@ jobs:
   pr:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.41.2-jammy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

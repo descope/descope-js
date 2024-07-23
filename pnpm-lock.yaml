@@ -76,7 +76,7 @@ importers:
         specifier: 19.5.2
         version: 19.5.2
       playwright:
-        specifier: ^1.41.2
+        specifier: 1.41.2
         version: 1.41.2
       prettier:
         specifier: ^3.0.0
