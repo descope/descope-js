@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.20.3](https://github.com/descope/descope-js/compare/web-component-3.20.2...web-component-3.20.3) (2024-07-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.15.9`
+
+### Bug Fixes
+
+* Vue sdk RELEASE ([#749](https://github.com/descope/descope-js/issues/749)) ([a487b5e](https://github.com/descope/descope-js/commit/a487b5e378d679a71622c79eead6249e0b550f40))
+
 ## [3.20.2](https://github.com/descope/descope-js/compare/web-component-3.20.1...web-component-3.20.2) (2024-07-21)
 
 ### Dependency Updates

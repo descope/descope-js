@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.58](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.57...sdk-helpers-0.1.58) (2024-07-23)
+
+
+### Bug Fixes
+
+* Vue sdk RELEASE ([#749](https://github.com/descope/descope-js/issues/749)) ([a487b5e](https://github.com/descope/descope-js/commit/a487b5e378d679a71622c79eead6249e0b550f40))
+
 ## [0.1.57](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.56...sdk-helpers-0.1.57) (2024-07-19)
 
 ## [0.1.56](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.55...sdk-helpers-0.1.56) (2024-07-17)

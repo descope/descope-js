@@ -336,6 +336,8 @@ test.describe('widget', () => {
     const editUserPhoneInput = page.getByLabel('Phone').last();
     const editUserRolesInput = page.getByLabel('Roles').last();
 
+    // clear previous email
+    await editUserEmailInput.evaluate((e: HTMLInputElement) => (e.value = ''));
     // edit email
     await editUserEmailInput.fill(updatedUser.email);
 
@@ -667,6 +669,8 @@ test.describe('widget', () => {
       });
     });
 
+    await page.waitForTimeout(STATE_TIMEOUT);
+
     const searchInput = page
       .getByTestId('search-input')
       .locator('input')
@@ -678,13 +682,10 @@ test.describe('widget', () => {
     // enter search string
     await searchInput.fill('mockSearchString');
 
-    // wait for results to filter
-    await page.waitForTimeout(5000);
-
     // only search results shown in grid
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden();
+    ).toBeHidden({ timeout: 20000 });
   });
 
   test('close notification', async ({ page }) => {
