@@ -14,8 +14,8 @@ lint_find_secrets() {
 		fi
 		TMPDIR=$(mktemp -d)
  		curl -o ${TMPDIR}/${FILE} -JL https://github.com/zricethezav/gitleaks/releases/download/v${SECRETS_SUPPORTED_VERSION}/${FILE}
-		chmod +x ${TMPDIR}/${FILE}
     tar zxv -C /usr/local/bin -f ${TMPDIR}/${FILE} gitleaks
+    chmod +x /usr/local/bin/gitleaks
 		rm ${TMPDIR}/${FILE}
 		echo "Done installing gitleaks"
 	fi
