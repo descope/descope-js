@@ -43,10 +43,13 @@ jobs:
       - name: Mark repository as safe
         run: git config --global --add safe.directory /__w/descope-js/descope-js
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -57,7 +60,7 @@ jobs:
       #       node_modules
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
 
-      - name: Fetch all branches
+      - name: Fetch all branches to container
         run: git fetch --all
 
       - name: Install dependencies
@@ -65,26 +68,35 @@ jobs:
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+
       # - name: Set NX cloud shas
       #   uses: nrwl/nx-set-shas@v4
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps
+
       # - name: Cache npm dependencies
       #   uses: actions/cache/save@v4
       #   with:
       #     path: |
       #       node_modules
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Build
         run: pnpm run build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+
       - name: Lint
         run: pnpm run lint
+
       - name: Test
         run: pnpm run test
+
       - name: E2E
         run: pnpm nx affected --target test:e2e
+        env:
+          HOME: /root
+
       - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4
