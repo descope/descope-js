@@ -9,28 +9,6 @@ env:
   PNPM_VERSION: 8
   HOME: /root
 jobs:
-  gitleaks:
-    name: 🔒 Run Git leaks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      # Skip post-install scripts here, as a malicious
-      # script could steal NODE_AUTH_TOKEN.
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
-        env:
-          CI: true
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
-      - name: Gitleaks
-        run: npm run leaks
-        shell: bash
   pr:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
@@ -81,6 +59,10 @@ jobs:
       #     path: |
       #       node_modules
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Gitleaks
+        run: npm run leaks
+        shell: bash
 
       - name: Build
         run: pnpm run build
