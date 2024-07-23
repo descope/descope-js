@@ -6,7 +6,7 @@ on:
       - main
 env:
   NODE_VERSION: 18.2
-  PNPM_VERSION: 7.28.0
+  PNPM_VERSION: 8
 jobs:
   gitleaks:
     name: 🔒 Run Git leaks
@@ -41,6 +41,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -55,6 +56,8 @@ jobs:
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+      - name: Set NX
+        uses: nrwl/nx-set-shas@v4
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Cache npm dependencies
