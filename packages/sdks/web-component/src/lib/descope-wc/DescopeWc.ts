@@ -46,7 +46,6 @@ import {
   NextFnReturnPromiseValue,
   SdkConfig,
   StepState,
-  extractOIDCOptions,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 import loadSdkScript, { getScriptResultPath } from './sdkScripts';
@@ -214,7 +213,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
-      ssoQueryParams,
+      ...ssoQueryParams
     } = currentState;
 
     let startScreenId: string;
@@ -440,6 +439,9 @@ class DescopeWc extends BaseDescopeWc {
       readyScreenId,
     );
 
+    const { oidcLoginHint, oidcPrompt, oidcErrorRedirectUri, samlIdpUsername } =
+      ssoQueryParams;
+
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
       direction: getAnimationDirection(stepId, prevState.stepId),
@@ -466,8 +468,10 @@ class DescopeWc extends BaseDescopeWc {
           filename: filenameWithLocale,
           baseUrl: this.baseStaticUrl,
         }),
-      samlIdpUsername: ssoQueryParams.samlIdpUsername,
-      ...extractOIDCOptions(ssoQueryParams),
+      samlIdpUsername,
+      oidcLoginHint,
+      oidcPrompt,
+      oidcErrorRedirectUri,
       openInNewTabUrl,
     };
 

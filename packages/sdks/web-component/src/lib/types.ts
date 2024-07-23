@@ -48,18 +48,6 @@ export type OIDCOptions = {
   oidcErrorRedirectUri?: string;
 };
 
-export const extractOIDCOptions = (params: SSOQueryParams): OIDCOptions => {
-  const {
-    oidcIdpStateId,
-    samlIdpStateId,
-    samlIdpUsername,
-    descopeIdpInitiated,
-    ssoAppId,
-    ...oidcOptions
-  } = params;
-  return oidcOptions;
-};
-
 export type FlowState = {
   flowId: string;
   projectId: string;
@@ -87,8 +75,7 @@ export type FlowState = {
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
-  ssoQueryParams: SSOQueryParams;
-};
+} & SSOQueryParams;
 
 export type StepState = {
   screenState: ScreenState;

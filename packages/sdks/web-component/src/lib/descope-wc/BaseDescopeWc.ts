@@ -709,7 +709,7 @@ class BaseDescopeWc extends HTMLElement {
         redirectAuthBackupCallbackUri,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
-        ssoQueryParams,
+        ssoQueryParams
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
@@ -740,7 +740,7 @@ class BaseDescopeWc extends HTMLElement {
         redirectAuthBackupCallbackUri,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
-        ssoQueryParams,
+        ...ssoQueryParams,
       });
 
       this.#init = true;
