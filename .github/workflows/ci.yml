@@ -45,12 +45,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
-      - name: Restore cached npm dependencies
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            node_modules
-          key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+      # - name: Restore cached npm dependencies
+      #   uses: actions/cache/restore@v4
+      #   with:
+      #     path: |
+      #       node_modules
+      #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
