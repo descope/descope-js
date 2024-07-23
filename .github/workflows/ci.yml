@@ -37,11 +37,11 @@ jobs:
       #       node_modules
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
 
-      - name: Fetch all branches to container
-        run: git fetch --all
-
       - name: Mark repository as safe
         run: git config --global --add safe.directory /__w/descope-js/descope-js
+
+      - name: Fetch all branches to container
+        run: git fetch --all
 
       - name: Install jq
         run: apt-get update && apt-get install -y jq
