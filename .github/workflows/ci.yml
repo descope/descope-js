@@ -12,7 +12,9 @@ jobs:
   pr:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/playwright:v1.41.2-jammy
+    container:
+      image: mcr.microsoft.com/playwright:v1.41.2-jammy
+      options: --volume=/github/workspace:/github/workspace
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
