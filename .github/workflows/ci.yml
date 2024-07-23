@@ -10,7 +10,7 @@ env:
 jobs:
   gitleaks:
     name: 🔒 Run Git leaks
-    runs-on: ubuntu-latest
+    runs-on: mcr.microsoft.com/playwright:v1.42.1-jammy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,8 +56,8 @@ jobs:
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
-      - name: Set NX cloud shas
-        uses: nrwl/nx-set-shas@v4
+      # - name: Set NX cloud shas
+      #   uses: nrwl/nx-set-shas@v4
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Cache npm dependencies
