@@ -2,9 +2,6 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
   "defaultBase": "origin/main",
-  "affected": {
-    "defaultBase": "origin/main"
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": [
