@@ -19,7 +19,6 @@ lint_find_secrets() {
 		echo "Done installing gitleaks"
 	fi
 	echo "  - Finding leaks in git log"
-  git config --global --add safe.directory /__w/descope-js/descope-js
 	gitleaks detect -v --redact  -c tools/scripts/gitleaks/.gitleaks.toml
 	if [ $? -ne 0 ]; then
 		exit 1
