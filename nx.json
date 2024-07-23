@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
+  "affected": { "defaultBase": "origin/main" },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
@@ -43,6 +44,5 @@
     "sharedGlobals": []
   },
   "workspaceLayout": { "appsDir": "packages/**", "libsDir": "packages/**" },
-  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU=",
-  "defaultBase": "main"
+  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU="
 }
