@@ -48,8 +48,8 @@ jobs:
       - name: Install jq
         run: apt-get update && apt-get install -y jq
 
-      # - name: Set permission
-      #   run: chmod -R 777 /usr/local
+      - name: Set permission
+        run: chmod -R 777 /usr/local
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
