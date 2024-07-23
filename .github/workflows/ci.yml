@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.41.2-jammy
-      options: --user root
+      options: --user 1001
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Mark repository as safe
-        run: sudo git config --system --add safe.directory /__w/descope-js/descope-js
+        run: git config --system --add safe.directory /__w/descope-js/descope-js
 
       # - name: Fetch all branches to container
       #   run: git fetch --all
