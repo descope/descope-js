@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.92](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.91...user-profile-widget-0.0.92) (2024-07-23)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.23.5`
+* `web-js-sdk` updated to version `1.15.9`
+* `web-component` updated to version `3.20.3`
+* `sdk-helpers` updated to version `0.1.58`
+* `sdk-mixins` updated to version `0.2.43`
+* `sdk-component-drivers` updated to version `0.2.39`
+
+### Bug Fixes
+
+* Vue sdk RELEASE ([#749](https://github.com/descope/descope-js/issues/749)) ([a487b5e](https://github.com/descope/descope-js/commit/a487b5e378d679a71622c79eead6249e0b550f40))
+
 ## [0.0.91](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.90...user-profile-widget-0.0.91) (2024-07-21)
 
 ### Dependency Updates
