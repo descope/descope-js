@@ -17,6 +17,7 @@ type Options = Pick<
   | 'client'
   | 'locale'
   | 'oidcPrompt'
+  | 'oidcErrorRedirectUri'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
