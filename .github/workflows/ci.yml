@@ -7,7 +7,7 @@ on:
 env:
   NODE_VERSION: 18.2
   PNPM_VERSION: 8
-  HOME: /root
+  # HOME: /root
 jobs:
   pr:
     name: 👷 Build / Lint / Test
