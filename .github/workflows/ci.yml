@@ -53,7 +53,7 @@ jobs:
         run: apt-get update && apt-get install -y jq
 
       - name: Set permission
-        run: chmod +x /tmp
+        run: chmod 755 /usr/local/bin
 
       # - name: Set NX cloud shas
       #   uses: nrwl/nx-set-shas@v4
