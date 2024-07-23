@@ -1,17 +1,11 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
-  "affected": { "defaultBase": "origin/main" },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "lint": {
       "dependsOn": ["^build"],
@@ -19,11 +13,22 @@
         "default",
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/.eslintignore"
-      ]
+      ],
+      "cache": true
     },
     "test": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "test:e2e": {
+      "inputs": [
+        "default",
+        "^production",
+        "{projectRoot}/playwright.config.ts"
+      ],
+      "dependsOn": ["^build"],
+      "cache": true
     }
   },
   "namedInputs": {
@@ -38,5 +43,6 @@
     "sharedGlobals": []
   },
   "workspaceLayout": { "appsDir": "packages/**", "libsDir": "packages/**" },
-  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU=",
+  "defaultBase": "main"
 }
