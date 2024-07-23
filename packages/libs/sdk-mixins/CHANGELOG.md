@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.43](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.42...sdk-mixins-0.2.43) (2024-07-23)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.58`
+* `sdk-component-drivers` updated to version `0.2.39`
+
+### Bug Fixes
+
+* Vue sdk RELEASE ([#749](https://github.com/descope/descope-js/issues/749)) ([a487b5e](https://github.com/descope/descope-js/commit/a487b5e378d679a71622c79eead6249e0b550f40))
+
 ## [0.2.42](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.41...sdk-mixins-0.2.42) (2024-07-19)
 
 ### Dependency Updates
