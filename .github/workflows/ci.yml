@@ -10,7 +10,7 @@ env:
 jobs:
   gitleaks:
     name: 🔒 Run Git leaks
-    runs-on: mcr.microsoft.com/playwright:v1.45.1-jammy
+    runs-on: mcr.microsoft.com/playwright:v1.41.2-jammy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
