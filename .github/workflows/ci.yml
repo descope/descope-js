@@ -63,6 +63,9 @@ jobs:
       - name: Fetch all branches to container
         run: git fetch --all
 
+      - name: Ensure main branch exists
+        run: git checkout main
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
