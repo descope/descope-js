@@ -52,6 +52,9 @@ jobs:
       - name: Install jq
         run: apt-get update && apt-get install -y jq
 
+      - name: Set permission
+        run: chmod +x /tmp
+
       # - name: Set NX cloud shas
       #   uses: nrwl/nx-set-shas@v4
       # - name: Install Playwright Browsers
