@@ -33,11 +33,7 @@ jobs:
   pr:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.41.2-jammy
-      volumes:
-        - my_docker_volume:/volume_mount
-      options: --cpus 1
+    container: mcr.microsoft.com/playwright:v1.41.2-jammy
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
