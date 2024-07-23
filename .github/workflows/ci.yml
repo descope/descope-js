@@ -63,9 +63,6 @@ jobs:
       - name: Fetch all branches to container
         run: git fetch --all
 
-      - name: Ensure main branch exists
-        run: git checkout main
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
@@ -86,8 +83,6 @@ jobs:
 
       - name: Build
         run: pnpm run build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
 
       - name: Lint
         run: pnpm run lint
@@ -96,7 +91,7 @@ jobs:
         run: pnpm run test
 
       - name: E2E
-        run: pnpm nx affected --target test:e2e
+        run: pnpm run test:e2e
         env:
           HOME: /root
 
