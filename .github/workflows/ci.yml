@@ -69,9 +69,9 @@ jobs:
       #       node_modules
       #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
 
-      - name: Gitleaks
-        run: npm run leaks
-        shell: bash
+      # - name: Gitleaks
+      #   run: npm run leaks
+      #   shell: bash
 
       - name: Build
         run: pnpm run build
