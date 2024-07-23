@@ -20,9 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Mark repository as safe
-        run: git config --global --add safe.directory /__w/descope-js/descope-js
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -43,17 +40,21 @@ jobs:
       - name: Fetch all branches to container
         run: git fetch --all
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
-        env:
-          CI: true
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+      - name: Mark repository as safe
+        run: git config --global --add safe.directory /__w/descope-js/descope-js
 
       - name: Install jq
         run: apt-get update && apt-get install -y jq
 
       - name: Set permission
         run: chmod -R 777 /usr/local
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          CI: true
+          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+
 
       # - name: Set NX cloud shas
       #   uses: nrwl/nx-set-shas@v4
