@@ -209,17 +209,11 @@ class DescopeWc extends BaseDescopeWc {
       redirectAuthCallbackUrl,
       redirectAuthBackupCallbackUri,
       redirectAuthInitiator,
-      oidcIdpStateId,
       locale,
-      samlIdpStateId,
-      samlIdpUsername,
-      descopeIdpInitiated,
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
-      ssoAppId,
-      oidcLoginHint,
-      oidcPrompt,
+      ...ssoQueryParams
     } = currentState;
 
     let startScreenId: string;
@@ -267,28 +261,13 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       // As an optimization - we want to show the first screen if it is possible
-      if (
-        !showFirstScreenOnExecutionInit(
-          startScreenId,
-          oidcIdpStateId,
-          samlIdpStateId,
-          samlIdpUsername,
-          ssoAppId,
-          oidcLoginHint,
-          oidcPrompt,
-        )
-      ) {
+      if (!showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
             tenant,
             redirectAuth,
-            oidcIdpStateId,
-            samlIdpStateId,
-            samlIdpUsername,
-            ssoAppId,
-            oidcLoginHint,
-            oidcPrompt,
+            ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
@@ -302,9 +281,11 @@ class DescopeWc extends BaseDescopeWc {
           {
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
-            ...(descopeIdpInitiated && { idpInitiated: true }),
+            ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
             ...(token ? { token } : {}),
-            ...(oidcLoginHint ? { externalId: oidcLoginHint } : {}),
+            ...(ssoQueryParams.oidcLoginHint
+              ? { externalId: ssoQueryParams.oidcLoginHint }
+              : {}),
           },
         );
 
@@ -458,6 +439,9 @@ class DescopeWc extends BaseDescopeWc {
       readyScreenId,
     );
 
+    const { oidcLoginHint, oidcPrompt, oidcErrorRedirectUri, samlIdpUsername } =
+      ssoQueryParams;
+
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
       direction: getAnimationDirection(stepId, prevState.stepId),
@@ -487,25 +471,16 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
+      oidcErrorRedirectUri,
       openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
 
     // If there is a start screen id, next action should start the flow
-    // But if oidcIdpStateId, samlIdpStateId, samlIdpUsername, ssoAppId, oidcLoginHint, oidcPrompt is not empty, this optimization doesn't happen
+    // But if any of the sso params are not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
-    if (
-      showFirstScreenOnExecutionInit(
-        startScreenId,
-        oidcIdpStateId,
-        samlIdpStateId,
-        samlIdpUsername,
-        ssoAppId,
-        oidcLoginHint,
-        oidcPrompt,
-      )
-    ) {
+    if (showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
       stepStateUpdate.next = (
         interactionId,
         version,
@@ -517,18 +492,13 @@ class DescopeWc extends BaseDescopeWc {
           {
             tenant,
             redirectAuth,
-            oidcIdpStateId,
-            samlIdpStateId,
-            samlIdpUsername,
-            ssoAppId,
-            oidcLoginHint,
+            ...ssoQueryParams,
             lastAuth,
             preview: this.preview,
             abTestingKey,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale),
-            oidcPrompt,
           },
           conditionInteractionId,
           interactionId,
@@ -538,7 +508,7 @@ class DescopeWc extends BaseDescopeWc {
             ...this.formConfigValues,
             ...inputs,
             ...(code && { exchangeCode: code, idpInitiated: true }),
-            ...(descopeIdpInitiated && { idpInitiated: true }),
+            ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
             ...(token && { token }),
           },
         );
