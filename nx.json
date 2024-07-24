@@ -1,33 +1,57 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
-  "affected": { "defaultBase": "origin/main" },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
-    }
-  },
+  "defaultBase": "origin/main",
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ],
+      "cache": true
     },
     "lint": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "inputs": [
         "default",
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/.eslintignore"
-      ]
+      ],
+      "cache": true
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "dependsOn": ["^build"]
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": true
+    },
+    "test:e2e": {
+      "inputs": [
+        "default",
+        "^production",
+        "{projectRoot}/playwright.config.ts"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": true
     }
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "production": [
       "default",
       "!{projectRoot}/.eslintrc.json",
@@ -37,6 +61,9 @@
     ],
     "sharedGlobals": []
   },
-  "workspaceLayout": { "appsDir": "packages/**", "libsDir": "packages/**" },
-  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU="
+  "workspaceLayout": {
+    "appsDir": "packages/**",
+    "libsDir": "packages/**"
+  },
+  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU=",
 }
