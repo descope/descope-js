@@ -51,5 +51,3 @@ export type { HTTPMethods, RequestConfig, ExtendedResponse };
 export type DeliveryMethod = keyof typeof DeliveryMethods;
 /** Type to restrict to valid OAuth providers */
 export type OAuthProvider = keyof typeof OAuthProviders;
-
-export const a = 1;

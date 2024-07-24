@@ -13,6 +13,7 @@ jobs:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
     container:
+      # the container version should be the same as the version of the Playwright package
       image: mcr.microsoft.com/playwright:v1.41.2-jammy
       options: --user root
     steps:
@@ -48,8 +49,8 @@ jobs:
       - name: Install jq
         run: apt-get update && apt-get install -y jq
 
-      - name: Set permission
-        run: chmod -R 777 /usr/local
+      # - name: Set permission
+      #   run: chmod -R 777 /usr/local
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
