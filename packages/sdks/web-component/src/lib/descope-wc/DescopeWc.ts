@@ -35,7 +35,6 @@ import { getABTestingKey } from '../helpers/abTestingKey';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
-  getDescopeUiComponentsList,
   setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
@@ -127,7 +126,7 @@ class DescopeWc extends BaseDescopeWc {
       this.stepState?.subscribe(this.onStepChange.bind(this));
 
       window.addEventListener(
-        'visibilitychange',
+        'visibilitychange', 
         this.#eventsCbRefs.visibilitychange,
       );
     }
