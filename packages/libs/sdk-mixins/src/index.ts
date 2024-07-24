@@ -1,11 +1,11 @@
 declare global {
   interface HTMLElement {
-    attributeChangedCallback?(
+    attributeChangedCallback(
       attrName: string,
       oldValue: string | null,
       newValue: string | null,
     ): void;
-    connectedCallback?(): void;
+    connectedCallback(): void;
   }
 }
 
