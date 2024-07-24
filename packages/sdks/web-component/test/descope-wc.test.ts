@@ -421,7 +421,7 @@ describe('web-component', () => {
 
     pageContent = '<input id="email"></input><span>It works!</span>';
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" style-name="test"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" style-id="test"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -504,10 +504,7 @@ describe('web-component', () => {
         });
       }
 
-      // eslint-disable-next-line class-methods-use-this
-      public get projectId() {
-        return '1';
-      }
+      projectId: '1';
     }
     customElements.define('test-flow', Test);
     const descope = new Test();
@@ -1765,19 +1762,12 @@ describe('web-component', () => {
         });
       }
 
-      // eslint-disable-next-line class-methods-use-this
-      public get projectId() {
-        return '1';
-      }
+      projectId: '1';
+      theme: any = '1';
 
       // eslint-disable-next-line class-methods-use-this
       public get flowId() {
         return '1';
-      }
-
-      // eslint-disable-next-line class-methods-use-this
-      public get theme() {
-        return '1' as any;
       }
     }
 

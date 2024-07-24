@@ -46,8 +46,8 @@ export const themeMixin = createSingletonMixin(
         return theme || 'light';
       }
 
-      get styleName(): string {
-        return this.getAttribute('style-name') || THEME_DEFAULT_NAME;
+      get styleId(): string {
+        return this.getAttribute('style-id') || THEME_DEFAULT_NAME;
       }
 
       #_themeResource: Promise<void | Record<string, any>>;
@@ -55,7 +55,7 @@ export const themeMixin = createSingletonMixin(
       async #fetchTheme() {
         try {
           const { body: fetchedTheme } = await this.fetchStaticResource(
-            `${this.styleName}.json`,
+            `${this.styleId}.json`,
             'json',
           );
 
@@ -173,6 +173,11 @@ export const themeMixin = createSingletonMixin(
         this.observeAttributes(['theme'], () => {
           this.#loadFonts();
           this.#applyTheme();
+        });
+
+        this.observeAttributes(['style-id'], () => {
+          this.#_themeResource = null;
+          this.#loadComponentsStyle();
         });
       }
     };

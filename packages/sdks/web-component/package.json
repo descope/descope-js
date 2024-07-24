@@ -74,6 +74,8 @@
   },
   "dependencies": {
     "tslib": "2.6.3",
+    "@descope/sdk-helpers": "workspace:*",
+    "@descope/sdk-mixins": "workspace:*",
     "@descope/web-js-sdk": "workspace:*"
   },
   "overrides": {
