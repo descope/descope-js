@@ -582,7 +582,7 @@ class DescopeWc extends BaseDescopeWc {
 
       this.loggerWrapper.error(
         sdkResp?.error?.errorDescription || defaultMessage,
-        sdkResp?.error?.us || defaultDescription,
+        sdkResp?.error?.errorMessage || defaultDescription,
       );
       return;
     }
