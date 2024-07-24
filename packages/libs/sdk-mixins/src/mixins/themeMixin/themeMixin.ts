@@ -124,6 +124,7 @@ export const themeMixin = createSingletonMixin(
 
         if (!this.#globalStyleTag) {
           this.#globalStyleTag = document.createElement('style');
+          this.#globalStyleTag.id = 'global-style';
           this.shadowRoot!.appendChild(this.#globalStyleTag);
         }
 
@@ -145,7 +146,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #getFontsConfig() {
-        const { projectConfig } = await this.config;
+        const { projectConfig } = await this.config || {};
 
         const newConfig = projectConfig?.styles?.[this.styleId]
         const oldConfig = projectConfig?.cssTemplate
@@ -159,7 +160,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadFonts() {
-        const fonts = this.#getFontsConfig();
+        const fonts = await this.#getFontsConfig();
         if (fonts) {
           Object.values(fonts).forEach((font) => {
             if (font.url) {

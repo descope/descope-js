@@ -126,7 +126,7 @@ class DescopeWc extends BaseDescopeWc {
       this.stepState?.subscribe(this.onStepChange.bind(this));
 
       window.addEventListener(
-        'visibilitychange', 
+        'visibilitychange',
         this.#eventsCbRefs.visibilitychange,
       );
     }
