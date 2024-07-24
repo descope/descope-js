@@ -6,73 +6,83 @@ on:
       - main
 env:
   NODE_VERSION: 18.2
-  PNPM_VERSION: 7.28.0
+  PNPM_VERSION: 8
 jobs:
-  gitleaks:
-    name: 🔒 Run Git leaks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      # Skip post-install scripts here, as a malicious
-      # script could steal NODE_AUTH_TOKEN.
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
-        env:
-          CI: true
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
-      - name: Gitleaks
-        run: npm run leaks
-        shell: bash
   pr:
     name: 👷 Build / Lint / Test
     runs-on: ubuntu-latest
+    container:
+      # the container version should be the same as the version of the Playwright package
+      image: mcr.microsoft.com/playwright:v1.41.2-jammy
+      options: --user root
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          # ref: main
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: pnpm/action-setup@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
-      - name: Restore cached npm dependencies
-        uses: actions/cache/restore@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: |
-            node_modules
-          key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      # - name: Restore cached npm dependencies
+      #   uses: actions/cache/restore@v4
+      #   with:
+      #     path: |
+      #       node_modules
+      #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+
+      # Setup container
+      - name: Mark directory as safe
+        run:  git config --system --add safe.directory /__w/descope-js/descope-js
+      - name: Install jq
+        run: apt-get update && apt-get install -y jq
+      - name: Set permission
+        run: chmod -R 777 /usr/local
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Cache npm dependencies
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            node_modules
-          key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+
+      # - name: Set NX cloud shas
+      #   uses: nrwl/nx-set-shas@v4
+      # - name: Install Playwright Browsers
+      #   run: npx playwright install --with-deps
+
+      # - name: Cache npm dependencies
+      #   uses: actions/cache/save@v4
+      #   with:
+      #     path: |
+      #       node_modules
+      #     key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Gitleaks
+        run: npm run leaks
+        shell: bash
+
       - name: Build
         run: pnpm run build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+
       - name: Lint
         run: pnpm run lint
+
       - name: Test
         run: pnpm run test
+
       - name: E2E
         run: pnpm nx affected --target test:e2e
+        env:
+          HOME: /root
+
       - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4

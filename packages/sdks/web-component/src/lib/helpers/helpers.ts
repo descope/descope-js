@@ -493,18 +493,15 @@ export const showFirstScreenOnExecutionInit = (
     oidcPrompt,
     oidcErrorRedirectUri,
   }: SSOQueryParams,
-): boolean => {
-  return (
-    !!startScreenId &&
-    !oidcIdpStateId &&
-    !samlIdpStateId &&
-    !samlIdpUsername &&
-    !ssoAppId &&
-    !oidcLoginHint &&
-    !oidcPrompt &&
-    !oidcErrorRedirectUri
-  );
-};
+): boolean =>
+  !!startScreenId &&
+  !oidcIdpStateId &&
+  !samlIdpStateId &&
+  !samlIdpUsername &&
+  !ssoAppId &&
+  !oidcLoginHint &&
+  !oidcPrompt &&
+  !oidcErrorRedirectUri;
 
 export const injectSamlIdpForm = (
   url: string,
