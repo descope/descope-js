@@ -7,7 +7,6 @@ on:
 env:
   NODE_VERSION: 18.2
   PNPM_VERSION: 8
-  # HOME: /root
 jobs:
   pr:
     name: 👷 Build / Lint / Test
@@ -90,4 +89,3 @@ jobs:
         with:
           name: e2e-report
           path: packages/**/playwright-report
-# dummy
