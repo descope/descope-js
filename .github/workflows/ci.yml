@@ -90,4 +90,3 @@ jobs:
         with:
           name: e2e-report
           path: packages/**/playwright-report
-# temp remove
