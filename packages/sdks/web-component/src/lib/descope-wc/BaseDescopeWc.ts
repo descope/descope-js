@@ -125,7 +125,6 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #initShadowDom() {
-    //this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
 
     this.rootElement =

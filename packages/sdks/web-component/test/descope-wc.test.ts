@@ -11,7 +11,6 @@ import {
   DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
-  THEME_DEFAULT_NAME,
   URL_CODE_PARAM_NAME,
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
@@ -51,7 +50,7 @@ jest.mock('@descope/web-js-sdk', () => ({
 }));
 
 const WAIT_TIMEOUT = 10000;
-const THEME_DEFAULT_FILENAME = `${THEME_DEFAULT_NAME}.json`;
+const THEME_DEFAULT_FILENAME = `theme.json`;
 
 const abTestingKey = getABTestingKey();
 
