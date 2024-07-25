@@ -1,4 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
+// @ts-nocheck
 import createSdk, { ensureFingerprintIds } from '@descope/web-js-sdk';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
@@ -504,7 +505,7 @@ describe('web-component', () => {
         });
       }
 
-      // eslint-disable-next-line class-methods-use-this, @ts-ignore
+      // eslint-disable-next-line class-methods-use-this
       public get projectId() {
         return '1';
       }
@@ -1775,7 +1776,7 @@ describe('web-component', () => {
         });
       }
 
-      // eslint-disable-next-line class-methods-use-this, @ts-ignore
+      // eslint-disable-next-line class-methods-use-this
       public get projectId() {
         return '1';
       }
