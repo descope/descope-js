@@ -47,11 +47,24 @@ const replaceElementInputs = (
 /**
  * Get object nested path.
  * Examples:
- *  - getByPath({ { a { b: 'rob' } }, 'a.b') => 'hey rob'
+ *  - getByPath({ { a { b: 'rob' } }, 'a.b') => 'rob'
+ *  - getByPath({ { a { 'b.c': 'rob' } }, 'a.b.c') => 'rob'
  *  - getByPath({}, 'a.b') => ''
  */
 const getByPath = (obj: Record<string, any>, path: string) =>
-  path.split('.').reduce((prev, next) => prev?.[next] || '', obj);
+  {
+    if (!path) {
+      return '';
+    }
+    if (obj?.[path]) {
+      return obj[path];
+    }
+    const [first, rest] = path.split(/\.(.*)/s);
+    if (first && obj?.[first] && !(typeof obj[first] == "object")) {
+      return obj[first];
+    }
+    return getByPath(obj[first], rest || '');
+  };
 
 /**
  * Apply template language on text, based on screen state.
