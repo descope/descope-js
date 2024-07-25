@@ -504,8 +504,7 @@ describe('web-component', () => {
         });
       }
 
-      // eslint-disable-next-line class-methods-use-this
-      // @ts-ignore
+      // eslint-disable-next-line class-methods-use-this, @ts-ignore
       public get projectId() {
         return '1';
       }
@@ -1776,8 +1775,7 @@ describe('web-component', () => {
         });
       }
 
-      // eslint-disable-next-line class-methods-use-this
-      // @ts-ignore
+      // eslint-disable-next-line class-methods-use-this, @ts-ignore
       public get projectId() {
         return '1';
       }
