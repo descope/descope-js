@@ -71,7 +71,8 @@
 	"dependencies": {
 		"@descope/node-sdk": "1.6.9",
 		"@descope/react-sdk": "workspace:*",
-		"@descope/core-js-sdk": "workspace:*"
+		"@descope/core-js-sdk": "workspace:*",
+		"@descope/web-component": "workspace:*"
 	},
 	"devDependencies": {
 		"@babel/core": "7.23.9",

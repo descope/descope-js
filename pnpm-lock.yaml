@@ -648,6 +648,9 @@ importers:
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
+      '@descope/web-component':
+        specifier: workspace:*
+        version: link:../web-component
       react:
         specifier: '>=18'
         version: 18.3.1
@@ -23811,6 +23814,7 @@ packages:
       '@descope/core-js-sdk': link:packages/sdks/core-js-sdk
       '@descope/node-sdk': 1.6.9
       '@descope/react-sdk': link:packages/sdks/react-sdk
+      '@descope/web-component': link:packages/sdks/web-component
       '@types/react': 18.3.3
       next: 13.5.3(@babel/core@7.24.7)(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
