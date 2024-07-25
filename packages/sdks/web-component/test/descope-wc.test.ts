@@ -1114,17 +1114,9 @@ describe('web-component', () => {
   it('should update the page when user changes the url query param value', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
-    globalThis.DescopeUI = {}
-
     pageContent = '<input id="email" name="email"></input>';
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    fetchMock.mockReturnValue({
-      text: () =>
-        '<input id="email"></input><input id="code"></input><span>It updated!</span>',
-      ok: true,
-    });
 
     const logSpy = jest.spyOn(console, 'warn');
 
@@ -1772,7 +1764,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true, appendChild: () => {} },
+          value: { isConnected: true, appendChild: () => {}, host: { closest: () => true } },
         });
       }
 
@@ -1788,16 +1780,7 @@ describe('web-component', () => {
     }
 
     customElements.define('test-theme', Test as any);
-    const descope: any = new Test();
-
-    Object.defineProperty(descope, 'theme', {
-      get: () => '1',
-    })
-
-    Object.defineProperty(descope.shadowRoot, 'host', {
-      value: { closest: jest.fn() },
-      writable: true,
-    });
+    document.body.innerHTML = `<h1>Custom element test</h1> <test-theme flow-id="otpSignInEmail" project-id="1" theme="lol"></descope-wc>`;
 
     await waitFor(() =>
       expect(errorSpy).toHaveBeenCalledWith(
