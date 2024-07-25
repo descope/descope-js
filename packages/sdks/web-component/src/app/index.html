@@ -61,7 +61,7 @@
 
       descopeWcEle.errorTransformer = translateError;
       descopeWcEle.addEventListener('error', (e) =>
-        alert(`Error! - ${e.detail.errorMessage}`),
+        alert(`Error! - ${JSON.stringify(e.detail, null, 4)}`),
       );
       descopeWcEle.addEventListener('success', (e) =>
         alert(`Success! - ${JSON.stringify(e.detail)}`),
