@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.24.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.23.5...core-js-sdk-2.24.0) (2024-07-25)
+
+
+### Features
+
+* OIDC error redirect URI ([#748](https://github.com/descope/descope-js/issues/748)) ([d1701fa](https://github.com/descope/descope-js/commit/d1701fa348d2de88891f13a5aea66115575d773f))
+
 ## [2.23.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.23.4...core-js-sdk-2.23.5) (2024-07-23)
 
 
