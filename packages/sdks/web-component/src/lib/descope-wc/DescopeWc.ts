@@ -584,7 +584,7 @@ class DescopeWc extends BaseDescopeWc {
       this.#dispatch(
         'error',
         sdkResp?.error || {
-          errorCode: 'E151000',
+          errorCode: 'J151001',
           errorDescription: defaultDescription,
           errorMessage: defaultMessage,
         },
