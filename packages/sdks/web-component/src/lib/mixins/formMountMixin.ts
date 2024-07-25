@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { createSingletonMixin } from '@descope/sdk-helpers';
 import { isChromium } from '../helpers';
 

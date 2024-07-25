@@ -504,6 +504,7 @@ describe('web-component', () => {
         });
       }
 
+      // eslint-disable-next-line class-methods-use-this
       // @ts-ignore
       public get projectId() {
         return '1';
@@ -1110,7 +1111,7 @@ describe('web-component', () => {
     );
   });
 
-  it.skip('should update the page when user changes the url query param value', async () => {
+  it('should update the page when user changes the url query param value', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
     globalThis.DescopeUI = {}
@@ -1765,7 +1766,8 @@ describe('web-component', () => {
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'light'));
   });
 
-  it.skip('should throw an error when theme has a wrong value', async () => {
+  it('should throw an error when theme has a wrong value', async () => {
+    const errorSpy = jest.spyOn(console, 'error');
     class Test extends DescopeWc {
       constructor() {
         super();
@@ -1774,6 +1776,7 @@ describe('web-component', () => {
         });
       }
 
+      // eslint-disable-next-line class-methods-use-this
       // @ts-ignore
       public get projectId() {
         return '1';
@@ -1797,9 +1800,11 @@ describe('web-component', () => {
       writable: true,
     });
 
-    await expect(descope.init.bind(descope)).rejects.toThrow(
-      `Supported theme values are "light", "dark", or leave empty for using the OS theme`,
-    );
+    await waitFor(() =>
+      expect(errorSpy).toHaveBeenCalledWith(
+        'Supported theme values are "light", "dark", or leave empty for using the OS theme'
+      ),
+      { timeout: WAIT_TIMEOUT });
   });
 
   it('should show form validation error when input is not valid', async () => {
