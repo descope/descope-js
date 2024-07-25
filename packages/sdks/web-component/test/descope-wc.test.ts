@@ -1,4 +1,4 @@
-// eslint-disable-next-line max-classes-per-file
+/* eslint-disable max-classes-per-file */
 // @ts-nocheck
 import createSdk, { ensureFingerprintIds } from '@descope/web-js-sdk';
 import { fireEvent, waitFor } from '@testing-library/dom';
