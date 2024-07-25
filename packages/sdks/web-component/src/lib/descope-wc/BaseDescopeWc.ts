@@ -307,6 +307,14 @@ class BaseDescopeWc extends HTMLElement {
         try {
           const resp = await origFn(...args);
           return resp;
+        } catch (e) {
+          // return a generic error object in case of an error
+          return {
+            error: {
+              errorCode: 'E151000',
+              errorDescription: e.toString(),
+            },
+          };
         } finally {
           this.nextRequestStatus.update({ isLoading: false });
         }
@@ -709,7 +717,7 @@ class BaseDescopeWc extends HTMLElement {
         redirectAuthBackupCallbackUri,
         redirectAuthCodeChallenge,
         redirectAuthInitiator,
-        ssoQueryParams
+        ssoQueryParams,
       } = handleUrlParams();
 
       // we want to update the state when user clicks on back in the browser
