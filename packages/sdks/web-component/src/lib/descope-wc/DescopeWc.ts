@@ -554,6 +554,8 @@ class DescopeWc extends BaseDescopeWc {
             flowVersion,
             componentsVersion,
           );
+
+          return;
         }
         this.#handleSdkResponse(sdkResp);
         const { action: nextAction } = sdkResp?.data ?? {};
@@ -576,9 +578,17 @@ class DescopeWc extends BaseDescopeWc {
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
-      this.#dispatch('error', sdkResp?.error);
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
+
+      this.#dispatch(
+        'error',
+        sdkResp?.error || {
+          errorCode: 'E151000',
+          errorDescription: defaultDescription,
+          errorMessage: defaultMessage,
+        },
+      );
 
       this.loggerWrapper.error(
         sdkResp?.error?.errorDescription || defaultMessage,
