@@ -311,7 +311,7 @@ class BaseDescopeWc extends HTMLElement {
           // return a generic error object in case of an error
           return {
             error: {
-              errorCode: 'E151000',
+              errorCode: 'J151000',
               errorDescription: e.toString(),
             },
           };
