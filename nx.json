@@ -55,6 +55,6 @@
     "appsDir": "packages/**",
     "libsDir": "packages/**"
   },
-  "nxCloudAccessToken": "OTk2MTNiMTQtODRiMi00OTVkLWE5MGQtNjMyY2ZkY2I0MDhlfHJlYWQtd3JpdGU=",
+  "nxCloudAccessToken": "MjZkNzE4YWUtYjgyZC00OThjLTgzMmMtOTYxNTk0Yzk3ZWEzfHJlYWQ=",
   "neverConnectToCloud": true
 }
