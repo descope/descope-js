@@ -5,10 +5,15 @@ on:
     branches:
       - main
 
+env:
+  NODE_VERSION: 18.2
+  PNPM_VERSION: 8
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
 jobs:
   release:
     name: Release
-    if: "contains(github.event.head_commit.message, 'RELEASE')"
+    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     steps:
       - name: Get token
@@ -33,7 +38,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: pnpm/action-setup@v4
         with:
-          version: 7.28.0
+          version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
