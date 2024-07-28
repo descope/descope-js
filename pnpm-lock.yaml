@@ -511,8 +511,6 @@ importers:
         specifier: ^4.5.3
         version: 4.9.5
 
-  packages/libs/sdk-mixins/dist/cjs: {}
-
   packages/sdks/core-js-sdk:
     dependencies:
       jwt-decode:

@@ -127,8 +127,7 @@ class BaseDescopeWc extends BaseClass {
   #initShadowDom() {
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
 
-    this.rootElement =
-      this.shadowRoot.querySelector<HTMLDivElement>('#wc-root');
+    this.rootElement = this.shadowRoot.querySelector<HTMLDivElement>('#root');
   }
 
   get flowId() {

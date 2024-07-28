@@ -224,7 +224,7 @@ describe('web-component', () => {
     const wc = document.querySelector('descope-wc');
     wc.setAttribute('theme', 'dark');
 
-    const rootEle = wc.shadowRoot.querySelector('#wc-root');
+    const rootEle = wc.shadowRoot.querySelector('#root');
 
     await waitFor(
       () =>
@@ -690,7 +690,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -732,7 +732,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -763,7 +763,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -794,7 +794,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -816,7 +816,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -838,7 +838,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -860,7 +860,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -1091,7 +1091,7 @@ describe('web-component', () => {
     const spyGet = jest.spyOn(customElements, 'get');
     spyGet.mockReturnValueOnce({ cssVarList: { url: '--url' } } as any);
 
-    pageContent = `<div>Loaded1</div>"/>`;
+    pageContent = `<div>Loaded1</div>`;
 
     document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -1100,8 +1100,9 @@ describe('web-component', () => {
     });
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
+    console.log(shadowEle.innerHTML);
 
-    const rootEle = shadowEle.querySelector('#wc-root');
+    const rootEle = shadowEle.querySelector('#root');
     await waitFor(
       () =>
         expect(rootEle).toHaveStyle({
@@ -1174,7 +1175,7 @@ describe('web-component', () => {
     fireEvent.popState(window);
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
-    const rootEle = shadowEle.querySelector('#wc-root');
+    const rootEle = shadowEle.querySelector('#root');
     const spyAddEventListener = jest.spyOn(rootEle, 'addEventListener');
 
     spyAddEventListener.mockImplementationOnce(
@@ -1727,7 +1728,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle?.querySelector('#wc-root');
+    const rootEle = shadowEle?.querySelector('#root');
 
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'light'));
   });
@@ -1740,7 +1741,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle?.querySelector('#wc-root');
+    const rootEle = shadowEle?.querySelector('#root');
 
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'dark'));
   });
@@ -1753,7 +1754,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle?.querySelector('#wc-root');
+    const rootEle = shadowEle?.querySelector('#root');
 
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'light'));
   });
@@ -3954,7 +3955,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
