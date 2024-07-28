@@ -17,7 +17,7 @@ import {
   withMemCache,
 } from '../helpers';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin } from './../mixins';
+import { formMountMixin } from '../mixins';
 import {
   AutoFocusOptions,
   DebuggerMessage,

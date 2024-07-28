@@ -146,10 +146,10 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #getFontsConfig() {
-        const { projectConfig } = await this.config || {};
+        const { projectConfig } = (await this.config) || {};
 
-        const newConfig = projectConfig?.styles?.[this.styleId]
-        const oldConfig = projectConfig?.cssTemplate
+        const newConfig = projectConfig?.styles?.[this.styleId];
+        const oldConfig = projectConfig?.cssTemplate;
 
         const config = newConfig || oldConfig;
 
