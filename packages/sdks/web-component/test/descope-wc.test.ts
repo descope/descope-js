@@ -1100,7 +1100,6 @@ describe('web-component', () => {
     });
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
-    console.log(shadowEle.innerHTML);
 
     const rootEle = shadowEle.querySelector('#root');
     await waitFor(
