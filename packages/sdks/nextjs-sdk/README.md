@@ -72,7 +72,7 @@ const Page = () => {
 };
 ```
 
-Refer to the [Descope React SDK Section](https://github.com/descope/react-sdk?tab=readme-ov-file#2-provide-flow-id) for a list of available props.
+Refer to the [Descope React SDK Section](../react-sdk/README.md) for a list of available props.
 
 **Note:** Descope is a client component. if the component that renders it is a server component, you cannot pass `onSuccess`/`onError`/`errorTransformer`/`logger` props because they are not serializable. To redirect the user after the flow is completed, use the `redirectAfterSuccess` and `redirectAfterError` props.
 
