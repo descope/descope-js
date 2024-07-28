@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "descope",
   "defaultBase": "origin/main",
-  "tasksRunnerOptions": {
+  "tasksRunnerOptions_disableNxCloud": {
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
@@ -56,5 +56,5 @@
     "libsDir": "packages/**"
   },
   "nxCloudAccessToken": "MjZkNzE4YWUtYjgyZC00OThjLTgzMmMtOTYxNTk0Yzk3ZWEzfHJlYWQ=",
-  "neverConnectToCloud": true
+  "neverConnectToCloud": false
 }
