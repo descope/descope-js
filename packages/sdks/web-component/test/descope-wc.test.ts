@@ -1083,7 +1083,7 @@ describe('web-component', () => {
     expect(btn).toHaveAttribute('disabled', 'true');
   });
 
-  it.skip('should update root css var according to screen state', async () => {
+  it('should update root css var according to screen state', async () => {
     startMock.mockReturnValue(
       generateSdkResponse({ screenState: { totp: { image: 'base-64-text' } } }),
     );
