@@ -3,6 +3,7 @@ import { screen } from 'shadow-dom-testing-library';
 import {
   setNOTPVariable,
   updateScreenFromScreenState,
+  updateTemplateFromScreenState,
 } from '../../src/lib/helpers/templates';
 
 describe('templates', () => {
@@ -32,6 +33,17 @@ describe('templates', () => {
       form: { email: 'email2' },
     });
     await waitFor(() => screen.getByShadowDisplayValue('email2'));
+  });
+
+  it('should handle nested descope form', async () => {
+    document.body.innerHTML = `<div>
+			<descope-text class="descope-text">{{form.test.another}}</descope-text>
+		</div>`;
+
+    updateTemplateFromScreenState(document, {
+      form: { test: { another: "value" } } as any,
+    });
+    await waitFor(() => screen.getByShadowText('value'));
   });
 
   it('should set NOTP variable', async () => {

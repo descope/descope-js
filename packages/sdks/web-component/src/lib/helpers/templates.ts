@@ -127,9 +127,9 @@ const replaceHrefByDataType = (
 
 const setFormConfigValues = (
   baseEle: DocumentFragment,
-  formData: Record<string, string>,
+  formData?: Record<string, string>,
 ) => {
-  Object.entries(formData).forEach(([name, config]) => {
+  Object.entries(formData || {}).forEach(([name, config]) => {
     const eles = baseEle.querySelectorAll(`[name="${name}"]`);
 
     eles.forEach((ele) => {
