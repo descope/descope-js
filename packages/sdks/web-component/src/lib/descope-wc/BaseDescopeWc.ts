@@ -256,6 +256,14 @@ class BaseDescopeWc extends BaseClass {
         try {
           const resp = await origFn(...args);
           return resp;
+        } catch (e) {
+          // return a generic error object in case of an error
+          return {
+            error: {
+              errorCode: 'J151000',
+              errorDescription: e.toString(),
+            },
+          };
         } finally {
           this.nextRequestStatus.update({ isLoading: false });
         }
