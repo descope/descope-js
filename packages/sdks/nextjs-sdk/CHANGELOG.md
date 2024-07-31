@@ -6,5 +6,5 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Dependency Updates
 
-* `react-sdk` updated to version `2.0.60`
-* `web-component` updated to version `3.21.1`
+- `react-sdk` updated to version `2.0.60`
+- `web-component` updated to version `3.21.1`

@@ -1,0 +1,32 @@
+<h2>ANGULAR SDK DEMO APP</h2>
+<button *ngIf="!isAuthenticated" (click)="login()">LOGIN</button>
+<ng-container *ngIf="isAuthenticated">
+  <h3>Hello {{ userName }}</h3>
+  <div>
+    Roles:
+    <ng-container *ngIf="roles && roles.length; else noRoles">
+      {{ roles }}
+    </ng-container>
+    <ng-template #noRoles>N/A</ng-template>
+  </div>
+  <button
+    *ngIf="backendUrl.length > 0"
+    class="action-button"
+    (click)="fetchData()"
+  >
+    FETCH DATA
+  </button>
+  <button *ngIf="stepUpConfigured" class="action-button" (click)="stepUp()">
+    STEP UP
+  </button>
+  <button class="action-button" (click)="manageUsers()">Manage Users</button>
+  <button class="action-button" (click)="manageRoles()">Manage Roles</button>
+  <button class="action-button" (click)="manageAccessKeys()">
+    Manage Access Keys
+  </button>
+  <button class="action-button" (click)="manageAudit()">Manage Audit</button>
+  <button class="action-button" (click)="myUserProfile()">
+    My User Profile
+  </button>
+  <button class="logout-button" (click)="logout()">LOGOUT</button>
+</ng-container>

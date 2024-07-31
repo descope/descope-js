@@ -1,0 +1,18 @@
+<descope
+  *ngIf="!stepUpSuccess"
+  (success)="onSuccess($event)"
+  (error)="onError($event)"
+  [theme]="theme"
+  [flowId]="flowId"
+  [locale]="locale"
+  [redirectUrl]="redirectUrl"
+  [telemetryKey]="telemetryKey"
+  [tenant]="tenantId"
+  [debug]="debugMode"
+  [errorTransformer]="errorTransformer"
+></descope>
+
+<ng-container *ngIf="stepUpSuccess">
+  <h2>STEP UP SUCCESS</h2>
+  <button (click)="goBack()">GO BACK</button>
+</ng-container>
