@@ -28,7 +28,7 @@
     "ng": "ng",
     "start": "ng serve",
     "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
-    "prebuild:ci": "node scripts/setversion/setversion.js",
+    "prebuild": "node scripts/setversion/setversion.js",
     "build": "npm run build:lib && rm -rf ./dist/package.json",
     "build:lib": "cp package.json ./projects/angular-sdk && ng build angular-sdk",
     "build:app": "ng build demo-app",
@@ -36,8 +36,7 @@
     "test": "jest --config jest.config.js",
     "lint": "ng lint",
     "format": "prettier . -w --ignore-path .gitignore",
-    "format-check": "prettier . --check --ignore-path .gitignore",
-    "prepublishOnly": "npm run build:ci"
+    "format-check": "prettier . --check --ignore-path .gitignore"
   },
   "dependencies": {
     "@descope/access-key-management-widget": "workspace:*",
