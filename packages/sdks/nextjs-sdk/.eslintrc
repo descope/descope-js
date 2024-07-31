@@ -24,7 +24,7 @@
 		"coverage/*",
 		"testUtils/*",
 		"examples/*",
-    "node_modules/*"
+		"node_modules/*"
 	],
 	"parserOptions": {
 		"ecmaFeatures": {

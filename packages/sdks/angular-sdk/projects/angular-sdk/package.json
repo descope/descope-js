@@ -6,13 +6,30 @@
     "@angular/core": ">=16.0.0"
   },
   "license": "MIT",
-  "node": "^16.14.0 || >=18.10.0",
+  "engines": {
+    "node": "^16.14.0 || >=18.10.0",
+    "npm": ">= 8.1.0"
+  },
+  "module": "fesm2022/descope-angular-sdk.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2022": "./esm2022/descope-angular-sdk.mjs",
+      "esm": "./esm2022/descope-angular-sdk.mjs",
+      "default": "./fesm2022/descope-angular-sdk.mjs"
+    }
+  },
+  "sideEffects": false,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
     "prebuild:ci": "node scripts/setversion/setversion.js",
-    "build:ci": "npm run build:lib",
+    "build": "npm run build:lib && rm -rf ./dist/package.json",
     "build:lib": "cp package.json ./projects/angular-sdk && ng build angular-sdk",
     "build:app": "ng build demo-app",
     "watch": "ng build --watch --configuration development",
