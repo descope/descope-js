@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.23](https://github.com/descope/descope-js/compare/vue-sdk-2.0.22...vue-sdk-2.0.23) (2024-07-31)
+
+
+### Bug Fixes
+
+* issue 7219 RELEASE ([#765](https://github.com/descope/descope-js/issues/765)) ([eec8843](https://github.com/descope/descope-js/commit/eec88439177d57dd19665c96bd57dc206ca3b4f4))
+
 ## [2.0.22](https://github.com/descope/descope-js/compare/vue-sdk-2.0.21...vue-sdk-2.0.22) (2024-07-28)
 
 ### Dependency Updates
