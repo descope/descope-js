@@ -1,4 +1,6 @@
-import '@descope/core-js-sdk';
+// workaround for TS issue https://github.com/microsoft/TypeScript/issues/42873
+// eslint-disable-next-line
+import type * as _1 from '@descope/core-js-sdk';
 import createSdk from '@descope/web-js-sdk';
 import { IS_BROWSER } from './constants';
 import { wrapInTry } from './utils';
