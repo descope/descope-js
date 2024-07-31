@@ -30,7 +30,7 @@
     "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
     "prebuild": "node scripts/setversion/setversion.js",
     "build": "npm run build:lib && rm -rf ./dist/package.json",
-    "build:lib": "pwd && cp package.json ./projects/angular-sdk/package.json && ng build angular-sdk",
+    "build:lib": "cp package.json ./projects/angular-sdk/package.json && ng build angular-sdk",
     "build:app": "ng build demo-app",
     "watch": "ng build --watch --configuration development",
     "test": "jest --config jest.config.js",
