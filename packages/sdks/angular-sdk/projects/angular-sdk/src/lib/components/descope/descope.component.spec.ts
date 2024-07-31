@@ -76,10 +76,12 @@ describe('DescopeComponent', () => {
     expect(DescopeWC.sdkConfigOverrides).toEqual({
       baseHeaders: {
         'x-descope-sdk-name': 'angular',
-        'x-descope-sdk-version': '0.0.0'
+        'x-descope-sdk-version': expect.stringMatching(/^\d+\.\d+\.\d+$/)
       },
       persistTokens: false,
-      hooks: {}
+      hooks: {
+        beforeRequest: undefined
+      }
     });
   });
 

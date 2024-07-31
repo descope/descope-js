@@ -356,8 +356,6 @@ importers:
         specifier: ^4.5.3
         version: 4.9.5
 
-  packages/libs/sdk-helpers/dist/cjs: {}
-
   packages/libs/sdk-mixins:
     dependencies:
       '@descope/sdk-component-drivers':
@@ -635,42 +633,6 @@ importers:
         specifier: ~0.13.0
         version: 0.13.3
 
-  packages/sdks/angular-sdk/dist:
-    dependencies:
-      '@angular/common':
-        specifier: '>=16.0.0'
-        version: 16.2.12(@angular/core@16.2.12)(rxjs@7.8.1)
-      '@angular/core':
-        specifier: '>=16.0.0'
-        version: 16.2.12(rxjs@7.8.1)(zone.js@0.13.3)
-      '@descope/access-key-management-widget':
-        specifier: workspace:*
-        version: link:../../../widgets/access-key-management-widget
-      '@descope/audit-management-widget':
-        specifier: workspace:*
-        version: link:../../../widgets/audit-management-widget
-      '@descope/core-js-sdk':
-        specifier: workspace:*
-        version: link:../../core-js-sdk
-      '@descope/role-management-widget':
-        specifier: workspace:*
-        version: link:../../../widgets/role-management-widget
-      '@descope/user-management-widget':
-        specifier: workspace:*
-        version: link:../../../widgets/user-management-widget
-      '@descope/user-profile-widget':
-        specifier: workspace:*
-        version: link:../../../widgets/user-profile-widget
-      '@descope/web-component':
-        specifier: workspace:*
-        version: link:../../web-component
-      '@descope/web-js-sdk':
-        specifier: workspace:*
-        version: link:../../web-js-sdk
-      tslib:
-        specifier: ^2.3.0
-        version: 2.6.3
-
   packages/sdks/angular-sdk/projects/angular-sdk:
     dependencies:
       '@descope/access-key-management-widget':
@@ -918,8 +880,6 @@ importers:
       typescript:
         specifier: ^4.5.3
         version: 4.9.5
-
-  packages/sdks/core-js-sdk/dist/cjs: {}
 
   packages/sdks/nextjs-sdk:
     dependencies:
@@ -3064,6 +3024,7 @@ packages:
       '@angular/core': 16.2.12(rxjs@7.8.1)(zone.js@0.13.3)
       rxjs: 7.8.1
       tslib: 2.6.3
+    dev: true
 
   /@angular/compiler-cli@16.2.12(@angular/compiler@16.2.12)(typescript@4.9.3):
     resolution: {integrity: sha512-pWSrr152562ujh6lsFZR8NfNc5Ljj+zSTQO44DsuB0tZjwEpnRcjJEgzuhGXr+CoiBf+jTSPZKemtSktDk5aaA==}
@@ -3110,6 +3071,7 @@ packages:
       rxjs: 7.8.1
       tslib: 2.6.3
       zone.js: 0.13.3
+    dev: true
 
   /@angular/forms@16.2.12(@angular/common@16.2.12)(@angular/core@16.2.12)(@angular/platform-browser@16.2.12)(rxjs@7.8.1):
     resolution: {integrity: sha512-1Eao89hlBgLR3v8tU91vccn21BBKL06WWxl7zLpQmG6Hun+2jrThgOE4Pf3os4fkkbH4Apj0tWL2fNIWe/blbw==}
@@ -25633,6 +25595,7 @@ packages:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
       tslib: 2.6.3
+    dev: true
 
   /safe-array-concat@1.1.2:
     resolution: {integrity: sha512-vj6RsCsWBCf19jIeHEfkRMw8DPiBb+DMXklQ/1SGDHOMlHdPUkZXFQ2YdplS23zESTijAcurb1aSgJA3AgMu1Q==}
@@ -28838,6 +28801,7 @@ packages:
     resolution: {integrity: sha512-MKPbmZie6fASC/ps4dkmIhaT5eonHkEt6eAy80K42tAm0G2W+AahLJjbfi6X9NPdciOE9GRFTTM8u2IiF6O3ww==}
     dependencies:
       tslib: 2.6.3
+    dev: true
 
   file:packages/sdks/nextjs-sdk(@types/react@18.3.3)(next@13.5.3)(react@18.3.1):
     resolution: {directory: packages/sdks/nextjs-sdk, type: directory}
