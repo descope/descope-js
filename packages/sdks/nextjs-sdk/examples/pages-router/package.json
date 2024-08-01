@@ -2,7 +2,7 @@
 	"name": "pages-router",
 	"version": "1.0.0",
 	"description": "",
-  "private": true,
+	"private": true,
 	"main": "index.js",
 	"scripts": {
 		"dev": "next dev -p 3001"

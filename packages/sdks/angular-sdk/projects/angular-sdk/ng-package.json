@@ -1,0 +1,17 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "@descope/core-js-sdk",
+    "@descope/web-js-sdk",
+    "@descope/web-component",
+    "@descope/user-management-widget",
+    "@descope/role-management-widget",
+    "@descope/access-key-management-widget",
+    "@descope/audit-management-widget",
+    "@descope/user-profile-widget"
+  ]
+}
