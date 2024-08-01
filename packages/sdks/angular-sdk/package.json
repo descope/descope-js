@@ -23,6 +23,9 @@
       "default": "./fesm2022/descope-angular-sdk.mjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "ng": "ng",
@@ -30,11 +33,12 @@
     "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
     "prebuild": "node scripts/setversion/setversion.js",
     "build": "npm run build:lib && rm -rf ./dist/package.json",
-    "build:lib": "cp package.json ./projects/angular-sdk && ng build angular-sdk",
+    "build:lib": "cp package.json ./projects/angular-sdk && ng build angular-sdk && rm -rf ./projects/angular-sdk/package.json",
     "build:app": "ng build demo-app",
-    "pretest": "cp package.json ./projects/angular-sdk",
     "watch": "ng build --watch --configuration development",
+    "pretest": "cp package.json ./projects/angular-sdk",
     "test": "jest --config jest.config.js",
+    "posttest": "rm -rf ./projects/angular-sdk/package.json",
     "lint": "ng lint",
     "format": "prettier . -w --ignore-path .gitignore",
     "format-check": "prettier . --check --ignore-path .gitignore"
