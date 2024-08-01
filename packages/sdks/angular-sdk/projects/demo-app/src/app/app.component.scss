@@ -1,0 +1,18 @@
+:host {
+  height: 100vh;
+  position: relative;
+}
+main {
+  border-radius: 10px;
+  margin: auto;
+  border: 1px solid lightgray;
+  padding: 20px;
+  max-width: 500px;
+  box-shadow:
+    13px 13px 20px #cbced1,
+    -13px -13px 20px #fff;
+  background: #ecf0f3;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
