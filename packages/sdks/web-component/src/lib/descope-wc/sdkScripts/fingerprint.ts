@@ -24,8 +24,7 @@ export const loadFingerprint = async (
 
     let endpoints = [];
     if (useCloudflareIntegration && cloudflareEndpointUrl) {
-      const endpointUrl = new URL(cloudflareEndpointUrl);
-      endpoints = [endpointUrl.toString(), defaultEndpoint];
+      endpoints = [cloudflareEndpointUrl, defaultEndpoint];
     } else {
       endpoints = [defaultEndpoint];
     }
