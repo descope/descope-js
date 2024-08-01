@@ -94,7 +94,7 @@ describe('sdkScripts', () => {
 
       expect(agent).toHaveBeenCalledWith({
         apiKey: 'testApiKey',
-        endpoint: ['https://cloudflare.endpoint/', fp.defaultEndpoint],
+        endpoint: ['https://cloudflare.endpoint', fp.defaultEndpoint],
         scriptUrlPattern: [
           `https://cloudflare.script.url/${urlPattern}`,
           fp.defaultScriptUrlPattern,
