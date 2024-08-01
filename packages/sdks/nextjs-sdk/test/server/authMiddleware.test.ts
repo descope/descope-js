@@ -86,9 +86,11 @@ describe('authMiddleware', () => {
 		});
 		const mockReq = createMockNextRequest({ pathname: '/private' });
 
-		await middleware(mockReq);
-		// Expect the middleware not to redirect
-		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		const response = await middleware(mockReq);
+		expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
+		expect(response).toEqual({
+			pathname: DEFAULT_PUBLIC_ROUTES.signIn
+		});
 	});
 
 	it('allows authenticated users for private routes and adds proper headers', async () => {
