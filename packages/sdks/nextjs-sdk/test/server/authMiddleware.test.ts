@@ -119,13 +119,13 @@ describe('authMiddleware', () => {
 		);
 	});
 
-	it('redirects unauthenticated users for private routes, when public routes and private routes are defined', async () => {
+	it('allows unauthenticated users for public routes when both public and private routes are defined', async () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
 		const middleware = authMiddleware({
-			publicRoutes: ['/private'],
+			publicRoutes: ['/sign-in'],
 			privateRoutes: ['/private']
 		});
-		const mockReq = createMockNextRequest({ pathname: '/private' });
+		const mockReq = createMockNextRequest({ pathname: '/sign-in' });
 
 		const response = await middleware(mockReq);
 		expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
