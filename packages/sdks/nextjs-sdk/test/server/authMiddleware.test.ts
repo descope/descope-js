@@ -129,11 +129,8 @@ describe('authMiddleware', () => {
 		});
 		const mockReq = createMockNextRequest({ pathname: '/sign-in' });
 
-		const response = await middleware(mockReq);
-		expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
-		expect(response).toEqual({
-			pathname: DEFAULT_PUBLIC_ROUTES.signIn
-		});
+		await middleware(mockReq);
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
 	});
 
 	it('allows unauthenticated users for public routes', async () => {
