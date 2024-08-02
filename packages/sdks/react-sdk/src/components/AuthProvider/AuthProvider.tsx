@@ -69,6 +69,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   }, [sdk]);
 
   const isSessionFetched = useRef(false);
+  const isUserFetched = useRef(false);
 
   const fetchSession = useCallback(() => {
     // We want that the session will fetched only once
@@ -82,6 +83,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   }, [sdk]);
 
   const fetchUser = useCallback(() => {
+    // We want that the user will fetched only once
+    if (isUserFetched.current) return;
+    isUserFetched.current = true;
+
     setIsUserLoading(true);
     withValidation(sdk.me)().then(() => {
       setIsUserLoading(false);
@@ -93,6 +98,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
+      isUserFetched: isUserFetched.current,
       fetchSession,
       session,
       isSessionLoading,
@@ -110,6 +116,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
+      isUserFetched.current,
       fetchSession,
       session,
       isSessionLoading,
