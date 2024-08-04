@@ -5,7 +5,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../examples/app/App';
-import { AuthProvider } from '../../src';
+import { AuthProvider, useSession, useUser } from '../../src';
 
 Object.defineProperty(global, 'Response', {
   value: class {},
@@ -24,6 +24,7 @@ jest.mock('@descope/web-js-sdk', () => {
     getSessionToken: jest.fn().mockName('getSessionToken'),
     getJwtRoles: jest.fn().mockName('getJwtRoles'),
     refresh: jest.fn(() => Promise.resolve()),
+    me: jest.fn(() => Promise.resolve()),
     httpClient: {
       hooks: {
         afterRequest: jest.fn(),
@@ -36,7 +37,7 @@ jest.mock('@descope/web-js-sdk', () => {
 const renderWithRouter = (ui: React.ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
-const { logout, onSessionTokenChange, onUserChange, refresh } = createSdk({
+const { logout, onSessionTokenChange, onUserChange, refresh, me } = createSdk({
   projectId: '',
 });
 
@@ -134,6 +135,34 @@ describe('App', () => {
 
     // ensure refresh called only once
     expect(refresh).toBeCalledTimes(1);
+  });
+
+  it('should call me only once when useUser used twice', async () => {
+    // rendering App twice which uses useUser
+    (onSessionTokenChange as jest.Mock).mockImplementation((cb) => {
+      cb('token1');
+      return () => {};
+    });
+
+    const MyComponent = () => {
+      // Calling useSession to trigger onSessionTokenChange (because having a session token is required to fetch user)
+      useSession();
+      // Using useUser to fetch user
+      useUser();
+      return <div>MyComponent</div>;
+    }
+
+    renderWithRouter(
+      <AuthProvider projectId="p1">
+        <>
+          <MyComponent />
+          <MyComponent />
+        </>
+      </AuthProvider>,
+    );
+
+    // ensure me called only once
+    expect(me).toHaveBeenCalledTimes(1);
   });
 
   it('should trigger refresh once when navigating between pages', async () => {
