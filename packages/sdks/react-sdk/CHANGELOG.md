@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.63](https://github.com/descope/descope-js/compare/react-sdk-2.0.62...react-sdk-2.0.63) (2024-08-04)
+
+
+### Bug Fixes
+
+* fix multiple fetch user ([#772](https://github.com/descope/descope-js/issues/772)) RELEASE ([1019b9d](https://github.com/descope/descope-js/commit/1019b9de4fb46b471fdc14246216fe2b2c60ecf4))
+
 ## [2.0.62](https://github.com/descope/descope-js/compare/react-sdk-2.0.61...react-sdk-2.0.62) (2024-08-03)
 
 ### Dependency Updates
