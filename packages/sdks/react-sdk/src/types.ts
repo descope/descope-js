@@ -81,6 +81,7 @@ export interface IContext {
   fetchUser: () => void;
   user: User;
   isUserLoading: boolean;
+  isUserFetched: boolean;
   fetchSession: () => void;
   session: string;
   isSessionLoading: boolean;
