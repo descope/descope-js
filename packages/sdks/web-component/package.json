@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "3.21.1",
+  "version": "3.22.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -76,7 +76,8 @@
     "tslib": "2.6.3",
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
-    "@descope/web-js-sdk": "workspace:*"
+    "@descope/web-js-sdk": "workspace:*",
+    "@fingerprintjs/fingerprintjs-pro": "3.9.9"
   },
   "overrides": {
     "terser": "5.31.1"

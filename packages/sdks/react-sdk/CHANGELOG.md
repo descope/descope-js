@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.63](https://github.com/descope/descope-js/compare/react-sdk-2.0.62...react-sdk-2.0.63) (2024-08-04)
+
+
+### Bug Fixes
+
+* fix multiple fetch user ([#772](https://github.com/descope/descope-js/issues/772)) RELEASE ([1019b9d](https://github.com/descope/descope-js/commit/1019b9de4fb46b471fdc14246216fe2b2c60ecf4))
+
+## [2.0.62](https://github.com/descope/descope-js/compare/react-sdk-2.0.61...react-sdk-2.0.62) (2024-08-03)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.95`
+* `web-component` updated to version `3.22.0`
+## [2.0.61](https://github.com/descope/descope-js/compare/react-sdk-2.0.60...react-sdk-2.0.61) (2024-07-31)
+
+
+### Bug Fixes
+
+* issue 7219 RELEASE ([#765](https://github.com/descope/descope-js/issues/765)) ([eec8843](https://github.com/descope/descope-js/commit/eec88439177d57dd19665c96bd57dc206ca3b4f4))
+
 ## [2.0.60](https://github.com/descope/descope-js/compare/react-sdk-2.0.59...react-sdk-2.0.60) (2024-07-28)
 
 ### Dependency Updates

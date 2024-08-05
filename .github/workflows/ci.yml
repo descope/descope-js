@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  NODE_VERSION: 18.2
+  NODE_VERSION: 18.10.0
   PNPM_VERSION: 8
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 jobs:
@@ -42,7 +42,7 @@ jobs:
 
       # Setup container
       - name: Mark directory as safe
-        run:  git config --system --add safe.directory /__w/descope-js/descope-js
+        run: git config --system --add safe.directory /__w/descope-js/descope-js
       - name: Install jq
         run: apt-get update && apt-get install -y jq
       - name: Set permission

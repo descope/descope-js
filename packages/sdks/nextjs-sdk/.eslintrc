@@ -23,7 +23,8 @@
 		"bundle/*",
 		"coverage/*",
 		"testUtils/*",
-		"examples/*"
+		"examples/*",
+		"node_modules/*"
 	],
 	"parserOptions": {
 		"ecmaFeatures": {

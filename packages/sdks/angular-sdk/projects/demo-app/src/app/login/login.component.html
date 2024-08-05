@@ -1,0 +1,20 @@
+<descope
+  (success)="onSuccess($event)"
+  (error)="onError($event)"
+  (ready)="onReady()"
+  [theme]="theme"
+  [flowId]="flowId"
+  [locale]="locale"
+  [redirectUrl]="redirectUrl"
+  [telemetryKey]="telemetryKey"
+  [tenant]="tenantId"
+  [debug]="debugMode"
+  [errorTransformer]="errorTransformer"
+></descope>
+<div
+  *ngIf="isLoading"
+  class="loading-indicator"
+  style="display: flex; justify-content: center; align-items: center"
+>
+  Loading...
+</div>
