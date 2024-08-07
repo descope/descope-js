@@ -18,6 +18,7 @@
 		"jest.config.js",
 		"babel.config.js",
 		"build/*",
+		"examples/*",
 		"dist/*",
 		"webpack.config.js",
 		"bundle/*",

@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-component",
-  "version": "3.22.0",
+  "version": "3.22.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -70,7 +70,7 @@
     "string-to-arraybuffer": "^1.0.2",
     "ts-jest": "^29.0.0",
     "ts-node": "10.9.2",
-    "typescript": "^4.5.3"
+    "typescript": "^5.0.2"
   },
   "dependencies": {
     "tslib": "2.6.3",
