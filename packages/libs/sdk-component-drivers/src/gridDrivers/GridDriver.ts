@@ -19,7 +19,7 @@ const driversMapping = {
 
 export class GridDriver<T extends any> extends BaseDriver {
   nodeName = 'descope-grid';
-  #onColumnsChangeCb: (columns: typeof this.ele.columns) => void;
+  #onColumnsChangeCb: (columns: Column[]) => void;
 
   onSelectedItemsChange(cb: (e: CustomEvent<{ value: T[] }>) => void) {
     this.ele?.addEventListener('selected-items-changed', cb);
@@ -31,7 +31,7 @@ export class GridDriver<T extends any> extends BaseDriver {
     return super.ele as Element & {
       data: T[];
       columns: Column[];
-      renderColumn: ({ path, header, type, attrs }) => string;
+      renderColumn: ({ path, header, type, attrs }: Column) => string;
     };
   }
 
@@ -65,11 +65,13 @@ export class GridDriver<T extends any> extends BaseDriver {
     }
   }
 
-  onColumnsChange(cb: (columns: typeof this.ele.columns) => void) {
+  onColumnsChange(cb: (columns: Column[]) => void) {
     this.#onColumnsChangeCb = cb;
   }
 
-  set renderColumn(renderFn: ({ path, header, type, attrs }) => string) {
+  set renderColumn(
+    renderFn: ({ path, header, type, attrs }: Column) => string,
+  ) {
     this.ele.renderColumn = renderFn;
   }
 }
