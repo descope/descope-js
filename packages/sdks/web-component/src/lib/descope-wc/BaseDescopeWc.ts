@@ -24,7 +24,6 @@ import {
   DebugState,
   FlowState,
   FlowStateUpdateFn,
-  ILogger,
   SdkConfig,
   DescopeUI,
   ProjectConfiguration,
