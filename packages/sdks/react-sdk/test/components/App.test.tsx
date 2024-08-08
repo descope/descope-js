@@ -150,7 +150,7 @@ describe('App', () => {
       // Using useUser to fetch user
       useUser();
       return <div>MyComponent</div>;
-    }
+    };
 
     renderWithRouter(
       <AuthProvider projectId="p1">

@@ -2,6 +2,7 @@ import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
+  FETCH_EXCEPTION_ERROR_CODE,
   PREV_VER_ASSETS_FOLDER,
   THEME_FILENAME,
   UI_COMPONENTS_FALLBACK_URL,
@@ -311,7 +312,7 @@ class BaseDescopeWc extends HTMLElement {
           // return a generic error object in case of an error
           return {
             error: {
-              errorCode: 'J151000',
+              errorCode: FETCH_EXCEPTION_ERROR_CODE,
               errorDescription: e.toString(),
             },
           };
