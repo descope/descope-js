@@ -43,8 +43,6 @@ const BaseClass = compose(themeMixin, formMountMixin)(HTMLElement);
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends BaseClass {
-  logger: ILogger = console;
-
   static get observedAttributes() {
     return [
       'project-id',
