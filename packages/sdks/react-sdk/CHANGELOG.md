@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.65](https://github.com/descope/descope-js/compare/react-sdk-2.0.64...react-sdk-2.0.65) (2024-08-08)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.97`
+* `web-component` updated to version `3.22.2`
+
+### Bug Fixes
+
+* polling when there is a fetch error RELEASE ([#776](https://github.com/descope/descope-js/issues/776)) ([0999164](https://github.com/descope/descope-js/commit/099916447bee3c5e3fe83e70bc01890e12485df2))
+
 ## [2.0.64](https://github.com/descope/descope-js/compare/react-sdk-2.0.63...react-sdk-2.0.64) (2024-08-07)
 
 ### Dependency Updates
