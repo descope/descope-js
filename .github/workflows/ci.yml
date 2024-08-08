@@ -71,7 +71,7 @@ jobs:
         shell: bash
 
       - name: License validation
-        run: pnpm run license
+        run: pnpm run licenseCheck
 
       - name: Build
         run: pnpm run build
