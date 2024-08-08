@@ -12,7 +12,7 @@
         "preset": "conventional"
       }
     },
-    "license": {
+    "licenseCheck": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
