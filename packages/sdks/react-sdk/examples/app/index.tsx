@@ -9,13 +9,13 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
-	<BrowserRouter>
-		<AuthProvider
+  <BrowserRouter>
+    <AuthProvider
       projectId={process.env.DESCOPE_PROJECT_ID}
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
     >
-			<App />
-		</AuthProvider>
-	</BrowserRouter>,
+      <App />
+    </AuthProvider>
+  </BrowserRouter>,
 );
