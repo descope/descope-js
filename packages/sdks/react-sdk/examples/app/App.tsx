@@ -11,7 +11,7 @@ import ManageAudit from './ManageAudit';
 import MyUserProfile from './MyUserProfile';
 
 const Layout = () => (
-	<div
+  <div
     style={{
       height: '100vh',
       position: 'relative',
@@ -20,7 +20,7 @@ const Layout = () => (
       alignItems: 'center',
     }}
   >
-		<div
+    <div
       style={{
         borderRadius: 10,
         margin: 'auto',
@@ -32,9 +32,9 @@ const Layout = () => (
         position: 'relative',
       }}
     >
-			<Outlet />
-		</div>
-	</div>
+      <Outlet />
+    </div>
+  </div>
 );
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
@@ -52,60 +52,60 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 };
 
 const App = () => (
-	<Routes>
-		<Route element={<Layout />}>
-			<Route
+  <Routes>
+    <Route element={<Layout />}>
+      <Route
         index
         element={
-	<ProtectedRoute>
-		<Home />
-	</ProtectedRoute>
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
         }
       />
-			<Route
+      <Route
         path="/user-management"
         element={
-	<ProtectedRoute>
-		<ManageUsers />
-	</ProtectedRoute>
+          <ProtectedRoute>
+            <ManageUsers />
+          </ProtectedRoute>
         }
       />
-			<Route
+      <Route
         path="/role-management"
         element={
-	<ProtectedRoute>
-		<ManageRoles />
-	</ProtectedRoute>
+          <ProtectedRoute>
+            <ManageRoles />
+          </ProtectedRoute>
         }
       />
-			<Route
+      <Route
         path="/access-key-management"
         element={
-	<ProtectedRoute>
-		<ManageAccessKeys />
-	</ProtectedRoute>
+          <ProtectedRoute>
+            <ManageAccessKeys />
+          </ProtectedRoute>
         }
       />
-			<Route
+      <Route
         path="/audit-management"
         element={
-	<ProtectedRoute>
-		<ManageAudit />
-	</ProtectedRoute>
+          <ProtectedRoute>
+            <ManageAudit />
+          </ProtectedRoute>
         }
       />
-			<Route
+      <Route
         path="/user-profile"
         element={
-	<ProtectedRoute>
-		<MyUserProfile />
-	</ProtectedRoute>
+          <ProtectedRoute>
+            <MyUserProfile />
+          </ProtectedRoute>
         }
       />
-			<Route path="/login" element={<Login />} />
-			<Route path="/step-up" element={<StepUp />} />
-		</Route>
-	</Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/step-up" element={<StepUp />} />
+    </Route>
+  </Routes>
 );
 
 export default App;
