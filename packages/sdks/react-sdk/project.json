@@ -17,8 +17,7 @@
       "options": {
         "commands": [
           "tools/scripts/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
-        ],
-        "parallel": false
+        ]
       }
     }
   },
