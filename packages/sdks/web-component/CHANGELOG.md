@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.22.2](https://github.com/descope/descope-js/compare/web-component-3.22.1...web-component-3.22.2) (2024-08-08)
+
+
+### Bug Fixes
+
+* polling when there is a fetch error RELEASE ([#776](https://github.com/descope/descope-js/issues/776)) ([0999164](https://github.com/descope/descope-js/commit/099916447bee3c5e3fe83e70bc01890e12485df2))
+
 ## [3.22.1](https://github.com/descope/descope-js/compare/web-component-3.22.0...web-component-3.22.1) (2024-08-07)
 
 ### Dependency Updates
