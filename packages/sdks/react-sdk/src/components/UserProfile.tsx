@@ -22,7 +22,7 @@ const UserProfileWC = lazy(async () => {
       theme,
       debug,
     }) => (
-	<descope-user-profile-widget
+      <descope-user-profile-widget
         project-id={projectId}
         widget-id={widgetId}
         base-url={baseUrl}
@@ -58,8 +58,8 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
     }, [innerRef, onLogout]);
 
     return (
-	<Suspense fallback={null}>
-		<UserProfileWC
+      <Suspense fallback={null}>
+        <UserProfileWC
           projectId={projectId}
           widgetId={widgetId}
           baseUrl={baseUrl}
@@ -68,7 +68,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
           theme={theme}
           debug={debug}
         />
-	</Suspense>
+      </Suspense>
     );
   },
 );

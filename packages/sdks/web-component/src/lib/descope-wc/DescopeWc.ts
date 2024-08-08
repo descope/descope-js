@@ -535,8 +535,10 @@ class DescopeWc extends BaseDescopeWc {
   ) => {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
+      this.logger.debug('polling - Schedule for 2 seconds from now');
       this.#pollingTimeout = setTimeout(async () => {
         let sdkResp;
+        this.logger.debug('polling - Calling next');
         try {
           sdkResp = await this.sdk.flow.next(
             executionId,
@@ -547,6 +549,7 @@ class DescopeWc extends BaseDescopeWc {
             {},
           );
         } catch (e) {
+          this.logger.debug('polling - Caught an error', e.message);
           this.#handlePollingResponse(
             executionId,
             stepId,
@@ -557,6 +560,8 @@ class DescopeWc extends BaseDescopeWc {
 
           return;
         }
+        this.logger.debug('polling - Got a response', sdkResp);
+
         this.#handleSdkResponse(sdkResp);
         const { action: nextAction } = sdkResp?.data ?? {};
         // will poll again if needed

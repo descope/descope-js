@@ -17,8 +17,8 @@ const StepUp = () => {
     setErrorMessage('Something went wrong');
   }, [setErrorMessage]);
   return (
-	<>
-		<Descope
+    <>
+      <Descope
         flowId={process.env.DESCOPE_STEP_UP_FLOW_ID}
         onSuccess={onSuccess}
         onError={onError}
@@ -29,18 +29,18 @@ const StepUp = () => {
         tenant={process.env.DESCOPE_TENANT_ID}
         telemetryKey={process.env.DESCOPE_TELEMETRY_KEY}
       />
-		{errorMessage && (
-		<div
+      {errorMessage && (
+        <div
           className="error"
           style={{
             margin: 'auto',
             color: 'red',
           }}
         >
-			{errorMessage}
-		</div>
+          {errorMessage}
+        </div>
       )}
-	</>
+    </>
   );
 };
 
