@@ -16,7 +16,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
+          "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot} -go-project tools/scripts/licenseValidation"
         ]
       }
     }
