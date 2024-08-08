@@ -42,7 +42,7 @@ jobs:
 
       # Setup container
       - name: Mark directory as safe
-        run:  git config --system --add safe.directory /__w/descope-js/descope-js
+        run: git config --system --add safe.directory /__w/descope-js/descope-js
       - name: Install jq
         run: apt-get update && apt-get install -y jq
       - name: Set permission
@@ -69,6 +69,10 @@ jobs:
       - name: Gitleaks
         run: npm run leaks
         shell: bash
+
+      - name: License validation
+        shell: bash
+        run: ./thirdPartyLicenseCollector_linux_amd64 -npm-project .
 
       - name: Build
         run: pnpm run build
