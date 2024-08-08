@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.23](https://github.com/descope/descope-js/compare/nextjs-sdk-0.0.22...nextjs-sdk-0.0.23) (2024-08-08)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.0.65`
+* `web-component` updated to version `3.22.2`
+
+### Bug Fixes
+
+* polling when there is a fetch error RELEASE ([#776](https://github.com/descope/descope-js/issues/776)) ([0999164](https://github.com/descope/descope-js/commit/099916447bee3c5e3fe83e70bc01890e12485df2))
+
 ## [0.0.22](https://github.com/descope/descope-js/compare/nextjs-sdk-0.0.21...nextjs-sdk-0.0.22) (2024-08-07)
 
 ### Dependency Updates
