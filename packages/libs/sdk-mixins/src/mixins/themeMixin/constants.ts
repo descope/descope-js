@@ -1,3 +1,3 @@
 // Those files are saved on a new folder to prevent breaking changes
-export const THEME_FILENAME = 'theme.json';
+export const DEFAULT_STYLE_ID = 'theme';
 export const CONFIG_FILENAME = 'config.json';

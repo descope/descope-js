@@ -1,4 +1,5 @@
-// eslint-disable-next-line max-classes-per-file
+/* eslint-disable max-classes-per-file */
+// @ts-nocheck
 import createSdk, { ensureFingerprintIds } from '@descope/web-js-sdk';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
@@ -11,7 +12,6 @@ import {
   DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
   ELEMENT_TYPE_ATTRIBUTE,
   RESPONSE_ACTIONS,
-  THEME_FILENAME,
   URL_CODE_PARAM_NAME,
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
@@ -51,11 +51,12 @@ jest.mock('@descope/web-js-sdk', () => ({
 }));
 
 const WAIT_TIMEOUT = 10000;
+const THEME_DEFAULT_FILENAME = `theme.json`;
 
 const abTestingKey = getABTestingKey();
 
 const defaultOptionsValues = {
-  baseUrl: undefined,
+  baseUrl: null,
   deferredRedirect: false,
   abTestingKey,
   lastAuth: {},
@@ -223,7 +224,7 @@ describe('web-component', () => {
     const wc = document.querySelector('descope-wc');
     wc.setAttribute('theme', 'dark');
 
-    const rootEle = wc.shadowRoot.querySelector('#wc-root');
+    const rootEle = wc.shadowRoot.querySelector('#root');
 
     await waitFor(
       () =>
@@ -393,7 +394,42 @@ describe('web-component', () => {
     });
 
     const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
+    const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+    const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+    const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+    const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(htmlUrlPathRegex),
+      expect.any(Object),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(themeUrlPathRegex),
+      expect.any(Object),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(configUrlPathRegex),
+      expect.any(Object),
+    );
+  });
+
+  it('should fetch the data from the correct path with custom style name', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" style-id="test"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
+    const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/test.json`;
     const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
     const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -438,7 +474,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true },
+          value: { isConnected: true, appendChild: () => {} },
         });
       }
 
@@ -448,14 +484,14 @@ describe('web-component', () => {
       }
     }
 
-    customElements.define('test-project', Test);
-    const descope = new Test();
+    customElements.define('test-project', Test as any);
+    const descope: any = new Test();
     Object.defineProperty(descope.shadowRoot, 'host', {
       value: { closest: jest.fn() },
       writable: true,
     });
 
-    await expect(descope.connectedCallback.bind(descope)).rejects.toThrow(
+    await expect(descope.init.bind(descope)).rejects.toThrow(
       'project-id cannot be empty',
     );
   });
@@ -465,7 +501,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true },
+          value: { isConnected: true, appendChild: () => {} },
         });
       }
 
@@ -474,14 +510,14 @@ describe('web-component', () => {
         return '1';
       }
     }
-    customElements.define('test-flow', Test);
-    const descope = new Test();
+    customElements.define('test-flow', Test as any);
+    const descope: any = new Test();
     Object.defineProperty(descope.shadowRoot, 'host', {
       value: { closest: jest.fn() },
       writable: true,
     });
 
-    await expect(descope.connectedCallback.bind(descope)).rejects.toThrow(
+    await expect(descope.init.bind(descope)).rejects.toThrow(
       'flow-id cannot be empty',
     );
   });
@@ -654,7 +690,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -696,7 +732,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -727,7 +763,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -758,7 +794,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -780,7 +816,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -802,7 +838,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -824,7 +860,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 
@@ -1055,7 +1091,7 @@ describe('web-component', () => {
     const spyGet = jest.spyOn(customElements, 'get');
     spyGet.mockReturnValueOnce({ cssVarList: { url: '--url' } } as any);
 
-    pageContent = `<div>Loaded1</div>"/>`;
+    pageContent = `<div>Loaded1</div>`;
 
     document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -1065,7 +1101,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle.querySelector('#wc-root');
+    const rootEle = shadowEle.querySelector('#root');
     await waitFor(
       () =>
         expect(rootEle).toHaveStyle({
@@ -1082,20 +1118,16 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    fetchMock.mockReturnValue({
-      text: () =>
-        '<input id="email"></input><input id="code"></input><span>It updated!</span>',
-      ok: true,
-    });
-
     const logSpy = jest.spyOn(console, 'warn');
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1`;
 
     fireEvent.popState(window);
 
-    await waitFor(() =>
-      expect(logSpy).toHaveBeenCalledWith('No screen was found to show', ''),
+    await waitFor(
+      () =>
+        expect(logSpy).toHaveBeenCalledWith('No screen was found to show', ''),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -1144,7 +1176,7 @@ describe('web-component', () => {
     fireEvent.popState(window);
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
-    const rootEle = shadowEle.querySelector('#wc-root');
+    const rootEle = shadowEle.querySelector('#root');
     const spyAddEventListener = jest.spyOn(rootEle, 'addEventListener');
 
     spyAddEventListener.mockImplementationOnce(
@@ -1556,14 +1588,23 @@ describe('web-component', () => {
       },
     };
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+    pageContent =
+      '<descope-button id="submitterId">click</descope-button><span>It works!</span>';
 
-    await waitFor(() =>
-      expect(
-        document.head.querySelector(`link[href="font.url"]`),
-      ).toBeInTheDocument(),
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" theme="light" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('It works!'), {
+      timeout: 10000,
+    });
+
+    await waitFor(
+      () =>
+        expect(
+          document.head.querySelector(`link[href="font.url"]`),
+        ).toBeInTheDocument(),
+      { timeout: 5000 },
     );
-  });
+  }, 20000);
 
   it('loads flow start screen if its in config file', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
@@ -1690,7 +1731,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle?.querySelector('#wc-root');
+    const rootEle = shadowEle?.querySelector('#root');
 
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'light'));
   });
@@ -1703,7 +1744,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle?.querySelector('#wc-root');
+    const rootEle = shadowEle?.querySelector('#root');
 
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'dark'));
   });
@@ -1716,17 +1757,22 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle?.querySelector('#wc-root');
+    const rootEle = shadowEle?.querySelector('#root');
 
     await waitFor(() => expect(rootEle).toHaveAttribute('data-theme', 'light'));
   });
 
   it('should throw an error when theme has a wrong value', async () => {
+    const errorSpy = jest.spyOn(console, 'error');
     class Test extends DescopeWc {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true },
+          value: {
+            isConnected: true,
+            appendChild: () => {},
+            host: { closest: () => true },
+          },
         });
       }
 
@@ -1739,22 +1785,17 @@ describe('web-component', () => {
       public get flowId() {
         return '1';
       }
-
-      // eslint-disable-next-line class-methods-use-this
-      public get theme() {
-        return '1' as any;
-      }
     }
 
-    customElements.define('test-theme', Test);
-    const descope = new Test();
-    Object.defineProperty(descope.shadowRoot, 'host', {
-      value: { closest: jest.fn() },
-      writable: true,
-    });
+    customElements.define('test-theme', Test as any);
+    document.body.innerHTML = `<h1>Custom element test</h1> <test-theme flow-id="otpSignInEmail" project-id="1" theme="lol"></descope-wc>`;
 
-    await expect(descope.connectedCallback.bind(descope)).rejects.toThrow(
-      `Supported theme values are "light", "dark", or leave empty for using the OS theme`,
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          'Supported theme values are "light", "dark", or leave empty for using the OS theme',
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -3287,7 +3328,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3333,7 +3374,7 @@ describe('web-component', () => {
         });
 
         const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en-us.html`;
-        const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+        const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
         const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
         const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3379,7 +3420,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3428,7 +3469,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3481,7 +3522,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-zh-tw.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3535,7 +3576,7 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3598,7 +3639,7 @@ describe('web-component', () => {
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
       const expectedHtmlFallbackPath = `/pages/1/${ASSETS_FOLDER}/0.html`;
-      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_FILENAME}`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 
       const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
@@ -3743,12 +3784,25 @@ describe('web-component', () => {
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(errorSpy).toHaveBeenCalledWith(
-          'Cannot load DescopeUI',
-          expect.any(String),
-          expect.any(Error),
-        ),
+      await waitFor(
+        () =>
+          expect(document.getElementById('load-descope-ui')).toHaveAttribute(
+            'src',
+            expect.stringContaining('https'),
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      document
+        .getElementById('load-descope-ui')
+        .dispatchEvent(new Event('error'));
+
+      await waitFor(
+        () =>
+          expect(errorSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Cannot load DescopeUI'),
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
     });
     it('should try to load all descope component on the page', async () => {
@@ -3787,7 +3841,6 @@ describe('web-component', () => {
           expect(errorSpy).toHaveBeenCalledWith(
             'Cannot load UI component "descope-button1"',
             expect.any(String),
-            expect.any(Error),
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -3922,7 +3975,7 @@ describe('web-component', () => {
 
     const rootEle = document
       .getElementsByTagName('descope-wc')[0]
-      .shadowRoot.querySelector('#wc-root');
+      .shadowRoot.querySelector('#root');
 
     fireEvent.keyDown(rootEle, { key: 'Enter', code: 13, charCode: 13 });
 

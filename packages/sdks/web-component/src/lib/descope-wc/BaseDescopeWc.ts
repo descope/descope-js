@@ -1,13 +1,11 @@
 import createSdk from '@descope/web-js-sdk';
+import { themeMixin } from '@descope/sdk-mixins';
+import { compose } from '@descope/sdk-helpers';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
   FETCH_EXCEPTION_ERROR_CODE,
   PREV_VER_ASSETS_FOLDER,
-  THEME_FILENAME,
-  UI_COMPONENTS_FALLBACK_URL,
-  UI_COMPONENTS_URL,
-  UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
 } from '../constants';
 import {
   camelCase,
@@ -16,21 +14,18 @@ import {
   getContentUrl,
   getRunIdsFromUrl,
   handleUrlParams,
-  isChromium,
-  loadFont,
   State,
   withMemCache,
 } from '../helpers';
 import { IsChanged } from '../helpers/state';
+import { formMountMixin } from '../mixins';
 import {
   AutoFocusOptions,
   DebuggerMessage,
   DebugState,
   FlowState,
   FlowStateUpdateFn,
-  ILogger,
   SdkConfig,
-  ThemeOptions,
   DescopeUI,
   ProjectConfiguration,
   FlowConfig,
@@ -44,17 +39,16 @@ import {
 // this is replaced in build time
 declare const BUILD_VERSION: string;
 
-// this base class is responsible for WC initialization
-class BaseDescopeWc extends HTMLElement {
-  logger: ILogger = console;
+const BaseClass = compose(themeMixin, formMountMixin)(HTMLElement);
 
+// this base class is responsible for WC initialization
+class BaseDescopeWc extends BaseClass {
   static get observedAttributes() {
     return [
       'project-id',
       'flow-id',
       'base-url',
       'tenant',
-      'theme',
       'locale',
       'debug',
       'storage-prefix',
@@ -64,6 +58,7 @@ class BaseDescopeWc extends HTMLElement {
       'store-last-authenticated-user',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
+      'style-id',
     ];
   }
 
@@ -128,32 +123,9 @@ class BaseDescopeWc extends HTMLElement {
   }
 
   #initShadowDom() {
-    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
 
-    this.rootElement =
-      this.shadowRoot.querySelector<HTMLDivElement>('#wc-root');
-  }
-
-  #shouldMountInFormEle() {
-    const wc = this.shadowRoot.host;
-    return !wc.closest('form') && isChromium();
-  }
-
-  // we want to make sure the web-component is wrapped with on outer form element
-  // this is needed in order to support webauthn conditional UI (which currently supported only in Chrome when input is inside a web-component)
-  // for more info see here: https://github.com/descope/etc/issues/733
-  #handleOuterForm() {
-    const wc = this.shadowRoot.host;
-    const form = document.createElement('form');
-    form.style.width = '100%';
-    form.style.height = '100%';
-    wc.parentElement.appendChild(form);
-    form.appendChild(wc);
-  }
-
-  get projectId() {
-    return this.getAttribute('project-id');
+    this.rootElement = this.shadowRoot.querySelector<HTMLDivElement>('#root');
   }
 
   get flowId() {
@@ -171,14 +143,6 @@ class BaseDescopeWc extends HTMLElement {
     }
   }
 
-  get baseUrl() {
-    return this.getAttribute('base-url') || undefined;
-  }
-
-  get baseStaticUrl() {
-    return this.getAttribute('base-static-url');
-  }
-
   get tenant() {
     return this.getAttribute('tenant') || undefined;
   }
@@ -193,19 +157,6 @@ class BaseDescopeWc extends HTMLElement {
 
   get locale() {
     return this.getAttribute('locale') || undefined;
-  }
-
-  get theme(): ThemeOptions {
-    const theme = this.getAttribute('theme') as ThemeOptions;
-
-    if (theme === 'os') {
-      const isOsDark =
-        window.matchMedia &&
-        window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
-      return isOsDark ? 'dark' : 'light';
-    }
-
-    return theme || 'light';
   }
 
   get autoFocus(): AutoFocusOptions {
@@ -254,7 +205,6 @@ class BaseDescopeWc extends HTMLElement {
     const optionalAttributes = [
       'base-url',
       'tenant',
-      'theme',
       'locale',
       'debug',
       'redirect-url',
@@ -266,18 +216,13 @@ class BaseDescopeWc extends HTMLElement {
       'form',
       'client',
       'validate-on-blur',
+      'style-id',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
       if (!optionalAttributes.includes(attr) && !this[camelCase(attr)])
         throw Error(`${attr} cannot be empty`);
     });
-
-    if (this.theme && this.theme !== 'light' && this.theme !== 'dark') {
-      throw Error(
-        'Supported theme values are "light", "dark", or leave empty for using the OS theme',
-      );
-    }
   }
 
   #syncStateIdFromUrl() {
@@ -382,75 +327,8 @@ class BaseDescopeWc extends HTMLElement {
     }
   });
 
-  async #fetchTheme() {
-    const themeUrl = getContentUrl({
-      projectId: this.projectId,
-      filename: THEME_FILENAME,
-      baseUrl: this.baseStaticUrl,
-    });
-    try {
-      const { body } = await fetchContent(themeUrl, 'json');
-
-      return body;
-    } catch (e) {
-      this.loggerWrapper.error(
-        'Cannot fetch theme file',
-        'make sure that your projectId & flowId are correct',
-      );
-
-      return undefined;
-    }
-  }
-
-  #theme: Promise<Record<string, any>>;
-
-  async #loadFonts() {
-    const { projectConfig } = await this.#getConfig();
-    const fonts = projectConfig?.cssTemplate?.[this.theme]?.fonts;
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    fonts &&
-      Object.values(fonts).forEach((font: Record<string, any>) =>
-        loadFont(font.url),
-      );
-  }
-
-  async #handleTheme() {
-    await this.#loadTheme();
-    await this.#applyTheme();
-  }
-
-  async #loadTheme() {
-    const styleEle = document.createElement('style');
-    const theme = await this.#theme;
-
-    styleEle.innerText =
-      (theme?.light?.globals || '') + (theme?.dark?.globals || '');
-
-    const descopeUi = await BaseDescopeWc.descopeUI;
-
-    if (
-      descopeUi?.componentsThemeManager &&
-      !descopeUi.componentsThemeManager.hasThemes
-    ) {
-      descopeUi.componentsThemeManager.themes = {
-        light: theme?.light?.components,
-        dark: theme?.dark?.components,
-      };
-    }
-
-    this.shadowRoot.appendChild(styleEle);
-  }
-
   #handleComponentsContext(e: CustomEvent) {
     this.#componentsContext = { ...this.#componentsContext, ...e.detail };
-  }
-
-  async #applyTheme() {
-    this.rootElement.setAttribute('data-theme', this.theme);
-    const descopeUi = await BaseDescopeWc.descopeUI;
-    if (descopeUi?.componentsThemeManager) {
-      descopeUi.componentsThemeManager.currentThemeName = this.theme;
-    }
   }
 
   async getExecutionContext() {
@@ -587,173 +465,78 @@ class BaseDescopeWc extends HTMLElement {
 
   static descopeUI: any;
 
-  async #loadDescopeUI() {
-    if (BaseDescopeWc.descopeUI) {
-      this.loggerWrapper.debug(
-        'DescopeUI is already loading, probably multiple flows are running on the same page',
+  async init() {
+    await super.init?.();
+    this.#debugState.subscribe(this.#handleDebugMode.bind(this));
+    this.#debugState.update({ isDebug: this.debug });
+
+    this.#validateAttrs();
+
+    if (await this.#getIsFlowsVersionMismatch()) {
+      this.loggerWrapper.error(
+        'This SDK version does not support your flows version',
+        'Make sure to upgrade your flows to the latest version or use an older SDK version',
       );
+
       return;
     }
 
-    BaseDescopeWc.descopeUI = new Promise((resolve) => {
-      if (globalThis.DescopeUI) {
-        resolve(globalThis.DescopeUI);
-        return;
-      }
-
-      const setupScript = (url: string) => {
-        const scriptEle = document.createElement('script');
-        scriptEle.id = 'load-descope-ui';
-        scriptEle.src = url;
-
-        return scriptEle;
-      };
-
-      const generateScriptUrl = (
-        urlTemplate: string,
-        componentsVersion: string,
-      ) =>
-        urlTemplate.replace(
-          UI_COMPONENTS_URL_VERSION_PLACEHOLDER,
-          componentsVersion,
-        );
-
-      const attachEvents = (
-        scriptEle: HTMLScriptElement,
-        onError: () => void,
-      ) => {
-        const onErrorInternal = () => {
-          this.loggerWrapper.error(
-            'Cannot load DescopeUI',
-            `Make sure this URL is valid and return the correct script: "${scriptEle.src}"`,
-          );
-
-          onError();
-        };
-
-        scriptEle.addEventListener('load', () => {
-          if (!globalThis.DescopeUI) onErrorInternal();
-          resolve(globalThis.DescopeUI);
-        });
-
-        scriptEle.addEventListener('error', onErrorInternal);
-      };
-
-      (async () => {
-        const componentsVersion = await this.#getComponentsVersion();
-        const scriptEle = setupScript(
-          generateScriptUrl(UI_COMPONENTS_URL, componentsVersion),
-        );
-
-        // if we cannot load descope UI, we want to try from a fallback url
-        const onError = () => {
-          scriptEle.remove();
-
-          this.loggerWrapper.info(
-            'Trying to load DescopeUI from a fallback URL',
-          );
-
-          const fallbackScriptEle = setupScript(
-            generateScriptUrl(UI_COMPONENTS_FALLBACK_URL, componentsVersion),
-          );
-          attachEvents(fallbackScriptEle, () => {
-            resolve(undefined);
-          });
-          document.body.append(fallbackScriptEle);
-        };
-
-        attachEvents(scriptEle, onError);
-        document.body.append(scriptEle);
-      })();
-    });
-  }
-
-  async connectedCallback() {
-    if (this.shadowRoot.isConnected) {
-      this.#debugState.subscribe(this.#handleDebugMode.bind(this));
-      this.#debugState.update({ isDebug: this.debug });
-
-      if (this.#shouldMountInFormEle()) {
-        this.#handleOuterForm();
-        return;
-      }
-
-      this.#validateAttrs();
-
-      this.#theme = this.#fetchTheme();
-
-      if (await this.#getIsFlowsVersionMismatch()) {
-        this.loggerWrapper.error(
-          'This SDK version does not support your flows version',
-          'Make sure to upgrade your flows to the latest version or use an older SDK version',
-        );
-
-        return;
-      }
-
-      if ((await this.#getConfig()).isMissingConfig) {
-        this.loggerWrapper.error(
-          'Cannot get config file',
-          'Make sure that your projectId & flowId are correct',
-        );
-
-        return;
-      }
-
-      this.#loadFonts();
-
-      await this.#loadDescopeUI();
-
-      await this.#handleTheme();
-
-      this.#handleKeyPress();
-
-      const {
-        executionId,
-        stepId,
-        token,
-        code,
-        exchangeError,
-        redirectAuthCallbackUrl,
-        redirectAuthBackupCallbackUri,
-        redirectAuthCodeChallenge,
-        redirectAuthInitiator,
-        ssoQueryParams,
-      } = handleUrlParams();
-
-      // we want to update the state when user clicks on back in the browser
-      window.addEventListener('popstate', this.#eventsCbRefs.popstate);
-
-      // adding event to listen to events coming from components (e.g. recaptcha risk token) that want to add data to the context
-      // this data will be sent to the server on the next request
-      window.addEventListener(
-        'components-context',
-        this.#eventsCbRefs.componentsContext,
+    if ((await this.#getConfig()).isMissingConfig) {
+      this.loggerWrapper.error(
+        'Cannot get config file',
+        'Make sure that your projectId & flowId are correct',
       );
 
-      this.#flowState.subscribe(this.#onFlowChange.bind(this));
-
-      this.#flowState.update({
-        projectId: this.projectId,
-        flowId: this.flowId,
-        baseUrl: this.baseUrl,
-        tenant: this.tenant,
-        redirectUrl: this.redirectUrl,
-        locale: this.locale,
-        stepId,
-        executionId,
-        token,
-        code,
-        exchangeError,
-        redirectAuthCallbackUrl,
-        redirectAuthBackupCallbackUri,
-        redirectAuthCodeChallenge,
-        redirectAuthInitiator,
-        ...ssoQueryParams,
-      });
-
-      this.#init = true;
+      return;
     }
+
+    this.#handleKeyPress();
+
+    const {
+      executionId,
+      stepId,
+      token,
+      code,
+      exchangeError,
+      redirectAuthCallbackUrl,
+      redirectAuthBackupCallbackUri,
+      redirectAuthCodeChallenge,
+      redirectAuthInitiator,
+      ssoQueryParams,
+    } = handleUrlParams();
+
+    // we want to update the state when user clicks on back in the browser
+    window.addEventListener('popstate', this.#eventsCbRefs.popstate);
+
+    // adding event to listen to events coming from components (e.g. recaptcha risk token) that want to add data to the context
+    // this data will be sent to the server on the next request
+    window.addEventListener(
+      'components-context',
+      this.#eventsCbRefs.componentsContext,
+    );
+
+    this.#flowState.subscribe(this.#onFlowChange.bind(this));
+
+    this.#flowState.update({
+      projectId: this.projectId,
+      flowId: this.flowId,
+      baseUrl: this.baseUrl,
+      tenant: this.tenant,
+      redirectUrl: this.redirectUrl,
+      locale: this.locale,
+      stepId,
+      executionId,
+      token,
+      code,
+      exchangeError,
+      redirectAuthCallbackUrl,
+      redirectAuthBackupCallbackUri,
+      redirectAuthCodeChallenge,
+      redirectAuthInitiator,
+      ...ssoQueryParams,
+    });
+
+    this.#init = true;
   }
 
   disconnectedCallback() {
@@ -801,10 +584,6 @@ class BaseDescopeWc extends HTMLElement {
       });
 
       this.#debugState.update({ isDebug: this.debug });
-
-      if (attrName === 'theme') {
-        this.#applyTheme();
-      }
     }
   }
 }
