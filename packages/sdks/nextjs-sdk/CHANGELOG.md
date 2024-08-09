@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.0.23...nextjs-sdk-0.1.0) (2024-08-09)
+
+
+### Features
+
+* Added Private Routes to Next JS SDK ([#770](https://github.com/descope/descope-js/issues/770)) ([ccf6976](https://github.com/descope/descope-js/commit/ccf6976bc07f1ae8fb45bfbc9a5454cba788721f))
+
 ## [0.0.23](https://github.com/descope/descope-js/compare/nextjs-sdk-0.0.22...nextjs-sdk-0.0.23) (2024-08-08)
 
 ### Dependency Updates
