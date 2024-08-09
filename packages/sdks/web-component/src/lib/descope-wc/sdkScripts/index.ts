@@ -13,6 +13,14 @@ export default async function loadSdkScript(scriptId: string) {
     case 'forter':
       res = await import('./forter');
       return res.default;
+    case 'fingerprint':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./fingerprint');
+      return res.default;
+    case 'fingerprintDescope':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./fingerprintDescope');
+      return res.default;
     default:
       throw new Error(`Unknown script id: ${scriptId}`);
   }

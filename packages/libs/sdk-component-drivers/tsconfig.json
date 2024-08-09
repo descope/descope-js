@@ -14,7 +14,7 @@
     "declaration": true,
     "declarationDir": "dts",
     "noErrorTruncation": true,
-    "typeRoots": ["./node_modules/@types", "./node_modules/@descope"]
+    "typeRoots": ["./node_modules/@types"]
   },
 
   "include": ["**/*.ts"],

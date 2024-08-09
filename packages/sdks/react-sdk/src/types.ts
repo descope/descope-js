@@ -37,9 +37,9 @@ type WidgetProps = {
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
 
-type ErrorResponse = FlowResponse['error'];
+type ErrorResponse = Required<FlowResponse>['error'];
 
-type JWTResponse = FlowResponse['data']['authInfo'];
+type JWTResponse = Required<Required<FlowResponse>['data']>['authInfo'];
 
 type CustomEventCb<T extends Record<string, any>> = (e: CustomEvent<T>) => void;
 
@@ -81,6 +81,7 @@ export interface IContext {
   fetchUser: () => void;
   user: User;
   isUserLoading: boolean;
+  isUserFetched: boolean;
   fetchSession: () => void;
   session: string;
   isSessionLoading: boolean;

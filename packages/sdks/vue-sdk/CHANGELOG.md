@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.26](https://github.com/descope/descope-js/compare/vue-sdk-2.0.25...vue-sdk-2.0.26) (2024-08-08)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.97`
+* `web-component` updated to version `3.22.2`
+## [2.0.25](https://github.com/descope/descope-js/compare/vue-sdk-2.0.24...vue-sdk-2.0.25) (2024-08-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.116`
+* `audit-management-widget` updated to version `0.1.79`
+* `role-management-widget` updated to version `0.1.114`
+* `user-management-widget` updated to version `0.4.117`
+* `user-profile-widget` updated to version `0.0.96`
+* `web-component` updated to version `3.22.1`
+* `web-js-sdk` updated to version `1.16.1`
+* `core-js-sdk` updated to version `2.24.1`
+
+### Bug Fixes
+
+* Issue6274 RELEASE ([#774](https://github.com/descope/descope-js/issues/774)) ([1c4b646](https://github.com/descope/descope-js/commit/1c4b64687da48d62339ccb78c2e8fde04e46e8b5))
+
+## [2.0.24](https://github.com/descope/descope-js/compare/vue-sdk-2.0.23...vue-sdk-2.0.24) (2024-08-03)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.95`
+* `web-component` updated to version `3.22.0`
 ## [2.0.23](https://github.com/descope/descope-js/compare/vue-sdk-2.0.22...vue-sdk-2.0.23) (2024-07-31)
 
 

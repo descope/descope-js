@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.65](https://github.com/descope/descope-js/compare/react-sdk-2.0.64...react-sdk-2.0.65) (2024-08-08)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.97`
+* `web-component` updated to version `3.22.2`
+
+### Bug Fixes
+
+* polling when there is a fetch error RELEASE ([#776](https://github.com/descope/descope-js/issues/776)) ([0999164](https://github.com/descope/descope-js/commit/099916447bee3c5e3fe83e70bc01890e12485df2))
+
+## [2.0.64](https://github.com/descope/descope-js/compare/react-sdk-2.0.63...react-sdk-2.0.64) (2024-08-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.116`
+* `audit-management-widget` updated to version `0.1.79`
+* `role-management-widget` updated to version `0.1.114`
+* `user-management-widget` updated to version `0.4.117`
+* `user-profile-widget` updated to version `0.0.96`
+* `web-component` updated to version `3.22.1`
+* `web-js-sdk` updated to version `1.16.1`
+* `core-js-sdk` updated to version `2.24.1`
+
+### Bug Fixes
+
+* Issue6274 RELEASE ([#774](https://github.com/descope/descope-js/issues/774)) ([1c4b646](https://github.com/descope/descope-js/commit/1c4b64687da48d62339ccb78c2e8fde04e46e8b5))
+
+## [2.0.63](https://github.com/descope/descope-js/compare/react-sdk-2.0.62...react-sdk-2.0.63) (2024-08-04)
+
+
+### Bug Fixes
+
+* fix multiple fetch user ([#772](https://github.com/descope/descope-js/issues/772)) RELEASE ([1019b9d](https://github.com/descope/descope-js/commit/1019b9de4fb46b471fdc14246216fe2b2c60ecf4))
+
+## [2.0.62](https://github.com/descope/descope-js/compare/react-sdk-2.0.61...react-sdk-2.0.62) (2024-08-03)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.95`
+* `web-component` updated to version `3.22.0`
 ## [2.0.61](https://github.com/descope/descope-js/compare/react-sdk-2.0.60...react-sdk-2.0.61) (2024-07-31)
 
 

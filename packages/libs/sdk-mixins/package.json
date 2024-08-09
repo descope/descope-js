@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-mixins",
-  "version": "0.2.43",
+  "version": "0.2.44",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-mixins",
   "bugs": {
@@ -81,7 +81,7 @@
     "rollup-plugin-livereload": "^2.0.5",
     "ts-jest": "^29.0.0",
     "ts-node": "10.9.2",
-    "typescript": "^4.5.3",
+    "typescript": "^5.0.2",
     "@reduxjs/toolkit": "^2.0.1",
     "redux": "5.0.1"
   },

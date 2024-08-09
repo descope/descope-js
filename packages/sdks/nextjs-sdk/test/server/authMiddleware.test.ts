@@ -35,7 +35,7 @@ const createMockNextRequest = (
 			pathname: options.pathname || '/',
 			clone: jest.fn(() => ({ pathname: options.pathname || '/' }))
 		}
-	} as unknown as NextRequest);
+	}) as unknown as NextRequest;
 
 describe('authMiddleware', () => {
 	beforeEach(() => {
