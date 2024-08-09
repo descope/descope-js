@@ -25,6 +25,10 @@ type MiddlewareOptions = {
 	// - process.env.SIGN_IN_ROUTE or /sign-in if not provided
 	// - process.env.SIGN_UP_ROUTE or /sign-up if not provided
 	publicRoutes?: string[];
+
+	// An array of private routes that require authentication
+	// If privateRoutes is defined, routes not listed in this array will default to public routes
+	privateRoutes?: string[];
 };
 
 const getSessionJwt = (req: NextRequest): string | undefined => {
@@ -41,12 +45,31 @@ const getSessionJwt = (req: NextRequest): string | undefined => {
 };
 
 const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
+	// Ensure publicRoutes and privateRoutes are arrays, defaulting to empty arrays if not defined
+	const publicRoutes = options.publicRoutes || [];
+	const privateRoutes = options.privateRoutes || [];
+	
 	const isDefaultPublicRoute = Object.values(DEFAULT_PUBLIC_ROUTES).includes(
 		req.nextUrl.pathname
 	);
-	const isPublic = options.publicRoutes?.includes(req.nextUrl.pathname);
 
-	return isDefaultPublicRoute || isPublic;
+	if (publicRoutes.length > 0) {
+		if (privateRoutes.length > 0) {
+			console.warn(
+				'Both publicRoutes and privateRoutes are defined. Ignoring privateRoutes.'
+			);
+		}
+		return isDefaultPublicRoute || publicRoutes.includes(req.nextUrl.pathname);
+	}
+
+	if (privateRoutes.length > 0) {
+		return (
+			isDefaultPublicRoute || !privateRoutes.includes(req.nextUrl.pathname)
+		);
+	}
+
+	// If no routes are provided, all routes are private
+	return isDefaultPublicRoute;
 };
 
 const addSessionToHeadersIfExists = (
