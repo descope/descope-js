@@ -4,6 +4,7 @@ import { compose } from '@descope/sdk-helpers';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
+  FETCH_EXCEPTION_ERROR_CODE,
   PREV_VER_ASSETS_FOLDER,
 } from '../constants';
 import {
@@ -256,7 +257,7 @@ class BaseDescopeWc extends BaseClass {
           // return a generic error object in case of an error
           return {
             error: {
-              errorCode: 'J151000',
+              errorCode: FETCH_EXCEPTION_ERROR_CODE,
               errorDescription: e.toString(),
             },
           };

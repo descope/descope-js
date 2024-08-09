@@ -18,26 +18,26 @@ const ManageRoles = () => {
   }, [sdk]);
 
   return (
-	<>
-		<header
+    <>
+      <header
         style={{
           borderBottom: '1px solid gray',
           display: 'flex',
           justifyContent: 'space-between',
         }}
       >
-			<p>
-				<a href="/">Home</a>
-			</p>
-			<div>
-				<p>
-					User:{' '}
-					<span style={{ fontWeight: 'bold' }}>
-						{getUserDisplayName(user)}
-					</span>
-				</p>
-				<p>
-					<button
+        <p>
+          <a href="/">Home</a>
+        </p>
+        <div>
+          <p>
+            User:{' '}
+            <span style={{ fontWeight: 'bold' }}>
+              {getUserDisplayName(user)}
+            </span>
+          </p>
+          <p>
+            <button
               type="button"
               id="logout-button"
               onClick={onLogout}
@@ -47,24 +47,24 @@ const ManageRoles = () => {
                 padding: 5,
               }}
             >
-						Logout
-					</button>
-				</p>
-				<p>
-					{process.env.DESCOPE_STEP_UP_FLOW_ID && (
-					<Link id="step-up-button" to="/step-up">
-						Step Up
-					</Link>
+              Logout
+            </button>
+          </p>
+          <p>
+            {process.env.DESCOPE_STEP_UP_FLOW_ID && (
+              <Link id="step-up-button" to="/step-up">
+                Step Up
+              </Link>
             )}
-				</p>
-			</div>
-		</header>
-		<h2>Manage Roles</h2>
-		<RoleManagement
+          </p>
+        </div>
+      </header>
+      <h2>Manage Roles</h2>
+      <RoleManagement
         widgetId="role-management-widget"
         tenant={process.env.DESCOPE_TENANT_ID}
       />
-	</>
+    </>
   );
 };
 

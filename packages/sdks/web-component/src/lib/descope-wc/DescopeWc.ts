@@ -7,6 +7,8 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   ELEMENT_TYPE_ATTRIBUTE,
+  FETCH_ERROR_RESPONSE_ERROR_CODE,
+  FETCH_EXCEPTION_ERROR_CODE,
   RESPONSE_ACTIONS,
 } from '../constants';
 import {
@@ -225,10 +227,10 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-            backupCallbackUri: redirectAuthBackupCallbackUri,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+          backupCallbackUri: redirectAuthBackupCallbackUri,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -534,18 +536,21 @@ class DescopeWc extends BaseDescopeWc {
   ) => {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
+      this.logger.debug('polling - Scheduling polling request');
       this.#pollingTimeout = setTimeout(async () => {
-        let sdkResp;
-        try {
-          sdkResp = await this.sdk.flow.next(
-            executionId,
-            stepId,
-            CUSTOM_INTERACTIONS.polling,
-            flowVersion,
-            componentsVersion,
-            {},
-          );
-        } catch (e) {
+        this.logger.debug('polling - Calling next');
+
+        const sdkResp = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          CUSTOM_INTERACTIONS.polling,
+          flowVersion,
+          componentsVersion,
+          {},
+        );
+
+        if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
+          this.logger.debug('polling - Got a generic error due to exception in fetch call');
           this.#handlePollingResponse(
             executionId,
             stepId,
@@ -556,6 +561,11 @@ class DescopeWc extends BaseDescopeWc {
 
           return;
         }
+        this.logger.debug('polling - Got a response');
+        if (sdkResp?.error) {
+          this.logger.debug('polling - Response has an error', JSON.stringify(sdkResp.error, null, 4));
+        }
+
         this.#handleSdkResponse(sdkResp);
         const { action: nextAction } = sdkResp?.data ?? {};
         // will poll again if needed
@@ -583,7 +593,7 @@ class DescopeWc extends BaseDescopeWc {
       this.#dispatch(
         'error',
         sdkResp?.error || {
-          errorCode: 'J151001',
+          errorCode: FETCH_ERROR_RESPONSE_ERROR_CODE,
           errorDescription: defaultDescription,
           errorMessage: defaultMessage,
         },

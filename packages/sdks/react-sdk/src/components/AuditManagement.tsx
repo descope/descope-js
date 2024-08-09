@@ -23,7 +23,7 @@ const AuditManagementWC = lazy(async () => {
       theme,
       debug,
     }) => (
-	<descope-audit-management-widget
+      <descope-audit-management-widget
         project-id={projectId}
         widget-id={widgetId}
         base-url={baseUrl}
@@ -52,8 +52,8 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
     }, [innerRef, logger]);
 
     return (
-	<Suspense fallback={null}>
-		<AuditManagementWC
+      <Suspense fallback={null}>
+        <AuditManagementWC
           projectId={projectId}
           widgetId={widgetId}
           baseUrl={baseUrl}
@@ -63,7 +63,7 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
           theme={theme}
           debug={debug}
         />
-	</Suspense>
+      </Suspense>
     );
   },
 );
