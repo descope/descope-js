@@ -79,6 +79,75 @@ describe('authMiddleware', () => {
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 	});
 
+	it('redirects unauthenticated users for private routes', async () => {
+		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
+		const middleware = authMiddleware({
+			privateRoutes: ['/private']
+		});
+		const mockReq = createMockNextRequest({ pathname: '/private' });
+
+		const response = await middleware(mockReq);
+		expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
+		expect(response).toEqual({
+			pathname: DEFAULT_PUBLIC_ROUTES.signIn
+		});
+	});
+
+	it('allows authenticated users for private routes and adds proper headers', async () => {
+		// Mock validateJwt to simulate an authenticated user
+		const authInfo = {
+			jwt: 'validJwt',
+			token: { iss: 'project-1', sub: 'user-123' }
+		};
+		mockValidateJwt.mockImplementation(() => authInfo);
+
+		const middleware = authMiddleware({
+			privateRoutes: ['/private']
+		});
+		const mockReq = createMockNextRequest({
+			pathname: '/private',
+			headers: { Authorization: 'Bearer validJwt' }
+		});
+
+		await middleware(mockReq);
+		// Expect no redirect and check if response contains session headers
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		expect(NextResponse.next).toHaveBeenCalled();
+
+		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
+			.request.headers;
+		expect(headersArg.get('x-descope-session')).toEqual(
+			Buffer.from(JSON.stringify(authInfo)).toString('base64')
+		);
+	});
+
+	it('allows unauthenticated users for public routes when both public and private routes are defined', async () => {
+		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
+		const middleware = authMiddleware({
+			publicRoutes: ['/sign-in'],
+			privateRoutes: ['/private']
+		});
+		const mockReq = createMockNextRequest({ pathname: '/sign-in' });
+
+		await middleware(mockReq);
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
+	});
+
+	it('redirects unauthenticated users for private routes when both public and private routes are defined', async () => {
+		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
+		const middleware = authMiddleware({
+			publicRoutes: ['/sign-in'],
+			privateRoutes: ['/private']
+		});
+		const mockReq = createMockNextRequest({ pathname: '/other-route' });
+
+		const response = await middleware(mockReq);
+		expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
+		expect(response).toEqual({
+			pathname: DEFAULT_PUBLIC_ROUTES.signIn
+		});
+	});
+
 	it('allows authenticated users for non-public routes and adds proper headers', async () => {
 		// Mock validateJwt to simulate an authenticated user
 		const authInfo = {
