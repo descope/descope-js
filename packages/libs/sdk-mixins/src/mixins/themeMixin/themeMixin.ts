@@ -6,7 +6,7 @@ import { descopeUiMixin } from '../descopeUiMixin';
 import { initElementMixin } from '../initElementMixin';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
-import { THEME_FILENAME } from './constants';
+import { DEFAULT_STYLE_ID } from './constants';
 import { loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
@@ -32,6 +32,8 @@ export const themeMixin = createSingletonMixin(
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
+      #globalStyleTag: HTMLStyleElement;
+
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
 
@@ -46,12 +48,16 @@ export const themeMixin = createSingletonMixin(
         return theme || 'light';
       }
 
+      get styleId(): string {
+        return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
+      }
+
       #_themeResource: Promise<void | Record<string, any>>;
 
       async #fetchTheme() {
         try {
           const { body: fetchedTheme } = await this.fetchStaticResource(
-            THEME_FILENAME,
+            `${this.styleId}.json`,
             'json',
           );
 
@@ -116,11 +122,14 @@ export const themeMixin = createSingletonMixin(
         const theme = await this.#themeResource;
         if (!theme) return;
 
-        const styleEle = document.createElement('style');
-        styleEle.innerText =
-          (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+        if (!this.#globalStyleTag) {
+          this.#globalStyleTag = document.createElement('style');
+          this.#globalStyleTag.id = 'global-style';
+          this.shadowRoot!.appendChild(this.#globalStyleTag);
+        }
 
-        this.shadowRoot!.appendChild(styleEle);
+        this.#globalStyleTag.innerText =
+          (theme?.light?.globals || '') + (theme?.dark?.globals || '');
       }
 
       async #loadComponentsStyle() {
@@ -136,10 +145,22 @@ export const themeMixin = createSingletonMixin(
         }
       }
 
-      async #loadFonts() {
-        const { projectConfig } = await this.config;
+      async #getFontsConfig() {
+        const { projectConfig } = (await this.config) || {};
+
+        const newConfig = projectConfig?.styles?.[this.styleId];
+        const oldConfig = projectConfig?.cssTemplate;
+
+        const config = newConfig || oldConfig;
+
         const fonts: Record<string, { url?: string }> | undefined =
-          projectConfig?.cssTemplate?.[this.theme]?.fonts;
+          config?.[this.theme]?.fonts;
+
+        return fonts;
+      }
+
+      async #loadFonts() {
+        const fonts = await this.#getFontsConfig();
         if (fonts) {
           Object.values(fonts).forEach((font) => {
             if (font.url) {
@@ -147,6 +168,8 @@ export const themeMixin = createSingletonMixin(
               loadFont(font.url);
             }
           });
+        } else {
+          this.logger.debug('No fonts to load');
         }
       }
 
@@ -169,6 +192,13 @@ export const themeMixin = createSingletonMixin(
         this.observeAttributes(['theme'], () => {
           this.#loadFonts();
           this.#applyTheme();
+        });
+
+        this.observeAttributes(['style-id'], () => {
+          this.#_themeResource = null;
+          this.#loadFonts();
+          this.#loadGlobalStyle();
+          this.#loadComponentsStyle();
         });
       }
     };
