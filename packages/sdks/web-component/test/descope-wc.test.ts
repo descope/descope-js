@@ -56,7 +56,7 @@ const THEME_DEFAULT_FILENAME = `theme.json`;
 const abTestingKey = getABTestingKey();
 
 const defaultOptionsValues = {
-  baseUrl: null,
+  baseUrl: '',
   deferredRedirect: false,
   abTestingKey,
   lastAuth: {},
