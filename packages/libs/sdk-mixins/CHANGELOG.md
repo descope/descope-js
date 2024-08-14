@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.44...sdk-mixins-0.3.0) (2024-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.60`
+* `sdk-component-drivers` updated to version `0.2.41`
+
+### Features
+
+* support multi style and style prop ([#744](https://github.com/descope/descope-js/issues/744)) ([7d153ec](https://github.com/descope/descope-js/commit/7d153ec7a447f038ee716746a85f1193e8a0f357))
+
+
+### Bug Fixes
+
+* issue 7394 RELEASE ([#778](https://github.com/descope/descope-js/issues/778)) ([caade56](https://github.com/descope/descope-js/commit/caade569c388c7d03ed711e02e1de7188c11256a))
+
 ## [0.2.44](https://github.com/descope/descope-js/compare/sdk-mixins-0.2.43...sdk-mixins-0.2.44) (2024-08-07)
 
 ### Dependency Updates
