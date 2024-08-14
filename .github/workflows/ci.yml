@@ -70,6 +70,9 @@ jobs:
         run: npm run leaks
         shell: bash
 
+      - name: License validation
+        run: pnpm run licenseCheck
+
       - name: Build
         run: pnpm run build
 
