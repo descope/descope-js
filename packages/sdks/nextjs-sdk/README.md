@@ -140,24 +140,58 @@ import { authMiddleware } from '@descope/nextjs-sdk/server'
 export default authMiddleware({
 	// The Descope project ID to use for authentication
 	// Defaults to process.env.DESCOPE_PROJECT_ID
-	projectId: 'your-descope-project-id'
+	projectId: 'your-descope-project-id',
 
 	// The URL to redirect to if the user is not authenticated
 	// Defaults to process.env.SIGN_IN_ROUTE or '/sign-in' if not provided
 	// NOTE: In case it contains query parameters that exist in the original URL, they will override the original query parameters. e.g. if the original URL is /page?param1=1&param2=2 and the redirect URL is /sign-in?param1=3, the final redirect URL will be /sign-in?param1=3&param2=2
-	redirectUrl?: string
+	redirectUrl?: string,
 
-	// An array of public routes that do not require authentication
-	// In addition to the default public routes:
-	// - process.env.SIGN_IN_ROUTE or /sign-in if not provided
-	// - process.env.SIGN_UP_ROUTE or /sign-up if not provided
-	publicRoutes?: string[]
+	// These are the public and private routes in your app. Read more about how to use these below.
+	publicRoutes?: string[],
+	privateRoutes?: string[]
+	// If you having privateRoutes and publicRoutes defined at the same time, privateRoutes will be ignored.
 })
 
 export const config = {
 	matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)']
 }
 ```
+
+##### Public and Private Route Definitions
+
+- **All routes are private by default.**
+- **`publicRoutes`:** Use this to specify which routes do not require authentication. If specified, only these routes and the default public routes will be public.
+- **`privateRoutes`:** Use this to specify which routes require authentication. If specified, only these routes will be private, and all other routes will be public.
+- **Conflict Handling:** If both `publicRoutes` and `privateRoutes` are provided, `privateRoutes` will be ignored, and a warning will be logged.
+
+This setup ensures that you can clearly define which routes in your application require authentication and which do not, while providing a mechanism to handle potential misconfigurations gracefully.
+
+###### Public Routes
+
+- **Description:** An array of public routes that do not require authentication.
+- **Configuration:** Use `publicRoutes` to specify routes that don't require authentication.
+- **Additional Defaults:** In addition to the routes you specify, the following default public routes are included:
+  - `process.env.SIGN_IN_ROUTE` or `/sign-in` if not provided
+  - `process.env.SIGN_UP_ROUTE` or `/sign-up` if not provided
+- **Example:**
+  ```typescript
+  const options = {
+  	publicRoutes: ['/home', '/about']
+  };
+  ```
+
+###### Private Routes
+
+- **Description:** An array of private routes that require authentication.
+- **Configuration:** Use `privateRoutes` to specify routes that require authentication. All other routes will be considered public.
+- **Conflict Handling:** If both `publicRoutes` and `privateRoutes` are defined at the same time, `privateRoutes` will be ignored, and a warning will be logged.
+- **Example:**
+  ```typescript
+  const options = {
+  	privateRoutes: ['/dashboard', '/profile']
+  };
+  ```
 
 ##### Read session information in server side
 

@@ -39,7 +39,7 @@ const Login = () => {
   );
 
   return (
-	<div
+    <div
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -47,10 +47,10 @@ const Login = () => {
         alignItems: 'center',
       }}
     >
-		<h2>Login</h2>
-		{(isSessionLoading || isFlowLoading) && <div>Loading...</div>}
-		{!isSessionLoading && (
-		<Descope
+      <h2>Login</h2>
+      {(isSessionLoading || isFlowLoading) && <div>Loading...</div>}
+      {!isSessionLoading && (
+        <Descope
           flowId={process.env.DESCOPE_FLOW_ID || 'sign-up-or-in'}
           onSuccess={onSuccess}
           onError={onError}
@@ -66,18 +66,18 @@ const Login = () => {
           errorTransformer={errorTransformer}
         />
       )}
-		{errorMessage && (
-		<div
+      {errorMessage && (
+        <div
           className="error"
           style={{
             margin: 'auto',
             color: 'red',
           }}
         >
-			{errorMessage}
-		</div>
+          {errorMessage}
+        </div>
       )}
-	</div>
+    </div>
   );
 };
 

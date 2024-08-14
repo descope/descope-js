@@ -15,25 +15,23 @@ Descope Client SDKs are used to create and manage authentication flows, manageme
 - **[Vue](https://github.com/descope/descope-js/tree/main/packages/sdks/vue-sdk)**
 - **[Web Component (HTML)](https://github.com/descope/descope-js/tree/main/packages/sdks/web-component)**
 
-  
 ## :cherry_blossom: Widgets
 
 [Descope Widgets](https://github.com/descope/descope-js/tree/main/packages/widgets) are embeddable components designed to facilitate the delegation of operations to your application's users. These widgets can be utilized in both B2B and B2C contexts, allowing your users to perform various tenant, user management, and project level operations from within the application itself.  
-[Read More](https://docs.descope.com/customize/widgets) about Descope's widgets. 
+[Read More](https://docs.descope.com/customize/widgets) about Descope's widgets.
 
-  
 ## :open_file_folder: Folder structure
 
 This repository hosts multiple packages, sdks, widgets, located under the `./packages` directory, organized as follows:
 
     .
     ├── ...
-    ├── packages          
+    ├── packages
     │   ├── libs         # sdks helpers and drivers
     │   ├── sdks         # Descope Client SDKs
     │   └── widgets      # Descope embeddable widgets
     └── ...
-    
+
 For more detailed information, please consult the README and the specific instructions provided for each package.
 
 ## Contribution

@@ -7,6 +7,8 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   ELEMENT_TYPE_ATTRIBUTE,
+  FETCH_ERROR_RESPONSE_ERROR_CODE,
+  FETCH_EXCEPTION_ERROR_CODE,
   RESPONSE_ACTIONS,
 } from '../constants';
 import {
@@ -35,7 +37,6 @@ import { getABTestingKey } from '../helpers/abTestingKey';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
-  getDescopeUiComponentsList,
   setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
@@ -121,7 +122,7 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  async connectedCallback() {
+  async init() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
       this.stepState?.subscribe(this.onStepChange.bind(this));
@@ -131,7 +132,7 @@ class DescopeWc extends BaseDescopeWc {
         this.#eventsCbRefs.visibilitychange,
       );
     }
-    await super.connectedCallback();
+    await super.init?.();
   }
 
   disconnectedCallback() {
@@ -226,10 +227,10 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-            backupCallbackUri: redirectAuthBackupCallbackUri,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+          backupCallbackUri: redirectAuthBackupCallbackUri,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -535,18 +536,21 @@ class DescopeWc extends BaseDescopeWc {
   ) => {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
+      this.logger.debug('polling - Scheduling polling request');
       this.#pollingTimeout = setTimeout(async () => {
-        let sdkResp;
-        try {
-          sdkResp = await this.sdk.flow.next(
-            executionId,
-            stepId,
-            CUSTOM_INTERACTIONS.polling,
-            flowVersion,
-            componentsVersion,
-            {},
-          );
-        } catch (e) {
+        this.logger.debug('polling - Calling next');
+
+        const sdkResp = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          CUSTOM_INTERACTIONS.polling,
+          flowVersion,
+          componentsVersion,
+          {},
+        );
+
+        if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
+          this.logger.debug('polling - Got a generic error due to exception in fetch call');
           this.#handlePollingResponse(
             executionId,
             stepId,
@@ -557,6 +561,11 @@ class DescopeWc extends BaseDescopeWc {
 
           return;
         }
+        this.logger.debug('polling - Got a response');
+        if (sdkResp?.error) {
+          this.logger.debug('polling - Response has an error', JSON.stringify(sdkResp.error, null, 4));
+        }
+
         this.#handleSdkResponse(sdkResp);
         const { action: nextAction } = sdkResp?.data ?? {};
         // will poll again if needed
@@ -584,7 +593,7 @@ class DescopeWc extends BaseDescopeWc {
       this.#dispatch(
         'error',
         sdkResp?.error || {
-          errorCode: 'J151001',
+          errorCode: FETCH_ERROR_RESPONSE_ERROR_CODE,
           errorDescription: defaultDescription,
           errorMessage: defaultMessage,
         },
@@ -766,47 +775,6 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  async loadDescopeUiComponents(clone: DocumentFragment) {
-    const descopeUI = await BaseDescopeWc.descopeUI;
-    if (!descopeUI) return;
-
-    const descopeUiComponentsList = getDescopeUiComponentsList(clone);
-
-    await Promise.all(
-      descopeUiComponentsList.map(async (tag) => {
-        const isComponentAlreadyDefined = !!customElements.get(tag);
-
-        if (isComponentAlreadyDefined) return undefined;
-
-        if (!descopeUI[tag]) {
-          this.loggerWrapper.error(
-            `Cannot load UI component "${tag}"`,
-            `Descope UI does not have a component named "${tag}", available components are: "${Object.keys(
-              descopeUI,
-            ).join(', ')}"`,
-          );
-          return undefined;
-        }
-        try {
-          // eslint-disable-next-line @typescript-eslint/return-await
-          return await descopeUI[tag]();
-        } catch (e) {
-          // this error is thrown when trying to register a component which is already registered
-          // when running 2 flows on the same page, it might happen that the register fn is called twice
-          // in case it happens, we are silently ignore the error
-          if (e.name === 'NotSupportedError') {
-            // eslint-disable-next-line no-console
-            console.debug(`${tag} is already registered`);
-          } else {
-            throw e;
-          }
-        }
-
-        return undefined;
-      }),
-    );
-  }
-
   async onStepChange(currentState: StepState, prevState: StepState) {
     const {
       htmlUrl,
@@ -822,9 +790,7 @@ class DescopeWc extends BaseDescopeWc {
 
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
-    const loadDescopeUiComponents = this.loadDescopeUiComponents(
-      stepTemplate.content,
-    );
+    const loadDescopeUiComponents = this.loadDescopeUiComponents(stepTemplate);
 
     // we want to disable the webauthn buttons if it's not supported on the browser
     if (!this.sdk.webauthn.helpers.isSupported()) {
