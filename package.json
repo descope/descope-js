@@ -20,7 +20,8 @@
     "postversion:ci": "pnpm run build:ci",
     "print-affected:ci": "nx print-affected --base=$(sh ./tools/scripts/latestTag.sh) --select=projects",
     "format": "nx format:write",
-    "format:ci": "nx format:check"
+    "format:ci": "nx format:check",
+    "postinstall": "pnpm update @descope/web-components-ui"
   },
   "private": true,
   "dependencies": {

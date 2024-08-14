@@ -6,7 +6,7 @@ const flattenFormObject = (obj: any, prefix = '') =>
     const v = typeof obj[el] === 'object' ? obj[el] : { value: obj[el] };
     const fl = { ...res, [prefix + el]: v, [`form.${prefix}${el}`]: v };
     if (el === 'displayName') {
-      return { ...fl, [`${prefix  }fullName`]: v, [`form.${prefix}fullName`]: v };
+      return { ...fl, [`${prefix}fullName`]: v, [`form.${prefix}fullName`]: v };
     }
     return fl;
   }, []);

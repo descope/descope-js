@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import useContext from './useContext';
 
 const useUser = () => {
-  const { user, fetchUser, isUserLoading, session, isUserFetched } = useContext();
+  const { user, fetchUser, isUserLoading, session, isUserFetched } =
+    useContext();
   const [isInit, setIsInit] = useState(false); // we want to get the user only in the first time we got a session
 
   // when session should be received, we want the return value of "isUserLoading" to be true starting from the first call
