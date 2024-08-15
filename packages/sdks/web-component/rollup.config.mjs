@@ -5,6 +5,7 @@ import dts from 'rollup-plugin-dts';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import define from 'rollup-plugin-define';
+import replace from '@rollup/plugin-replace';
 
 import packageJson from './package.json' assert { type: 'json' };
 
@@ -32,6 +33,10 @@ export default [
       }),
       commonjs(),
       nodeResolve(),
+      replace({
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify('production'),
+      }),
       terser(),
     ],
   },
@@ -53,6 +58,10 @@ export default [
       }),
       commonjs(),
       nodeResolve(),
+      replace({
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify('production'),
+      }),
       terser(),
     ],
     external,
