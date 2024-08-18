@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.0...nextjs-sdk-0.2.1) (2024-08-15)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.0.67`
+* `web-component` updated to version `3.23.1`
+## [0.2.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.1.0...nextjs-sdk-0.2.0) (2024-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.2`
+* `react-sdk` updated to version `2.0.66`
+* `core-js-sdk` updated to version `2.24.2`
+* `web-component` updated to version `3.23.0`
+
+### Features
+
+* support multi style and style prop ([#744](https://github.com/descope/descope-js/issues/744)) ([7d153ec](https://github.com/descope/descope-js/commit/7d153ec7a447f038ee716746a85f1193e8a0f357))
+
 ## [0.1.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.0.23...nextjs-sdk-0.1.0) (2024-08-09)
 
 
