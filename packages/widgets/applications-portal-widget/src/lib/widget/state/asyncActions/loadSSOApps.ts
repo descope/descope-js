@@ -14,7 +14,7 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.ssoAppsList.data = action.payload;
+      state.ssoAppsList.data = action.payload?.apps;
     },
   },
   withRequestStatus((state: State) => state.ssoAppsList),

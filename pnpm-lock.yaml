@@ -88,8 +88,6 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.14.9)(typescript@5.5.4)
 
-  packages/core-js-sdk/dist/cjs: {}
-
   packages/libs/sdk-component-drivers:
     dependencies:
       '@descope/sdk-helpers':
@@ -786,7 +784,7 @@ importers:
     optionalDependencies:
       '@descope/web-js-sdk':
         specifier: '>=1'
-        version: 1.16.2
+        version: link:../web-js-sdk
     devDependencies:
       '@babel/core':
         specifier: 7.23.9
@@ -1218,6 +1216,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/react-sdk/dist/cjs: {}
 
   packages/sdks/vue-sdk:
     dependencies:
@@ -1658,8 +1658,6 @@ importers:
         version: 5.4.5
 
   packages/sdks/web-js-sdk/dist/cjs: {}
-
-  packages/web-js-sdk/dist/cjs: {}
 
   packages/widgets/access-key-management-widget:
     dependencies:
@@ -9505,6 +9503,14 @@ packages:
       - nx
     dev: true
 
+  /@nrwl/devkit@19.3.2(nx@19.3.2):
+    resolution: {integrity: sha512-n3tFalVPUk1HAJ2VYNnF34yzB9j2+6swFUi4Y92PxD1vN7vrIXnNeaTx2qcee7JDjBpiJ7Zn0KLg2jwiH6hNwA==}
+    dependencies:
+      '@nx/devkit': 19.3.2(nx@19.3.2)
+    transitivePeerDependencies:
+      - nx
+    dev: true
+
   /@nrwl/devkit@19.3.2(nx@19.5.2):
     resolution: {integrity: sha512-n3tFalVPUk1HAJ2VYNnF34yzB9j2+6swFUi4Y92PxD1vN7vrIXnNeaTx2qcee7JDjBpiJ7Zn0KLg2jwiH6hNwA==}
     dependencies:
@@ -9702,7 +9708,7 @@ packages:
     peerDependencies:
       nx: '>= 17 <= 20'
     dependencies:
-      '@nrwl/devkit': 19.3.2(nx@19.5.2)
+      '@nrwl/devkit': 19.3.2(nx@19.3.2)
       ejs: 3.1.9
       enquirer: 2.3.6
       ignore: 5.3.1
@@ -23213,8 +23219,6 @@ packages:
       webpack: '*'
     peerDependenciesMeta:
       webpack:
-        optional: true
-      webpack-sources:
         optional: true
     dependencies:
       webpack: 5.88.2(esbuild@0.18.17)

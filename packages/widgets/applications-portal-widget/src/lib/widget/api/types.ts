@@ -17,6 +17,6 @@ export type SSOApplication = {
   appType: SSOAppType;
   logo?: string;
   samlSettings?: {
-    idpInitiatedURL: string;
+    idpInitiatedUrl: string;
   };
 };
