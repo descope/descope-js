@@ -1,3 +1,4 @@
+import { before } from 'node:test';
 import createSdk, { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from '../src/index';
 import { flowResponse } from './mocks';
 import { createMockReturnValue } from './testUtils';
@@ -7,6 +8,9 @@ global.fetch = mockFetch;
 Object.defineProperty(global, 'PublicKeyCredential', { value: class {} });
 
 describe('sdk', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
   it('should send start option on start call', async () => {
     const mockFetch = jest
       .fn()
@@ -61,6 +65,36 @@ describe('sdk', () => {
         preview: true,
       },
     });
+  });
+
+  it('should set dsc query param to false on refresh when the session token does not exist', async () => {
+    localStorage.removeItem('DS'); // no session token
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(flowResponse));
+    global.fetch = mockFetch;
+    const sdk = createSdk({ projectId: 'pid' });
+    await sdk.refresh('token');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.descope.com/v1/auth/refresh?dcs=f',
+      expect.any(Object),
+    );
+  });
+
+  it('should set dcs query param to true on refresh when the session token exists', async () => {
+    localStorage.setItem('DS', 'refresh-token-1'); // with session token
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(flowResponse));
+    global.fetch = mockFetch;
+    const sdk = createSdk({ projectId: 'pid' });
+    await sdk.refresh('token');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.descope.com/v1/auth/refresh?dcs=t',
+      expect.any(Object),
+    );
   });
 
   it('should export constants', () => {
