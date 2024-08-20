@@ -1,4 +1,3 @@
-import { before } from 'node:test';
 import createSdk, { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from '../src/index';
 import { flowResponse } from './mocks';
 import { createMockReturnValue } from './testUtils';

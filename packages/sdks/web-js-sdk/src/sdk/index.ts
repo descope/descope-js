@@ -10,6 +10,8 @@ const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
   return {
     ...coreSdk,
     refresh: (token?: string) => {
+      // Descope use this query param to monitor if refresh is made
+      // When the user is already logged in in the past or not (We want to optimize that in the future)
       const currentSessionToken = getSessionToken();
       return coreSdk.refresh(token, { dcs: currentSessionToken ? 't' : 'f' });
     },
