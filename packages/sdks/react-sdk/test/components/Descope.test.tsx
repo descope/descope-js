@@ -252,4 +252,14 @@ describe('Descope', () => {
       );
     });
   });
+
+  it('should render web-component with style id when provided', async () => {
+    renderWithProvider(<Descope flowId="flow-1" styleId="test" />);
+    await waitFor(() => {
+      expect(document.querySelector('descope-wc')).toHaveAttribute(
+        'style-id',
+        'test',
+      );
+    });
+  });
 });
