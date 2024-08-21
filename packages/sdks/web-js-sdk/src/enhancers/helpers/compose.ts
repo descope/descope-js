@@ -1,5 +1,3 @@
-import { CreateWebSdk, WebSdk } from '../../sdk';
-
 type Fn = (arg: any) => any;
 
 export function compose<Input, A1>(
