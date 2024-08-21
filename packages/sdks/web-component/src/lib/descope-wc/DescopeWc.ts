@@ -43,7 +43,6 @@ import {
 import {
   Direction,
   FlowState,
-  Locale,
   NextFn,
   NextFnReturnPromiseValue,
   SdkConfig,
