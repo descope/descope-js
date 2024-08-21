@@ -73,12 +73,12 @@ export const themeMixin = createSingletonMixin(
 
                 if (devTheme) {
                   fetchedTheme.light.components = {
-                    ...devTheme.light.components,
                     ...fetchedTheme.light.components,
+                    ...devTheme.light.components,
                   };
                   fetchedTheme.dark.components = {
-                    ...devTheme.dark.components,
                     ...fetchedTheme.dark.components,
+                    ...devTheme.dark.components,
                   };
 
                   this.logger.warn('Theme was merged successfully');

@@ -14,8 +14,9 @@ export default `
     </descope-combo-box>
   </descope-container>
   <descope-grid bordered="true" column-reordering-allowed="true" data-id="audit-table" size="sm" st-host-height="300px" style="width:100%">
-  <descope-grid-text-column header="Occurred" path="occurredFormatted" resizable="true" sortable="false"></descope-grid-text-column>
-  <descope-grid-text-column header="User ID" path="userId" resizable="true" sortable="false"></descope-grid-text-column>
+      <descope-grid-item-details-column width="3.5em" flex-grow="0" frozen></descope-grid-item-details-column>
+    <descope-grid-text-column header="Occurred" path="occurredFormatted" resizable="true" sortable="false"></descope-grid-text-column>
+    <descope-grid-text-column header="User ID" path="userId" resizable="true" sortable="false"></descope-grid-text-column>
     <descope-grid-text-column header="Actor" path="actorId" resizable="true" sortable="false"></descope-grid-text-column>
     <descope-grid-text-column header="Login IDs" path="externalIds" resizable="true" sortable="false"></descope-grid-text-column>
     <descope-grid-text-column header="Remote Address" path="remoteAddress" resizable="true" sortable="false"></descope-grid-text-column>
