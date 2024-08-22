@@ -81,7 +81,7 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | storage-prefix                            | **String** - A prefix to add to the key of the local storage when persisting tokens                                                                                                                                                        | **""**        |
 | store-last-authenticated-user             | **"true"** - Stores last-authenticated user details in local storage when flow is completed</br>**"false"** - Do not store last-auth user details. Disabling this flag may cause last-authenticated user features to not function properly | **"true"**    |
 | keep-last-authenticated-user-after-logout | **"true"** - Do not clear the last authenticated user details from the browser storage after logout</br>**"false"** - Clear the last authenticated user details from the browser storage after logout                                      | **"false"**   |
-| style-id                                  | **"String"** - Set a specific style name to load rather then the default theme                                                                                                                                                             | **""**        |
+| style-id                                  | **"String"** - Set a specific style to load rather then the default style                                                                                                                                                             | **""**        |
 
 ## Optional Properties
 
