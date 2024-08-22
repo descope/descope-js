@@ -227,10 +227,10 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-          callbackUrl: redirectAuthCallbackUrl,
-          codeChallenge: redirectAuthCodeChallenge,
-          backupCallbackUri: redirectAuthBackupCallbackUri,
-        }
+            callbackUrl: redirectAuthCallbackUrl,
+            codeChallenge: redirectAuthCodeChallenge,
+            backupCallbackUri: redirectAuthBackupCallbackUri,
+          }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -271,7 +271,7 @@ class DescopeWc extends BaseDescopeWc {
             ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.storagePrefix),
             abTestingKey,
             locale: getUserLocale(locale),
           },
@@ -476,7 +476,7 @@ class DescopeWc extends BaseDescopeWc {
       openInNewTabUrl,
     };
 
-    const lastAuth = getLastAuth(loginId);
+    const lastAuth = getLastAuth(loginId, this.storagePrefix);
 
     // If there is a start screen id, next action should start the flow
     // But if any of the sso params are not empty, this optimization doesn't happen
@@ -550,7 +550,9 @@ class DescopeWc extends BaseDescopeWc {
         );
 
         if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
-          this.logger.debug('polling - Got a generic error due to exception in fetch call');
+          this.logger.debug(
+            'polling - Got a generic error due to exception in fetch call',
+          );
           this.#handlePollingResponse(
             executionId,
             stepId,
@@ -563,7 +565,10 @@ class DescopeWc extends BaseDescopeWc {
         }
         this.logger.debug('polling - Got a response');
         if (sdkResp?.error) {
-          this.logger.debug('polling - Response has an error', JSON.stringify(sdkResp.error, null, 4));
+          this.logger.debug(
+            'polling - Response has an error',
+            JSON.stringify(sdkResp.error, null, 4),
+          );
         }
 
         this.#handleSdkResponse(sdkResp);
@@ -628,7 +633,7 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
-        setLastAuth(lastAuth);
+        setLastAuth(lastAuth, this.storagePrefix);
       }
       this.#dispatch('success', authInfo);
       return;

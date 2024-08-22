@@ -3289,6 +3289,42 @@ describe('web-component', () => {
     ).toBeNull();
   });
 
+  it('should store last auth with prefix', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+        lastAuth: { authMethod: 'otp' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1 storage-prefix="test">
+    </descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ detail: 'auth info' }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    expect(
+      localStorage.getItem(`test${DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY}`),
+    ).not.toBeNull();
+  });
+
   it('should update dynamic attribute values', async () => {
     pageContent = `<input ${HAS_DYNAMIC_VALUES_ATTR_NAME}="" testAttr="{{form.varName}}" id="email" name="email" placeholder="email"></input>`;
 
