@@ -88,6 +88,7 @@ export interface IContext {
   isSessionFetched: boolean;
   projectId: string;
   baseUrl?: string;
+  styleId?: string;
   baseStaticUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
@@ -117,6 +118,7 @@ export type DescopeProps = {
   form?: Record<string, any>;
   // use to override client context in flow execution
   client?: Record<string, any>;
+  styleId?: string;
 };
 
 export type UserManagementProps = WidgetProps;
