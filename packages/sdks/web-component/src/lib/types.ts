@@ -48,6 +48,11 @@ export type OIDCOptions = {
   oidcErrorRedirectUri?: string;
 };
 
+export type Locale = {
+  locale: string;
+  fallback: string;
+};
+
 export type FlowState = {
   flowId: string;
   projectId: string;
