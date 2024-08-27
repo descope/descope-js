@@ -50,10 +50,11 @@ const DescopeWC = lazy(async () => {
       redirectUrl,
       client,
       form,
+      styleId,
       autoFocus,
       validateOnBlur,
     }) => (
-      <descope-wc
+	<descope-wc
         project-id={projectId}
         flow-id={flowId}
         base-url={baseUrl}
@@ -65,6 +66,7 @@ const DescopeWC = lazy(async () => {
         debug={debug}
         client={client}
         form={form}
+        style-id={styleId}
         redirect-url={redirectUrl}
         auto-focus={autoFocus}
         validate-on-blur={validateOnBlur}
@@ -92,6 +94,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       autoFocus,
       validateOnBlur,
       errorTransformer,
+      styleId,
     },
     ref,
   ) => {
@@ -193,9 +196,9 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-      <form>
-        <Suspense fallback={null}>
-          <DescopeWC
+	<form>
+		<Suspense fallback={null}>
+			<DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
@@ -210,14 +213,15 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             telemetryKey={telemetryKey}
             redirectUrl={redirectUrl}
             autoFocus={autoFocus}
+            styleId={styleId}
             validateOnBlur={validateOnBlur}
             storeLastAuthenticatedUser={storeLastAuthenticatedUser}
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
             }
           />
-        </Suspense>
-      </form>
+		</Suspense>
+	</form>
     );
   },
 );

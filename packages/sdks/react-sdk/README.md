@@ -153,6 +153,11 @@ const App = () => {
             // ...
             // logger={logger}
             // ...
+
+
+            // Use a custom style name or keep empty to use the default style.
+            // styleId="my-awesome-style"
+
         />
     )
 }
