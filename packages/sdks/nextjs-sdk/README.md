@@ -272,7 +272,7 @@ export async function GET(req) {
 ### Pages Router
 
 This section is Working in progress :-)
-In the meantime, you can see the example in the [Pages Router](/examples/pages-router/) folder.
+In the meantime, you can see the example in the [Pages Router](./examples/pages-router) folder.
 
 ### Widgets
 
