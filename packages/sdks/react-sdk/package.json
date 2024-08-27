@@ -39,7 +39,8 @@
     "lint": "eslint '+(src|examples)/**/*.+(ts|tsx)' --fix",
     "prepublishOnly": "npm run build",
     "start": "npm run build && rollup -c rollup.config.app.mjs -w",
-    "test": "jest"
+    "test": "jest",
+    "next-version": "npm version \"0.0.0-next-$(git rev-parse HEAD)\""
   },
   "lint-staged": {
     "+(src|examples)/**/*.{js,ts,jsx,tsx}": [
