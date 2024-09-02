@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.24.0](https://github.com/descope/descope-js/compare/web-component-3.23.2...web-component-3.24.0) (2024-09-02)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.1`
+
+### Features
+
+* Allow dialect localization ([#783](https://github.com/descope/descope-js/issues/783)) ([4dba2a1](https://github.com/descope/descope-js/commit/4dba2a1e659a6ffb6feb73141ef98ae9f47a59f6))
+
 ## [3.23.2](https://github.com/descope/descope-js/compare/web-component-3.23.1...web-component-3.23.2) (2024-08-20)
 
 ### Dependency Updates
