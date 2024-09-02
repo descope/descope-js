@@ -1,6 +1,6 @@
 // @ts-nocheck
 import createSdk from '../../src/sdk';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { mockHttpClient } from '../utils';
 import { apiPaths } from '../../src/constants';
 

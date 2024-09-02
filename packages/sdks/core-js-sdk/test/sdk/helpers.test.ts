@@ -1,9 +1,5 @@
 import { isJwtExpired, pathJoin } from '../../src/sdk/helpers';
-import jwtDecode from 'jwt-decode';
-import {
-  MAX_POLLING_TIMEOUT_MS,
-  MIN_POLLING_INTERVAL_MS,
-} from '../../src/constants';
+import { jwtDecode } from 'jwt-decode';
 
 jest.mock('jwt-decode', () => jest.fn());
 

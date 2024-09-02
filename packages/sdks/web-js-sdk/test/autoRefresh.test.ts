@@ -3,7 +3,7 @@ import { authInfo } from './mocks';
 import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
 import { MAX_TIMEOUT } from '../src/constants';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
   debug: jest.fn(),
