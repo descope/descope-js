@@ -4,7 +4,11 @@ import { jwtDecode } from 'jwt-decode';
 import { mockHttpClient } from '../utils';
 import { apiPaths } from '../../src/constants';
 
-jest.mock('jwt-decode', () => jest.fn());
+jest.mock('jwt-decode', () => {
+  return {
+    jwtDecode: jest.fn(),
+  };
+});
 
 const sdk = createSdk(mockHttpClient);
 

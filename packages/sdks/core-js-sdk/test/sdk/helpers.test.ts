@@ -1,7 +1,11 @@
 import { isJwtExpired, pathJoin } from '../../src/sdk/helpers';
 import { jwtDecode } from 'jwt-decode';
 
-jest.mock('jwt-decode', () => jest.fn());
+jest.mock('jwt-decode', () => {
+  return {
+    jwtDecode: jest.fn(),
+  };
+});
 
 describe('helpers', () => {
   describe('pathJoin', () => {
