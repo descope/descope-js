@@ -119,6 +119,7 @@ export type DescopeProps = {
   // use to override client context in flow execution
   client?: Record<string, any>;
   styleId?: string;
+  storeLastAuthenticatedUser?: boolean;
 };
 
 export type UserManagementProps = WidgetProps;
