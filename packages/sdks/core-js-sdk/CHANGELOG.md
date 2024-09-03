@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.24.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.24.3...core-js-sdk-2.24.4) (2024-09-03)
+
+
+### Bug Fixes
+
+* upgrade jwt decode to 4.0.0. ([#789](https://github.com/descope/descope-js/issues/789)) RELEASE ([19e2cfd](https://github.com/descope/descope-js/commit/19e2cfde2fd061110fec8918e211f89909553f8a))
+
 ## [2.24.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.24.2...core-js-sdk-2.24.3) (2024-08-20)
 
 ## [2.24.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.24.1...core-js-sdk-2.24.2) (2024-08-14)
