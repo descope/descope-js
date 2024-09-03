@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.71](https://github.com/descope/descope-js/compare/react-sdk-2.0.70...react-sdk-2.0.71) (2024-09-03)
+
+
+### Bug Fixes
+
+* store last auth user prop in React SDK ([#790](https://github.com/descope/descope-js/issues/790)) RELEASE ([b583bcf](https://github.com/descope/descope-js/commit/b583bcf4aae2e9e20d247b4e8bfc3d57dec94ba6))
+
 ## [2.0.70](https://github.com/descope/descope-js/compare/react-sdk-2.0.69...react-sdk-2.0.70) (2024-09-03)
 
 ### Dependency Updates
