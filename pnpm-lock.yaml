@@ -638,8 +638,8 @@ importers:
   packages/sdks/core-js-sdk:
     dependencies:
       jwt-decode:
-        specifier: 3.1.2
-        version: 3.1.2
+        specifier: 4.0.0
+        version: 4.0.0
     devDependencies:
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
@@ -1524,8 +1524,8 @@ importers:
         specifier: 3.0.5
         version: 3.0.5
       jwt-decode:
-        specifier: 3.1.2
-        version: 3.1.2
+        specifier: 4.0.0
+        version: 4.0.0
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -1694,7 +1694,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.0.348
+        version: 1.0.361
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -1872,7 +1872,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.0.348
+        version: 1.0.361
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2050,7 +2050,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.0.348
+        version: 1.0.361
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2231,7 +2231,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.0.348
+        version: 1.0.361
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2416,7 +2416,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.0.348
+        version: 1.0.361
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -7262,8 +7262,8 @@ packages:
       - encoding
     dev: false
 
-  /@descope/web-components-ui@1.0.348:
-    resolution: {integrity: sha512-QKlKbm4DT3hxZoF83P8JW3MPizh42NYMk+FD7/fetnp/bU4LkfdQyHBHWjmudfgdiVKLuaTuPioeSnCmsnOHlw==}
+  /@descope/web-components-ui@1.0.361:
+    resolution: {integrity: sha512-XYNBswr/lJD5za93zYONrnNSvgRiCI9K4feyThtoVSO6oiZrD6V18W6FUQEnfm6eIGqcQIEH71+vHwfMBAK70Q==}
     requiresBuild: true
     dependencies:
       '@vaadin/avatar': 24.3.4
@@ -7287,7 +7287,8 @@ packages:
       color: 4.2.3
       element-internals-polyfill: 1.3.11
       highlight.js: 11.10.0
-      lint-staged: 15.1.0
+      lint-staged: 15.2.7
+      lodash.debounce: 4.0.8
       lodash.merge: 4.6.2
       markdown-it: 14.1.0
     transitivePeerDependencies:
@@ -13070,7 +13071,7 @@ packages:
     resolution: {integrity: sha512-HK4c1Kq1tHabgGO6o/qLePi67lYBqkn7XD0M92fc6cwFSi8IerxEuKNaF71ZF8+32PXqhwT1IKgka2S9iUea8w==}
     dependencies:
       '@polymer/polymer': 3.5.1
-      '@vaadin/icon': 24.3.4
+      '@vaadin/icon': 24.3.19
     dev: true
 
   /@vaadin/input-container@24.3.19:
@@ -22658,6 +22659,11 @@ packages:
 
   /jwt-decode@3.1.2:
     resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
+    dev: false
+
+  /jwt-decode@4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
     dev: false
 
   /karma-source-map-support@1.4.0:

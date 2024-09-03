@@ -3,13 +3,17 @@ import { authInfo } from './mocks';
 import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
 import { MAX_TIMEOUT } from '../src/constants';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
   debug: jest.fn(),
 }));
 
-jest.mock('jwt-decode', () => jest.fn());
+jest.mock('jwt-decode', () => {
+  return {
+    jwtDecode: jest.fn(),
+  };
+});
 
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
@@ -18,7 +22,7 @@ describe('autoRefresh', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (jwtDecode as jest.Mock).mockImplementation(
-      jest.requireActual('jwt-decode'),
+      jest.requireActual('jwt-decode').jwtDecode,
     );
   });
 
