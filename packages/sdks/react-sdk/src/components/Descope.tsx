@@ -53,6 +53,7 @@ const DescopeWC = lazy(async () => {
       styleId,
       autoFocus,
       validateOnBlur,
+      storeLastAuthenticatedUser,
     }) => (
 	<descope-wc
         project-id={projectId}
@@ -70,6 +71,7 @@ const DescopeWC = lazy(async () => {
         redirect-url={redirectUrl}
         auto-focus={autoFocus}
         validate-on-blur={validateOnBlur}
+        store-last-authenticated-user={storeLastAuthenticatedUser}
       />
     ),
   };
