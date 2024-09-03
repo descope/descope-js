@@ -264,7 +264,11 @@ describe('Descope', () => {
   });
 
   it('should render web-component with store-last-authenticated-user', async () => {
-    renderWithProvider(<Descope flowId="flow-1" storeLastAuthenticatedUser />);
+    render(
+      <AuthProvider projectId="project-1" storeLastAuthenticatedUser>
+        <Descope flowId="flow-1" />
+      </AuthProvider>,
+    );
     await waitFor(() => {
       expect(document.querySelector('descope-wc')).toHaveAttribute(
         'store-last-authenticated-user',
