@@ -26,7 +26,7 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         // eslint-disable-next-line @typescript-eslint/naming-convention
         oidc_generated_user,
         ...data
-      },
+      } = {},
       ...auditRest
     } = audit || {};
 
