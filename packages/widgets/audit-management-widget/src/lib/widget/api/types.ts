@@ -5,7 +5,8 @@ export type Sdk = ReturnType<typeof createWebSdk>;
 export type HttpClient = Sdk['httpClient'];
 
 export type Audit = {
-  ID: string;
+  ID?: string;
+  id: string;
   userId: string;
   action: string;
   actorId: string;
