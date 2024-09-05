@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.20](https://github.com/descope/descope-js/compare/angular-sdk-0.5.19...angular-sdk-0.5.20) (2024-09-05)
+
+### Dependency Updates
+
+* `audit-management-widget` updated to version `0.1.84`
 ## [0.5.19](https://github.com/descope/descope-js/compare/angular-sdk-0.5.18...angular-sdk-0.5.19) (2024-09-03)
 
 ### Dependency Updates
