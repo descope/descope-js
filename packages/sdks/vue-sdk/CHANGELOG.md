@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.32](https://github.com/descope/descope-js/compare/vue-sdk-2.0.31...vue-sdk-2.0.32) (2024-09-05)
+
+### Dependency Updates
+
+* `audit-management-widget` updated to version `0.1.84`
 ## [2.0.31](https://github.com/descope/descope-js/compare/vue-sdk-2.0.30...vue-sdk-2.0.31) (2024-09-03)
 
 ### Dependency Updates
