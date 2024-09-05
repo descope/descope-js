@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.72](https://github.com/descope/descope-js/compare/react-sdk-2.0.71...react-sdk-2.0.72) (2024-09-05)
+
+### Dependency Updates
+
+* `audit-management-widget` updated to version `0.1.84`
 ## [2.0.71](https://github.com/descope/descope-js/compare/react-sdk-2.0.70...react-sdk-2.0.71) (2024-09-03)
 
 
