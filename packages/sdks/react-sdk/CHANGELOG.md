@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.72](https://github.com/descope/descope-js/compare/react-sdk-2.0.71...react-sdk-2.0.72) (2024-09-05)
+
+### Dependency Updates
+
+* `audit-management-widget` updated to version `0.1.84`
+## [2.0.71](https://github.com/descope/descope-js/compare/react-sdk-2.0.70...react-sdk-2.0.71) (2024-09-03)
+
+
+### Bug Fixes
+
+* store last auth user prop in React SDK ([#790](https://github.com/descope/descope-js/issues/790)) RELEASE ([b583bcf](https://github.com/descope/descope-js/commit/b583bcf4aae2e9e20d247b4e8bfc3d57dec94ba6))
+
+## [2.0.70](https://github.com/descope/descope-js/compare/react-sdk-2.0.69...react-sdk-2.0.70) (2024-09-03)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.120`
+* `audit-management-widget` updated to version `0.1.83`
+* `role-management-widget` updated to version `0.1.118`
+* `user-management-widget` updated to version `0.4.121`
+* `user-profile-widget` updated to version `0.0.102`
+* `web-component` updated to version `3.24.1`
+* `web-js-sdk` updated to version `1.16.4`
+* `core-js-sdk` updated to version `2.24.4`
+## [2.0.69](https://github.com/descope/descope-js/compare/react-sdk-2.0.68...react-sdk-2.0.69) (2024-09-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.119`
+* `audit-management-widget` updated to version `0.1.82`
+* `role-management-widget` updated to version `0.1.117`
+* `user-management-widget` updated to version `0.4.120`
+* `user-profile-widget` updated to version `0.0.101`
+* `web-component` updated to version `3.24.0`
 ## [2.0.68](https://github.com/descope/descope-js/compare/react-sdk-2.0.67...react-sdk-2.0.68) (2024-08-20)
 
 ### Dependency Updates
