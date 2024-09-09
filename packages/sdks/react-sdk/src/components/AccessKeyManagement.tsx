@@ -23,7 +23,7 @@ const AccessKeyManagementWC = lazy(async () => {
       theme,
       debug,
     }) => (
-      <descope-access-key-management-widget
+	<descope-access-key-management-widget
         project-id={projectId}
         widget-id={widgetId}
         base-url={baseUrl}
@@ -54,8 +54,8 @@ const AccessKeyManagement = React.forwardRef<
   }, [innerRef, logger]);
 
   return (
-    <Suspense fallback={null}>
-      <AccessKeyManagementWC
+	<Suspense fallback={null}>
+		<AccessKeyManagementWC
         projectId={projectId}
         widgetId={widgetId}
         baseUrl={baseUrl}
@@ -65,7 +65,7 @@ const AccessKeyManagement = React.forwardRef<
         theme={theme}
         debug={debug}
       />
-    </Suspense>
+	</Suspense>
   );
 });
 

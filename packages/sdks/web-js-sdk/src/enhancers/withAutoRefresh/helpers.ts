@@ -1,4 +1,4 @@
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 /**
  * Get the JWT expiration WITHOUT VALIDATING the JWT

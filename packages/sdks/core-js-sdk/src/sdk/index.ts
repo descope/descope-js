@@ -48,12 +48,15 @@ export default (httpClient: HttpClient) => ({
    * Refreshes a session token
    * Should be called when a session has expired (failed validation) to renew it
    * @param token A valid refresh token
+   * @param queryParams Additional query parameters to send with the request.
+   *    NOTE - queryParams is used internally and should NOT be used by other consumers, this is subject to change and may be removed in the near future.
    * @returns The updated authentication info (JWTs)
    */
-  refresh: withOptionalTokenValidations((token?: string) =>
-    transformResponse<JWTResponse>(
-      httpClient.post(apiPaths.refresh, {}, { token }),
-    ),
+  refresh: withOptionalTokenValidations(
+    (token?: string, queryParams?: { [key: string]: string }) =>
+      transformResponse<JWTResponse>(
+        httpClient.post(apiPaths.refresh, {}, { token, queryParams }),
+      ),
   ),
   /**
    * Selects a tenant for the current session
