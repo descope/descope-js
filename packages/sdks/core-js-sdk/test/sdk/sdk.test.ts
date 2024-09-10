@@ -247,6 +247,56 @@ describe('sdk', () => {
     });
   });
 
+  describe('myTenants', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.myTenants({ a: 'b' })).toThrow(
+        '"token" must be string or undefined',
+      );
+    });
+    it('should send the correct request with boolean', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.myTenants(true, 'token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.myTenants,
+        {
+          dct: true,
+        },
+        { token: 'token' },
+      );
+    });
+    it('should send the correct request with array', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.myTenants(['a'], 'token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.myTenants,
+        {
+          ids: ['a'],
+        },
+        { token: 'token' },
+      );
+    });
+  });
+
   describe('history', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.history({ a: 'b' })).toThrow(
