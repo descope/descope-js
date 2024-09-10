@@ -60,6 +60,16 @@ export type UserResponse = User & {
   status: string;
 };
 
+export type Tenant = {
+  id: string;
+  name: string;
+  customAttributes?: Record<string, any>;
+};
+
+export type TenantsResponse = {
+  tenants: Tenant[];
+};
+
 export type UserHistoryResponse = {
   userId: string;
   loginTime: number;
