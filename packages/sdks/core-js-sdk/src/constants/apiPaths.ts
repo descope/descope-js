@@ -84,6 +84,7 @@ export default {
   logout: '/v1/auth/logout',
   logoutAll: '/v1/auth/logoutall',
   me: '/v1/auth/me',
+  myTenants: '/v1/auth/me/tenants',
   history: '/v1/auth/me/history',
   flow: {
     start: '/v1/flow/start',
