@@ -112,7 +112,7 @@ export default (httpClient: HttpClient) => ({
    * @returns The current user details
    */
   myTenants: withValidations(
-    [isArrayOrBool('tenants')],
+    [isArrayOrBool('"tenants" must a string array or a boolean')],
     [isStringOrUndefined('"token" must be string or undefined')],
   )((tenants: true | string[], token?: string) => {
     const bdy = {};

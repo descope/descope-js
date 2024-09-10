@@ -248,9 +248,15 @@ describe('sdk', () => {
   });
 
   describe('myTenants', () => {
-    it('should throw an error when token is not a string', () => {
+    it('should throw an error when tenant is not a valid input', () => {
       expect(() => sdk.myTenants({ a: 'b' })).toThrow(
-        '"token" must be string or undefined',
+        '"tenants" must a string array or a boolean',
+      );
+    });
+
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.myTenants(true, { a: 'b' })).toThrow(
+        '"token" must be string',
       );
     });
     it('should send the correct request with boolean', () => {
