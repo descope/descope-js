@@ -16,14 +16,23 @@ import withOtp from './otp';
 import withSaml from './saml';
 import withTotp from './totp';
 import withPassword from './password';
-import { JWTResponse, UserHistoryResponse, UserResponse } from './types';
+import {
+  JWTResponse,
+  TenantsResponse,
+  UserHistoryResponse,
+  UserResponse,
+} from './types';
 import {
   stringNonEmpty,
   withValidations,
   isStringOrUndefinedValidator,
 } from './validations';
 import withWebauthn from './webauthn';
-import { isString, isStringOrUndefined } from './validations/validators';
+import {
+  isArrayOrBool,
+  isString,
+  isStringOrUndefined,
+} from './validations/validators';
 import withNotp from './notp';
 
 const withJwtValidations = withValidations(stringNonEmpty('token'));
@@ -96,6 +105,26 @@ export default (httpClient: HttpClient) => ({
   me: withOptionalTokenValidations((token?: string) =>
     transformResponse<UserResponse>(httpClient.get(apiPaths.me, { token })),
   ),
+  /**
+   * Returns the current user details
+   * @param tenants set to true IFF the response should include only the selected tenant from JWT, or list of tenant ids
+   * @param token A valid refresh token
+   * @returns The current user details
+   */
+  myTenants: withValidations(
+    [isArrayOrBool('"tenants" must a string array or a boolean')],
+    [isStringOrUndefined('"token" must be string or undefined')],
+  )((tenants: true | string[], token?: string) => {
+    const bdy = {};
+    if (typeof tenants === 'boolean') {
+      bdy['dct'] = tenants;
+    } else {
+      bdy['ids'] = tenants;
+    }
+    return transformResponse<TenantsResponse>(
+      httpClient.post(apiPaths.myTenants, bdy, { token }),
+    );
+  }),
   /**
    * Returns the current user authentication history
    * @param token A valid refresh token
