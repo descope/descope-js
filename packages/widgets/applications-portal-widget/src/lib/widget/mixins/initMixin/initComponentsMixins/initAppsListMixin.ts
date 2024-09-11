@@ -1,9 +1,9 @@
+import { AppsListDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { getAppsList, getSamlApps } from '../../../state/selectors';
+import { getAppsList } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { AppsListDriver } from '@descope/sdk-component-drivers';
 
 export const initAppsListMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
