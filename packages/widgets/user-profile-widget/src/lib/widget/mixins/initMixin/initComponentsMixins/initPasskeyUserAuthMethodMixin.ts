@@ -29,6 +29,8 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       #flow: FlowDriver;
 
       #initModal() {
+        if (!this.passkeyUserAuthMethod.flowId) return;
+
         this.#modal = this.createModal({ 'data-id': 'passkey' });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
@@ -63,7 +65,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         );
 
         this.passkeyUserAuthMethod.onButtonClick(() => {
-          this.#modal.open();
+          this.#modal?.open();
         });
       }
 
