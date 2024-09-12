@@ -15,13 +15,23 @@ jobs:
     name: Release Next
     runs-on: ubuntu-latest
     steps:
+      - name: Check if should run
+        id: 'check'
+        run: |
+          if [[ $(nx show projects --affected --plain | grep -q "react-sdk") ]]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
       - name: Get token
+        if: steps.check.outputs.run == 'true'
         id: get_token
         uses: tibdex/github-app-token@v2
         with:
           private_key: ${{ secrets.RELEASE_APP_PEM }}
           app_id: ${{ secrets.RELEASE_APP_ID }}
       - name: Checkout code
+        if: steps.check.outputs.run == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -39,15 +49,18 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
+        if: steps.check.outputs.run == 'true'
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
       - name: Build
+        if: steps.check.outputs.run == 'true'
         run: npm run version:ci
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Run pnpm publish
+        if: steps.check.outputs.run == 'true'
         run: |
           pnpm --filter "@descope/react-sdk" exec npm version "0.0.0-next-$(git rev-parse HEAD)" --git-tag-version=false
           pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
