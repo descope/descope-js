@@ -1,4 +1,4 @@
-name: Release Next
+name: Release - React SDK next
 
 on:
   push:
@@ -38,14 +38,20 @@ jobs:
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
-      - run: |
+      - name: Run git config
+        if: steps.check.outputs.run == 'true'
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        if: steps.check.outputs.run == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v4
+      - name: Setup PNPM
+        if: steps.check.outputs.run == 'true'
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
