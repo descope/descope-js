@@ -1004,9 +1004,9 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    // if (ele.getAttribute('external-input') !== 'true') {
-    //   return;
-    // }
+    if (ele.getAttribute('external-input') !== 'true') {
+      return;
+    }
 
     const origInputs = ele.querySelectorAll('input');
 
