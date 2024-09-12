@@ -11,7 +11,7 @@ const load: () => Promise<SSOApplication[]> = async () =>
         appType: SSOAppType.saml,
         logo: 'logo1',
         samlSettings: {
-          idpInitiatedURL: 'http://idpInitiatedURL.com',
+          idpInitiatedUrl: 'http://idpInitiatedURL.com',
         },
       },
       {
@@ -30,7 +30,7 @@ const load: () => Promise<SSOApplication[]> = async () =>
         appType: SSOAppType.saml,
         logo: 'logo3',
         samlSettings: {
-          idpInitiatedURL: 'http://idpInitiatedURL2.com',
+          idpInitiatedUrl: 'http://idpInitiatedURL2.com',
         },
       },
     ]);
