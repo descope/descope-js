@@ -9,7 +9,7 @@ export const mockSsoApps = [
     appType: SSOAppType.saml,
     logo: 'logo1',
     samlSettings: {
-      idpInitiatedURL: 'http://idpInitiatedURL.com',
+      idpInitiatedUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
     },
   },
   {
@@ -28,7 +28,7 @@ export const mockSsoApps = [
     appType: SSOAppType.saml,
     logo: 'logo3',
     samlSettings: {
-      idpInitiatedURL: 'http://idpInitiatedURL2.com',
+      idpInitiatedUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
     },
   },
 ]
