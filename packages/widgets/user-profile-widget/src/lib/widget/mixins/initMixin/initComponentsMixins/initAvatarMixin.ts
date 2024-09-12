@@ -34,6 +34,8 @@ export const initAvatarMixin = createSingletonMixin(
       #flow: FlowDriver;
 
       #initModal() {
+        if (!this.avatar.flowId) return;
+
         this.#modal = this.createModal({ 'data-id': 'update-pic' });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
@@ -65,7 +67,7 @@ export const initAvatarMixin = createSingletonMixin(
         );
 
         this.avatar.onClick(() => {
-          this.#modal.open();
+          this.#modal?.open();
         });
       }
 
