@@ -856,12 +856,6 @@ class DescopeWc extends BaseDescopeWc {
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
 
-      // handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
-
-      // if (this.validateOnBlur) {
-      //   handleReportValidityOnBlur(this.rootElement);
-      // }
-
       this.#hydrate(next);
       if (isFirstScreen) {
         // Dispatch when the first page is ready
