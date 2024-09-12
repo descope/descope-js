@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Run pnpm publish
         run: |
-          pnpm --filter "@descope/react-sdk" npm version "0.0.0-next-$(git rev-parse HEAD)" --git-tag-version=false
+          pnpm --filter "@descope/react-sdk" exec npm version "0.0.0-next-$(git rev-parse HEAD)" --git-tag-version=false
           pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
         env:
           CI: true
