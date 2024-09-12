@@ -245,8 +245,8 @@ export const camelCase = (s: string) =>
 
 export const createIsChanged =
   <T extends Record<string, any>>(state: T, prevState: T) =>
-  (attrName: keyof T) =>
-    state[attrName] !== prevState[attrName];
+    (attrName: keyof T) =>
+      state[attrName] !== prevState[attrName];
 
 export const getElementDescopeAttributes = (ele: HTMLElement) =>
   Array.from(ele?.attributes || []).reduce((acc, attr) => {
@@ -406,14 +406,22 @@ export const handleAutoFocus = (
   }
 };
 
+// TODO: Move to externalInputHelpers
+const isExternalInput = (ele: HTMLElement) => {
+  return ele.getAttribute('external-input') === 'true';
+}
+
+const getExternalInputEle = (id: string) => document.querySelector('descope-wc').querySelector(`[slot="input-${id}-external-input"]`);
+
 export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
-    ele.addEventListener('blur', () => {
+    const inputEle = isExternalInput(ele) ? getExternalInputEle(ele.id) : ele;
+    inputEle.addEventListener('blur', () => {
       // reportValidity also focus the element if it's invalid
       // in order to prevent this we need to override the focus method
       const origFocus = ele.focus;
       // eslint-disable-next-line no-param-reassign
-      ele.focus = () => {};
+      ele.focus = () => { };
       ele.reportValidity?.();
       setTimeout(() => {
         // eslint-disable-next-line no-param-reassign
