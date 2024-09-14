@@ -31,7 +31,7 @@ export const urlBuilder = ({
     url = `${url}?`;
     const keys = Object.keys(queryParams);
     keys.forEach((key: string, index: number) => {
-      url = `${url}${key}=${queryParams[key]}${
+      url = `${url}${key}=${encodeURI(queryParams[key])}${
         index === keys.length - 1 ? '' : '&'
       }`;
     });
