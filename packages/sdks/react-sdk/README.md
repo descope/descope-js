@@ -504,6 +504,8 @@ See bellow for an `.env` file template with more information.
 
 ### Run Example
 
+Note: Due to an issue with react-sdk tsconfig, you need to remove `"examples"` from the `exclude` field in the `tsconfig.json` file in the root of the project before running the example.
+
 Run the following command in the root of the project to build and run the example:
 
 ```bash
