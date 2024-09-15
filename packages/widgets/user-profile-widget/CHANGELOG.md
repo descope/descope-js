@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.103](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.102...user-profile-widget-0.0.103) (2024-09-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.25.0`
+* `web-js-sdk` updated to version `1.16.5`
+* `web-component` updated to version `3.24.2`
+
+### Bug Fixes
+
+* UPW no flow run when no fid RELEASE ([#796](https://github.com/descope/descope-js/issues/796)) ([dadf507](https://github.com/descope/descope-js/commit/dadf5074bbb5866e28aedc84010ece756b87d9e2))
+
 ## [0.0.102](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.101...user-profile-widget-0.0.102) (2024-09-03)
 
 ### Dependency Updates

@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.74](https://github.com/descope/descope-js/compare/react-sdk-2.0.73...react-sdk-2.0.74) (2024-09-12)
+
+
+### Bug Fixes
+
+* issue 6274 RELEASE ([#795](https://github.com/descope/descope-js/issues/795)) ([d5c4536](https://github.com/descope/descope-js/commit/d5c453623e78fc7c31b39345485cbdbea54b2422))
+
+## [2.0.73](https://github.com/descope/descope-js/compare/react-sdk-2.0.72...react-sdk-2.0.73) (2024-09-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.121`
+* `audit-management-widget` updated to version `0.1.85`
+* `role-management-widget` updated to version `0.1.119`
+* `user-management-widget` updated to version `0.4.122`
+* `user-profile-widget` updated to version `0.0.103`
+* `web-component` updated to version `3.24.2`
+* `web-js-sdk` updated to version `1.16.5`
+* `core-js-sdk` updated to version `2.25.0`
+
+### Bug Fixes
+
+* UPW no flow run when no fid RELEASE ([#796](https://github.com/descope/descope-js/issues/796)) ([dadf507](https://github.com/descope/descope-js/commit/dadf5074bbb5866e28aedc84010ece756b87d9e2))
+
+## [2.0.72](https://github.com/descope/descope-js/compare/react-sdk-2.0.71...react-sdk-2.0.72) (2024-09-05)
+
+### Dependency Updates
+
+* `audit-management-widget` updated to version `0.1.84`
 ## [2.0.71](https://github.com/descope/descope-js/compare/react-sdk-2.0.70...react-sdk-2.0.71) (2024-09-03)
 
 
