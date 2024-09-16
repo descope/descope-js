@@ -14,9 +14,11 @@ export const initAppsListMixin = createSingletonMixin(
     )(superclass) {
       appsList: AppsListDriver;
 
-
       #initAppsList(appsList: ReturnType<typeof getAppsList>) {
-        this.appsList = new AppsListDriver( () => this.shadowRoot?.querySelector('descope-apps-list'), { logger: this.logger });
+        this.appsList = new AppsListDriver(
+          () => this.shadowRoot?.querySelector('descope-apps-list'),
+          { logger: this.logger },
+        );
         this.appsList.data = appsList;
       }
 

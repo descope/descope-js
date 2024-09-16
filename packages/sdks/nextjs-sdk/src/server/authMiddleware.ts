@@ -48,7 +48,7 @@ const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 	// Ensure publicRoutes and privateRoutes are arrays, defaulting to empty arrays if not defined
 	const publicRoutes = options.publicRoutes || [];
 	const privateRoutes = options.privateRoutes || [];
-	
+
 	const isDefaultPublicRoute = Object.values(DEFAULT_PUBLIC_ROUTES).includes(
 		req.nextUrl.pathname
 	);

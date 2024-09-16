@@ -1,4 +1,4 @@
-import { SSOAppType } from "../../src/lib/widget/api/types";
+import { SSOAppType } from '../../src/lib/widget/api/types';
 
 export const mockSsoApps = [
   {
@@ -31,4 +31,4 @@ export const mockSsoApps = [
       idpInitiatedUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
     },
   },
-]
+];

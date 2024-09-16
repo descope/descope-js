@@ -1,16 +1,16 @@
 import { BaseDriver } from './BaseDriver';
 
-type Data = { name: string, icon: string, url: string }[];
+type Data = { name: string; icon: string; url: string }[];
 
 export class AppsListDriver extends BaseDriver {
   nodeName = 'descope-apps-list';
 
   set data(data: Data) {
-    if(this.ele) this.ele.data = data;
+    if (this.ele) this.ele.data = data;
   }
 
   get data() {
-    return this.ele?.data
+    return this.ele?.data;
   }
 
   get ele() {

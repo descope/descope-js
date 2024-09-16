@@ -15,8 +15,7 @@ const configContent = {
 const apiPath = (prop: 'ssoApps', path: string) =>
   `**/*${apiPaths[prop][path]}`;
 
-const samlApps = mockSsoApps
-.filter((app) => app.appType === SSOAppType.saml)
+const samlApps = mockSsoApps.filter((app) => app.appType === SSOAppType.saml);
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -65,16 +64,14 @@ test.describe('widget', () => {
 
   test('saml apps are in the list', async ({ page }) => {
     for (const app of samlApps) {
-      await expect(
-        page.locator(`text=${app.name}`).first(),
-      ).toBeVisible();
+      await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
     }
   });
   test('click app opens a new tab', async ({ page }) => {
-    const newTabPromise = page.waitForEvent("popup");
+    const newTabPromise = page.waitForEvent('popup');
 
-    const app = page.locator(`text=${samlApps[0].name}`).first()
-    await app.click()
+    const app = page.locator(`text=${samlApps[0].name}`).first();
+    await app.click();
 
     const newTab = await newTabPromise;
     await newTab.waitForLoadState();

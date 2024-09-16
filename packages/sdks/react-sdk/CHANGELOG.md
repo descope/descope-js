@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.74](https://github.com/descope/descope-js/compare/react-sdk-2.0.73...react-sdk-2.0.74) (2024-09-12)
+
+
+### Bug Fixes
+
+* issue 6274 RELEASE ([#795](https://github.com/descope/descope-js/issues/795)) ([d5c4536](https://github.com/descope/descope-js/commit/d5c453623e78fc7c31b39345485cbdbea54b2422))
+
 ## [2.0.73](https://github.com/descope/descope-js/compare/react-sdk-2.0.72...react-sdk-2.0.73) (2024-09-11)
 
 ### Dependency Updates

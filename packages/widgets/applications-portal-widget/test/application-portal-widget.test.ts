@@ -21,8 +21,7 @@ export const mockHttpClient = {
         ok: true,
         status: 200,
         json: () => Promise.resolve({ apps: mockSsoApps }),
-        text: () =>
-          Promise.resolve(JSON.stringify({ apps: mockSsoApps })),
+        text: () => Promise.resolve(JSON.stringify({ apps: mockSsoApps })),
       }),
     ),
 };
@@ -39,9 +38,7 @@ jest.mock('../src/lib/widget/api/sdk/createSsoAppsSdk', () => {
   );
   return {
     __esModule: true,
-    createSsoAppsSdk: jest.fn((props) => {
-      return actualModule.createSsoAppsSdk(props);
-    }),
+    createSsoAppsSdk: jest.fn((props) => actualModule.createSsoAppsSdk(props)),
   };
 });
 
@@ -93,14 +90,11 @@ describe('application-portal-widget', () => {
       const sdk = createSdk({ projectId: mockProjectId }, false);
       const result = await sdk.ssoApps.load();
 
-      await waitFor(
-        () => expect(mockHttpClient.get).toHaveBeenCalledTimes(1),
-        { timeout: 5000 },
-      );
+      await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
+        timeout: 5000,
+      });
       await waitFor(() =>
-        expect(mockHttpClient.get).toHaveBeenCalledWith(
-          apiPaths.ssoApps.load,
-        ),
+        expect(mockHttpClient.get).toHaveBeenCalledWith(apiPaths.ssoApps.load),
       );
 
       expect(result.apps[0].id).toEqual(mockSsoApps[0].id);
