@@ -169,13 +169,6 @@ export function getRedirectAuthFromUrl() {
   };
 }
 
-export function clearRedirectAuthFromUrl() {
-  resetUrlParam(URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME);
-}
-
 export function getOIDCIDPParamFromUrl() {
   return getUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
 }
@@ -283,20 +276,14 @@ export const handleUrlParams = () => {
     clearExchangeErrorFromUrl();
   }
 
+  // these query params are retained to allow the flow to be refreshed
+  // without losing the redirect auth state
   const {
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
   } = getRedirectAuthFromUrl();
-  if (
-    redirectAuthCodeChallenge ||
-    redirectAuthCallbackUrl ||
-    redirectAuthBackupCallbackUri ||
-    redirectAuthInitiator
-  ) {
-    clearRedirectAuthFromUrl();
-  }
 
   const oidcIdpStateId = getOIDCIDPParamFromUrl();
   if (oidcIdpStateId) {
