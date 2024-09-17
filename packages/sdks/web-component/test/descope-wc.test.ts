@@ -2470,7 +2470,7 @@ describe('web-component', () => {
       );
     });
 
-    it('should call start with redirect auth data and clear it from url', async () => {
+    it('should call start with redirect auth data and keep it in the url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = '<span>It works!</span>';
@@ -2481,7 +2481,8 @@ describe('web-component', () => {
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
       const encodedBackupCallback = encodeURIComponent(backupCallback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      const redirectAuthQueryParams = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      window.location.search = redirectAuthQueryParams;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2505,10 +2506,12 @@ describe('web-component', () => {
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
       });
-      await waitFor(() => expect(window.location.search).toBe(''));
+      await waitFor(() =>
+        expect(window.location.search).toBe(redirectAuthQueryParams),
+      );
     });
 
-    it('should call start with redirect auth data and token and clear it from url', async () => {
+    it('should call start with redirect auth data and token and keep it in the url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = '<span>It works!</span>';
@@ -2517,7 +2520,8 @@ describe('web-component', () => {
       const callback = 'https://mycallback.com';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android&${URL_TOKEN_PARAM_NAME}=${token}`;
+      const redirectAuthQueryParams = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      window.location.search = `${redirectAuthQueryParams}&${URL_TOKEN_PARAM_NAME}=${token}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2541,7 +2545,9 @@ describe('web-component', () => {
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
       });
-      await waitFor(() => expect(window.location.search).toBe(''));
+      await waitFor(() =>
+        expect(window.location.search).toBe(redirectAuthQueryParams),
+      );
     });
 
     it('should call start with oidc idp flag and clear it from url', async () => {

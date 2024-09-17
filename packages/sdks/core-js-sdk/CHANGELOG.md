@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.25.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.0...core-js-sdk-2.25.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* Regression with encoding parameters ([#801](https://github.com/descope/descope-js/issues/801)) ([92105aa](https://github.com/descope/descope-js/commit/92105aaceb5fbfb1181acee90bd940680781d10b))
+
 ## [2.25.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.24.4...core-js-sdk-2.25.0) (2024-09-11)
 
 
