@@ -1,6 +1,6 @@
 import { SSOApplication, SSOAppType } from '../types';
 
-const load: () => Promise<SSOApplication[]> = async () =>
+const load: () => Promise<{ apps: SSOApplication[] }> = async () =>
   new Promise((resolve) => {
     resolve({
       apps: [
