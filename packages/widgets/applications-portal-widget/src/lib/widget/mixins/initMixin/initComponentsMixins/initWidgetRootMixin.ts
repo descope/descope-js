@@ -30,6 +30,11 @@ export const initWidgetRootMixin = createSingletonMixin(
           await this.fetchWidgetPage('root.html'),
         );
         await this.loadDescopeUiComponents(template);
+
+        return template;
+      }
+
+      #renderTemplate(template: HTMLTemplateElement) {
         this.contentRootElement.append(template.content.cloneNode(true));
       }
 
@@ -39,7 +44,10 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        await Promise.all([this.actions.loadSSOApps(), this.#initWidgetRoot()]);
+        const [template] = await Promise.all([this.#initWidgetRoot(), this.actions.loadSSOApps()]);
+        // we want to render the template only after the data was fetched
+        // so we won't show the apps-list empty state until the data is loaded
+        this.#renderTemplate(template);
 
         this.onWidgetRootReady();
       }
