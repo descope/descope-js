@@ -19,7 +19,7 @@ DESCOPE_WIDGET_ID=  # default: "role-management-widget"
 
 ```
 // replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/role-management-widget
-<script src="https://static.descope.com/npm/@descope/role-management-widget@x.x.x/dist/index.js"></script>
+<script src="https://dscpcdn.net/npm/@descope/role-management-widget@x.x.x/dist/index.js"></script>
 <descope-role-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
