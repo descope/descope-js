@@ -66,7 +66,7 @@ export const themeMixin = createSingletonMixin(
           if (process.env.NODE_ENV === 'development') {
             if (localStorage?.getItem(UI_COMPONENTS_URL_KEY)) {
               try {
-                this.logger.warn(
+                this.logger?.warn(
                   'You are in DEV mode, and UI components override URL was found\ntrying to merge project theme with the default theme of the UI components',
                 );
                 const devTheme = await loadDevTheme();
@@ -81,7 +81,7 @@ export const themeMixin = createSingletonMixin(
                     ...devTheme.dark.components,
                   };
 
-                  this.logger.warn('Theme was merged successfully');
+                  this.logger?.warn('Theme was merged successfully');
 
                   // eslint-disable-next-line no-console
                   console.log(
@@ -90,14 +90,14 @@ export const themeMixin = createSingletonMixin(
                   );
                 }
               } catch (e) {
-                this.logger.error('Failed to merge UI components theme\n', e);
+                this.logger?.error('Failed to merge UI components theme\n', e);
               }
             }
           }
 
           return fetchedTheme;
         } catch (e) {
-          this.logger.error(
+          this.logger?.error(
             'Cannot fetch theme file',
             'make sure that your projectId & flowId are correct',
           );
@@ -109,8 +109,8 @@ export const themeMixin = createSingletonMixin(
       get #themeResource() {
         if (!this.#_themeResource) {
           this.#_themeResource = this.#fetchTheme();
-          this.#_themeResource.then((theme) =>
-            this.logger.debug('Fetched theme', theme),
+          this.#_themeResource.then(
+            (theme) => this.logger?.debug('Fetched theme', theme),
           );
         }
 
@@ -164,12 +164,12 @@ export const themeMixin = createSingletonMixin(
         if (fonts) {
           Object.values(fonts).forEach((font) => {
             if (font.url) {
-              this.logger.debug(`Loading font from URL "${font.url}"`);
+              this.logger?.debug(`Loading font from URL "${font.url}"`);
               loadFont(font.url);
             }
           });
         } else {
-          this.logger.debug('No fonts to load');
+          this.logger?.debug('No fonts to load');
         }
       }
 

@@ -22,7 +22,7 @@ const createValidateAttributesMixin =
           typeof onError === 'function' ? onError(attrName, newValue) : onError;
 
         if (error) {
-          this.logger.error(error);
+          this.logger?.error(error);
         }
       }
 

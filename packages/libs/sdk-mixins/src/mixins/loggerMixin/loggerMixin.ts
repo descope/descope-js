@@ -10,7 +10,7 @@ export const loggerMixin = createSingletonMixin(
     class LoggerMixinClass extends superclass {
       #logger: Logger = this.#wrapLogger(console);
 
-      #wrapLogger(logger: Partial<Logger>) {
+      #wrapLogger(logger: Logger) {
         return logLevels.reduce((acc, logLevel) => {
           acc[logLevel] = (...args: any[]) => {
             this.onLogEvent(logLevel, args);
@@ -21,7 +21,7 @@ export const loggerMixin = createSingletonMixin(
         }, {}) as Logger;
       }
 
-      set logger(logger: Partial<Logger>) {
+      set logger(logger: Logger) {
         this.#logger = this.#wrapLogger(logger);
       }
 

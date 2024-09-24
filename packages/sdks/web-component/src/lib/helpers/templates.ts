@@ -149,7 +149,7 @@ const setElementConfig = (
           try {
             value = JSON.stringify(value);
           } catch (e) {
-            logger.error(
+            logger?.error(
               `Could not stringify value "${value}" for "${attr}"`,
               e.message,
             );
@@ -203,7 +203,7 @@ export const updateTemplateFromScreenState = (
         type: screenState?.errorType,
       }) || screenState?.errorText;
   } catch (e) {
-    logger.error('Error transforming error message', e.message);
+    logger?.error('Error transforming error message', e.message);
   }
   replaceElementMessage(baseEle, 'error-message', errorText);
   replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);

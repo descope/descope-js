@@ -2,10 +2,10 @@ import { waitForElement } from './helpers';
 import { RefOrRefFn } from './types';
 
 type Logger = {
-  error(...data: any[]): void;
-  warn(...data: any[]): void;
-  info(...data: any[]): void;
-  debug(...data: any[]): void;
+  error?(message?: any, ...optionalParams: any[]): void;
+  warn?(message?: any, ...optionalParams: any[]): void;
+  info?(message?: any, ...optionalParams: any[]): void;
+  debug?(message?: any, ...optionalParams: any[]): void;
 };
 
 export class BaseDriver {

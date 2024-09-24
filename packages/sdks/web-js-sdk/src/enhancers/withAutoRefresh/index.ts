@@ -39,7 +39,7 @@ export const withAutoRefresh =
           document.visibilityState === 'visible' &&
           new Date() > sessionExpiration
         ) {
-          logger.debug('Expiration time passed, refreshing session');
+          logger?.debug('Expiration time passed, refreshing session');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
@@ -53,12 +53,12 @@ export const withAutoRefresh =
 
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
-        logger.debug('Received 401, canceling all timers');
+        logger?.debug('Received 401, canceling all timers');
         clearAllTimers();
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
         if (!sessionExpiration) {
-          logger.debug('Could not extract expiration time from session token');
+          logger?.debug('Could not extract expiration time from session token');
           return;
         }
         refreshToken = refreshJwt;
@@ -66,7 +66,7 @@ export const withAutoRefresh =
           millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
 
         if (timeout > MAX_TIMEOUT) {
-          logger.debug(
+          logger?.debug(
             `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`,
           );
           timeout = MAX_TIMEOUT;
@@ -76,12 +76,12 @@ export const withAutoRefresh =
         const refreshTimeStr = new Date(
           Date.now() + timeout,
         ).toLocaleTimeString('en-US', { hour12: false });
-        logger.debug(
+        logger?.debug(
           `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
         );
 
         setTimer(() => {
-          logger.debug('Refreshing session due to timer');
+          logger?.debug('Refreshing session due to timer');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
@@ -96,7 +96,7 @@ export const withAutoRefresh =
       (fn) =>
       async (...args) => {
         const resp = await fn(...args);
-        logger.debug('Clearing all timers');
+        logger?.debug('Clearing all timers');
         clearAllTimers();
 
         return resp;

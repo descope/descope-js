@@ -38,7 +38,7 @@ export const stateManagementMixin = createSingletonMixin(
         super(...args);
 
         this.subscribe((state: typeof initialState) => {
-          this.logger.debug('State update:', state);
+          this.logger?.debug('State update:', state);
           this.state = state;
         });
       }

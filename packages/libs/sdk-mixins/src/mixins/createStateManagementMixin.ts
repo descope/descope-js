@@ -65,7 +65,7 @@ export const createStateManagementMixin = <
             try {
               unwrapResult(result);
             } catch (e) {
-              this.logger.error(e.message, result.type, e.stack);
+              this.logger?.error(e.message, result.type, e.stack);
             }
 
             return result;

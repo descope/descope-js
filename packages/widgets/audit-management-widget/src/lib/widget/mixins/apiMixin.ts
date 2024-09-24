@@ -24,7 +24,7 @@ export const apiMixin = createSingletonMixin(
       #api: Sdk;
 
       #createSdk() {
-        this.logger.debug('creating an sdk instance');
+        this.logger?.debug('creating an sdk instance');
         this.#api = createSdk(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.tenant,

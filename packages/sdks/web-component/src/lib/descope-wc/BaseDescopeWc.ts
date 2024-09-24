@@ -74,17 +74,17 @@ class BaseDescopeWc extends BaseClass {
 
   loggerWrapper = {
     error: (message: string, description = '') => {
-      this.logger.error(message, description, new Error());
+      this.logger?.error(message, description, new Error());
       this.#updateDebuggerMessages(message, description);
     },
     warn: (message: string, description = '') => {
-      this.logger.warn(message, description);
+      this.logger?.warn(message, description);
     },
     info: (message: string, description = '', state: any = {}) => {
-      this.logger.info(message, description, state);
+      this.logger?.info(message, description, state);
     },
     debug: (message: string, description = '') => {
-      this.logger.debug(message, description);
+      this.logger?.debug(message, description);
     },
   };
 
@@ -458,7 +458,7 @@ class BaseDescopeWc extends BaseClass {
 
     if (version) return version;
 
-    this.logger.error('Did not get components version, using latest version');
+    this.logger?.error('Did not get components version, using latest version');
 
     return 'latest';
   }

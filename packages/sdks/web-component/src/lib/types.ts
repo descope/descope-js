@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import createSdk from '@descope/web-js-sdk';
+import { Logger } from '@descope/sdk-mixins';
 
 export type SdkConfig = Parameters<typeof createSdk>[0];
 export type Sdk = ReturnType<typeof createSdk>;
@@ -157,12 +158,7 @@ export interface Context {
   abTestingKey?: number;
 }
 
-export interface ILogger {
-  info(title: string, description: string, state: any): void;
-  warn(title: string, description?: string): void;
-  debug(title: string, description?: string): void;
-  error(title: string, description?: string, ...optionalParams: any[]): void;
-}
+export type ILogger = Logger;
 
 export type DescopeUI = Record<string, () => Promise<void>> & {
   componentsThemeManager: Record<string, any>;

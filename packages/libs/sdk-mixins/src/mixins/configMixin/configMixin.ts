@@ -30,7 +30,7 @@ export const configMixin = createSingletonMixin(
             executionContext: { geo: headers['x-geo'] },
           };
         } catch (e) {
-          this.logger.error(
+          this.logger?.error(
             'Cannot fetch config file',
             'make sure that your projectId & flowId are correct',
           );

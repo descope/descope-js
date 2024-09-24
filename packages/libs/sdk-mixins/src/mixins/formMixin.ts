@@ -16,7 +16,7 @@ export const formMixin = createSingletonMixin(
       // eslint-disable-next-line class-methods-use-this
       getFormInputs(rootEle: ElementOrEmpty): HTMLInputElement[] {
         if (!rootEle) {
-          this.logger.debug(
+          this.logger?.debug(
             'cannot get form inputs, no root element was received',
           );
           return [];

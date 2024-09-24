@@ -538,9 +538,9 @@ class DescopeWc extends BaseDescopeWc {
   ) => {
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
-      this.logger.debug('polling - Scheduling polling request');
+      this.logger?.debug('polling - Scheduling polling request');
       this.#pollingTimeout = setTimeout(async () => {
-        this.logger.debug('polling - Calling next');
+        this.logger?.debug('polling - Calling next');
 
         const sdkResp = await this.sdk.flow.next(
           executionId,
@@ -552,7 +552,7 @@ class DescopeWc extends BaseDescopeWc {
         );
 
         if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
-          this.logger.debug(
+          this.logger?.debug(
             'polling - Got a generic error due to exception in fetch call',
           );
           this.#handlePollingResponse(
@@ -565,9 +565,9 @@ class DescopeWc extends BaseDescopeWc {
 
           return;
         }
-        this.logger.debug('polling - Got a response');
+        this.logger?.debug('polling - Got a response');
         if (sdkResp?.error) {
-          this.logger.debug(
+          this.logger?.debug(
             'polling - Response has an error',
             JSON.stringify(sdkResp.error, null, 4),
           );

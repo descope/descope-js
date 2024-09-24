@@ -50,7 +50,7 @@ export const staticResourcesMixin = createSingletonMixin(
         });
         const res = await fetch(resourceUrl, { cache: 'default' });
         if (!res.ok) {
-          this.logger.error(
+          this.logger?.error(
             `Error fetching URL ${resourceUrl} [${res.status}]`,
           );
         }

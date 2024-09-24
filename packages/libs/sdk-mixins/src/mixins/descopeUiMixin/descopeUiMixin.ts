@@ -31,9 +31,9 @@ export const descopeUiMixin = createSingletonMixin(
         const componentsVersion = config?.projectConfig?.componentsVersion;
 
         if (!componentsVersion) {
-          this.logger.error('Could not get components version');
+          this.logger?.error('Could not get components version');
         } else {
-          this.logger.debug(`Got component version "${componentsVersion}"`);
+          this.logger?.debug(`Got component version "${componentsVersion}"`);
         }
 
         return componentsVersion;
@@ -65,7 +65,7 @@ export const descopeUiMixin = createSingletonMixin(
       }
 
       async #handleFallbackScript(errorCbs: ErrorCb[], loadCbs: LoadCb[]) {
-        this.logger.debug('Trying to load DescopeUI from a fallback URL');
+        this.logger?.debug('Trying to load DescopeUI from a fallback URL');
         const fallbackScriptEle = setupScript(DESCOPE_UI_FALLBACK_SCRIPT_ID);
         document.body.append(fallbackScriptEle);
 
@@ -109,7 +109,7 @@ export const descopeUiMixin = createSingletonMixin(
 
       async #getDescopeUiLoadingScript() {
         if (!document.querySelector(`script#${DESCOPE_UI_SCRIPT_ID}`)) {
-          this.logger.debug(
+          this.logger?.debug(
             'DescopeUI loading script does not exist, creating it',
             this,
           );
@@ -126,7 +126,7 @@ export const descopeUiMixin = createSingletonMixin(
             await this.#getComponentsVersion(),
           );
         } else {
-          this.logger.debug('DescopeUI loading script already exists', this);
+          this.logger?.debug('DescopeUI loading script already exists', this);
         }
 
         return document.getElementById(DESCOPE_UI_SCRIPT_ID);
@@ -146,7 +146,7 @@ export const descopeUiMixin = createSingletonMixin(
         const isComponentAlreadyDefined = !!customElements.get(componentName);
 
         if (isComponentAlreadyDefined) {
-          this.logger.debug(
+          this.logger?.debug(
             `Loading component "${componentName}" is skipped as it is already defined`,
           );
           return undefined;
@@ -155,7 +155,7 @@ export const descopeUiMixin = createSingletonMixin(
         const descopeUI = await this.descopeUi;
 
         if (!descopeUI[componentName]) {
-          this.logger.error(
+          this.logger?.error(
             `Cannot load UI component "${componentName}"`,
             `Descope UI does not have a component named "${componentName}", available components are: "${Object.keys(
               descopeUI,
@@ -209,7 +209,7 @@ export const descopeUiMixin = createSingletonMixin(
             scriptEle!.onerror = this.logger.error;
             // eslint-disable-next-line no-param-reassign
             scriptEle!.onload = () => {
-              this.logger.debug('DescopeUI was loaded');
+              this.logger?.debug('DescopeUI was loaded');
               res(globalThis.DescopeUI);
             };
 
