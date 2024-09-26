@@ -58,13 +58,32 @@ describe('webauthn', () => {
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
 
-        sdk.webauthn.signUp.start('loginId', 'origin', 'John Doe');
+        const passkeyOptions = {
+          authenticatorSelection: {
+            authenticatorAttachment: 'platform',
+            residentKey: 'required',
+            userVerification: 'required',
+          },
+        };
+        sdk.webauthn.signUp.start(
+          'loginId',
+          'origin',
+          'John Doe',
+          passkeyOptions,
+        );
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.webauthn.signUp.start,
           {
             user: { loginId: 'loginId', name: 'John Doe' },
             origin: 'origin',
+            passkeyOptions: {
+              authenticatorSelection: {
+                authenticatorAttachment: 'platform',
+                residentKey: 'required',
+                userVerification: 'required',
+              },
+            },
           },
         );
       });
@@ -201,7 +220,17 @@ describe('webauthn', () => {
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
 
-        sdk.webauthn.signIn.start('loginId', 'origin');
+        const passkeyOptions = {
+          userVerification: 'required',
+          extensionsJSON: '{}',
+        };
+        sdk.webauthn.signIn.start(
+          'loginId',
+          'origin',
+          undefined,
+          undefined,
+          passkeyOptions,
+        );
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.webauthn.signIn.start,
@@ -209,6 +238,11 @@ describe('webauthn', () => {
             loginId: 'loginId',
             origin: 'origin',
             loginOptions: undefined,
+            token: undefined,
+            passkeyOptions: {
+              userVerification: 'required',
+              extensionsJSON: '{}',
+            },
           },
           { token: undefined },
         );
@@ -387,6 +421,7 @@ describe('webauthn', () => {
           {
             loginId: 'loginId',
             origin: 'origin',
+            passkeyOptions: undefined,
           },
         );
       });
