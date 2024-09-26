@@ -18,7 +18,7 @@ DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 
 ```
 // replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/user-profile-widget
-<script src="https://dscpcdn.net/npm/@descope/user-profile-widget@x.x.x/dist/index.js"></script>
+<script src="https://descopecdn.com/npm/@descope/user-profile-widget@x.x.x/dist/index.js"></script>
 <descope-user-profile-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"

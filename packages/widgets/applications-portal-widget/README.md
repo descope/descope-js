@@ -18,7 +18,7 @@ DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 
 ```
 // replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/applications-portal-widget
-<script src="https://dscpcdn.net/npm/@descope/applications-portal-widget@x.x.x/dist/index.js"></script>
+<script src="https://descopecdn.com/npm/@descope/applications-portal-widget@x.x.x/dist/index.js"></script>
 <descope-applications-portal-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"

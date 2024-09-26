@@ -19,7 +19,7 @@ DESCOPE_WIDGET_ID=  # default: "user-management-widget"
 
 ```
 // replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/user-management-widget
-<script src="https://dscpcdn.net/npm/@descope/user-management-widget@x.x.x/dist/index.js"></script>
+<script src="https://descopecdn.com/npm/@descope/user-management-widget@x.x.x/dist/index.js"></script>
 <descope-user-management-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
