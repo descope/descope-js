@@ -36,6 +36,7 @@ describe('Descope.vue', () => {
         errorTransformer,
         form: { test: 'a' },
         client: { test: 'b' },
+        styleId: 'test-style-id',
       },
     });
 
@@ -54,6 +55,7 @@ describe('Descope.vue', () => {
     expect(wrapper.vm.errorTransformer).toBe(errorTransformer);
     expect(descopeWc.attributes('form')).toBe('{"test":"a"}');
     expect(wrapper.vm.client).toStrictEqual({ test: 'b' });
+    expect(descopeWc.attributes('style-id')).toBe('test-style-id');
   });
 
   it('renders a DescopeWc component with empty props', () => {

@@ -45,6 +45,7 @@ Thumbs.db
 *.pem
 
 .env
+.env.local
 .nx/*
 .next
 
