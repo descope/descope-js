@@ -1,6 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import UserProfile from '../src/UserProfile.vue';
-import { ApplicationsPortal } from '../../react-sdk/src';
+import ApplicationsPortal from '../src/ApplicationsPortal.vue';
 
 jest.mock('../src/hooks', () => ({
   useOptions: () => ({ projectId: 'project1', baseUrl: 'baseUrl' }),
@@ -23,7 +22,7 @@ describe('ApplicationsPortal.vue', () => {
   });
 
   it('renders a widget with the correct props', () => {
-    const wrapper = mount(UserProfile, {
+    const wrapper = mount(ApplicationsPortal, {
       props: {
         widgetId: 'widget1',
         theme: 'test-theme',
