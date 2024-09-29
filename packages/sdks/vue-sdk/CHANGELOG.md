@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.37](https://github.com/descope/descope-js/compare/vue-sdk-2.0.36...vue-sdk-2.0.37) (2024-09-29)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.107`
+* `web-component` updated to version `3.25.3`
+
+### Bug Fixes
+
+* logger typing improvements ([#813](https://github.com/descope/descope-js/issues/813)) RELEASE ([ab20610](https://github.com/descope/descope-js/commit/ab206103a6eb42489c7cc4013ea721a576d3d302))
+
 ## [2.0.36](https://github.com/descope/descope-js/compare/vue-sdk-2.0.35...vue-sdk-2.0.36) (2024-09-29)
 
 ### Dependency Updates
