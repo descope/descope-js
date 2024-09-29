@@ -1,6 +1,6 @@
 import { JWTResponse, SdkResponse, ResponseData } from '@descope/core-js-sdk';
 import { IS_BROWSER } from '../constants';
-import { CoreSdk } from '../types';
+import { CoreSdk, PasskeyOptions } from '../types';
 
 type CreateWebauthn = typeof createWebAuthn;
 
@@ -25,11 +25,16 @@ const withCoreFns =
 
 /** Constructs a higher level WebAuthn API that wraps the functions from code-js-sdk */
 const createWebAuthn = (sdk: CoreSdk) => ({
-  async signUp(identifier: string, name: string) {
+  async signUp(
+    identifier: string,
+    name: string,
+    passkeyOptions?: PasskeyOptions,
+  ) {
     const startResponse = await sdk.webauthn.signUp.start(
       identifier,
       window.location.origin,
       name,
+      passkeyOptions,
     );
     if (!startResponse.ok) {
       return startResponse as unknown as SdkResponse<JWTResponse>;
@@ -42,10 +47,13 @@ const createWebAuthn = (sdk: CoreSdk) => ({
     return finishResponse;
   },
 
-  async signIn(identifier: string) {
+  async signIn(identifier: string, passkeyOptions?: PasskeyOptions) {
     const startResponse = await sdk.webauthn.signIn.start(
       identifier,
       window.location.origin,
+      undefined,
+      undefined,
+      passkeyOptions,
     );
     if (!startResponse.ok) {
       return startResponse as unknown as SdkResponse<JWTResponse>;
@@ -58,10 +66,11 @@ const createWebAuthn = (sdk: CoreSdk) => ({
     return finishResponse;
   },
 
-  async signUpOrIn(identifier: string) {
+  async signUpOrIn(identifier: string, passkeyOptions?: PasskeyOptions) {
     const startResponse = await sdk.webauthn.signUpOrIn.start(
       identifier,
       window.location.origin,
+      passkeyOptions,
     );
     if (!startResponse.ok) {
       return startResponse as unknown as SdkResponse<JWTResponse>;
@@ -83,11 +92,16 @@ const createWebAuthn = (sdk: CoreSdk) => ({
     }
   },
 
-  async update(identifier: string, token: string) {
+  async update(
+    identifier: string,
+    token: string,
+    passkeyOptions?: PasskeyOptions,
+  ) {
     const startResponse = await sdk.webauthn.update.start(
       identifier,
       window.location.origin,
       token,
+      passkeyOptions,
     );
     if (!startResponse.ok) {
       return startResponse as SdkResponse<ResponseData>;
