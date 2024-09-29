@@ -6,6 +6,7 @@ import {
   ResponseData,
   LoginOptions,
   JWTResponse,
+  PasskeyOptions,
   WebAuthnStartResponse,
 } from './types';
 import { string, stringNonEmpty, withValidations } from './validations';
@@ -44,6 +45,7 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginId: string,
         origin: string,
         name: string,
+        passkeyOptions?: PasskeyOptions,
       ): Promise<SdkResponse<WebAuthnStartResponse>> =>
         transformResponse(
           httpClient.post(apiPaths.webauthn.signUp.start, {
@@ -52,6 +54,7 @@ const withWebauthn = (httpClient: HttpClient) => ({
               name,
             },
             origin,
+            passkeyOptions,
           }),
         ),
     ),
@@ -77,11 +80,12 @@ const withWebauthn = (httpClient: HttpClient) => ({
         origin: string,
         loginOptions?: LoginOptions,
         token?: string,
+        passkeyOptions?: PasskeyOptions,
       ): Promise<SdkResponse<WebAuthnStartResponse>> =>
         transformResponse(
           httpClient.post(
             apiPaths.webauthn.signIn.start,
-            { loginId, origin, loginOptions },
+            { loginId, origin, loginOptions, passkeyOptions },
             { token },
           ),
         ),
@@ -106,11 +110,13 @@ const withWebauthn = (httpClient: HttpClient) => ({
       (
         loginId: string,
         origin: string,
+        passkeyOptions?: PasskeyOptions,
       ): Promise<SdkResponse<WebAuthnStartResponse>> =>
         transformResponse(
           httpClient.post(apiPaths.webauthn.signUpOrIn.start, {
             loginId,
             origin,
+            passkeyOptions,
           }),
         ),
     ),
@@ -122,11 +128,12 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginId: string,
         origin: string,
         token: string,
+        passkeyOptions?: PasskeyOptions,
       ): Promise<SdkResponse<WebAuthnStartResponse>> =>
         transformResponse(
           httpClient.post(
             apiPaths.webauthn.update.start,
-            { loginId, origin },
+            { loginId, origin, passkeyOptions },
             { token },
           ),
         ),

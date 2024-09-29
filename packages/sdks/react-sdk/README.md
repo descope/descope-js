@@ -500,7 +500,7 @@ import { ApplicationsPortal } from '@descope/react-sdk';
 ```
 
 Example:
-[User Profile](./examples/app/MyApplicationsPortal.tsx)
+[Applications Portal](./examples/app/MyApplicationsPortal.tsx)
 
 ## Code Example
 
