@@ -99,7 +99,7 @@ This can be helpful to implement application-specific logic. Examples:
 		<div v-if="isSessionLoading || isUserLoading">Loading ...</div>
 		<div v-else-if="isAuthenticated">
 			<div>Hello {{ user?.name }}</div>
-			<button @click="logout">Logout</button>
+			<button @click="logout()">Logout</button>
 		</div>
 		<div v-else>You are not logged in</div>
 	</div>
@@ -108,8 +108,8 @@ This can be helpful to implement application-specific logic. Examples:
 <script setup>
 import { useDescope, useSession, useUser } from '@descope/vue-sdk';
 
-const { isAuthenticated, isSessionLoading } = useSession();
-const { user, isUserLoading } = useUser();
+const { isAuthenticated, isLoading: isSessionLoading } = useSession();
+const { user, isLoading: isUserLoading } = useUser();
 const { logout } = useDescope();
 </script>
 ```
