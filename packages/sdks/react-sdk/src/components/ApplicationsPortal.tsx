@@ -50,15 +50,6 @@ const ApplicationsPortal = React.forwardRef<
       innerRef.logger = logger;
     }
   }, [innerRef, logger]);
-
-  useEffect(() => {
-    if (innerRef && onLogout) {
-      innerRef.addEventListener('logout', onLogout);
-      return () => innerRef.removeEventListener('logout', onLogout);
-    }
-    return undefined;
-  }, [innerRef, onLogout]);
-
   return (
 	<Suspense fallback={null}>
 		<ApplicationsPortalWC

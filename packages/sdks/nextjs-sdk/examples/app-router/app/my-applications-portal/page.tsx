@@ -12,12 +12,9 @@ export default () => (
 			justifyContent: 'center'
 		}}
 	>
-		<h1>User Profile</h1>
+		<h1>Applications Portal</h1>
 		<ApplicationsPortal
 			widgetId="applications-portal-widget"
-			onLogout={() => {
-				window.location.href = '/login';
-			}}
 		/>
 	</div>
 );
