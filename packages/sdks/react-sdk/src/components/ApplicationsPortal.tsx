@@ -38,7 +38,7 @@ const ApplicationsPortalWC = lazy(async () => {
 const ApplicationsPortal = React.forwardRef<
   HTMLElement,
   ApplicationsPortalProps
->(({ logger, theme, debug, widgetId, onLogout }, ref) => {
+>(({ logger, theme, debug, widgetId }, ref) => {
   const [innerRef, setInnerRef] = useState(null);
 
   useImperativeHandle(ref, () => innerRef);
