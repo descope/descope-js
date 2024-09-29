@@ -502,7 +502,6 @@ import { ApplicationsPortal } from '@descope/react-sdk';
 Example:
 [User Profile](./examples/app/MyApplicationsPortal.tsx)
 
-
 ## Code Example
 
 You can find an example react app in the [examples folder](./examples).

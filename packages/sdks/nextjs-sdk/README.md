@@ -422,8 +422,6 @@ import { UserProfile } from '@descope/nextjs-sdk';
 Example:
 [User Profile](./examples/app-router/app/my-user-profile/page.tsx)
 
-
-
 #### Applications Portal
 
 The `ApplicationsPortal` lets you embed an applications portal component in your app and allows the logged-in user to open applications they are assigned to.
@@ -438,11 +436,8 @@ import { ApplicationsPortal } from '@descope/nextjs-sdk';
   />
 ```
 
-
 Example:
 [User Profile](./examples/app-router/app/my-applications-portal/page.tsx)
-
-
 
 ## Code Example
 
