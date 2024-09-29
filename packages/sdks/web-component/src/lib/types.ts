@@ -157,13 +157,6 @@ export interface Context {
   abTestingKey?: number;
 }
 
-export interface ILogger {
-  info(title: string, description: string, state: any): void;
-  warn(title: string, description?: string): void;
-  debug(title: string, description?: string): void;
-  error(title: string, description?: string, ...optionalParams: any[]): void;
-}
-
 export type DescopeUI = Record<string, () => Promise<void>> & {
   componentsThemeManager: Record<string, any>;
 };
