@@ -59,7 +59,7 @@ const MyApplicationsPortal = () => {
           </p>
         </div>
       </header>
-      <h2>My Profile</h2>
+      <h2>Applications Portal</h2>
       <ApplicationsPortal widgetId="applications-portal-widget" />
     </>
   );
