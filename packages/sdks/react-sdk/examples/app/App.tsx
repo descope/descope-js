@@ -9,6 +9,7 @@ import ManageRoles from './ManageRoles';
 import ManageAccessKeys from './ManageAccessKeys';
 import ManageAudit from './ManageAudit';
 import MyUserProfile from './MyUserProfile';
+import MyApplicationsPortal from './MyApplicationsPortal';
 
 const Layout = () => (
   <div
@@ -99,6 +100,14 @@ const App = () => (
         element={
           <ProtectedRoute>
             <MyUserProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/applications-portal"
+        element={
+          <ProtectedRoute>
+            <MyApplicationsPortal />
           </ProtectedRoute>
         }
       />
