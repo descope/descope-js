@@ -25,4 +25,4 @@ export type AfterRequestHook = Extract<
   Function
 >;
 
-export type { UserResponse } from '@descope/core-js-sdk';
+export type { UserResponse, PasskeyOptions } from '@descope/core-js-sdk';

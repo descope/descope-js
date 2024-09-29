@@ -125,6 +125,24 @@ export type ExchangeAccessKeyResponse = {
   expiration: number;
 };
 
+/** Options for fine-grained passkey (WebAuthn) control */
+export type PasskeyOptions = {
+  // attestation only (sign up)
+  authenticatorSelection?: WebauthnAuthenticatorSelectionCriteria;
+  attestation?: 'none' | 'indirect' | 'direct';
+  // assertion only (sign in)
+  userVerification?: 'preferred' | 'required' | 'discouraged';
+  // shared
+  extensionsJSON?: string;
+};
+
+/** Part of the passkey options that apply when performing attestation (sign up) */
+export type WebauthnAuthenticatorSelectionCriteria = {
+  authenticatorAttachment?: 'any' | 'platform' | 'crossplatform';
+  residentKey?: 'discouraged' | 'preferred' | 'required';
+  userVerification?: 'preferred' | 'required' | 'discouraged';
+};
+
 /** The response returned from the various start webauthn functions */
 export type WebAuthnStartResponse = {
   transactionId: string;
