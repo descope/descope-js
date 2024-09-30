@@ -1,5 +1,6 @@
 import { DEFAULT_BASE_API_URL } from '../src/constants';
 import createHttpClient from '../src/httpClient';
+import { getClientSessionId } from '../src/httpClient/helpers';
 import createFetchLogger from '../src/httpClient/helpers/createFetchLogger';
 import { ExtendedResponse } from '../src/httpClient/types';
 
@@ -11,6 +12,7 @@ const afterRequestHook = jest.fn();
 const descopeHeaders = {
   'x-descope-sdk-name': 'core-js',
   'x-descope-sdk-version': globalThis.BUILD_VERSION,
+  'x-descope-sdk-session-id': getClientSessionId(),
 };
 
 const httpClient = createHttpClient({
@@ -160,8 +162,8 @@ describe('httpClient', () => {
           test2: '123',
           test: '123',
           Authorization: 'Bearer 456',
+          ...descopeHeaders,
           'x-descope-sdk-name': 'lulu',
-          'x-descope-sdk-version': globalThis.BUILD_VERSION,
         }),
         method: 'GET',
       },

@@ -1,4 +1,5 @@
 export { default as createFetchLogger } from './createFetchLogger';
+export { getClientSessionId } from './getClientSessionId';
 
 export function transformSetCookie(setCookieHeader: string) {
   // Split the header by semicolons to separate different attributes
