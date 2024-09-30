@@ -216,6 +216,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
+      executionFlowId,
       ...ssoQueryParams
     } = currentState;
 
@@ -304,6 +305,7 @@ class DescopeWc extends BaseDescopeWc {
     // we should call next with the params
     if (
       executionId &&
+      flowId === executionFlowId && // in case there are 2 instance on the same page, we want to make sure the correct instance is calling next
       ((isChanged('token') && token) ||
         (isChanged('code') && code) ||
         (isChanged('exchangeError') && exchangeError))

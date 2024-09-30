@@ -80,6 +80,7 @@ export type FlowState = {
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
+  executionFlowId: string;
 } & SSOQueryParams;
 
 export type StepState = {
