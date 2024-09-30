@@ -305,7 +305,9 @@ class DescopeWc extends BaseDescopeWc {
     // we should call next with the params
     if (
       executionId &&
-      flowId === executionFlowId && // in case there are 2 instance on the same page, we want to make sure the correct instance is calling next
+      // in case there are 2 WC instance on the same page, we want to make sure the correct instance is calling next
+      // we are detecting it by comparing the flow id from execution id (if available) with the flow id attribute value
+      (!executionFlowId || flowId === executionFlowId) &&
       ((isChanged('token') && token) ||
         (isChanged('code') && code) ||
         (isChanged('exchangeError') && exchangeError))
