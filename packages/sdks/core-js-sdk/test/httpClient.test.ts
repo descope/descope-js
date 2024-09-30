@@ -207,6 +207,25 @@ describe('httpClient', () => {
       cookiePolicy: null,
     });
 
+    httpClient.get('1/2/3/4', {
+      headers: { test2: '123' },
+      queryParams: { test2: '123' },
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://descope.com/1/2/3/4?test2=123',
+      {
+        body: undefined,
+        headers: new Headers({
+          test2: '123',
+          test: '123',
+          Authorization: 'Bearer 456',
+          ...descopeHeaders,
+        }),
+        method: 'GET',
+      },
+    );
+
     httpClient.get('1/2/3', {
       headers: { test2: '123' },
       queryParams: { test2: '123' },
