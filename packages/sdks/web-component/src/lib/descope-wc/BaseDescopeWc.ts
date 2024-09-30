@@ -226,8 +226,8 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #syncStateIdFromUrl() {
-    const { stepId, executionId } = getRunIdsFromUrl();
-    this.#flowState.update({ stepId, executionId });
+    const { stepId, executionId, executionFlowId } = getRunIdsFromUrl();
+    this.#flowState.update({ stepId, executionId, executionFlowId });
   }
 
   #createSdk(projectId: string, baseUrl: string) {
@@ -451,16 +451,6 @@ class BaseDescopeWc extends BaseClass {
         }
       }
     };
-  }
-
-  async #getComponentsVersion() {
-    const version = (await this.#getConfig())?.projectConfig?.componentsVersion;
-
-    if (version) return version;
-
-    this.logger.error('Did not get components version, using latest version');
-
-    return 'latest';
   }
 
   static descopeUI: any;

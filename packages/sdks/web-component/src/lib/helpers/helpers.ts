@@ -106,8 +106,9 @@ export function getAnimationDirection(
 
 export const getRunIdsFromUrl = () => {
   const [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+  const executionFlowId = executionId.split('|#|')[0];
 
-  return { executionId, stepId };
+  return { executionId, stepId, executionFlowId };
 };
 
 export const setRunIdsOnUrl = (executionId: string, stepId: string) => {
