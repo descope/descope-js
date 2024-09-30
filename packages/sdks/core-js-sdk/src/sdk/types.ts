@@ -14,6 +14,11 @@ type RedirectAuth = {
   codeChallenge: string;
 };
 
+type NativeOptions = {
+  platform: string;
+  nativeOAuthProvider?: string;
+};
+
 type AuthMethod =
   | 'magiclink'
   | 'enchantedlink'
@@ -276,6 +281,8 @@ export type FlowResponse = {
     options: string;
     create: boolean;
   };
+  // native data - if the action is 'native'
+  native?: string;
   // an error that occurred during flow execution, used for debugging / integrating
   error?: {
     code: string;
@@ -311,6 +318,7 @@ export type Options = {
   locale?: string;
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
+  nativeOptions?: NativeOptions;
 };
 
 export type ResponseData = Record<string, any>;
