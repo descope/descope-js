@@ -34,7 +34,7 @@ const load: () => Promise<{ apps: SSOApplication[] }> = async () =>
             idpInitiatedUrl: 'http://idpInitiatedURL2.com',
           },
         },
-      ]
+      ],
     });
   });
 

@@ -14,6 +14,7 @@ import { RoleManagementComponent } from './components/role-management/role-manag
 import { AccessKeyManagementComponent } from './components/access-key-management/access-key-management.component';
 import { AuditManagementComponent } from './components/audit-management/audit-management.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { ApplicationsPortalComponent } from './components/applications-portal/applications-portal.component';
 import { DescopeAuthConfig } from './types/types';
 
 @NgModule({
@@ -27,7 +28,8 @@ import { DescopeAuthConfig } from './types/types';
     RoleManagementComponent,
     AccessKeyManagementComponent,
     AuditManagementComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ApplicationsPortalComponent
   ],
   exports: [
     DescopeComponent,
@@ -38,7 +40,8 @@ import { DescopeAuthConfig } from './types/types';
     RoleManagementComponent,
     AccessKeyManagementComponent,
     AuditManagementComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ApplicationsPortalComponent
   ]
 })
 export class DescopeAuthModule {
