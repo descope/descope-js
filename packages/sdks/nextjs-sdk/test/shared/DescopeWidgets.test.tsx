@@ -8,7 +8,8 @@ import {
 	RoleManagement,
 	AccessKeyManagement,
 	AuditManagement,
-	UserProfile
+	UserProfile,
+	ApplicationsPortal
 } from '../../src/shared/DescopeWidgets';
 
 const mockPush = jest.fn();
@@ -92,6 +93,21 @@ describe('Descope Widgets', () => {
 		await waitFor(() =>
 			expect(
 				document.querySelector('descope-user-profile-widget')
+			).toBeInTheDocument()
+		);
+	});
+
+	it('render ApplicationsPortal', async () => {
+		render(
+			<AuthProvider projectId="project1">
+				<ApplicationsPortal widgetId="widget1" />
+			</AuthProvider>
+		);
+
+		// Wait for the web component to be in the document
+		await waitFor(() =>
+			expect(
+				document.querySelector('descope-applications-portal-widget')
 			).toBeInTheDocument()
 		);
 	});
