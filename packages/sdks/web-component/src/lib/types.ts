@@ -80,10 +80,10 @@ export type FlowState = {
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
-  native: string;
-  nativeResponse: string;
+  nativePlatform: string;
+  nativePayload: Record<string, any>;
   nativeOAuthProvider: string;
-  originOverride: string;
+  webauthnOrigin: string;
 } & SSOQueryParams;
 
 export type StepState = {

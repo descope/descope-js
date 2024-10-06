@@ -50,7 +50,6 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 import loadSdkScript, { getScriptResultPath } from './sdkScripts';
-import { platform } from 'os';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -96,12 +95,20 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  updateNativeState(
-    native: string,
-    originOverride: string,
-    nativeOAuthProvider: string,
-  ) {
-    this.flowState.update({ native, originOverride, nativeOAuthProvider });
+  initNativeState({
+    platform,
+    oauthProvider,
+    origin,
+  }: {
+    platform: string;
+    origin?: string;
+    oauthProvider?: string;
+  }) {
+    this.flowState.update({
+      webauthnOrigin: origin,
+      nativePlatform: platform,
+      nativeOAuthProvider: oauthProvider,
+    });
   }
 
   nativeComplete = async (_: any) => {};
@@ -227,8 +234,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
-      native,
-      nativeResponse,
+      nativePlatform,
+      nativePayload,
       nativeOAuthProvider,
       ...ssoQueryParams
     } = currentState;
@@ -248,8 +255,8 @@ class DescopeWc extends BaseDescopeWc {
             backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
-    const nativeOptions = native
-      ? { platform: native, nativeOAuthProvider }
+    const nativeOptions = nativePlatform
+      ? { platform: nativePlatform, oauthProvider: nativeOAuthProvider }
       : undefined;
 
     // if there is no execution id we should start a new flow
@@ -438,8 +445,8 @@ class DescopeWc extends BaseDescopeWc {
       this.#handleSdkResponse(sdkResp);
     }
 
-    if (action === RESPONSE_ACTIONS.native) {
-      // prepare a callback to receive the response and failure from the Android layer
+    if (action === RESPONSE_ACTIONS.nativeBridge) {
+      // prepare a callback to receive a response from the native layer
       this.nativeComplete = async (input: any) => {
         const sdkResp = await this.sdk.flow.next(
           executionId,
@@ -451,8 +458,8 @@ class DescopeWc extends BaseDescopeWc {
         );
         this.#handleSdkResponse(sdkResp);
       };
-      // notify the Android layer that a native action is requested
-      this.#dispatch('native', nativeResponse);
+      // notify the native layer that a native action is requested via 'nativeBridge' event
+      this.#dispatch('nativeBridge', nativePayload);
       return;
     }
 
@@ -689,7 +696,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthn,
       error,
       samlIdpResponse,
-      native,
+      nativePayload,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
@@ -726,7 +733,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
-      nativeResponse: native,
+      nativePayload,
     });
   };
 
@@ -1037,7 +1044,7 @@ class DescopeWc extends BaseDescopeWc {
           ...formData,
           // 'origin' is required to start webauthn. For now we'll add it to every request
           origin:
-            this.flowState.current.originOverride || window.location.origin,
+            this.flowState.current.webauthnOrigin || window.location.origin,
         };
 
         const flowConfig = await this.getFlowConfig();

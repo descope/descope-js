@@ -16,7 +16,7 @@ type RedirectAuth = {
 
 type NativeOptions = {
   platform: string;
-  nativeOAuthProvider?: string;
+  oauthProvider?: string;
 };
 
 type AuthMethod =
@@ -231,6 +231,7 @@ export enum FlowStatus {
  *  - poll - next action is poll for next after timeout
  *  - redirect - next action is to redirect (redirection details in 'redirect' attribute)
  *  - webauthnCreate/webauthnGet - next action is to prompt webauthn (details in 'webauthn' attribute)
+ *  - nativeBridge - the next action needs to be sent via the native bridge to the native layer
  *  - none - no next action
  */
 export type FlowAction =
@@ -239,6 +240,7 @@ export type FlowAction =
   | 'redirect'
   | 'webauthnCreate'
   | 'webauthnGet'
+  | 'nativeBridge'
   | 'none';
 
 export type ComponentsConfig = Record<string, any>;
@@ -281,8 +283,8 @@ export type FlowResponse = {
     options: string;
     create: boolean;
   };
-  // native data - if the action is 'native'
-  native?: string;
+  // native payload - if the action is 'nativeBridge'
+  nativePayload?: Record<string, any>;
   // an error that occurred during flow execution, used for debugging / integrating
   error?: {
     code: string;
