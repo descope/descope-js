@@ -20,7 +20,7 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
 } from '../constants';
-import { AutoFocusOptions, Direction, SSOQueryParams } from '../types';
+import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -169,13 +169,6 @@ export function getRedirectAuthFromUrl() {
   };
 }
 
-export function clearRedirectAuthFromUrl() {
-  resetUrlParam(URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME);
-}
-
 export function getOIDCIDPParamFromUrl() {
   return getUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
 }
@@ -283,20 +276,14 @@ export const handleUrlParams = () => {
     clearExchangeErrorFromUrl();
   }
 
+  // these query params are retained to allow the flow to be refreshed
+  // without losing the redirect auth state
   const {
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
   } = getRedirectAuthFromUrl();
-  if (
-    redirectAuthCodeChallenge ||
-    redirectAuthCallbackUrl ||
-    redirectAuthBackupCallbackUri ||
-    redirectAuthInitiator
-  ) {
-    clearRedirectAuthFromUrl();
-  }
 
   const oidcIdpStateId = getOIDCIDPParamFromUrl();
   if (oidcIdpStateId) {
@@ -552,11 +539,21 @@ export const leadingDebounce = <T extends (...args: any[]) => void>(
   } as T;
 };
 
-export function getUserLocale(locale: string) {
-  let browserLocale = navigator.language;
-  if (browserLocale && browserLocale !== 'zh-TW') {
-    // zh-TW is the only locale that must have "-", for all others we need to have the first part
-    browserLocale = browserLocale.split('-')[0]; // eslint-disable-line
+export function getUserLocale(locale: string): Locale {
+  if (locale) {
+    return { locale: locale.toLowerCase(), fallback: locale.toLowerCase() };
   }
-  return (locale || browserLocale || '').toLowerCase();
+  const nl = navigator.language;
+  if (!nl) {
+    return { locale: '', fallback: '' };
+  }
+
+  if (nl.includes('-')) {
+    return {
+      locale: nl.toLowerCase(),
+      fallback: nl.split('-')[0].toLowerCase(),
+    };
+  }
+
+  return { locale: nl.toLowerCase(), fallback: nl.toLowerCase() };
 }

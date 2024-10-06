@@ -5,6 +5,10 @@ const regexMatch = (regex: RegExp) => (val: any) => regex.test(val);
 
 const validateString = (val: any) => typeof val === 'string';
 
+const validateArray = (val: any) => Array.isArray(val);
+
+const validateBoolean = (val: any) => typeof val === 'boolean';
+
 const validateUndefined = (val: any) => val === undefined;
 
 const validateEmail = regexMatch(
@@ -66,6 +70,13 @@ export const isString = createValidator(
   'Input is not a string',
 );
 
+export const isArray = createValidator(validateArray, 'Input is not an array');
+
+export const isBoolean = createValidator(
+  validateBoolean,
+  'Input is not a boolean',
+);
+
 export const isUndefined = createValidator(
   validateUndefined,
   'Input is defined',
@@ -74,6 +85,11 @@ export const isUndefined = createValidator(
 export const isStringOrUndefined = createOrValidator(
   [isString(), isUndefined()],
   'Input is not a string or undefined',
+);
+
+export const isArrayOrBool = createOrValidator(
+  [isArray(), isBoolean()],
+  'Input is not an array or boolean',
 );
 
 // export const isPlainObject = createValidator(validatePlainObject, 'Input is not a plain object');

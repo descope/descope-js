@@ -1,10 +1,14 @@
 // @ts-nocheck
 import createSdk from '../../src/sdk';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { mockHttpClient } from '../utils';
 import { apiPaths } from '../../src/constants';
 
-jest.mock('jwt-decode', () => jest.fn());
+jest.mock('jwt-decode', () => {
+  return {
+    jwtDecode: jest.fn(),
+  };
+});
 
 const sdk = createSdk(mockHttpClient);
 
@@ -240,6 +244,62 @@ describe('sdk', () => {
       expect(mockHttpClient.get).toHaveBeenCalledWith(apiPaths.me, {
         token: 'token',
       });
+    });
+  });
+
+  describe('myTenants', () => {
+    it('should throw an error when tenant is not a valid input', () => {
+      expect(() => sdk.myTenants({ a: 'b' })).toThrow(
+        '"tenants" must a string array or a boolean',
+      );
+    });
+
+    it('should throw an error when token is not a string', () => {
+      expect(() => sdk.myTenants(true, { a: 'b' })).toThrow(
+        '"token" must be string',
+      );
+    });
+    it('should send the correct request with boolean', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.myTenants(true, 'token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.myTenants,
+        {
+          dct: true,
+        },
+        { token: 'token' },
+      );
+    });
+    it('should send the correct request with array', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.myTenants(['a'], 'token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.myTenants,
+        {
+          ids: ['a'],
+        },
+        { token: 'token' },
+      );
     });
   });
 

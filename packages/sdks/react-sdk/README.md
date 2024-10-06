@@ -72,11 +72,12 @@ const App = () => {
             flowId="my-flow-id"
             onSuccess={(e) => console.log('Logged in!')}
             onError={(e) => console.log('Could not logged in')}
-						// onReady={() => {
-						//   This event is triggered when the flow is ready to be displayed
-						//   Its useful for showing a loading indication before the page ready
-						//   console.log('Flow is ready');
-						// }}
+            // onReady={() => {
+            //   This event is triggered when the flow is ready to be displayed
+            //   Its useful for showing a loading indication before the page ready
+            //   console.log('Flow is ready');
+            // }}
+
             // theme can be "light", "dark" or "os", which auto select a theme based on the OS theme. Default is "light"
             // theme="dark"
 
@@ -153,6 +154,11 @@ const App = () => {
             // ...
             // logger={logger}
             // ...
+
+
+            // Use a custom style name or keep empty to use the default style.
+            // styleId="my-awesome-style"
+
         />
     )
 }
@@ -479,6 +485,23 @@ import { UserProfile } from '@descope/react-sdk';
 Example:
 [User Profile](./examples/app/MyUserProfile.tsx)
 
+#### Applications Portal
+
+The `ApplicationsPortal` lets you embed an applications portal component in your app and allows the logged-in user to open applications they are assigned to.
+
+###### Usage
+
+```js
+import { ApplicationsPortal } from '@descope/react-sdk';
+...
+  <ApplicationsPortal
+    widgetId="applications-portal-widget"
+  />
+```
+
+Example:
+[Applications Portal](./examples/app/MyApplicationsPortal.tsx)
+
 ## Code Example
 
 You can find an example react app in the [examples folder](./examples).
@@ -497,6 +520,8 @@ Alternatively, put the environment variable in `.env` file in the project root d
 See bellow for an `.env` file template with more information.
 
 ### Run Example
+
+Note: Due to an issue with react-sdk tsconfig, you need to remove `"examples"` from the `exclude` field in the `tsconfig.json` file in the root of the project before running the example.
 
 Run the following command in the root of the project to build and run the example:
 

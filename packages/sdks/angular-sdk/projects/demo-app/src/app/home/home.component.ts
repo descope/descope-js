@@ -82,4 +82,10 @@ export class HomeComponent implements OnInit {
       .navigate(['/my-user-profile'])
       .catch((err) => console.error(err));
   }
+
+  myApplicationsPortal() {
+    this.router
+      .navigate(['/my-applications-portal'])
+      .catch((err) => console.error(err));
+  }
 }

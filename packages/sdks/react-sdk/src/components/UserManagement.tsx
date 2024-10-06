@@ -23,7 +23,7 @@ const UserManagementWC = lazy(async () => {
       theme,
       debug,
     }) => (
-      <descope-user-management-widget
+	<descope-user-management-widget
         project-id={projectId}
         widget-id={widgetId}
         base-url={baseUrl}
@@ -52,8 +52,8 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
     }, [innerRef, logger]);
 
     return (
-      <Suspense fallback={null}>
-        <UserManagementWC
+	<Suspense fallback={null}>
+		<UserManagementWC
           projectId={projectId}
           widgetId={widgetId}
           baseUrl={baseUrl}
@@ -63,7 +63,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
           theme={theme}
           debug={debug}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

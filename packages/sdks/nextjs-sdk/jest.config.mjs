@@ -26,6 +26,7 @@ export default {
 		'@descope/role-management-widget': '<rootDir>/mockModule.js',
 		'@descope/access-key-management-widget': '<rootDir>/mockModule.js',
 		'@descope/audit-management-widget': '<rootDir>/mockModule.js',
-		'@descope/user-profile-widget': '<rootDir>/mockModule.js'
+		'@descope/user-profile-widget': '<rootDir>/mockModule.js',
+		'@descope/applications-portal-widget': '<rootDir>/mockModule.js'
 	}
 };

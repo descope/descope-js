@@ -60,6 +60,16 @@ export type UserResponse = User & {
   status: string;
 };
 
+export type Tenant = {
+  id: string;
+  name: string;
+  customAttributes?: Record<string, any>;
+};
+
+export type TenantsResponse = {
+  tenants: Tenant[];
+};
+
 export type UserHistoryResponse = {
   userId: string;
   loginTime: number;
@@ -113,6 +123,24 @@ export type ExchangeAccessKeyResponse = {
   keyId: string;
   sessionJwt: string;
   expiration: number;
+};
+
+/** Options for fine-grained passkey (WebAuthn) control */
+export type PasskeyOptions = {
+  // attestation only (sign up)
+  authenticatorSelection?: WebauthnAuthenticatorSelectionCriteria;
+  attestation?: 'none' | 'indirect' | 'direct';
+  // assertion only (sign in)
+  userVerification?: 'preferred' | 'required' | 'discouraged';
+  // shared
+  extensionsJSON?: string;
+};
+
+/** Part of the passkey options that apply when performing attestation (sign up) */
+export type WebauthnAuthenticatorSelectionCriteria = {
+  authenticatorAttachment?: 'any' | 'platform' | 'crossplatform';
+  residentKey?: 'discouraged' | 'preferred' | 'required';
+  userVerification?: 'preferred' | 'required' | 'discouraged';
 };
 
 /** The response returned from the various start webauthn functions */

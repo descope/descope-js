@@ -2,6 +2,53 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.25.3](https://github.com/descope/descope-js/compare/web-component-3.25.2...web-component-3.25.3) (2024-09-29)
+
+
+### Bug Fixes
+
+* logger typing improvements ([#813](https://github.com/descope/descope-js/issues/813)) RELEASE ([ab20610](https://github.com/descope/descope-js/commit/ab206103a6eb42489c7cc4013ea721a576d3d302))
+
+## [3.25.2](https://github.com/descope/descope-js/compare/web-component-3.25.1...web-component-3.25.2) (2024-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.17.0`
+## [3.25.1](https://github.com/descope/descope-js/compare/web-component-3.25.0...web-component-3.25.1) (2024-09-19)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.2`
+## [3.25.0](https://github.com/descope/descope-js/compare/web-component-3.24.2...web-component-3.25.0) (2024-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.6`
+
+### Features
+
+* Retain redirect auth URL params ([#802](https://github.com/descope/descope-js/issues/802)) RELEASE ([7d6590f](https://github.com/descope/descope-js/commit/7d6590f544c06af2e25e7ca1c42206680c7c6f4f))
+
+## [3.24.2](https://github.com/descope/descope-js/compare/web-component-3.24.1...web-component-3.24.2) (2024-09-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.5`
+## [3.24.1](https://github.com/descope/descope-js/compare/web-component-3.24.0...web-component-3.24.1) (2024-09-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.4`
+## [3.24.0](https://github.com/descope/descope-js/compare/web-component-3.23.2...web-component-3.24.0) (2024-09-02)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.1`
+
+### Features
+
+* Allow dialect localization ([#783](https://github.com/descope/descope-js/issues/783)) ([4dba2a1](https://github.com/descope/descope-js/commit/4dba2a1e659a6ffb6feb73141ef98ae9f47a59f6))
+
 ## [3.23.2](https://github.com/descope/descope-js/compare/web-component-3.23.1...web-component-3.23.2) (2024-08-20)
 
 ### Dependency Updates
