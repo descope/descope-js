@@ -15,4 +15,5 @@ export * from './lib/components/role-management/role-management.component';
 export * from './lib/components/access-key-management/access-key-management.component';
 export * from './lib/components/audit-management/audit-management.component';
 export * from './lib/components/user-profile/user-profile.component';
+export * from './lib/components/applications-portal/applications-portal.component';
 export * from './lib/types/types';

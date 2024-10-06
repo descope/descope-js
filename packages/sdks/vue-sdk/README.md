@@ -385,6 +385,25 @@ const onLogout = () => (window.location.href = '/login');
 Example:
 [User Profile](./example/components/MyUserProfile.vue)
 
+#### Applications Portal
+
+The `ApplicationsPortal` lets you embed an applications portal component in your app and allows the logged-in user to open applications they are assigned to.
+
+###### Usage
+
+```vue
+<template>
+  <ApplicationsPortal widget-id="applications-portal-widget" />
+</template>
+
+<script setup>
+import { ApplicationsPortal } from '@descope/vue-sdk';
+</script>
+```
+
+Example:
+[User Profile](./example/components/MyApplicationsPortal.vue)
+
 ## Code Example
 
 You can find an example Vue app in the [example folder](./example).
