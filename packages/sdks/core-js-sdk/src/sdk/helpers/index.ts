@@ -1,4 +1,4 @@
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { ResponseData, SdkResponse } from '../types';
 import HttpStatusCodes from '../../constants/httpStatusCodes';
 import { DESCOPE_CURRENT_TENANT_CLAIM } from '../../constants';

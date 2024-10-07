@@ -71,7 +71,7 @@ const defaultOptionsValues = {
   client: {},
   redirectAuth: undefined,
   tenant: undefined,
-  locale: 'en',
+  locale: 'en-us',
 };
 
 class MockFileReader {
@@ -2470,7 +2470,7 @@ describe('web-component', () => {
       );
     });
 
-    it('should call start with redirect auth data and clear it from url', async () => {
+    it('should call start with redirect auth data and keep it in the url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = '<span>It works!</span>';
@@ -2481,7 +2481,8 @@ describe('web-component', () => {
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
       const encodedBackupCallback = encodeURIComponent(backupCallback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      const redirectAuthQueryParams = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      window.location.search = redirectAuthQueryParams;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2505,10 +2506,12 @@ describe('web-component', () => {
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
       });
-      await waitFor(() => expect(window.location.search).toBe(''));
+      await waitFor(() =>
+        expect(window.location.search).toBe(redirectAuthQueryParams),
+      );
     });
 
-    it('should call start with redirect auth data and token and clear it from url', async () => {
+    it('should call start with redirect auth data and token and keep it in the url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = '<span>It works!</span>';
@@ -2517,7 +2520,8 @@ describe('web-component', () => {
       const callback = 'https://mycallback.com';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android&${URL_TOKEN_PARAM_NAME}=${token}`;
+      const redirectAuthQueryParams = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      window.location.search = `${redirectAuthQueryParams}&${URL_TOKEN_PARAM_NAME}=${token}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2541,7 +2545,9 @@ describe('web-component', () => {
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
       });
-      await waitFor(() => expect(window.location.search).toBe(''));
+      await waitFor(() =>
+        expect(window.location.search).toBe(redirectAuthQueryParams),
+      );
     });
 
     it('should call start with oidc idp flag and clear it from url', async () => {
@@ -3522,6 +3528,60 @@ describe('web-component', () => {
       });
 
       const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-zh-tw.html`;
+      const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
+      const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
+
+      const htmlUrlPathRegex = new RegExp(`//[^/]+${expectedHtmlPath}$`);
+      const themeUrlPathRegex = new RegExp(`//[^/]+${expectedThemePath}$`);
+      const configUrlPathRegex = new RegExp(`//[^/]+${expectedConfigPath}$`);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(htmlUrlPathRegex),
+        expect.any(Object),
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(themeUrlPathRegex),
+        expect.any(Object),
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringMatching(configUrlPathRegex),
+        expect.any(Object),
+      );
+
+      Object.defineProperty(navigator, 'language', {
+        value: '',
+        writable: true,
+      });
+    });
+
+    it('should fetch the data from the correct path when locale provided in navigator short form', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      configContent = {
+        ...configContent,
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['en'],
+          },
+        },
+      };
+
+      Object.defineProperty(navigator, 'language', {
+        value: 'en',
+        writable: true,
+      });
+
+      pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const expectedHtmlPath = `/pages/1/${ASSETS_FOLDER}/0-en.html`;
       const expectedThemePath = `/pages/1/${ASSETS_FOLDER}/${THEME_DEFAULT_FILENAME}`;
       const expectedConfigPath = `/pages/1/${ASSETS_FOLDER}/${CONFIG_FILENAME}`;
 

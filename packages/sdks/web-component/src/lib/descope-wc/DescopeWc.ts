@@ -155,8 +155,10 @@ class DescopeWc extends BaseDescopeWc {
     const userLocale = getUserLocale(locale); // use provided locals, otherwise use browser locale
     const targetLocales = await this.getTargetLocales();
 
-    if (targetLocales.includes(userLocale)) {
-      filenameWithLocale = `${screenId}-${userLocale}.html`;
+    if (targetLocales.includes(userLocale.locale)) {
+      filenameWithLocale = `${screenId}-${userLocale.locale}.html`;
+    } else if (targetLocales.includes(userLocale.fallback)) {
+      filenameWithLocale = `${screenId}-${userLocale.fallback}.html`;
     }
     return filenameWithLocale;
   }
@@ -227,10 +229,10 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-          callbackUrl: redirectAuthCallbackUrl,
-          codeChallenge: redirectAuthCodeChallenge,
-          backupCallbackUri: redirectAuthBackupCallbackUri,
-        }
+            callbackUrl: redirectAuthCallbackUrl,
+            codeChallenge: redirectAuthCodeChallenge,
+            backupCallbackUri: redirectAuthBackupCallbackUri,
+          }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -273,7 +275,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId),
             abTestingKey,
-            locale: getUserLocale(locale),
+            locale: getUserLocale(locale).locale,
           },
           conditionInteractionId,
           '',
@@ -499,7 +501,7 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            locale: getUserLocale(locale),
+            locale: getUserLocale(locale).locale,
           },
           conditionInteractionId,
           interactionId,
@@ -550,7 +552,9 @@ class DescopeWc extends BaseDescopeWc {
         );
 
         if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
-          this.logger.debug('polling - Got a generic error due to exception in fetch call');
+          this.logger.debug(
+            'polling - Got a generic error due to exception in fetch call',
+          );
           this.#handlePollingResponse(
             executionId,
             stepId,
@@ -563,7 +567,10 @@ class DescopeWc extends BaseDescopeWc {
         }
         this.logger.debug('polling - Got a response');
         if (sdkResp?.error) {
-          this.logger.debug('polling - Response has an error', JSON.stringify(sdkResp.error, null, 4));
+          this.logger.debug(
+            'polling - Response has an error',
+            JSON.stringify(sdkResp.error, null, 4),
+          );
         }
 
         this.#handleSdkResponse(sdkResp);

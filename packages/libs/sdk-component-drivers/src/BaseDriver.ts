@@ -29,8 +29,7 @@ export class BaseDriver {
     const ele = typeof this.#ele === 'function' ? this.#ele() : this.#ele;
     if (!ele) {
       this.logger?.debug(
-        `no element for driver `,
-        this.constructor.name,
+        `Driver element is not available for ${this.nodeName}`,
         new Error(),
       );
 

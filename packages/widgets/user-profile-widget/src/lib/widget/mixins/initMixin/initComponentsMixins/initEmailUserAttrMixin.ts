@@ -33,6 +33,8 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #deleteFlow: FlowDriver;
 
       #initEditModal() {
+        if (!this.emailUserAttr.editFlowId) return;
+
         this.#editModal = this.createModal({ 'data-id': 'edit-email' });
         this.#editFlow = new FlowDriver(
           () => this.#editModal.ele?.querySelector('descope-wc'),
@@ -58,6 +60,8 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       }
 
       #initDeleteModal() {
+        if (!this.emailUserAttr.deleteFlowId) return;
+
         this.#deleteModal = this.createModal({ 'data-id': 'delete-email' });
         this.#deleteFlow = new FlowDriver(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
@@ -92,11 +96,11 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         );
 
         this.emailUserAttr.onEditClick(() => {
-          this.#editModal.open();
+          this.#editModal?.open();
         });
 
         this.emailUserAttr.onDeleteClick(() => {
-          this.#deleteModal.open();
+          this.#deleteModal?.open();
         });
       }
 

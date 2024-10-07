@@ -28,12 +28,11 @@ export const urlBuilder = ({
 
   // add query params if given
   if (queryParams) {
-    url = `${url}?`;
     const keys = Object.keys(queryParams);
     keys.forEach((key: string, index: number) => {
-      url = `${url}${key}=${queryParams[key]}${
-        index === keys.length - 1 ? '' : '&'
-      }`;
+      url = `${url}${index === 0 ? '?' : ''}${key}=${encodeURIComponent(
+        queryParams[key],
+      )}${index === keys.length - 1 ? '' : '&'}`;
     });
   }
 

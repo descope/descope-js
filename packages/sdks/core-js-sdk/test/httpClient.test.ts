@@ -74,14 +74,36 @@ describe('httpClient', () => {
     );
   });
 
+  it('should call fetch without ? when calling "get" without params', () => {
+    httpClient.get('1/2/3', {
+      queryParams: {},
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(`http://descope.com/1/2/3`, {
+      body: undefined,
+      credentials: 'include',
+      headers: new Headers({
+        test: '123',
+        Authorization: 'Bearer 456',
+        ...descopeHeaders,
+      }),
+      method: 'GET',
+    });
+  });
+
   it('should call fetch with multiple params when calling "get"', () => {
     httpClient.get('1/2/3', {
       headers: { test2: '123' },
-      queryParams: { test2: '123', test3: '456', test4: '789' },
+      queryParams: {
+        test2: '123',
+        test3: '456',
+        test4: '789',
+        test5: `don't+forget+to@escape.urls`,
+      },
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://descope.com/1/2/3?test2=123&test3=456&test4=789',
+      `http://descope.com/1/2/3?test2=123&test3=456&test4=789&test5=don't%2Bforget%2Bto%40escape.urls`,
       {
         body: undefined,
         credentials: 'include',

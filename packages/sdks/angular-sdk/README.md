@@ -533,6 +533,19 @@ The widget lets you:
 Example:
 [My User Profile](./projects/demo-app/src/app/my-user-profile/my-user-profile.component.html)
 
+#### ApplicationsPortal
+
+The `ApplicationsPortal` lets you embed an applications portal component in your app and allows the logged-in user to open applications they are assigned to.
+
+###### Usage
+
+```angular2html
+<applications-portal widgetId="applications-portal-widget" />
+```
+
+Example:
+[My User Profile](./projects/demo-app/src/app/my-applications-portal/my-applications-portal.component.html)
+
 ## Code Example
 
 You can find an example angular app in the [examples folder](./projects/demo-app).
@@ -556,7 +569,7 @@ Find your Project ID in the [Descope console](https://app.descope.com/settings/p
 Run the following command in the root of the project to build and run the example:
 
 ```bash
-npm i && npm start
+pnpm i && npm start
 ```
 
 ### Example Optional Env Variables

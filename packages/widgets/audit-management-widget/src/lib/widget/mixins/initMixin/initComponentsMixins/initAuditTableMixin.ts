@@ -17,7 +17,7 @@ export const initAuditTableMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
     )(superclass) {
-      auditTable: GridDriver<Audit>;
+      auditTable: GridDriver<Partial<Audit>>;
 
       #initAuditTable() {
         this.auditTable = new GridDriver(

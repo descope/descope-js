@@ -252,4 +252,28 @@ describe('Descope', () => {
       );
     });
   });
+
+  it('should render web-component with style id when provided', async () => {
+    renderWithProvider(<Descope flowId="flow-1" styleId="test" />);
+    await waitFor(() => {
+      expect(document.querySelector('descope-wc')).toHaveAttribute(
+        'style-id',
+        'test',
+      );
+    });
+  });
+
+  it('should render web-component with store-last-authenticated-user', async () => {
+    render(
+      <AuthProvider projectId="project-1" storeLastAuthenticatedUser>
+        <Descope flowId="flow-1" />
+      </AuthProvider>,
+    );
+    await waitFor(() => {
+      expect(document.querySelector('descope-wc')).toHaveAttribute(
+        'store-last-authenticated-user',
+        "true",
+      );
+    });
+  });
 });

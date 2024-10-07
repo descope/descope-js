@@ -2,6 +2,36 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.17.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.6...web-js-sdk-1.17.0) (2024-09-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.26.0`
+
+### Features
+
+* Add passkeyOptions to all webauthn start calls ([#807](https://github.com/descope/descope-js/issues/807)) RELEASE ([a8e0909](https://github.com/descope/descope-js/commit/a8e09094f8afdb016f437a3bc3bb6c6586330840))
+
+## [1.16.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.5...web-js-sdk-1.16.6) (2024-09-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.25.1`
+## [1.16.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.4...web-js-sdk-1.16.5) (2024-09-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.25.0`
+## [1.16.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.3...web-js-sdk-1.16.4) (2024-09-03)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.24.4`
+
+### Bug Fixes
+
+* upgrade jwt decode to 4.0.0. ([#789](https://github.com/descope/descope-js/issues/789)) RELEASE ([19e2cfd](https://github.com/descope/descope-js/commit/19e2cfde2fd061110fec8918e211f89909553f8a))
+
 ## [1.16.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.2...web-js-sdk-1.16.3) (2024-08-20)
 
 ### Dependency Updates

@@ -48,6 +48,11 @@ export type OIDCOptions = {
   oidcErrorRedirectUri?: string;
 };
 
+export type Locale = {
+  locale: string;
+  fallback: string;
+};
+
 export type FlowState = {
   flowId: string;
   projectId: string;
@@ -150,13 +155,6 @@ export interface Context {
   code?: string;
   token?: string;
   abTestingKey?: number;
-}
-
-export interface ILogger {
-  info(title: string, description: string, state: any): void;
-  warn(title: string, description?: string): void;
-  debug(title: string, description?: string): void;
-  error(title: string, description?: string, ...optionalParams: any[]): void;
 }
 
 export type DescopeUI = Record<string, () => Promise<void>> & {

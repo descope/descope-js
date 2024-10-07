@@ -23,7 +23,7 @@ const RoleManagementWC = lazy(async () => {
       theme,
       debug,
     }) => (
-      <descope-role-management-widget
+	<descope-role-management-widget
         project-id={projectId}
         widget-id={widgetId}
         base-url={baseUrl}
@@ -52,8 +52,8 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
     }, [innerRef, logger]);
 
     return (
-      <Suspense fallback={null}>
-        <RoleManagementWC
+	<Suspense fallback={null}>
+		<RoleManagementWC
           projectId={projectId}
           widgetId={widgetId}
           baseUrl={baseUrl}
@@ -63,7 +63,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
           theme={theme}
           debug={debug}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

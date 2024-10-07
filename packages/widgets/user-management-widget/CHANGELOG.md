@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.125](https://github.com/descope/descope-js/compare/user-management-widget-0.4.124...user-management-widget-0.4.125) (2024-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.17.0`
+## [0.4.124](https://github.com/descope/descope-js/compare/user-management-widget-0.4.123...user-management-widget-0.4.124) (2024-09-19)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.2`
+* `sdk-component-drivers` updated to version `0.2.42`
+## [0.4.123](https://github.com/descope/descope-js/compare/user-management-widget-0.4.122...user-management-widget-0.4.123) (2024-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.6`
+## [0.4.122](https://github.com/descope/descope-js/compare/user-management-widget-0.4.121...user-management-widget-0.4.122) (2024-09-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.5`
+## [0.4.121](https://github.com/descope/descope-js/compare/user-management-widget-0.4.120...user-management-widget-0.4.121) (2024-09-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.4`
+## [0.4.120](https://github.com/descope/descope-js/compare/user-management-widget-0.4.119...user-management-widget-0.4.120) (2024-09-02)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.1`
 ## [0.4.119](https://github.com/descope/descope-js/compare/user-management-widget-0.4.118...user-management-widget-0.4.119) (2024-08-20)
 
 ### Dependency Updates
