@@ -186,6 +186,28 @@ class DescopeWc extends BaseDescopeWc {
     return null;
   }
 
+  async #handleMismatchFlowVersion() {
+    this.loggerWrapper.debug('Mismatch flow version');
+    const prevCompVersion = await this.getComponentsVersion();
+    this.getConfig.reset();
+    const compVersion = await this.getComponentsVersion();
+
+    if (prevCompVersion === compVersion) {
+      this.loggerWrapper.debug(
+        'Mismatch flow version',
+        'Components version was not changed, reloading flow',
+      );
+      this.flowState.update({
+        stepId: null,
+        executionId: null,
+      });
+    } else {
+      this.loggerWrapper.error(
+        'Components version mismatch, please reload the page',
+      );
+    }
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -610,6 +632,10 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorDescription || defaultMessage,
         sdkResp?.error?.errorMessage || defaultDescription,
       );
+
+      if (sdkResp?.error?.errorCode === 'E102004') {
+        this.#handleMismatchFlowVersion();
+      }
       return;
     }
 

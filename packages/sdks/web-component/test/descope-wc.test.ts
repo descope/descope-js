@@ -297,6 +297,57 @@ describe('web-component', () => {
     });
   });
 
+  it('When getting E102004 error, and the components version remains the same, should restart the flow with the correct version', async () => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({ requestErrorCode: 'E102004', ok: false }),
+    );
+    startMock.mockReturnValue(generateSdkResponse({}));
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => expect(startMock).toBeCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'otpSignInEmail',
+          expect.any(Object),
+          undefined,
+          '',
+          1,
+          '1.2.3',
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    configContent.flows.otpSignInEmail.version = 2;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(() => expect(startMock).toBeCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'otpSignInEmail',
+          expect.any(Object),
+          undefined,
+          '',
+          2,
+          '1.2.3',
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
   it('When WC loads it injects the theme', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
