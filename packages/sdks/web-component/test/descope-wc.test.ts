@@ -259,6 +259,7 @@ describe('web-component', () => {
         ok: false,
         requestErrorMessage: 'Not found',
         requestErrorDescription: 'Not found',
+        requestErrorCode: '123',
       }),
     );
 
@@ -276,6 +277,7 @@ describe('web-component', () => {
             detail: {
               errorMessage: 'Not found',
               errorDescription: 'Not found',
+              errorCode: '123',
             },
           }),
         ),
