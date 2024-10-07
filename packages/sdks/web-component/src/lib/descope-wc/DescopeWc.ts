@@ -842,6 +842,9 @@ class DescopeWc extends BaseDescopeWc {
 
       this.rootElement.replaceChildren(clone);
 
+      // If before html url was empty, we deduce its the first time a screen is shown
+      const isFirstScreen = !prevState.htmlUrl;
+
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
@@ -852,16 +855,12 @@ class DescopeWc extends BaseDescopeWc {
         if (this.validateOnBlur) {
           handleReportValidityOnBlur(this.rootElement);
         }
-  
       });      
 
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
         updateScreenFromScreenState(this.rootElement, screenState);
       });
-
-      // If before html url was empty, we deduce its the first time a screen is shown
-      const isFirstScreen = !prevState.htmlUrl;
 
       this.#hydrate(next);
       if (isFirstScreen) {
