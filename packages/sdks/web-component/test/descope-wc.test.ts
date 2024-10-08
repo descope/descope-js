@@ -4225,4 +4225,36 @@ describe('web-component', () => {
       expect(screen.getByShadowText('ho!')).toHaveAttribute('href', 'john'),
     );
   });
+
+  it('should handle external input components', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    const clearPreviousExtInputsSpy = jest.spyOn(
+      helpers,
+      'clearPreviousExternalInputs',
+    );
+
+    pageContent =
+      '<input id="should-be-removed" data-hidden-input="true"/><div external-input="true" id="email"><input slot="test-slot" type="email"/></div><span>It works!</span>';
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // previous external input cleared
+    await waitFor(() =>
+      expect(clearPreviousExtInputsSpy).toHaveBeenCalledTimes(1),
+    );
+
+    const rootEle = document.getElementsByTagName('descope-wc')[0];
+
+    // new external input created
+    await waitFor(
+      () =>
+        expect(
+          rootEle.querySelector('input[slot="input-email-test-slot"]'),
+        ).toHaveAttribute('type', 'email'),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
 });

@@ -30,6 +30,7 @@ import {
   leadingDebounce,
   handleReportValidityOnBlur,
   getUserLocale,
+  clearPreviousExternalInputs,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -981,28 +982,10 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #updateExternalInputs() {
-    if (!globalThis.PasswordCredential) {
-      const emailEles = this.rootElement.querySelectorAll(
-        'descope-email-field',
-      );
+    clearPreviousExternalInputs();
 
-      const passwordEles =
-        this.rootElement.querySelectorAll('descope-password');
-
-      const newPasswordEles = this.rootElement.querySelectorAll(
-        'descope-new-password',
-      );
-
-      // remove existing external inputs
-      document
-        .querySelectorAll('[data-hidden-input="true"]')
-        .forEach((ele) => ele.remove());
-
-      // handle external input
-      [...emailEles, ...passwordEles, ...newPasswordEles].forEach((ele) =>
-        this.#handleExternalInputs(ele),
-      );
-    }
+    const eles = this.rootElement.querySelectorAll('[external-input="true"]');
+    eles.forEach((ele) => this.#handleExternalInputs(ele));
   }
 
   #handleExternalInputs(ele: Element) {
