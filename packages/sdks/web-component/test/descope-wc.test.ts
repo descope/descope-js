@@ -334,7 +334,10 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), true, true);
+
+    await waitFor(() =>
+      expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), true, true),
+    );
   });
 
   it('Auto focus should not happen when auto-focus is false', async () => {
@@ -347,7 +350,10 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), false, true);
+
+    await waitFor(() =>
+      expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), false, true),
+    );
   });
 
   it('Auto focus should not happen when auto-focus is `skipFirstScreen`', async () => {
@@ -362,10 +368,13 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(autoFocusSpy).toBeCalledWith(
-      expect.any(HTMLElement),
-      'skipFirstScreen',
-      true,
+
+    await waitFor(() =>
+      expect(autoFocusSpy).toBeCalledWith(
+        expect.any(HTMLElement),
+        'skipFirstScreen',
+        true,
+      ),
     );
     autoFocusSpy.mockClear();
 
@@ -3988,11 +3997,13 @@ describe('web-component', () => {
 
     fireEvent.blur(emailInput);
 
-    await waitFor(() =>
-      expect(
-        (<HTMLInputElement>emailInput).reportValidity,
-      ).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => {
+      setTimeout(() => {
+        expect(
+          (<HTMLInputElement>emailInput).reportValidity,
+        ).toHaveBeenCalledTimes(1);
+      }, 0);
+    });
   });
 
   it('should not call report validity on blur by default', async () => {

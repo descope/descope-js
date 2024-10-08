@@ -855,7 +855,7 @@ class DescopeWc extends BaseDescopeWc {
         if (this.validateOnBlur) {
           handleReportValidityOnBlur(this.rootElement);
         }
-      });      
+      });
 
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
