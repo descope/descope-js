@@ -5,6 +5,4 @@ export const IS_BROWSER = typeof window !== 'undefined';
 // For more information, refer to https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#maximum_delay_value
 export const MAX_TIMEOUT = Math.pow(2, 31) - 1;
 
-
-
 const a = 1
