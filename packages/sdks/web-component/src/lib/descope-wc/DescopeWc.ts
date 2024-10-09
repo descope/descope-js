@@ -856,10 +856,8 @@ class DescopeWc extends BaseDescopeWc {
         if (this.validateOnBlur) {
           handleReportValidityOnBlur(this.rootElement);
         }
-      });
 
-      // we need to wait for all components to render before we can set its value
-      setTimeout(() => {
+        // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(this.rootElement, screenState);
       });
 
@@ -982,6 +980,8 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #updateExternalInputs() {
+    // we need to clear external inputs that were created previously, so each screen has only
+    // the slotted inputs it needs
     clearPreviousExternalInputs();
 
     const eles = this.rootElement.querySelectorAll('[external-input="true"]');
@@ -990,10 +990,6 @@ class DescopeWc extends BaseDescopeWc {
 
   #handleExternalInputs(ele: Element) {
     if (!ele) {
-      return;
-    }
-
-    if (ele.getAttribute('external-input') !== 'true') {
       return;
     }
 

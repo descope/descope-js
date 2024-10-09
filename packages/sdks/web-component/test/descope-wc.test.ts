@@ -3995,14 +3995,12 @@ describe('web-component', () => {
 
     (<HTMLInputElement>emailInput).reportValidity = jest.fn();
 
-    fireEvent.blur(emailInput);
-
     await waitFor(() => {
-      setTimeout(() => {
-        expect(
-          (<HTMLInputElement>emailInput).reportValidity,
-        ).toHaveBeenCalledTimes(1);
-      }, 0);
+      fireEvent.blur(emailInput);
+
+      expect(
+        (<HTMLInputElement>emailInput).reportValidity,
+      ).toHaveBeenCalledTimes(1);
     });
   });
 
