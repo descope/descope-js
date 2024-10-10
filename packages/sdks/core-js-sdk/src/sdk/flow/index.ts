@@ -3,7 +3,7 @@ import { HttpClient } from '../../httpClient';
 import { transformResponse } from '../helpers';
 import { FlowResponse, Options, SdkResponse } from '../types';
 import { stringNonEmpty, withValidations } from '../validations';
-import { FlowInput } from './types';
+import { FlowInput, FlowVersions } from './types';
 
 const withStartValidations = withValidations(stringNonEmpty('flowId'));
 const withNextValidations = withValidations(
@@ -21,6 +21,7 @@ const withFlow = (httpClient: HttpClient) => ({
       interactionId?: string,
       version?: number,
       componentsVersion?: string,
+      flowVersions?: FlowVersions,
       input?: FlowInput,
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
@@ -31,6 +32,7 @@ const withFlow = (httpClient: HttpClient) => ({
           interactionId,
           version,
           componentsVersion,
+          flowVersions,
           input,
         }),
       ),
