@@ -569,7 +569,7 @@ Find your Project ID in the [Descope console](https://app.descope.com/settings/p
 Run the following command in the root of the project to build and run the example:
 
 ```bash
-npm i && npm start
+pnpm i && npm start
 ```
 
 ### Example Optional Env Variables
