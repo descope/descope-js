@@ -186,6 +186,27 @@ class DescopeWc extends BaseDescopeWc {
     return null;
   }
 
+  async #handleFlowReload() {
+    this.loggerWrapper.debug('Trying to reload the flow');
+    const prevCompVersion = await this.getComponentsVersion();
+    this.getConfig.reset();
+    const compVersion = await this.getComponentsVersion();
+
+    if (prevCompVersion === compVersion) {
+      this.loggerWrapper.debug(
+        'Components version was not changed, reloading flow',
+      );
+      this.flowState.update({
+        stepId: null,
+        executionId: null,
+      });
+    } else {
+      this.loggerWrapper.error(
+        'Components version mismatch, please reload the page',
+      );
+    }
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -610,6 +631,15 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorDescription || defaultMessage,
         sdkResp?.error?.errorMessage || defaultDescription,
       );
+
+      // E102004 = Flow requested is in old version
+      // E103205 = Flow timed out
+      if (
+        sdkResp?.error?.errorCode === 'E102004' ||
+        sdkResp?.error?.errorCode === 'E103205'
+      ) {
+        this.#handleFlowReload();
+      }
       return;
     }
 
