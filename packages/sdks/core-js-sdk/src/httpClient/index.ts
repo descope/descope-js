@@ -1,4 +1,4 @@
-import { transformSetCookie } from './helpers';
+import { getClientSessionId, transformSetCookie } from './helpers';
 import createFetchLogger from './helpers/createFetchLogger';
 import {
   CreateHttpClientConfig,
@@ -35,6 +35,7 @@ declare const BUILD_VERSION: string;
  */
 const createDescopeHeaders = () => {
   return {
+    'x-descope-sdk-session-id': getClientSessionId(),
     'x-descope-sdk-name': 'core-js',
     'x-descope-sdk-version': BUILD_VERSION,
   };
