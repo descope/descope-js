@@ -2,8 +2,8 @@
 
 ![github-header-image (2) (1)](https://github.com/descope/.github/assets/32936811/d904d37e-e3fa-4331-9f10-2880bb708f64)
 
-Welcome to the Descope JavaScript respostiry.
-The Descope JS respostiry is composed of npm packages, sdks and widgets.
+Welcome to the Descope JavaScript repository.
+The Descope JS repository is composed of npm packages, sdks and widgets.
 
 ## 🖥️ Client SDKs
 
