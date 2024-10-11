@@ -24,6 +24,8 @@ const Page = async () => {
 						<Link href="/manage-audit">Manage Audit</Link>
 						<br />
 						<Link href="/my-user-profile">User Profile</Link>
+						<br />
+						<Link href="/my-applications-portal">Applications Portal</Link>
 					</div>
 				)
 			}

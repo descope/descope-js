@@ -1,6 +1,6 @@
 {
   "name": "@descope/angular-sdk",
-  "version": "0.5.18",
+  "version": "0.5.25",
   "peerDependencies": {
     "@angular/common": ">=16.0.0",
     "@angular/core": ">=16.0.0"
@@ -49,6 +49,7 @@
     "@descope/role-management-widget": "workspace:*",
     "@descope/user-management-widget": "workspace:*",
     "@descope/user-profile-widget": "workspace:*",
+    "@descope/applications-portal-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
     "@descope/core-js-sdk": "workspace:*",

@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.107](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.106...user-profile-widget-0.0.107) (2024-09-29)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.25.3`
+## [0.0.106](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.105...user-profile-widget-0.0.106) (2024-09-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.26.0`
+* `web-js-sdk` updated to version `1.17.0`
+* `web-component` updated to version `3.25.2`
+## [0.0.105](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.104...user-profile-widget-0.0.105) (2024-09-19)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.25.1`
+* `sdk-mixins` updated to version `0.3.2`
+* `sdk-component-drivers` updated to version `0.2.42`
+## [0.0.104](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.103...user-profile-widget-0.0.104) (2024-09-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.25.1`
+* `web-js-sdk` updated to version `1.16.6`
+* `web-component` updated to version `3.25.0`
+## [0.0.103](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.102...user-profile-widget-0.0.103) (2024-09-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.25.0`
+* `web-js-sdk` updated to version `1.16.5`
+* `web-component` updated to version `3.24.2`
+
+### Bug Fixes
+
+* UPW no flow run when no fid RELEASE ([#796](https://github.com/descope/descope-js/issues/796)) ([dadf507](https://github.com/descope/descope-js/commit/dadf5074bbb5866e28aedc84010ece756b87d9e2))
+
+## [0.0.102](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.101...user-profile-widget-0.0.102) (2024-09-03)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.24.4`
+* `web-js-sdk` updated to version `1.16.4`
+* `web-component` updated to version `3.24.1`
 ## [0.0.101](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.100...user-profile-widget-0.0.101) (2024-09-02)
 
 ### Dependency Updates

@@ -30,6 +30,7 @@ import {
   leadingDebounce,
   handleReportValidityOnBlur,
   getUserLocale,
+  clearPreviousExternalInputs,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -842,19 +843,23 @@ class DescopeWc extends BaseDescopeWc {
 
       this.rootElement.replaceChildren(clone);
 
-      // we need to wait for all components to render before we can set its value
-      setTimeout(() => {
-        updateScreenFromScreenState(this.rootElement, screenState);
-      });
-
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
 
-      handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+      // we need to wait for all components to render before we can set its value
+      setTimeout(() => {
+        updateScreenFromScreenState(this.rootElement, screenState);
+        this.#updateExternalInputs();
 
-      if (this.validateOnBlur) {
-        handleReportValidityOnBlur(this.rootElement);
-      }
+        handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+
+        if (this.validateOnBlur) {
+          handleReportValidityOnBlur(this.rootElement);
+        }
+
+        // we need to wait for all components to render before we can set its value
+        updateScreenFromScreenState(this.rootElement, screenState);
+      });
 
       this.#hydrate(next);
       if (isFirstScreen) {
@@ -972,6 +977,37 @@ class DescopeWc extends BaseDescopeWc {
         this.loggerWrapper.error('Could not store credentials', e.message);
       }
     }
+  }
+
+  #updateExternalInputs() {
+    // we need to clear external inputs that were created previously, so each screen has only
+    // the slotted inputs it needs
+    clearPreviousExternalInputs();
+
+    const eles = this.rootElement.querySelectorAll('[external-input="true"]');
+    eles.forEach((ele) => this.#handleExternalInputs(ele));
+  }
+
+  #handleExternalInputs(ele: Element) {
+    if (!ele) {
+      return;
+    }
+
+    const origInputs = ele.querySelectorAll('input');
+
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
   }
 
   // we are wrapping this function with a leading debounce,

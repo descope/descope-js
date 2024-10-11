@@ -1,6 +1,6 @@
 {
   "name": "@descope/vue-sdk",
-  "version": "2.0.30",
+  "version": "2.0.37",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "type": "module",
@@ -41,6 +41,7 @@
     "@descope/role-management-widget": "workspace:*",
     "@descope/user-management-widget": "workspace:*",
     "@descope/user-profile-widget": "workspace:*",
+    "@descope/applications-portal-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
     "@descope/core-js-sdk": "workspace:*"

@@ -334,7 +334,10 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), true, true);
+
+    await waitFor(() =>
+      expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), true, true),
+    );
   });
 
   it('Auto focus should not happen when auto-focus is false', async () => {
@@ -347,7 +350,10 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), false, true);
+
+    await waitFor(() =>
+      expect(autoFocusSpy).toBeCalledWith(expect.any(HTMLElement), false, true),
+    );
   });
 
   it('Auto focus should not happen when auto-focus is `skipFirstScreen`', async () => {
@@ -362,10 +368,13 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(autoFocusSpy).toBeCalledWith(
-      expect.any(HTMLElement),
-      'skipFirstScreen',
-      true,
+
+    await waitFor(() =>
+      expect(autoFocusSpy).toBeCalledWith(
+        expect.any(HTMLElement),
+        'skipFirstScreen',
+        true,
+      ),
     );
     autoFocusSpy.mockClear();
 
@@ -2470,7 +2479,7 @@ describe('web-component', () => {
       );
     });
 
-    it('should call start with redirect auth data and clear it from url', async () => {
+    it('should call start with redirect auth data and keep it in the url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = '<span>It works!</span>';
@@ -2481,7 +2490,8 @@ describe('web-component', () => {
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
       const encodedBackupCallback = encodeURIComponent(backupCallback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      const redirectAuthQueryParams = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME}=${encodedBackupCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      window.location.search = redirectAuthQueryParams;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2505,10 +2515,12 @@ describe('web-component', () => {
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
       });
-      await waitFor(() => expect(window.location.search).toBe(''));
+      await waitFor(() =>
+        expect(window.location.search).toBe(redirectAuthQueryParams),
+      );
     });
 
-    it('should call start with redirect auth data and token and clear it from url', async () => {
+    it('should call start with redirect auth data and token and keep it in the url', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       pageContent = '<span>It works!</span>';
@@ -2517,7 +2529,8 @@ describe('web-component', () => {
       const callback = 'https://mycallback.com';
       const encodedChallenge = encodeURIComponent(challenge);
       const encodedCallback = encodeURIComponent(callback);
-      window.location.search = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android&${URL_TOKEN_PARAM_NAME}=${token}`;
+      const redirectAuthQueryParams = `?${URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME}=${encodedChallenge}&${URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME}=${encodedCallback}&${URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME}=android`;
+      window.location.search = `${redirectAuthQueryParams}&${URL_TOKEN_PARAM_NAME}=${token}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       await waitFor(() =>
@@ -2541,7 +2554,9 @@ describe('web-component', () => {
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
       });
-      await waitFor(() => expect(window.location.search).toBe(''));
+      await waitFor(() =>
+        expect(window.location.search).toBe(redirectAuthQueryParams),
+      );
     });
 
     it('should call start with oidc idp flag and clear it from url', async () => {
@@ -3980,13 +3995,13 @@ describe('web-component', () => {
 
     (<HTMLInputElement>emailInput).reportValidity = jest.fn();
 
-    fireEvent.blur(emailInput);
+    await waitFor(() => {
+      fireEvent.blur(emailInput);
 
-    await waitFor(() =>
       expect(
         (<HTMLInputElement>emailInput).reportValidity,
-      ).toHaveBeenCalledTimes(1),
-    );
+      ).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('should not call report validity on blur by default', async () => {
@@ -4206,6 +4221,38 @@ describe('web-component', () => {
     });
     await waitFor(() =>
       expect(screen.getByShadowText('ho!')).toHaveAttribute('href', 'john'),
+    );
+  });
+
+  it('should handle external input components', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    const clearPreviousExtInputsSpy = jest.spyOn(
+      helpers,
+      'clearPreviousExternalInputs',
+    );
+
+    pageContent =
+      '<input id="should-be-removed" data-hidden-input="true"/><div external-input="true" id="email"><input slot="test-slot" type="email"/></div><span>It works!</span>';
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // previous external input cleared
+    await waitFor(() =>
+      expect(clearPreviousExtInputsSpy).toHaveBeenCalledTimes(1),
+    );
+
+    const rootEle = document.getElementsByTagName('descope-wc')[0];
+
+    // new external input created
+    await waitFor(
+      () =>
+        expect(
+          rootEle.querySelector('input[slot="input-email-test-slot"]'),
+        ).toHaveAttribute('type', 'email'),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 });

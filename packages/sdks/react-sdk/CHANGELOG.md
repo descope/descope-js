@@ -2,6 +2,94 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.0.78](https://github.com/descope/descope-js/compare/react-sdk-2.0.77...react-sdk-2.0.78) (2024-09-29)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.107`
+* `web-component` updated to version `3.25.3`
+## [2.0.77](https://github.com/descope/descope-js/compare/react-sdk-2.0.76...react-sdk-2.0.77) (2024-09-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.124`
+* `audit-management-widget` updated to version `0.1.88`
+* `role-management-widget` updated to version `0.1.122`
+* `user-management-widget` updated to version `0.4.125`
+* `user-profile-widget` updated to version `0.0.106`
+* `web-component` updated to version `3.25.2`
+* `web-js-sdk` updated to version `1.17.0`
+* `core-js-sdk` updated to version `2.26.0`
+## [2.0.76](https://github.com/descope/descope-js/compare/react-sdk-2.0.75...react-sdk-2.0.76) (2024-09-19)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.123`
+* `audit-management-widget` updated to version `0.1.87`
+* `role-management-widget` updated to version `0.1.121`
+* `user-management-widget` updated to version `0.4.124`
+* `user-profile-widget` updated to version `0.0.105`
+* `web-component` updated to version `3.25.1`
+## [2.0.75](https://github.com/descope/descope-js/compare/react-sdk-2.0.74...react-sdk-2.0.75) (2024-09-17)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.122`
+* `audit-management-widget` updated to version `0.1.86`
+* `role-management-widget` updated to version `0.1.120`
+* `user-management-widget` updated to version `0.4.123`
+* `user-profile-widget` updated to version `0.0.104`
+* `web-component` updated to version `3.25.0`
+* `web-js-sdk` updated to version `1.16.6`
+* `core-js-sdk` updated to version `2.25.1`
+## [2.0.74](https://github.com/descope/descope-js/compare/react-sdk-2.0.73...react-sdk-2.0.74) (2024-09-12)
+
+
+### Bug Fixes
+
+* issue 6274 RELEASE ([#795](https://github.com/descope/descope-js/issues/795)) ([d5c4536](https://github.com/descope/descope-js/commit/d5c453623e78fc7c31b39345485cbdbea54b2422))
+
+## [2.0.73](https://github.com/descope/descope-js/compare/react-sdk-2.0.72...react-sdk-2.0.73) (2024-09-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.121`
+* `audit-management-widget` updated to version `0.1.85`
+* `role-management-widget` updated to version `0.1.119`
+* `user-management-widget` updated to version `0.4.122`
+* `user-profile-widget` updated to version `0.0.103`
+* `web-component` updated to version `3.24.2`
+* `web-js-sdk` updated to version `1.16.5`
+* `core-js-sdk` updated to version `2.25.0`
+
+### Bug Fixes
+
+* UPW no flow run when no fid RELEASE ([#796](https://github.com/descope/descope-js/issues/796)) ([dadf507](https://github.com/descope/descope-js/commit/dadf5074bbb5866e28aedc84010ece756b87d9e2))
+
+## [2.0.72](https://github.com/descope/descope-js/compare/react-sdk-2.0.71...react-sdk-2.0.72) (2024-09-05)
+
+### Dependency Updates
+
+* `audit-management-widget` updated to version `0.1.84`
+## [2.0.71](https://github.com/descope/descope-js/compare/react-sdk-2.0.70...react-sdk-2.0.71) (2024-09-03)
+
+
+### Bug Fixes
+
+* store last auth user prop in React SDK ([#790](https://github.com/descope/descope-js/issues/790)) RELEASE ([b583bcf](https://github.com/descope/descope-js/commit/b583bcf4aae2e9e20d247b4e8bfc3d57dec94ba6))
+
+## [2.0.70](https://github.com/descope/descope-js/compare/react-sdk-2.0.69...react-sdk-2.0.70) (2024-09-03)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.120`
+* `audit-management-widget` updated to version `0.1.83`
+* `role-management-widget` updated to version `0.1.118`
+* `user-management-widget` updated to version `0.4.121`
+* `user-profile-widget` updated to version `0.0.102`
+* `web-component` updated to version `3.24.1`
+* `web-js-sdk` updated to version `1.16.4`
+* `core-js-sdk` updated to version `2.24.4`
 ## [2.0.69](https://github.com/descope/descope-js/compare/react-sdk-2.0.68...react-sdk-2.0.69) (2024-09-02)
 
 ### Dependency Updates
