@@ -291,8 +291,6 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          flowConfig.version,
-          projectConfig.componentsVersion,
           flowVersions,
           {
             ...this.formConfigValues,
@@ -518,8 +516,6 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           interactionId,
-          version,
-          componentsVersion,
           flowVersions,
           {
             ...this.formConfigValues,

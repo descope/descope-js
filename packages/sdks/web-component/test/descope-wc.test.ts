@@ -673,8 +673,6 @@ describe('web-component', () => {
         },
         undefined,
         'submitterId',
-        0,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 0,
@@ -1732,7 +1730,7 @@ describe('web-component', () => {
 
     // Get start input is the 6th argument of the first call to start
     // ensure the result is passed to the start input
-    const startInput = startMock.mock.calls[0][7];
+    const startInput = startMock.mock.calls[0][5];
     expect(startInput).toEqual(
       expect.objectContaining({
         [`${SDK_SCRIPT_RESULTS_KEY}.${scriptId}_${resultKey}`]: resultValue,
@@ -1863,8 +1861,6 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
-        0,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 0,
@@ -1905,8 +1901,6 @@ describe('web-component', () => {
         }),
         undefined,
         '',
-        1,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 1,
@@ -2331,8 +2325,6 @@ describe('web-component', () => {
           },
           conditionInteractionId,
           'interactionId',
-          1,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 1,
@@ -2381,8 +2373,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          1,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 1,
@@ -2473,8 +2463,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          1,
-          undefined,
           {
             "componentsVersion": undefined,
             "version": 1,
@@ -2560,8 +2548,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2612,8 +2598,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2656,8 +2640,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2787,8 +2769,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2832,8 +2812,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2873,8 +2851,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2948,8 +2924,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
-          '1.2.3',
           {
             "componentsVersion": "1.2.3",
             "version": 0,
@@ -2989,8 +2963,6 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        0,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 0,
@@ -3060,8 +3032,6 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        0,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 0,
@@ -3130,8 +3100,6 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        0,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 0,
@@ -3209,8 +3177,6 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
-        1,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 1,
@@ -3269,8 +3235,6 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
-        1,
-        '1.2.3',
         {
           "componentsVersion": "1.2.3",
           "version": 1,

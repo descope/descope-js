@@ -19,8 +19,6 @@ const withFlow = (httpClient: HttpClient) => ({
       options?: Options,
       conditionInteractionId?: string,
       interactionId?: string,
-      version?: number,
-      componentsVersion?: string,
       flowVersions?: FlowVersions,
       input?: FlowInput,
     ): Promise<SdkResponse<FlowResponse>> =>
@@ -30,8 +28,6 @@ const withFlow = (httpClient: HttpClient) => ({
           options,
           conditionInteractionId,
           interactionId,
-          version,
-          componentsVersion,
           flowVersions,
           input,
         }),
