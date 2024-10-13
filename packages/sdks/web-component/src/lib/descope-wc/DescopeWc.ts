@@ -226,6 +226,17 @@ class DescopeWc extends BaseDescopeWc {
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
+    const flowVersions = {
+      version: flowConfig.version,
+      componentsVersion: projectConfig.componentsVersion,
+      allVersions: Object.entries(projectConfig.flows || {}).reduce( // pass also current versions for all flows, it may be used as a part of the current flow
+        (acc, [key, value]) => {
+          acc[key] = value.version;
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
+    };
 
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
@@ -282,6 +293,7 @@ class DescopeWc extends BaseDescopeWc {
           '',
           flowConfig.version,
           projectConfig.componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
@@ -508,6 +520,7 @@ class DescopeWc extends BaseDescopeWc {
           interactionId,
           version,
           componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...inputs,
