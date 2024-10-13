@@ -228,7 +228,7 @@ class DescopeWc extends BaseDescopeWc {
     const flowVersions = {
       version: flowConfig.version,
       componentsVersion: projectConfig.componentsVersion,
-      versions: Object.keys(projectConfig.flows).reduce((acc, key) => {
+      versions: Object.keys(projectConfig.flows || []).reduce((acc, key) => {
         const flowConf = projectConfig.flows[key];
         acc[key] = flowConf.version;
         return acc;
