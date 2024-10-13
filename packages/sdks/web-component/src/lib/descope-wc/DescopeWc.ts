@@ -229,11 +229,13 @@ class DescopeWc extends BaseDescopeWc {
     const flowVersions = {
       version: flowConfig.version,
       componentsVersion: projectConfig.componentsVersion,
-      versions: Object.keys(projectConfig.flows || []).reduce((acc, key) => {
-        const flowConf = projectConfig.flows[key];
-        acc[key] = flowConf.version;
-        return acc;
-      }, {} as Record<string, number>),
+      allVersions: Object.entries(projectConfig.flows || {}).reduce( // pass also current versions for all flows, it may be used as a part of the current flow
+        (acc, [key, value]) => {
+          acc[key] = value.version;
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
     };
 
     const redirectAuth =

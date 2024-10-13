@@ -678,7 +678,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 0,
-          "versions": {
+          "allVersions": {
             "sign-in": 0,
           },
         },
@@ -1868,7 +1868,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 0,
-          "versions": {
+          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
           },
@@ -1910,7 +1910,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 1,
-          "versions": {
+          "allVersions": {
             "sign-in": 1,
           },
         },
@@ -2336,7 +2336,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 1,
-            "versions": {
+            "allVersions": {
               "sign-in": 1,
             },
           },
@@ -2386,7 +2386,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 1,
-            "versions": {
+            "allVersions": {
               "sign-in": 1,
             },
           },
@@ -2478,7 +2478,7 @@ describe('web-component', () => {
           {
             "componentsVersion": undefined,
             "version": 1,
-            "versions": {
+            "allVersions": {
               "sign-in": 1,
             },
           },
@@ -2565,7 +2565,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2617,7 +2617,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2661,7 +2661,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2792,7 +2792,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2837,7 +2837,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2878,7 +2878,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2953,7 +2953,7 @@ describe('web-component', () => {
           {
             "componentsVersion": "1.2.3",
             "version": 0,
-            "versions": {
+            "allVersions": {
               "sign-in": 0,
             },
           },
@@ -2994,7 +2994,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 0,
-          "versions": {
+          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
           },
@@ -3065,7 +3065,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 0,
-          "versions": {
+          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
           },
@@ -3135,7 +3135,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 0,
-          "versions": {
+          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
           },
@@ -3214,7 +3214,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 1,
-          "versions": {
+          "allVersions": {
             "sign-in": 1,
           },
         },
@@ -3274,7 +3274,7 @@ describe('web-component', () => {
         {
           "componentsVersion": "1.2.3",
           "version": 1,
-          "versions": {
+          "allVersions": {
             "sign-in": 1,
           },
         },
