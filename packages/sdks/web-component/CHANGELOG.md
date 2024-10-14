@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.26.0](https://github.com/descope/descope-js/compare/web-component-3.25.3...web-component-3.26.0) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+
+### Features
+
+* apps portal sdks ([#808](https://github.com/descope/descope-js/issues/808)) ([30b11b0](https://github.com/descope/descope-js/commit/30b11b0ec8252281ed3cfb273e415edfa2fa1070))
+* External Input support in SDK ([#798](https://github.com/descope/descope-js/issues/798)) ([01cc7fe](https://github.com/descope/descope-js/commit/01cc7feaba76908bada7b56e7f17ca87cd388a8b))
+
 ## [3.25.3](https://github.com/descope/descope-js/compare/web-component-3.25.2...web-component-3.25.3) (2024-09-29)
 
 
