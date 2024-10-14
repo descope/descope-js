@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.27.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.26.0...core-js-sdk-2.27.0) (2024-10-14)
+
+
+### Features
+
+* add sdk session id ([#814](https://github.com/descope/descope-js/issues/814)) ([9f8f5a6](https://github.com/descope/descope-js/commit/9f8f5a6a79f978919a0019991640bd69e06365f8))
+
 ## [2.26.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.1...core-js-sdk-2.26.0) (2024-09-29)
 
 
