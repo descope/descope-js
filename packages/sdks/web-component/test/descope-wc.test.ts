@@ -673,12 +673,10 @@ describe('web-component', () => {
         },
         undefined,
         'submitterId',
+        0,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 0,
-          "allVersions": {
             "sign-in": 0,
-          },
         },
         {
           email: '',
@@ -1730,7 +1728,7 @@ describe('web-component', () => {
 
     // Get start input is the 6th argument of the first call to start
     // ensure the result is passed to the start input
-    const startInput = startMock.mock.calls[0][5];
+    const startInput = startMock.mock.calls[0][7];
     expect(startInput).toEqual(
       expect.objectContaining({
         [`${SDK_SCRIPT_RESULTS_KEY}.${scriptId}_${resultKey}`]: resultValue,
@@ -1861,13 +1859,11 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
+        0,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 0,
-          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
-          },
         },
         {},
       ),
@@ -1901,12 +1897,10 @@ describe('web-component', () => {
         }),
         undefined,
         '',
+        1,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 1,
-          "allVersions": {
             "sign-in": 1,
-          },
         },
         {
           email: 'test',
@@ -2325,12 +2319,10 @@ describe('web-component', () => {
           },
           conditionInteractionId,
           'interactionId',
+          1,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 1,
-            "allVersions": {
               "sign-in": 1,
-            },
           },
           { origin: 'http://localhost' },
         ),
@@ -2373,12 +2365,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          1,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 1,
-            "allVersions": {
               "sign-in": 1,
-            },
           },
           {
             exchangeCode: 'code1',
@@ -2463,12 +2453,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          1,
+          undefined,
           {
-            "componentsVersion": undefined,
-            "version": 1,
-            "allVersions": {
               "sign-in": 1,
-            },
           },
           {
             token: 'code1',
@@ -2548,12 +2536,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           {},
         ),
@@ -2598,12 +2584,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           { token },
         ),
@@ -2640,12 +2624,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           {},
         ),
@@ -2769,12 +2751,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           {},
         ),
@@ -2812,12 +2792,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           {},
         ),
@@ -2851,12 +2829,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           {
             idpInitiated: true,
@@ -2924,12 +2900,10 @@ describe('web-component', () => {
           },
           undefined,
           '',
+          0,
+          "1.2.3",
           {
-            "componentsVersion": "1.2.3",
-            "version": 0,
-            "allVersions": {
               "sign-in": 0,
-            },
           },
           {},
         ),
@@ -2963,13 +2937,11 @@ describe('web-component', () => {
         },
         undefined,
         '',
+        0,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 0,
-          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
-          },
         },
         {
           externalId: 'dummyUser',
@@ -3032,13 +3004,11 @@ describe('web-component', () => {
         },
         undefined,
         '',
+        0,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 0,
-          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
-          },
         },
         {},
       ),
@@ -3100,13 +3070,11 @@ describe('web-component', () => {
         },
         undefined,
         '',
+        0,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 0,
-          "allVersions": {
             "otpSignInEmail": 1,
             "versioned-flow": 1,
-          },
         },
         {},
       ),
@@ -3177,12 +3145,10 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
+        1,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 1,
-          "allVersions": {
             "sign-in": 1,
-          },
         },
         {
           exchangeCode: 'code1',
@@ -3235,12 +3201,10 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
+        1,
+        "1.2.3",
         {
-          "componentsVersion": "1.2.3",
-          "version": 1,
-          "allVersions": {
             "sign-in": 1,
-          },
         },
         {
           exchangeCode: 'code1',
