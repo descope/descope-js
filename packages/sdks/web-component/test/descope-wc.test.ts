@@ -673,7 +673,6 @@ describe('web-component', () => {
         },
         undefined,
         'submitterId',
-        0,
         "1.2.3",
         {
             "sign-in": 0,
@@ -1728,7 +1727,7 @@ describe('web-component', () => {
 
     // Get start input is the 6th argument of the first call to start
     // ensure the result is passed to the start input
-    const startInput = startMock.mock.calls[0][7];
+    const startInput = startMock.mock.calls[0][6];
     expect(startInput).toEqual(
       expect.objectContaining({
         [`${SDK_SCRIPT_RESULTS_KEY}.${scriptId}_${resultKey}`]: resultValue,
@@ -1859,7 +1858,6 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
-        0,
         "1.2.3",
         {
             "otpSignInEmail": 1,
@@ -1897,7 +1895,6 @@ describe('web-component', () => {
         }),
         undefined,
         '',
-        1,
         "1.2.3",
         {
             "sign-in": 1,
@@ -2319,7 +2316,6 @@ describe('web-component', () => {
           },
           conditionInteractionId,
           'interactionId',
-          1,
           "1.2.3",
           {
               "sign-in": 1,
@@ -2365,7 +2361,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          1,
           "1.2.3",
           {
               "sign-in": 1,
@@ -2453,7 +2448,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          1,
           undefined,
           {
               "sign-in": 1,
@@ -2536,7 +2530,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2584,7 +2577,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2624,7 +2616,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2751,7 +2742,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2792,7 +2782,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2829,7 +2818,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2900,7 +2888,6 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          0,
           "1.2.3",
           {
               "sign-in": 0,
@@ -2937,7 +2924,6 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        0,
         "1.2.3",
         {
             "otpSignInEmail": 1,
@@ -3004,7 +2990,6 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        0,
         "1.2.3",
         {
             "otpSignInEmail": 1,
@@ -3070,7 +3055,6 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        0,
         "1.2.3",
         {
             "otpSignInEmail": 1,
@@ -3145,7 +3129,6 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
-        1,
         "1.2.3",
         {
             "sign-in": 1,
@@ -3201,7 +3184,6 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
-        1,
         "1.2.3",
         {
             "sign-in": 1,
