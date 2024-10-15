@@ -289,7 +289,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async #getIsFlowsVersionMismatch() {
-    const config = await this.#getConfig();
+    const config = await this.getConfig();
 
     return config.isMissingConfig && (await this.#isPrevVerConfig());
   }
@@ -310,7 +310,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   // we want to get the config only if we don't have it already
-  #getConfig = withMemCache(async () => {
+  getConfig = withMemCache(async () => {
     const configUrl = getContentUrl({
       projectId: this.projectId,
       filename: CONFIG_FILENAME,
@@ -331,8 +331,12 @@ class BaseDescopeWc extends BaseClass {
     this.#componentsContext = { ...this.#componentsContext, ...e.detail };
   }
 
+  get isRestartOnError() {
+    return this.getAttribute('restart-on-error') === 'true';
+  }
+
   async getExecutionContext() {
-    const { executionContext } = await this.#getConfig();
+    const { executionContext } = await this.getConfig();
 
     return executionContext;
   }
@@ -375,7 +379,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async getProjectConfig(): Promise<ProjectConfiguration> {
-    const { projectConfig } = await this.#getConfig();
+    const { projectConfig } = await this.getConfig();
     return projectConfig;
   }
 
@@ -453,8 +457,8 @@ class BaseDescopeWc extends BaseClass {
     };
   }
 
-  async #getComponentsVersion() {
-    const version = (await this.#getConfig())?.projectConfig?.componentsVersion;
+  async getComponentsVersion() {
+    const version = (await this.getConfig())?.projectConfig?.componentsVersion;
 
     if (version) return version;
 
@@ -481,7 +485,7 @@ class BaseDescopeWc extends BaseClass {
       return;
     }
 
-    if ((await this.#getConfig()).isMissingConfig) {
+    if ((await this.getConfig()).isMissingConfig) {
       this.loggerWrapper.error(
         'Cannot get config file',
         'Make sure that your projectId & flowId are correct',

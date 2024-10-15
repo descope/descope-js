@@ -285,6 +285,8 @@ test.describe('widget', () => {
     // open add user modal
     await openAddUserModalButton.click();
 
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
     const createUserLoginIdInput = page.getByLabel('Login Id').first();
     const createUserEmailInput = page.getByLabel('Email').first();
 
@@ -551,6 +553,8 @@ test.describe('widget', () => {
       0,
     );
     await cellContentLocator.click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // enable user button is enabled on selection
     expect(removePasskeyTrigger).toBeEnabled();
