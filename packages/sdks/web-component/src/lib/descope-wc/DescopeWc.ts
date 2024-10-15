@@ -30,6 +30,7 @@ import {
   leadingDebounce,
   handleReportValidityOnBlur,
   getUserLocale,
+  clearPreviousExternalInputs,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -246,7 +247,13 @@ class DescopeWc extends BaseDescopeWc {
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
-
+    const flowVersions = Object.entries(projectConfig.flows || {}).reduce( // pass also current versions for all flows, it may be used as a part of the current flow
+      (acc, [key, value]) => {
+        acc[key] = value.version;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
@@ -300,8 +307,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          flowConfig.version,
           projectConfig.componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
@@ -526,8 +533,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           interactionId,
-          version,
           componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...inputs,
@@ -873,19 +880,23 @@ class DescopeWc extends BaseDescopeWc {
 
       this.rootElement.replaceChildren(clone);
 
-      // we need to wait for all components to render before we can set its value
-      setTimeout(() => {
-        updateScreenFromScreenState(this.rootElement, screenState);
-      });
-
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
 
-      handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+      // we need to wait for all components to render before we can set its value
+      setTimeout(() => {
+        updateScreenFromScreenState(this.rootElement, screenState);
+        this.#updateExternalInputs();
 
-      if (this.validateOnBlur) {
-        handleReportValidityOnBlur(this.rootElement);
-      }
+        handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+
+        if (this.validateOnBlur) {
+          handleReportValidityOnBlur(this.rootElement);
+        }
+
+        // we need to wait for all components to render before we can set its value
+        updateScreenFromScreenState(this.rootElement, screenState);
+      });
 
       this.#hydrate(next);
       if (isFirstScreen) {
@@ -1003,6 +1014,37 @@ class DescopeWc extends BaseDescopeWc {
         this.loggerWrapper.error('Could not store credentials', e.message);
       }
     }
+  }
+
+  #updateExternalInputs() {
+    // we need to clear external inputs that were created previously, so each screen has only
+    // the slotted inputs it needs
+    clearPreviousExternalInputs();
+
+    const eles = this.rootElement.querySelectorAll('[external-input="true"]');
+    eles.forEach((ele) => this.#handleExternalInputs(ele));
+  }
+
+  #handleExternalInputs(ele: Element) {
+    if (!ele) {
+      return;
+    }
+
+    const origInputs = ele.querySelectorAll('input');
+
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
   }
 
   // we are wrapping this function with a leading debounce,

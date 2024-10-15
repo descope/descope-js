@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.12...nextjs-sdk-0.3.0) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+* `react-sdk` updated to version `2.1.0`
+* `core-js-sdk` updated to version `2.27.0`
+* `web-component` updated to version `3.26.0`
+
+### Features
+
+* apps portal sdks ([#808](https://github.com/descope/descope-js/issues/808)) ([30b11b0](https://github.com/descope/descope-js/commit/30b11b0ec8252281ed3cfb273e415edfa2fa1070))
+
 ## [0.2.12](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.11...nextjs-sdk-0.2.12) (2024-09-29)
 
 ### Dependency Updates
