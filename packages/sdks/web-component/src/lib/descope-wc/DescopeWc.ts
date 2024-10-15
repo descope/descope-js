@@ -280,7 +280,7 @@ class DescopeWc extends BaseDescopeWc {
             ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.storagePrefix),
             abTestingKey,
             locale: getUserLocale(locale).locale,
           },
@@ -485,7 +485,7 @@ class DescopeWc extends BaseDescopeWc {
       openInNewTabUrl,
     };
 
-    const lastAuth = getLastAuth(loginId);
+    const lastAuth = getLastAuth(loginId, this.storagePrefix);
 
     // If there is a start screen id, next action should start the flow
     // But if any of the sso params are not empty, this optimization doesn't happen
@@ -642,7 +642,7 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
-        setLastAuth(lastAuth);
+        setLastAuth(lastAuth, this.storagePrefix);
       }
       this.#dispatch('success', authInfo);
       return;
