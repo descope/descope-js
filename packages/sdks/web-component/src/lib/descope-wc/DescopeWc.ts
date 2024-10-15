@@ -186,15 +186,15 @@ class DescopeWc extends BaseDescopeWc {
     return null;
   }
 
-  async #handleFlowReload() {
-    this.loggerWrapper.debug('Trying to reload the flow');
+  async #handleFlowRestart() {
+    this.loggerWrapper.debug('Trying to restart the flow');
     const prevCompVersion = await this.getComponentsVersion();
     this.getConfig.reset();
     const compVersion = await this.getComponentsVersion();
 
     if (prevCompVersion === compVersion) {
       this.loggerWrapper.debug(
-        'Components version was not changed, reloading flow',
+        'Components version was not changed, restarting flow',
       );
       this.flowState.update({
         stepId: null,
@@ -250,10 +250,10 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-            backupCallbackUri: redirectAuthBackupCallbackUri,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+          backupCallbackUri: redirectAuthBackupCallbackUri,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -634,11 +634,12 @@ class DescopeWc extends BaseDescopeWc {
 
       // E102004 = Flow requested is in old version
       // E103205 = Flow timed out
+      const errorCode = sdkResp?.error?.errorCode
       if (
-        sdkResp?.error?.errorCode === 'E102004' ||
-        sdkResp?.error?.errorCode === 'E103205'
+        (errorCode === 'E102004' || errorCode === 'E103205') &&
+        this.isRestartOnError
       ) {
-        this.#handleFlowReload();
+        this.#handleFlowRestart();
       }
       return;
     }

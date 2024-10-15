@@ -331,6 +331,10 @@ class BaseDescopeWc extends BaseClass {
     this.#componentsContext = { ...this.#componentsContext, ...e.detail };
   }
 
+  get isRestartOnError() {
+    return this.getAttribute('restart-on-error') === 'true';
+  }
+
   async getExecutionContext() {
     const { executionContext } = await this.getConfig();
 

@@ -9,7 +9,7 @@ import {
   handleAutoFocus,
   isChromium,
   setRunIdsOnUrl,
-  withMemCache
+  withMemCache,
 } from '../../src/lib/helpers/helpers';
 
 const mockFetch = jest.fn();
@@ -228,7 +228,7 @@ describe('withMemCache', () => {
     const myFnWithMemCache = withMemCache(myFn);
 
     expect(myFnWithMemCache()).toBe('result');
-  })
+  });
 
   it('should cache the fn result', () => {
     const myFn = jest.fn(() => 'result');
@@ -238,7 +238,7 @@ describe('withMemCache', () => {
     myFnWithMemCache();
 
     expect(myFn).toHaveBeenCalledTimes(1);
-  })
+  });
 
   it('should reset the cache when the reset function is called', () => {
     const myFn = jest.fn(() => 'result');
@@ -249,6 +249,5 @@ describe('withMemCache', () => {
     myFnWithMemCache();
 
     expect(myFn).toHaveBeenCalledTimes(2);
-  })
-
-})
+  });
+});
