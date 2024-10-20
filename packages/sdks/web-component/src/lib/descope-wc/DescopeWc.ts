@@ -99,16 +99,19 @@ class DescopeWc extends BaseDescopeWc {
   initNativeState({
     platform,
     oauthProvider,
+    oauthRedirect,
     origin,
   }: {
     platform: string;
-    origin?: string;
     oauthProvider?: string;
+    oauthRedirect?: string;
+    origin?: string;
   }) {
     this.flowState.update({
-      webauthnOrigin: origin,
       nativePlatform: platform,
       nativeOAuthProvider: oauthProvider,
+      nativeOAuthRedirect: oauthRedirect,
+      webauthnOrigin: origin,
     });
   }
 
@@ -239,6 +242,7 @@ class DescopeWc extends BaseDescopeWc {
       nativeResponseType,
       nativePayload,
       nativeOAuthProvider,
+      nativeOAuthRedirect,
       ...ssoQueryParams
     } = currentState;
 
@@ -265,7 +269,11 @@ class DescopeWc extends BaseDescopeWc {
           }
         : undefined;
     const nativeOptions = nativePlatform
-      ? { platform: nativePlatform, oauthProvider: nativeOAuthProvider }
+      ? {
+          platform: nativePlatform,
+          oauthProvider: nativeOAuthProvider,
+          oauthRedirect: nativeOAuthRedirect,
+        }
       : undefined;
 
     // if there is no execution id we should start a new flow
