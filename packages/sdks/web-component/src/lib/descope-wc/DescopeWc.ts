@@ -754,8 +754,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
-      nativeResponseType: nativeResponse.type,
-      nativePayload: nativeResponse.payload,
+      nativeResponseType: nativeResponse?.type,
+      nativePayload: nativeResponse?.payload,
     });
   };
 
