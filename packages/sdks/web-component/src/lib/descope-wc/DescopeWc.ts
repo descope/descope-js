@@ -476,8 +476,8 @@ class DescopeWc extends BaseDescopeWc {
         );
         this.#handleSdkResponse(sdkResp);
       };
-      // notify the native layer that a native action is requested via 'nativeBridge' event
-      this.#dispatch('nativeBridge', {
+      // notify the bridging native layer that a native action is requested via 'bridge' event
+      this.#dispatch('bridge', {
         type: nativeResponseType,
         payload: nativePayload,
       });
