@@ -112,7 +112,7 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  nativeComplete = async (_: string) => {};
+  nativeComplete: (nativeResponse: string) => Promise<void>;
 
   async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
@@ -248,7 +248,8 @@ class DescopeWc extends BaseDescopeWc {
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
-    const flowVersions = Object.entries(projectConfig.flows || {}).reduce( // pass also current versions for all flows, it may be used as a part of the current flow
+    const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
+      // pass also current versions for all flows, it may be used as a part of the current flow
       (acc, [key, value]) => {
         acc[key] = value.version;
         return acc;
@@ -455,8 +456,8 @@ class DescopeWc extends BaseDescopeWc {
 
     if (action === RESPONSE_ACTIONS.nativeBridge) {
       // prepare a callback to receive a response from the native layer
-      this.nativeComplete = async (inputString: string) => {
-        const input = JSON.parse(inputString);
+      this.nativeComplete = async (nativeResponse: string) => {
+        const input = JSON.parse(nativeResponse);
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
