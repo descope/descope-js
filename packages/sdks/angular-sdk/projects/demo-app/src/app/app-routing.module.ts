@@ -9,6 +9,7 @@ import { ManageRolesComponent } from './manage-roles/manage-roles.component';
 import { ManageAccessKeysComponent } from './manage-access-keys/manage-access-keys.component';
 import { ManageAuditComponent } from './manage-audit/manage-audit.component';
 import { MyUserProfileComponent } from './my-user-profile/my-user-profile.component';
+import { MyApplicationsPortalComponent } from './my-applications-portal/my-applications-portal.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'manage-access-keys', component: ManageAccessKeysComponent },
   { path: 'manage-audit', component: ManageAuditComponent },
   { path: 'my-user-profile', component: MyUserProfileComponent },
+  { path: 'my-applications-portal', component: MyApplicationsPortalComponent },
   { path: '**', component: HomeComponent }
 ];
 

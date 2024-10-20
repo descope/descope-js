@@ -549,3 +549,9 @@ export function getUserLocale(locale: string): Locale {
 
   return { locale: nl.toLowerCase(), fallback: nl.toLowerCase() };
 }
+
+export const clearPreviousExternalInputs = () => {
+  document
+    .querySelectorAll('[data-hidden-input="true"]')
+    .forEach((ele) => ele.remove());
+};

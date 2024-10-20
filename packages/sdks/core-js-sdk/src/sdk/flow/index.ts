@@ -19,8 +19,8 @@ const withFlow = (httpClient: HttpClient) => ({
       options?: Options,
       conditionInteractionId?: string,
       interactionId?: string,
-      version?: number,
       componentsVersion?: string,
+      flowVersions?: Record<string, number>,
       input?: FlowInput,
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
@@ -29,8 +29,8 @@ const withFlow = (httpClient: HttpClient) => ({
           options,
           conditionInteractionId,
           interactionId,
-          version,
           componentsVersion,
+          flowVersions,
           input,
         }),
       ),

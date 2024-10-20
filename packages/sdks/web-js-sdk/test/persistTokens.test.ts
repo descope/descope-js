@@ -4,9 +4,16 @@ import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
+globalThis.Headers = class Headers {
+  constructor(obj: object) {
+    return Object.assign({}, obj);
+  }
+} as any;
+
 const descopeHeaders = {
   'x-descope-sdk-name': 'web-js',
   'x-descope-sdk-version': global.BUILD_VERSION,
+  'x-descope-sdk-session-id': expect.any(String),
 };
 
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));

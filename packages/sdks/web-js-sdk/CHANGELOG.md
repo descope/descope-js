@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.18.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.17.0...web-js-sdk-1.18.0) (2024-10-14)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.27.0`
+
+### Features
+
+* add sdk session id ([#814](https://github.com/descope/descope-js/issues/814)) ([9f8f5a6](https://github.com/descope/descope-js/commit/9f8f5a6a79f978919a0019991640bd69e06365f8))
+
 ## [1.17.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.6...web-js-sdk-1.17.0) (2024-09-29)
 
 ### Dependency Updates

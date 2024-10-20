@@ -13,7 +13,7 @@ const onLogout = () => (window.location.href = '/login');
 </script>
 
 <style>
-.manage-users-wrapper {
+.user-profile-wrapper {
   margin: 20px;
 }
 </style>
