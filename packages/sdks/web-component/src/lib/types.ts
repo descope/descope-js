@@ -81,8 +81,9 @@ export type FlowState = {
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
   nativePlatform: string;
-  nativePayload: Record<string, any>;
   nativeOAuthProvider: string;
+  nativeResponseType: string;
+  nativePayload: Record<string, any>;
   webauthnOrigin: string;
 } & SSOQueryParams;
 

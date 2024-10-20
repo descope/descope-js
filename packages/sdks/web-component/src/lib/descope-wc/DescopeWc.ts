@@ -111,7 +111,7 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  nativeComplete = async (_: any) => {};
+  nativeComplete = async (_: string) => {};
 
   async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
@@ -235,6 +235,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
       nativePlatform,
+      nativeResponseType,
       nativePayload,
       nativeOAuthProvider,
       ...ssoQueryParams
@@ -447,7 +448,8 @@ class DescopeWc extends BaseDescopeWc {
 
     if (action === RESPONSE_ACTIONS.nativeBridge) {
       // prepare a callback to receive a response from the native layer
-      this.nativeComplete = async (input: any) => {
+      this.nativeComplete = async (inputString: string) => {
+        const input = JSON.parse(inputString);
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
@@ -459,7 +461,10 @@ class DescopeWc extends BaseDescopeWc {
         this.#handleSdkResponse(sdkResp);
       };
       // notify the native layer that a native action is requested via 'nativeBridge' event
-      this.#dispatch('nativeBridge', nativePayload);
+      this.#dispatch('nativeBridge', {
+        type: nativeResponseType,
+        payload: nativePayload,
+      });
       return;
     }
 
@@ -696,7 +701,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthn,
       error,
       samlIdpResponse,
-      nativePayload,
+      nativeResponse,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
@@ -733,7 +738,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
-      nativePayload,
+      nativeResponseType: nativeResponse.type,
+      nativePayload: nativeResponse.payload,
     });
   };
 

@@ -284,7 +284,10 @@ export type FlowResponse = {
     create: boolean;
   };
   // native payload - if the action is 'nativeBridge'
-  nativePayload?: Record<string, any>;
+  nativeResponse?: {
+    type: string;
+    payload: Record<string, any>;
+  };
   // an error that occurred during flow execution, used for debugging / integrating
   error?: {
     code: string;
