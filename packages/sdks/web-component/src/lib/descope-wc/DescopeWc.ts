@@ -96,6 +96,27 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  initNativeState({
+    platform,
+    oauthProvider,
+    oauthRedirect,
+    origin,
+  }: {
+    platform: string;
+    oauthProvider?: string;
+    oauthRedirect?: string;
+    origin?: string;
+  }) {
+    this.flowState.update({
+      nativePlatform: platform,
+      nativeOAuthProvider: oauthProvider,
+      nativeOAuthRedirect: oauthRedirect,
+      webauthnOrigin: origin,
+    });
+  }
+
+  nativeComplete: (nativeResponse: string) => Promise<void>;
+
   async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
     const scripts = flowConfig.sdkScripts;
@@ -217,6 +238,11 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
+      nativePlatform,
+      nativeResponseType,
+      nativePayload,
+      nativeOAuthProvider,
+      nativeOAuthRedirect,
       ...ssoQueryParams
     } = currentState;
 
@@ -226,7 +252,8 @@ class DescopeWc extends BaseDescopeWc {
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
-    const flowVersions = Object.entries(projectConfig.flows || {}).reduce( // pass also current versions for all flows, it may be used as a part of the current flow
+    const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
+      // pass also current versions for all flows, it may be used as a part of the current flow
       (acc, [key, value]) => {
         acc[key] = value.version;
         return acc;
@@ -241,6 +268,13 @@ class DescopeWc extends BaseDescopeWc {
             backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
+    const nativeOptions = nativePlatform
+      ? {
+          platform: nativePlatform,
+          oauthProvider: nativeOAuthProvider,
+          oauthRedirect: nativeOAuthRedirect,
+        }
+      : undefined;
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
@@ -283,6 +317,7 @@ class DescopeWc extends BaseDescopeWc {
             lastAuth: getLastAuth(loginId),
             abTestingKey,
             locale: getUserLocale(locale).locale,
+            nativeOptions,
           },
           conditionInteractionId,
           '',
@@ -427,6 +462,28 @@ class DescopeWc extends BaseDescopeWc {
       this.#handleSdkResponse(sdkResp);
     }
 
+    if (action === RESPONSE_ACTIONS.nativeBridge) {
+      // prepare a callback to receive a response from the native layer
+      this.nativeComplete = async (nativeResponse: string) => {
+        const input = JSON.parse(nativeResponse);
+        const sdkResp = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          CUSTOM_INTERACTIONS.submit,
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          input,
+        );
+        this.#handleSdkResponse(sdkResp);
+      };
+      // notify the bridging native layer that a native action is requested via 'bridge' event
+      this.#dispatch('bridge', {
+        type: nativeResponseType,
+        payload: nativePayload,
+      });
+      return;
+    }
+
     this.#handlePollingResponse(
       executionId,
       stepId,
@@ -509,6 +566,7 @@ class DescopeWc extends BaseDescopeWc {
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale).locale,
+            nativeOptions,
           },
           conditionInteractionId,
           interactionId,
@@ -659,6 +717,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthn,
       error,
       samlIdpResponse,
+      nativeResponse,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
@@ -695,6 +754,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
+      nativeResponseType: nativeResponse?.type,
+      nativePayload: nativeResponse?.payload,
     });
   };
 
@@ -1039,7 +1100,8 @@ class DescopeWc extends BaseDescopeWc {
           ...eleDescopeAttrs,
           ...formData,
           // 'origin' is required to start webauthn. For now we'll add it to every request
-          origin: window.location.origin,
+          origin:
+            this.flowState.current.webauthnOrigin || window.location.origin,
         };
 
         const flowConfig = await this.getFlowConfig();

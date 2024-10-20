@@ -673,9 +673,9 @@ describe('web-component', () => {
         },
         undefined,
         'submitterId',
-        "1.2.3",
+        '1.2.3',
         {
-            "sign-in": 0,
+          'sign-in': 0,
         },
         {
           email: '',
@@ -1858,10 +1858,10 @@ describe('web-component', () => {
         expect.objectContaining({ redirectUrl: 'http://custom.url' }),
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "otpSignInEmail": 1,
-            "versioned-flow": 1,
+          otpSignInEmail: 1,
+          'versioned-flow': 1,
         },
         {},
       ),
@@ -1895,9 +1895,9 @@ describe('web-component', () => {
         }),
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "sign-in": 1,
+          'sign-in': 1,
         },
         {
           email: 'test',
@@ -2316,9 +2316,9 @@ describe('web-component', () => {
           },
           conditionInteractionId,
           'interactionId',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 1,
+            'sign-in': 1,
           },
           { origin: 'http://localhost' },
         ),
@@ -2361,9 +2361,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 1,
+            'sign-in': 1,
           },
           {
             exchangeCode: 'code1',
@@ -2450,7 +2450,7 @@ describe('web-component', () => {
           '',
           undefined,
           {
-              "sign-in": 1,
+            'sign-in': 1,
           },
           {
             token: 'code1',
@@ -2530,9 +2530,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           {},
         ),
@@ -2577,9 +2577,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           { token },
         ),
@@ -2616,9 +2616,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           {},
         ),
@@ -2742,9 +2742,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           {},
         ),
@@ -2782,9 +2782,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           {},
         ),
@@ -2818,9 +2818,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           {
             idpInitiated: true,
@@ -2888,9 +2888,9 @@ describe('web-component', () => {
           },
           undefined,
           '',
-          "1.2.3",
+          '1.2.3',
           {
-              "sign-in": 0,
+            'sign-in': 0,
           },
           {},
         ),
@@ -2924,10 +2924,10 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "otpSignInEmail": 1,
-            "versioned-flow": 1,
+          otpSignInEmail: 1,
+          'versioned-flow': 1,
         },
         {
           externalId: 'dummyUser',
@@ -2990,10 +2990,10 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "otpSignInEmail": 1,
-            "versioned-flow": 1,
+          otpSignInEmail: 1,
+          'versioned-flow': 1,
         },
         {},
       ),
@@ -3055,10 +3055,10 @@ describe('web-component', () => {
         },
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "otpSignInEmail": 1,
-            "versioned-flow": 1,
+          otpSignInEmail: 1,
+          'versioned-flow': 1,
         },
         {},
       ),
@@ -3129,9 +3129,9 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "sign-in": 1,
+          'sign-in': 1,
         },
         {
           exchangeCode: 'code1',
@@ -3184,9 +3184,9 @@ describe('web-component', () => {
         defaultOptionsValues,
         undefined,
         '',
-        "1.2.3",
+        '1.2.3',
         {
-            "sign-in": 1,
+          'sign-in': 1,
         },
         {
           exchangeCode: 'code1',
