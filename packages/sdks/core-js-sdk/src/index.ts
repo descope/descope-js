@@ -41,6 +41,7 @@ export type {
   UserHistoryResponse,
   LoginOptions,
   AccessKeyLoginOptions,
+  PasskeyOptions,
 } from './sdk/types';
 export * from './utils';
 export { default as HttpStatusCodes } from './constants/httpStatusCodes';

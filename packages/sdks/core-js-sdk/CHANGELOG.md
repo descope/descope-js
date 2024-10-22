@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.27.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.26.0...core-js-sdk-2.27.0) (2024-10-14)
+
+
+### Features
+
+* add sdk session id ([#814](https://github.com/descope/descope-js/issues/814)) ([9f8f5a6](https://github.com/descope/descope-js/commit/9f8f5a6a79f978919a0019991640bd69e06365f8))
+
+## [2.26.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.1...core-js-sdk-2.26.0) (2024-09-29)
+
+
+### Features
+
+* Add passkeyOptions to all webauthn start calls ([#807](https://github.com/descope/descope-js/issues/807)) RELEASE ([a8e0909](https://github.com/descope/descope-js/commit/a8e09094f8afdb016f437a3bc3bb6c6586330840))
+
 ## [2.25.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.0...core-js-sdk-2.25.1) (2024-09-17)
 
 

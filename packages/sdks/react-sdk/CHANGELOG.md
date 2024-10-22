@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.1.0](https://github.com/descope/descope-js/compare/react-sdk-2.0.78...react-sdk-2.1.0) (2024-10-14)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.125`
+* `audit-management-widget` updated to version `0.1.89`
+* `role-management-widget` updated to version `0.1.123`
+* `user-management-widget` updated to version `0.4.126`
+* `user-profile-widget` updated to version `0.0.108`
+* `applications-portal-widget` updated to version `0.1.0`
+* `web-component` updated to version `3.26.0`
+* `web-js-sdk` updated to version `1.18.0`
+* `core-js-sdk` updated to version `2.27.0`
+
+### Features
+
+* apps portal sdks ([#808](https://github.com/descope/descope-js/issues/808)) ([30b11b0](https://github.com/descope/descope-js/commit/30b11b0ec8252281ed3cfb273e415edfa2fa1070))
+
+## [2.0.78](https://github.com/descope/descope-js/compare/react-sdk-2.0.77...react-sdk-2.0.78) (2024-09-29)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.0.107`
+* `web-component` updated to version `3.25.3`
+## [2.0.77](https://github.com/descope/descope-js/compare/react-sdk-2.0.76...react-sdk-2.0.77) (2024-09-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.1.124`
+* `audit-management-widget` updated to version `0.1.88`
+* `role-management-widget` updated to version `0.1.122`
+* `user-management-widget` updated to version `0.4.125`
+* `user-profile-widget` updated to version `0.0.106`
+* `web-component` updated to version `3.25.2`
+* `web-js-sdk` updated to version `1.17.0`
+* `core-js-sdk` updated to version `2.26.0`
 ## [2.0.76](https://github.com/descope/descope-js/compare/react-sdk-2.0.75...react-sdk-2.0.76) (2024-09-19)
 
 ### Dependency Updates

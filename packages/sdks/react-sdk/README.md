@@ -485,6 +485,23 @@ import { UserProfile } from '@descope/react-sdk';
 Example:
 [User Profile](./examples/app/MyUserProfile.tsx)
 
+#### Applications Portal
+
+The `ApplicationsPortal` lets you embed an applications portal component in your app and allows the logged-in user to open applications they are assigned to.
+
+###### Usage
+
+```js
+import { ApplicationsPortal } from '@descope/react-sdk';
+...
+  <ApplicationsPortal
+    widgetId="applications-portal-widget"
+  />
+```
+
+Example:
+[Applications Portal](./examples/app/MyApplicationsPortal.tsx)
+
 ## Code Example
 
 You can find an example react app in the [examples folder](./examples).

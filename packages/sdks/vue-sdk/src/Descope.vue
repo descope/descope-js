@@ -13,6 +13,7 @@
       :telemetryKey.attr="telemetryKey"
       :redirect-url="redirectUrl"
       :auto-focus="autoFocus"
+      :style-id="styleId"
       :validate-on-blur="validateOnBlur"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
       :errorTransformer.prop="errorTransformer"
@@ -92,6 +93,9 @@ const props = defineProps({
   },
   client: {
     type: Object,
+  },
+  styleId: {
+    type: String,
   },
 });
 // const emit = defineEmits(['success', 'error', 'ready']);

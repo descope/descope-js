@@ -8,4 +8,6 @@ if (!customElements.get('descope-wc')) {
 }
 export default DescopeWc;
 
-export type { AutoFocusOptions, ThemeOptions, ILogger } from '../types';
+export type ILogger = Partial<DescopeWc['logger']>;
+
+export type { AutoFocusOptions, ThemeOptions } from '../types';

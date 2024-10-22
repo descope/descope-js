@@ -2,38 +2,70 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.12...nextjs-sdk-0.3.0) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+* `react-sdk` updated to version `2.1.0`
+* `core-js-sdk` updated to version `2.27.0`
+* `web-component` updated to version `3.26.0`
+
+### Features
+
+* apps portal sdks ([#808](https://github.com/descope/descope-js/issues/808)) ([30b11b0](https://github.com/descope/descope-js/commit/30b11b0ec8252281ed3cfb273e415edfa2fa1070))
+
+## [0.2.12](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.11...nextjs-sdk-0.2.12) (2024-09-29)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.0.78`
+* `web-component` updated to version `3.25.3`
+## [0.2.11](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.10...nextjs-sdk-0.2.11) (2024-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.17.0`
+* `react-sdk` updated to version `2.0.77`
+* `core-js-sdk` updated to version `2.26.0`
+* `web-component` updated to version `3.25.2`
 ## [0.2.10](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.9...nextjs-sdk-0.2.10) (2024-09-19)
 
 ### Dependency Updates
 
-* `react-sdk` updated to version `2.0.76`
-* `web-component` updated to version `3.25.1`
+- `react-sdk` updated to version `2.0.76`
+- `web-component` updated to version `3.25.1`
+
 ## [0.2.9](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.8...nextjs-sdk-0.2.9) (2024-09-17)
 
 ### Dependency Updates
 
-* `web-js-sdk` updated to version `1.16.6`
-* `react-sdk` updated to version `2.0.75`
-* `core-js-sdk` updated to version `2.25.1`
-* `web-component` updated to version `3.25.0`
+- `web-js-sdk` updated to version `1.16.6`
+- `react-sdk` updated to version `2.0.75`
+- `core-js-sdk` updated to version `2.25.1`
+- `web-component` updated to version `3.25.0`
+
 ## [0.2.8](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.7...nextjs-sdk-0.2.8) (2024-09-12)
 
 ### Dependency Updates
 
-* `react-sdk` updated to version `2.0.74`
+- `react-sdk` updated to version `2.0.74`
+
 ## [0.2.7](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.6...nextjs-sdk-0.2.7) (2024-09-11)
 
 ### Dependency Updates
 
-* `web-js-sdk` updated to version `1.16.5`
-* `react-sdk` updated to version `2.0.73`
-* `core-js-sdk` updated to version `2.25.0`
-* `web-component` updated to version `3.24.2`
+- `web-js-sdk` updated to version `1.16.5`
+- `react-sdk` updated to version `2.0.73`
+- `core-js-sdk` updated to version `2.25.0`
+- `web-component` updated to version `3.24.2`
+
 ## [0.2.6](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.5...nextjs-sdk-0.2.6) (2024-09-05)
 
 ### Dependency Updates
 
-* `react-sdk` updated to version `2.0.72`
+- `react-sdk` updated to version `2.0.72`
+
 ## [0.2.5](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.4...nextjs-sdk-0.2.5) (2024-09-03)
 
 ### Dependency Updates
