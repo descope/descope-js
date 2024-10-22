@@ -641,7 +641,7 @@ class DescopeWc extends BaseDescopeWc {
 
       // E102004 = Flow requested is in old version
       // E103205 = Flow timed out
-      const errorCode = sdkResp?.error?.errorCode
+      const errorCode = sdkResp?.error?.errorCode;
       if (
         (errorCode === 'E102004' || errorCode === 'E103205') &&
         this.isRestartOnError
