@@ -96,6 +96,9 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  // native bridge
+  bridgeVersion = 1;
+  nativeComplete: (nativeResponse: string) => Promise<void>;
   initNativeState({
     platform,
     oauthProvider,
@@ -114,8 +117,6 @@ class DescopeWc extends BaseDescopeWc {
       webauthnOrigin: origin,
     });
   }
-
-  nativeComplete: (nativeResponse: string) => Promise<void>;
 
   async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
