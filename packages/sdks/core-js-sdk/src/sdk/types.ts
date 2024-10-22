@@ -14,9 +14,16 @@ type RedirectAuth = {
   codeChallenge: string;
 };
 
+/** Sent in a flow start request when running as a native flow component via a mobile SDK */
 type NativeOptions = {
-  platform: string;
+  /** What mobile platform we're running on, used to decide between different behaviors on the backend */
+  platform: 'ios' | 'android';
+
+  /** The name of an OAuth provider that will use native OAuth (Sign in with Apple/Google) instead of web OAuth when running in a mobile app */
   oauthProvider?: string;
+
+  /** An override for web OAuth that sets the address to redirect to after authentication succeeds at the OAuth provider website */
+  oauthRedirect?: string;
 };
 
 type AuthMethod =
@@ -283,9 +290,9 @@ export type FlowResponse = {
     options: string;
     create: boolean;
   };
-  // native payload - if the action is 'nativeBridge'
+  // set if the action is 'nativeBridge'
   nativeResponse?: {
-    type: string;
+    type: 'oauthNative' | 'oauthWeb' | 'webauthnGet' | 'webauthnCreate';
     payload: Record<string, any>;
   };
   // an error that occurred during flow execution, used for debugging / integrating

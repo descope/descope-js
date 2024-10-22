@@ -96,18 +96,18 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  // native bridge version native / web syncing - change this when
+  // Native bridge version native / web syncing - change this when
   // a major change happens that requires some form of compatibility
   bridgeVersion = 1;
 
-  // this callback will be initialized once a 'nativeBridge' action is
+  // This callback will be initialized once a 'nativeBridge' action is
   // received from a start or next request. It will then be called by
   // the native layer as a response to a dispatched 'bridge' event.
   nativeComplete: (bridgeResponse: string) => Promise<void>;
 
-  // this function is called once by the native layer, after the
+  // This function is called once by the native layer, after the
   // web-component dispatches the 'ready' event. It is used to
-  // inject native specific data into the `flowState`
+  // inject native specific data into the 'flowState'.
   initNativeState({
     platform,
     oauthProvider,
@@ -1143,7 +1143,10 @@ class DescopeWc extends BaseDescopeWc {
           ...contextArgs,
           ...eleDescopeAttrs,
           ...formData,
-          // 'origin' is required to start webauthn. For now we'll add it to every request
+          // 'origin' is required to start webauthn. For now we'll add it to every request.
+          // When running in a native flow in a Android app the webauthn authentication
+          // is performed in the native app, so a custom origin needs to be injected
+          // into the webauthn request data.
           origin:
             this.flowState.current.webauthnOrigin || window.location.origin,
         };
