@@ -104,6 +104,7 @@ export type LoginOptions = {
   stepup?: boolean;
   mfa?: boolean;
   customClaims?: Record<string, any>;
+  templateId?: string;
   templateOptions?: TemplateOptions;
 };
 
@@ -115,6 +116,7 @@ export type AccessKeyLoginOptions = {
 /** Sign Up options to be added to the different authentication methods */
 export type SignUpOptions = {
   customClaims?: Record<string, any>;
+  templateId?: string;
   templateOptions?: TemplateOptions;
 };
 
