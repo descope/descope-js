@@ -187,6 +187,27 @@ class DescopeWc extends BaseDescopeWc {
     return null;
   }
 
+  async #handleFlowRestart() {
+    this.loggerWrapper.debug('Trying to restart the flow');
+    const prevCompVersion = await this.getComponentsVersion();
+    this.getConfig.reset();
+    const compVersion = await this.getComponentsVersion();
+
+    if (prevCompVersion === compVersion) {
+      this.loggerWrapper.debug(
+        'Components version was not changed, restarting flow',
+      );
+      this.flowState.update({
+        stepId: null,
+        executionId: null,
+      });
+    } else {
+      this.loggerWrapper.error(
+        'Components version mismatch, please reload the page',
+      );
+    }
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -226,14 +247,20 @@ class DescopeWc extends BaseDescopeWc {
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
-
+    const flowVersions = Object.entries(projectConfig.flows || {}).reduce( // pass also current versions for all flows, it may be used as a part of the current flow
+      (acc, [key, value]) => {
+        acc[key] = value.version;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-            backupCallbackUri: redirectAuthBackupCallbackUri,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+          backupCallbackUri: redirectAuthBackupCallbackUri,
+        }
         : undefined;
 
     // if there is no execution id we should start a new flow
@@ -280,8 +307,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           '',
-          flowConfig.version,
           projectConfig.componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
@@ -506,8 +533,8 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           interactionId,
-          version,
           componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...inputs,
@@ -611,6 +638,16 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorDescription || defaultMessage,
         sdkResp?.error?.errorMessage || defaultDescription,
       );
+
+      // E102004 = Flow requested is in old version
+      // E103205 = Flow timed out
+      const errorCode = sdkResp?.error?.errorCode
+      if (
+        (errorCode === 'E102004' || errorCode === 'E103205') &&
+        this.isRestartOnError
+      ) {
+        this.#handleFlowRestart();
+      }
       return;
     }
 

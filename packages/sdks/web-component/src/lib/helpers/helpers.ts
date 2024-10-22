@@ -368,14 +368,22 @@ const compareArrays = (array1: any[], array2: any[]) =>
 export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
   let prevArgs: any[];
   let cache: any;
-  return (...args: I) => {
-    if (prevArgs && compareArrays(prevArgs, args)) return cache as O;
+  return Object.assign(
+    (...args: I) => {
+      if (prevArgs && compareArrays(prevArgs, args)) return cache as O;
 
-    prevArgs = args;
-    cache = fn(...args);
+      prevArgs = args;
+      cache = fn(...args);
 
-    return cache as O;
-  };
+      return cache as O;
+    },
+    {
+      reset: () => {
+        prevArgs = undefined;
+        cache = undefined;
+      },
+    },
+  );
 };
 
 export const handleAutoFocus = (
