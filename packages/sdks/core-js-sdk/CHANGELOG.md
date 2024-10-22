@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.28.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.27.0...core-js-sdk-2.28.0) (2024-10-22)
+
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+* send all flow versions during start ([#819](https://github.com/descope/descope-js/issues/819)) ([9726ebc](https://github.com/descope/descope-js/commit/9726ebc96b9a6e77324bf3f5af13eea74e8ecf2d))
+
 ## [2.27.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.26.0...core-js-sdk-2.27.0) (2024-10-14)
 
 
