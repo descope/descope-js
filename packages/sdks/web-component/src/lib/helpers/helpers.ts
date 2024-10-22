@@ -22,6 +22,8 @@ import {
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
+const MARKDOWN_CHARS = ['*', '~', '&'];
+
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -554,4 +556,12 @@ export const clearPreviousExternalInputs = () => {
   document
     .querySelectorAll('[data-hidden-input="true"]')
     .forEach((ele) => ele.remove());
+};
+
+export const escapeMarkdown = (s: string) => {
+  console.log('escapeMarkdown');
+  if (typeof s !== 'string') return s;
+  const escapedChars = MARKDOWN_CHARS.map((char) => `\\${char}`).join('|');
+  const regexp = new RegExp(`(${escapedChars})`, 'g');
+  return s.replace(regexp, '\\$1');
 };

@@ -4,6 +4,7 @@ import {
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
+import { escapeMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
 
@@ -63,7 +64,9 @@ const applyTemplates = (
   text: string,
   screenState?: Record<string, any>,
 ): string =>
-  text.replace(/{{(.+?)}}/g, (_, match) => getByPath(screenState, match));
+  text.replace(/{{(.+?)}}/g, (_, match) =>
+    escapeMarkdown(getByPath(screenState, match)),
+  );
 
 /**
  * Replace the templates of content of inner text/link elements with screen state data
