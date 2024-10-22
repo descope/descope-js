@@ -96,9 +96,18 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  // native bridge
+  // native bridge version native / web syncing - change this when
+  // a major change happens that requires some form of compatibility
   bridgeVersion = 1;
-  nativeComplete: (nativeResponse: string) => Promise<void>;
+
+  // this callback will be initialized once a 'nativeBridge' action is
+  // received from a start or next request. It will then be called by
+  // the native layer as a response to a dispatched 'bridge' event.
+  nativeComplete: (bridgeResponse: string) => Promise<void>;
+
+  // this function is called once by the native layer, after the
+  // web-component dispatches the 'ready' event. It is used to
+  // inject native specific data into the `flowState`
   initNativeState({
     platform,
     oauthProvider,
@@ -464,9 +473,11 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     if (action === RESPONSE_ACTIONS.nativeBridge) {
-      // prepare a callback to receive a response from the native layer
-      this.nativeComplete = async (nativeResponse: string) => {
-        const input = JSON.parse(nativeResponse);
+      // prepare a callback with the current flow state, and accept
+      // the input to be a JSON, passed down from the native layer.
+      // this function will be called as an async response to a 'bridge' event
+      this.nativeComplete = async (bridgeResponse: string) => {
+        const input = JSON.parse(bridgeResponse);
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
@@ -477,7 +488,8 @@ class DescopeWc extends BaseDescopeWc {
         );
         this.#handleSdkResponse(sdkResp);
       };
-      // notify the bridging native layer that a native action is requested via 'bridge' event
+      // notify the bridging native layer that a native action is requested via 'bridge' event.
+      // the response will be in the form of calling the `nativeComplete` callback
       this.#dispatch('bridge', {
         type: nativeResponseType,
         payload: nativePayload,
