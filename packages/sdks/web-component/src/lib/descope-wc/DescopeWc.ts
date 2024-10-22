@@ -218,6 +218,27 @@ class DescopeWc extends BaseDescopeWc {
     return null;
   }
 
+  async #handleFlowRestart() {
+    this.loggerWrapper.debug('Trying to restart the flow');
+    const prevCompVersion = await this.getComponentsVersion();
+    this.getConfig.reset();
+    const compVersion = await this.getComponentsVersion();
+
+    if (prevCompVersion === compVersion) {
+      this.loggerWrapper.debug(
+        'Components version was not changed, restarting flow',
+      );
+      this.flowState.update({
+        stepId: null,
+        executionId: null,
+      });
+    } else {
+      this.loggerWrapper.error(
+        'Components version mismatch, please reload the page',
+      );
+    }
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -273,10 +294,10 @@ class DescopeWc extends BaseDescopeWc {
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
-            callbackUrl: redirectAuthCallbackUrl,
-            codeChallenge: redirectAuthCodeChallenge,
-            backupCallbackUri: redirectAuthBackupCallbackUri,
-          }
+          callbackUrl: redirectAuthCallbackUrl,
+          codeChallenge: redirectAuthCodeChallenge,
+          backupCallbackUri: redirectAuthBackupCallbackUri,
+        }
         : undefined;
     const nativeOptions = nativePlatform
       ? {
@@ -688,6 +709,16 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorDescription || defaultMessage,
         sdkResp?.error?.errorMessage || defaultDescription,
       );
+
+      // E102004 = Flow requested is in old version
+      // E103205 = Flow timed out
+      const errorCode = sdkResp?.error?.errorCode
+      if (
+        (errorCode === 'E102004' || errorCode === 'E103205') &&
+        this.isRestartOnError
+      ) {
+        this.#handleFlowRestart();
+      }
       return;
     }
 

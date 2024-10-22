@@ -13,6 +13,7 @@ export const generateSdkResponse = ({
   status = 'running',
   requestErrorMessage = '',
   requestErrorDescription = '',
+  requestErrorCode = '',
   webAuthnTransactionId = '',
   webAuthnOptions = '',
   samlIdpResponseUrl = '',
@@ -52,6 +53,7 @@ export const generateSdkResponse = ({
   error: {
     errorMessage: requestErrorMessage,
     errorDescription: requestErrorDescription,
+    errorCode: requestErrorCode,
   },
 });
 

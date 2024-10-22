@@ -116,7 +116,7 @@ let themeContent = {};
 let pageContent = '';
 let configContent: any = {};
 
-class TestClass {}
+class TestClass { }
 
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
@@ -259,6 +259,7 @@ describe('web-component', () => {
         ok: false,
         requestErrorMessage: 'Not found',
         requestErrorDescription: 'Not found',
+        requestErrorCode: '123',
       }),
     );
 
@@ -276,6 +277,7 @@ describe('web-component', () => {
             detail: {
               errorMessage: 'Not found',
               errorDescription: 'Not found',
+              errorCode: '123',
             },
           }),
         ),
@@ -295,6 +297,59 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
+  });
+
+  it('When getting E102004 error, and the components version remains the same, should restart the flow with the correct version', async () => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({ requestErrorCode: 'E102004', ok: false }),
+    );
+    startMock.mockReturnValue(generateSdkResponse({}));
+
+    pageContent = '<input id="email"></input><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1" restart-on-error="true"></descope-wc>`;
+
+    const flattenConfigFlowVersions = (flows) => Object.entries(flows).reduce((acc, [key, val]) => ({ ...acc, [key]: val.version }), {});
+
+    await waitFor(() => expect(startMock).toBeCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'otpSignInEmail',
+          expect.any(Object),
+          undefined,
+          '',
+          '1.2.3',
+          flattenConfigFlowVersions(configContent.flows),
+          {}
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    configContent.flows.otpSignInEmail.version = 2;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(() => expect(startMock).toBeCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'otpSignInEmail',
+          expect.any(Object),
+          undefined,
+          '',
+          '1.2.3',
+          flattenConfigFlowVersions(configContent.flows),
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('When WC loads it injects the theme', async () => {
@@ -483,7 +538,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true, appendChild: () => {} },
+          value: { isConnected: true, appendChild: () => { } },
         });
       }
 
@@ -510,7 +565,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true, appendChild: () => {} },
+          value: { isConnected: true, appendChild: () => { } },
         });
       }
 
@@ -714,7 +769,7 @@ describe('web-component', () => {
     pageContent =
       '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
 
-    customElements.define('descope-test-button', class extends HTMLElement {});
+    customElements.define('descope-test-button', class extends HTMLElement { });
 
     const DescopeUI = { 'descope-test-button': jest.fn() };
     globalThis.DescopeUI = DescopeUI;
@@ -1781,7 +1836,7 @@ describe('web-component', () => {
         Object.defineProperty(this, 'shadowRoot', {
           value: {
             isConnected: true,
-            appendChild: () => {},
+            appendChild: () => { },
             host: { closest: () => true },
           },
         });
@@ -3929,7 +3984,7 @@ describe('web-component', () => {
       );
 
       const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
-      mockSubmitForm.mockImplementation(() => {});
+      mockSubmitForm.mockImplementation(() => { });
 
       document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
