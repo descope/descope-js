@@ -105,27 +105,16 @@ class DescopeWc extends BaseDescopeWc {
   // the native layer as a response to a dispatched 'bridge' event.
   nativeComplete: (bridgeResponse: string) => Promise<void>;
 
-  // This function is called once by the native layer, after the
-  // web-component dispatches the 'ready' event. It is used to
+  // This object is set by the native layer to
   // inject native specific data into the 'flowState'.
-  initNativeState({
-    platform,
-    oauthProvider,
-    oauthRedirect,
-    origin,
-  }: {
-    platform: string;
-    oauthProvider?: string;
-    oauthRedirect?: string;
-    origin?: string;
-  }) {
-    this.flowState.update({
-      nativePlatform: platform,
-      nativeOAuthProvider: oauthProvider,
-      nativeOAuthRedirect: oauthRedirect,
-      webauthnOrigin: origin,
-    });
-  }
+  nativeOptions:
+    | {
+        platform: 'ios' | 'android';
+        oauthProvider?: string;
+        oauthRedirect?: string;
+        origin?: string;
+      }
+    | undefined;
 
   async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
@@ -269,11 +258,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
-      nativePlatform,
       nativeResponseType,
       nativePayload,
-      nativeOAuthProvider,
-      nativeOAuthRedirect,
       ...ssoQueryParams
     } = currentState;
 
@@ -299,11 +285,11 @@ class DescopeWc extends BaseDescopeWc {
             backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
-    const nativeOptions = nativePlatform
+    const nativeOptions = this.nativeOptions
       ? {
-          platform: nativePlatform,
-          oauthProvider: nativeOAuthProvider,
-          oauthRedirect: nativeOAuthRedirect,
+          platform: this.nativeOptions.platform,
+          oauthProvider: this.nativeOptions.oauthProvider,
+          oauthRedirect: this.nativeOptions.oauthRedirect,
         }
       : undefined;
 
@@ -1147,8 +1133,7 @@ class DescopeWc extends BaseDescopeWc {
           // When running in a native flow in a Android app the webauthn authentication
           // is performed in the native app, so a custom origin needs to be injected
           // into the webauthn request data.
-          origin:
-            this.flowState.current.webauthnOrigin || window.location.origin,
+          origin: this.nativeOptions?.origin || window.location.origin,
         };
 
         const flowConfig = await this.getFlowConfig();
