@@ -2,8 +2,10 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { configMixin } from '../configMixin';
 import { loggerMixin } from '../loggerMixin';
 import {
+  DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
   DESCOPE_UI_FALLBACK_SCRIPT_ID,
   DESCOPE_UI_SCRIPT_ID,
+  UI_COMPONENTS_FALLBACK_2_URL,
   UI_COMPONENTS_FALLBACK_URL,
   UI_COMPONENTS_URL,
 } from './constants';
@@ -75,6 +77,12 @@ export const descopeUiMixin = createSingletonMixin(
               `Cannot load DescopeUI from fallback URL, Make sure this URL is valid and return the correct script: "${fallbackScriptEle.src}"`,
             ),
           );
+
+          // in case we could not load DescopeUI from the main URL, we are trying to load it from a fallback URL
+          this.#handleFallback2Script(
+            fallbackScriptEle[this.#errorCbsSym],
+            fallbackScriptEle[this.#loadCbsSym],
+          );
         });
 
         fallbackScriptEle.addEventListener('load', () => {
@@ -83,6 +91,31 @@ export const descopeUiMixin = createSingletonMixin(
 
         fallbackScriptEle.src = generateScriptUrl(
           UI_COMPONENTS_FALLBACK_URL,
+          await this.#getComponentsVersion(),
+        );
+      }
+
+      async #handleFallback2Script(errorCbs: ErrorCb[], loadCbs: LoadCb[]) {
+        this.logger.debug(
+          'Trying to load DescopeUI from a second fallback URL',
+        );
+        const fallback2ScriptEle = setupScript(DESCOPE_UI_FALLBACK_2_SCRIPT_ID);
+        document.body.append(fallback2ScriptEle);
+
+        fallback2ScriptEle.addEventListener('error', () => {
+          errorCbs.forEach((cb: ErrorCb) =>
+            cb(
+              `Cannot load DescopeUI from second fallback URL, Make sure this URL is valid and return the correct script: "${fallback2ScriptEle.src}"`,
+            ),
+          );
+        });
+
+        fallback2ScriptEle.addEventListener('load', () => {
+          loadCbs.forEach((cb: LoadCb) => cb());
+        });
+
+        fallback2ScriptEle.src = generateScriptUrl(
+          UI_COMPONENTS_FALLBACK_2_URL,
           await this.#getComponentsVersion(),
         );
       }
