@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.29.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.28.0...core-js-sdk-2.29.0) (2024-10-26)
+
+
+### Features
+
+* Add support for templateId in LoginOptions and SignUpOptions ([#827](https://github.com/descope/descope-js/issues/827)) ([5c0a591](https://github.com/descope/descope-js/commit/5c0a591cf7f63645d440caf6e699631b7a5bcd97))
+
 ## [2.28.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.27.0...core-js-sdk-2.28.0) (2024-10-22)
 
 
