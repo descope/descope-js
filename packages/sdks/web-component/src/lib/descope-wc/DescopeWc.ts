@@ -31,6 +31,7 @@ import {
   handleReportValidityOnBlur,
   getUserLocale,
   clearPreviousExternalInputs,
+  timeoutPromise,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -615,19 +616,27 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #handlePollingResponse = (
-    executionId,
-    stepId,
-    action,
-    flowVersion,
-    componentsVersion,
+    executionId: string,
+    stepId: string,
+    action: string,
+    flowVersion?: number,
+    componentsVersion?: string,
+    rescheduled: boolean = false,
   ) => {
+    const pollingDefaultDelay = 2000;
+    const pollingDefaultTimeout = 6000;
+    const pollingThrottleDelay = 500;
+    const pollingThrottleThreshold = 500;
+    const pollingThrottleTimeout = 1000;
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.logger.debug('polling - Scheduling polling request');
+      const scheduledAt = Date.now();
+      const delay = rescheduled ? pollingThrottleDelay : pollingDefaultDelay;
       this.#pollingTimeout = setTimeout(async () => {
         this.logger.debug('polling - Calling next');
 
-        const sdkResp = await this.sdk.flow.next(
+        const nextCall = this.sdk.flow.next(
           executionId,
           stepId,
           CUSTOM_INTERACTIONS.polling,
@@ -635,6 +644,41 @@ class DescopeWc extends BaseDescopeWc {
           componentsVersion,
           {},
         );
+
+        // Try to detect whether the tab is being throttled when running in a mobile browser, specifically on iOS.
+        // We check whether the tab seems to hidden and the polling callback was called much later than expected,
+        // in which case we allow a much shorter timeout for the polling request. The reschedule check ensures
+        // this cannot happen twice consecutively.
+        const throttled =
+          document.hidden &&
+          !rescheduled &&
+          Date.now() - scheduledAt > delay + pollingThrottleThreshold;
+        if (throttled) {
+          this.logger.debug('polling - The polling seems to be throttled');
+        }
+
+        let sdkResp: Awaited<typeof nextCall>;
+        try {
+          const timeout = throttled
+            ? pollingThrottleTimeout
+            : pollingDefaultTimeout;
+          sdkResp = await timeoutPromise(timeout, nextCall);
+        } catch (err) {
+          this.logger.warn(
+            `polling - The ${
+              throttled ? 'throttled fetch' : 'fetch'
+            } call timed out or was aborted`,
+          );
+          this.#handlePollingResponse(
+            executionId,
+            stepId,
+            action,
+            flowVersion,
+            componentsVersion,
+            throttled,
+          );
+          return;
+        }
 
         if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
           this.logger.debug(
@@ -647,9 +691,9 @@ class DescopeWc extends BaseDescopeWc {
             flowVersion,
             componentsVersion,
           );
-
           return;
         }
+
         this.logger.debug('polling - Got a response');
         if (sdkResp?.error) {
           this.logger.debug(
@@ -668,7 +712,7 @@ class DescopeWc extends BaseDescopeWc {
           flowVersion,
           componentsVersion,
         );
-      }, 2000);
+      }, delay);
     }
   };
 
