@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.27.1](https://github.com/descope/descope-js/compare/web-component-3.27.0...web-component-3.27.1) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+
+### Bug Fixes
+
+* Add longish timeout for polling calls and a shorter one when detecting iOS throttling RELEASE ([#828](https://github.com/descope/descope-js/issues/828)) ([833151e](https://github.com/descope/descope-js/commit/833151ea4ffbfc66e904e0283065baeac0e0ac07))
+
 ## [3.27.0](https://github.com/descope/descope-js/compare/web-component-3.26.0...web-component-3.27.0) (2024-10-22)
 
 ### Dependency Updates
