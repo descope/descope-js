@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.3](https://github.com/descope/descope-js/compare/applications-portal-widget-0.1.2...applications-portal-widget-0.1.3) (2024-10-27)
+
+
+### Bug Fixes
+
+* issue 8042 RELEASE ([#830](https://github.com/descope/descope-js/issues/830)) ([7dd9d33](https://github.com/descope/descope-js/commit/7dd9d332c75cc10395a82c764b5a760769090f87))
+
 ## [0.1.2](https://github.com/descope/descope-js/compare/applications-portal-widget-0.1.1...applications-portal-widget-0.1.2) (2024-10-26)
 
 ### Dependency Updates
