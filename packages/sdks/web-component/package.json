@@ -77,7 +77,8 @@
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
-    "@fingerprintjs/fingerprintjs-pro": "3.9.9"
+    "@fingerprintjs/fingerprintjs-pro": "3.9.9",
+    "@descope-int/escape-markdown": "workspace:*"
   },
   "overrides": {
     "terser": "5.31.1"

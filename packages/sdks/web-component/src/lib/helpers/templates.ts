@@ -1,10 +1,11 @@
+import { escapeMarkdown } from '@descope-int/escape-markdown';
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
-import { escapeMarkdown, shouldHandleMarkdown } from './helpers';
+import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
 
