@@ -1147,7 +1147,6 @@ class DescopeWc extends BaseDescopeWc {
 
       inp.setAttribute('slot', id);
       this.appendChild(inp);
-      console.log('finish handleExternalInputs')
     });
   }
 
