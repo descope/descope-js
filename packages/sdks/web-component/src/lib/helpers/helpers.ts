@@ -22,7 +22,8 @@ import {
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
-const MARKDOWN_CHARS = ['*', '~', '&'];
+const MD_CHARS = ['*', '~', '&'];
+const MD_COMPONENTS = ['descope-enriched-text'];
 
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -568,7 +569,10 @@ export const clearPreviousExternalInputs = () => {
 
 export const escapeMarkdown = (s: string) => {
   if (typeof s !== 'string') return s;
-  const escapedChars = MARKDOWN_CHARS.map((char) => `\\${char}`).join('|');
+  const escapedChars = MD_CHARS.map((char) => `\\${char}`).join('|');
   const regexp = new RegExp(`(${escapedChars})`, 'g');
   return s.replace(regexp, '\\$1');
 };
+
+export const shouldHandleMarkdown = (compName: string) =>
+  MD_COMPONENTS.includes(compName);
