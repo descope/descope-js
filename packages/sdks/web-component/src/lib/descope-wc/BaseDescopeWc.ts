@@ -29,6 +29,7 @@ import {
   DescopeUI,
   ProjectConfiguration,
   FlowConfig,
+  SdkFlags,
 } from '../types';
 import initTemplate from './initTemplate';
 import {
@@ -69,6 +70,8 @@ class BaseDescopeWc extends BaseClass {
       'x-descope-sdk-version': BUILD_VERSION,
     },
   };
+
+  static sdkFlags: SdkFlags = {};
 
   #init = false;
 

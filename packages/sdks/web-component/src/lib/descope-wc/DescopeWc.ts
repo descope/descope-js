@@ -48,6 +48,7 @@ import {
   NextFn,
   NextFnReturnPromiseValue,
   SdkConfig,
+  SdkFlags,
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
@@ -61,6 +62,10 @@ class DescopeWc extends BaseDescopeWc {
 
   static set sdkConfigOverrides(config: Partial<SdkConfig>) {
     BaseDescopeWc.sdkConfigOverrides = config;
+  }
+
+  static set sdkFlags(flags: SdkFlags) {
+    BaseDescopeWc.sdkFlags = flags;
   }
 
   flowState: State<FlowState>;
@@ -645,39 +650,45 @@ class DescopeWc extends BaseDescopeWc {
           {},
         );
 
-        // Try to detect whether the tab is being throttled when running in a mobile browser, specifically on iOS.
-        // We check whether the tab seems to hidden and the polling callback was called much later than expected,
-        // in which case we allow a much shorter timeout for the polling request. The reschedule check ensures
-        // this cannot happen twice consecutively.
-        const throttled =
-          document.hidden &&
-          !rescheduled &&
-          Date.now() - scheduledAt > delay + pollingThrottleThreshold;
-        if (throttled) {
-          this.logger.debug('polling - The polling seems to be throttled');
-        }
-
         let sdkResp: Awaited<typeof nextCall>;
-        try {
-          const timeout = throttled
-            ? pollingThrottleTimeout
-            : pollingDefaultTimeout;
-          sdkResp = await timeoutPromise(timeout, nextCall);
-        } catch (err) {
-          this.logger.warn(
-            `polling - The ${
-              throttled ? 'throttled fetch' : 'fetch'
-            } call timed out or was aborted`,
-          );
-          this.#handlePollingResponse(
-            executionId,
-            stepId,
-            action,
-            flowVersion,
-            componentsVersion,
-            throttled,
-          );
-          return;
+        if (!BaseDescopeWc.sdkFlags?.enablePollingOptimization) {
+          // Smart polling is disabled, we will poll with the default delay
+          sdkResp = await nextCall;
+        } else {
+          this.logger.debug('Polling optimization is enabled');
+          // Try to detect whether the tab is being throttled when running in a mobile browser, specifically on iOS.
+          // We check whether the tab seems to hidden and the polling callback was called much later than expected,
+          // in which case we allow a much shorter timeout for the polling request. The reschedule check ensures
+          // this cannot happen twice consecutively.
+          const throttled =
+            document.hidden &&
+            !rescheduled &&
+            Date.now() - scheduledAt > delay + pollingThrottleThreshold;
+          if (throttled) {
+            this.logger.debug('polling - The polling seems to be throttled');
+          }
+
+          try {
+            const timeout = throttled
+              ? pollingThrottleTimeout
+              : pollingDefaultTimeout;
+            sdkResp = await timeoutPromise(timeout, nextCall);
+          } catch (err) {
+            this.logger.warn(
+              `polling - The ${
+                throttled ? 'throttled fetch' : 'fetch'
+              } call timed out or was aborted`,
+            );
+            this.#handlePollingResponse(
+              executionId,
+              stepId,
+              action,
+              flowVersion,
+              componentsVersion,
+              throttled,
+            );
+            return;
+          }
         }
 
         if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {

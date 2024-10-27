@@ -5,6 +5,17 @@ import createSdk from '@descope/web-js-sdk';
 export type SdkConfig = Parameters<typeof createSdk>[0];
 export type Sdk = ReturnType<typeof createSdk>;
 
+// Flags that can be passed to the SDK
+export type SdkFlags = {
+  /**
+   * When enabled, optimizes polling behavior by detecting potential throttling,
+   * especially in iOS browsers when the tab is hidden.
+   * If throttling is detected, the polling timeout is reduced temporarily to maintain responsiveness.
+   * If disabled, polling operates with the default delay without adaptive adjustments.
+   */
+  enablePollingOptimization?: boolean;
+};
+
 export type SdkFlowNext = Sdk['flow']['next'];
 
 export type ComponentsConfig = Record<string, any>;
