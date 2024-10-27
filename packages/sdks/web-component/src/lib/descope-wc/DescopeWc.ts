@@ -619,8 +619,8 @@ class DescopeWc extends BaseDescopeWc {
     executionId: string,
     stepId: string,
     action: string,
-    flowVersion?: number,
-    componentsVersion?: string,
+    flowVersion: number,
+    componentsVersion: string,
     rescheduled: boolean = false,
   ) => {
     const pollingDefaultDelay = 2000;
