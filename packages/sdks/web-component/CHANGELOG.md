@@ -2,6 +2,32 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.27.1](https://github.com/descope/descope-js/compare/web-component-3.27.0...web-component-3.27.1) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+
+### Bug Fixes
+
+* Add longish timeout for polling calls and a shorter one when detecting iOS throttling RELEASE ([#828](https://github.com/descope/descope-js/issues/828)) ([833151e](https://github.com/descope/descope-js/commit/833151ea4ffbfc66e904e0283065baeac0e0ac07))
+
+## [3.27.0](https://github.com/descope/descope-js/compare/web-component-3.26.0...web-component-3.27.0) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+* send all flow versions during start ([#819](https://github.com/descope/descope-js/issues/819)) ([9726ebc](https://github.com/descope/descope-js/commit/9726ebc96b9a6e77324bf3f5af13eea74e8ecf2d))
+
+
+### Bug Fixes
+
+* handle mismatch flow version ([#818](https://github.com/descope/descope-js/issues/818)) ([9aa29e2](https://github.com/descope/descope-js/commit/9aa29e2a6293d761275738edced7091c785503f0))
+
 ## [3.26.0](https://github.com/descope/descope-js/compare/web-component-3.25.3...web-component-3.26.0) (2024-10-14)
 
 ### Dependency Updates
