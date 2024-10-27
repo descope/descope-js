@@ -559,7 +559,6 @@ export const clearPreviousExternalInputs = () => {
 };
 
 export const escapeMarkdown = (s: string) => {
-  console.log('escapeMarkdown');
   if (typeof s !== 'string') return s;
   const escapedChars = MARKDOWN_CHARS.map((char) => `\\${char}`).join('|');
   const regexp = new RegExp(`(${escapedChars})`, 'g');
