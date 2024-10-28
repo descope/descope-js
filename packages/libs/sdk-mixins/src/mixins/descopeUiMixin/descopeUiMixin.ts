@@ -66,9 +66,15 @@ export const descopeUiMixin = createSingletonMixin(
         });
       }
 
-      async #handleFallbackScript(errorCbs: ErrorCb[], loadCbs: LoadCb[]) {
+      async #handleFallbackScript(
+        errorCbs: ErrorCb[],
+        loadCbs: LoadCb[],
+        elemId: string,
+        scriptUrl: string,
+        withFallback = true,
+      ) {
         this.logger.debug('Trying to load DescopeUI from a fallback URL');
-        const fallbackScriptEle = setupScript(DESCOPE_UI_FALLBACK_SCRIPT_ID);
+        const fallbackScriptEle = setupScript(elemId);
         document.body.append(fallbackScriptEle);
 
         fallbackScriptEle.addEventListener('error', () => {
@@ -79,10 +85,14 @@ export const descopeUiMixin = createSingletonMixin(
           );
 
           // in case we could not load DescopeUI from the main URL, we are trying to load it from a fallback URL
-          this.#handleFallback2Script(
-            fallbackScriptEle[this.#errorCbsSym],
-            fallbackScriptEle[this.#loadCbsSym],
-          );
+          withFallback &&
+            this.#handleFallbackScript(
+              fallbackScriptEle[this.#errorCbsSym],
+              fallbackScriptEle[this.#loadCbsSym],
+              DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
+              UI_COMPONENTS_FALLBACK_2_URL,
+              false,
+            );
         });
 
         fallbackScriptEle.addEventListener('load', () => {
@@ -90,32 +100,7 @@ export const descopeUiMixin = createSingletonMixin(
         });
 
         fallbackScriptEle.src = generateScriptUrl(
-          UI_COMPONENTS_FALLBACK_URL,
-          await this.#getComponentsVersion(),
-        );
-      }
-
-      async #handleFallback2Script(errorCbs: ErrorCb[], loadCbs: LoadCb[]) {
-        this.logger.debug(
-          'Trying to load DescopeUI from a second fallback URL',
-        );
-        const fallback2ScriptEle = setupScript(DESCOPE_UI_FALLBACK_2_SCRIPT_ID);
-        document.body.append(fallback2ScriptEle);
-
-        fallback2ScriptEle.addEventListener('error', () => {
-          errorCbs.forEach((cb: ErrorCb) =>
-            cb(
-              `Cannot load DescopeUI from second fallback URL, Make sure this URL is valid and return the correct script: "${fallback2ScriptEle.src}"`,
-            ),
-          );
-        });
-
-        fallback2ScriptEle.addEventListener('load', () => {
-          loadCbs.forEach((cb: LoadCb) => cb());
-        });
-
-        fallback2ScriptEle.src = generateScriptUrl(
-          UI_COMPONENTS_FALLBACK_2_URL,
+          scriptUrl,
           await this.#getComponentsVersion(),
         );
       }
@@ -132,6 +117,8 @@ export const descopeUiMixin = createSingletonMixin(
           this.#handleFallbackScript(
             scriptEle[this.#errorCbsSym],
             scriptEle[this.#loadCbsSym],
+            DESCOPE_UI_FALLBACK_SCRIPT_ID,
+            UI_COMPONENTS_FALLBACK_URL,
           );
         });
 
