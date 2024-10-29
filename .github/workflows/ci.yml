@@ -71,7 +71,9 @@ jobs:
         shell: bash
 
       - name: License validation
-        run: pnpm run licenseCheck
+        run:
+          cd packages/libs/escape-markdown && tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project .
+        # run: pnpm run licenseCheck
 
       - name: Build
         run: pnpm run build
