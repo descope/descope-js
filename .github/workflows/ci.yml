@@ -72,7 +72,7 @@ jobs:
 
       - name: License validation
         run:
-          cd packages/libs/escape-markdown && tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project .
+          ./tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project ./packages/libs/escape-markdown
         # run: pnpm run licenseCheck
 
       - name: Build
