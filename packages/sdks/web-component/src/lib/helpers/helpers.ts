@@ -22,6 +22,8 @@ import {
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
+const MD_COMPONENTS = ['descope-enriched-text'];
+
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -563,3 +565,6 @@ export const clearPreviousExternalInputs = () => {
     .querySelectorAll('[data-hidden-input="true"]')
     .forEach((ele) => ele.remove());
 };
+
+export const shouldHandleMarkdown = (compName: string) =>
+  MD_COMPONENTS.includes(compName);
