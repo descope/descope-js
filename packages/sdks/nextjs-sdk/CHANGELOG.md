@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.5](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.4...nextjs-sdk-0.3.5) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+* `react-sdk` updated to version `2.1.5`
+* `core-js-sdk` updated to version `2.29.1`
+* `web-component` updated to version `3.27.3`
+
+### Bug Fixes
+
+* support next build for app router without transpile    ([#833](https://github.com/descope/descope-js/issues/833)) ([58612e4](https://github.com/descope/descope-js/commit/58612e41c62253f9d041fd0aa4b9a51be43d7888))
+
 ## [0.3.4](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.3...nextjs-sdk-0.3.4) (2024-10-27)
 
 ### Dependency Updates
