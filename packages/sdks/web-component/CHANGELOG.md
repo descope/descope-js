@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.27.2](https://github.com/descope/descope-js/compare/web-component-3.27.1...web-component-3.27.2) (2024-10-27)
+
+
+### Bug Fixes
+
+* Fix updateScreenFromScreenState RELEASE ([#831](https://github.com/descope/descope-js/issues/831)) ([feec44d](https://github.com/descope/descope-js/commit/feec44d603f781e67ca5e9da18177beb96d33486))
+* Remove redundant optionality from function params ([#829](https://github.com/descope/descope-js/issues/829)) ([0def47e](https://github.com/descope/descope-js/commit/0def47e657bcbfaf62187234df1d6c2e826f937e))
+
 ## [3.27.1](https://github.com/descope/descope-js/compare/web-component-3.27.0...web-component-3.27.1) (2024-10-26)
 
 ### Dependency Updates

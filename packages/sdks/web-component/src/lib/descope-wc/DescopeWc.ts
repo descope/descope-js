@@ -619,8 +619,8 @@ class DescopeWc extends BaseDescopeWc {
     executionId: string,
     stepId: string,
     action: string,
-    flowVersion?: number,
-    componentsVersion?: string,
+    flowVersion: number,
+    componentsVersion: string,
     rescheduled: boolean = false,
   ) => {
     const pollingDefaultDelay = 2000;
@@ -989,7 +989,6 @@ class DescopeWc extends BaseDescopeWc {
 
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
-        updateScreenFromScreenState(this.rootElement, screenState);
         this.#updateExternalInputs();
 
         handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);

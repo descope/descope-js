@@ -10,6 +10,16 @@ import preserveDirectives from 'rollup-plugin-preserve-directives';
 // import { swc } from 'rollup-plugin-swc3';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 // import commonjs from '@rollup/plugin-commonjs';
+import alias from '@rollup/plugin-alias';
+
+const nextSubPackages = [
+	'next/server',
+	'next/dynamic',
+	'next/navigation',
+	'next/router',
+	'next/link',
+	'next/headers'
+];
 
 // Common plugins for all configurations
 const commonPlugins = (outputDir) => [
@@ -26,6 +36,13 @@ const commonPlugins = (outputDir) => [
 	preserveDirectives({ supressPreserveModulesWarning: true }),
 	nodeResolve(),
 	// commonjs(),
+	alias({
+		entries: nextSubPackages.map((alias) => {
+			// Append the `.js` suffix to Next.js sub-packages
+			// to ensure compatibility with Node environments
+			return { find: alias, replacement: `${alias}.js` };
+		})
+	}),
 	autoExternal()
 	// terser()
 ];
@@ -38,15 +55,7 @@ const configurations = ['server', 'client', ''].map((entry) => {
 
 	return {
 		input: inputPath,
-		external: [
-			'next/server',
-			'react',
-			'next/dynamic',
-			'next/router',
-			'next/navigation',
-			'next/link',
-			'next/headers'
-		],
+		external: ['react', ...nextSubPackages.map((alias) => `${alias}.js`)],
 		onwarn(warning, warn) {
 			if (
 				warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
