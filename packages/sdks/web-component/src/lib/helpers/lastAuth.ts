@@ -4,13 +4,17 @@ import {
 } from '../constants';
 import { NextFnReturnPromiseValue } from '../types';
 
-export function getLastAuth(loginId: string) {
+export function getLastAuth(loginId: string, prefix?: string) {
   const lastAuth = {};
   if (loginId) {
     try {
       Object.assign(
         lastAuth,
-        JSON.parse(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)),
+        JSON.parse(
+          localStorage.getItem(
+            `${prefix}${DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY}`,
+          ),
+        ),
       );
     } catch (e) {
       /* empty */
@@ -22,13 +26,14 @@ export function getLastAuth(loginId: string) {
 // save last auth to local storage
 export function setLastAuth(
   lastAuth: NextFnReturnPromiseValue['data']['lastAuth'],
+  prefix?: string,
 ) {
   if (!lastAuth?.authMethod) {
     return;
   }
   if (IS_LOCAL_STORAGE) {
     localStorage.setItem(
-      DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+      `${prefix}${DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY}`,
       JSON.stringify(lastAuth),
     );
   }
