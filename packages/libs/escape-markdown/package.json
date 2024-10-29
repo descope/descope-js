@@ -1,5 +1,5 @@
 {
-  "name": "@descope-int/escape-markdown",
+  "name": "@descope/escape-markdown",
   "version": "0.0.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
@@ -25,7 +25,10 @@
   "scripts": {
     "build": "rimraf dist && rollup -c",
     "test": "jest",
-    "lint": "eslint '+(src|test|examples)/**/*.ts'"
+    "format": "prettier . -w --ignore-path .gitignore",
+    "format-check": "prettier . --check --ignore-path .gitignore",
+    "lint": "eslint '+(src|test|examples)/**/*.ts'",
+    "lint-check": "eslint '+(src|test)/**/*.+(ts|tsx)'"
   },
   "license": "MIT",
   "repository": {

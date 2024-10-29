@@ -1,4 +1,4 @@
-import { escapeMarkdown } from '@descope-int/escape-markdown';
+import { escapeMarkdown } from '@descope/escape-markdown';
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,

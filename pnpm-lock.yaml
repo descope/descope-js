@@ -1472,7 +1472,7 @@ importers:
 
   packages/sdks/web-component:
     dependencies:
-      '@descope-int/escape-markdown':
+      '@descope/escape-markdown':
         specifier: workspace:*
         version: link:../../libs/escape-markdown
       '@descope/sdk-helpers':
