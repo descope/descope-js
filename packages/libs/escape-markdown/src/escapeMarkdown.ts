@@ -1,15 +1,16 @@
 const mdChars = ['*', '#', '/', '(', ')', '[', ']', '_', '<', '>', '`'];
 
+const createRegexp = (prefix: string) => {
+  const regex = mdChars.map((char) => `${prefix}${char}`).join('|')
+  return new RegExp(`(${regex})`, 'g');
+};
+
 export const escapeMarkdown = (s: string) => {
   if (typeof s !== 'string') return s;
-  const escapedTextRegexp = mdChars.map((char) => `\\${char}`).join('|');
-  const regexp = new RegExp(`(${escapedTextRegexp})`, 'g');
-  return s.replace(regexp, '\\$1');
+  return s.replace(createRegexp('\\'), '\\$1');
 };
 
 export const unescapeMarkdown = (s: string) => {
   if (typeof s !== 'string') return s;
-  const escapedTextRegexp = mdChars.map((char) => `\\\\${char}`).join('|');
-  const regexp = new RegExp(`(${escapedTextRegexp})`, 'g');
-  return s.replace(regexp, (match) => match.slice(1));
+  return s.replace(createRegexp('\\\\'), (match) => match.slice(1));
 };
