@@ -1,7 +1,7 @@
 const mdChars = ['*', '#', '/', '(', ')', '[', ']', '_', '<', '>', '`'];
 
 const createRegexp = (prefix: string) => {
-  const regex = mdChars.map((char) => `${prefix}${char}`).join('|')
+  const regex = mdChars.map((char) => `${prefix}${char}`).join('|');
   return new RegExp(`(${regex})`, 'g');
 };
 
