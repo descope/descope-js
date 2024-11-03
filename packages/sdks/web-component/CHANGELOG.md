@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.28.0](https://github.com/descope/descope-js/compare/web-component-3.27.3...web-component-3.28.0) (2024-11-03)
+
+### Dependency Updates
+
+* `escape-markdown` updated to version `0.0.2`
+
+### Features
+
+* Add more options to native options ([#839](https://github.com/descope/descope-js/issues/839)) RELEASE ([4bc0b4c](https://github.com/descope/descope-js/commit/4bc0b4ce266c563b7964facf66180dafe4f0fafa))
+
 ## [3.27.3](https://github.com/descope/descope-js/compare/web-component-3.27.2...web-component-3.27.3) (2024-10-29)
 
 ### Dependency Updates
