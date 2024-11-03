@@ -15,6 +15,7 @@
       :auto-focus="autoFocus"
       :style-id="styleId"
       :validate-on-blur="validateOnBlur"
+      :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
       :errorTransformer.prop="errorTransformer"
       :form.attr="formStr"
@@ -83,6 +84,9 @@ const props = defineProps({
     type: Boolean || String,
   },
   validateOnBlur: {
+    type: Boolean,
+  },
+  restartOnError: {
     type: Boolean,
   },
   errorTransformer: {
