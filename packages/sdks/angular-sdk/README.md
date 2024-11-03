@@ -148,6 +148,14 @@ export class AppComponent {
      - "skipFirstScreen": automatically focus on the first input of each screen, except first screen
      autoFocus="skipFirstScreen"
 
+    validateOnBlur can be true or false. Default is false.
+     - true: Trigger input validation upon blur, in addition to the validation on submit
+     - false: do not trigger input validation upon blur
+
+    restartOnError can be true or false. Default is false.
+     - true: In case of flow version mismatch, will restart the flow if the components version was not changed
+     - false: Will not auto restart the flow in case of a flow version mismatch
+
      errorTransformer is a function that receives an error object and returns a string. The returned string will be displayed to the user.
      NOTE: errorTransformer is not required. If not provided, the error object will be displayed as is.
      Example:
