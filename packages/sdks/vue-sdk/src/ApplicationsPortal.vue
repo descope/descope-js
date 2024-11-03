@@ -8,6 +8,7 @@
       :theme.attr="theme"
       :debug.attr="debug"
       :widget-id="widgetId"
+      :style-id="styleId"
     />
   </div>
 </template>
@@ -22,6 +23,9 @@ defineProps({
     required: true,
   },
   theme: {
+    type: String,
+  },
+  styleId: {
     type: String,
   },
   debug: {

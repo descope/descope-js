@@ -24,6 +24,7 @@ export class SignUpOrInFlowComponent {
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();

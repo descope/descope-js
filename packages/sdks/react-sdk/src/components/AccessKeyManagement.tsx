@@ -22,6 +22,7 @@ const AccessKeyManagementWC = lazy(async () => {
       widgetId,
       theme,
       debug,
+      styleId,
     }) => (
 	<descope-access-key-management-widget
         project-id={projectId}
@@ -31,6 +32,7 @@ const AccessKeyManagementWC = lazy(async () => {
         theme={theme}
         tenant={tenant}
         debug={debug}
+        style-id={styleId}
         ref={innerRef}
       />
     ),
