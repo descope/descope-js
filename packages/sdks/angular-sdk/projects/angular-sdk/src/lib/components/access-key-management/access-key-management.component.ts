@@ -18,6 +18,7 @@ export class AccessKeyManagementComponent implements OnInit, OnChanges {
   @Input() theme: 'light' | 'dark' | 'os';
   @Input() debug: boolean;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   private readonly webComponent = new DescopeAccessKeyManagementWidget();
 

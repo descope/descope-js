@@ -22,6 +22,7 @@ const RoleManagementWC = lazy(async () => {
       widgetId,
       theme,
       debug,
+      styleId,
     }) => (
 	<descope-role-management-widget
         project-id={projectId}
@@ -31,6 +32,7 @@ const RoleManagementWC = lazy(async () => {
         theme={theme}
         tenant={tenant}
         debug={debug}
+        style-id={styleId}
         ref={innerRef}
       />
     ),
@@ -38,7 +40,7 @@ const RoleManagementWC = lazy(async () => {
 });
 
 const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId }, ref) => {
+  ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -61,6 +63,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
           innerRef={setInnerRef}
           tenant={tenant}
           theme={theme}
+          styleId={styleId}
           debug={debug}
         />
 	</Suspense>

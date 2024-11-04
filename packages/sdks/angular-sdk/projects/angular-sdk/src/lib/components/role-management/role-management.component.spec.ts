@@ -51,6 +51,7 @@ describe('DescopeRoleManagementComponent', () => {
     component.projectId = '123';
     component.tenant = 'tenant-1';
     component.widgetId = 'widget-1';
+    component.styleId = 'style-1';
     component.logger = {
       info: jest.fn(),
       error: jest.fn(),
@@ -80,5 +81,6 @@ describe('DescopeRoleManagementComponent', () => {
       'widget-1'
     );
     expect(webComponentHtml.getAttribute('logger')).toBeDefined();
+    expect(webComponentHtml.getAttribute('style-id')).toStrictEqual('style-1');
   });
 });

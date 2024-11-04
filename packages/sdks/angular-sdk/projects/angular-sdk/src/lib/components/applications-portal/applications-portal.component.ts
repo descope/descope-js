@@ -25,6 +25,7 @@ export class ApplicationsPortalComponent implements OnInit, OnChanges {
   @Input() theme: 'light' | 'dark' | 'os';
   @Input() debug: boolean;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   @Output() logout: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
 
@@ -66,6 +67,9 @@ export class ApplicationsPortalComponent implements OnInit, OnChanges {
 
     if (this.logger) {
       (this.webComponent as any).logger = this.logger;
+    }
+    if (this.styleId) {
+      this.webComponent.setAttribute('style-id', this.styleId);
     }
 
     if (this.logout) {
