@@ -35,6 +35,7 @@ type WidgetProps = {
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
   debug?: boolean;
+  styleId?: string;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;

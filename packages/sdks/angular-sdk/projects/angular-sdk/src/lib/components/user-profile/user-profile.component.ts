@@ -25,6 +25,7 @@ export class UserProfileComponent implements OnInit, OnChanges {
   @Input() theme: 'light' | 'dark' | 'os';
   @Input() debug: boolean;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   @Output() logout: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
 
@@ -62,6 +63,9 @@ export class UserProfileComponent implements OnInit, OnChanges {
     }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
+    }
+    if (this.styleId) {
+      this.webComponent.setAttribute('style-id', this.styleId);
     }
 
     if (this.logger) {

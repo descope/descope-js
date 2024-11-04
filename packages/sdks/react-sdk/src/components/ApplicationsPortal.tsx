@@ -21,6 +21,7 @@ const ApplicationsPortalWC = lazy(async () => {
       widgetId,
       theme,
       debug,
+      styleId,
     }) => (
 	<descope-applications-portal-widget
         project-id={projectId}
@@ -29,6 +30,7 @@ const ApplicationsPortalWC = lazy(async () => {
         base-static-url={baseStaticUrl}
         theme={theme}
         debug={debug}
+        style-id={styleId}
         ref={innerRef}
       />
     ),
@@ -38,7 +40,7 @@ const ApplicationsPortalWC = lazy(async () => {
 const ApplicationsPortal = React.forwardRef<
   HTMLElement,
   ApplicationsPortalProps
->(({ logger, theme, debug, widgetId }, ref) => {
+>(({ logger, theme, debug, widgetId, styleId }, ref) => {
   const [innerRef, setInnerRef] = useState(null);
 
   useImperativeHandle(ref, () => innerRef);
@@ -60,6 +62,7 @@ const ApplicationsPortal = React.forwardRef<
         innerRef={setInnerRef}
         theme={theme}
         debug={debug}
+        styleId={styleId}
       />
 	</Suspense>
   );
