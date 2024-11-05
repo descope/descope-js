@@ -2,6 +2,52 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.6](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.5...nextjs-sdk-0.3.6) (2024-11-03)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.1.6`
+* `web-component` updated to version `3.28.0`
+## [0.3.5](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.4...nextjs-sdk-0.3.5) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+* `react-sdk` updated to version `2.1.5`
+* `core-js-sdk` updated to version `2.29.1`
+* `web-component` updated to version `3.27.3`
+
+### Bug Fixes
+
+* support next build for app router without transpile    ([#833](https://github.com/descope/descope-js/issues/833)) ([58612e4](https://github.com/descope/descope-js/commit/58612e41c62253f9d041fd0aa4b9a51be43d7888))
+
+## [0.3.4](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.3...nextjs-sdk-0.3.4) (2024-10-27)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.1.4`
+* `web-component` updated to version `3.27.2`
+## [0.3.3](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.2...nextjs-sdk-0.3.3) (2024-10-27)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.1.3`
+## [0.3.2](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.1...nextjs-sdk-0.3.2) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+* `react-sdk` updated to version `2.1.2`
+* `core-js-sdk` updated to version `2.29.0`
+* `web-component` updated to version `3.27.1`
+## [0.3.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.0...nextjs-sdk-0.3.1) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+* `react-sdk` updated to version `2.1.1`
+* `core-js-sdk` updated to version `2.28.0`
+* `web-component` updated to version `3.27.0`
 ## [0.3.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.2.12...nextjs-sdk-0.3.0) (2024-10-14)
 
 ### Dependency Updates

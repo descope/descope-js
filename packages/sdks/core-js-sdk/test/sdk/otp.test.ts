@@ -162,6 +162,7 @@ describe('otp', () => {
 
     it('should send the correct request with sign up options', () => {
       sdk.otp.signUpOrIn.email('loginId', {
+        templateId: 'foo',
         templateOptions: {
           ble: 'blue',
         },
@@ -171,6 +172,7 @@ describe('otp', () => {
         {
           loginId: 'loginId',
           loginOptions: {
+            templateId: 'foo',
             templateOptions: {
               ble: 'blue',
             },

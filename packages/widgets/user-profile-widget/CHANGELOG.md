@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.113](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.112...user-profile-widget-0.0.113) (2024-11-03)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.28.0`
+## [0.0.112](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.111...user-profile-widget-0.0.112) (2024-10-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.29.1`
+* `web-js-sdk` updated to version `1.19.2`
+* `web-component` updated to version `3.27.3`
+## [0.0.111](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.110...user-profile-widget-0.0.111) (2024-10-27)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.27.2`
+## [0.0.110](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.109...user-profile-widget-0.0.110) (2024-10-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.29.0`
+* `web-js-sdk` updated to version `1.19.1`
+* `web-component` updated to version `3.27.1`
+## [0.0.109](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.108...user-profile-widget-0.0.109) (2024-10-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.28.0`
+* `web-js-sdk` updated to version `1.19.0`
+* `web-component` updated to version `3.27.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+
 ## [0.0.108](https://github.com/descope/descope-js/compare/user-profile-widget-0.0.107...user-profile-widget-0.0.108) (2024-10-14)
 
 ### Dependency Updates

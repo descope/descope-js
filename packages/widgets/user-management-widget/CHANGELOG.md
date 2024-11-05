@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.129](https://github.com/descope/descope-js/compare/user-management-widget-0.4.128...user-management-widget-0.4.129) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+## [0.4.128](https://github.com/descope/descope-js/compare/user-management-widget-0.4.127...user-management-widget-0.4.128) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+## [0.4.127](https://github.com/descope/descope-js/compare/user-management-widget-0.4.126...user-management-widget-0.4.127) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+* handle mismatch flow version ([#818](https://github.com/descope/descope-js/issues/818)) ([9aa29e2](https://github.com/descope/descope-js/commit/9aa29e2a6293d761275738edced7091c785503f0))
+
 ## [0.4.126](https://github.com/descope/descope-js/compare/user-management-widget-0.4.125...user-management-widget-0.4.126) (2024-10-14)
 
 ### Dependency Updates

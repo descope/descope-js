@@ -116,7 +116,7 @@ let themeContent = {};
 let pageContent = '';
 let configContent: any = {};
 
-class TestClass { }
+class TestClass {}
 
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
@@ -309,7 +309,11 @@ describe('web-component', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1" restart-on-error="true"></descope-wc>`;
 
-    const flattenConfigFlowVersions = (flows) => Object.entries(flows).reduce((acc, [key, val]) => ({ ...acc, [key]: val.version }), {});
+    const flattenConfigFlowVersions = (flows) =>
+      Object.entries(flows).reduce(
+        (acc, [key, val]) => ({ ...acc, [key]: val.version }),
+        {},
+      );
 
     await waitFor(() => expect(startMock).toBeCalledTimes(1), {
       timeout: WAIT_TIMEOUT,
@@ -323,7 +327,7 @@ describe('web-component', () => {
           '',
           '1.2.3',
           flattenConfigFlowVersions(configContent.flows),
-          {}
+          {},
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -538,7 +542,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true, appendChild: () => { } },
+          value: { isConnected: true, appendChild: () => {} },
         });
       }
 
@@ -565,7 +569,7 @@ describe('web-component', () => {
       constructor() {
         super();
         Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true, appendChild: () => { } },
+          value: { isConnected: true, appendChild: () => {} },
         });
       }
 
@@ -769,7 +773,7 @@ describe('web-component', () => {
     pageContent =
       '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
 
-    customElements.define('descope-test-button', class extends HTMLElement { });
+    customElements.define('descope-test-button', class extends HTMLElement {});
 
     const DescopeUI = { 'descope-test-button': jest.fn() };
     globalThis.DescopeUI = DescopeUI;
@@ -1836,7 +1840,7 @@ describe('web-component', () => {
         Object.defineProperty(this, 'shadowRoot', {
           value: {
             isConnected: true,
-            appendChild: () => { },
+            appendChild: () => {},
             host: { closest: () => true },
           },
         });
@@ -2220,6 +2224,92 @@ describe('web-component', () => {
       );
 
       wcEle.removeEventListener('success', onSuccess);
+    });
+  });
+
+  describe('native', () => {
+    it('Should prepare a callback for a native bridge response and broadcast an event when receiving a nativeBridge action', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.nativeBridge,
+          nativeResponseType: 'oauthNative',
+          nativeResponsePayload: { start: {} },
+        }),
+      );
+
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({
+          status: 'completed',
+        }),
+      );
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const onSuccess = jest.fn();
+      const onBridge = jest.fn();
+
+      const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+      // nativeComplete starts as undefined
+      expect(wcEle.nativeComplete).not.toBeDefined();
+
+      wcEle.addEventListener('success', onSuccess);
+      wcEle.addEventListener('bridge', onBridge);
+
+      // after start 'nativeComplete' is initialized and a 'bridge' event should be dispatched
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(onBridge).toHaveBeenCalledWith(
+            expect.objectContaining({
+              detail: {
+                type: 'oauthNative',
+                payload: { start: {} },
+              },
+            }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // simulate a native complete call and expect the 'next' call
+      await wcEle.nativeComplete(JSON.stringify({ response: true }));
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.submit,
+            1,
+            '1.2.3',
+            { response: true },
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(onSuccess).toHaveBeenCalledWith(
+            expect.objectContaining({ detail: 'auth info' }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      wcEle.removeEventListener('success', onSuccess);
+      wcEle.removeEventListener('bridge', onBridge);
     });
   });
 
@@ -3898,7 +3988,7 @@ describe('web-component', () => {
       );
 
       const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
-      mockSubmitForm.mockImplementation(() => { });
+      mockSubmitForm.mockImplementation(() => {});
 
       document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 

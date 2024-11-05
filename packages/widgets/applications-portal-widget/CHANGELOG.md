@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.4](https://github.com/descope/descope-js/compare/applications-portal-widget-0.1.3...applications-portal-widget-0.1.4) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+## [0.1.3](https://github.com/descope/descope-js/compare/applications-portal-widget-0.1.2...applications-portal-widget-0.1.3) (2024-10-27)
+
+
+### Bug Fixes
+
+* issue 8042 RELEASE ([#830](https://github.com/descope/descope-js/issues/830)) ([7dd9d33](https://github.com/descope/descope-js/commit/7dd9d332c75cc10395a82c764b5a760769090f87))
+
+## [0.1.2](https://github.com/descope/descope-js/compare/applications-portal-widget-0.1.1...applications-portal-widget-0.1.2) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+## [0.1.1](https://github.com/descope/descope-js/compare/applications-portal-widget-0.1.0...applications-portal-widget-0.1.1) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+
 ## [0.1.0](https://github.com/descope/descope-js/compare/applications-portal-widget-0.0.2...applications-portal-widget-0.1.0) (2024-10-14)
 
 ### Dependency Updates
