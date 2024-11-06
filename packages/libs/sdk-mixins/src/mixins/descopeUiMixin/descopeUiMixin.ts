@@ -71,7 +71,6 @@ export const descopeUiMixin = createSingletonMixin(
         loadCbs: LoadCb[],
         elemId: string,
         scriptUrl: string,
-        withFallback = true,
       ) {
         this.logger.debug('Trying to load DescopeUI from a fallback URL');
         const fallbackScriptEle = setupScript(elemId);
@@ -83,16 +82,6 @@ export const descopeUiMixin = createSingletonMixin(
               `Cannot load DescopeUI from fallback URL, Make sure this URL is valid and return the correct script: "${fallbackScriptEle.src}"`,
             ),
           );
-
-          // in case we could not load DescopeUI from the main URL, we are trying to load it from a fallback URL
-          withFallback &&
-            this.#handleFallbackScript(
-              fallbackScriptEle[this.#errorCbsSym],
-              fallbackScriptEle[this.#loadCbsSym],
-              DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
-              UI_COMPONENTS_FALLBACK_2_URL,
-              false,
-            );
         });
 
         fallbackScriptEle.addEventListener('load', () => {
@@ -115,7 +104,17 @@ export const descopeUiMixin = createSingletonMixin(
 
           // in case we could not load DescopeUI from the main URL, we are trying to load it from a fallback URL
           this.#handleFallbackScript(
-            scriptEle[this.#errorCbsSym],
+            [
+              // we are adding a second fallback
+              this.#handleFallbackScript.bind(
+                this,
+                scriptEle[this.#errorCbsSym],
+                scriptEle[this.#loadCbsSym],
+                DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
+                UI_COMPONENTS_FALLBACK_2_URL,
+              ),
+              ...scriptEle[this.#errorCbsSym],
+            ],
             scriptEle[this.#loadCbsSym],
             DESCOPE_UI_FALLBACK_SCRIPT_ID,
             UI_COMPONENTS_FALLBACK_URL,
