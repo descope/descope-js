@@ -181,6 +181,9 @@ export class AppComponent {
     Example:
     client={{ version: "1.2.0" }}
 
+    Use a custom style name or keep empty to use the default style.
+    styleId="my-awesome-style"
+
      logger is an object describing how to log info, warn and errors.
      NOTE: logger is not required. If not provided, the logs will be printed to the console.
      Example:

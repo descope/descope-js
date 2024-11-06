@@ -113,6 +113,8 @@ class DescopeWc extends BaseDescopeWc {
         platform: 'ios' | 'android';
         oauthProvider?: string;
         oauthRedirect?: string;
+        magicLinkRedirect?: string;
+        ssoRedirect?: string;
         origin?: string;
       }
     | undefined;
@@ -291,6 +293,8 @@ class DescopeWc extends BaseDescopeWc {
           platform: this.nativeOptions.platform,
           oauthProvider: this.nativeOptions.oauthProvider,
           oauthRedirect: this.nativeOptions.oauthRedirect,
+          magicLinkRedirect: this.nativeOptions.magicLinkRedirect,
+          ssoRedirect: this.nativeOptions.ssoRedirect,
         }
       : undefined;
 
