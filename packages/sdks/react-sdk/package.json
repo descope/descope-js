@@ -55,7 +55,8 @@
     "@descope/applications-portal-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
-    "@descope/core-js-sdk": "workspace:*"
+    "@descope/core-js-sdk": "workspace:*",
+    "@license-debug/gpl-3-0": "0.0.7"
   },
   "devDependencies": {
     "@babel/core": "7.24.7",
