@@ -116,7 +116,7 @@ class DescopeWc extends BaseDescopeWc {
     const response = JSON.parse(payload);
     this.logger.info(`nativeResume received payload of type '${type}'`);
     if (type === 'oauthWeb' || type === 'sso') {
-      let {exchangeCode} = response;
+      let { exchangeCode } = response;
       if (!exchangeCode) {
         const url = new URL(response.url);
         exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
