@@ -22,6 +22,8 @@ import {
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
+const MD_COMPONENTS = ['descope-enriched-text'];
+
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -169,13 +171,6 @@ export function getRedirectAuthFromUrl() {
   };
 }
 
-export function clearRedirectAuthFromUrl() {
-  resetUrlParam(URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME);
-  resetUrlParam(URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME);
-}
-
 export function getOIDCIDPParamFromUrl() {
   return getUrlParam(OIDC_IDP_STATE_ID_PARAM_NAME);
 }
@@ -283,20 +278,14 @@ export const handleUrlParams = () => {
     clearExchangeErrorFromUrl();
   }
 
+  // these query params are retained to allow the flow to be refreshed
+  // without losing the redirect auth state
   const {
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
   } = getRedirectAuthFromUrl();
-  if (
-    redirectAuthCodeChallenge ||
-    redirectAuthCallbackUrl ||
-    redirectAuthBackupCallbackUri ||
-    redirectAuthInitiator
-  ) {
-    clearRedirectAuthFromUrl();
-  }
 
   const oidcIdpStateId = getOIDCIDPParamFromUrl();
   if (oidcIdpStateId) {
@@ -379,14 +368,22 @@ const compareArrays = (array1: any[], array2: any[]) =>
 export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
   let prevArgs: any[];
   let cache: any;
-  return (...args: I) => {
-    if (prevArgs && compareArrays(prevArgs, args)) return cache as O;
+  return Object.assign(
+    (...args: I) => {
+      if (prevArgs && compareArrays(prevArgs, args)) return cache as O;
 
-    prevArgs = args;
-    cache = fn(...args);
+      prevArgs = args;
+      cache = fn(...args);
 
-    return cache as O;
-  };
+      return cache as O;
+    },
+    {
+      reset: () => {
+        prevArgs = undefined;
+        cache = undefined;
+      },
+    },
+  );
 };
 
 export const handleAutoFocus = (
@@ -562,3 +559,12 @@ export function getUserLocale(locale: string): Locale {
 
   return { locale: nl.toLowerCase(), fallback: nl.toLowerCase() };
 }
+
+export const clearPreviousExternalInputs = () => {
+  document
+    .querySelectorAll('[data-hidden-input="true"]')
+    .forEach((ele) => ele.remove());
+};
+
+export const shouldHandleMarkdown = (compName: string) =>
+  MD_COMPONENTS.includes(compName);

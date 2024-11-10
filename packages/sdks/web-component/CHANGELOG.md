@@ -2,6 +2,94 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.28.0](https://github.com/descope/descope-js/compare/web-component-3.27.3...web-component-3.28.0) (2024-11-03)
+
+### Dependency Updates
+
+* `escape-markdown` updated to version `0.0.2`
+
+### Features
+
+* Add more options to native options ([#839](https://github.com/descope/descope-js/issues/839)) RELEASE ([4bc0b4c](https://github.com/descope/descope-js/commit/4bc0b4ce266c563b7964facf66180dafe4f0fafa))
+
+## [3.27.3](https://github.com/descope/descope-js/compare/web-component-3.27.2...web-component-3.27.3) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+* `escape-markdown` updated to version `0.0.1`
+## [3.27.2](https://github.com/descope/descope-js/compare/web-component-3.27.1...web-component-3.27.2) (2024-10-27)
+
+
+### Bug Fixes
+
+* Fix updateScreenFromScreenState RELEASE ([#831](https://github.com/descope/descope-js/issues/831)) ([feec44d](https://github.com/descope/descope-js/commit/feec44d603f781e67ca5e9da18177beb96d33486))
+* Remove redundant optionality from function params ([#829](https://github.com/descope/descope-js/issues/829)) ([0def47e](https://github.com/descope/descope-js/commit/0def47e657bcbfaf62187234df1d6c2e826f937e))
+
+## [3.27.1](https://github.com/descope/descope-js/compare/web-component-3.27.0...web-component-3.27.1) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+
+### Bug Fixes
+
+* Add longish timeout for polling calls and a shorter one when detecting iOS throttling RELEASE ([#828](https://github.com/descope/descope-js/issues/828)) ([833151e](https://github.com/descope/descope-js/commit/833151ea4ffbfc66e904e0283065baeac0e0ac07))
+
+## [3.27.0](https://github.com/descope/descope-js/compare/web-component-3.26.0...web-component-3.27.0) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+* send all flow versions during start ([#819](https://github.com/descope/descope-js/issues/819)) ([9726ebc](https://github.com/descope/descope-js/commit/9726ebc96b9a6e77324bf3f5af13eea74e8ecf2d))
+
+
+### Bug Fixes
+
+* handle mismatch flow version ([#818](https://github.com/descope/descope-js/issues/818)) ([9aa29e2](https://github.com/descope/descope-js/commit/9aa29e2a6293d761275738edced7091c785503f0))
+
+## [3.26.0](https://github.com/descope/descope-js/compare/web-component-3.25.3...web-component-3.26.0) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+
+### Features
+
+* apps portal sdks ([#808](https://github.com/descope/descope-js/issues/808)) ([30b11b0](https://github.com/descope/descope-js/commit/30b11b0ec8252281ed3cfb273e415edfa2fa1070))
+* External Input support in SDK ([#798](https://github.com/descope/descope-js/issues/798)) ([01cc7fe](https://github.com/descope/descope-js/commit/01cc7feaba76908bada7b56e7f17ca87cd388a8b))
+
+## [3.25.3](https://github.com/descope/descope-js/compare/web-component-3.25.2...web-component-3.25.3) (2024-09-29)
+
+
+### Bug Fixes
+
+* logger typing improvements ([#813](https://github.com/descope/descope-js/issues/813)) RELEASE ([ab20610](https://github.com/descope/descope-js/commit/ab206103a6eb42489c7cc4013ea721a576d3d302))
+
+## [3.25.2](https://github.com/descope/descope-js/compare/web-component-3.25.1...web-component-3.25.2) (2024-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.17.0`
+## [3.25.1](https://github.com/descope/descope-js/compare/web-component-3.25.0...web-component-3.25.1) (2024-09-19)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.2`
+## [3.25.0](https://github.com/descope/descope-js/compare/web-component-3.24.2...web-component-3.25.0) (2024-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.6`
+
+### Features
+
+* Retain redirect auth URL params ([#802](https://github.com/descope/descope-js/issues/802)) RELEASE ([7d6590f](https://github.com/descope/descope-js/commit/7d6590f544c06af2e25e7ca1c42206680c7c6f4f))
+
 ## [3.24.2](https://github.com/descope/descope-js/compare/web-component-3.24.1...web-component-3.24.2) (2024-09-11)
 
 ### Dependency Updates

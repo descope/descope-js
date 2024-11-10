@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.29.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.29.0...core-js-sdk-2.29.1) (2024-10-29)
+
+## [2.29.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.28.0...core-js-sdk-2.29.0) (2024-10-26)
+
+
+### Features
+
+* Add support for templateId in LoginOptions and SignUpOptions ([#827](https://github.com/descope/descope-js/issues/827)) ([5c0a591](https://github.com/descope/descope-js/commit/5c0a591cf7f63645d440caf6e699631b7a5bcd97))
+
+## [2.28.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.27.0...core-js-sdk-2.28.0) (2024-10-22)
+
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+* send all flow versions during start ([#819](https://github.com/descope/descope-js/issues/819)) ([9726ebc](https://github.com/descope/descope-js/commit/9726ebc96b9a6e77324bf3f5af13eea74e8ecf2d))
+
+## [2.27.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.26.0...core-js-sdk-2.27.0) (2024-10-14)
+
+
+### Features
+
+* add sdk session id ([#814](https://github.com/descope/descope-js/issues/814)) ([9f8f5a6](https://github.com/descope/descope-js/commit/9f8f5a6a79f978919a0019991640bd69e06365f8))
+
+## [2.26.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.1...core-js-sdk-2.26.0) (2024-09-29)
+
+
+### Features
+
+* Add passkeyOptions to all webauthn start calls ([#807](https://github.com/descope/descope-js/issues/807)) RELEASE ([a8e0909](https://github.com/descope/descope-js/commit/a8e09094f8afdb016f437a3bc3bb6c6586330840))
+
+## [2.25.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.0...core-js-sdk-2.25.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* Regression with encoding parameters ([#801](https://github.com/descope/descope-js/issues/801)) ([92105aa](https://github.com/descope/descope-js/commit/92105aaceb5fbfb1181acee90bd940680781d10b))
+
 ## [2.25.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.24.4...core-js-sdk-2.25.0) (2024-09-11)
 
 

@@ -54,6 +54,7 @@ describe('DescopeComponent', () => {
     component.locale = 'en-US';
     component.success = new EventEmitter<CustomEvent>();
     component.error = new EventEmitter<CustomEvent>();
+    component.styleId = 'style-1';
     component.logger = {
       info: jest.fn(),
       error: jest.fn(),
@@ -94,6 +95,7 @@ describe('DescopeComponent', () => {
     expect(webComponentHtml.getAttribute('logger')).toBeDefined();
     expect(webComponentHtml.getAttribute('error-transformer')).toBeDefined();
     expect(webComponentHtml.getAttribute('redirect-url')).toBeNull();
+    expect(webComponentHtml.getAttribute('style-id')).toBe('style-1');
     expect(
       webComponentHtml?.getAttribute('store-last-authenticated-user')
     ).toEqual('true');

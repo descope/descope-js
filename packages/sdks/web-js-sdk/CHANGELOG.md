@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.19.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.19.1...web-js-sdk-1.19.2) (2024-10-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.29.1`
+## [1.19.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.19.0...web-js-sdk-1.19.1) (2024-10-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.29.0`
+## [1.19.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.18.0...web-js-sdk-1.19.0) (2024-10-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.28.0`
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+
+## [1.18.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.17.0...web-js-sdk-1.18.0) (2024-10-14)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.27.0`
+
+### Features
+
+* add sdk session id ([#814](https://github.com/descope/descope-js/issues/814)) ([9f8f5a6](https://github.com/descope/descope-js/commit/9f8f5a6a79f978919a0019991640bd69e06365f8))
+
+## [1.17.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.6...web-js-sdk-1.17.0) (2024-09-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.26.0`
+
+### Features
+
+* Add passkeyOptions to all webauthn start calls ([#807](https://github.com/descope/descope-js/issues/807)) RELEASE ([a8e0909](https://github.com/descope/descope-js/commit/a8e09094f8afdb016f437a3bc3bb6c6586330840))
+
+## [1.16.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.5...web-js-sdk-1.16.6) (2024-09-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.25.1`
 ## [1.16.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.16.4...web-js-sdk-1.16.5) (2024-09-11)
 
 ### Dependency Updates

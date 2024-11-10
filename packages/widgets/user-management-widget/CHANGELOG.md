@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.129](https://github.com/descope/descope-js/compare/user-management-widget-0.4.128...user-management-widget-0.4.129) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+## [0.4.128](https://github.com/descope/descope-js/compare/user-management-widget-0.4.127...user-management-widget-0.4.128) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+## [0.4.127](https://github.com/descope/descope-js/compare/user-management-widget-0.4.126...user-management-widget-0.4.127) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+* handle mismatch flow version ([#818](https://github.com/descope/descope-js/issues/818)) ([9aa29e2](https://github.com/descope/descope-js/commit/9aa29e2a6293d761275738edced7091c785503f0))
+
+## [0.4.126](https://github.com/descope/descope-js/compare/user-management-widget-0.4.125...user-management-widget-0.4.126) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+## [0.4.125](https://github.com/descope/descope-js/compare/user-management-widget-0.4.124...user-management-widget-0.4.125) (2024-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.17.0`
+## [0.4.124](https://github.com/descope/descope-js/compare/user-management-widget-0.4.123...user-management-widget-0.4.124) (2024-09-19)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.2`
+* `sdk-component-drivers` updated to version `0.2.42`
+## [0.4.123](https://github.com/descope/descope-js/compare/user-management-widget-0.4.122...user-management-widget-0.4.123) (2024-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.6`
 ## [0.4.122](https://github.com/descope/descope-js/compare/user-management-widget-0.4.121...user-management-widget-0.4.122) (2024-09-11)
 
 ### Dependency Updates

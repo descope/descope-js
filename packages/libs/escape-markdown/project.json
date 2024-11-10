@@ -1,0 +1,17 @@
+{
+  "name": "escape-markdown",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/libs/escape-markdown/src",
+  "projectType": "library",
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": false,
+        "preset": "conventional"
+      }
+    }
+  },
+  "tags": []
+}

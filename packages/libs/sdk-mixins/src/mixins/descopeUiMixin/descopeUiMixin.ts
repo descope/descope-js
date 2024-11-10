@@ -2,8 +2,10 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { configMixin } from '../configMixin';
 import { loggerMixin } from '../loggerMixin';
 import {
+  DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
   DESCOPE_UI_FALLBACK_SCRIPT_ID,
   DESCOPE_UI_SCRIPT_ID,
+  UI_COMPONENTS_FALLBACK_2_URL,
   UI_COMPONENTS_FALLBACK_URL,
   UI_COMPONENTS_URL,
 } from './constants';
@@ -64,9 +66,14 @@ export const descopeUiMixin = createSingletonMixin(
         });
       }
 
-      async #handleFallbackScript(errorCbs: ErrorCb[], loadCbs: LoadCb[]) {
+      async #handleFallbackScript(
+        errorCbs: ErrorCb[],
+        loadCbs: LoadCb[],
+        elemId: string,
+        scriptUrl: string,
+      ) {
         this.logger.debug('Trying to load DescopeUI from a fallback URL');
-        const fallbackScriptEle = setupScript(DESCOPE_UI_FALLBACK_SCRIPT_ID);
+        const fallbackScriptEle = setupScript(elemId);
         document.body.append(fallbackScriptEle);
 
         fallbackScriptEle.addEventListener('error', () => {
@@ -82,7 +89,7 @@ export const descopeUiMixin = createSingletonMixin(
         });
 
         fallbackScriptEle.src = generateScriptUrl(
-          UI_COMPONENTS_FALLBACK_URL,
+          scriptUrl,
           await this.#getComponentsVersion(),
         );
       }
@@ -97,8 +104,20 @@ export const descopeUiMixin = createSingletonMixin(
 
           // in case we could not load DescopeUI from the main URL, we are trying to load it from a fallback URL
           this.#handleFallbackScript(
-            scriptEle[this.#errorCbsSym],
+            [
+              // we are adding a second fallback
+              this.#handleFallbackScript.bind(
+                this,
+                scriptEle[this.#errorCbsSym],
+                scriptEle[this.#loadCbsSym],
+                DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
+                UI_COMPONENTS_FALLBACK_2_URL,
+              ),
+              ...scriptEle[this.#errorCbsSym],
+            ],
             scriptEle[this.#loadCbsSym],
+            DESCOPE_UI_FALLBACK_SCRIPT_ID,
+            UI_COMPONENTS_FALLBACK_URL,
           );
         });
 

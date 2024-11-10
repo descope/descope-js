@@ -18,6 +18,7 @@ export class AuditManagementComponent implements OnInit, OnChanges {
   @Input() theme: 'light' | 'dark' | 'os';
   @Input() debug: boolean;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   private readonly webComponent = new DescopeAuditManagementWidget();
 
@@ -54,6 +55,9 @@ export class AuditManagementComponent implements OnInit, OnChanges {
     }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
+    }
+    if (this.styleId) {
+      this.webComponent.setAttribute('style-id', this.styleId);
     }
 
     if (this.logger) {

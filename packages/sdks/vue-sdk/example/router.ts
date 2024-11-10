@@ -7,6 +7,7 @@ import ManageAudit from './components/ManageAudit.vue';
 import ManageRoles from './components/ManageRoles.vue';
 import ManageUsers from './components/ManageUsers.vue';
 import MyUserProfile from './components/MyUserProfile.vue';
+import MyApplicationsPortal from './components/MyApplicationsPortal.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,16 +21,16 @@ const router = createRouter({
       },
       // Alternative method to guard route implemented in the beforeEach bellow:
       /*
-			beforeEnter: async (to, from, next) => {
-			  // alternative method to guard route
-				const isAuthenticated = await routeGuard();
-				if (!isAuthenticated) {
-					next({ name: 'login' });
-				} else {
-					next();
-				}
-			}
-			*/
+      beforeEnter: async (to, from, next) => {
+        // alternative method to guard route
+        const isAuthenticated = await routeGuard();
+        if (!isAuthenticated) {
+          next({ name: 'login' });
+        } else {
+          next();
+        }
+      }
+      */
       // alternative method to guard route implemented in the beforeEach bellow:
       // beforeEnter: routeGuard
     },
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/user-profile',
       name: 'user-profile',
       component: MyUserProfile,
+    },
+    {
+      path: '/applications-portal',
+      name: 'applications-portal',
+      component: MyApplicationsPortal,
     },
   ],
 });

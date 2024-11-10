@@ -38,6 +38,7 @@ export class DescopeComponent implements OnInit, OnChanges {
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();
@@ -124,6 +125,9 @@ export class DescopeComponent implements OnInit, OnChanges {
     }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
+    }
+    if (this.styleId) {
+      this.webComponent.setAttribute('style-id', this.styleId);
     }
 
     if (this.errorTransformer) {

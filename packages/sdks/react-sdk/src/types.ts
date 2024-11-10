@@ -11,6 +11,7 @@ import RoleManagementWidget from '@descope/role-management-widget';
 import AccessKeyManagementWidget from '@descope/access-key-management-widget';
 import AuditManagementWidget from '@descope/audit-management-widget';
 import UserProfileWidget from '@descope/user-profile-widget';
+import ApplicationsPortalWidget from '@descope/applications-portal-widget';
 import createSdk from './sdk';
 
 declare global {
@@ -22,6 +23,7 @@ declare global {
       ['descope-access-key-management-widget']: AccessKeyManagementCustomElement;
       ['descope-audit-management-widget']: AuditManagementCustomElement;
       ['descope-user-profile-widget']: UserProfileCustomElement;
+      ['descope-applications-portal-widget']: ApplicationsPortalCustomElement;
     }
   }
 }
@@ -33,6 +35,7 @@ type WidgetProps = {
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
   debug?: boolean;
+  styleId?: string;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
@@ -75,6 +78,10 @@ export type AuditManagementCustomElement = CustomElement<
 
 export type UserProfileCustomElement = CustomElement<
   typeof UserProfileWidget & UserProfileProps
+>;
+
+export type ApplicationsPortalCustomElement = CustomElement<
+  typeof ApplicationsPortalWidget & ApplicationsPortalProps
 >;
 
 export interface IContext {
@@ -130,6 +137,10 @@ export type AccessKeyManagementProps = WidgetProps;
 export type AuditManagementProps = WidgetProps;
 
 export type UserProfileProps = Omit<WidgetProps, 'tenant'> & {
+  onLogout?: (e: CustomEvent) => void;
+};
+
+export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
   onLogout?: (e: CustomEvent) => void;
 };
 

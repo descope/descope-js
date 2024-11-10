@@ -15,7 +15,6 @@
     "declarationDir": "dts",
     "jsx": "react",
     "noErrorTruncation": true,
-    "typeRoots": ["./node_modules/@types", "./node_modules/@types/react"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "build", "dist", "test"]

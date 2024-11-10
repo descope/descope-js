@@ -30,6 +30,8 @@ import {
   leadingDebounce,
   handleReportValidityOnBlur,
   getUserLocale,
+  clearPreviousExternalInputs,
+  timeoutPromise,
 } from '../helpers';
 import { calculateConditions, calculateCondition } from '../helpers/conditions';
 import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
@@ -94,6 +96,28 @@ class DescopeWc extends BaseDescopeWc {
       }, 300);
     }
   }
+
+  // Native bridge version native / web syncing - change this when
+  // a major change happens that requires some form of compatibility
+  bridgeVersion = 1;
+
+  // This callback will be initialized once a 'nativeBridge' action is
+  // received from a start or next request. It will then be called by
+  // the native layer as a response to a dispatched 'bridge' event.
+  nativeComplete: (bridgeResponse: string) => Promise<void>;
+
+  // This object is set by the native layer to
+  // inject native specific data into the 'flowState'.
+  nativeOptions:
+    | {
+        platform: 'ios' | 'android';
+        oauthProvider?: string;
+        oauthRedirect?: string;
+        magicLinkRedirect?: string;
+        ssoRedirect?: string;
+        origin?: string;
+      }
+    | undefined;
 
   async loadSdkScripts() {
     const flowConfig = await this.getFlowConfig();
@@ -186,6 +210,27 @@ class DescopeWc extends BaseDescopeWc {
     return null;
   }
 
+  async #handleFlowRestart() {
+    this.loggerWrapper.debug('Trying to restart the flow');
+    const prevCompVersion = await this.getComponentsVersion();
+    this.getConfig.reset();
+    const compVersion = await this.getComponentsVersion();
+
+    if (prevCompVersion === compVersion) {
+      this.loggerWrapper.debug(
+        'Components version was not changed, restarting flow',
+      );
+      this.flowState.update({
+        stepId: null,
+        executionId: null,
+      });
+    } else {
+      this.loggerWrapper.error(
+        'Components version mismatch, please reload the page',
+      );
+    }
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -216,6 +261,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
+      nativeResponseType,
+      nativePayload,
       ...ssoQueryParams
     } = currentState;
 
@@ -225,7 +272,14 @@ class DescopeWc extends BaseDescopeWc {
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
-
+    const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
+      // pass also current versions for all flows, it may be used as a part of the current flow
+      (acc, [key, value]) => {
+        acc[key] = value.version;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
     const redirectAuth =
       redirectAuthCallbackUrl && redirectAuthCodeChallenge
         ? {
@@ -234,6 +288,15 @@ class DescopeWc extends BaseDescopeWc {
             backupCallbackUri: redirectAuthBackupCallbackUri,
           }
         : undefined;
+    const nativeOptions = this.nativeOptions
+      ? {
+          platform: this.nativeOptions.platform,
+          oauthProvider: this.nativeOptions.oauthProvider,
+          oauthRedirect: this.nativeOptions.oauthRedirect,
+          magicLinkRedirect: this.nativeOptions.magicLinkRedirect,
+          ssoRedirect: this.nativeOptions.ssoRedirect,
+        }
+      : undefined;
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
@@ -276,11 +339,12 @@ class DescopeWc extends BaseDescopeWc {
             lastAuth: getLastAuth(loginId),
             abTestingKey,
             locale: getUserLocale(locale).locale,
+            nativeOptions,
           },
           conditionInteractionId,
           '',
-          flowConfig.version,
           projectConfig.componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
@@ -420,6 +484,31 @@ class DescopeWc extends BaseDescopeWc {
       this.#handleSdkResponse(sdkResp);
     }
 
+    if (action === RESPONSE_ACTIONS.nativeBridge) {
+      // prepare a callback with the current flow state, and accept
+      // the input to be a JSON, passed down from the native layer.
+      // this function will be called as an async response to a 'bridge' event
+      this.nativeComplete = async (bridgeResponse: string) => {
+        const input = JSON.parse(bridgeResponse);
+        const sdkResp = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          CUSTOM_INTERACTIONS.submit,
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          input,
+        );
+        this.#handleSdkResponse(sdkResp);
+      };
+      // notify the bridging native layer that a native action is requested via 'bridge' event.
+      // the response will be in the form of calling the `nativeComplete` callback
+      this.#dispatch('bridge', {
+        type: nativeResponseType,
+        payload: nativePayload,
+      });
+      return;
+    }
+
     this.#handlePollingResponse(
       executionId,
       stepId,
@@ -502,11 +591,12 @@ class DescopeWc extends BaseDescopeWc {
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale).locale,
+            nativeOptions,
           },
           conditionInteractionId,
           interactionId,
-          version,
           componentsVersion,
+          flowVersions,
           {
             ...this.formConfigValues,
             ...inputs,
@@ -530,19 +620,27 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #handlePollingResponse = (
-    executionId,
-    stepId,
-    action,
-    flowVersion,
-    componentsVersion,
+    executionId: string,
+    stepId: string,
+    action: string,
+    flowVersion: number,
+    componentsVersion: string,
+    rescheduled: boolean = false,
   ) => {
+    const pollingDefaultDelay = 2000;
+    const pollingDefaultTimeout = 6000;
+    const pollingThrottleDelay = 500;
+    const pollingThrottleThreshold = 500;
+    const pollingThrottleTimeout = 1000;
     if (action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.logger.debug('polling - Scheduling polling request');
+      const scheduledAt = Date.now();
+      const delay = rescheduled ? pollingThrottleDelay : pollingDefaultDelay;
       this.#pollingTimeout = setTimeout(async () => {
         this.logger.debug('polling - Calling next');
 
-        const sdkResp = await this.sdk.flow.next(
+        const nextCall = this.sdk.flow.next(
           executionId,
           stepId,
           CUSTOM_INTERACTIONS.polling,
@@ -550,6 +648,41 @@ class DescopeWc extends BaseDescopeWc {
           componentsVersion,
           {},
         );
+
+        // Try to detect whether the tab is being throttled when running in a mobile browser, specifically on iOS.
+        // We check whether the tab seems to hidden and the polling callback was called much later than expected,
+        // in which case we allow a much shorter timeout for the polling request. The reschedule check ensures
+        // this cannot happen twice consecutively.
+        const throttled =
+          document.hidden &&
+          !rescheduled &&
+          Date.now() - scheduledAt > delay + pollingThrottleThreshold;
+        if (throttled) {
+          this.logger.debug('polling - The polling seems to be throttled');
+        }
+
+        let sdkResp: Awaited<typeof nextCall>;
+        try {
+          const timeout = throttled
+            ? pollingThrottleTimeout
+            : pollingDefaultTimeout;
+          sdkResp = await timeoutPromise(timeout, nextCall);
+        } catch (err) {
+          this.logger.warn(
+            `polling - The ${
+              throttled ? 'throttled fetch' : 'fetch'
+            } call timed out or was aborted`,
+          );
+          this.#handlePollingResponse(
+            executionId,
+            stepId,
+            action,
+            flowVersion,
+            componentsVersion,
+            throttled,
+          );
+          return;
+        }
 
         if (sdkResp?.error?.errorCode === FETCH_EXCEPTION_ERROR_CODE) {
           this.logger.debug(
@@ -562,9 +695,9 @@ class DescopeWc extends BaseDescopeWc {
             flowVersion,
             componentsVersion,
           );
-
           return;
         }
+
         this.logger.debug('polling - Got a response');
         if (sdkResp?.error) {
           this.logger.debug(
@@ -583,7 +716,7 @@ class DescopeWc extends BaseDescopeWc {
           flowVersion,
           componentsVersion,
         );
-      }, 2000);
+      }, delay);
     }
   };
 
@@ -610,6 +743,16 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorDescription || defaultMessage,
         sdkResp?.error?.errorMessage || defaultDescription,
       );
+
+      // E102004 = Flow requested is in old version
+      // E103205 = Flow timed out
+      const errorCode = sdkResp?.error?.errorCode;
+      if (
+        (errorCode === 'E102004' || errorCode === 'E103205') &&
+        this.isRestartOnError
+      ) {
+        this.#handleFlowRestart();
+      }
       return;
     }
 
@@ -652,6 +795,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthn,
       error,
       samlIdpResponse,
+      nativeResponse,
     } = sdkResp.data;
 
     if (action === RESPONSE_ACTIONS.poll) {
@@ -688,6 +832,8 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
+      nativeResponseType: nativeResponse?.type,
+      nativePayload: nativeResponse?.payload,
     });
   };
 
@@ -842,19 +988,22 @@ class DescopeWc extends BaseDescopeWc {
 
       this.rootElement.replaceChildren(clone);
 
-      // we need to wait for all components to render before we can set its value
-      setTimeout(() => {
-        updateScreenFromScreenState(this.rootElement, screenState);
-      });
-
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlUrl;
 
-      handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+      // we need to wait for all components to render before we can set its value
+      setTimeout(() => {
+        this.#updateExternalInputs();
 
-      if (this.validateOnBlur) {
-        handleReportValidityOnBlur(this.rootElement);
-      }
+        handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
+
+        if (this.validateOnBlur) {
+          handleReportValidityOnBlur(this.rootElement);
+        }
+
+        // we need to wait for all components to render before we can set its value
+        updateScreenFromScreenState(this.rootElement, screenState);
+      });
 
       this.#hydrate(next);
       if (isFirstScreen) {
@@ -974,6 +1123,37 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #updateExternalInputs() {
+    // we need to clear external inputs that were created previously, so each screen has only
+    // the slotted inputs it needs
+    clearPreviousExternalInputs();
+
+    const eles = this.rootElement.querySelectorAll('[external-input="true"]');
+    eles.forEach((ele) => this.#handleExternalInputs(ele));
+  }
+
+  #handleExternalInputs(ele: Element) {
+    if (!ele) {
+      return;
+    }
+
+    const origInputs = ele.querySelectorAll('input');
+
+    origInputs.forEach((inp) => {
+      const targetSlot = inp.getAttribute('slot');
+      const id = `input-${ele.id}-${targetSlot}`;
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', id);
+      slot.setAttribute('slot', targetSlot);
+
+      ele.appendChild(slot);
+
+      inp.setAttribute('slot', id);
+      this.appendChild(inp);
+    });
+  }
+
   // we are wrapping this function with a leading debounce,
   // to prevent a scenario where we are calling it multiple times
   // this can caused by focusing on a button and pressing enter
@@ -996,8 +1176,11 @@ class DescopeWc extends BaseDescopeWc {
           ...contextArgs,
           ...eleDescopeAttrs,
           ...formData,
-          // 'origin' is required to start webauthn. For now we'll add it to every request
-          origin: window.location.origin,
+          // 'origin' is required to start webauthn. For now we'll add it to every request.
+          // When running in a native flow in a Android app the webauthn authentication
+          // is performed in the native app, so a custom origin needs to be injected
+          // into the webauthn request data.
+          origin: this.nativeOptions?.origin || window.location.origin,
         };
 
         const flowConfig = await this.getFlowConfig();

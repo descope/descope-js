@@ -1,6 +1,6 @@
 {
   "name": "@descope/react-sdk",
-  "version": "2.0.73",
+  "version": "2.1.6",
   "description": "Descope React SDK",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
@@ -52,6 +52,7 @@
     "@descope/role-management-widget": "workspace:*",
     "@descope/user-management-widget": "workspace:*",
     "@descope/user-profile-widget": "workspace:*",
+    "@descope/applications-portal-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
     "@descope/core-js-sdk": "workspace:*"

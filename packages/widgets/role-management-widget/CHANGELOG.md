@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.126](https://github.com/descope/descope-js/compare/role-management-widget-0.1.125...role-management-widget-0.1.126) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+## [0.1.125](https://github.com/descope/descope-js/compare/role-management-widget-0.1.124...role-management-widget-0.1.125) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+## [0.1.124](https://github.com/descope/descope-js/compare/role-management-widget-0.1.123...role-management-widget-0.1.124) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+
+## [0.1.123](https://github.com/descope/descope-js/compare/role-management-widget-0.1.122...role-management-widget-0.1.123) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+## [0.1.122](https://github.com/descope/descope-js/compare/role-management-widget-0.1.121...role-management-widget-0.1.122) (2024-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.17.0`
+## [0.1.121](https://github.com/descope/descope-js/compare/role-management-widget-0.1.120...role-management-widget-0.1.121) (2024-09-19)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.3.2`
+* `sdk-component-drivers` updated to version `0.2.42`
+## [0.1.120](https://github.com/descope/descope-js/compare/role-management-widget-0.1.119...role-management-widget-0.1.120) (2024-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.16.6`
 ## [0.1.119](https://github.com/descope/descope-js/compare/role-management-widget-0.1.118...role-management-widget-0.1.119) (2024-09-11)
 
 ### Dependency Updates

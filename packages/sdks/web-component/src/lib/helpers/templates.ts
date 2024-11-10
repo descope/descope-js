@@ -1,9 +1,11 @@
+import { escapeMarkdown } from '@descope/escape-markdown';
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
 import { ComponentsConfig, ScreenState } from '../types';
+import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
 
@@ -62,8 +64,13 @@ const getByPath = (obj: Record<string, any>, path: string) =>
 const applyTemplates = (
   text: string,
   screenState?: Record<string, any>,
+  handleMarkdown?: boolean,
 ): string =>
-  text.replace(/{{(.+?)}}/g, (_, match) => getByPath(screenState, match));
+  text.replace(/{{(.+?)}}/g, (_, match) =>
+    handleMarkdown
+      ? escapeMarkdown(getByPath(screenState, match))
+      : getByPath(screenState, match),
+  );
 
 /**
  * Replace the templates of content of inner text/link elements with screen state data
@@ -76,8 +83,13 @@ const replaceElementTemplates = (
     'descope-text,descope-link,descope-enriched-text,descope-code-snippet',
   );
   eleList.forEach((inEle: HTMLElement) => {
+    const handleMarkdown = shouldHandleMarkdown(inEle.localName);
     // eslint-disable-next-line no-param-reassign
-    inEle.textContent = applyTemplates(inEle.textContent, screenState);
+    inEle.textContent = applyTemplates(
+      inEle.textContent,
+      screenState,
+      handleMarkdown,
+    );
     const href = inEle.getAttribute('href');
     if (href) {
       inEle.setAttribute('href', applyTemplates(href, screenState));
