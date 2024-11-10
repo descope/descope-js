@@ -2282,7 +2282,10 @@ describe('web-component', () => {
       );
 
       // simulate a native complete call and expect the 'next' call
-      await wcEle.nativeComplete(JSON.stringify({ response: true }));
+      await wcEle.nativeResume(
+        'oauthNative',
+        JSON.stringify({ response: true }),
+      );
       await waitFor(
         () =>
           expect(nextMock).toHaveBeenCalledWith(
@@ -2310,6 +2313,181 @@ describe('web-component', () => {
 
       wcEle.removeEventListener('success', onSuccess);
       wcEle.removeEventListener('bridge', onBridge);
+    });
+
+    it('Should handle a nativeResume oauthWeb response', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.nativeBridge,
+          nativeResponseType: 'oauthWeb',
+          nativeResponsePayload: { url: 'https://oauthprovider.com' },
+        }),
+      );
+
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({
+          status: 'completed',
+        }),
+      );
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const onSuccess = jest.fn();
+      const onBridge = jest.fn();
+
+      const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+      // nativeComplete starts as undefined
+      expect(wcEle.nativeComplete).not.toBeDefined();
+
+      wcEle.addEventListener('success', onSuccess);
+      wcEle.addEventListener('bridge', onBridge);
+
+      // after start 'nativeComplete' is initialized and a 'bridge' event should be dispatched
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(onBridge).toHaveBeenCalledWith(
+            expect.objectContaining({
+              detail: {
+                type: 'oauthWeb',
+                payload: { url: 'https://oauthprovider.com' },
+              },
+            }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // simulate a native resume call and expect the 'next' call
+      await wcEle.nativeResume(
+        'oauthWeb',
+        JSON.stringify({ url: 'https://deeplink.com?code=code123' }),
+      );
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.submit,
+            1,
+            '1.2.3',
+            { exchangeCode: 'code123', idpInitiated: true },
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(onSuccess).toHaveBeenCalledWith(
+            expect.objectContaining({ detail: 'auth info' }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      wcEle.removeEventListener('success', onSuccess);
+      wcEle.removeEventListener('bridge', onBridge);
+    });
+
+    it('Should handle a nativeResume call for magic link', async () => {
+      jest.spyOn(global, 'clearTimeout');
+
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent =
+        '<descope-button id="submitterId">click</descope-button><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const onSuccess = jest.fn();
+
+      const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+      wcEle.addEventListener('success', onSuccess);
+
+      await waitFor(() => screen.findByShadowText('It works!'), {
+        timeout: 20000,
+      });
+
+      nextMock
+        .mockReturnValueOnce(
+          generateSdkResponse({
+            action: RESPONSE_ACTIONS.poll,
+          }),
+        )
+        .mockReturnValueOnce(
+          generateSdkResponse({
+            status: 'completed',
+          }),
+        );
+
+      // user clicks
+      fireEvent.click(screen.getByShadowText('click'));
+
+      // at least one poll
+      await waitFor(() =>
+        expect(nextMock).toHaveBeenNthCalledWith(
+          1,
+          '0',
+          '0',
+          'submitterId',
+          1,
+          '1.2.3',
+          expect.any(Object),
+        ),
+      );
+
+      // simulate a native resume call and expect the 'next' call to contain the token
+      await wcEle.nativeResume(
+        'magicLink',
+        JSON.stringify({
+          url: 'https://deeplink.com?descope-login-flow=native%7C%23%7C2oeoLE7E8PJaR9qRLgT1rjwgiJP_2.end&t=token123',
+        }),
+      );
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '2.end',
+            CUSTOM_INTERACTIONS.submit,
+            1,
+            '1.2.3',
+            expect.objectContaining({ token: 'token123' }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // expect success to be called
+      await waitFor(
+        () =>
+          expect(onSuccess).toHaveBeenCalledWith(
+            expect.objectContaining({ detail: 'auth info' }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // expect the timeout to have been cleared
+      await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      wcEle.removeEventListener('success', onSuccess);
     });
   });
 
