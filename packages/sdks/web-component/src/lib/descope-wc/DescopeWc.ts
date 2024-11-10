@@ -106,44 +106,38 @@ class DescopeWc extends BaseDescopeWc {
 
   // This callback will be initialized once a 'nativeBridge' action is
   // received from a start or next request. It will then be called by
-  // the native layer as a response to a dispatched 'bridge' event.
-  nativeComplete: (bridgeResponse: string) => Promise<void>;
+  // nativeResume if appropriate as part of handling some payload types.
+  nativeComplete: (input: Record<string, any>) => Promise<void>;
 
-  // This callback is called by the `nativeBridge` when the app
-  // is redirected back to using a deep link or equivalent mechanism.
-  // It is currently supported to handle magic links and OAuth / SSO
-  nativeResume = ({
-    urlString,
-    code,
-  }: {
-    urlString: string;
-    code?: string;
-  }) => {
-    const url = new URL(urlString);
-    const token = url.searchParams.get(URL_TOKEN_PARAM_NAME);
-    const exchangeCode = code || url.searchParams.get(URL_CODE_PARAM_NAME);
-    const stepId = url.searchParams
-      .get(URL_RUN_IDS_PARAM_NAME)
-      .split('_')
-      .pop();
-
-    if (token && stepId) {
-      this.logger.info('nativeResume received a magic link - updating state');
+  // This callback is called by the native layer to resume a flow
+  // that's waiting for some external trigger, such as a magic link
+  // redirect or native OAuth authentication.
+  nativeResume = (type: string, payload: string) => {
+    const response = JSON.parse(payload);
+    this.logger.info(`nativeResume received payload of type '${type}'`);
+    if (type === 'oauthWeb' || type === 'sso') {
+      let {exchangeCode} = response;
+      if (!exchangeCode) {
+        const url = new URL(response.url);
+        exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
+      }
+      this.nativeComplete({
+        exchangeCode,
+        idpInitiated: true,
+      });
+    } else if (type === 'magicLink') {
+      const url = new URL(response.url);
+      const token = url.searchParams.get(URL_TOKEN_PARAM_NAME);
+      const stepId = url.searchParams
+        .get(URL_RUN_IDS_PARAM_NAME)
+        .split('_')
+        .pop();
       this.#resetPollingTimeout();
       // update the state along with cancelling out the action to abort the polling mechanism
       this.flowState.update({ token, stepId, action: undefined });
-    } else if (exchangeCode) {
-      this.logger.info(
-        'nativeResume received an exchange code - calling native complete',
-      );
-      this.nativeComplete(
-        JSON.stringify({
-          exchangeCode,
-          idpInitiated: true,
-        }),
-      );
     } else {
-      this.logger.warn('nativeResume called with unsupported url');
+      // expected: 'oauthNative', 'webauthnCreate', 'webauthnGet', 'failure'
+      this.nativeComplete(response);
     }
   };
 
@@ -529,8 +523,7 @@ class DescopeWc extends BaseDescopeWc {
       // prepare a callback with the current flow state, and accept
       // the input to be a JSON, passed down from the native layer.
       // this function will be called as an async response to a 'bridge' event
-      this.nativeComplete = async (bridgeResponse: string) => {
-        const input = JSON.parse(bridgeResponse);
+      this.nativeComplete = async (input: Record<string, any>) => {
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
