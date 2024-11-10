@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.29.0](https://github.com/descope/descope-js/compare/web-component-3.28.0...web-component-3.29.0) (2024-11-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.4.0`
+
+### Features
+
+* Add nativeResume function and have polling check the current action ([#842](https://github.com/descope/descope-js/issues/842)) RELEASE ([e08a4b8](https://github.com/descope/descope-js/commit/e08a4b8c93516290868db09b0049ba6c374e7d64))
+* **descope-ui-mixin:** use descopecdn.com ([#804](https://github.com/descope/descope-js/issues/804)) ([82e2fa7](https://github.com/descope/descope-js/commit/82e2fa779f48b99c8ed88af451fc2a9b329d1758))
+
 ## [3.28.0](https://github.com/descope/descope-js/compare/web-component-3.27.3...web-component-3.28.0) (2024-11-03)
 
 ### Dependency Updates
