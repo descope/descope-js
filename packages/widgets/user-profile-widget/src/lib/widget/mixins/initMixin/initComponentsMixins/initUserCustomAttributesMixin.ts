@@ -36,6 +36,11 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initCustomValueUserAttrs();
+
+        this.subscribe(
+          this.#initCustomValueUserAttrs.bind(this),
+          getUserCustomAttrs,
+        );
       }
     },
 );
