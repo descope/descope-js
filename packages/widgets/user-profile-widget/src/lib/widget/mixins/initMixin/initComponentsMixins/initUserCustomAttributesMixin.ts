@@ -18,6 +18,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
         const allCustomAttributesComponents = this.shadowRoot?.querySelectorAll(
           'descope-user-attribute[data-id^="customAttributes."]',
         );
+        const userCustomAttributesData = getUserCustomAttrs(this.state);
 
         Array.from(allCustomAttributesComponents).forEach((nodeEle) => {
           const attrName = nodeEle.getAttribute('data-id');
@@ -27,8 +28,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             logger: this.logger,
           });
 
-          const userCustomAttributesData = getUserCustomAttrs(this.state);
-          compInstance.value = userCustomAttributesData[customAttrName];
+          compInstance.value = userCustomAttributesData[customAttrName] || '';
         });
       }
 
