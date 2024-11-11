@@ -1,21 +1,27 @@
+import { JWTResponse, SdkResponse, URLResponse } from '@descope/core-js-sdk';
 import {
   OidcClient,
   OidcClientSettings,
   SigninResponse,
   WebStorageStateStore,
 } from 'oidc-client-ts';
-import { CoreSdk } from '../types';
-import { SdkResponse, JWTResponse, URLResponse } from '@descope/core-js-sdk';
+import { AfterRequestHook, CoreSdk } from '../types';
+
+interface OidcConfig {
+  clientId: string;
+  redirectUri: string;
+  scope: string;
+}
 
 const getOidcClient = (
   sdk: CoreSdk,
   projectID: string,
-  oidcSettings?: OidcClientSettings,
+  oidcConfig?: OidcConfig,
 ) => {
   const statePrefix = window.location.pathname.replace(/\//g, '_');
   const stateUserKey = `${statePrefix}_user`;
 
-  const defaultSettings: OidcClientSettings = {
+  const settings: OidcClientSettings = {
     authority: sdk.httpClient.buildUrl(projectID),
     client_id: projectID,
     redirect_uri: window.location.href,
@@ -30,33 +36,33 @@ const getOidcClient = (
     fetchRequestCredentials: 'same-origin',
   };
 
+  if (oidcConfig) {
+    settings.client_id = oidcConfig.clientId;
+    settings.redirect_uri = oidcConfig.redirectUri;
+    settings.scope = oidcConfig.scope;
+  }
   return {
-    client: new OidcClient({ ...defaultSettings, ...oidcSettings }),
+    client: new OidcClient(settings),
     stateUserKey,
   };
 };
 
 const createOidc = (sdk: CoreSdk, projectID: string) => {
   const authorize = async (
-    oidcSettings?: OidcClientSettings,
+    oidcConfig?: OidcConfig,
   ): Promise<SdkResponse<URLResponse>> => {
-    const { client } = getOidcClient(sdk, projectID, oidcSettings);
+    const { client } = getOidcClient(sdk, projectID, oidcConfig);
     const { url } = await client.createSigninRequest({});
     return { ok: true, data: { url } };
   };
 
   const finish = async (
-    oidcSettings?: OidcClientSettings,
-  ): Promise<SdkResponse<JWTResponse & { oidcResponse: SigninResponse }>> => {
-    const { client, stateUserKey } = getOidcClient(
-      sdk,
-      projectID,
-      oidcSettings,
-    );
+    oidcConfig?: OidcConfig,
+  ): Promise<SdkResponse<JWTResponse>> => {
+    const { client, stateUserKey } = getOidcClient(sdk, projectID, oidcConfig);
     const user = await client.processSigninResponse(window.location.href);
     window.localStorage.setItem(stateUserKey, JSON.stringify(user));
-    const res = await sdk.refresh(user.refresh_token);
-    return { ...res, data: { ...res.data, oidcResponse: user } };
+    return sdk.refresh(user.refresh_token);
   };
 
   const getUser = (stateUserKey: string): SigninResponse | null => {
@@ -64,12 +70,8 @@ const createOidc = (sdk: CoreSdk, projectID: string) => {
     return user ? JSON.parse(user) : null;
   };
 
-  const logout = async (oidcSettings?: OidcClientSettings) => {
-    const { client, stateUserKey } = getOidcClient(
-      sdk,
-      projectID,
-      oidcSettings,
-    );
+  const logout = async (oidcConfig?: OidcConfig) => {
+    const { client, stateUserKey } = getOidcClient(sdk, projectID, oidcConfig);
     const user = getUser(stateUserKey);
     if (user) {
       const { url } = await client.createSignoutRequest({
@@ -89,3 +91,4 @@ const createOidc = (sdk: CoreSdk, projectID: string) => {
 };
 
 export default createOidc;
+export type { OidcConfig };
