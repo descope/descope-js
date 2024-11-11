@@ -1,5 +1,9 @@
 import { UserAttributeDriver } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { getUserCustomAttrs } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -14,7 +18,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
     )(superclass) {
       customValueUserAttr: UserAttributeDriver;
 
-      #initCustomValueUserAttrs() {
+      #updateCustomValueUserAttrs = withMemCache(() => {
         const allCustomAttributesComponents = this.shadowRoot?.querySelectorAll(
           'descope-user-attribute[data-id^="customAttributes."]',
         );
@@ -30,15 +34,15 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
 
           compInstance.value = userCustomAttributesData[customAttrName] || '';
         });
-      }
+      });
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initCustomValueUserAttrs();
+        this.#updateCustomValueUserAttrs();
 
         this.subscribe(
-          this.#initCustomValueUserAttrs.bind(this),
+          this.#updateCustomValueUserAttrs.bind(this),
           getUserCustomAttrs,
         );
       }
