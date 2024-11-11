@@ -21,7 +21,7 @@ const plugins = [
   }),
   commonjs(),
   resolve(),
-  // terser(),
+  terser(),
 ];
 const input = './src/index.ts';
 const external = (id) =>
