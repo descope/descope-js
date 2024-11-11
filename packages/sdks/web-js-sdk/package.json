@@ -90,7 +90,8 @@
     "@fingerprintjs/fingerprintjs-pro": "3.9.9",
     "js-cookie": "3.0.5",
     "jwt-decode": "4.0.0",
-    "tslib": "2.6.3"
+    "tslib": "2.6.3",
+    "oidc-client-ts": "3.1.0"
   },
   "overrides": {
     "terser": "^5.14.2"
