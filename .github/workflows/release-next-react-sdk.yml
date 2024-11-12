@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix/next-react-sdk
 
 env:
   NODE_VERSION: 18.10.0
@@ -15,6 +16,10 @@ jobs:
     name: Release Next
     runs-on: ubuntu-latest
     steps:
+      - name: Test
+        run: |
+          echo "TEST"
+          npx nx --version
       - name: Check if should run
         id: 'check'
         run: |
