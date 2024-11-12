@@ -23,6 +23,12 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
+      - name: Get token
+        id: get_token
+        uses: tibdex/github-app-token@v2
+        with:
+          private_key: ${{ secrets.RELEASE_APP_PEM }}
+          app_id: ${{ secrets.RELEASE_APP_ID }}
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -39,13 +45,6 @@ jobs:
           else
             echo "run=false" >> $GITHUB_OUTPUT
           fi
-      - name: Get token
-        if: steps.check.outputs.run == 'true'
-        id: get_token
-        uses: tibdex/github-app-token@v2
-        with:
-          private_key: ${{ secrets.RELEASE_APP_PEM }}
-          app_id: ${{ secrets.RELEASE_APP_ID }}
       - name: Run git config
         if: steps.check.outputs.run == 'true'
         run: |
