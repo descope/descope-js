@@ -16,14 +16,10 @@ jobs:
     name: Release Next
     runs-on: ubuntu-latest
     steps:
-      - name: Test
-        run: |
-          echo "TEST"
-          npx nx --version
       - name: Check if should run
         id: 'check'
         run: |
-          if [[ $(nx show projects --affected --plain | grep -q "react-sdk") ]]; then
+          if [[ $(npx nx show projects --affected --plain | grep -q "react-sdk") ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
