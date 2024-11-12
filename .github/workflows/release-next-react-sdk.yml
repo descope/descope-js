@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fix/next-react-sdk
 
 env:
   NODE_VERSION: 18.10.0
@@ -29,11 +28,17 @@ jobs:
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
-      - uses: actions/setup-node@v4
+      - name: Run git config
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
@@ -43,34 +48,12 @@ jobs:
       - name: Check if should run
         id: 'check'
         run: |
-          pnpm showprojects
           pnpm nx show projects --affected --plain
-          if [[ $(pnpm showprojects | grep -q "react-sdk") ]]; then
+          if [[ $(pnpm nx show projects --affected --plain | grep -q "react-sdk") ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
           fi
-      - name: Run git config
-        if: steps.check.outputs.run == 'true'
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-      - name: Setup Node
-        if: steps.check.outputs.run == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: https://registry.npmjs.org/
-      - name: Setup PNPM
-        if: steps.check.outputs.run == 'true'
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Install dependencies
-        if: steps.check.outputs.run == 'true'
-        run: pnpm install --frozen-lockfile --ignore-scripts
-        env:
-          CI: true
       - name: Build
         if: steps.check.outputs.run == 'true'
         run: npm run version:ci
@@ -78,7 +61,6 @@ jobs:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Set Next Version
-        if: steps.check.outputs.run == 'true'
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
           CURRENT_DATE=$(date +'%Y%m%d')
