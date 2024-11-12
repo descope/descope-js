@@ -23,6 +23,14 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
+      - name: Checkout code§
+        if: steps.check.outputs.run == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # persist-credentials: false
+          token: ${{ steps.get_token.outputs.token }}
+          ref: ${{ github.ref }}
       - name: Check if should run
         id: 'check'
         run: |
@@ -39,14 +47,6 @@ jobs:
         with:
           private_key: ${{ secrets.RELEASE_APP_PEM }}
           app_id: ${{ secrets.RELEASE_APP_ID }}
-      - name: Checkout code
-        if: steps.check.outputs.run == 'true'
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          # persist-credentials: false
-          token: ${{ steps.get_token.outputs.token }}
-          ref: ${{ github.ref }}
       - name: Run git config
         if: steps.check.outputs.run == 'true'
         run: |
