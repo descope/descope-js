@@ -18,28 +18,30 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
     )(superclass) {
       customValueUserAttr: UserAttributeDriver;
 
-      #updateCustomValueUserAttrs = withMemCache(() => {
-        const allCustomAttributesComponents = this.shadowRoot?.querySelectorAll(
-          'descope-user-attribute[data-id^="customAttributes."]',
-        );
-        const userCustomAttributesData = getUserCustomAttrs(this.state);
+      #updateCustomValueUserAttrs = withMemCache(
+        (customAttr: ReturnType<typeof getUserCustomAttrs>) => {
+          const allCustomAttributesComponents =
+            this.shadowRoot?.querySelectorAll(
+              'descope-user-attribute[data-id^="customAttributes."]',
+            );
 
-        Array.from(allCustomAttributesComponents).forEach((nodeEle) => {
-          const attrName = nodeEle.getAttribute('data-id');
-          const customAttrName = attrName.replace('customAttributes.', '');
+          Array.from(allCustomAttributesComponents).forEach((nodeEle) => {
+            const attrName = nodeEle.getAttribute('data-id');
+            const customAttrName = attrName.replace('customAttributes.', '');
 
-          const compInstance = new UserAttributeDriver(nodeEle, {
-            logger: this.logger,
+            const compInstance = new UserAttributeDriver(nodeEle, {
+              logger: this.logger,
+            });
+
+            compInstance.value = customAttr[customAttrName] || '';
           });
-
-          compInstance.value = userCustomAttributesData[customAttrName] || '';
-        });
-      });
+        },
+      );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#updateCustomValueUserAttrs();
+        this.#updateCustomValueUserAttrs(getUserCustomAttrs(this.state));
 
         this.subscribe(
           this.#updateCustomValueUserAttrs.bind(this),
