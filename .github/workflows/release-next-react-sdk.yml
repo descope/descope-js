@@ -16,11 +16,18 @@ jobs:
     name: Release Next
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - name: Check if should run
         id: 'check'
         run: |
           pnpm nx show projects --affected --plain
-          if [[ $(npx nx show projects --affected --plain | grep -q "react-sdk") ]]; then
+          if [[ $(pnpm nx show projects --affected --plain | grep -q "react-sdk") ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
