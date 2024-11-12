@@ -39,8 +39,9 @@ jobs:
       - name: Check if should run
         id: 'check'
         run: |
-          npx nx show projects --affected --plain
-          if [[ $(npx nx show projects --affected --plain | grep -q "react-sdk") ]]; then
+          pnpm showprojects
+          pnpm nx show projects --affected --plain
+          if [[ $(pnpm showprojects | grep -q "react-sdk") ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
