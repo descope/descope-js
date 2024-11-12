@@ -23,8 +23,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
-      - name: Checkout code§
-        if: steps.check.outputs.run == 'true'
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -75,6 +74,7 @@ jobs:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Set Next Version
+        if: steps.check.outputs.run == 'true'
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
           CURRENT_DATE=$(date +'%Y%m%d')
