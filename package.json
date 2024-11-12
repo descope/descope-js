@@ -21,7 +21,8 @@
     "print-affected:ci": "nx print-affected --base=$(sh ./tools/scripts/latestTag.sh) --select=projects",
     "format": "nx format:write",
     "format:ci": "nx format:check",
-    "postinstall": "pnpm update @descope/web-components-ui"
+    "postinstall": "pnpm update @descope/web-components-ui",
+    "showprojects": "nx show projects --affected --plain"
   },
   "private": true,
   "dependencies": {
