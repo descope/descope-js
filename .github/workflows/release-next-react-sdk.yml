@@ -3,6 +3,7 @@ name: Release - React SDK next
 on:
   push:
     branches:
+      - fix/next-react-sdk
       - main
 
 env:
