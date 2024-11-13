@@ -28,6 +28,11 @@ jobs:
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
+      - name: ls
+        run: |
+          ls -la
+          pwd
+
       - name: Run git config
         run: |
           git config user.name github-actions
