@@ -29,23 +29,25 @@ jobs:
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
-      - name: Run git config
-        run: |
+      - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
-        run: ls -la && pwd && pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
+      - name: Build
+        run: npm run version:ci
+        env:
+          CI: true
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Check if should run
         id: 'check'
         run: |
@@ -55,22 +57,16 @@ jobs:
           else
             echo "run=false" >> $GITHUB_OUTPUT
           fi
-      - name: Build
-        if: steps.check.outputs.run == 'true'
-        run: npm run version:ci
-        env:
-          CI: true
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
-      - name: Set Next Version
-        run: |
-          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
-          CURRENT_DATE=$(date +'%Y%m%d')
-          echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
-      - name: Run pnpm publish
-        if: steps.check.outputs.run == 'true'
-        run: |
-          pnpm --filter "@descope/react-sdk" exec npm version "${NEXT_VERSION}" --git-tag-version=false
-          pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
-        env:
-          CI: true
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
+      # - name: Set Next Version
+      #   run: |
+      #     SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
+      #     CURRENT_DATE=$(date +'%Y%m%d')
+      #     echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
+      # - name: Run pnpm publish
+      #   if: steps.check.outputs.run == 'true'
+      #   run: |
+      #     pnpm --filter "@descope/react-sdk" exec npm version "${NEXT_VERSION}" --git-tag-version=false
+      #     pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
+      #   env:
+      #     CI: true
+      #     NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
