@@ -123,6 +123,8 @@ test.describe('widget', () => {
       .locator('input')
       .first();
 
+    await page.waitForTimeout(1000);
+
     // focus search input
     await searchInput.focus();
 

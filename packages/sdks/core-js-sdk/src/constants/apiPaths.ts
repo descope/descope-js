@@ -83,6 +83,7 @@ export default {
   selectTenant: '/v1/auth/tenant/select',
   logout: '/v1/auth/logout',
   logoutAll: '/v1/auth/logoutall',
+  logoutPrevious: '/v1/auth/logoutprevious',
   me: '/v1/auth/me',
   myTenants: '/v1/auth/me/tenants',
   history: '/v1/auth/me/history',

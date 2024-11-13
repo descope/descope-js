@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.1](https://github.com/descope/descope-js/compare/audit-management-widget-0.2.0...audit-management-widget-0.2.1) (2024-11-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.0`
+## [0.2.0](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.92...audit-management-widget-0.2.0) (2024-11-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.4.0`
+
+### Features
+
+* **descope-ui-mixin:** use descopecdn.com ([#804](https://github.com/descope/descope-js/issues/804)) ([82e2fa7](https://github.com/descope/descope-js/commit/82e2fa779f48b99c8ed88af451fc2a9b329d1758))
+
+## [0.1.92](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.91...audit-management-widget-0.1.92) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+## [0.1.91](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.90...audit-management-widget-0.1.91) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+## [0.1.90](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.89...audit-management-widget-0.1.90) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+
+## [0.1.89](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.88...audit-management-widget-0.1.89) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
 ## [0.1.88](https://github.com/descope/descope-js/compare/audit-management-widget-0.1.87...audit-management-widget-0.1.88) (2024-09-29)
 
 ### Dependency Updates

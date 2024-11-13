@@ -35,6 +35,7 @@ type WidgetProps = {
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
   debug?: boolean;
+  styleId?: string;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
@@ -116,6 +117,7 @@ export type DescopeProps = {
   locale?: string;
   autoFocus?: AutoFocusOptions;
   validateOnBlur?: boolean;
+  restartOnError?: boolean;
   debug?: boolean;
   telemetryKey?: string;
   redirectUrl?: string;

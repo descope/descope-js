@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.29.1...core-js-sdk-2.30.0) (2024-11-13)
+
+
+### Features
+
+* Logout previous sessions RELEASE ([#846](https://github.com/descope/descope-js/issues/846)) ([193b640](https://github.com/descope/descope-js/commit/193b640bb81b157d172ca4e58d32f742e97009fe))
+
+## [2.29.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.29.0...core-js-sdk-2.29.1) (2024-10-29)
+
+## [2.29.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.28.0...core-js-sdk-2.29.0) (2024-10-26)
+
+
+### Features
+
+* Add support for templateId in LoginOptions and SignUpOptions ([#827](https://github.com/descope/descope-js/issues/827)) ([5c0a591](https://github.com/descope/descope-js/commit/5c0a591cf7f63645d440caf6e699631b7a5bcd97))
+
+## [2.28.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.27.0...core-js-sdk-2.28.0) (2024-10-22)
+
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+* send all flow versions during start ([#819](https://github.com/descope/descope-js/issues/819)) ([9726ebc](https://github.com/descope/descope-js/commit/9726ebc96b9a6e77324bf3f5af13eea74e8ecf2d))
+
+## [2.27.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.26.0...core-js-sdk-2.27.0) (2024-10-14)
+
+
+### Features
+
+* add sdk session id ([#814](https://github.com/descope/descope-js/issues/814)) ([9f8f5a6](https://github.com/descope/descope-js/commit/9f8f5a6a79f978919a0019991640bd69e06365f8))
+
 ## [2.26.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.25.1...core-js-sdk-2.26.0) (2024-09-29)
 
 

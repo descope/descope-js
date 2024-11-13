@@ -49,6 +49,7 @@ describe('Enchanted Link', () => {
           name: 'John Doe',
         },
         {
+          templateId: 'bar',
           templateOptions: {
             ble: 'blue',
           },
@@ -61,6 +62,7 @@ describe('Enchanted Link', () => {
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
           loginOptions: {
+            templateId: 'bar',
             templateOptions: {
               ble: 'blue',
             },

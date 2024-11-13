@@ -35,6 +35,7 @@ export const RESPONSE_ACTIONS = {
   poll: 'poll',
   webauthnCreate: 'webauthnCreate',
   webauthnGet: 'webauthnGet',
+  nativeBridge: 'nativeBridge',
   loadForm: 'loadForm',
 };
 

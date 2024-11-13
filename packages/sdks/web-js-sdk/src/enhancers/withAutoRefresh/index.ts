@@ -102,5 +102,5 @@ export const withAutoRefresh =
         return resp;
       };
 
-    return wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
+    return wrapWith(sdk, ['logout', 'logoutAll', 'logoutPrevious'], wrapper);
   };

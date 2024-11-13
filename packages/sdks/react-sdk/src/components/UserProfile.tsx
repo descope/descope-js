@@ -21,6 +21,7 @@ const UserProfileWC = lazy(async () => {
       widgetId,
       theme,
       debug,
+      styleId,
     }) => (
 	<descope-user-profile-widget
         project-id={projectId}
@@ -29,6 +30,7 @@ const UserProfileWC = lazy(async () => {
         base-static-url={baseStaticUrl}
         theme={theme}
         debug={debug}
+        style-id={styleId}
         ref={innerRef}
       />
     ),
@@ -36,7 +38,7 @@ const UserProfileWC = lazy(async () => {
 });
 
 const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
-  ({ logger, theme, debug, widgetId, onLogout }, ref) => {
+  ({ logger, theme, debug, widgetId, onLogout, styleId }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -66,6 +68,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
           baseStaticUrl={baseStaticUrl}
           innerRef={setInnerRef}
           theme={theme}
+          styleId={styleId}
           debug={debug}
         />
 	</Suspense>

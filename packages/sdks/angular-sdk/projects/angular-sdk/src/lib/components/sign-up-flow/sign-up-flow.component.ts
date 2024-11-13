@@ -18,12 +18,15 @@ export class SignUpFlowComponent {
   @Input() telemetryKey: string;
   @Input() redirectUrl: string;
   @Input() autoFocus: true | false | 'skipFirstScreen';
-
+  @Input() validateOnBlur: boolean;
+  @Input() restartOnError: boolean;
+  
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();
