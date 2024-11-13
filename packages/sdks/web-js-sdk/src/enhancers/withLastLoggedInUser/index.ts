@@ -49,7 +49,7 @@ export const withLastLoggedInUser =
     let wrappedSdk = wrapWith(sdk, ['flow.start'], startWrapper);
     wrappedSdk = wrapWith(
       wrappedSdk,
-      ['logout', 'logoutAll'],
+      ['logout', 'logoutAll', 'logoutPrevious'],
       logoutWrapper(keepLastAuthenticatedUserAfterLogout),
     );
     return Object.assign(wrappedSdk, {
