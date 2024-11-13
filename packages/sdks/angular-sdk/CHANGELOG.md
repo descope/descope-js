@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/angular-sdk-0.6.6...angular-sdk-0.7.0) (2024-11-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.0`
+* `audit-management-widget` updated to version `0.2.0`
+* `role-management-widget` updated to version `0.2.0`
+* `user-management-widget` updated to version `0.5.0`
+* `user-profile-widget` updated to version `0.1.0`
+* `applications-portal-widget` updated to version `0.2.0`
+* `web-component` updated to version `3.29.0`
+
+### Features
+
+* add style-id to widgets ([#840](https://github.com/descope/descope-js/issues/840)) ([0573afd](https://github.com/descope/descope-js/commit/0573afd7e3e873a18bfba605643dd20820cf0365))
+
 ## [0.6.6](https://github.com/descope/descope-js/compare/angular-sdk-0.6.5...angular-sdk-0.6.6) (2024-11-03)
 
 ### Dependency Updates
