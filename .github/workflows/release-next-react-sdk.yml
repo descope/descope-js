@@ -29,11 +29,6 @@ jobs:
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
-      - name: ls
-        run: |
-          ls -la
-          pwd
-
       - name: Run git config
         run: |
           git config user.name github-actions
@@ -48,7 +43,7 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: ls -la && pwd && pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
       - name: Check if should run
