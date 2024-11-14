@@ -4,5 +4,3 @@ type JSONSerializable =
   | boolean
   | null
   | Array<JSONSerializable>;
-
-  export type FlowInput = Record<string, JSONSerializable>;
