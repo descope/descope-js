@@ -62,7 +62,7 @@ export const withPersistTokens =
 
     const wrappedSdk = wrapWith(
       sdk,
-      ['logout', 'logoutAll', 'logoutPrevious'],
+      ['logout', 'logoutAll'],
       wrapper(storagePrefix),
     );
 

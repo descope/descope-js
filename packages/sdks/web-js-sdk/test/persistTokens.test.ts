@@ -275,19 +275,6 @@ describe('persistTokens', () => {
       expect(removeMock).toBeCalledWith('DS');
     });
 
-    it('should clear tokens on logoutPrevious even when not passing refresh token', async () => {
-      localStorage.setItem('DSR', authInfo.refreshJwt);
-      const mockFetch = jest.fn().mockReturnValue(createMockReturnValue({}));
-      global.fetch = mockFetch;
-
-      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
-      await sdk.logoutPrevious();
-
-      expect(localStorage.getItem('DSR')).toBeFalsy();
-      const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toBeCalledWith('DS');
-    });
-
     it('should not log a warning when not running in the browser', () => {
       const warnSpy = jest.spyOn(console, 'warn');
 

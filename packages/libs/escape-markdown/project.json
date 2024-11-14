@@ -13,13 +13,11 @@
       }
     },
     "licenseCheck": {
-			"executor": "nx:run-commands",
-			"options": {
-				"commands": [
-					"exit 0"
-				]
-			}
-		}
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["exit 0"]
+      }
+    }
   },
   "tags": []
 }

@@ -45,11 +45,7 @@ export const withNotifications =
         return resp;
       };
 
-    const wrappedSdk = wrapWith(
-      sdk,
-      ['logout', 'logoutAll', 'logoutPrevious'],
-      wrapper,
-    );
+    const wrappedSdk = wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
 
     return Object.assign(wrappedSdk, {
       onSessionTokenChange: sessionPS.sub,
