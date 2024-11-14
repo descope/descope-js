@@ -1,5 +1,4 @@
 import createSdk from '../src/index';
-import webauthn from '../src/sdk/webauthn';
 
 const coreJs = {
   oauth: {

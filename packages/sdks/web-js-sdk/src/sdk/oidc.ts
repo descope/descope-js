@@ -5,7 +5,7 @@ import {
   SigninResponse,
   WebStorageStateStore,
 } from 'oidc-client-ts';
-import { AfterRequestHook, CoreSdk } from '../types';
+import { CoreSdk } from '../types';
 
 interface OidcConfig {
   clientId: string;
@@ -18,6 +18,14 @@ const getOidcClient = (
   projectID: string,
   oidcConfig?: OidcConfig,
 ) => {
+  // oidc-client-ts is a peer dependency of @descope/web-js-sdk
+  // so if it's not installed, we should throw an error
+  if (!OidcClient) {
+    throw new Error(
+      'oidc-client-ts is not installed. Please install it by running `npm install oidc-client-ts`',
+    );
+  }
+
   const statePrefix = window.location.pathname.replace(/\//g, '_');
   const stateUserKey = `${statePrefix}_user`;
 
@@ -56,7 +64,7 @@ const createOidc = (sdk: CoreSdk, projectID: string) => {
     return { ok: true, data: { url } };
   };
 
-  const finish = async (
+  const token = async (
     oidcConfig?: OidcConfig,
   ): Promise<SdkResponse<JWTResponse>> => {
     const { client, stateUserKey } = getOidcClient(sdk, projectID, oidcConfig);
@@ -85,7 +93,7 @@ const createOidc = (sdk: CoreSdk, projectID: string) => {
 
   return {
     authorize,
-    finish,
+    token,
     logout,
   };
 };
