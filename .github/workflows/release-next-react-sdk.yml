@@ -65,10 +65,15 @@ jobs:
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+      - name: Set Next Version
+        run: |
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
+          CURRENT_DATE=$(date +'%Y%m%d')
+          echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
       - name: Run pnpm publish
         if: steps.check.outputs.run == 'true'
         run: |
-          pnpm --filter "@descope/react-sdk" exec npm version "0.0.0-next-$(git rev-parse HEAD)" --git-tag-version=false
+          pnpm --filter "@descope/react-sdk" exec npm version "${NEXT_VERSION}" --git-tag-version=false
           pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
         env:
           CI: true

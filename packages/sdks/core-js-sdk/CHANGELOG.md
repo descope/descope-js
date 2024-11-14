@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.30.0...core-js-sdk-2.30.1) (2024-11-14)
+
+## [2.30.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.29.1...core-js-sdk-2.30.0) (2024-11-13)
+
+
+### Features
+
+* Logout previous sessions RELEASE ([#846](https://github.com/descope/descope-js/issues/846)) ([193b640](https://github.com/descope/descope-js/commit/193b640bb81b157d172ca4e58d32f742e97009fe))
+
 ## [2.29.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.29.0...core-js-sdk-2.29.1) (2024-10-29)
 
 ## [2.29.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.28.0...core-js-sdk-2.29.0) (2024-10-26)

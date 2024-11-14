@@ -99,7 +99,9 @@ const App = () => {
             // - "skipFirstScreen": automatically focus on the first input of each screen, except first screen
             // autoFocus="skipFirstScreen"
 
-            // validateOnBlur: set it to true will show input validation errors on blur, in addition to on submit
+            // validateOnBlur: set it to true will show input validation errors on blur, in addition to on submit            
+            
+            // restartOnError: if set to true, in case of flow version mismatch, will restart the flow if the components version was not changed. Default is false
 
             // errorTransformer is a function that receives an error object and returns a string. The returned string will be displayed to the user.
             // NOTE: errorTransformer is not required. If not provided, the error object will be displayed as is.
