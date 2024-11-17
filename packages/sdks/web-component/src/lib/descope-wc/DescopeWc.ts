@@ -10,6 +10,9 @@ import {
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
   RESPONSE_ACTIONS,
+  URL_CODE_PARAM_NAME,
+  URL_RUN_IDS_PARAM_NAME,
+  URL_TOKEN_PARAM_NAME,
 } from '../constants';
 import {
   fetchContent,
@@ -103,8 +106,40 @@ class DescopeWc extends BaseDescopeWc {
 
   // This callback will be initialized once a 'nativeBridge' action is
   // received from a start or next request. It will then be called by
-  // the native layer as a response to a dispatched 'bridge' event.
-  nativeComplete: (bridgeResponse: string) => Promise<void>;
+  // nativeResume if appropriate as part of handling some payload types.
+  nativeComplete: (input: Record<string, any>) => Promise<void>;
+
+  // This callback is called by the native layer to resume a flow
+  // that's waiting for some external trigger, such as a magic link
+  // redirect or native OAuth authentication.
+  nativeResume = (type: string, payload: string) => {
+    const response = JSON.parse(payload);
+    this.logger.info(`nativeResume received payload of type '${type}'`);
+    if (type === 'oauthWeb' || type === 'sso') {
+      let { exchangeCode } = response;
+      if (!exchangeCode) {
+        const url = new URL(response.url);
+        exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
+      }
+      this.nativeComplete({
+        exchangeCode,
+        idpInitiated: true,
+      });
+    } else if (type === 'magicLink') {
+      const url = new URL(response.url);
+      const token = url.searchParams.get(URL_TOKEN_PARAM_NAME);
+      const stepId = url.searchParams
+        .get(URL_RUN_IDS_PARAM_NAME)
+        .split('_')
+        .pop();
+      this.#resetPollingTimeout();
+      // update the state along with cancelling out the action to abort the polling mechanism
+      this.flowState.update({ token, stepId, action: undefined });
+    } else {
+      // expected: 'oauthNative', 'webauthnCreate', 'webauthnGet', 'failure'
+      this.nativeComplete(response);
+    }
+  };
 
   // This object is set by the native layer to
   // inject native specific data into the 'flowState'.
@@ -488,8 +523,7 @@ class DescopeWc extends BaseDescopeWc {
       // prepare a callback with the current flow state, and accept
       // the input to be a JSON, passed down from the native layer.
       // this function will be called as an async response to a 'bridge' event
-      this.nativeComplete = async (bridgeResponse: string) => {
-        const input = JSON.parse(bridgeResponse);
+      this.nativeComplete = async (input: Record<string, any>) => {
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
@@ -512,7 +546,6 @@ class DescopeWc extends BaseDescopeWc {
     this.#handlePollingResponse(
       executionId,
       stepId,
-      action,
       flowConfig.version,
       projectConfig.componentsVersion,
     );
@@ -622,7 +655,6 @@ class DescopeWc extends BaseDescopeWc {
   #handlePollingResponse = (
     executionId: string,
     stepId: string,
-    action: string,
     flowVersion: number,
     componentsVersion: string,
     rescheduled: boolean = false,
@@ -632,7 +664,7 @@ class DescopeWc extends BaseDescopeWc {
     const pollingThrottleDelay = 500;
     const pollingThrottleThreshold = 500;
     const pollingThrottleTimeout = 1000;
-    if (action === RESPONSE_ACTIONS.poll) {
+    if (this.flowState.current.action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.logger.debug('polling - Scheduling polling request');
       const scheduledAt = Date.now();
@@ -676,7 +708,6 @@ class DescopeWc extends BaseDescopeWc {
           this.#handlePollingResponse(
             executionId,
             stepId,
-            action,
             flowVersion,
             componentsVersion,
             throttled,
@@ -691,7 +722,6 @@ class DescopeWc extends BaseDescopeWc {
           this.#handlePollingResponse(
             executionId,
             stepId,
-            action,
             flowVersion,
             componentsVersion,
           );
@@ -707,12 +737,10 @@ class DescopeWc extends BaseDescopeWc {
         }
 
         this.#handleSdkResponse(sdkResp);
-        const { action: nextAction } = sdkResp?.data ?? {};
         // will poll again if needed
         this.#handlePollingResponse(
           executionId,
           stepId,
-          nextAction,
           flowVersion,
           componentsVersion,
         );

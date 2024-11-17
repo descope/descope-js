@@ -103,6 +103,7 @@ export type TemplateOptions = Record<string, string>; // for providing messaging
 export type LoginOptions = {
   stepup?: boolean;
   mfa?: boolean;
+  revokeOtherSessions?: boolean;
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
