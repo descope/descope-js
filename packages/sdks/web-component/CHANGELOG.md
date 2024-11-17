@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.29.3](https://github.com/descope/descope-js/compare/web-component-3.29.2...web-component-3.29.3) (2024-11-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.2`
+## [3.29.2](https://github.com/descope/descope-js/compare/web-component-3.29.1...web-component-3.29.2) (2024-11-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.1`
+* `escape-markdown` updated to version `0.1.1`
+
+### Bug Fixes
+
+* expose restartOnError on all sdks ([#838](https://github.com/descope/descope-js/issues/838)) ([dd20924](https://github.com/descope/descope-js/commit/dd20924dfd02345eae2972d5154b9be8a209a906))
+
 ## [3.29.1](https://github.com/descope/descope-js/compare/web-component-3.29.0...web-component-3.29.1) (2024-11-13)
 
 ### Dependency Updates

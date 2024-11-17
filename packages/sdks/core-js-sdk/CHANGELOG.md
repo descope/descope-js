@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.31.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.30.1...core-js-sdk-2.31.0) (2024-11-16)
+
+
+### Features
+
+* Add the revokeOtherSessions attribute in LoginOptions RELEASE ([#848](https://github.com/descope/descope-js/issues/848)) ([fca695f](https://github.com/descope/descope-js/commit/fca695fa4ab079791c969590694912a5b2daf74f))
+
+## [2.30.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.30.0...core-js-sdk-2.30.1) (2024-11-14)
+
 ## [2.30.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.29.1...core-js-sdk-2.30.0) (2024-11-13)
 
 
