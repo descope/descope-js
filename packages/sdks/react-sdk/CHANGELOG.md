@@ -452,3 +452,4 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 * `user-profile-widget` updated to version `0.0.82`
 * `web-component` updated to version `3.19.4`
 * `web-js-sdk` updated to version `1.15.4`
+ 
