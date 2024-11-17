@@ -62,12 +62,12 @@ const ManageAccessKeys = () => {
       <h2>Manage Access Keys</h2>
       <AccessKeyManagement
         widgetId="access-key-management-widget"
-        tenant={process.env.DESCOPE_TENANT_ID}
+        tenant={process.env.DESCOPE_TENANT_ID!}
       />
       <h2>Manage My Access Keys</h2>
       <AccessKeyManagement
         widgetId="user-access-key-management-widget"
-        tenant={process.env.DESCOPE_TENANT_ID}
+        tenant={process.env.DESCOPE_TENANT_ID!}
       />
     </>
   );
