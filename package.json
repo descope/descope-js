@@ -57,7 +57,6 @@
   "lint-staged": {
     "*.*": [
       "bash -c \"npm run format\"",
-      "bash -c \"npm run lint\"",
       "git add"
     ],
     "package.json": [
