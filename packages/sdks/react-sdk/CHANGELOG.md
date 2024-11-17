@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.2](https://github.com/descope/descope-js/compare/react-sdk-2.3.1...react-sdk-2.3.2) (2024-11-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.3`
+* `audit-management-widget` updated to version `0.2.3`
+* `role-management-widget` updated to version `0.2.3`
+* `user-management-widget` updated to version `0.5.3`
+* `user-profile-widget` updated to version `0.1.3`
+* `applications-portal-widget` updated to version `0.2.3`
+* `web-component` updated to version `3.29.3`
+* `web-js-sdk` updated to version `1.20.2`
+* `core-js-sdk` updated to version `2.31.0`
 ## [2.3.1](https://github.com/descope/descope-js/compare/react-sdk-2.3.0...react-sdk-2.3.1) (2024-11-14)
 
 ### Dependency Updates
