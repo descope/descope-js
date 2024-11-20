@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.3.2...sdk-mixins-0.4.0) (2024-11-10)
+
+
+### Features
+
+* **descope-ui-mixin:** use descopecdn.com ([#804](https://github.com/descope/descope-js/issues/804)) ([82e2fa7](https://github.com/descope/descope-js/commit/82e2fa779f48b99c8ed88af451fc2a9b329d1758))
+
 ## [0.3.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.3.1...sdk-mixins-0.3.2) (2024-09-19)
 
 ### Dependency Updates
