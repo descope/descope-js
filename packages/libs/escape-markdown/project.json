@@ -11,6 +11,12 @@
         "push": false,
         "preset": "conventional"
       }
+    },
+    "licenseCheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["exit 0"]
+      }
     }
   },
   "tags": []

@@ -2,6 +2,50 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.3](https://github.com/descope/descope-js/compare/angular-sdk-0.7.2...angular-sdk-0.7.3) (2024-11-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.3`
+* `audit-management-widget` updated to version `0.2.3`
+* `role-management-widget` updated to version `0.2.3`
+* `user-management-widget` updated to version `0.5.3`
+* `user-profile-widget` updated to version `0.1.3`
+* `applications-portal-widget` updated to version `0.2.3`
+* `web-component` updated to version `3.29.3`
+* `web-js-sdk` updated to version `1.20.2`
+* `core-js-sdk` updated to version `2.31.0`
+## [0.7.2](https://github.com/descope/descope-js/compare/angular-sdk-0.7.1...angular-sdk-0.7.2) (2024-11-14)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.2`
+* `audit-management-widget` updated to version `0.2.2`
+* `role-management-widget` updated to version `0.2.2`
+* `user-management-widget` updated to version `0.5.2`
+* `user-profile-widget` updated to version `0.1.2`
+* `applications-portal-widget` updated to version `0.2.2`
+* `web-component` updated to version `3.29.2`
+* `web-js-sdk` updated to version `1.20.1`
+* `core-js-sdk` updated to version `2.30.1`
+
+### Bug Fixes
+
+* expose restartOnError on all sdks ([#838](https://github.com/descope/descope-js/issues/838)) ([dd20924](https://github.com/descope/descope-js/commit/dd20924dfd02345eae2972d5154b9be8a209a906))
+
+## [0.7.1](https://github.com/descope/descope-js/compare/angular-sdk-0.7.0...angular-sdk-0.7.1) (2024-11-13)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.1`
+* `audit-management-widget` updated to version `0.2.1`
+* `role-management-widget` updated to version `0.2.1`
+* `user-management-widget` updated to version `0.5.1`
+* `user-profile-widget` updated to version `0.1.1`
+* `applications-portal-widget` updated to version `0.2.1`
+* `web-component` updated to version `3.29.1`
+* `web-js-sdk` updated to version `1.20.0`
+* `core-js-sdk` updated to version `2.30.0`
 ## [0.7.0](https://github.com/descope/descope-js/compare/angular-sdk-0.6.6...angular-sdk-0.7.0) (2024-11-10)
 
 ### Dependency Updates

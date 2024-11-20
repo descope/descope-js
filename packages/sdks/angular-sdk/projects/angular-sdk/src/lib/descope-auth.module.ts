@@ -47,9 +47,8 @@ import { DescopeAuthConfig } from './types/types';
 export class DescopeAuthModule {
   constructor(@Optional() @SkipSelf() parentModule?: DescopeAuthModule) {
     if (parentModule) {
-      throw new Error(
-        'DescopeAuthModule is already loaded. Import it only once'
-      );
+      // eslint-disable-next-line no-console
+      console.log('DescopeAuthModule is loaded in a child module');
     }
   }
 
