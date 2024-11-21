@@ -20,6 +20,7 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
         expireTime: new Date().getTime() / 1000 + 60 * 60 * 24 * 30,
         createdTime: new Date().getTime() / 1000,
         roleNames: [`Role ${i}`],
+        permittedIps: ['127.1.2.3'],
         status: 'active',
         clientId: `Client ID ${i}`,
         boundUserId: `User ${i}`,
@@ -45,7 +46,7 @@ const create: (
   config: CreateAccessKeyConfig,
   expireTime: number,
 ) => Promise<{ cleartext: string; key: AccessKey }> = async (
-  { name, roleNames, userId },
+  { name, roleNames, userId, permittedIps },
   expireTime,
 ) => {
   const i = Math.random().toString(10).substring(15);
@@ -60,6 +61,7 @@ const create: (
         expireTime,
         createdTime: new Date().getTime() / 1000,
         roleNames,
+        permittedIps,
         status: 'active',
         clientId: `Client ID ${i}`,
         boundUserId: userId || `User ${i}`,

@@ -224,6 +224,7 @@ describe('access-key-management-widget', () => {
             name: mockNewAccessKey.name,
             userId: mockNewAccessKey.userId,
             roleNames: mockNewAccessKey.roleNames,
+            permittedIps: mockNewAccessKey.permittedIps,
             expireTime: 0,
           },
           {
