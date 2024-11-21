@@ -4,7 +4,7 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
-import { ComponentsConfig, ScreenState } from '../types';
+import { ComponentsConfig, CssVars, ScreenState } from '../types';
 import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
@@ -141,6 +141,53 @@ const setFormConfigValues = (
   });
 };
 
+const setCssVars = (
+  nextPageTemplate: DocumentFragment,
+  rootEle: HTMLElement,
+  cssVars: CssVars,
+  logger: {
+    error: (message: string, description: string) => void,
+    info: (message: string, description: string) => void,
+  }
+) => {
+  if (!cssVars) {
+    return;
+  }
+
+  Object.keys(cssVars).forEach((componentName) => {
+    if(!nextPageTemplate.querySelector(componentName)){
+      logger.info(`Skipping css vars for component "${componentName}}"`, `Got css vars for component ${componentName} but Could not find it on next page` );
+    }
+    const componentClass: CustomElementConstructor & { cssVarList: CssVars } | undefined = customElements.get(componentName) as any;
+
+    if (!componentClass) {
+      logger.error(
+        `Could not find component class for ${componentName}`,
+        'Check if the component is registered',
+      );
+      return;
+    }
+
+    Object.keys(cssVars[componentName]).forEach((cssVarKey) => {
+      const componentCssVars = cssVars[componentName];
+      const varName = componentClass?.cssVarList?.[cssVarKey];
+
+      if (!varName) {
+        logger.error(
+          `Could not find css variable name for ${cssVarKey} in ${componentName}`,
+          'Check if the css variable is defined in the component',
+        );
+        return;
+      }
+
+      const value = componentCssVars[cssVarKey];
+
+      rootEle.style.setProperty(varName, value);
+    })
+  });
+}
+
+
 const setElementConfig = (
   baseEle: DocumentFragment,
   componentsConfig: ComponentsConfig,
@@ -175,6 +222,8 @@ const setElementConfig = (
   });
 };
 
+
+
 const setImageVariable = (
   rootEle: HTMLElement,
   name: string,
@@ -201,8 +250,10 @@ const setImageVariable = (
  */
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
+  rootEle: HTMLElement,
   screenState?: ScreenState,
   componentsConfig?: ComponentsConfig,
+  cssVars?: CssVars,
   flowInputs?: Record<string, string>,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
@@ -222,6 +273,7 @@ export const updateTemplateFromScreenState = (
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
+  setCssVars(baseEle, rootEle, cssVars, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
 };

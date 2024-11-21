@@ -994,8 +994,10 @@ class DescopeWc extends BaseDescopeWc {
 
     updateTemplateFromScreenState(
       clone,
+      this.rootElement,
       screenState,
       screenState.componentsConfig,
+      screenState.cssVars,
       this.formConfig,
       this.errorTransformer,
       this.loggerWrapper,
