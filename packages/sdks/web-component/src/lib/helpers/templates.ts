@@ -146,22 +146,27 @@ const setCssVars = (
   rootEle: HTMLElement,
   cssVars: CssVars,
   logger: {
-    error: (message: string, description: string) => void,
-    info: (message: string, description: string) => void,
-  }
+    error: (message: string, description: string) => void;
+    info: (message: string, description: string) => void;
+  },
 ) => {
   if (!cssVars) {
     return;
   }
 
   Object.keys(cssVars).forEach((componentName) => {
-    if(!nextPageTemplate.querySelector(componentName)){
-      logger.info(`Skipping css vars for component "${componentName}}"`, `Got css vars for component ${componentName} but Could not find it on next page` );
+    if (!nextPageTemplate.querySelector(componentName)) {
+      logger.info(
+        `Skipping css vars for component "${componentName}}"`,
+        `Got css vars for component ${componentName} but Could not find it on next page`,
+      );
     }
-    const componentClass: CustomElementConstructor & { cssVarList: CssVars } | undefined = customElements.get(componentName) as any;
+    const componentClass:
+      | (CustomElementConstructor & { cssVarList: CssVars })
+      | undefined = customElements.get(componentName) as any;
 
     if (!componentClass) {
-      logger.error(
+      logger.info(
         `Could not find component class for ${componentName}`,
         'Check if the component is registered',
       );
@@ -173,7 +178,7 @@ const setCssVars = (
       const varName = componentClass?.cssVarList?.[cssVarKey];
 
       if (!varName) {
-        logger.error(
+        logger.info(
           `Could not find css variable name for ${cssVarKey} in ${componentName}`,
           'Check if the css variable is defined in the component',
         );
@@ -183,10 +188,9 @@ const setCssVars = (
       const value = componentCssVars[cssVarKey];
 
       rootEle.style.setProperty(varName, value);
-    })
+    });
   });
-}
-
+};
 
 const setElementConfig = (
   baseEle: DocumentFragment,
@@ -221,8 +225,6 @@ const setElementConfig = (
     });
   });
 };
-
-
 
 const setImageVariable = (
   rootEle: HTMLElement,
