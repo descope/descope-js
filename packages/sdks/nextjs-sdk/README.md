@@ -272,7 +272,7 @@ export async function GET(req) {
 ### Pages Router
 
 This section is Working in progress :-)
-In the meantime, you can see the example in the [Pages Router](/examples/pages-router/) folder.
+In the meantime, you can see the example in the [Pages Router](./examples/pages-router/) folder.
 
 ### Widgets
 
@@ -441,7 +441,7 @@ Example:
 
 ## Code Example
 
-You can find an example react app in the [examples folder](./examples). - [App Router](/examples/app-router/) - [Pages Router](/examples/pages-router/)
+You can find an example react app in the [examples folder](./examples). - [App Router](./examples/app-router/) - [Pages Router](./examples/pages-router/)
 
 ## Learn More
 
