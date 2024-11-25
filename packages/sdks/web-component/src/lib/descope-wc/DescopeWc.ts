@@ -619,6 +619,7 @@ class DescopeWc extends BaseDescopeWc {
           flowId,
           {
             tenant,
+            thirdPartyAppId,
             redirectAuth,
             ...ssoQueryParams,
             lastAuth,
