@@ -141,8 +141,7 @@ const setFormConfigValues = (
   });
 };
 
-const setCssVars = (
-  nextPageTemplate: DocumentFragment,
+export const setCssVars = (
   rootEle: HTMLElement,
   cssVars: CssVars,
   logger: {
@@ -155,7 +154,7 @@ const setCssVars = (
   }
 
   Object.keys(cssVars).forEach((componentName) => {
-    if (!nextPageTemplate.querySelector(componentName)) {
+    if (!rootEle.querySelector(componentName)) {
       logger.info(
         `Skipping css vars for component "${componentName}}"`,
         `Got css vars for component ${componentName} but Could not find it on next page`,
@@ -252,10 +251,8 @@ const setImageVariable = (
  */
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
-  rootEle: HTMLElement,
   screenState?: ScreenState,
   componentsConfig?: ComponentsConfig,
-  cssVars?: CssVars,
   flowInputs?: Record<string, string>,
   errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
@@ -275,7 +272,6 @@ export const updateTemplateFromScreenState = (
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
-  setCssVars(baseEle, rootEle, cssVars, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
 };

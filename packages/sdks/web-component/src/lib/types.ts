@@ -83,6 +83,7 @@ export type FlowState = {
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
   nativeResponseType: string;
+  thirdPartyAppId: string;
   nativePayload: Record<string, any>;
 } & SSOQueryParams;
 

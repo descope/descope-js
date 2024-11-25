@@ -19,6 +19,7 @@ import {
   OVERRIDE_CONTENT_URL,
   OIDC_PROMPT_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
+  THIRD_PARTY_APP_ID_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
@@ -207,8 +208,16 @@ export function getSSOAppIdParamFromUrl() {
   return getUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getThirdPartyAppIdParamFromUrl() {
+  return getUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
+}
+
 export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearThirdPartyAppIdParamFromUrl() {
+  resetUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
 }
 
 export function getOIDCLoginHintParamFromUrl() {
@@ -312,6 +321,11 @@ export const handleUrlParams = () => {
     clearSSOAppIdParamFromUrl();
   }
 
+  const thirdPartyAppId = getThirdPartyAppIdParamFromUrl();
+  if (thirdPartyAppId) {
+    clearThirdPartyAppIdParamFromUrl();
+  }
+
   const oidcLoginHint = getOIDCLoginHintParamFromUrl();
   if (oidcLoginHint) {
     clearOIDCLoginHintParamFromUrl();
@@ -339,6 +353,7 @@ export const handleUrlParams = () => {
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
+    thirdPartyAppId,
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
