@@ -81,54 +81,67 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
 
             compInstance.value = customAttr[customAttrName] || '';
 
-            const editFlowId = nodeEle.getAttribute('edit-flow-id');
-            if (editFlowId) {
-              this.#editModals[editFlowId] = this.createModal({
-                'data-id': `edit-${customAttrName}`,
-              });
-
-              this.#editFlows[editFlowId] = new FlowDriver(
-                () =>
-                  this.#editModals[editFlowId]?.ele?.querySelector(
-                    'descope-wc',
-                  ),
-                { logger: this.logger },
-              );
-              this.#editModals[editFlowId].afterClose =
-                this.#initEditModalContent.bind(this, editFlowId);
-
-              compInstance.onEditClick(() => {
-                this.#editModals?.[editFlowId]?.open();
-              });
-
-              this.#initEditModalContent(editFlowId);
-            }
-
-            const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
-            if (deleteFlowId) {
-              this.#deleteModals[deleteFlowId] = this.createModal({
-                'data-id': `delete-${customAttrName}`,
-              });
-
-              this.#deleteFlows[deleteFlowId] = new FlowDriver(
-                () =>
-                  this.#deleteModals[deleteFlowId]?.ele?.querySelector(
-                    'descope-wc',
-                  ),
-                { logger: this.logger },
-              );
-              this.#deleteModals[deleteFlowId].afterClose =
-                this.#initDeleteModalContent.bind(this, deleteFlowId);
-
-              compInstance.onDeleteClick(() => {
-                this.#deleteModals?.[deleteFlowId]?.open();
-              });
-
-              this.#initDeleteModalContent(deleteFlowId);
-            }
+            this.#initEditFlow(nodeEle, customAttrName, compInstance);
+            this.#initDeleteFlow(nodeEle, customAttrName, compInstance);
           });
         },
       );
+
+      #initEditFlow(
+        nodeEle: Element,
+        customAttrName: string,
+        compInstance: UserAttributeDriver,
+      ) {
+        const editFlowId = nodeEle.getAttribute('edit-flow-id');
+        if (editFlowId) {
+          this.#editModals[editFlowId] = this.createModal({
+            'data-id': `edit-${customAttrName}`,
+          });
+
+          this.#editFlows[editFlowId] = new FlowDriver(
+            () =>
+              this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
+            { logger: this.logger },
+          );
+          this.#editModals[editFlowId].afterClose =
+            this.#initEditModalContent.bind(this, editFlowId);
+
+          compInstance.onEditClick(() => {
+            this.#editModals?.[editFlowId]?.open();
+          });
+
+          this.#initEditModalContent(editFlowId);
+        }
+      }
+
+      #initDeleteFlow(
+        nodeEle: Element,
+        customAttrName: string,
+        compInstance: UserAttributeDriver,
+      ) {
+        const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
+        if (deleteFlowId) {
+          this.#deleteModals[deleteFlowId] = this.createModal({
+            'data-id': `delete-${customAttrName}`,
+          });
+
+          this.#deleteFlows[deleteFlowId] = new FlowDriver(
+            () =>
+              this.#deleteModals[deleteFlowId]?.ele?.querySelector(
+                'descope-wc',
+              ),
+            { logger: this.logger },
+          );
+          this.#deleteModals[deleteFlowId].afterClose =
+            this.#initDeleteModalContent.bind(this, deleteFlowId);
+
+          compInstance.onDeleteClick(() => {
+            this.#deleteModals?.[deleteFlowId]?.open();
+          });
+
+          this.#initDeleteModalContent(deleteFlowId);
+        }
+      }
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
