@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // workaround for TS issue https://github.com/microsoft/TypeScript/issues/42873
 // eslint-disable-next-line
 import type * as _1 from '@descope/core-js-sdk';
