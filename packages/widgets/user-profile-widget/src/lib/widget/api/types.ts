@@ -4,7 +4,7 @@ export type Sdk = ReturnType<typeof createWebSdk>;
 
 type CustomAttributeType = string | boolean | number;
 
-type CustomAttributes = Record<string, CustomAttributeType>;
+export type CustomAttributes = Record<string, CustomAttributeType>;
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
@@ -94,7 +94,7 @@ export type CreateUserConfig = {
 
 export type CustomAttr = {
   name: string;
-  type: number;
+  type: AttributeType;
   options: string[];
   displayName: string;
   defaultValue: Record<string, string>;
@@ -102,3 +102,12 @@ export type CustomAttr = {
   EditPermissions: string[];
   editable: boolean;
 };
+
+export enum AttributeType {
+  text = 1,
+  number = 2,
+  boolean = 3,
+  singleSelect = 4,
+  array = 5,
+  date = 6,
+}

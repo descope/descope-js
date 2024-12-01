@@ -6,4 +6,9 @@ export const initialState: State = {
     error: null,
     data: {},
   },
+  customAttributes: {
+    loading: false,
+    error: null,
+    data: [],
+  },
 };

@@ -1,5 +1,5 @@
 import { apiPaths } from '../apiPaths';
-import { HttpClient } from '../types';
+import { CustomAttr, HttpClient } from '../types';
 import { withErrorHandler } from './helpers';
 import { user } from './mocks';
 
@@ -21,7 +21,21 @@ export const createUserSdk = ({
     return res.json();
   };
 
+  const getCustomAttributes = async (): Promise<CustomAttr[]> => {
+    if (mock) {
+      return [];
+    }
+    const res = await httpClient.get(apiPaths.user.customAttributes);
+
+    await withErrorHandler(res);
+
+    const json = await res.json();
+
+    return json.data;
+  };
+
   return {
     me,
+    getCustomAttributes,
   };
 };
