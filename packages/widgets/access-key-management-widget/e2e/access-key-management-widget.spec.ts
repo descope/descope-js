@@ -146,7 +146,7 @@ test.describe('widget', () => {
     const createAccessKeyNameInput = page.getByText('Name');
     await createAccessKeyNameInput.last().fill('some access key name');
 
-    await page.locator(`id=toggleButton`).last().click();
+    await page.locator(`id=toggleButton`).nth(-2).click();
     await expect(
       page.locator(`text=${mockRoles.roles[0].name}`).last(),
     ).toBeVisible();
@@ -157,7 +157,7 @@ test.describe('widget', () => {
       page.locator(`text=${mockRoles.roles[2].name}`).last(),
     ).toBeVisible();
 
-    await page.locator(`id=toggleButton`).last().click();
+    await page.locator(`id=toggleButton`).nth(-2).click();
 
     // click modal create button
     const createAccessKeyButton = page
