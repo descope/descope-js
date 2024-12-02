@@ -72,6 +72,8 @@ const defaultOptionsValues = {
   redirectAuth: undefined,
   tenant: undefined,
   locale: 'en-us',
+  nativeOptions: undefined,
+  thirdPartyAppId: null,
 };
 
 class MockFileReader {
@@ -4525,6 +4527,41 @@ describe('web-component', () => {
       await waitFor(() => screen.getByShadowDisplayValue('val1'), {
         timeout: WAIT_TIMEOUT,
       });
+    });
+  });
+
+  describe('cssVars', () => {
+    it('should set css vars on root element', async () => {
+      const spyGet = jest.spyOn(customElements, 'get');
+      spyGet.mockReturnValue({ cssVarList: { varName: '--var-name' } } as any);
+
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          screenState: {
+            cssVars: { 'descope-button': { varName: 'value' } },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="customComponent">`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const shadowEle =
+        document.getElementsByTagName('descope-wc')[0].shadowRoot;
+      const rootEle = shadowEle.querySelector('#root');
+
+      await waitFor(
+        () =>
+          expect(rootEle).toHaveStyle({
+            '--var-name': 'value',
+          }),
+        { timeout: WAIT_TIMEOUT },
+      );
     });
   });
 
