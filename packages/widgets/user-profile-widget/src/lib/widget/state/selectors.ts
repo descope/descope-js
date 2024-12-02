@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { AttributeType, CustomAttr } from '../api/types';
 import { State } from './types';
 
 export const getMe = (state: State) => state.me.data;
@@ -19,38 +18,7 @@ export const getIsPhoneVerified = createSelector(
 export const getHasPasskey = createSelector(getMe, (me) => me.webauthn);
 export const getHasPassword = createSelector(getMe, (me) => me.password);
 
-export const getCustomAttributes = (state: State) =>
-  state.customAttributes.data;
-
 export const getUserCustomAttrs = createSelector(
   getMe,
-  getCustomAttributes,
-  (
-    userData: Record<string, any>,
-    allCustomAttrs: CustomAttr[] = [],
-  ): Record<string, string> => {
-    const userCustomAttributes = userData['customAttributes'] || {};
-
-    return Object.entries(userCustomAttributes).reduce(
-      (acc, [key]) => {
-        const type =
-          allCustomAttrs.find((attr) => attr.name === key)?.type ||
-          AttributeType.text;
-
-        if (type === AttributeType.date && userCustomAttributes[key]) {
-          // to full date time
-          acc[key] = new Date(userCustomAttributes[key]).toLocaleString();
-        } else if (
-          type === AttributeType.boolean &&
-          userCustomAttributes[key] !== undefined
-        ) {
-          acc[key] = !userCustomAttributes[key] ? 'False' : 'True';
-        } else {
-          acc[key] = (userCustomAttributes[key] || '').toString();
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
-  },
+  (me) => me.customAttributes as Record<string, any>,
 );

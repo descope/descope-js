@@ -94,7 +94,7 @@ export type CreateUserConfig = {
 
 export type CustomAttr = {
   name: string;
-  type: AttributeType;
+  type: number;
   options: string[];
   displayName: string;
   defaultValue: Record<string, string>;
@@ -103,11 +103,11 @@ export type CustomAttr = {
   editable: boolean;
 };
 
-export enum AttributeType {
-  text = 1,
-  number = 2,
-  boolean = 3,
-  singleSelect = 4,
-  array = 5,
-  date = 6,
+export enum AttributeTypeName {
+  TEXT = 'text',
+  NUMBER = 'number',
+  BOOLEAN = 'boolean',
+  SINGLE_SELECT = 'singleSelect',
+  ARRAY = 'array',
+  DATE = 'date',
 }

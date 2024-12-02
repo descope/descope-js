@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { AttributeTypeName } from '../../../api/types';
 import { getUserCustomAttrs } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -63,7 +64,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       }
 
       #updateCustomValueUserAttrs = withMemCache(
-        (customAttr: ReturnType<typeof getUserCustomAttrs>) => {
+        (userCustomAttributes: ReturnType<typeof getUserCustomAttrs>) => {
           const allCustomAttributesComponents =
             this.shadowRoot?.querySelectorAll(
               'descope-user-attribute[data-id^="customAttributes."]',
@@ -72,12 +73,25 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
           Array.from(allCustomAttributesComponents).forEach((nodeEle) => {
             const attrName = nodeEle.getAttribute('data-id');
             const customAttrName = attrName.replace('customAttributes.', '');
+            const type =
+              nodeEle.getAttribute('data-type') || AttributeTypeName.TEXT;
+            const val = userCustomAttributes[customAttrName];
 
             const compInstance = new UserAttributeDriver(nodeEle, {
               logger: this.logger,
             });
 
-            compInstance.value = customAttr[customAttrName] || '';
+            if (type === AttributeTypeName.DATE && val) {
+              // to full date time
+              compInstance.value = new Date(val).toLocaleString();
+            } else if (
+              type === AttributeTypeName.BOOLEAN &&
+              val !== undefined
+            ) {
+              compInstance.value = !val ? 'False' : 'True';
+            } else {
+              compInstance.value = (val || '').toString();
+            }
 
             this.#initEditFlow(nodeEle, customAttrName, compInstance);
             this.#initDeleteFlow(nodeEle, customAttrName, compInstance);

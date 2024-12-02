@@ -1,17 +1,11 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { Sdk } from '../api/sdk';
-import { CustomAttr } from '../api/types';
 
 export type State = {
   me: {
     loading: boolean;
     error: unknown;
     data: Record<string, any>;
-  };
-  customAttributes: {
-    loading: boolean;
-    error: unknown;
-    data: CustomAttr[];
   };
 };
 

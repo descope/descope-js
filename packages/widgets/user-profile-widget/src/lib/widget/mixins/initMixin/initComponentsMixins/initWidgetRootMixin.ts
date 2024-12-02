@@ -37,11 +37,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        await Promise.all([
-          this.actions.getMe(),
-          this.actions.getCustomAttributes(),
-          this.#initWidgetRoot(),
-        ]);
+        await Promise.all([this.actions.getMe(), this.#initWidgetRoot()]);
 
         this.onWidgetRootReady();
       }

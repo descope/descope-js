@@ -102,22 +102,5 @@ describe('user-profile-widget', () => {
 
       expect(result).toEqual(mockUser);
     });
-
-    it('custom attributes', async () => {
-      mockHttpClient.reset();
-      const sdk = createSdk({ projectId: mockProjectId }, false);
-      const result = await sdk.user.getCustomAttributes();
-
-      await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
-        timeout: 5000,
-      });
-      await waitFor(() =>
-        expect(mockHttpClient.get).toHaveBeenCalledWith(
-          apiPaths.user.customAttributes,
-        ),
-      );
-
-      expect(result).toEqual([]);
-    });
   });
 });
