@@ -42,6 +42,7 @@ import { getABTestingKey } from '../helpers/abTestingKey';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
+  setCssVars,
   setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
@@ -298,6 +299,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       nativeResponseType,
       nativePayload,
+      thirdPartyAppId,
       ...ssoQueryParams
     } = currentState;
 
@@ -368,6 +370,7 @@ class DescopeWc extends BaseDescopeWc {
           {
             tenant,
             redirectAuth,
+            thirdPartyAppId,
             ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
@@ -616,6 +619,7 @@ class DescopeWc extends BaseDescopeWc {
           flowId,
           {
             tenant,
+            thirdPartyAppId,
             redirectAuth,
             ...ssoQueryParams,
             lastAuth,
@@ -1013,6 +1017,9 @@ class DescopeWc extends BaseDescopeWc {
       setTOTPVariable(rootElement, screenState?.totp?.image);
 
       setNOTPVariable(rootElement, screenState?.notp?.image);
+
+      // set dynamic css variables that should be set at runtime
+      setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
       this.rootElement.replaceChildren(clone);
 
