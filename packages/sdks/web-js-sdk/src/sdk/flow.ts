@@ -11,6 +11,7 @@ type Options = Pick<
   | 'samlIdpStateId'
   | 'samlIdpUsername'
   | 'ssoAppId'
+  | 'thirdPartyAppId'
   | 'oidcLoginHint'
   | 'preview'
   | 'abTestingKey'
