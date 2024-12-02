@@ -32,6 +32,17 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
 
       #deleteFlows: Record<string, FlowDriver> = {};
 
+      static getFormattedValue(type: string, val: any) {
+        if (type === AttributeTypeName.DATE && val) {
+          // to full date time
+          return new Date(val).toLocaleString();
+        }
+        if (type === AttributeTypeName.BOOLEAN && val !== undefined) {
+          return !val ? 'False' : 'True';
+        }
+        return (val || '').toString();
+      }
+
       #initEditModalContent(flowId: string) {
         this.#editModals[flowId]?.setContent(
           createFlowTemplate({
@@ -81,17 +92,8 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
               logger: this.logger,
             });
 
-            if (type === AttributeTypeName.DATE && val) {
-              // to full date time
-              compInstance.value = new Date(val).toLocaleString();
-            } else if (
-              type === AttributeTypeName.BOOLEAN &&
-              val !== undefined
-            ) {
-              compInstance.value = !val ? 'False' : 'True';
-            } else {
-              compInstance.value = (val || '').toString();
-            }
+            compInstance.value =
+              UserCustomAttributesMixinClass.getFormattedValue(type, val);
 
             this.#initEditFlow(nodeEle, customAttrName, compInstance);
             this.#initDeleteFlow(nodeEle, customAttrName, compInstance);
