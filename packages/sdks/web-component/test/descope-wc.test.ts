@@ -151,8 +151,6 @@ class DescopeButton extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
-
-  static cssVarList = { varName: '--var-name' };
 }
 
 customElements.define('descope-button', DescopeButton);
@@ -4534,6 +4532,9 @@ describe('web-component', () => {
 
   describe('cssVars', () => {
     it('should set css vars on root element', async () => {
+      const spyGet = jest.spyOn(customElements, 'get');
+      spyGet.mockReturnValue({ cssVarList: { varName: '--var-name' } } as any);
+
       startMock.mockReturnValueOnce(
         generateSdkResponse({
           screenState: {
