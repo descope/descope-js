@@ -31,7 +31,7 @@ export const createUserSdk = ({
 
     const json = await res.json();
 
-    return json.data;
+    return json.data || [];
   };
 
   return {

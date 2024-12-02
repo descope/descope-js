@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { AttributeType } from '../api/types';
+import { AttributeType, CustomAttr } from '../api/types';
 import { State } from './types';
 
 export const getMe = (state: State) => state.me.data;
@@ -25,26 +25,32 @@ export const getCustomAttributes = (state: State) =>
 export const getUserCustomAttrs = createSelector(
   getMe,
   getCustomAttributes,
-  (userData, allCustomAttrs = []) => {
-    const res: Record<string, string> = {};
+  (
+    userData: Record<string, any>,
+    allCustomAttrs: CustomAttr[] = [],
+  ): Record<string, string> => {
     const userCustomAttributes = userData['customAttributes'] || {};
 
-    Object.keys(userCustomAttributes).forEach((key: string) => {
-      const type =
-        allCustomAttrs.find((attr) => attr.name === key)?.type ||
-        AttributeType.text;
-      if (type === AttributeType.date && userCustomAttributes[key]) {
-        // to full date time
-        res[key] = new Date(userCustomAttributes[key]).toLocaleString();
-      } else if (
-        type === AttributeType.boolean &&
-        userCustomAttributes[key] !== undefined
-      ) {
-        res[key] = !userCustomAttributes[key] ? 'False' : 'True';
-      } else {
-        res[key] = (userCustomAttributes[key] || '').toString();
-      }
-    });
-    return res;
+    return Object.entries(userCustomAttributes).reduce(
+      (acc, [key]) => {
+        const type =
+          allCustomAttrs.find((attr) => attr.name === key)?.type ||
+          AttributeType.text;
+
+        if (type === AttributeType.date && userCustomAttributes[key]) {
+          // to full date time
+          acc[key] = new Date(userCustomAttributes[key]).toLocaleString();
+        } else if (
+          type === AttributeType.boolean &&
+          userCustomAttributes[key] !== undefined
+        ) {
+          acc[key] = !userCustomAttributes[key] ? 'False' : 'True';
+        } else {
+          acc[key] = (userCustomAttributes[key] || '').toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
   },
 );

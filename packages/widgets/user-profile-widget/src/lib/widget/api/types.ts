@@ -4,7 +4,7 @@ export type Sdk = ReturnType<typeof createWebSdk>;
 
 type CustomAttributeType = string | boolean | number;
 
-export type CustomAttributes = Record<string, CustomAttributeType>;
+type CustomAttributes = Record<string, CustomAttributeType>;
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 

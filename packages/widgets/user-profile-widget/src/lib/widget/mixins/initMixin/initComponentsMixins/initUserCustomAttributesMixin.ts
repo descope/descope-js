@@ -22,8 +22,6 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       initWidgetRootMixin,
       modalMixin,
     )(superclass) {
-      customValueUserAttr: UserAttributeDriver;
-
       // flow Id is key in all maps
       #editModals: Record<string, ModalDriver> = {};
 
