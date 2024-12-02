@@ -326,6 +326,7 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  thirdPartyAppId?: string;
   oidcLoginHint?: string;
   abTestingKey?: number;
   startOptionsVersion?: number;
