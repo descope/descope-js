@@ -1019,7 +1019,7 @@ class DescopeWc extends BaseDescopeWc {
       setNOTPVariable(rootElement, screenState?.notp?.image);
 
       // set dynamic css variables that should be set at runtime
-      setCssVars(rootElement, screenState.cssVars, this.loggerWrapper);
+      setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
       this.rootElement.replaceChildren(clone);
 

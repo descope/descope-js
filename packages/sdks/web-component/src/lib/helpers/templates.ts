@@ -143,10 +143,12 @@ const setFormConfigValues = (
 
 export const setCssVars = (
   rootEle: HTMLElement,
+  nextPageTemplate: DocumentFragment,
   cssVars: CssVars,
   logger: {
     error: (message: string, description: string) => void;
     info: (message: string, description: string) => void;
+    debug: (message: string, description: string) => void;
   },
 ) => {
   if (!cssVars) {
@@ -154,8 +156,8 @@ export const setCssVars = (
   }
 
   Object.keys(cssVars).forEach((componentName) => {
-    if (!rootEle.querySelector(componentName)) {
-      logger.info(
+    if (!nextPageTemplate.querySelector(componentName)) {
+      logger.debug(
         `Skipping css vars for component "${componentName}}"`,
         `Got css vars for component ${componentName} but Could not find it on next page`,
       );
