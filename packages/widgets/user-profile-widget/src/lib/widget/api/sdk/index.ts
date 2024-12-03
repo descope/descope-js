@@ -1,6 +1,6 @@
+import '@descope/core-js-sdk';
 import createWebSdk from '@descope/web-js-sdk';
 import { createUserSdk } from './createUserSdk';
-import '@descope/core-js-sdk';
 
 declare const BUILD_VERSION: string;
 
