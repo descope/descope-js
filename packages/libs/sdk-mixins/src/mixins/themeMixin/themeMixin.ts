@@ -195,8 +195,8 @@ export const themeMixin = createSingletonMixin(
       #toggleOsThemeChangeListener = (listen: boolean) => {
         const method = listen ? 'addEventListener' : 'removeEventListener';
         window
-          .matchMedia('(prefers-color-scheme: dark)')
-          [method]('change', () => this.#loadTheme());
+          .matchMedia?.('(prefers-color-scheme: dark)')
+          ?.[method]?.('change', () => this.#loadTheme());
       };
 
       async init() {
