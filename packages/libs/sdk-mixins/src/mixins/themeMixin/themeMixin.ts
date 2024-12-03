@@ -181,18 +181,28 @@ export const themeMixin = createSingletonMixin(
         }
       }
 
+      #onThemeChange = () => {
+        this.#loadFonts();
+        this.#applyTheme();
+      };
+
+      #handleOsThemeChange = () => {
+        window
+          .matchMedia('(prefers-color-scheme: dark)')
+          .addEventListener('change', () => {
+            this.#onThemeChange();
+          });
+      };
+
       async init() {
         await super.init?.();
 
         this.#loadGlobalStyle();
         this.#loadComponentsStyle();
-        this.#loadFonts();
-        this.#applyTheme();
+        this.#onThemeChange();
 
-        this.observeAttributes(['theme'], () => {
-          this.#loadFonts();
-          this.#applyTheme();
-        });
+        this.observeAttributes(['theme'], this.#onThemeChange);
+        this.#handleOsThemeChange();
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
