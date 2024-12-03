@@ -73,7 +73,7 @@ class BaseDescopeWc extends BaseClass {
 
   #init = false;
 
-  flowStatus: FlowStatus = 'init';
+  flowStatus: FlowStatus = 'initial';
 
   loggerWrapper = {
     error: (message: string, description = '') => {

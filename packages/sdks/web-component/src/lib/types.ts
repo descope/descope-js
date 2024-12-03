@@ -207,4 +207,4 @@ export interface ProjectConfiguration {
   };
 }
 
-export type FlowStatus = 'loading' | 'error' | 'success' | 'ready' | 'init';
+export type FlowStatus = 'loading' | 'error' | 'success' | 'ready' | 'initial';
