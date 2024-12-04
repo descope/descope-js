@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.4.0...sdk-mixins-0.5.0) (2024-12-04)
+
+
+### Features
+
+* Status param & dynamic os theme ([#854](https://github.com/descope/descope-js/issues/854)) ([f3deea7](https://github.com/descope/descope-js/commit/f3deea70df62c19209866e918c8013427dc33700))
+
 ## [0.4.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.3.2...sdk-mixins-0.4.0) (2024-11-10)
 
 
