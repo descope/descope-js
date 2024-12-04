@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.4](https://github.com/descope/descope-js/compare/angular-sdk-0.7.3...angular-sdk-0.7.4) (2024-12-04)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.0`
+* `audit-management-widget` updated to version `0.2.4`
+* `role-management-widget` updated to version `0.2.4`
+* `user-management-widget` updated to version `0.5.4`
+* `user-profile-widget` updated to version `0.2.0`
+* `applications-portal-widget` updated to version `0.2.4`
+* `web-component` updated to version `3.30.0`
+* `web-js-sdk` updated to version `1.21.0`
+* `core-js-sdk` updated to version `2.32.0`
+
+### Bug Fixes
+
+* angualr lazy module ([#851](https://github.com/descope/descope-js/issues/851)) ([0b7b7f5](https://github.com/descope/descope-js/commit/0b7b7f56fb7d9300540526c24b2967d1839b4612))
+
 ## [0.7.3](https://github.com/descope/descope-js/compare/angular-sdk-0.7.2...angular-sdk-0.7.3) (2024-11-16)
 
 ### Dependency Updates
