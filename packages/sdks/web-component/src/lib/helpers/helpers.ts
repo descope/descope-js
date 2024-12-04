@@ -20,6 +20,8 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
   THIRD_PARTY_APP_ID_PARAM_NAME,
+  THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
+  SCOPES_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
@@ -220,6 +222,22 @@ export function clearThirdPartyAppIdParamFromUrl() {
   resetUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
 }
 
+export function getThirdPartyAppStateIdParamFromUrl() {
+  return getUrlParam(THIRD_PARTY_APP_STATE_ID_PARAM_NAME);
+}
+
+export function clearThirdPartyAppStateIdParamFromUrl() {
+  resetUrlParam(THIRD_PARTY_APP_STATE_ID_PARAM_NAME);
+}
+
+export function getScopesParamFromUrl() {
+  return getUrlParam(SCOPES_PARAM_NAME);
+}
+
+export function clearScopesParamFromUrl() {
+  resetUrlParam(SCOPES_PARAM_NAME);
+}
+
 export function getOIDCLoginHintParamFromUrl() {
   return getUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
 }
@@ -326,6 +344,16 @@ export const handleUrlParams = () => {
     clearThirdPartyAppIdParamFromUrl();
   }
 
+  const thirdPartyAppStateId = getThirdPartyAppStateIdParamFromUrl();
+  if (thirdPartyAppStateId) {
+    clearThirdPartyAppStateIdParamFromUrl();
+  }
+
+  const scopes = getScopesParamFromUrl();
+  if (scopes) {
+    clearScopesParamFromUrl();
+  }
+
   const oidcLoginHint = getOIDCLoginHintParamFromUrl();
   if (oidcLoginHint) {
     clearOIDCLoginHintParamFromUrl();
@@ -363,6 +391,8 @@ export const handleUrlParams = () => {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      thirdPartyAppStateId,
+      scopes,
     },
   };
 };
@@ -504,6 +534,7 @@ export const showFirstScreenOnExecutionInit = (
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
+    scopes,
   }: SSOQueryParams,
 ): boolean =>
   !!startScreenId &&
@@ -513,7 +544,8 @@ export const showFirstScreenOnExecutionInit = (
   !ssoAppId &&
   !oidcLoginHint &&
   !oidcPrompt &&
-  !oidcErrorRedirectUri;
+  !oidcErrorRedirectUri &&
+  !scopes;
 
 export const injectSamlIdpForm = (
   url: string,

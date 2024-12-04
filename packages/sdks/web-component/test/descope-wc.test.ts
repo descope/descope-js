@@ -30,6 +30,7 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   SDK_SCRIPT_RESULTS_KEY,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
+  THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -3519,6 +3520,81 @@ describe('web-component', () => {
         },
       ),
     );
+  });
+
+  it('should call start with third party application stateId and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 0 },
+      },
+    };
+    const thirdPartyAppStateId = 'abcdefgh';
+    const encodedThirdPartyAppStateId =
+      encodeURIComponent(thirdPartyAppStateId);
+    window.location.search = `?${THIRD_PARTY_APP_STATE_ID_PARAM_NAME}=${encodedThirdPartyAppStateId}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          ...defaultOptionsValues,
+          thirdPartyAppStateId: 'abcdefgh',
+        },
+        undefined,
+        '',
+        '1.2.3',
+        {
+          'sign-in': 0,
+        },
+        {},
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with scopes info and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 0 },
+      },
+    };
+    const scopes = 'openid profile email';
+    const encodedScopes = encodeURIComponent(scopes);
+    window.location.search = `?${SCOPES_PARAM_NAME}=${encodedScopes}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          ...defaultOptionsValues,
+          scopes: 'openid profile email',
+        },
+        undefined,
+        '',
+        '1.2.3',
+        {
+          'sign-in': 0,
+        },
+        {},
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
   });
 
   it('Should fetch met screen when second condition is met (also checks conditions with predicates)', async () => {
