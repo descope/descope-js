@@ -181,18 +181,32 @@ export const themeMixin = createSingletonMixin(
         }
       }
 
+      #onThemeChange = () => {
+        this.#loadTheme();
+        this.#toggleOsThemeChangeListener(this.getAttribute('theme') === 'os');
+      };
+
+      #loadTheme() {
+        this.#loadFonts();
+        this.#applyTheme();
+      }
+
+      // add or remove os theme change listener
+      #toggleOsThemeChangeListener = (listen: boolean) => {
+        const method = listen ? 'addEventListener' : 'removeEventListener';
+        window
+          .matchMedia?.('(prefers-color-scheme: dark)')
+          ?.[method]?.('change', () => this.#loadTheme());
+      };
+
       async init() {
         await super.init?.();
 
         this.#loadGlobalStyle();
         this.#loadComponentsStyle();
-        this.#loadFonts();
-        this.#applyTheme();
+        this.#onThemeChange();
 
-        this.observeAttributes(['theme'], () => {
-          this.#loadFonts();
-          this.#applyTheme();
-        });
+        this.observeAttributes(['theme'], this.#onThemeChange);
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
