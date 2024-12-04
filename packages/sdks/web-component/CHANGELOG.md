@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.30.0](https://github.com/descope/descope-js/compare/web-component-3.29.3...web-component-3.30.0) (2024-12-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.0`
+* `web-js-sdk` updated to version `1.21.0`
+
+### Features
+
+* Css vars ([#853](https://github.com/descope/descope-js/issues/853)) ([a49be2b](https://github.com/descope/descope-js/commit/a49be2b67b7eb8e3535647a94960f59396c70a0b))
+* Status param & dynamic os theme ([#854](https://github.com/descope/descope-js/issues/854)) ([f3deea7](https://github.com/descope/descope-js/commit/f3deea70df62c19209866e918c8013427dc33700))
+
 ## [3.29.3](https://github.com/descope/descope-js/compare/web-component-3.29.2...web-component-3.29.3) (2024-11-16)
 
 ### Dependency Updates
