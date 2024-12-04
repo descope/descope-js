@@ -76,6 +76,8 @@ const defaultOptionsValues = {
   locale: 'en-us',
   nativeOptions: undefined,
   thirdPartyAppId: null,
+  thirdPartyAppStateId: null,
+  scopes: null,
 };
 
 class MockFileReader {
