@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.1.3...user-profile-widget-0.2.0) (2024-12-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.32.0`
+* `web-js-sdk` updated to version `1.21.0`
+* `web-component` updated to version `3.30.0`
+* `sdk-mixins` updated to version `0.5.0`
+
+### Features
+
+* Support custom fields in user-profile-widget + Edit/Delete flows ([#843](https://github.com/descope/descope-js/issues/843)) ([d29e1f4](https://github.com/descope/descope-js/commit/d29e1f4855affc3bc67904926f4e1b023d48b5b2))
+
 ## [0.1.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.1.2...user-profile-widget-0.1.3) (2024-11-16)
 
 ### Dependency Updates
