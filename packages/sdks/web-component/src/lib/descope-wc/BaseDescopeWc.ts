@@ -29,6 +29,7 @@ import {
   DescopeUI,
   ProjectConfiguration,
   FlowConfig,
+  FlowStatus,
 } from '../types';
 import initTemplate from './initTemplate';
 import {
@@ -71,6 +72,8 @@ class BaseDescopeWc extends BaseClass {
   };
 
   #init = false;
+
+  flowStatus: FlowStatus = 'initial';
 
   loggerWrapper = {
     error: (message: string, description = '') => {
@@ -470,6 +473,13 @@ class BaseDescopeWc extends BaseClass {
   static descopeUI: any;
 
   async init() {
+    this.flowStatus = 'loading';
+    ['ready', 'error', 'success'].forEach((status: FlowStatus) =>
+      this.addEventListener(status, () => {
+        this.flowStatus = status;
+      }),
+    );
+
     await super.init?.();
     this.#debugState.subscribe(this.#handleDebugMode.bind(this));
     this.#debugState.update({ isDebug: this.debug });

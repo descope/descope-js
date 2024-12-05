@@ -208,3 +208,5 @@ export interface ProjectConfiguration {
     [key: string]: FlowConfig; // dynamic key names for flows
   };
 }
+
+export type FlowStatus = 'loading' | 'error' | 'success' | 'ready' | 'initial';

@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.2.3...access-key-management-widget-0.3.0) (2024-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.21.0`
+* `sdk-mixins` updated to version `0.5.0`
+
+### Features
+
+* add permitted IPs for access key widget ([#852](https://github.com/descope/descope-js/issues/852)) ([b2b5bbe](https://github.com/descope/descope-js/commit/b2b5bbe943e3911236f67525f6acf347651d0d10))
+
 ## [0.2.3](https://github.com/descope/descope-js/compare/access-key-management-widget-0.2.2...access-key-management-widget-0.2.3) (2024-11-16)
 
 ### Dependency Updates
