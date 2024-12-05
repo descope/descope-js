@@ -381,7 +381,6 @@ export const handleUrlParams = () => {
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
-    thirdPartyAppId,
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
@@ -391,6 +390,7 @@ export const handleUrlParams = () => {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      thirdPartyAppId,
       thirdPartyAppStateId,
       scopes,
     },
@@ -534,6 +534,7 @@ export const showFirstScreenOnExecutionInit = (
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
+    thirdPartyAppId,
     thirdPartyAppStateId,
     scopes,
   }: SSOQueryParams,
@@ -546,6 +547,7 @@ export const showFirstScreenOnExecutionInit = (
   !oidcLoginHint &&
   !oidcPrompt &&
   !oidcErrorRedirectUri &&
+  !thirdPartyAppId &&
   !thirdPartyAppStateId &&
   !scopes;
 

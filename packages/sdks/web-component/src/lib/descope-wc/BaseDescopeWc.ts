@@ -506,7 +506,6 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthBackupCallbackUri,
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
-      thirdPartyAppId,
       ssoQueryParams,
     } = handleUrlParams();
 
@@ -538,7 +537,6 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthBackupCallbackUri,
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
-      thirdPartyAppId,
       ...ssoQueryParams,
     });
 
