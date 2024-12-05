@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.32.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.31.0...core-js-sdk-2.32.0) (2024-12-04)
+
+
+### Features
+
+* Css vars ([#853](https://github.com/descope/descope-js/issues/853)) ([a49be2b](https://github.com/descope/descope-js/commit/a49be2b67b7eb8e3535647a94960f59396c70a0b))
+
 ## [2.31.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.30.1...core-js-sdk-2.31.0) (2024-11-16)
 
 
