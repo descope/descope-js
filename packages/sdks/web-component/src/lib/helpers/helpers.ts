@@ -534,6 +534,7 @@ export const showFirstScreenOnExecutionInit = (
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
+    thirdPartyAppStateId,
     scopes,
   }: SSOQueryParams,
 ): boolean =>
@@ -545,6 +546,7 @@ export const showFirstScreenOnExecutionInit = (
   !oidcLoginHint &&
   !oidcPrompt &&
   !oidcErrorRedirectUri &&
+  !thirdPartyAppStateId &&
   !scopes;
 
 export const injectSamlIdpForm = (
