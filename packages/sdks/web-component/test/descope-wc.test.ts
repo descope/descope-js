@@ -31,7 +31,7 @@ import {
   SDK_SCRIPT_RESULTS_KEY,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
-  SCOPES_PARAM_NAME,
+  APPLICATION_SCOPES_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -77,7 +77,7 @@ const defaultOptionsValues = {
   nativeOptions: undefined,
   thirdPartyAppId: null,
   thirdPartyAppStateId: null,
-  scopes: null,
+  applicationScopes: null,
 };
 
 class MockFileReader {
@@ -3563,7 +3563,7 @@ describe('web-component', () => {
     await waitFor(() => expect(window.location.search).toBe(''));
   });
 
-  it('should call start with scopes info and clear it from url', async () => {
+  it('should call start with application scopes info and clear it from url', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
     pageContent = '<span>It works!</span>';
@@ -3573,9 +3573,9 @@ describe('web-component', () => {
         'sign-in': { version: 0 },
       },
     };
-    const scopes = 'openid profile email';
-    const encodedScopes = encodeURIComponent(scopes);
-    window.location.search = `?${SCOPES_PARAM_NAME}=${encodedScopes}`;
+    const applicationScopes = 'openid profile email';
+    const encodedApplicationScopes = encodeURIComponent(applicationScopes);
+    window.location.search = `?${APPLICATION_SCOPES_PARAM_NAME}=${encodedApplicationScopes}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
     await waitFor(() =>
@@ -3583,7 +3583,7 @@ describe('web-component', () => {
         'sign-in',
         {
           ...defaultOptionsValues,
-          scopes: 'openid profile email',
+          applicationScopes: 'openid profile email',
         },
         undefined,
         '',

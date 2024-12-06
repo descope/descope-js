@@ -44,7 +44,7 @@ export type SSOQueryParams = {
   ssoAppId?: string;
   thirdPartyAppId: string;
   thirdPartyAppStateId?: string;
-  scopes?: string;
+  applicationScopes?: string;
 } & OIDCOptions;
 
 export type OIDCOptions = {
