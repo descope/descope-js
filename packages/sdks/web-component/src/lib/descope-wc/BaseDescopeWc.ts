@@ -135,6 +135,10 @@ class BaseDescopeWc extends BaseClass {
     return this.getAttribute('flow-id');
   }
 
+  set flowId(value: string) {
+    this.setAttribute('flow-id', value);
+  }
+
   get client() {
     try {
       return (JSON.parse(this.getAttribute('client')) || {}) as Record<
@@ -146,20 +150,40 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
+  set client(value: any) {
+    this.setAttribute('client', value);
+  }
+
   get tenant() {
     return this.getAttribute('tenant') || undefined;
+  }
+
+  set tenant(value: string) {
+    this.setAttribute('tenant', value);
   }
 
   get redirectUrl() {
     return this.getAttribute('redirect-url') || undefined;
   }
 
+  set redirectUrl(value: string) {
+    this.setAttribute('redirect-url', value);
+  }
+
   get debug() {
     return this.getAttribute('debug') === 'true';
   }
 
+  set debug(value: any) {
+    this.setAttribute('debug', value);
+  }
+
   get locale() {
     return this.getAttribute('locale') || undefined;
+  }
+
+  set locale(value: string) {
+    this.setAttribute('locale', value);
   }
 
   get autoFocus(): AutoFocusOptions {
@@ -170,8 +194,16 @@ class BaseDescopeWc extends BaseClass {
     return res === 'true';
   }
 
+  set autoFocus(value: any) {
+    this.setAttribute('auto-focus', value);
+  }
+
   get validateOnBlur() {
     return this.getAttribute('validate-on-blur') === 'true';
+  }
+
+  set validateOnBlur(value: any) {
+    this.setAttribute('validate-on-blur', value);
   }
 
   get storeLastAuthenticatedUser() {
@@ -179,17 +211,33 @@ class BaseDescopeWc extends BaseClass {
     return res === 'true';
   }
 
+  set storeLastAuthenticatedUser(value: any) {
+    this.setAttribute('store-last-authenticated-user', value);
+  }
+
   get keepLastAuthenticatedUserAfterLogout() {
     const res = this.getAttribute('keep-last-authenticated-user-after-logout');
     return res === 'true';
+  }
+
+  set keepLastAuthenticatedUserAfterLogout(value: any) {
+    this.setAttribute('keep-last-authenticated-user-after-logout', value);
   }
 
   get storagePrefix() {
     return this.getAttribute('storage-prefix') || '';
   }
 
+  set storagePrefix(value: string) {
+    this.setAttribute('storage-prefix', value);
+  }
+
   get preview() {
     return !!this.getAttribute('preview');
+  }
+
+  set preview(value: any) {
+    this.setAttribute('preview', value);
   }
 
   get formConfig() {
@@ -198,6 +246,10 @@ class BaseDescopeWc extends BaseClass {
 
   get form() {
     return this.getAttribute('form');
+  }
+
+  set form(value: string) {
+    this.setAttribute('form', value);
   }
 
   get formConfigValues() {
@@ -336,6 +388,10 @@ class BaseDescopeWc extends BaseClass {
 
   get isRestartOnError() {
     return this.getAttribute('restart-on-error') === 'true';
+  }
+
+  set isRestartOnError(value: any) {
+    this.setAttribute('restart-on-error', value);
   }
 
   async getExecutionContext() {
