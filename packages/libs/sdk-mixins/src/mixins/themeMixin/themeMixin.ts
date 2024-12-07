@@ -34,6 +34,10 @@ export const themeMixin = createSingletonMixin(
     return class ThemeMixinClass extends BaseClass {
       #globalStyleTag: HTMLStyleElement;
 
+      set theme(value: ThemeOptions) {
+        this.setAttribute('theme', value);
+      }
+
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
 
