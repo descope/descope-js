@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.33.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.32.0...core-js-sdk-2.33.0) (2024-12-08)
+
+
+### Features
+
+* Add thirdPartyAppStateId and scopes parameters for third party application ([#856](https://github.com/descope/descope-js/issues/856)) ([fa95d30](https://github.com/descope/descope-js/commit/fa95d30810599cf4a198b09b96b36b7e4c284464))
+
 ## [2.32.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.31.0...core-js-sdk-2.32.0) (2024-12-04)
 
 
