@@ -42,6 +42,9 @@ export type SSOQueryParams = {
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
+  thirdPartyAppId: string;
+  thirdPartyAppStateId?: string;
+  applicationScopes?: string;
 } & OIDCOptions;
 
 export type OIDCOptions = {
@@ -83,7 +86,6 @@ export type FlowState = {
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
   nativeResponseType: string;
-  thirdPartyAppId: string;
   nativePayload: Record<string, any>;
 } & SSOQueryParams;
 

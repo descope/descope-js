@@ -20,6 +20,8 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
   THIRD_PARTY_APP_ID_PARAM_NAME,
+  THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
+  APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
@@ -220,6 +222,22 @@ export function clearThirdPartyAppIdParamFromUrl() {
   resetUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
 }
 
+export function getThirdPartyAppStateIdParamFromUrl() {
+  return getUrlParam(THIRD_PARTY_APP_STATE_ID_PARAM_NAME);
+}
+
+export function clearThirdPartyAppStateIdParamFromUrl() {
+  resetUrlParam(THIRD_PARTY_APP_STATE_ID_PARAM_NAME);
+}
+
+export function getApplicationScopesParamFromUrl() {
+  return getUrlParam(APPLICATION_SCOPES_PARAM_NAME);
+}
+
+export function clearApplicationScopesParamFromUrl() {
+  resetUrlParam(APPLICATION_SCOPES_PARAM_NAME);
+}
+
 export function getOIDCLoginHintParamFromUrl() {
   return getUrlParam(OIDC_LOGIN_HINT_PARAM_NAME);
 }
@@ -326,6 +344,16 @@ export const handleUrlParams = () => {
     clearThirdPartyAppIdParamFromUrl();
   }
 
+  const thirdPartyAppStateId = getThirdPartyAppStateIdParamFromUrl();
+  if (thirdPartyAppStateId) {
+    clearThirdPartyAppStateIdParamFromUrl();
+  }
+
+  const applicationScopes = getApplicationScopesParamFromUrl();
+  if (applicationScopes) {
+    clearApplicationScopesParamFromUrl();
+  }
+
   const oidcLoginHint = getOIDCLoginHintParamFromUrl();
   if (oidcLoginHint) {
     clearOIDCLoginHintParamFromUrl();
@@ -353,7 +381,6 @@ export const handleUrlParams = () => {
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
-    thirdPartyAppId,
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
@@ -363,6 +390,9 @@ export const handleUrlParams = () => {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      thirdPartyAppId,
+      thirdPartyAppStateId,
+      applicationScopes,
     },
   };
 };
@@ -504,6 +534,9 @@ export const showFirstScreenOnExecutionInit = (
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
+    thirdPartyAppId,
+    thirdPartyAppStateId,
+    applicationScopes,
   }: SSOQueryParams,
 ): boolean =>
   !!startScreenId &&
@@ -513,7 +546,10 @@ export const showFirstScreenOnExecutionInit = (
   !ssoAppId &&
   !oidcLoginHint &&
   !oidcPrompt &&
-  !oidcErrorRedirectUri;
+  !oidcErrorRedirectUri &&
+  !thirdPartyAppId &&
+  !thirdPartyAppStateId &&
+  !applicationScopes;
 
 export const injectSamlIdpForm = (
   url: string,
