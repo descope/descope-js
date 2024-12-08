@@ -299,7 +299,6 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       nativeResponseType,
       nativePayload,
-      thirdPartyAppId,
       ...ssoQueryParams
     } = currentState;
 
@@ -370,7 +369,6 @@ class DescopeWc extends BaseDescopeWc {
           {
             tenant,
             redirectAuth,
-            thirdPartyAppId,
             ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
@@ -619,7 +617,6 @@ class DescopeWc extends BaseDescopeWc {
           flowId,
           {
             tenant,
-            thirdPartyAppId,
             redirectAuth,
             ...ssoQueryParams,
             lastAuth,

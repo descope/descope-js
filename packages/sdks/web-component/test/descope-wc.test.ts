@@ -30,6 +30,8 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   SDK_SCRIPT_RESULTS_KEY,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
+  THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
+  APPLICATION_SCOPES_PARAM_NAME,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -74,6 +76,8 @@ const defaultOptionsValues = {
   locale: 'en-us',
   nativeOptions: undefined,
   thirdPartyAppId: null,
+  thirdPartyAppStateId: null,
+  applicationScopes: null,
 };
 
 class MockFileReader {
@@ -3519,6 +3523,81 @@ describe('web-component', () => {
         },
       ),
     );
+  });
+
+  it('should call start with third party application stateId and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 0 },
+      },
+    };
+    const thirdPartyAppStateId = 'abcdefgh';
+    const encodedThirdPartyAppStateId =
+      encodeURIComponent(thirdPartyAppStateId);
+    window.location.search = `?${THIRD_PARTY_APP_STATE_ID_PARAM_NAME}=${encodedThirdPartyAppStateId}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          ...defaultOptionsValues,
+          thirdPartyAppStateId: 'abcdefgh',
+        },
+        undefined,
+        '',
+        '1.2.3',
+        {
+          'sign-in': 0,
+        },
+        {},
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with application scopes info and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 0 },
+      },
+    };
+    const applicationScopes = 'openid profile email';
+    const encodedApplicationScopes = encodeURIComponent(applicationScopes);
+    window.location.search = `?${APPLICATION_SCOPES_PARAM_NAME}=${encodedApplicationScopes}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        {
+          ...defaultOptionsValues,
+          applicationScopes: 'openid profile email',
+        },
+        undefined,
+        '',
+        '1.2.3',
+        {
+          'sign-in': 0,
+        },
+        {},
+      ),
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
   });
 
   it('Should fetch met screen when second condition is met (also checks conditions with predicates)', async () => {

@@ -335,6 +335,8 @@ export type Options = {
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
   nativeOptions?: NativeOptions;
+  thirdPartyAppStateId?: string;
+  applicationScopes?: string; // Relevant for sso application and third party application
 };
 
 export type ResponseData = Record<string, any>;

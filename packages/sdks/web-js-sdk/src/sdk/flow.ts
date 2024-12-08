@@ -20,6 +20,8 @@ type Options = Pick<
   | 'oidcPrompt'
   | 'oidcErrorRedirectUri'
   | 'nativeOptions'
+  | 'thirdPartyAppStateId'
+  | 'applicationScopes'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };
