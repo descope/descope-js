@@ -32,6 +32,9 @@ export const flatten = (
     ]),
   );
 
+export const formatDate = (val: string) =>
+  new Date(Number(val)).toLocaleDateString('en-US');
+
 export const formatCustomAttrValue = (
   type: CustomAttributeTypeMap,
   val: CustomAttributeType,
@@ -43,6 +46,3 @@ export const formatCustomAttrValue = (
       return val;
   }
 };
-
-export const formatDate = (val: string) =>
-  new Date(Number(val)).toLocaleDateString('en-US');

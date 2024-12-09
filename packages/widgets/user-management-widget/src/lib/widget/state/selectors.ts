@@ -36,14 +36,12 @@ export const getFormattedUserList = createSelector(
 );
 
 export const getUsersList = createSelector(getFormattedUserList, (users) =>
-  users.map((user) => {
-    return {
-      ...user,
-      ...flatten(user?.customAttributes, 'customAttributes'),
-      status: userStatusMappings[user.status] || user.status,
-      roles: user.roleNames,
-    };
-  }),
+  users.map((user) => ({
+    ...user,
+    ...flatten(user?.customAttributes, 'customAttributes'),
+    status: userStatusMappings[user.status] || user.status,
+    roles: user.roleNames,
+  })),
 );
 
 export const getSelectedUsers = createSelector(
