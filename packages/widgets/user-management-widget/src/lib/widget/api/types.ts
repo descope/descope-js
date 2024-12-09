@@ -2,9 +2,18 @@ import createWebSdk from '@descope/web-js-sdk';
 
 export type Sdk = ReturnType<typeof createWebSdk>;
 
-type CustomAttributeType = string | boolean | number;
+export type CustomAttributeType = string | boolean | number;
 
 type CustomAttributes = Record<string, CustomAttributeType>;
+
+export enum CustomAttributeTypeMap {
+  text = 1,
+  numeric = 2,
+  bool = 3,
+  singleSelect = 4,
+  array = 5,
+  date = 6,
+}
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
