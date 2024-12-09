@@ -30,5 +30,6 @@ export {
 } from './enhancers/withFingerprint/helpers';
 
 export type { OneTapConfig } from './sdk/fedcm';
+export type { OidcConfig } from './sdk/oidc';
 
 export default decoratedCreateSdk;
