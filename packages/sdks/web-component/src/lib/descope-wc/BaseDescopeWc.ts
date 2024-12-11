@@ -170,12 +170,11 @@ class BaseDescopeWc extends BaseClass {
     this.setAttribute('redirect-url', value);
   }
 
-  get debug() {
-    return this.getAttribute('debug') === 'true';
-  }
-
-  set debug(value: any) {
-    this.setAttribute('debug', value);
+  get _debug() {
+    const res = this.hasAttribute('debug');
+    const attr = this.getAttribute('debug');
+    console.log('@@@ debug', res, "attr", attr);
+    return res;
   }
 
   get locale() {
@@ -433,7 +432,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #updateDebuggerMessages(title: string, description: string) {
-    if (title && this.debug)
+    if (title && this._debug)
       this.#debuggerEle?.updateData({ title, description });
   }
 
@@ -538,7 +537,7 @@ class BaseDescopeWc extends BaseClass {
 
     await super.init?.();
     this.#debugState.subscribe(this.#handleDebugMode.bind(this));
-    this.#debugState.update({ isDebug: this.debug });
+    this.#debugState.update({ isDebug: this._debug });
 
     this.#validateAttrs();
 
@@ -655,7 +654,7 @@ class BaseDescopeWc extends BaseClass {
         };
       });
 
-      this.#debugState.update({ isDebug: this.debug });
+      this.#debugState.update({ isDebug: this._debug });
     }
   }
 }
