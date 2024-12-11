@@ -25,8 +25,8 @@ export default [
       sourcemap: true,
       name: 'descope-role-management-widget',
       extend: true,
+      inlineDynamicImports: true,
     },
-    inlineDynamicImports: true,
     plugins: [
       del({ targets: 'dist' }),
       define({
