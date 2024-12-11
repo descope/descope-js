@@ -37,47 +37,46 @@ const DescopeWC = lazy(async () => {
   };
 
   return {
-    default: ({
-      projectId,
-      flowId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      tenant,
-      theme,
-      locale,
-      debug,
-      redirectUrl,
-      client,
-      form,
-      styleId,
-      autoFocus,
-      validateOnBlur,
-      restartOnError,
-      storeLastAuthenticatedUser,
-    }) => (
-	<descope-wc
-        project-id={projectId}
-        flow-id={flowId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        ref={innerRef}
-        tenant={tenant}
-        theme={theme}
-        locale={locale}
-        debug={debug}
-        client={client}
-        form={form}
-        style-id={styleId}
-        redirect-url={redirectUrl}
-        auto-focus={autoFocus}
-        validate-on-blur={validateOnBlur}
-        restart-on-error={restartOnError}
-        store-last-authenticated-user={storeLastAuthenticatedUser}
-      />
-    ),
+    default: Wrapper(React.forwardRef((_, ref) => <descope-wc ref={ref} />)),
   };
 });
+
+const kebabCase = (str: string) =>
+  str
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/[\s_.]+/g, '-')
+    .toLowerCase();
+
+const Wrapper = (Component) => {
+  return React.forwardRef((props, ref) => {
+    const [innerRef, setInnerRef] = useState(null);
+    useImperativeHandle(ref, () => innerRef);
+    useMemo(() => {
+      if (!innerRef) return;
+      Object.entries(props).forEach(([key, value]) => {
+        // we have 2 cases - properties and attributes
+        if (key.endsWith('.prop')) {
+          const readyKey = key.replace(/.prop$/, '');
+          console.log('@@@ setting', {
+            readyKey,
+            value,
+          });
+          innerRef[readyKey] = value;
+        } else {
+          const kebabKey = kebabCase(key);
+          if (value === undefined || value === null) {
+            innerRef?.removeAttribute?.(kebabKey);
+          } else {
+            const readyValue =
+              typeof value === 'string' ? value : JSON.stringify(value);
+            innerRef?.setAttribute?.(kebabKey, readyValue);
+          }
+        }
+      });
+    }, [props, innerRef]);
+    return <Component ref={setInnerRef} />;
+  });
+};
 
 const Descope = React.forwardRef<HTMLElement, DescopeProps>(
   (
@@ -175,12 +174,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
     }, [innerRef, onReady]);
 
     useEffect(() => {
-      if (innerRef) {
-        innerRef.errorTransformer = errorTransformer;
-      }
-    }, [innerRef, errorTransformer]);
-
-    useEffect(() => {
       if (innerRef && logger) {
         innerRef.logger = logger;
       }
@@ -201,9 +194,9 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-	<form>
-		<Suspense fallback={null}>
-			<DescopeWC
+      <form>
+        <Suspense fallback={null}>
+          <DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
@@ -225,9 +218,12 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
             }
+            {...{
+              'errorTransformer.prop': errorTransformer,
+            }}
           />
-		</Suspense>
-	</form>
+        </Suspense>
+      </form>
     );
   },
 );

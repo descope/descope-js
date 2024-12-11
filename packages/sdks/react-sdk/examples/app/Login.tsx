@@ -30,6 +30,9 @@ const Login = () => {
 
   const errorTransformer = useCallback(
     (error: { text: string; type: string }) => {
+      console.log('@@@ errorTransformer', {
+        text, type
+      });
       const translationMap = {
         SAMLStartFailed: 'Failed to start SAML flow',
       };
@@ -57,7 +60,7 @@ const Login = () => {
           onReady={onReady}
           // form={{ email: 'predefinedname@domain.com' }} // found in context key: form.email
           client={{ version: '1.0.2' }} // found in context key: client.version
-          debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
+          debug={true}
           theme={process.env.DESCOPE_THEME as any}
           locale={process.env.DESCOPE_LOCALE as string}
           redirectUrl={process.env.DESCOPE_REDIRECT_URL}
