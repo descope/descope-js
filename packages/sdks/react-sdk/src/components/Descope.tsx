@@ -4,13 +4,13 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useState,
 } from 'react';
 import { baseHeaders } from '../constants';
 import Context from '../hooks/Context';
 import { DescopeProps } from '../types';
 import { getGlobalSdk } from '../sdk';
+import WebComponentBridge from './WebComponentBridge';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
@@ -37,44 +37,10 @@ const DescopeWC = lazy(async () => {
   };
 
   return {
-    default: ({
-      projectId,
-      flowId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      tenant,
-      theme,
-      locale,
-      debug,
-      redirectUrl,
-      client,
-      form,
-      styleId,
-      autoFocus,
-      validateOnBlur,
-      restartOnError,
-      storeLastAuthenticatedUser,
-    }) => (
-	<descope-wc
-        project-id={projectId}
-        flow-id={flowId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        ref={innerRef}
-        tenant={tenant}
-        theme={theme}
-        locale={locale}
-        debug={debug}
-        client={client}
-        form={form}
-        style-id={styleId}
-        redirect-url={redirectUrl}
-        auto-focus={autoFocus}
-        validate-on-blur={validateOnBlur}
-        restart-on-error={restartOnError}
-        store-last-authenticated-user={storeLastAuthenticatedUser}
-      />
+    default: WebComponentBridge(
+      React.forwardRef<HTMLElement>((props, ref) => (
+	<descope-wc ref={ref} {...props} />
+      )),
     ),
   };
 });
@@ -174,26 +140,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       };
     }, [innerRef, onReady]);
 
-    useEffect(() => {
-      if (innerRef) {
-        innerRef.errorTransformer = errorTransformer;
-      }
-    }, [innerRef, errorTransformer]);
-
-    useEffect(() => {
-      if (innerRef && logger) {
-        innerRef.logger = logger;
-      }
-    }, [innerRef, logger]);
-
-    const { form: stringifiedForm, client: stringifiedClient } = useMemo(
-      () => ({
-        form: JSON.stringify(form || {}),
-        client: JSON.stringify(client || {}),
-      }),
-      [form, client],
-    );
-
     return (
       /**
        * in order to avoid redundant remounting of the WC, we are wrapping it with a form element
@@ -208,13 +154,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             flowId={flowId}
             baseUrl={baseUrl}
             baseStaticUrl={baseStaticUrl}
-            innerRef={setInnerRef}
-            tenant={tenant}
-            theme={theme}
-            locale={locale}
-            debug={debug}
-            form={stringifiedForm}
-            client={stringifiedClient}
+            ref={setInnerRef}
             telemetryKey={telemetryKey}
             redirectUrl={redirectUrl}
             autoFocus={autoFocus}
@@ -225,6 +165,18 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
             }
+            {...{
+              // attributes
+              'tenant.attr': tenant,
+              'theme.attr': theme,
+              'locale.attr': locale,
+              'form.attr': form,
+              'client.attr': client,
+              'debug.attr': debug,
+              // props
+              'errorTransformer.prop': errorTransformer,
+              'logger.prop': logger,
+            }}
           />
 		</Suspense>
 	</form>

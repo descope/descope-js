@@ -19,6 +19,7 @@ export default {
   plugins: [
     del({ targets: 'build' }),
     typescript({
+      tsconfig: './tsconfig.app.json',
       declaration: false,
       declarationDir: null,
     }),

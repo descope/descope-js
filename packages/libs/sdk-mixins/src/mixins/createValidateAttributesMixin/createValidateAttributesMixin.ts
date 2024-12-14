@@ -33,12 +33,11 @@ const createValidateAttributesMixin =
       }
 
       async init() {
-        await super.init?.();
-
         // check attributes initial values
         mappingsNames.forEach((attr) =>
           this.#handleError(attr, this.getAttribute(attr)),
         );
+        await super.init?.();
       }
     };
   };
