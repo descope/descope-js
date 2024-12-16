@@ -100,6 +100,8 @@ type OneTapInitialize = ({
 
 type PromptNotification = {
   isSkippedMoment: () => boolean;
+  isDismissedMoment: () => boolean;
+  getMomentType: () => string;
 };
 
 /**
@@ -113,6 +115,7 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkip?: () => void,
+    onDismissed?: () => void,
   ) {
     const readyProvider = provider ?? 'google';
     const startResponse = await sdk.oauth.startNative(
@@ -150,8 +153,26 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       });
 
       googleClient.prompt((notification) => {
-        if (notification?.isSkippedMoment()) {
+        const momentType = notification?.getMomentType();
+
+        if (!momentType) {
+          // Default to skipping behavior if no notification is provided
           onSkip?.();
+          return;
+        }
+        
+        switch (momentType) {
+          case 'skipped':
+            onSkip?.();
+            break;
+          case 'dismissed':
+            onDismissed?.();
+            break;
+          case 'display':
+            break;
+          default:
+            reportError(`Unexpected One Tap moment type: ${momentType}`);
+            break;
         }
       });
     });
