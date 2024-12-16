@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "declaration": false,
     "jsx": "react",
-    "noErrorTruncation": true,
+    "noErrorTruncation": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "build", "dist", "test"]

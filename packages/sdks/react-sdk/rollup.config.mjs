@@ -68,19 +68,19 @@ export default [
   },
   {
     input: 'src/index.ts',
-    output: [{ dir: './dist', format: 'esm'}],
+    output: [{ dir: './dist', format: 'esm' }],
     plugins: [
       typescript({
         tsconfig: './tsconfig.json',
         compilerOptions: {
-          rootDir: "./src",
+          rootDir: './src',
           declaration: true,
           declarationDir: './dist/types',
         },
       }),
       dts(),
       cjsPackage(),
-      noEmit({ match: file => file.endsWith('.js') }),
+      noEmit({ match: (file) => file.endsWith('.js') }),
     ],
   },
 ];
