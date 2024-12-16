@@ -350,7 +350,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async #handleDebugMode({ isDebug }) {
-    if (isDebug && process.env.NODE_ENV === 'development') {
+    if (isDebug) {
       this.#debuggerEle = document.createElement(
         'descope-debugger',
       ) as HTMLElement & {
