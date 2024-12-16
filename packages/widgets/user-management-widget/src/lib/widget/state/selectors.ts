@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { flatten } from '../../helpers';
+import { flatten, formatCustomAttrValue } from '../../helpers';
 import { State } from './types';
 import { userStatusMappings } from './constants';
 
@@ -12,7 +12,30 @@ export const getSearchParams = (state: State) => state.searchParams;
 export const getCustomAttributes = (state: State) =>
   state.customAttributes.data;
 
-export const getUsersList = createSelector(getRawUsersList, (users) =>
+export const getCustomAttrTypes = createSelector(
+  getCustomAttributes,
+  (customAttrs) =>
+    Object.fromEntries(customAttrs.map((attr) => [attr.name, attr.type])),
+);
+
+export const getFormattedUserList = createSelector(
+  getRawUsersList,
+  getCustomAttrTypes,
+  (users, customAttrTypes) =>
+    users.map((user) => ({
+      ...user,
+      ...{
+        customAttributes: Object.fromEntries(
+          Object.entries(user.customAttributes).map(([attr, val]) => [
+            attr,
+            formatCustomAttrValue(customAttrTypes[attr], val),
+          ]),
+        ),
+      },
+    })),
+);
+
+export const getUsersList = createSelector(getFormattedUserList, (users) =>
   users.map((user) => ({
     ...user,
     ...flatten(user?.customAttributes, 'customAttributes'),

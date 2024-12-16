@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.22.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.21.0...web-js-sdk-1.22.0) (2024-12-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.0`
+
+### Features
+
+* Add thirdPartyAppStateId and scopes parameters for third party application ([#856](https://github.com/descope/descope-js/issues/856)) ([fa95d30](https://github.com/descope/descope-js/commit/fa95d30810599cf4a198b09b96b36b7e4c284464))
+
 ## [1.21.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.20.2...web-js-sdk-1.21.0) (2024-12-04)
 
 ### Dependency Updates

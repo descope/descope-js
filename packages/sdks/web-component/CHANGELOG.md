@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.31.0](https://github.com/descope/descope-js/compare/web-component-3.30.0...web-component-3.31.0) (2024-12-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.22.0`
+
+### Features
+
+* Add thirdPartyAppStateId and scopes parameters for third party application ([#856](https://github.com/descope/descope-js/issues/856)) ([fa95d30](https://github.com/descope/descope-js/commit/fa95d30810599cf4a198b09b96b36b7e4c284464))
+
 ## [3.30.0](https://github.com/descope/descope-js/compare/web-component-3.29.3...web-component-3.30.0) (2024-12-04)
 
 ### Dependency Updates
