@@ -1,5 +1,5 @@
 import createSdk from '@descope/web-js-sdk';
-import { themeMixin } from '@descope/sdk-mixins';
+import { themeMixin } from '@descope/sdk-mixins/themeMixin';
 import { compose } from '@descope/sdk-helpers';
 import {
   CONFIG_FILENAME,
@@ -350,7 +350,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async #handleDebugMode({ isDebug }) {
-    if (isDebug) {
+    if (isDebug && process.env.NODE_ENV === 'development') {
       this.#debuggerEle = document.createElement(
         'descope-debugger',
       ) as HTMLElement & {

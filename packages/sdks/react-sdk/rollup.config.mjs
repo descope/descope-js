@@ -7,36 +7,30 @@ import dts from 'rollup-plugin-dts';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import noEmit from 'rollup-plugin-no-emit';
 
 import packageJson from './package.json' assert { type: 'json' };
 
 export default [
   {
-    input: 'src/index.ts',
-    output: {
-      file: packageJson.main,
-      sourcemap: true,
-      format: 'cjs',
-    },
-    plugins: [
-      define({
-        replacements: {
-          BUILD_VERSION: JSON.stringify(packageJson.version),
-        },
-      }),
-      typescript(),
-      autoExternal(),
-      terser(),
+    input: ['src/index.ts', 'src/flows.ts'],
+    output: [
+      {
+        dir: './dist/esm',
+        sourcemap: true,
+        format: 'esm',
+        preserveModules: true,
+      },
+      {
+        dir: './dist/cjs',
+        sourcemap: true,
+        format: 'cjs',
+        preserveModules: true,
+        exports: 'named',
+      },
     ],
-  },
-  {
-    input: 'src/index.ts',
-    output: {
-      file: packageJson.module,
-      sourcemap: true,
-      format: 'esm',
-    },
     plugins: [
+      del({ targets: 'dist/*' }),
       define({
         replacements: {
           BUILD_VERSION: JSON.stringify(packageJson.version),
@@ -73,19 +67,20 @@ export default [
     ],
   },
   {
-    input: './dist/dts/src/index.d.ts',
-    output: [{ file: packageJson.types, format: 'esm' }],
+    input: 'src/index.ts',
+    output: [{ dir: './dist', format: 'esm'}],
     plugins: [
-      dts(),
-      del({
-        hook: 'buildEnd',
-        targets: [
-          './dist/test',
-          './dist/src',
-          './dist/cjs/!(index.cjs.*|package.json)',
-        ],
+      typescript({
+        tsconfig: './tsconfig.json',
+        compilerOptions: {
+          rootDir: "./src",
+          declaration: true,
+          declarationDir: './dist/types',
+        },
       }),
+      dts(),
       cjsPackage(),
+      noEmit({ match: file => file.endsWith('.js') }),
     ],
   },
 ];

@@ -25,8 +25,8 @@ export default [
       sourcemap: true,
       name: 'descope-access-key-management-widget',
       extend: true,
+      inlineDynamicImports: true,
     },
-    inlineDynamicImports: true,
     plugins: [
       del({ targets: 'dist' }),
       define({
