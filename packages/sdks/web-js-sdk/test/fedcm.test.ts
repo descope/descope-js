@@ -134,7 +134,7 @@ describe('fedcm', () => {
       promptCallback({ isSkippedMoment: () => true });
       expect(onSkip).toHaveBeenCalled();
     });
-    it('call onDismissed callback on prompt dismiss', async () => {
+    it('call onDismissed callback on prompt dismiss with detailed reason', async () => {
       coreJs.oauth.startNative.mockResolvedValue({
         ok: true,
         data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
@@ -153,11 +153,14 @@ describe('fedcm', () => {
     
       await new Promise(process.nextTick);
     
-      // Simulate prompt callback with isDismissedMoment
+      // Simulate prompt callback with isDismissedMoment and getDismissedReason
       const promptCallback = googleClient.prompt.mock.calls[0][0];
-      promptCallback({ isDismissedMoment: () => true });
+      promptCallback({
+        isDismissedMoment: () => true,
+        getDismissedReason: () => 'credential_returned',
+      });
     
-      expect(onDismissed).toHaveBeenCalled();
+      expect(onDismissed).toHaveBeenCalledWith('credential_returned');
     });
   });
   describe('launch', () => {

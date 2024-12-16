@@ -101,7 +101,7 @@ type OneTapInitialize = ({
 type PromptNotification = {
   isSkippedMoment: () => boolean;
   isDismissedMoment: () => boolean;
-  getMomentType: () => string;
+  getDismissedReason: () => string;
 };
 
 /**
@@ -115,7 +115,7 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkip?: () => void,
-    onDismissed?: () => void
+    onDismissed?: (reason?: string) => void
   ) {
     const readyProvider = provider ?? 'google';
     const startResponse = await sdk.oauth.startNative(
@@ -153,14 +153,20 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       });
 
       googleClient.prompt((notification) => {
-        // Will first confirm if OneTap is dismissed
-        if (notification?.isDismissedMoment()) {
-          onDismissed?.();
-        }
-        
-        // Fallback to onSkip
-        if (notification?.isSkippedMoment()) {
+        if (!notification) {
           onSkip?.();
+          return;
+        }
+      
+        if (notification.isSkippedMoment()) {
+          onSkip?.();
+          return;
+        }
+      
+        if (notification.isDismissedMoment()) {
+          const reason = notification.getDismissedReason?.();
+          onDismissed?.(reason);
+          return;
         }
       });
     });
