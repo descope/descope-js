@@ -155,12 +155,10 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       googleClient.prompt((notification) => {
         if (notification?.isSkippedMoment()) {
           onSkip?.();
-          return;
         }
 
         if (notification?.isDismissedMoment()) {
           onDismissed?.();
-          return;
         }
       });
     });
