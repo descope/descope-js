@@ -153,19 +153,16 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       });
 
       googleClient.prompt((notification) => {
-        if (!notification) {
-          onSkip?.();
-          return;
-        }
-      
-        if (notification.isSkippedMoment()) {
-          onSkip?.();
-          return;
-        }
-      
-        if (notification.isDismissedMoment()) {
+        // Notification is dismissed by user, but credential is found
+        if (notification?.isDismissedMoment()) {
           const reason = notification.getDismissedReason?.();
           onDismissed?.(reason);
+          return;
+        }
+        
+        // Fallback to onSkip
+        if (notification?.isSkippedMoment()) {
+          onSkip?.();
           return;
         }
       });
