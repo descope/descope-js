@@ -134,38 +134,15 @@ describe('fedcm', () => {
       promptCallback({ isSkippedMoment: () => true });
       expect(onSkip).toHaveBeenCalled();
     });
-  });
-  describe('momentType handling', () => {
-    it('handles skipped moment correctly', async () => {
+    it('call onDismissed callback on prompt dismiss', async () => {
       coreJs.oauth.startNative.mockResolvedValue({
         ok: true,
         data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
       });
-  
-      const onSkip = jest.fn();
-  
-      sdk.fedcm.oneTap(
-        'google',
-        { auto_select: true },
-        { stepup: false },
-        onSkip,
-      );
-      await new Promise(process.nextTick);
-  
-      const promptCallback = googleClient.prompt.mock.calls[0][0];
-      promptCallback({ getMomentType: () => 'skipped', isSkippedMoment: () => true });
-  
-      expect(onSkip).toHaveBeenCalled();
-    });
-  
-    it('handles dismissed moment correctly', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
-        ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
-      });
-  
+    
       const onDismissed = jest.fn();
-  
+    
+      // Call oneTap with onDismissed callback
       sdk.fedcm.oneTap(
         'google',
         { auto_select: true },
@@ -173,36 +150,14 @@ describe('fedcm', () => {
         undefined,
         onDismissed,
       );
+    
       await new Promise(process.nextTick);
-  
+    
+      // Simulate prompt callback with isDismissedMoment
       const promptCallback = googleClient.prompt.mock.calls[0][0];
-      promptCallback({ getMomentType: () => 'dismissed', isDismissedMoment: () => true });
-  
+      promptCallback({ isDismissedMoment: () => true });
+    
       expect(onDismissed).toHaveBeenCalled();
-    });
-  
-    it('handles display moment correctly', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
-        ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
-      });
-  
-      const onDisplay = jest.fn();
-  
-      sdk.fedcm.oneTap(
-        'google',
-        { auto_select: true },
-        { stepup: false },
-        undefined,
-        undefined,
-      );
-      await new Promise(process.nextTick);
-  
-      const promptCallback = googleClient.prompt.mock.calls[0][0];
-      promptCallback({ getMomentType: () => 'display' });
-  
-      // Verify no callbacks are called for 'display'
-      expect(onDisplay).not.toHaveBeenCalled()
     });
   });
   describe('launch', () => {
