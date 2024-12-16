@@ -153,12 +153,14 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       });
 
       googleClient.prompt((notification) => {
-        if (notification?.isSkippedMoment()) {
-          onSkip?.();
-        }
-
+        // Will first confirm if OneTap is dismissed
         if (notification?.isDismissedMoment()) {
           onDismissed?.();
+        }
+        
+        // Fallback to onSkip
+        if (notification?.isSkippedMoment()) {
+          onSkip?.();
         }
       });
     });
