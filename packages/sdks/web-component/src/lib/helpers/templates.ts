@@ -303,7 +303,9 @@ export const setPhoneAutoDetectDefaultCode = (
   autoDetectCode?: string,
 ) => {
   Array.from(
-    fragment.querySelectorAll('descope-phone-field[default-code="autoDetect"]'),
+    fragment.querySelectorAll(
+      'descope-phone-field[default-code="autoDetect"], descope-hybrid-field[default-code="autoDetect"]',
+    ),
   ).forEach((phoneEle) => {
     phoneEle.setAttribute('default-code', autoDetectCode);
   });
