@@ -67,6 +67,10 @@ class DescopeWc extends BaseDescopeWc {
     BaseDescopeWc.sdkConfigOverrides = config;
   }
 
+  static get sdkConfigOverrides() {
+    return BaseDescopeWc.sdkConfigOverrides;
+  }
+
   flowState: State<FlowState>;
 
   stepState = new State<StepState>({} as StepState, {
