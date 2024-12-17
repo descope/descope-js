@@ -22,7 +22,7 @@ export default [
       inlineDynamicImports: true,
     },
     plugins: [
-      del({ targets: 'dist' }),
+      del({ targets: 'dist/*' }),
       define({
         replacements: {
           BUILD_VERSION: JSON.stringify(packageJson.version),
@@ -30,6 +30,8 @@ export default [
       }),
       typescript({
         rootDir: './src/lib',
+        declaration: true,
+        declarationDir: 'dist/dts',
       }),
       commonjs(),
       nodeResolve(),
@@ -42,15 +44,20 @@ export default [
   },
   {
     input,
-    output: {
-      dir: 'dist/esm',
-      format: 'esm',
-    },
+    output: [
+      {
+        dir: 'dist/esm',
+        format: 'esm',
+        preserveModules: true,
+      },
+      {
+        dir: 'dist/cjs',
+        format: 'cjs',
+        preserveModules: true,
+      },
+    ],
     plugins: [
-      typescript({
-        rootDir: './src/lib',
-        declarationDir: 'dist/esm/dts',
-      }),
+      typescript({}),
       define({
         replacements: {
           BUILD_VERSION: JSON.stringify(packageJson.version),
@@ -73,5 +80,6 @@ export default [
       dts(),
       del({ hook: 'buildEnd', targets: ['./dist/dts', './dist/esm/dts'] }),
     ],
+    external,
   },
 ];

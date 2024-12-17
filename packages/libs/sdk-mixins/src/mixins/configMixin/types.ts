@@ -23,18 +23,18 @@ type Operator =
   | 'is-false'
   | 'in'
   | 'not-in';
-export interface ClientCondition {
+export type ClientCondition = {
   operator: Operator;
   key: string;
   predicate?: string | number;
   met: ClientConditionResult;
   unmet?: ClientConditionResult;
-}
+};
 
-export interface ClientConditionResult {
+export type ClientConditionResult = {
   screenId: string;
   interactionId: string;
-}
+};
 
 export type FlowConfig = {
   startScreenId?: string;
@@ -46,7 +46,7 @@ export type FlowConfig = {
   fingerprintKey?: string;
 };
 
-export interface ProjectConfiguration {
+export type ProjectConfiguration = {
   componentsVersion: string;
   cssTemplate: {
     dark: ThemeTemplate;
@@ -55,4 +55,4 @@ export interface ProjectConfiguration {
   flows: {
     [key: string]: FlowConfig; // dynamic key names for flows
   };
-}
+};

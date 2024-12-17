@@ -25,8 +25,8 @@ export default [
       sourcemap: true,
       name: 'descope-audit-management-widget',
       extend: true,
+      inlineDynamicImports: true,
     },
-    inlineDynamicImports: true,
     plugins: [
       del({ targets: 'dist' }),
       define({
