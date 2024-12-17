@@ -116,7 +116,7 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkip?: (reason?: string) => void,
-    onDismissed?: (reason?: string) => void
+    onDismissed?: (reason?: string) => void,
   ) {
     const readyProvider = provider ?? 'google';
     const startResponse = await sdk.oauth.startNative(
@@ -154,15 +154,14 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       });
 
       googleClient.prompt((notification) => {
-        // Notification is dismissed by user, but credential is found
-        if (notification?.isDismissedMoment()) {
+        if (onDismissed && notification?.isDismissedMoment()) {
           const reason = notification.getDismissedReason?.();
           onDismissed?.(reason);
           return;
         }
-        
+
         // Fallback to onSkip
-        if (notification?.isSkippedMoment()) {
+        if (onSkip && notification?.isSkippedMoment()) {
           const reason = notification.getSkippedReason?.();
           onSkip?.(reason);
           return;
