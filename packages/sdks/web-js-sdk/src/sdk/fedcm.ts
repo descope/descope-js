@@ -102,6 +102,7 @@ type PromptNotification = {
   isSkippedMoment: () => boolean;
   isDismissedMoment: () => boolean;
   getDismissedReason: () => string;
+  getSkippedReason: () => string;
 };
 
 /**
@@ -114,7 +115,7 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     provider?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
-    onSkip?: () => void,
+    onSkip?: (reason?: string) => void,
     onDismissed?: (reason?: string) => void
   ) {
     const readyProvider = provider ?? 'google';
@@ -162,7 +163,8 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
         
         // Fallback to onSkip
         if (notification?.isSkippedMoment()) {
-          onSkip?.();
+          const reason = notification.getSkippedReason?.();
+          onSkip?.(reason);
           return;
         }
       });
