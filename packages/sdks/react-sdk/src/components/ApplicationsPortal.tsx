@@ -37,35 +37,36 @@ const ApplicationsPortalWC = lazy(async () => {
   };
 });
 
-const ApplicationsPortal = React.forwardRef<
-  HTMLElement,
-  ApplicationsPortalProps
->(({ logger, theme, debug, widgetId, styleId }, ref) => {
-  const [innerRef, setInnerRef] = useState(null);
+const ApplicationsPortal: React.ForwardRefExoticComponent<
+  ApplicationsPortalProps & React.RefAttributes<HTMLElement>
+> = React.forwardRef<HTMLElement, ApplicationsPortalProps>(
+  ({ logger, theme, debug, widgetId, styleId }, ref) => {
+    const [innerRef, setInnerRef] = useState(null);
 
-  useImperativeHandle(ref, () => innerRef);
+    useImperativeHandle(ref, () => innerRef);
 
-  const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
 
-  useEffect(() => {
-    if (innerRef && logger) {
-      innerRef.logger = logger;
-    }
-  }, [innerRef, logger]);
-  return (
+    useEffect(() => {
+      if (innerRef && logger) {
+        innerRef.logger = logger;
+      }
+    }, [innerRef, logger]);
+    return (
 	<Suspense fallback={null}>
 		<ApplicationsPortalWC
-        projectId={projectId}
-        widgetId={widgetId}
-        baseUrl={baseUrl}
-        baseStaticUrl={baseStaticUrl}
-        innerRef={setInnerRef}
-        theme={theme}
-        debug={debug}
-        styleId={styleId}
-      />
+          projectId={projectId}
+          widgetId={widgetId}
+          baseUrl={baseUrl}
+          baseStaticUrl={baseStaticUrl}
+          innerRef={setInnerRef}
+          theme={theme}
+          debug={debug}
+          styleId={styleId}
+        />
 	</Suspense>
-  );
-});
+    );
+  },
+);
 
 export default ApplicationsPortal;

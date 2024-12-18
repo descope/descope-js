@@ -39,7 +39,9 @@ const RoleManagementWC = lazy(async () => {
   };
 });
 
-const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
+const RoleManagement: React.ForwardRefExoticComponent<
+  RoleManagementProps & React.RefAttributes<HTMLElement>
+> = React.forwardRef<HTMLElement, RoleManagementProps>(
   ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 

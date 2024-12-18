@@ -39,36 +39,37 @@ const AccessKeyManagementWC = lazy(async () => {
   };
 });
 
-const AccessKeyManagement = React.forwardRef<
-  HTMLElement,
-  AccessKeyManagementProps
->(({ logger, tenant, theme, debug, widgetId }, ref) => {
-  const [innerRef, setInnerRef] = useState(null);
+const AccessKeyManagement: React.ForwardRefExoticComponent<
+  AccessKeyManagementProps & React.RefAttributes<HTMLElement>
+> = React.forwardRef<HTMLElement, AccessKeyManagementProps>(
+  ({ logger, tenant, theme, debug, widgetId }, ref) => {
+    const [innerRef, setInnerRef] = useState(null);
 
-  useImperativeHandle(ref, () => innerRef);
+    useImperativeHandle(ref, () => innerRef);
 
-  const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
 
-  useEffect(() => {
-    if (innerRef && logger) {
-      innerRef.logger = logger;
-    }
-  }, [innerRef, logger]);
+    useEffect(() => {
+      if (innerRef && logger) {
+        innerRef.logger = logger;
+      }
+    }, [innerRef, logger]);
 
-  return (
+    return (
 	<Suspense fallback={null}>
 		<AccessKeyManagementWC
-        projectId={projectId}
-        widgetId={widgetId}
-        baseUrl={baseUrl}
-        baseStaticUrl={baseStaticUrl}
-        innerRef={setInnerRef}
-        tenant={tenant}
-        theme={theme}
-        debug={debug}
-      />
+          projectId={projectId}
+          widgetId={widgetId}
+          baseUrl={baseUrl}
+          baseStaticUrl={baseStaticUrl}
+          innerRef={setInnerRef}
+          tenant={tenant}
+          theme={theme}
+          debug={debug}
+        />
 	</Suspense>
-  );
-});
+    );
+  },
+);
 
 export default AccessKeyManagement;

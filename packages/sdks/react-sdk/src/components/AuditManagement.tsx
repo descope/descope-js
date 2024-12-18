@@ -39,7 +39,9 @@ const AuditManagementWC = lazy(async () => {
   };
 });
 
-const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
+const AuditManagement: React.ForwardRefExoticComponent<
+  AuditManagementProps & React.RefAttributes<HTMLElement>
+> = React.forwardRef<HTMLElement, AuditManagementProps>(
   ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
