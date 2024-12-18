@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.23.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.22.0...web-js-sdk-1.23.0) (2024-12-18)
+
+
+### Features
+
+* Support for isDismissed from FedCM ([#862](https://github.com/descope/descope-js/issues/862)) ([27e977c](https://github.com/descope/descope-js/commit/27e977c536da4d4f966bdf4989bdef8066438060))
+
 ## [1.22.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.21.0...web-js-sdk-1.22.0) (2024-12-08)
 
 ### Dependency Updates
