@@ -302,13 +302,11 @@ export const setPhoneAutoDetectDefaultCode = (
   fragment: DocumentFragment,
   autoDetectCode?: string,
 ) => {
-  Array.from(
-    fragment.querySelectorAll(
-      'descope-phone-field[default-code="autoDetect"], descope-hybrid-field[default-code="autoDetect"]',
-    ),
-  ).forEach((phoneEle) => {
-    phoneEle.setAttribute('default-code', autoDetectCode);
-  });
+  Array.from(fragment.querySelectorAll('[default-code="autoDetect"]')).forEach(
+    (phoneEle) => {
+      phoneEle.setAttribute('default-code', autoDetectCode);
+    },
+  );
 };
 
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {
