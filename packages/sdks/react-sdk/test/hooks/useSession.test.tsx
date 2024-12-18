@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSession } from '../../src';
 import Context from '../../src/hooks/Context';
 import { IContext } from '../../src/types';
@@ -31,7 +31,6 @@ describe('useSession', () => {
     expect(result.current.isSessionLoading).toBe(false);
     expect(result.current.sessionToken).toBe(session);
     expect(result.current.isAuthenticated).toBe(true);
-
     expect(fetchSession).not.toHaveBeenCalled();
   });
 });

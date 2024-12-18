@@ -161,7 +161,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             styleId={styleId}
             validateOnBlur={validateOnBlur}
             restartOnError={restartOnError}
-            storeLastAuthenticatedUser={storeLastAuthenticatedUser}
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
             }
@@ -173,6 +172,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'form.attr': form,
               'client.attr': client,
               'debug.attr': debug,
+              'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
