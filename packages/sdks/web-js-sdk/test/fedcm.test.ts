@@ -223,11 +223,13 @@ describe('fedcm', () => {
     beforeEach(() => {
       // Set up mock for navigator.credentials.get
       mockGet = jest.fn();
+      // @ts-ignore
       global.navigator.credentials = { get: mockGet } as any;
     });
   
     afterEach(() => {
       jest.clearAllMocks();
+      // @ts-ignore
       delete global.navigator.credentials;
     });
   
