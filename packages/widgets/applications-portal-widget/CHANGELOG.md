@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.6](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.5...applications-portal-widget-0.2.6) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
 ## [0.2.5](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.4...applications-portal-widget-0.2.5) (2024-12-08)
 
 ### Dependency Updates
