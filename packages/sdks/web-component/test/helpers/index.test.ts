@@ -3,7 +3,6 @@ import { URL_RUN_IDS_PARAM_NAME } from '../../src/lib/constants';
 import { dragElement } from '../../src/lib/helpers';
 import {
   clearRunIdsFromUrl,
-  fetchContent,
   getAnimationDirection,
   getRunIdsFromUrl,
   handleAutoFocus,
@@ -16,44 +15,6 @@ const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
 describe('helpers', () => {
-  describe('fetchContent', () => {
-    it('should throw an error when got error response code', () => {
-      mockFetch.mockReturnValueOnce(
-        Promise.resolve({
-          ok: false,
-        }),
-      );
-
-      expect(fetchContent('url', 'text')).rejects.toThrow();
-    });
-    it('should return the response text', () => {
-      mockFetch.mockReturnValueOnce(
-        Promise.resolve({
-          ok: true,
-          text: () => 'text',
-          headers: new Headers({ h: '1' }),
-        }),
-      );
-
-      expect(fetchContent('url', 'text')).resolves.toMatchObject({
-        body: 'text',
-        headers: { h: '1' },
-      });
-    });
-    it('should cache the response', () => {
-      mockFetch.mockReturnValueOnce(
-        Promise.resolve({
-          ok: true,
-          text: () => 'text',
-          headers: new Headers({ h: '1' }),
-        }),
-      );
-      fetchContent('url', 'text');
-      expect(mockFetch).toHaveBeenCalledWith(expect.any(String), {
-        cache: 'default',
-      });
-    });
-  });
   it('getRunIds should return the correct query param value', () => {
     Object.defineProperty(window, 'location', {
       writable: true,

@@ -91,8 +91,8 @@ export type FlowState = {
 
 export type StepState = {
   screenState: ScreenState;
-  htmlUrl: string;
-  htmlLocaleUrl: string;
+  html: string;
+  htmlLocale: string;
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;

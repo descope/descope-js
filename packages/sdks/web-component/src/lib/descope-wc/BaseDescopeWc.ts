@@ -1,6 +1,7 @@
-import createSdk from '@descope/web-js-sdk';
-import { themeMixin } from '@descope/sdk-mixins/themeMixin';
 import { compose } from '@descope/sdk-helpers';
+import { staticResourcesMixin } from '@descope/sdk-mixins';
+import { themeMixin } from '@descope/sdk-mixins/themeMixin';
+import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
@@ -10,37 +11,39 @@ import {
 import {
   camelCase,
   clearRunIdsFromUrl,
-  fetchContent,
-  getContentUrl,
   getRunIdsFromUrl,
   handleUrlParams,
   State,
   withMemCache,
 } from '../helpers';
+import {
+  extractNestedAttribute,
+  transformFlowInputFormData,
+} from '../helpers/flowInputs';
 import { IsChanged } from '../helpers/state';
 import { formMountMixin } from '../mixins';
 import {
   AutoFocusOptions,
   DebuggerMessage,
   DebugState,
+  DescopeUI,
+  FlowConfig,
   FlowState,
   FlowStateUpdateFn,
-  SdkConfig,
-  DescopeUI,
-  ProjectConfiguration,
-  FlowConfig,
   FlowStatus,
+  ProjectConfiguration,
+  SdkConfig,
 } from '../types';
 import initTemplate from './initTemplate';
-import {
-  extractNestedAttribute,
-  transformFlowInputFormData,
-} from '../helpers/flowInputs';
 
 // this is replaced in build time
 declare const BUILD_VERSION: string;
 
-const BaseClass = compose(themeMixin, formMountMixin)(HTMLElement);
+const BaseClass = compose(
+  themeMixin,
+  formMountMixin,
+  staticResourcesMixin,
+)(HTMLElement);
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends BaseClass {
@@ -298,14 +301,12 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async #isPrevVerConfig() {
-    const prevVerConfigUrl = getContentUrl({
-      projectId: this.projectId,
-      filename: CONFIG_FILENAME,
-      assetsFolder: PREV_VER_ASSETS_FOLDER,
-      baseUrl: this.baseStaticUrl,
-    });
     try {
-      await fetchContent(prevVerConfigUrl, 'json');
+      await this.fetchStaticResource(
+        CONFIG_FILENAME,
+        'json',
+        PREV_VER_ASSETS_FOLDER,
+      );
       return true;
     } catch (e) {
       return false;
@@ -314,13 +315,11 @@ class BaseDescopeWc extends BaseClass {
 
   // we want to get the config only if we don't have it already
   getConfig = withMemCache(async () => {
-    const configUrl = getContentUrl({
-      projectId: this.projectId,
-      filename: CONFIG_FILENAME,
-      baseUrl: this.baseStaticUrl,
-    });
     try {
-      const { body, headers } = await fetchContent(configUrl, 'json');
+      const { body, headers } = await this.fetchStaticResource(
+        CONFIG_FILENAME,
+        'json',
+      );
       return {
         projectConfig: body as ProjectConfiguration,
         executionContext: { geo: headers['x-geo'] },

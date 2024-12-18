@@ -1,27 +1,24 @@
 import {
-  ASSETS_FOLDER,
-  BASE_CONTENT_URL,
+  APPLICATION_SCOPES_PARAM_NAME,
   DESCOPE_ATTRIBUTE_PREFIX,
-  URL_CODE_PARAM_NAME,
-  URL_ERR_PARAM_NAME,
-  URL_RUN_IDS_PARAM_NAME,
-  URL_TOKEN_PARAM_NAME,
-  URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
-  URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
-  URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
-  URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
+  DESCOPE_IDP_INITIATED_PARAM_NAME,
+  OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
+  OIDC_LOGIN_HINT_PARAM_NAME,
+  OIDC_PROMPT_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
-  OIDC_LOGIN_HINT_PARAM_NAME,
-  DESCOPE_IDP_INITIATED_PARAM_NAME,
-  OVERRIDE_CONTENT_URL,
-  OIDC_PROMPT_PARAM_NAME,
-  OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
   THIRD_PARTY_APP_ID_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
-  APPLICATION_SCOPES_PARAM_NAME,
+  URL_CODE_PARAM_NAME,
+  URL_ERR_PARAM_NAME,
+  URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME,
+  URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME,
+  URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
+  URL_RUN_IDS_PARAM_NAME,
+  URL_TOKEN_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
@@ -55,43 +52,6 @@ function resetUrlParam(paramName: string) {
     newUrl.search = search.toString();
     window.history.replaceState({}, '', newUrl.toString());
   }
-}
-
-export async function fetchContent<T extends 'text' | 'json'>(
-  url: string,
-  returnType: T,
-): Promise<{
-  body: T extends 'json' ? Record<string, any> : string;
-  headers: Record<string, string>;
-}> {
-  const res = await fetch(url, { cache: 'default' });
-  if (!res.ok) {
-    throw Error(`Error fetching URL ${url} [${res.status}]`);
-  }
-
-  return {
-    body: await res[returnType || 'text'](),
-    headers: Object.fromEntries(res.headers.entries()),
-  };
-}
-
-const pathJoin = (...paths: string[]) => paths.join('/').replace(/\/+/g, '/'); // preventing duplicate separators
-
-export function getContentUrl({
-  projectId,
-  filename,
-  assetsFolder = ASSETS_FOLDER,
-  baseUrl,
-}: {
-  projectId: string;
-  filename: string;
-  assetsFolder?: string;
-  baseUrl?: string;
-}) {
-  const url = new URL(OVERRIDE_CONTENT_URL || baseUrl || BASE_CONTENT_URL);
-  url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
-
-  return url.toString();
 }
 
 export function getAnimationDirection(
