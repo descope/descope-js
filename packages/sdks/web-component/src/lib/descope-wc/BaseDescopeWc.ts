@@ -1,5 +1,5 @@
 import createSdk from '@descope/web-js-sdk';
-import { themeMixin } from '@descope/sdk-mixins';
+import { themeMixin } from '@descope/sdk-mixins/themeMixin';
 import { compose } from '@descope/sdk-helpers';
 import {
   CONFIG_FILENAME,

@@ -87,6 +87,12 @@ Object.defineProperty(window.history, 'replaceState', {
   },
 });
 
+(<any>globalThis).process = {
+  env: {
+    NODE_ENV: 'development',
+  },
+};
+
 describe('debugger', () => {
   beforeEach(() => {
     jest.useFakeTimers();
