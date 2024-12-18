@@ -217,4 +217,62 @@ describe('fedcm', () => {
       expect(sdk.fedcm.isSupported()).toBe(false);
     });
   });
+  describe('isLoggedIn', () => {
+    it('should return true if navigator.credentials.get returns a valid token', async () => {
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+      
+      mockGet.mockResolvedValue({ token: 'validToken' });
+  
+      const result = await sdk.fedcm.isLoggedIn();
+  
+      expect(mockGet).toHaveBeenCalledWith({
+        identity: {
+          context: 'signin',
+          providers: [
+            {
+              configURL: 'http://localhost:3000/P123/fedcm/config',
+              clientId: 'P123',
+            },
+          ],
+        },
+      });
+      expect(result).toBe(true);
+    });
+  
+    it('should return false if navigator.credentials.get returns null', async () => {
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+  
+      mockGet.mockResolvedValue(null);
+  
+      const result = await sdk.fedcm.isLoggedIn();
+  
+      expect(mockGet).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+  
+    it('should return false if navigator.credentials.get throws an error', async () => {
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+  
+      mockGet.mockRejectedValue(new Error('Test Error'));
+  
+      const result = await sdk.fedcm.isLoggedIn();
+  
+      expect(mockGet).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+  
+    it('should return false if IdentityCredential is not supported', async () => {
+      delete global.window['IdentityCredential'];
+  
+      const result = await sdk.fedcm.isLoggedIn();
+  
+      expect(result).toBe(false);
+    });
+  });
 });

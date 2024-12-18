@@ -192,6 +192,34 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   isSupported(): boolean {
     return IS_BROWSER && 'IdentityCredential' in window;
   },
+  async isLoggedIn(
+    context?: IdentityCredentialRequestOptionsContext,
+  ): Promise<boolean> {
+    if (!this.isSupported()) {
+      return false;
+    }
+    const configURL = sdk.httpClient.buildUrl(
+      projectId + apiPaths.fedcm.config,
+    );
+    try {
+      const req: FedCMCredentialRequestOptions = {
+        identity: {
+          context: context || 'signin',
+          providers: [
+            {
+              configURL,
+              clientId: projectId,
+            },
+          ],
+        },
+      };
+      const res = await navigator.credentials?.get(req as any);
+      return !!res && !!(res as any as FedCMAssertionResponse).token;
+    } catch (e) {
+      // Any error likely indicates no active session.
+      return false;
+    }
+  },
 });
 
 // Helpers functions
