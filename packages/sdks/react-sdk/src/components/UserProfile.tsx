@@ -37,7 +37,9 @@ const UserProfileWC = lazy(async () => {
   };
 });
 
-const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
+const UserProfile: React.ForwardRefExoticComponent<
+  UserProfileProps & React.RefAttributes<HTMLElement>
+> = React.forwardRef<HTMLElement, UserProfileProps>(
   ({ logger, theme, debug, widgetId, onLogout, styleId }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 

@@ -39,7 +39,9 @@ const UserManagementWC = lazy(async () => {
   };
 });
 
-const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
+const UserManagement: React.ForwardRefExoticComponent<
+  UserManagementProps & React.RefAttributes<HTMLElement>
+> = React.forwardRef<HTMLElement, UserManagementProps>(
   ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
