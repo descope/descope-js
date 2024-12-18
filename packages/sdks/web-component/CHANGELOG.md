@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.31.1](https://github.com/descope/descope-js/compare/web-component-3.31.0...web-component-3.31.1) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
+
+### Bug Fixes
+
+* Auto-detect country code in hybrid-fields ([#863](https://github.com/descope/descope-js/issues/863)) ([3d85a32](https://github.com/descope/descope-js/commit/3d85a3251d7f3d4ba2c8fabefeced26773ea074e))
+
 ## [3.31.0](https://github.com/descope/descope-js/compare/web-component-3.30.0...web-component-3.31.0) (2024-12-08)
 
 ### Dependency Updates

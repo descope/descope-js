@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/user-management-widget-0.5.5...user-management-widget-0.6.0) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
+
+### Features
+
+* UserMgmt widget date format ([#859](https://github.com/descope/descope-js/issues/859)) ([3a1d65d](https://github.com/descope/descope-js/commit/3a1d65d4d9df33d48c898897d83943dd4caa2b51))
+
 ## [0.5.5](https://github.com/descope/descope-js/compare/user-management-widget-0.5.4...user-management-widget-0.5.5) (2024-12-08)
 
 ### Dependency Updates
