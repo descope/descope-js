@@ -242,6 +242,8 @@ describe('fedcm', () => {
   
     it('should return false if navigator.credentials.get returns null', async () => {
       const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
       mockGet.mockResolvedValue(null);
   
       const result = await sdk.fedcm.isLoggedIn();
@@ -252,6 +254,8 @@ describe('fedcm', () => {
   
     it('should return false if navigator.credentials.get throws an error', async () => {
       const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
       mockGet.mockRejectedValue(new Error('Test Error'));
   
       const result = await sdk.fedcm.isLoggedIn();

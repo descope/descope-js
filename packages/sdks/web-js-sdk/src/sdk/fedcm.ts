@@ -195,9 +195,6 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   async isLoggedIn(
     context?: IdentityCredentialRequestOptionsContext,
   ): Promise<boolean> {
-    if (!this.isSupported()) {
-      return false;
-    }
     const configURL = sdk.httpClient.buildUrl(
       projectId + apiPaths.fedcm.config,
     );
