@@ -100,6 +100,9 @@ type OneTapInitialize = ({
 
 type PromptNotification = {
   isSkippedMoment: () => boolean;
+  isDismissedMoment: () => boolean;
+  getDismissedReason: () => string;
+  getSkippedReason: () => string;
 };
 
 /**
@@ -112,7 +115,8 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     provider?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
-    onSkip?: () => void,
+    onSkip?: (reason?: string) => void,
+    onDismissed?: (reason?: string) => void,
   ) {
     const readyProvider = provider ?? 'google';
     const startResponse = await sdk.oauth.startNative(
@@ -150,8 +154,17 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
       });
 
       googleClient.prompt((notification) => {
-        if (notification?.isSkippedMoment()) {
-          onSkip?.();
+        if (onDismissed && notification?.isDismissedMoment()) {
+          const reason = notification.getDismissedReason?.();
+          onDismissed?.(reason);
+          return;
+        }
+
+        // Fallback to onSkip
+        if (onSkip && notification?.isSkippedMoment()) {
+          const reason = notification.getSkippedReason?.();
+          onSkip?.(reason);
+          return;
         }
       });
     });
@@ -178,6 +191,31 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   },
   isSupported(): boolean {
     return IS_BROWSER && 'IdentityCredential' in window;
+  },
+  async isLoggedIn(
+    context?: IdentityCredentialRequestOptionsContext,
+  ): Promise<boolean> {
+    const configURL = sdk.httpClient.buildUrl(
+      projectId + apiPaths.fedcm.config,
+    );
+    try {
+      const req: FedCMCredentialRequestOptions = {
+        identity: {
+          context: context || 'signin',
+          providers: [
+            {
+              configURL,
+              clientId: projectId,
+            },
+          ],
+        },
+      };
+      const res = await navigator.credentials?.get(req as any);
+      return !!res && !!(res as any as FedCMAssertionResponse).token;
+    } catch (e) {
+      // Any error likely indicates no active session.
+      return false;
+    }
   },
 });
 
