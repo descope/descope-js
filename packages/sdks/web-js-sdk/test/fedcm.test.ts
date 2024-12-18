@@ -218,23 +218,11 @@ describe('fedcm', () => {
     });
   });
   describe('isLoggedIn', () => {
-    let mockGet: jest.Mock;
-  
-    beforeEach(() => {
-      // Set up mock for navigator.credentials.get
-      mockGet = jest.fn();
-      // @ts-ignore
-      global.navigator.credentials = { get: mockGet } as any;
-    });
-  
-    afterEach(() => {
-      jest.clearAllMocks();
-      // @ts-ignore
-      delete global.navigator.credentials;
-    });
-  
     it('should return true if navigator.credentials.get returns a valid token', async () => {
-      mockGet.mockResolvedValue({ token: 'validToken' });
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+      mockGet.mockResolvedValue({ token: 'mockToken' });
   
       const result = await sdk.fedcm.isLoggedIn();
   
@@ -253,6 +241,7 @@ describe('fedcm', () => {
     });
   
     it('should return false if navigator.credentials.get returns null', async () => {
+      const mockGet = jest.fn();
       mockGet.mockResolvedValue(null);
   
       const result = await sdk.fedcm.isLoggedIn();
@@ -262,6 +251,7 @@ describe('fedcm', () => {
     });
   
     it('should return false if navigator.credentials.get throws an error', async () => {
+      const mockGet = jest.fn();
       mockGet.mockRejectedValue(new Error('Test Error'));
   
       const result = await sdk.fedcm.isLoggedIn();
