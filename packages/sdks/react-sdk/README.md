@@ -576,6 +576,14 @@ DESCOPE_STEP_UP_FLOW_ID=step-up
 DESCOPE_TELEMETRY_KEY=""
 ```
 
+## Performance / Bundle Size
+
+To improve modularity and reduce bundle size, all flow-related utilities are available also under `@descope/react-sdk/flows` subpath. Example:
+
+```
+import { Descope, useSession, ... } from '@descope/react-sdk/flows';
+```
+
 ## FAQ
 
 ### I updated the user in my backend, but the user / session token are not updated in the frontend

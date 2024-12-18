@@ -8,11 +8,10 @@
     "strict": false,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "declaration": true,
-    "declarationDir": "dist/dts",
+    "declaration": false,
     "noErrorTruncation": true,
     "typeRoots": ["./node_modules/@types", "./node_modules/@descope/*"]
   },
