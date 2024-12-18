@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.0...sdk-mixins-0.5.1) (2024-12-18)
+
 ## [0.5.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.4.0...sdk-mixins-0.5.0) (2024-12-04)
 
 
