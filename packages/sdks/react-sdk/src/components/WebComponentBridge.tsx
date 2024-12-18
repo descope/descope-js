@@ -50,8 +50,10 @@ const WebComponentBridge = <P extends Record<string, any>>(
         if (innerRef) {
           Object.entries(props).forEach(([key, value]) => {
             if (key.endsWith(propSuffixes.prop)) {
-              const readyKey = key.replace(/\.prop$/, '');
-              currRef.current[readyKey] = value;
+              if (value !== undefined && value !== null) {
+                const readyKey = key.replace(/\.prop$/, '');
+                currRef.current[readyKey] = value;
+              }
             } else if (key.endsWith(propSuffixes.attr)) {
               const kebabKey = kebabCase(key.replace(/\.attr$/, ''));
               if (value === undefined || value === null) {
