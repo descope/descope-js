@@ -7,17 +7,29 @@
     "url": "https://github.com/descope/sdk-mixins/issues",
     "email": "help@descope.com"
   },
-  "main": "dist/cjs/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "require": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/cjs/index.cjs.js"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.esm.js"
+    "./themeMixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/themeMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/themeMixin/index.js"
+      }
     }
   },
   "type": "module",
@@ -83,7 +95,8 @@
     "ts-node": "10.9.2",
     "typescript": "^5.0.2",
     "@reduxjs/toolkit": "^2.0.1",
-    "redux": "5.0.1"
+    "redux": "5.0.1",
+    "rollup-plugin-no-emit": "1.2.1"
   },
   "dependencies": {
     "@descope/sdk-helpers": "workspace:*",
