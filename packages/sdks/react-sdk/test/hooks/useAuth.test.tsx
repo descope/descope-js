@@ -48,16 +48,22 @@ const authProviderWrapper =
 describe('hooks', () => {
   it('should throw error when used without provider', () => {
     expect(() => {
-      renderHook(useDescope)
-    }).toThrow(Error('You can only use this hook in the context of <AuthProvider />'))
+      renderHook(useDescope);
+    }).toThrow(
+      Error('You can only use this hook in the context of <AuthProvider />'),
+    );
 
     expect(() => {
-      renderHook(useSession)
-    }).toThrow(Error('You can only use this hook in the context of <AuthProvider />'))
+      renderHook(useSession);
+    }).toThrow(
+      Error('You can only use this hook in the context of <AuthProvider />'),
+    );
 
     expect(() => {
-      renderHook(useUser)
-    }).toThrow(Error('You can only use this hook in the context of <AuthProvider />'))
+      renderHook(useUser);
+    }).toThrow(
+      Error('You can only use this hook in the context of <AuthProvider />'),
+    );
   });
 
   it.each(['logoutAll', 'logout', 'otp.signIn.email'])(
