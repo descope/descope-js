@@ -14,7 +14,7 @@ import UserProfileWidget from '@descope/user-profile-widget';
 import ApplicationsPortalWidget from '@descope/applications-portal-widget';
 import createSdk from './sdk';
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       ['descope-wc']: DescopeCustomElement;
@@ -53,7 +53,7 @@ export type Sdk = ReturnType<typeof createSdk>;
 export type CustomElement<T> = Partial<
   T &
     DOMAttributes<T> & {
-      children: React.ReactChild;
+      children: React.ReactNode;
       ref: React.Ref<HTMLElement>;
     }
 >;

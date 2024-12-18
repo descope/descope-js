@@ -38,7 +38,7 @@ const Layout = () => (
   </div>
 );
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isSessionLoading } = useSession();
 
   if (isSessionLoading) {
