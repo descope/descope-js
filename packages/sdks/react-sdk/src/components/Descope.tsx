@@ -14,8 +14,11 @@ import { getGlobalSdk } from '../sdk';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
-  const module = await import('@descope/web-component');
-  module.default.sdkConfigOverrides = {
+  const WebComponent: any =
+    customElements?.get('descope-wc') ||
+    (await import('@descope/web-component').then((module) => module.default));
+
+  WebComponent.sdkConfigOverrides = {
     // Overrides the web-component's base headers to indicate usage via the React SDK
     baseHeaders,
     // Disables token persistence within the web-component to delegate token management

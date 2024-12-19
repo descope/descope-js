@@ -23,6 +23,7 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
+import { ILogger } from '../descope-wc';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
@@ -56,6 +57,11 @@ function resetUrlParam(paramName: string) {
     window.history.replaceState({}, '', newUrl.toString());
   }
 }
+
+const getFlowIdFromExecId = (executionId: string) => {
+  const regex = /(.*)\|\#\|.*/;
+  return regex.exec(executionId)?.[1];
+};
 
 export async function fetchContent<T extends 'text' | 'json'>(
   url: string,
@@ -109,10 +115,17 @@ export function getAnimationDirection(
   return undefined;
 }
 
-export const getRunIdsFromUrl = () => {
-  const [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+export const getRunIdsFromUrl = (flowId: string) => {
+  let [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+  const executionFlowId = getFlowIdFromExecId(executionId);
 
-  return { executionId, stepId };
+  // if the flow id does not match, this execution id is not for this flow
+  if (executionFlowId && executionFlowId !== flowId) {
+    executionId = '';
+    stepId = '';
+  }
+
+  return { executionId, stepId, executionFlowId };
 };
 
 export const setRunIdsOnUrl = (executionId: string, stepId: string) => {
@@ -284,8 +297,18 @@ export const getElementDescopeAttributes = (ele: HTMLElement) =>
 export const getFlowConfig = (config: Record<string, any>, flowId: string) =>
   config?.flows?.[flowId] || {};
 
-export const handleUrlParams = () => {
-  const { executionId, stepId } = getRunIdsFromUrl();
+export const handleUrlParams = (flowId: string, logger: ILogger) => {
+  const { executionId, stepId, executionFlowId } = getRunIdsFromUrl(flowId);
+
+  // if the flow id does not match, we do not want to read & remove any query params
+  // because it's probably belongs to another flow
+  if (executionFlowId && flowId !== executionFlowId) {
+    logger.debug(
+      'Flow id does not match the execution flow id, skipping url params handling',
+    );
+    return { ssoQueryParams: {} };
+  }
+
   if (executionId || stepId) {
     clearRunIdsFromUrl();
   }
