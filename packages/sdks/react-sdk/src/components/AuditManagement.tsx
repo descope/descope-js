@@ -1,40 +1,17 @@
-import React, {
-  lazy,
-  Suspense,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
 import { AuditManagementProps } from '../types';
+import WebComponentBridge from './WebComponentBridge';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const AuditManagementWC = lazy(async () => {
   await import('@descope/audit-management-widget');
 
   return {
-    default: ({
-      projectId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      tenant,
-      widgetId,
-      theme,
-      debug,
-      styleId,
-    }) => (
-	<descope-audit-management-widget
-        project-id={projectId}
-        widget-id={widgetId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        theme={theme}
-        tenant={tenant}
-        debug={debug}
-        style-id={styleId}
-        ref={innerRef}
-      />
+    default: WebComponentBridge(
+      React.forwardRef<HTMLElement>((props, ref) => (
+	<descope-audit-management-widget ref={ref} {...props} />
+      )),
     ),
   };
 });
@@ -47,12 +24,6 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
 
     const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
 
-    useEffect(() => {
-      if (innerRef && logger) {
-        innerRef.logger = logger;
-      }
-    }, [innerRef, logger]);
-
     return (
 	<Suspense fallback={null}>
 		<AuditManagementWC
@@ -61,10 +32,15 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
           innerRef={setInnerRef}
-          tenant={tenant}
-          theme={theme}
-          styleId={styleId}
-          debug={debug}
+          {...{
+            // attributes
+            'tenant.attr': tenant,
+            'theme.attr': theme,
+            'debug.attr': debug,
+            'style-id.attr': styleId,
+            // props
+            'logger.prop': logger,
+          }}
         />
 	</Suspense>
     );

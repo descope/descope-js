@@ -31,7 +31,6 @@ describe('useSession', () => {
     expect(result.current.isSessionLoading).toBe(false);
     expect(result.current.sessionToken).toBe(session);
     expect(result.current.isAuthenticated).toBe(true);
-
     expect(fetchSession).not.toHaveBeenCalled();
   });
 });

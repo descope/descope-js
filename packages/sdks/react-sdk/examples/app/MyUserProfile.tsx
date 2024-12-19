@@ -62,6 +62,10 @@ const MyUserProfile = () => {
       <h2>My Profile</h2>
       <UserProfile
         widgetId="user-profile-widget"
+        theme={process.env.DESCOPE_THEME as any}
+        styleId={process.env.DESCOPE_STYLE_ID}
+        debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
+        logger={console}
         onLogout={() => {
           window.location.href = '/login';
         }}

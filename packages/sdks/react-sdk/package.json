@@ -50,7 +50,7 @@
     "leaks": "bash ./scripts/gitleaks/gitleaks.sh",
     "lint": "eslint '+(src|examples)/**/*.+(ts|tsx)' --fix",
     "prepublishOnly": "npm run build",
-    "start": "npm run build && rollup -c rollup.config.app.mjs -w",
+    "start": "npx nx run react-sdk:build && rollup -c rollup.config.app.mjs -w",
     "test": "jest"
   },
   "lint-staged": {
@@ -59,6 +59,7 @@
     ]
   },
   "dependencies": {
+    "@descope/sdk-helpers": "workspace:*",
     "@descope/access-key-management-widget": "workspace:*",
     "@descope/audit-management-widget": "workspace:*",
     "@descope/role-management-widget": "workspace:*",
