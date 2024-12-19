@@ -59,8 +59,8 @@ describe('helpers', () => {
       writable: true,
       value: new URL('http://localhost'),
     });
-    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8_9`;
-    expect(getRunIdsFromUrl()).toEqual({ executionId: '8', stepId: '9' });
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8|#|a_9`;
+    expect(getRunIdsFromUrl('8')).toEqual({ executionId: '8', stepId: '9' });
   });
   it('setRunIds should pushstate new URL with query param', () => {
     Object.defineProperty(window, 'location', {
