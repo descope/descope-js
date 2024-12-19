@@ -27,7 +27,7 @@ interface IAuthProviderProps {
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
   keepLastAuthenticatedUserAfterLogout?: boolean;
-  children?: JSX.Element;
+  children?: React.ReactNode;
 }
 
 const AuthProvider: FC<IAuthProviderProps> = ({

@@ -21,8 +21,8 @@ export const loggerMixin = createSingletonMixin(
         }, {}) as Logger;
       }
 
-      set logger(logger: Partial<Logger>) {
-        this.#logger = this.#wrapLogger(logger);
+      set logger(logger: Partial<Logger> | undefined) {
+        this.#logger = this.#wrapLogger(logger || console);
       }
 
       get logger(): Logger {
