@@ -23,7 +23,6 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
-import { ILogger } from '../descope-wc';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
@@ -297,7 +296,10 @@ export const getElementDescopeAttributes = (ele: HTMLElement) =>
 export const getFlowConfig = (config: Record<string, any>, flowId: string) =>
   config?.flows?.[flowId] || {};
 
-export const handleUrlParams = (flowId: string, logger: ILogger) => {
+export const handleUrlParams = (
+  flowId: string,
+  logger: { debug: (...data: any[]) => void },
+) => {
   const { executionId, stepId, executionFlowId } = getRunIdsFromUrl(flowId);
 
   // if the flow id does not match, we do not want to read & remove any query params
