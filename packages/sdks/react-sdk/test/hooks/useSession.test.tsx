@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { useSession } from '../../src';
 import Context from '../../src/hooks/Context';
 import { IContext } from '../../src/types';

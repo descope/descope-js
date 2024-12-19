@@ -2,7 +2,7 @@ import React from 'react';
 /* eslint-disable testing-library/no-node-access */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import createSdk from '@descope/web-js-sdk';
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { AuthProvider, useSession } from '../../src';
 import useDescope from '../../src/hooks/useDescope';
@@ -47,22 +47,20 @@ const authProviderWrapper =
   );
 describe('hooks', () => {
   it('should throw error when used without provider', () => {
-    expect(() => {
-      renderHook(useDescope);
-    }).toThrow(
-      Error('You can only use this hook in the context of <AuthProvider />'),
+    let result;
+    ({ result } = renderHook(useDescope));
+    expect(result.error?.message).toEqual(
+      'You can only use this hook in the context of <AuthProvider />',
     );
 
-    expect(() => {
-      renderHook(useSession);
-    }).toThrow(
-      Error('You can only use this hook in the context of <AuthProvider />'),
+    ({ result } = renderHook(useSession));
+    expect(result.error?.message).toEqual(
+      'You can only use this hook in the context of <AuthProvider />',
     );
 
-    expect(() => {
-      renderHook(useUser);
-    }).toThrow(
-      Error('You can only use this hook in the context of <AuthProvider />'),
+    ({ result } = renderHook(useUser));
+    expect(result.error?.message).toEqual(
+      'You can only use this hook in the context of <AuthProvider />',
     );
   });
 
