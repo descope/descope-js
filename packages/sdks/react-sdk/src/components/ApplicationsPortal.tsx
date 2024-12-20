@@ -1,14 +1,14 @@
 import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
 import { ApplicationsPortalProps } from '../types';
-import WebComponentBridge from './WebComponentBridge';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const ApplicationsPortalWC = lazy(async () => {
   await import('@descope/applications-portal-widget');
 
   return {
-    default: WebComponentBridge(
+    default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
 	<descope-applications-portal-widget ref={ref} {...props} />
       )),
@@ -38,7 +38,7 @@ const ApplicationsPortal = React.forwardRef<
           // attributes
           'theme.attr': theme,
           'debug.attr': debug,
-          'style-id.attr': styleId,
+          'styleId.attr': styleId,
           // props
           'logger.prop': logger,
         }}

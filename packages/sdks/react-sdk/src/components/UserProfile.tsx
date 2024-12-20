@@ -7,14 +7,14 @@ import React, {
 } from 'react';
 import Context from '../hooks/Context';
 import { UserProfileProps } from '../types';
-import WebComponentBridge from './WebComponentBridge';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const UserProfileWC = lazy(async () => {
   await import('@descope/user-profile-widget');
 
   return {
-    default: WebComponentBridge(
+    default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
 	<descope-user-profile-widget ref={ref} {...props} />
       )),
@@ -51,7 +51,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
             // attributes
             'theme.attr': theme,
             'debug.attr': debug,
-            'style-id.attr': styleId,
+            'styleId.attr': styleId,
             // props
             'logger.prop': logger,
           }}

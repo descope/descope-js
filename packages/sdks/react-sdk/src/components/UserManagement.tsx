@@ -1,14 +1,14 @@
 import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
 import { UserManagementProps } from '../types';
-import WebComponentBridge from './WebComponentBridge';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const UserManagementWC = lazy(async () => {
   await import('@descope/user-management-widget');
 
   return {
-    default: WebComponentBridge(
+    default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
 	<descope-user-management-widget ref={ref} {...props} />
       )),
@@ -37,7 +37,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
             'tenant.attr': tenant,
             'theme.attr': theme,
             'debug.attr': debug,
-            'style-id.attr': styleId,
+            'styleId.attr': styleId,
             // props
             'logger.prop': logger,
           }}

@@ -10,7 +10,7 @@ import { baseHeaders } from '../constants';
 import Context from '../hooks/Context';
 import { DescopeProps } from '../types';
 import { getGlobalSdk } from '../sdk';
-import WebComponentBridge from './WebComponentBridge';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
@@ -37,7 +37,7 @@ const DescopeWC = lazy(async () => {
   };
 
   return {
-    default: WebComponentBridge(
+    default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
 	<descope-wc ref={ref} {...props} />
       )),
