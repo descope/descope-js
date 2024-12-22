@@ -1011,15 +1011,15 @@ class DescopeWc extends BaseDescopeWc {
         'descope-text[data-type="error-message"]',
       );
       if (errorMsgs.length) {
-        const onErrorMsgCLear = () => {
+        const onErrorMsgClear = () => {
           Array.from(errorMsgs).forEach((errorMsg) => {
             errorMsg.innerHTML = '';
-            this.removeEventListener('click', onErrorMsgCLear);
-            this.removeEventListener('keypress', onErrorMsgCLear);
+            this.removeEventListener('click', onErrorMsgClear);
+            this.removeEventListener('keypress', onErrorMsgClear);
           });
         };
-        this.addEventListener('click', onErrorMsgCLear);
-        this.addEventListener('keypress', onErrorMsgCLear);
+        this.addEventListener('click', onErrorMsgClear);
+        this.addEventListener('keypress', onErrorMsgClear);
       }
     });
 
