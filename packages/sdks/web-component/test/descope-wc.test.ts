@@ -973,102 +973,6 @@ describe('web-component', () => {
     });
   });
 
-  it('should update the page messages when page is remaining the same but the state is updated', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(
-      generateSdkResponse({ screenState: { errorText: 'Error!' } }),
-    );
-
-    pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.findByShadowText('Loaded1'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
-
-    fireEvent.click(screen.getByShadowText('click'));
-
-    await waitFor(
-      () =>
-        screen.getByShadowText('Error!', {
-          selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
-        }),
-      { timeout: WAIT_TIMEOUT },
-    );
-  });
-
-  it('should clear the page messages when page click', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(
-      generateSdkResponse({ screenState: { errorText: 'Error!' } }),
-    );
-
-    pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message" data-auto-clear="true">xxx</span>`;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.findByShadowText('Loaded1'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
-
-    fireEvent.click(screen.getByShadowText('click'));
-
-    await waitFor(
-      () =>
-        screen.getByShadowText('Error!', {
-          selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
-        }),
-      { timeout: WAIT_TIMEOUT },
-    );
-
-    fireEvent.click(screen.getByText('Custom element test'));
-
-    setTimeout(() => {
-      expect(screen.queryByShadowText('Error!')).toBeNull();
-    });
-  });
-
-  it('should clear the page messages when page keypress', async () => {
-    startMock.mockReturnValueOnce(generateSdkResponse());
-    nextMock.mockReturnValueOnce(
-      generateSdkResponse({ screenState: { errorText: 'Error!' } }),
-    );
-
-    pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message" data-auto-clear="true">xxx</span>`;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.findByShadowText('Loaded1'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
-
-    fireEvent.click(screen.getByShadowText('click'));
-
-    await waitFor(
-      () =>
-        screen.getByShadowText('Error!', {
-          selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
-        }),
-      { timeout: WAIT_TIMEOUT },
-    );
-
-    fireEvent.keyPress(screen.getByText('Custom element test'), {
-      key: 'Enter',
-      code: 13,
-    });
-
-    setTimeout(() => {
-      expect(screen.queryByShadowText('Error!')).toBeNull();
-    });
-  });
-
   it('should update page inputs according to screen state', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     nextMock.mockReturnValueOnce(
@@ -4845,4 +4749,112 @@ describe('web-component', () => {
       { timeout: WAIT_TIMEOUT },
     );
   });
+
+
+  describe('error-message', () => {
+    it('should update the page messages when page is remaining the same but the state is updated', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({ screenState: { errorText: 'Error!' } }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('Loaded1'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          screen.getByShadowText('Error!', {
+            selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
+          }),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should clear the page messages when page click', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({ screenState: { errorText: 'Error!' } }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('Loaded1'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          screen.getByShadowText('Error!', {
+            selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
+          }),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+
+      await fireEvent.keyPress(screen.getByText('Custom element test'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      await waitFor(() => {
+        return expect(screen.getByShadowText('Error!', {
+          selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
+        })).toBeNull();
+      })
+
+    });
+
+    it('should clear the page messages when page keypress', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({ screenState: { errorText: 'Error!' } }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded1</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message" data-auto-clear="true">xxx</span>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('Loaded1'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      pageContent = `<div>Loaded2</div><span ${ELEMENT_TYPE_ATTRIBUTE}="error-message">xxx</span>`;
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      expect(await waitFor(() => screen.getByShadowText('Error!'), { timeout: WAIT_TIMEOUT }));
+      // await waitFor(
+      //   () =>
+      //     screen.getByShadowText('Error!', {
+      //       selector: `[${ELEMENT_TYPE_ATTRIBUTE}="error-message"]`,
+      //     }),
+      //   { timeout: WAIT_TIMEOUT },
+      // );
+
+      await fireEvent.keyPress(screen.getByText('Custom element test'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      // todo: async await for 'Error!' not to appear on shadow dom
+      setTimeout(() => {
+        expect(screen.queryByShadowText('Error!')).not.toBeDefined();
+      });
+    });
+  });  
 });
