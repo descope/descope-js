@@ -1304,6 +1304,7 @@ class DescopeWc extends BaseDescopeWc {
       if (errorMsgs.length) {
         const onErrorMsgClear = () => {
           Array.from(errorMsgs).forEach((errorMsg) => {
+            // eslint-disable-next-line no-param-reassign
             errorMsg.innerHTML = '';
             this.removeEventListener('click', onErrorMsgClear);
             this.removeEventListener('keypress', onErrorMsgClear);
