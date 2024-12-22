@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.7](https://github.com/descope/descope-js/compare/react-sdk-2.3.6...react-sdk-2.3.7) (2024-12-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.4`
+* `audit-management-widget` updated to version `0.2.8`
+* `role-management-widget` updated to version `0.2.8`
+* `user-management-widget` updated to version `0.6.2`
+* `user-profile-widget` updated to version `0.2.4`
+* `applications-portal-widget` updated to version `0.2.8`
+* `web-component` updated to version `3.31.3`
+* `web-js-sdk` updated to version `1.23.1`
+
+### Bug Fixes
+
+* multiple flows on the same page ([#868](https://github.com/descope/descope-js/issues/868)) ([c4182b3](https://github.com/descope/descope-js/commit/c4182b3f3a282a45edab2a6d6b1a669721782096))
+* support react-19 ([#860](https://github.com/descope/descope-js/issues/860)) RELEASE ([efd6833](https://github.com/descope/descope-js/commit/efd6833dfefc854b7f461606084234603f2444e0))
+
 ## [2.3.6](https://github.com/descope/descope-js/compare/react-sdk-2.3.5...react-sdk-2.3.6) (2024-12-18)
 
 ### Dependency Updates
