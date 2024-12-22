@@ -26,7 +26,7 @@ export const formMountMixin = createSingletonMixin(
         if (this.#shouldMountInFormEle()) {
           this.#handleOuterForm();
         }
-        super['connectedCallback']?.();
+        super.connectedCallback?.();
       }
     },
 );

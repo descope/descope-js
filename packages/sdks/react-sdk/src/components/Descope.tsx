@@ -14,8 +14,11 @@ import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
-  const module = await import('@descope/web-component');
-  module.default.sdkConfigOverrides = {
+  const WebComponent: any =
+    customElements?.get('descope-wc') ||
+    (await import('@descope/web-component').then((module) => module.default));
+
+  WebComponent.sdkConfigOverrides = {
     // Overrides the web-component's base headers to indicate usage via the React SDK
     baseHeaders,
     // Disables token persistence within the web-component to delegate token management
@@ -39,7 +42,7 @@ const DescopeWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-	<descope-wc ref={ref} {...props} />
+        <descope-wc ref={ref} {...props} />
       )),
     ),
   };
@@ -147,9 +150,9 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-	<form>
-		<Suspense fallback={null}>
-			<DescopeWC
+      <form>
+        <Suspense fallback={null}>
+          <DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
@@ -178,8 +181,8 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'logger.prop': logger,
             }}
           />
-		</Suspense>
-	</form>
+        </Suspense>
+      </form>
     );
   },
 );

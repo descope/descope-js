@@ -24,17 +24,21 @@ const withPropsMapping = <P extends Record<string, any>>(
   Component: ComponentType<any>,
 ) =>
   React.forwardRef<HTMLElement, P>((props, ref) => {
-    const { prop, attr, rest } = useMemo(() => Object.entries(props).reduce(
-        (acc, [key, value]) => {
-          const { trimmedKey, category } = transformKey(key);
-          if (category === 'prop') acc.prop.push([trimmedKey, value]);
-          else if (category === 'attr')
-            acc.attr.push([kebabCase(trimmedKey), transformAttrValue(value)]);
-          else Object.assign(acc.rest, { [kebabCase(trimmedKey)]: value });
-          return acc;
-        },
-        { attr: [], prop: [], rest: {} },
-      ), [props]);
+    const { prop, attr, rest } = useMemo(
+      () =>
+        Object.entries(props).reduce(
+          (acc, [key, value]) => {
+            const { trimmedKey, category } = transformKey(key);
+            if (category === 'prop') acc.prop.push([trimmedKey, value]);
+            else if (category === 'attr')
+              acc.attr.push([kebabCase(trimmedKey), transformAttrValue(value)]);
+            else Object.assign(acc.rest, { [kebabCase(trimmedKey)]: value });
+            return acc;
+          },
+          { attr: [], prop: [], rest: {} },
+        ),
+      [props],
+    );
 
     const currRef = useRef<HTMLElement | null>(null);
 
