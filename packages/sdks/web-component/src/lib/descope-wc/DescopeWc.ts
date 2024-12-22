@@ -1006,22 +1006,7 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
-    setTimeout(() => {
-      const errorMsgs = this.shadowRoot.querySelectorAll(
-        'descope-text[data-type="error-message"]',
-      );
-      if (errorMsgs.length) {
-        const onErrorMsgClear = () => {
-          Array.from(errorMsgs).forEach((errorMsg) => {
-            errorMsg.innerHTML = '';
-            this.removeEventListener('click', onErrorMsgClear);
-            this.removeEventListener('keypress', onErrorMsgClear);
-          });
-        };
-        this.addEventListener('click', onErrorMsgClear);
-        this.addEventListener('keypress', onErrorMsgClear);
-      }
-    });
+    this.#handleErrorMessageClearing();
 
     // set the default country code based on the locale value we got
     const { geo } = await this.getExecutionContext();
@@ -1308,6 +1293,25 @@ class DescopeWc extends BaseDescopeWc {
 
   #dispatch(eventName: string, detail: any) {
     this.dispatchEvent(new CustomEvent(eventName, { detail }));
+  }
+
+  #handleErrorMessageClearing() {
+    setTimeout(() => {
+      const errorMsgs = this.shadowRoot.querySelectorAll(
+        'descope-text[data-type="error-message"][data-auto-clear="true"]',
+      );
+      if (errorMsgs.length) {
+        const onErrorMsgClear = () => {
+          Array.from(errorMsgs).forEach((errorMsg) => {
+            errorMsg.innerHTML = '';
+            this.removeEventListener('click', onErrorMsgClear);
+            this.removeEventListener('keypress', onErrorMsgClear);
+          });
+        };
+        this.addEventListener('click', onErrorMsgClear);
+        this.addEventListener('keypress', onErrorMsgClear);
+      }
+    });
   }
 }
 
