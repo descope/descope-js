@@ -1299,7 +1299,7 @@ class DescopeWc extends BaseDescopeWc {
     // we need to wait for the component is populated with the error message
     setTimeout(() => {
       const errorMsgs = this.shadowRoot.querySelectorAll(
-        'descope-text[data-type="error-message"][data-auto-clear="true"]',
+        '[data-type="error-message"][data-auto-clear="true"]',
       );
       if (errorMsgs.length) {
         const onErrorMsgClear = () => {
