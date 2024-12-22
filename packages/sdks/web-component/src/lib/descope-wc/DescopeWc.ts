@@ -1296,6 +1296,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #handleErrorMessageClearing() {
+    // we need to wait for the component is populated with the error message
     setTimeout(() => {
       const errorMsgs = this.shadowRoot.querySelectorAll(
         'descope-text[data-type="error-message"][data-auto-clear="true"]',
