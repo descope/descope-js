@@ -229,7 +229,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #syncStateIdFromUrl() {
-    const { stepId, executionId } = getRunIdsFromUrl();
+    const { stepId, executionId } = getRunIdsFromUrl(this.flowId);
     this.#flowState.update({ stepId, executionId });
   }
 
@@ -517,7 +517,7 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
       ssoQueryParams,
-    } = handleUrlParams();
+    } = handleUrlParams(this.flowId, this.loggerWrapper);
 
     // we want to update the state when user clicks on back in the browser
     window.addEventListener('popstate', this.#eventsCbRefs.popstate);

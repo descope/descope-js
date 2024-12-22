@@ -57,6 +57,11 @@ function resetUrlParam(paramName: string) {
   }
 }
 
+const getFlowIdFromExecId = (executionId: string) => {
+  const regex = /(.*)\|#\|.*/;
+  return regex.exec(executionId)?.[1] || '';
+};
+
 export async function fetchContent<T extends 'text' | 'json'>(
   url: string,
   returnType: T,
@@ -109,10 +114,17 @@ export function getAnimationDirection(
   return undefined;
 }
 
-export const getRunIdsFromUrl = () => {
-  const [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+export const getRunIdsFromUrl = (flowId: string) => {
+  let [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+  const executionFlowId = getFlowIdFromExecId(executionId);
 
-  return { executionId, stepId };
+  // if the flow id does not match, this execution id is not for this flow
+  if (!flowId || (executionFlowId && executionFlowId !== flowId)) {
+    executionId = '';
+    stepId = '';
+  }
+
+  return { executionId, stepId, executionFlowId };
 };
 
 export const setRunIdsOnUrl = (executionId: string, stepId: string) => {
@@ -284,8 +296,21 @@ export const getElementDescopeAttributes = (ele: HTMLElement) =>
 export const getFlowConfig = (config: Record<string, any>, flowId: string) =>
   config?.flows?.[flowId] || {};
 
-export const handleUrlParams = () => {
-  const { executionId, stepId } = getRunIdsFromUrl();
+export const handleUrlParams = (
+  flowId: string,
+  logger: { debug: (...data: any[]) => void },
+) => {
+  const { executionId, stepId, executionFlowId } = getRunIdsFromUrl(flowId);
+
+  // if the flow id does not match, we do not want to read & remove any query params
+  // because it's probably belongs to another flow
+  if (executionFlowId && flowId !== executionFlowId) {
+    logger.debug(
+      'Flow id does not match the execution flow id, skipping url params handling',
+    );
+    return { ssoQueryParams: {} };
+  }
+
   if (executionId || stepId) {
     clearRunIdsFromUrl();
   }
