@@ -63,7 +63,9 @@ export class DescopeComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     const sdk = this.authService.descopeSdk; // Capture the class context in a variable
-    DescopeWc.sdkConfigOverrides = {
+    const WebComponent: any = customElements?.get('descope-wc') || DescopeWc;
+
+    WebComponent.sdkConfigOverrides = {
       // Overrides the web-component's base headers to indicate usage via the React SDK
       baseHeaders,
       // Disables token persistence within the web-component to delegate token management
@@ -126,10 +128,16 @@ export class DescopeComponent implements OnInit, OnChanges {
       this.webComponent.setAttribute('auto-focus', this.autoFocus.toString());
     }
     if (this.validateOnBlur) {
-      this.webComponent.setAttribute('validate-on-blur', this.autoFocus.toString());
+      this.webComponent.setAttribute(
+        'validate-on-blur',
+        this.autoFocus.toString()
+      );
     }
     if (this.restartOnError) {
-      this.webComponent.setAttribute('restart-on-error', this.autoFocus.toString());
+      this.webComponent.setAttribute(
+        'restart-on-error',
+        this.autoFocus.toString()
+      );
     }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
