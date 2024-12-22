@@ -7,7 +7,7 @@
     "url": "https://github.com/descope/descope-js/issues",
     "email": "help@descope.com"
   },
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "description": "Descope user profile widget",

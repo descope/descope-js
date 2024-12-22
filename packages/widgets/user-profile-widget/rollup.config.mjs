@@ -39,6 +39,8 @@ export default [
       }),
       typescript({
         rootDir: './src/lib',
+        declarationDir: 'dist/dts',
+        declaration: true,
       }),
       commonjs(),
       nodeResolve(),
@@ -55,16 +57,20 @@ export default [
   },
   {
     input,
-    output: {
-      dir: 'dist/esm',
-      format: 'esm',
-      sourcemap: true,
-    },
+    output: [
+      {
+        dir: 'dist/esm',
+        format: 'esm',
+        sourcemap: true,
+      },
+      {
+        dir: 'dist/cjs',
+        format: 'cjs',
+        sourcemap: true,
+      },
+    ],
     plugins: [
-      typescript({
-        rootDir: './src/lib',
-        declarationDir: 'dist/esm/dts',
-      }),
+      typescript(),
       define({
         replacements: {
           BUILD_VERSION: JSON.stringify(packageJson.version),

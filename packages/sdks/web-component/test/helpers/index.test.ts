@@ -59,9 +59,40 @@ describe('helpers', () => {
       writable: true,
       value: new URL('http://localhost'),
     });
-    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8_9`;
-    expect(getRunIdsFromUrl()).toEqual({ executionId: '8', stepId: '9' });
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8|#|a_9`;
+    expect(getRunIdsFromUrl('8')).toEqual({
+      executionFlowId: '8',
+      executionId: '8|#|a',
+      stepId: '9',
+    });
   });
+
+  it('getRunIds should return the correct query param when there is no flow Id', () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: new URL('http://localhost'),
+    });
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8|#|a_9`;
+    expect(getRunIdsFromUrl('')).toEqual({
+      executionFlowId: '8',
+      executionId: '',
+      stepId: '',
+    });
+  });
+
+  it('getRunIds should return the correct query param when exec id is wrong', () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: new URL('http://localhost'),
+    });
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8`;
+    expect(getRunIdsFromUrl('8')).toEqual({
+      executionFlowId: '',
+      executionId: '8',
+      stepId: '',
+    });
+  });
+
   it('setRunIds should pushstate new URL with query param', () => {
     Object.defineProperty(window, 'location', {
       writable: true,
