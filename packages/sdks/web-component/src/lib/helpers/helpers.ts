@@ -59,7 +59,7 @@ function resetUrlParam(paramName: string) {
 
 const getFlowIdFromExecId = (executionId: string) => {
   const regex = /(.*)\|#\|.*/;
-  return regex.exec(executionId)?.[1];
+  return regex.exec(executionId)?.[1] || '';
 };
 
 export async function fetchContent<T extends 'text' | 'json'>(
@@ -119,7 +119,7 @@ export const getRunIdsFromUrl = (flowId: string) => {
   const executionFlowId = getFlowIdFromExecId(executionId);
 
   // if the flow id does not match, this execution id is not for this flow
-  if (executionFlowId && executionFlowId !== flowId) {
+  if (!flowId || (executionFlowId && executionFlowId !== flowId)) {
     executionId = '';
     stepId = '';
   }
