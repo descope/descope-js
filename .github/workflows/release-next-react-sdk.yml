@@ -50,9 +50,7 @@ jobs:
         id: 'check'
         run: |
           echo debugging:
-          pnpm nx show projects --affected --with-target=build --plain
-          pnpm nx show projects --affected --plain
-          npx nx show projects --affected --plain
+          pnpm nx show projects --projects=tag:release-next
           exit 1
           # npx nx show projects --affected --plain | grep -q "react-sdk"
           if $(npx nx show projects --affected --plain | grep -q "react-sdk"); then
