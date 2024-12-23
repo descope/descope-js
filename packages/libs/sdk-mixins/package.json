@@ -30,6 +30,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/mixins/themeMixin/index.js"
       }
+    },
+    "./staticResourcesMixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/staticResourcesMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/staticResourcesMixin/index.js"
+      }
     }
   },
   "type": "module",
