@@ -50,6 +50,7 @@ jobs:
         id: 'check'
         run: |
           echo debugging:
+          pnpm nx show projects --affected --with-target=build --plain
           pnpm nx show projects --affected --plain
           npx nx show projects --affected --plain
           exit 1
