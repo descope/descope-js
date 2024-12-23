@@ -50,8 +50,8 @@ jobs:
         id: 'check'
         run: |
           echo debugging:
-            npx nx show projects --affected --plain
-            npx npx nx show projects --affected --plain | grep -q "react-sdk"
+          npx nx show projects --affected --plain
+          npx nx show projects --affected --plain | grep -q "react-sdk"
           if $(npx nx show projects --affected --plain | grep -q "react-sdk"); then
             echo "run=true" >> $GITHUB_OUTPUT
           else
