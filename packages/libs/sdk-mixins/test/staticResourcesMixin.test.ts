@@ -44,9 +44,7 @@ describe('staticResourcesMixin', () => {
     await mixin.fetchStaticResource('file', 'json');
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        ...new URL('https://static.example.com/pages/123/v2-beta/file'),
-      }),
+      'https://static.example.com/pages/123/v2-beta/file',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
@@ -64,16 +62,12 @@ describe('staticResourcesMixin', () => {
 
     expect(globalThis.fetch).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({
-        ...new URL('https://example.com/pages/123/v2-beta/file'),
-      }),
+      'https://example.com/pages/123/v2-beta/file',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenNthCalledWith(
       2,
-      expect.objectContaining({
-        ...new URL('https://static.descope.com/pages/123/v2-beta/file'),
-      }),
+      'https://static.descope.com/pages/123/v2-beta/file',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
@@ -87,9 +81,7 @@ describe('staticResourcesMixin', () => {
     await mixin.fetchStaticResource('file', 'json');
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        ...new URL('https://static.descope.com/pages/123/v2-beta/file'),
-      }),
+      'https://static.descope.com/pages/123/v2-beta/file',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
@@ -107,9 +99,7 @@ describe('staticResourcesMixin', () => {
 
     expect(globalThis.fetch).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({
-        ...new URL('https://example.com/pages/123/v2-beta/file'),
-      }),
+      'https://example.com/pages/123/v2-beta/file',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
@@ -121,9 +111,7 @@ describe('staticResourcesMixin', () => {
     await mixin.fetchStaticResource('file2', 'json');
     expect(globalThis.fetch).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({
-        ...new URL('https://example.com/pages/123/v2-beta/file2'),
-      }),
+      'https://example.com/pages/123/v2-beta/file2',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
@@ -141,9 +129,7 @@ describe('staticResourcesMixin', () => {
 
     expect(globalThis.fetch).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({
-        ...new URL('https://example.com/pages/123/v2-beta/file'),
-      }),
+      'https://example.com/pages/123/v2-beta/file',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
@@ -155,9 +141,7 @@ describe('staticResourcesMixin', () => {
     await mixin.fetchStaticResource('file2', 'json');
     expect(globalThis.fetch).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({
-        ...new URL('https://static.descope.com/pages/123/v2-beta/file2'),
-      }),
+      'https://static.descope.com/pages/123/v2-beta/file2',
       expect.any(Object),
     );
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);

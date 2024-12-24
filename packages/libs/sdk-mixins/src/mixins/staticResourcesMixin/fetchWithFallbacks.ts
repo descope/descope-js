@@ -18,7 +18,7 @@ export const fetchWithFallbacks = async (
     const isLast = index === fallbacksArr.length - 1;
 
     try {
-      const res = await fetch(url, init);
+      const res = await fetch(url.toString(), init);
       if (res.ok) {
         onSuccess?.(index);
         return res;
