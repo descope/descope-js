@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.8](https://github.com/descope/descope-js/compare/react-sdk-2.3.7...react-sdk-2.3.8) (2024-12-24)
+
+
+### Bug Fixes
+
+* ReactSDK publish-next affected workspaces ([#872](https://github.com/descope/descope-js/issues/872)) ([f6c19b5](https://github.com/descope/descope-js/commit/f6c19b5d5d2e2e05f05ae9aea1c7c12fc40c4145))
+* update affected projects check in release workflow ([#874](https://github.com/descope/descope-js/issues/874)) ([7311ea7](https://github.com/descope/descope-js/commit/7311ea713c5cdfdbd158a99179624482d9a61995))
+
 ## [2.3.7](https://github.com/descope/descope-js/compare/react-sdk-2.3.6...react-sdk-2.3.7) (2024-12-22)
 
 ### Dependency Updates
