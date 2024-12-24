@@ -1006,6 +1006,8 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
+    this.#handleErrorMessageClearing();
+
     // set the default country code based on the locale value we got
     const { geo } = await this.getExecutionContext();
     setPhoneAutoDetectDefaultCode(clone, geo);
@@ -1291,6 +1293,27 @@ class DescopeWc extends BaseDescopeWc {
 
   #dispatch(eventName: string, detail: any) {
     this.dispatchEvent(new CustomEvent(eventName, { detail }));
+  }
+
+  #handleErrorMessageClearing() {
+    // we need to wait for the component is populated with the error message
+    setTimeout(() => {
+      const errorMsgs = this.shadowRoot.querySelectorAll(
+        'descope-text[data-type="error-message"][data-auto-clear="true"]',
+      );
+      if (errorMsgs.length) {
+        const onErrorMsgClear = () => {
+          Array.from(errorMsgs).forEach((errorMsg) => {
+            // eslint-disable-next-line no-param-reassign
+            errorMsg.innerHTML = '';
+            this.removeEventListener('click', onErrorMsgClear);
+            this.removeEventListener('keypress', onErrorMsgClear);
+          });
+        };
+        this.addEventListener('click', onErrorMsgClear);
+        this.addEventListener('keypress', onErrorMsgClear);
+      }
+    });
   }
 }
 
