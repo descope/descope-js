@@ -11,21 +11,25 @@ import { fetchWithFallbacks } from './fetchWithFallbacks';
 
 type Format = 'text' | 'json';
 
+type CustomUrl = URL & { baseUrl: string };
+
 export function getResourceUrl({
   projectId,
   filename,
   assetsFolder = ASSETS_FOLDER,
-  baseUrl,
+  baseUrl = BASE_CONTENT_URL,
 }: {
   projectId: string;
   filename: string;
   assetsFolder?: string;
   baseUrl?: string;
 }) {
-  const url = new URL(OVERRIDE_CONTENT_URL || baseUrl || BASE_CONTENT_URL);
+  const url: CustomUrl = new URL(baseUrl) as any;
   url.pathname = pathJoin(url.pathname, projectId, assetsFolder, filename);
+  // we want to keep the baseUrl so we can use it later
+  url.baseUrl = baseUrl;
 
-  return url.toString();
+  return url;
 }
 
 export const staticResourcesMixin = createSingletonMixin(
@@ -46,12 +50,14 @@ export const staticResourcesMixin = createSingletonMixin(
       #lastBaseUrl?: string;
       #workingBaseUrl?: string;
 
-      #getResourceUrls(filename: string): string[] | string {
-        if (this.baseStaticUrl) {
+      #getResourceUrls(filename: string): CustomUrl[] | CustomUrl {
+        const overrideUrl = OVERRIDE_CONTENT_URL || this.baseStaticUrl;
+
+        if (overrideUrl) {
           return getResourceUrl({
             projectId: this.projectId,
             filename,
-            baseUrl: this.baseStaticUrl,
+            baseUrl: overrideUrl,
           });
         }
 
@@ -99,14 +105,8 @@ export const staticResourcesMixin = createSingletonMixin(
           ? null
           : (index: number) => {
               if (index !== resourceUrls.length - 1) {
-                const { origin, pathname } = new URL(resourceUrls[index]);
-                this.#workingBaseUrl = new URL(
-                  pathname.replace(
-                    new RegExp(`(.*)\/${this.projectId}\/.*$`),
-                    '$1',
-                  ),
-                  origin,
-                ).toString();
+                const { baseUrl } = resourceUrls[index];
+                this.#workingBaseUrl = baseUrl;
               }
             };
 

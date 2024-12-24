@@ -1,8 +1,8 @@
 import { compose } from '@descope/sdk-helpers';
 // eslint-disable-next-line import/no-duplicates
-import { staticResourcesMixin } from '@descope/sdk-mixins/staticResourcesMixin';
+import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin';
 // eslint-disable-next-line import/no-duplicates
-import { themeMixin } from '@descope/sdk-mixins/themeMixin';
+import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
