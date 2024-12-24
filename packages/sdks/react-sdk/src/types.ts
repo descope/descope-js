@@ -113,7 +113,7 @@ export type DescopeProps = {
   tenant?: string;
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
-  // Unless locale is provided - the browser's locale will be used
+  // If locale is not provided - the browser's locale will be used
   locale?: string;
   autoFocus?: AutoFocusOptions;
   validateOnBlur?: boolean;
