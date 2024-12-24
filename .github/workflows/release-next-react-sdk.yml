@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - fix/react-sdk-publish-next
+      - fix/react-sdk-next
 
 env:
   NODE_VERSION: 18.10.0
@@ -49,9 +49,6 @@ jobs:
       - name: Check if should run
         id: 'check'
         run: |
-          npx nx --version
-          npx nx show projects --affected --plain
-          exit 1
           if $(npx nx show projects --affected --plain | grep -q "react-sdk"); then
             echo "run=true" >> $GITHUB_OUTPUT
           else
