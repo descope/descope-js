@@ -867,6 +867,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
       nativeResponseType: nativeResponse?.type,
       nativePayload: nativeResponse?.payload,
+      forceUpdate: this.autoClearError && errorText
     });
   };
 
@@ -1006,8 +1007,6 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
-    this.#handleErrorMessageClearing();
-
     // set the default country code based on the locale value we got
     const { geo } = await this.getExecutionContext();
     setPhoneAutoDetectDefaultCode(clone, geo);
@@ -1041,6 +1040,10 @@ class DescopeWc extends BaseDescopeWc {
 
         // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(this.rootElement, screenState);
+
+        if (this.autoClearError && screenState.errorText) {
+          this.#handleErrorMessageClearing();
+        }
       });
 
       this.#hydrate(next);
@@ -1296,24 +1299,20 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #handleErrorMessageClearing() {
-    // we need to wait for the component is populated with the error message
-    setTimeout(() => {
-      const errorMsgs = this.shadowRoot.querySelectorAll(
-        '[data-type="error-message"][data-auto-clear="true"]',
-      );
-      if (errorMsgs.length) {
-        const onErrorMsgClear = () => {
-          Array.from(errorMsgs).forEach((errorMsg) => {
-            // eslint-disable-next-line no-param-reassign
-            errorMsg.innerHTML = '';
-            this.removeEventListener('click', onErrorMsgClear);
-            this.removeEventListener('keypress', onErrorMsgClear);
-          });
-        };
-        this.addEventListener('click', onErrorMsgClear);
-        this.addEventListener('keypress', onErrorMsgClear);
-      }
-    });
+    const errorMsgs = this.shadowRoot.querySelectorAll(
+      '[data-type="error-message"]',
+    );
+
+    if (errorMsgs.length) {
+      const onErrorMsgClear = () => {
+        Array.from(errorMsgs).forEach((errorMsg) => {
+          // eslint-disable-next-line no-param-reassign
+          errorMsg.innerHTML = '';
+          this.removeEventListener('keydown', onErrorMsgClear);
+        });
+      };
+      this.addEventListener('keydown', onErrorMsgClear);
+    }
   }
 }
 
