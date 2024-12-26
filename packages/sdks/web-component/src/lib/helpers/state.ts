@@ -69,7 +69,11 @@ class State<T extends StateObject> {
       typeof newState === 'function' ? newState(this.#state) : newState;
 
     const nextState = { ...this.#state, ...internalNewState };
-    if (!this.#updateOnlyOnChange || !compareObjects(this.#state, nextState) || nextState.forceUpdate) {
+    if (
+      !this.#updateOnlyOnChange ||
+      !compareObjects(this.#state, nextState) ||
+      nextState.forceUpdate
+    ) {
       const prevState = this.#state;
       this.#state = nextState;
       Object.freeze(this.#state);
