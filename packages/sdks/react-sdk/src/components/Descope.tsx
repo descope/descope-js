@@ -56,6 +56,7 @@ const DescopeWC = lazy(async () => {
       styleId,
       autoFocus,
       validateOnBlur,
+      autoClearError,
       restartOnError,
       storeLastAuthenticatedUser,
     }) => (
@@ -75,6 +76,7 @@ const DescopeWC = lazy(async () => {
         redirect-url={redirectUrl}
         auto-focus={autoFocus}
         validate-on-blur={validateOnBlur}
+        auto-clear-error={autoClearError}
         restart-on-error={restartOnError}
         store-last-authenticated-user={storeLastAuthenticatedUser}
       />
@@ -100,6 +102,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       redirectUrl,
       autoFocus,
       validateOnBlur,
+      autoClearError,
       restartOnError,
       errorTransformer,
       styleId,
@@ -223,6 +226,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             autoFocus={autoFocus}
             styleId={styleId}
             validateOnBlur={validateOnBlur}
+            autp-clear-erro={autoClearError}
             restartOnError={restartOnError}
             storeLastAuthenticatedUser={storeLastAuthenticatedUser}
             keepLastAuthenticatedUserAfterLogout={

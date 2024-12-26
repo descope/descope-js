@@ -117,6 +117,7 @@ export type DescopeProps = {
   locale?: string;
   autoFocus?: AutoFocusOptions;
   validateOnBlur?: boolean;
+  autoClearError?: boolean;
   restartOnError?: boolean;
   debug?: boolean;
   telemetryKey?: string;
