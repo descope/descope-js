@@ -858,7 +858,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
       nativeResponseType: nativeResponse?.type,
       nativePayload: nativeResponse?.payload,
-      forceUpdate: this.autoClearError && errorText
+      forceUpdate: this.autoClearError && errorText,
     });
   };
 
