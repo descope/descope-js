@@ -1,6 +1,6 @@
 import {
-  ensureFingerprintIds,
   clearFingerprintData,
+  ensureFingerprintIds,
 } from '@descope/web-js-sdk';
 import {
   CUSTOM_INTERACTIONS,
@@ -15,30 +15,28 @@ import {
   URL_TOKEN_PARAM_NAME,
 } from '../constants';
 import {
-  fetchContent,
+  clearPreviousExternalInputs,
   getAnimationDirection,
-  getContentUrl,
   getElementDescopeAttributes,
+  getFirstNonEmptyValue,
+  getUserLocale,
   handleAutoFocus,
+  handleReportValidityOnBlur,
   injectSamlIdpForm,
   isConditionalLoginSupported,
-  updateScreenFromScreenState,
-  updateTemplateFromScreenState,
+  leadingDebounce,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
   submitForm,
-  withMemCache,
-  getFirstNonEmptyValue,
-  leadingDebounce,
-  handleReportValidityOnBlur,
-  getUserLocale,
-  clearPreviousExternalInputs,
   timeoutPromise,
+  updateScreenFromScreenState,
+  updateTemplateFromScreenState,
+  withMemCache,
 } from '../helpers';
-import { calculateConditions, calculateCondition } from '../helpers/conditions';
-import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { getABTestingKey } from '../helpers/abTestingKey';
+import { calculateCondition, calculateConditions } from '../helpers/conditions';
+import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
@@ -227,22 +225,25 @@ class DescopeWc extends BaseDescopeWc {
     return filenameWithLocale;
   }
 
-  async getPageContent(htmlUrl: string, htmlLocaleUrl: string) {
-    if (htmlLocaleUrl) {
+  async getPageContent(htmlFilename: string, htmlLocaleFilename: string) {
+    if (htmlLocaleFilename) {
       // try first locale url, if can't get for some reason, fallback to the original html url (the one without locale)
       try {
-        const { body } = await fetchContent(htmlLocaleUrl, 'text');
+        const { body } = await this.fetchStaticResource(
+          htmlLocaleFilename,
+          'text',
+        );
         return body;
       } catch (ex) {
         this.loggerWrapper.error(
-          `Failed to fetch flow page from ${htmlLocaleUrl}. Fallback to url ${htmlUrl}`,
+          `Failed to fetch flow page from ${htmlLocaleFilename}. Fallback to url ${htmlFilename}`,
           ex,
         );
       }
     }
 
     try {
-      const { body } = await fetchContent(htmlUrl, 'text');
+      const { body } = await this.fetchStaticResource(htmlFilename, 'text');
       return body;
     } catch (ex) {
       this.loggerWrapper.error(`Failed to fetch flow page`, ex.message);
@@ -586,18 +587,8 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
       },
-      htmlUrl: getContentUrl({
-        projectId,
-        filename: `${readyScreenId}.html`,
-        baseUrl: this.baseStaticUrl,
-      }),
-      htmlLocaleUrl:
-        filenameWithLocale &&
-        getContentUrl({
-          projectId,
-          filename: filenameWithLocale,
-          baseUrl: this.baseStaticUrl,
-        }),
+      htmlFilename: `${readyScreenId}.html`,
+      htmlLocaleFilename: filenameWithLocale,
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
@@ -964,8 +955,8 @@ class DescopeWc extends BaseDescopeWc {
 
   async onStepChange(currentState: StepState, prevState: StepState) {
     const {
-      htmlUrl,
-      htmlLocaleUrl,
+      htmlFilename,
+      htmlLocaleFilename,
       direction,
       next,
       screenState,
@@ -973,7 +964,10 @@ class DescopeWc extends BaseDescopeWc {
     } = currentState;
 
     const stepTemplate = document.createElement('template');
-    stepTemplate.innerHTML = await this.getPageContent(htmlUrl, htmlLocaleUrl);
+    stepTemplate.innerHTML = await this.getPageContent(
+      htmlFilename,
+      htmlLocaleFilename,
+    );
 
     const clone = stepTemplate.content.cloneNode(true) as DocumentFragment;
 
@@ -1026,7 +1020,7 @@ class DescopeWc extends BaseDescopeWc {
       this.rootElement.replaceChildren(clone);
 
       // If before html url was empty, we deduce its the first time a screen is shown
-      const isFirstScreen = !prevState.htmlUrl;
+      const isFirstScreen = !prevState.htmlFilename;
 
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {

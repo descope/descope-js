@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-mixins",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-mixins",
   "bugs": {
@@ -21,7 +21,7 @@
         "default": "./dist/cjs/index.js"
       }
     },
-    "./themeMixin": {
+    "./theme-mixin": {
       "import": {
         "types": "./dist/index.d.ts",
         "default": "./dist/esm/mixins/themeMixin/index.js"
@@ -30,13 +30,23 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/mixins/themeMixin/index.js"
       }
+    },
+    "./static-resources-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/staticResourcesMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/staticResourcesMixin/index.js"
+      }
     }
   },
   "type": "module",
   "description": "Descope JavaScript SDK mixins",
   "scripts": {
     "build": "rimraf dist && rollup -c",
-    "test": "echo no tests yet",
+    "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'"
   },
   "license": "MIT",

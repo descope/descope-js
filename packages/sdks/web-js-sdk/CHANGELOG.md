@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.23.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.0...web-js-sdk-1.23.1) (2024-12-22)
+
+
+### Bug Fixes
+
+* support react-19 ([#860](https://github.com/descope/descope-js/issues/860)) RELEASE ([efd6833](https://github.com/descope/descope-js/commit/efd6833dfefc854b7f461606084234603f2444e0))
+
 ## [1.23.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.22.0...web-js-sdk-1.23.0) (2024-12-18)
 
 

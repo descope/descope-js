@@ -1,40 +1,17 @@
-import React, {
-  lazy,
-  Suspense,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
 import { UserManagementProps } from '../types';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const UserManagementWC = lazy(async () => {
   await import('@descope/user-management-widget');
 
   return {
-    default: ({
-      projectId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      tenant,
-      widgetId,
-      theme,
-      debug,
-      styleId,
-    }) => (
-	<descope-user-management-widget
-        project-id={projectId}
-        widget-id={widgetId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        theme={theme}
-        tenant={tenant}
-        debug={debug}
-        style-id={styleId}
-        ref={innerRef}
-      />
+    default: withPropsMapping(
+      React.forwardRef<HTMLElement>((props, ref) => (
+        <descope-user-management-widget ref={ref} {...props} />
+      )),
     ),
   };
 });
@@ -47,26 +24,25 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
 
     const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
 
-    useEffect(() => {
-      if (innerRef && logger) {
-        innerRef.logger = logger;
-      }
-    }, [innerRef, logger]);
-
     return (
-	<Suspense fallback={null}>
-		<UserManagementWC
+      <Suspense fallback={null}>
+        <UserManagementWC
           projectId={projectId}
           widgetId={widgetId}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
-          innerRef={setInnerRef}
-          tenant={tenant}
-          theme={theme}
-          styleId={styleId}
-          debug={debug}
+          ref={setInnerRef}
+          {...{
+            // attributes
+            'tenant.attr': tenant,
+            'theme.attr': theme,
+            'debug.attr': debug,
+            'styleId.attr': styleId,
+            // props
+            'logger.prop': logger,
+          }}
         />
-	</Suspense>
+      </Suspense>
     );
   },
 );

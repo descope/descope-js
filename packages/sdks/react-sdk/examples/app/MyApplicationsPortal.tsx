@@ -60,7 +60,13 @@ const MyApplicationsPortal = () => {
         </div>
       </header>
       <h2>Applications Portal</h2>
-      <ApplicationsPortal widgetId="applications-portal-widget" />
+      <ApplicationsPortal
+        widgetId="applications-portal-widget"
+        theme={process.env.DESCOPE_THEME as any}
+        styleId={process.env.DESCOPE_STYLE_ID}
+        debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
+        logger={console}
+      />
     </>
   );
 };
