@@ -2,6 +2,36 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.18](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.17...nextjs-sdk-0.3.18) (2024-12-25)
+
+
+### Bug Fixes
+
+* run pnpm ([#875](https://github.com/descope/descope-js/issues/875)) RELEASE ([523b86a](https://github.com/descope/descope-js/commit/523b86a55c9c1f7da0b225f2e48d3bbd77a32e8b))
+
+## [0.3.17](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.16...nextjs-sdk-0.3.17) (2024-12-24)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.3.9`
+* `web-component` updated to version `3.32.0`
+## [0.3.16](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.15...nextjs-sdk-0.3.16) (2024-12-24)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.3.8`
+## [0.3.15](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.14...nextjs-sdk-0.3.15) (2024-12-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.1`
+* `react-sdk` updated to version `2.3.7`
+* `web-component` updated to version `3.31.3`
+
+### Bug Fixes
+
+* support react-19 ([#860](https://github.com/descope/descope-js/issues/860)) RELEASE ([efd6833](https://github.com/descope/descope-js/commit/efd6833dfefc854b7f461606084234603f2444e0))
+
 ## [0.3.14](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.13...nextjs-sdk-0.3.14) (2024-12-18)
 
 ### Dependency Updates

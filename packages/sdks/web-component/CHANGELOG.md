@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.32.0](https://github.com/descope/descope-js/compare/web-component-3.31.3...web-component-3.32.0) (2024-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.0`
+
+### Features
+
+* Content from base url ([#871](https://github.com/descope/descope-js/issues/871)) RELEASE ([f3e437e](https://github.com/descope/descope-js/commit/f3e437e0793507627b157317063fe39174600c80))
+
+## [3.31.3](https://github.com/descope/descope-js/compare/web-component-3.31.2...web-component-3.31.3) (2024-12-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.2`
+* `web-js-sdk` updated to version `1.23.1`
+
+### Bug Fixes
+
+* multiple flows on the same page ([#868](https://github.com/descope/descope-js/issues/868)) ([c4182b3](https://github.com/descope/descope-js/commit/c4182b3f3a282a45edab2a6d6b1a669721782096))
+
 ## [3.31.2](https://github.com/descope/descope-js/compare/web-component-3.31.1...web-component-3.31.2) (2024-12-18)
 
 ### Dependency Updates

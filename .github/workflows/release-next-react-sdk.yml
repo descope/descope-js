@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fix/react-sdk-next
 
 env:
   NODE_VERSION: 18.10.0
@@ -49,7 +48,8 @@ jobs:
       - name: Check if should run
         id: 'check'
         run: |
-          if $(npx nx show projects --affected --plain | grep -q "react-sdk"); then
+          # Check if the affected projects include "react-sdk" or "web-component" since the last commit
+          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep -q "react-sdk\|web-component"); then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT

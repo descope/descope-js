@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.2...sdk-mixins-0.6.0) (2024-12-24)
+
+
+### Features
+
+* Content from base url ([#871](https://github.com/descope/descope-js/issues/871)) RELEASE ([f3e437e](https://github.com/descope/descope-js/commit/f3e437e0793507627b157317063fe39174600c80))
+
+## [0.5.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.1...sdk-mixins-0.5.2) (2024-12-22)
+
+
+### Bug Fixes
+
+* support react-19 ([#860](https://github.com/descope/descope-js/issues/860)) RELEASE ([efd6833](https://github.com/descope/descope-js/commit/efd6833dfefc854b7f461606084234603f2444e0))
+
 ## [0.5.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.0...sdk-mixins-0.5.1) (2024-12-18)
 
 ## [0.5.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.4.0...sdk-mixins-0.5.0) (2024-12-04)

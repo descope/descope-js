@@ -10,7 +10,11 @@ import noEmit from 'rollup-plugin-no-emit';
 
 import packageJson from './package.json' assert { type: 'json' };
 
-const input = ['./src/index.ts', './src/mixins/themeMixin/index.ts'];
+const input = [
+  './src/index.ts',
+  './src/mixins/themeMixin/index.ts',
+  './src/mixins/staticResourcesMixin/index.ts',
+];
 const external = (id) =>
   !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
