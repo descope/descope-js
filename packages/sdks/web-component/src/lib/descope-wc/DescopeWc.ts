@@ -517,6 +517,7 @@ class DescopeWc extends BaseDescopeWc {
         flowConfig.version,
         projectConfig.componentsVersion,
         {
+          ...this.getComponentsContext(),
           transactionId: webauthnTransactionId,
           response,
           failure,
@@ -937,6 +938,7 @@ class DescopeWc extends BaseDescopeWc {
               flowConfig.version,
               projectConfig.componentsVersion,
               {
+                ...this.getComponentsContext(),
                 transactionId,
                 response,
               },
