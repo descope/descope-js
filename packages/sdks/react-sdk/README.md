@@ -30,6 +30,20 @@ const AppRoot = () => {
       // must be configured (e.g., https://auth.app.example.com)
       // and should be set as the baseUrl property.
       // baseUrl = "https://auth.app.example.com"
+      // Allows to override the base URL that is used to fetch static files
+      // baseStaticUrl? = "https://auth.static.app.example.com"
+      // Determines if tokens will be stored on local storage and can accessed with getToken function
+      // persistTokens={false} // Default is true
+      // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be stored on local storage and can accessed with getSessionToken function.
+      // Use this option if session token will stay small (less than 1k)
+      // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
+      // sessionTokenViaCookie={true}
+      // If true, last authenticated user will be stored on local storage and can accessed with getUser function
+      // storeLastAuthenticatedUser={false} // Default is true
+      // If true, last authenticated user will not be removed after logout
+      // keepLastAuthenticatedUserAfterLogout?: boolean;
+      // If true, session will be refreshed on first useSession call, even if the session is never fetched before
+      // eagerRefreshOnFirstUseSession={false} // Default is true
     >
       <App />
     </AuthProvider>
@@ -600,6 +614,18 @@ const handleUpdateUser = useCallback(() => {
     sdk.refresh();
   });
 }, [sdk]);
+```
+
+### I see a `/refresh` API call failure in my logs
+
+By default, the Descope SDK eagerly attempts to refresh the session when the `useSession` hook is first called regardless the previous logged in state. If you want to disable this behavior, you can set the `eagerRefreshOnFirstUseSession={false}` prop on the `AuthProvider` component. With this property set to `false`, the SDK will only attempt to refresh the session if the user has previously logged in.
+
+Example:
+
+```jsx
+<AuthProvider eagerRefreshOnFirstUseSession={false}>
+  <App />
+</AuthProvider>
 ```
 
 ## Learn More

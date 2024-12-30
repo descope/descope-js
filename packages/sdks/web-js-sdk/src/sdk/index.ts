@@ -7,13 +7,25 @@ import { getSessionToken } from '../enhancers/withPersistTokens/helpers';
 const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
   const coreSdk = createCoreSdk(...args);
 
+  const refresh = (token?: string) => {
+    // Descope use this query param to monitor if refresh is made
+    // When the user is already logged in in the past or not (We want to optimize that in the future)
+    const currentSessionToken = getSessionToken();
+    return coreSdk.refresh(token, { dcs: currentSessionToken ? 't' : 'f' });
+  };
+
   return {
     ...coreSdk,
-    refresh: (token?: string) => {
-      // Descope use this query param to monitor if refresh is made
-      // When the user is already logged in in the past or not (We want to optimize that in the future)
+    refresh,
+    refreshIfSessionTokenExists: (token?: string) => {
       const currentSessionToken = getSessionToken();
-      return coreSdk.refresh(token, { dcs: currentSessionToken ? 't' : 'f' });
+      if (currentSessionToken || token) {
+        return refresh(token);
+      }
+      // If session token does not exist, we return a failed promise
+      return Promise.resolve({
+        ok: false,
+      });
     },
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),

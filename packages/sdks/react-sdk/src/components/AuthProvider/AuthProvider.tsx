@@ -27,6 +27,8 @@ interface IAuthProviderProps {
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
   keepLastAuthenticatedUserAfterLogout?: boolean;
+  // If true, session will be refreshed on first useSession call, even if the session is never fetched before
+  eagerRefreshOnFirstUseSession?: boolean;
   children?: React.ReactNode;
 }
 
@@ -38,6 +40,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   persistTokens = true,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
+  eagerRefreshOnFirstUseSession = true,
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -77,10 +80,14 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     isSessionFetched.current = true;
 
     setIsSessionLoading(true);
-    withValidation(sdk?.refresh)().then(() => {
+
+    const refreshFn = eagerRefreshOnFirstUseSession
+      ? sdk?.refresh
+      : sdk.refreshIfSessionTokenExists;
+    withValidation(refreshFn)().then(() => {
       setIsSessionLoading(false);
     });
-  }, [sdk]);
+  }, [sdk, eagerRefreshOnFirstUseSession]);
 
   const fetchUser = useCallback(() => {
     // We want that the user will fetched only once

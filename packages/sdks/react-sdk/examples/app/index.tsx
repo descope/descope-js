@@ -13,6 +13,7 @@ root.render(
     <AuthProvider
       projectId={process.env.DESCOPE_PROJECT_ID!}
       baseUrl={process.env.DESCOPE_BASE_URL}
+      eagerRefreshOnFirstUseSession={false}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
     >
       <App />
