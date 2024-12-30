@@ -4,9 +4,12 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import { screen } from 'shadow-dom-testing-library';
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import '../src/lib/descope-wc';
-
 import { isConditionalLoginSupported } from '../src/lib/helpers/webauthn';
-import { RESPONSE_ACTIONS } from '../src/lib/constants';
+import { RESPONSE_ACTIONS, SDK_SCRIPT_RESULTS_KEY } from '../src/lib/constants';
+// We load forter script in the test because we mock it and ensure it is called properly
+import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
+
+jest.mock('../src/lib/descope-wc/sdkScripts/forter', () => jest.fn());
 
 jest.mock('../src/lib/helpers/webauthn', () => ({
   isConditionalLoginSupported: jest.fn(),
@@ -48,7 +51,7 @@ globalThis.DescopeUI = {};
 // this is for mocking the pages/theme/config
 const themeContent = {};
 let pageContent = '';
-const configContent = {
+let configContent: any = {
   componentsVersion: '1.2.3',
 };
 
@@ -252,6 +255,29 @@ describe('webauthnConditionalUi', () => {
   });
 
   it('should call next with the correct params when user is logging in using autofill', async () => {
+    // We use specific connector which exists to test it all end to end
+    // but we override it above
+    const scriptId = 'forter';
+    const resultKey = 'some-result-key';
+    const resultValue = 'some-value';
+
+    configContent = {
+      componentsVersion: '1.2.3',
+      flows: {
+        otpSignInEmail: {
+          sdkScripts: [
+            {
+              id: scriptId,
+              initArgs: {
+                siteId: 'some-site-id',
+              },
+              resultKey,
+            },
+          ],
+        },
+      },
+    };
+
     startMock.mockReturnValue(generateSdkResponse());
     isConditionalLoginSupportedMock.mockReturnValueOnce(true);
     isWebauthnSupportedMock.mockReturnValueOnce(true);
@@ -265,9 +291,20 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
+    // wait for loadForter to be called
+    await waitFor(() => expect(loadForter).toHaveBeenCalled(), {
+      timeout: 3000,
+    });
+
+    // trigger the callback, to simulate the script loaded
+    // get the 3rd argument of the first call to loadForter
+    const callback = (loadForter as jest.Mock).mock.calls[0][2];
+    callback(resultValue);
+
     await waitFor(
       () =>
         expect(nextMock).toHaveBeenCalledWith('0', '0', 'id', 0, '1.2.3', {
+          [`${SDK_SCRIPT_RESULTS_KEY}.${scriptId}_${resultKey}`]: resultValue, // should be called with the result of the script
           response: 'response',
           transactionId: 'transactionId',
         }),
