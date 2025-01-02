@@ -27,13 +27,13 @@ export const apiMixin = createSingletonMixin(
         this.logger.debug('creating an sdk instance');
         this.#api = createSdk(
           { projectId: this.projectId, baseUrl: this.baseUrl },
-          this.tenant,
+          this.tenantId,
           this.mock === 'true',
           this.widgetId,
         );
       }
 
-      get tenant() {
+      get tenantId() {
         return this.getAttribute('tenant');
       }
 
