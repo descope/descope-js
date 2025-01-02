@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.10](https://github.com/descope/descope-js/compare/role-management-widget-0.2.9...role-management-widget-0.2.10) (2025-01-02)
+
+
+### Bug Fixes
+
+* Widgets tenant ID attribute ([#879](https://github.com/descope/descope-js/issues/879)) ([6b67f5e](https://github.com/descope/descope-js/commit/6b67f5e92f596e8145a24ccb90db9fcecb5190ea))
+
 ## [0.2.9](https://github.com/descope/descope-js/compare/role-management-widget-0.2.8...role-management-widget-0.2.9) (2024-12-24)
 
 ### Dependency Updates
