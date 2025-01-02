@@ -66,6 +66,7 @@ class BaseDescopeWc extends BaseClass {
       'store-last-authenticated-user',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
+      'auto-clear-error',
       'style-id',
     ];
   }
@@ -181,6 +182,10 @@ class BaseDescopeWc extends BaseClass {
     return this.getAttribute('validate-on-blur') === 'true';
   }
 
+  get autoClearError() {
+    return this.getAttribute('auto-clear-error') === 'true';
+  }
+
   get storeLastAuthenticatedUser() {
     const res = this.getAttribute('store-last-authenticated-user') ?? 'true';
     return res === 'true';
@@ -226,6 +231,7 @@ class BaseDescopeWc extends BaseClass {
       'form',
       'client',
       'validate-on-blur',
+      'auto-clear-error',
       'style-id',
     ];
 

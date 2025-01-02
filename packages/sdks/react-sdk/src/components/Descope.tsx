@@ -66,6 +66,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       redirectUrl,
       autoFocus,
       validateOnBlur,
+      autoClearError,
       restartOnError,
       errorTransformer,
       styleId,
@@ -163,6 +164,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             autoFocus={autoFocus}
             styleId={styleId}
             validateOnBlur={validateOnBlur}
+            auto-clear-error={autoClearError}
             restartOnError={restartOnError}
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
