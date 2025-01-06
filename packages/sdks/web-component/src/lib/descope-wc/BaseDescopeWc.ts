@@ -153,7 +153,7 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  get tenant() {
+  get tenantId() {
     return this.getAttribute('tenant') || undefined;
   }
 
@@ -542,7 +542,7 @@ class BaseDescopeWc extends BaseClass {
       projectId: this.projectId,
       flowId: this.flowId,
       baseUrl: this.baseUrl,
-      tenant: this.tenant,
+      tenant: this.tenantId,
       redirectUrl: this.redirectUrl,
       locale: this.locale,
       stepId,
