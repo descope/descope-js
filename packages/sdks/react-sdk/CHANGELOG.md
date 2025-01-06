@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.11](https://github.com/descope/descope-js/compare/react-sdk-2.3.10...react-sdk-2.3.11) (2025-01-06)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.2.6`
+* `web-component` updated to version `3.32.1`
+
+### Bug Fixes
+
+* tenant attr in Descope.js component RELEASE ([#882](https://github.com/descope/descope-js/issues/882)) ([b840cba](https://github.com/descope/descope-js/commit/b840cbac3477019e2551e51849421f430b82bbeb))
+
 ## [2.3.10](https://github.com/descope/descope-js/compare/react-sdk-2.3.9...react-sdk-2.3.10) (2025-01-02)
 
 ### Dependency Updates
