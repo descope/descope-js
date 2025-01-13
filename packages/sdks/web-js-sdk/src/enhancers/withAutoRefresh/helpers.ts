@@ -1,9 +1,6 @@
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import logger from '../helpers/logger';
-import { MAX_TIMEOUT } from '../../constants';
-
-// The amount of time (ms) to trigger the refresh before session expires
-const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
+import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
 /**
  * Get the JWT expiration WITHOUT VALIDATING the JWT
