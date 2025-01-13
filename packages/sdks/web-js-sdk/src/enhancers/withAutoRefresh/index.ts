@@ -5,15 +5,12 @@ import { addHooks, getAuthInfoFromResponse } from '../helpers';
 import {
   createTimerFunctions,
   getTokenExpiration,
-  millisecondsUntilDate,
+  getAutoRefreshTimeout,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
-import { IS_BROWSER, MAX_TIMEOUT } from '../../constants';
+import { IS_BROWSER } from '../../constants';
 import { getRefreshToken } from '../withPersistTokens/helpers';
-
-// The amount of time (ms) to trigger the refresh before session expires
-const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
 
 /**
  * Automatically refresh the session token before it expires
@@ -62,15 +59,8 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
-        let timeout =
-          millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
+        const timeout = getAutoRefreshTimeout(sessionExpiration);
 
-        if (timeout > MAX_TIMEOUT) {
-          logger.debug(
-            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`,
-          );
-          timeout = MAX_TIMEOUT;
-        }
         clearAllTimers();
 
         const refreshTimeStr = new Date(
