@@ -35,7 +35,6 @@ export const withAutoRefresh =
         // tab becomes visible and the session is expired, do a refresh
         if (
           document.visibilityState === 'visible' &&
-          millisecondsUntilDate(sessionExpiration) > REFRESH_THRESHOLD &&
           new Date() > sessionExpiration
         ) {
           logger.debug('Expiration time passed, refreshing session');
