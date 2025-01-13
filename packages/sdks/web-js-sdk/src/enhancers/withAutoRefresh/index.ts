@@ -6,7 +6,6 @@ import {
   createTimerFunctions,
   getTokenExpiration,
   getAutoRefreshTimeout,
-  millisecondsUntilDate,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
