@@ -34,6 +34,7 @@ export const withAutoRefresh =
         // tab becomes visible and the session is expired, do a refresh
         if (
           document.visibilityState === 'visible' &&
+          sessionExpiration &&
           new Date() > sessionExpiration
         ) {
           logger.debug('Expiration time passed, refreshing session');
@@ -51,6 +52,7 @@ export const withAutoRefresh =
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
         logger.debug('Received 401, canceling all timers');
+        sessionExpiration = null;
         clearAllTimers();
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
