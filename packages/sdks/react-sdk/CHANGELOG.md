@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.11](https://github.com/descope/descope-js/compare/react-sdk-2.3.10...react-sdk-2.3.11) (2025-01-06)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.2.6`
+* `web-component` updated to version `3.32.1`
+
+### Bug Fixes
+
+* tenant attr in Descope.js component RELEASE ([#882](https://github.com/descope/descope-js/issues/882)) ([b840cba](https://github.com/descope/descope-js/commit/b840cbac3477019e2551e51849421f430b82bbeb))
+
+## [2.3.10](https://github.com/descope/descope-js/compare/react-sdk-2.3.9...react-sdk-2.3.10) (2025-01-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.6`
+* `audit-management-widget` updated to version `0.2.10`
+* `role-management-widget` updated to version `0.2.10`
+* `user-management-widget` updated to version `0.6.4`
+
+### Bug Fixes
+
+* Widgets tenant ID attribute ([#879](https://github.com/descope/descope-js/issues/879)) ([6b67f5e](https://github.com/descope/descope-js/commit/6b67f5e92f596e8145a24ccb90db9fcecb5190ea))
+
 ## [2.3.9](https://github.com/descope/descope-js/compare/react-sdk-2.3.8...react-sdk-2.3.9) (2024-12-24)
 
 ### Dependency Updates

@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.32.1](https://github.com/descope/descope-js/compare/web-component-3.32.0...web-component-3.32.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* tenant attr in Descope.js component RELEASE ([#882](https://github.com/descope/descope-js/issues/882)) ([b840cba](https://github.com/descope/descope-js/commit/b840cbac3477019e2551e51849421f430b82bbeb))
+
 ## [3.32.0](https://github.com/descope/descope-js/compare/web-component-3.31.3...web-component-3.32.0) (2024-12-24)
 
 ### Dependency Updates
