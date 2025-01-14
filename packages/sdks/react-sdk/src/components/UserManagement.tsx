@@ -10,7 +10,7 @@ const UserManagementWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-user-management-widget ref={ref} {...props} />
+	<descope-user-management-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -25,16 +25,16 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
     const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
 
     return (
-      <Suspense fallback={null}>
-        <UserManagementWC
+	<Suspense fallback={null}>
+		<UserManagementWC
           projectId={projectId}
           widgetId={widgetId}
+          tenant={tenant}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
           ref={setInnerRef}
           {...{
             // attributes
-            'tenant.attr': tenant,
             'theme.attr': theme,
             'debug.attr': debug,
             'styleId.attr': styleId,
@@ -42,7 +42,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
             'logger.prop': logger,
           }}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.4](https://github.com/descope/descope-js/compare/user-management-widget-0.6.3...user-management-widget-0.6.4) (2025-01-02)
+
+
+### Bug Fixes
+
+* Widgets tenant ID attribute ([#879](https://github.com/descope/descope-js/issues/879)) ([6b67f5e](https://github.com/descope/descope-js/commit/6b67f5e92f596e8145a24ccb90db9fcecb5190ea))
+
 ## [0.6.3](https://github.com/descope/descope-js/compare/user-management-widget-0.6.2...user-management-widget-0.6.3) (2024-12-24)
 
 ### Dependency Updates
