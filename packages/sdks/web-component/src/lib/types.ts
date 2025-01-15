@@ -14,6 +14,19 @@ type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never;
 
+type KeepArgsByIndex<F, Indices extends readonly number[]> = F extends (
+  ...args: infer A
+) => infer R
+  ? (...args: PickArgsByIndex<A, Indices>) => R
+  : never;
+
+type PickArgsByIndex<
+  All extends readonly any[],
+  Indices extends readonly number[],
+> = {
+  [K in keyof Indices]: Indices[K] extends keyof All ? All[Indices[K]] : never;
+};
+
 export enum Direction {
   backward = 'backward',
   forward = 'forward',
@@ -103,7 +116,7 @@ export type DebugState = {
   isDebug: boolean;
 };
 
-export type NextFn = OmitFirstArg<OmitFirstArg<SdkFlowNext>>;
+export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]>;
 export type NextFnReturnPromiseValue = Awaited<ReturnType<NextFn>>;
 
 export type DebuggerMessage = {

@@ -23,7 +23,13 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
-import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
+import {
+  AutoFocusOptions,
+  Direction,
+  Locale,
+  SSOQueryParams,
+  StepState,
+} from '../types';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
@@ -644,3 +650,24 @@ export const clearPreviousExternalInputs = () => {
 
 export const shouldHandleMarkdown = (compName: string) =>
   MD_COMPONENTS.includes(compName);
+
+export const transformStepStateForCustomScreen = (
+  state: Partial<StepState>,
+) => {
+  const {
+    screenState: { inputs, ...screenState },
+    htmlFilename,
+    htmlLocaleFilename,
+    ...rest
+  } = state;
+
+  const screenId = htmlFilename?.replace('.html', '');
+
+  return {
+    ...rest,
+    screenId,
+    screenState: {
+      ...screenState,
+    },
+  };
+};

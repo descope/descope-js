@@ -21,6 +21,10 @@ initTemplate.innerHTML = `
 			opacity: 0.1;
 		}
 
+    .hidden {
+      display: none;
+    }
+
 	</style>
 	`;
 

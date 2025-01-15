@@ -127,6 +127,8 @@ export type DescopeProps = {
   // use to override client context in flow execution
   client?: Record<string, any>;
   styleId?: string;
+  onPageUpdate?: (state: any, ref: HTMLElement) => boolean;
+  children?: React.ReactNode;
 };
 
 export type UserManagementProps = WidgetProps;

@@ -73,5 +73,28 @@
         // document.querySelector('.loading')?.style.display = 'none';
       });
     </script>
+    <script>
+      const descopeEle = document.querySelector('descope-wc');
+      descopeEle.onPageUpdate = (state, ref) => {
+        console.log('onPageUpdate', state);
+
+        // ref.innerHTML = `
+        //   <form>
+        //     <input type="text" name="email" placeholder="Email" />
+        //     <button type="submit">Submit</button>
+        //   </form>
+        // `;
+
+        // ref.closest('form').addEventListener('submit', (e) => {
+        //   e.preventDefault();
+        //   const formData = new FormData(e.target);
+        //   const data = Object.fromEntries(formData.entries());
+
+        //   state.next('COcMh1vzSn', data);
+        // });
+
+        return false;
+      };
+    </script>
   </body>
 </html>
