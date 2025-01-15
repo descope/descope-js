@@ -102,3 +102,12 @@ export type CustomAttr = {
   EditPermissions: string[];
   editable: boolean;
 };
+
+export enum AttributeTypeName {
+  TEXT = 'text',
+  NUMBER = 'number',
+  BOOLEAN = 'boolean',
+  SINGLE_SELECT = 'singleSelect',
+  ARRAY = 'array',
+  DATE = 'date',
+}

@@ -2,6 +2,71 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.32.1](https://github.com/descope/descope-js/compare/web-component-3.32.0...web-component-3.32.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* tenant attr in Descope.js component RELEASE ([#882](https://github.com/descope/descope-js/issues/882)) ([b840cba](https://github.com/descope/descope-js/commit/b840cbac3477019e2551e51849421f430b82bbeb))
+
+## [3.32.0](https://github.com/descope/descope-js/compare/web-component-3.31.3...web-component-3.32.0) (2024-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.0`
+
+### Features
+
+* Content from base url ([#871](https://github.com/descope/descope-js/issues/871)) RELEASE ([f3e437e](https://github.com/descope/descope-js/commit/f3e437e0793507627b157317063fe39174600c80))
+
+## [3.31.3](https://github.com/descope/descope-js/compare/web-component-3.31.2...web-component-3.31.3) (2024-12-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.2`
+* `web-js-sdk` updated to version `1.23.1`
+
+### Bug Fixes
+
+* multiple flows on the same page ([#868](https://github.com/descope/descope-js/issues/868)) ([c4182b3](https://github.com/descope/descope-js/commit/c4182b3f3a282a45edab2a6d6b1a669721782096))
+
+## [3.31.2](https://github.com/descope/descope-js/compare/web-component-3.31.1...web-component-3.31.2) (2024-12-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.0`
+## [3.31.1](https://github.com/descope/descope-js/compare/web-component-3.31.0...web-component-3.31.1) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
+
+### Bug Fixes
+
+* Auto-detect country code in hybrid-fields ([#863](https://github.com/descope/descope-js/issues/863)) ([3d85a32](https://github.com/descope/descope-js/commit/3d85a3251d7f3d4ba2c8fabefeced26773ea074e))
+
+## [3.31.0](https://github.com/descope/descope-js/compare/web-component-3.30.0...web-component-3.31.0) (2024-12-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.22.0`
+
+### Features
+
+* Add thirdPartyAppStateId and scopes parameters for third party application ([#856](https://github.com/descope/descope-js/issues/856)) ([fa95d30](https://github.com/descope/descope-js/commit/fa95d30810599cf4a198b09b96b36b7e4c284464))
+
+## [3.30.0](https://github.com/descope/descope-js/compare/web-component-3.29.3...web-component-3.30.0) (2024-12-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.0`
+* `web-js-sdk` updated to version `1.21.0`
+
+### Features
+
+* Css vars ([#853](https://github.com/descope/descope-js/issues/853)) ([a49be2b](https://github.com/descope/descope-js/commit/a49be2b67b7eb8e3535647a94960f59396c70a0b))
+* Status param & dynamic os theme ([#854](https://github.com/descope/descope-js/issues/854)) ([f3deea7](https://github.com/descope/descope-js/commit/f3deea70df62c19209866e918c8013427dc33700))
+
 ## [3.29.3](https://github.com/descope/descope-js/compare/web-component-3.29.2...web-component-3.29.3) (2024-11-16)
 
 ### Dependency Updates

@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.23.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.0...web-js-sdk-1.23.1) (2024-12-22)
+
+
+### Bug Fixes
+
+* support react-19 ([#860](https://github.com/descope/descope-js/issues/860)) RELEASE ([efd6833](https://github.com/descope/descope-js/commit/efd6833dfefc854b7f461606084234603f2444e0))
+
+## [1.23.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.22.0...web-js-sdk-1.23.0) (2024-12-18)
+
+
+### Features
+
+* Support for isDismissed from FedCM ([#862](https://github.com/descope/descope-js/issues/862)) ([27e977c](https://github.com/descope/descope-js/commit/27e977c536da4d4f966bdf4989bdef8066438060))
+
+## [1.22.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.21.0...web-js-sdk-1.22.0) (2024-12-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.0`
+
+### Features
+
+* Add thirdPartyAppStateId and scopes parameters for third party application ([#856](https://github.com/descope/descope-js/issues/856)) ([fa95d30](https://github.com/descope/descope-js/commit/fa95d30810599cf4a198b09b96b36b7e4c284464))
+
+## [1.21.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.20.2...web-js-sdk-1.21.0) (2024-12-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.32.0`
+
+### Features
+
+* Css vars ([#853](https://github.com/descope/descope-js/issues/853)) ([a49be2b](https://github.com/descope/descope-js/commit/a49be2b67b7eb8e3535647a94960f59396c70a0b))
+
 ## [1.20.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.20.1...web-js-sdk-1.20.2) (2024-11-16)
 
 ### Dependency Updates

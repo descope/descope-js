@@ -7,32 +7,17 @@ import React, {
 } from 'react';
 import Context from '../hooks/Context';
 import { UserProfileProps } from '../types';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const UserProfileWC = lazy(async () => {
   await import('@descope/user-profile-widget');
 
   return {
-    default: ({
-      projectId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      widgetId,
-      theme,
-      debug,
-      styleId,
-    }) => (
-	<descope-user-profile-widget
-        project-id={projectId}
-        widget-id={widgetId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        theme={theme}
-        debug={debug}
-        style-id={styleId}
-        ref={innerRef}
-      />
+    default: withPropsMapping(
+      React.forwardRef<HTMLElement>((props, ref) => (
+	<descope-user-profile-widget ref={ref} {...props} />
+      )),
     ),
   };
 });
@@ -44,12 +29,6 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
     useImperativeHandle(ref, () => innerRef);
 
     const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
-
-    useEffect(() => {
-      if (innerRef && logger) {
-        innerRef.logger = logger;
-      }
-    }, [innerRef, logger]);
 
     useEffect(() => {
       if (innerRef && onLogout) {
@@ -66,10 +45,16 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
           widgetId={widgetId}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
-          innerRef={setInnerRef}
-          theme={theme}
           styleId={styleId}
-          debug={debug}
+          ref={setInnerRef}
+          {...{
+            // attributes
+            'theme.attr': theme,
+            'debug.attr': debug,
+            'styleId.attr': styleId,
+            // props
+            'logger.prop': logger,
+          }}
         />
 	</Suspense>
     );

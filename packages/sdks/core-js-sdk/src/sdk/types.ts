@@ -326,6 +326,7 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  thirdPartyAppId?: string;
   oidcLoginHint?: string;
   abTestingKey?: number;
   startOptionsVersion?: number;
@@ -334,6 +335,8 @@ export type Options = {
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
   nativeOptions?: NativeOptions;
+  thirdPartyAppStateId?: string;
+  applicationScopes?: string; // Relevant for sso application and third party application
 };
 
 export type ResponseData = Record<string, any>;

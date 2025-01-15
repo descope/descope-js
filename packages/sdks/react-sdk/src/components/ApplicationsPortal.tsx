@@ -1,38 +1,17 @@
-import React, {
-  lazy,
-  Suspense,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
 import { ApplicationsPortalProps } from '../types';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const ApplicationsPortalWC = lazy(async () => {
   await import('@descope/applications-portal-widget');
 
   return {
-    default: ({
-      projectId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      widgetId,
-      theme,
-      debug,
-      styleId,
-    }) => (
-	<descope-applications-portal-widget
-        project-id={projectId}
-        widget-id={widgetId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        theme={theme}
-        debug={debug}
-        style-id={styleId}
-        ref={innerRef}
-      />
+    default: withPropsMapping(
+      React.forwardRef<HTMLElement>((props, ref) => (
+	<descope-applications-portal-widget ref={ref} {...props} />
+      )),
     ),
   };
 });
@@ -47,11 +26,6 @@ const ApplicationsPortal = React.forwardRef<
 
   const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
 
-  useEffect(() => {
-    if (innerRef && logger) {
-      innerRef.logger = logger;
-    }
-  }, [innerRef, logger]);
   return (
 	<Suspense fallback={null}>
 		<ApplicationsPortalWC
@@ -60,9 +34,14 @@ const ApplicationsPortal = React.forwardRef<
         baseUrl={baseUrl}
         baseStaticUrl={baseStaticUrl}
         innerRef={setInnerRef}
-        theme={theme}
-        debug={debug}
-        styleId={styleId}
+        {...{
+          // attributes
+          'theme.attr': theme,
+          'debug.attr': debug,
+          'styleId.attr': styleId,
+          // props
+          'logger.prop': logger,
+        }}
       />
 	</Suspense>
   );

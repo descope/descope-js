@@ -1,6 +1,9 @@
-import createSdk from '@descope/web-js-sdk';
-import { themeMixin } from '@descope/sdk-mixins';
 import { compose } from '@descope/sdk-helpers';
+// eslint-disable-next-line import/no-duplicates
+import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin';
+// eslint-disable-next-line import/no-duplicates
+import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
+import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
@@ -17,29 +20,34 @@ import {
   State,
   withMemCache,
 } from '../helpers';
+import {
+  extractNestedAttribute,
+  transformFlowInputFormData,
+} from '../helpers/flowInputs';
 import { IsChanged } from '../helpers/state';
 import { formMountMixin } from '../mixins';
 import {
   AutoFocusOptions,
   DebuggerMessage,
   DebugState,
+  DescopeUI,
+  FlowConfig,
   FlowState,
   FlowStateUpdateFn,
-  SdkConfig,
-  DescopeUI,
+  FlowStatus,
   ProjectConfiguration,
-  FlowConfig,
+  SdkConfig,
 } from '../types';
 import initTemplate from './initTemplate';
-import {
-  extractNestedAttribute,
-  transformFlowInputFormData,
-} from '../helpers/flowInputs';
 
 // this is replaced in build time
 declare const BUILD_VERSION: string;
 
-const BaseClass = compose(themeMixin, formMountMixin)(HTMLElement);
+const BaseClass = compose(
+  themeMixin,
+  staticResourcesMixin,
+  formMountMixin,
+)(HTMLElement);
 
 // this base class is responsible for WC initialization
 class BaseDescopeWc extends BaseClass {
@@ -71,6 +79,8 @@ class BaseDescopeWc extends BaseClass {
   };
 
   #init = false;
+
+  flowStatus: FlowStatus = 'initial';
 
   loggerWrapper = {
     error: (message: string, description = '') => {
@@ -143,7 +153,7 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  get tenant() {
+  get tenantId() {
     return this.getAttribute('tenant') || undefined;
   }
 
@@ -226,7 +236,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #syncStateIdFromUrl() {
-    const { stepId, executionId } = getRunIdsFromUrl();
+    const { stepId, executionId } = getRunIdsFromUrl(this.flowId);
     this.#flowState.update({ stepId, executionId });
   }
 
@@ -294,6 +304,8 @@ class BaseDescopeWc extends BaseClass {
     return config.isMissingConfig && (await this.#isPrevVerConfig());
   }
 
+  // we are not using fetchStaticResource here
+  // because we do not want to use the fallbacks mechanism
   async #isPrevVerConfig() {
     const prevVerConfigUrl = getContentUrl({
       projectId: this.projectId,
@@ -311,13 +323,11 @@ class BaseDescopeWc extends BaseClass {
 
   // we want to get the config only if we don't have it already
   getConfig = withMemCache(async () => {
-    const configUrl = getContentUrl({
-      projectId: this.projectId,
-      filename: CONFIG_FILENAME,
-      baseUrl: this.baseStaticUrl,
-    });
     try {
-      const { body, headers } = await fetchContent(configUrl, 'json');
+      const { body, headers } = await this.fetchStaticResource(
+        CONFIG_FILENAME,
+        'json',
+      );
       return {
         projectConfig: body as ProjectConfiguration,
         executionContext: { geo: headers['x-geo'] },
@@ -470,6 +480,13 @@ class BaseDescopeWc extends BaseClass {
   static descopeUI: any;
 
   async init() {
+    this.flowStatus = 'loading';
+    ['ready', 'error', 'success'].forEach((status: FlowStatus) =>
+      this.addEventListener(status, () => {
+        this.flowStatus = status;
+      }),
+    );
+
     await super.init?.();
     this.#debugState.subscribe(this.#handleDebugMode.bind(this));
     this.#debugState.update({ isDebug: this.debug });
@@ -507,7 +524,7 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
       ssoQueryParams,
-    } = handleUrlParams();
+    } = handleUrlParams(this.flowId, this.loggerWrapper);
 
     // we want to update the state when user clicks on back in the browser
     window.addEventListener('popstate', this.#eventsCbRefs.popstate);
@@ -525,7 +542,7 @@ class BaseDescopeWc extends BaseClass {
       projectId: this.projectId,
       flowId: this.flowId,
       baseUrl: this.baseUrl,
-      tenant: this.tenant,
+      tenant: this.tenantId,
       redirectUrl: this.redirectUrl,
       locale: this.locale,
       stepId,

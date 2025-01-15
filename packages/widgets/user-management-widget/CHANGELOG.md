@@ -2,6 +2,50 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.4](https://github.com/descope/descope-js/compare/user-management-widget-0.6.3...user-management-widget-0.6.4) (2025-01-02)
+
+
+### Bug Fixes
+
+* Widgets tenant ID attribute ([#879](https://github.com/descope/descope-js/issues/879)) ([6b67f5e](https://github.com/descope/descope-js/commit/6b67f5e92f596e8145a24ccb90db9fcecb5190ea))
+
+## [0.6.3](https://github.com/descope/descope-js/compare/user-management-widget-0.6.2...user-management-widget-0.6.3) (2024-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.0`
+## [0.6.2](https://github.com/descope/descope-js/compare/user-management-widget-0.6.1...user-management-widget-0.6.2) (2024-12-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.1`
+* `sdk-mixins` updated to version `0.5.2`
+## [0.6.1](https://github.com/descope/descope-js/compare/user-management-widget-0.6.0...user-management-widget-0.6.1) (2024-12-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.0`
+## [0.6.0](https://github.com/descope/descope-js/compare/user-management-widget-0.5.5...user-management-widget-0.6.0) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
+
+### Features
+
+* UserMgmt widget date format ([#859](https://github.com/descope/descope-js/issues/859)) ([3a1d65d](https://github.com/descope/descope-js/commit/3a1d65d4d9df33d48c898897d83943dd4caa2b51))
+
+## [0.5.5](https://github.com/descope/descope-js/compare/user-management-widget-0.5.4...user-management-widget-0.5.5) (2024-12-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.22.0`
+## [0.5.4](https://github.com/descope/descope-js/compare/user-management-widget-0.5.3...user-management-widget-0.5.4) (2024-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.21.0`
+* `sdk-mixins` updated to version `0.5.0`
 ## [0.5.3](https://github.com/descope/descope-js/compare/user-management-widget-0.5.2...user-management-widget-0.5.3) (2024-11-16)
 
 ### Dependency Updates

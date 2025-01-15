@@ -11,11 +11,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "declaration": true,
-    "declarationDir": "dts",
+    "declaration": false,
     "jsx": "react",
-    "noErrorTruncation": true,
+    "noErrorTruncation": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "build", "dist", "test", "examples"]
+  "exclude": ["node_modules", "build", "dist", "test"]
 }

@@ -1,6 +1,6 @@
 {
   "name": "@descope/react-sdk",
-  "version": "2.3.2",
+  "version": "2.3.11",
   "description": "Descope React SDK",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
@@ -15,17 +15,29 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "require": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/cjs/index.cjs.js"
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/index.js"
+      }
     },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.esm.js"
+    "./flows": {
+      "import": {
+        "types": "./dist/types/flows.d.ts",
+        "default": "./dist/esm/flows.js"
+      },
+      "require": {
+        "types": "./dist/types/flows.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
-  "main": "dist/cjs/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -38,7 +50,7 @@
     "leaks": "bash ./scripts/gitleaks/gitleaks.sh",
     "lint": "eslint '+(src|examples)/**/*.+(ts|tsx)' --fix",
     "prepublishOnly": "npm run build",
-    "start": "npm run build && rollup -c rollup.config.app.mjs -w",
+    "start": "npx nx run react-sdk:build && rollup -c rollup.config.app.mjs -w",
     "test": "jest"
   },
   "lint-staged": {
@@ -47,6 +59,7 @@
     ]
   },
   "dependencies": {
+    "@descope/sdk-helpers": "workspace:*",
     "@descope/access-key-management-widget": "workspace:*",
     "@descope/audit-management-widget": "workspace:*",
     "@descope/role-management-widget": "workspace:*",
@@ -121,7 +134,8 @@
     "scheduler": "^0.23.0",
     "@remix-run/router": "1.17.0",
     "jest-environment-jsdom": "^29.0.0",
-    "core-js": "3.19.3"
+    "core-js": "3.19.3",
+    "rollup-plugin-no-emit": "1.2.1"
   },
   "peerDependencies": {
     "@types/react": ">=17",

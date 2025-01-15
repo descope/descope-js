@@ -2,6 +2,61 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.5...user-profile-widget-0.2.6) (2025-01-06)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.32.1`
+## [0.2.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.4...user-profile-widget-0.2.5) (2024-12-24)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.32.0`
+* `sdk-mixins` updated to version `0.6.0`
+## [0.2.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.3...user-profile-widget-0.2.4) (2024-12-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.1`
+* `web-component` updated to version `3.31.3`
+* `sdk-mixins` updated to version `0.5.2`
+
+### Bug Fixes
+
+* multiple flows on the same page ([#868](https://github.com/descope/descope-js/issues/868)) ([c4182b3](https://github.com/descope/descope-js/commit/c4182b3f3a282a45edab2a6d6b1a669721782096))
+
+## [0.2.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.2...user-profile-widget-0.2.3) (2024-12-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.0`
+* `web-component` updated to version `3.31.2`
+## [0.2.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.1...user-profile-widget-0.2.2) (2024-12-18)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.31.1`
+* `sdk-mixins` updated to version `0.5.1`
+## [0.2.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.0...user-profile-widget-0.2.1) (2024-12-08)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.0`
+* `web-js-sdk` updated to version `1.22.0`
+* `web-component` updated to version `3.31.0`
+## [0.2.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.1.3...user-profile-widget-0.2.0) (2024-12-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.32.0`
+* `web-js-sdk` updated to version `1.21.0`
+* `web-component` updated to version `3.30.0`
+* `sdk-mixins` updated to version `0.5.0`
+
+### Features
+
+* Support custom fields in user-profile-widget + Edit/Delete flows ([#843](https://github.com/descope/descope-js/issues/843)) ([d29e1f4](https://github.com/descope/descope-js/commit/d29e1f4855affc3bc67904926f4e1b023d48b5b2))
+
 ## [0.1.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.1.2...user-profile-widget-0.1.3) (2024-11-16)
 
 ### Dependency Updates

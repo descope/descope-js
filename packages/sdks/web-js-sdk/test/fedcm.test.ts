@@ -133,6 +133,34 @@ describe('fedcm', () => {
       promptCallback({ isSkippedMoment: () => true });
       expect(onSkip).toHaveBeenCalled();
     });
+    it('call onDismissed callback on prompt dismiss with detailed reason', async () => {
+      coreJs.oauth.startNative.mockResolvedValue({
+        ok: true,
+        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+      });
+
+      const onDismissed = jest.fn();
+
+      // Call oneTap with onDismissed callback
+      sdk.fedcm.oneTap(
+        'google',
+        { auto_select: true },
+        { stepup: false },
+        undefined,
+        onDismissed,
+      );
+
+      await new Promise(process.nextTick);
+
+      // Simulate prompt callback with isDismissedMoment and getDismissedReason
+      const promptCallback = googleClient.prompt.mock.calls[0][0];
+      promptCallback({
+        isDismissedMoment: () => true,
+        getDismissedReason: () => 'credential_returned',
+      });
+
+      expect(onDismissed).toHaveBeenCalledWith('credential_returned');
+    });
   });
   describe('launch', () => {
     it('should call navigator.credentials.get with correct parameters', async () => {
@@ -186,6 +214,53 @@ describe('fedcm', () => {
     it('should return false if IdentityCredential is not in window', () => {
       delete global.window['IdentityCredential'];
       expect(sdk.fedcm.isSupported()).toBe(false);
+    });
+  });
+  describe('isLoggedIn', () => {
+    it('should return true if navigator.credentials.get returns a valid token', async () => {
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+      mockGet.mockResolvedValue({ token: 'mockToken' });
+
+      const result = await sdk.fedcm.isLoggedIn();
+
+      expect(mockGet).toHaveBeenCalledWith({
+        identity: {
+          context: 'signin',
+          providers: [
+            {
+              configURL: 'http://localhost:3000/P123/fedcm/config',
+              clientId: 'P123',
+            },
+          ],
+        },
+      });
+      expect(result).toBe(true);
+    });
+
+    it('should return false if navigator.credentials.get returns null', async () => {
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+      mockGet.mockResolvedValue(null);
+
+      const result = await sdk.fedcm.isLoggedIn();
+
+      expect(mockGet).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+
+    it('should return false if navigator.credentials.get throws an error', async () => {
+      const mockGet = jest.fn();
+      // @ts-ignore
+      global.navigator.credentials = { get: mockGet };
+      mockGet.mockRejectedValue(new Error('Test Error'));
+
+      const result = await sdk.fedcm.isLoggedIn();
+
+      expect(mockGet).toHaveBeenCalled();
+      expect(result).toBe(false);
     });
   });
 });
