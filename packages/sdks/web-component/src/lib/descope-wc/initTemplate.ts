@@ -9,9 +9,12 @@ initTemplate.innerHTML = `
 
 		#root {
 			height: 100%;
-			transition: opacity 300ms ease-in-out;
       display: flex;
 		}
+
+    #content-root {
+      transition: opacity 300ms ease-in-out;
+    }
 
 		#root[data-theme] {
 			background-color: transparent;
