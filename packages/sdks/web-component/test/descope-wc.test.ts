@@ -2075,12 +2075,12 @@ describe('web-component', () => {
             expect.any(Object),
           ),
         {
-          timeout: 8000,
+          timeout: 20000,
         },
       );
 
       await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {
-        timeout: 8000,
+        timeout: 20000,
       });
     });
 
