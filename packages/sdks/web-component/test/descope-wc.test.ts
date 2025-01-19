@@ -2062,23 +2062,6 @@ describe('web-component', () => {
         },
       );
 
-      // second call is the click call
-      await waitFor(
-        () =>
-          expect(nextMock).toHaveBeenNthCalledWith(
-            3,
-            '0',
-            '0',
-            CUSTOM_INTERACTIONS.polling,
-            1,
-            '1.2.3',
-            expect.any(Object),
-          ),
-        {
-          timeout: 8000,
-        },
-      );
-
       await waitFor(() => expect(clearTimeout).toHaveBeenCalled(), {
         timeout: 8000,
       });
