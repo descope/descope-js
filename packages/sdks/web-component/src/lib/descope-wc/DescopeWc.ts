@@ -725,14 +725,20 @@ class DescopeWc extends BaseDescopeWc {
         }
 
         this.logger.debug('polling - Got a response');
-        if (sdkResp?.error) {
+        this.#handleSdkResponse(sdkResp);
+
+        if (
+          sdkResp?.error ||
+          (sdkResp as unknown as (typeof sdkResp)['error'])?.errorCode
+        ) {
           this.logger.debug(
             'polling - Response has an error',
             JSON.stringify(sdkResp.error, null, 4),
           );
+
+          return;
         }
 
-        this.#handleSdkResponse(sdkResp);
         // will poll again if needed
         this.#handlePollingResponse(
           executionId,
