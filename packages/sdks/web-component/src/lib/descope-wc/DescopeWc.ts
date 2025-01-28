@@ -10,6 +10,7 @@ import {
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
   RESPONSE_ACTIONS,
+  SDK_SCRIPTS_LOAD_TIMEOUT,
   URL_CODE_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
@@ -46,6 +47,7 @@ import {
 } from '../helpers/templates';
 import {
   Direction,
+  FlowConfig,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
@@ -78,6 +80,8 @@ class DescopeWc extends BaseDescopeWc {
   #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
+
+  #sdkScriptsLoading = null;
 
   constructor() {
     const flowState = new State<FlowState>({
@@ -157,31 +161,62 @@ class DescopeWc extends BaseDescopeWc {
       }
     | undefined;
 
-  async loadSdkScripts() {
-    const flowConfig = await this.getFlowConfig();
+  loadSdkScripts(flowConfig: FlowConfig) {
     const scripts = flowConfig.sdkScripts;
+    if (!scripts?.length) {
+      return null;
+    }
 
-    scripts?.forEach(async (script) => {
-      const module = await loadSdkScript(script.id);
-      module(
-        script.initArgs as any,
-        { baseUrl: this.baseUrl },
-        (result: string) => {
-          // update the context with the result, under the `resultKey` key
-          this.dispatchEvent(
-            new CustomEvent('components-context', {
-              detail: {
-                // we store the result with script.id prefix to avoid conflicts with other scripts results
-                // that may have the same key
-                [getScriptResultPath(script.id, script.resultKey)]: result,
-              },
-              bubbles: true,
-              composed: true,
-            }),
-          );
+    const createScriptCallback =
+      (
+        script: {
+          id: string;
+          resultKey?: string;
         },
-      );
+        resolve: (value: any) => void,
+      ) =>
+      (result: string) => {
+        this.dispatchEvent(
+          // update the context with the result, under the `resultKey` key
+          new CustomEvent('components-context', {
+            detail: {
+              // we store the result with script.id prefix to avoid conflicts with other scripts results
+              // that may have the same key
+              [getScriptResultPath(script.id, script.resultKey)]: result,
+            },
+            bubbles: true,
+            composed: true,
+          }),
+        );
+        resolve(script.id);
+      };
+
+    const promises = Promise.all(
+      scripts?.map(async (script) => {
+        const module = await loadSdkScript(script.id);
+        return new Promise((resolve, reject) => {
+          try {
+            const unloadScript = module(
+              script.initArgs as any,
+              { baseUrl: this.baseUrl },
+              createScriptCallback(script, resolve),
+            );
+            this.nextRequestStatus.subscribe(() => {
+              this.loggerWrapper.debug('Unloading script', script.id);
+              unloadScript?.();
+            });
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }),
+    );
+
+    const toPromise = new Promise((resolve) => {
+      setTimeout(resolve, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
+
+    return Promise.race([promises, toPromise]);
   }
 
   async init() {
@@ -341,7 +376,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      this.loadSdkScripts();
+      this.#sdkScriptsLoading = this.loadSdkScripts(flowConfig);
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
         await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
       } else {
@@ -1200,6 +1235,18 @@ class DescopeWc extends BaseDescopeWc {
 
         const formData = await this.#getFormData();
         const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+
+        this.nextRequestStatus.update({ isLoading: true });
+
+        if (this.#sdkScriptsLoading) {
+          this.loggerWrapper.debug('Waiting for sdk scripts to load');
+          const now = Date.now();
+          await this.#sdkScriptsLoading;
+          this.loggerWrapper.debug(
+            'Sdk scripts loaded for',
+            (Date.now() - now).toString(),
+          );
+        }
         const contextArgs = this.getComponentsContext();
 
         const actionArgs = {
@@ -1221,6 +1268,8 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           actionArgs,
         );
+
+        this.nextRequestStatus.update({ isLoading: false });
 
         this.#handleSdkResponse(sdkResp);
 
