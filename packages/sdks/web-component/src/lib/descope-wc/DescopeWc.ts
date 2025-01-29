@@ -662,7 +662,10 @@ class DescopeWc extends BaseDescopeWc {
       };
     }
     const pageUpdateConfig = await this.onPageUpdate?.(
-      transformStepStateForCustomScreen(stepStateUpdate),
+      transformStepStateForCustomScreen({
+        ...this.stepState.current,
+        ...stepStateUpdate,
+      }),
       this,
     );
     const isCustomScreen = !!pageUpdateConfig;
