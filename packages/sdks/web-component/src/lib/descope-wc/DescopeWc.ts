@@ -661,6 +661,7 @@ class DescopeWc extends BaseDescopeWc {
         return res;
       };
     }
+
     const pageUpdateConfig = await this.onPageUpdate?.(
       transformStepStateForCustomScreen({
         ...this.stepState.current,
@@ -670,18 +671,22 @@ class DescopeWc extends BaseDescopeWc {
     );
     const isCustomScreen = !!pageUpdateConfig;
 
-    if (!isCustomScreen) {
-      // no custom screen, we proceed with the flow screen
-
-      // update step state
-      this.stepState.update(stepStateUpdate);
-    } else {
+    if (isCustomScreen) {
       this.loggerWrapper.debug('Rendering a custom screen');
-
-      // TODO: need to think how can we know if this is the first screen,
-      // when the first screen is custom, we are not updating stepState
+      this.contentRootElement.innerHTML = '';
       this.#dispatchPageEvents(!this.stepState.current.htmlFilename);
+      // we are unsubscribing all the listeners because we are going to render a custom screen
+      // and we do not want that onStepChange will be called
+      this.stepState.unsubscribeAll();
+      const subscribeId = this.stepState.subscribe(() => {
+        // after state was updated, we want to re-subscribe the onStepChange listener
+        this.stepState.unsubscribe(subscribeId);
+        this.stepState?.subscribe(this.onStepChange.bind(this));
+      });
     }
+
+    // update step state
+    this.stepState.update(stepStateUpdate);
     this.#toggleScreenVisibility(isCustomScreen);
   }
 
