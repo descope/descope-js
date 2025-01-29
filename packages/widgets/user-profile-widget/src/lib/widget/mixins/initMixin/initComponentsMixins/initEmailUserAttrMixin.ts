@@ -8,7 +8,7 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin, themeMixin } from '@descope/sdk-mixins';
+import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { getEmail, getIsEmailVerified } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
