@@ -2488,8 +2488,8 @@ importers:
         specifier: ^10.0.3
         version: 10.0.3
       libphonenumber-js:
-        specifier: 1.11.4
-        version: 1.11.4
+        specifier: 1.11.17
+        version: 1.11.17
       redux:
         specifier: 5.0.1
         version: 5.0.1
@@ -22896,8 +22896,8 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libphonenumber-js@1.11.4:
-    resolution: {integrity: sha512-F/R50HQuWWYcmU/esP5jrH5LiWYaN7DpN0a/99U8+mnGGtnx8kmRE+649dQh3v+CowXXZc8vpkf5AmYkO0AQ7Q==}
+  /libphonenumber-js@1.11.17:
+    resolution: {integrity: sha512-Jr6v8thd5qRlOlc6CslSTzGzzQW03uiscab7KHQZX1Dfo4R6n6FDhZ0Hri6/X7edLIDv9gl4VMZXhxTjLnl0VQ==}
     dev: false
 
   /license-webpack-plugin@4.0.2(webpack@5.88.2):
