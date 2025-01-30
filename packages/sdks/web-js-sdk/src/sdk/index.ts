@@ -1,6 +1,7 @@
 import createCoreSdk from '@descope/core-js-sdk';
 import createWebAuthn from './webauthn';
 import createFedCM from './fedcm';
+import createOidc from './oidc';
 import withFlow from './flow';
 import { getSessionToken } from '../enhancers/withPersistTokens/helpers';
 
@@ -18,6 +19,7 @@ const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),
     fedcm: createFedCM(coreSdk, args[0].projectId),
+    oidc: createOidc(coreSdk, args[0].projectId),
   };
 };
 
