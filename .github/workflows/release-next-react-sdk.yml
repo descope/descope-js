@@ -15,23 +15,13 @@ jobs:
     name: Release Next
     runs-on: ubuntu-latest
     steps:
-      - name: Check if should run
-        id: 'check'
-        run: |
-          if [[ $(nx show projects --affected --plain | grep -q "react-sdk") ]]; then
-            echo "run=true" >> $GITHUB_OUTPUT
-          else
-            echo "run=false" >> $GITHUB_OUTPUT
-          fi
       - name: Get token
-        if: steps.check.outputs.run == 'true'
         id: get_token
         uses: tibdex/github-app-token@v2
         with:
           private_key: ${{ secrets.RELEASE_APP_PEM }}
           app_id: ${{ secrets.RELEASE_APP_ID }}
       - name: Checkout code
-        if: steps.check.outputs.run == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -39,36 +29,46 @@ jobs:
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
       - name: Run git config
-        if: steps.check.outputs.run == 'true'
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
       - name: Setup Node
-        if: steps.check.outputs.run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
       - name: Setup PNPM
-        if: steps.check.outputs.run == 'true'
         uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
-        if: steps.check.outputs.run == 'true'
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
+      - name: Check if should run
+        id: 'check'
+        run: |
+          # Check if the affected projects include "react-sdk" or "web-component" since the last commit
+          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep -q "react-sdk\|web-component"); then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
       - name: Build
         if: steps.check.outputs.run == 'true'
         run: npm run version:ci
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+      - name: Set Next Version
+        run: |
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
+          CURRENT_DATE=$(date +'%Y%m%d')
+          echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
       - name: Run pnpm publish
         if: steps.check.outputs.run == 'true'
         run: |
-          pnpm --filter "@descope/react-sdk" exec npm version "0.0.0-next-$(git rev-parse HEAD)" --git-tag-version=false
+          pnpm --filter "@descope/react-sdk" exec npm version "${NEXT_VERSION}" --git-tag-version=false
           pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
         env:
           CI: true

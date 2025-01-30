@@ -49,7 +49,7 @@
     "lint-staged": "^15.0.0",
     "ngx-deploy-npm": "^8.0.0",
     "nx": "19.5.2",
-    "playwright": "1.41.2",
+    "playwright": "1.47.0",
     "prettier": "^3.0.0",
     "ts-jest": "29.1.5",
     "ts-node": "10.9.2"
@@ -57,7 +57,6 @@
   "lint-staged": {
     "*.*": [
       "bash -c \"npm run format\"",
-      "bash -c \"npm run lint\"",
       "git add"
     ],
     "package.json": [

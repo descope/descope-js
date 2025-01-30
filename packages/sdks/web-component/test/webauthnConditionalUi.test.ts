@@ -41,7 +41,7 @@ const isWebauthnSupportedMock = sdk.webauthn.helpers.isSupported as jest.Mock;
 const webauthnConditionalMock = sdk.webauthn.helpers.conditional as jest.Mock;
 const webauthnSignInStartMock = sdk.webauthn.signIn.start as jest.Mock;
 const isConditionalLoginSupportedMock =
-  isConditionalLoginSupported as jest.Mock;
+  isConditionalLoginSupported as unknown as jest.Mock;
 
 globalThis.DescopeUI = {};
 

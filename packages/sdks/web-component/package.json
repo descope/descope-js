@@ -1,14 +1,14 @@
 {
   "name": "@descope/web-component",
-  "version": "3.25.3",
+  "version": "3.32.2",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
     "url": "https://github.com/descope/descope-js",
     "email": "help@descope.com"
   },
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/cjs/descope-wc/index.js",
+  "module": "dist/esm/descope-wc/index.js",
   "types": "dist/index.d.ts",
   "description": "Descope WC",
   "scripts": {
@@ -77,7 +77,8 @@
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
-    "@fingerprintjs/fingerprintjs-pro": "3.9.9"
+    "@fingerprintjs/fingerprintjs-pro": "3.9.9",
+    "@descope/escape-markdown": "workspace:*"
   },
   "overrides": {
     "terser": "5.31.1"

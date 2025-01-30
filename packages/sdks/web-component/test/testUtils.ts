@@ -13,6 +13,7 @@ export const generateSdkResponse = ({
   status = 'running',
   requestErrorMessage = '',
   requestErrorDescription = '',
+  requestErrorCode = '',
   webAuthnTransactionId = '',
   webAuthnOptions = '',
   samlIdpResponseUrl = '',
@@ -20,6 +21,8 @@ export const generateSdkResponse = ({
   samlIdpResponseRelayState = '',
   lastAuth = {},
   openInNewTabUrl = '',
+  nativeResponseType = '',
+  nativeResponsePayload = {},
 } = {}) => ({
   ok,
   data: {
@@ -42,10 +45,15 @@ export const generateSdkResponse = ({
     },
     lastAuth,
     openInNewTabUrl,
+    nativeResponse: {
+      type: nativeResponseType,
+      payload: nativeResponsePayload,
+    },
   },
   error: {
     errorMessage: requestErrorMessage,
     errorDescription: requestErrorDescription,
+    errorCode: requestErrorCode,
   },
 });
 

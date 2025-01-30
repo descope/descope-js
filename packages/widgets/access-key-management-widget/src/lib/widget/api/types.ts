@@ -8,6 +8,7 @@ export type AccessKey = {
   id: string;
   name: string;
   roleNames: string[];
+  permittedIps: string[];
   status: string;
   createdTime: number;
   expireTime: number;
@@ -33,6 +34,7 @@ export type CreateAccessKeyConfig = {
   expiration: string;
   roleNames: string[];
   userId: string;
+  permittedIps: string[];
 };
 
 export type ActivateAccessKeyConfig = {

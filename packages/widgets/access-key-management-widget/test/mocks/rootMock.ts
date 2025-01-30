@@ -19,6 +19,7 @@ export default `
     </descope-grid-custom-column>
     <descope-grid-text-column header="Expiration Time" path="expireTimeFormatted" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Roles" path="roleNames" resizable="true"></descope-grid-text-column>
+    <descope-grid-text-column header="Permitted IPs" path="permittedIps" resizable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Created By" path="createdBy" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Created Time" path="createdTimeFormatted" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Bound To User" path="boundUserId" resizable="true" sortable="true"></descope-grid-text-column>

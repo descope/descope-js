@@ -21,10 +21,11 @@ export const configMixin = createSingletonMixin(
 
       #fetchConfig = async () => {
         try {
-          const { body, headers } = await this.fetchStaticResource(
-            CONFIG_FILENAME,
-            'json',
-          );
+          const {
+            body,
+            headers,
+          }: { body: ProjectConfiguration; headers: Record<string, any> } =
+            await (<any>this.fetchStaticResource(CONFIG_FILENAME, 'json'));
           return {
             projectConfig: body as ProjectConfiguration,
             executionContext: { geo: headers['x-geo'] },

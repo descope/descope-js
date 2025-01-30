@@ -14,6 +14,18 @@ type RedirectAuth = {
   codeChallenge: string;
 };
 
+/** Sent in a flow start request when running as a native flow component via a mobile SDK */
+type NativeOptions = {
+  /** What mobile platform we're running on, used to decide between different behaviors on the backend */
+  platform: 'ios' | 'android';
+
+  /** The name of an OAuth provider that will use native OAuth (Sign in with Apple/Google) instead of web OAuth when running in a mobile app */
+  oauthProvider?: string;
+
+  /** An override for web OAuth that sets the address to redirect to after authentication succeeds at the OAuth provider website */
+  oauthRedirect?: string;
+};
+
 type AuthMethod =
   | 'magiclink'
   | 'enchantedlink'
@@ -91,7 +103,9 @@ export type TemplateOptions = Record<string, string>; // for providing messaging
 export type LoginOptions = {
   stepup?: boolean;
   mfa?: boolean;
+  revokeOtherSessions?: boolean;
   customClaims?: Record<string, any>;
+  templateId?: string;
   templateOptions?: TemplateOptions;
 };
 
@@ -103,6 +117,7 @@ export type AccessKeyLoginOptions = {
 /** Sign Up options to be added to the different authentication methods */
 export type SignUpOptions = {
   customClaims?: Record<string, any>;
+  templateId?: string;
   templateOptions?: TemplateOptions;
 };
 
@@ -226,6 +241,7 @@ export enum FlowStatus {
  *  - poll - next action is poll for next after timeout
  *  - redirect - next action is to redirect (redirection details in 'redirect' attribute)
  *  - webauthnCreate/webauthnGet - next action is to prompt webauthn (details in 'webauthn' attribute)
+ *  - nativeBridge - the next action needs to be sent via the native bridge to the native layer
  *  - none - no next action
  */
 export type FlowAction =
@@ -234,6 +250,7 @@ export type FlowAction =
   | 'redirect'
   | 'webauthnCreate'
   | 'webauthnGet'
+  | 'nativeBridge'
   | 'none';
 
 export type ComponentsConfig = Record<string, any>;
@@ -276,6 +293,11 @@ export type FlowResponse = {
     options: string;
     create: boolean;
   };
+  // set if the action is 'nativeBridge'
+  nativeResponse?: {
+    type: 'oauthNative' | 'oauthWeb' | 'webauthnGet' | 'webauthnCreate';
+    payload: Record<string, any>;
+  };
   // an error that occurred during flow execution, used for debugging / integrating
   error?: {
     code: string;
@@ -304,6 +326,7 @@ export type Options = {
   samlIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  thirdPartyAppId?: string;
   oidcLoginHint?: string;
   abTestingKey?: number;
   startOptionsVersion?: number;
@@ -311,6 +334,9 @@ export type Options = {
   locale?: string;
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
+  nativeOptions?: NativeOptions;
+  thirdPartyAppStateId?: string;
+  applicationScopes?: string; // Relevant for sso application and third party application
 };
 
 export type ResponseData = Record<string, any>;

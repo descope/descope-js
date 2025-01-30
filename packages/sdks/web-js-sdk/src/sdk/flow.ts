@@ -11,6 +11,7 @@ type Options = Pick<
   | 'samlIdpStateId'
   | 'samlIdpUsername'
   | 'ssoAppId'
+  | 'thirdPartyAppId'
   | 'oidcLoginHint'
   | 'preview'
   | 'abTestingKey'
@@ -18,6 +19,9 @@ type Options = Pick<
   | 'locale'
   | 'oidcPrompt'
   | 'oidcErrorRedirectUri'
+  | 'nativeOptions'
+  | 'thirdPartyAppStateId'
+  | 'applicationScopes'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };

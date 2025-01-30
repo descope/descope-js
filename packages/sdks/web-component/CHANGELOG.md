@@ -2,6 +2,170 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.32.2](https://github.com/descope/descope-js/compare/web-component-3.32.1...web-component-3.32.2) (2025-01-30)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.1`
+## [3.32.1](https://github.com/descope/descope-js/compare/web-component-3.32.0...web-component-3.32.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* tenant attr in Descope.js component RELEASE ([#882](https://github.com/descope/descope-js/issues/882)) ([b840cba](https://github.com/descope/descope-js/commit/b840cbac3477019e2551e51849421f430b82bbeb))
+
+## [3.32.0](https://github.com/descope/descope-js/compare/web-component-3.31.3...web-component-3.32.0) (2024-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.0`
+
+### Features
+
+* Content from base url ([#871](https://github.com/descope/descope-js/issues/871)) RELEASE ([f3e437e](https://github.com/descope/descope-js/commit/f3e437e0793507627b157317063fe39174600c80))
+
+## [3.31.3](https://github.com/descope/descope-js/compare/web-component-3.31.2...web-component-3.31.3) (2024-12-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.2`
+* `web-js-sdk` updated to version `1.23.1`
+
+### Bug Fixes
+
+* multiple flows on the same page ([#868](https://github.com/descope/descope-js/issues/868)) ([c4182b3](https://github.com/descope/descope-js/commit/c4182b3f3a282a45edab2a6d6b1a669721782096))
+
+## [3.31.2](https://github.com/descope/descope-js/compare/web-component-3.31.1...web-component-3.31.2) (2024-12-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.0`
+## [3.31.1](https://github.com/descope/descope-js/compare/web-component-3.31.0...web-component-3.31.1) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
+
+### Bug Fixes
+
+* Auto-detect country code in hybrid-fields ([#863](https://github.com/descope/descope-js/issues/863)) ([3d85a32](https://github.com/descope/descope-js/commit/3d85a3251d7f3d4ba2c8fabefeced26773ea074e))
+
+## [3.31.0](https://github.com/descope/descope-js/compare/web-component-3.30.0...web-component-3.31.0) (2024-12-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.22.0`
+
+### Features
+
+* Add thirdPartyAppStateId and scopes parameters for third party application ([#856](https://github.com/descope/descope-js/issues/856)) ([fa95d30](https://github.com/descope/descope-js/commit/fa95d30810599cf4a198b09b96b36b7e4c284464))
+
+## [3.30.0](https://github.com/descope/descope-js/compare/web-component-3.29.3...web-component-3.30.0) (2024-12-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.0`
+* `web-js-sdk` updated to version `1.21.0`
+
+### Features
+
+* Css vars ([#853](https://github.com/descope/descope-js/issues/853)) ([a49be2b](https://github.com/descope/descope-js/commit/a49be2b67b7eb8e3535647a94960f59396c70a0b))
+* Status param & dynamic os theme ([#854](https://github.com/descope/descope-js/issues/854)) ([f3deea7](https://github.com/descope/descope-js/commit/f3deea70df62c19209866e918c8013427dc33700))
+
+## [3.29.3](https://github.com/descope/descope-js/compare/web-component-3.29.2...web-component-3.29.3) (2024-11-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.2`
+## [3.29.2](https://github.com/descope/descope-js/compare/web-component-3.29.1...web-component-3.29.2) (2024-11-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.1`
+* `escape-markdown` updated to version `0.1.1`
+
+### Bug Fixes
+
+* expose restartOnError on all sdks ([#838](https://github.com/descope/descope-js/issues/838)) ([dd20924](https://github.com/descope/descope-js/commit/dd20924dfd02345eae2972d5154b9be8a209a906))
+
+## [3.29.1](https://github.com/descope/descope-js/compare/web-component-3.29.0...web-component-3.29.1) (2024-11-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.0`
+* `escape-markdown` updated to version `0.1.0`
+## [3.29.0](https://github.com/descope/descope-js/compare/web-component-3.28.0...web-component-3.29.0) (2024-11-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.4.0`
+
+### Features
+
+* Add nativeResume function and have polling check the current action ([#842](https://github.com/descope/descope-js/issues/842)) RELEASE ([e08a4b8](https://github.com/descope/descope-js/commit/e08a4b8c93516290868db09b0049ba6c374e7d64))
+* **descope-ui-mixin:** use descopecdn.com ([#804](https://github.com/descope/descope-js/issues/804)) ([82e2fa7](https://github.com/descope/descope-js/commit/82e2fa779f48b99c8ed88af451fc2a9b329d1758))
+
+## [3.28.0](https://github.com/descope/descope-js/compare/web-component-3.27.3...web-component-3.28.0) (2024-11-03)
+
+### Dependency Updates
+
+* `escape-markdown` updated to version `0.0.2`
+
+### Features
+
+* Add more options to native options ([#839](https://github.com/descope/descope-js/issues/839)) RELEASE ([4bc0b4c](https://github.com/descope/descope-js/commit/4bc0b4ce266c563b7964facf66180dafe4f0fafa))
+
+## [3.27.3](https://github.com/descope/descope-js/compare/web-component-3.27.2...web-component-3.27.3) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+* `escape-markdown` updated to version `0.0.1`
+## [3.27.2](https://github.com/descope/descope-js/compare/web-component-3.27.1...web-component-3.27.2) (2024-10-27)
+
+
+### Bug Fixes
+
+* Fix updateScreenFromScreenState RELEASE ([#831](https://github.com/descope/descope-js/issues/831)) ([feec44d](https://github.com/descope/descope-js/commit/feec44d603f781e67ca5e9da18177beb96d33486))
+* Remove redundant optionality from function params ([#829](https://github.com/descope/descope-js/issues/829)) ([0def47e](https://github.com/descope/descope-js/commit/0def47e657bcbfaf62187234df1d6c2e826f937e))
+
+## [3.27.1](https://github.com/descope/descope-js/compare/web-component-3.27.0...web-component-3.27.1) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+
+### Bug Fixes
+
+* Add longish timeout for polling calls and a shorter one when detecting iOS throttling RELEASE ([#828](https://github.com/descope/descope-js/issues/828)) ([833151e](https://github.com/descope/descope-js/commit/833151ea4ffbfc66e904e0283065baeac0e0ac07))
+
+## [3.27.0](https://github.com/descope/descope-js/compare/web-component-3.26.0...web-component-3.27.0) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Features
+
+* Add a new native action and state ([#815](https://github.com/descope/descope-js/issues/815)) RELEASE ([575774c](https://github.com/descope/descope-js/commit/575774c74ac47a193edc30668f9e95c7f2049829))
+* send all flow versions during start ([#819](https://github.com/descope/descope-js/issues/819)) ([9726ebc](https://github.com/descope/descope-js/commit/9726ebc96b9a6e77324bf3f5af13eea74e8ecf2d))
+
+
+### Bug Fixes
+
+* handle mismatch flow version ([#818](https://github.com/descope/descope-js/issues/818)) ([9aa29e2](https://github.com/descope/descope-js/commit/9aa29e2a6293d761275738edced7091c785503f0))
+
+## [3.26.0](https://github.com/descope/descope-js/compare/web-component-3.25.3...web-component-3.26.0) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
+
+### Features
+
+* apps portal sdks ([#808](https://github.com/descope/descope-js/issues/808)) ([30b11b0](https://github.com/descope/descope-js/commit/30b11b0ec8252281ed3cfb273e415edfa2fa1070))
+* External Input support in SDK ([#798](https://github.com/descope/descope-js/issues/798)) ([01cc7fe](https://github.com/descope/descope-js/commit/01cc7feaba76908bada7b56e7f17ca87cd388a8b))
+
 ## [3.25.3](https://github.com/descope/descope-js/compare/web-component-3.25.2...web-component-3.25.3) (2024-09-29)
 
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Component, OnInit } from '@angular/core';
 import { DescopeAuthService } from '../../../../angular-sdk/src/lib/services/descope-auth.service';
 import { Router } from '@angular/router';

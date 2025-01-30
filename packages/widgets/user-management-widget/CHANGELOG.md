@@ -2,6 +2,107 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.5](https://github.com/descope/descope-js/compare/user-management-widget-0.6.4...user-management-widget-0.6.5) (2025-01-30)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.1`
+* `sdk-component-drivers` updated to version `0.2.43`
+## [0.6.4](https://github.com/descope/descope-js/compare/user-management-widget-0.6.3...user-management-widget-0.6.4) (2025-01-02)
+
+
+### Bug Fixes
+
+* Widgets tenant ID attribute ([#879](https://github.com/descope/descope-js/issues/879)) ([6b67f5e](https://github.com/descope/descope-js/commit/6b67f5e92f596e8145a24ccb90db9fcecb5190ea))
+
+## [0.6.3](https://github.com/descope/descope-js/compare/user-management-widget-0.6.2...user-management-widget-0.6.3) (2024-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.0`
+## [0.6.2](https://github.com/descope/descope-js/compare/user-management-widget-0.6.1...user-management-widget-0.6.2) (2024-12-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.1`
+* `sdk-mixins` updated to version `0.5.2`
+## [0.6.1](https://github.com/descope/descope-js/compare/user-management-widget-0.6.0...user-management-widget-0.6.1) (2024-12-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.0`
+## [0.6.0](https://github.com/descope/descope-js/compare/user-management-widget-0.5.5...user-management-widget-0.6.0) (2024-12-18)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.5.1`
+
+### Features
+
+* UserMgmt widget date format ([#859](https://github.com/descope/descope-js/issues/859)) ([3a1d65d](https://github.com/descope/descope-js/commit/3a1d65d4d9df33d48c898897d83943dd4caa2b51))
+
+## [0.5.5](https://github.com/descope/descope-js/compare/user-management-widget-0.5.4...user-management-widget-0.5.5) (2024-12-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.22.0`
+## [0.5.4](https://github.com/descope/descope-js/compare/user-management-widget-0.5.3...user-management-widget-0.5.4) (2024-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.21.0`
+* `sdk-mixins` updated to version `0.5.0`
+## [0.5.3](https://github.com/descope/descope-js/compare/user-management-widget-0.5.2...user-management-widget-0.5.3) (2024-11-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.2`
+## [0.5.2](https://github.com/descope/descope-js/compare/user-management-widget-0.5.1...user-management-widget-0.5.2) (2024-11-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.1`
+## [0.5.1](https://github.com/descope/descope-js/compare/user-management-widget-0.5.0...user-management-widget-0.5.1) (2024-11-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.20.0`
+## [0.5.0](https://github.com/descope/descope-js/compare/user-management-widget-0.4.129...user-management-widget-0.5.0) (2024-11-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.4.0`
+
+### Features
+
+* **descope-ui-mixin:** use descopecdn.com ([#804](https://github.com/descope/descope-js/issues/804)) ([82e2fa7](https://github.com/descope/descope-js/commit/82e2fa779f48b99c8ed88af451fc2a9b329d1758))
+
+## [0.4.129](https://github.com/descope/descope-js/compare/user-management-widget-0.4.128...user-management-widget-0.4.129) (2024-10-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.2`
+## [0.4.128](https://github.com/descope/descope-js/compare/user-management-widget-0.4.127...user-management-widget-0.4.128) (2024-10-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.1`
+## [0.4.127](https://github.com/descope/descope-js/compare/user-management-widget-0.4.126...user-management-widget-0.4.127) (2024-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.19.0`
+
+### Bug Fixes
+
+* Bump playwright ([#824](https://github.com/descope/descope-js/issues/824)) ([da5a753](https://github.com/descope/descope-js/commit/da5a7533362f12253fca36051b4cb9aa5346b07b))
+* handle mismatch flow version ([#818](https://github.com/descope/descope-js/issues/818)) ([9aa29e2](https://github.com/descope/descope-js/commit/9aa29e2a6293d761275738edced7091c785503f0))
+
+## [0.4.126](https://github.com/descope/descope-js/compare/user-management-widget-0.4.125...user-management-widget-0.4.126) (2024-10-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.18.0`
 ## [0.4.125](https://github.com/descope/descope-js/compare/user-management-widget-0.4.124...user-management-widget-0.4.125) (2024-09-29)
 
 ### Dependency Updates

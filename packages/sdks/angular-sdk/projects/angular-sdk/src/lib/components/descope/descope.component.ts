@@ -32,12 +32,15 @@ export class DescopeComponent implements OnInit, OnChanges {
   @Input() telemetryKey: string;
   @Input() redirectUrl: string;
   @Input() autoFocus: true | false | 'skipFirstScreen';
+  @Input() validateOnBlur: boolean;
+  @Input() restartOnError: boolean;
 
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
+  @Input() styleId: string;
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();
@@ -60,7 +63,9 @@ export class DescopeComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     const sdk = this.authService.descopeSdk; // Capture the class context in a variable
-    DescopeWc.sdkConfigOverrides = {
+    const WebComponent: any = customElements?.get('descope-wc') || DescopeWc;
+
+    WebComponent.sdkConfigOverrides = {
       // Overrides the web-component's base headers to indicate usage via the React SDK
       baseHeaders,
       // Disables token persistence within the web-component to delegate token management
@@ -122,8 +127,23 @@ export class DescopeComponent implements OnInit, OnChanges {
     if (this.autoFocus) {
       this.webComponent.setAttribute('auto-focus', this.autoFocus.toString());
     }
+    if (this.validateOnBlur) {
+      this.webComponent.setAttribute(
+        'validate-on-blur',
+        this.autoFocus.toString()
+      );
+    }
+    if (this.restartOnError) {
+      this.webComponent.setAttribute(
+        'restart-on-error',
+        this.autoFocus.toString()
+      );
+    }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
+    }
+    if (this.styleId) {
+      this.webComponent.setAttribute('style-id', this.styleId);
     }
 
     if (this.errorTransformer) {

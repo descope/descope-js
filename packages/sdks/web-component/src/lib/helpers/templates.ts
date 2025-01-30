@@ -1,9 +1,11 @@
+import { escapeMarkdown } from '@descope/escape-markdown';
 import {
   ELEMENT_TYPE_ATTRIBUTE,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
-import { ComponentsConfig, ScreenState } from '../types';
+import { ComponentsConfig, CssVars, ScreenState } from '../types';
+import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
 
@@ -62,8 +64,13 @@ const getByPath = (obj: Record<string, any>, path: string) =>
 const applyTemplates = (
   text: string,
   screenState?: Record<string, any>,
+  handleMarkdown?: boolean,
 ): string =>
-  text.replace(/{{(.+?)}}/g, (_, match) => getByPath(screenState, match));
+  text.replace(/{{(.+?)}}/g, (_, match) =>
+    handleMarkdown
+      ? escapeMarkdown(getByPath(screenState, match))
+      : getByPath(screenState, match),
+  );
 
 /**
  * Replace the templates of content of inner text/link elements with screen state data
@@ -76,8 +83,13 @@ const replaceElementTemplates = (
     'descope-text,descope-link,descope-enriched-text,descope-code-snippet',
   );
   eleList.forEach((inEle: HTMLElement) => {
+    const handleMarkdown = shouldHandleMarkdown(inEle.localName);
     // eslint-disable-next-line no-param-reassign
-    inEle.textContent = applyTemplates(inEle.textContent, screenState);
+    inEle.textContent = applyTemplates(
+      inEle.textContent,
+      screenState,
+      handleMarkdown,
+    );
     const href = inEle.getAttribute('href');
     if (href) {
       inEle.setAttribute('href', applyTemplates(href, screenState));
@@ -125,6 +137,58 @@ const setFormConfigValues = (
           ele.setAttribute(attrName, attrValue);
         }
       });
+    });
+  });
+};
+
+export const setCssVars = (
+  rootEle: HTMLElement,
+  nextPageTemplate: DocumentFragment,
+  cssVars: CssVars,
+  logger: {
+    error: (message: string, description: string) => void;
+    info: (message: string, description: string) => void;
+    debug: (message: string, description: string) => void;
+  },
+) => {
+  if (!cssVars) {
+    return;
+  }
+
+  Object.keys(cssVars).forEach((componentName) => {
+    if (!nextPageTemplate.querySelector(componentName)) {
+      logger.debug(
+        `Skipping css vars for component "${componentName}}"`,
+        `Got css vars for component ${componentName} but Could not find it on next page`,
+      );
+    }
+    const componentClass:
+      | (CustomElementConstructor & { cssVarList: CssVars })
+      | undefined = customElements.get(componentName) as any;
+
+    if (!componentClass) {
+      logger.info(
+        `Could not find component class for ${componentName}`,
+        'Check if the component is registered',
+      );
+      return;
+    }
+
+    Object.keys(cssVars[componentName]).forEach((cssVarKey) => {
+      const componentCssVars = cssVars[componentName];
+      const varName = componentClass?.cssVarList?.[cssVarKey];
+
+      if (!varName) {
+        logger.info(
+          `Could not find css variable name for ${cssVarKey} in ${componentName}`,
+          'Check if the css variable is defined in the component',
+        );
+        return;
+      }
+
+      const value = componentCssVars[cssVarKey];
+
+      rootEle.style.setProperty(varName, value);
     });
   });
 };
@@ -238,11 +302,11 @@ export const setPhoneAutoDetectDefaultCode = (
   fragment: DocumentFragment,
   autoDetectCode?: string,
 ) => {
-  Array.from(
-    fragment.querySelectorAll('descope-phone-field[default-code="autoDetect"]'),
-  ).forEach((phoneEle) => {
-    phoneEle.setAttribute('default-code', autoDetectCode);
-  });
+  Array.from(fragment.querySelectorAll('[default-code="autoDetect"]')).forEach(
+    (phoneEle) => {
+      phoneEle.setAttribute('default-code', autoDetectCode);
+    },
+  );
 };
 
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {

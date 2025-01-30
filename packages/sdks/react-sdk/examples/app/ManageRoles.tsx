@@ -62,7 +62,11 @@ const ManageRoles = () => {
       <h2>Manage Roles</h2>
       <RoleManagement
         widgetId="role-management-widget"
-        tenant={process.env.DESCOPE_TENANT_ID}
+        tenant={process.env.DESCOPE_TENANT_ID!}
+        theme={process.env.DESCOPE_THEME as any}
+        styleId={process.env.DESCOPE_STYLE_ID}
+        debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
+        logger={console}
       />
     </>
   );

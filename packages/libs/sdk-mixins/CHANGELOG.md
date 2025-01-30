@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.0...sdk-mixins-0.6.1) (2025-01-30)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.2.43`
+## [0.6.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.2...sdk-mixins-0.6.0) (2024-12-24)
+
+
+### Features
+
+* Content from base url ([#871](https://github.com/descope/descope-js/issues/871)) RELEASE ([f3e437e](https://github.com/descope/descope-js/commit/f3e437e0793507627b157317063fe39174600c80))
+
+## [0.5.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.1...sdk-mixins-0.5.2) (2024-12-22)
+
+
+### Bug Fixes
+
+* support react-19 ([#860](https://github.com/descope/descope-js/issues/860)) RELEASE ([efd6833](https://github.com/descope/descope-js/commit/efd6833dfefc854b7f461606084234603f2444e0))
+
+## [0.5.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.0...sdk-mixins-0.5.1) (2024-12-18)
+
+## [0.5.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.4.0...sdk-mixins-0.5.0) (2024-12-04)
+
+
+### Features
+
+* Status param & dynamic os theme ([#854](https://github.com/descope/descope-js/issues/854)) ([f3deea7](https://github.com/descope/descope-js/commit/f3deea70df62c19209866e918c8013427dc33700))
+
+## [0.4.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.3.2...sdk-mixins-0.4.0) (2024-11-10)
+
+
+### Features
+
+* **descope-ui-mixin:** use descopecdn.com ([#804](https://github.com/descope/descope-js/issues/804)) ([82e2fa7](https://github.com/descope/descope-js/commit/82e2fa779f48b99c8ed88af451fc2a9b329d1758))
+
 ## [0.3.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.3.1...sdk-mixins-0.3.2) (2024-09-19)
 
 ### Dependency Updates

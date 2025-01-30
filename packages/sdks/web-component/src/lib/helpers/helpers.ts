@@ -19,8 +19,13 @@ import {
   OVERRIDE_CONTENT_URL,
   OIDC_PROMPT_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
+  THIRD_PARTY_APP_ID_PARAM_NAME,
+  THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
+  APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
 import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
+
+const MD_COMPONENTS = ['descope-enriched-text'];
 
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -51,6 +56,11 @@ function resetUrlParam(paramName: string) {
     window.history.replaceState({}, '', newUrl.toString());
   }
 }
+
+const getFlowIdFromExecId = (executionId: string) => {
+  const regex = /(.*)\|#\|.*/;
+  return regex.exec(executionId)?.[1] || '';
+};
 
 export async function fetchContent<T extends 'text' | 'json'>(
   url: string,
@@ -104,10 +114,17 @@ export function getAnimationDirection(
   return undefined;
 }
 
-export const getRunIdsFromUrl = () => {
-  const [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+export const getRunIdsFromUrl = (flowId: string) => {
+  let [executionId = '', stepId = ''] = (getFlowUrlParam() || '').split('_');
+  const executionFlowId = getFlowIdFromExecId(executionId);
 
-  return { executionId, stepId };
+  // if the flow id does not match, this execution id is not for this flow
+  if (!flowId || (executionFlowId && executionFlowId !== flowId)) {
+    executionId = '';
+    stepId = '';
+  }
+
+  return { executionId, stepId, executionFlowId };
 };
 
 export const setRunIdsOnUrl = (executionId: string, stepId: string) => {
@@ -205,8 +222,32 @@ export function getSSOAppIdParamFromUrl() {
   return getUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getThirdPartyAppIdParamFromUrl() {
+  return getUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
+}
+
 export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearThirdPartyAppIdParamFromUrl() {
+  resetUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
+}
+
+export function getThirdPartyAppStateIdParamFromUrl() {
+  return getUrlParam(THIRD_PARTY_APP_STATE_ID_PARAM_NAME);
+}
+
+export function clearThirdPartyAppStateIdParamFromUrl() {
+  resetUrlParam(THIRD_PARTY_APP_STATE_ID_PARAM_NAME);
+}
+
+export function getApplicationScopesParamFromUrl() {
+  return getUrlParam(APPLICATION_SCOPES_PARAM_NAME);
+}
+
+export function clearApplicationScopesParamFromUrl() {
+  resetUrlParam(APPLICATION_SCOPES_PARAM_NAME);
 }
 
 export function getOIDCLoginHintParamFromUrl() {
@@ -255,8 +296,21 @@ export const getElementDescopeAttributes = (ele: HTMLElement) =>
 export const getFlowConfig = (config: Record<string, any>, flowId: string) =>
   config?.flows?.[flowId] || {};
 
-export const handleUrlParams = () => {
-  const { executionId, stepId } = getRunIdsFromUrl();
+export const handleUrlParams = (
+  flowId: string,
+  logger: { debug: (...data: any[]) => void },
+) => {
+  const { executionId, stepId, executionFlowId } = getRunIdsFromUrl(flowId);
+
+  // if the flow id does not match, we do not want to read & remove any query params
+  // because it's probably belongs to another flow
+  if (executionFlowId && flowId !== executionFlowId) {
+    logger.debug(
+      'Flow id does not match the execution flow id, skipping url params handling',
+    );
+    return { ssoQueryParams: {} };
+  }
+
   if (executionId || stepId) {
     clearRunIdsFromUrl();
   }
@@ -310,6 +364,21 @@ export const handleUrlParams = () => {
     clearSSOAppIdParamFromUrl();
   }
 
+  const thirdPartyAppId = getThirdPartyAppIdParamFromUrl();
+  if (thirdPartyAppId) {
+    clearThirdPartyAppIdParamFromUrl();
+  }
+
+  const thirdPartyAppStateId = getThirdPartyAppStateIdParamFromUrl();
+  if (thirdPartyAppStateId) {
+    clearThirdPartyAppStateIdParamFromUrl();
+  }
+
+  const applicationScopes = getApplicationScopesParamFromUrl();
+  if (applicationScopes) {
+    clearApplicationScopesParamFromUrl();
+  }
+
   const oidcLoginHint = getOIDCLoginHintParamFromUrl();
   if (oidcLoginHint) {
     clearOIDCLoginHintParamFromUrl();
@@ -346,6 +415,9 @@ export const handleUrlParams = () => {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      thirdPartyAppId,
+      thirdPartyAppStateId,
+      applicationScopes,
     },
   };
 };
@@ -366,14 +438,22 @@ const compareArrays = (array1: any[], array2: any[]) =>
 export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
   let prevArgs: any[];
   let cache: any;
-  return (...args: I) => {
-    if (prevArgs && compareArrays(prevArgs, args)) return cache as O;
+  return Object.assign(
+    (...args: I) => {
+      if (prevArgs && compareArrays(prevArgs, args)) return cache as O;
 
-    prevArgs = args;
-    cache = fn(...args);
+      prevArgs = args;
+      cache = fn(...args);
 
-    return cache as O;
-  };
+      return cache as O;
+    },
+    {
+      reset: () => {
+        prevArgs = undefined;
+        cache = undefined;
+      },
+    },
+  );
 };
 
 export const handleAutoFocus = (
@@ -479,6 +559,9 @@ export const showFirstScreenOnExecutionInit = (
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
+    thirdPartyAppId,
+    thirdPartyAppStateId,
+    applicationScopes,
   }: SSOQueryParams,
 ): boolean =>
   !!startScreenId &&
@@ -488,7 +571,10 @@ export const showFirstScreenOnExecutionInit = (
   !ssoAppId &&
   !oidcLoginHint &&
   !oidcPrompt &&
-  !oidcErrorRedirectUri;
+  !oidcErrorRedirectUri &&
+  !thirdPartyAppId &&
+  !thirdPartyAppStateId &&
+  !applicationScopes;
 
 export const injectSamlIdpForm = (
   url: string,
@@ -555,3 +641,6 @@ export const clearPreviousExternalInputs = () => {
     .querySelectorAll('[data-hidden-input="true"]')
     .forEach((ele) => ele.remove());
 };
+
+export const shouldHandleMarkdown = (compName: string) =>
+  MD_COMPONENTS.includes(compName);

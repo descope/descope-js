@@ -15,6 +15,7 @@
       :auto-focus="autoFocus"
       :style-id="styleId"
       :validate-on-blur="validateOnBlur"
+      :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
       :errorTransformer.prop="errorTransformer"
       :form.attr="formStr"
@@ -35,7 +36,9 @@ import { computed } from 'vue';
 import { getGlobalSdk } from './sdk';
 import type { JWTResponse, ErrorResponse } from './types';
 
-DescopeWcClass.sdkConfigOverrides = {
+const WebComponent: any = customElements?.get('descope-wc') || DescopeWcClass;
+
+WebComponent.sdkConfigOverrides = {
   // Overrides the web-component's base headers to indicate usage via the React SDK
   baseHeaders,
   // Disables token persistence within the web-component to delegate token management
@@ -83,6 +86,9 @@ const props = defineProps({
     type: Boolean || String,
   },
   validateOnBlur: {
+    type: Boolean,
+  },
+  restartOnError: {
     type: Boolean,
   },
   errorTransformer: {
