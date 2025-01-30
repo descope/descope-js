@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.14](https://github.com/descope/descope-js/compare/angular-sdk-0.7.13...angular-sdk-0.7.14) (2025-01-30)
+
 ## [0.7.13](https://github.com/descope/descope-js/compare/angular-sdk-0.7.12...angular-sdk-0.7.13) (2025-01-30)
 
 ### Dependency Updates
