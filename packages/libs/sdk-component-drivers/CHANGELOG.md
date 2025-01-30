@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.43](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.42...sdk-component-drivers-0.2.43) (2025-01-30)
+
+
+### Bug Fixes
+
+* Issue8959 ([#890](https://github.com/descope/descope-js/issues/890)) ([4640275](https://github.com/descope/descope-js/commit/4640275dc29d145de1eef81e57aa3691773625b6))
+
 ## [0.2.42](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.41...sdk-component-drivers-0.2.42) (2024-09-19)
 
 ## [0.2.41](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.40...sdk-component-drivers-0.2.41) (2024-08-14)
