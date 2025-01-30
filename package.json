@@ -39,7 +39,7 @@
     "@nrwl/workspace": "19.3.2",
     "@types/jest": "29.5.14",
     "@types/node": "20.14.9",
-    "@typescript-eslint/eslint-plugin": "7.15.0",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "~9.6.0",
     "eslint-config-prettier": "9.1.0",
