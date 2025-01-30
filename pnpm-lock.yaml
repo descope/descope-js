@@ -858,8 +858,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@descope/node-sdk':
-        specifier: 1.6.9
-        version: 1.6.9
+        specifier: 1.6.12
+        version: 1.6.12
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
@@ -7443,10 +7443,10 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@descope/core-js-sdk@2.23.3:
-    resolution: {integrity: sha512-0UuwLkS4dcP7mRCiFjgMCpSbngTadywpUAr37T9mT0p7z9CeLL/Jj6AX1L2/2TDzOzJ4URIPTeTr1NXH3PJ9iQ==}
+  /@descope/core-js-sdk@2.31.0:
+    resolution: {integrity: sha512-y5Z8wQwmOt4IEt67XwS006jbtSVGumbcXDx6k+1/e3jHFzSLZdVnt9sgKKU0biQQl5jAi3GVNsilWVNIC4D2Ww==}
     dependencies:
-      jwt-decode: 3.1.2
+      jwt-decode: 4.0.0
     dev: false
 
   /@descope/core-js-sdk@2.33.0:
@@ -7457,11 +7457,11 @@ packages:
     dev: false
     optional: true
 
-  /@descope/node-sdk@1.6.9:
-    resolution: {integrity: sha512-C4zspOsIPLkvwn6zIztWN0wmZCpfRnONmc3j6wUpjtp848InJVC2B3P1UAz3OMH/w/Jyayo5c4m5WuVwdrPfjA==}
+  /@descope/node-sdk@1.6.12:
+    resolution: {integrity: sha512-+tpQWq+URrDIA1SFuCkqJKWIiOg7BA96sL9P5dZ+wcJ4lDGhzLnVTl3WBOZCV9voxBY8c2eznLqmwb+q7Bdang==}
     engines: {node: '>= 12.0.0'}
     dependencies:
-      '@descope/core-js-sdk': 2.23.3
+      '@descope/core-js-sdk': 2.31.0
       cross-fetch: 4.0.0
       jose: 5.2.2
       tslib: 2.6.3
@@ -22764,10 +22764,6 @@ packages:
       object.values: 1.2.0
     dev: true
 
-  /jwt-decode@3.1.2:
-    resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
-    dev: false
-
   /jwt-decode@4.0.0:
     resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
     engines: {node: '>=18'}
@@ -30341,7 +30337,7 @@ packages:
       react: '>=18'
     dependencies:
       '@descope/core-js-sdk': link:packages/sdks/core-js-sdk
-      '@descope/node-sdk': 1.6.9
+      '@descope/node-sdk': 1.6.12
       '@descope/react-sdk': link:packages/sdks/react-sdk
       '@descope/web-component': link:packages/sdks/web-component
       '@types/react': 18.3.3
@@ -30364,7 +30360,7 @@ packages:
       react: '>=18'
     dependencies:
       '@descope/core-js-sdk': link:packages/sdks/core-js-sdk
-      '@descope/node-sdk': 1.6.9
+      '@descope/node-sdk': 1.6.12
       '@descope/react-sdk': link:packages/sdks/react-sdk
       '@descope/web-component': link:packages/sdks/web-component
       '@types/react': 18.3.3
