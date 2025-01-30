@@ -46,6 +46,7 @@ import {
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
+  ClientScript,
   Direction,
   FlowConfig,
   FlowState,
@@ -161,8 +162,7 @@ class DescopeWc extends BaseDescopeWc {
       }
     | undefined;
 
-  loadSdkScripts(flowConfig: FlowConfig) {
-    const scripts = flowConfig.sdkScripts;
+  loadSdkScripts(scripts: ClientScript[]) {
     if (!scripts?.length) {
       return null;
     }
@@ -376,18 +376,17 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      this.#sdkScriptsLoading = this.loadSdkScripts(flowConfig);
-      if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
-        await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
-      } else {
-        clearFingerprintData();
-      }
+      let clientScripts = [
+        ...(flowConfig.clientScripts || []),
+        ...(flowConfig.sdkScripts || []),
+      ];
 
       if (flowConfig.conditions) {
-        ({ startScreenId, conditionInteractionId } = calculateConditions(
-          { loginId, code, token, abTestingKey },
-          flowConfig.conditions,
-        ));
+        ({ startScreenId, conditionInteractionId, clientScripts } =
+          calculateConditions(
+            { loginId, code, token, abTestingKey },
+            flowConfig.conditions,
+          ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
@@ -400,6 +399,13 @@ class DescopeWc extends BaseDescopeWc {
         ));
       } else {
         startScreenId = flowConfig.startScreenId;
+      }
+
+      this.#sdkScriptsLoading = this.loadSdkScripts(clientScripts);
+      if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
+        await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
+      } else {
+        clearFingerprintData();
       }
 
       // As an optimization - we want to show the first screen if it is possible

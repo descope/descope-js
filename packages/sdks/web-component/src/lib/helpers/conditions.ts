@@ -57,5 +57,6 @@ export const calculateConditions = (
     : {
         startScreenId: conditionResult.met.screenId,
         conditionInteractionId: conditionResult.met.interactionId,
+        clientScripts: conditionResult.met.clientScripts,
       };
 };
