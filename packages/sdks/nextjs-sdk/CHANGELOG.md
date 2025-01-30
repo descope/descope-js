@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.24](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.23...nextjs-sdk-0.3.24) (2025-01-30)
+
+
+### Bug Fixes
+
+* correct broken links in README.md ([#787](https://github.com/descope/descope-js/issues/787)) ([b06564a](https://github.com/descope/descope-js/commit/b06564a7db0e4a1d2469b4e37965ae39f785cbc3))
+
 ## [0.3.23](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.22...nextjs-sdk-0.3.23) (2025-01-30)
 
 ### Dependency Updates
