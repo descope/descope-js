@@ -2,6 +2,146 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.2.14](https://github.com/descope/descope-js/compare/vue-sdk-2.2.13...vue-sdk-2.2.14) (2025-01-30)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.6.6`
+## [2.2.13](https://github.com/descope/descope-js/compare/vue-sdk-2.2.12...vue-sdk-2.2.13) (2025-01-30)
+
+## [2.2.12](https://github.com/descope/descope-js/compare/vue-sdk-2.2.11...vue-sdk-2.2.12) (2025-01-30)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.7`
+* `audit-management-widget` updated to version `0.2.11`
+* `role-management-widget` updated to version `0.2.11`
+* `user-management-widget` updated to version `0.6.5`
+* `user-profile-widget` updated to version `0.2.7`
+* `applications-portal-widget` updated to version `0.2.10`
+* `web-component` updated to version `3.32.2`
+## [2.2.11](https://github.com/descope/descope-js/compare/vue-sdk-2.2.10...vue-sdk-2.2.11) (2025-01-06)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.2.6`
+* `web-component` updated to version `3.32.1`
+## [2.2.10](https://github.com/descope/descope-js/compare/vue-sdk-2.2.9...vue-sdk-2.2.10) (2025-01-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.6`
+* `audit-management-widget` updated to version `0.2.10`
+* `role-management-widget` updated to version `0.2.10`
+* `user-management-widget` updated to version `0.6.4`
+## [2.2.9](https://github.com/descope/descope-js/compare/vue-sdk-2.2.8...vue-sdk-2.2.9) (2024-12-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.5`
+* `audit-management-widget` updated to version `0.2.9`
+* `role-management-widget` updated to version `0.2.9`
+* `user-management-widget` updated to version `0.6.3`
+* `user-profile-widget` updated to version `0.2.5`
+* `applications-portal-widget` updated to version `0.2.9`
+* `web-component` updated to version `3.32.0`
+## [2.2.8](https://github.com/descope/descope-js/compare/vue-sdk-2.2.7...vue-sdk-2.2.8) (2024-12-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.4`
+* `audit-management-widget` updated to version `0.2.8`
+* `role-management-widget` updated to version `0.2.8`
+* `user-management-widget` updated to version `0.6.2`
+* `user-profile-widget` updated to version `0.2.4`
+* `applications-portal-widget` updated to version `0.2.8`
+* `web-component` updated to version `3.31.3`
+* `web-js-sdk` updated to version `1.23.1`
+
+### Bug Fixes
+
+* multiple flows on the same page ([#868](https://github.com/descope/descope-js/issues/868)) ([c4182b3](https://github.com/descope/descope-js/commit/c4182b3f3a282a45edab2a6d6b1a669721782096))
+
+## [2.2.7](https://github.com/descope/descope-js/compare/vue-sdk-2.2.6...vue-sdk-2.2.7) (2024-12-18)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.3`
+* `audit-management-widget` updated to version `0.2.7`
+* `role-management-widget` updated to version `0.2.7`
+* `user-management-widget` updated to version `0.6.1`
+* `user-profile-widget` updated to version `0.2.3`
+* `applications-portal-widget` updated to version `0.2.7`
+* `web-component` updated to version `3.31.2`
+* `web-js-sdk` updated to version `1.23.0`
+## [2.2.6](https://github.com/descope/descope-js/compare/vue-sdk-2.2.5...vue-sdk-2.2.6) (2024-12-18)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.2`
+* `audit-management-widget` updated to version `0.2.6`
+* `role-management-widget` updated to version `0.2.6`
+* `user-management-widget` updated to version `0.6.0`
+* `user-profile-widget` updated to version `0.2.2`
+* `applications-portal-widget` updated to version `0.2.6`
+* `web-component` updated to version `3.31.1`
+## [2.2.5](https://github.com/descope/descope-js/compare/vue-sdk-2.2.4...vue-sdk-2.2.5) (2024-12-08)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.1`
+* `audit-management-widget` updated to version `0.2.5`
+* `role-management-widget` updated to version `0.2.5`
+* `user-management-widget` updated to version `0.5.5`
+* `user-profile-widget` updated to version `0.2.1`
+* `applications-portal-widget` updated to version `0.2.5`
+* `web-component` updated to version `3.31.0`
+* `web-js-sdk` updated to version `1.22.0`
+* `core-js-sdk` updated to version `2.33.0`
+## [2.2.4](https://github.com/descope/descope-js/compare/vue-sdk-2.2.3...vue-sdk-2.2.4) (2024-12-04)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.0`
+* `audit-management-widget` updated to version `0.2.4`
+* `role-management-widget` updated to version `0.2.4`
+* `user-management-widget` updated to version `0.5.4`
+* `user-profile-widget` updated to version `0.2.0`
+* `applications-portal-widget` updated to version `0.2.4`
+* `web-component` updated to version `3.30.0`
+* `web-js-sdk` updated to version `1.21.0`
+* `core-js-sdk` updated to version `2.32.0`
+## [2.2.3](https://github.com/descope/descope-js/compare/vue-sdk-2.2.2...vue-sdk-2.2.3) (2024-11-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.3`
+* `audit-management-widget` updated to version `0.2.3`
+* `role-management-widget` updated to version `0.2.3`
+* `user-management-widget` updated to version `0.5.3`
+* `user-profile-widget` updated to version `0.1.3`
+* `applications-portal-widget` updated to version `0.2.3`
+* `web-component` updated to version `3.29.3`
+* `web-js-sdk` updated to version `1.20.2`
+* `core-js-sdk` updated to version `2.31.0`
+## [2.2.2](https://github.com/descope/descope-js/compare/vue-sdk-2.2.1...vue-sdk-2.2.2) (2024-11-14)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.2.2`
+* `audit-management-widget` updated to version `0.2.2`
+* `role-management-widget` updated to version `0.2.2`
+* `user-management-widget` updated to version `0.5.2`
+* `user-profile-widget` updated to version `0.1.2`
+* `applications-portal-widget` updated to version `0.2.2`
+* `web-component` updated to version `3.29.2`
+* `web-js-sdk` updated to version `1.20.1`
+* `core-js-sdk` updated to version `2.30.1`
+
+### Bug Fixes
+
+* expose restartOnError on all sdks ([#838](https://github.com/descope/descope-js/issues/838)) ([dd20924](https://github.com/descope/descope-js/commit/dd20924dfd02345eae2972d5154b9be8a209a906))
+
 ## [2.2.1](https://github.com/descope/descope-js/compare/vue-sdk-2.2.0...vue-sdk-2.2.1) (2024-11-13)
 
 ### Dependency Updates

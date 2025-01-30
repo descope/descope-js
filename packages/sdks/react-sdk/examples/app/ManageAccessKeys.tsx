@@ -62,12 +62,20 @@ const ManageAccessKeys = () => {
       <h2>Manage Access Keys</h2>
       <AccessKeyManagement
         widgetId="access-key-management-widget"
-        tenant={process.env.DESCOPE_TENANT_ID}
+        tenant={process.env.DESCOPE_TENANT_ID!}
+        theme={process.env.DESCOPE_THEME as any}
+        styleId={process.env.DESCOPE_STYLE_ID}
+        debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
+        logger={console}
       />
       <h2>Manage My Access Keys</h2>
       <AccessKeyManagement
         widgetId="user-access-key-management-widget"
-        tenant={process.env.DESCOPE_TENANT_ID}
+        tenant={process.env.DESCOPE_TENANT_ID!}
+        theme={process.env.DESCOPE_THEME as any}
+        styleId={process.env.DESCOPE_STYLE_ID}
+        debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
+        logger={console}
       />
     </>
   );

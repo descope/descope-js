@@ -1,30 +1,52 @@
 {
   "name": "@descope/sdk-mixins",
-  "version": "0.4.0",
+  "version": "0.6.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-mixins",
   "bugs": {
     "url": "https://github.com/descope/sdk-mixins/issues",
     "email": "help@descope.com"
   },
-  "main": "dist/cjs/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "require": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/cjs/index.cjs.js"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.esm.js"
+    "./theme-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/themeMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/themeMixin/index.js"
+      }
+    },
+    "./static-resources-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/staticResourcesMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/staticResourcesMixin/index.js"
+      }
     }
   },
   "type": "module",
   "description": "Descope JavaScript SDK mixins",
   "scripts": {
     "build": "rimraf dist && rollup -c",
-    "test": "echo no tests yet",
+    "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'"
   },
   "license": "MIT",
@@ -83,7 +105,8 @@
     "ts-node": "10.9.2",
     "typescript": "^5.0.2",
     "@reduxjs/toolkit": "^2.0.1",
-    "redux": "5.0.1"
+    "redux": "5.0.1",
+    "rollup-plugin-no-emit": "1.2.1"
   },
   "dependencies": {
     "@descope/sdk-helpers": "workspace:*",

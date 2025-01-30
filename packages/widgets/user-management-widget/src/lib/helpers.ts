@@ -1,4 +1,8 @@
-import { User } from './widget/api/types';
+import {
+  CustomAttributeType,
+  CustomAttributeTypeMap,
+  User,
+} from './widget/api/types';
 
 export const unflatten = (formData: Partial<User>, keyPrefix: string) =>
   Object.entries(formData).reduce((acc, [key, value]) => {
@@ -27,3 +31,18 @@ export const flatten = (
       val,
     ]),
   );
+
+export const formatDate = (val: string) =>
+  new Date(Number(val)).toLocaleDateString('en-US');
+
+export const formatCustomAttrValue = (
+  type: CustomAttributeTypeMap,
+  val: CustomAttributeType,
+) => {
+  switch (type) {
+    case CustomAttributeTypeMap['date']:
+      return formatDate(`${val}`);
+    default:
+      return val;
+  }
+};

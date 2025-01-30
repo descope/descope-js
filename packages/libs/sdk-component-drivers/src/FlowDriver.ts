@@ -15,6 +15,14 @@ export class FlowDriver extends BaseDriver {
     this.ele?.setAttribute('flow-id', flowId);
   }
 
+  set theme(theme: string | null | undefined) {
+    if (!theme) {
+      this.ele?.removeAttribute('theme');
+    } else {
+      this.ele?.setAttribute('theme', theme);
+    }
+  }
+
   onSuccess(cb: () => void) {
     this.ele?.addEventListener('success', cb);
 

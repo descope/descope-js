@@ -15,7 +15,6 @@ jest.mock('@descope/web-js-sdk', () => {
   const sdk = {
     logout: jest.fn().mockName('logout'),
     logoutAll: jest.fn().mockName('logoutAll'),
-    logoutPrevious: jest.fn().mockName('logoutPrevious'),
     otp: {
       signIn: {
         email: jest.fn().mockName('otp.signIn.email'),
@@ -65,7 +64,7 @@ describe('hooks', () => {
     );
   });
 
-  it.each(['logoutAll', 'logoutPrevious', 'logout', 'otp.signIn.email'])(
+  it.each(['logoutAll', 'logout', 'otp.signIn.email'])(
     'should throw error when using sdk function before sdk initialization - %s',
     (fnName) => {
       const { result } = renderHook(() => useDescope(), {

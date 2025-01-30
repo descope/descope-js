@@ -1,6 +1,6 @@
 {
   "name": "@descope/user-management-widget",
-  "version": "0.5.1",
+  "version": "0.6.6",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -85,7 +85,7 @@
     "@descope/sdk-mixins": "workspace:*",
     "@descope/sdk-component-drivers": "workspace:*",
     "tslib": "2.6.3",
-    "libphonenumber-js": "1.11.4",
+    "libphonenumber-js": "1.11.17",
     "reselect": "5.1.1",
     "@reduxjs/toolkit": "^2.0.1",
     "redux": "5.0.1",

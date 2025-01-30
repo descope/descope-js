@@ -98,15 +98,6 @@ export default (httpClient: HttpClient) => ({
     ),
   ),
   /**
-   * Logs out all previous sessions for the current user
-   * @param token A valid refresh token
-   */
-  logoutPrevious: withOptionalTokenValidations((token?: string) =>
-    transformResponse<never>(
-      httpClient.post(apiPaths.logoutPrevious, {}, { token }),
-    ),
-  ),
-  /**
    * Returns the current user details
    * @param token A valid refresh token
    * @returns The current user details

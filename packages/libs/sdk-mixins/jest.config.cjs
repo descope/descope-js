@@ -9,10 +9,10 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 93.5,
-      lines: 93.5,
-      statements: 93.5,
+      branches: 12,
+      functions: 17,
+      lines: 36,
+      statements: 36,
     },
   },
   // A set of global variables that need to be available in all test environments

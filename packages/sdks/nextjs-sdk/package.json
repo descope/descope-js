@@ -1,6 +1,6 @@
 {
 	"name": "@descope/nextjs-sdk",
-	"version": "0.3.8",
+	"version": "0.3.23",
 	"description": "Descope NextJS SDK",
 	"author": "Descope Team <info@descope.com>",
 	"homepage": "https://github.com/descope/descope-js",
@@ -69,7 +69,7 @@
 		]
 	},
 	"dependencies": {
-		"@descope/node-sdk": "1.6.9",
+		"@descope/node-sdk": "1.6.12",
 		"@descope/react-sdk": "workspace:*",
 		"@descope/core-js-sdk": "workspace:*",
 		"@descope/web-component": "workspace:*"
@@ -89,9 +89,6 @@
 		"@testing-library/jest-dom": "^6.4.2",
 		"@testing-library/react": "^14.2.1",
 		"@types/jest": "^29.5.12",
-		"@types/react": "18.3.3",
-		"@types/react-dom": "18.2.18",
-		"@types/react-router-dom": "^5.3.3",
 		"babel": "^6.23.0",
 		"babel-jest": "^27.5.1",
 		"eslint": "8.56.0",
@@ -139,7 +136,7 @@
 	},
 	"peerDependencies": {
 		"@types/react": ">=18",
-		"next": ">=13",
+		"next": ">=14.2.21",
 		"react": ">=18"
 	},
 	"optionalDependencies": {

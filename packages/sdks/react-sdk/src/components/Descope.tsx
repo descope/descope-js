@@ -4,18 +4,21 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useState,
 } from 'react';
 import { baseHeaders } from '../constants';
 import Context from '../hooks/Context';
 import { DescopeProps } from '../types';
 import { getGlobalSdk } from '../sdk';
+import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
-  const module = await import('@descope/web-component');
-  module.default.sdkConfigOverrides = {
+  const WebComponent: any =
+    customElements?.get('descope-wc') ||
+    (await import('@descope/web-component').then((module) => module.default));
+
+  WebComponent.sdkConfigOverrides = {
     // Overrides the web-component's base headers to indicate usage via the React SDK
     baseHeaders,
     // Disables token persistence within the web-component to delegate token management
@@ -37,44 +40,10 @@ const DescopeWC = lazy(async () => {
   };
 
   return {
-    default: ({
-      projectId,
-      flowId,
-      baseUrl,
-      baseStaticUrl,
-      innerRef,
-      tenant,
-      theme,
-      locale,
-      debug,
-      redirectUrl,
-      client,
-      form,
-      styleId,
-      autoFocus,
-      validateOnBlur,
-      restartOnError,
-      storeLastAuthenticatedUser,
-    }) => (
-	<descope-wc
-        project-id={projectId}
-        flow-id={flowId}
-        base-url={baseUrl}
-        base-static-url={baseStaticUrl}
-        ref={innerRef}
-        tenant={tenant}
-        theme={theme}
-        locale={locale}
-        debug={debug}
-        client={client}
-        form={form}
-        style-id={styleId}
-        redirect-url={redirectUrl}
-        auto-focus={autoFocus}
-        validate-on-blur={validateOnBlur}
-        restart-on-error={restartOnError}
-        store-last-authenticated-user={storeLastAuthenticatedUser}
-      />
+    default: withPropsMapping(
+      React.forwardRef<HTMLElement>((props, ref) => (
+        <descope-wc ref={ref} {...props} />
+      )),
     ),
   };
 });
@@ -174,26 +143,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       };
     }, [innerRef, onReady]);
 
-    useEffect(() => {
-      if (innerRef) {
-        innerRef.errorTransformer = errorTransformer;
-      }
-    }, [innerRef, errorTransformer]);
-
-    useEffect(() => {
-      if (innerRef && logger) {
-        innerRef.logger = logger;
-      }
-    }, [innerRef, logger]);
-
-    const { form: stringifiedForm, client: stringifiedClient } = useMemo(
-      () => ({
-        form: JSON.stringify(form || {}),
-        client: JSON.stringify(client || {}),
-      }),
-      [form, client],
-    );
-
     return (
       /**
        * in order to avoid redundant remounting of the WC, we are wrapping it with a form element
@@ -201,33 +150,39 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-	<form>
-		<Suspense fallback={null}>
-			<DescopeWC
+      <form>
+        <Suspense fallback={null}>
+          <DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
             baseStaticUrl={baseStaticUrl}
-            innerRef={setInnerRef}
-            tenant={tenant}
-            theme={theme}
-            locale={locale}
-            debug={debug}
-            form={stringifiedForm}
-            client={stringifiedClient}
+            ref={setInnerRef}
             telemetryKey={telemetryKey}
             redirectUrl={redirectUrl}
             autoFocus={autoFocus}
             styleId={styleId}
             validateOnBlur={validateOnBlur}
             restartOnError={restartOnError}
-            storeLastAuthenticatedUser={storeLastAuthenticatedUser}
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
             }
+            tenant={tenant}
+            {...{
+              // attributes
+              'theme.attr': theme,
+              'locale.attr': locale,
+              'form.attr': form,
+              'client.attr': client,
+              'debug.attr': debug,
+              'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
+              // props
+              'errorTransformer.prop': errorTransformer,
+              'logger.prop': logger,
+            }}
           />
-		</Suspense>
-	</form>
+        </Suspense>
+      </form>
     );
   },
 );

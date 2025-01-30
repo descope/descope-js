@@ -8,6 +8,7 @@ export type Sdk = ReturnType<typeof createSdk>;
 export type SdkFlowNext = Sdk['flow']['next'];
 
 export type ComponentsConfig = Record<string, any>;
+export type CssVars = Record<string, any>;
 
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
@@ -27,6 +28,7 @@ export interface ScreenState {
   errorText?: string;
   errorType?: string;
   componentsConfig?: ComponentsConfig;
+  cssVars?: CssVars;
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
@@ -40,6 +42,9 @@ export type SSOQueryParams = {
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
+  thirdPartyAppId: string;
+  thirdPartyAppStateId?: string;
+  applicationScopes?: string;
 } & OIDCOptions;
 
 export type OIDCOptions = {
@@ -86,8 +91,8 @@ export type FlowState = {
 
 export type StepState = {
   screenState: ScreenState;
-  htmlUrl: string;
-  htmlLocaleUrl: string;
+  htmlFilename: string;
+  htmlLocaleFilename: string;
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
@@ -203,3 +208,5 @@ export interface ProjectConfiguration {
     [key: string]: FlowConfig; // dynamic key names for flows
   };
 }
+
+export type FlowStatus = 'loading' | 'error' | 'success' | 'ready' | 'initial';
