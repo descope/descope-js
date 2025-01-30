@@ -207,7 +207,7 @@ Server Component:
 import { session } from '@descope/nextjs-sdk/server';
 
 async function Page() {
-	const sessionRes = session();
+	const sessionRes = await session();
 	if (!sessionRes) {
 		// ...
 	}
@@ -221,7 +221,7 @@ Route handler:
 ```js
 // src/pages/api/routes.ts
 export async function GET() {
-	const currSession = session();
+	const currSession = await session();
 	if (!currSession.isAuthenticated) {
 		// ...
 	}
