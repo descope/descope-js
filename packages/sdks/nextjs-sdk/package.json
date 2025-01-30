@@ -1,6 +1,6 @@
 {
 	"name": "@descope/nextjs-sdk",
-	"version": "0.3.21",
+	"version": "0.3.23",
 	"description": "Descope NextJS SDK",
 	"author": "Descope Team <info@descope.com>",
 	"homepage": "https://github.com/descope/descope-js",
@@ -69,7 +69,7 @@
 		]
 	},
 	"dependencies": {
-		"@descope/node-sdk": "1.6.9",
+		"@descope/node-sdk": "1.6.12",
 		"@descope/react-sdk": "workspace:*",
 		"@descope/core-js-sdk": "workspace:*",
 		"@descope/web-component": "workspace:*"
