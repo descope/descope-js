@@ -13,10 +13,12 @@ import { getName } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initNameUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class NameUserAttrMixinClass extends compose(
+      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -42,6 +44,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
         );
         this.#editModal.afterClose = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
+        this.syncFlowTheme(this.#editFlow);
       }
 
       #initEditModalContent() {
@@ -69,6 +72,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
         );
         this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
         this.#initDeleteModalContent();
+        this.syncFlowTheme(this.#deleteFlow);
       }
 
       #initDeleteModalContent() {
