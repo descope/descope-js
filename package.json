@@ -25,7 +25,7 @@
   },
   "private": true,
   "dependencies": {
-    "tslib": "2.6.3"
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",

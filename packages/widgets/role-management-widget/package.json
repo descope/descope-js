@@ -84,7 +84,7 @@
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
     "@descope/sdk-component-drivers": "workspace:*",
-    "tslib": "2.6.3",
+    "tslib": "2.8.1",
     "reselect": "5.1.1",
     "@reduxjs/toolkit": "^2.0.1",
     "redux": "5.0.1",
