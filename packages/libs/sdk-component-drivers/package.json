@@ -85,7 +85,7 @@
   },
   "dependencies": {
     "@descope/sdk-helpers": "workspace:*",
-    "tslib": "2.6.3"
+    "tslib": "2.8.1"
   },
   "overrides": {
     "terser": "^5.14.2"
