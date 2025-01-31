@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.8](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.7...access-key-management-widget-0.3.8) (2025-01-31)
+
 ## [0.3.7](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.6...access-key-management-widget-0.3.7) (2025-01-30)
 
 ### Dependency Updates
