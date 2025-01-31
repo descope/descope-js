@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.14](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.13...applications-portal-widget-0.2.14) (2025-01-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.3`
+* `sdk-helpers` updated to version `0.1.61`
+* `sdk-mixins` updated to version `0.6.2`
+* `sdk-component-drivers` updated to version `0.2.44`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
 ## [0.2.13](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.12...applications-portal-widget-0.2.13) (2025-01-31)
 
 ## [0.2.12](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.11...applications-portal-widget-0.2.12) (2025-01-31)
