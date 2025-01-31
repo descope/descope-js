@@ -77,7 +77,7 @@
     "ts-jest": "^29.0.0",
     "ts-node": "10.9.2",
     "typescript": "^5.0.2",
-    "serve": "14.2.3"
+    "serve": "14.2.4"
   },
   "dependencies": {
     "@descope/web-js-sdk": "workspace:*",
