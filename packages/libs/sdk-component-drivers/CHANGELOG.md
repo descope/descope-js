@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.44](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.43...sdk-component-drivers-0.2.44) (2025-01-31)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.61`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
 ## [0.2.43](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.42...sdk-component-drivers-0.2.43) (2025-01-30)
 
 
