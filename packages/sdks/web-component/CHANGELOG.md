@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.32.4](https://github.com/descope/descope-js/compare/web-component-3.32.3...web-component-3.32.4) (2025-01-31)
+
 ## [3.32.3](https://github.com/descope/descope-js/compare/web-component-3.32.2...web-component-3.32.3) (2025-01-31)
 
 ### Dependency Updates
