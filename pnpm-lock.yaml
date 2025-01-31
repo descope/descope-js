@@ -30220,7 +30220,7 @@ packages:
     resolution: {directory: packages/sdks/nextjs-sdk, type: directory}
     id: file:packages/sdks/nextjs-sdk
     name: '@descope/nextjs-sdk'
-    engines: {node: ^18 || ^20}
+    engines: {node: ^22.0.0}
     peerDependencies:
       '@types/react': '>=18'
       next: '>=14.2.21'
@@ -30243,7 +30243,7 @@ packages:
     resolution: {directory: packages/sdks/nextjs-sdk, type: directory}
     id: file:packages/sdks/nextjs-sdk
     name: '@descope/nextjs-sdk'
-    engines: {node: ^18 || ^20}
+    engines: {node: ^22.0.0}
     peerDependencies:
       '@types/react': '>=18'
       next: '>=14.2.21'
