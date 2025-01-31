@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.9](https://github.com/descope/descope-js/compare/user-management-widget-0.6.8...user-management-widget-0.6.9) (2025-01-31)
+
 ## [0.6.8](https://github.com/descope/descope-js/compare/user-management-widget-0.6.7...user-management-widget-0.6.8) (2025-01-31)
 
 ### Dependency Updates
