@@ -81,6 +81,6 @@
     "@descope/escape-markdown": "workspace:*"
   },
   "overrides": {
-    "terser": "5.31.1"
+    "terser": "5.37.0"
   }
 }
