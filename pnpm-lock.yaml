@@ -1342,8 +1342,8 @@ importers:
         version: link:../web-js-sdk
     devDependencies:
       '@rollup/plugin-node-resolve':
-        specifier: ^6.0.0
-        version: 6.1.0(rollup@2.79.1)
+        specifier: ^9.0.0
+        version: 9.0.0(rollup@2.79.1)
       '@rollup/plugin-typescript':
         specifier: ^11.1.0
         version: 11.1.6(rollup@2.79.1)(tslib@2.6.3)(typescript@5.4.5)
@@ -10403,15 +10403,16 @@ packages:
       rollup: 4.14.3
     dev: true
 
-  /@rollup/plugin-node-resolve@6.1.0(rollup@2.79.1):
-    resolution: {integrity: sha512-Cv7PDIvxdE40SWilY5WgZpqfIUEaDxFxs89zCAHjqyRwlTSuql4M5hjIuc5QYJkOH0/vyiyNXKD72O+LhRipGA==}
-    engines: {node: '>= 8.0.0'}
+  /@rollup/plugin-node-resolve@9.0.0(rollup@2.79.1):
+    resolution: {integrity: sha512-gPz+utFHLRrd41WMP13Jq5mqqzHL3OXrfj3/MkSyB6UBIcuNt9j60GCbarzMzdf1VHFpOxfQh/ez7wyadLMqkg==}
+    engines: {node: '>= 10.0.0'}
     peerDependencies:
-      rollup: ^1.20.0
+      rollup: ^1.20.0||^2.0.0
     dependencies:
       '@rollup/pluginutils': 3.1.0(rollup@2.79.1)
-      '@types/resolve': 0.0.8
+      '@types/resolve': 1.17.1
       builtin-modules: 3.3.0
+      deepmerge: 4.3.1
       is-module: 1.0.0
       resolve: 1.22.4
       rollup: 2.79.1
@@ -11786,8 +11787,8 @@ packages:
     resolution: {integrity: sha512-QSvevZ+IRww2ldtfv1QskYsqVVVwCKQf1XbwtcyyoRvLIQzfyPhj/C+3+PKzSDRdiyejaiLgnq//XTkleorpLg==}
     dev: true
 
-  /@types/resolve@0.0.8:
-    resolution: {integrity: sha512-auApPaJf3NPfe18hSoJkp8EbZzer2ISk7o8mCC3M9he/a04+gbMF97NkpD2S8riMGvm4BMRI59/SZQSaLTKpsQ==}
+  /@types/resolve@1.17.1:
+    resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
       '@types/node': 20.14.11
     dev: true
