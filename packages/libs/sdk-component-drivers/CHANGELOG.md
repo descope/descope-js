@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.45](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.44...sdk-component-drivers-0.2.45) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.62`
 ## [0.2.44](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.43...sdk-component-drivers-0.2.44) (2025-01-31)
 
 ### Dependency Updates
