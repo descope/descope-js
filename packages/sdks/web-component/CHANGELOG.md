@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.32.6](https://github.com/descope/descope-js/compare/web-component-3.32.5...web-component-3.32.6) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.62`
+* `sdk-mixins` updated to version `0.6.3`
+* `web-js-sdk` updated to version `1.23.4`
+* `escape-markdown` updated to version `0.1.2`
 ## [3.32.5](https://github.com/descope/descope-js/compare/web-component-3.32.4...web-component-3.32.5) (2025-01-31)
 
 ### Dependency Updates
