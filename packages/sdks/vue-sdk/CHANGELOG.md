@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.2.26](https://github.com/descope/descope-js/compare/vue-sdk-2.2.25...vue-sdk-2.2.26) (2025-02-02)
+
 ## [2.2.25](https://github.com/descope/descope-js/compare/vue-sdk-2.2.24...vue-sdk-2.2.25) (2025-02-02)
 
 ## [2.2.24](https://github.com/descope/descope-js/compare/vue-sdk-2.2.23...vue-sdk-2.2.24) (2025-02-01)
