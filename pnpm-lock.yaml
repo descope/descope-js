@@ -1176,8 +1176,8 @@ importers:
         specifier: 29.7.0
         version: 29.7.0(@babel/core@7.26.0)
       core-js:
-        specifier: 3.19.3
-        version: 3.19.3
+        specifier: 3.40.0
+        version: 3.40.0
       eslint:
         specifier: 8.57.1
         version: 8.57.1
@@ -3505,6 +3505,18 @@ packages:
       - supports-color
     dev: true
 
+  /@babel/helper-create-regexp-features-plugin@7.24.7(@babel/core@7.24.0):
+    resolution: {integrity: sha512-03TCmXy2FtXJEZfbXDTSqq1fRJArk7lX9DOFC/47VthYcxyIOx+eXQmdo6DOQvrbpIix+KfXwvuXdFDZHxt+rA==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0
+    dependencies:
+      '@babel/core': 7.24.0
+      '@babel/helper-annotate-as-pure': 7.25.9
+      regexpu-core: 5.3.2
+      semver: 6.3.1
+    dev: true
+
   /@babel/helper-create-regexp-features-plugin@7.24.7(@babel/core@7.26.0):
     resolution: {integrity: sha512-03TCmXy2FtXJEZfbXDTSqq1fRJArk7lX9DOFC/47VthYcxyIOx+eXQmdo6DOQvrbpIix+KfXwvuXdFDZHxt+rA==}
     engines: {node: '>=6.9.0'}
@@ -3592,8 +3604,8 @@ packages:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
       '@babel/core': 7.24.0
-      '@babel/helper-compilation-targets': 7.26.5
-      '@babel/helper-plugin-utils': 7.26.5
+      '@babel/helper-compilation-targets': 7.25.7
+      '@babel/helper-plugin-utils': 7.24.8
       debug: 4.3.7
       lodash.debounce: 4.0.8
       resolve: 1.22.4
@@ -4426,7 +4438,7 @@ packages:
       '@babel/core': ^7.0.0
     dependencies:
       '@babel/core': 7.24.0
-      '@babel/helper-create-regexp-features-plugin': 7.26.3(@babel/core@7.24.0)
+      '@babel/helper-create-regexp-features-plugin': 7.24.7(@babel/core@7.24.0)
       '@babel/helper-plugin-utils': 7.26.5
     dev: true
 
@@ -14915,9 +14927,8 @@ packages:
       browserslist: 4.24.4
     dev: true
 
-  /core-js@3.19.3:
-    resolution: {integrity: sha512-LeLBMgEGSsG7giquSzvgBrTS7V5UL6ks3eQlUSbN8dJStlLFiRzUm5iqsRyzUB8carhfKjkJ2vzKqE6z1Vga9g==}
-    deprecated: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
+  /core-js@3.40.0:
+    resolution: {integrity: sha512-7vsMc/Lty6AGnn7uFpYT56QesI5D2Y/UkgKounk87OP9Z2H9Z8kj6jzcSGAxFmUtDOS0ntK6lbQz+Nsa0Jj6mQ==}
     requiresBuild: true
     dev: true
 
@@ -26563,7 +26574,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.7.0
+      semver: 7.6.0
       typescript: 5.4.5
       yargs-parser: 21.1.1
     dev: true
@@ -26601,7 +26612,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.7.0
+      semver: 7.6.0
       typescript: 4.9.5
       yargs-parser: 21.1.1
     dev: true
@@ -26639,7 +26650,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.7.0
+      semver: 7.6.0
       typescript: 5.4.5
       yargs-parser: 21.1.1
     dev: true
@@ -26676,7 +26687,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.7.0
+      semver: 7.6.0
       typescript: 5.5.4
       yargs-parser: 21.1.1
     dev: true
@@ -26823,7 +26834,7 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 20.17.12
-      acorn: 8.14.0
+      acorn: 8.11.3
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
@@ -26854,7 +26865,7 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 20.17.12
-      acorn: 8.14.0
+      acorn: 8.11.3
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
