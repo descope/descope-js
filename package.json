@@ -51,7 +51,7 @@
     "nx": "19.5.2",
     "playwright": "1.47.0",
     "prettier": "^3.0.0",
-    "ts-jest": "29.1.5",
+    "ts-jest": "29.2.5",
     "ts-node": "10.9.2"
   },
   "lint-staged": {
