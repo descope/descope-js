@@ -80,7 +80,7 @@
 		"@babel/preset-react": "7.23.3",
 		"@babel/preset-typescript": "7.23.3",
 		"@open-wc/rollup-plugin-html": "^1.2.5",
-		"@rollup/plugin-commonjs": "^25.0.7",
+		"@rollup/plugin-commonjs": "^27.0.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-alias": "5.1.1",
 		"@rollup/plugin-replace": "^5.0.5",
