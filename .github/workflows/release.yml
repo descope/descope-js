@@ -15,7 +15,7 @@ jobs:
   release:
     name: Release
     # if: contains(github.event.head_commit.message, 'RELEASE')
-    runs-on: ubuntu-latest
+    runs-on: k8s-small-4
     steps:
       - name: Debug
         run: |
