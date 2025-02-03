@@ -633,7 +633,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^18.0.0
-        version: 18.2.14(@angular/compiler-cli@19.1.4)(@types/node@20.17.12)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(ng-packagr@16.2.3)(typescript@4.9.5)(vite@5.1.8)
+        version: 18.2.14(@angular/compiler-cli@19.1.4)(@types/node@20.17.12)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(ng-packagr@16.2.3)(typescript@4.9.5)(vite@5.4.14)
       '@angular-eslint/builder':
         specifier: 17.5.3
         version: 17.5.3(eslint@8.57.0)(typescript@4.9.5)
@@ -858,8 +858,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@descope/node-sdk':
-        specifier: 1.6.12
-        version: 1.6.12
+        specifier: 1.6.13
+        version: 1.6.13
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
@@ -2870,7 +2870,7 @@ packages:
       - chokidar
     dev: true
 
-  /@angular-devkit/build-angular@18.2.14(@angular/compiler-cli@19.1.4)(@types/node@20.17.12)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(ng-packagr@16.2.3)(typescript@4.9.5)(vite@5.1.8):
+  /@angular-devkit/build-angular@18.2.14(@angular/compiler-cli@19.1.4)(@types/node@20.17.12)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(ng-packagr@16.2.3)(typescript@4.9.5)(vite@5.4.14):
     resolution: {integrity: sha512-ycie4OhvNv8eNVqvq46pCIf6kB50xbMOdnAVqmlj+BaQjWbGjUQPjAmp4VGqeDZZ/lW82xkfTmJZxc6pYp7YdQ==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -2928,7 +2928,7 @@ packages:
       '@babel/runtime': 7.25.0
       '@discoveryjs/json-ext': 0.6.1
       '@ngtools/webpack': 18.2.14(@angular/compiler-cli@19.1.4)(typescript@4.9.5)(webpack@5.94.0)
-      '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.1.8)
+      '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.4.14)
       ansi-colors: 4.1.3
       autoprefixer: 10.4.20(postcss@8.4.41)
       babel-loader: 9.1.3(@babel/core@7.25.2)(webpack@5.94.0)
@@ -3647,8 +3647,8 @@ packages:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
       '@babel/core': 7.25.2
-      '@babel/helper-compilation-targets': 7.26.5
-      '@babel/helper-plugin-utils': 7.26.5
+      '@babel/helper-compilation-targets': 7.25.7
+      '@babel/helper-plugin-utils': 7.24.8
       debug: 4.3.7
       lodash.debounce: 4.0.8
       resolve: 1.22.8
@@ -6351,8 +6351,8 @@ packages:
     dev: false
     optional: true
 
-  /@descope/node-sdk@1.6.12:
-    resolution: {integrity: sha512-+tpQWq+URrDIA1SFuCkqJKWIiOg7BA96sL9P5dZ+wcJ4lDGhzLnVTl3WBOZCV9voxBY8c2eznLqmwb+q7Bdang==}
+  /@descope/node-sdk@1.6.13:
+    resolution: {integrity: sha512-6r0ArtJkkky67wQR0J1cS5WRNcrE3dgMDE0wqWdmq/OZPIYVwLf950I24I4wPVh97Ya40TAqm8kt7VP1zJFfKw==}
     engines: {node: '>= 12.0.0'}
     dependencies:
       '@descope/core-js-sdk': 2.31.0
@@ -12507,15 +12507,6 @@ packages:
       '@vaadin/vaadin-development-mode-detector': 2.0.7
     dev: true
 
-  /@vitejs/plugin-basic-ssl@1.1.0(vite@5.1.8):
-    resolution: {integrity: sha512-wO4Dk/rm8u7RNhOf95ZzcEmC9rYOncYgvq4z3duaJrCgjN8BxAnDVyndanfcJZ0O6XZzHz6Q0hTimxTg8Y9g/A==}
-    engines: {node: '>=14.6.0'}
-    peerDependencies:
-      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
-    dependencies:
-      vite: 5.1.8(@types/node@20.17.12)(less@4.2.0)
-    dev: true
-
   /@vitejs/plugin-basic-ssl@1.1.0(vite@5.4.14):
     resolution: {integrity: sha512-wO4Dk/rm8u7RNhOf95ZzcEmC9rYOncYgvq4z3duaJrCgjN8BxAnDVyndanfcJZ0O6XZzHz6Q0hTimxTg8Y9g/A==}
     engines: {node: '>=14.6.0'}
@@ -16893,6 +16884,7 @@ packages:
       '@esbuild/win32-ia32': 0.19.12
       '@esbuild/win32-x64': 0.19.12
     dev: true
+    optional: true
 
   /esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -20980,7 +20972,7 @@ packages:
       jest: ^29.0.0
       typescript: '>=4.4'
     dependencies:
-      '@angular-devkit/build-angular': 18.2.14(@angular/compiler-cli@19.1.4)(@types/node@20.17.12)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(ng-packagr@16.2.3)(typescript@4.9.5)(vite@5.1.8)
+      '@angular-devkit/build-angular': 18.2.14(@angular/compiler-cli@19.1.4)(@types/node@20.17.12)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(ng-packagr@16.2.3)(typescript@4.9.5)(vite@5.4.14)
       '@angular/compiler-cli': 19.1.4(@angular/compiler@19.1.4)(typescript@4.9.5)
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
       '@angular/platform-browser-dynamic': 19.1.4(@angular/common@19.1.4)(@angular/compiler@19.1.4)(@angular/core@19.1.4)(@angular/platform-browser@19.1.4)
@@ -27042,7 +27034,7 @@ packages:
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.1
-      terser: 5.31.6
+      terser: 5.31.3
       webpack: 5.94.0(esbuild@0.23.0)
     dev: true
 
@@ -27669,7 +27661,7 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 20.17.12
-      acorn: 8.14.0
+      acorn: 8.11.3
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
@@ -27700,7 +27692,7 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 20.17.12
-      acorn: 8.14.0
+      acorn: 8.11.3
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
@@ -28274,43 +28266,6 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
-    dev: true
-
-  /vite@5.1.8(@types/node@20.17.12)(less@4.2.0):
-    resolution: {integrity: sha512-mB8ToUuSmzODSpENgvpFk2fTiU/YQ1tmcVJJ4WZbq4fPdGJkFNVcmVL5k7iDug6xzWjjuGDKAuSievIsD6H7Xw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 20.17.12
-      esbuild: 0.19.12
-      less: 4.2.0
-      postcss: 8.5.1
-      rollup: 4.14.3
-    optionalDependencies:
-      fsevents: 2.3.3
     dev: true
 
   /vite@5.4.14(@types/node@20.17.12)(less@4.2.0)(sass@1.77.6)(terser@5.31.6):
@@ -29281,7 +29236,7 @@ packages:
       react: '>=18'
     dependencies:
       '@descope/core-js-sdk': link:packages/sdks/core-js-sdk
-      '@descope/node-sdk': 1.6.12
+      '@descope/node-sdk': 1.6.13
       '@descope/react-sdk': link:packages/sdks/react-sdk
       '@descope/web-component': link:packages/sdks/web-component
       '@types/react': 18.3.18
@@ -29304,7 +29259,7 @@ packages:
       react: '>=18'
     dependencies:
       '@descope/core-js-sdk': link:packages/sdks/core-js-sdk
-      '@descope/node-sdk': 1.6.12
+      '@descope/node-sdk': 1.6.13
       '@descope/react-sdk': link:packages/sdks/react-sdk
       '@descope/web-component': link:packages/sdks/web-component
       '@types/react': 18.3.18
