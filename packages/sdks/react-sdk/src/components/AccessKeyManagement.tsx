@@ -31,12 +31,12 @@ const AccessKeyManagement = React.forwardRef<
 		<AccessKeyManagementWC
         projectId={projectId}
         widgetId={widgetId}
+        tenant={tenant}
         baseUrl={baseUrl}
         baseStaticUrl={baseStaticUrl}
         innerRef={setInnerRef}
         {...{
           // attributes
-          'tenant.attr': tenant,
           'theme.attr': theme,
           'debug.attr': debug,
           'styleId.attr': styleId,

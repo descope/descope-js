@@ -169,9 +169,9 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             keepLastAuthenticatedUserAfterLogout={
               keepLastAuthenticatedUserAfterLogout
             }
+            tenant={tenant}
             {...{
               // attributes
-              'tenant.attr': tenant,
               'theme.attr': theme,
               'locale.attr': locale,
               'form.attr': form,
