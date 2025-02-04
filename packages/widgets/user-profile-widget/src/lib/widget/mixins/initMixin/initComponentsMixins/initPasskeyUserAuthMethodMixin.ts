@@ -13,10 +13,12 @@ import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getHasPasskey } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PasskeyUserAuthMethodMixinClass extends compose(
+      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -38,6 +40,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         );
         this.#modal.afterClose = this.#initModalContent.bind(this);
         this.#initModalContent();
+        this.syncFlowTheme(this.#flow);
       }
 
       #initModalContent() {
