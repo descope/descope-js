@@ -9,7 +9,7 @@ import {
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
-import { IS_BROWSER } from '../../constants';
+import { IS_BROWSER, REFRESH_THRESHOLD } from '../../constants';
 import { getRefreshToken } from '../withPersistTokens/helpers';
 
 /**
@@ -34,6 +34,7 @@ export const withAutoRefresh =
         // tab becomes visible and the session is expired, do a refresh
         if (
           document.visibilityState === 'visible' &&
+          sessionExpiration &&
           new Date() > sessionExpiration
         ) {
           logger.debug('Expiration time passed, refreshing session');
@@ -51,6 +52,7 @@ export const withAutoRefresh =
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
         logger.debug('Received 401, canceling all timers');
+        sessionExpiration = null;
         clearAllTimers();
       } else if (sessionJwt) {
         sessionExpiration = getTokenExpiration(sessionJwt);
@@ -62,6 +64,13 @@ export const withAutoRefresh =
         const timeout = getAutoRefreshTimeout(sessionExpiration);
 
         clearAllTimers();
+
+        if (timeout <= REFRESH_THRESHOLD) {
+          logger.debug(
+            'Session is too close to expiration, not setting refresh timer',
+          );
+          return;
+        }
 
         const refreshTimeStr = new Date(
           Date.now() + timeout,
