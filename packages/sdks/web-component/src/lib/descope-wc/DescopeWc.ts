@@ -858,6 +858,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
       nativeResponseType: nativeResponse?.type,
       nativePayload: nativeResponse?.payload,
+      forceUpdate: this.autoClearError && errorText,
     });
   };
 
@@ -1033,6 +1034,10 @@ class DescopeWc extends BaseDescopeWc {
 
         // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(this.rootElement, screenState);
+
+        if (this.autoClearError && screenState.errorText) {
+          this.#handleErrorMessageClearing();
+        }
       });
 
       this.#hydrate(next);
@@ -1285,6 +1290,23 @@ class DescopeWc extends BaseDescopeWc {
 
   #dispatch(eventName: string, detail: any) {
     this.dispatchEvent(new CustomEvent(eventName, { detail }));
+  }
+
+  #handleErrorMessageClearing() {
+    const errorMsgs = this.shadowRoot.querySelectorAll(
+      '[data-type="error-message"]',
+    );
+
+    if (errorMsgs.length) {
+      const onErrorMsgClear = () => {
+        Array.from(errorMsgs).forEach((errorMsg) => {
+          // eslint-disable-next-line no-param-reassign
+          errorMsg.innerHTML = '';
+          this.removeEventListener('keydown', onErrorMsgClear);
+        });
+      };
+      this.addEventListener('keydown', onErrorMsgClear);
+    }
   }
 }
 
