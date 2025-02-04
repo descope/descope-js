@@ -18,7 +18,6 @@ import {
   getRunIdsFromUrl,
   handleUrlParams,
   State,
-  withMemCache,
 } from '../helpers';
 import {
   extractNestedAttribute,
@@ -325,9 +324,7 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  getConfig = async () => {
-    return (await this.config) || { isMissingConfig: true };
-  };
+  getConfig = async () => (await this.config) || { isMissingConfig: true };
 
   #handleComponentsContext(e: CustomEvent) {
     this.#componentsContext = { ...this.#componentsContext, ...e.detail };

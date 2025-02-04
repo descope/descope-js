@@ -23,6 +23,12 @@ type Operator =
   | 'is-false'
   | 'in'
   | 'not-in';
+
+type Style = {
+  dark: ThemeTemplate;
+  light: ThemeTemplate;
+};
+
 export type ClientCondition = {
   operator: Operator;
   key: string;
@@ -44,11 +50,6 @@ export type FlowConfig = {
   condition?: ClientCondition;
   fingerprintEnabled?: boolean;
   fingerprintKey?: string;
-};
-
-type Style = {
-  dark: ThemeTemplate;
-  light: ThemeTemplate;
 };
 
 export type ProjectConfiguration = {
