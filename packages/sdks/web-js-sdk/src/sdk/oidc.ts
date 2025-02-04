@@ -12,9 +12,9 @@ import {
 } from '../constants';
 
 interface OidcConfig {
-  clientId: string;
-  redirectUri: string;
-  scope: string;
+  clientId?: string;
+  redirectUri?: string;
+  scope?: string;
 }
 
 type OidcModule = {
@@ -78,7 +78,7 @@ const loadOIDCModule = async (): Promise<OidcModule> => {
 
 const getOidcClient = async (
   sdk: CoreSdk,
-  projectID: string,
+  projectId: string,
   oidcConfig?: OidcConfig,
 ) => {
   if (!scriptLoadingPromise) {
@@ -92,12 +92,13 @@ const getOidcClient = async (
     );
   }
 
-  const statePrefix = window.location.pathname.replace(/\//g, '_');
+  // Asaf - maybe to set state by projectId, or maybe we need per application
+  const statePrefix = window.location.origin.replace(/\//g, '_');
   const stateUserKey = `${statePrefix}_user`;
 
   const settings: OidcClientSettings = {
-    authority: sdk.httpClient.buildUrl(projectID),
-    client_id: projectID,
+    authority: sdk.httpClient.buildUrl(projectId),
+    client_id: projectId,
     redirect_uri: window.location.href,
     post_logout_redirect_uri: window.location.origin + window.location.pathname,
     response_type: 'code',
@@ -121,26 +122,26 @@ const getOidcClient = async (
   };
 };
 
-const createOidc = (sdk: CoreSdk, projectID: string) => {
+const createOidc = (sdk: CoreSdk, projectId: string) => {
   const authorize = async (
     oidcConfig?: OidcConfig,
   ): Promise<SdkResponse<URLResponse>> => {
-    const { client } = await getOidcClient(sdk, projectID, oidcConfig);
+    const { client } = await getOidcClient(sdk, projectId, oidcConfig);
     const { url } = await client.createSigninRequest({});
     return { ok: true, data: { url } };
   };
 
-  const token = async (
-    oidcConfig?: OidcConfig,
-  ): Promise<SdkResponse<JWTResponse>> => {
+  const token = async (oidcConfig?: OidcConfig): Promise<any> => {
     const { client, stateUserKey } = await getOidcClient(
       sdk,
-      projectID,
+      projectId,
       oidcConfig,
     );
     const user = await client.processSigninResponse(window.location.href);
     window.localStorage.setItem(stateUserKey, JSON.stringify(user));
-    return sdk.refresh(user.refresh_token);
+    return client.useRefreshToken({
+      state: { refresh_token: user.refresh_token, data: null, ...user },
+    });
   };
 
   const getUser = (stateUserKey: string): SigninResponse | null => {
@@ -151,7 +152,7 @@ const createOidc = (sdk: CoreSdk, projectID: string) => {
   const logout = async (oidcConfig?: OidcConfig) => {
     const { client, stateUserKey } = await getOidcClient(
       sdk,
-      projectID,
+      projectId,
       oidcConfig,
     );
     const user = getUser(stateUserKey);
