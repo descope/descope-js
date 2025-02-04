@@ -12,15 +12,19 @@ import {
   baseStaticUrlMixin,
   loggerMixin,
   modalMixin,
+  themeMixin,
 } from '@descope/sdk-mixins';
 import { getName, getPicture } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initAvatarMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class AvatarMixinClass extends compose(
+      flowSyncThemeMixin,
+      themeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -43,6 +47,7 @@ export const initAvatarMixin = createSingletonMixin(
         );
         this.#modal.afterClose = this.#initModalContent.bind(this);
         this.#initModalContent();
+        this.syncFlowTheme(this.#flow);
       }
 
       #initModalContent() {
