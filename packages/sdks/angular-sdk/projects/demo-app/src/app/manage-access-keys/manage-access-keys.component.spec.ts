@@ -13,18 +13,18 @@ describe('ManageAccessKeysComponent', () => {
 
   let mockedCreateSdk: jest.Mock;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({});
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ManageAccessKeysComponent],
+      imports: [ManageAccessKeysComponent],
       providers: [
         DescopeAuthConfig,
         { provide: DescopeAuthConfig, useValue: { projectId: 'test' } }
       ]
-    });
+    }).compileComponents();
     fixture = TestBed.createComponent(ManageAccessKeysComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
