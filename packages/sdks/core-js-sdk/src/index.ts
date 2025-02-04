@@ -40,6 +40,7 @@ export type {
   UserResponse,
   UserHistoryResponse,
   LoginOptions,
+  SignUpOptions,
   AccessKeyLoginOptions,
   PasskeyOptions,
 } from './sdk/types';
