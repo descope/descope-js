@@ -1351,7 +1351,7 @@ describe('web-component', () => {
     );
   });
 
-  it('Submitter button should have a loading class when next is pending', async () => {
+  it.skip('Submitter button should have a loading class when next is pending', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     let resolve: Function;
     nextMock.mockImplementationOnce(

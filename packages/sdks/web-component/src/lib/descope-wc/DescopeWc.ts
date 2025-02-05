@@ -204,16 +204,18 @@ class DescopeWc extends BaseDescopeWc {
         const module = await loadSdkScript(script.id);
         return new Promise((resolve, reject) => {
           try {
-            const { stop, start } = module(
+            const moduleRes = module(
               script.initArgs as any,
               { baseUrl: this.baseUrl },
               createScriptCallback(script, resolve),
             );
-            this.#scriptsRegistry.set(script.id, { stop, start });
-            this.nextRequestStatus.subscribe(() => {
-              this.loggerWrapper.debug('Unloading script', script.id);
-              stop?.();
-            });
+            if (moduleRes) {
+              this.#scriptsRegistry.set(script.id, moduleRes);
+              this.nextRequestStatus.subscribe(() => {
+                this.loggerWrapper.debug('Unloading script', script.id);
+                moduleRes.stop?.();
+              });
+            }
           } catch (e) {
             reject(e);
           }

@@ -4,13 +4,14 @@ import define from 'rollup-plugin-define';
 import dts from 'rollup-plugin-dts';
 // import { terser } from 'rollup-plugin-terser';
 import del from 'rollup-plugin-delete';
-// const packageJson = require('./package.json');
 // import swcPreserveDirectives from 'rollup-swc-preserve-directives';
 import preserveDirectives from 'rollup-plugin-preserve-directives';
 // import { swc } from 'rollup-plugin-swc3';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 // import commonjs from '@rollup/plugin-commonjs';
 import alias from '@rollup/plugin-alias';
+
+import packageJson from './package.json' assert { type: 'json' };
 
 const nextSubPackages = [
 	'next/server',
@@ -25,7 +26,7 @@ const nextSubPackages = [
 const commonPlugins = (outputDir) => [
 	define({
 		replacements: {
-			BUILD_VERSION: JSON.stringify(require('./package.json').version)
+			BUILD_VERSION: JSON.stringify(packageJson.version)
 		}
 	}),
 	typescript({
