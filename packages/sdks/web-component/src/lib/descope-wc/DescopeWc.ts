@@ -254,7 +254,7 @@ class DescopeWc extends BaseDescopeWc {
   async #handleFlowRestart() {
     this.loggerWrapper.debug('Trying to restart the flow');
     const prevCompVersion = await this.getComponentsVersion();
-    this.getConfig.reset();
+    this.reset();
     const compVersion = await this.getComponentsVersion();
 
     if (prevCompVersion === compVersion) {
