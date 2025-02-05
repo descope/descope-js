@@ -27,6 +27,7 @@ export default [
         format: 'cjs',
         preserveModules: true,
         exports: 'named',
+        interop: 'auto',
       },
     ],
     plugins: [
@@ -50,6 +51,7 @@ export default [
       format: 'umd',
       sourcemap: true,
       name: 'Descope',
+      inlineDynamicImports: true,
       globals: {
         react: 'React',
       },
