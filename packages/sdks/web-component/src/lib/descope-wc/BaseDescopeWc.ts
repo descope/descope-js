@@ -258,7 +258,6 @@ class BaseDescopeWc extends BaseClass {
       const origFn = this.sdk.flow[key];
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
-        this.nextRequestStatus.update({ isLoading: true });
         try {
           const resp = await origFn(...args);
           return resp;
@@ -270,8 +269,6 @@ class BaseDescopeWc extends BaseClass {
               errorDescription: e.toString(),
             },
           };
-        } finally {
-          this.nextRequestStatus.update({ isLoading: false });
         }
       };
     });

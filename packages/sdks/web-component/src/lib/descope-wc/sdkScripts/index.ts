@@ -21,6 +21,10 @@ export default async function loadSdkScript(scriptId: string) {
       // eslint-disable-next-line no-case-declarations
       res = await import('./fingerprintDescope');
       return res.default;
+    case 'grecaptcha':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./grecaptcha');
+      return res.default;
     default:
       throw new Error(`Unknown script id: ${scriptId}`);
   }

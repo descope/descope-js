@@ -103,6 +103,12 @@ export type DebugState = {
   isDebug: boolean;
 };
 
+export type ClientScript = {
+  id: string;
+  initArgs: Record<string, any>;
+  resultKey?: string;
+};
+
 export type NextFn = OmitFirstArg<OmitFirstArg<SdkFlowNext>>;
 export type NextFnReturnPromiseValue = Awaited<ReturnType<NextFn>>;
 
@@ -128,6 +134,7 @@ type Operator =
 
 export interface ClientConditionResult {
   screenId: string;
+  clientScripts?: ClientScript[];
   interactionId: string;
 }
 
@@ -196,6 +203,7 @@ export type FlowConfig = {
       resultKey?: string;
     },
   ];
+  clientScripts?: ClientScript[];
 };
 
 export interface ProjectConfiguration {

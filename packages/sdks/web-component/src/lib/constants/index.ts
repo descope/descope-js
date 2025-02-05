@@ -53,3 +53,5 @@ export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
   'descope-multi-select-combo-box',
   'descope-text-area',
 ];
+
+export const SDK_SCRIPTS_LOAD_TIMEOUT = 5000;
