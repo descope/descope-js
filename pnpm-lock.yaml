@@ -194,8 +194,8 @@ importers:
         specifier: 28.0.2
         version: 28.0.2(rollup@4.13.0)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.13.0)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.13.0)
       '@rollup/plugin-replace':
         specifier: ^5.0.2
         version: 5.0.2(rollup@4.13.0)
@@ -324,8 +324,8 @@ importers:
         specifier: 28.0.2
         version: 28.0.2(rollup@4.13.0)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.13.0)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.13.0)
       '@rollup/plugin-replace':
         specifier: ^5.0.2
         version: 5.0.2(rollup@4.13.0)
@@ -472,8 +472,8 @@ importers:
         specifier: 28.0.2
         version: 28.0.2(rollup@4.13.0)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.13.0)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.13.0)
       '@rollup/plugin-replace':
         specifier: ^5.0.2
         version: 5.0.2(rollup@4.13.0)
@@ -738,8 +738,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.2
         version: 5.0.2(rollup@4.14.3)
@@ -899,8 +899,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@2.79.1)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.2.3
-        version: 15.2.3(rollup@2.79.1)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@2.79.1)
       '@rollup/plugin-replace':
         specifier: ^5.0.5
         version: 5.0.7(rollup@2.79.1)
@@ -1137,8 +1137,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@2.79.1)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@2.79.1)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@2.79.1)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@2.79.1)
@@ -1342,8 +1342,8 @@ importers:
         version: link:../web-js-sdk
     devDependencies:
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.2.3(rollup@2.79.1)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@2.79.1)
       '@rollup/plugin-typescript':
         specifier: ^11.1.0
         version: 11.1.6(rollup@2.79.1)(tslib@2.6.3)(typescript@5.4.5)
@@ -1487,8 +1487,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@3.29.4)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@3.29.4)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@3.29.4)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@3.29.4)
@@ -1635,8 +1635,8 @@ importers:
         specifier: 28.0.2
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.2
         version: 5.0.2(rollup@4.14.3)
@@ -1801,8 +1801,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@4.14.3)
@@ -1979,8 +1979,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.2.3(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.7(rollup@4.14.3)
@@ -2157,8 +2157,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@2.79.1)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@2.79.1)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@2.79.1)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@2.79.1)
@@ -2335,8 +2335,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@4.14.3)
@@ -2516,8 +2516,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@4.14.3)
@@ -2701,8 +2701,8 @@ importers:
         specifier: ^28.0.0
         version: 28.0.2(rollup@4.14.3)
       '@rollup/plugin-node-resolve':
-        specifier: ^15.0.0
-        version: 15.0.2(rollup@4.14.3)
+        specifier: ^16.0.0
+        version: 16.0.0(rollup@4.14.3)
       '@rollup/plugin-replace':
         specifier: ^5.0.0
         version: 5.0.2(rollup@4.14.3)
@@ -3570,7 +3570,7 @@ packages:
       '@babel/helper-plugin-utils': 7.26.5
       debug: 4.3.7
       lodash.debounce: 4.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3585,7 +3585,7 @@ packages:
       '@babel/helper-plugin-utils': 7.26.5
       debug: 4.3.7
       lodash.debounce: 4.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3600,7 +3600,7 @@ packages:
       '@babel/helper-plugin-utils': 7.24.8
       debug: 4.3.7
       lodash.debounce: 4.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8555,96 +8555,6 @@ packages:
       rollup: 3.29.4
     dev: true
 
-  /@rollup/plugin-node-resolve@15.0.2(rollup@2.79.1):
-    resolution: {integrity: sha512-Y35fRGUjC3FaurG722uhUuG8YHOJRJQbI6/CkbRkdPotSpDj9NtIN85z1zrcyDcCQIW4qp5mgG72U+gJ0TAFEg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@2.79.1)
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-builtin-module: 3.2.1
-      is-module: 1.0.0
-      resolve: 1.22.4
-      rollup: 2.79.1
-    dev: true
-
-  /@rollup/plugin-node-resolve@15.0.2(rollup@3.29.4):
-    resolution: {integrity: sha512-Y35fRGUjC3FaurG722uhUuG8YHOJRJQbI6/CkbRkdPotSpDj9NtIN85z1zrcyDcCQIW4qp5mgG72U+gJ0TAFEg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-builtin-module: 3.2.1
-      is-module: 1.0.0
-      resolve: 1.22.4
-      rollup: 3.29.4
-    dev: true
-
-  /@rollup/plugin-node-resolve@15.0.2(rollup@4.13.0):
-    resolution: {integrity: sha512-Y35fRGUjC3FaurG722uhUuG8YHOJRJQbI6/CkbRkdPotSpDj9NtIN85z1zrcyDcCQIW4qp5mgG72U+gJ0TAFEg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.13.0)
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-builtin-module: 3.2.1
-      is-module: 1.0.0
-      resolve: 1.22.4
-      rollup: 4.13.0
-    dev: true
-
-  /@rollup/plugin-node-resolve@15.0.2(rollup@4.14.3):
-    resolution: {integrity: sha512-Y35fRGUjC3FaurG722uhUuG8YHOJRJQbI6/CkbRkdPotSpDj9NtIN85z1zrcyDcCQIW4qp5mgG72U+gJ0TAFEg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-builtin-module: 3.2.1
-      is-module: 1.0.0
-      resolve: 1.22.4
-      rollup: 4.14.3
-    dev: true
-
-  /@rollup/plugin-node-resolve@15.2.3(rollup@2.79.1):
-    resolution: {integrity: sha512-j/lym8nf5E21LwBT4Df1VD6hRO2L2iwUeUmP7litikRsVp1H6NWx20NEp0Y7su+7XGc476GnXXc4kFeZNGmaSQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@2.79.1)
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-builtin-module: 3.2.1
-      is-module: 1.0.0
-      resolve: 1.22.4
-      rollup: 2.79.1
-    dev: true
-
   /@rollup/plugin-node-resolve@15.2.3(rollup@3.29.4):
     resolution: {integrity: sha512-j/lym8nf5E21LwBT4Df1VD6hRO2L2iwUeUmP7litikRsVp1H6NWx20NEp0Y7su+7XGc476GnXXc4kFeZNGmaSQ==}
     engines: {node: '>=14.0.0'}
@@ -8659,12 +8569,63 @@ packages:
       deepmerge: 4.3.1
       is-builtin-module: 3.2.1
       is-module: 1.0.0
-      resolve: 1.22.8
+      resolve: 1.22.10
       rollup: 3.29.4
     dev: true
 
-  /@rollup/plugin-node-resolve@15.2.3(rollup@4.14.3):
-    resolution: {integrity: sha512-j/lym8nf5E21LwBT4Df1VD6hRO2L2iwUeUmP7litikRsVp1H6NWx20NEp0Y7su+7XGc476GnXXc4kFeZNGmaSQ==}
+  /@rollup/plugin-node-resolve@16.0.0(rollup@2.79.1):
+    resolution: {integrity: sha512-0FPvAeVUT/zdWoO0jnb/V5BlBsUSNfkIOtFHzMO4H9MOklrmQFY6FduVHKucNb/aTFxvnGhj4MNj/T1oNdDfNg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.78.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.1.4(rollup@2.79.1)
+      '@types/resolve': 1.20.2
+      deepmerge: 4.3.1
+      is-module: 1.0.0
+      resolve: 1.22.10
+      rollup: 2.79.1
+    dev: true
+
+  /@rollup/plugin-node-resolve@16.0.0(rollup@3.29.4):
+    resolution: {integrity: sha512-0FPvAeVUT/zdWoO0jnb/V5BlBsUSNfkIOtFHzMO4H9MOklrmQFY6FduVHKucNb/aTFxvnGhj4MNj/T1oNdDfNg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.78.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.1.4(rollup@3.29.4)
+      '@types/resolve': 1.20.2
+      deepmerge: 4.3.1
+      is-module: 1.0.0
+      resolve: 1.22.10
+      rollup: 3.29.4
+    dev: true
+
+  /@rollup/plugin-node-resolve@16.0.0(rollup@4.13.0):
+    resolution: {integrity: sha512-0FPvAeVUT/zdWoO0jnb/V5BlBsUSNfkIOtFHzMO4H9MOklrmQFY6FduVHKucNb/aTFxvnGhj4MNj/T1oNdDfNg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.78.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.1.4(rollup@4.13.0)
+      '@types/resolve': 1.20.2
+      deepmerge: 4.3.1
+      is-module: 1.0.0
+      resolve: 1.22.10
+      rollup: 4.13.0
+    dev: true
+
+  /@rollup/plugin-node-resolve@16.0.0(rollup@4.14.3):
+    resolution: {integrity: sha512-0FPvAeVUT/zdWoO0jnb/V5BlBsUSNfkIOtFHzMO4H9MOklrmQFY6FduVHKucNb/aTFxvnGhj4MNj/T1oNdDfNg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.78.0||^3.0.0||^4.0.0
@@ -8675,9 +8636,8 @@ packages:
       '@rollup/pluginutils': 5.1.4(rollup@4.14.3)
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
-      is-builtin-module: 3.2.1
       is-module: 1.0.0
-      resolve: 1.22.8
+      resolve: 1.22.10
       rollup: 4.14.3
     dev: true
 
@@ -13476,7 +13436,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.25.6
       cosmiconfig: 6.0.0
-      resolve: 1.22.8
+      resolve: 1.22.10
     dev: true
 
   /babel-plugin-polyfill-corejs2@0.4.11(@babel/core@7.26.0):
@@ -20666,7 +20626,7 @@ packages:
       jest-pnp-resolver: 1.2.3(jest-resolve@29.7.0)
       jest-util: 29.7.0
       jest-validate: 29.7.0
-      resolve: 1.22.8
+      resolve: 1.22.10
       resolve.exports: 2.0.2
       slash: 3.0.0
     dev: true
@@ -22613,7 +22573,7 @@ packages:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.8
+      resolve: 1.22.10
       semver: 5.7.1
       validate-npm-package-license: 3.0.4
     dev: true
@@ -25013,15 +24973,6 @@ packages:
     hasBin: true
     dependencies:
       is-core-module: 2.13.1
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
-    dev: true
-
-  /resolve@1.22.8:
-    resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
-    hasBin: true
-    dependencies:
-      is-core-module: 2.16.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
