@@ -23,6 +23,12 @@ type Operator =
   | 'is-false'
   | 'in'
   | 'not-in';
+
+type Style = {
+  dark: ThemeTemplate;
+  light: ThemeTemplate;
+};
+
 export type ClientCondition = {
   operator: Operator;
   key: string;
@@ -48,11 +54,16 @@ export type FlowConfig = {
 
 export type ProjectConfiguration = {
   componentsVersion: string;
-  cssTemplate: {
-    dark: ThemeTemplate;
-    light: ThemeTemplate;
-  };
+  cssTemplate: Style;
   flows: {
     [key: string]: FlowConfig; // dynamic key names for flows
+  };
+  styles: Record<string, Style>;
+};
+
+export type Config = {
+  projectConfig: ProjectConfiguration;
+  executionContext: {
+    geo: string;
   };
 };
