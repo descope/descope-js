@@ -129,7 +129,7 @@
 		"rollup-plugin-preserve-directives": "^0.4.0",
 		"rollup-plugin-serve": "^2.0.3",
 		"rollup-plugin-swc3": "^0.12.0",
-		"rollup-plugin-terser": "^7.0.2",
+		"@rollup/plugin-terser": "^0.1.0",
 		"rollup-swc-preserve-directives": "^0.7.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.0.2"
