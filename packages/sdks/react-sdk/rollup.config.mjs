@@ -20,6 +20,7 @@ export default [
         sourcemap: true,
         format: 'esm',
         preserveModules: true,
+        interop: 'auto',
       },
       {
         dir: './dist/cjs',
@@ -50,7 +51,6 @@ export default [
       format: 'umd',
       sourcemap: true,
       name: 'Descope',
-      inlineDynamicImports: true,
       globals: {
         react: 'React',
       },
