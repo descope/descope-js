@@ -115,7 +115,7 @@
 		"jest-config": "^29.7.0",
 		"jest-environment-jsdom": "^29.7.0",
 		"jest-fetch-mock": "^3.0.3",
-		"lint-staged": "^13.3.0",
+		"lint-staged": "^14.0.0",
 		"msw": "^2.1.7",
 		"next": "^14.2.10",
 		"rollup": "^2.79.1",
