@@ -20,7 +20,6 @@ export default [
         sourcemap: true,
         format: 'esm',
         preserveModules: true,
-        interop: 'auto',
       },
       {
         dir: './dist/cjs',
@@ -28,6 +27,7 @@ export default [
         format: 'cjs',
         preserveModules: true,
         exports: 'named',
+        interop: 'auto',
       },
     ],
     plugins: [
