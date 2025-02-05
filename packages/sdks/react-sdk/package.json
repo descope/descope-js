@@ -82,7 +82,7 @@
     "@rollup/plugin-replace": "^5.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/jest-dom": "5.17.0",
-    "@testing-library/react": "16.0.0",
+    "@testing-library/react": "16.1.0",
     "@testing-library/react-hooks": "8.0.1",
     "@testing-library/user-event": "14.5.2",
     "@types/jest": "^29.0.0",
