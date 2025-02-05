@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { observeAttributesMixin, themeMixin } from '@descope/sdk-mixins';
