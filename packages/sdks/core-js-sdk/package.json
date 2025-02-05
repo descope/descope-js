@@ -48,7 +48,7 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": "20.17.13",
-    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "esbuild": "^0.24.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-typescript": "18.0.0",
