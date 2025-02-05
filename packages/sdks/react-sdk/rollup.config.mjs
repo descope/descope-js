@@ -50,6 +50,7 @@ export default [
       format: 'umd',
       sourcemap: true,
       name: 'Descope',
+      inlineDynamicImports: true,
       globals: {
         react: 'React',
       },

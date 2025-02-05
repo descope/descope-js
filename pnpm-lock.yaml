@@ -178,6 +178,8 @@ importers:
         specifier: ^5.0.2
         version: 5.6.3
 
+  packages/libs/escape-markdown/dist/cjs: {}
+
   packages/libs/sdk-component-drivers:
     dependencies:
       '@descope/sdk-helpers':
@@ -314,6 +316,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-component-drivers/dist/cjs: {}
+
   packages/libs/sdk-helpers:
     dependencies:
       tslib:
@@ -443,6 +447,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -597,6 +603,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-mixins/dist/cjs: {}
 
   packages/sdks/angular-sdk:
     dependencies:
@@ -851,6 +859,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/core-js-sdk/dist/cjs: {}
 
   packages/sdks/nextjs-sdk:
     dependencies:
@@ -1284,8 +1294,8 @@ importers:
         specifier: ^0.5.0
         version: 0.5.1(rollup@4.22.4)
       rollup-plugin-dts:
-        specifier: ^4.2.2
-        version: 4.2.3(rollup@4.22.4)(typescript@5.4.5)
+        specifier: ^6.1.1
+        version: 6.1.1(rollup@4.22.4)(typescript@5.4.5)
       rollup-plugin-livereload:
         specifier: ^2.0.5
         version: 2.0.5
@@ -1310,6 +1320,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/react-sdk/dist/cjs: {}
 
   packages/sdks/vue-sdk:
     dependencies:
@@ -1432,8 +1444,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       rollup-plugin-dts:
-        specifier: ^4.2.2
-        version: 4.2.3(rollup@4.22.4)(typescript@5.4.5)
+        specifier: ^6.1.1
+        version: 6.1.1(rollup@4.22.4)(typescript@5.4.5)
       rollup-plugin-terser:
         specifier: ^7.0.2
         version: 7.0.2(rollup@4.22.4)
@@ -1754,6 +1766,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/web-js-sdk/dist/cjs: {}
 
   packages/widgets/access-key-management-widget:
     dependencies:
@@ -3390,7 +3404,7 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   /@babel/compat-data@7.26.5:
     resolution: {integrity: sha512-XvcZi1KWf88RVbF9wn8MN6tYFloU5qX8KjuF3E1PVBmJ9eypXfs4GRiJwLuTZL0iSnJUKn1BFPa5BPZZJyFzPg==}
@@ -3943,11 +3957,6 @@ packages:
     resolution: {integrity: sha512-4A/SCr/2KLd5jrtOMFzaKjVtAei3+2r/NChoBNoZ3EyP/+GlhoaEGoWOZUmFmoITP7zOJyHIMm+DYRd8o3PvHA==}
     engines: {node: '>=6.9.0'}
 
-  /@babel/helper-validator-identifier@7.24.7:
-    resolution: {integrity: sha512-rR+PBcQ1SMQDDyF6X0wxtG8QyLCgUB0eRAGguqRLfkCA87l7yAP7ehq8SNj96OOGTO8OBV70KhuFYcIkHXOg0w==}
-    engines: {node: '>=6.9.0'}
-    dev: true
-
   /@babel/helper-validator-identifier@7.25.9:
     resolution: {integrity: sha512-Ed61U6XJc3CVRfkERJWDz4dJwKe7iLmmJsbOGu9wSloNSFttHV0I8g6UAgb7qnK5ly5bGLPd4oXZlxCdANBOWQ==}
     engines: {node: '>=6.9.0'}
@@ -3990,7 +3999,7 @@ packages:
       '@babel/helper-validator-identifier': 7.25.9
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
     dev: true
 
   /@babel/parser@7.24.8:
@@ -6234,7 +6243,7 @@ packages:
     resolution: {integrity: sha512-jYqfPrU9JTF0PmPy1tLYHW4Mp4KlgxJD9l2nP9fD6yT/ICi554DmrWBAEYpIelzjHf1msDP3PxJIRt/nFNfBig==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/code-frame': 7.24.7
+      '@babel/code-frame': 7.26.2
       '@babel/parser': 7.24.8
       '@babel/types': 7.24.8
     dev: true
@@ -6284,7 +6293,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/helper-string-parser': 7.24.8
-      '@babel/helper-validator-identifier': 7.24.7
+      '@babel/helper-validator-identifier': 7.25.9
       to-fast-properties: 2.0.0
     dev: true
 
@@ -21229,7 +21238,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@22.13.1)(typescript@5.6.3)
+      ts-node: 10.9.2(@types/node@20.17.12)(typescript@5.7.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -22149,7 +22158,7 @@ packages:
   /launch-editor@2.8.0:
     resolution: {integrity: sha512-vJranOAJrI/llyWGRQqiDM+adrw+k83fvmmx3+nV47g3+36xM15jE+zyZ6Ffel02+xSvuM0b2GDRosXZkbb6wA==}
     dependencies:
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       shell-quote: 1.8.1
     dev: true
 
@@ -24343,6 +24352,7 @@ packages:
 
   /picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
+    dev: true
 
   /picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -26134,6 +26144,20 @@ packages:
       '@babel/code-frame': 7.26.2
     dev: true
 
+  /rollup-plugin-dts@6.1.1(rollup@4.22.4)(typescript@5.4.5):
+    resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      rollup: ^3.29.4 || ^4
+      typescript: ^4.5 || ^5.0
+    dependencies:
+      magic-string: 0.30.17
+      rollup: 4.22.4
+      typescript: 5.4.5
+    optionalDependencies:
+      '@babel/code-frame': 7.26.2
+    dev: true
+
   /rollup-plugin-esbuild@6.1.1(esbuild@0.24.2)(rollup@4.22.4):
     resolution: {integrity: sha512-CehMY9FAqJD5OUaE/Mi1r5z0kNeYxItmRO2zG4Qnv2qWKF09J2lTy5GUzjJR354ZPrLkCj4fiBN41lo8PzBUhw==}
     engines: {node: '>=14.18.0'}
@@ -26279,7 +26303,7 @@ packages:
     peerDependencies:
       rollup: ^2.0.0 || ^3.0.0 || ^4.0.0
     dependencies:
-      magic-string: 0.30.11
+      magic-string: 0.30.17
       rollup: 4.22.4
     dev: true
 
@@ -27572,7 +27596,7 @@ packages:
       css-select: 4.3.0
       css-tree: 1.1.3
       csso: 4.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       stable: 0.1.8
     dev: true
 
@@ -28850,7 +28874,7 @@ packages:
     dependencies:
       browserslist: 4.23.2
       escalade: 3.1.2
-      picocolors: 1.1.0
+      picocolors: 1.1.1
     dev: true
 
   /update-browserslist-db@1.1.0(browserslist@4.23.3):
@@ -28861,7 +28885,7 @@ packages:
     dependencies:
       browserslist: 4.23.3
       escalade: 3.1.2
-      picocolors: 1.1.0
+      picocolors: 1.1.1
     dev: true
 
   /update-browserslist-db@1.1.1(browserslist@4.24.0):
@@ -28872,7 +28896,7 @@ packages:
     dependencies:
       browserslist: 4.24.0
       escalade: 3.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   /update-browserslist-db@1.1.1(browserslist@4.24.4):
     resolution: {integrity: sha512-R8UzCaa9Az+38REPiJ1tXlImTJXlVfgHZsglwBD/k6nj76ctsH1E3q4doGrukiLQd3sGQYu56r5+lo5r94l29A==}
@@ -28882,7 +28906,7 @@ packages:
     dependencies:
       browserslist: 4.24.4
       escalade: 3.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
     dev: true
 
   /update-check@1.5.4:
