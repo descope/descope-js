@@ -1037,8 +1037,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       rollup-plugin-swc3:
-        specifier: ^0.11.0
-        version: 0.11.2(@swc/core@1.7.1)(rollup@2.79.1)
+        specifier: ^0.12.0
+        version: 0.12.1(@swc/core@1.7.1)(rollup@2.79.1)
       rollup-plugin-terser:
         specifier: ^7.0.2
         version: 7.0.2(rollup@2.79.1)
@@ -6418,6 +6418,10 @@ packages:
     engines: {node: '>=14.17.0'}
     dev: true
 
+  /@dual-bundle/import-meta-resolve@4.1.0:
+    resolution: {integrity: sha512-+nxncfwHM5SgAtrVzgpzJOI1ol0PkumhVo469KCf9lUi21IGcY90G98VuHm9VRrUypmAzawAHO9bs6hqeADaVg==}
+    dev: true
+
   /@emnapi/core@1.2.0:
     resolution: {integrity: sha512-E7Vgw78I93we4ZWdYCb4DGAwRROGkMIXk7/y87UmANR+J6qsWusmC3gLt0H+O0KOt5e6O38U8oJamgbudrES/w==}
     dependencies:
@@ -7444,8 +7448,8 @@ packages:
       levn: 0.4.1
     dev: true
 
-  /@fastify/deepmerge@1.3.0:
-    resolution: {integrity: sha512-J8TOSBq3SoZbDhM9+R/u77hP93gz/rajSA+K2kGyijPpORPWUXHUpTaleoj+92As0S9uPRP7Oi8IqMf0u+ro6A==}
+  /@fastify/deepmerge@2.0.2:
+    resolution: {integrity: sha512-3wuLdX5iiiYeZWP6bQrjqhrcvBIf0NHbQH1Ur1WbHvoiuTYUEItgygea3zs8aHpiitn0lOB8gX20u1qO+FDm7Q==}
     dev: true
 
   /@fingerprintjs/fingerprintjs-pro@3.11.6:
@@ -10107,6 +10111,21 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 4.14.3
+    dev: true
+
+  /@rollup/pluginutils@5.1.4(rollup@2.79.1):
+    resolution: {integrity: sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.6
+      estree-walker: 2.0.2
+      picomatch: 4.0.2
+      rollup: 2.79.1
     dev: true
 
   /@rollup/rollup-android-arm-eabi@4.13.0:
@@ -19362,6 +19381,12 @@ packages:
       get-intrinsic: 1.2.4
     dev: true
 
+  /get-tsconfig@4.10.0:
+    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+    dev: true
+
   /get-tsconfig@4.7.3:
     resolution: {integrity: sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg==}
     dependencies:
@@ -25833,19 +25858,20 @@ packages:
       rollup: 4.14.3
     dev: true
 
-  /rollup-plugin-swc3@0.11.2(@swc/core@1.7.1)(rollup@2.79.1):
-    resolution: {integrity: sha512-o1ih9B806fV2wBSNk46T0cYfTF2eiiKmYXRpWw3K4j/Cp3tCAt10UCVsTqvUhGP58pcB3/GZcAVl5e7TCSKN6Q==}
-    engines: {node: '>=12'}
+  /rollup-plugin-swc3@0.12.1(@swc/core@1.7.1)(rollup@2.79.1):
+    resolution: {integrity: sha512-iNV1T432XvyejZ19/41C2gLbXxEOiiJynPPAFF0WzwwFT5FHx7SstAp0yjJRLyrbZjfIhoWJVl3hX3c3Stv/GQ==}
+    engines: {node: '>=16'}
     peerDependencies:
       '@swc/core': '>=1.2.165'
       rollup: ^2.0.0 || ^3.0.0 || ^4.0.0
     dependencies:
-      '@fastify/deepmerge': 1.3.0
-      '@rollup/pluginutils': 5.1.0(rollup@2.79.1)
+      '@dual-bundle/import-meta-resolve': 4.1.0
+      '@fastify/deepmerge': 2.0.2
+      '@rollup/pluginutils': 5.1.4(rollup@2.79.1)
       '@swc/core': 1.7.1
-      get-tsconfig: 4.7.3
+      get-tsconfig: 4.10.0
       rollup: 2.79.1
-      rollup-preserve-directives: 1.1.1(rollup@2.79.1)
+      rollup-preserve-directives: 1.1.3(rollup@2.79.1)
     dev: true
 
   /rollup-plugin-terser@7.0.2(rollup@2.79.1):
@@ -25921,12 +25947,12 @@ packages:
       estree-walker: 0.6.1
     dev: true
 
-  /rollup-preserve-directives@1.1.1(rollup@2.79.1):
-    resolution: {integrity: sha512-+eQafbuEfDPfxQ9hQPlwaROfin4yiVRxap8hnrvvvcSGoukv1tTiYpAW9mvm3uR8J+fe4xd8FdVd5rz9q7jZ+Q==}
+  /rollup-preserve-directives@1.1.3(rollup@2.79.1):
+    resolution: {integrity: sha512-oXqxd6ZzkoQej8Qt0k+S/yvO2+S4CEVEVv2g85oL15o0cjAKTKEuo2MzyA8FcsBBXbtytBzBMFAbhvQg4YyPUQ==}
     peerDependencies:
       rollup: ^2.0.0 || ^3.0.0 || ^4.0.0
     dependencies:
-      magic-string: 0.30.11
+      magic-string: 0.30.17
       rollup: 2.79.1
     dev: true
 
