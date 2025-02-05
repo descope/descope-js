@@ -1,9 +1,21 @@
+declare global {
+  interface Window {
+    grecaptcha?: {
+      enterprise?: any;
+      ready: (callback: () => void) => void;
+      execute: (widgetId: any, options: { action: string }) => Promise<string>;
+      render: (container: HTMLElement, parameters: any) => any;
+    };
+    onRecaptchaLoadCallback: () => void;
+  }
+}
+
 export const loadGRecaptcha = (
   initArgs: {
     enterprise: boolean;
     siteKey: string;
   },
-  inputs: { baseUrl?: string },
+  _inputs: { baseUrl?: string },
   onTokenReady: (token: string) => void,
 ) => {
   const getScriptURL = () => {
@@ -27,19 +39,16 @@ export const loadGRecaptcha = (
     initArgs.enterprise ? window.grecaptcha?.enterprise : window.grecaptcha;
 
   let timer;
+  let recaptchaWidgetId;
 
-  const getNewToken = (grecaptchaInstance, currentNode, recaptchaWidgetId) => {
+  const getNewToken = (grecaptchaInstance, currentNode) => {
     grecaptchaInstance.ready(() => {
       if (!initArgs.siteKey) {
         return;
       }
-      // we should pass recaptchaWidgetId, but this does not allow us to run execute multiple times
-      // also calling grecaptchaInstance.reset() does not work
       grecaptchaInstance
-        ?.execute(recaptchaWidgetId, {
-          action: 'load',
-        })
-        .then((token, e) => {
+        ?.execute(recaptchaWidgetId, { action: 'load' })
+        .then((token: string, e: any) => {
           if (e) {
             // eslint-disable-next-line no-console
             console.warn('could not execute recaptcha', e);
@@ -47,14 +56,14 @@ export const loadGRecaptcha = (
             onTokenReady(token);
             // if the component is still connected, we should try to get a new token before the token expires (2 minutes)
             timer = setTimeout(() => {
-              getNewToken(grecaptchaInstance, currentNode, recaptchaWidgetId);
+              getNewToken(grecaptchaInstance, currentNode);
             }, 110000);
           }
         });
     });
   };
 
-  const stopScriptExecution = () => {
+  const stopTimer = () => {
     clearTimeout(timer);
   };
 
@@ -66,6 +75,14 @@ export const loadGRecaptcha = (
   };
 
   const elementRef = createRecaptchaEle();
+
+  const resumeScriptExecution = () => {
+    const grecaptchaInstance = getGrecaptchaInstance();
+    if (!grecaptchaInstance) {
+      return;
+    }
+    getNewToken(grecaptchaInstance, elementRef);
+  };
 
   const createOnLoadScript = () => {
     window.onRecaptchaLoadCallback = () => {
@@ -83,12 +100,12 @@ export const loadGRecaptcha = (
       }
 
       setTimeout(() => {
-        const recaptchaWidgetId = grecaptchaInstance.render(currentNode, {
+        recaptchaWidgetId = grecaptchaInstance.render(currentNode, {
           sitekey: initArgs.siteKey,
           badge: 'inline',
           size: 'invisible',
         });
-        getNewToken(grecaptchaInstance, currentNode, recaptchaWidgetId);
+        getNewToken(grecaptchaInstance, currentNode);
       }, 0);
     };
   };
@@ -96,7 +113,7 @@ export const loadGRecaptcha = (
   createOnLoadScript();
   loadRecaptchaScript();
 
-  return stopScriptExecution;
+  return { stop: stopTimer, start: resumeScriptExecution };
 };
 
 export default loadGRecaptcha;

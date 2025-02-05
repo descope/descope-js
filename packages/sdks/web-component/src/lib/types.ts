@@ -34,6 +34,7 @@ export interface ScreenState {
   lastAuth?: LastAuthState;
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
+  clientScripts?: ClientScript[];
 }
 
 export type SSOQueryParams = {
@@ -101,6 +102,11 @@ export type StepState = {
 
 export type DebugState = {
   isDebug: boolean;
+};
+
+export type ScriptModule = {
+  stop: () => void;
+  start: () => void;
 };
 
 export type ClientScript = {

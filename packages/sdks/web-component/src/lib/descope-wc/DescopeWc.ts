@@ -48,10 +48,10 @@ import {
 import {
   ClientScript,
   Direction,
-  FlowConfig,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
+  ScriptModule,
   SdkConfig,
   StepState,
 } from '../types';
@@ -162,6 +162,8 @@ class DescopeWc extends BaseDescopeWc {
       }
     | undefined;
 
+  #scriptsRegistry = new Map<string, ScriptModule>();
+
   loadSdkScripts(scripts: ClientScript[]) {
     if (!scripts?.length) {
       return null;
@@ -193,17 +195,24 @@ class DescopeWc extends BaseDescopeWc {
 
     const promises = Promise.all(
       scripts?.map(async (script) => {
+        if (this.#scriptsRegistry.has(script.id)) {
+          this.loggerWrapper.debug('Script already loaded', script.id);
+          const m = this.#scriptsRegistry.get(script.id);
+          m.start?.();
+          return m;
+        }
         const module = await loadSdkScript(script.id);
         return new Promise((resolve, reject) => {
           try {
-            const unloadScript = module(
+            const { stop, start } = module(
               script.initArgs as any,
               { baseUrl: this.baseUrl },
               createScriptCallback(script, resolve),
             );
+            this.#scriptsRegistry.set(script.id, { stop, start });
             this.nextRequestStatus.subscribe(() => {
               this.loggerWrapper.debug('Unloading script', script.id);
-              unloadScript?.();
+              stop?.();
             });
           } catch (e) {
             reject(e);
@@ -376,17 +385,22 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      let clientScripts = [
+      const clientScripts = [
         ...(flowConfig.clientScripts || []),
         ...(flowConfig.sdkScripts || []),
       ];
 
       if (flowConfig.conditions) {
-        ({ startScreenId, conditionInteractionId, clientScripts } =
-          calculateConditions(
-            { loginId, code, token, abTestingKey },
-            flowConfig.conditions,
-          ));
+        let conditionScripts = [];
+        ({
+          startScreenId,
+          conditionInteractionId,
+          clientScripts: conditionScripts,
+        } = calculateConditions(
+          { loginId, code, token, abTestingKey },
+          flowConfig.conditions,
+        ));
+        clientScripts.push(...(conditionScripts || []));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
@@ -883,6 +897,10 @@ class DescopeWc extends BaseDescopeWc {
         error,
       },
     );
+
+    if (screen.state?.clientScripts) {
+      this.#sdkScriptsLoading = this.loadSdkScripts(screen.state.clientScripts);
+    }
 
     this.flowState.update({
       stepId,
