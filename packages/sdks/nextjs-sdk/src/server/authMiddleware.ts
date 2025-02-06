@@ -44,13 +44,18 @@ const getSessionJwt = (req: NextRequest): string | undefined => {
 	return undefined;
 };
 
+const matchWildcardRoute = (route: string, path: string) => {
+	const regex = new RegExp(`^${route.replace(/\*/g, '.*')}$`);
+	return regex.test(path);
+};
+
 const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 	// Ensure publicRoutes and privateRoutes are arrays, defaulting to empty arrays if not defined
-	const publicRoutes = options.publicRoutes || [];
-	const privateRoutes = options.privateRoutes || [];
+	const { publicRoutes = [], privateRoutes = [] } = options;
+	const { pathname } = req.nextUrl;
 
 	const isDefaultPublicRoute = Object.values(DEFAULT_PUBLIC_ROUTES).includes(
-		req.nextUrl.pathname
+		pathname
 	);
 
 	if (publicRoutes.length > 0) {
@@ -59,12 +64,12 @@ const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 				'Both publicRoutes and privateRoutes are defined. Ignoring privateRoutes.'
 			);
 		}
-		return isDefaultPublicRoute || publicRoutes.includes(req.nextUrl.pathname);
+		return isDefaultPublicRoute || publicRoutes.some((route) => matchWildcardRoute(route, pathname))
 	}
 
 	if (privateRoutes.length > 0) {
 		return (
-			isDefaultPublicRoute || !privateRoutes.includes(req.nextUrl.pathname)
+			isDefaultPublicRoute || !privateRoutes.some((route) => matchWildcardRoute(route, pathname))
 		);
 	}
 

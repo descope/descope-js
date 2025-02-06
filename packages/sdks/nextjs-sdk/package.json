@@ -19,19 +19,31 @@
 			"import": {
 				"types": "./dist/index.d.ts",
 				"default": "./dist/index.js"
-			}
+			},
+			"require": {
+      			"types": "./dist/index.d.ts",
+      			"default": "./dist/index.js"
+    		}
 		},
 		"./client": {
 			"import": {
 				"types": "./dist/client/index.d.ts",
 				"default": "./dist/client/index.js"
-			}
+			},
+			"require": {
+      			"types": "./dist/client/index.d.ts",
+      			"default": "./dist/client/index.js"
+    		}
 		},
 		"./server": {
 			"import": {
 				"types": "./dist/server/index.d.ts",
 				"default": "./dist/server/index.js"
-			}
+			},
+			"require": {
+      			"types": "./dist/server/index.d.ts",
+      			"default": "./dist/server/index.js"
+    		}
 		}
 	},
 	"typesVersions": {
