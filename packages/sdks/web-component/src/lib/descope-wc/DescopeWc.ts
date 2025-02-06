@@ -9,7 +9,6 @@ import {
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
-  IS_RUNNING_IN_DESCOPE_BRIDGE,
   RESPONSE_ACTIONS,
   URL_CODE_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
@@ -198,7 +197,7 @@ class DescopeWc extends BaseDescopeWc {
     // when running in a webview (mobile SDK) we want to lazy init the component
     // so the mobile SDK will be able to register all the necessary callbacks
     // before the component will start loading the flow
-    if (!IS_RUNNING_IN_DESCOPE_BRIDGE) {
+    if (!(window as any).isDescopeBridge) {
       return this._init();
     } else {
       (this as any).lazyInit = this._init;
@@ -366,6 +365,7 @@ class DescopeWc extends BaseDescopeWc {
     } = currentState;
 
     let startScreenId: string;
+    let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
     const loginId = this.sdk.getLastUserLoginId();
@@ -407,10 +407,11 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       if (flowConfig.conditions) {
-        ({ startScreenId, conditionInteractionId } = calculateConditions(
-          { loginId, code, token, abTestingKey },
-          flowConfig.conditions,
-        ));
+        ({ startScreenId, conditionInteractionId, startScreenName } =
+          calculateConditions(
+            { loginId, code, token, abTestingKey },
+            flowConfig.conditions,
+          ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
@@ -422,6 +423,7 @@ class DescopeWc extends BaseDescopeWc {
           },
         ));
       } else {
+        startScreenName = flowConfig.startScreenName;
         startScreenId = flowConfig.startScreenId;
       }
 
@@ -648,7 +650,7 @@ class DescopeWc extends BaseDescopeWc {
       htmlFilename: `${readyScreenId}.html`,
       htmlLocaleFilename: filenameWithLocale,
       screenId: readyScreenId,
-      stepName: currentState.stepName || flowConfig.startScreenName,
+      stepName: currentState.stepName || startScreenName,
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,

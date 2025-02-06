@@ -52,6 +52,15 @@ export interface ScreenState {
   project?: Project;
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
+  clientScripts?: unknown;
+  selfProvisionDomains?: unknown;
+  user?: unknown;
+  sso?: unknown;
+  dynamicSelects?: unknown;
+  keysInUse?: unknown;
+  genericForm?: unknown;
+  linkId?: unknown;
+  sentTo?: unknown;
 }
 
 export type SSOQueryParams = {
@@ -120,9 +129,9 @@ export type StepState = {
   openInNewTabUrl?: string;
 } & OIDCOptions;
 
-export type CustomScreenState = Pick<
+export type CustomScreenState = Omit<
   ScreenState,
-  'form' | 'lastAuth' | 'project'
+  'cssVars' | 'componentsConfig' | 'inputs'
 > & {
   error?: {
     text: ScreenState['errorText'];
@@ -159,6 +168,7 @@ type Operator =
 
 export interface ClientConditionResult {
   screenId: string;
+  screenName: string;
   interactionId: string;
 }
 

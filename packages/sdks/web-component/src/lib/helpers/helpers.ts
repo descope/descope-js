@@ -23,6 +23,7 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
+import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
 import {
   AutoFocusOptions,
   CustomScreenState,
@@ -652,28 +653,32 @@ export const clearPreviousExternalInputs = () => {
 export const shouldHandleMarkdown = (compName: string) =>
   MD_COMPONENTS.includes(compName);
 
+const omitBy = <T extends Record<string, any>>(
+  obj: T,
+  predicate: (value: any, key: keyof T) => boolean,
+): T => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(
+      ([key, value]) => !predicate(value, key as keyof T),
+    ),
+  ) as T;
+};
+
 export const transformStepStateForCustomScreen = (
   state: Partial<StepState>,
 ) => {
+  const sanitizedState: CustomScreenState = omitBy(
+    state.screenState,
+    (_, key) => EXCLUDED_STATE_KEYS.includes(key) || key.startsWith('_'),
+  );
+
   const {
-    screenState: {
-      cssVars,
-      componentsConfig,
-      inputs,
-      // keys we want to exclude ^^
-      errorText,
-      errorType,
-      ...screenState
-    },
+    screenState: { errorText, errorType },
   } = state;
 
-  const result: CustomScreenState = {
-    ...screenState,
-  };
-
   if (errorText || errorType) {
-    result.error = { text: errorText, type: errorType };
+    sanitizedState.error = { text: errorText, type: errorType };
   }
 
-  return result;
+  return sanitizedState;
 };
