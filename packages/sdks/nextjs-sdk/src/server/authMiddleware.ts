@@ -45,9 +45,14 @@ const getSessionJwt = (req: NextRequest): string | undefined => {
 };
 
 const matchWildcardRoute = (route: string, path: string) => {
-	const regex = new RegExp(`^${route.replace(/\*/g, '.*')}$`);
+	let regexPattern = route.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+  
+	// Convert wildcard (*) to match path segments only
+	regexPattern = regexPattern.replace(/\*/g, '[^/]*');
+	const regex = new RegExp(`^${regexPattern}$`);
+  
 	return regex.test(path);
-};
+  };
 
 const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 	// Ensure publicRoutes and privateRoutes are arrays, defaulting to empty arrays if not defined
