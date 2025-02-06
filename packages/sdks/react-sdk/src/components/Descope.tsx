@@ -69,7 +69,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       restartOnError,
       errorTransformer,
       styleId,
-      onPageUpdate,
+      onScreenUpdate,
       children,
     },
     ref,
@@ -181,7 +181,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
-              'onPageUpdate.prop': onPageUpdate,
+              'onScreenUpdate.prop': onScreenUpdate,
             }}
           >
 				{children}

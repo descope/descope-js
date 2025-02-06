@@ -27,6 +27,10 @@ type PickArgsByIndex<
   [K in keyof Indices]: Indices[K] extends keyof All ? All[Indices[K]] : never;
 };
 
+type Project = {
+  name: string;
+};
+
 export enum Direction {
   backward = 'backward',
   forward = 'forward',
@@ -45,6 +49,7 @@ export interface ScreenState {
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
+  project?: Project;
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
 }
@@ -77,6 +82,7 @@ export type FlowState = {
   baseUrl: string;
   tenant: string;
   stepId: string;
+  stepName: string;
   executionId: string;
   action: string;
   redirectTo: string;
@@ -104,6 +110,8 @@ export type FlowState = {
 
 export type StepState = {
   screenState: ScreenState;
+  screenId: string;
+  stepName: string;
   htmlFilename: string;
   htmlLocaleFilename: string;
   next: NextFn;
@@ -111,6 +119,16 @@ export type StepState = {
   samlIdpUsername: string;
   openInNewTabUrl?: string;
 } & OIDCOptions;
+
+export type CustomScreenState = Pick<
+  ScreenState,
+  'form' | 'lastAuth' | 'project'
+> & {
+  error?: {
+    text: ScreenState['errorText'];
+    type: ScreenState['errorType'];
+  };
+};
 
 export type DebugState = {
   isDebug: boolean;
@@ -196,6 +214,7 @@ type ThemeTemplate = {
 
 export type FlowConfig = {
   startScreenId?: string;
+  startScreenName?: string;
   version: number;
   targetLocales?: string[];
   conditions?: ClientCondition[];

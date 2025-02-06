@@ -127,7 +127,15 @@ export type DescopeProps = {
   // use to override client context in flow execution
   client?: Record<string, any>;
   styleId?: string;
-  onPageUpdate?: (state: any, ref: HTMLElement) => boolean;
+  onScreenUpdate?: (
+    screenName: string,
+    state: Record<string, any>,
+    next: (
+      interactionId: string,
+      form: Record<string, any>,
+    ) => Promise<unknown>,
+    ref: HTMLElement,
+  ) => boolean;
   children?: React.ReactNode;
 };
 

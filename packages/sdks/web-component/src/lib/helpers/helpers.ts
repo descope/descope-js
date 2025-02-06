@@ -25,6 +25,7 @@ import {
 } from '../constants';
 import {
   AutoFocusOptions,
+  CustomScreenState,
   Direction,
   Locale,
   SSOQueryParams,
@@ -655,19 +656,24 @@ export const transformStepStateForCustomScreen = (
   state: Partial<StepState>,
 ) => {
   const {
-    screenState: { inputs, ...screenState },
-    htmlFilename,
-    htmlLocaleFilename,
-    ...rest
+    screenState: {
+      cssVars,
+      componentsConfig,
+      inputs,
+      // keys we want to exclude ^^
+      errorText,
+      errorType,
+      ...screenState
+    },
   } = state;
 
-  const screenId = htmlFilename?.replace('.html', '');
-
-  return {
-    ...rest,
-    screenId,
-    screenState: {
-      ...screenState,
-    },
+  const result: CustomScreenState = {
+    ...screenState,
   };
+
+  if (errorText || errorType) {
+    result.error = { text: errorText, type: errorType };
+  }
+
+  return result;
 };

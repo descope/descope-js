@@ -9,6 +9,7 @@ import {
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
+  IS_RUNNING_IN_DESCOPE_BRIDGE,
   RESPONSE_ACTIONS,
   URL_CODE_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
@@ -73,17 +74,19 @@ class DescopeWc extends BaseDescopeWc {
   flowState: State<FlowState>;
 
   stepState = new State<StepState>({} as StepState, {
-    updateOnlyOnChange: false,
+    forceUpdate: true,
   });
 
   #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
 
-  onPageUpdate: (
-    stepStateUpdate: Partial<StepState>,
+  onScreenUpdate: (
+    screenName: string,
+    screenState: Partial<Omit<StepState, 'next'>>,
+    next: StepState['next'],
     ref: typeof this,
-  ) => Promise<{ useDescopeComponents?: boolean } | boolean>;
+  ) => Promise<boolean>;
 
   constructor() {
     const flowState = new State<FlowState>({
@@ -190,7 +193,18 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  async init() {
+  init() {
+    // when running in a webview (mobile SDK) we want to lazy init the component
+    // so the mobile SDK will be able to register all the necessary callbacks
+    // before the component will start loading the flow
+    if (!IS_RUNNING_IN_DESCOPE_BRIDGE) {
+      return this._init();
+    } else {
+      (this as any).lazyInit = this._init;
+    }
+  }
+
+  async _init() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
       this.stepState?.subscribe(this.onStepChange.bind(this));
@@ -276,6 +290,43 @@ class DescopeWc extends BaseDescopeWc {
         'Components version mismatch, please reload the page',
       );
     }
+  }
+
+  async #handleCustomScreen(stepStateUpdate: Partial<StepState>) {
+    const { next, stepName, ...state } = {
+      ...this.stepState.current,
+      ...stepStateUpdate,
+    };
+
+    const isCustomScreen: boolean = await this.onScreenUpdate?.(
+      stepName,
+      transformStepStateForCustomScreen(state),
+      next,
+      this,
+    );
+
+    if (isCustomScreen) {
+      this.loggerWrapper.debug('Rendering a custom screen');
+      this.contentRootElement.innerHTML = '';
+      this.#dispatchPageEvents({
+        isFirstScreen: !this.stepState.current.htmlFilename,
+        stepName: stepStateUpdate.stepName,
+      });
+
+      // we are unsubscribing all the listeners because we are going to render a custom screen
+      // and we do not want that onStepChange will be called
+      this.stepState.unsubscribeAll();
+      const subscribeId = this.stepState.subscribe(() => {
+        // after state was updated, we want to re-subscribe the onStepChange listener
+        this.stepState.unsubscribe(subscribeId);
+        this.stepState?.subscribe(this.onStepChange.bind(this));
+      });
+    }
+
+    this.#toggleScreenVisibility(isCustomScreen);
+    // in order to call onScreenUpdate after every next call
+    // and not only when there is a state change, we need to force update when we are rendering a custom screen
+    this.flowState.forceUpdate = isCustomScreen;
   }
 
   async onFlowChange(
@@ -595,6 +646,8 @@ class DescopeWc extends BaseDescopeWc {
       },
       htmlFilename: `${readyScreenId}.html`,
       htmlLocaleFilename: filenameWithLocale,
+      screenId: readyScreenId,
+      stepName: currentState.stepName || flowConfig.startScreenName,
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
@@ -662,32 +715,15 @@ class DescopeWc extends BaseDescopeWc {
       };
     }
 
-    const pageUpdateConfig = await this.onPageUpdate?.(
-      transformStepStateForCustomScreen({
-        ...this.stepState.current,
-        ...stepStateUpdate,
-      }),
-      this,
+    this.loggerWrapper.debug(
+      'Going to render screen with id',
+      stepStateUpdate.screenId,
     );
-    const isCustomScreen = !!pageUpdateConfig;
 
-    if (isCustomScreen) {
-      this.loggerWrapper.debug('Rendering a custom screen');
-      this.contentRootElement.innerHTML = '';
-      this.#dispatchPageEvents(!this.stepState.current.htmlFilename);
-      // we are unsubscribing all the listeners because we are going to render a custom screen
-      // and we do not want that onStepChange will be called
-      this.stepState.unsubscribeAll();
-      const subscribeId = this.stepState.subscribe(() => {
-        // after state was updated, we want to re-subscribe the onStepChange listener
-        this.stepState.unsubscribe(subscribeId);
-        this.stepState?.subscribe(this.onStepChange.bind(this));
-      });
-    }
+    await this.#handleCustomScreen(stepStateUpdate);
 
     // update step state
     this.stepState.update(stepStateUpdate);
-    this.#toggleScreenVisibility(isCustomScreen);
   }
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
@@ -892,6 +928,7 @@ class DescopeWc extends BaseDescopeWc {
 
     this.flowState.update({
       stepId,
+      stepName,
       executionId,
       action,
       redirectTo: redirect?.url,
@@ -993,13 +1030,21 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  #dispatchPageEvents(isFirstScreen: boolean) {
+  #dispatchPageEvents({
+    isFirstScreen,
+    stepName,
+  }: {
+    isFirstScreen: boolean;
+    stepName: string;
+  }) {
     if (isFirstScreen) {
       // Dispatch when the first page is ready
       // So user can show a loader until his event is triggered
       this.#dispatch('ready', {});
     }
-    this.#dispatch('page-updated', {});
+
+    this.#dispatch('page-updated', { stepName });
+    this.#dispatch('screen-updated', { stepName });
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
@@ -1011,6 +1056,8 @@ class DescopeWc extends BaseDescopeWc {
       screenState,
       openInNewTabUrl,
     } = currentState;
+
+    this.loggerWrapper.debug('Rendering a flow screen');
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(
@@ -1082,7 +1129,10 @@ class DescopeWc extends BaseDescopeWc {
         // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(rootElement, screenState);
 
-        this.#dispatchPageEvents(isFirstScreen);
+        this.#dispatchPageEvents({
+          isFirstScreen,
+          stepName: currentState.stepName,
+        });
 
         handleAutoFocus(rootElement, this.autoFocus, isFirstScreen);
       });
