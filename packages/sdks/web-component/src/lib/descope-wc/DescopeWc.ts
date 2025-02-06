@@ -47,6 +47,7 @@ import {
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
+  CustomScreenState,
   Direction,
   FlowState,
   NextFn,
@@ -83,7 +84,7 @@ class DescopeWc extends BaseDescopeWc {
 
   onScreenUpdate: (
     screenName: string,
-    screenState: Partial<Omit<StepState, 'next'>>,
+    screenState: CustomScreenState,
     next: StepState['next'],
     ref: typeof this,
   ) => Promise<boolean>;
@@ -274,7 +275,7 @@ class DescopeWc extends BaseDescopeWc {
   async #handleFlowRestart() {
     this.loggerWrapper.debug('Trying to restart the flow');
     const prevCompVersion = await this.getComponentsVersion();
-    this.getConfig.reset();
+    this.reset();
     const compVersion = await this.getComponentsVersion();
 
     if (prevCompVersion === compVersion) {

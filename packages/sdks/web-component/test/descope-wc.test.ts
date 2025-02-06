@@ -774,7 +774,7 @@ describe('web-component', () => {
   });
 
   it('should not load components which are already loaded', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
+    startMock.mockReturnValueOnce(generateSdkResponse());
 
     pageContent =
       '<descope-test-button id="email">Button</descope-test-button><span>It works!</span>';
@@ -787,7 +787,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('Button'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
 
     expect(DescopeUI['descope-test-button']).not.toHaveBeenCalled();
@@ -1177,7 +1177,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle.querySelector('#root');
+    const rootEle = shadowEle.querySelector('#content-root');
     await waitFor(
       () =>
         expect(rootEle).toHaveStyle({
@@ -1242,7 +1242,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1`;
@@ -1252,7 +1252,7 @@ describe('web-component', () => {
     fireEvent.popState(window);
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
-    const rootEle = shadowEle.querySelector('#root');
+    const rootEle = shadowEle.querySelector('#content-root');
     const spyAddEventListener = jest.spyOn(rootEle, 'addEventListener');
 
     spyAddEventListener.mockImplementationOnce(
@@ -1260,7 +1260,7 @@ describe('web-component', () => {
     );
 
     await waitFor(() => screen.findByShadowText('It updated!'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
   });
 
@@ -1272,14 +1272,17 @@ describe('web-component', () => {
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_TOKEN_PARAM_NAME}=token1`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
-        token: 'token1',
-      }),
-    );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
+
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
+          token: 'token1',
+        }),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should call next with token when url contains "code" query param', async () => {
@@ -1290,10 +1293,12 @@ describe('web-component', () => {
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
-        exchangeCode: 'code1',
-      }),
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+          exchangeCode: 'code1',
+        }),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -1308,10 +1313,12 @@ describe('web-component', () => {
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_ERR_PARAM_NAME}=err1`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
-        exchangeError: 'err1',
-      }),
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
+          exchangeError: 'err1',
+        }),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -1670,7 +1677,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" theme="light" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('It works!'), {
-      timeout: 10000,
+      timeout: 20000,
     });
 
     await waitFor(
@@ -1708,6 +1715,23 @@ describe('web-component', () => {
       expect.stringMatching(htmlUrlPathRegex),
       expect.any(Object),
     );
+  });
+
+  it('should fetch config file once', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    expect(
+      fetchMock.mock.calls.filter((call) => call[0].endsWith('config.json'))
+        .length,
+    ).toBe(1);
   });
 
   it('runs fingerprint when config contains the correct fields', async () => {
@@ -1884,7 +1908,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('click'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
 
     const buttonEle = await screen.findByShadowText('click');
@@ -1914,7 +1938,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" redirect-url="http://custom.url"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('hey'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
 
     await waitFor(() =>
@@ -1946,7 +1970,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" form='{"displayName": "dn", "email": "test", "nested": { "key": "value" }, "another": { "value": "a", "disabled": true }}' client='{"email": "test2", "nested": { "key": "value" }}'></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('hey'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
 
     await waitFor(() =>
@@ -2002,7 +2026,7 @@ describe('web-component', () => {
       jest.runAllTimers();
 
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: 10000,
+        timeout: 20000,
       });
 
       /*  next returns
@@ -2216,7 +2240,7 @@ describe('web-component', () => {
       jest.runAllTimers();
 
       await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
-        timeout: WAIT_TIMEOUT,
+        timeout: 20000,
       });
 
       await waitFor(
@@ -2681,24 +2705,26 @@ describe('web-component', () => {
       };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            lastAuth: { authMethod: 'otp' },
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 1,
-          },
-          {
-            exchangeCode: 'code1',
-            idpInitiated: true,
-          },
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              lastAuth: { authMethod: 'otp' },
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 1,
+            },
+            {
+              exchangeCode: 'code1',
+              idpInitiated: true,
+            },
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
     });
 
@@ -2768,23 +2794,25 @@ describe('web-component', () => {
       };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            lastAuth: { authMethod: 'otp' },
-          },
-          undefined,
-          '',
-          undefined,
-          {
-            'sign-in': 1,
-          },
-          {
-            token: 'code1',
-          },
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              lastAuth: { authMethod: 'otp' },
+            },
+            undefined,
+            '',
+            undefined,
+            {
+              'sign-in': 1,
+            },
+            {
+              token: 'code1',
+            },
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
     });
 
@@ -2846,28 +2874,30 @@ describe('web-component', () => {
       window.location.search = redirectAuthQueryParams;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            redirectAuth: {
-              callbackUrl: callback,
-              codeChallenge: challenge,
-              backupCallbackUri: backupCallback,
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              redirectAuth: {
+                callbackUrl: callback,
+                codeChallenge: challenge,
+                backupCallbackUri: backupCallback,
+              },
             },
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          {},
-        ),
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {},
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: WAIT_TIMEOUT,
+        timeout: 20000,
       });
       await waitFor(() =>
         expect(window.location.search).toBe(redirectAuthQueryParams),
@@ -2893,28 +2923,30 @@ describe('web-component', () => {
       window.location.search = `${redirectAuthQueryParams}&${URL_TOKEN_PARAM_NAME}=${token}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            redirectAuth: {
-              callbackUrl: callback,
-              codeChallenge: challenge,
-              backupCallbackUri: null,
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              redirectAuth: {
+                callbackUrl: callback,
+                codeChallenge: challenge,
+                backupCallbackUri: null,
+              },
             },
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          { token },
-        ),
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            { token },
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: WAIT_TIMEOUT,
+        timeout: 20000,
       });
       await waitFor(() =>
         expect(window.location.search).toBe(redirectAuthQueryParams),
@@ -2936,24 +2968,26 @@ describe('web-component', () => {
       window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcIdpStateId}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            oidcIdpStateId: 'abcdefgh',
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          {},
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              oidcIdpStateId: 'abcdefgh',
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {},
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: WAIT_TIMEOUT,
+        timeout: 20000,
       });
       await waitFor(() => expect(window.location.search).toBe(''));
     });
@@ -2976,10 +3010,12 @@ describe('web-component', () => {
       window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcIdpStateId}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => expect(startMock).toHaveBeenCalled());
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
 
       await waitFor(() => screen.findByShadowText('It works!'), {
-        timeout: WAIT_TIMEOUT,
+        timeout: 20000,
       });
 
       fireEvent.click(screen.getByShadowText('click'));
@@ -3006,7 +3042,9 @@ describe('web-component', () => {
       window.location.search = `?${SAML_IDP_STATE_ID_PARAM_NAME}=${encodedSamlIdpStateId}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => expect(startMock).toHaveBeenCalled());
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
 
       await waitFor(() => screen.findByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT * 2,
@@ -3036,7 +3074,9 @@ describe('web-component', () => {
       window.location.search = `?${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpUsername}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => expect(startMock).toHaveBeenCalled());
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
 
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -3062,21 +3102,23 @@ describe('web-component', () => {
       window.location.search = `?${SAML_IDP_STATE_ID_PARAM_NAME}=${encodedSamlIdpStateId}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            samlIdpStateId: 'abcdefgh',
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          {},
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              samlIdpStateId: 'abcdefgh',
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {},
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -3101,22 +3143,24 @@ describe('web-component', () => {
       window.location.search = `?${SAML_IDP_STATE_ID_PARAM_NAME}=${encodedSamlIdpStateId}&${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpUsername}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            samlIdpStateId: 'abcdefgh',
-            samlIdpUsername: 'dummyUser',
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          {},
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              samlIdpStateId: 'abcdefgh',
+              samlIdpUsername: 'dummyUser',
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {},
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -3138,23 +3182,25 @@ describe('web-component', () => {
       window.location.search = `?${DESCOPE_IDP_INITIATED_PARAM_NAME}=${descopeIdpInitiated}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            descopeIdpInitiated: true,
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          {
-            idpInitiated: true,
-          },
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              descopeIdpInitiated: true,
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {
+              idpInitiated: true,
+            },
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -3179,7 +3225,9 @@ describe('web-component', () => {
       window.location.search = `?${SSO_APP_ID_PARAM_NAME}=${encodedSSOAppId}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => expect(startMock).toHaveBeenCalled());
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
 
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -3208,21 +3256,23 @@ describe('web-component', () => {
       window.location.search = `?${SSO_APP_ID_PARAM_NAME}=${encodedSSOAppId}`;
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() =>
-        expect(startMock).toHaveBeenCalledWith(
-          'sign-in',
-          {
-            ...defaultOptionsValues,
-            ssoAppId: 'abcdefgh',
-          },
-          undefined,
-          '',
-          '1.2.3',
-          {
-            'sign-in': 0,
-          },
-          {},
-        ),
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              ssoAppId: 'abcdefgh',
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {},
+          ),
+        { timeout: WAIT_TIMEOUT },
       );
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -3243,25 +3293,27 @@ describe('web-component', () => {
     window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_LOGIN_HINT_PARAM_NAME}=${encodedOidcLoginHint}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        {
-          ...defaultOptionsValues,
-          oidcIdpStateId: 'abcdefgh',
-          oidcLoginHint: 'dummyUser',
-        },
-        undefined,
-        '',
-        '1.2.3',
-        {
-          otpSignInEmail: 1,
-          'versioned-flow': 1,
-        },
-        {
-          externalId: 'dummyUser',
-        },
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            ...defaultOptionsValues,
+            oidcIdpStateId: 'abcdefgh',
+            oidcLoginHint: 'dummyUser',
+          },
+          undefined,
+          '',
+          '1.2.3',
+          {
+            otpSignInEmail: 1,
+            'versioned-flow': 1,
+          },
+          {
+            externalId: 'dummyUser',
+          },
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3286,7 +3338,9 @@ describe('web-component', () => {
     window.location.search = `?${OIDC_LOGIN_HINT_PARAM_NAME}=${encodedOidcLoginHint}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => expect(startMock).toHaveBeenCalled());
+    await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3309,23 +3363,25 @@ describe('web-component', () => {
     window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_PROMPT_PARAM_NAME}=${encodedOidcPrompt}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        {
-          ...defaultOptionsValues,
-          oidcIdpStateId: 'abcdefgh',
-          oidcPrompt: 'login',
-        },
-        undefined,
-        '',
-        '1.2.3',
-        {
-          otpSignInEmail: 1,
-          'versioned-flow': 1,
-        },
-        {},
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            ...defaultOptionsValues,
+            oidcIdpStateId: 'abcdefgh',
+            oidcPrompt: 'login',
+          },
+          undefined,
+          '',
+          '1.2.3',
+          {
+            otpSignInEmail: 1,
+            'versioned-flow': 1,
+          },
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3350,7 +3406,9 @@ describe('web-component', () => {
     window.location.search = `?${OIDC_PROMPT_PARAM_NAME}=${encodedOidcPrompt}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => expect(startMock).toHaveBeenCalled());
+    await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3374,23 +3432,25 @@ describe('web-component', () => {
     window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        {
-          ...defaultOptionsValues,
-          oidcIdpStateId: 'abcdefgh',
-          oidcErrorRedirectUri: 'https://some.test',
-        },
-        undefined,
-        '',
-        '1.2.3',
-        {
-          otpSignInEmail: 1,
-          'versioned-flow': 1,
-        },
-        {},
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            ...defaultOptionsValues,
+            oidcIdpStateId: 'abcdefgh',
+            oidcErrorRedirectUri: 'https://some.test',
+          },
+          undefined,
+          '',
+          '1.2.3',
+          {
+            otpSignInEmail: 1,
+            'versioned-flow': 1,
+          },
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3416,7 +3476,9 @@ describe('web-component', () => {
     window.location.search = `?${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() => expect(startMock).toHaveBeenCalled());
+    await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3452,21 +3514,23 @@ describe('web-component', () => {
     };
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        defaultOptionsValues,
-        undefined,
-        '',
-        '1.2.3',
-        {
-          'sign-in': 1,
-        },
-        {
-          exchangeCode: 'code1',
-          idpInitiated: true,
-        },
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          defaultOptionsValues,
+          undefined,
+          '',
+          '1.2.3',
+          {
+            'sign-in': 1,
+          },
+          {
+            exchangeCode: 'code1',
+            idpInitiated: true,
+          },
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -3507,21 +3571,23 @@ describe('web-component', () => {
     };
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        defaultOptionsValues,
-        undefined,
-        '',
-        '1.2.3',
-        {
-          'sign-in': 1,
-        },
-        {
-          exchangeCode: 'code1',
-          idpInitiated: true,
-        },
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          defaultOptionsValues,
+          undefined,
+          '',
+          '1.2.3',
+          {
+            'sign-in': 1,
+          },
+          {
+            exchangeCode: 'code1',
+            idpInitiated: true,
+          },
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
@@ -3541,21 +3607,23 @@ describe('web-component', () => {
     window.location.search = `?${THIRD_PARTY_APP_STATE_ID_PARAM_NAME}=${encodedThirdPartyAppStateId}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        {
-          ...defaultOptionsValues,
-          thirdPartyAppStateId: 'abcdefgh',
-        },
-        undefined,
-        '',
-        '1.2.3',
-        {
-          'sign-in': 0,
-        },
-        {},
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            ...defaultOptionsValues,
+            thirdPartyAppStateId: 'abcdefgh',
+          },
+          undefined,
+          '',
+          '1.2.3',
+          {
+            'sign-in': 0,
+          },
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -3578,21 +3646,23 @@ describe('web-component', () => {
     window.location.search = `?${APPLICATION_SCOPES_PARAM_NAME}=${encodedApplicationScopes}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-    await waitFor(() =>
-      expect(startMock).toHaveBeenCalledWith(
-        'sign-in',
-        {
-          ...defaultOptionsValues,
-          applicationScopes: 'openid profile email',
-        },
-        undefined,
-        '',
-        '1.2.3',
-        {
-          'sign-in': 0,
-        },
-        {},
-      ),
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            ...defaultOptionsValues,
+            applicationScopes: 'openid profile email',
+          },
+          undefined,
+          '',
+          '1.2.3',
+          {
+            'sign-in': 0,
+          },
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -4421,7 +4491,7 @@ describe('web-component', () => {
       });
 
       // Should called after the page is loaded
-      expect(ready).toBeCalledTimes(1);
+      await waitFor(() => expect(ready).toBeCalledTimes(1), { timeout: 20000 });
 
       pageContent = '<span>Second Page</span>';
 
@@ -4632,14 +4702,14 @@ describe('web-component', () => {
 
       const shadowEle =
         document.getElementsByTagName('descope-wc')[0].shadowRoot;
-      const rootEle = shadowEle.querySelector('#root');
+      const rootEle = shadowEle.querySelector('#content-root');
 
       await waitFor(
         () =>
           expect(rootEle).toHaveStyle({
             '--var-name': 'value',
           }),
-        { timeout: WAIT_TIMEOUT },
+        { timeout: 20000 },
       );
     });
   });

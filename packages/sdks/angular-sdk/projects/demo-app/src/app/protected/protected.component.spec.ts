@@ -16,21 +16,21 @@ describe('ProtectedComponent', () => {
   const onSessionTokenChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
       onUserChange: onUserChangeSpy
     });
 
-    TestBed.configureTestingModule({
-      declarations: [ProtectedComponent],
+    await TestBed.configureTestingModule({
+      imports: [ProtectedComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         DescopeAuthConfig,
         { provide: DescopeAuthConfig, useValue: { projectId: 'test' } }
       ]
-    });
+    }).compileComponents();
     fixture = TestBed.createComponent(ProtectedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
