@@ -17,39 +17,51 @@
 	"exports": {
 		".": {
 			"import": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.js"
 			}
 		},
 		"./client": {
 			"import": {
-				"types": "./dist/client/index.d.ts",
-				"default": "./dist/client/index.js"
+				"types": "./dist/esm/client/index.d.ts",
+				"default": "./dist/esm/client/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/client/index.d.ts",
+				"default": "./dist/cjs/client/index.js"
 			}
 		},
 		"./server": {
 			"import": {
-				"types": "./dist/server/index.d.ts",
-				"default": "./dist/server/index.js"
+				"types": "./dist/esm/server/index.d.ts",
+				"default": "./dist/esm/server/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/server/index.d.ts",
+				"default": "./dist/cjs/server/index.js"
 			}
 		}
 	},
 	"typesVersions": {
 		"*": {
 			"*": [
-				"dist/index.d.ts"
+				"dist/esm/index.d.ts"
 			],
 			"client": [
-				"dist/client/index.d.ts"
+				"dist/esm/client/index.d.ts"
 			],
 			"server": [
-				"dist/server/index.d.ts"
+				"dist/esm/server/index.d.ts"
 			]
 		}
 	},
-	"main": "dist/index.js",
-	"module": "dist/index.mjs",
-	"types": "dist/index.d.ts",
+	"main": "dist/cjs/index.js",
+	"module": "dist/esm/index.mjs",
+	"types": "dist/esm/index.d.ts",
 	"files": [
 		"dist/**/*"
 	],
@@ -118,13 +130,13 @@
 		"lint-staged": "^13.3.0",
 		"msw": "^2.1.7",
 		"next": "^14.2.10",
-		"rollup": "^4.0.0",
+		"rollup": "^2.79.1",
 		"rollup-plugin-auto-external": "^2.0.0",
 		"rollup-plugin-browsersync": "^1.0.0",
 		"rollup-plugin-define": "^1.0.1",
 		"rollup-plugin-delete": "^2.0.0",
 		"rollup-plugin-dotenv": "^0.5.0",
-		"rollup-plugin-dts": "^6.1.1",
+		"rollup-plugin-dts": "^4.2.3",
 		"rollup-plugin-livereload": "^2.0.5",
 		"rollup-plugin-preserve-directives": "^0.4.0",
 		"rollup-plugin-serve": "^2.0.3",
