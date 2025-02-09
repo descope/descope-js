@@ -10,10 +10,6 @@ export type SdkFlowNext = Sdk['flow']['next'];
 export type ComponentsConfig = Record<string, any>;
 export type CssVars = Record<string, any>;
 
-type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
-  ? (...args: P) => R
-  : never;
-
 type KeepArgsByIndex<F, Indices extends readonly number[]> = F extends (
   ...args: infer A
 ) => infer R

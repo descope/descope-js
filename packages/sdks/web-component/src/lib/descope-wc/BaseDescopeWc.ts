@@ -108,7 +108,9 @@ class BaseDescopeWc extends BaseClass {
   nextRequestStatus = new State<{ isLoading: boolean }>({ isLoading: false });
 
   rootElement: HTMLDivElement;
+
   contentRootElement: HTMLDivElement;
+
   slotElement: HTMLSlotElement;
 
   #debuggerEle: HTMLElement & {

@@ -656,13 +656,12 @@ export const shouldHandleMarkdown = (compName: string) =>
 const omitBy = <T extends Record<string, any>>(
   obj: T,
   predicate: (value: any, key: keyof T) => boolean,
-): T => {
-  return Object.fromEntries(
+): T =>
+  Object.fromEntries(
     Object.entries(obj).filter(
       ([key, value]) => !predicate(value, key as keyof T),
     ),
   ) as T;
-};
 
 export const transformStepStateForCustomScreen = (
   state: Partial<StepState>,

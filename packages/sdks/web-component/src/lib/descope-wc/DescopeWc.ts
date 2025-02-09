@@ -193,17 +193,20 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  init() {
+  async init() {
     // when running in a webview (mobile SDK) we want to lazy init the component
     // so the mobile SDK will be able to register all the necessary callbacks
     // before the component will start loading the flow
     if (!(window as any).isDescopeBridge) {
-      return this._init();
+      // eslint-disable-next-line no-underscore-dangle
+      this._init();
     } else {
+      // eslint-disable-next-line no-underscore-dangle
       (this as any).lazyInit = this._init;
     }
   }
 
+  // eslint-disable-next-line no-underscore-dangle
   async _init() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
@@ -1013,8 +1016,6 @@ class DescopeWc extends BaseDescopeWc {
         // we need the abort controller so we can cancel the current webauthn session in case the user clicked on a webauthn button, and we need to start a new session
         this.#conditionalUiAbortController = new AbortController();
 
-        const flowConfig = await this.getFlowConfig();
-        const projectConfig = await this.getProjectConfig();
         // we should not wait for this fn, it will call next when the user uses his passkey on the input
         this.sdk.webauthn.helpers
           .conditional(options, this.#conditionalUiAbortController)
@@ -1146,8 +1147,6 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        const flowConfig = await this.getFlowConfig();
-        const projectConfig = await this.getProjectConfig();
         // Loader component in the screen triggers polling interaction
         next(CUSTOM_INTERACTIONS.polling, {});
       }
