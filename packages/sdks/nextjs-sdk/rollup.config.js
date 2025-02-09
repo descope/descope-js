@@ -30,7 +30,7 @@ const commonPlugins = (outputDir) => [
 	}),
 	typescript({
 		tsconfig: './tsconfig.json',
-		declarationDir: `${outputDir}/dts` // dynamically set declarationDir
+		declarationDir: `${outputDir}/dts`
 	}),
 	// swcPreserveDirectives(),
 	preserveDirectives({ supressPreserveModulesWarning: true }),
@@ -48,12 +48,12 @@ const commonPlugins = (outputDir) => [
 ];
 
 // Configurations for server, client and main entry
-const configurations = ['server', 'client', ''].map((entry) => {
+const configurations = ['server', 'client', ''].flatMap((entry) => {
 	const inputPath = entry ? `src/${entry}/index.ts` : 'src/index.ts';
-	// const outputPath = entry ? `dist/${entry}/index.js` : 'dist/index.js';
-	const outputDir = entry ? `dist/${entry}` : 'dist';
+	const esmOutputDir = entry ? `dist/esm/${entry}` : 'dist/esm';
+	const cjsOutputDir = entry ? `dist/cjs/${entry}` : 'dist/cjs';
 
-	return {
+	const baseConf = {
 		input: inputPath,
 		external: ['react', ...nextSubPackages.map((alias) => `${alias}.js`)],
 		onwarn(warning, warn) {
@@ -64,45 +64,81 @@ const configurations = ['server', 'client', ''].map((entry) => {
 				return;
 			}
 			warn(warning);
+		}
+	};
+
+	return [
+		{
+			...baseConf,
+			output: {
+				dir: cjsOutputDir,
+				sourcemap: true,
+				format: 'cjs',
+				preserveModules: true,
+				exports: 'auto'
+			},
+			plugins: commonPlugins(cjsOutputDir)
 		},
-		// externals: ['./shared'],
-		output: [
-			// {
-			//   // file: outputPath,
-			// 	dir: outputDir,
-			//   sourcemap: true,
-			//   format: 'cjs',
-			// 	preserveModules: true
-			// },
-			{
-				// file: outputPath.replace('.js', '.mjs'),
-				dir: outputDir,
+		{
+			...baseConf,
+			output: {
+				dir: esmOutputDir,
 				sourcemap: true,
 				format: 'esm',
 				preserveModules: true
-			}
-		],
-		plugins: commonPlugins(outputDir)
-	};
+			},
+			plugins: commonPlugins(esmOutputDir)
+		}
+	];
 });
 
-const endConfigurations = ['server', 'client', ''].map((entry) => {
-	const input = entry
-		? `./dist/dts/src/${entry}/index.d.ts`
-		: './dist/dts/src/index.d.ts';
-	const outputFile = entry ? `dist/${entry}/index.d.ts` : 'dist/index.d.ts';
-	const srcDir = entry ? `./dist/${entry}/src` : './dist/src';
-	return {
-		input: input,
-		output: [{ file: outputFile, format: 'esm' }],
-		plugins: [
-			dts(),
-			del({
-				hook: 'buildEnd',
-				targets: srcDir
-			})
-		]
-	};
+const endConfigurations = ['server', 'client', ''].flatMap((entry) => {
+	// ESM input and output paths
+	const esmInput = entry
+		? `./dist/esm/${entry}/dts/src/index.d.ts`
+		: './dist/esm/dts/src/index.d.ts';
+	const esmOutput = entry
+		? `dist/esm/${entry}/dts/index.d.ts`
+		: 'dist/esm/dts/index.d.ts';
+	const esmSrcDir = entry
+		? `./dist/esm/${entry}/dts/src`
+		: './dist/esm/dts/src';
+
+	// CJS input and output paths
+	const cjsInput = entry
+		? `./dist/cjs/${entry}/dts/src/index.d.ts`
+		: './dist/cjs/dts/src/index.d.ts';
+	const cjsOutput = entry
+		? `dist/cjs/${entry}/dts/index.d.ts`
+		: 'dist/cjs/dts/index.d.ts';
+	const cjsSrcDir = entry
+		? `./dist/cjs/${entry}/dts/src`
+		: './dist/cjs/dts/src';
+
+	return [
+		{
+			input: esmInput,
+			output: [{ file: esmOutput, format: 'esm' }],
+			plugins: [
+				dts(),
+				del({
+					hook: 'buildEnd',
+					targets: esmSrcDir
+				})
+			]
+		},
+		{
+			input: cjsInput,
+			output: [{ file: cjsOutput, format: 'cjs' }],
+			plugins: [
+				dts(),
+				del({
+					hook: 'buildEnd',
+					targets: cjsSrcDir
+				})
+			]
+		}
+	];
 });
 
 export default [...configurations, ...endConfigurations];
