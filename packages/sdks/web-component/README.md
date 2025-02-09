@@ -71,22 +71,22 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 
 ## Optional Attributes
 
-| Attribute                                 | Available options                                                                                                                                                                                                                          | Default value |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| base-url                                  | Custom Descope base URL                                                                                                                                                                                                                    | **""**        |
-| theme                                     | **"light"** - Light theme</br>**"dark"** - Dark theme</br>**"os"** - Auto select a theme based on the OS theme settings                                                                                                                    | **"light"**   |
-| debug                                     | **"true"** - Enable debugger</br>**"false"** - Disable debugger                                                                                                                                                                            | **"false"**   |
-| preview                                   | **"true"** - Run flow in a preview mode</br>**"false"** - Do run flow in a preview mode                                                                                                                                                    | **"false"**   |
-| auto-focus                                | **"true"** - Automatically focus on the first input of each screen</br>**"false"** - Do not automatically focus on screen's inputs</br>**"skipFirstScreen"** - Automatically focus on the first input of each screen, except first screen  | **"true"**    |
+| Attribute  | Available options                                                                                                                                                                                                                         | Default value |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| base-url   | Custom Descope base URL                                                                                                                                                                                                                   | **""**        |
+| theme      | **"light"** - Light theme</br>**"dark"** - Dark theme</br>**"os"** - Auto select a theme based on the OS theme settings                                                                                                                   | **"light"**   |
+| debug      | **"true"** - Enable debugger</br>**"false"** - Disable debugger                                                                                                                                                                           | **"false"**   |
+| preview    | **"true"** - Run flow in a preview mode</br>**"false"** - Do run flow in a preview mode                                                                                                                                                   | **"false"**   |
+| auto-focus | **"true"** - Automatically focus on the first input of each screen</br>**"false"** - Do not automatically focus on screen's inputs</br>**"skipFirstScreen"** - Automatically focus on the first input of each screen, except first screen | **"true"**    |
 
-| validate-on-blur                                | **"true"** - Triggers the input validation upon blur in addition to the validation on submit</br>**"false"** - Do not triggers validation upon blur</br>  | **"false"**    |
+| validate-on-blur | **"true"** - Triggers the input validation upon blur in addition to the validation on submit</br>**"false"** - Do not triggers validation upon blur</br> | **"false"** |
 
-| restart-on-error                                | **"true"** - In case of flow version mismatch, will restart the flow if the components version was not changed</br>**"false"** - Do not restart the flow automatically</br>  | **"false"**    |
+| restart-on-error | **"true"** - In case of flow version mismatch, will restart the flow if the components version was not changed</br>**"false"** - Do not restart the flow automatically</br> | **"false"** |
 
-| storage-prefix                            | **String** - A prefix to add to the key of the local storage when persisting tokens                                                                                                                                                        | **""**        |
-| store-last-authenticated-user             | **"true"** - Stores last-authenticated user details in local storage when flow is completed</br>**"false"** - Do not store last-auth user details. Disabling this flag may cause last-authenticated user features to not function properly | **"true"**    |
-| keep-last-authenticated-user-after-logout | **"true"** - Do not clear the last authenticated user details from the browser storage after logout</br>**"false"** - Clear the last authenticated user details from the browser storage after logout                                      | **"false"**   |
-| style-id                                  | **"String"** - Set a specific style to load rather then the default style                                                                                                                                                             | **""**        |
+| storage-prefix | **String** - A prefix to add to the key of the local storage when persisting tokens | **""** |
+| store-last-authenticated-user | **"true"** - Stores last-authenticated user details in local storage when flow is completed</br>**"false"** - Do not store last-auth user details. Disabling this flag may cause last-authenticated user features to not function properly | **"true"** |
+| keep-last-authenticated-user-after-logout | **"true"** - Do not clear the last authenticated user details from the browser storage after logout</br>**"false"** - Clear the last authenticated user details from the browser storage after logout | **"false"** |
+| style-id | **"String"** - Set a specific style to load rather then the default style | **""** |
 
 ## Optional Properties
 
@@ -129,6 +129,55 @@ const logger = {
 const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
 
 descopeWcEle.logger = logger;
+```
+
+### `onScreenUpdate`
+
+A function that is called whenever there is a new screen state or after every next call. It receives the following parameters:
+
+- `screenName`: The name of the screen that is about to be rendered
+- `state`: An object containing the upcoming screen state
+- `next`: A function that, when called, continues the flow execution
+- `ref`: A reference to the descope-wc node
+
+The function should return a boolean indicating whether a custom screen should be rendered:
+
+- `true`: Render a custom screen
+- `false`: Render the default flow screen
+
+This function allows rendering custom screens instead of the default flow screens.
+It can be useful for highly customized UIs or specific logic not covered by the default screens
+
+Usage example:
+
+```javascript
+function onScreenUpdate(screenName, state, next, ref) {
+  if (screenName === 'My Custom Screen') {
+    ref.innerHTML = `
+          <form>
+            <input type="text" name="email" placeholder="Email" />
+            <button type="submit">Submit</button>
+          </form>
+        `;
+
+    ref.closest('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      // replace with the button interaction id
+      next('interactionId', data);
+    });
+
+    return true;
+  }
+
+  return false;
+}
+
+const descopeWcEle = document.querySelector('descope-wc');
+
+descopeWcEle.onScreenUpdate = onScreenUpdate;
 ```
 
 ## Events
