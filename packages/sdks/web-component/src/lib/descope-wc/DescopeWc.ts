@@ -193,17 +193,17 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  async init() {
+  init() {
     // when running in a webview (mobile SDK) we want to lazy init the component
     // so the mobile SDK will be able to register all the necessary callbacks
     // before the component will start loading the flow
     if (!(window as any).isDescopeBridge) {
       // eslint-disable-next-line no-underscore-dangle
-      this._init();
-    } else {
-      // eslint-disable-next-line no-underscore-dangle
-      (this as any).lazyInit = this._init;
+      return this._init();
     }
+    // eslint-disable-next-line no-underscore-dangle
+    (this as any).lazyInit = this._init;
+    return undefined;
   }
 
   // eslint-disable-next-line no-underscore-dangle
