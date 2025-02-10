@@ -1,15 +1,10 @@
 import typescript from '@rollup/plugin-typescript';
 import autoExternal from 'rollup-plugin-auto-external';
 import define from 'rollup-plugin-define';
-import dts from 'rollup-plugin-dts';
-// import { terser } from 'rollup-plugin-terser';
-import del from 'rollup-plugin-delete';
-// import swcPreserveDirectives from 'rollup-swc-preserve-directives';
 import preserveDirectives from 'rollup-plugin-preserve-directives';
-// import { swc } from 'rollup-plugin-swc3';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-// import commonjs from '@rollup/plugin-commonjs';
 import alias from '@rollup/plugin-alias';
+import noEmit from 'rollup-plugin-no-emit';
 
 import packageJson from './package.json' assert { type: 'json' };
 
@@ -31,7 +26,7 @@ const commonPlugins = (outputDir) => [
 	}),
 	typescript({
 		tsconfig: './tsconfig.json',
-		declarationDir: outputDir
+		declaration: false,
 	}),
 	// swcPreserveDirectives(),
 	preserveDirectives({ supressPreserveModulesWarning: true }),
@@ -93,49 +88,21 @@ const configurations = ['server', 'client', ''].flatMap((entry) => {
 	];
 });
 
-const endConfigurations = ['server', 'client', ''].flatMap((entry) => {
-	// ESM input and output paths
-	const esmInput = entry
-		? `./dist/esm/src/${entry}/index.d.ts`
-		: './dist/esm/src/index.d.ts';
-	const esmOutput = entry
-		? `dist/esm/${entry}/index.d.ts`
-		: 'dist/esm/index.d.ts';
-	const esmSrcDir = entry ? `./dist/esm/${entry}/src` : './dist/esm/src';
-
-	// CJS input and output paths
-	const cjsInput = entry
-		? `./dist/cjs/src/${entry}/index.d.ts`
-		: './dist/cjs/src/index.d.ts';
-	const cjsOutput = entry
-		? `dist/cjs/${entry}/index.d.ts`
-		: 'dist/cjs/index.d.ts';
-	const cjsSrcDir = entry ? `./dist/cjs/${entry}/src` : './dist/cjs/src';
-
-	return [
-		{
-			input: esmInput,
-			output: [{ file: esmOutput, format: 'esm' }],
-			plugins: [
-				dts(),
-				del({
-					hook: 'buildEnd',
-					targets: esmSrcDir
-				})
-			]
-		},
-		{
-			input: cjsInput,
-			output: [{ file: cjsOutput, format: 'cjs' }],
-			plugins: [
-				dts(),
-				del({
-					hook: 'buildEnd',
-					targets: cjsSrcDir
-				})
-			]
-		}
-	];
-});
-
-export default [...configurations, ...endConfigurations];
+export default [
+  ...configurations,
+  {
+    input: 'src/index.ts',
+    output: [{ dir: './dist', format: 'esm' }],
+    plugins: [
+      typescript({
+        tsconfig: './tsconfig.json',
+        compilerOptions: {
+          rootDir: './src',
+          declaration: true,
+          declarationDir: './dist/types',
+        },
+      }),
+      noEmit({ match: (file) => file.endsWith('.js') }),
+    ],
+  },
+];
