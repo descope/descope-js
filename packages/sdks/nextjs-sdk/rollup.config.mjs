@@ -101,9 +101,7 @@ const endConfigurations = ['server', 'client', ''].flatMap((entry) => {
 	const esmOutput = entry
 		? `dist/esm/${entry}/index.d.ts`
 		: 'dist/esm/index.d.ts';
-	const esmSrcDir = entry
-		? `./dist/esm/${entry}/src`
-		: './dist/esm/src';
+	const esmSrcDir = entry ? `./dist/esm/${entry}/src` : './dist/esm/src';
 
 	// CJS input and output paths
 	const cjsInput = entry
@@ -112,9 +110,7 @@ const endConfigurations = ['server', 'client', ''].flatMap((entry) => {
 	const cjsOutput = entry
 		? `dist/cjs/${entry}/index.d.ts`
 		: 'dist/cjs/index.d.ts';
-	const cjsSrcDir = entry
-		? `./dist/cjs/${entry}/src`
-		: './dist/cjs/src';
+	const cjsSrcDir = entry ? `./dist/cjs/${entry}/src` : './dist/cjs/src';
 
 	return [
 		{
