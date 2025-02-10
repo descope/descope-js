@@ -141,7 +141,7 @@ export const descopeUiMixin = createSingletonMixin(
           this.#registerEvents(scriptEle);
 
           scriptEle.src = generateScriptUrl(
-            UI_COMPONENTS_URL,
+            this.baseCdnUrl || UI_COMPONENTS_URL,
             await this.#getComponentsVersion(),
           );
         } else {
@@ -240,6 +240,10 @@ export const descopeUiMixin = createSingletonMixin(
             });
           });
         });
+      }
+
+      get baseCdnUrl() {
+        return this.getAttribute('base-cdn-url');
       }
     };
   },

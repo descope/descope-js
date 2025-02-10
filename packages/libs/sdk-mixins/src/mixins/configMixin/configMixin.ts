@@ -2,13 +2,24 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { CONFIG_FILENAME } from './constants';
-import { ProjectConfiguration } from './types';
+import { Config, ProjectConfiguration } from './types';
+import { resetMixin } from '../resetMixin';
+import { initLifecycleMixin } from '../initLifecycleMixin';
 
 export const configMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(staticResourcesMixin)(superclass);
+    const BaseClass = compose(
+      staticResourcesMixin,
+      resetMixin,
+      initLifecycleMixin,
+    )(superclass);
 
     return class ConfigMixinClass extends BaseClass {
+      async init() {
+        await super.init();
+        this.onReset('config', this.#configCacheClear.bind(this));
+      }
+
       get config() {
         if (!this.#_configResource) {
           this.#_configResource = this.#fetchConfig();
@@ -17,9 +28,13 @@ export const configMixin = createSingletonMixin(
         return this.#_configResource;
       }
 
-      #_configResource;
+      #configCacheClear() {
+        this.#_configResource = undefined;
+      }
 
-      #fetchConfig = async () => {
+      #_configResource: Promise<Config>;
+
+      #fetchConfig: () => Promise<Config> = async () => {
         try {
           const {
             body,

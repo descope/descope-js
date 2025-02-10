@@ -2,6 +2,138 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.25](https://github.com/descope/descope-js/compare/angular-sdk-0.7.24...angular-sdk-0.7.25) (2025-02-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.16`
+* `audit-management-widget` updated to version `0.2.20`
+* `role-management-widget` updated to version `0.2.20`
+* `user-management-widget` updated to version `0.6.15`
+* `user-profile-widget` updated to version `0.2.16`
+* `applications-portal-widget` updated to version `0.2.19`
+* `web-component` updated to version `3.32.10`
+* `web-js-sdk` updated to version `1.23.8`
+* `core-js-sdk` updated to version `2.33.5`
+## [0.7.24](https://github.com/descope/descope-js/compare/angular-sdk-0.7.23...angular-sdk-0.7.24) (2025-02-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.15`
+* `audit-management-widget` updated to version `0.2.19`
+* `role-management-widget` updated to version `0.2.19`
+* `user-management-widget` updated to version `0.6.14`
+* `user-profile-widget` updated to version `0.2.15`
+* `applications-portal-widget` updated to version `0.2.18`
+* `web-component` updated to version `3.32.9`
+* `web-js-sdk` updated to version `1.23.7`
+* `core-js-sdk` updated to version `2.33.4`
+## [0.7.23](https://github.com/descope/descope-js/compare/angular-sdk-0.7.22...angular-sdk-0.7.23) (2025-02-01)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.14`
+* `audit-management-widget` updated to version `0.2.18`
+* `role-management-widget` updated to version `0.2.18`
+* `user-management-widget` updated to version `0.6.13`
+* `user-profile-widget` updated to version `0.2.14`
+* `applications-portal-widget` updated to version `0.2.17`
+* `web-component` updated to version `3.32.8`
+* `web-js-sdk` updated to version `1.23.6`
+* `core-js-sdk` updated to version `2.33.3`
+## [0.7.22](https://github.com/descope/descope-js/compare/angular-sdk-0.7.21...angular-sdk-0.7.22) (2025-02-01)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.13`
+* `audit-management-widget` updated to version `0.2.17`
+* `role-management-widget` updated to version `0.2.17`
+* `user-management-widget` updated to version `0.6.12`
+* `user-profile-widget` updated to version `0.2.13`
+* `applications-portal-widget` updated to version `0.2.16`
+* `web-component` updated to version `3.32.7`
+* `web-js-sdk` updated to version `1.23.5`
+* `core-js-sdk` updated to version `2.33.2`
+## [0.7.21](https://github.com/descope/descope-js/compare/angular-sdk-0.7.20...angular-sdk-0.7.21) (2025-02-01)
+
+## [0.7.20](https://github.com/descope/descope-js/compare/angular-sdk-0.7.19...angular-sdk-0.7.20) (2025-02-01)
+
+## [0.7.19](https://github.com/descope/descope-js/compare/angular-sdk-0.7.18...angular-sdk-0.7.19) (2025-02-01)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.12`
+* `audit-management-widget` updated to version `0.2.16`
+* `role-management-widget` updated to version `0.2.16`
+* `user-management-widget` updated to version `0.6.11`
+* `user-profile-widget` updated to version `0.2.12`
+* `applications-portal-widget` updated to version `0.2.15`
+* `web-component` updated to version `3.32.6`
+* `web-js-sdk` updated to version `1.23.4`
+* `core-js-sdk` updated to version `2.33.1`
+## [0.7.18](https://github.com/descope/descope-js/compare/angular-sdk-0.7.17...angular-sdk-0.7.18) (2025-01-31)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.11`
+* `audit-management-widget` updated to version `0.2.15`
+* `role-management-widget` updated to version `0.2.15`
+* `user-management-widget` updated to version `0.6.10`
+* `user-profile-widget` updated to version `0.2.11`
+* `applications-portal-widget` updated to version `0.2.14`
+* `web-component` updated to version `3.32.5`
+* `web-js-sdk` updated to version `1.23.3`
+## [0.7.17](https://github.com/descope/descope-js/compare/angular-sdk-0.7.16...angular-sdk-0.7.17) (2025-01-31)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.10`
+* `audit-management-widget` updated to version `0.2.14`
+* `role-management-widget` updated to version `0.2.14`
+* `user-management-widget` updated to version `0.6.9`
+* `user-profile-widget` updated to version `0.2.10`
+* `applications-portal-widget` updated to version `0.2.13`
+* `web-component` updated to version `3.32.4`
+## [0.7.16](https://github.com/descope/descope-js/compare/angular-sdk-0.7.15...angular-sdk-0.7.16) (2025-01-31)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.9`
+* `audit-management-widget` updated to version `0.2.13`
+* `role-management-widget` updated to version `0.2.13`
+* `user-management-widget` updated to version `0.6.8`
+* `user-profile-widget` updated to version `0.2.9`
+* `applications-portal-widget` updated to version `0.2.12`
+* `web-component` updated to version `3.32.3`
+* `web-js-sdk` updated to version `1.23.2`
+## [0.7.15](https://github.com/descope/descope-js/compare/angular-sdk-0.7.14...angular-sdk-0.7.15) (2025-01-31)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.8`
+* `audit-management-widget` updated to version `0.2.12`
+* `role-management-widget` updated to version `0.2.12`
+* `user-management-widget` updated to version `0.6.7`
+* `user-profile-widget` updated to version `0.2.8`
+* `applications-portal-widget` updated to version `0.2.11`
+## [0.7.14](https://github.com/descope/descope-js/compare/angular-sdk-0.7.13...angular-sdk-0.7.14) (2025-01-30)
+
+## [0.7.13](https://github.com/descope/descope-js/compare/angular-sdk-0.7.12...angular-sdk-0.7.13) (2025-01-30)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.6.6`
+## [0.7.12](https://github.com/descope/descope-js/compare/angular-sdk-0.7.11...angular-sdk-0.7.12) (2025-01-30)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.7`
+* `audit-management-widget` updated to version `0.2.11`
+* `role-management-widget` updated to version `0.2.11`
+* `user-management-widget` updated to version `0.6.5`
+* `user-profile-widget` updated to version `0.2.7`
+* `applications-portal-widget` updated to version `0.2.10`
+* `web-component` updated to version `3.32.2`
 ## [0.7.11](https://github.com/descope/descope-js/compare/angular-sdk-0.7.10...angular-sdk-0.7.11) (2025-01-06)
 
 ### Dependency Updates
