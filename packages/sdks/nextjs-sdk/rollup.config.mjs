@@ -31,7 +31,7 @@ const commonPlugins = (outputDir) => [
 	}),
 	typescript({
 		tsconfig: './tsconfig.json',
-		declarationDir: `${outputDir}/dts`
+		declarationDir: `${outputDir}`
 	}),
 	// swcPreserveDirectives(),
 	preserveDirectives({ supressPreserveModulesWarning: true }),
@@ -96,25 +96,25 @@ const configurations = ['server', 'client', ''].flatMap((entry) => {
 const endConfigurations = ['server', 'client', ''].flatMap((entry) => {
 	// ESM input and output paths
 	const esmInput = entry
-		? `./dist/esm/${entry}/dts/src/index.d.ts`
-		: './dist/esm/dts/src/index.d.ts';
+		? `./dist/esm/src/${entry}/index.d.ts`
+		: './dist/esm/src/index.d.ts';
 	const esmOutput = entry
-		? `dist/esm/${entry}/dts/index.d.ts`
-		: 'dist/esm/dts/index.d.ts';
+		? `dist/esm/${entry}/index.d.ts`
+		: 'dist/esm/index.d.ts';
 	const esmSrcDir = entry
-		? `./dist/esm/${entry}/dts/src`
-		: './dist/esm/dts/src';
+		? `./dist/esm/${entry}/src`
+		: './dist/esm/src';
 
 	// CJS input and output paths
 	const cjsInput = entry
-		? `./dist/cjs/${entry}/dts/src/index.d.ts`
-		: './dist/cjs/dts/src/index.d.ts';
+		? `./dist/cjs/src/${entry}/index.d.ts`
+		: './dist/cjs/src/index.d.ts';
 	const cjsOutput = entry
-		? `dist/cjs/${entry}/dts/index.d.ts`
-		: 'dist/cjs/dts/index.d.ts';
+		? `dist/cjs/${entry}/index.d.ts`
+		: 'dist/cjs/index.d.ts';
 	const cjsSrcDir = entry
-		? `./dist/cjs/${entry}/dts/src`
-		: './dist/cjs/dts/src';
+		? `./dist/cjs/${entry}/src`
+		: './dist/cjs/src';
 
 	return [
 		{
