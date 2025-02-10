@@ -7,6 +7,7 @@ import {
   removeLocalStorage,
   setLocalStorage,
 } from '../helpers';
+import { CookieConfig, SameSite } from './types';
 
 /**
  * Store the session JWT as a cookie on the given domain and path with the given expiration.
@@ -18,7 +19,12 @@ import {
 function setJwtTokenCookie(
   name: string,
   value: string,
-  { cookiePath, cookieDomain, cookieExpiration }: Partial<JWTResponse>,
+  {
+    cookiePath,
+    cookieDomain,
+    cookieExpiration,
+    cookieSameSite = 'Strict',
+  }: Partial<JWTResponse & { cookieSameSite: SameSite }>,
 ) {
   if (value) {
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
@@ -28,7 +34,7 @@ function setJwtTokenCookie(
       path: cookiePath,
       domain: domainMatches ? cookieDomain : undefined,
       expires,
-      sameSite: 'Strict',
+      sameSite: cookieSameSite,
       secure: true,
     });
   }
@@ -57,7 +63,7 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
 
 export const persistTokens = (
   { refreshJwt, sessionJwt, ...cookieParams } = {} as Partial<JWTResponse>,
-  sessionTokenViaCookie = false,
+  sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
   // persist refresh token
@@ -67,7 +73,13 @@ export const persistTokens = (
   // persist session token
   if (sessionJwt) {
     sessionTokenViaCookie
-      ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, cookieParams)
+      ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
+          ...cookieParams,
+          cookieSameSite:
+            sessionTokenViaCookie === true
+              ? 'Strict'
+              : sessionTokenViaCookie['SameSite'],
+        })
       : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
   }
 };

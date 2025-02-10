@@ -417,6 +417,8 @@ Notes:
 
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `session` observable of `DescopeAuthService`.
+- The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+  If you need to customize this, you can set `sessionTokenViaCookie={SameSite: 'Lax'}`
 
 ### Last User Persistence
 
