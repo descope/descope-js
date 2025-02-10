@@ -97,6 +97,7 @@ export interface IContext {
   baseUrl?: string;
   styleId?: string;
   baseStaticUrl?: string;
+  baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
   sdk?: Sdk;

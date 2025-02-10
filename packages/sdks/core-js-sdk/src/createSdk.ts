@@ -10,6 +10,8 @@ type SdkConfig = {
   projectId: string;
   logger?: Logger;
   baseUrl?: string;
+  baseStaticUrl?: string;
+  baseCdnUrl?: string;
   hooks?: Hooks;
   cookiePolicy?: RequestCredentials | null;
   baseHeaders?: HeadersInit;
