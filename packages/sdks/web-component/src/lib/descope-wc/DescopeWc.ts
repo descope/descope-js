@@ -1047,8 +1047,8 @@ class DescopeWc extends BaseDescopeWc {
       this.#dispatch('ready', {});
     }
 
-    this.#dispatch('page-updated', { stepName });
-    this.#dispatch('screen-updated', { stepName });
+    this.#dispatch('page-updated', { screenName: stepName });
+    this.#dispatch('screen-updated', { screenName: stepName });
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
