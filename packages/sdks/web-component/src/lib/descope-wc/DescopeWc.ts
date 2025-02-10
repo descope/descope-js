@@ -301,11 +301,13 @@ class DescopeWc extends BaseDescopeWc {
       ...stepStateUpdate,
     };
 
-    const isCustomScreen: boolean = await this.onScreenUpdate?.(
-      stepName,
-      transformStepStateForCustomScreen(state),
-      next,
-      this,
+    const isCustomScreen: boolean = Boolean(
+      await this.onScreenUpdate?.(
+        stepName,
+        transformStepStateForCustomScreen(state),
+        next,
+        this,
+      ),
     );
 
     if (isCustomScreen) {
