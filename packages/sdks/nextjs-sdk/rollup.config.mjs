@@ -31,7 +31,7 @@ const commonPlugins = (outputDir) => [
 	}),
 	typescript({
 		tsconfig: './tsconfig.json',
-		declarationDir: `${outputDir}`
+		declarationDir: outputDir
 	}),
 	// swcPreserveDirectives(),
 	preserveDirectives({ supressPreserveModulesWarning: true }),
