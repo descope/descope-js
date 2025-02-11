@@ -208,7 +208,7 @@ export class AppComponent {
 A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
 
 - `screenName`: The name of the screen that is about to be rendered
-- `state`: An object containing the upcoming screen state
+- `context`: An object containing the upcoming screen context
 - `next`: A function that, when called, continues the flow execution
 - `ref`: A reference to the descope-wc node
 
@@ -225,7 +225,7 @@ To render a custom screen, its elements should be appended as children of the `d
 Usage example:
 
 ```javascript
-function onScreenUpdate(screenName, state, next, ref) {
+function onScreenUpdate(screenName, context, next, ref) {
   if (screenName === 'My Custom Screen') {
     return true;
   }

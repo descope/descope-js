@@ -171,7 +171,7 @@ const App = () => {
 A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
 
 - `screenName`: The name of the screen that is about to be rendered
-- `state`: An object containing the upcoming screen state
+- `context`: An object containing the upcoming screen state
 - `next`: A function that, when called, continues the flow execution
 - `ref`: A reference to the descope-wc node
 
@@ -211,8 +211,8 @@ const Login = () => {
   const [state, setState] = useState();
   const [form, setForm] = useState();
 
-  const onScreenUpdate = (screenName, state, next) => {
-    setState({screenName, state, next})
+  const onScreenUpdate = (screenName, context, next) => {
+    setState({screenName, context, next})
 
     if (screenName === 'My Custom Screen') {
       return true;
@@ -227,7 +227,7 @@ const Login = () => {
   >{state.screenName === 'My Custom Screen' && <CustomScreen
     onClick={() => {
       // replace with the button interaction id
-      next('interactionId', form)
+      state.next('interactionId', form)
     }}
     setForm={setForm}/>}
   </Descope>

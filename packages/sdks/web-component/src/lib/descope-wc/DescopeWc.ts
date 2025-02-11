@@ -83,7 +83,7 @@ class DescopeWc extends BaseDescopeWc {
 
   onScreenUpdate: (
     screenName: string,
-    screenState: CustomScreenState,
+    context: CustomScreenState,
     next: StepState['next'],
     ref: typeof this,
   ) => boolean | Promise<boolean>;

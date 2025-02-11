@@ -40,7 +40,7 @@ export class DescopeComponent implements OnInit, OnChanges {
   @Input() errorTransformer: (error: { text: string; type: string }) => string;
   @Input() onScreenUpdate: (
     screenName: string,
-    state: Record<string, any>,
+    context: Record<string, any>,
     next: (
       interactionId: string,
       form: Record<string, any>

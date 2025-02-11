@@ -46,8 +46,8 @@ const errorTransformer = (error) => {
   return translationMap[error.type] || error.text;
 };
 
-const onScreenUpdate = (screenName, state, next) => {
-  console.log('Screen update', screenName, state, next);
+const onScreenUpdate = (screenName, context, next) => {
+  console.log('Screen update', screenName, context, next);
 
   return false;
 };

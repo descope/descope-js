@@ -130,7 +130,7 @@ export type DescopeProps = {
   styleId?: string;
   onScreenUpdate?: (
     screenName: string,
-    state: Record<string, any>,
+    context: Record<string, any>,
     next: (
       interactionId: string,
       form: Record<string, any>,

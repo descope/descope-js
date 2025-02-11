@@ -81,8 +81,8 @@
     <script>
       const descopeEle = document.querySelector('descope-wc');
 
-      descopeEle.onScreenUpdate = async (screenName, state, next, ref) => {
-        console.log('onScreenUpdate', screenName, state);
+      descopeEle.onScreenUpdate = async (screenName, context, next, ref) => {
+        console.log('onScreenUpdate', screenName, context);
 
         // ref.innerHTML = `
         //   <form>
