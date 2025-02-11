@@ -3,10 +3,6 @@ import { NextApiRequest } from 'next';
 import { headers } from 'next/headers';
 import { DESCOPE_SESSION_HEADER } from './constants';
 
-// This type is declared to allow simpler migration to Next.15
-// It will be removed in the future
-type HeaderTypes = Awaited<ReturnType<typeof headers>>;
-
 const extractSession = (
 	descopeSession?: string
 ): AuthenticationInfo | undefined => {
@@ -24,10 +20,8 @@ const extractSession = (
 };
 // returns the session token if it exists in the headers
 // This function require middleware
-export const session = (): AuthenticationInfo | undefined => {
-	// from Next.js 15, headers() returns a Promise
-	// It can still be used synchronously to facilitate migration
-	const reqHeaders = headers() as never as HeaderTypes;
+export const session = async (): Promise<AuthenticationInfo | undefined> => {
+	const reqHeaders = await headers();
 	const sessionHeader = reqHeaders.get(DESCOPE_SESSION_HEADER);
 	return extractSession(sessionHeader);
 };
