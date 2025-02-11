@@ -78,7 +78,7 @@ export const persistTokens = (
           cookieSameSite:
             sessionTokenViaCookie === true
               ? 'Strict'
-              : sessionTokenViaCookie['SameSite'],
+              : sessionTokenViaCookie['sameSite'],
         })
       : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
   }
