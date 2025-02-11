@@ -52,6 +52,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
@@ -68,6 +69,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {
