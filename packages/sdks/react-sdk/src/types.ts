@@ -97,6 +97,7 @@ export interface IContext {
   baseUrl?: string;
   styleId?: string;
   baseStaticUrl?: string;
+  baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
   sdk?: Sdk;
@@ -127,6 +128,16 @@ export type DescopeProps = {
   // use to override client context in flow execution
   client?: Record<string, any>;
   styleId?: string;
+  onScreenUpdate?: (
+    screenName: string,
+    context: Record<string, any>,
+    next: (
+      interactionId: string,
+      form: Record<string, any>,
+    ) => Promise<unknown>,
+    ref: HTMLElement,
+  ) => boolean | Promise<boolean>;
+  children?: React.ReactNode;
 };
 
 export type UserManagementProps = WidgetProps;

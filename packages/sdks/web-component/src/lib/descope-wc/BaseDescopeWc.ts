@@ -109,6 +109,10 @@ class BaseDescopeWc extends BaseClass {
 
   rootElement: HTMLDivElement;
 
+  contentRootElement: HTMLDivElement;
+
+  slotElement: HTMLSlotElement;
+
   #debuggerEle: HTMLElement & {
     updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
   };
@@ -133,8 +137,9 @@ class BaseDescopeWc extends BaseClass {
 
   #initShadowDom() {
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
-
-    this.rootElement = this.shadowRoot.querySelector<HTMLDivElement>('#root');
+    this.slotElement = document.createElement('slot');
+    this.slotElement.classList.add('hidden');
+    this.rootElement.appendChild(this.slotElement);
   }
 
   get flowId() {

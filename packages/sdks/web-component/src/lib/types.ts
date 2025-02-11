@@ -10,9 +10,22 @@ export type SdkFlowNext = Sdk['flow']['next'];
 export type ComponentsConfig = Record<string, any>;
 export type CssVars = Record<string, any>;
 
-type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
-  ? (...args: P) => R
+type KeepArgsByIndex<F, Indices extends readonly number[]> = F extends (
+  ...args: infer A
+) => infer R
+  ? (...args: PickArgsByIndex<A, Indices>) => R
   : never;
+
+type PickArgsByIndex<
+  All extends readonly any[],
+  Indices extends readonly number[],
+> = {
+  [K in keyof Indices]: Indices[K] extends keyof All ? All[Indices[K]] : never;
+};
+
+type Project = {
+  name: string;
+};
 
 export enum Direction {
   backward = 'backward',
@@ -32,8 +45,18 @@ export interface ScreenState {
   form?: Record<string, string>;
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
+  project?: Project;
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
+  clientScripts?: unknown;
+  selfProvisionDomains?: unknown;
+  user?: unknown;
+  sso?: unknown;
+  dynamicSelects?: unknown;
+  keysInUse?: unknown;
+  genericForm?: unknown;
+  linkId?: unknown;
+  sentTo?: unknown;
   clientScripts?: ClientScript[];
 }
 
@@ -65,6 +88,7 @@ export type FlowState = {
   baseUrl: string;
   tenant: string;
   stepId: string;
+  stepName: string;
   executionId: string;
   action: string;
   redirectTo: string;
@@ -92,6 +116,8 @@ export type FlowState = {
 
 export type StepState = {
   screenState: ScreenState;
+  screenId: string;
+  stepName: string;
   htmlFilename: string;
   htmlLocaleFilename: string;
   next: NextFn;
@@ -99,6 +125,16 @@ export type StepState = {
   samlIdpUsername: string;
   openInNewTabUrl?: string;
 } & OIDCOptions;
+
+export type CustomScreenState = Omit<
+  ScreenState,
+  'cssVars' | 'componentsConfig' | 'inputs'
+> & {
+  error?: {
+    text: ScreenState['errorText'];
+    type: ScreenState['errorType'];
+  };
+};
 
 export type DebugState = {
   isDebug: boolean;
@@ -115,7 +151,7 @@ export type ClientScript = {
   resultKey?: string;
 };
 
-export type NextFn = OmitFirstArg<OmitFirstArg<SdkFlowNext>>;
+export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]>;
 export type NextFnReturnPromiseValue = Awaited<ReturnType<NextFn>>;
 
 export type DebuggerMessage = {
@@ -140,6 +176,7 @@ type Operator =
 
 export interface ClientConditionResult {
   screenId: string;
+  screenName: string;
   clientScripts?: ClientScript[];
   interactionId: string;
 }
@@ -196,6 +233,7 @@ type ThemeTemplate = {
 
 export type FlowConfig = {
   startScreenId?: string;
+  startScreenName?: string;
   version: number;
   targetLocales?: string[];
   conditions?: ClientCondition[];
