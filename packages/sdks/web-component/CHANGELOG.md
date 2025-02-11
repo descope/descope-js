@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.33.0](https://github.com/descope/descope-js/compare/web-component-3.32.10...web-component-3.33.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `web-js-sdk` updated to version `1.23.9`
+* `escape-markdown` updated to version `0.1.5`
+
+### Features
+
+* **web-component:** add base-cdn-url attribute ([#1013](https://github.com/descope/descope-js/issues/1013)) ([8346412](https://github.com/descope/descope-js/commit/834641285494f842978b4111dae1db4e643cb494))
+
+
+### Bug Fixes
+
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
 ## [3.32.10](https://github.com/descope/descope-js/compare/web-component-3.32.9...web-component-3.32.10) (2025-02-02)
 
 ### Dependency Updates
