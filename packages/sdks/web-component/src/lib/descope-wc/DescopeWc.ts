@@ -192,7 +192,9 @@ class DescopeWc extends BaseDescopeWc {
         );
         resolve(script.id);
       };
-
+    this.loggerWrapper.debug(
+      `Preparing to load scripts: ${+scripts.map((s) => s.id)}`,
+    );
     const promises = Promise.all(
       scripts?.map(async (script) => {
         if (this.#scriptsRegistry.has(script.id)) {
