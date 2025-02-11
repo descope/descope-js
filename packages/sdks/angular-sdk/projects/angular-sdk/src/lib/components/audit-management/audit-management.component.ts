@@ -12,6 +12,7 @@ export class AuditManagementComponent implements OnInit, OnChanges {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
+  baseCdnUrl?: string;
   @Input() tenant: string;
   @Input() widgetId: string;
 
@@ -29,6 +30,7 @@ export class AuditManagementComponent implements OnInit, OnChanges {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
+    this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
   ngOnInit() {
@@ -49,6 +51,9 @@ export class AuditManagementComponent implements OnInit, OnChanges {
     }
     if (this.baseStaticUrl) {
       this.webComponent.setAttribute('base-static-url', this.baseStaticUrl);
+    }
+    if (this.baseCdnUrl) {
+      this.webComponent.setAttribute('base-cdn-url', this.baseCdnUrl);
     }
     if (this.theme) {
       this.webComponent.setAttribute('theme', this.theme);

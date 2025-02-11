@@ -4,6 +4,7 @@ export class DescopeAuthConfig {
   projectId = '';
   baseUrl?: string;
   baseStaticUrl?: string;
+  baseCdnUrl?: string;
   // If true, tokens will be stored on local storage
   persistTokens?: boolean;
   sessionTokenViaCookie?: boolean | { SameSite: 'Strict' | 'Lax' | 'None' };

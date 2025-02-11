@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.26](https://github.com/descope/descope-js/compare/angular-sdk-0.7.25...angular-sdk-0.7.26) (2025-02-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.17`
+* `audit-management-widget` updated to version `0.2.21`
+* `role-management-widget` updated to version `0.2.21`
+* `user-management-widget` updated to version `0.6.16`
+* `user-profile-widget` updated to version `0.2.17`
+* `applications-portal-widget` updated to version `0.2.20`
+* `web-component` updated to version `3.33.0`
+* `web-js-sdk` updated to version `1.23.9`
+* `core-js-sdk` updated to version `2.33.6`
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
 ## [0.7.25](https://github.com/descope/descope-js/compare/angular-sdk-0.7.24...angular-sdk-0.7.25) (2025-02-02)
 
 ### Dependency Updates

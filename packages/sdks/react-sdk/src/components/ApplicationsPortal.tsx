@@ -24,7 +24,7 @@ const ApplicationsPortal = React.forwardRef<
 
   useImperativeHandle(ref, () => innerRef);
 
-  const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+  const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = React.useContext(Context);
 
   return (
 	<Suspense fallback={null}>
@@ -33,6 +33,7 @@ const ApplicationsPortal = React.forwardRef<
         widgetId={widgetId}
         baseUrl={baseUrl}
         baseStaticUrl={baseStaticUrl}
+        baseCdnUrl={baseCdnUrl}
         innerRef={setInnerRef}
         {...{
           // attributes

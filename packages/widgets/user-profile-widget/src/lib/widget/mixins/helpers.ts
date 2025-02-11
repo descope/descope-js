@@ -5,6 +5,7 @@ type FlowConfig = {
   flowId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
+  baseCdnUrl?: string;
 };
 
 export const createFlowTemplate = (
