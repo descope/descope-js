@@ -82,6 +82,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       sdk,
@@ -159,6 +160,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             flowId={flowId}
             baseUrl={baseUrl}
             baseStaticUrl={baseStaticUrl}
+            baseCdnUrl={baseCdnUrl}
             ref={setInnerRef}
             telemetryKey={telemetryKey}
             redirectUrl={redirectUrl}

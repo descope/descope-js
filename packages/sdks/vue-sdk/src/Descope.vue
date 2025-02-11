@@ -5,6 +5,7 @@
       :project-id="projectId"
       :base-url="baseUrl"
       :base-static-url="baseStaticUrl"
+      :base-cdn-url="baseCdnUrl"
       :flow-id="flowId"
       :theme.attr="theme"
       :locale.attr="locale"
@@ -110,7 +111,7 @@ const emit = defineEmits<{
   (e: 'error', payload: CustomEvent<ErrorResponse>): void;
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
 }>();
-const { projectId, baseUrl, baseStaticUrl, storeLastAuthenticatedUser } =
+const { projectId, baseUrl, baseStaticUrl, storeLastAuthenticatedUser, baseCdnUrl } =
   useOptions();
 const sdk = useDescope();
 
