@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.37...nextjs-sdk-0.4.0) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.10`
+* `react-sdk` updated to version `2.4.0`
+* `core-js-sdk` updated to version `2.34.0`
+* `web-component` updated to version `3.34.0`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
 ## [0.3.37](https://github.com/descope/descope-js/compare/nextjs-sdk-0.3.36...nextjs-sdk-0.3.37) (2025-02-11)
 
 ### Dependency Updates
