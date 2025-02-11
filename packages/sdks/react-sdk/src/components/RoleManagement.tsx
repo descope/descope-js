@@ -22,7 +22,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = React.useContext(Context);
 
     return (
 	<Suspense fallback={null}>
@@ -32,6 +32,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
           tenant={tenant}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
+          baseCdnUrl={baseCdnUrl}
           innerRef={setInnerRef}
           {...{
             // attributes
