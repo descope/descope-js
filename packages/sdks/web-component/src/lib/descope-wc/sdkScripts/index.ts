@@ -5,20 +5,25 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
-export const scripts = {
-  forter: './forter',
-  fingerprint: './fingerprint',
-  fingerprintDescope: './fingerprintDescope',
-  grecaptcha: './grecaptcha',
-};
-
-// this function should contain the script that will load the sdk scripts
-// this is documented in `loadSdkScript` README
 export default async function loadSdkScript(scriptId: string) {
-  const path = scripts[scriptId];
-  if (!path) {
-    throw new Error(`Unknown script id: ${scriptId}`);
+  let res;
+  switch (scriptId) {
+    case 'forter':
+      res = await import('./forter');
+      return res.default;
+    case 'fingerprint':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./fingerprint');
+      return res.default;
+    case 'fingerprintDescope':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./fingerprintDescope');
+      return res.default;
+    case 'grecaptcha':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./grecaptcha');
+      return res.default;
+    default:
+      throw new Error(`Unknown script id: ${scriptId}`);
   }
-  const res = await import(path);
-  return res.default;
 }

@@ -202,7 +202,7 @@ class DescopeWc extends BaseDescopeWc {
         resolve(script.id);
       };
     this.loggerWrapper.debug(
-      `Preparing to load scripts: ${+scripts.map((s) => s.id)}`,
+      `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
     const promises = Promise.all(
       scripts?.map(async (script) => {
@@ -235,7 +235,10 @@ class DescopeWc extends BaseDescopeWc {
     );
 
     const toPromise = new Promise((resolve) => {
-      setTimeout(resolve, SDK_SCRIPTS_LOAD_TIMEOUT);
+      setTimeout(() => {
+        this.loggerWrapper.warn('SDK scripts loading timeout');
+        resolve(true);
+      }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
     return Promise.race([promises, toPromise]);
