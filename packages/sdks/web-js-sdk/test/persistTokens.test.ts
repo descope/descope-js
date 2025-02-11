@@ -92,7 +92,7 @@ describe('persistTokens', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        sessionTokenViaCookie: { SameSite: 'Lax' },
+        sessionTokenViaCookie: { sameSite: 'Lax' },
         persistTokens: true,
       });
       await sdk.httpClient.get('1/2/3');

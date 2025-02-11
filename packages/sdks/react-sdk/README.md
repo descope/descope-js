@@ -302,7 +302,7 @@ The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc
 In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
 
 The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={SameSite: 'Lax'}`
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 ### Helper Functions
 

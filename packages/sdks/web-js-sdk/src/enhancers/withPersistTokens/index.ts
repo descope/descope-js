@@ -18,7 +18,7 @@ import { CookieConfig, PersistTokensOptions, SameSite } from './types';
  */
 export const withPersistTokens =
   <T extends CreateWebSdk>(createSdk: T) =>
-  <A extends boolean | CookieConfig>({
+  <A extends CookieConfig>({
     persistTokens: isPersistTokens,
     sessionTokenViaCookie,
     storagePrefix,

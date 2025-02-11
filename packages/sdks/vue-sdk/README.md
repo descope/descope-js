@@ -175,7 +175,7 @@ app.use(descope, {
 ```
 
 Note: The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={SameSite: 'Lax'}`
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 Now, whenever you call `fetch`, the cookie will automatically be sent with the request.  
 Descope backend SDKs also support extracting the token from the `DS` cookie.

@@ -10,7 +10,6 @@ app.use(descope, {
   projectId: process.env.VUE_APP_DESCOPE_PROJECT_ID || '',
   baseUrl: process.env.VUE_APP_DESCOPE_BASE_URL || '',
   baseStaticUrl: process.env.VUE_APP_DESCOPE_BASE_STATIC_URL || '',
-  sessionTokenViaCookie: { SameSite: 'Lax' },
 });
 
 const sdk = getSdk();
