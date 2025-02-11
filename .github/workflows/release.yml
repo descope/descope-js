@@ -6,8 +6,6 @@ on:
       - main
 
 env:
-  NODE_VERSION: 18.19.0
-  PNPM_VERSION: 8
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
@@ -32,29 +30,22 @@ jobs:
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+      - run: corepack enable
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: package.json
           registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-        env:
-          CI: true
       - name: Build
         run: npm run version:ci
         env:
-          CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Run pnpm publish
         run: pnpm -r publish --access=public --no-git-checks
         env:
-          CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
       - name: Push versions, changelog and tags
         run: git push --atomic origin main $(git tag -l)
         env:
-          CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
