@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.67...sdk-helpers-0.2.0) (2025-02-11)
+
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
 ## [0.1.67](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.66...sdk-helpers-0.1.67) (2025-02-11)
 
 ## [0.1.66](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.65...sdk-helpers-0.1.66) (2025-02-02)
