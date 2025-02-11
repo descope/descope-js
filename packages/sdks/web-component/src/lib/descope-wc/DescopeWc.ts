@@ -1385,7 +1385,7 @@ class DescopeWc extends BaseDescopeWc {
           origin: this.nativeOptions?.origin || window.location.origin,
         };
 
-        next(submitterId, actionArgs);
+        await next(submitterId, actionArgs);
 
         this.nextRequestStatus.update({ isLoading: false });
 

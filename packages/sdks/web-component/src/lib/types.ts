@@ -48,7 +48,6 @@ export interface ScreenState {
   project?: Project;
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
-  clientScripts?: unknown;
   selfProvisionDomains?: unknown;
   user?: unknown;
   sso?: unknown;
