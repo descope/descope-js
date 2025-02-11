@@ -19,12 +19,15 @@
       :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
       :errorTransformer.prop="errorTransformer"
+      :onScreenUpdate.prop="onScreenUpdate"
       :form.attr="formStr"
       :client.attr="clientStr"
       @success="onSuccess"
       @error="onError"
       @ready="onReady"
-    />
+    >
+    <slot></slot>
+  </descope-wc>
   </div>
 </template>
 
@@ -93,6 +96,9 @@ const props = defineProps({
     type: Boolean,
   },
   errorTransformer: {
+    type: Function,
+  },
+  onScreenUpdate: {
     type: Function,
   },
   form: {

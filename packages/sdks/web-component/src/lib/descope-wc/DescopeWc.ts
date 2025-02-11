@@ -86,7 +86,7 @@ class DescopeWc extends BaseDescopeWc {
     screenState: CustomScreenState,
     next: StepState['next'],
     ref: typeof this,
-  ) => Promise<boolean>;
+  ) => boolean | Promise<boolean>;
 
   constructor() {
     const flowState = new State<FlowState>({

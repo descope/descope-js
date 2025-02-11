@@ -38,6 +38,15 @@ export class DescopeComponent implements OnInit, OnChanges {
 
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;
+  @Input() onScreenUpdate: (
+    screenName: string,
+    state: Record<string, any>,
+    next: (
+      interactionId: string,
+      form: Record<string, any>
+    ) => Promise<unknown>,
+    ref: HTMLElement
+  ) => boolean | Promise<boolean>;
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
@@ -153,6 +162,10 @@ export class DescopeComponent implements OnInit, OnChanges {
 
     if (this.errorTransformer) {
       this.webComponent.errorTransformer = this.errorTransformer;
+    }
+
+    if (this.onScreenUpdate) {
+      this.webComponent.onScreenUpdate = this.onScreenUpdate;
     }
 
     if (this.client) {

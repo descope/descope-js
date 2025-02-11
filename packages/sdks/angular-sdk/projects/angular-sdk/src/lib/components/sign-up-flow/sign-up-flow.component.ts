@@ -20,9 +20,18 @@ export class SignUpFlowComponent {
   @Input() autoFocus: true | false | 'skipFirstScreen';
   @Input() validateOnBlur: boolean;
   @Input() restartOnError: boolean;
-  
+
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;
+  @Input() onScreenUpdate: (
+    screenName: string,
+    state: Record<string, any>,
+    next: (
+      interactionId: string,
+      form: Record<string, any>
+    ) => Promise<unknown>,
+    ref: HTMLElement
+  ) => boolean | Promise<boolean>;
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;

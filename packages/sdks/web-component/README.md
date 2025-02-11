@@ -133,20 +133,22 @@ descopeWcEle.logger = logger;
 
 ### `onScreenUpdate`
 
-A function that is called whenever there is a new screen state or after every next call. It receives the following parameters:
+A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
 
 - `screenName`: The name of the screen that is about to be rendered
 - `state`: An object containing the upcoming screen state
 - `next`: A function that, when called, continues the flow execution
 - `ref`: A reference to the descope-wc node
 
-The function should return a boolean indicating whether a custom screen should be rendered:
+The function can be sync or async, and should return a boolean indicating whether a custom screen should be rendered:
 
 - `true`: Render a custom screen
 - `false`: Render the default flow screen
 
 This function allows rendering custom screens instead of the default flow screens.
 It can be useful for highly customized UIs or specific logic not covered by the default screens
+
+To render a custom screen, its elements should be appended as children of the `descope-wc` component
 
 Usage example:
 

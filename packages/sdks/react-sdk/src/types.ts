@@ -136,7 +136,7 @@ export type DescopeProps = {
       form: Record<string, any>,
     ) => Promise<unknown>,
     ref: HTMLElement,
-  ) => boolean;
+  ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
 };
 
