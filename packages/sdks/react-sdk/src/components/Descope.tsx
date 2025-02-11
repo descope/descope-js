@@ -69,6 +69,8 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       restartOnError,
       errorTransformer,
       styleId,
+      onScreenUpdate,
+      children,
     },
     ref,
   ) => {
@@ -181,8 +183,11 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
+              'onScreenUpdate.prop': onScreenUpdate,
             }}
-          />
+          >
+            {children}
+          </DescopeWC>
         </Suspense>
       </form>
     );

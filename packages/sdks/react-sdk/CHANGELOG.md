@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.4.0](https://github.com/descope/descope-js/compare/react-sdk-2.3.25...react-sdk-2.4.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `access-key-management-widget` updated to version `0.3.18`
+* `audit-management-widget` updated to version `0.3.0`
+* `role-management-widget` updated to version `0.2.22`
+* `user-management-widget` updated to version `0.6.17`
+* `user-profile-widget` updated to version `0.2.18`
+* `applications-portal-widget` updated to version `0.2.21`
+* `web-component` updated to version `3.34.0`
+* `web-js-sdk` updated to version `1.23.10`
+* `core-js-sdk` updated to version `2.34.0`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
 ## [2.3.25](https://github.com/descope/descope-js/compare/react-sdk-2.3.24...react-sdk-2.3.25) (2025-02-11)
 
 ### Dependency Updates

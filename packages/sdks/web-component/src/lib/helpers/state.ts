@@ -53,15 +53,19 @@ class State<T extends StateObject> {
 
   #token = 0;
 
-  #updateOnlyOnChange = false;
+  #forceUpdateAll = true;
 
-  constructor(init: T = {} as T, { updateOnlyOnChange = true } = {}) {
+  constructor(init: T = {} as T, { forceUpdate = false } = {}) {
     this.#state = init;
-    this.#updateOnlyOnChange = updateOnlyOnChange;
+    this.#forceUpdateAll = forceUpdate;
   }
 
   get current() {
     return { ...this.#state };
+  }
+
+  set forceUpdate(forceUpdate: boolean) {
+    this.#forceUpdateAll = forceUpdate;
   }
 
   update = (newState: Partial<T> | UpdateStateCb<T>) => {
@@ -69,7 +73,7 @@ class State<T extends StateObject> {
       typeof newState === 'function' ? newState(this.#state) : newState;
 
     const nextState = { ...this.#state, ...internalNewState };
-    if (!this.#updateOnlyOnChange || !compareObjects(this.#state, nextState)) {
+    if (this.#forceUpdateAll || !compareObjects(this.#state, nextState)) {
       const prevState = this.#state;
       this.#state = nextState;
       Object.freeze(this.#state);
