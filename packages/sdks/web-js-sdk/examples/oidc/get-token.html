@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>Getting Token ...</h1>
+    </div>
+
+    <script>
+      const h1Ele = document.getElementsByTagName('h1')[0];
+
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const projectId = urlSearchParams.get('projectId');
+      const url = new URL(location.href);
+      url.searchParams.set('projectId', projectId);
+      const redirectUri = url.toString();
+      const sdk = Descope({ projectId });
+
+      sdk.oidc.token().then((resp) => {
+        // change the h1 text to "Done!"
+        h1Ele.innerText = 'Done!';
+        if (resp?.ok === false) alert(JSON.stringify(resp, null, 4));
+
+        // create a code element to display the response
+        const codeEle = document.createElement('code');
+        codeEle.innerText = JSON.stringify(resp, null, 4);
+        document.body.appendChild(codeEle);
+      });
+    </script>
+  </body>
+</html>
