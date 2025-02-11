@@ -193,9 +193,9 @@ const CustomScreen = ({onClick, setForm}) => {
 
   return (
     <>
-      <input 
-        type="email" 
-        placeholder="Email" 
+      <input
+        type="email"
+        placeholder="Email"
         onChange={onChange}
       />
       <button
@@ -224,11 +224,11 @@ const Login = () => {
   return <Descope
   ...
   onScreenUpdate={onScreenUpdate}
-  >{state.screenName === 'My Custom Screen' && <CustomScreen 
+  >{state.screenName === 'My Custom Screen' && <CustomScreen
     onClick={() => {
       // replace with the button interaction id
       next('interactionId', form)
-    }} 
+    }}
     setForm={setForm}/>}
   </Descope>
 }

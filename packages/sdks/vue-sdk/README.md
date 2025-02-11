@@ -87,7 +87,6 @@ const handleReady = () => {
 </script>
 ```
 
-
 ### `onScreenUpdate`
 
 A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
@@ -118,7 +117,6 @@ function onScreenUpdate(screenName, state, next) {
   return false;
 }
 ```
-
 
 ### Use the `useDescope`, `useSession` and `useUser` functions in your components in order to get authentication state, user details and utilities
 

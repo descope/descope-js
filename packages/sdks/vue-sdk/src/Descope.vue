@@ -26,8 +26,8 @@
       @error="onError"
       @ready="onReady"
     >
-    <slot></slot>
-  </descope-wc>
+      <slot></slot>
+    </descope-wc>
   </div>
 </template>
 
