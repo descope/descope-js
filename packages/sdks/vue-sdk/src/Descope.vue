@@ -111,8 +111,13 @@ const emit = defineEmits<{
   (e: 'error', payload: CustomEvent<ErrorResponse>): void;
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
 }>();
-const { projectId, baseUrl, baseStaticUrl, storeLastAuthenticatedUser, baseCdnUrl } =
-  useOptions();
+const {
+  projectId,
+  baseUrl,
+  baseStaticUrl,
+  storeLastAuthenticatedUser,
+  baseCdnUrl,
+} = useOptions();
 const sdk = useDescope();
 
 const formStr = computed(() => (props.form ? JSON.stringify(props.form) : ''));
