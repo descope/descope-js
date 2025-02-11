@@ -18,7 +18,7 @@
     "preversion:ci": "sh ./tools/scripts/latestTag.sh",
     "version:ci": "pnpm affected:ci --target version --noVerify=true --parallel 1",
     "postversion:ci": "pnpm run build:ci",
-    "print-affected:ci": "nx print-affected --base=$(sh ./tools/scripts/latestTag.sh) --select=projects",
+    "print-affected:ci": "nx show projects --affected --base=$(sh ./tools/scripts/latestTag.sh) --select=projects",
     "format": "nx format:write",
     "format:ci": "nx format:check",
     "postinstall": "pnpm update @descope/web-components-ui"

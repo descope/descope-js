@@ -10,7 +10,7 @@ const AccessKeyManagementWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-	<descope-access-key-management-widget ref={ref} {...props} />
+        <descope-access-key-management-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -24,11 +24,12 @@ const AccessKeyManagement = React.forwardRef<
 
   useImperativeHandle(ref, () => innerRef);
 
-  const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = React.useContext(Context);
+  const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+    React.useContext(Context);
 
   return (
-	<Suspense fallback={null}>
-		<AccessKeyManagementWC
+    <Suspense fallback={null}>
+      <AccessKeyManagementWC
         projectId={projectId}
         widgetId={widgetId}
         tenant={tenant}
@@ -45,7 +46,7 @@ const AccessKeyManagement = React.forwardRef<
           'logger.prop': logger,
         }}
       />
-	</Suspense>
+    </Suspense>
   );
 });
 

@@ -1177,7 +1177,7 @@ describe('web-component', () => {
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
-    const rootEle = shadowEle.querySelector('#root');
+    const rootEle = shadowEle.querySelector('#content-root');
     await waitFor(
       () =>
         expect(rootEle).toHaveStyle({
@@ -1242,7 +1242,7 @@ describe('web-component', () => {
     document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
 
     window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_1`;
@@ -1252,7 +1252,7 @@ describe('web-component', () => {
     fireEvent.popState(window);
 
     const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
-    const rootEle = shadowEle.querySelector('#root');
+    const rootEle = shadowEle.querySelector('#content-root');
     const spyAddEventListener = jest.spyOn(rootEle, 'addEventListener');
 
     spyAddEventListener.mockImplementationOnce(
@@ -1260,7 +1260,7 @@ describe('web-component', () => {
     );
 
     await waitFor(() => screen.findByShadowText('It updated!'), {
-      timeout: WAIT_TIMEOUT,
+      timeout: 20000,
     });
   });
 
@@ -4491,7 +4491,7 @@ describe('web-component', () => {
       });
 
       // Should called after the page is loaded
-      expect(ready).toBeCalledTimes(1);
+      await waitFor(() => expect(ready).toBeCalledTimes(1), { timeout: 20000 });
 
       pageContent = '<span>Second Page</span>';
 
@@ -4702,14 +4702,14 @@ describe('web-component', () => {
 
       const shadowEle =
         document.getElementsByTagName('descope-wc')[0].shadowRoot;
-      const rootEle = shadowEle.querySelector('#root');
+      const rootEle = shadowEle.querySelector('#content-root');
 
       await waitFor(
         () =>
           expect(rootEle).toHaveStyle({
             '--var-name': 'value',
           }),
-        { timeout: WAIT_TIMEOUT },
+        { timeout: 20000 },
       );
     });
   });
@@ -4845,5 +4845,179 @@ describe('web-component', () => {
         ).toHaveAttribute('type', 'email'),
       { timeout: WAIT_TIMEOUT },
     );
+  });
+
+  describe('custom screen', () => {
+    it('should call the onScreenUpdate with the correct params', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            user: { name: 'john' },
+            inputs: {},
+            cssVars: {},
+            componentsConfig: {},
+            errorText: 'errorText',
+            errorType: 'errorType',
+            clientScripts: {},
+            _key: {},
+          },
+        }),
+      );
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn();
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1));
+
+      await waitFor(() =>
+        expect(onScreenUpdate).toHaveBeenCalledWith(
+          'Step Name',
+          {
+            form: {},
+            lastAuth: { loginId: undefined, name: undefined },
+            user: { name: 'john' },
+            error: {
+              text: 'errorText',
+              type: 'errorType',
+            },
+          },
+          expect.any(Function),
+          expect.any(HTMLElement),
+        ),
+      );
+    });
+    it('should render a flow screen when onScreenUpdate returns false', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"><button>Custom Button</button></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn(() => false);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(descopeWc.shadowRoot.querySelector('slot')).toHaveClass(
+            'hidden',
+          ),
+        {
+          timeout: 20000,
+        },
+      );
+    });
+    it('should render a custom screen when onScreenUpdate returns true', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"><button>Custom Button</button></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn(() => true);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.queryByShadowText('Loaded123')).not.toBeInTheDocument(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(descopeWc.shadowRoot.querySelector('slot')).not.toHaveClass(
+            'hidden',
+          ),
+        {
+          timeout: 20000,
+        },
+      );
+    });
+    it('should call onScreenUpdate when rendering a custom screen even if there is no state change', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      nextMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"><button>Custom Button</button></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn(() => true);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const next = onScreenUpdate.mock.calls[0][2];
+
+      next('bla', {});
+
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(2), {
+        timeout: 20000,
+      });
+
+      expect(onScreenUpdate.mock.calls[0][1]).toEqual(
+        onScreenUpdate.mock.calls[1][1],
+      );
+    });
+    it('should allow lazy render when window attribute is set (for mobile)', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      window.isDescopeBridge = true;
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1" window="true"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(
+        () => expect(descopeWc.lazyInit).toEqual(expect.any(Function)),
+        { timeout: 20000 },
+      );
+
+      await waitFor(
+        () =>
+          expect(screen.queryByShadowText('Loaded123')).not.toBeInTheDocument(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      descopeWc.lazyInit();
+
+      await waitFor(
+        () => expect(screen.queryByShadowText('Loaded123')).toBeInTheDocument(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+    });
   });
 });

@@ -11,9 +11,11 @@
       @error="handleError"
       @ready="handleReady"
       :errorTransformer="errorTransformer"
+      :onScreenUpdate="onScreenUpdate"
       :form="form"
       :client="client"
-    />
+    >
+    </Descope>
   </div>
 </template>
 
@@ -42,6 +44,12 @@ const errorTransformer = (error) => {
     SAMLStartFailed: 'Failed to start SAML flow',
   };
   return translationMap[error.type] || error.text;
+};
+
+const onScreenUpdate = (screenName, context, next) => {
+  console.log('Screen update', screenName, context, next);
+
+  return false;
 };
 
 const { isLoading, isAuthenticated } = useSession();
