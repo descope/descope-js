@@ -34,5 +34,5 @@ defineProps({
   },
 });
 
-const { projectId, baseUrl, baseStaticUrl, baseCdnUrl} = useOptions();
+const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = useOptions();
 </script>

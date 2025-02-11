@@ -26,7 +26,7 @@ const commonPlugins = (outputDir) => [
 	}),
 	typescript({
 		tsconfig: './tsconfig.json',
-		declaration: false,
+		declaration: false
 	}),
 	// swcPreserveDirectives(),
 	preserveDirectives({ supressPreserveModulesWarning: true }),
@@ -89,20 +89,20 @@ const configurations = ['server', 'client', ''].flatMap((entry) => {
 });
 
 export default [
-  ...configurations,
-  {
-    input: 'src/index.ts',
-    output: [{ dir: './dist', format: 'esm' }],
-    plugins: [
-      typescript({
-        tsconfig: './tsconfig.json',
-        compilerOptions: {
-          rootDir: './src',
-          declaration: true,
-          declarationDir: './dist/types',
-        },
-      }),
-      noEmit({ match: (file) => file.endsWith('.js') }),
-    ],
-  },
+	...configurations,
+	{
+		input: 'src/index.ts',
+		output: [{ dir: './dist', format: 'esm' }],
+		plugins: [
+			typescript({
+				tsconfig: './tsconfig.json',
+				compilerOptions: {
+					rootDir: './src',
+					declaration: true,
+					declarationDir: './dist/types'
+				}
+			}),
+			noEmit({ match: (file) => file.endsWith('.js') })
+		]
+	}
 ];

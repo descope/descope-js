@@ -30,6 +30,7 @@ import {
   State,
   submitForm,
   timeoutPromise,
+  transformStepStateForCustomScreen,
   updateScreenFromScreenState,
   updateTemplateFromScreenState,
   withMemCache,
@@ -45,6 +46,7 @@ import {
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
+  CustomScreenState,
   Direction,
   FlowState,
   NextFn,
@@ -72,12 +74,19 @@ class DescopeWc extends BaseDescopeWc {
   flowState: State<FlowState>;
 
   stepState = new State<StepState>({} as StepState, {
-    updateOnlyOnChange: false,
+    forceUpdate: true,
   });
 
   #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
+
+  onScreenUpdate: (
+    screenName: string,
+    context: CustomScreenState,
+    next: StepState['next'],
+    ref: typeof this,
+  ) => boolean | Promise<boolean>;
 
   constructor() {
     const flowState = new State<FlowState>({
@@ -184,7 +193,21 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  async init() {
+  init() {
+    // when running in a webview (mobile SDK) we want to lazy init the component
+    // so the mobile SDK will be able to register all the necessary callbacks
+    // before the component will start loading the flow
+    if (!(window as any).isDescopeBridge) {
+      // eslint-disable-next-line no-underscore-dangle
+      return this._init();
+    }
+    // eslint-disable-next-line no-underscore-dangle
+    (this as any).lazyInit = this._init;
+    return undefined;
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  async _init() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
       this.stepState?.subscribe(this.onStepChange.bind(this));
@@ -272,6 +295,45 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  async #handleCustomScreen(stepStateUpdate: Partial<StepState>) {
+    const { next, stepName, ...state } = {
+      ...this.stepState.current,
+      ...stepStateUpdate,
+    };
+
+    const isCustomScreen: boolean = Boolean(
+      await this.onScreenUpdate?.(
+        stepName,
+        transformStepStateForCustomScreen(state),
+        next,
+        this,
+      ),
+    );
+
+    if (isCustomScreen) {
+      this.loggerWrapper.debug('Rendering a custom screen');
+      this.contentRootElement.innerHTML = '';
+      this.#dispatchPageEvents({
+        isFirstScreen: !this.stepState.current.htmlFilename,
+        stepName: stepStateUpdate.stepName,
+      });
+
+      // we are unsubscribing all the listeners because we are going to render a custom screen
+      // and we do not want that onStepChange will be called
+      this.stepState.unsubscribeAll();
+      const subscribeId = this.stepState.subscribe(() => {
+        // after state was updated, we want to re-subscribe the onStepChange listener
+        this.stepState.unsubscribe(subscribeId);
+        this.stepState?.subscribe(this.onStepChange.bind(this));
+      });
+    }
+
+    this.#toggleScreenVisibility(isCustomScreen);
+    // in order to call onScreenUpdate after every next call
+    // and not only when there is a state change, we need to force update when we are rendering a custom screen
+    this.flowState.forceUpdate = isCustomScreen;
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -308,6 +370,7 @@ class DescopeWc extends BaseDescopeWc {
     } = currentState;
 
     let startScreenId: string;
+    let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
     const loginId = this.sdk.getLastUserLoginId();
@@ -349,10 +412,11 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       if (flowConfig.conditions) {
-        ({ startScreenId, conditionInteractionId } = calculateConditions(
-          { loginId, code, token, abTestingKey },
-          flowConfig.conditions,
-        ));
+        ({ startScreenId, conditionInteractionId, startScreenName } =
+          calculateConditions(
+            { loginId, code, token, abTestingKey },
+            flowConfig.conditions,
+          ));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
@@ -364,6 +428,7 @@ class DescopeWc extends BaseDescopeWc {
           },
         ));
       } else {
+        startScreenName = flowConfig.startScreenName;
         startScreenId = flowConfig.startScreenId;
       }
 
@@ -589,6 +654,8 @@ class DescopeWc extends BaseDescopeWc {
       },
       htmlFilename: `${readyScreenId}.html`,
       htmlLocaleFilename: filenameWithLocale,
+      screenId: readyScreenId,
+      stepName: currentState.stepName || startScreenName,
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
@@ -602,13 +669,8 @@ class DescopeWc extends BaseDescopeWc {
     // But if any of the sso params are not empty, this optimization doesn't happen
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
-      stepStateUpdate.next = (
-        interactionId,
-        version,
-        componentsVersion,
-        inputs,
-      ) =>
-        this.sdk.flow.start(
+      stepStateUpdate.next = async (interactionId, inputs) => {
+        const res = await this.sdk.flow.start(
           flowId,
           {
             tenant,
@@ -624,7 +686,7 @@ class DescopeWc extends BaseDescopeWc {
           },
           conditionInteractionId,
           interactionId,
-          componentsVersion,
+          projectConfig.componentsVersion,
           flowVersions,
           {
             ...this.formConfigValues,
@@ -634,19 +696,48 @@ class DescopeWc extends BaseDescopeWc {
             ...(token && { token }),
           },
         );
+
+        this.#handleSdkResponse(res);
+
+        return res;
+      };
     } else if (
       isChanged('projectId') ||
       isChanged('baseUrl') ||
       isChanged('executionId') ||
       isChanged('stepId')
     ) {
-      stepStateUpdate.next = (...args) =>
-        this.sdk.flow.next(executionId, stepId, ...args);
+      stepStateUpdate.next = async (interactionId, input) => {
+        const res = await this.sdk.flow.next(
+          executionId,
+          stepId,
+          interactionId,
+          flowConfig.version,
+          projectConfig.componentsVersion,
+          input,
+        );
+
+        this.#handleSdkResponse(res);
+
+        return res;
+      };
     }
+
+    this.loggerWrapper.debug(
+      'Going to render screen with id',
+      stepStateUpdate.screenId,
+    );
+
+    await this.#handleCustomScreen(stepStateUpdate);
 
     // update step state
     this.stepState.update(stepStateUpdate);
   }
+
+  #toggleScreenVisibility = (isCustomScreen: boolean) => {
+    this.contentRootElement.classList.toggle('hidden', isCustomScreen);
+    this.slotElement.classList.toggle('hidden', !isCustomScreen);
+  };
 
   #handlePollingResponse = (
     executionId: string,
@@ -845,6 +936,7 @@ class DescopeWc extends BaseDescopeWc {
 
     this.flowState.update({
       stepId,
+      stepName,
       executionId,
       action,
       redirectTo: redirect?.url,
@@ -926,22 +1018,14 @@ class DescopeWc extends BaseDescopeWc {
         // we need the abort controller so we can cancel the current webauthn session in case the user clicked on a webauthn button, and we need to start a new session
         this.#conditionalUiAbortController = new AbortController();
 
-        const flowConfig = await this.getFlowConfig();
-        const projectConfig = await this.getProjectConfig();
         // we should not wait for this fn, it will call next when the user uses his passkey on the input
         this.sdk.webauthn.helpers
           .conditional(options, this.#conditionalUiAbortController)
           .then(async (response) => {
-            const resp = await next(
-              conditionalUiInput.id,
-              flowConfig.version,
-              projectConfig.componentsVersion,
-              {
-                transactionId,
-                response,
-              },
-            );
-            this.#handleSdkResponse(resp);
+            next(conditionalUiInput.id, {
+              transactionId,
+              response,
+            });
           })
           .catch((err) => {
             if (err.name !== 'AbortError') {
@@ -950,6 +1034,23 @@ class DescopeWc extends BaseDescopeWc {
           });
       }
     }
+  }
+
+  #dispatchPageEvents({
+    isFirstScreen,
+    stepName,
+  }: {
+    isFirstScreen: boolean;
+    stepName: string;
+  }) {
+    if (isFirstScreen) {
+      // Dispatch when the first page is ready
+      // So user can show a loader until his event is triggered
+      this.#dispatch('ready', {});
+    }
+
+    this.#dispatch('page-updated', { screenName: stepName });
+    this.#dispatch('screen-updated', { screenName: stepName });
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
@@ -961,6 +1062,8 @@ class DescopeWc extends BaseDescopeWc {
       screenState,
       openInNewTabUrl,
     } = currentState;
+
+    this.loggerWrapper.debug('Rendering a flow screen');
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(
@@ -1007,8 +1110,8 @@ class DescopeWc extends BaseDescopeWc {
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
 
-      // put the totp and notp variable on the root element, which is the top level 'div' inside the shadowroot
-      const rootElement = this.shadowRoot.querySelector('div');
+      // put the totp and notp variable on the root element, which is the top level 'div' inside the shadowRoot
+      const rootElement = this.contentRootElement;
       setTOTPVariable(rootElement, screenState?.totp?.image);
 
       setNOTPVariable(rootElement, screenState?.notp?.image);
@@ -1016,7 +1119,7 @@ class DescopeWc extends BaseDescopeWc {
       // set dynamic css variables that should be set at runtime
       setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
-      this.rootElement.replaceChildren(clone);
+      rootElement.replaceChildren(clone);
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlFilename;
@@ -1025,37 +1128,29 @@ class DescopeWc extends BaseDescopeWc {
       setTimeout(() => {
         this.#updateExternalInputs();
 
-        handleAutoFocus(this.rootElement, this.autoFocus, isFirstScreen);
-
         if (this.validateOnBlur) {
-          handleReportValidityOnBlur(this.rootElement);
+          handleReportValidityOnBlur(rootElement);
         }
 
         // we need to wait for all components to render before we can set its value
-        updateScreenFromScreenState(this.rootElement, screenState);
+        updateScreenFromScreenState(rootElement, screenState);
+
+        this.#dispatchPageEvents({
+          isFirstScreen,
+          stepName: currentState.stepName,
+        });
+
+        handleAutoFocus(rootElement, this.autoFocus, isFirstScreen);
       });
 
       this.#hydrate(next);
-      if (isFirstScreen) {
-        // Dispatch when the first page is ready
-        // So user can show a loader until his event is triggered
-        this.#dispatch('ready', {});
-      }
-      this.#dispatch('page-updated', {});
-      const loader = this.rootElement.querySelector(
+
+      const loader = rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        const flowConfig = await this.getFlowConfig();
-        const projectConfig = await this.getProjectConfig();
         // Loader component in the screen triggers polling interaction
-        const response = await next(
-          CUSTOM_INTERACTIONS.polling,
-          flowConfig.version,
-          projectConfig.componentsVersion,
-          {},
-        );
-        this.#handleSdkResponse(response);
+        next(CUSTOM_INTERACTIONS.polling, {});
       }
 
       // open in a new tab should be done after the screen is rendered
@@ -1158,7 +1253,9 @@ class DescopeWc extends BaseDescopeWc {
     // the slotted inputs it needs
     clearPreviousExternalInputs();
 
-    const eles = this.rootElement.querySelectorAll('[external-input="true"]');
+    const eles = this.contentRootElement.querySelectorAll(
+      '[external-input="true"]',
+    );
     eles.forEach((ele) => this.#handleExternalInputs(ele));
   }
 
@@ -1213,16 +1310,7 @@ class DescopeWc extends BaseDescopeWc {
           origin: this.nativeOptions?.origin || window.location.origin,
         };
 
-        const flowConfig = await this.getFlowConfig();
-        const projectConfig = await this.getProjectConfig();
-        const sdkResp = await next(
-          submitterId,
-          flowConfig.version,
-          projectConfig.componentsVersion,
-          actionArgs,
-        );
-
-        this.#handleSdkResponse(sdkResp);
+        next(submitterId, actionArgs);
 
         this.#handleStoreCredentials(formData);
       }
@@ -1230,7 +1318,7 @@ class DescopeWc extends BaseDescopeWc {
   );
 
   #addPasscodeAutoSubmitListeners(next: NextFn) {
-    this.rootElement
+    this.contentRootElement
       .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
       .forEach((passcode: HTMLInputElement) => {
         passcode.addEventListener('input', () => {
@@ -1245,7 +1333,7 @@ class DescopeWc extends BaseDescopeWc {
   #hydrate(next: NextFn) {
     // hydrating the page
     // Adding event listeners to all buttons without the exclude attribute
-    this.rootElement
+    this.contentRootElement
       .querySelectorAll(
         `descope-button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`,
       )
@@ -1260,10 +1348,10 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {
-    this.rootElement.addEventListener(
+    this.contentRootElement.addEventListener(
       'transitionend',
       () => {
-        this.rootElement.classList.remove('fade-out');
+        this.contentRootElement.classList.remove('fade-out');
         injectNextPage();
       },
       { once: true },
@@ -1273,14 +1361,14 @@ class DescopeWc extends BaseDescopeWc {
       direction === Direction.forward ? 'slide-forward' : 'slide-backward';
 
     Array.from(
-      this.rootElement.getElementsByClassName('input-container'),
+      this.contentRootElement.getElementsByClassName('input-container'),
     ).forEach((ele, i) => {
       // eslint-disable-next-line no-param-reassign
       (ele as HTMLElement).style['transition-delay'] = `${i * 40}ms`;
       ele.classList.add(transitionClass);
     });
 
-    this.rootElement.classList.add('fade-out');
+    this.contentRootElement.classList.add('fade-out');
   }
 
   #dispatch(eventName: string, detail: any) {

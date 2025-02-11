@@ -39,11 +39,13 @@ export type ClientCondition = {
 
 export type ClientConditionResult = {
   screenId: string;
+  screenName: string;
   interactionId: string;
 };
 
 export type FlowConfig = {
   startScreenId?: string;
+  startScreenName?: string;
   version: number;
   targetLocales?: string[];
   conditions?: ClientCondition[];
