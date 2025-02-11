@@ -11,24 +11,24 @@ import {
   getSessionToken,
   persistTokens,
 } from './helpers';
-import { PersistTokensOptions } from './types';
+import { CookieConfig, PersistTokensOptions, SameSite } from './types';
 
 /**
  * Persist authentication tokens in cookie/storage
  */
 export const withPersistTokens =
   <T extends CreateWebSdk>(createSdk: T) =>
-  <A extends boolean>({
+  <A extends CookieConfig>({
     persistTokens: isPersistTokens,
     sessionTokenViaCookie,
     storagePrefix,
     ...config
-  }: Parameters<T>[0] & PersistTokensOptions<A>): A extends true
-    ? ReturnType<T> & {
+  }: Parameters<T>[0] & PersistTokensOptions<A>): A extends false
+    ? ReturnType<T>
+    : ReturnType<T> & {
         getRefreshToken: () => string;
         getSessionToken: () => string;
-      }
-    : ReturnType<T> => {
+      } => {
     if (!isPersistTokens || !IS_BROWSER) {
       if (isPersistTokens) {
         // Storing auth tokens in local storage and cookies are a client side only capabilities
