@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.34.0](https://github.com/descope/descope-js/compare/web-component-3.33.0...web-component-3.34.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `web-js-sdk` updated to version `1.23.10`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
 ## [3.33.0](https://github.com/descope/descope-js/compare/web-component-3.32.10...web-component-3.33.0) (2025-02-11)
 
 ### Dependency Updates
