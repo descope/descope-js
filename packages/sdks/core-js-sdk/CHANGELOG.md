@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.33.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.5...core-js-sdk-2.33.6) (2025-02-11)
+
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+
 ## [2.33.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.4...core-js-sdk-2.33.5) (2025-02-02)
 
 ## [2.33.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.3...core-js-sdk-2.33.4) (2025-02-02)
