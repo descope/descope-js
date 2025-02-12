@@ -4,8 +4,6 @@ on:
     types: [opened, edited, synchronize, reopened]
     branches:
       - main
-env:
-  NODE_VERSION: 18.19.0
 jobs:
   pr:
     name: 🌀 Check PR Title
