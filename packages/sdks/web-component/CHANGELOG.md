@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.35.0](https://github.com/descope/descope-js/compare/web-component-3.34.1...web-component-3.35.0) (2025-02-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.9.0`
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
 ## [3.34.1](https://github.com/descope/descope-js/compare/web-component-3.34.0...web-component-3.34.1) (2025-02-11)
 
 ### Dependency Updates
