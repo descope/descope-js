@@ -139,6 +139,10 @@ export type DebugState = {
   isDebug: boolean;
 };
 
+export interface ScriptElement extends HTMLDivElement {
+  moduleRes?: ScriptModule;
+}
+
 export type ScriptModule = {
   stop: () => void;
   start: () => void;

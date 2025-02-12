@@ -47,13 +47,13 @@ import {
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
-  CustomScreenState,
   ClientScript,
+  CustomScreenState,
   Direction,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
-  ScriptModule,
+  ScriptElement,
   SdkConfig,
   StepState,
 } from '../types';
@@ -171,8 +171,6 @@ class DescopeWc extends BaseDescopeWc {
       }
     | undefined;
 
-  #scriptsRegistry = new Map<string, ScriptModule>();
-
   loadSdkScripts(scripts: ClientScript[]) {
     if (!scripts?.length) {
       return null;
@@ -206,11 +204,14 @@ class DescopeWc extends BaseDescopeWc {
     );
     const promises = Promise.all(
       scripts?.map(async (script) => {
-        if (this.#scriptsRegistry.has(script.id)) {
+        const scriptElement = this.shadowRoot.querySelector(
+          `[data-script-id="${script.id}"]`,
+        ) as ScriptElement;
+        if (scriptElement) {
           this.loggerWrapper.debug('Script already loaded', script.id);
-          const m = this.#scriptsRegistry.get(script.id);
-          m.start?.();
-          return m;
+          const { moduleRes } = scriptElement;
+          moduleRes?.start?.();
+          return moduleRes;
         }
         const module = await loadSdkScript(script.id);
         return new Promise((resolve, reject) => {
@@ -221,7 +222,12 @@ class DescopeWc extends BaseDescopeWc {
               createScriptCallback(script, resolve),
             );
             if (moduleRes) {
-              this.#scriptsRegistry.set(script.id, moduleRes);
+              const newScriptElement = document.createElement(
+                'div',
+              ) as ScriptElement;
+              newScriptElement.setAttribute('data-script-id', script.id);
+              newScriptElement.moduleRes = moduleRes;
+              this.shadowRoot.appendChild(newScriptElement);
               this.nextRequestStatus.subscribe(() => {
                 this.loggerWrapper.debug('Unloading script', script.id);
                 moduleRes.stop?.();
