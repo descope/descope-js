@@ -162,7 +162,7 @@ Note: Descope also provides server-side SDKs in various languages (NodeJS, Go, P
 There are 2 ways to achieve that:
 
 1. Using `getSessionToken` to get the token, and pass it on the `Authorization` Header (Recommended)
-2. Passing `sessionTokenViaCookie` boolean option when initializing the plugin (Use cautiously, session token may grow, especially in cases of using authorization, or adding custom claim)
+2. Passing `sessionTokenViaCookie` option when initializing the plugin (Use cautiously, session token may grow, especially in cases of using authorization, or adding custom claim)
 
 #### 1. Using `getSessionToken` to get the token
 
@@ -204,6 +204,9 @@ app.use(descope, {
   sessionTokenViaCookie: true,
 });
 ```
+
+Note: The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 Now, whenever you call `fetch`, the cookie will automatically be sent with the request.  
 Descope backend SDKs also support extracting the token from the `DS` cookie.
