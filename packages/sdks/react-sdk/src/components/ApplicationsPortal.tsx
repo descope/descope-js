@@ -10,7 +10,7 @@ const ApplicationsPortalWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-applications-portal-widget ref={ref} {...props} />
+	<descope-applications-portal-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -28,8 +28,8 @@ const ApplicationsPortal = React.forwardRef<
     React.useContext(Context);
 
   return (
-    <Suspense fallback={null}>
-      <ApplicationsPortalWC
+	<Suspense fallback={null}>
+		<ApplicationsPortalWC
         projectId={projectId}
         widgetId={widgetId}
         baseUrl={baseUrl}
@@ -45,7 +45,7 @@ const ApplicationsPortal = React.forwardRef<
           'logger.prop': logger,
         }}
       />
-    </Suspense>
+	</Suspense>
   );
 });
 

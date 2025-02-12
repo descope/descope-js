@@ -48,7 +48,6 @@ export interface ScreenState {
   project?: Project;
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
-  clientScripts?: unknown;
   selfProvisionDomains?: unknown;
   user?: unknown;
   sso?: unknown;
@@ -57,6 +56,7 @@ export interface ScreenState {
   genericForm?: unknown;
   linkId?: unknown;
   sentTo?: unknown;
+  clientScripts?: ClientScript[];
 }
 
 export type SSOQueryParams = {
@@ -139,6 +139,21 @@ export type DebugState = {
   isDebug: boolean;
 };
 
+export interface ScriptElement extends HTMLDivElement {
+  moduleRes?: ScriptModule;
+}
+
+export type ScriptModule = {
+  stop: () => void;
+  start: () => void;
+};
+
+export type ClientScript = {
+  id: string;
+  initArgs: Record<string, any>;
+  resultKey?: string;
+};
+
 export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]>;
 export type NextFnReturnPromiseValue = Awaited<ReturnType<NextFn>>;
 
@@ -165,6 +180,7 @@ type Operator =
 export interface ClientConditionResult {
   screenId: string;
   screenName: string;
+  clientScripts?: ClientScript[];
   interactionId: string;
 }
 
@@ -234,6 +250,7 @@ export type FlowConfig = {
       resultKey?: string;
     },
   ];
+  clientScripts?: ClientScript[];
 };
 
 export interface ProjectConfiguration {
