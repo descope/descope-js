@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.24.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.10...web-js-sdk-1.24.0) (2025-02-11)
+
+
+### Features
+
+* **web-js-sdk/withPersistTokens:** allow customizing SameSite RELEASE ([#1015](https://github.com/descope/descope-js/issues/1015)) ([d5262f7](https://github.com/descope/descope-js/commit/d5262f7cd42d6c042d4aa87c34ac1c71bb3c7bde))
+
 ## [1.23.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.9...web-js-sdk-1.23.10) (2025-02-11)
 
 ### Dependency Updates

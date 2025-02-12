@@ -10,7 +10,7 @@ const AuditManagementWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-audit-management-widget ref={ref} {...props} />
+	<descope-audit-management-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -26,8 +26,8 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
       React.useContext(Context);
 
     return (
-      <Suspense fallback={null}>
-        <AuditManagementWC
+	<Suspense fallback={null}>
+		<AuditManagementWC
           projectId={projectId}
           widgetId={widgetId}
           tenant={tenant}
@@ -44,7 +44,7 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
             'logger.prop': logger,
           }}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

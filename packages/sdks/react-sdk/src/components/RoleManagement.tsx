@@ -10,7 +10,7 @@ const RoleManagementWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-role-management-widget ref={ref} {...props} />
+	<descope-role-management-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -26,8 +26,8 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
       React.useContext(Context);
 
     return (
-      <Suspense fallback={null}>
-        <RoleManagementWC
+	<Suspense fallback={null}>
+		<RoleManagementWC
           projectId={projectId}
           widgetId={widgetId}
           tenant={tenant}
@@ -44,7 +44,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
             'logger.prop': logger,
           }}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

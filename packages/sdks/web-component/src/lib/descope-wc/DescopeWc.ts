@@ -10,6 +10,7 @@ import {
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
   RESPONSE_ACTIONS,
+  SDK_SCRIPTS_LOAD_TIMEOUT,
   URL_CODE_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
@@ -46,11 +47,13 @@ import {
   setPhoneAutoDetectDefaultCode,
 } from '../helpers/templates';
 import {
+  ClientScript,
   CustomScreenState,
   Direction,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
+  ScriptElement,
   SdkConfig,
   StepState,
 } from '../types';
@@ -87,6 +90,8 @@ class DescopeWc extends BaseDescopeWc {
     next: StepState['next'],
     ref: typeof this,
   ) => boolean | Promise<boolean>;
+
+  #sdkScriptsLoading = null;
 
   constructor() {
     const flowState = new State<FlowState>({
@@ -166,31 +171,83 @@ class DescopeWc extends BaseDescopeWc {
       }
     | undefined;
 
-  async loadSdkScripts() {
-    const flowConfig = await this.getFlowConfig();
-    const scripts = flowConfig.sdkScripts;
+  loadSdkScripts(scripts: ClientScript[]) {
+    if (!scripts?.length) {
+      return null;
+    }
 
-    scripts?.forEach(async (script) => {
-      const module = await loadSdkScript(script.id);
-      module(
-        script.initArgs as any,
-        { baseUrl: this.baseUrl },
-        (result: string) => {
-          // update the context with the result, under the `resultKey` key
-          this.dispatchEvent(
-            new CustomEvent('components-context', {
-              detail: {
-                // we store the result with script.id prefix to avoid conflicts with other scripts results
-                // that may have the same key
-                [getScriptResultPath(script.id, script.resultKey)]: result,
-              },
-              bubbles: true,
-              composed: true,
-            }),
-          );
+    const createScriptCallback =
+      (
+        script: {
+          id: string;
+          resultKey?: string;
         },
-      );
+        resolve: (value: any) => void,
+      ) =>
+      (result: string) => {
+        this.dispatchEvent(
+          // update the context with the result, under the `resultKey` key
+          new CustomEvent('components-context', {
+            detail: {
+              // we store the result with script.id prefix to avoid conflicts with other scripts results
+              // that may have the same key
+              [getScriptResultPath(script.id, script.resultKey)]: result,
+            },
+            bubbles: true,
+            composed: true,
+          }),
+        );
+        resolve(script.id);
+      };
+    this.loggerWrapper.debug(
+      `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
+    );
+    const promises = Promise.all(
+      scripts?.map(async (script) => {
+        const scriptElement = this.shadowRoot.querySelector(
+          `[data-script-id="${script.id}"]`,
+        ) as ScriptElement;
+        if (scriptElement) {
+          this.loggerWrapper.debug('Script already loaded', script.id);
+          const { moduleRes } = scriptElement;
+          moduleRes?.start?.();
+          return moduleRes;
+        }
+        const module = await loadSdkScript(script.id);
+        return new Promise((resolve, reject) => {
+          try {
+            const moduleRes = module(
+              script.initArgs as any,
+              { baseUrl: this.baseUrl },
+              createScriptCallback(script, resolve),
+            );
+            if (moduleRes) {
+              const newScriptElement = document.createElement(
+                'div',
+              ) as ScriptElement;
+              newScriptElement.setAttribute('data-script-id', script.id);
+              newScriptElement.moduleRes = moduleRes;
+              this.shadowRoot.appendChild(newScriptElement);
+              this.nextRequestStatus.subscribe(() => {
+                this.loggerWrapper.debug('Unloading script', script.id);
+                moduleRes.stop?.();
+              });
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }),
+    );
+
+    const toPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        this.loggerWrapper.warn('SDK scripts loading timeout');
+        resolve(true);
+      }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
+
+    return Promise.race([promises, toPromise]);
   }
 
   init() {
@@ -404,19 +461,23 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      this.loadSdkScripts();
-      if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
-        await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
-      } else {
-        clearFingerprintData();
-      }
+      const clientScripts = [
+        ...(flowConfig.clientScripts || []),
+        ...(flowConfig.sdkScripts || []),
+      ];
 
       if (flowConfig.conditions) {
-        ({ startScreenId, conditionInteractionId, startScreenName } =
-          calculateConditions(
-            { loginId, code, token, abTestingKey },
-            flowConfig.conditions,
-          ));
+        let conditionScripts = [];
+        ({
+          startScreenId,
+          conditionInteractionId,
+          startScreenName,
+          clientScripts: conditionScripts,
+        } = calculateConditions(
+          { loginId, code, token, abTestingKey },
+          flowConfig.conditions,
+        ));
+        clientScripts.push(...(conditionScripts || []));
       } else if (flowConfig.condition) {
         ({ startScreenId, conditionInteractionId } = calculateCondition(
           flowConfig.condition,
@@ -430,6 +491,13 @@ class DescopeWc extends BaseDescopeWc {
       } else {
         startScreenName = flowConfig.startScreenName;
         startScreenId = flowConfig.startScreenId;
+      }
+
+      this.#sdkScriptsLoading = this.loadSdkScripts(clientScripts);
+      if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
+        await ensureFingerprintIds(flowConfig.fingerprintKey, this.baseUrl);
+      } else {
+        clearFingerprintData();
       }
 
       // As an optimization - we want to show the first screen if it is possible
@@ -934,6 +1002,10 @@ class DescopeWc extends BaseDescopeWc {
       },
     );
 
+    if (screen.state?.clientScripts) {
+      this.#sdkScriptsLoading = this.loadSdkScripts(screen.state.clientScripts);
+    }
+
     this.flowState.update({
       stepId,
       stepName,
@@ -1297,6 +1369,18 @@ class DescopeWc extends BaseDescopeWc {
 
         const formData = await this.#getFormData();
         const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+
+        this.nextRequestStatus.update({ isLoading: true });
+
+        if (this.#sdkScriptsLoading) {
+          this.loggerWrapper.debug('Waiting for sdk scripts to load');
+          const now = Date.now();
+          await this.#sdkScriptsLoading;
+          this.loggerWrapper.debug(
+            'Sdk scripts loaded for',
+            (Date.now() - now).toString(),
+          );
+        }
         const contextArgs = this.getComponentsContext();
 
         const actionArgs = {
@@ -1310,7 +1394,9 @@ class DescopeWc extends BaseDescopeWc {
           origin: this.nativeOptions?.origin || window.location.origin,
         };
 
-        next(submitterId, actionArgs);
+        await next(submitterId, actionArgs);
+
+        this.nextRequestStatus.update({ isLoading: false });
 
         this.#handleStoreCredentials(formData);
       }
