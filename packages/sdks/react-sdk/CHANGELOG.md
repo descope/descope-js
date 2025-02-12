@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.6.0](https://github.com/descope/descope-js/compare/react-sdk-2.5.0...react-sdk-2.6.0) (2025-02-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.20`
+* `audit-management-widget` updated to version `0.3.2`
+* `role-management-widget` updated to version `0.2.24`
+* `user-management-widget` updated to version `0.6.19`
+* `user-profile-widget` updated to version `0.2.20`
+* `applications-portal-widget` updated to version `0.2.23`
+* `web-component` updated to version `3.35.0`
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
 ## [2.5.0](https://github.com/descope/descope-js/compare/react-sdk-2.4.0...react-sdk-2.5.0) (2025-02-11)
 
 ### Dependency Updates
