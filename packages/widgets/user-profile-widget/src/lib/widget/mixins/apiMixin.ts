@@ -25,6 +25,7 @@ export const apiMixin = createSingletonMixin(
           { projectId: this.projectId, baseUrl: this.baseUrl },
           this.mock === 'true',
           this.widgetId,
+          this.getAttribute('refresh-cookie-name'),
         );
       }
 
