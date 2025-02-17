@@ -104,7 +104,7 @@ describe('saml', () => {
         {
           queryParams: {
             tenant: 'tenant-ID',
-            redirectUrl: 'aaa',
+            redirectURL: 'aaa',
             ssoId: 'ddd',
           },
           token: 'ccc',
