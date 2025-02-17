@@ -48,6 +48,43 @@ describe('saml', () => {
         response: httpResponse,
       });
     });
+
+    it('should return the correct url - sso id', async () => {
+      const httpRespJson = { url: 'http://redirecturl.com/' };
+      const httpResponse = {
+        ok: true,
+        json: () => Promise.resolve(httpRespJson),
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValueOnce(httpResponse);
+      const resp = await sdk.saml.start(
+        'tenant-ID',
+        '',
+        null,
+        '',
+        'some-sso-id',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.saml.start,
+        {},
+        {
+          queryParams: {
+            tenant: 'tenant-ID',
+            ssoId: 'some-sso-id',
+          },
+        },
+      );
+
+      expect(resp).toEqual({
+        code: 200,
+        data: httpRespJson,
+        ok: true,
+        response: httpResponse,
+      });
+    });
   });
 
   describe('exchange', () => {
