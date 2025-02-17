@@ -20,10 +20,10 @@ const withSaml = (httpClient: HttpClient) => ({
         httpClient.post(apiPaths.saml.start, loginOptions || {}, {
           queryParams: {
             tenant: tenantIdOrEmail,
-            redirectURL: redirectUrl,
-            ssoId,
+            ...(redirectUrl && { redirectURL: redirectUrl }),
+            ...(ssoId && { ssoId }),
           },
-          token,
+          ...(token && { token }),
         }),
       ),
   ),
