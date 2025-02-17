@@ -62,9 +62,9 @@ describe('saml', () => {
       mockHttpClient.post.mockResolvedValueOnce(httpResponse);
       const resp = await sdk.saml.start(
         'tenant-ID',
-        '',
         null,
-        '',
+        null,
+        null,
         'some-sso-id',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -74,7 +74,6 @@ describe('saml', () => {
           queryParams: {
             tenant: 'tenant-ID',
             ssoId: 'some-sso-id',
-            redirectURL: '',
           },
         },
       );
