@@ -16,7 +16,7 @@ const UserProfileWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-user-profile-widget ref={ref} {...props} />
+	<descope-user-profile-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -28,7 +28,8 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+      React.useContext(Context);
 
     useEffect(() => {
       if (innerRef && onLogout) {
@@ -39,12 +40,13 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
     }, [innerRef, onLogout]);
 
     return (
-      <Suspense fallback={null}>
-        <UserProfileWC
+	<Suspense fallback={null}>
+		<UserProfileWC
           projectId={projectId}
           widgetId={widgetId}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
+          baseCdnUrl={baseCdnUrl}
           styleId={styleId}
           ref={setInnerRef}
           {...{
@@ -56,7 +58,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
             'logger.prop': logger,
           }}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

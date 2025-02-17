@@ -18,7 +18,6 @@ import {
   getRunIdsFromUrl,
   handleUrlParams,
   State,
-  withMemCache,
 } from '../helpers';
 import {
   extractNestedAttribute,
@@ -110,6 +109,10 @@ class BaseDescopeWc extends BaseClass {
 
   rootElement: HTMLDivElement;
 
+  contentRootElement: HTMLDivElement;
+
+  slotElement: HTMLSlotElement;
+
   #debuggerEle: HTMLElement & {
     updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
   };
@@ -134,8 +137,9 @@ class BaseDescopeWc extends BaseClass {
 
   #initShadowDom() {
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
-
-    this.rootElement = this.shadowRoot.querySelector<HTMLDivElement>('#root');
+    this.slotElement = document.createElement('slot');
+    this.slotElement.classList.add('hidden');
+    this.rootElement.appendChild(this.slotElement);
   }
 
   get flowId() {
@@ -259,7 +263,6 @@ class BaseDescopeWc extends BaseClass {
       const origFn = this.sdk.flow[key];
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
-        this.nextRequestStatus.update({ isLoading: true });
         try {
           const resp = await origFn(...args);
           return resp;
@@ -271,8 +274,6 @@ class BaseDescopeWc extends BaseClass {
               errorDescription: e.toString(),
             },
           };
-        } finally {
-          this.nextRequestStatus.update({ isLoading: false });
         }
       };
     });
@@ -301,7 +302,11 @@ class BaseDescopeWc extends BaseClass {
   async #getIsFlowsVersionMismatch() {
     const config = await this.getConfig();
 
-    return config.isMissingConfig && (await this.#isPrevVerConfig());
+    return (
+      'isMissingConfig' in config &&
+      config.isMissingConfig &&
+      (await this.#isPrevVerConfig())
+    );
   }
 
   // we are not using fetchStaticResource here
@@ -321,21 +326,7 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  // we want to get the config only if we don't have it already
-  getConfig = withMemCache(async () => {
-    try {
-      const { body, headers } = await this.fetchStaticResource(
-        CONFIG_FILENAME,
-        'json',
-      );
-      return {
-        projectConfig: body as ProjectConfiguration,
-        executionContext: { geo: headers['x-geo'] },
-      };
-    } catch (e) {
-      return { isMissingConfig: true };
-    }
-  });
+  getConfig = async () => (await this.config) || { isMissingConfig: true };
 
   #handleComponentsContext(e: CustomEvent) {
     this.#componentsContext = { ...this.#componentsContext, ...e.detail };
@@ -346,9 +337,8 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async getExecutionContext() {
-    const { executionContext } = await this.getConfig();
-
-    return executionContext;
+    const config = await this.getConfig();
+    return 'executionContext' in config ? config.executionContext : undefined;
   }
 
   #disableDebugger() {
@@ -389,8 +379,8 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async getProjectConfig(): Promise<ProjectConfiguration> {
-    const { projectConfig } = await this.getConfig();
-    return projectConfig;
+    const config = await this.getConfig();
+    return 'projectConfig' in config ? config.projectConfig : undefined;
   }
 
   async getFlowConfig(): Promise<FlowConfig> {
@@ -468,7 +458,9 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async getComponentsVersion() {
-    const version = (await this.getConfig())?.projectConfig?.componentsVersion;
+    const config = await this.getConfig();
+    const version =
+      'projectConfig' in config ? config.projectConfig?.componentsVersion : {};
 
     if (version) return version;
 
@@ -502,7 +494,8 @@ class BaseDescopeWc extends BaseClass {
       return;
     }
 
-    if ((await this.getConfig()).isMissingConfig) {
+    const config = await this.getConfig();
+    if ('isMissingConfig' in config && config.isMissingConfig) {
       this.loggerWrapper.error(
         'Cannot get config file',
         'Make sure that your projectId & flowId are correct',

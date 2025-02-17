@@ -8,10 +8,12 @@ import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasswordUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PasswordUserAuthMethodMixinClass extends compose(
+      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -33,6 +35,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
         );
         this.#modal.afterClose = this.#initModalContent.bind(this);
         this.#initModalContent();
+        this.syncFlowTheme(this.#flow);
       }
 
       #initModalContent() {
@@ -42,6 +45,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
             flowId: this.passwordUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#flow.onSuccess(() => {

@@ -57,11 +57,11 @@ export class State<T extends StateObject> {
 
   #token = 0;
 
-  #updateOnlyOnChange = false;
+  #forceUpdate = true;
 
-  constructor(init: T = {} as T, { updateOnlyOnChange = true } = {}) {
+  constructor(init: T = {} as T, { forceUpdate = false } = {}) {
     this.#state = init;
-    this.#updateOnlyOnChange = updateOnlyOnChange;
+    this.#forceUpdate = forceUpdate;
   }
 
   get current() {
@@ -73,7 +73,7 @@ export class State<T extends StateObject> {
       typeof newState === 'function' ? newState(this.#state) : newState;
 
     const nextState = { ...this.#state, ...internalNewState };
-    if (!this.#updateOnlyOnChange || !compareObjects(this.#state, nextState)) {
+    if (this.#forceUpdate || !compareObjects(this.#state, nextState)) {
       const prevState = this.#state;
       this.#state = nextState;
       Object.freeze(this.#state);

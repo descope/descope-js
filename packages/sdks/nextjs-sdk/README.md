@@ -48,6 +48,8 @@ export default function RootLayout({
 ```
 
 Note: `AuthProvider` uses `sessionTokenViaCookie` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
+The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={SameSite: 'Lax'}`
 
 #### Use Descope to render Flow
 
@@ -207,7 +209,7 @@ Server Component:
 import { session } from '@descope/nextjs-sdk/server';
 
 async function Page() {
-	const sessionRes = session();
+	const sessionRes = await session();
 	if (!sessionRes) {
 		// ...
 	}
@@ -221,7 +223,7 @@ Route handler:
 ```js
 // src/pages/api/routes.ts
 export async function GET() {
-	const currSession = session();
+	const currSession = await session();
 	if (!currSession.isAuthenticated) {
 		// ...
 	}
@@ -272,7 +274,7 @@ export async function GET(req) {
 ### Pages Router
 
 This section is Working in progress :-)
-In the meantime, you can see the example in the [Pages Router](/examples/pages-router/) folder.
+In the meantime, you can see the example in the [Pages Router](./examples/pages-router/) folder.
 
 ### Widgets
 
@@ -441,7 +443,7 @@ Example:
 
 ## Code Example
 
-You can find an example react app in the [examples folder](./examples). - [App Router](/examples/app-router/) - [Pages Router](/examples/pages-router/)
+You can find an example react app in the [examples folder](./examples). - [App Router](./examples/app-router/) - [Pages Router](./examples/pages-router/)
 
 ## Learn More
 

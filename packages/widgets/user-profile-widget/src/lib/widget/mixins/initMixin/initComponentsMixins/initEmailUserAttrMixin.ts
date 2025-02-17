@@ -13,10 +13,12 @@ import { getEmail, getIsEmailVerified } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initEmailUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class EmailUserAttrMixinClass extends compose(
+      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -42,6 +44,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         );
         this.#editModal.afterClose = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
+        this.syncFlowTheme(this.#editFlow);
       }
 
       #initEditModalContent() {
@@ -51,6 +54,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
             flowId: this.emailUserAttr.editFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -69,6 +73,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         );
         this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
         this.#initDeleteModalContent();
+        this.syncFlowTheme(this.#deleteFlow);
       }
 
       #initDeleteModalContent() {

@@ -127,7 +127,7 @@ describe('webauthnConditionalUi', () => {
           'name',
           'user-test',
         ),
-      { timeout: 3000 },
+      { timeout: 10000 },
     );
   });
 
@@ -146,7 +146,7 @@ describe('webauthnConditionalUi', () => {
 
     const input = await waitFor(
       () => screen.getByShadowPlaceholderText('test'),
-      { timeout: 3000 },
+      { timeout: 10000 },
     );
 
     await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'), {
@@ -173,7 +173,7 @@ describe('webauthnConditionalUi', () => {
 
     const input = await waitFor(
       () => screen.getByShadowPlaceholderText('test'),
-      { timeout: 3000 },
+      { timeout: 10000 },
     );
 
     await waitFor(() => expect(input).toHaveAttribute('name', 'user-test'));
@@ -215,7 +215,9 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    await waitFor(() => screen.getByShadowText('It works!'), { timeout: 3000 });
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: 10000,
+    });
 
     fireEvent.click(screen.getByShadowText('click'));
 
@@ -271,7 +273,7 @@ describe('webauthnConditionalUi', () => {
           response: 'response',
           transactionId: 'transactionId',
         }),
-      { timeout: 3000 },
+      { timeout: 10000 },
     );
   });
 

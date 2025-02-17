@@ -13,18 +13,18 @@ describe('MyUserProfileComponent', () => {
 
   let mockedCreateSdk: jest.Mock;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({});
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [MyUserProfileComponent],
+      imports: [MyUserProfileComponent],
       providers: [
         DescopeAuthConfig,
         { provide: DescopeAuthConfig, useValue: { projectId: 'test' } }
       ]
-    });
+    }).compileComponents();
     fixture = TestBed.createComponent(MyUserProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

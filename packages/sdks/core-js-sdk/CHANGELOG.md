@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.34.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.6...core-js-sdk-2.34.0) (2025-02-11)
+
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [2.33.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.5...core-js-sdk-2.33.6) (2025-02-11)
+
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+
+## [2.33.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.4...core-js-sdk-2.33.5) (2025-02-02)
+
+## [2.33.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.3...core-js-sdk-2.33.4) (2025-02-02)
+
+## [2.33.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.2...core-js-sdk-2.33.3) (2025-02-01)
+
+## [2.33.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.1...core-js-sdk-2.33.2) (2025-02-01)
+
+## [2.33.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.0...core-js-sdk-2.33.1) (2025-02-01)
+
 ## [2.33.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.32.0...core-js-sdk-2.33.0) (2024-12-08)
 
 

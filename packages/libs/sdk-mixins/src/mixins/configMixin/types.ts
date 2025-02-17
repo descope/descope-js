@@ -23,6 +23,18 @@ type Operator =
   | 'is-false'
   | 'in'
   | 'not-in';
+
+type Style = {
+  dark: ThemeTemplate;
+  light: ThemeTemplate;
+};
+
+export type ClientScript = {
+  id: string;
+  initArgs: Record<string, any>;
+  resultKey?: string;
+};
+
 export type ClientCondition = {
   operator: Operator;
   key: string;
@@ -33,11 +45,14 @@ export type ClientCondition = {
 
 export type ClientConditionResult = {
   screenId: string;
+  screenName: string;
+  clientScripts?: ClientScript[];
   interactionId: string;
 };
 
 export type FlowConfig = {
   startScreenId?: string;
+  startScreenName?: string;
   version: number;
   targetLocales?: string[];
   conditions?: ClientCondition[];
@@ -48,11 +63,16 @@ export type FlowConfig = {
 
 export type ProjectConfiguration = {
   componentsVersion: string;
-  cssTemplate: {
-    dark: ThemeTemplate;
-    light: ThemeTemplate;
-  };
+  cssTemplate: Style;
   flows: {
     [key: string]: FlowConfig; // dynamic key names for flows
+  };
+  styles: Record<string, Style>;
+};
+
+export type Config = {
+  projectConfig: ProjectConfiguration;
+  executionContext: {
+    geo: string;
   };
 };

@@ -2,6 +2,87 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.8.0...sdk-mixins-0.9.0) (2025-02-12)
+
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
+## [0.8.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.7.0...sdk-mixins-0.8.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-component-drivers` updated to version `0.2.51`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [0.7.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.7...sdk-mixins-0.7.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-component-drivers` updated to version `0.2.50`
+
+### Features
+
+* **web-component:** add base-cdn-url attribute ([#1013](https://github.com/descope/descope-js/issues/1013)) ([8346412](https://github.com/descope/descope-js/commit/834641285494f842978b4111dae1db4e643cb494))
+
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
+## [0.6.7](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.6...sdk-mixins-0.6.7) (2025-02-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.66`
+* `sdk-component-drivers` updated to version `0.2.49`
+## [0.6.6](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.5...sdk-mixins-0.6.6) (2025-02-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.65`
+* `sdk-component-drivers` updated to version `0.2.48`
+## [0.6.5](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.4...sdk-mixins-0.6.5) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.64`
+* `sdk-component-drivers` updated to version `0.2.47`
+## [0.6.4](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.3...sdk-mixins-0.6.4) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.63`
+* `sdk-component-drivers` updated to version `0.2.46`
+## [0.6.3](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.2...sdk-mixins-0.6.3) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.62`
+* `sdk-component-drivers` updated to version `0.2.45`
+## [0.6.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.1...sdk-mixins-0.6.2) (2025-01-31)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.61`
+* `sdk-component-drivers` updated to version `0.2.44`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
+## [0.6.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.0...sdk-mixins-0.6.1) (2025-01-30)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.2.43`
 ## [0.6.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.5.2...sdk-mixins-0.6.0) (2024-12-24)
 
 

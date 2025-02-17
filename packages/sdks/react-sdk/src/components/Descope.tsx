@@ -42,7 +42,7 @@ const DescopeWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-wc ref={ref} {...props} />
+	<descope-wc ref={ref} {...props} />
       )),
     ),
   };
@@ -69,6 +69,8 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       restartOnError,
       errorTransformer,
       styleId,
+      onScreenUpdate,
+      children,
     },
     ref,
   ) => {
@@ -80,6 +82,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       sdk,
@@ -150,13 +153,14 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-      <form>
-        <Suspense fallback={null}>
-          <DescopeWC
+	<form>
+		<Suspense fallback={null}>
+			<DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
             baseStaticUrl={baseStaticUrl}
+            baseCdnUrl={baseCdnUrl}
             ref={setInnerRef}
             telemetryKey={telemetryKey}
             redirectUrl={redirectUrl}
@@ -179,10 +183,13 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
+              'onScreenUpdate.prop': onScreenUpdate,
             }}
-          />
-        </Suspense>
-      </form>
+          >
+				{children}
+			</DescopeWC>
+		</Suspense>
+	</form>
     );
   },
 );

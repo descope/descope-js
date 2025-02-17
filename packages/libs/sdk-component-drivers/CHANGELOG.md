@@ -2,6 +2,58 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.51](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.50...sdk-component-drivers-0.2.51) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+## [0.2.50](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.49...sdk-component-drivers-0.2.50) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+## [0.2.49](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.48...sdk-component-drivers-0.2.49) (2025-02-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.66`
+## [0.2.48](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.47...sdk-component-drivers-0.2.48) (2025-02-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.65`
+## [0.2.47](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.46...sdk-component-drivers-0.2.47) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.64`
+## [0.2.46](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.45...sdk-component-drivers-0.2.46) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.63`
+## [0.2.45](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.44...sdk-component-drivers-0.2.45) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.62`
+## [0.2.44](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.43...sdk-component-drivers-0.2.44) (2025-01-31)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.61`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
+## [0.2.43](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.42...sdk-component-drivers-0.2.43) (2025-01-30)
+
+
+### Bug Fixes
+
+* Issue8959 ([#890](https://github.com/descope/descope-js/issues/890)) ([4640275](https://github.com/descope/descope-js/commit/4640275dc29d145de1eef81e57aa3691773625b6))
+
 ## [0.2.42](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.41...sdk-component-drivers-0.2.42) (2024-09-19)
 
 ## [0.2.41](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.40...sdk-component-drivers-0.2.41) (2024-08-14)

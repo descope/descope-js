@@ -2,6 +2,62 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.24.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.10...web-js-sdk-1.24.0) (2025-02-11)
+
+
+### Features
+
+* **web-js-sdk/withPersistTokens:** allow customizing SameSite RELEASE ([#1015](https://github.com/descope/descope-js/issues/1015)) ([d5262f7](https://github.com/descope/descope-js/commit/d5262f7cd42d6c042d4aa87c34ac1c71bb3c7bde))
+
+## [1.23.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.9...web-js-sdk-1.23.10) (2025-02-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.34.0`
+## [1.23.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.8...web-js-sdk-1.23.9) (2025-02-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.6`
+## [1.23.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.7...web-js-sdk-1.23.8) (2025-02-02)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.5`
+## [1.23.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.6...web-js-sdk-1.23.7) (2025-02-02)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.4`
+## [1.23.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.5...web-js-sdk-1.23.6) (2025-02-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.3`
+## [1.23.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.4...web-js-sdk-1.23.5) (2025-02-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.2`
+## [1.23.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.3...web-js-sdk-1.23.4) (2025-02-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.1`
+## [1.23.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.2...web-js-sdk-1.23.3) (2025-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
+## [1.23.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.1...web-js-sdk-1.23.2) (2025-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.11.6 ([#905](https://github.com/descope/descope-js/issues/905)) ([b2f4a54](https://github.com/descope/descope-js/commit/b2f4a54912493c342b1a6f544a790794484456d2))
+
 ## [1.23.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.0...web-js-sdk-1.23.1) (2024-12-22)
 
 

@@ -14,10 +14,12 @@ import { getUserCustomAttrs } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initUserCustomAttributesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class UserCustomAttributesMixinClass extends compose(
+      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -50,6 +52,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
@@ -66,6 +69,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {
@@ -125,6 +129,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
           });
 
           this.#initEditModalContent(editFlowId);
+          this.syncFlowTheme(this.#editFlows[editFlowId]);
         }
       }
 
@@ -154,6 +159,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
           });
 
           this.#initDeleteModalContent(deleteFlowId);
+          this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
         }
       }
 

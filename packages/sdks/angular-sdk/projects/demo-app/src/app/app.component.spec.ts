@@ -12,21 +12,20 @@ describe('AppComponent', () => {
   const onSessionTokenChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
       onUserChange: onUserChangeSpy
     });
 
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+    await TestBed.configureTestingModule({
+      imports: [RouterTestingModule, AppComponent],
       providers: [
         DescopeAuthConfig,
         { provide: DescopeAuthConfig, useValue: { projectId: 'test' } }
-      ],
-      declarations: [AppComponent]
-    });
+      ]
+    }).compileComponents();
   });
 
   it('should create the app', () => {

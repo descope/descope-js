@@ -2,6 +2,107 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.19](https://github.com/descope/descope-js/compare/user-management-widget-0.6.18...user-management-widget-0.6.19) (2025-02-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.9.0`
+## [0.6.18](https://github.com/descope/descope-js/compare/user-management-widget-0.6.17...user-management-widget-0.6.18) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.0`
+## [0.6.17](https://github.com/descope/descope-js/compare/user-management-widget-0.6.16...user-management-widget-0.6.17) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.10`
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `sdk-component-drivers` updated to version `0.2.51`
+## [0.6.16](https://github.com/descope/descope-js/compare/user-management-widget-0.6.15...user-management-widget-0.6.16) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.9`
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `sdk-component-drivers` updated to version `0.2.50`
+## [0.6.15](https://github.com/descope/descope-js/compare/user-management-widget-0.6.14...user-management-widget-0.6.15) (2025-02-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.8`
+* `sdk-helpers` updated to version `0.1.66`
+* `sdk-mixins` updated to version `0.6.7`
+* `sdk-component-drivers` updated to version `0.2.49`
+## [0.6.14](https://github.com/descope/descope-js/compare/user-management-widget-0.6.13...user-management-widget-0.6.14) (2025-02-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.7`
+* `sdk-helpers` updated to version `0.1.65`
+* `sdk-mixins` updated to version `0.6.6`
+* `sdk-component-drivers` updated to version `0.2.48`
+## [0.6.13](https://github.com/descope/descope-js/compare/user-management-widget-0.6.12...user-management-widget-0.6.13) (2025-02-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.6`
+* `sdk-helpers` updated to version `0.1.64`
+* `sdk-mixins` updated to version `0.6.5`
+* `sdk-component-drivers` updated to version `0.2.47`
+## [0.6.12](https://github.com/descope/descope-js/compare/user-management-widget-0.6.11...user-management-widget-0.6.12) (2025-02-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.5`
+* `sdk-helpers` updated to version `0.1.63`
+* `sdk-mixins` updated to version `0.6.4`
+* `sdk-component-drivers` updated to version `0.2.46`
+## [0.6.11](https://github.com/descope/descope-js/compare/user-management-widget-0.6.10...user-management-widget-0.6.11) (2025-02-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.4`
+* `sdk-helpers` updated to version `0.1.62`
+* `sdk-mixins` updated to version `0.6.3`
+* `sdk-component-drivers` updated to version `0.2.45`
+## [0.6.10](https://github.com/descope/descope-js/compare/user-management-widget-0.6.9...user-management-widget-0.6.10) (2025-01-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.3`
+* `sdk-helpers` updated to version `0.1.61`
+* `sdk-mixins` updated to version `0.6.2`
+* `sdk-component-drivers` updated to version `0.2.44`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
+## [0.6.9](https://github.com/descope/descope-js/compare/user-management-widget-0.6.8...user-management-widget-0.6.9) (2025-01-31)
+
+## [0.6.8](https://github.com/descope/descope-js/compare/user-management-widget-0.6.7...user-management-widget-0.6.8) (2025-01-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.2`
+## [0.6.7](https://github.com/descope/descope-js/compare/user-management-widget-0.6.6...user-management-widget-0.6.7) (2025-01-31)
+
+## [0.6.6](https://github.com/descope/descope-js/compare/user-management-widget-0.6.5...user-management-widget-0.6.6) (2025-01-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency libphonenumber-js to v1.11.17 ([#900](https://github.com/descope/descope-js/issues/900)) ([04808ab](https://github.com/descope/descope-js/commit/04808ab0418a470568bbbc2c4c4c0269b4f9eb12))
+
+## [0.6.5](https://github.com/descope/descope-js/compare/user-management-widget-0.6.4...user-management-widget-0.6.5) (2025-01-30)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.1`
+* `sdk-component-drivers` updated to version `0.2.43`
 ## [0.6.4](https://github.com/descope/descope-js/compare/user-management-widget-0.6.3...user-management-widget-0.6.4) (2025-01-02)
 
 

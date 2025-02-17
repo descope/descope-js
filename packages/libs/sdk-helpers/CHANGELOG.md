@@ -2,6 +2,32 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.67...sdk-helpers-0.2.0) (2025-02-11)
+
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [0.1.67](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.66...sdk-helpers-0.1.67) (2025-02-11)
+
+## [0.1.66](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.65...sdk-helpers-0.1.66) (2025-02-02)
+
+## [0.1.65](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.64...sdk-helpers-0.1.65) (2025-02-02)
+
+## [0.1.64](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.63...sdk-helpers-0.1.64) (2025-02-01)
+
+## [0.1.63](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.62...sdk-helpers-0.1.63) (2025-02-01)
+
+## [0.1.62](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.61...sdk-helpers-0.1.62) (2025-02-01)
+
+## [0.1.61](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.60...sdk-helpers-0.1.61) (2025-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
 ## [0.1.60](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.59...sdk-helpers-0.1.60) (2024-08-14)
 
 ## [0.1.59](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.58...sdk-helpers-0.1.59) (2024-08-07)

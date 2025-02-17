@@ -2,6 +2,118 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.35.0](https://github.com/descope/descope-js/compare/web-component-3.34.1...web-component-3.35.0) (2025-02-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.9.0`
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
+## [3.34.1](https://github.com/descope/descope-js/compare/web-component-3.34.0...web-component-3.34.1) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.0`
+## [3.34.0](https://github.com/descope/descope-js/compare/web-component-3.33.0...web-component-3.34.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `web-js-sdk` updated to version `1.23.10`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [3.33.0](https://github.com/descope/descope-js/compare/web-component-3.32.10...web-component-3.33.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `web-js-sdk` updated to version `1.23.9`
+* `escape-markdown` updated to version `0.1.5`
+
+### Features
+
+* **web-component:** add base-cdn-url attribute ([#1013](https://github.com/descope/descope-js/issues/1013)) ([8346412](https://github.com/descope/descope-js/commit/834641285494f842978b4111dae1db4e643cb494))
+
+
+### Bug Fixes
+
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
+## [3.32.10](https://github.com/descope/descope-js/compare/web-component-3.32.9...web-component-3.32.10) (2025-02-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.66`
+* `sdk-mixins` updated to version `0.6.7`
+* `web-js-sdk` updated to version `1.23.8`
+## [3.32.9](https://github.com/descope/descope-js/compare/web-component-3.32.8...web-component-3.32.9) (2025-02-02)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.65`
+* `sdk-mixins` updated to version `0.6.6`
+* `web-js-sdk` updated to version `1.23.7`
+## [3.32.8](https://github.com/descope/descope-js/compare/web-component-3.32.7...web-component-3.32.8) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.64`
+* `sdk-mixins` updated to version `0.6.5`
+* `web-js-sdk` updated to version `1.23.6`
+* `escape-markdown` updated to version `0.1.4`
+## [3.32.7](https://github.com/descope/descope-js/compare/web-component-3.32.6...web-component-3.32.7) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.63`
+* `sdk-mixins` updated to version `0.6.4`
+* `web-js-sdk` updated to version `1.23.5`
+* `escape-markdown` updated to version `0.1.3`
+## [3.32.6](https://github.com/descope/descope-js/compare/web-component-3.32.5...web-component-3.32.6) (2025-02-01)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.62`
+* `sdk-mixins` updated to version `0.6.3`
+* `web-js-sdk` updated to version `1.23.4`
+* `escape-markdown` updated to version `0.1.2`
+## [3.32.5](https://github.com/descope/descope-js/compare/web-component-3.32.4...web-component-3.32.5) (2025-01-31)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.61`
+* `sdk-mixins` updated to version `0.6.2`
+* `web-js-sdk` updated to version `1.23.3`
+
+### Bug Fixes
+
+* **deps:** update dependency tslib to v2.8.1 ([#912](https://github.com/descope/descope-js/issues/912)) ([e49bd4b](https://github.com/descope/descope-js/commit/e49bd4b4668e3139b1d8a059858df36831782500))
+
+## [3.32.4](https://github.com/descope/descope-js/compare/web-component-3.32.3...web-component-3.32.4) (2025-01-31)
+
+## [3.32.3](https://github.com/descope/descope-js/compare/web-component-3.32.2...web-component-3.32.3) (2025-01-31)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.2`
+
+### Bug Fixes
+
+* **deps:** update dependency @fingerprintjs/fingerprintjs-pro to v3.11.6 ([#905](https://github.com/descope/descope-js/issues/905)) ([b2f4a54](https://github.com/descope/descope-js/commit/b2f4a54912493c342b1a6f544a790794484456d2))
+
+## [3.32.2](https://github.com/descope/descope-js/compare/web-component-3.32.1...web-component-3.32.2) (2025-01-30)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.6.1`
 ## [3.32.1](https://github.com/descope/descope-js/compare/web-component-3.32.0...web-component-3.32.1) (2025-01-06)
 
 

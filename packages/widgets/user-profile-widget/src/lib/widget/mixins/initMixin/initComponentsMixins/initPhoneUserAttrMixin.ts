@@ -13,10 +13,12 @@ import { getIsPhoneVerified, getPhone } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPhoneUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PhoneUserAttrMixinClass extends compose(
+      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
@@ -42,6 +44,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         );
         this.#editModal.afterClose = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
+        this.syncFlowTheme(this.#editFlow);
       }
 
       #initEditModalContent() {
@@ -51,6 +54,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             flowId: this.phoneUserAttr.editFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -69,6 +73,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         );
         this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
         this.#initDeleteModalContent();
+        this.syncFlowTheme(this.#deleteFlow);
       }
 
       #initDeleteModalContent() {
@@ -78,6 +83,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             flowId: this.phoneUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#deleteFlow.onSuccess(() => {
