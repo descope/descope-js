@@ -74,6 +74,7 @@ describe('saml', () => {
           queryParams: {
             tenant: 'tenant-ID',
             ssoId: 'some-sso-id',
+            redirectURL: '',
           },
         },
       );
