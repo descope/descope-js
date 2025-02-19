@@ -30,6 +30,7 @@ export const apiMixin = createSingletonMixin(
           this.tenantId,
           this.mock === 'true',
           this.widgetId,
+          this.getAttribute('refresh-cookie-name'),
         );
       }
 
