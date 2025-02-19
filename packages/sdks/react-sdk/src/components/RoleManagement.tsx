@@ -22,7 +22,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
 
     return (
@@ -40,6 +40,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
             'theme.attr': theme,
             'debug.attr': debug,
             'styleId.attr': styleId,
+            'refresh-cookie-name.attr': refreshCookieName,
             // props
             'logger.prop': logger,
           }}
