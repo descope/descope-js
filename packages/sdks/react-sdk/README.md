@@ -406,6 +406,27 @@ Notes:
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `useSession` hook.
 
+### Custom Refresh Cookie Name
+
+If you have multiple Descope projects on the same domain, you can set a custom cookie name for the refresh token. Settings the refresh cookie name is done in the login process (e.g. using Descope Flows), but you need to configure the SDK to use the custom cookie name. You can do this by passing the `refreshCookieName` prop to the `AuthProvider` component.
+
+This will signal Descope API to use the custom cookie name as the refresh token.
+
+Note that this option is only available when the refresh token managed on cookies.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  // pass the custom cookie name to the AuthProvider
+  return (
+    <AuthProvider projectId="my-project-id" refreshCookieName="MY_DSR">
+      <App />
+    </AuthProvider>
+  );
+};
+```
+
 ### Last User Persistence
 
 Descope stores the last user information in local storage. If you wish to disable this feature, you can pass `storeLastAuthenticatedUser={false}` to the `AuthProvider` component. Please note that some features related to the last authenticated user may not function as expected if this behavior is disabled. Local storage is being cleared when the user logs out, if you want the avoid clearing the local storage, you can pass `keepLastAuthenticatedUserAfterLogout={true}` to the `AuthProvider` component.
