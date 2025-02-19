@@ -39,9 +39,10 @@ const renderWithProvider = (
   ui: React.ReactElement,
   projectId: string = 'project1',
   baseUrl?: string,
+  refreshCookieName?: string,
 ) =>
   render(
-    <AuthProvider projectId={projectId} baseUrl={baseUrl}>
+    <AuthProvider projectId={projectId} baseUrl={baseUrl} refreshCookieName={refreshCookieName}>
       {ui}
     </AuthProvider>,
   );
@@ -84,7 +85,7 @@ describe('Descope', () => {
     );
   });
 
-  it('Should be able to override bae headers', async () => {
+  it('Should be able to override headers', async () => {
     renderWithProvider(<Descope flowId="flow1" />, 'proj1', 'url1');
     baseHeaders['x-descope-sdk-name'] = 'foo';
     baseHeaders['x-some-property'] = 'bar';
@@ -216,7 +217,7 @@ describe('Descope', () => {
 
   it('should add descope headers to request', async () => {
     const ref = jest.fn();
-    renderWithProvider(<Descope flowId="flow-1" ref={ref} />);
+    renderWithProvider(<Descope flowId="flow-1" ref={ref} />, 'project1', undefined, 'cookie1');
     await waitFor(() => {
       expect(document.querySelector('descope-wc')).toBeInTheDocument();
     });
@@ -226,6 +227,7 @@ describe('Descope', () => {
         baseHeaders: {
           'x-descope-sdk-name': 'react',
           'x-descope-sdk-version': 'one.two.three',
+          'x-descope-refresh-cookie-name': 'cookie1',
         },
       }),
     );

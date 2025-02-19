@@ -2007,6 +2007,33 @@ describe('web-component', () => {
     );
   });
 
+  it('should call start with refresh cookie name when provided', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 1 },
+      },
+    };
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" refresh-cookie-name="cookie-1"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: 20000,
+    });
+
+    await waitFor(() =>
+      expect(createSdk).toHaveBeenCalledWith(
+        expect.objectContaining({
+          baseHeaders: expect.objectContaining({
+            'x-descope-refresh-cookie-name': 'cookie-1',
+          }),
+        }),
+      ),
+    );
+  });
+
   describe('poll', () => {
     beforeEach(() => {
       jest.useFakeTimers();
