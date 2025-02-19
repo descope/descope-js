@@ -18,7 +18,9 @@ export const createSdk = (
       'x-descope-widget-type': 'access-key-management-widget',
       'x-descope-widget-id': widgetId,
       'x-descope-widget-version': BUILD_VERSION,
-      'x-descope-refresh-cookie-name': refreshCookieName,
+      ...(refreshCookieName && {
+        'x-descope-refresh-cookie-name': refreshCookieName,
+      }),
     },
   });
 

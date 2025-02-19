@@ -33,7 +33,9 @@ export default ({
       sessionTokenViaCookie,
       baseHeaders: {
         ...baseHeaders,
-        'x-descope-refresh-cookie-name': refreshCookieName,
+        ...(refreshCookieName && {
+          'x-descope-refresh-cookie-name': refreshCookieName,
+        }),
       },
       persistTokens,
       storeLastAuthenticatedUser,

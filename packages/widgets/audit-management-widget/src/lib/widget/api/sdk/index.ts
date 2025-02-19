@@ -17,7 +17,9 @@ export const createSdk = (
       'x-descope-widget-type': 'audit-management-widget',
       'x-descope-widget-id': widgetId,
       'x-descope-widget-version': BUILD_VERSION,
-      'x-descope-refresh-cookie-name': refreshCookieName,
+      ...(refreshCookieName && {
+        'x-descope-refresh-cookie-name': refreshCookieName,
+      }),
     },
   });
 
