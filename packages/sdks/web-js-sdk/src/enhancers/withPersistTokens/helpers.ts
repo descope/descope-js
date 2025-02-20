@@ -78,7 +78,7 @@ export const persistTokens = (
       // 1. sessionTokenViaCookie is a boolean
       // 2. sessionTokenViaCookie is an object without the property
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
-      const cookieSecure = sessionTokenViaCookie['secure'] || true;
+      const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
       setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
         ...cookieParams,
         cookieSameSite,

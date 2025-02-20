@@ -109,6 +109,64 @@ describe('persistTokens', () => {
       expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
     });
 
+    it('should set cookie secure as false it is configured to', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Strict',
+        secure: false,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    });
+
+    it('should set cookie to both SameSite Lax and secure as false when they are configured', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { sameSite: 'Lax', secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Lax',
+        secure: false,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    });
+
     it('should set cookie domain when it is the a parent of cookie domain', async () => {
       window.location = { hostname: `app.${authInfo.cookieDomain}` } as any;
 
