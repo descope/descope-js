@@ -49,11 +49,13 @@ export default [
         dir: 'dist/esm',
         format: 'esm',
         preserveModules: true,
+        sourcemap: true,
       },
       {
         dir: 'dist/cjs',
         format: 'cjs',
         preserveModules: true,
+        sourcemap: true,
       },
     ],
     plugins: [

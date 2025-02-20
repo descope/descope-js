@@ -70,11 +70,40 @@ describe('persistTokens', () => {
 
       await new Promise(process.nextTick);
 
-      expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
         path: authInfo.cookiePath,
         domain: authInfo.cookieDomain,
         expires: new Date(authInfo.cookieExpiration * 1000),
         sameSite: 'Strict',
+        secure: true,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    });
+
+    it('should set cookie SameSite Lax when it is configured', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { sameSite: 'Lax' },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Lax',
         secure: true,
       });
       expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
@@ -99,7 +128,7 @@ describe('persistTokens', () => {
 
       await new Promise(process.nextTick);
 
-      expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
         path: authInfo.cookiePath,
         domain: authInfo.cookieDomain,
         expires: new Date(authInfo.cookieExpiration * 1000),
@@ -127,7 +156,7 @@ describe('persistTokens', () => {
 
       await new Promise(process.nextTick);
 
-      expect(setMock).toBeCalledWith('DS', authInfo.sessionJwt, {
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
         path: authInfo.cookiePath,
         // domain is undefined
         expires: new Date(authInfo.cookieExpiration * 1000),
@@ -156,7 +185,7 @@ describe('persistTokens', () => {
     await new Promise(process.nextTick);
 
     expect(localStorage.getItem('DSR')).toBeTruthy();
-    expect(refreshSpy).not.toBeCalled();
+    expect(refreshSpy).not.toHaveBeenCalled();
   });
 
   it('should not set refresh if persistTokens is configured to false with prefix', async () => {
@@ -179,7 +208,7 @@ describe('persistTokens', () => {
     await new Promise(process.nextTick);
 
     expect(localStorage.getItem('test.DSR')).toBeTruthy();
-    expect(refreshSpy).not.toBeCalled();
+    expect(refreshSpy).not.toHaveBeenCalled();
   });
 
   it('should not set storage if persistTokens is configured to false', async () => {
@@ -192,7 +221,7 @@ describe('persistTokens', () => {
     await sdk.httpClient.get('1/2/3');
 
     const setMock = Cookies.set as jest.Mock;
-    expect(setMock).not.toBeCalled();
+    expect(setMock).not.toHaveBeenCalled();
   });
 
   describe('getSessionToken', () => {
@@ -200,7 +229,7 @@ describe('persistTokens', () => {
       const getMock = Cookies.get as jest.Mock;
       getMock.mockReturnValue('session-1');
       expect(getSessionToken('test')).toEqual('session-1');
-      expect(getMock).toBeCalled();
+      expect(getMock).toHaveBeenCalled();
     });
 
     it('should get session from from local storage', async () => {
@@ -246,7 +275,7 @@ describe('persistTokens', () => {
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toBeCalledWith('DS');
+      expect(removeMock).toHaveBeenCalledWith('DS');
     });
 
     it('should clear tokens on logout even when not passing refresh token', async () => {
@@ -259,7 +288,7 @@ describe('persistTokens', () => {
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toBeCalledWith('DS');
+      expect(removeMock).toHaveBeenCalledWith('DS');
     });
 
     it('should clear tokens on logoutAll even when not passing refresh token', async () => {
@@ -272,7 +301,7 @@ describe('persistTokens', () => {
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toBeCalledWith('DS');
+      expect(removeMock).toHaveBeenCalledWith('DS');
     });
 
     it('should not log a warning when not running in the browser', () => {

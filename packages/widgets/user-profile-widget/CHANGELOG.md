@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.21](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.20...user-profile-widget-0.2.21) (2025-02-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.35.0`
+* `web-js-sdk` updated to version `1.24.1`
+* `web-component` updated to version `3.35.1`
+## [0.2.20](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.19...user-profile-widget-0.2.20) (2025-02-12)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.35.0`
+* `sdk-mixins` updated to version `0.9.0`
+## [0.2.19](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.18...user-profile-widget-0.2.19) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.0`
+* `web-component` updated to version `3.34.1`
+## [0.2.18](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.17...user-profile-widget-0.2.18) (2025-02-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.34.0`
+* `web-js-sdk` updated to version `1.23.10`
+* `web-component` updated to version `3.34.0`
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `sdk-component-drivers` updated to version `0.2.51`
+## [0.2.17](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.16...user-profile-widget-0.2.17) (2025-02-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.6`
+* `web-js-sdk` updated to version `1.23.9`
+* `web-component` updated to version `3.33.0`
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `sdk-component-drivers` updated to version `0.2.50`
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
 ## [0.2.16](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.15...user-profile-widget-0.2.16) (2025-02-02)
 
 ### Dependency Updates

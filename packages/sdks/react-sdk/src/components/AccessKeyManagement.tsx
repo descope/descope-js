@@ -24,7 +24,8 @@ const AccessKeyManagement = React.forwardRef<
 
   useImperativeHandle(ref, () => innerRef);
 
-  const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+  const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+    React.useContext(Context);
 
   return (
 	<Suspense fallback={null}>
@@ -34,6 +35,7 @@ const AccessKeyManagement = React.forwardRef<
         tenant={tenant}
         baseUrl={baseUrl}
         baseStaticUrl={baseStaticUrl}
+        baseCdnUrl={baseCdnUrl}
         innerRef={setInnerRef}
         {...{
           // attributes

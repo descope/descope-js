@@ -203,6 +203,37 @@ export class AppComponent {
 ></descope>
 ```
 
+### `onScreenUpdate`
+
+A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
+
+- `screenName`: The name of the screen that is about to be rendered
+- `context`: An object containing the upcoming screen context
+- `next`: A function that, when called, continues the flow execution
+- `ref`: A reference to the descope-wc node
+
+The function can be sync or async, and should return a boolean indicating whether a custom screen should be rendered:
+
+- `true`: Render a custom screen
+- `false`: Render the default flow screen
+
+This function allows rendering custom screens instead of the default flow screens.
+It can be useful for highly customized UIs or specific logic not covered by the default screens
+
+To render a custom screen, its elements should be appended as children of the `descope` component
+
+Usage example:
+
+```javascript
+function onScreenUpdate(screenName, context, next, ref) {
+  if (screenName === 'My Custom Screen') {
+    return true;
+  }
+
+  return false;
+}
+```
+
 #### Standalone Mode
 
 All components in the sdk are standalone, so you can use them by directly importing them to your components.
@@ -417,6 +448,8 @@ Notes:
 
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `session` observable of `DescopeAuthService`.
+- The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+  If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 ### Last User Persistence
 

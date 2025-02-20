@@ -37,6 +37,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
             flowId: widgetFlow,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
 

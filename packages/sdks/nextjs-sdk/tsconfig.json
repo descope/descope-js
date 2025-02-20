@@ -11,8 +11,7 @@
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"declaration": true,
-		"declarationDir": "dist/dts",
+		"declaration": false,
 		"jsx": "react",
 		"noErrorTruncation": true,
 		"typeRoots": ["./node_modules/@types", "./node_modules/@types/react"]

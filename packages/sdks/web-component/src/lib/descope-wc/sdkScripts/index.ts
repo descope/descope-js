@@ -5,8 +5,6 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
-// this function should contain the script that will load the sdk scripts
-// this is documented in `loadSdkScript` README
 export default async function loadSdkScript(scriptId: string) {
   let res;
   switch (scriptId) {
@@ -20,6 +18,10 @@ export default async function loadSdkScript(scriptId: string) {
     case 'fingerprintDescope':
       // eslint-disable-next-line no-case-declarations
       res = await import('./fingerprintDescope');
+      return res.default;
+    case 'grecaptcha':
+      // eslint-disable-next-line no-case-declarations
+      res = await import('./grecaptcha');
       return res.default;
     default:
       throw new Error(`Unknown script id: ${scriptId}`);

@@ -5,6 +5,7 @@
       :project-id="projectId"
       :base-url="baseUrl"
       :base-static-url="baseStaticUrl"
+      :base-cdn-url="baseCdnUrl"
       :flow-id="flowId"
       :theme.attr="theme"
       :locale.attr="locale"
@@ -18,12 +19,15 @@
       :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
       :errorTransformer.prop="errorTransformer"
+      :onScreenUpdate.prop="onScreenUpdate"
       :form.attr="formStr"
       :client.attr="clientStr"
       @success="onSuccess"
       @error="onError"
       @ready="onReady"
-    />
+    >
+      <slot></slot>
+    </descope-wc>
   </div>
 </template>
 
@@ -94,6 +98,9 @@ const props = defineProps({
   errorTransformer: {
     type: Function,
   },
+  onScreenUpdate: {
+    type: Function,
+  },
   form: {
     type: Object,
   },
@@ -110,8 +117,13 @@ const emit = defineEmits<{
   (e: 'error', payload: CustomEvent<ErrorResponse>): void;
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
 }>();
-const { projectId, baseUrl, baseStaticUrl, storeLastAuthenticatedUser } =
-  useOptions();
+const {
+  projectId,
+  baseUrl,
+  baseStaticUrl,
+  storeLastAuthenticatedUser,
+  baseCdnUrl,
+} = useOptions();
 const sdk = useDescope();
 
 const formStr = computed(() => (props.form ? JSON.stringify(props.form) : ''));

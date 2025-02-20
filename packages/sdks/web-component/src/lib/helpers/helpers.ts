@@ -23,7 +23,15 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
 } from '../constants';
-import { AutoFocusOptions, Direction, Locale, SSOQueryParams } from '../types';
+import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
+import {
+  AutoFocusOptions,
+  CustomScreenState,
+  Direction,
+  Locale,
+  SSOQueryParams,
+  StepState,
+} from '../types';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
@@ -644,3 +652,32 @@ export const clearPreviousExternalInputs = () => {
 
 export const shouldHandleMarkdown = (compName: string) =>
   MD_COMPONENTS.includes(compName);
+
+const omitBy = <T extends Record<string, any>>(
+  obj: T,
+  predicate: (value: any, key: keyof T) => boolean,
+): T =>
+  Object.fromEntries(
+    Object.entries(obj).filter(
+      ([key, value]) => !predicate(value, key as keyof T),
+    ),
+  ) as T;
+
+export const transformStepStateForCustomScreen = (
+  state: Partial<StepState>,
+) => {
+  const sanitizedState: CustomScreenState = omitBy(
+    state.screenState,
+    (_, key) => EXCLUDED_STATE_KEYS.includes(key) || key.startsWith('_'),
+  );
+
+  const {
+    screenState: { errorText, errorType },
+  } = state;
+
+  if (errorText || errorType) {
+    sanitizedState.error = { text: errorText, type: errorType };
+  }
+
+  return sanitizedState;
+};

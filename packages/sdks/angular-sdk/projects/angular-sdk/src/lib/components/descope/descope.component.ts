@@ -23,6 +23,7 @@ export class DescopeComponent implements OnInit, OnChanges {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
+  baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   @Input() flowId: string;
 
@@ -37,6 +38,15 @@ export class DescopeComponent implements OnInit, OnChanges {
 
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;
+  @Input() onScreenUpdate: (
+    screenName: string,
+    context: Record<string, any>,
+    next: (
+      interactionId: string,
+      form: Record<string, any>
+    ) => Promise<unknown>,
+    ref: HTMLElement
+  ) => boolean | Promise<boolean>;
   @Input() client: Record<string, any>;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
@@ -58,6 +68,7 @@ export class DescopeComponent implements OnInit, OnChanges {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
+    this.baseCdnUrl = descopeConfig.baseCdnUrl;
     this.storeLastAuthenticatedUser = descopeConfig.storeLastAuthenticatedUser;
   }
 
@@ -102,6 +113,9 @@ export class DescopeComponent implements OnInit, OnChanges {
     }
     if (this.baseStaticUrl) {
       this.webComponent.setAttribute('base-static-url', this.baseStaticUrl);
+    }
+    if (this.baseCdnUrl) {
+      this.webComponent.setAttribute('base-cdn-url', this.baseCdnUrl);
     }
     if (this.storeLastAuthenticatedUser) {
       this.webComponent.setAttribute(
@@ -148,6 +162,10 @@ export class DescopeComponent implements OnInit, OnChanges {
 
     if (this.errorTransformer) {
       this.webComponent.errorTransformer = this.errorTransformer;
+    }
+
+    if (this.onScreenUpdate) {
+      this.webComponent.onScreenUpdate = this.onScreenUpdate;
     }
 
     if (this.client) {

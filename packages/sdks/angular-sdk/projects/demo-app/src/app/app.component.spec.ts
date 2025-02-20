@@ -24,7 +24,7 @@ describe('AppComponent', () => {
       providers: [
         DescopeAuthConfig,
         { provide: DescopeAuthConfig, useValue: { projectId: 'test' } }
-      ],
+      ]
     }).compileComponents();
   });
 

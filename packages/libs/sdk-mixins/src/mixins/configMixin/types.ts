@@ -29,6 +29,12 @@ type Style = {
   light: ThemeTemplate;
 };
 
+export type ClientScript = {
+  id: string;
+  initArgs: Record<string, any>;
+  resultKey?: string;
+};
+
 export type ClientCondition = {
   operator: Operator;
   key: string;
@@ -39,11 +45,14 @@ export type ClientCondition = {
 
 export type ClientConditionResult = {
   screenId: string;
+  screenName: string;
+  clientScripts?: ClientScript[];
   interactionId: string;
 };
 
 export type FlowConfig = {
   startScreenId?: string;
+  startScreenName?: string;
   version: number;
   targetLocales?: string[];
   conditions?: ClientCondition[];

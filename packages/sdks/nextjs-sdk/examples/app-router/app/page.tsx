@@ -4,8 +4,7 @@ import Link from 'next/link';
 import UserDetails from './UserDetails';
 
 const Page = async () => {
-	const sessionRes = session();
-
+	const sessionRes = await session();
 	return (
 		<div>
 			<h1>App Router Home</h1>

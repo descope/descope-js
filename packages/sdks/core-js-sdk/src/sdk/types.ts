@@ -67,6 +67,7 @@ export type UserResponse = User & {
   createTime: number;
   TOTP: boolean;
   SAML: boolean;
+  password: boolean;
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
   status: string;

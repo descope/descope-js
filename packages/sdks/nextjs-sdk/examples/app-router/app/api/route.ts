@@ -7,7 +7,7 @@ const sdk = createSdk({
 });
 
 export const GET = async () => {
-	const currentSession = session();
+	const currentSession = await session();
 	if (!currentSession) {
 		return new Response('Unauthorized', { status: 401 });
 	}

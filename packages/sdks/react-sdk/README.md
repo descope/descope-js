@@ -166,6 +166,75 @@ const App = () => {
 }
 ```
 
+### `onScreenUpdate`
+
+A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
+
+- `screenName`: The name of the screen that is about to be rendered
+- `context`: An object containing the upcoming screen state
+- `next`: A function that, when called, continues the flow execution
+- `ref`: A reference to the descope-wc node
+
+The function can be sync or async, and should return a boolean indicating whether a custom screen should be rendered:
+
+- `true`: Render a custom screen
+- `false`: Render the default flow screen
+
+This function allows rendering custom screens instead of the default flow screens.
+It can be useful for highly customized UIs or specific logic not covered by the default screens
+
+To render a custom screen, its elements should be appended as children of the `Descope` component
+
+Usage example:
+
+```javascript
+const CustomScreen = ({onClick, setForm}) => {
+  const onChange = (e) => setForm({ email: e.target.value })
+
+  return (
+    <>
+      <input
+        type="email"
+        placeholder="Email"
+        onChange={onChange}
+      />
+      <button
+        type="button"
+        onClick={onClick}
+      >
+        Submit
+      </button>
+    </>
+)}
+
+const Login = () => {
+  const [state, setState] = useState();
+  const [form, setForm] = useState();
+
+  const onScreenUpdate = (screenName, context, next) => {
+    setState({screenName, context, next})
+
+    if (screenName === 'My Custom Screen') {
+      return true;
+    }
+
+    return false;
+  };
+
+  return <Descope
+  ...
+  onScreenUpdate={onScreenUpdate}
+  >{state.screenName === 'My Custom Screen' && <CustomScreen
+    onClick={() => {
+      // replace with the button interaction id
+      state.next('interactionId', form)
+    }}
+    setForm={setForm}/>}
+  </Descope>
+}
+
+```
+
 ### Use the `useDescope`, `useSession` and `useUser` hooks in your components in order to get authentication state, user details and utilities
 
 This can be helpful to implement application-specific logic. Examples:
@@ -300,6 +369,9 @@ Now, whenever you call `fetch`, the cookie will automatically be sent with the r
 Note:
 The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5) cookie. It will be sent only over HTTPS connections.
 In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
+
+The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 ### Helper Functions
 

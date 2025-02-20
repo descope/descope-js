@@ -11,6 +11,7 @@ import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
 import useSdk from './useSdk';
 
+type SameSite = 'Strict' | 'Lax' | 'None';
 interface IAuthProviderProps {
   projectId: string;
   baseUrl?: string;
@@ -22,7 +23,7 @@ interface IAuthProviderProps {
   // stored on local storage and can accessed with getSessionToken function
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
-  sessionTokenViaCookie?: boolean;
+  sessionTokenViaCookie?: boolean | { sameSite: SameSite };
   // If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout

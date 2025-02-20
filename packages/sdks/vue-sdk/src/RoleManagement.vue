@@ -4,6 +4,7 @@
     <descope-role-management-widget
       :project-id="projectId"
       :base-url="baseUrl"
+      :base-cdn-url="baseCdnUrl"
       :base-static-url="baseStaticUrl"
       :theme.attr="theme"
       :tenant.attr="tenant"
@@ -34,5 +35,5 @@ defineProps({
   },
 });
 
-const { projectId, baseUrl, baseStaticUrl } = useOptions();
+const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = useOptions();
 </script>

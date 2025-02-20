@@ -8,6 +8,7 @@ export const environment: Env = {
   descopeProjectId: '',
   descopeBaseUrl: '',
   descopeBaseStaticUrl: '',
+  descopeBaseCdnUrl: '',
   descopeFlowId: '',
   descopeDebugMode: false,
   descopeTheme: '',

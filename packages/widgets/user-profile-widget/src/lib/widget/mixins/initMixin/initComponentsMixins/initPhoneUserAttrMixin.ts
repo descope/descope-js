@@ -54,6 +54,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             flowId: this.phoneUserAttr.editFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -82,6 +83,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             flowId: this.phoneUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

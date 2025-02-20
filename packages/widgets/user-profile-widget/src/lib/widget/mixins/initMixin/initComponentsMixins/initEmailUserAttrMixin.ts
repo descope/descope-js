@@ -54,6 +54,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
             flowId: this.emailUserAttr.editFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
           }),
         );
         this.#editFlow.onSuccess(() => {

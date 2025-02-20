@@ -1,4 +1,7 @@
-export type PersistTokensOptions<A extends boolean> = {
+export type SameSite = 'Strict' | 'Lax' | 'None';
+export type CookieConfig = boolean | { sameSite: SameSite };
+
+export type PersistTokensOptions<A extends CookieConfig> = {
   // If true, response's tokens will be persisted - session-token in DS cookie, and refresh-token in local storage
   // In addition, the stored refresh-token will be automatically passed to the sdk functions, unless it was provided
   persistTokens?: A;
@@ -10,5 +13,5 @@ export type PersistTokensOptions<A extends boolean> = {
   // stored on local storage and can accessed with getSessionToken function
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
-  sessionTokenViaCookie?: A extends true ? boolean : never;
+  sessionTokenViaCookie?: A extends false ? never : true | CookieConfig;
 };

@@ -48,6 +48,7 @@ export function initializeApp(authService: DescopeAuthService) {
       projectId: environment.descopeProjectId,
       baseUrl: environment.descopeBaseUrl || '',
       baseStaticUrl: environment.descopeBaseStaticUrl || '',
+      baseCdnUrl: environment.descopeBaseCdnUrl || '',
       sessionTokenViaCookie: true
     })
   ],

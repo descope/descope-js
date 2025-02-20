@@ -23,6 +23,7 @@ describe('Descope.vue', () => {
     const errorTransformer = (error: { text: string; type: string }) => {
       return error.text || error.type;
     };
+    const onScreenUpdate = () => false;
     const wrapper = mount(Descope, {
       props: {
         flowId: 'test-flow-id',
@@ -34,6 +35,7 @@ describe('Descope.vue', () => {
         redirectUrl: 'test-redirect-url',
         autoFocus: true,
         errorTransformer,
+        onScreenUpdate,
         form: { test: 'a' },
         client: { test: 'b' },
         styleId: 'test-style-id',
@@ -53,6 +55,7 @@ describe('Descope.vue', () => {
     expect(descopeWc.attributes('redirect-url')).toBe('test-redirect-url');
     expect(descopeWc.attributes('auto-focus')).toBe('true');
     expect(wrapper.vm.errorTransformer).toBe(errorTransformer);
+    expect(wrapper.vm.onScreenUpdate).toBe(onScreenUpdate);
     expect(descopeWc.attributes('form')).toBe('{"test":"a"}');
     expect(wrapper.vm.client).toStrictEqual({ test: 'b' });
     expect(descopeWc.attributes('style-id')).toBe('test-style-id');
@@ -61,14 +64,15 @@ describe('Descope.vue', () => {
   it('renders a DescopeWc component with empty props', () => {
     const wrapper = mount(Descope, {
       props: {
-        form: null,
-        client: null,
+        flowId: 'test-flow-id',
+        form: {},
+        client: {},
       },
     });
 
     const descopeWc = wrapper.find('descope-wc');
-    expect(descopeWc.attributes('form')).toBe('');
-    expect(wrapper.vm.client).toBeNull();
+    expect(descopeWc.attributes('form')).toEqual('{}');
+    expect(wrapper.vm.client).toEqual({});
   });
 
   it('init sdk config', async () => {

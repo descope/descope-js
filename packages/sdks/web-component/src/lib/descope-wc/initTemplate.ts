@@ -9,9 +9,13 @@ initTemplate.innerHTML = `
 
 		#root {
 			height: 100%;
-			transition: opacity 300ms ease-in-out;
       display: flex;
+      flex-direction: column;
 		}
+
+    #content-root {
+      transition: opacity 300ms ease-in-out;
+    }
 
 		#root[data-theme] {
 			background-color: transparent;
@@ -20,6 +24,10 @@ initTemplate.innerHTML = `
 		.fade-out {
 			opacity: 0.1;
 		}
+
+    .hidden {
+      display: none;
+    }
 
 	</style>
 	`;

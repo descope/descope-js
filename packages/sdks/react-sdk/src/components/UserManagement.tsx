@@ -22,7 +22,8 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+      React.useContext(Context);
 
     return (
 	<Suspense fallback={null}>
@@ -32,6 +33,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
           tenant={tenant}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
+          baseCdnUrl={baseCdnUrl}
           ref={setInnerRef}
           {...{
             // attributes

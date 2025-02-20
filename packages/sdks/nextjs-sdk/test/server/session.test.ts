@@ -11,7 +11,7 @@ describe('session utilities', () => {
 	});
 
 	describe('session', () => {
-		it('should extract and return session information if present', () => {
+		it('should extract and return session information if present', async () => {
 			(headers as jest.Mock).mockImplementation(
 				() =>
 					new Map([
@@ -23,16 +23,16 @@ describe('session utilities', () => {
 						]
 					])
 			);
-			const result = session();
+			const result = await session();
 			expect(result).toEqual({ user: 'testUser' });
 		});
 
-		it('should return undefined if session header is missing', () => {
+		it('should return undefined if session header is missing', async () => {
 			(headers as jest.Mock).mockImplementation(() => new Map());
 			jest.mock('next/headers', () => ({
 				headers: jest.fn().mockImplementation(() => new Map())
 			}));
-			const result = session();
+			const result = await session();
 			expect(result).toBeUndefined();
 		});
 	});
