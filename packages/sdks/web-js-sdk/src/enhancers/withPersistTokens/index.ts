@@ -11,7 +11,7 @@ import {
   getSessionToken,
   persistTokens,
 } from './helpers';
-import { CookieConfig, PersistTokensOptions, SameSite } from './types';
+import { CookieConfig, PersistTokensOptions } from './types';
 
 /**
  * Persist authentication tokens in cookie/storage

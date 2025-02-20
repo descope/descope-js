@@ -30,5 +30,6 @@ export {
 } from './enhancers/withFingerprint/helpers';
 
 export type { OneTapConfig } from './sdk/fedcm';
+export type { CookieConfig } from './enhancers/withPersistTokens/types';
 
 export default decoratedCreateSdk;
