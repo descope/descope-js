@@ -14,7 +14,7 @@ import UserProfileWidget from '@descope/user-profile-widget';
 import ApplicationsPortalWidget from '@descope/applications-portal-widget';
 import createSdk from './sdk';
 
-declare module 'react' {
+declare global {
   namespace JSX {
     interface IntrinsicElements {
       ['descope-wc']: DescopeCustomElement;
