@@ -206,7 +206,7 @@ app.use(descope, {
 ```
 
 Note: The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
-  If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
 Now, whenever you call `fetch`, the cookie will automatically be sent with the request.  
 Descope backend SDKs also support extracting the token from the `DS` cookie.
