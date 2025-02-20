@@ -105,6 +105,10 @@ type PromptNotification = {
   getSkippedReason: () => string;
 };
 
+const generateNonce = () => {
+  return Math.random().toString(36).substring(2);
+};
+
 /**
  * Constructs a higher level FedCM API that wraps the functions from code-js-sdk.
  * @param sdk The CoreSdk instance.
@@ -113,32 +117,24 @@ type PromptNotification = {
 const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   async oneTap(
     provider?: string,
+    clientId?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkip?: (reason?: string) => void,
     onDismissed?: (reason?: string) => void,
   ) {
     const readyProvider = provider ?? 'google';
-    const startResponse = await sdk.oauth.startNative(
-      readyProvider,
-      loginOptions,
-      true,
-    );
-    if (!startResponse.ok) {
-      return startResponse as unknown as SdkResponse<JWTResponse>;
-    }
 
-    const { clientId, stateId, nonce } = startResponse.data;
+    const nonce = generateNonce();
     const googleClient = await getGoogleClient();
     return new Promise((resolve) => {
       const callback = (res: CredentialResponse) => {
         resolve(
-          sdk.oauth.finishNative(
+          sdk.oauth.exchangeProviderToken(
             readyProvider,
-            stateId,
-            '',
-            '',
             res.credential,
+            nonce,
+            loginOptions,
           ),
         );
       };
