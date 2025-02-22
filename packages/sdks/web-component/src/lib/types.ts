@@ -37,6 +37,10 @@ export interface LastAuthState {
   name?: string;
 }
 
+export type ComponentsAttrs = {
+  attributes: Record<string, string>;
+};
+
 export interface ScreenState {
   errorText?: string;
   errorType?: string;
@@ -57,6 +61,7 @@ export interface ScreenState {
   linkId?: unknown;
   sentTo?: unknown;
   clientScripts?: ClientScript[];
+  componentsAttrs?: Record<string, ComponentsAttrs>;
 }
 
 export type SSOQueryParams = {
@@ -181,6 +186,7 @@ export interface ClientConditionResult {
   screenId: string;
   screenName: string;
   clientScripts?: ClientScript[];
+  componentsAttrs?: Record<string, ComponentsAttrs>;
   interactionId: string;
 }
 
@@ -251,6 +257,7 @@ export type FlowConfig = {
     },
   ];
   clientScripts?: ClientScript[];
+  componentsAttrs?: Record<string, ComponentsAttrs>;
 };
 
 export interface ProjectConfiguration {

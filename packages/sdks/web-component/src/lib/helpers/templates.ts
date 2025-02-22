@@ -4,7 +4,12 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
-import { ComponentsConfig, CssVars, ScreenState } from '../types';
+import {
+  ComponentsAttrs,
+  ComponentsConfig,
+  CssVars,
+  ScreenState,
+} from '../types';
 import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
@@ -227,6 +232,27 @@ const setElementConfig = (
   });
 };
 
+const setElementAttributes = (
+  baseEle: DocumentFragment,
+  componentsAttrs?: Record<string, ComponentsAttrs>,
+) => {
+  if (!componentsAttrs || !Object.keys(componentsAttrs).length) {
+    return;
+  }
+  Object.entries(componentsAttrs).forEach(([id, componentAttrs]) => {
+    const { attributes } = componentAttrs;
+    if (!attributes || !Object.keys(attributes).length) {
+      return;
+    }
+
+    baseEle.querySelectorAll(`[id='${id}']`).forEach((comp) => {
+      Object.entries(attributes).forEach(([attr, value]) => {
+        comp.setAttribute(attr, value);
+      });
+    });
+  });
+};
+
 const setImageVariable = (
   rootEle: HTMLElement,
   name: string,
@@ -274,6 +300,7 @@ export const updateTemplateFromScreenState = (
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
+  setElementAttributes(baseEle, screenState?.componentsAttrs);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
 };
