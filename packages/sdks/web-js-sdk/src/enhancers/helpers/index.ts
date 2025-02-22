@@ -1,5 +1,5 @@
-import { JWTResponse, UserResponse } from '@descope/core-js-sdk';
-import { CoreSdkConfig } from '../../types';
+import { UserResponse } from '@descope/core-js-sdk';
+import { CoreSdkConfig, WebJWTResponse } from '../../types';
 
 /**
  * Add hooks to an existing core-sdk config
@@ -31,7 +31,7 @@ export { compose } from './compose';
  */
 export const getAuthInfoFromResponse = async (
   res: Response,
-): Promise<Partial<JWTResponse>> => {
+): Promise<Partial<WebJWTResponse>> => {
   if (!res?.ok) return {};
   const body = await res?.clone().json();
   return body?.authInfo || body || {};

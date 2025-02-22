@@ -1,6 +1,8 @@
 // workaround for TS issue https://github.com/microsoft/TypeScript/issues/42873
 // eslint-disable-next-line
 import type * as _1 from '@descope/core-js-sdk';
+import type * as _2 from '@descope/web-js-sdk';
+// import type * as _2 from 'oidc-client-ts';
 import createSdk from '@descope/web-js-sdk';
 import { IS_BROWSER } from './constants';
 import { wrapInTry } from './utils';

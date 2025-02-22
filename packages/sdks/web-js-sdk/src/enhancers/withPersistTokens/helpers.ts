@@ -1,7 +1,6 @@
-import { JWTResponse } from '@descope/core-js-sdk';
 import Cookies from 'js-cookie';
-import { BeforeRequestHook } from '../../types';
-import { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
+import { BeforeRequestHook, WebJWTResponse } from '../../types';
+import { ID_TOKEN_KEY, REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -18,9 +17,11 @@ import {
 function setJwtTokenCookie(
   name: string,
   value: string,
-  { cookiePath, cookieDomain, cookieExpiration }: Partial<JWTResponse>,
+  { cookiePath, cookieDomain, cookieExpiration }: Partial<WebJWTResponse>,
 ) {
   if (value) {
+    // Asaf - check if we need to adjust the expiration time in OIDC and how this will work without domain etc
+
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
     // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
     const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
@@ -56,7 +57,7 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
 }
 
 export const persistTokens = (
-  { refreshJwt, sessionJwt, ...cookieParams } = {} as Partial<JWTResponse>,
+  { refreshJwt, sessionJwt, idTokenJwt, ...cookieParams } = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie = false,
   storagePrefix = '',
 ) => {
@@ -69,6 +70,10 @@ export const persistTokens = (
     sessionTokenViaCookie
       ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, cookieParams)
       : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
+  }
+
+  if (idTokenJwt) {
+    setLocalStorage(`${storagePrefix}ID_TOKEN_KEY`, idTokenJwt);
   }
 };
 
@@ -89,10 +94,18 @@ export function getSessionToken(prefix: string = ''): string {
   );
 }
 
+export function getIdToken(prefix: string = ''): string {
+  return (
+    getLocalStorage(`${prefix}${ID_TOKEN_KEY}`) ||
+    ''
+  );
+}
+
 /** Remove both the localStorage refresh JWT and the session cookie */
 export function clearTokens(prefix: string = '') {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
+  removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
   Cookies.remove(SESSION_TOKEN_KEY);
 }
 

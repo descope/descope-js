@@ -7,6 +7,7 @@ import { addHooks, getAuthInfoFromResponse } from '../helpers';
 import {
   beforeRequest,
   clearTokens,
+  getIdToken,
   getRefreshToken,
   getSessionToken,
   persistTokens,
@@ -60,18 +61,21 @@ export const withPersistTokens =
       }),
     );
 
+
     const wrappedSdk = wrapWith(
-      sdk,
-      ['logout', 'logoutAll'],
+      sdk, // @ts-ignore
+      ['logout', 'logoutAll', 'oidc.logout'],     
       wrapper(storagePrefix),
     );
 
     const refreshToken = () => getRefreshToken(storagePrefix);
     const sessionToken = () => getSessionToken(storagePrefix);
+    const idToken = () => getIdToken(storagePrefix);
 
     return Object.assign(wrappedSdk, {
       getRefreshToken: refreshToken,
       getSessionToken: sessionToken,
+      getIdToken: idToken,
     }) as any;
   };
 

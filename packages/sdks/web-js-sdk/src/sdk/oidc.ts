@@ -5,7 +5,7 @@ import type {
   SigninResponse,
   WebStorageStateStore,
 } from 'oidc-client-ts';
-import { CoreSdk } from '../types';
+import { CoreSdk, WebJWTResponse } from '../types';
 import {
   OIDC_CLIENT_TS_DESCOPE_CDN_URL,
   OIDC_CLIENT_TS_JSDELIVR_CDN_URL,
@@ -76,6 +76,21 @@ const loadOIDCModule = async (): Promise<OidcModule> => {
   }
 };
 
+const oidcSignInResToWebJWTRes = (
+  signInRes: SigninResponse,
+): WebJWTResponse => {
+  const accessToken = signInRes.access_token;
+  const refreshToken = signInRes.refresh_token;
+  const idToken = signInRes.id_token;
+  return {
+    sessionJwt: accessToken,
+    refreshJwt: refreshToken,
+    idTokenJwt: idToken,
+    cookieExpiration: signInRes.expires_at,
+    oidc: true,
+  };
+};
+
 const getOidcClient = async (
   sdk: CoreSdk,
   projectId: string,
@@ -111,10 +126,14 @@ const getOidcClient = async (
     fetchRequestCredentials: 'same-origin',
   };
 
-  if (oidcConfig) {
+  if (oidcConfig?.clientId) {
     settings.client_id = oidcConfig.clientId;
+  }
+  if (oidcConfig?.redirectUri) {
     settings.redirect_uri = oidcConfig.redirectUri;
-    settings.scope = oidcConfig.scope;
+  }
+  if (oidcConfig?.scope) {
+    settings.scope = oidcConfig.scope
   }
   return {
     client: new OidcClient(settings),
@@ -137,11 +156,23 @@ const createOidc = (sdk: CoreSdk, projectId: string) => {
       projectId,
       oidcConfig,
     );
-    const user = await client.processSigninResponse(window.location.href);
-    window.localStorage.setItem(stateUserKey, JSON.stringify(user));
-    return client.useRefreshToken({
-      state: { refresh_token: user.refresh_token, data: null, ...user },
-    });
+    const signInRes = await client.processSigninResponse(window.location.href);
+
+    // In order to make sure all the after-hooks are running with the success response
+    // we are generating a fake response with the success data and calling the http client after hook fn with it
+    await sdk.httpClient.hooks.afterRequest(
+      {} as any,
+      new Response(JSON.stringify(oidcSignInResToWebJWTRes(signInRes))),
+    );
+    // Asaf - I'm not sure we want to set this in the local storage
+    window.localStorage.setItem(stateUserKey, JSON.stringify(signInRes));
+    // return client.useRefreshToken({
+    //   state: {
+    //     refresh_token: signInRes.refresh_token,
+    //     ...signInRes,
+    //   },
+    // });
+    return signInRes;
   };
 
   const getUser = (stateUserKey: string): SigninResponse | null => {
@@ -166,10 +197,37 @@ const createOidc = (sdk: CoreSdk, projectId: string) => {
     }
   };
 
+  const refreshToken = async (refreshToken: string) => {
+    console.log('@@@ calling refreshToken');
+    const { client, stateUserKey } = await getOidcClient(
+      sdk,
+      projectId,
+    );
+
+    const user = getUser(stateUserKey);
+    console.log('user', user);
+    const res = await client.useRefreshToken({
+      state: {
+        refresh_token: refreshToken,
+        ...user,
+      },
+    });
+
+    // In order to make sure all the after-hooks are running with the success response
+    // we are generating a fake response with the success data and calling the http client after hook fn with it
+    await sdk.httpClient.hooks.afterRequest(
+      {} as any,
+      new Response(JSON.stringify(oidcSignInResToWebJWTRes(res))),
+    );
+
+    return res;
+  }
+
   return {
+    logout,
     authorize,
     token,
-    logout,
+    refreshToken
   };
 };
 

@@ -1,11 +1,15 @@
 /* eslint-disable no-console */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Descope, useSession } from '../../src';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Descope, useSession, useDescope } from '../../src';
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isFlowLoading, setIsFlowLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const sdk = useDescope();
+
+  const isOidc = process.env.DESCOPE_IS_OIDC === 'oidc';
 
   const { isAuthenticated, isSessionLoading } = useSession();
   const navigate = useNavigate();
@@ -15,6 +19,27 @@ const Login = () => {
       navigate('/');
     }
   }, [navigate, isAuthenticated]);
+
+  useEffect(() => {
+
+    if (isOidc) {
+      const code = searchParams.get('code');
+      console.log('@@@ OIDC login', {
+        doAuthorize: !code,
+        tokenFn: sdk.oidc.token,
+        authorizeFn: sdk.oidc.authorize,
+      });
+
+    if (code) {
+        sdk.oidc.token();
+    } else {
+      sdk.oidc.authorize();
+    }
+
+  }
+
+
+  }, [sdk]);
 
   const onSuccess = useCallback(() => {
     navigate('/');
@@ -49,7 +74,7 @@ const Login = () => {
     >
       <h2>Login</h2>
       {(isSessionLoading || isFlowLoading) && <div>Loading...</div>}
-      {!isSessionLoading && (
+      {!isSessionLoading && !isOidc && (
         <Descope
           flowId={process.env.DESCOPE_FLOW_ID || 'sign-up-or-in'}
           onSuccess={onSuccess}
