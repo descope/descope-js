@@ -109,6 +109,10 @@ class BaseDescopeWc extends BaseClass {
 
   rootElement: HTMLDivElement;
 
+  contentRootElement: HTMLDivElement;
+
+  slotElement: HTMLSlotElement;
+
   #debuggerEle: HTMLElement & {
     updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
   };
@@ -133,8 +137,9 @@ class BaseDescopeWc extends BaseClass {
 
   #initShadowDom() {
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
-
-    this.rootElement = this.shadowRoot.querySelector<HTMLDivElement>('#root');
+    this.slotElement = document.createElement('slot');
+    this.slotElement.classList.add('hidden');
+    this.rootElement.appendChild(this.slotElement);
   }
 
   get flowId() {
@@ -258,7 +263,6 @@ class BaseDescopeWc extends BaseClass {
       const origFn = this.sdk.flow[key];
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
-        this.nextRequestStatus.update({ isLoading: true });
         try {
           const resp = await origFn(...args);
           return resp;
@@ -270,8 +274,6 @@ class BaseDescopeWc extends BaseClass {
               errorDescription: e.toString(),
             },
           };
-        } finally {
-          this.nextRequestStatus.update({ isLoading: false });
         }
       };
     });

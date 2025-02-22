@@ -2,6 +2,96 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.6.1](https://github.com/descope/descope-js/compare/react-sdk-2.6.0...react-sdk-2.6.1) (2025-02-20)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.21`
+* `audit-management-widget` updated to version `0.3.3`
+* `role-management-widget` updated to version `0.2.25`
+* `user-management-widget` updated to version `0.6.20`
+* `user-profile-widget` updated to version `0.2.21`
+* `applications-portal-widget` updated to version `0.2.24`
+* `web-component` updated to version `3.35.1`
+* `web-js-sdk` updated to version `1.24.1`
+* `core-js-sdk` updated to version `2.35.0`
+
+### Bug Fixes
+
+* TS override ([#1027](https://github.com/descope/descope-js/issues/1027)) RELEASE ([781fa3b](https://github.com/descope/descope-js/commit/781fa3bd9200422f5272720f8b05e63870e1d193))
+
+## [2.6.0](https://github.com/descope/descope-js/compare/react-sdk-2.5.0...react-sdk-2.6.0) (2025-02-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.20`
+* `audit-management-widget` updated to version `0.3.2`
+* `role-management-widget` updated to version `0.2.24`
+* `user-management-widget` updated to version `0.6.19`
+* `user-profile-widget` updated to version `0.2.20`
+* `applications-portal-widget` updated to version `0.2.23`
+* `web-component` updated to version `3.35.0`
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
+## [2.5.0](https://github.com/descope/descope-js/compare/react-sdk-2.4.0...react-sdk-2.5.0) (2025-02-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.19`
+* `audit-management-widget` updated to version `0.3.1`
+* `role-management-widget` updated to version `0.2.23`
+* `user-management-widget` updated to version `0.6.18`
+* `user-profile-widget` updated to version `0.2.19`
+* `applications-portal-widget` updated to version `0.2.22`
+* `web-component` updated to version `3.34.1`
+* `web-js-sdk` updated to version `1.24.0`
+
+### Features
+
+* **web-js-sdk/withPersistTokens:** allow customizing SameSite RELEASE ([#1015](https://github.com/descope/descope-js/issues/1015)) ([d5262f7](https://github.com/descope/descope-js/commit/d5262f7cd42d6c042d4aa87c34ac1c71bb3c7bde))
+
+## [2.4.0](https://github.com/descope/descope-js/compare/react-sdk-2.3.25...react-sdk-2.4.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `access-key-management-widget` updated to version `0.3.18`
+* `audit-management-widget` updated to version `0.3.0`
+* `role-management-widget` updated to version `0.2.22`
+* `user-management-widget` updated to version `0.6.17`
+* `user-profile-widget` updated to version `0.2.18`
+* `applications-portal-widget` updated to version `0.2.21`
+* `web-component` updated to version `3.34.0`
+* `web-js-sdk` updated to version `1.23.10`
+* `core-js-sdk` updated to version `2.34.0`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [2.3.25](https://github.com/descope/descope-js/compare/react-sdk-2.3.24...react-sdk-2.3.25) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+* `access-key-management-widget` updated to version `0.3.17`
+* `audit-management-widget` updated to version `0.2.21`
+* `role-management-widget` updated to version `0.2.21`
+* `user-management-widget` updated to version `0.6.16`
+* `user-profile-widget` updated to version `0.2.17`
+* `applications-portal-widget` updated to version `0.2.20`
+* `web-component` updated to version `3.33.0`
+* `web-js-sdk` updated to version `1.23.9`
+* `core-js-sdk` updated to version `2.33.6`
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
 ## [2.3.24](https://github.com/descope/descope-js/compare/react-sdk-2.3.23...react-sdk-2.3.24) (2025-02-02)
 
 ### Dependency Updates

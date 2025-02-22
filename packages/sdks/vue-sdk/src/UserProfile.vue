@@ -5,6 +5,7 @@
       :project-id="projectId"
       :base-url="baseUrl"
       :base-static-url="baseStaticUrl"
+      :base-cdn-url="baseCdnUrl"
       :theme.attr="theme"
       :debug.attr="debug"
       :widget-id="widgetId"
@@ -33,5 +34,5 @@ defineProps({
   },
 });
 
-const { projectId, baseUrl, baseStaticUrl } = useOptions();
+const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = useOptions();
 </script>

@@ -6,6 +6,7 @@ import {
   removeLocalStorage,
   setLocalStorage,
 } from '../helpers';
+import { CookieConfig, SameSite } from './types';
 
 /**
  * Store the session JWT as a cookie on the given domain and path with the given expiration.
@@ -17,11 +18,14 @@ import {
 function setJwtTokenCookie(
   name: string,
   value: string,
-  { cookiePath, cookieDomain, cookieExpiration }: Partial<WebJWTResponse>,
+  {
+    cookiePath,
+    cookieDomain,
+    cookieExpiration,
+    cookieSameSite = 'Strict',
+  }: Partial<WebJWTResponse & { cookieSameSite: SameSite }>,
 ) {
   if (value) {
-    // Asaf - check if we need to adjust the expiration time in OIDC and how this will work without domain etc
-
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
     // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
     const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
@@ -29,7 +33,7 @@ function setJwtTokenCookie(
       path: cookiePath,
       domain: domainMatches ? cookieDomain : undefined,
       expires,
-      sameSite: 'Strict',
+      sameSite: cookieSameSite,
       secure: true,
     });
   }
@@ -58,7 +62,7 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
 
 export const persistTokens = (
   { refreshJwt, sessionJwt, idTokenJwt, ...cookieParams } = {} as Partial<WebJWTResponse>,
-  sessionTokenViaCookie = false,
+  sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
   // persist refresh token
@@ -68,7 +72,13 @@ export const persistTokens = (
   // persist session token
   if (sessionJwt) {
     sessionTokenViaCookie
-      ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, cookieParams)
+      ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
+          ...cookieParams,
+          cookieSameSite:
+            sessionTokenViaCookie === true
+              ? 'Strict'
+              : sessionTokenViaCookie['sameSite'],
+        })
       : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
   }
 

@@ -87,6 +87,37 @@ const handleReady = () => {
 </script>
 ```
 
+### `onScreenUpdate`
+
+A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
+
+- `screenName`: The name of the screen that is about to be rendered
+- `context`: An object containing the upcoming screen state
+- `next`: A function that, when called, continues the flow execution
+- `ref`: A reference to the descope-wc node
+
+The function can be sync or async, and should return a boolean indicating whether a custom screen should be rendered:
+
+- `true`: Render a custom screen
+- `false`: Render the default flow screen
+
+This function allows rendering custom screens instead of the default flow screens.
+It can be useful for highly customized UIs or specific logic not covered by the default screens
+
+To render a custom screen, its elements should be appended as children of the `Descope` component
+
+Usage example:
+
+```javascript
+function onScreenUpdate(screenName, context, next) {
+  if (screenName === 'My Custom Screen') {
+    return true;
+  }
+
+  return false;
+}
+```
+
 ### Use the `useDescope`, `useSession` and `useUser` functions in your components in order to get authentication state, user details and utilities
 
 This can be helpful to implement application-specific logic. Examples:
@@ -131,7 +162,7 @@ Note: Descope also provides server-side SDKs in various languages (NodeJS, Go, P
 There are 2 ways to achieve that:
 
 1. Using `getSessionToken` to get the token, and pass it on the `Authorization` Header (Recommended)
-2. Passing `sessionTokenViaCookie` boolean option when initializing the plugin (Use cautiously, session token may grow, especially in cases of using authorization, or adding custom claim)
+2. Passing `sessionTokenViaCookie` option when initializing the plugin (Use cautiously, session token may grow, especially in cases of using authorization, or adding custom claim)
 
 #### 1. Using `getSessionToken` to get the token
 
@@ -173,6 +204,9 @@ app.use(descope, {
   sessionTokenViaCookie: true,
 });
 ```
+
+Note: The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 Now, whenever you call `fetch`, the cookie will automatically be sent with the request.  
 Descope backend SDKs also support extracting the token from the `DS` cookie.

@@ -62,6 +62,7 @@ describe('DescopeComponent', () => {
       debug: jest.fn()
     };
     component.errorTransformer = jest.fn();
+    component.onScreenUpdate = jest.fn();
     component.client = {};
     component.form = {};
     component.storeLastAuthenticatedUser = true;

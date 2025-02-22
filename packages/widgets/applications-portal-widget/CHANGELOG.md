@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.24](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.23...applications-portal-widget-0.2.24) (2025-02-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.1`
+## [0.2.23](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.22...applications-portal-widget-0.2.23) (2025-02-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.9.0`
+## [0.2.22](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.21...applications-portal-widget-0.2.22) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.0`
+## [0.2.21](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.20...applications-portal-widget-0.2.21) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.10`
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `sdk-component-drivers` updated to version `0.2.51`
+## [0.2.20](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.19...applications-portal-widget-0.2.20) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.9`
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `sdk-component-drivers` updated to version `0.2.50`
 ## [0.2.19](https://github.com/descope/descope-js/compare/applications-portal-widget-0.2.18...applications-portal-widget-0.2.19) (2025-02-02)
 
 ### Dependency Updates

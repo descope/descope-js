@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.8.0...sdk-mixins-0.9.0) (2025-02-12)
+
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
+## [0.8.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.7.0...sdk-mixins-0.8.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-component-drivers` updated to version `0.2.51`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [0.7.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.7...sdk-mixins-0.7.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-component-drivers` updated to version `0.2.50`
+
+### Features
+
+* **web-component:** add base-cdn-url attribute ([#1013](https://github.com/descope/descope-js/issues/1013)) ([8346412](https://github.com/descope/descope-js/commit/834641285494f842978b4111dae1db4e643cb494))
+
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
 ## [0.6.7](https://github.com/descope/descope-js/compare/sdk-mixins-0.6.6...sdk-mixins-0.6.7) (2025-02-02)
 
 ### Dependency Updates
