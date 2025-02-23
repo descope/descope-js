@@ -5,42 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Uncomment next section if you want to test CSP -->
 
-    <!-- <meta
+    <meta
       http-equiv="Content-Security-Policy"
       content="connect-src 'self' static.descope.com api.descope.com;
-    style-src 'unsafe-inline' fonts.googleapis.com;
-    img-src static.descope.com content.app.descope.com;
-    font-src fonts.gstatic.com;
-    script-src 'self' static.descope.com;"
-    /> -->
-    <style>
-      body {
-        background-color: antiquewhite;
-        position: relative;
-        height: 100vh;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .login-container {
-        width: 500px;
-        min-height: 300px;
-        margin: auto;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-    </style>
+    style-src fonts.googleapis.com 'nonce-rAnd0m';
+    img-src static.descope.com content.app.descope.com imgs.descope.com;
+    font-src fonts.gstatic.com http://localhost:5500;
+    script-src 'self' static.descope.com http://localhost:5500 'unsafe-inline';"
+    />
   </head>
   <body>
     <script type="module" src="../lib/descope-wc/index.ts"></script>
     <div class="login-container">
       <descope-wc
         project-id="<project-id>"
-        flow-id="<flow-id>"
+        flow-id="aa"
         base-url="<base-url>"
         base-static-url="<base-static-url>"
         base-cdn-url="<base-cdn-url>"
@@ -48,6 +27,7 @@
         debug="true"
         validate-on-blur="false"
         keep-last-authenticated-user-after-logout="true"
+        nonce="rAnd0m"
       ></descope-wc>
       <div class="loading">Loading ...</div>
     </div>

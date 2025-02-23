@@ -16,8 +16,13 @@ export const initElementMixin = createSingletonMixin(
         super(...rest);
 
         this.attachShadow({ mode: 'open' }).innerHTML = `
+          <div id="${ROOT_ID}">
+            <div id="${CONTENT_ROOT_ID}"></div>
+          </div>
+          `;
 
-          <style>
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(`
             #${ROOT_ID}, #${CONTENT_ROOT_ID} {
               height: 100%;
             }
@@ -25,11 +30,8 @@ export const initElementMixin = createSingletonMixin(
               position: relative;
               height: fit-content;
             }
-          </style>
-          <div id="${ROOT_ID}">
-            <div id="${CONTENT_ROOT_ID}"></div>
-          </div>
-          `;
+          `);
+        this.shadowRoot.adoptedStyleSheets = [sheet];
 
         this.contentRootElement =
           this.shadowRoot?.getElementById(CONTENT_ROOT_ID)!;

@@ -66,6 +66,7 @@ class BaseDescopeWc extends BaseClass {
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
       'style-id',
+      'nonce',
     ];
   }
 
@@ -135,8 +136,42 @@ class BaseDescopeWc extends BaseClass {
     this.#initShadowDom();
   }
 
+  #loadInitStyle() {
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(`
+    :host {
+      all: initial;
+			width: 100%;
+      display: block;
+		}
+
+		#root {
+			height: 100%;
+      display: flex;
+      flex-direction: column;
+		}
+
+    #content-root {
+      transition: opacity 300ms ease-in-out;
+    }
+
+		#root[data-theme] {
+			background-color: transparent;
+		}
+
+		.fade-out {
+			opacity: 0.1;
+		}
+
+    .hidden {
+      display: none;
+    }
+    `);
+    this.shadowRoot.adoptedStyleSheets = [sheet];
+  }
+
   #initShadowDom() {
-    this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
+    this.#loadInitStyle();
     this.slotElement = document.createElement('slot');
     this.slotElement.classList.add('hidden');
     this.rootElement.appendChild(this.slotElement);
@@ -471,7 +506,16 @@ class BaseDescopeWc extends BaseClass {
 
   static descopeUI: any;
 
+  #handleNonce() {
+    if (this.getAttribute('nonce')) {
+      // the key name "DESCOPE_NONCE" is in use also by the web-components-ui
+      // it's used to set Vaadins style tags nonce
+      (window as any).DESCOPE_NONCE = this.getAttribute('nonce');
+    }
+  }
+
   async init() {
+    this.#handleNonce();
     this.flowStatus = 'loading';
     ['ready', 'error', 'success'].forEach((status: FlowStatus) =>
       this.addEventListener(status, () => {
@@ -578,6 +622,10 @@ class BaseDescopeWc extends BaseClass {
       this.#validateAttrs();
 
       const isInitialRun = oldValue === null;
+
+      if (attrName === 'nonce') {
+        this.#handleNonce();
+      }
 
       this.#flowState.update(({ stepId, executionId }) => {
         let newStepId = stepId;

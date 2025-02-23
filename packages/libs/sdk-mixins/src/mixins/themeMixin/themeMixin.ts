@@ -32,7 +32,7 @@ export const themeMixin = createSingletonMixin(
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
-      #globalStyleTag: HTMLStyleElement;
+      #globalStyle: CSSStyleSheet;
 
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
@@ -122,14 +122,18 @@ export const themeMixin = createSingletonMixin(
         const theme = await this.#themeResource;
         if (!theme) return;
 
-        if (!this.#globalStyleTag) {
-          this.#globalStyleTag = document.createElement('style');
-          this.#globalStyleTag.id = 'global-style';
-          this.shadowRoot!.appendChild(this.#globalStyleTag);
+        if (!this.#globalStyle) {
+          this.#globalStyle = new CSSStyleSheet();
+          this.shadowRoot.adoptedStyleSheets ??= [];
+          this.shadowRoot.adoptedStyleSheets = [
+            ...this.shadowRoot.adoptedStyleSheets,
+            this.#globalStyle,
+          ];
         }
 
-        this.#globalStyleTag.innerText =
-          (theme?.light?.globals || '') + (theme?.dark?.globals || '');
+        this.#globalStyle.replaceSync(
+          (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
+        );
       }
 
       async #loadComponentsStyle() {
