@@ -4682,6 +4682,186 @@ describe('web-component', () => {
     });
   });
 
+  describe('componentsAttrs', () => {
+    it('should parse componentsAttrs values to screen components after next', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsAttrs: {
+              id123: {
+                attributes: {
+                  'test-attr': 'test-value',
+                  'test-attr2': 'test-value2',
+                },
+              },
+              id456: {
+                attributes: {
+                  'test-attr': 'test-value3',
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input><input id="id456" class="descope-input" placeholder="input2"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+      expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+        'test-attr2',
+        'test-value2',
+      );
+      expect(screen.getByShadowPlaceholderText('input2')).toHaveAttribute(
+        'test-attr',
+        'test-value3',
+      );
+      expect(screen.getByShadowPlaceholderText('input2')).not.toHaveAttribute(
+        'test-attr2',
+      );
+    });
+
+    it('should parse componentsAttrs values to screen components after start', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          screenState: {
+            componentsAttrs: {
+              id123: {
+                attributes: {
+                  'test-attr': 'test-value',
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should parse componentsAttrs values to screen components from config', async () => {
+      configContent = {
+        ...configContent,
+        flows: {
+          'sign-in': {
+            startScreenId: 'screen-0',
+            componentsAttrs: {
+              id123: {
+                attributes: {
+                  'test-attr': 'test-value',
+                },
+              },
+            },
+          },
+        },
+      };
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      expect(startMock).not.toHaveBeenCalled();
+      expect(nextMock).not.toHaveBeenCalled();
+    });
+
+    it('should parse componentsAttrs values to screen components from config with condition', async () => {
+      configContent = {
+        ...configContent,
+        flows: {
+          'sign-in': {
+            conditions: [
+              {
+                key: 'idpInitiated',
+                met: {
+                  interactionId: 'vhz8zebfaw',
+                  screenId: 'met',
+                },
+                operator: 'is-true',
+                predicate: '',
+              },
+              {
+                key: 'ELSE',
+                met: {
+                  componentsAttrs: {
+                    id123: {
+                      attributes: {
+                        'test-attr': 'test-value',
+                      },
+                    },
+                  },
+                  interactionId: 'ELSE',
+                  screenId: 'unmet',
+                },
+                unmet: {},
+              },
+            ],
+          },
+        },
+      };
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      expect(startMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('cssVars', () => {
     it('should set css vars on root element', async () => {
       const spyGet = jest.spyOn(customElements, 'get');
