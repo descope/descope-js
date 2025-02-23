@@ -63,6 +63,7 @@ class BaseDescopeWc extends BaseClass {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'refresh-cookie-name',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
       'style-id',
@@ -190,6 +191,10 @@ class BaseDescopeWc extends BaseClass {
     return res === 'true';
   }
 
+  get refreshCookieName() {
+    return this.getAttribute('refresh-cookie-name') || '';
+  }
+
   get keepLastAuthenticatedUserAfterLogout() {
     const res = this.getAttribute('keep-last-authenticated-user-after-logout');
     return res === 'true';
@@ -224,6 +229,7 @@ class BaseDescopeWc extends BaseClass {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'refresh-cookie-name',
       'keep-last-authenticated-user-after-logout',
       'preview',
       'storage-prefix',
@@ -253,6 +259,7 @@ class BaseDescopeWc extends BaseClass {
       storeLastAuthenticatedUser: this.storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout:
         this.keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName: this.refreshCookieName,
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,

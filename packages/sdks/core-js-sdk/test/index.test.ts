@@ -69,6 +69,21 @@ describe('sdk', () => {
     );
   });
 
+  it('should add refresh cookie name header if provided', () => {
+    (httpClient as jest.Mock).mockReturnValueOnce('httpClient');
+    (sdk as jest.Mock).mockReturnValueOnce('sdk');
+
+    expect(createSdk({ projectId: '123', refreshCookieName: 'cookie-1' })).toBe(
+      'sdk',
+    );
+    expect(sdk).toHaveBeenCalledWith('httpClient');
+    expect(httpClient).toHaveBeenCalledWith(
+      expect.objectContaining({
+        refreshCookieName: 'cookie-1',
+      }),
+    );
+  });
+
   it('should add rate limit to the response error', async () => {
     const createSdk1 = jest.requireActual('../src/sdk').default;
     const httpResp = {

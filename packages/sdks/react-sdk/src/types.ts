@@ -100,6 +100,7 @@ export interface IContext {
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
+  refreshCookieName?: string;
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   setSession: React.Dispatch<React.SetStateAction<string>>;

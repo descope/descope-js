@@ -26,7 +26,11 @@ export const apiMixin = createSingletonMixin(
       #createSdk() {
         this.logger.debug('creating an sdk instance');
         this.#api = createSdk(
-          { projectId: this.projectId, baseUrl: this.baseUrl },
+          {
+            projectId: this.projectId,
+            baseUrl: this.baseUrl,
+            refreshCookieName: this.getAttribute('refresh-cookie-name'),
+          },
           this.tenantId,
           this.mock === 'true',
           this.widgetId,
