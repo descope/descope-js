@@ -408,7 +408,7 @@ Notes:
 
 ### Custom Refresh Cookie Name
 
-If you have multiple Descope projects on the same domain, you can set a custom cookie name for the refresh token. Settings the refresh cookie name is done in the login process (e.g. using Descope Flows), but you need to configure the SDK to use the custom cookie name. You can do this by passing the `refreshCookieName` prop to the `AuthProvider` component.
+When managing multiple Descope projects on the same domain, you can avoid refresh cookie conflicts by assigning a custom cookie name to your refresh token during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` prop to the `AuthProvider` component.
 
 This will signal Descope API to use the custom cookie name as the refresh token.
 
