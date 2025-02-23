@@ -76,9 +76,7 @@ class DescopeWc extends BaseDescopeWc {
 
   flowState: State<FlowState>;
 
-  stepState = new State<StepState>({} as StepState, {
-    forceUpdate: true,
-  });
+  stepState = new State<StepState>({} as StepState);
 
   #pollingTimeout: NodeJS.Timeout;
 
@@ -386,9 +384,6 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     this.#toggleScreenVisibility(isCustomScreen);
-    // in order to call onScreenUpdate after every next call
-    // and not only when there is a state change, we need to force update when we are rendering a custom screen
-    this.flowState.forceUpdate = isCustomScreen;
   }
 
   async onFlowChange(
@@ -423,6 +418,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState,
       nativeResponseType,
       nativePayload,
+      reqTimestamp,
       ...ssoQueryParams
     } = currentState;
 
@@ -682,12 +678,14 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    this.#handlePollingResponse(
-      executionId,
-      stepId,
-      flowConfig.version,
-      projectConfig.componentsVersion,
-    );
+    if (isChanged('action')) {
+      this.#handlePollingResponse(
+        executionId,
+        stepId,
+        flowConfig.version,
+        projectConfig.componentsVersion,
+      );
+    }
 
     // if there is no screen id (possibly due to page refresh or no screen flow) we should get it from the server
     if (!screenId && !startScreenId) {
@@ -791,10 +789,7 @@ class DescopeWc extends BaseDescopeWc {
       };
     }
 
-    this.loggerWrapper.debug(
-      'Going to render screen with id',
-      stepStateUpdate.screenId,
-    );
+    this.loggerWrapper.debug('Got a screen with id', stepStateUpdate.screenId);
 
     await this.#handleCustomScreen(stepStateUpdate);
 
@@ -891,14 +886,16 @@ class DescopeWc extends BaseDescopeWc {
           );
         }
 
-        this.#handleSdkResponse(sdkResp);
         // will poll again if needed
+        // handleSdkResponse will clear the timeout if the response action is not polling response
         this.#handlePollingResponse(
           executionId,
           stepId,
           flowVersion,
           componentsVersion,
         );
+
+        this.#handleSdkResponse(sdkResp);
       }, delay);
     }
   };
@@ -957,7 +954,11 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper.error(errorText);
     }
 
-    const { status, authInfo, lastAuth } = sdkResp.data;
+    const { status, authInfo, lastAuth, action } = sdkResp.data;
+
+    if (action !== RESPONSE_ACTIONS.poll) {
+      this.#resetPollingTimeout();
+    }
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
@@ -971,7 +972,6 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       stepId,
       stepName,
-      action,
       screen,
       redirect,
       openInNewTabUrl,
@@ -981,10 +981,15 @@ class DescopeWc extends BaseDescopeWc {
       nativeResponse,
     } = sdkResp.data;
 
+    // this is used as a cache buster
+    // we want to make sure the onScreenUpdate will be called after every next call even if the state was not changed
+    const reqTimestamp = Date.now();
+
     if (action === RESPONSE_ACTIONS.poll) {
       // We only update action because the polling response action does not return extra information
       this.flowState.update({
         action,
+        reqTimestamp,
       });
       return;
     }
@@ -1022,6 +1027,7 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
       nativeResponseType: nativeResponse?.type,
       nativePayload: nativeResponse?.payload,
+      reqTimestamp,
     });
   };
 

@@ -84,9 +84,11 @@
       descopeEle.onScreenUpdate = async (screenName, context, next, ref) => {
         console.log('onScreenUpdate', screenName, context);
 
+        // if (screenName !== 'Sign In') return false;
+
         // ref.innerHTML = `
         //   <form>
-        //     <input type="text" name="email" placeholder="Email" />
+        //     <input type="text" name="password" placeholder="Password" />
         //     <button type="submit">Submit</button>
         //   </form>
         // `;
@@ -96,10 +98,10 @@
         //   const formData = new FormData(e.target);
         //   const data = Object.fromEntries(formData.entries());
 
-        //   next('Ppb_65tyyn', data);
-        // });
+        //   next('pXVwWREG7M', data);
+        // }, { once: true });
 
-        return false;
+        // return true;
       };
     </script>
   </body>
