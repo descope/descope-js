@@ -886,14 +886,16 @@ class DescopeWc extends BaseDescopeWc {
           );
         }
 
-        this.#handleSdkResponse(sdkResp);
         // will poll again if needed
+        // handleSdkResponse will clear the timeout if the response action is not polling response
         this.#handlePollingResponse(
           executionId,
           stepId,
           flowVersion,
           componentsVersion,
         );
+
+        this.#handleSdkResponse(sdkResp);
       }, delay);
     }
   };
@@ -952,7 +954,11 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper.error(errorText);
     }
 
-    const { status, authInfo, lastAuth } = sdkResp.data;
+    const { status, authInfo, lastAuth, action } = sdkResp.data;
+
+    if (action !== RESPONSE_ACTIONS.poll) {
+      this.#resetPollingTimeout();
+    }
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
@@ -966,7 +972,6 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       stepId,
       stepName,
-      action,
       screen,
       redirect,
       openInNewTabUrl,
