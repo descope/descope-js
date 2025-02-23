@@ -42,7 +42,11 @@ const renderWithProvider = (
   refreshCookieName?: string,
 ) =>
   render(
-    <AuthProvider projectId={projectId} baseUrl={baseUrl} refreshCookieName={refreshCookieName}>
+    <AuthProvider
+      projectId={projectId}
+      baseUrl={baseUrl}
+      refreshCookieName={refreshCookieName}
+    >
       {ui}
     </AuthProvider>,
   );
@@ -217,7 +221,12 @@ describe('Descope', () => {
 
   it('should add descope headers to request', async () => {
     const ref = jest.fn();
-    renderWithProvider(<Descope flowId="flow-1" ref={ref} />, 'project1', undefined, 'cookie1');
+    renderWithProvider(
+      <Descope flowId="flow-1" ref={ref} />,
+      'project1',
+      undefined,
+      'cookie1',
+    );
     await waitFor(() => {
       expect(document.querySelector('descope-wc')).toBeInTheDocument();
     });
@@ -274,7 +283,7 @@ describe('Descope', () => {
     await waitFor(() => {
       expect(document.querySelector('descope-wc')).toHaveAttribute(
         'store-last-authenticated-user',
-        "true",
+        'true',
       );
     });
   });
