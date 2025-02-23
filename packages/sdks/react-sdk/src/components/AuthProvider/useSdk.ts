@@ -10,9 +10,7 @@ type Config = Pick<
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
   | 'keepLastAuthenticatedUserAfterLogout'
-> & {
-  refreshCookieName?: string;
-};
+>;
 
 export default ({
   projectId,
@@ -21,7 +19,6 @@ export default ({
   sessionTokenViaCookie,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
-  refreshCookieName,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
     if (!projectId) {
@@ -31,15 +28,10 @@ export default ({
       projectId,
       baseUrl,
       sessionTokenViaCookie,
-      baseHeaders: {
-        ...baseHeaders,
-        ...(refreshCookieName && {
-          'x-descope-refresh-cookie-name': refreshCookieName,
-        }),
-      },
+      baseHeaders,
       persistTokens,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       autoRefresh: true,
     });
-  }, [projectId, baseUrl, sessionTokenViaCookie, refreshCookieName]);
+  }, [projectId, baseUrl, sessionTokenViaCookie]);

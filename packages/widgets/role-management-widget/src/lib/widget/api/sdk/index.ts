@@ -9,12 +9,10 @@ export const createSdk = (
   tenant: string,
   mock: boolean,
   widgetId?: string,
-  refreshCookieName?: string,
 ) => {
   const webSdk = createWebSdk({
     ...config,
     persistTokens: true,
-    refreshCookieName,
     baseHeaders: {
       'x-descope-widget-type': 'role-management-widget',
       'x-descope-widget-id': widgetId,

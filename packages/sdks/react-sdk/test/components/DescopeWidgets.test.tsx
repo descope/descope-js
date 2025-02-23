@@ -1,8 +1,15 @@
 /* eslint-disable testing-library/no-node-access */
-import {  render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import AuthProvider from '../../src/components/AuthProvider';
-import { AccessKeyManagement, ApplicationsPortal, AuditManagement, RoleManagement, UserManagement, UserProfile } from '../../src';
+import {
+  AccessKeyManagement,
+  ApplicationsPortal,
+  AuditManagement,
+  RoleManagement,
+  UserManagement,
+  UserProfile,
+} from '../../src';
 
 Object.defineProperty(global, 'Response', {
   value: class {},
@@ -102,7 +109,9 @@ describe('Descope Widgets', () => {
       ).toBeInTheDocument(),
     );
 
-    const widget = document.querySelector('descope-access-key-management-widget');
+    const widget = document.querySelector(
+      'descope-access-key-management-widget',
+    );
     expect(widget).toHaveAttribute('tenant', 'tenant1');
     expect(widget).toHaveAttribute('widget-id', 'widget1');
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
@@ -137,7 +146,9 @@ describe('Descope Widgets', () => {
 
     // Wait for the web component to be in the document
     await waitFor(() =>
-      expect(document.querySelector('descope-user-profile-widget')).toBeInTheDocument(),
+      expect(
+        document.querySelector('descope-user-profile-widget'),
+      ).toBeInTheDocument(),
     );
 
     const widget = document.querySelector('descope-user-profile-widget');
