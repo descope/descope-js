@@ -16,7 +16,11 @@ const Home = () => {
   const sdk = useDescope();
 
   const onLogout = useCallback(() => {
-    sdk.logout();
+    if (sdk.getIdToken()) {
+      sdk.oidc.logout('/');
+    } else {
+      sdk.logout();
+    }
   }, [sdk]);
 
   const roles = useMemo(

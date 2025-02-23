@@ -29,6 +29,7 @@ export const withPersistTokens =
     : ReturnType<T> & {
         getRefreshToken: () => string;
         getSessionToken: () => string;
+        getIdToken: () => string;
       } => {
     if (!isPersistTokens || !IS_BROWSER) {
       if (isPersistTokens) {
@@ -64,7 +65,7 @@ export const withPersistTokens =
 
     const wrappedSdk = wrapWith(
       sdk, // @ts-ignore
-      ['logout', 'logoutAll', 'oidc.logout'],     
+      ['logout', 'logoutAll', 'oidc.logout'],
       wrapper(storagePrefix),
     );
 

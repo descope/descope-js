@@ -83,7 +83,7 @@ export const persistTokens = (
   }
 
   if (idTokenJwt) {
-    setLocalStorage(`${storagePrefix}ID_TOKEN_KEY`, idTokenJwt);
+    setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, idTokenJwt);
   }
 };
 

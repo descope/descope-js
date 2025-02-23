@@ -77,6 +77,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     if (isSessionFetched.current) return;
     isSessionFetched.current = true;
 
+    console.log('@@@ fetching session', { DSR: sdk.getRefreshToken(), persistTokens} )
     setIsSessionLoading(true);
     withValidation(sdk?.refresh)().then(() => {
       setIsSessionLoading(false);
