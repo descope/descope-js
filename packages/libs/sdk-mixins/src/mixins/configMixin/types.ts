@@ -35,6 +35,10 @@ export type ClientScript = {
   resultKey?: string;
 };
 
+export type ComponentsAttrs = {
+  attributes: Record<string, string>;
+};
+
 export type ClientCondition = {
   operator: Operator;
   key: string;
@@ -48,6 +52,7 @@ export type ClientConditionResult = {
   screenName: string;
   clientScripts?: ClientScript[];
   interactionId: string;
+  componentsAttrs?: Record<string, ComponentsAttrs>;
 };
 
 export type FlowConfig = {
