@@ -78,18 +78,6 @@ class BaseDescopeWc extends BaseClass {
     },
   };
 
-  #getSdkConfigOverrides() {
-    return {
-      ...BaseDescopeWc.sdkConfigOverrides,
-      baseHeaders: {
-        ...BaseDescopeWc.sdkConfigOverrides.baseHeaders,
-        ...(this.refreshCookieName && {
-          'x-descope-refresh-cookie-name': this.refreshCookieName,
-        }),
-      },
-    };
-  }
-
   #init = false;
 
   flowStatus: FlowStatus = 'initial';
@@ -271,7 +259,8 @@ class BaseDescopeWc extends BaseClass {
       storeLastAuthenticatedUser: this.storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout:
         this.keepLastAuthenticatedUserAfterLogout,
-      ...this.#getSdkConfigOverrides(),
+      refreshCookieName: this.refreshCookieName,
+      ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
     });

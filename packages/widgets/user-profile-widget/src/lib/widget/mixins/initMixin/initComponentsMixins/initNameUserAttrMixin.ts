@@ -55,6 +55,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -84,6 +85,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

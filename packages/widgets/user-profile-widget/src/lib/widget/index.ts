@@ -19,11 +19,6 @@ const rootMixin = (superclass: CustomElementConstructor) =>
           'x-descope-widget-type': 'user-profile-widget',
           'x-descope-widget-id': this.getAttribute('widget-id'),
           'x-descope-widget-version': BUILD_VERSION,
-          ...(this.getAttribute('refresh-cookie-name') && {
-            'x-descope-refresh-cookie-name': this.getAttribute(
-              'refresh-cookie-name',
-            ),
-          }),
         },
       };
     }

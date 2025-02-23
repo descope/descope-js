@@ -181,7 +181,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'client.attr': client,
               'debug.attr': debug,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
-              'refresh-cookie-name.attr': refreshCookieName,
+              'refreshCookieName.attr': refreshCookieName,
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,

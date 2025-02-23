@@ -14,13 +14,11 @@ export const createSdk = (
   const webSdk = createWebSdk({
     ...config,
     persistTokens: true,
+    refreshCookieName,
     baseHeaders: {
       'x-descope-widget-type': 'role-management-widget',
       'x-descope-widget-id': widgetId,
       'x-descope-widget-version': BUILD_VERSION,
-      ...(refreshCookieName && {
-        'x-descope-refresh-cookie-name': refreshCookieName,
-      }),
     },
   });
 

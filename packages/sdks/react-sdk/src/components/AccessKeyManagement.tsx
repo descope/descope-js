@@ -42,7 +42,7 @@ const AccessKeyManagement = React.forwardRef<
           'theme.attr': theme,
           'debug.attr': debug,
           'styleId.attr': styleId,
-          'refresh-cookie-name.attr': refreshCookieName,
+          'refreshCookieName.attr': refreshCookieName,
           // props
           'logger.prop': logger,
         }}
