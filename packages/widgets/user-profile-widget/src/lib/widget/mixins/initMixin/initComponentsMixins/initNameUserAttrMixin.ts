@@ -8,7 +8,11 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { getName } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -22,6 +26,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
+      cookieConfigMixin,
       modalMixin,
     )(superclass) {
       nameUserAttr: UserAttributeDriver;

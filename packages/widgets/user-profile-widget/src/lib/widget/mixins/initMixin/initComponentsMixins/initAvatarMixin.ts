@@ -8,7 +8,12 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin, themeMixin } from '@descope/sdk-mixins';
+import {
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+  themeMixin,
+} from '@descope/sdk-mixins';
 import { getName, getPicture } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -22,6 +27,7 @@ export const initAvatarMixin = createSingletonMixin(
       themeMixin,
       stateManagementMixin,
       loggerMixin,
+      cookieConfigMixin,
       initWidgetRootMixin,
       modalMixin,
     )(superclass) {

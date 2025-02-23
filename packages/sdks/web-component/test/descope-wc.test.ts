@@ -2026,9 +2026,7 @@ describe('web-component', () => {
     await waitFor(() =>
       expect(createSdk).toHaveBeenCalledWith(
         expect.objectContaining({
-          baseHeaders: expect.objectContaining({
-            'x-descope-refresh-cookie-name': 'cookie-1',
-          }),
+          refreshCookieName: 'cookie-1',
         }),
       ),
     );

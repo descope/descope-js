@@ -4,7 +4,11 @@ import {
   UserAuthMethodDriver,
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
@@ -17,6 +21,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
+      cookieConfigMixin,
       modalMixin,
     )(superclass) {
       passwordUserAuthMethod: UserAuthMethodDriver;
