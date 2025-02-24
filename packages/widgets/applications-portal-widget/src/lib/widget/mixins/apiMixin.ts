@@ -1,4 +1,3 @@
-import { refresh } from './../../../../../../sdks/react-sdk/src/sdk';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   baseUrlMixin,
