@@ -16,25 +16,34 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"import": {
-				"types": "./dist/types/index.d.ts",
+      "import": {
+        "types": "./dist/types/index.d.ts",
 				"default": "./dist/esm/index.js"
 			},
-			"require": "./dist/cjs/index.js"
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/cjs/index.js"
+    	}
 		},
 		"./client": {
-			"import": {
-				"types": "./dist/types/client/index.d.ts",
+      "import": {
+        "types": "./dist/types/client/index.d.ts",
 				"default": "./dist/esm/client/index.js"
 			},
-			"require": "./dist/cjs/client/index.js"
+			"require": {
+        "types": "./dist/types/client/index.d.ts",
+        "default": "./dist/cjs/client/index.js"
+    	}
 		},
 		"./server": {
-			"import": {
+      "import": {
 				"types": "./dist/types/server/index.d.ts",
 				"default": "./dist/esm/server/index.js"
 			},
-			"require": "./dist/cjs/server/index.js"
+			"require": {
+        "types": "./dist/types/server/index.d.ts",
+        "default": "./dist/cjs/server/index.js"
+    	}
 		}
 	},
 	"typesVersions": {
