@@ -10,6 +10,7 @@ type Config = Pick<
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
   | 'keepLastAuthenticatedUserAfterLogout'
+  | 'refreshCookieName'
 >;
 
 export default ({
