@@ -1,6 +1,7 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   baseUrlMixin,
+  cookieConfigMixin,
   createValidateAttributesMixin,
   loggerMixin,
   observeAttributesMixin,
@@ -15,6 +16,7 @@ export const apiMixin = createSingletonMixin(
       observeAttributesMixin,
       loggerMixin,
       baseUrlMixin,
+      cookieConfigMixin,
       createValidateAttributesMixin({
         tenant: createValidateAttributesMixin.missingAttrValidator,
       }),
@@ -29,7 +31,7 @@ export const apiMixin = createSingletonMixin(
           {
             projectId: this.projectId,
             baseUrl: this.baseUrl,
-            refreshCookieName: this.getAttribute('refresh-cookie-name'),
+            refreshCookieName: this.refreshCookieName,
           },
           this.tenantId,
           this.mock === 'true',
