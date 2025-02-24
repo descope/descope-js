@@ -13,6 +13,7 @@ type SdkConfig = {
   hooks?: Hooks;
   cookiePolicy?: RequestCredentials | null;
   baseHeaders?: HeadersInit;
+  refreshCookieName?: string;
   fetch?: Fetch;
 };
 
@@ -76,6 +77,7 @@ export default withSdkConfigValidations(
       hooks,
       cookiePolicy,
       baseHeaders = {},
+      refreshCookieName,
       fetch,
     }: SdkConfig) =>
       createSdk(
@@ -86,6 +88,7 @@ export default withSdkConfigValidations(
           hooks,
           cookiePolicy,
           baseConfig: { baseHeaders },
+          refreshCookieName,
           fetch,
         }),
       ),
