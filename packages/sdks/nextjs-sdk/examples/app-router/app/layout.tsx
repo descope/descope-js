@@ -11,7 +11,7 @@ export default ({ children }: { children: React.ReactNode }) => {
 			projectId={process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID}
 			baseUrl={process.env.NEXT_PUBLIC_DESCOPE_BASE_URL}
 			baseStaticUrl={process.env.NEXT_PUBLIC_DESCOPE_BASE_STATIC_URL}
-			sessionTokenViaCookie={{ SameSite: 'Lax' }}
+			sessionTokenViaCookie={{ sameSite: 'Lax' }}
 		>
 			<html lang="en">
 				<body>{children}</body>
