@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.25.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.24.1...web-js-sdk-1.25.0) (2025-02-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.36.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
 ## [1.24.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.24.0...web-js-sdk-1.24.1) (2025-02-20)
 
 ### Dependency Updates
