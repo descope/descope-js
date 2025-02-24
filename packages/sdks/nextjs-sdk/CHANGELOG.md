@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.5.2...nextjs-sdk-0.6.0) (2025-02-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.25.0`
+* `react-sdk` updated to version `2.7.0`
+* `core-js-sdk` updated to version `2.36.0`
+* `web-component` updated to version `3.36.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
 ## [0.5.2](https://github.com/descope/descope-js/compare/nextjs-sdk-0.5.1...nextjs-sdk-0.5.2) (2025-02-20)
 
 ### Dependency Updates
