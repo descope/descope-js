@@ -28,6 +28,9 @@ interface IAuthProviderProps {
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
   keepLastAuthenticatedUserAfterLogout?: boolean;
+  // Use this option if the authentication is done via cookie, and configured with a different name
+  // Currently, this is done using Descope Flows
+  refreshCookieName?: string;
   children?: React.ReactNode;
 }
 
@@ -39,6 +42,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   persistTokens = true,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
+  refreshCookieName = '',
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -54,6 +58,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     sessionTokenViaCookie,
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
+    refreshCookieName,
   });
 
   useEffect(() => {
@@ -109,6 +114,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       baseStaticUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName,
       setUser,
       setSession,
       sdk,
@@ -125,6 +131,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       projectId,
       baseUrl,
       baseStaticUrl,
+      keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName,
       setUser,
       setSession,
       sdk,

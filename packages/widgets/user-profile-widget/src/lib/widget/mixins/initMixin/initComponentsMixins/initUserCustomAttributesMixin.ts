@@ -8,7 +8,11 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
 import { getUserCustomAttrs } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
@@ -23,6 +27,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
+      cookieConfigMixin,
       modalMixin,
     )(superclass) {
       // flow Id is key in all maps
@@ -53,6 +58,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
@@ -70,6 +76,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {

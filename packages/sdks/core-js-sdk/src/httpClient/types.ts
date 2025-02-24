@@ -51,6 +51,7 @@ export type CreateHttpClientConfig = {
   logger?: Logger;
   hooks?: Hooks;
   cookiePolicy?: RequestCredentials | null;
+  refreshCookieName?: string;
   fetch?: Fetch;
 };
 

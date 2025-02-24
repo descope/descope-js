@@ -85,6 +85,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       baseCdnUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName,
       sdk,
     } = React.useContext(Context);
 
@@ -180,6 +181,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'client.attr': client,
               'debug.attr': debug,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
+              'refreshCookieName.attr': refreshCookieName,
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
