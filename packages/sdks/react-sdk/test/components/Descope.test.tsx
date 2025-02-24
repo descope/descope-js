@@ -221,6 +221,23 @@ describe('Descope', () => {
 
   it('should add descope headers to request', async () => {
     const ref = jest.fn();
+    renderWithProvider(<Descope flowId="flow-1" ref={ref} />);
+    await waitFor(() => {
+      expect(document.querySelector('descope-wc')).toBeInTheDocument();
+    });
+
+    expect(createSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        baseHeaders: {
+          'x-descope-sdk-name': 'react',
+          'x-descope-sdk-version': 'one.two.three',
+        },
+      }),
+    );
+  });
+
+  it('should pass descope refresh cookie name', async () => {
+    const ref = jest.fn();
     renderWithProvider(
       <Descope flowId="flow-1" ref={ref} />,
       'project1',
@@ -233,11 +250,7 @@ describe('Descope', () => {
 
     expect(createSdk).toHaveBeenCalledWith(
       expect.objectContaining({
-        baseHeaders: {
-          'x-descope-sdk-name': 'react',
-          'x-descope-sdk-version': 'one.two.three',
-          'x-descope-refresh-cookie-name': 'cookie1',
-        },
+        refreshCookieName: 'cookie1',
       }),
     );
   });
