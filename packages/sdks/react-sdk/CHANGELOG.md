@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.7.0](https://github.com/descope/descope-js/compare/react-sdk-2.6.1...react-sdk-2.7.0) (2025-02-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.0`
+* `audit-management-widget` updated to version `0.4.0`
+* `role-management-widget` updated to version `0.3.0`
+* `user-management-widget` updated to version `0.7.0`
+* `user-profile-widget` updated to version `0.3.0`
+* `applications-portal-widget` updated to version `0.3.0`
+* `web-component` updated to version `3.36.0`
+* `web-js-sdk` updated to version `1.25.0`
+* `core-js-sdk` updated to version `2.36.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
 ## [2.6.1](https://github.com/descope/descope-js/compare/react-sdk-2.6.0...react-sdk-2.6.1) (2025-02-20)
 
 ### Dependency Updates
