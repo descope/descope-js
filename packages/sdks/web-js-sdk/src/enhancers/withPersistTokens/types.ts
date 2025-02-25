@@ -1,5 +1,5 @@
 export type SameSite = 'Strict' | 'Lax' | 'None';
-export type CookieConfig = boolean | { sameSite: SameSite };
+export type CookieConfig = boolean | { sameSite?: SameSite; secure?: boolean };
 
 export type PersistTokensOptions<A extends CookieConfig> = {
   // If true, response's tokens will be persisted - session-token in DS cookie, and refresh-token in local storage
