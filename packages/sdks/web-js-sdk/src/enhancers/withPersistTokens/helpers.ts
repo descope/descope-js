@@ -121,5 +121,12 @@ export function clearTokens(prefix: string = '') {
 
 export const beforeRequest =
   (prefix?: string): BeforeRequestHook =>
-  (config) =>
-    Object.assign(config, { token: config.token || getRefreshToken(prefix) });
+  (config) => {
+    console.log('@@@ running beforeRequest', {
+      config,
+      prefix,
+      token: config.token,
+      refresh_token: getRefreshToken(prefix),
+    });
+    return Object.assign(config, { token: config.token || getRefreshToken(prefix) })
+  };

@@ -17,7 +17,8 @@ const Home = () => {
 
   const onLogout = useCallback(() => {
     if (sdk.getIdToken()) {
-      sdk.oidc.logout('/');
+      // get current url and replace with /
+      sdk.oidc.logout(window.location.origin + '/');
     } else {
       sdk.logout();
     }

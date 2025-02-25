@@ -81,17 +81,10 @@ export const withAutoRefresh =
         );
 
         setTimer(() => {
-          logger.debug('Refreshing session due to timer', { oidc });
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
-
-          const refreshToken = getRefreshToken() || refreshJwt;
-          if (oidc) {
-            sdk.oidc.refreshToken(refreshToken);
-          } else {
-            sdk.refresh(refreshToken);
-          }
+          sdk.refresh(refreshToken);
         }, timeout);
       }
     };
@@ -108,6 +101,6 @@ export const withAutoRefresh =
         return resp;
       };
 
-    // @ts-ignore - Asaf - check why only oidc.authorize / token are available 
+    // @ts-ignore - Asaf - check why only oidc.authorize/oidc.token are available
     return wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper);
   };

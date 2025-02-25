@@ -3,7 +3,7 @@ import createWebAuthn from './webauthn';
 import createFedCM from './fedcm';
 import createOidc, { OidcConfig } from './oidc';
 import withFlow from './flow';
-import { getIdToken, getSessionToken } from '../enhancers/withPersistTokens/helpers';
+import { getIdToken, getRefreshToken, getSessionToken } from '../enhancers/withPersistTokens/helpers';
 
 type CoreSdkParams = Parameters<typeof createCoreSdk>[0]; // Extracts the first argument type
 type ExtendedCoreSdkArgs = CoreSdkParams & { oidcConfig?: OidcConfig }; // Extends with oidcConfig
@@ -20,9 +20,13 @@ const createSdk = (config: ExtendedCoreSdkArgs) => {
       // When the user is already logged in in the past or not (We want to optimize that in the future)
       const currentSessionToken = getSessionToken();
       const idToken = getIdToken();
-      console.log('@@@@ token', token)
       if (idToken) {
-        return oidc.refreshToken(token);
+        // the before hook of the core sdk does not take care of oidc tokens
+        const oidcRefreshToken = token || getRefreshToken();
+        if (!oidcRefreshToken) {
+          // Asaf -think what to do here
+        }
+        return oidc.refreshToken(oidcRefreshToken);
       }
       return coreSdk.refresh(token, { dcs: currentSessionToken ? 't' : 'f' });
     },

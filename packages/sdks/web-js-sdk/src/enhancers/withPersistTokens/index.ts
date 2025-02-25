@@ -31,6 +31,12 @@ export const withPersistTokens =
         getSessionToken: () => string;
         getIdToken: () => string;
       } => {
+    console.log('@@@ withPersistTokens setting', {
+      isPersistTokens,
+      sessionTokenViaCookie,
+      storagePrefix,
+      config,
+    });
     if (!isPersistTokens || !IS_BROWSER) {
       if (isPersistTokens) {
         // Storing auth tokens in local storage and cookies are a client side only capabilities
@@ -55,13 +61,14 @@ export const withPersistTokens =
       }
     };
 
+    console.log('@@@ withPersistTokens setting before request');
+
     const sdk = createSdk(
       addHooks(config, {
         beforeRequest: beforeRequest(storagePrefix),
         afterRequest,
       }),
     );
-
 
     const wrappedSdk = wrapWith(
       sdk, // @ts-ignore

@@ -128,8 +128,10 @@ const getOidcClient = async (
   const stateUserKey = `${clientId}_user`;
 
 
+  const authority = sdk.httpClient.buildUrl(projectId);
+  console.log('@@@ CreateClient', { authority })
   const settings: OidcClientSettings = {
-    authority: sdk.httpClient.buildUrl(projectId),
+    authority,
     client_id: projectId,
     redirect_uri: redirectUri,
     response_type: 'code',
@@ -203,6 +205,9 @@ const createOidc = (sdk: CoreSdk, projectId: string, oidcConfig?: OidcConfig) =>
   };
 
   const refreshToken = async (refreshToken: string) => {
+    console.trace('@@@ calling refresh token', {
+      refreshToken
+    })
     const { client, stateUserKey } = await getOidcClient(
       sdk,
       projectId,
