@@ -2285,6 +2285,49 @@ describe('web-component', () => {
     });
   });
 
+  it(
+    'should not have concurrent polling calls',
+    async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      const MIN_NUM_OF_RUNS = 15;
+
+      let isRunning = false;
+      let counter = 0;
+      let isConcurrentPolling = false;
+
+      nextMock.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            if (isRunning) {
+              isConcurrentPolling = true;
+            }
+            counter += 1;
+            isRunning = true;
+            setTimeout(() => {
+              resolve(
+                generateSdkResponse({
+                  action: RESPONSE_ACTIONS.poll,
+                }),
+              );
+
+              isRunning = false;
+            }, 100);
+          }),
+      );
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(counter).toBeGreaterThan(MIN_NUM_OF_RUNS), {
+        timeout: WAIT_TIMEOUT * 5,
+      });
+
+      if (isConcurrentPolling) throw new Error('Concurrent polling detected');
+    },
+    WAIT_TIMEOUT * 5,
+  );
+
   describe('native', () => {
     it('Should prepare a callback for a native bridge response and broadcast an event when receiving a nativeBridge action', async () => {
       startMock.mockReturnValueOnce(
@@ -5316,6 +5359,49 @@ describe('web-component', () => {
           timeout: 20000,
         },
       );
+
+      await waitFor(
+        () =>
+          expect(
+            descopeWc.shadowRoot.querySelector('#content-root'),
+          ).not.toHaveClass('hidden'),
+        {
+          timeout: 20000,
+        },
+      );
+    });
+    it('should render a flow screen when onScreenUpdate is not set', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"><button>Custom Button</button></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(descopeWc.shadowRoot.querySelector('slot')).toHaveClass(
+            'hidden',
+          ),
+        {
+          timeout: 20000,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(
+            descopeWc.shadowRoot.querySelector('#content-root'),
+          ).not.toHaveClass('hidden'),
+        {
+          timeout: 20000,
+        },
+      );
     });
     it('should render a custom screen when onScreenUpdate returns true', async () => {
       startMock.mockReturnValue(generateSdkResponse());
@@ -5349,8 +5435,18 @@ describe('web-component', () => {
           timeout: 20000,
         },
       );
+
+      await waitFor(
+        () =>
+          expect(
+            descopeWc.shadowRoot.querySelector('#content-root'),
+          ).toHaveClass('hidden'),
+        {
+          timeout: 20000,
+        },
+      );
     });
-    it('should call onScreenUpdate when rendering a custom screen even if there is no state change', async () => {
+    it('should call onScreenUpdate after "next" call, even if there is no state change', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       nextMock.mockReturnValue(generateSdkResponse());
