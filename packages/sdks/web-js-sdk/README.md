@@ -48,7 +48,11 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
   /* Do not clear the last authenticated user details from the browser storage after logout (default is false).
   Note: This flag is relevant only when `storeLastAuthenticatedUser` is true.
   */
-  keepLastAuthenticatedUserAfterLogout: true // default is false
+  keepLastAuthenticatedUserAfterLogout: true, // default is false
+
+  /*  When managing multiple Descope projects on the same domain, you can prevent refresh cookie conflicts by assigning a custom name to your refresh token cookie during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` option.
+  */
+  refreshCookieName: "cookie-1"
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {

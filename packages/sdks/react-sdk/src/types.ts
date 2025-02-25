@@ -14,7 +14,7 @@ import UserProfileWidget from '@descope/user-profile-widget';
 import ApplicationsPortalWidget from '@descope/applications-portal-widget';
 import createSdk from './sdk';
 
-declare module 'react' {
+declare global {
   namespace JSX {
     interface IntrinsicElements {
       ['descope-wc']: DescopeCustomElement;
@@ -100,6 +100,7 @@ export interface IContext {
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
+  refreshCookieName?: string;
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   setSession: React.Dispatch<React.SetStateAction<string>>;
