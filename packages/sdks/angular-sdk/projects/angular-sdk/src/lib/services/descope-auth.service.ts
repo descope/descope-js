@@ -54,6 +54,7 @@ export class DescopeAuthService {
     this.user$ = this.userSubject.asObservable();
     this.descopeSdk.onSessionTokenChange(this.setSession.bind(this));
     this.descopeSdk.onUserChange(this.setUser.bind(this));
+    this.descopeSdk.onIsAuthenticatedChange(this.setIsAuthenticated.bind(this));
   }
 
   refreshSession() {
@@ -186,7 +187,16 @@ export class DescopeAuthService {
     const currentSession = this.sessionSubject.value;
     this.sessionSubject.next({
       sessionToken,
-      isAuthenticated: !!sessionToken,
+      isAuthenticated: currentSession.isAuthenticated,
+      isSessionLoading: currentSession.isSessionLoading
+    });
+  }
+
+  private setIsAuthenticated(isAuthenticated: boolean) {
+    const currentSession = this.sessionSubject.value;
+    this.sessionSubject.next({
+      sessionToken: currentSession.sessionToken,
+      isAuthenticated,
       isSessionLoading: currentSession.isSessionLoading
     });
   }

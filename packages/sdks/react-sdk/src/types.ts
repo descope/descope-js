@@ -91,6 +91,7 @@ export interface IContext {
   isUserFetched: boolean;
   fetchSession: () => void;
   session: string;
+  isAuthenticated: boolean;
   isSessionLoading: boolean;
   isSessionFetched: boolean;
   projectId: string;
