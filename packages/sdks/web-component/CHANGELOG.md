@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.36.1](https://github.com/descope/descope-js/compare/web-component-3.36.0...web-component-3.36.1) (2025-02-25)
+
+
+### Bug Fixes
+
+* BYOS redundant onScreenUpdate calls RELEASE ([#1031](https://github.com/descope/descope-js/issues/1031)) ([bac7a25](https://github.com/descope/descope-js/commit/bac7a25019f23ba129d1d91d7043530f73d691d3))
+
 ## [3.36.0](https://github.com/descope/descope-js/compare/web-component-3.35.1...web-component-3.36.0) (2025-02-24)
 
 ### Dependency Updates

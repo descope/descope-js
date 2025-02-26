@@ -117,6 +117,7 @@ export type FlowState = {
   samlIdpResponseRelayState: string;
   nativeResponseType: string;
   nativePayload: Record<string, any>;
+  reqTimestamp: number;
 } & SSOQueryParams;
 
 export type StepState = {
