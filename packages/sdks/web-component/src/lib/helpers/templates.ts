@@ -4,12 +4,7 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../constants';
-import {
-  ComponentsAttrs,
-  ComponentsConfig,
-  CssVars,
-  ScreenState,
-} from '../types';
+import { ComponentsConfig, CssVars, ScreenState } from '../types';
 import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
@@ -206,10 +201,26 @@ const setElementConfig = (
   if (!componentsConfig) {
     return;
   }
+  const { componentsDynamicAttrs, ...rest } = componentsConfig;
+
+  const configMap = Object.keys(rest).reduce((acc, componentName) => {
+    acc[`[name=${componentName}]`] = rest[componentName];
+    return acc;
+  }, {});
+
+  if (componentsDynamicAttrs) {
+    Object.keys(componentsDynamicAttrs).forEach((componentSelector) => {
+      const { attributes } = componentsDynamicAttrs[componentSelector];
+      if (attributes && Object.keys(attributes).length) {
+        configMap[componentSelector] = attributes;
+      }
+    });
+  }
+
   // collect components that needs configuration from DOM
-  Object.keys(componentsConfig).forEach((componentName) => {
-    baseEle.querySelectorAll(`[name=${componentName}]`).forEach((comp) => {
-      const config = componentsConfig[componentName];
+  Object.keys(configMap).forEach((componentsSelector) => {
+    baseEle.querySelectorAll(componentsSelector).forEach((comp) => {
+      const config = configMap[componentsSelector];
 
       Object.keys(config).forEach((attr) => {
         let value = config[attr];
@@ -226,27 +237,6 @@ const setElementConfig = (
           }
         }
 
-        comp.setAttribute(attr, value);
-      });
-    });
-  });
-};
-
-const setElementAttributes = (
-  baseEle: DocumentFragment,
-  componentsAttrs?: Record<string, ComponentsAttrs>,
-) => {
-  if (!componentsAttrs || !Object.keys(componentsAttrs).length) {
-    return;
-  }
-  Object.entries(componentsAttrs).forEach(([id, componentAttrs]) => {
-    const { attributes } = componentAttrs;
-    if (!attributes || !Object.keys(attributes).length) {
-      return;
-    }
-
-    baseEle.querySelectorAll(`[id='${id}']`).forEach((comp) => {
-      Object.entries(attributes).forEach(([attr, value]) => {
         comp.setAttribute(attr, value);
       });
     });
@@ -300,7 +290,6 @@ export const updateTemplateFromScreenState = (
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, logger);
-  setElementAttributes(baseEle, screenState?.componentsAttrs);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
 };

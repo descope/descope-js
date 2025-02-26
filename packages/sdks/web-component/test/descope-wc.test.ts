@@ -4705,24 +4705,24 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
     });
-  });
 
-  describe('componentsAttrs', () => {
     it('should parse componentsAttrs values to screen components after next', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValue(
         generateSdkResponse({
           screenState: {
-            componentsAttrs: {
-              id123: {
-                attributes: {
-                  'test-attr': 'test-value',
-                  'test-attr2': 'test-value2',
+            componentsConfig: {
+              componentsDynamicAttrs: {
+                "[data-connector-id='id123']": {
+                  attributes: {
+                    'test-attr': 'test-value',
+                    'test-attr2': 2,
+                  },
                 },
-              },
-              id456: {
-                attributes: {
-                  'test-attr': 'test-value3',
+                "[id='id456']": {
+                  attributes: {
+                    'test-attr': 'test-value3',
+                  },
                 },
               },
             },
@@ -4730,7 +4730,7 @@ describe('web-component', () => {
         }),
       );
 
-      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input><input id="id456" class="descope-input" placeholder="input2"></input>`;
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input data-connector-id="id123" class="descope-input" placeholder="input1"></input><input id="id456" class="descope-input" placeholder="input2"></input>`;
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
@@ -4750,7 +4750,7 @@ describe('web-component', () => {
       );
       expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
         'test-attr2',
-        'test-value2',
+        '2',
       );
       expect(screen.getByShadowPlaceholderText('input2')).toHaveAttribute(
         'test-attr',
@@ -4765,10 +4765,12 @@ describe('web-component', () => {
       startMock.mockReturnValueOnce(
         generateSdkResponse({
           screenState: {
-            componentsAttrs: {
-              id123: {
-                attributes: {
-                  'test-attr': 'test-value',
+            componentsConfig: {
+              componentsDynamicAttrs: {
+                "[placeholder='input1']": {
+                  attributes: {
+                    'test-attr': 'test-value',
+                  },
                 },
               },
             },
@@ -4776,7 +4778,7 @@ describe('web-component', () => {
         }),
       );
 
-      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input>`;
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" placeholder="input1"></input>`;
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
@@ -4800,10 +4802,12 @@ describe('web-component', () => {
         flows: {
           'sign-in': {
             startScreenId: 'screen-0',
-            componentsAttrs: {
-              id123: {
-                attributes: {
-                  'test-attr': 'test-value',
+            componentsConfig: {
+              componentsDynamicAttrs: {
+                "[id='id123']": {
+                  attributes: {
+                    'test-attr': 'test-value',
+                  },
                 },
               },
             },
@@ -4849,10 +4853,12 @@ describe('web-component', () => {
               {
                 key: 'ELSE',
                 met: {
-                  componentsAttrs: {
-                    id123: {
-                      attributes: {
-                        'test-attr': 'test-value',
+                  componentsConfig: {
+                    componentsDynamicAttrs: {
+                      "[id='id123']": {
+                        attributes: {
+                          'test-attr': 'test-value',
+                        },
                       },
                     },
                   },
