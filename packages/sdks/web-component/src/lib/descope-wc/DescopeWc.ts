@@ -48,6 +48,7 @@ import {
 } from '../helpers/templates';
 import {
   ClientScript,
+  ComponentsConfig,
   CustomScreenState,
   Direction,
   FlowState,
@@ -454,6 +455,7 @@ class DescopeWc extends BaseDescopeWc {
           ssoRedirect: this.nativeOptions.ssoRedirect,
         }
       : undefined;
+    let conditionComponentsConfig: ComponentsConfig = {};
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
@@ -469,6 +471,7 @@ class DescopeWc extends BaseDescopeWc {
           conditionInteractionId,
           startScreenName,
           clientScripts: conditionScripts,
+          componentsConfig: conditionComponentsConfig,
         } = calculateConditions(
           { loginId, code, token, abTestingKey },
           flowConfig.conditions,
@@ -716,6 +719,11 @@ class DescopeWc extends BaseDescopeWc {
         lastAuth: {
           loginId,
           name: this.sdk.getLastUserDisplayName() || loginId,
+        },
+        componentsConfig: {
+          ...flowConfig.componentsConfig,
+          ...conditionComponentsConfig,
+          ...screenState?.componentsConfig,
         },
       },
       htmlFilename: `${readyScreenId}.html`,
