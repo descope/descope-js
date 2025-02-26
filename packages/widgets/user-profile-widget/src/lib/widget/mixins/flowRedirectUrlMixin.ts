@@ -4,6 +4,7 @@ import {
   initLifecycleMixin,
   loggerMixin,
   modalMixin,
+  cookieConfigMixin,
 } from '@descope/sdk-mixins';
 import { createFlowTemplate, getUrlParam, resetUrlParam } from './helpers';
 import { stateManagementMixin } from './stateManagementMixin';
@@ -16,6 +17,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
       initLifecycleMixin,
       modalMixin,
       stateManagementMixin,
+      cookieConfigMixin,
       loggerMixin,
     )(superclass) {
       async init() {
@@ -37,6 +39,8 @@ export const flowRedirectUrlMixin = createSingletonMixin(
             flowId: widgetFlow,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
 

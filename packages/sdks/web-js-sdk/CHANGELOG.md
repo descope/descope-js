@@ -2,6 +2,38 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.25.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.24.1...web-js-sdk-1.25.0) (2025-02-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.36.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
+## [1.24.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.24.0...web-js-sdk-1.24.1) (2025-02-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.35.0`
+## [1.24.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.10...web-js-sdk-1.24.0) (2025-02-11)
+
+
+### Features
+
+* **web-js-sdk/withPersistTokens:** allow customizing SameSite RELEASE ([#1015](https://github.com/descope/descope-js/issues/1015)) ([d5262f7](https://github.com/descope/descope-js/commit/d5262f7cd42d6c042d4aa87c34ac1c71bb3c7bde))
+
+## [1.23.10](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.9...web-js-sdk-1.23.10) (2025-02-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.34.0`
+## [1.23.9](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.8...web-js-sdk-1.23.9) (2025-02-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.33.6`
 ## [1.23.8](https://github.com/descope/descope-js/compare/web-js-sdk-1.23.7...web-js-sdk-1.23.8) (2025-02-02)
 
 ### Dependency Updates

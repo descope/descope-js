@@ -2,6 +2,102 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.4.4](https://github.com/descope/descope-js/compare/vue-sdk-2.4.3...vue-sdk-2.4.4) (2025-02-25)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.3.1`
+* `web-component` updated to version `3.36.1`
+## [2.4.3](https://github.com/descope/descope-js/compare/vue-sdk-2.4.2...vue-sdk-2.4.3) (2025-02-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.0`
+* `audit-management-widget` updated to version `0.4.0`
+* `role-management-widget` updated to version `0.3.0`
+* `user-management-widget` updated to version `0.7.0`
+* `user-profile-widget` updated to version `0.3.0`
+* `applications-portal-widget` updated to version `0.3.0`
+* `web-component` updated to version `3.36.0`
+* `web-js-sdk` updated to version `1.25.0`
+* `core-js-sdk` updated to version `2.36.0`
+## [2.4.2](https://github.com/descope/descope-js/compare/vue-sdk-2.4.1...vue-sdk-2.4.2) (2025-02-20)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.21`
+* `audit-management-widget` updated to version `0.3.3`
+* `role-management-widget` updated to version `0.2.25`
+* `user-management-widget` updated to version `0.6.20`
+* `user-profile-widget` updated to version `0.2.21`
+* `applications-portal-widget` updated to version `0.2.24`
+* `web-component` updated to version `3.35.1`
+* `web-js-sdk` updated to version `1.24.1`
+* `core-js-sdk` updated to version `2.35.0`
+## [2.4.1](https://github.com/descope/descope-js/compare/vue-sdk-2.4.0...vue-sdk-2.4.1) (2025-02-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.20`
+* `audit-management-widget` updated to version `0.3.2`
+* `role-management-widget` updated to version `0.2.24`
+* `user-management-widget` updated to version `0.6.19`
+* `user-profile-widget` updated to version `0.2.20`
+* `applications-portal-widget` updated to version `0.2.23`
+* `web-component` updated to version `3.35.0`
+## [2.4.0](https://github.com/descope/descope-js/compare/vue-sdk-2.3.0...vue-sdk-2.4.0) (2025-02-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.19`
+* `audit-management-widget` updated to version `0.3.1`
+* `role-management-widget` updated to version `0.2.23`
+* `user-management-widget` updated to version `0.6.18`
+* `user-profile-widget` updated to version `0.2.19`
+* `applications-portal-widget` updated to version `0.2.22`
+* `web-component` updated to version `3.34.1`
+* `web-js-sdk` updated to version `1.24.0`
+
+### Features
+
+* **web-js-sdk/withPersistTokens:** allow customizing SameSite RELEASE ([#1015](https://github.com/descope/descope-js/issues/1015)) ([d5262f7](https://github.com/descope/descope-js/commit/d5262f7cd42d6c042d4aa87c34ac1c71bb3c7bde))
+
+## [2.3.0](https://github.com/descope/descope-js/compare/vue-sdk-2.2.29...vue-sdk-2.3.0) (2025-02-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.18`
+* `audit-management-widget` updated to version `0.3.0`
+* `role-management-widget` updated to version `0.2.22`
+* `user-management-widget` updated to version `0.6.17`
+* `user-profile-widget` updated to version `0.2.18`
+* `applications-portal-widget` updated to version `0.2.21`
+* `web-component` updated to version `3.34.0`
+* `web-js-sdk` updated to version `1.23.10`
+* `core-js-sdk` updated to version `2.34.0`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [2.2.29](https://github.com/descope/descope-js/compare/vue-sdk-2.2.28...vue-sdk-2.2.29) (2025-02-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.3.17`
+* `audit-management-widget` updated to version `0.2.21`
+* `role-management-widget` updated to version `0.2.21`
+* `user-management-widget` updated to version `0.6.16`
+* `user-profile-widget` updated to version `0.2.17`
+* `applications-portal-widget` updated to version `0.2.20`
+* `web-component` updated to version `3.33.0`
+* `web-js-sdk` updated to version `1.23.9`
+* `core-js-sdk` updated to version `2.33.6`
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+
 ## [2.2.28](https://github.com/descope/descope-js/compare/vue-sdk-2.2.27...vue-sdk-2.2.28) (2025-02-02)
 
 ### Dependency Updates

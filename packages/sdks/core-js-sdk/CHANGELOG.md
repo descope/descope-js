@@ -2,6 +2,34 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.36.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.35.0...core-js-sdk-2.36.0) (2025-02-24)
+
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
+## [2.35.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.34.0...core-js-sdk-2.35.0) (2025-02-20)
+
+
+### Features
+
+* Multi SSO - allow to pass sso ID for sso start method ([#1026](https://github.com/descope/descope-js/issues/1026)) ([be5a6ad](https://github.com/descope/descope-js/commit/be5a6adb20d6af26d04f35636e433d70eae58f4d))
+
+## [2.34.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.6...core-js-sdk-2.34.0) (2025-02-11)
+
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [2.33.6](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.5...core-js-sdk-2.33.6) (2025-02-11)
+
+
+### Bug Fixes
+
+* add baseCdnUrl attribute in all packages ([#1014](https://github.com/descope/descope-js/issues/1014)) ([c78190a](https://github.com/descope/descope-js/commit/c78190ac4992a158ebbac79e55da1dab2d4c11a0))
+
 ## [2.33.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.4...core-js-sdk-2.33.5) (2025-02-02)
 
 ## [2.33.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.33.3...core-js-sdk-2.33.4) (2025-02-02)

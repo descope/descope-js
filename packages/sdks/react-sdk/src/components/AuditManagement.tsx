@@ -22,7 +22,8 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
+      React.useContext(Context);
 
     return (
 	<Suspense fallback={null}>
@@ -32,12 +33,14 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
           tenant={tenant}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
+          baseCdnUrl={baseCdnUrl}
           innerRef={setInnerRef}
           {...{
             // attributes
             'theme.attr': theme,
             'debug.attr': debug,
             'styleId.attr': styleId,
+            'refreshCookieName.attr': refreshCookieName,
             // props
             'logger.prop': logger,
           }}

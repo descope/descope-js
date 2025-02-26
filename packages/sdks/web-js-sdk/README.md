@@ -29,6 +29,8 @@ const sdk = descopeSdk({
     - This option is relevant only when `persistTokens` is true.
     - The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5) cookie. It will be sent only over HTTPS connections.
 In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
+    - The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
     - If the cookie domain set on Descope configuration doesn't match, or is not a parent domain of the current domain, The cookie will be stored on the current domain that runs the code. Examples:
      - Project cookie domain is acme.com, current domain is app.acme.com - the domain will be set to app.acme.com
      - Project cookie domain is acme.com, current domain is my-app.com - the domain will be set to my-app.com
@@ -46,7 +48,11 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
   /* Do not clear the last authenticated user details from the browser storage after logout (default is false).
   Note: This flag is relevant only when `storeLastAuthenticatedUser` is true.
   */
-  keepLastAuthenticatedUserAfterLogout: true // default is false
+  keepLastAuthenticatedUserAfterLogout: true, // default is false
+
+  /*  When managing multiple Descope projects on the same domain, you can prevent refresh cookie conflicts by assigning a custom name to your refresh token cookie during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` option.
+  */
+  refreshCookieName: "cookie-1"
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {

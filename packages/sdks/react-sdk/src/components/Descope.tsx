@@ -69,6 +69,8 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       restartOnError,
       errorTransformer,
       styleId,
+      onScreenUpdate,
+      children,
     },
     ref,
   ) => {
@@ -80,8 +82,10 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName,
       sdk,
     } = React.useContext(Context);
 
@@ -157,6 +161,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             flowId={flowId}
             baseUrl={baseUrl}
             baseStaticUrl={baseStaticUrl}
+            baseCdnUrl={baseCdnUrl}
             ref={setInnerRef}
             telemetryKey={telemetryKey}
             redirectUrl={redirectUrl}
@@ -176,11 +181,15 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'client.attr': client,
               'debug.attr': debug,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
+              'refreshCookieName.attr': refreshCookieName,
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
+              'onScreenUpdate.prop': onScreenUpdate,
             }}
-          />
+          >
+				{children}
+			</DescopeWC>
 		</Suspense>
 	</form>
     );

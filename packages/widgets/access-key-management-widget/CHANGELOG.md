@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.21...access-key-management-widget-0.4.0) (2025-02-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.25.0`
+* `sdk-mixins` updated to version `0.10.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
+## [0.3.21](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.20...access-key-management-widget-0.3.21) (2025-02-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.1`
+## [0.3.20](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.19...access-key-management-widget-0.3.20) (2025-02-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.9.0`
+## [0.3.19](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.18...access-key-management-widget-0.3.19) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.0`
+## [0.3.18](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.17...access-key-management-widget-0.3.18) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.10`
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `sdk-component-drivers` updated to version `0.2.51`
+## [0.3.17](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.16...access-key-management-widget-0.3.17) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.23.9`
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `sdk-component-drivers` updated to version `0.2.50`
 ## [0.3.16](https://github.com/descope/descope-js/compare/access-key-management-widget-0.3.15...access-key-management-widget-0.3.16) (2025-02-02)
 
 ### Dependency Updates

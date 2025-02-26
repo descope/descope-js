@@ -9,7 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
-  baseStaticUrlMixin,
+  cookieConfigMixin,
   loggerMixin,
   modalMixin,
   themeMixin,
@@ -27,9 +27,9 @@ export const initAvatarMixin = createSingletonMixin(
       themeMixin,
       stateManagementMixin,
       loggerMixin,
+      cookieConfigMixin,
       initWidgetRootMixin,
       modalMixin,
-      baseStaticUrlMixin,
     )(superclass) {
       avatar: AvatarDriver;
 
@@ -57,6 +57,8 @@ export const initAvatarMixin = createSingletonMixin(
             flowId: this.avatar.flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#flow.onSuccess(() => {

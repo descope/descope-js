@@ -42,6 +42,8 @@
         project-id="<project-id>"
         flow-id="<flow-id>"
         base-url="<base-url>"
+        base-static-url="<base-static-url>"
+        base-cdn-url="<base-cdn-url>"
         locale="<locale>"
         debug="true"
         validate-on-blur="false"
@@ -57,7 +59,7 @@
         };
         return translationMap[error.type] || error.text;
       }
-      const descopeWcEle = document.getElementsByTagName('descope-wc')[0];
+      const descopeWcEle = document.querySelector('descope-wc');
 
       descopeWcEle.errorTransformer = translateError;
       descopeWcEle.addEventListener('error', (e) =>
@@ -72,6 +74,35 @@
         // Alternatively, it can be hidden. For example:
         // document.querySelector('.loading')?.style.display = 'none';
       });
+      descopeWcEle.addEventListener('screen-updated', (e) => {
+        console.log('screen-updated', e.detail);
+      });
+    </script>
+    <script>
+      const descopeEle = document.querySelector('descope-wc');
+
+      descopeEle.onScreenUpdate = async (screenName, context, next, ref) => {
+        console.log('onScreenUpdate', screenName, context);
+
+        // if (screenName !== 'Sign In') return false;
+
+        // ref.innerHTML = `
+        //   <form>
+        //     <input type="text" name="password" placeholder="Password" />
+        //     <button type="submit">Submit</button>
+        //   </form>
+        // `;
+
+        // ref.closest('form').addEventListener('submit', (e) => {
+        //   e.preventDefault();
+        //   const formData = new FormData(e.target);
+        //   const data = Object.fromEntries(formData.entries());
+
+        //   next('pXVwWREG7M', data);
+        // }, { once: true });
+
+        // return true;
+      };
     </script>
   </body>
 </html>

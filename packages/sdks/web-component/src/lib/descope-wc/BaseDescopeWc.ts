@@ -63,6 +63,7 @@ class BaseDescopeWc extends BaseClass {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'refresh-cookie-name',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
       'style-id',
@@ -109,6 +110,10 @@ class BaseDescopeWc extends BaseClass {
 
   rootElement: HTMLDivElement;
 
+  contentRootElement: HTMLDivElement;
+
+  slotElement: HTMLSlotElement;
+
   #debuggerEle: HTMLElement & {
     updateData: (data: DebuggerMessage | DebuggerMessage[]) => void;
   };
@@ -133,8 +138,9 @@ class BaseDescopeWc extends BaseClass {
 
   #initShadowDom() {
     this.shadowRoot.appendChild(initTemplate.content.cloneNode(true));
-
-    this.rootElement = this.shadowRoot.querySelector<HTMLDivElement>('#root');
+    this.slotElement = document.createElement('slot');
+    this.slotElement.classList.add('hidden');
+    this.rootElement.appendChild(this.slotElement);
   }
 
   get flowId() {
@@ -185,6 +191,10 @@ class BaseDescopeWc extends BaseClass {
     return res === 'true';
   }
 
+  get refreshCookieName() {
+    return this.getAttribute('refresh-cookie-name') || '';
+  }
+
   get keepLastAuthenticatedUserAfterLogout() {
     const res = this.getAttribute('keep-last-authenticated-user-after-logout');
     return res === 'true';
@@ -219,6 +229,7 @@ class BaseDescopeWc extends BaseClass {
       'redirect-url',
       'auto-focus',
       'store-last-authenticated-user',
+      'refresh-cookie-name',
       'keep-last-authenticated-user-after-logout',
       'preview',
       'storage-prefix',
@@ -248,6 +259,7 @@ class BaseDescopeWc extends BaseClass {
       storeLastAuthenticatedUser: this.storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout:
         this.keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName: this.refreshCookieName,
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
@@ -258,7 +270,6 @@ class BaseDescopeWc extends BaseClass {
       const origFn = this.sdk.flow[key];
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
-        this.nextRequestStatus.update({ isLoading: true });
         try {
           const resp = await origFn(...args);
           return resp;
@@ -270,8 +281,6 @@ class BaseDescopeWc extends BaseClass {
               errorDescription: e.toString(),
             },
           };
-        } finally {
-          this.nextRequestStatus.update({ isLoading: false });
         }
       };
     });

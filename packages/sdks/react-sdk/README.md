@@ -166,6 +166,75 @@ const App = () => {
 }
 ```
 
+### `onScreenUpdate`
+
+A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
+
+- `screenName`: The name of the screen that is about to be rendered
+- `context`: An object containing the upcoming screen state
+- `next`: A function that, when called, continues the flow execution
+- `ref`: A reference to the descope-wc node
+
+The function can be sync or async, and should return a boolean indicating whether a custom screen should be rendered:
+
+- `true`: Render a custom screen
+- `false`: Render the default flow screen
+
+This function allows rendering custom screens instead of the default flow screens.
+It can be useful for highly customized UIs or specific logic not covered by the default screens
+
+To render a custom screen, its elements should be appended as children of the `Descope` component
+
+Usage example:
+
+```javascript
+const CustomScreen = ({onClick, setForm}) => {
+  const onChange = (e) => setForm({ email: e.target.value })
+
+  return (
+    <>
+      <input
+        type="email"
+        placeholder="Email"
+        onChange={onChange}
+      />
+      <button
+        type="button"
+        onClick={onClick}
+      >
+        Submit
+      </button>
+    </>
+)}
+
+const Login = () => {
+  const [state, setState] = useState();
+  const [form, setForm] = useState();
+
+  const onScreenUpdate = (screenName, context, next) => {
+    setState({screenName, context, next})
+
+    if (screenName === 'My Custom Screen') {
+      return true;
+    }
+
+    return false;
+  };
+
+  return <Descope
+  ...
+  onScreenUpdate={onScreenUpdate}
+  >{state.screenName === 'My Custom Screen' && <CustomScreen
+    onClick={() => {
+      // replace with the button interaction id
+      state.next('interactionId', form)
+    }}
+    setForm={setForm}/>}
+  </Descope>
+}
+
+```
+
 ### Use the `useDescope`, `useSession` and `useUser` hooks in your components in order to get authentication state, user details and utilities
 
 This can be helpful to implement application-specific logic. Examples:
@@ -301,6 +370,9 @@ Note:
 The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5) cookie. It will be sent only over HTTPS connections.
 In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
 
+The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
+
 ### Helper Functions
 
 You can also use the following functions to assist with various actions managing your JWT.
@@ -333,6 +405,27 @@ Notes:
 
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `useSession` hook.
+
+### Custom Refresh Cookie Name
+
+When managing multiple Descope projects on the same domain, you can avoid refresh cookie conflicts by assigning a custom cookie name to your refresh token during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` prop to the `AuthProvider` component.
+
+This will signal Descope API to use the custom cookie name as the refresh token.
+
+Note that this option is only available when the refresh token managed on cookies.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  // pass the custom cookie name to the AuthProvider
+  return (
+    <AuthProvider projectId="my-project-id" refreshCookieName="MY_DSR">
+      <App />
+    </AuthProvider>
+  );
+};
+```
 
 ### Last User Persistence
 

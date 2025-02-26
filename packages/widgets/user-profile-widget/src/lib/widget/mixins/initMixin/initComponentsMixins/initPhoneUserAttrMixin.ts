@@ -8,7 +8,11 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  loggerMixin,
+  modalMixin,
+  cookieConfigMixin,
+} from '@descope/sdk-mixins';
 import { getIsPhoneVerified, getPhone } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -22,6 +26,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
+      cookieConfigMixin,
       modalMixin,
     )(superclass) {
       phoneUserAttr: UserAttributeDriver;
@@ -54,6 +59,8 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             flowId: this.phoneUserAttr.editFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -82,6 +89,8 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             flowId: this.phoneUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

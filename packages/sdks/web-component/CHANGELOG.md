@@ -2,6 +2,74 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.36.1](https://github.com/descope/descope-js/compare/web-component-3.36.0...web-component-3.36.1) (2025-02-25)
+
+
+### Bug Fixes
+
+* BYOS redundant onScreenUpdate calls RELEASE ([#1031](https://github.com/descope/descope-js/issues/1031)) ([bac7a25](https://github.com/descope/descope-js/commit/bac7a25019f23ba129d1d91d7043530f73d691d3))
+
+## [3.36.0](https://github.com/descope/descope-js/compare/web-component-3.35.1...web-component-3.36.0) (2025-02-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.10.0`
+* `web-js-sdk` updated to version `1.25.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
+## [3.35.1](https://github.com/descope/descope-js/compare/web-component-3.35.0...web-component-3.35.1) (2025-02-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.1`
+## [3.35.0](https://github.com/descope/descope-js/compare/web-component-3.34.1...web-component-3.35.0) (2025-02-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.9.0`
+
+### Features
+
+* add grecaptcha script loading and improve SDK script handling ([#891](https://github.com/descope/descope-js/issues/891)) ([e943681](https://github.com/descope/descope-js/commit/e943681c1201b26ef185ffd86e641b832801c3ad))
+
+## [3.34.1](https://github.com/descope/descope-js/compare/web-component-3.34.0...web-component-3.34.1) (2025-02-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.24.0`
+## [3.34.0](https://github.com/descope/descope-js/compare/web-component-3.33.0...web-component-3.34.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.2.0`
+* `sdk-mixins` updated to version `0.8.0`
+* `web-js-sdk` updated to version `1.23.10`
+
+### Features
+
+* Custom screens support RELEASE ([#1012](https://github.com/descope/descope-js/issues/1012)) ([20e310d](https://github.com/descope/descope-js/commit/20e310d48f070260a896c9fab0f2b96ef5ccbb3a))
+
+## [3.33.0](https://github.com/descope/descope-js/compare/web-component-3.32.10...web-component-3.33.0) (2025-02-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.1.67`
+* `sdk-mixins` updated to version `0.7.0`
+* `web-js-sdk` updated to version `1.23.9`
+* `escape-markdown` updated to version `0.1.5`
+
+### Features
+
+* **web-component:** add base-cdn-url attribute ([#1013](https://github.com/descope/descope-js/issues/1013)) ([8346412](https://github.com/descope/descope-js/commit/834641285494f842978b4111dae1db4e643cb494))
+
+
+### Bug Fixes
+
+* duplicate config.json call ([#942](https://github.com/descope/descope-js/issues/942)) ([9ced429](https://github.com/descope/descope-js/commit/9ced429c7bd9872790b1012a73e9b14a593f724b))
+
 ## [3.32.10](https://github.com/descope/descope-js/compare/web-component-3.32.9...web-component-3.32.10) (2025-02-02)
 
 ### Dependency Updates

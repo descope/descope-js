@@ -8,7 +8,11 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { getName } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -22,6 +26,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
+      cookieConfigMixin,
       modalMixin,
     )(superclass) {
       nameUserAttr: UserAttributeDriver;
@@ -54,6 +59,8 @@ export const initNameUserAttrMixin = createSingletonMixin(
             flowId: this.nameUserAttr.editFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -82,6 +89,8 @@ export const initNameUserAttrMixin = createSingletonMixin(
             flowId: this.nameUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

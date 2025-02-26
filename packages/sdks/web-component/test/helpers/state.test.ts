@@ -67,11 +67,11 @@ describe('state', () => {
     expect(subscriber1).not.toBeCalled();
   });
 
-  it('update should call subscriber when objects are equal and updateOnlyOnChange is false', () => {
+  it('update should call subscriber when objects are equal and forceUpdate is true', () => {
     const init = { a: { b: 1 } };
     const data = { a: { b: 1 } };
 
-    const state = new State(init, { updateOnlyOnChange: false });
+    const state = new State(init, { forceUpdate: true });
     const subscriber1 = jest.fn();
 
     state.subscribe(subscriber1);

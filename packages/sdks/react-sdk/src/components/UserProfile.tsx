@@ -28,7 +28,8 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl } = React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
+      React.useContext(Context);
 
     useEffect(() => {
       if (innerRef && onLogout) {
@@ -45,6 +46,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
           widgetId={widgetId}
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
+          baseCdnUrl={baseCdnUrl}
           styleId={styleId}
           ref={setInnerRef}
           {...{
@@ -52,6 +54,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
             'theme.attr': theme,
             'debug.attr': debug,
             'styleId.attr': styleId,
+            'refreshCookieName.attr': refreshCookieName,
             // props
             'logger.prop': logger,
           }}
