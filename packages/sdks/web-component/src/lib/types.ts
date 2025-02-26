@@ -7,7 +7,13 @@ export type Sdk = ReturnType<typeof createSdk>;
 
 export type SdkFlowNext = Sdk['flow']['next'];
 
-export type ComponentsConfig = Record<string, any>;
+export type ComponentsDynamicAttrs = {
+  attributes: Record<string, any>;
+};
+
+export type ComponentsConfig = Record<string, any> & {
+  componentsDynamicAttrs?: Record<string, ComponentsDynamicAttrs>;
+};
 export type CssVars = Record<string, any>;
 
 type KeepArgsByIndex<F, Indices extends readonly number[]> = F extends (
@@ -182,6 +188,7 @@ export interface ClientConditionResult {
   screenId: string;
   screenName: string;
   clientScripts?: ClientScript[];
+  componentsConfig?: ComponentsConfig;
   interactionId: string;
 }
 
@@ -252,6 +259,7 @@ export type FlowConfig = {
     },
   ];
   clientScripts?: ClientScript[];
+  componentsConfig?: ComponentsConfig;
 };
 
 export interface ProjectConfiguration {
