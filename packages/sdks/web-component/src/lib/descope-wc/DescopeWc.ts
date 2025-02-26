@@ -721,9 +721,9 @@ class DescopeWc extends BaseDescopeWc {
           name: this.sdk.getLastUserDisplayName() || loginId,
         },
         componentsConfig: {
-          ...screenState?.componentsConfig,
           ...flowConfig.componentsConfig,
           ...conditionComponentsConfig,
+          ...screenState?.componentsConfig,
         },
       },
       htmlFilename: `${readyScreenId}.html`,

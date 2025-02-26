@@ -210,9 +210,12 @@ const setElementConfig = (
 
   if (componentsDynamicAttrs) {
     Object.keys(componentsDynamicAttrs).forEach((componentSelector) => {
-      const { attributes } = componentsDynamicAttrs[componentSelector];
-      if (attributes && Object.keys(attributes).length) {
-        configMap[componentSelector] = attributes;
+      const componentDynamicAttrs = componentsDynamicAttrs[componentSelector];
+      if (componentDynamicAttrs) {
+        const { attributes } = componentDynamicAttrs;
+        if (attributes && Object.keys(attributes).length) {
+          configMap[componentSelector] = attributes;
+        }
       }
     });
   }
