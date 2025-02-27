@@ -45,6 +45,8 @@ import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
 import recaptcha from '../src/lib/descope-wc/sdkScripts/grecaptcha';
 
+global.CSSStyleSheet.prototype.replaceSync = jest.fn();
+
 jest.mock('../src/lib/descope-wc/sdkScripts/forter', () => jest.fn());
 jest.mock('../src/lib/descope-wc/sdkScripts/grecaptcha');
 
@@ -384,11 +386,13 @@ describe('web-component', () => {
     const themeStyleEle = shadowEle?.querySelector(
       'style:last-child',
     ) as HTMLStyleElement;
-    expect(themeStyleEle.innerText).toContain(
-      (themeContent as any).light.globals,
-    );
-    expect(themeStyleEle.innerText).toContain(
-      (themeContent as any).dark.globals,
+    await waitFor(
+      () =>
+        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+          (themeContent as any).light.globals +
+            (themeContent as any).dark.globals,
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 

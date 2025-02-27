@@ -276,6 +276,7 @@ class BaseDescopeWc extends BaseClass {
       'client',
       'validate-on-blur',
       'style-id',
+      'nonce',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
