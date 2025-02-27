@@ -8,7 +8,11 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { getEmail, getIsEmailVerified } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -22,6 +26,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
+      cookieConfigMixin,
       modalMixin,
     )(superclass) {
       emailUserAttr: UserAttributeDriver;
@@ -55,6 +60,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
           }),
         );
         this.#editFlow.onSuccess(() => {

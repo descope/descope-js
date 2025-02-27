@@ -2007,6 +2007,31 @@ describe('web-component', () => {
     );
   });
 
+  it('should call start with refresh cookie name when provided', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 1 },
+      },
+    };
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" refresh-cookie-name="cookie-1"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: 20000,
+    });
+
+    await waitFor(() =>
+      expect(createSdk).toHaveBeenCalledWith(
+        expect.objectContaining({
+          refreshCookieName: 'cookie-1',
+        }),
+      ),
+    );
+  });
+
   describe('poll', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -2259,6 +2284,49 @@ describe('web-component', () => {
       wcEle.removeEventListener('success', onSuccess);
     });
   });
+
+  it(
+    'should not have concurrent polling calls',
+    async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      const MIN_NUM_OF_RUNS = 15;
+
+      let isRunning = false;
+      let counter = 0;
+      let isConcurrentPolling = false;
+
+      nextMock.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            if (isRunning) {
+              isConcurrentPolling = true;
+            }
+            counter += 1;
+            isRunning = true;
+            setTimeout(() => {
+              resolve(
+                generateSdkResponse({
+                  action: RESPONSE_ACTIONS.poll,
+                }),
+              );
+
+              isRunning = false;
+            }, 100);
+          }),
+      );
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(counter).toBeGreaterThan(MIN_NUM_OF_RUNS), {
+        timeout: WAIT_TIMEOUT * 5,
+      });
+
+      if (isConcurrentPolling) throw new Error('Concurrent polling detected');
+    },
+    WAIT_TIMEOUT * 5,
+  );
 
   describe('native', () => {
     it('Should prepare a callback for a native bridge response and broadcast an event when receiving a nativeBridge action', async () => {
@@ -4680,6 +4748,192 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
     });
+
+    it('should parse componentsAttrs values to screen components after next', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsConfig: {
+              componentsDynamicAttrs: {
+                "[data-connector-id='id123']": {
+                  attributes: {
+                    'test-attr': 'test-value',
+                    'test-attr2': 2,
+                  },
+                },
+                "[id='id456']": {
+                  attributes: {
+                    'test-attr': 'test-value3',
+                  },
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input data-connector-id="id123" class="descope-input" placeholder="input1"></input><input id="id456" class="descope-input" placeholder="input2"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+      expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+        'test-attr2',
+        '2',
+      );
+      expect(screen.getByShadowPlaceholderText('input2')).toHaveAttribute(
+        'test-attr',
+        'test-value3',
+      );
+      expect(screen.getByShadowPlaceholderText('input2')).not.toHaveAttribute(
+        'test-attr2',
+      );
+    });
+
+    it('should parse componentsAttrs values to screen components after start', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          screenState: {
+            componentsConfig: {
+              componentsDynamicAttrs: {
+                "[placeholder='input1']": {
+                  attributes: {
+                    'test-attr': 'test-value',
+                  },
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" placeholder="input1"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should parse componentsAttrs values to screen components from config', async () => {
+      configContent = {
+        ...configContent,
+        flows: {
+          'sign-in': {
+            startScreenId: 'screen-0',
+            componentsConfig: {
+              componentsDynamicAttrs: {
+                "[id='id123']": {
+                  attributes: {
+                    'test-attr': 'test-value',
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      expect(startMock).not.toHaveBeenCalled();
+      expect(nextMock).not.toHaveBeenCalled();
+    });
+
+    it('should parse componentsAttrs values to screen components from config with condition', async () => {
+      configContent = {
+        ...configContent,
+        flows: {
+          'sign-in': {
+            conditions: [
+              {
+                key: 'idpInitiated',
+                met: {
+                  interactionId: 'vhz8zebfaw',
+                  screenId: 'met',
+                },
+                operator: 'is-true',
+                predicate: '',
+              },
+              {
+                key: 'ELSE',
+                met: {
+                  componentsConfig: {
+                    componentsDynamicAttrs: {
+                      "[id='id123']": {
+                        attributes: {
+                          'test-attr': 'test-value',
+                        },
+                      },
+                    },
+                  },
+                  interactionId: 'ELSE',
+                  screenId: 'unmet',
+                },
+                unmet: {},
+              },
+            ],
+          },
+        },
+      };
+
+      pageContent = `<descope-button>click</descope-button><div>Loaded</div><input id="id123" class="descope-input" placeholder="input1"></input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowPlaceholderText('input1')).toHaveAttribute(
+            'test-attr',
+            'test-value',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      expect(startMock).not.toHaveBeenCalled();
+    });
   });
 
   describe('cssVars', () => {
@@ -5291,6 +5545,49 @@ describe('web-component', () => {
           timeout: 20000,
         },
       );
+
+      await waitFor(
+        () =>
+          expect(
+            descopeWc.shadowRoot.querySelector('#content-root'),
+          ).not.toHaveClass('hidden'),
+        {
+          timeout: 20000,
+        },
+      );
+    });
+    it('should render a flow screen when onScreenUpdate is not set', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"><button>Custom Button</button></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () =>
+          expect(descopeWc.shadowRoot.querySelector('slot')).toHaveClass(
+            'hidden',
+          ),
+        {
+          timeout: 20000,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(
+            descopeWc.shadowRoot.querySelector('#content-root'),
+          ).not.toHaveClass('hidden'),
+        {
+          timeout: 20000,
+        },
+      );
     });
     it('should render a custom screen when onScreenUpdate returns true', async () => {
       startMock.mockReturnValue(generateSdkResponse());
@@ -5324,8 +5621,18 @@ describe('web-component', () => {
           timeout: 20000,
         },
       );
+
+      await waitFor(
+        () =>
+          expect(
+            descopeWc.shadowRoot.querySelector('#content-root'),
+          ).toHaveClass('hidden'),
+        {
+          timeout: 20000,
+        },
+      );
     });
-    it('should call onScreenUpdate when rendering a custom screen even if there is no state change', async () => {
+    it('should call onScreenUpdate after "next" call, even if there is no state change', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
       nextMock.mockReturnValue(generateSdkResponse());

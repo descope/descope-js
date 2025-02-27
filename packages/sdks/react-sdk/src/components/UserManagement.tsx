@@ -22,7 +22,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
 
     return (
@@ -40,6 +40,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
             'theme.attr': theme,
             'debug.attr': debug,
             'styleId.attr': styleId,
+            'refreshCookieName.attr': refreshCookieName,
             // props
             'logger.prop': logger,
           }}

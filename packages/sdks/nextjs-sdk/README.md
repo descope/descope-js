@@ -49,7 +49,7 @@ export default function RootLayout({
 
 Note: `AuthProvider` uses `sessionTokenViaCookie` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
 The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={SameSite: 'Lax'}`
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
 #### Use Descope to render Flow
 
@@ -149,7 +149,8 @@ export default authMiddleware({
 	// NOTE: In case it contains query parameters that exist in the original URL, they will override the original query parameters. e.g. if the original URL is /page?param1=1&param2=2 and the redirect URL is /sign-in?param1=3, the final redirect URL will be /sign-in?param1=3&param2=2
 	redirectUrl?: string,
 
-	// These are the public and private routes in your app. Read more about how to use these below.
+	// These are the public and private routes in your app. You can also use wildcards (e.g. /api/*) with routes as well in these definitions.
+	// Read more about how to use these below.
 	publicRoutes?: string[],
 	privateRoutes?: string[]
 	// If you having privateRoutes and publicRoutes defined at the same time, privateRoutes will be ignored.
