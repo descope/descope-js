@@ -167,7 +167,11 @@ class BaseDescopeWc extends BaseClass {
       display: none;
     }
     `);
-    this.shadowRoot.adoptedStyleSheets = [sheet];
+    this.shadowRoot.adoptedStyleSheets ??= [];
+    this.shadowRoot.adoptedStyleSheets = [
+      ...this.shadowRoot.adoptedStyleSheets,
+      sheet,
+    ];
   }
 
   #initShadowDom() {

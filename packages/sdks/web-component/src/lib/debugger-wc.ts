@@ -167,7 +167,11 @@ class Debugger extends HTMLElement {
   #initStyle() {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(style);
-    this.shadowRoot.adoptedStyleSheets = [sheet];
+    this.shadowRoot.adoptedStyleSheets ??= [];
+    this.shadowRoot.adoptedStyleSheets = [
+      ...this.shadowRoot.adoptedStyleSheets,
+      sheet,
+    ];
 
     this.#rootEle.style.top = `${INITIAL_POS_THRESHOLD}px`;
     this.#rootEle.style.left = `${

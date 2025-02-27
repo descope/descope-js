@@ -31,7 +31,12 @@ export const initElementMixin = createSingletonMixin(
               height: fit-content;
             }
           `);
-        this.shadowRoot.adoptedStyleSheets = [sheet];
+
+        this.shadowRoot.adoptedStyleSheets ??= [];
+        this.shadowRoot.adoptedStyleSheets = [
+          ...this.shadowRoot.adoptedStyleSheets,
+          sheet,
+        ];
 
         this.contentRootElement =
           this.shadowRoot?.getElementById(CONTENT_ROOT_ID)!;

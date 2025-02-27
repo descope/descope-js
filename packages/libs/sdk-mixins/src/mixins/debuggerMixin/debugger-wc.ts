@@ -160,7 +160,12 @@ class Debugger extends HTMLElement {
     this.shadowRoot?.appendChild(template.content.cloneNode(true));
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(style);
-    this.shadowRoot.adoptedStyleSheets = [sheet];
+    this.shadowRoot.adoptedStyleSheets ??= [];
+    this.shadowRoot.adoptedStyleSheets = [
+      ...this.shadowRoot.adoptedStyleSheets,
+      sheet,
+    ];
+
     this.#rootEle =
       this.shadowRoot!.querySelector<HTMLDivElement>('.debugger')!;
     this.#contentEle = this.#rootEle.querySelector<HTMLDivElement>('.content')!;
