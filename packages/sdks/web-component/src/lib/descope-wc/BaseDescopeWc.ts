@@ -37,7 +37,6 @@ import {
   ProjectConfiguration,
   SdkConfig,
 } from '../types';
-import initTemplate from './initTemplate';
 
 // this is replaced in build time
 declare const BUILD_VERSION: string;

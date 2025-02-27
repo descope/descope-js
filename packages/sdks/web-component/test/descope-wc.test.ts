@@ -383,9 +383,6 @@ describe('web-component', () => {
       timeout: WAIT_TIMEOUT,
     });
 
-    const themeStyleEle = shadowEle?.querySelector(
-      'style:last-child',
-    ) as HTMLStyleElement;
     await waitFor(
       () =>
         expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
