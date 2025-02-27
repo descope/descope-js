@@ -377,7 +377,6 @@ describe('web-component', () => {
     };
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1" theme="light"></descope-wc>`;
-    const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
