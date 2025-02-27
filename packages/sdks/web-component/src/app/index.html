@@ -9,13 +9,17 @@
       http-equiv="Content-Security-Policy"
       content="connect-src 'self' static.descope.com api.descope.com;
     style-src fonts.googleapis.com 'nonce-rAnd0m';
-    img-src static.descope.com content.app.descope.com imgs.descope.com;
-    font-src fonts.gstatic.com http://localhost:5500;
-    script-src 'self' static.descope.com http://localhost:5500 'unsafe-inline';"
+    img-src static.descope.com content.app.descope.com imgs.descope.com data:;
+    font-src fonts.gstatic.com;
+    script-src 'self' static.descope.com 'nonce-rAnd0m' 'sha256-ZfFIHrd9MzirQdadZrM3hznhYlx+PRQo8+OCWjaPDaY=';"
     />
   </head>
   <body>
-    <script type="module" src="../lib/descope-wc/index.ts"></script>
+    <script
+      type="module"
+      src="../lib/descope-wc/index.ts"
+      nonce="rAnd0m"
+    ></script>
     <div class="login-container">
       <descope-wc
         project-id="<project-id>"
@@ -31,7 +35,7 @@
       ></descope-wc>
       <div class="loading">Loading ...</div>
     </div>
-    <script>
+    <script nonce="rAnd0m">
       // Translate or modify the error as needed
       function translateError(error) {
         const translationMap = {
@@ -58,7 +62,7 @@
         console.log('screen-updated', e.detail);
       });
     </script>
-    <script>
+    <script nonce="rAnd0m">
       const descopeEle = document.querySelector('descope-wc');
 
       descopeEle.onScreenUpdate = async (screenName, context, next, ref) => {
