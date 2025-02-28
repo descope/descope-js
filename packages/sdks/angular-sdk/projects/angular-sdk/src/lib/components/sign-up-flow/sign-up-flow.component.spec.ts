@@ -23,6 +23,7 @@ describe('SignUpFlowComponent', () => {
 
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: jest.fn(),
+      onIsAuthenticatedChange: jest.fn(),
       onUserChange: jest.fn()
     });
 

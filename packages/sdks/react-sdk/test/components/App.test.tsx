@@ -20,6 +20,7 @@ jest.mock('@descope/web-js-sdk', () => {
   const sdk = {
     logout: jest.fn().mockName('logout'),
     onSessionTokenChange: jest.fn().mockName('onSessionTokenChange'),
+    onIsAuthenticatedChange: jest.fn().mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn().mockName('onUserChange'),
     getSessionToken: jest.fn().mockName('getSessionToken'),
     getJwtRoles: jest.fn().mockName('getJwtRoles'),
@@ -37,7 +38,7 @@ jest.mock('@descope/web-js-sdk', () => {
 const renderWithRouter = (ui: React.ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
-const { logout, onSessionTokenChange, onUserChange, refresh, me } = createSdk({
+const { logout, onSessionTokenChange, onIsAuthenticatedChange, onUserChange, refresh, me } = createSdk({
   projectId: '',
 });
 
@@ -45,15 +46,17 @@ describe('App', () => {
   beforeEach(() => {
     // reset mock functions that may be override
     (onSessionTokenChange as jest.Mock).mockImplementation(() => () => {});
+    (onIsAuthenticatedChange as jest.Mock).mockImplementation(() => () => {});
     (onUserChange as jest.Mock).mockImplementation(() => () => {});
   });
 
   it('should subscribe to user and session token', async () => {
-    (onSessionTokenChange as jest.Mock).mockImplementation((cb) => {
+    (onIsAuthenticatedChange as jest.Mock).mockImplementation((cb) => {
       expect(cb).toBeTruthy();
-      cb('token1');
+      cb(true);
       return () => {};
     });
+
 
     (onUserChange as jest.Mock).mockImplementation((cb) => {
       expect(cb).toBeTruthy();
@@ -100,8 +103,8 @@ describe('App', () => {
   });
 
   it('should render logout button and and call sdk logout', async () => {
-    (onSessionTokenChange as jest.Mock).mockImplementation((cb) => {
-      cb('token1');
+    (onIsAuthenticatedChange as jest.Mock).mockImplementation((cb) => {
+      cb(true);
       return () => {};
     });
     (onUserChange as jest.Mock).mockImplementation((cb) => {
@@ -139,13 +142,13 @@ describe('App', () => {
 
   it('should call me only once when useUser used twice', async () => {
     // rendering App twice which uses useUser
-    (onSessionTokenChange as jest.Mock).mockImplementation((cb) => {
-      cb('token1');
+    (onIsAuthenticatedChange as jest.Mock).mockImplementation((cb) => {
+      cb(true);
       return () => {};
     });
 
     const MyComponent = () => {
-      // Calling useSession to trigger onSessionTokenChange (because having a session token is required to fetch user)
+      // Calling useSession to trigger onIsAuthenticated (because having a session token is required to fetch user)
       useSession();
       // Using useUser to fetch user
       useUser();

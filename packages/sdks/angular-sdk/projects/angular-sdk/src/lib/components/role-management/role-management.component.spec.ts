@@ -19,6 +19,7 @@ describe('DescopeRoleManagementComponent', () => {
   let fixture: ComponentFixture<RoleManagementComponent>;
   let mockedCreateSdk: jest.Mock;
   const onSessionTokenChangeSpy = jest.fn();
+  const onIsAuthenticatedChangeSpy = jest.fn();
   const onRoleChangeSpy = jest.fn();
   const afterRequestHooksSpy = jest.fn();
   const mockConfig: DescopeAuthConfig = {
@@ -30,6 +31,7 @@ describe('DescopeRoleManagementComponent', () => {
 
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
+      onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onRoleChange: onRoleChangeSpy,
       httpClient: {
         hooks: {

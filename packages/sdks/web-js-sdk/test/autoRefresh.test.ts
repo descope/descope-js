@@ -30,7 +30,64 @@ describe('autoRefresh', () => {
     jest.clearAllMocks();
   });
 
-  it('should refresh token after interval', async () => {
+  it('should refresh token after interval when only session expiration was returned', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionJwt: undefined,
+        sessionExpiration: 1663190468,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    // ensure logger called
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Setting refresh timer for/),
+    );
+    loggerDebugMock.mockClear();
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // ensure refresh called with refresh token
+    timeoutFn();
+    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
+
+    // check refresh called around 20 seconds before session token expiration
+    const expectedTimer = 1663190448000 - new Date().getTime();
+    expect(timeoutTimer).toBeGreaterThan(expectedTimer - 1000);
+    expect(timeoutTimer).toBeLessThan(expectedTimer + 1000);
+
+    // apply another mock and ensure timeout is being triggered
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+
+    expect(loggerDebugMock).toHaveBeenCalledTimes(2);
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching('Refreshing session'),
+    );
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Setting refresh timer for/),
+    );
+  });
+
+  it('should refresh token after interval if only sessionToken was returned', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
@@ -74,7 +131,7 @@ describe('autoRefresh', () => {
 
     expect(clearTimeoutSpy).toHaveBeenCalled();
 
-    expect(loggerDebugMock).toHaveBeenCalledTimes(2);
+    expect(loggerDebugMock).toHaveBeenCalledTimes(3);
     expect(loggerDebugMock).toHaveBeenCalledWith(
       expect.stringMatching('Refreshing session'),
     );
