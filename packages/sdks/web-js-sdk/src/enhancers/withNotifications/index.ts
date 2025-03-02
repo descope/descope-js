@@ -61,7 +61,7 @@ export const withNotifications =
       onUserChange: userPS.sub,
       onIsAuthenticatedChange: (cb: (isAuthenticated: boolean) => void) => {
         // If and only if there is a session expiration, then the user is authenticated
-        sessionExpirationPS.sub((exp) => {
+        return sessionExpirationPS.sub((exp) => {
           cb(!!exp);
         });
       },
