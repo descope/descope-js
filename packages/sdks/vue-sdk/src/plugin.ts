@@ -70,16 +70,14 @@ export default {
     // maybe there is a better way to do it
     routeGuardInternal.value = () =>
       new Promise((resolve, reject) => {
-        // Asaf - I think we need to change this to isAuthenticated.value
-        if (!sessionToken.value && isFetchSessionWasNeverCalled.value) {
+        if (!isAuthenticated.value && isFetchSessionWasNeverCalled.value) {
           fetchSession().catch(reject);
         }
 
         // if the session is loading we want to wait for it to finish before resolving
         watch(
           () => isSessionLoading.value,
-          // Asaf - I think we need to change this to unref(isAuthenticated)
-          () => !isSessionLoading.value && resolve(!!unref(sessionToken)),
+          () => !isSessionLoading.value && resolve(!!unref(isAuthenticated)),
           { immediate: true },
         );
       });

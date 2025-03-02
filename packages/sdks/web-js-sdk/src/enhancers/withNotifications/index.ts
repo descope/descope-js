@@ -17,7 +17,7 @@ import { createPubSub } from './helpers';
 export const withNotifications =
   <T extends CreateWebSdk>(createSdk: T) =>
   (config: Parameters<T>[0]) => {
-    const isAuthenticatedPS = createPubSub<boolean>();
+    const sessionExpirationPS = createPubSub<number | null>();
     const sessionPS = createPubSub<string | null>();
     const userPS = createPubSub<UserResponse | null>();
 
@@ -25,7 +25,7 @@ export const withNotifications =
       if (res?.status === 401) {
         sessionPS.pub(null);
         userPS.pub(null);
-        isAuthenticatedPS.pub(false);
+        sessionExpirationPS.pub(null);
       } else {
         const userDetails = await getUserFromResponse(res);
         if (userDetails) userPS.pub(userDetails);
@@ -35,8 +35,7 @@ export const withNotifications =
         if (sessionJwt) sessionPS.pub(sessionJwt);
 
         if (sessionExpiration) {
-          // A temporary hacky way to determine if the user is authenticated
-          isAuthenticatedPS.pub(true);
+          sessionExpirationPS.pub(sessionExpiration);
         }
       }
     };
@@ -50,7 +49,7 @@ export const withNotifications =
 
         sessionPS.pub(null);
         userPS.pub(null);
-        isAuthenticatedPS.pub(false);
+        sessionExpirationPS.pub(null);
 
         return resp;
       };
@@ -60,6 +59,11 @@ export const withNotifications =
     return Object.assign(wrappedSdk, {
       onSessionTokenChange: sessionPS.sub,
       onUserChange: userPS.sub,
-      onIsAuthenticatedChange: isAuthenticatedPS.sub,
+      onIsAuthenticatedChange: (cb: (isAuthenticated: boolean) => void) => {
+        // If and only if there is a session expiration, then the user is authenticated
+        sessionExpirationPS.sub((exp) => {
+          cb(!!exp);
+        });
+      },
     });
   };

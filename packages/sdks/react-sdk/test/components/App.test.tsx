@@ -38,7 +38,14 @@ jest.mock('@descope/web-js-sdk', () => {
 const renderWithRouter = (ui: React.ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
-const { logout, onSessionTokenChange, onIsAuthenticatedChange, onUserChange, refresh, me } = createSdk({
+const {
+  logout,
+  onSessionTokenChange,
+  onIsAuthenticatedChange,
+  onUserChange,
+  refresh,
+  me,
+} = createSdk({
   projectId: '',
 });
 
@@ -56,7 +63,6 @@ describe('App', () => {
       cb(true);
       return () => {};
     });
-
 
     (onUserChange as jest.Mock).mockImplementation((cb) => {
       expect(cb).toBeTruthy();

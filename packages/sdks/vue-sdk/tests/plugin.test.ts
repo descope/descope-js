@@ -143,33 +143,33 @@ describe('plugin', () => {
       expect(mockSdk.refresh).toBeCalledTimes(1);
     });
 
-    it('should return true if there is a session', async () => {
+    it('should return true when is authenticated notifies true', async () => {
       const provide = jest.fn();
       const app = { provide } as any;
 
       plugin.install(app, {} as any);
 
-      const onSessionTokenChange =
-        mockSdk.onSessionTokenChange.mock.calls[0][0];
-      onSessionTokenChange('newSession');
+      const onIsAuthenticatedChange =
+        mockSdk.onIsAuthenticatedChange.mock.calls[0][0];
+      onIsAuthenticatedChange(true);
 
       expect(await routeGuard()).toBe(true);
     });
 
-    it('should return false if there is no session', async () => {
+    it('should return false if is', async () => {
       const provide = jest.fn();
       const app = { provide } as any;
 
       plugin.install(app, {} as any);
 
-      const onSessionTokenChange =
-        mockSdk.onSessionTokenChange.mock.calls[0][0];
-      onSessionTokenChange('');
+      const onIsAuthenticatedChange =
+        mockSdk.onIsAuthenticatedChange.mock.calls[0][0];
+      onIsAuthenticatedChange(false);
 
       expect(await routeGuard()).toBe(false);
     });
 
-    it('should resolve only when the session is not loading', async () => {
+    it('should resolve only when the is authenticated is not loading', async () => {
       const provide = jest.fn();
       const app = { provide } as any;
 
@@ -185,9 +185,9 @@ describe('plugin', () => {
       routeGuard();
       const isAuthenticatedPromise = routeGuard();
 
-      const onSessionTokenChange =
-        mockSdk.onSessionTokenChange.mock.calls[0][0];
-      onSessionTokenChange('session');
+      const onIsAuthenticatedChange =
+        mockSdk.onIsAuthenticatedChange.mock.calls[0][0];
+      onIsAuthenticatedChange(true);
 
       resolve();
 
