@@ -137,7 +137,7 @@ describe('App', () => {
     );
 
     // ensure refresh called only once
-    expect(refresh).toBeCalledTimes(1);
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 
   it('should call me only once when useUser used twice', async () => {
@@ -176,7 +176,7 @@ describe('App', () => {
     );
 
     // ensure refresh called only once
-    expect(refresh).toBeCalledTimes(1);
+    expect(refresh).toHaveBeenCalledTimes(1);
 
     const loginButton = await screen.findByText('Login');
     fireEvent.click(loginButton);
@@ -187,6 +187,6 @@ describe('App', () => {
     );
 
     // ensure refresh called only once
-    expect(refresh).toBeCalledTimes(1);
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 });
