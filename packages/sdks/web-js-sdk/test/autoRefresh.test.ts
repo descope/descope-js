@@ -324,6 +324,7 @@ describe('autoRefresh', () => {
 
     const authInfoWith1MonthExpiration = {
       ...authInfo,
+      sessionExpiration: undefined,
       sessionJwt: getFutureSessionToken(30 * 24 * 60 * 60 * 1000),
     };
     const mockFetch = jest
