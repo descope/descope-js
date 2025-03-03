@@ -7,6 +7,7 @@ export const authInfo = {
   cookiePath: '/path1',
   cookieExpiration: 1665576720,
   user: { name: 'john', loginIds: ['js@hotmail.com'] },
+  sessionExpiration: 1663190468,
 };
 
 export const flowResponse = {

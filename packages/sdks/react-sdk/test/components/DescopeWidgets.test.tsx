@@ -31,6 +31,9 @@ jest.mock('@descope/web-js-sdk', () => {
     onSessionTokenChange: jest
       .fn(() => () => {})
       .mockName('onSessionTokenChange'),
+    onIsAuthenticatedChange: jest
+      .fn(() => () => {})
+      .mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn(() => () => {}).mockName('onUserChange'),
     refresh: jest.fn(),
     httpClient: {

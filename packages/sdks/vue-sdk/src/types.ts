@@ -30,6 +30,7 @@ type Session = {
   fetchSession: () => Promise<void>;
   isLoading: Ref<boolean | null>;
   session: Ref<string>;
+  isAuthenticated: Ref<boolean>;
   isFetchSessionWasNeverCalled: Ref<boolean>;
 };
 
