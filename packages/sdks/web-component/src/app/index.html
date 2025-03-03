@@ -11,7 +11,7 @@
     style-src fonts.googleapis.com 'nonce-rAnd0m';
     img-src static.descope.com content.app.descope.com imgs.descope.com data:;
     font-src fonts.gstatic.com;
-    script-src 'self' static.descope.com 'nonce-rAnd0m' 'sha256-ZfFIHrd9MzirQdadZrM3hznhYlx+PRQo8+OCWjaPDaY=';"
+    script-src 'self' static.descope.com descopecdn.com 'nonce-rAnd0m' 'sha256-ZfFIHrd9MzirQdadZrM3hznhYlx+PRQo8+OCWjaPDaY=';"
     />
   </head>
   <body>
@@ -53,6 +53,7 @@
         alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
       descopeWcEle.addEventListener('ready', () => {
+        console.log('ready');
         // Remove/hide loading
         document.querySelector('.loading')?.remove();
         // Alternatively, it can be hidden. For example:
