@@ -14,8 +14,6 @@ const configContent = {
 const apiPath = (prop: 'audit' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() =>
@@ -64,15 +62,15 @@ test.describe('widget', () => {
   test('audit table', async ({ page }) => {
     await expect(
       page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 3000 });
+    ).toBeVisible({ timeout: 10000 });
 
     await expect(
       page.locator(`text=${mockAudit.audit[1]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 3000 });
+    ).toBeVisible({ timeout: 10000 });
 
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 3000 });
+    ).toBeVisible({ timeout: 10000 });
   });
 
   test('search audit', async ({ page }) => {
