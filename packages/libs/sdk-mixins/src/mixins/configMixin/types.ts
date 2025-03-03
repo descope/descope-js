@@ -35,6 +35,14 @@ export type ClientScript = {
   resultKey?: string;
 };
 
+export type ComponentsDynamicAttrs = {
+  attributes: Record<string, any>;
+};
+
+export type ComponentsConfig = Record<string, any> & {
+  componentsDynamicAttrs?: Record<string, ComponentsDynamicAttrs>;
+};
+
 export type ClientCondition = {
   operator: Operator;
   key: string;
@@ -48,6 +56,7 @@ export type ClientConditionResult = {
   screenName: string;
   clientScripts?: ClientScript[];
   interactionId: string;
+  componentsConfig?: ComponentsConfig;
 };
 
 export type FlowConfig = {

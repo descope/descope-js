@@ -201,10 +201,29 @@ const setElementConfig = (
   if (!componentsConfig) {
     return;
   }
+  const { componentsDynamicAttrs, ...rest } = componentsConfig;
+
+  const configMap = Object.keys(rest).reduce((acc, componentName) => {
+    acc[`[name=${componentName}]`] = rest[componentName];
+    return acc;
+  }, {});
+
+  if (componentsDynamicAttrs) {
+    Object.keys(componentsDynamicAttrs).forEach((componentSelector) => {
+      const componentDynamicAttrs = componentsDynamicAttrs[componentSelector];
+      if (componentDynamicAttrs) {
+        const { attributes } = componentDynamicAttrs;
+        if (attributes && Object.keys(attributes).length) {
+          configMap[componentSelector] = attributes;
+        }
+      }
+    });
+  }
+
   // collect components that needs configuration from DOM
-  Object.keys(componentsConfig).forEach((componentName) => {
-    baseEle.querySelectorAll(`[name=${componentName}]`).forEach((comp) => {
-      const config = componentsConfig[componentName];
+  Object.keys(configMap).forEach((componentsSelector) => {
+    baseEle.querySelectorAll(componentsSelector).forEach((comp) => {
+      const config = configMap[componentsSelector];
 
       Object.keys(config).forEach((attr) => {
         let value = config[attr];

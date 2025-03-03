@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.7.0...nextjs-sdk-0.7.1) (2025-02-26)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.7.2`
+* `web-component` updated to version `3.37.0`
+## [0.7.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.6.1...nextjs-sdk-0.7.0) (2025-02-26)
+
+
+### Features
+
+* Support Wildcard Paths in Next SDK Middleware and Support CommonJS ([#1009](https://github.com/descope/descope-js/issues/1009)) RELEASE ([fc36903](https://github.com/descope/descope-js/commit/fc369032b462c7d7ac62e958ef382bb9779091e1))
+
+## [0.6.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.6.0...nextjs-sdk-0.6.1) (2025-02-25)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.7.1`
+* `web-component` updated to version `3.36.1`
 ## [0.6.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.5.2...nextjs-sdk-0.6.0) (2025-02-24)
 
 ### Dependency Updates
