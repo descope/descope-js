@@ -148,7 +148,7 @@ test.describe('widget', () => {
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
-        expect(await userAttr.getAttribute('value')).toBe(attr.newValue);
+        await expect(userAttr).toHaveAttribute('value', attr.newValue);
       });
     }
   });
@@ -186,7 +186,11 @@ test.describe('widget', () => {
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
-        expect(await userAttr.getAttribute('fulfilled')).toBe(attr.fulfilled);
+        if (attr.fulfilled !== null) {
+          await expect(userAttr).toHaveAttribute('fulfilled', attr.fulfilled);
+        } else {
+          await expect(userAttr).not.toHaveAttribute('fulfilled');
+        }
       });
     }
   });
