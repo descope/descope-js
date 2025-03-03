@@ -64,15 +64,15 @@ test.describe('widget', () => {
   test('audit table', async ({ page }) => {
     await expect(
       page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 3000 });
 
     await expect(
       page.locator(`text=${mockAudit.audit[1]['actorId']}`).first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 3000 });
 
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 3000 });
   });
 
   test('search audit', async ({ page }) => {
