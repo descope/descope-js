@@ -18,8 +18,6 @@ describe('DescopeAccessKeyManagementComponent', () => {
   let component: AccessKeyManagementComponent;
   let fixture: ComponentFixture<AccessKeyManagementComponent>;
   let mockedCreateSdk: jest.Mock;
-  const onSessionTokenChangeSpy = jest.fn();
-  const onIsAuthenticatedChangeSpy = jest.fn();
   const onAccessKeyChangeSpy = jest.fn();
   const afterRequestHooksSpy = jest.fn();
   const mockConfig: DescopeAuthConfig = {
@@ -30,8 +28,6 @@ describe('DescopeAccessKeyManagementComponent', () => {
     mockedCreateSdk = mocked(createSdk);
 
     mockedCreateSdk.mockReturnValue({
-      onSessionTokenChange: onSessionTokenChangeSpy,
-      onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onAccessKeyChange: onAccessKeyChangeSpy,
       httpClient: {
         hooks: {

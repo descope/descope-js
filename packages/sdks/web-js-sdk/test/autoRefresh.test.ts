@@ -263,7 +263,9 @@ describe('autoRefresh', () => {
 
     const mockFetch = jest
       .fn()
-      .mockReturnValue(createMockReturnValue(authInfo));
+      .mockReturnValue(
+        createMockReturnValue({ ...authInfo, sessionExpiration: undefined }),
+      );
     global.fetch = mockFetch;
 
     const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
@@ -297,6 +299,7 @@ describe('autoRefresh', () => {
     const mockFetch = jest.fn().mockReturnValue(
       createMockReturnValue({
         ...authInfo,
+        sessionExpiration: undefined,
         sessionJwt: getFutureSessionToken(),
       }),
     );
