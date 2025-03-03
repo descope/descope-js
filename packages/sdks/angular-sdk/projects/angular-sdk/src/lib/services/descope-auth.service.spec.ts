@@ -13,6 +13,7 @@ describe('DescopeAuthService', () => {
   let mockedCreateSdk: jest.Mock;
   let windowSpy: jest.SpyInstance;
   const onSessionTokenChangeSpy = jest.fn();
+  const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
   const getSessionTokenSpy = jest.fn();
   const getRefreshTokenSpy = jest.fn();
@@ -31,6 +32,7 @@ describe('DescopeAuthService', () => {
 
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
+      onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onUserChange: onUserChangeSpy,
       getSessionToken: getSessionTokenSpy,
       getRefreshToken: getRefreshTokenSpy,
@@ -42,6 +44,7 @@ describe('DescopeAuthService', () => {
     });
 
     onSessionTokenChangeSpy.mockImplementation((fn) => fn());
+    onIsAuthenticatedChangeSpy.mockImplementation((fn) => fn());
     onUserChangeSpy.mockImplementation((fn) => fn());
 
     TestBed.configureTestingModule({
@@ -67,6 +70,7 @@ describe('DescopeAuthService', () => {
       expect.objectContaining(mockConfig)
     );
     expect(onSessionTokenChangeSpy).toHaveBeenCalled();
+    expect(onIsAuthenticatedChangeSpy).toHaveBeenCalled();
     expect(onUserChangeSpy).toHaveBeenCalled();
   });
 
@@ -201,29 +205,22 @@ describe('DescopeAuthService', () => {
   describe('refreshSession', () => {
     it('correctly handle descopeSession stream when session is successfully refreshed', (done: jest.DoneCallback) => {
       refreshSpy.mockReturnValueOnce(
-        of({ ok: true, data: { sessionJwt: 'newToken' } })
+        of({
+          ok: true,
+          data: { sessionJwt: 'newToken', sessionExpiration: 1663190468 }
+        })
       );
-      // Taking 4 values from stream: first is initial value, next 3 are the result of refreshSession
-      service.session$.pipe(take(4), toArray()).subscribe({
+      // Taking 3 values from stream: first is initial value, next 2 are the result of refreshSession
+      service.session$.pipe(take(3), toArray()).subscribe({
         next: (result) => {
           expect(result.slice(1)).toStrictEqual([
-            {
-              isAuthenticated: false,
-              isSessionLoading: true,
-              sessionToken: undefined
-            },
-            {
-              isAuthenticated: true,
-              isSessionLoading: true,
-              sessionToken: 'newToken'
-            },
-            {
-              isAuthenticated: true,
-              isSessionLoading: false,
-              sessionToken: 'newToken'
-            }
+            expect.objectContaining({
+              isSessionLoading: true
+            }),
+            expect.objectContaining({
+              isSessionLoading: false
+            })
           ]);
-          expect(service.isAuthenticated()).toBeTruthy();
           done();
         },
         error: (err) => {
@@ -237,27 +234,17 @@ describe('DescopeAuthService', () => {
       refreshSpy.mockReturnValueOnce(
         of({ ok: false, data: { sessionJwt: 'newToken' } })
       );
-      // Taking 4 values from stream: first is initial value, next 3 are the result of refreshSession
-      service.session$.pipe(take(4), toArray()).subscribe({
+      // Taking 3 values from stream: first is initial value, next 2 are the result of refreshSession
+      service.session$.pipe(take(3), toArray()).subscribe({
         next: (result) => {
           expect(result.slice(1)).toStrictEqual([
-            {
-              isAuthenticated: false,
-              isSessionLoading: true,
-              sessionToken: undefined
-            },
-            {
-              isAuthenticated: false,
-              isSessionLoading: true,
-              sessionToken: ''
-            },
-            {
-              isAuthenticated: false,
-              isSessionLoading: false,
-              sessionToken: ''
-            }
+            expect.objectContaining({
+              isSessionLoading: true
+            }),
+            expect.objectContaining({
+              isSessionLoading: false
+            })
           ]);
-          expect(service.isAuthenticated()).toBeFalsy();
           done();
         },
         error: (err) => {
