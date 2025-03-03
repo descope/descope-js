@@ -45,6 +45,8 @@ import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
 import recaptcha from '../src/lib/descope-wc/sdkScripts/grecaptcha';
 
+global.CSSStyleSheet.prototype.replaceSync = jest.fn();
+
 jest.mock('../src/lib/descope-wc/sdkScripts/forter', () => jest.fn());
 jest.mock('../src/lib/descope-wc/sdkScripts/grecaptcha');
 
@@ -375,20 +377,18 @@ describe('web-component', () => {
     };
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1" theme="light"></descope-wc>`;
-    const shadowEle = document.getElementsByTagName('descope-wc')[0].shadowRoot;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
 
-    const themeStyleEle = shadowEle?.querySelector(
-      'style:last-child',
-    ) as HTMLStyleElement;
-    expect(themeStyleEle.innerText).toContain(
-      (themeContent as any).light.globals,
-    );
-    expect(themeStyleEle.innerText).toContain(
-      (themeContent as any).dark.globals,
+    await waitFor(
+      () =>
+        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+          (themeContent as any).light.globals +
+            (themeContent as any).dark.globals,
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
   });
 
