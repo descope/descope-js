@@ -366,7 +366,7 @@ describe('authMiddleware Chaining', () => {
 			headers: { Authorization: 'Bearer validJwt' }
 		});
 
-		const response = await middleware(mockReq);
+		await middleware(mockReq);
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(mockMiddleware).toHaveBeenCalled();
 
