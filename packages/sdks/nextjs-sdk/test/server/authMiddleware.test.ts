@@ -176,64 +176,64 @@ describe('authMiddleware', () => {
 
 	it('redirects unauthenticated users for private routes matching wildcard patterns', async () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
-	  
+
 		const middleware = authMiddleware({
-		  privateRoutes: ['/private/*']
+			privateRoutes: ['/private/*']
 		});
-	  
+
 		// Mock request to a route matching the wildcard pattern
 		const mockReq = createMockNextRequest({ pathname: '/private/dashboard' });
-	  
+
 		const response = await middleware(mockReq);
-	  
+
 		// Expect a redirect since the user is unauthenticated
 		expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
 		expect(response).toEqual({
-		  pathname: DEFAULT_PUBLIC_ROUTES.signIn
+			pathname: DEFAULT_PUBLIC_ROUTES.signIn
 		});
-	  });
-	  
-	  it('allows authenticated users for private routes matching wildcard patterns', async () => {
+	});
+
+	it('allows authenticated users for private routes matching wildcard patterns', async () => {
 		const authInfo = {
-		  jwt: 'validJwt',
-		  token: { iss: 'project-1', sub: 'user-123' }
+			jwt: 'validJwt',
+			token: { iss: 'project-1', sub: 'user-123' }
 		};
 		mockValidateJwt.mockImplementation(() => authInfo);
-	  
+
 		const middleware = authMiddleware({
-		  privateRoutes: ['/private/*']
+			privateRoutes: ['/private/*']
 		});
-	  
+
 		const mockReq = createMockNextRequest({
-		  pathname: '/private/settings',
-		  headers: { Authorization: 'Bearer validJwt' }
+			pathname: '/private/settings',
+			headers: { Authorization: 'Bearer validJwt' }
 		});
-	  
+
 		await middleware(mockReq);
-	  
+
 		// Expect no redirect and that the session header is set
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(NextResponse.next).toHaveBeenCalled();
-	  
+
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
-		  .request.headers;
+			.request.headers;
 		expect(headersArg.get('x-descope-session')).toEqual(
-		  Buffer.from(JSON.stringify(authInfo)).toString('base64')
+			Buffer.from(JSON.stringify(authInfo)).toString('base64')
 		);
-	  });
-	
+	});
+
 	it('allows unauthenticated users for public routes matching wildcard patterns', async () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
-	
+
 		const middleware = authMiddleware({
 			publicRoutes: ['/public/*']
 		});
-	
+
 		// Mock request to a route matching the wildcard pattern
 		const mockReq = createMockNextRequest({ pathname: '/public/info' });
-	
+
 		await middleware(mockReq);
-	
+
 		// Expect no redirect since it's a public route
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(NextResponse.next).toHaveBeenCalled();
