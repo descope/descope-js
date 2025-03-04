@@ -66,8 +66,9 @@ describe('sdk', () => {
     });
   });
 
-  it('should set dsc query param to false on refresh when the session token does not exist', async () => {
+  it('should set dsc query param to false on refresh when the refresh and session token do not exist', async () => {
     localStorage.removeItem('DS'); // no session token
+    localStorage.removeItem('DSR'); // no refresh token
 
     const mockFetch = jest
       .fn()
@@ -76,13 +77,14 @@ describe('sdk', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.refresh('token');
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://api.descope.com/v1/auth/refresh?dcs=f',
+      'https://api.descope.com/v1/auth/refresh?dcs=f&dcr=f',
       expect.any(Object),
     );
   });
 
-  it('should set dcs query param to true on refresh when the session token exists', async () => {
-    localStorage.setItem('DS', 'refresh-token-1'); // with session token
+  it('should set dcs query param to true on refresh when the refresh and session token exist', async () => {
+    localStorage.setItem('DS', 'session-token-1'); // with session token
+    localStorage.setItem('DSR', 'refresh-token-1'); // with refresh token
 
     const mockFetch = jest
       .fn()
@@ -91,7 +93,23 @@ describe('sdk', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.refresh('token');
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://api.descope.com/v1/auth/refresh?dcs=t',
+      'https://api.descope.com/v1/auth/refresh?dcs=t&dcr=t',
+      expect.any(Object),
+    );
+  });
+
+  it('should set dcs query param to true on refresh when the refresh and session token exist', async () => {
+    localStorage.setItem('DS', 'session-token-1'); // with session token
+    localStorage.removeItem('DSR'); // no refresh token
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(flowResponse));
+    global.fetch = mockFetch;
+    const sdk = createSdk({ projectId: 'pid' });
+    await sdk.refresh('token');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.descope.com/v1/auth/refresh?dcs=t&dcr=f',
       expect.any(Object),
     );
   });
