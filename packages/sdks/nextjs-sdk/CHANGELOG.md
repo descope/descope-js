@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.7.1...nextjs-sdk-0.8.0) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.0`
+* `react-sdk` updated to version `2.8.0`
+* `core-js-sdk` updated to version `2.37.0`
+* `web-component` updated to version `3.38.0`
+
+### Features
+
+* Take cookie from session ([#1037](https://github.com/descope/descope-js/issues/1037)) RELEASE ([c79eeab](https://github.com/descope/descope-js/commit/c79eeabfdfb07129862909860d1f28c95552aede))
+
 ## [0.7.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.7.0...nextjs-sdk-0.7.1) (2025-02-26)
 
 ### Dependency Updates
