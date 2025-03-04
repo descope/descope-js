@@ -46,13 +46,13 @@ const getSessionJwt = (req: NextRequest): string | undefined => {
 
 const matchWildcardRoute = (route: string, path: string) => {
 	let regexPattern = route.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-  
+
 	// Convert wildcard (*) to match path segments only
 	regexPattern = regexPattern.replace(/\*/g, '[^/]*');
 	const regex = new RegExp(`^${regexPattern}$`);
-  
+
 	return regex.test(path);
-  };
+};
 
 const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 	// Ensure publicRoutes and privateRoutes are arrays, defaulting to empty arrays if not defined
@@ -69,12 +69,16 @@ const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 				'Both publicRoutes and privateRoutes are defined. Ignoring privateRoutes.'
 			);
 		}
-		return isDefaultPublicRoute || publicRoutes.some((route) => matchWildcardRoute(route, pathname))
+		return (
+			isDefaultPublicRoute ||
+			publicRoutes.some((route) => matchWildcardRoute(route, pathname))
+		);
 	}
 
 	if (privateRoutes.length > 0) {
 		return (
-			isDefaultPublicRoute || !privateRoutes.some((route) => matchWildcardRoute(route, pathname))
+			isDefaultPublicRoute ||
+			!privateRoutes.some((route) => matchWildcardRoute(route, pathname))
 		);
 	}
 

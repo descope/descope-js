@@ -13,8 +13,6 @@ export default () => (
 		}}
 	>
 		<h1>Applications Portal</h1>
-		<ApplicationsPortal
-			widgetId="applications-portal-widget"
-		/>
+		<ApplicationsPortal widgetId="applications-portal-widget" />
 	</div>
 );

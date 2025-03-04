@@ -235,11 +235,13 @@ export async function GET() {
 ```
 
 ##### Optional Parameters
+
 If the middleware did not set a session, The `session()` function will attempt to retrieve the session token from cookies and validates it, this requires the project ID to be either set in the environment variables or passed as a parameter to the function.
 
 ```
 session({ projectId?: string, baseUrl?: string })
 ```
+
 - **projectId:** The Descope Project ID. If not provided, the function will fall back to `DESCOPE_PROJECT_ID` from the environment variables.
 - **baseUrl:** The Descope API base URL.
 
