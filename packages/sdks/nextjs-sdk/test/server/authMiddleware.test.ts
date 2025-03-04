@@ -16,6 +16,13 @@ jest.mock('next/server', () => ({
 	}
 }));
 
+// Mock another middleware for testing chaining
+const mockMiddleware = jest.fn(async (req: NextRequest) => {
+	const headers = new Headers(req.headers);
+	headers.set('X-Test-Header', 'test-value');
+	return NextResponse.next({ request: { headers } });
+});
+
 // Utility function to create a mock NextRequest
 const createMockNextRequest = (
 	options: {
@@ -262,5 +269,112 @@ describe('authMiddleware', () => {
 			pathname: '/custom-sign-in',
 			search: `redirect=${encodeURIComponent('/another-path')}`
 		});
+	});
+});
+
+describe('authMiddleware Chaining', () => {
+	beforeEach(() => {
+		process.env.DESCOPE_PROJECT_ID = 'project1';
+		(NextResponse.redirect as jest.Mock).mockImplementation((url) => url);
+		(NextResponse.next as jest.Mock).mockImplementation(() => ({
+			headers: { set: jest.fn() },
+			request: jest.fn()
+		}));
+	});
+
+	afterEach(() => {
+		jest.resetAllMocks();
+		(NextResponse.redirect as jest.Mock).mockReset();
+		(NextResponse.next as jest.Mock).mockReset();
+		mockValidateJwt?.mockReset();
+		mockMiddleware?.mockReset();
+	});
+
+	it('chains middleware correctly for public routes', async () => {
+		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
+
+		const middleware = async (req: NextRequest) => {
+			const authResponse = await authMiddleware({ publicRoutes: ['/public'] })(req);
+			if (authResponse) return authResponse;
+			return mockMiddleware(req);
+		};
+
+		const mockReq = createMockNextRequest({ pathname: '/public' });
+		const response = await middleware(mockReq);
+
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		expect(mockMiddleware).toHaveBeenCalled();
+		expect(response).toEqual(expect.any(Object));
+	});
+
+	it('blocks unauthenticated users on private routes in a chained middleware setup', async () => {
+		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
+
+		const middleware = async (req: NextRequest) => {
+			const authResponse = await authMiddleware({ privateRoutes: ['/private'] })(req);
+			if (authResponse) return authResponse;
+			return mockMiddleware(req);
+		};
+
+		const mockReq = createMockNextRequest({ pathname: '/private' });
+		const response = await middleware(mockReq);
+
+		expect(NextResponse.redirect).toHaveBeenCalled();
+		expect(mockMiddleware).not.toHaveBeenCalled();
+		expect(response).toEqual({ pathname: DEFAULT_PUBLIC_ROUTES.signIn });
+	});
+
+	it('allows authenticated users through both middlewares', async () => {
+		const authInfo = {
+			jwt: 'validJwt',
+			token: { iss: 'project-1', sub: 'user-123' }
+		};
+		mockValidateJwt.mockImplementation(() => authInfo);
+
+		const middleware = async (req: NextRequest) => {
+			const authResponse = await authMiddleware()(req);
+			if (authResponse) return authResponse;
+			return mockMiddleware(req);
+		};
+
+		const mockReq = createMockNextRequest({
+			pathname: '/private',
+			headers: { Authorization: 'Bearer validJwt' }
+		});
+
+		await middleware(mockReq);
+
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		expect(mockMiddleware).toHaveBeenCalled();
+	});
+
+	it('preserves request headers when chaining middleware', async () => {
+		const authInfo = {
+			jwt: 'validJwt',
+			token: { iss: 'project-1', sub: 'user-123' }
+		};
+		mockValidateJwt.mockImplementation(() => authInfo);
+
+		const middleware = async (req: NextRequest) => {
+			const authResponse = await authMiddleware()(req);
+			if (authResponse) return authResponse;
+			return mockMiddleware(req);
+		};
+
+		const mockReq = createMockNextRequest({
+			pathname: '/private',
+			headers: { Authorization: 'Bearer validJwt' }
+		});
+
+		const response = await middleware(mockReq);
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		expect(mockMiddleware).toHaveBeenCalled();
+
+		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
+			.request.headers;
+		expect(headersArg.get('x-descope-session')).toEqual(
+			Buffer.from(JSON.stringify(authInfo)).toString('base64')
+		);
+		expect(headersArg.get('X-Test-Header')).toEqual('test-value');
 	});
 });

@@ -105,13 +105,13 @@ const addSessionToHeadersIfExists = (
 // if the user is not authenticated, it redirects to the redirectUrl
 // if the user is authenticated, it adds the session to the headers
 const createAuthMiddleware =
-	(options: MiddlewareOptions = {}) =>
-	async (req: NextRequest) => {
+  (options: MiddlewareOptions = {}) =>
+  async (req: NextRequest, next?: () => Promise<NextResponse>) => {
 		console.debug('Auth middleware starts');
 
 		const jwt = getSessionJwt(req);
 
-		// check if the user is authenticated
+		// Check if the user is authenticated
 		let session: AuthenticationInfo | undefined;
 		try {
 			session = await getGlobalSdk({
@@ -122,25 +122,29 @@ const createAuthMiddleware =
 			console.debug('Auth middleware, Failed to validate JWT', err);
 			if (!isPublicRoute(req, options)) {
 				const redirectUrl = options.redirectUrl || DEFAULT_PUBLIC_ROUTES.signIn;
-				const url = req.nextUrl.clone();
-				// Create a URL object for redirectUrl. 'http://example.com' is just a placeholder.
-				const parsedRedirectUrl = new URL(redirectUrl, 'http://example.com');
-				url.pathname = parsedRedirectUrl.pathname;
+				const url = new URL(redirectUrl, req.nextUrl);
 
-				const searchParams = mergeSearchParams(
-					url.search,
-					parsedRedirectUrl.search
-				);
-				if (searchParams) {
-					url.search = searchParams;
-				}
+				// Preserve query parameters from the original request
+				url.search = mergeSearchParams(req.nextUrl.search, url.search) || url.search;
 				console.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
 				return NextResponse.redirect(url);
 			}
 		}
 
 		console.debug('Auth middleware finishes');
-		// add the session to the request, if it exists
+
+		// If `next` is provided, use middleware chaining
+		if (next) {
+			const response = await next();
+			const updatedHeaders = addSessionToHeadersIfExists(response.headers, session);
+			return new NextResponse(response.body, {
+			  status: response.status,
+			  headers: updatedHeaders,
+			});
+		}
+
+
+		// Add the session to the request, if it exists
 		const headers = addSessionToHeadersIfExists(req.headers, session);
 		return NextResponse.next({
 			request: {
