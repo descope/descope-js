@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.0...sdk-mixins-0.11.1) (2025-03-04)
+
+
+### Bug Fixes
+
+* Strict CSP style config ([#1034](https://github.com/descope/descope-js/issues/1034)) ([87b98e2](https://github.com/descope/descope-js/commit/87b98e2919213a6558e086e9a65c1bebda3cd85a))
+
 ## [0.11.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.10.0...sdk-mixins-0.11.0) (2025-02-26)
 
 

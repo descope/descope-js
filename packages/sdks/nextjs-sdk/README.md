@@ -200,7 +200,7 @@ This setup ensures that you can clearly define which routes in your application 
 
 use the `session()` helper to read session information in Server Components and Route handlers.
 
-Note: `session()` requires the `authMiddleware` to be used for the Server Component or Route handler that uses it.
+Note: While using `authMiddleware` is still recommended for session management (because it validates the session only once), `session()` can function without it. If `authMiddleware` does not set a session, `session()` will attempt to retrieve the session token from cookies, then parse and validate it.
 
 Server Component:
 
@@ -233,6 +233,19 @@ export async function GET() {
 	const { jwt, token } = currSession;
 }
 ```
+
+##### Optional Parameters
+
+If the middleware did not set a session, The `session()` function will attempt to retrieve the session token from cookies and validates it, this requires the project ID to be either set in the environment variables or passed as a parameter to the function.
+
+```
+session({ projectId?: string, baseUrl?: string })
+```
+
+- **projectId:** The Descope Project ID. If not provided, the function will fall back to `DESCOPE_PROJECT_ID` from the environment variables.
+- **baseUrl:** The Descope API base URL.
+
+This allows developers to use `session()` even if the project ID is not set in the environment.
 
 #### Access Descope SDK in server side
 

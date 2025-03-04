@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.38.0](https://github.com/descope/descope-js/compare/web-component-3.37.0...web-component-3.38.0) (2025-03-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.1`
+* `web-js-sdk` updated to version `1.26.0`
+
+### Features
+
+* http session cookie ([#1032](https://github.com/descope/descope-js/issues/1032)) ([0cd7ee3](https://github.com/descope/descope-js/commit/0cd7ee35b4559b6bfd6c446c0c5e2c99e00d8131))
+
+
+### Bug Fixes
+
+* Strict CSP style config ([#1034](https://github.com/descope/descope-js/issues/1034)) ([87b98e2](https://github.com/descope/descope-js/commit/87b98e2919213a6558e086e9a65c1bebda3cd85a))
+
 ## [3.37.0](https://github.com/descope/descope-js/compare/web-component-3.36.1...web-component-3.37.0) (2025-02-26)
 
 ### Dependency Updates

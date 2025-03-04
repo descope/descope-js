@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.5.0](https://github.com/descope/descope-js/compare/vue-sdk-2.4.5...vue-sdk-2.5.0) (2025-03-04)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.2`
+* `audit-management-widget` updated to version `0.4.2`
+* `role-management-widget` updated to version `0.3.2`
+* `user-management-widget` updated to version `0.7.2`
+* `user-profile-widget` updated to version `0.3.3`
+* `applications-portal-widget` updated to version `0.3.2`
+* `web-component` updated to version `3.38.0`
+* `web-js-sdk` updated to version `1.26.0`
+* `core-js-sdk` updated to version `2.37.0`
+
+### Features
+
+* http session cookie ([#1032](https://github.com/descope/descope-js/issues/1032)) ([0cd7ee3](https://github.com/descope/descope-js/commit/0cd7ee35b4559b6bfd6c446c0c5e2c99e00d8131))
+
+
+### Bug Fixes
+
+* Strict CSP style config ([#1034](https://github.com/descope/descope-js/issues/1034)) ([87b98e2](https://github.com/descope/descope-js/commit/87b98e2919213a6558e086e9a65c1bebda3cd85a))
+
 ## [2.4.5](https://github.com/descope/descope-js/compare/vue-sdk-2.4.4...vue-sdk-2.4.5) (2025-02-26)
 
 ### Dependency Updates
