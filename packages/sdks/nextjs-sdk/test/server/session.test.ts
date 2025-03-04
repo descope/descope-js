@@ -6,7 +6,7 @@ jest.mock('@descope/node-sdk', () => {
 	const res = jest.fn(() => ({
 		validateJwt: mockValidateJwt
 	}));
-	res.SessionTokenCookieName = 'DS';
+	res['SessionTokenCookieName'] = 'DS';
 	return res;
 });
 
