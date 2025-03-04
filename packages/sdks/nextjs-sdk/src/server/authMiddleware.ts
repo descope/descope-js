@@ -122,7 +122,7 @@ const createAuthMiddleware =
 			console.debug('Auth middleware, Failed to validate JWT', err);
 			if (!isPublicRoute(req, options)) {
 				const redirectUrl = options.redirectUrl || DEFAULT_PUBLIC_ROUTES.signIn;
-				const url = new URL(redirectUrl, req.nextUrl);
+				const url = new URL(redirectUrl, req.nextUrl.origin);
 
 				// Preserve query parameters from the original request
 				url.search = mergeSearchParams(req.nextUrl.search, url.search) || url.search;
