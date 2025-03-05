@@ -24,6 +24,7 @@ const extractSession = (
 const getSessionFromCookie = async (
 	config?: CreateSdkParams
 ): Promise<AuthenticationInfo | undefined> => {
+  console.debug('attempting to get session from cookie');
 	try {
 		const sessionCookie = (await cookies()).get(
 			descopeSdk.SessionTokenCookieName
@@ -33,8 +34,7 @@ const getSessionFromCookie = async (
 			return undefined;
 		}
 		const sdk = getGlobalSdk(config);
-		const res = await sdk.validateJwt(sessionCookie.value);
-		return res;
+		return await sdk.validateJwt(sessionCookie.value);
 	} catch (err) {
 		console.debug('Error getting session from cookie', err);
 		return undefined;
