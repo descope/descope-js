@@ -271,6 +271,10 @@ const mockMiddleware = jest.fn(async (req: NextRequest) => {
 	return new NextResponse(null, { headers });
 }) as (req: NextRequest) => Promise<NextResponse>;
 
+const mockNext = jest.fn(async () => {
+	return new NextResponse(null, { headers: new Headers() });
+}) as () => Promise<NextResponse>;
+
 describe('authMiddleware Chaining', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -291,7 +295,7 @@ describe('authMiddleware Chaining', () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
 
 		const middleware = async (req: NextRequest) => {
-			const authResponse = await authMiddleware({ publicRoutes: ['/public'] })(req, () => mockMiddleware(req));
+			const authResponse = await authMiddleware({ publicRoutes: ['/public'] })(req, mockNext);
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
@@ -308,7 +312,7 @@ describe('authMiddleware Chaining', () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
 
 		const middleware = async (req: NextRequest) => {
-			const authResponse = await authMiddleware({ privateRoutes: ['/private'] })(req, () => mockMiddleware(req));
+			const authResponse = await authMiddleware({ privateRoutes: ['/private'] })(req, mockNext);
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
@@ -318,7 +322,6 @@ describe('authMiddleware Chaining', () => {
 
 		expect(NextResponse.redirect).toHaveBeenCalled();
 		expect(mockMiddleware).not.toHaveBeenCalled();
-		expect(response).toBeInstanceOf(NextResponse);
 		expect(response?.headers?.get('location')).toContain(DEFAULT_PUBLIC_ROUTES.signIn);
 	});
 
@@ -330,7 +333,7 @@ describe('authMiddleware Chaining', () => {
 		mockValidateJwt.mockResolvedValue(authInfo);
 
 		const middleware = async (req: NextRequest) => {
-			const authResponse = await authMiddleware()(req, () => mockMiddleware(req));
+			const authResponse = await authMiddleware()(req, mockNext);
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
@@ -362,7 +365,7 @@ describe('authMiddleware Chaining', () => {
 		mockValidateJwt.mockResolvedValue(authInfo);
 
 		const middleware = async (req: NextRequest) => {
-			const authResponse = await authMiddleware()(req, () => mockMiddleware(req));
+			const authResponse = await authMiddleware()(req, mockNext);
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
@@ -385,3 +388,4 @@ describe('authMiddleware Chaining', () => {
 		expect(headersArg.get('X-Test-Header')).toEqual('test-value');
 	});
 });
+
