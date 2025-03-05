@@ -251,6 +251,7 @@ const App = () => {
   // NOTE - `useDescope`, `useSession`, `useUser` should be used inside `AuthProvider` context,
   // and will throw an exception if this requirement is not met
   // useSession retrieves authentication state, session loading status, and session token
+  // If the session token is managed in cookies in project settings, sessionToken will be empty.
   const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
   // useUser retrieves the logged in user information
   const { user, isUserLoading } = useUser();
@@ -344,6 +345,8 @@ const Component = () => {
 }
 ```
 
+Note that ff Descope project settings are configured to manage session token in cookies, the `getSessionToken` function will return an empty string.
+
 #### 2. Passing `sessionTokenViaCookie` boolean prop to the `AuthProvider`
 
 Passing `sessionTokenViaCookie` prop to `AuthProvider` component. Descope SDK will automatically store session token on the `DS` cookie.
@@ -373,6 +376,11 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
 The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
 If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
 
+#### 3. Configure Descope project to manage session token in cookies
+
+If project settings are configured to manage session token in cookies, Descope services will automatically set the session token in the `DS` cookie as a `Secure` and `HttpOnly` cookie. In this case, the session token will not be stored in the browser's and will not be accessible to the client-side code using `useSession` or `getSessionToken`.
+
+````js
 ### Helper Functions
 
 You can also use the following functions to assist with various actions managing your JWT.
@@ -405,6 +413,27 @@ Notes:
 
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `useSession` hook.
+
+### Custom Refresh Cookie Name
+
+When managing multiple Descope projects on the same domain, you can avoid refresh cookie conflicts by assigning a custom cookie name to your refresh token during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` prop to the `AuthProvider` component.
+
+This will signal Descope API to use the custom cookie name as the refresh token.
+
+Note that this option is only available when the refresh token managed on cookies.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  // pass the custom cookie name to the AuthProvider
+  return (
+    <AuthProvider projectId="my-project-id" refreshCookieName="MY_DSR">
+      <App />
+    </AuthProvider>
+  );
+};
+````
 
 ### Last User Persistence
 

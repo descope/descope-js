@@ -28,6 +28,9 @@ interface IAuthProviderProps {
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
   keepLastAuthenticatedUserAfterLogout?: boolean;
+  // Use this option if the authentication is done via cookie, and configured with a different name
+  // Currently, this is done using Descope Flows
+  refreshCookieName?: string;
   children?: React.ReactNode;
 }
 
@@ -39,10 +42,12 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   persistTokens = true,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
+  refreshCookieName = '',
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
   const [session, setSession] = useState<string>();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(false);
@@ -54,16 +59,20 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     sessionTokenViaCookie,
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
+    refreshCookieName,
   });
 
   useEffect(() => {
     if (sdk) {
       const unsubscribeSessionToken = sdk.onSessionTokenChange(setSession);
       const unsubscribeUser = sdk.onUserChange(setUser);
+      const unsubscribeIsAuthenticated =
+        sdk.onIsAuthenticatedChange(setIsAuthenticated);
 
       return () => {
         unsubscribeSessionToken();
         unsubscribeUser();
+        unsubscribeIsAuthenticated();
       };
     }
     return undefined;
@@ -77,7 +86,6 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     if (isSessionFetched.current) return;
     isSessionFetched.current = true;
 
-    console.log('@@@ fetching session', { DSR: sdk.getRefreshToken(), persistTokens} )
     setIsSessionLoading(true);
     withValidation(sdk?.refresh)().then(() => {
       setIsSessionLoading(false);
@@ -103,6 +111,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isUserFetched: isUserFetched.current,
       fetchSession,
       session,
+      isAuthenticated,
       isSessionLoading,
       isSessionFetched: isSessionFetched.current,
       projectId,
@@ -110,6 +119,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       baseStaticUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName,
       setUser,
       setSession,
       sdk,
@@ -121,11 +131,14 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isUserFetched.current,
       fetchSession,
       session,
+      isAuthenticated,
       isSessionLoading,
       isSessionFetched.current,
       projectId,
       baseUrl,
       baseStaticUrl,
+      keepLastAuthenticatedUserAfterLogout,
+      refreshCookieName,
       setUser,
       setSession,
       sdk,

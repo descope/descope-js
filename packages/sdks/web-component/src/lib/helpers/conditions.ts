@@ -60,5 +60,6 @@ export const calculateConditions = (
         startScreenName: conditionResult.met.screenName,
         conditionInteractionId: conditionResult.met.interactionId,
         clientScripts: conditionResult.met.clientScripts,
+        componentsConfig: conditionResult.met.componentsConfig,
       };
 };

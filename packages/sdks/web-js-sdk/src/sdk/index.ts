@@ -3,7 +3,11 @@ import createWebAuthn from './webauthn';
 import createFedCM from './fedcm';
 import createOidc, { OidcConfig } from './oidc';
 import withFlow from './flow';
-import { getIdToken, getRefreshToken, getSessionToken } from '../enhancers/withPersistTokens/helpers';
+import {
+  getIdToken,
+  getRefreshToken,
+  getSessionToken,
+} from '../enhancers/withPersistTokens/helpers';
 
 type CoreSdkParams = Parameters<typeof createCoreSdk>[0]; // Extracts the first argument type
 type ExtendedCoreSdkArgs = CoreSdkParams & { oidcConfig?: OidcConfig }; // Extends with oidcConfig

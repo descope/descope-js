@@ -28,7 +28,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } =
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
 
     useEffect(() => {
@@ -54,6 +54,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
             'theme.attr': theme,
             'debug.attr': debug,
             'styleId.attr': styleId,
+            'refreshCookieName.attr': refreshCookieName,
             // props
             'logger.prop': logger,
           }}

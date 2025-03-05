@@ -91,6 +91,7 @@ export interface IContext {
   isUserFetched: boolean;
   fetchSession: () => void;
   session: string;
+  isAuthenticated: boolean;
   isSessionLoading: boolean;
   isSessionFetched: boolean;
   projectId: string;
@@ -100,6 +101,7 @@ export interface IContext {
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
+  refreshCookieName?: string;
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   setSession: React.Dispatch<React.SetStateAction<string>>;

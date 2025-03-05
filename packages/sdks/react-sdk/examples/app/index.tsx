@@ -14,6 +14,7 @@ root.render(
       projectId={process.env.DESCOPE_PROJECT_ID!}
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
+      refreshCookieName={process.env.DESCOPE_REFRESH_COOKIE_NAME}
     >
       <App />
     </AuthProvider>

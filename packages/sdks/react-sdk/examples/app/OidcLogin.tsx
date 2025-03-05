@@ -55,20 +55,18 @@ const OidcLogin = () => {
       }}
     >
       <h2>OIDC Login</h2>
-      {(isLoading) && <div>Loading...</div>}
-      {
-        !isLoading && (
-          <button
-            style={{
-              padding: '10px',
-              margin: '10px',
-            }}
-            onClick={onLogin}
-          >
-            Login with OIDC
-          </button>
-        )
-      }
+      {isLoading && <div>Loading...</div>}
+      {!isLoading && (
+        <button
+          style={{
+            padding: '10px',
+            margin: '10px',
+          }}
+          onClick={onLogin}
+        >
+          Login with OIDC
+        </button>
+      )}
       {errorMessage && (
         <div
           className="error"

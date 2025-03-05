@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.3](https://github.com/descope/descope-js/compare/user-management-widget-0.7.2...user-management-widget-0.7.3) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.1`
+## [0.7.2](https://github.com/descope/descope-js/compare/user-management-widget-0.7.1...user-management-widget-0.7.2) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.0`
+* `sdk-mixins` updated to version `0.11.1`
+## [0.7.1](https://github.com/descope/descope-js/compare/user-management-widget-0.7.0...user-management-widget-0.7.1) (2025-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.0`
+## [0.7.0](https://github.com/descope/descope-js/compare/user-management-widget-0.6.20...user-management-widget-0.7.0) (2025-02-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.25.0`
+* `sdk-mixins` updated to version `0.10.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
 ## [0.6.20](https://github.com/descope/descope-js/compare/user-management-widget-0.6.19...user-management-widget-0.6.20) (2025-02-20)
 
 ### Dependency Updates

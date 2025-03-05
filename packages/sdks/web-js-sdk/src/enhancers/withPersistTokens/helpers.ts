@@ -1,6 +1,10 @@
 import Cookies from 'js-cookie';
 import { BeforeRequestHook, WebJWTResponse } from '../../types';
-import { ID_TOKEN_KEY, REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
+import {
+  ID_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from './constants';
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -61,7 +65,12 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
 }
 
 export const persistTokens = (
-  { refreshJwt, sessionJwt, idTokenJwt, ...cookieParams } = {} as Partial<WebJWTResponse>,
+  {
+    refreshJwt,
+    sessionJwt,
+    idTokenJwt,
+    ...cookieParams
+  } = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
@@ -105,10 +114,7 @@ export function getSessionToken(prefix: string = ''): string {
 }
 
 export function getIdToken(prefix: string = ''): string {
-  return (
-    getLocalStorage(`${prefix}${ID_TOKEN_KEY}`) ||
-    ''
-  );
+  return getLocalStorage(`${prefix}${ID_TOKEN_KEY}`) || '';
 }
 
 /** Remove both the localStorage refresh JWT and the session cookie */
@@ -128,5 +134,7 @@ export const beforeRequest =
       token: config.token,
       refresh_token: getRefreshToken(prefix),
     });
-    return Object.assign(config, { token: config.token || getRefreshToken(prefix) })
+    return Object.assign(config, {
+      token: config.token || getRefreshToken(prefix),
+    });
   };

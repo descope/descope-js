@@ -22,7 +22,10 @@ type OidcModule = {
   WebStorageStateStore: typeof WebStorageStateStore;
 };
 
-type SignInResponseStorage = Pick<SigninResponse, 'id_token' | 'session_state' | 'profile'>
+type SignInResponseStorage = Pick<
+  SigninResponse,
+  'id_token' | 'session_state' | 'profile'
+>;
 
 let scriptLoadingPromise: Promise<OidcModule>;
 
@@ -93,15 +96,19 @@ const oidcSignInResToWebJWTRes = (
   };
 };
 
-function oidcSignInResToStorage(signInRes: SigninResponse): SignInResponseStorage  {
+function oidcSignInResToStorage(
+  signInRes: SigninResponse,
+): SignInResponseStorage {
   return {
     id_token: signInRes.id_token,
     session_state: signInRes.session_state,
-    profile: signInRes.profile
-  }
+    profile: signInRes.profile,
+  };
 }
 
-const getUserFromStorage = (stateUserKey: string): SignInResponseStorage | null => {
+const getUserFromStorage = (
+  stateUserKey: string,
+): SignInResponseStorage | null => {
   const user = window.localStorage.getItem(stateUserKey);
   return user ? JSON.parse(user) : null;
 };
@@ -124,12 +131,13 @@ const getOidcClient = async (
 
   const clientId = oidcConfig?.clientId || projectId;
   const redirectUri = oidcConfig?.redirectUri || window.location.href;
-  const scope = oidcConfig?.scope || 'openid email roles descope.custom_claims offline_access';
+  const scope =
+    oidcConfig?.scope ||
+    'openid email roles descope.custom_claims offline_access';
   const stateUserKey = `${clientId}_user`;
 
-
   const authority = sdk.httpClient.buildUrl(projectId);
-  console.log('@@@ CreateClient', { authority })
+  console.log('@@@ CreateClient', { authority });
   const settings: OidcClientSettings = {
     authority,
     client_id: projectId,
@@ -151,7 +159,7 @@ const getOidcClient = async (
     settings.redirect_uri = oidcConfig.redirectUri;
   }
   if (oidcConfig?.scope) {
-    settings.scope = oidcConfig.scope
+    settings.scope = oidcConfig.scope;
   }
   return {
     client: new OidcClient(settings),
@@ -159,10 +167,13 @@ const getOidcClient = async (
   };
 };
 
-const createOidc = (sdk: CoreSdk, projectId: string, oidcConfig?: OidcConfig) => {
+const createOidc = (
+  sdk: CoreSdk,
+  projectId: string,
+  oidcConfig?: OidcConfig,
+) => {
   // we build the
-  const authorize = async (
-  ): Promise<SdkResponse<URLResponse>> => {
+  const authorize = async (): Promise<SdkResponse<URLResponse>> => {
     const { client } = await getOidcClient(sdk, projectId, oidcConfig);
     const { url } = await client.createSigninRequest({});
     return { ok: true, data: { url } };
@@ -182,7 +193,10 @@ const createOidc = (sdk: CoreSdk, projectId: string, oidcConfig?: OidcConfig) =>
       {} as any,
       new Response(JSON.stringify(oidcSignInResToWebJWTRes(signInRes))),
     );
-    window.localStorage.setItem(stateUserKey, JSON.stringify(oidcSignInResToStorage(signInRes)));
+    window.localStorage.setItem(
+      stateUserKey,
+      JSON.stringify(oidcSignInResToStorage(signInRes)),
+    );
     return signInRes;
   };
 
@@ -197,7 +211,7 @@ const createOidc = (sdk: CoreSdk, projectId: string, oidcConfig?: OidcConfig) =>
     if (user) {
       const { url } = await client.createSignoutRequest({
         id_token_hint: user.id_token,
-        post_logout_redirect_uri:  postLogoutRedirectUri
+        post_logout_redirect_uri: postLogoutRedirectUri,
       });
       window.localStorage.removeItem(stateUserKey);
       window.location.replace(url);
@@ -206,12 +220,9 @@ const createOidc = (sdk: CoreSdk, projectId: string, oidcConfig?: OidcConfig) =>
 
   const refreshToken = async (refreshToken: string) => {
     console.trace('@@@ calling refresh token', {
-      refreshToken
-    })
-    const { client, stateUserKey } = await getOidcClient(
-      sdk,
-      projectId,
-    );
+      refreshToken,
+    });
+    const { client, stateUserKey } = await getOidcClient(sdk, projectId);
 
     const user = getUserFromStorage(stateUserKey);
     if (!user) {
@@ -233,13 +244,13 @@ const createOidc = (sdk: CoreSdk, projectId: string, oidcConfig?: OidcConfig) =>
     );
 
     return res;
-  }
+  };
 
   return {
     logout,
     authorize,
     token,
-    refreshToken
+    refreshToken,
   };
 };
 
