@@ -122,10 +122,18 @@ const createAuthMiddleware =
 			console.debug('Auth middleware, Failed to validate JWT', err);
 			if (!isPublicRoute(req, options)) {
 				const redirectUrl = options.redirectUrl || DEFAULT_PUBLIC_ROUTES.signIn;
-				const url = new URL(redirectUrl, req.nextUrl.origin);
+				const url = req.nextUrl.clone();
+				// Create a URL object for redirectUrl. 'http://example.com' is just a placeholder.
+				const parsedRedirectUrl = new URL(redirectUrl, 'http://example.com');
+				url.pathname = parsedRedirectUrl.pathname;
 
-				// Preserve query parameters from the original request
-				url.search = mergeSearchParams(req.nextUrl.search, url.search) || url.search;
+				const searchParams = mergeSearchParams(
+					url.search,
+					parsedRedirectUrl.search
+				);
+				if (searchParams) {
+					url.search = searchParams;
+				}
 				console.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
 				return NextResponse.redirect(url);
 			}
@@ -147,9 +155,7 @@ const createAuthMiddleware =
 		// Add the session to the request, if it exists
 		const headers = addSessionToHeadersIfExists(req.headers, session);
 		return NextResponse.next({
-			request: {
-				headers
-			}
+			request: { headers }
 		});
 	};
 
