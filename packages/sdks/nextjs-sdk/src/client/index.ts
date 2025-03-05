@@ -12,5 +12,6 @@ export {
 	isRefreshTokenExpired,
 	getJwtPermissions,
 	getJwtRoles,
+	getCurrentTenant,
 	refresh
 } from '@descope/react-sdk';
