@@ -77,6 +77,20 @@ const withOauth = (httpClient: HttpClient) => ({
         idToken,
       }),
     ),
+  exchangeProviderToken: (
+    provider: string,
+    idToken: string,
+    nonce: string,
+    loginOptions?: LoginOptions,
+  ) =>
+    transformResponse(
+      httpClient.post(apiPaths.oauth.exchangeProviderToken, {
+        provider,
+        idToken,
+        nonce,
+        loginOptions,
+      }),
+    ),
 });
 
 export default withOauth;
