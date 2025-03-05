@@ -1,4 +1,3 @@
-import { getCurrentTenant } from './../../react-sdk/src/sdk';
 export { default as Descope } from './Descope.vue';
 export { default as UserManagement } from './UserManagement.vue';
 export { default as RoleManagement } from './RoleManagement.vue';
