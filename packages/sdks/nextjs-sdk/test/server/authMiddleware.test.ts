@@ -309,59 +309,41 @@ describe('authMiddleware Chaining', () => {
 
 	it('blocks unauthenticated users on private routes in a chained middleware setup', async () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
-
+	
 		const middleware = async (req: NextRequest) => {
 			const authResponse = await authMiddleware({ privateRoutes: ['/private'] })(req);
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
-
+	
 		const mockReq = createMockNextRequest({ pathname: '/private' });
 		const response = await middleware(mockReq);
-
+	
+		// Ensure redirection occurs and middleware is NOT called
 		expect(NextResponse.redirect).toHaveBeenCalled();
 		expect(mockMiddleware).not.toHaveBeenCalled();
-		expect(response).toEqual({ pathname: DEFAULT_PUBLIC_ROUTES.signIn });
+		
+		// Validate response is a NextResponse redirect
+		expect(response).toBeInstanceOf(NextResponse);
+		expect(response?.headers?.get('location')).toContain(DEFAULT_PUBLIC_ROUTES.signIn);
 	});
-
+	
 	it('allows authenticated users through both middlewares', async () => {
 		const authInfo = {
 			jwt: 'validJwt',
 			token: { iss: 'project-1', sub: 'user-123' }
 		};
-		mockValidateJwt.mockImplementation(() => authInfo);
+		mockValidateJwt.mockResolvedValue(authInfo);
+	
+		// Ensure mockMiddleware is a properly typed function
+		const mockMiddleware = jest.fn(async (req: NextRequest) => {
+			const headers = new Headers(req.headers);
+			headers.set('X-Test-Header', 'test-value');
+			return new NextResponse(null, { headers });
+		}) as (req: NextRequest) => Promise<NextResponse>;
 	
 		const middleware = async (req: NextRequest) => {
-			console.debug('Middleware chaining - authMiddleware is executing...');
-			const authResponse = await authMiddleware()(req, async () => {
-				console.debug('Middleware chaining - mockMiddleware is being called');
-				return mockMiddleware(req);
-			});
-			if (authResponse) return authResponse;
-			console.debug('Middleware chaining - mockMiddleware did not return a response');
-			return mockMiddleware(req);
-		};
-	
-		const mockReq = createMockNextRequest({
-			pathname: '/private',
-			headers: { Authorization: 'Bearer validJwt' }
-		});
-	
-		await middleware(mockReq);
-	
-		expect(NextResponse.redirect).not.toHaveBeenCalled();
-		expect(mockMiddleware).toHaveBeenCalled();
-	});
-
-	it('preserves request headers when chaining middleware', async () => {
-		const authInfo = {
-			jwt: 'validJwt',
-			token: { iss: 'project-1', sub: 'user-123' }
-		};
-		mockValidateJwt.mockImplementation(() => authInfo);
-	
-		const middleware = async (req: NextRequest) => {
-			const authResponse = await authMiddleware()(req, mockMiddleware);
+			const authResponse = await authMiddleware()(req, () => mockMiddleware(req));
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
@@ -371,13 +353,14 @@ describe('authMiddleware Chaining', () => {
 			headers: { Authorization: 'Bearer validJwt' }
 		});
 	
-		await middleware(mockReq);
+		const response = await middleware(mockReq);
+	
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(mockMiddleware).toHaveBeenCalled();
+		expect(response).toBeInstanceOf(NextResponse);
 	
-		// Verify headers are properly forwarded
-		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
-			.request.headers;
+		// Extract and validate headers
+		const headersArg = response.headers;
 		expect(headersArg.get('x-descope-session')).toEqual(
 			Buffer.from(JSON.stringify(authInfo)).toString('base64')
 		);
