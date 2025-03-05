@@ -26,6 +26,7 @@ describe('useSession', () => {
       isSessionLoading: false,
       fetchSession,
       isSessionFetched: false,
+      isAuthenticated: true,
     } as any as IContext);
 
     expect(result.current.isSessionLoading).toBe(false);

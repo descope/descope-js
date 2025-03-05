@@ -57,6 +57,11 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
   // handle session token change...
+  // Note that if Descope project settings are configured to manage session token in cookies, the session token will not be available in the browser.
+});
+
+sdk.onIsAuthenticatedChange((isAuthenticated) => {
+  // handle authentication change...
 });
 
 sdk.onUserChange((newUser, oldUser) => {

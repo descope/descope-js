@@ -2,6 +2,36 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.3.3...user-profile-widget-0.3.4) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.1`
+* `web-component` updated to version `3.38.1`
+## [0.3.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.3.2...user-profile-widget-0.3.3) (2025-03-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.37.0`
+* `web-js-sdk` updated to version `1.26.0`
+* `web-component` updated to version `3.38.0`
+* `sdk-mixins` updated to version `0.11.1`
+
+### Bug Fixes
+
+* Strict CSP style config ([#1034](https://github.com/descope/descope-js/issues/1034)) ([87b98e2](https://github.com/descope/descope-js/commit/87b98e2919213a6558e086e9a65c1bebda3cd85a))
+
+## [0.3.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.3.1...user-profile-widget-0.3.2) (2025-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.37.0`
+* `sdk-mixins` updated to version `0.11.0`
+## [0.3.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.3.0...user-profile-widget-0.3.1) (2025-02-25)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.36.1`
 ## [0.3.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.2.21...user-profile-widget-0.3.0) (2025-02-24)
 
 ### Dependency Updates

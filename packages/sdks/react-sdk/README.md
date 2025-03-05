@@ -251,6 +251,7 @@ const App = () => {
   // NOTE - `useDescope`, `useSession`, `useUser` should be used inside `AuthProvider` context,
   // and will throw an exception if this requirement is not met
   // useSession retrieves authentication state, session loading status, and session token
+  // If the session token is managed in cookies in project settings, sessionToken will be empty.
   const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
   // useUser retrieves the logged in user information
   const { user, isUserLoading } = useUser();
@@ -344,6 +345,8 @@ const Component = () => {
 }
 ```
 
+Note that ff Descope project settings are configured to manage session token in cookies, the `getSessionToken` function will return an empty string.
+
 #### 2. Passing `sessionTokenViaCookie` boolean prop to the `AuthProvider`
 
 Passing `sessionTokenViaCookie` prop to `AuthProvider` component. Descope SDK will automatically store session token on the `DS` cookie.
@@ -373,6 +376,11 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
 The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
 If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
+#### 3. Configure Descope project to manage session token in cookies
+
+If project settings are configured to manage session token in cookies, Descope services will automatically set the session token in the `DS` cookie as a `Secure` and `HttpOnly` cookie. In this case, the session token will not be stored in the browser's and will not be accessible to the client-side code using `useSession` or `getSessionToken`.
+
+````js
 ### Helper Functions
 
 You can also use the following functions to assist with various actions managing your JWT.
@@ -425,7 +433,7 @@ const AppRoot = () => {
     </AuthProvider>
   );
 };
-```
+````
 
 ### Last User Persistence
 

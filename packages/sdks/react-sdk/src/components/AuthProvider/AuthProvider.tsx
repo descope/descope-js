@@ -47,6 +47,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 }) => {
   const [user, setUser] = useState<User>();
   const [session, setSession] = useState<string>();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(false);
@@ -65,10 +66,13 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     if (sdk) {
       const unsubscribeSessionToken = sdk.onSessionTokenChange(setSession);
       const unsubscribeUser = sdk.onUserChange(setUser);
+      const unsubscribeIsAuthenticated =
+        sdk.onIsAuthenticatedChange(setIsAuthenticated);
 
       return () => {
         unsubscribeSessionToken();
         unsubscribeUser();
+        unsubscribeIsAuthenticated();
       };
     }
     return undefined;
@@ -107,6 +111,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isUserFetched: isUserFetched.current,
       fetchSession,
       session,
+      isAuthenticated,
       isSessionLoading,
       isSessionFetched: isSessionFetched.current,
       projectId,
@@ -126,6 +131,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isUserFetched.current,
       fetchSession,
       session,
+      isAuthenticated,
       isSessionLoading,
       isSessionFetched.current,
       projectId,

@@ -2,13 +2,18 @@ import descopeSdk from '@descope/node-sdk';
 import { baseHeaders } from './constants';
 
 type Sdk = ReturnType<typeof descopeSdk>;
-type CreateSdkParams = Omit<Parameters<typeof descopeSdk>[0], 'projectId'> & {
+type CreateServerSdkParams = Omit<
+	Parameters<typeof descopeSdk>[0],
+	'projectId'
+> & {
 	projectId?: string | undefined;
 };
 
+type CreateSdkParams = Pick<CreateServerSdkParams, 'projectId' | 'baseUrl'>;
+
 let globalSdk: Sdk;
 
-export const createSdk = (config?: CreateSdkParams): Sdk =>
+export const createSdk = (config?: CreateServerSdkParams): Sdk =>
 	descopeSdk({
 		...config,
 		projectId: config?.projectId || process.env.DESCOPE_PROJECT_ID,
@@ -20,9 +25,7 @@ export const createSdk = (config?: CreateSdkParams): Sdk =>
 		}
 	});
 
-export const getGlobalSdk = (
-	config?: Pick<CreateSdkParams, 'projectId' | 'baseUrl'>
-): Sdk => {
+export const getGlobalSdk = (config?: CreateSdkParams): Sdk => {
 	if (!globalSdk) {
 		if (!config?.projectId && !process.env.DESCOPE_PROJECT_ID) {
 			throw new Error('Descope project ID is required to create the SDK');
@@ -32,3 +35,5 @@ export const getGlobalSdk = (
 
 	return globalSdk;
 };
+
+export type { CreateSdkParams };

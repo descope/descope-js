@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import useContext from './useContext';
 
 const useUser = () => {
-  const { user, fetchUser, isUserLoading, session, isUserFetched } =
+  const { user, fetchUser, isUserLoading, isAuthenticated, isUserFetched } =
     useContext();
   const [isInit, setIsInit] = useState(false); // we want to get the user only in the first time we got a session
 
@@ -11,8 +11,8 @@ const useUser = () => {
   const isLoading = useRef(isUserLoading);
 
   const shouldFetchUser = useMemo(
-    () => !user && !isUserLoading && session && !isInit,
-    [fetchUser, session, isInit],
+    () => !user && !isUserLoading && isAuthenticated && !isInit,
+    [fetchUser, isAuthenticated, isInit],
   );
 
   // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
