@@ -280,11 +280,8 @@ describe('authMiddleware Chaining', () => {
 		jest.clearAllMocks();
 		process.env.DESCOPE_PROJECT_ID = 'project1';
 
-		(NextResponse.redirect as jest.Mock).mockImplementation((url) => url);
-		(NextResponse.next as jest.Mock).mockImplementation(() => ({
-			headers: new Headers(),
-			request: jest.fn()
-		}));
+		(NextResponse.redirect as jest.Mock).mockImplementation((url) => new NextResponse(null, { headers: new Headers({ location: url }) }));
+		(NextResponse.next as jest.Mock).mockImplementation(() => new NextResponse(null, { headers: new Headers() }));
 	});
 
 	afterEach(() => {
@@ -322,7 +319,7 @@ describe('authMiddleware Chaining', () => {
 
 		expect(NextResponse.redirect).toHaveBeenCalled();
 		expect(mockMiddleware).not.toHaveBeenCalled();
-		expect(response?.headers?.get('location')).toContain(DEFAULT_PUBLIC_ROUTES.signIn);
+		expect(response.headers.get('location')).toContain(DEFAULT_PUBLIC_ROUTES.signIn);
 	});
 
 	it('allows authenticated users through both middlewares', async () => {
@@ -388,4 +385,3 @@ describe('authMiddleware Chaining', () => {
 		expect(headersArg.get('X-Test-Header')).toEqual('test-value');
 	});
 });
-
