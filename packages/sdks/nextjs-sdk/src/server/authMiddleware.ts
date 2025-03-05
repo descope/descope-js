@@ -141,13 +141,21 @@ const createAuthMiddleware =
 
 		console.debug('Auth middleware finishes');
 
-		let response = next ? await next() : NextResponse.next();
-		response = response || NextResponse.next();
+		// If `next` is provided, use middleware chaining
+		if (next) {
+			const response = await next();
+			const updatedHeaders = addSessionToHeadersIfExists(response.headers, session);
+			return new NextResponse(response.body, {
+			  status: response.status,
+			  headers: updatedHeaders,
+			});
+		}
 
-		const updatedHeaders = addSessionToHeadersIfExists(response.headers, session);
-		return new NextResponse(response.body, {
-			status: response.status,
-			headers: updatedHeaders
+
+		// Add the session to the request, if it exists
+		const headers = addSessionToHeadersIfExists(req.headers, session);
+		return NextResponse.next({
+			request: { headers }
 		});
 	};
 
