@@ -354,22 +354,23 @@ describe('authMiddleware Chaining', () => {
 			token: { iss: 'project-1', sub: 'user-123' }
 		};
 		mockValidateJwt.mockImplementation(() => authInfo);
-
+	
 		const middleware = async (req: NextRequest) => {
-			const authResponse = await authMiddleware()(req);
+			const authResponse = await authMiddleware()(req, mockMiddleware);
 			if (authResponse) return authResponse;
 			return mockMiddleware(req);
 		};
-
+	
 		const mockReq = createMockNextRequest({
 			pathname: '/private',
 			headers: { Authorization: 'Bearer validJwt' }
 		});
-
+	
 		await middleware(mockReq);
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(mockMiddleware).toHaveBeenCalled();
-
+	
+		// Verify headers are properly forwarded
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
 		expect(headersArg.get('x-descope-session')).toEqual(
