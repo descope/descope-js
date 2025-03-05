@@ -395,6 +395,7 @@ You can also use the following helper methods on `DescopeAuthService` to assist 
 - `isRefreshTokenExpired(token = getRefreshToken())` - Check whether the current refresh token is expired. Provide a refresh token if is not persisted.
 - `getJwtRoles(token = getSessionToken(), tenant = '')` - Get current roles from an existing session token. Provide tenant id for specific tenant roles.
 - `getJwtPermissions(token = getSessionToken(), tenant = '')` - Fet current permissions from an existing session token. Provide tenant id for specific tenant permissions.
+- `getCurrentTenant(token = getSessionToken())` - Get current tenant id from an existing session token (from the `dct` claim).
 
 ### Refresh token lifecycle
 
