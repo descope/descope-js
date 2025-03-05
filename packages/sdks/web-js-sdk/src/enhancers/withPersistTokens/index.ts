@@ -7,6 +7,7 @@ import { addHooks, getAuthInfoFromResponse } from '../helpers';
 import {
   beforeRequest,
   clearTokens,
+  getIdToken,
   getRefreshToken,
   getSessionToken,
   persistTokens,
@@ -28,7 +29,14 @@ export const withPersistTokens =
     : ReturnType<T> & {
         getRefreshToken: () => string;
         getSessionToken: () => string;
+        getIdToken: () => string;
       } => {
+    console.log('@@@ withPersistTokens setting', {
+      isPersistTokens,
+      sessionTokenViaCookie,
+      storagePrefix,
+      config,
+    });
     if (!isPersistTokens || !IS_BROWSER) {
       if (isPersistTokens) {
         // Storing auth tokens in local storage and cookies are a client side only capabilities
@@ -53,6 +61,8 @@ export const withPersistTokens =
       }
     };
 
+    console.log('@@@ withPersistTokens setting before request');
+
     const sdk = createSdk(
       addHooks(config, {
         beforeRequest: beforeRequest(storagePrefix),
@@ -61,17 +71,19 @@ export const withPersistTokens =
     );
 
     const wrappedSdk = wrapWith(
-      sdk,
-      ['logout', 'logoutAll'],
+      sdk, // @ts-ignore
+      ['logout', 'logoutAll', 'oidc.logout'],
       wrapper(storagePrefix),
     );
 
     const refreshToken = () => getRefreshToken(storagePrefix);
     const sessionToken = () => getSessionToken(storagePrefix);
+    const idToken = () => getIdToken(storagePrefix);
 
     return Object.assign(wrappedSdk, {
       getRefreshToken: refreshToken,
       getSessionToken: sessionToken,
+      getIdToken: idToken,
     }) as any;
   };
 

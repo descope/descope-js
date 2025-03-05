@@ -50,7 +50,7 @@ export const withAutoRefresh =
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
       const { refreshJwt, sessionJwt, sessionExpiration } =
-        (await getAuthInfoFromResponse(res)) as any;
+        await getAuthInfoFromResponse(res);
 
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
@@ -85,11 +85,10 @@ export const withAutoRefresh =
         );
 
         setTimer(() => {
-          logger.debug('Refreshing session due to timer');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshJwt);
+          sdk.refresh(refreshToken);
         }, timeout);
       }
     };

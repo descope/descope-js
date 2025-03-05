@@ -1324,6 +1324,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/sdks/react-sdk/dist/cjs: {}
+
   packages/sdks/vue-sdk:
     dependencies:
       '@descope/access-key-management-widget':
@@ -1734,6 +1736,9 @@ importers:
       lint-staged:
         specifier: ^15.0.0
         version: 15.1.0
+      oidc-client-ts:
+        specifier: 3.1.0
+        version: 3.1.0
       prettier:
         specifier: ^3.0.0
         version: 3.1.0
@@ -5556,8 +5561,8 @@ packages:
       jwt-decode: 4.0.0
     dev: false
 
-  /@descope/core-js-sdk@2.36.0:
-    resolution: {integrity: sha512-FB99bAJml//Dm/QtX7KCjpK+/1FkZDUN3ZNqCsirxt+mKYaIC6CoI6xibYFgIPA4AhrM15cFb3hP5Nzo0YQVNA==}
+  /@descope/core-js-sdk@2.37.0:
+    resolution: {integrity: sha512-p2JSK7/f9Fd7gI7vEPLMyij1x4sozeNgi0sQC/XbcZ/GSYUbeC1b6xT3XyoMJGNNW2lo115OS61bf7iXwyvJGw==}
     requiresBuild: true
     dependencies:
       jwt-decode: 4.0.0
@@ -5644,11 +5649,11 @@ packages:
       markdown-it: 14.1.0
     dev: true
 
-  /@descope/web-js-sdk@1.25.0:
-    resolution: {integrity: sha512-Fx5Tyrf6cxse5qUdaFBAk3aDT6LZooMcu1rhp6XTT3ZuBeKHnJRrI3E8FDSBdqGIPF/0G3uW4dq2QX+h6vUj2Q==}
+  /@descope/web-js-sdk@1.26.1:
+    resolution: {integrity: sha512-GoOWzYHM/g3L9Qc4XhNk8dnWZxRKpjATa437/7pQ09AdtULJcAk0JWxLLCsJBetn/gG5TlBoIZks+773w9eaiQ==}
     requiresBuild: true
     dependencies:
-      '@descope/core-js-sdk': 2.36.0
+      '@descope/core-js-sdk': 2.37.0
       '@fingerprintjs/fingerprintjs-pro': 3.11.6
       js-cookie: 3.0.5
       jwt-decode: 4.0.0
@@ -22305,7 +22310,6 @@ packages:
   /jwt-decode@4.0.0:
     resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
     engines: {node: '>=18'}
-    dev: false
 
   /karma-source-map-support@1.4.0:
     resolution: {integrity: sha512-RsBECncGO17KAoJCYXjv+ckIz+Ii9NCi+9enk+rq6XC81ezYkb4/RHE6CTXdA7IOJqoF3wcaLfVG0CPmE5ca6A==}
@@ -24157,6 +24161,13 @@ packages:
 
   /obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
+    dev: true
+
+  /oidc-client-ts@3.1.0:
+    resolution: {integrity: sha512-IDopEXjiwjkmJLYZo6BTlvwOtnlSniWZkKZoXforC/oLZHC9wkIxd25Kwtmo5yKFMMVcsp3JY6bhcNJqdYk8+g==}
+    engines: {node: '>=18'}
+    dependencies:
+      jwt-decode: 4.0.0
     dev: true
 
   /on-finished@2.3.0:
@@ -30563,7 +30574,7 @@ packages:
       next: 14.2.10(@babel/core@7.26.9)(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
-      '@descope/web-js-sdk': 1.25.0
+      '@descope/web-js-sdk': 1.26.1
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -30586,7 +30597,7 @@ packages:
       next: 14.2.21(@babel/core@7.26.9)(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
-      '@descope/web-js-sdk': 1.25.0
+      '@descope/web-js-sdk': 1.26.1
     transitivePeerDependencies:
       - encoding
     dev: false

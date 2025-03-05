@@ -1,7 +1,10 @@
-import { JWTResponse } from '@descope/core-js-sdk';
 import Cookies from 'js-cookie';
-import { BeforeRequestHook } from '../../types';
-import { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
+import { BeforeRequestHook, WebJWTResponse } from '../../types';
+import {
+  ID_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from './constants';
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -24,7 +27,7 @@ function setJwtTokenCookie(
     cookieDomain,
     cookieExpiration,
     cookieSameSite = 'Strict',
-  }: Partial<JWTResponse & { cookieSameSite: SameSite }>,
+  }: Partial<WebJWTResponse & { cookieSameSite: SameSite }>,
 ) {
   if (value) {
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
@@ -62,7 +65,12 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
 }
 
 export const persistTokens = (
-  { refreshJwt, sessionJwt, ...cookieParams } = {} as Partial<JWTResponse>,
+  {
+    refreshJwt,
+    sessionJwt,
+    idTokenJwt,
+    ...cookieParams
+  } = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
@@ -81,6 +89,10 @@ export const persistTokens = (
               : sessionTokenViaCookie['sameSite'],
         })
       : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
+  }
+
+  if (idTokenJwt) {
+    setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, idTokenJwt);
   }
 };
 
@@ -101,14 +113,28 @@ export function getSessionToken(prefix: string = ''): string {
   );
 }
 
+export function getIdToken(prefix: string = ''): string {
+  return getLocalStorage(`${prefix}${ID_TOKEN_KEY}`) || '';
+}
+
 /** Remove both the localStorage refresh JWT and the session cookie */
 export function clearTokens(prefix: string = '') {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
+  removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
   Cookies.remove(SESSION_TOKEN_KEY);
 }
 
 export const beforeRequest =
   (prefix?: string): BeforeRequestHook =>
-  (config) =>
-    Object.assign(config, { token: config.token || getRefreshToken(prefix) });
+  (config) => {
+    console.log('@@@ running beforeRequest', {
+      config,
+      prefix,
+      token: config.token,
+      refresh_token: getRefreshToken(prefix),
+    });
+    return Object.assign(config, {
+      token: config.token || getRefreshToken(prefix),
+    });
+  };
