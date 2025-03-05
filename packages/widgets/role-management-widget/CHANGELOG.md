@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.3](https://github.com/descope/descope-js/compare/role-management-widget-0.3.2...role-management-widget-0.3.3) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.1`
+## [0.3.2](https://github.com/descope/descope-js/compare/role-management-widget-0.3.1...role-management-widget-0.3.2) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.0`
+* `sdk-mixins` updated to version `0.11.1`
+## [0.3.1](https://github.com/descope/descope-js/compare/role-management-widget-0.3.0...role-management-widget-0.3.1) (2025-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.0`
+## [0.3.0](https://github.com/descope/descope-js/compare/role-management-widget-0.2.25...role-management-widget-0.3.0) (2025-02-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.25.0`
+* `sdk-mixins` updated to version `0.10.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
 ## [0.2.25](https://github.com/descope/descope-js/compare/role-management-widget-0.2.24...role-management-widget-0.2.25) (2025-02-20)
 
 ### Dependency Updates

@@ -233,7 +233,12 @@ app.use(descope, {
 const sdk = getSdk();
 
 sdk?.onSessionTokenChange((newSession) => {
-  // here you can implement custom logic when the session is changing
+  // here you can implement custom logic when the session is changing,
+  // note that the session may be not available if it is managed in cookies
+});
+
+sdk?.onIsAuthenticatedChange((isAuthenticated) => {
+  // here you can implement custom logic when the authentication state is changing
 });
 ```
 

@@ -15,12 +15,14 @@ describe('HomeComponent', () => {
 
   let mockedCreateSdk: jest.Mock;
   const onSessionTokenChangeSpy = jest.fn();
+  const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
 
   beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
+      onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onUserChange: onUserChangeSpy
     });
 

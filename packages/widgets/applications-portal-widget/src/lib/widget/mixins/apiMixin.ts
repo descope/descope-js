@@ -1,6 +1,7 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   baseUrlMixin,
+  cookieConfigMixin,
   loggerMixin,
   observeAttributesMixin,
   projectIdMixin,
@@ -13,6 +14,7 @@ export const apiMixin = createSingletonMixin(
       projectIdMixin,
       observeAttributesMixin,
       loggerMixin,
+      cookieConfigMixin,
       baseUrlMixin,
     )(superclass);
 
@@ -22,7 +24,11 @@ export const apiMixin = createSingletonMixin(
       #createSdk() {
         this.logger.debug('creating an sdk instance');
         this.#api = createSdk(
-          { projectId: this.projectId, baseUrl: this.baseUrl },
+          {
+            projectId: this.projectId,
+            baseUrl: this.baseUrl,
+            refreshCookieName: this.refreshCookieName,
+          },
           this.mock === 'true',
           this.widgetId,
         );

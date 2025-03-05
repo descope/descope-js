@@ -53,10 +53,10 @@ async function addUserToPage(user) {
     window.location.reload();
   };
 
-  // in case of session token is missing, reload the page
+  // in case the user is not authenticated, reload the page
   // this may happen if the user logs out from another tab or the refresh token is revoked/expired
-  sdk.onSessionTokenChange = async (token) => {
-    if (!token) {
+  sdk.onIsAuthenticatedChange = async (isAuthenticated) => {
+    if (!isAuthenticated) {
       // reload the page
       window.location.reload();
     }

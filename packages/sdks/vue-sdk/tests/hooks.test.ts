@@ -26,6 +26,7 @@ describe('hooks', () => {
         session: { value: 'session' },
         isLoading: { value: true },
         isFetchSessionWasNeverCalled: true,
+        isAuthenticated: { value: true },
       },
     });
   });
@@ -53,7 +54,7 @@ describe('hooks', () => {
       expect(useSession()).toEqual({
         isLoading: true,
         sessionToken: { value: 'session' },
-        isAuthenticated: true,
+        isAuthenticated: { value: true },
       });
     });
 

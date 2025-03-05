@@ -18,8 +18,6 @@ describe('DescopeUserProfileComponent', () => {
   let component: UserProfileComponent;
   let fixture: ComponentFixture<UserProfileComponent>;
   let mockedCreateSdk: jest.Mock;
-  const onSessionTokenChangeSpy = jest.fn();
-  const onAuditChangeSpy = jest.fn();
   const afterRequestHooksSpy = jest.fn();
   const mockConfig: DescopeAuthConfig = {
     projectId: 'someProject'
@@ -29,8 +27,6 @@ describe('DescopeUserProfileComponent', () => {
     mockedCreateSdk = mocked(createSdk);
 
     mockedCreateSdk.mockReturnValue({
-      onSessionTokenChange: onSessionTokenChangeSpy,
-      onAuditChange: onAuditChangeSpy,
       httpClient: {
         hooks: {
           afterRequest: afterRequestHooksSpy

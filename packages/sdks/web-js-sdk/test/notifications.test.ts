@@ -6,7 +6,7 @@ const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
 describe('notifications', () => {
-  it('should subscribe to onSessionTokenChange and onUserChange', async () => {
+  it('should subscribe to onSessionTokenChange, onIsAuthenticatedChange and onUserChange', async () => {
     const mockFetch = jest
       .fn()
       .mockReturnValue(createMockReturnValue(authInfo));
@@ -19,12 +19,16 @@ describe('notifications', () => {
     const userHandler = jest.fn();
     sdk.onUserChange(userHandler);
 
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
     await sdk.httpClient.get('1/2/3');
 
     await new Promise((resolve: Function) =>
       setTimeout(() => {
-        expect(sessionTokenHandler).toBeCalledWith(authInfo.sessionJwt);
-        expect(userHandler).toBeCalledWith(authInfo.user);
+        expect(sessionTokenHandler).toHaveBeenCalledWith(authInfo.sessionJwt);
+        expect(userHandler).toHaveBeenCalledWith(authInfo.user);
+        expect(isAuthenticatedHandler).toHaveBeenCalledWith(true);
         resolve();
       }, 0),
     );
@@ -73,6 +77,9 @@ describe('notifications', () => {
     const userHandler = jest.fn();
     sdk.onUserChange(userHandler);
 
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
     await sdk.httpClient.get('1/2/3');
 
     await new Promise(process.nextTick);
@@ -81,10 +88,12 @@ describe('notifications', () => {
 
     await new Promise(process.nextTick);
 
-    expect(sessionTokenHandler).toBeCalledTimes(2);
-    expect(userHandler).toBeCalledTimes(2);
+    expect(sessionTokenHandler).toHaveBeenCalledTimes(2);
+    expect(userHandler).toHaveBeenCalledTimes(2);
+    expect(isAuthenticatedHandler).toHaveBeenCalledTimes(2);
     expect(sessionTokenHandler).toHaveBeenNthCalledWith(2, null);
     expect(userHandler).toHaveBeenNthCalledWith(2, null);
+    expect(isAuthenticatedHandler).toHaveBeenNthCalledWith(2, false);
   });
 
   it('should not update state when response does not contain jwt response', async () => {
@@ -98,6 +107,9 @@ describe('notifications', () => {
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
 
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
     const userHandler = jest.fn();
     sdk.onUserChange(userHandler);
 
@@ -105,8 +117,9 @@ describe('notifications', () => {
 
     await new Promise((resolve: Function) =>
       setTimeout(() => {
-        expect(sessionTokenHandler).not.toBeCalled();
-        expect(userHandler).not.toBeCalled();
+        expect(sessionTokenHandler).not.toHaveBeenCalled();
+        expect(userHandler).not.toHaveBeenCalled();
+        expect(isAuthenticatedHandler).not.toHaveBeenCalled();
         resolve();
       }, 0),
     );
@@ -121,6 +134,7 @@ describe('notifications', () => {
     global.fetch = mockFetch;
 
     const sessionTokenHandler = jest.fn();
+    const isAuthenticatedHandler = jest.fn();
 
     const sdk = createSdk({ projectId: 'pid' });
 
@@ -128,12 +142,15 @@ describe('notifications', () => {
     await sdk.httpClient.get('1/2/3');
 
     sdk.onSessionTokenChange(sessionTokenHandler);
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
     await sdk.logout(authInfo.refreshJwt);
 
     // Ensure subscriber called automatically with an empty value
     await new Promise((resolve: Function) =>
       setTimeout(() => {
-        expect(sessionTokenHandler).toBeCalledWith(null);
+        expect(sessionTokenHandler).toHaveBeenCalledWith(null);
+        expect(isAuthenticatedHandler).toHaveBeenCalledWith(false);
         resolve();
       }, 0),
     );

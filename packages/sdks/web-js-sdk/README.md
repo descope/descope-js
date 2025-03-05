@@ -48,11 +48,20 @@ If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'La
   /* Do not clear the last authenticated user details from the browser storage after logout (default is false).
   Note: This flag is relevant only when `storeLastAuthenticatedUser` is true.
   */
-  keepLastAuthenticatedUserAfterLogout: true // default is false
+  keepLastAuthenticatedUserAfterLogout: true, // default is false
+
+  /*  When managing multiple Descope projects on the same domain, you can prevent refresh cookie conflicts by assigning a custom name to your refresh token cookie during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` option.
+  */
+  refreshCookieName: "cookie-1"
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
   // handle session token change...
+  // Note that if Descope project settings are configured to manage session token in cookies, the session token will not be available in the browser.
+});
+
+sdk.onIsAuthenticatedChange((isAuthenticated) => {
+  // handle authentication change...
 });
 
 sdk.onUserChange((newUser, oldUser) => {

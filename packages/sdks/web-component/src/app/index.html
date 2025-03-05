@@ -5,38 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Uncomment next section if you want to test CSP -->
 
-    <!-- <meta
+    <meta
       http-equiv="Content-Security-Policy"
       content="connect-src 'self' static.descope.com api.descope.com;
-    style-src 'unsafe-inline' fonts.googleapis.com;
-    img-src static.descope.com content.app.descope.com;
+    style-src fonts.googleapis.com 'nonce-rAnd0m';
+    img-src static.descope.com content.app.descope.com imgs.descope.com data:;
     font-src fonts.gstatic.com;
-    script-src 'self' static.descope.com;"
-    /> -->
-    <style>
-      body {
-        background-color: antiquewhite;
-        position: relative;
-        height: 100vh;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .login-container {
-        width: 500px;
-        min-height: 300px;
-        margin: auto;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-    </style>
+    script-src 'self' static.descope.com descopecdn.com 'nonce-rAnd0m' 'sha256-ZfFIHrd9MzirQdadZrM3hznhYlx+PRQo8+OCWjaPDaY=';"
+    />
   </head>
   <body>
-    <script type="module" src="../lib/descope-wc/index.ts"></script>
+    <script
+      type="module"
+      src="../lib/descope-wc/index.ts"
+      nonce="rAnd0m"
+    ></script>
     <div class="login-container">
       <descope-wc
         project-id="<project-id>"
@@ -48,10 +31,11 @@
         debug="true"
         validate-on-blur="false"
         keep-last-authenticated-user-after-logout="true"
+        nonce="rAnd0m"
       ></descope-wc>
       <div class="loading">Loading ...</div>
     </div>
-    <script>
+    <script nonce="rAnd0m">
       // Translate or modify the error as needed
       function translateError(error) {
         const translationMap = {
@@ -69,6 +53,7 @@
         alert(`Success! - ${JSON.stringify(e.detail)}`),
       );
       descopeWcEle.addEventListener('ready', () => {
+        console.log('ready');
         // Remove/hide loading
         document.querySelector('.loading')?.remove();
         // Alternatively, it can be hidden. For example:
@@ -78,15 +63,17 @@
         console.log('screen-updated', e.detail);
       });
     </script>
-    <script>
+    <script nonce="rAnd0m">
       const descopeEle = document.querySelector('descope-wc');
 
       descopeEle.onScreenUpdate = async (screenName, context, next, ref) => {
         console.log('onScreenUpdate', screenName, context);
 
+        // if (screenName !== 'Sign In') return false;
+
         // ref.innerHTML = `
         //   <form>
-        //     <input type="text" name="email" placeholder="Email" />
+        //     <input type="text" name="password" placeholder="Password" />
         //     <button type="submit">Submit</button>
         //   </form>
         // `;
@@ -96,10 +83,10 @@
         //   const formData = new FormData(e.target);
         //   const data = Object.fromEntries(formData.entries());
 
-        //   next('Ppb_65tyyn', data);
-        // });
+        //   next('pXVwWREG7M', data);
+        // }, { once: true });
 
-        return false;
+        // return true;
       };
     </script>
   </body>

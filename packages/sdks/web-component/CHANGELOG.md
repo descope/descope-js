@@ -2,6 +2,55 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.38.1](https://github.com/descope/descope-js/compare/web-component-3.38.0...web-component-3.38.1) (2025-03-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.26.1`
+## [3.38.0](https://github.com/descope/descope-js/compare/web-component-3.37.0...web-component-3.38.0) (2025-03-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.1`
+* `web-js-sdk` updated to version `1.26.0`
+
+### Features
+
+* http session cookie ([#1032](https://github.com/descope/descope-js/issues/1032)) ([0cd7ee3](https://github.com/descope/descope-js/commit/0cd7ee35b4559b6bfd6c446c0c5e2c99e00d8131))
+
+
+### Bug Fixes
+
+* Strict CSP style config ([#1034](https://github.com/descope/descope-js/issues/1034)) ([87b98e2](https://github.com/descope/descope-js/commit/87b98e2919213a6558e086e9a65c1bebda3cd85a))
+
+## [3.37.0](https://github.com/descope/descope-js/compare/web-component-3.36.1...web-component-3.37.0) (2025-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.0`
+
+### Features
+
+* support components attributes ([#1030](https://github.com/descope/descope-js/issues/1030)) ([a2944a1](https://github.com/descope/descope-js/commit/a2944a13840125662b465f092cdf8663995f4769))
+
+## [3.36.1](https://github.com/descope/descope-js/compare/web-component-3.36.0...web-component-3.36.1) (2025-02-25)
+
+
+### Bug Fixes
+
+* BYOS redundant onScreenUpdate calls RELEASE ([#1031](https://github.com/descope/descope-js/issues/1031)) ([bac7a25](https://github.com/descope/descope-js/commit/bac7a25019f23ba129d1d91d7043530f73d691d3))
+
+## [3.36.0](https://github.com/descope/descope-js/compare/web-component-3.35.1...web-component-3.36.0) (2025-02-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.10.0`
+* `web-js-sdk` updated to version `1.25.0`
+
+### Features
+
+* support cookie rename ([#1025](https://github.com/descope/descope-js/issues/1025)) RELEASE ([cc90806](https://github.com/descope/descope-js/commit/cc90806d8c97d1579d89921ee23c9bf846d11b5f))
+
 ## [3.35.1](https://github.com/descope/descope-js/compare/web-component-3.35.0...web-component-3.35.1) (2025-02-20)
 
 ### Dependency Updates

@@ -132,6 +132,7 @@ export type JWTResponse = {
   cookieExpiration?: number;
   user?: UserResponse;
   firstSeen?: boolean;
+  sessionExpiration: number;
 };
 
 /** Authentication info result from exchanging access keys for a session */

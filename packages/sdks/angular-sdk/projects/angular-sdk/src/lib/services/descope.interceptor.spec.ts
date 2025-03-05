@@ -27,6 +27,7 @@ describe('DescopeInterceptor', () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: jest.fn(),
+      onIsAuthenticatedChange: jest.fn(),
       onUserChange: jest.fn()
     });
 
@@ -72,7 +73,12 @@ describe('DescopeInterceptor', () => {
     jest.spyOn(authService, 'getSessionToken').mockReturnValue(null);
     const refreshSessionSpy = jest
       .spyOn(authService, 'refreshSession')
-      .mockReturnValue(of({ ok: true, data: { sessionJwt: 'newToken' } }));
+      .mockReturnValue(
+        of({
+          ok: true,
+          data: { sessionJwt: 'newToken', sessionExpiration: 1663190468 }
+        })
+      );
 
     httpClient.get('/api/data').subscribe();
 

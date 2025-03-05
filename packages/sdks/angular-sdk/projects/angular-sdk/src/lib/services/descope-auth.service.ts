@@ -53,6 +53,7 @@ export class DescopeAuthService {
     });
     this.user$ = this.userSubject.asObservable();
     this.descopeSdk.onSessionTokenChange(this.setSession.bind(this));
+    this.descopeSdk.onIsAuthenticatedChange(this.setIsAuthenticated.bind(this));
     this.descopeSdk.onUserChange(this.setUser.bind(this));
   }
 
@@ -63,22 +64,6 @@ export class DescopeAuthService {
       isSessionLoading: true
     });
     return this.descopeSdk.refresh().pipe(
-      tap((data) => {
-        const afterRequestSession = this.sessionSubject.value;
-        if (data.ok && data.data) {
-          this.sessionSubject.next({
-            ...afterRequestSession,
-            sessionToken: data.data.sessionJwt,
-            isAuthenticated: !!data.data.sessionJwt
-          });
-        } else {
-          this.sessionSubject.next({
-            ...afterRequestSession,
-            sessionToken: '',
-            isAuthenticated: false
-          });
-        }
-      }),
       finalize(() => {
         const afterRefreshSession = this.sessionSubject.value;
         this.sessionSubject.next({
@@ -185,9 +170,16 @@ export class DescopeAuthService {
   private setSession(sessionToken: string | null) {
     const currentSession = this.sessionSubject.value;
     this.sessionSubject.next({
-      sessionToken,
-      isAuthenticated: !!sessionToken,
-      isSessionLoading: currentSession.isSessionLoading
+      ...currentSession,
+      sessionToken
+    });
+  }
+
+  private setIsAuthenticated(isAuthenticated: boolean) {
+    const currentSession = this.sessionSubject.value;
+    this.sessionSubject.next({
+      ...currentSession,
+      isAuthenticated
     });
   }
 

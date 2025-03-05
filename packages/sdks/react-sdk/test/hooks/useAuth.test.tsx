@@ -23,6 +23,9 @@ jest.mock('@descope/web-js-sdk', () => {
     onSessionTokenChange: jest
       .fn(() => () => {})
       .mockName('onSessionTokenChange'),
+    onIsAuthenticatedChange: jest
+      .fn(() => () => {})
+      .mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn(() => () => {}).mockName('onUserChange'),
     refresh: jest.fn(() => Promise.resolve()),
     httpClient: {
@@ -87,7 +90,7 @@ describe('hooks', () => {
     });
 
     result.current.logout();
-    expect(logout).toBeCalled();
+    expect(logout).toHaveBeenCalled();
   });
 
   it('should throw an error when trying to access attribute and sdk is not initialized', () => {
@@ -95,7 +98,7 @@ describe('hooks', () => {
       wrapper: authProviderWrapper(''),
     });
 
-    expect(() => get(result.current, 'dummyKey')).toThrowError(
+    expect(() => get(result.current, 'dummyKey')).toThrow(
       expect.objectContaining({
         message: expect.stringContaining(
           'You can only use this attribute after sdk initialization',
@@ -129,13 +132,13 @@ describe('hooks', () => {
     expect(result.current.isSessionLoading).toEqual(true);
 
     await waitFor(() => {
-      expect(refresh).toBeCalled();
+      expect(refresh).toHaveBeenCalled();
     });
 
     // render again
     rerender();
 
     expect(result.current.isSessionLoading).toEqual(false);
-    expect(refresh).toBeCalledTimes(1);
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 });

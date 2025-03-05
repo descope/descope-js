@@ -29,12 +29,17 @@ export default {
 
     const isSessionLoading = ref<boolean | null>(null);
     const sessionToken = ref('');
+    const isAuthenticated = ref(false);
 
     const isUserLoading = ref<boolean | null>(null);
     const user = ref<UserData>(null);
 
     sdk.onSessionTokenChange((s) => {
       sessionToken.value = s;
+    });
+
+    sdk.onIsAuthenticatedChange((a) => {
+      isAuthenticated.value = a;
     });
 
     sdk.onUserChange((u) => {
@@ -65,14 +70,14 @@ export default {
     // maybe there is a better way to do it
     routeGuardInternal.value = () =>
       new Promise((resolve, reject) => {
-        if (!sessionToken.value && isFetchSessionWasNeverCalled.value) {
+        if (!isAuthenticated.value && isFetchSessionWasNeverCalled.value) {
           fetchSession().catch(reject);
         }
 
         // if the session is loading we want to wait for it to finish before resolving
         watch(
           () => isSessionLoading.value,
-          () => !isSessionLoading.value && resolve(!!unref(sessionToken)),
+          () => !isSessionLoading.value && resolve(!!unref(isAuthenticated)),
           { immediate: true },
         );
       });
@@ -82,6 +87,7 @@ export default {
         fetchSession,
         isLoading: readonly(isSessionLoading),
         session: readonly(sessionToken),
+        isAuthenticated: readonly(isAuthenticated),
         isFetchSessionWasNeverCalled,
       },
       user: {

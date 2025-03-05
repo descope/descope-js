@@ -6,6 +6,7 @@ type FlowConfig = {
   baseUrl?: string;
   baseStaticUrl?: string;
   baseCdnUrl?: string;
+  refreshCookieName?: string;
 };
 
 export const createFlowTemplate = (
