@@ -14,4 +14,5 @@ export {
   getSessionToken,
   isSessionTokenExpired,
   isRefreshTokenExpired,
+  getCurrentTenant,
 } from './sdk';
