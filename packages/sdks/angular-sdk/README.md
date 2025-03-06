@@ -184,6 +184,9 @@ export class AppComponent {
     Use a custom style name or keep empty to use the default style.
     styleId="my-awesome-style"
 
+    Set a CSP nonce that will be used for style and script tags.
+    nonce="rAnd0m"
+
      logger is an object describing how to log info, warn and errors.
      NOTE: logger is not required. If not provided, the logs will be printed to the console.
      Example:
