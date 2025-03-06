@@ -44,7 +44,6 @@ import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 // We load forter script in the test because we mock it and ensure it is called properly
 import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
 import recaptcha from '../src/lib/descope-wc/sdkScripts/grecaptcha';
-import { time } from 'console';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
 
