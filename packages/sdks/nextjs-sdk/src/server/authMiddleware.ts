@@ -147,6 +147,7 @@ const createAuthMiddleware =
 			const updatedHeaders = addSessionToHeadersIfExists(response.headers, session);
 			return new NextResponse(response.body, {
 			  status: response.status,
+			  statusText: response.statusText,
 			  headers: updatedHeaders,
 			});
 		}
