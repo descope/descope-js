@@ -108,3 +108,7 @@ export async function transformResponse<
 
   return ret;
 }
+
+export function getCurrentTenant(token: string): string {
+  return parseJwt(token)?.[DESCOPE_CURRENT_TENANT_CLAIM] || '';
+}

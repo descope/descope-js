@@ -6,6 +6,7 @@ import createSdk, {
   getSessionToken,
   isSessionTokenExpired,
   isRefreshTokenExpired,
+  getCurrentTenant,
 } from '../src/sdk';
 
 jest.mock('@descope/web-js-sdk', () => () => ({
@@ -14,6 +15,7 @@ jest.mock('@descope/web-js-sdk', () => () => ({
   isJwtExpired: jest.fn(),
   getJwtPermissions: jest.fn(),
   getJwtRoles: jest.fn(),
+  getCurrentTenant: jest.fn(),
   refresh: jest.fn(),
 }));
 
@@ -115,12 +117,19 @@ describe('utility functions', () => {
     expect(sdk.getJwtRoles).toHaveBeenCalledWith('session', undefined);
   });
 
-  it('should call getJwtRoles with the session token when not provided', () => {
+  it('should log error when calling getJwtRoles when the function throws error', () => {
     jest.spyOn(console, 'error').mockImplementation(() => {}); // eslint-disable-line @typescript-eslint/no-empty-function
     jest.spyOn(sdk, 'getJwtRoles').mockImplementation(() => {
       throw new Error('session token');
     });
     getJwtRoles();
     expect(console.error).toHaveBeenCalled(); // eslint-disable-line no-console
+  });
+
+  it('should call getCurrentTenant with the session token when not provided', () => {
+    (sdk.getSessionToken as jest.Mock).mockReturnValueOnce('session-token');
+    jest.spyOn(sdk, 'getCurrentTenant').mockReturnValueOnce('t-1');
+    expect(getCurrentTenant()).toBe('t-1');
+    expect(sdk.getCurrentTenant).toHaveBeenCalledWith('session-token');
   });
 });

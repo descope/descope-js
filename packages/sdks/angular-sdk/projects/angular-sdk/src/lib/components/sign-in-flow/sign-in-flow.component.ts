@@ -33,6 +33,7 @@ export class SignInFlowComponent {
     ref: HTMLElement
   ) => boolean | Promise<boolean>;
   @Input() client: Record<string, any>;
+  @Input() nonce: string;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;

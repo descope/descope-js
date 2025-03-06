@@ -7,6 +7,7 @@ import {
   getTenants,
   getJwtPermissions,
   getJwtRoles,
+  getCurrentTenant,
   isJwtExpired,
   transformResponse,
 } from './helpers';
@@ -161,5 +162,16 @@ export default (httpClient: HttpClient) => ({
    * @returns The list of roles specified in the given JWT
    */
   getJwtRoles: withJwtValidations(getJwtRoles),
+  /**
+   * Returns Descope current tenant from the given JWT but DOES NOT check for signature
+   * @param token A valid token
+   * @returns The current tenant from the given JWT
+   */
+  getCurrentTenant: withJwtValidations(getCurrentTenant),
+  /**
+   * Parses the given JWT token but DOES NOT check for signature
+   * @param token A valid token
+   * @returns The parsed JWT token
+   */
   httpClient,
 });

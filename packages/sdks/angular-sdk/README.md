@@ -184,6 +184,9 @@ export class AppComponent {
     Use a custom style name or keep empty to use the default style.
     styleId="my-awesome-style"
 
+    Set a CSP nonce that will be used for style and script tags.
+    nonce="rAnd0m"
+
      logger is an object describing how to log info, warn and errors.
      NOTE: logger is not required. If not provided, the logs will be printed to the console.
      Example:
@@ -395,6 +398,7 @@ You can also use the following helper methods on `DescopeAuthService` to assist 
 - `isRefreshTokenExpired(token = getRefreshToken())` - Check whether the current refresh token is expired. Provide a refresh token if is not persisted.
 - `getJwtRoles(token = getSessionToken(), tenant = '')` - Get current roles from an existing session token. Provide tenant id for specific tenant roles.
 - `getJwtPermissions(token = getSessionToken(), tenant = '')` - Fet current permissions from an existing session token. Provide tenant id for specific tenant permissions.
+- `getCurrentTenant(token = getSessionToken())` - Get current tenant id from an existing session token (from the `dct` claim).
 
 ### Refresh token lifecycle
 

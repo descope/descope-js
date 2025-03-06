@@ -118,6 +118,7 @@ export type DescopeProps = {
   theme?: ThemeOptions;
   // If locale is not provided - the browser's locale will be used
   locale?: string;
+  nonce?: string;
   autoFocus?: AutoFocusOptions;
   validateOnBlur?: boolean;
   restartOnError?: boolean;

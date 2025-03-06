@@ -55,6 +55,7 @@ app.mount('#app');
   <!-- form="{ email: 'test@domain.com' }" form is an object the initial form context that is used in screens inputs in the flow execution. Used to inject predifined input values on flow start such as custom inputs, custom attrbiutes and other inputs. Keys passed can be accessed in flows actions, conditions and screens prefixed with "form.". NOTE: form is not required. If not provided, 'form' context key will be empty before user input. -->
   <!-- client="{ version: '1.2.3' }" client is an object the initial client context in the flow execution. Keys passed can be accessed in flows actions and conditions prefixed with "client.". NOTE: client is not required. If not provided, context key will be empty. -->
   <!-- styleId="my-awesome-style" Use a custom style name or keep empty to use the default style. -->
+  <!-- nonce="rAnd0m" Set a CSP nonce that will be used for style and script tags -->
 </template>
 
 <script setup>
@@ -253,6 +254,7 @@ You can also use the following functions to assist with various actions managing
 `isRefreshTokenExpired(token = getRefreshToken())` - Check whether the current refresh token is expired. Provide a refresh token if is not persisted.
 `getJwtRoles(token = getSessionToken(), tenant = '')` - Get current roles from an existing session token. Provide tenant id for specific tenant roles.
 `getJwtPermissions(token = getSessionToken(), tenant = '')` - Fet current permissions from an existing session token. Provide tenant id for specific tenant permissions.
+`getCurrentTenant(token = getSessionToken())` - Get current tenant id from an existing session token (from the `dct` claim).
 
 ### Refresh token lifecycle
 
