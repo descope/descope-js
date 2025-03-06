@@ -1,6 +1,11 @@
 import { apiPaths } from '../../constants';
 import { HttpClient } from '../../httpClient';
-import { SdkResponse, JWTResponse, LoginOptions } from '../types';
+import {
+  SdkResponse,
+  JWTResponse,
+  LoginOptions,
+  ClientIdResponse,
+} from '../types';
 import { transformResponse } from '../helpers';
 import { Oauth, OAuthProviders } from './types';
 import { stringNonEmpty, withValidations } from '../validations';
@@ -77,6 +82,12 @@ const withOauth = (httpClient: HttpClient) => ({
         idToken,
       }),
     ),
+  getOneTapClientId: (provider: string) =>
+    transformResponse<ClientIdResponse>(
+      httpClient.get(
+        apiPaths.oauth.oneTap.getOneTapClientId.replace('{provider}', provider),
+      ),
+    ),
   exchangeProviderToken: (
     provider: string,
     idToken: string,
@@ -84,7 +95,7 @@ const withOauth = (httpClient: HttpClient) => ({
     loginOptions?: LoginOptions,
   ) =>
     transformResponse(
-      httpClient.post(apiPaths.oauth.exchangeProviderToken, {
+      httpClient.post(apiPaths.oauth.oneTap.exchangeOneTapIDToken, {
         provider,
         idToken,
         nonce,

@@ -38,7 +38,10 @@ export default {
     exchange: '/v1/auth/oauth/exchange',
     startNative: 'v1/auth/oauth/native/start',
     finishNative: 'v1/auth/oauth/native/finish',
-    exchangeProviderToken: 'v1/auth/oauth/provider/exchange',
+    oneTap: {
+      getOneTapClientId: '/v1/auth/onetap/clientid/{provider}',
+      exchangeOneTapIDToken: '/v1/auth/oauth/onetap/idtoken/exchange',
+    },
   },
   saml: {
     start: '/v1/auth/saml/authorize',
