@@ -44,6 +44,7 @@ import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 // We load forter script in the test because we mock it and ensure it is called properly
 import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
 import recaptcha from '../src/lib/descope-wc/sdkScripts/grecaptcha';
+import { time } from 'console';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
 
@@ -5466,6 +5467,24 @@ describe('web-component', () => {
           timeout: WAIT_TIMEOUT,
         },
       );
+    });
+  });
+
+  describe('CSP', () => {
+    it('should add nonce to window', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" nonce="123456"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => expect(window.DESCOPE_NONCE).toBe('123456'), {
+        timeout: WAIT_TIMEOUT,
+      });
     });
   });
 

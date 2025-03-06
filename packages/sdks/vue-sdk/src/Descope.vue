@@ -22,6 +22,7 @@
       :onScreenUpdate.prop="onScreenUpdate"
       :form.attr="formStr"
       :client.attr="clientStr"
+      :nonce.attr="nonce"
       @success="onSuccess"
       @error="onError"
       @ready="onReady"
@@ -108,6 +109,9 @@ const props = defineProps({
     type: Object,
   },
   styleId: {
+    type: String,
+  },
+  nonce: {
     type: String,
   },
 });
