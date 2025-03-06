@@ -65,6 +65,8 @@ export const initFilterAuditInputMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.searchInput.onInput(this.#onInput);
+        // we need to call it once to in case there is a default value
+        this.#onInput();
       }
 
       #initRangeInput() {
