@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.38.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.37.0...core-js-sdk-2.38.0) (2025-03-06)
+
+
+### Features
+
+* get current tenant ([#1040](https://github.com/descope/descope-js/issues/1040)) ([76e6f6c](https://github.com/descope/descope-js/commit/76e6f6ccd925ebc5425669f8137ff74480ab9911))
+
 ## [2.37.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.36.0...core-js-sdk-2.37.0) (2025-03-04)
 
 
