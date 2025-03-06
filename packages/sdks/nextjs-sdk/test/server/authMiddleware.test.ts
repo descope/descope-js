@@ -9,12 +9,20 @@ jest.mock('@descope/node-sdk', () =>
 	}))
 );
 
-jest.mock('next/server', () => ({
-	NextResponse: {
-		redirect: jest.fn(),
-		next: jest.fn()
+jest.mock('next/server', () => {
+	const originalModule = jest.requireActual('next/server');
+	
+	class MockNextResponse extends originalModule.NextResponse {
+	  static redirect = jest.fn();
+	  static next = jest.fn();
 	}
-}));
+  
+	return {
+	  ...originalModule,
+	  NextResponse: MockNextResponse
+	};
+  });
+  
 
 // Utility function to create a mock NextRequest
 const createMockNextRequest = (
