@@ -24,7 +24,7 @@ const extractSession = (
 const getSessionFromCookie = async (
 	config?: CreateSdkParams
 ): Promise<AuthenticationInfo | undefined> => {
-  console.debug('attempting to get session from cookie');
+	console.debug('attempting to get session from cookie');
 	try {
 		const sessionCookie = (await cookies()).get(
 			descopeSdk.SessionTokenCookieName

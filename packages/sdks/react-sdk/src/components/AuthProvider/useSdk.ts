@@ -21,7 +21,7 @@ export default ({
   refreshCookieName,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
-}: Config): ReturnType<typeof createSdk> =>
+}: Config): ReturnType<typeof createSdk> | undefined =>
   useMemo(() => {
     if (!projectId) {
       return undefined;

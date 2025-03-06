@@ -1,4 +1,4 @@
-import createCoreSdk from '@descope/core-js-sdk';
+import createCoreSdk, { JWTResponse } from '@descope/core-js-sdk';
 
 type Head<T extends ReadonlyArray<any>> = T extends readonly [] ? never : T[0];
 
@@ -15,6 +15,12 @@ export type ReplaceParam<
 export type CreateCoreSdk = typeof createCoreSdk;
 export type CoreSdk = ReturnType<CreateCoreSdk>;
 export type CoreSdkConfig = Head<Parameters<CreateCoreSdk>>;
+
+/* JWT response which might be an OIDC response */
+export type WebJWTResponse = JWTResponse & {
+  idTokenJwt?: string;
+  oidc?: boolean;
+};
 
 export type BeforeRequestHook = Extract<
   CoreSdkConfig['hooks']['beforeRequest'],

@@ -10,6 +10,7 @@ import ManageAccessKeys from './ManageAccessKeys';
 import ManageAudit from './ManageAudit';
 import MyUserProfile from './MyUserProfile';
 import MyApplicationsPortal from './MyApplicationsPortal';
+import OidcLogin from './OidcLogin';
 
 const Layout = () => (
   <div
@@ -46,7 +47,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    const route = process.env.DESCOPE_IS_OIDC ? '/oidc-login' : '/login';
+    return <Navigate to={route} replace />;
   }
 
   return children;
@@ -112,6 +114,7 @@ const App = () => (
         }
       />
       <Route path="/login" element={<Login />} />
+      <Route path="/oidc-login" element={<OidcLogin />} />
       <Route path="/step-up" element={<StepUp />} />
     </Route>
   </Routes>

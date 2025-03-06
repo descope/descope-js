@@ -16,7 +16,12 @@ const Home = () => {
   const sdk = useDescope();
 
   const onLogout = useCallback(() => {
-    sdk.logout();
+    if (sdk.getIdToken()) {
+      // get current url and replace with /
+      sdk.oidc.logout(window.location.origin + '/');
+    } else {
+      sdk.logout();
+    }
   }, [sdk]);
 
   const roles = useMemo(
