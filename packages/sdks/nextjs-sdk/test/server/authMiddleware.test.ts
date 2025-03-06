@@ -327,10 +327,10 @@ describe('middleware chaining', () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
 
 		const middleware = authMiddleware({
-			publicRoutes: ['/public/*']
+			publicRoutes: ['/sign-in']
 		});
 		
-		const mockReq = createMockNextRequest({ pathname: '/public/info' });
+		const mockReq = createMockNextRequest({ pathname: '/sign-in' });
 
 		const nextMock = jest.fn().mockResolvedValue(
 			new NextResponse(null, {
