@@ -380,7 +380,8 @@ describe('middleware chaining', () => {
 		expect(response.headers.get('content-type')).toEqual('application/json');
 		
 		// Verify the response body was preserved
-		expect(response.body).toEqual(JSON.stringify({ data: 'test' }));
+		const text = await response.clone().text();
+		expect(text).toEqual(JSON.stringify({ data: 'test' }));
 	});
 
 	it('should preserve status code when chaining middleware', async () => {
