@@ -58,6 +58,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       logger,
       tenant,
       theme,
+      nonce,
       locale,
       debug,
       client,
@@ -176,6 +177,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             {...{
               // attributes
               'theme.attr': theme,
+              'nonce.attr': nonce,
               'locale.attr': locale,
               'form.attr': form,
               'client.attr': client,

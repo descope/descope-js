@@ -526,7 +526,6 @@ class BaseDescopeWc extends BaseClass {
   }
 
   async init() {
-    this.#handleNonce();
     this.flowStatus = 'loading';
     ['ready', 'error', 'success'].forEach((status: FlowStatus) =>
       this.addEventListener(status, () => {
@@ -539,6 +538,7 @@ class BaseDescopeWc extends BaseClass {
     this.#debugState.update({ isDebug: this.debug });
 
     this.#validateAttrs();
+    this.#handleNonce();
 
     if (await this.#getIsFlowsVersionMismatch()) {
       this.loggerWrapper.error(

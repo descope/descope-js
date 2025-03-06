@@ -160,6 +160,8 @@ const App = () => {
 
             // Use a custom style name or keep empty to use the default style.
             // styleId="my-awesome-style"
+            // Set a CSP nonce that will be used for style and script tags
+            //nonce="rAnd0m"
 
         />
     )
