@@ -117,7 +117,6 @@ const generateNonce = () => {
 const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   async oneTap(
     provider?: string,
-    clientId?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkip?: (reason?: string) => void,
@@ -127,6 +126,15 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
 
     const nonce = generateNonce();
     const googleClient = await getGoogleClient();
+
+    const clientIdRes = await sdk.oauth.getOneTapClientId(readyProvider);
+    if (!clientIdRes.ok) {
+      throw new Error(
+        'Failed to get OneTap client ID for provider ' + readyProvider,
+      );
+    }
+    const clientId = clientIdRes.data.clientId;
+
     return new Promise((resolve) => {
       const callback = (res: CredentialResponse) => {
         resolve(
