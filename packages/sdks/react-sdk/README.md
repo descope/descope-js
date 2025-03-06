@@ -160,6 +160,8 @@ const App = () => {
 
             // Use a custom style name or keep empty to use the default style.
             // styleId="my-awesome-style"
+            // Set a CSP nonce that will be used for style and script tags
+            //nonce="rAnd0m"
 
         />
     )
@@ -392,6 +394,7 @@ You can also use the following functions to assist with various actions managing
 `isRefreshTokenExpired(token = getRefreshToken())` - Check whether the current refresh token is expired. Provide a refresh token if is not persisted (see [token persistence](#token-persistence)).
 `getJwtRoles(token = getSessionToken(), tenant = '')` - Get current roles from an existing session token. Provide tenant id for specific tenant roles.
 `getJwtPermissions(token = getSessionToken(), tenant = '')` - Fet current permissions from an existing session token. Provide tenant id for specific tenant permissions.
+`getCurrentTenant(token = getSessionToken())` - Get current tenant id from an existing session token (from the `dct` claim).
 
 ### Refresh token lifecycle
 
