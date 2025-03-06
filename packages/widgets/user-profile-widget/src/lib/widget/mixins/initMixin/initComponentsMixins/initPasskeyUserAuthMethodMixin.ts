@@ -65,7 +65,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         });
       }
 
-      #initPhoneUserAttr() {
+      #initPasskeyAuthMethod() {
         this.passkeyUserAuthMethod = new UserAuthMethodDriver(
           () =>
             this.shadowRoot?.querySelector(
@@ -88,7 +88,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initPhoneUserAttr();
+        this.#initPasskeyAuthMethod();
         this.#initModal();
 
         this.#onFulfilledUpdate(getHasPasskey(this.state));
