@@ -15,13 +15,13 @@ import {
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { getHasPasskey } from '../../../state/selectors';
+import { getHasTotp } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
-export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
+export const initTotpUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class PasskeyUserAuthMethodMixinClass extends compose(
+    class TotpUserAuthMethodMixinClass extends compose(
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -29,16 +29,16 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       cookieConfigMixin,
       modalMixin,
     )(superclass) {
-      passkeyUserAuthMethod: UserAuthMethodDriver;
+      totpUserAuthMethod: UserAuthMethodDriver;
 
       #modal: ModalDriver;
 
       #flow: FlowDriver;
 
       #initModal() {
-        if (!this.passkeyUserAuthMethod.flowId) return;
+        if (!this.totpUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'passkey' });
+        this.#modal = this.createModal({ 'data-id': 'totp' });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -52,7 +52,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.passkeyUserAuthMethod.flowId,
+            flowId: this.totpUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -65,35 +65,35 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         });
       }
 
-      #initPasskeyAuthMethod() {
-        this.passkeyUserAuthMethod = new UserAuthMethodDriver(
+      #initTotpAuthMethod() {
+        this.totpUserAuthMethod = new UserAuthMethodDriver(
           () =>
             this.shadowRoot?.querySelector(
-              'descope-user-auth-method[data-id="passkey"]',
+              'descope-user-auth-method[data-id="totp"]',
             ),
           { logger: this.logger },
         );
 
-        this.passkeyUserAuthMethod.onButtonClick(() => {
+        this.totpUserAuthMethod.onButtonClick(() => {
           this.#modal?.open();
         });
       }
 
       #onFulfilledUpdate = withMemCache(
-        (hasPasskey: ReturnType<typeof getHasPasskey>) => {
-          this.passkeyUserAuthMethod.fulfilled = hasPasskey;
+        (hasTotp: ReturnType<typeof getHasTotp>) => {
+          this.totpUserAuthMethod.fulfilled = hasTotp;
         },
       );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initPasskeyAuthMethod();
+        this.#initTotpAuthMethod();
         this.#initModal();
 
-        this.#onFulfilledUpdate(getHasPasskey(this.state));
+        this.#onFulfilledUpdate(getHasTotp(this.state));
 
-        this.subscribe(this.#onFulfilledUpdate.bind(this), getHasPasskey);
+        this.subscribe(this.#onFulfilledUpdate.bind(this), getHasTotp);
       }
     },
 );

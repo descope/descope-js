@@ -9,6 +9,7 @@ import { initPasskeyUserAuthMethodMixin } from './initComponentsMixins/initPassk
 import { initPasswordUserAuthMethodMixin } from './initComponentsMixins/initPasswordUserAuthMethodMixin';
 import { initPhoneUserAttrMixin } from './initComponentsMixins/initPhoneUserAttrMixin';
 import { initUserCustomAttributesMixin } from './initComponentsMixins/initUserCustomAttributesMixin';
+import { initTotpUserAuthMethodMixin } from './initComponentsMixins/initTotpUserAuthMethodMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -24,6 +25,8 @@ export const initMixin = createSingletonMixin(
       initPhoneUserAttrMixin,
       initPasskeyUserAuthMethodMixin,
       initPasswordUserAuthMethodMixin,
+      initPasswordUserAuthMethodMixin,
+      initTotpUserAuthMethodMixin,
       initLogoutMixin,
     )(superclass) {
       async init() {

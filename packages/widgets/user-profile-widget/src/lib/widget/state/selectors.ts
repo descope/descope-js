@@ -17,6 +17,7 @@ export const getIsPhoneVerified = createSelector(
 );
 export const getHasPasskey = createSelector(getMe, (me) => me.webauthn);
 export const getHasPassword = createSelector(getMe, (me) => me.password);
+export const getHasTotp = createSelector(getMe, (me) => me.TOTP);
 
 export const getUserCustomAttrs = createSelector(
   getMe,
