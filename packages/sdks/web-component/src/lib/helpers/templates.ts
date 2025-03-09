@@ -9,8 +9,8 @@ import { shouldHandleMarkdown } from './helpers';
 
 const ALLOWED_INPUT_CONFIG_ATTRS = ['disabled'];
 
-const replaceElementMessage = (
-  baseEle: DocumentFragment,
+export const replaceElementMessage = (
+  baseEle: HTMLElement,
   eleType: string,
   message = '',
 ) => {
@@ -275,20 +275,8 @@ export const updateTemplateFromScreenState = (
   screenState?: ScreenState,
   componentsConfig?: ComponentsConfig,
   flowInputs?: Record<string, string>,
-  errorTransformer?: (error: { text: string; type: string }) => string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
-  let errorText = screenState?.errorText;
-  try {
-    errorText =
-      errorTransformer?.({
-        text: screenState?.errorText,
-        type: screenState?.errorType,
-      }) || screenState?.errorText;
-  } catch (e) {
-    logger.error('Error transforming error message', e.message);
-  }
-  replaceElementMessage(baseEle, 'error-message', errorText);
   replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
