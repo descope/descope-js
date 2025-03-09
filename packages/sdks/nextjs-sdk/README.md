@@ -242,8 +242,9 @@ export async function GET() {
 
 If the middleware did not set a session, The `session()` function will attempt to retrieve the session token from cookies and validates it, this requires the project ID to be either set in the environment variables or passed as a parameter to the function.
 You can also pass the log level to the function (defaults to 'info').
+
 ```
-session({ 
+session({
   projectId?: string;
   baseUrl?: string;
   logLevel?: 'debug' | 'info' | 'warn' | 'error'
