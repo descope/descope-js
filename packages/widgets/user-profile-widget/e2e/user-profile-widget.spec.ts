@@ -109,7 +109,7 @@ test.describe('widget', () => {
 
     expect(isLoggedOut).toBe(true);
   });
-  test.describe('user auth methods', () => {
+  test.describe('user attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
       { name: 'email', action: 'edit', newValue: 'bla@bla.com' },
@@ -153,11 +153,12 @@ test.describe('widget', () => {
     }
   });
 
-  test.describe('user attributes', () => {
+  test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
       { name: 'passkey', flagPath: 'webauthn', fulfilled: 'true' },
       { name: 'password', flagPath: 'password', fulfilled: null },
+      { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
     ]) {
       test(`${attr.name}`, async ({ page }) => {
         await page.waitForTimeout(STATE_TIMEOUT);
