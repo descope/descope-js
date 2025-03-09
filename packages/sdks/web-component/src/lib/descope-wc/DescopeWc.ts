@@ -42,6 +42,7 @@ import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
+  replaceElementMessage,
   setCssVars,
   setNOTPVariable,
   setPhoneAutoDetectDefaultCode,
@@ -249,6 +250,41 @@ class DescopeWc extends BaseDescopeWc {
     return Promise.race([promises, toPromise]);
   }
 
+  get isDismissScreenErrorOnInput() {
+    return this.getAttribute('dismiss-screen-error-on-input') === 'true';
+  }
+
+  #handleGlobalErrors({
+    errorText,
+    errorType,
+  }: {
+    errorText: string;
+    errorType: string;
+  }) {
+    const updateGlobalError = () => {
+      let transformedErrorText = errorText;
+      try {
+        transformedErrorText =
+          this.errorTransformer?.({
+            text: errorText,
+            type: errorType,
+          }) || errorText;
+      } catch (e) {
+        this.loggerWrapper.error('Error transforming error message', e.message);
+      }
+      replaceElementMessage(
+        this.contentRootElement,
+        'error-message',
+        transformedErrorText,
+      );
+    };
+
+    // we do not know if the page is going to be updated or not,
+    // so we are updating the error message component before and after the screen update
+    this.addEventListener('screen-updated', updateGlobalError, { once: true });
+    updateGlobalError();
+  }
+
   init() {
     // when running in a webview (mobile SDK) we want to lazy init the component
     // so the mobile SDK will be able to register all the necessary callbacks
@@ -262,11 +298,25 @@ class DescopeWc extends BaseDescopeWc {
     return undefined;
   }
 
+  #subscribeStepState() {
+    this.stepState?.subscribe(
+      this.onStepChange.bind(this),
+      ({
+        screenState: { errorText, errorType, ...screenState } = {},
+        ...state
+      }) => ({ ...state, screenState }),
+    );
+    this.stepState?.subscribe(this.#handleGlobalErrors.bind(this), (state) => ({
+      errorText: state?.screenState?.errorText,
+      errorType: state?.screenState?.errorType,
+    }));
+  }
+
   // eslint-disable-next-line no-underscore-dangle
   async _init() {
     if (this.shadowRoot.isConnected) {
       this.flowState?.subscribe(this.onFlowChange.bind(this));
-      this.stepState?.subscribe(this.onStepChange.bind(this));
+      this.#subscribeStepState();
 
       window.addEventListener(
         'visibilitychange',
@@ -380,10 +430,10 @@ class DescopeWc extends BaseDescopeWc {
       const subscribeId = this.stepState.subscribe(() => {
         // after state was updated, we want to re-subscribe the onStepChange listener
         this.stepState.unsubscribe(subscribeId);
-        this.stepState?.subscribe(this.onStepChange.bind(this));
+        this.#subscribeStepState();
       });
     }
-
+    this.stepState.forceUpdate = isCustomScreen;
     this.#toggleScreenVisibility(isCustomScreen);
   }
 
@@ -1185,7 +1235,6 @@ class DescopeWc extends BaseDescopeWc {
       screenState,
       screenState.componentsConfig,
       this.formConfig,
-      this.errorTransformer,
       this.loggerWrapper,
     );
 
@@ -1445,6 +1494,22 @@ class DescopeWc extends BaseDescopeWc {
       });
 
     this.#addPasscodeAutoSubmitListeners(next);
+
+    if (this.isDismissScreenErrorOnInput) {
+      // listen to all input events in order to clear the global error state
+      this.contentRootElement.querySelectorAll('[name]').forEach((ele) => {
+        ele.addEventListener('input', () => {
+          this.stepState.update((state) => ({
+            ...state,
+            screenState: {
+              ...state.screenState,
+              errorText: '',
+              errorType: '',
+            },
+          }));
+        });
+      });
+    }
   }
 
   #handleAnimation(injectNextPage: () => void, direction: Direction) {
