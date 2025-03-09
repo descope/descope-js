@@ -4,20 +4,45 @@ import createFedCM from './fedcm';
 import withFlow from './flow';
 import { getSessionToken } from '../enhancers/withPersistTokens/helpers';
 
-const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
-  const coreSdk = createCoreSdk(...args);
+const createSdk = ({ getExternalAccessToken, ...arg }: Parameters<typeof createCoreSdk>[0] & {
+  getExternalAccessToken?: () => Promise<string>;
+}) => {
+  const coreSdk = createCoreSdk(arg);
 
+  console.log('@@@ web-js createSdk with', {
+    getExternalAccessToken
+  })
   return {
     ...coreSdk,
-    refresh: (token?: string) => {
+    refresh: async (token?: string) => {
       // Descope use this query param to monitor if refresh is made
       // When the user is already logged in in the past or not (We want to optimize that in the future)
       const currentSessionToken = getSessionToken();
-      return coreSdk.refresh(token, { dcs: currentSessionToken ? 't' : 'f' });
+
+      console.log('@@@ calling refresh with', {
+        getExternalAccessToken
+      })
+      const headers: HeadersInit = {};
+      if (getExternalAccessToken) {
+        try {
+          const externalAccessToken = await getExternalAccessToken();
+          console.log('@@@ externalAccessToken', externalAccessToken)
+          if (externalAccessToken) {
+            headers['x-descope-external-access-token'] = externalAccessToken;
+          }
+        } catch (e) {
+          console.error('Failed to get external access token', e);
+        }
+      }
+
+
+      return coreSdk.refresh(token, {
+        dcs: currentSessionToken ? 't' : 'f',
+      }, headers);
     },
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),
-    fedcm: createFedCM(coreSdk, args[0].projectId),
+    fedcm: createFedCM(coreSdk, arg.projectId),
   };
 };
 

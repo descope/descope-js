@@ -63,9 +63,9 @@ export default (httpClient: HttpClient) => ({
    * @returns The updated authentication info (JWTs)
    */
   refresh: withOptionalTokenValidations(
-    (token?: string, queryParams?: { [key: string]: string }) =>
+    (token?: string, queryParams?: { [key: string]: string }, headers?: HeadersInit) =>
       transformResponse<JWTResponse>(
-        httpClient.post(apiPaths.refresh, {}, { token, queryParams }),
+        httpClient.post(apiPaths.refresh, {}, { token, queryParams, headers }),
       ),
   ),
   /**
