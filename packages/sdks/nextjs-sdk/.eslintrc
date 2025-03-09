@@ -74,6 +74,7 @@
 		"import/prefer-default-export": ["off"],
 		"comma-dangle": ["off"],
 		"react/jsx-props-no-spreading": ["off"],
+    "testing-library/no-debugging-utils": ["off"],
 		"react/function-component-definition": [
 			2,
 			{

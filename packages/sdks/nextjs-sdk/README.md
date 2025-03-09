@@ -154,6 +154,10 @@ export default authMiddleware({
 	publicRoutes?: string[],
 	privateRoutes?: string[]
 	// If you having privateRoutes and publicRoutes defined at the same time, privateRoutes will be ignored.
+
+  // Optional: log level for the middleware
+  // Defaults to 'info'
+  // logLevel: 'debug' | 'info' | 'warn' | 'error'
 })
 
 export const config = {
@@ -237,9 +241,13 @@ export async function GET() {
 ##### Optional Parameters
 
 If the middleware did not set a session, The `session()` function will attempt to retrieve the session token from cookies and validates it, this requires the project ID to be either set in the environment variables or passed as a parameter to the function.
-
+You can also pass the log level to the function (defaults to 'info').
 ```
-session({ projectId?: string, baseUrl?: string })
+session({ 
+  projectId?: string;
+  baseUrl?: string;
+  logLevel?: 'debug' | 'info' | 'warn' | 'error'
+})
 ```
 
 - **projectId:** The Descope Project ID. If not provided, the function will fall back to `DESCOPE_PROJECT_ID` from the environment variables.
