@@ -1,10 +1,9 @@
 import createSdk from '../src/index';
-import webauthn from '../src/sdk/webauthn';
 
 const coreJs = {
   oauth: {
-    startNative: jest.fn(),
-    finishNative: jest.fn(),
+    getOneTapClientId: jest.fn(),
+    exchangeProviderToken: jest.fn(),
   },
   webauthn: {},
   refresh: jest.fn(),
@@ -40,18 +39,20 @@ describe('fedcm', () => {
     jest.clearAllMocks();
   });
   describe('oneTap', () => {
-    it('call start native when calling oneTap with provider and login options', () => {
-      // mock startNative response to be ok
-      coreJs.oauth.startNative.mockResolvedValue({ ok: true, data: {} });
+    it('call getOneTapClientId when calling oneTap with provider', async () => {
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
+        ok: true,
+        data: { clientId: '123' },
+      });
       sdk.fedcm.oneTap('google', { auto_select: true }, { stepup: false });
-      expect(coreJs.oauth.startNative).toHaveBeenCalledWith(
-        'google',
-        { stepup: false },
-        true,
-      );
+      await new Promise(process.nextTick);
+      expect(coreJs.oauth.getOneTapClientId).toHaveBeenCalledWith('google');
     });
-    it('throw error when startNative response is not ok', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({ ok: false, error: 'error' });
+    it('throw error when getOneTapClientId response is not ok', async () => {
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
+        ok: false,
+        error: 'error',
+      });
       try {
         await sdk.fedcm.oneTap(
           'google',
@@ -59,13 +60,15 @@ describe('fedcm', () => {
           { stepup: false },
         );
       } catch (e) {
-        expect(e).toEqual('error');
+        expect(e).toEqual(
+          new Error('Failed to get OneTap client ID for provider google'),
+        );
       }
     });
     it('call google client initialize with the correct params', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
         ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+        data: { clientId: 'C123' },
       });
       sdk.fedcm.oneTap(
         'google',
@@ -80,13 +83,13 @@ describe('fedcm', () => {
         use_fedcm_for_prompt: false,
         client_id: 'C123',
         callback: expect.any(Function),
-        nonce: 'N123',
+        nonce: expect.any(String),
       });
     });
     it('call google client prompt the correct defaults', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
         ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+        data: { clientId: 'C123' },
       });
       sdk.fedcm.oneTap('google', { auto_select: true }, { stepup: false });
       await new Promise(process.nextTick);
@@ -97,30 +100,29 @@ describe('fedcm', () => {
         use_fedcm_for_prompt: true,
         client_id: 'C123',
         callback: expect.any(Function),
-        nonce: 'N123',
+        nonce: expect.any(String),
       });
     });
     it('call finish native when user signs in with google with state id and the jwt', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
         ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+        data: { clientId: 'C123' },
       });
       sdk.fedcm.oneTap('google', { auto_select: true }, { stepup: false });
       await new Promise(process.nextTick);
       const callback = googleClient.initialize.mock.calls[0][0].callback;
       callback({ credential: 'JWT' });
-      expect(coreJs.oauth.finishNative).toHaveBeenCalledWith(
+      expect(coreJs.oauth.exchangeProviderToken).toHaveBeenCalledWith(
         'google',
-        'S123',
-        '',
-        '',
         'JWT',
+        expect.any(String),
+        { stepup: false },
       );
     });
     it('call onSkip callback on prompt skip', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
         ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+        data: { clientId: 'C123' },
       });
       const onSkip = jest.fn();
       sdk.fedcm.oneTap(
@@ -135,9 +137,9 @@ describe('fedcm', () => {
       expect(onSkip).toHaveBeenCalled();
     });
     it('call onDismissed callback on prompt dismiss with detailed reason', async () => {
-      coreJs.oauth.startNative.mockResolvedValue({
+      coreJs.oauth.getOneTapClientId.mockResolvedValue({
         ok: true,
-        data: { clientId: 'C123', stateId: 'S123', nonce: 'N123' },
+        data: { clientId: 'C123' },
       });
 
       const onDismissed = jest.fn();
