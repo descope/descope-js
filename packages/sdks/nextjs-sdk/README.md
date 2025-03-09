@@ -47,9 +47,9 @@ export default function RootLayout({
 }
 ```
 
-Note: `AuthProvider` uses `sessionTokenViaCookie` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
-The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
+Note: `AuthProvider` uses `sessionTokenViaCookie={true}` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
+The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
 #### Use Descope to render Flow
 
