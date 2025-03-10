@@ -24,7 +24,8 @@ function setJwtTokenCookie(
     cookieDomain,
     cookieExpiration,
     cookieSameSite = 'Strict',
-  }: Partial<JWTResponse & { cookieSameSite: SameSite }>,
+    cookieSecure = true,
+  }: Partial<JWTResponse & { cookieSameSite: SameSite; cookieSecure: boolean }>,
 ) {
   if (value) {
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
@@ -35,7 +36,7 @@ function setJwtTokenCookie(
       domain: domainMatches ? cookieDomain : undefined,
       expires,
       sameSite: cookieSameSite,
-      secure: true,
+      secure: cookieSecure,
     });
   }
 }
@@ -72,15 +73,20 @@ export const persistTokens = (
 
   // persist session token
   if (sessionJwt) {
-    sessionTokenViaCookie
-      ? setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
-          ...cookieParams,
-          cookieSameSite:
-            sessionTokenViaCookie === true
-              ? 'Strict'
-              : sessionTokenViaCookie['sameSite'],
-        })
-      : setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
+    if (sessionTokenViaCookie) {
+      // Cookie configs will fallback to default values in both cases
+      // 1. sessionTokenViaCookie is a boolean
+      // 2. sessionTokenViaCookie is an object without the property
+      const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
+      const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
+      setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
+        ...cookieParams,
+        cookieSameSite,
+        cookieSecure,
+      });
+    } else {
+      setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
+    }
   }
 };
 

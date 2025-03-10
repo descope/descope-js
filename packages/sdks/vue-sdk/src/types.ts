@@ -1,4 +1,4 @@
-import createSdk from '@descope/web-js-sdk';
+import createSdk, { CookieConfig } from '@descope/web-js-sdk';
 import type { Ref } from 'vue';
 
 export type Options = {
@@ -8,7 +8,7 @@ export type Options = {
   baseCdnUrl?: string;
   // If true, tokens will be stored on local storage
   persistTokens?: boolean;
-  sessionTokenViaCookie?: boolean | { sameSite: 'Strict' | 'Lax' | 'None' };
+  sessionTokenViaCookie?: CookieConfig;
   // If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
 };
