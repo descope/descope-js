@@ -1497,18 +1497,20 @@ class DescopeWc extends BaseDescopeWc {
 
     if (this.isDismissScreenErrorOnInput) {
       // listen to all input events in order to clear the global error state
-      this.contentRootElement.querySelectorAll('[name]').forEach((ele) => {
-        ele.addEventListener('input', () => {
-          this.stepState.update((state) => ({
-            ...state,
-            screenState: {
-              ...state.screenState,
-              errorText: '',
-              errorType: '',
-            },
-          }));
+      this.contentRootElement
+        .querySelectorAll(`*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`)
+        .forEach((ele) => {
+          ele.addEventListener('input', () => {
+            this.stepState.update((state) => ({
+              ...state,
+              screenState: {
+                ...state.screenState,
+                errorText: '',
+                errorType: '',
+              },
+            }));
+          });
         });
-      });
     }
   }
 

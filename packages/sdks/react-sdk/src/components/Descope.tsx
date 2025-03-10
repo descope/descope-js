@@ -71,6 +71,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       errorTransformer,
       styleId,
       onScreenUpdate,
+      dismissScreenErrorOnInput,
       children,
     },
     ref,
@@ -184,6 +185,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'debug.attr': debug,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
               'refreshCookieName.attr': refreshCookieName,
+              'dismiss-screen-error-on-input.attr': dismissScreenErrorOnInput,
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
