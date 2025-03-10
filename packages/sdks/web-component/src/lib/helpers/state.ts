@@ -8,10 +8,23 @@ export type SubscribeCb<T> = (
   prevState: T,
   isChanged: ReturnType<typeof createIsChanged>,
 ) => void | Promise<void>;
+
 type UpdateStateCb<T> = (state: T) => Partial<T>;
-type Subscribers<T> = Record<string, SubscribeCb<T>>;
+
+type Subscribers<T> = Record<
+  string,
+  { cb: SubscribeCb<ReturnType<SelectorCb<T>>>; selector: SelectorCb<T> }
+>;
+
+export type SelectorCb<T> = (state: T) => any;
 
 export type IsChanged<T> = Parameters<SubscribeCb<T>>[2];
+
+function isPlainObject(maybeObj: any) {
+  if (typeof maybeObj !== 'object' || maybeObj === null) return false;
+  const proto = Object.getPrototypeOf(maybeObj);
+  return proto === Object.prototype || proto === null;
+}
 
 function compareObjects(
   objectA: Record<string, any>,
@@ -73,22 +86,37 @@ class State<T extends StateObject> {
       typeof newState === 'function' ? newState(this.#state) : newState;
 
     const nextState = { ...this.#state, ...internalNewState };
-    if (this.#forceUpdateAll || !compareObjects(this.#state, nextState)) {
-      const prevState = this.#state;
-      this.#state = nextState;
-      Object.freeze(this.#state);
+    const prevState = this.#state;
+    this.#state = nextState;
+    Object.freeze(this.#state);
 
-      setTimeout(() => {
-        Object.values(this.#subscribers).forEach((cb) =>
-          cb(nextState, prevState, createIsChanged(nextState, prevState)),
-        );
-      }, 0);
-    }
+    setTimeout(() => {
+      Object.values(this.#subscribers).forEach(({ cb, selector }) => {
+        const partialPrevState = selector(prevState);
+        const partialNextState = selector(nextState);
+
+        if (
+          this.#forceUpdateAll ||
+          (isPlainObject(partialNextState)
+            ? !compareObjects(partialPrevState, partialNextState)
+            : partialPrevState !== partialNextState)
+        ) {
+          cb(
+            partialNextState,
+            partialPrevState,
+            createIsChanged(partialNextState, partialPrevState),
+          );
+        }
+      });
+    }, 0);
   };
 
-  subscribe(cb: SubscribeCb<T>) {
+  subscribe<R extends any | Partial<T>>(
+    cb: SubscribeCb<R>,
+    selector: (state: T) => R = (state: T) => state as unknown as R,
+  ) {
     this.#token += 1;
-    this.#subscribers[this.#token] = cb;
+    this.#subscribers[this.#token] = { cb, selector };
 
     return this.#token.toString();
   }

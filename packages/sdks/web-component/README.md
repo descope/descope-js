@@ -85,6 +85,7 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | keep-last-authenticated-user-after-logout | **"true"** - Do not clear the last authenticated user details from the browser storage after logout</br>**"false"** - Clear the last authenticated user details from the browser storage after logout                                      | **"false"**   |
 | style-id                                  | **"String"** - Set a specific style to load rather then the default style                                                                                                                                                                  | **""**        |
 | nonce                                     | **"String"** - Set a CSP nonce that will be used for style and script tags                                                                                                                                                                 | **""**        |
+| dismiss-screen-error-on-input             | **"true"** - Clear screen error message on user input </br> **"false"** - Do not clear screen error message on user input                                                                                                                  | **"false"**   |
 
 ## Optional Properties
 

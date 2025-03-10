@@ -34,6 +34,7 @@ export class SignUpFlowComponent {
   ) => boolean | Promise<boolean>;
   @Input() client: Record<string, any>;
   @Input() nonce: string;
+  @Input() dismissScreenErrorOnInput: boolean;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;

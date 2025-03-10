@@ -187,6 +187,9 @@ export class AppComponent {
     Set a CSP nonce that will be used for style and script tags.
     nonce="rAnd0m"
 
+    Clear screen error message on user input.
+    dismissScreenErrorOnInput=true
+
      logger is an object describing how to log info, warn and errors.
      NOTE: logger is not required. If not provided, the logs will be printed to the console.
      Example:

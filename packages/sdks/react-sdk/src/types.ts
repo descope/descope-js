@@ -131,6 +131,7 @@ export type DescopeProps = {
   // use to override client context in flow execution
   client?: Record<string, any>;
   styleId?: string;
+  dismissScreenErrorOnInput?: boolean;
   onScreenUpdate?: (
     screenName: string,
     context: Record<string, any>,
