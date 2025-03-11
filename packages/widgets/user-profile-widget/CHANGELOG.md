@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.3.5...user-profile-widget-0.4.0) (2025-03-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.39.0`
+* `sdk-helpers` updated to version `0.3.0`
+* `sdk-mixins` updated to version `0.11.2`
+* `sdk-component-drivers` updated to version `0.2.52`
+
+### Features
+
+* add totp to UPW ([#1043](https://github.com/descope/descope-js/issues/1043)) ([6908440](https://github.com/descope/descope-js/commit/69084402ebebe76e8e2c05f64cfc0d8036a4e250))
+
 ## [0.3.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.3.4...user-profile-widget-0.3.5) (2025-03-06)
 
 ### Dependency Updates
