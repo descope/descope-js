@@ -1,13 +1,13 @@
-# Descope SDK for NextJS
+# Descope SDK for Next.js
 
-The Descope SDK for NextJS provides convenient access to the Descope for an application written on top of NextJS. You can read more on the [Descope Website](https://descope.com).
+The Descope SDK for Next.js provides convenient access to the Descope for an application written on top of Next.js. You can read more on the [Descope Website](https://descope.com).
 
 This SDK uses under the hood the Descope React SDK and Descope Node SDK
 Refer to the [Descope React SDK](https://github.com/descope/descope-js/tree/main/packages/sdks/react-sdk) and [Descope Node SDK](https://github.com/descope/node-sdk) for more details.
 
 ## Requirements
 
-- The SDK supports NextJS version 13 and above.
+- The SDK supports Next.js version 13 and above.
 - A Descope `Project ID` is required for using the SDK. Find it on the [project page in the Descope Console](https://app.descope.com/settings/project).
 
 ## Installing the SDK
@@ -131,7 +131,7 @@ const App = () => {
 
 ##### Require authentication for application (Middleware)
 
-You can use NextJS Middleware to require authentication for a page/route or a group of pages/routes.
+You can use Next.js Middleware to require authentication for a page/route or a group of pages/routes.
 
 Descope SDK provides a middleware function that can be used to require authentication for a page/route or a group of pages/routes.
 
@@ -229,12 +229,24 @@ Route handler:
 // src/pages/api/routes.ts
 export async function GET() {
 	const currSession = await session();
-	if (!currSession.isAuthenticated) {
+	if (!currSession) {
 		// ...
 	}
 
 	// Use the session jwt or parsed token
 	const { jwt, token } = currSession;
+}
+```
+
+The `session()` function uses Next.js's `cookies()` and `headers()` functions to retrieve the session token. If you are using Next.js Version 13, you can use the `getSession(req)` instead.
+
+```js
+import { getSession } from '@descope/nextjs-sdk/server';
+
+export async function GET(req) {
+	const currSession = await getSession(req);
+
+	// ...
 }
 ```
 
