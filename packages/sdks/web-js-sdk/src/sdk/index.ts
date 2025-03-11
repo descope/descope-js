@@ -4,14 +4,17 @@ import createFedCM from './fedcm';
 import withFlow from './flow';
 import { getSessionToken } from '../enhancers/withPersistTokens/helpers';
 
-const createSdk = ({ getExternalAccessToken, ...arg }: Parameters<typeof createCoreSdk>[0] & {
+const createSdk = ({
+  getExternalAccessToken,
+  ...arg
+}: Parameters<typeof createCoreSdk>[0] & {
   getExternalAccessToken?: () => Promise<string>;
 }) => {
   const coreSdk = createCoreSdk(arg);
 
   console.log('@@@ web-js createSdk with', {
-    getExternalAccessToken
-  })
+    getExternalAccessToken,
+  });
   return {
     ...coreSdk,
     refresh: async (token?: string) => {
@@ -20,25 +23,28 @@ const createSdk = ({ getExternalAccessToken, ...arg }: Parameters<typeof createC
       const currentSessionToken = getSessionToken();
 
       console.log('@@@ calling refresh with', {
-        getExternalAccessToken
-      })
-      const headers: HeadersInit = {};
+        getExternalAccessToken,
+      });
+      let externalToken = '';
       if (getExternalAccessToken) {
         try {
           const externalAccessToken = await getExternalAccessToken();
-          console.log('@@@ externalAccessToken', externalAccessToken)
+          console.log('@@@ externalAccessToken', externalAccessToken);
           if (externalAccessToken) {
-            headers['x-descope-external-access-token'] = externalAccessToken;
+            externalToken = externalAccessToken;
           }
         } catch (e) {
           console.error('Failed to get external access token', e);
         }
       }
 
-
-      return coreSdk.refresh(token, {
-        dcs: currentSessionToken ? 't' : 'f',
-      }, headers);
+      return coreSdk.refresh(
+        token,
+        {
+          dcs: currentSessionToken ? 't' : 'f',
+        },
+        externalToken,
+      );
     },
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),
