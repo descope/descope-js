@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.39.0](https://github.com/descope/descope-js/compare/web-component-3.38.2...web-component-3.39.0) (2025-03-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.3.0`
+* `sdk-mixins` updated to version `0.11.2`
+
+### Features
+
+* added option to dismiss screen error on input ([#1045](https://github.com/descope/descope-js/issues/1045)) ([4d9e58d](https://github.com/descope/descope-js/commit/4d9e58dfdc6ab8e219ecf1506e9fd0ec731012cd))
+
 ## [3.38.2](https://github.com/descope/descope-js/compare/web-component-3.38.1...web-component-3.38.2) (2025-03-06)
 
 ### Dependency Updates
