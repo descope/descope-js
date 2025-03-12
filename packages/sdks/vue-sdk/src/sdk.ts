@@ -66,6 +66,10 @@ export const getJwtRoles = wrapInTry(
     globalSdk?.getJwtRoles(token, tenant),
 );
 
+export const getCurrentTenant = wrapInTry(
+  (token = getSessionToken()) => globalSdk?.getCurrentTenant(token),
+);
+
 export const refresh = (token = getRefreshToken()) => globalSdk?.refresh(token);
 
 export const getGlobalSdk = () => globalSdk;

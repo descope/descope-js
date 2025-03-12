@@ -21,7 +21,7 @@
     "print-affected:ci": "nx show projects --affected --base=$(sh ./tools/scripts/latestTag.sh) --select=projects",
     "format": "nx format:write",
     "format:ci": "nx format:check",
-    "postinstall": "pnpm update @descope/web-components-ui"
+    "postinstall": "if [ \"$NO_POSTINSTALL\" != \"true\" ]; then NO_POSTINSTALL=true pnpm update @descope/web-components-ui; fi"
   },
   "private": true,
   "dependencies": {
@@ -64,7 +64,7 @@
       "git add pnpm-lock.yaml"
     ]
   },
-  "packageManager": "pnpm@8.15.9+sha512.499434c9d8fdd1a2794ebf4552b3b25c0a633abcee5bb15e7b5de90f32f47b513aca98cd5cfd001c31f0db454bc3804edccd578501e4ca293a6816166bbd9f81",
+  "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": "^18.19.0"
   }

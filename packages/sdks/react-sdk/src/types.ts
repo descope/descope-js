@@ -118,6 +118,7 @@ export type DescopeProps = {
   theme?: ThemeOptions;
   // If locale is not provided - the browser's locale will be used
   locale?: string;
+  nonce?: string;
   autoFocus?: AutoFocusOptions;
   validateOnBlur?: boolean;
   restartOnError?: boolean;
@@ -130,6 +131,7 @@ export type DescopeProps = {
   // use to override client context in flow execution
   client?: Record<string, any>;
   styleId?: string;
+  dismissScreenErrorOnInput?: boolean;
   onScreenUpdate?: (
     screenName: string,
     context: Record<string, any>,

@@ -89,7 +89,8 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'npx serve node_modules/@descope/web-components-ui/dist -p 8768',
+      command:
+        'npx serve --cors node_modules/@descope/web-components-ui/dist -p 8768',
     },
     {
       command: 'npx serve build -l 5558',

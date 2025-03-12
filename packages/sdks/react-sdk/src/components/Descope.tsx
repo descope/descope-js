@@ -58,6 +58,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       logger,
       tenant,
       theme,
+      nonce,
       locale,
       debug,
       client,
@@ -70,6 +71,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       errorTransformer,
       styleId,
       onScreenUpdate,
+      dismissScreenErrorOnInput,
       children,
     },
     ref,
@@ -176,12 +178,14 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             {...{
               // attributes
               'theme.attr': theme,
+              'nonce.attr': nonce,
               'locale.attr': locale,
               'form.attr': form,
               'client.attr': client,
               'debug.attr': debug,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
               'refreshCookieName.attr': refreshCookieName,
+              'dismiss-screen-error-on-input.attr': dismissScreenErrorOnInput,
               // props
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,

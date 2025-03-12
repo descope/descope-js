@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.7.0](https://github.com/descope/descope-js/compare/vue-sdk-2.6.0...vue-sdk-2.7.0) (2025-03-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.5`
+* `audit-management-widget` updated to version `0.4.5`
+* `role-management-widget` updated to version `0.3.5`
+* `user-management-widget` updated to version `0.7.5`
+* `user-profile-widget` updated to version `0.4.0`
+* `applications-portal-widget` updated to version `0.3.5`
+* `web-component` updated to version `3.39.0`
+
+### Features
+
+* added option to dismiss screen error on input ([#1045](https://github.com/descope/descope-js/issues/1045)) ([4d9e58d](https://github.com/descope/descope-js/commit/4d9e58dfdc6ab8e219ecf1506e9fd0ec731012cd))
+
+## [2.6.0](https://github.com/descope/descope-js/compare/vue-sdk-2.5.1...vue-sdk-2.6.0) (2025-03-06)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.4`
+* `audit-management-widget` updated to version `0.4.4`
+* `role-management-widget` updated to version `0.3.4`
+* `user-management-widget` updated to version `0.7.4`
+* `user-profile-widget` updated to version `0.3.5`
+* `applications-portal-widget` updated to version `0.3.4`
+* `web-component` updated to version `3.38.2`
+* `web-js-sdk` updated to version `1.26.2`
+* `core-js-sdk` updated to version `2.38.0`
+
+### Features
+
+* get current tenant ([#1040](https://github.com/descope/descope-js/issues/1040)) ([76e6f6c](https://github.com/descope/descope-js/commit/76e6f6ccd925ebc5425669f8137ff74480ab9911))
+
+
+### Bug Fixes
+
+* added nonce to sdks and update readme ([#1041](https://github.com/descope/descope-js/issues/1041)) ([597bd34](https://github.com/descope/descope-js/commit/597bd34d1d41fed5aad841ea9c9bbe49b99fbb55))
+
 ## [2.5.1](https://github.com/descope/descope-js/compare/vue-sdk-2.5.0...vue-sdk-2.5.1) (2025-03-04)
 
 ### Dependency Updates

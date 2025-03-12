@@ -22,6 +22,8 @@
       :onScreenUpdate.prop="onScreenUpdate"
       :form.attr="formStr"
       :client.attr="clientStr"
+      :nonce.attr="nonce"
+      :dismiss-screen-error-on-input.attr="dismissScreenErrorOnInput"
       @success="onSuccess"
       @error="onError"
       @ready="onReady"
@@ -109,6 +111,12 @@ const props = defineProps({
   },
   styleId: {
     type: String,
+  },
+  nonce: {
+    type: String,
+  },
+  dismissScreenErrorOnInput: {
+    type: Boolean,
   },
 });
 // const emit = defineEmits(['success', 'error', 'ready']);

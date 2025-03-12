@@ -17,6 +17,7 @@ export {
   getSessionToken,
   isSessionTokenExpired,
   isRefreshTokenExpired,
+  getCurrentTenant,
 } from './sdk';
 
 // Export ref to baseHeaders so it can be overridden

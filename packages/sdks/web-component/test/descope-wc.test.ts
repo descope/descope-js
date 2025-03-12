@@ -5469,6 +5469,24 @@ describe('web-component', () => {
     });
   });
 
+  describe('CSP', () => {
+    it('should add nonce to window', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" nonce="123456"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => expect(window.DESCOPE_NONCE).toBe('123456'), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+  });
+
   describe('custom screen', () => {
     it('should call the onScreenUpdate with the correct params', async () => {
       startMock.mockReturnValue(
