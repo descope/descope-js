@@ -48,6 +48,8 @@ export class DescopeComponent implements OnInit, OnChanges {
     ref: HTMLElement
   ) => boolean | Promise<boolean>;
   @Input() client: Record<string, any>;
+  @Input() nonce: string;
+  @Input() dismissScreenErrorOnInput: boolean;
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;
@@ -170,6 +172,17 @@ export class DescopeComponent implements OnInit, OnChanges {
 
     if (this.client) {
       this.webComponent.setAttribute('client', JSON.stringify(this.client));
+    }
+
+    if (this.nonce) {
+      this.webComponent.setAttribute('nonce', JSON.stringify(this.nonce));
+    }
+
+    if (this.dismissScreenErrorOnInput) {
+      this.webComponent.setAttribute(
+        'dismiss-screen-error-on-input',
+        JSON.stringify(this.dismissScreenErrorOnInput)
+      );
     }
 
     if (this.form) {

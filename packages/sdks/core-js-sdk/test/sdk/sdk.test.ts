@@ -163,6 +163,22 @@ describe('sdk', () => {
     });
   });
 
+  describe('getCurrentTenant', () => {
+    it('should throw an error when token is not a string', () => {
+      expect(sdk.getCurrentTenant).toThrow('"token" must be a string');
+    });
+    it('should return the current tenant', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => ({
+        dct: 'current-tenant',
+      }));
+      expect(sdk.getCurrentTenant('jwt')).toBe('current-tenant');
+    });
+    it('should gracefully handle jwt decoding error', () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => new Error('error'));
+      expect(sdk.getCurrentTenant('jwt')).toBeFalsy();
+    });
+  });
+
   describe('logout', () => {
     it('should throw an error when token is not a string', () => {
       expect(() => sdk.logout({ a: 'b' })).toThrow(
