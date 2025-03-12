@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.7.0](https://github.com/descope/descope-js/compare/vue-sdk-2.6.0...vue-sdk-2.7.0) (2025-03-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.5`
+* `audit-management-widget` updated to version `0.4.5`
+* `role-management-widget` updated to version `0.3.5`
+* `user-management-widget` updated to version `0.7.5`
+* `user-profile-widget` updated to version `0.4.0`
+* `applications-portal-widget` updated to version `0.3.5`
+* `web-component` updated to version `3.39.0`
+
+### Features
+
+* added option to dismiss screen error on input ([#1045](https://github.com/descope/descope-js/issues/1045)) ([4d9e58d](https://github.com/descope/descope-js/commit/4d9e58dfdc6ab8e219ecf1506e9fd0ec731012cd))
+
 ## [2.6.0](https://github.com/descope/descope-js/compare/vue-sdk-2.5.1...vue-sdk-2.6.0) (2025-03-06)
 
 ### Dependency Updates

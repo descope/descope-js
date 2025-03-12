@@ -163,6 +163,8 @@ const App = () => {
             // Set a CSP nonce that will be used for style and script tags
             //nonce="rAnd0m"
 
+            // Clear screen error message on user input
+            //dismissScreenErrorOnInput={true}
         />
     )
 }

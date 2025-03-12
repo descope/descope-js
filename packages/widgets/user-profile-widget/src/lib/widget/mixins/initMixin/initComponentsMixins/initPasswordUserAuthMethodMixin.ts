@@ -59,7 +59,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
         });
       }
 
-      #initPhoneUserAttr() {
+      initPasswordAuthMethod() {
         this.passwordUserAuthMethod = new UserAuthMethodDriver(
           () =>
             this.shadowRoot?.querySelector(
@@ -76,7 +76,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initPhoneUserAttr();
+        this.initPasswordAuthMethod();
         this.#initModal();
       }
     },
