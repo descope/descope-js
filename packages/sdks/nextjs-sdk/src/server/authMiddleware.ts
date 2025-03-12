@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server';
 import descopeSdk from '@descope/node-sdk';
 import type { AuthenticationInfo } from '@descope/node-sdk';
 import { DEFAULT_PUBLIC_ROUTES, DESCOPE_SESSION_HEADER } from './constants';
 import { getGlobalSdk } from './sdk';
 import { mergeSearchParams } from './utils';
+import { LogLevel } from '../types';
+import { logger, setLogger } from './logger';
 
 type MiddlewareOptions = {
 	// The Descope project ID to use for authentication
@@ -29,6 +30,10 @@ type MiddlewareOptions = {
 	// An array of private routes that require authentication
 	// If privateRoutes is defined, routes not listed in this array will default to public routes
 	privateRoutes?: string[];
+
+	// The log level to use for the middleware
+	// Defaults to 'info'
+	logLevel?: LogLevel;
 };
 
 export type MiddlewareFunction = (
@@ -69,7 +74,7 @@ const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 
 	if (publicRoutes.length > 0) {
 		if (privateRoutes.length > 0) {
-			console.warn(
+			logger.warn(
 				'Both publicRoutes and privateRoutes are defined. Ignoring privateRoutes.'
 			);
 		}
@@ -135,7 +140,8 @@ export const chainMiddleware = (
 const createAuthMiddleware =
   (options: MiddlewareOptions = {}) =>
   async (req: NextRequest, next?: MiddlewareFunction) => {
-		console.debug('Auth middleware starts');
+		setLogger(options.logLevel);
+		logger.debug('Auth middleware starts');
 
 		const jwt = getSessionJwt(req);
 
@@ -147,7 +153,7 @@ const createAuthMiddleware =
 				baseUrl: options.baseUrl
 			}).validateJwt(jwt);
 		} catch (err) {
-			console.debug('Auth middleware, Failed to validate JWT', err);
+			logger.debug('Auth middleware, Failed to validate JWT', err);
 			if (!isPublicRoute(req, options)) {
 				const redirectUrl = options.redirectUrl || DEFAULT_PUBLIC_ROUTES.signIn;
 				const url = req.nextUrl.clone();
@@ -162,14 +168,13 @@ const createAuthMiddleware =
 				if (searchParams) {
 					url.search = searchParams;
 				}
-				console.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
+				logger.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
 				return NextResponse.redirect(url);
 			}
 		}
 
-		console.debug('Auth middleware finishes');
-
-		// Add the session to the request, if it exists
+		logger.debug('Auth middleware finishes');
+		// add the session to the request, if it exists
 		const headers = addSessionToHeadersIfExists(req.headers, session);
 		const reqWithSession = new NextRequest(req.url, {
 			headers
