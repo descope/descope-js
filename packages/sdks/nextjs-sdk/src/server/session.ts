@@ -1,9 +1,16 @@
-/* eslint-disable no-console */
 import descopeSdk, { AuthenticationInfo } from '@descope/node-sdk';
 import { NextApiRequest } from 'next';
 import { cookies, headers } from 'next/headers';
 import { DESCOPE_SESSION_HEADER } from './constants';
 import { getGlobalSdk, CreateSdkParams } from './sdk';
+import { LogLevel } from '../types';
+import { logger, setLogger } from './logger';
+
+type SessionConfig = CreateSdkParams & {
+	// The log level to use for the middleware
+	// Defaults to 'info'
+	logLevel?: LogLevel;
+};
 
 const extractSession = (
 	descopeSession?: string
@@ -24,19 +31,19 @@ const extractSession = (
 const getSessionFromCookie = async (
 	config?: CreateSdkParams
 ): Promise<AuthenticationInfo | undefined> => {
-  console.debug('attempting to get session from cookie');
+	logger.debug('attempting to get session from cookie');
 	try {
 		const sessionCookie = (await cookies()).get(
 			descopeSdk.SessionTokenCookieName
 		);
 		if (!sessionCookie?.value) {
-			console.debug('Session cookie not found');
+			logger.debug('Session cookie not found');
 			return undefined;
 		}
 		const sdk = getGlobalSdk(config);
 		return await sdk.validateJwt(sessionCookie.value);
 	} catch (err) {
-		console.debug('Error getting session from cookie', err);
+		logger.debug('Error getting session from cookie', err);
 		return undefined;
 	}
 };
@@ -45,7 +52,7 @@ const getSessionFromCookie = async (
 // if it doesn't exist, it will attempt to get the session from the cookie
 const extractOrGetSession = async (
 	sessionHeader?: string,
-	config?: CreateSdkParams
+	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
 	const session = extractSession(sessionHeader);
 	if (session) {
@@ -57,8 +64,9 @@ const extractOrGetSession = async (
 
 // returns the session token if it exists in the headers
 export const session = async (
-	config?: CreateSdkParams
+	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
+	setLogger(config?.logLevel);
 	// first attempt to get the session from the headers
 	const reqHeaders = await headers();
 	const sessionHeader = reqHeaders.get(DESCOPE_SESSION_HEADER);
@@ -68,9 +76,11 @@ export const session = async (
 // returns the session token if it exists in the request headers
 export const getSession = async (
 	req: NextApiRequest,
-	config?: CreateSdkParams
-): Promise<AuthenticationInfo | undefined> =>
-	extractOrGetSession(
+	config?: SessionConfig
+): Promise<AuthenticationInfo | undefined> => {
+	setLogger(config?.logLevel);
+	return extractOrGetSession(
 		req.headers[DESCOPE_SESSION_HEADER.toLowerCase()] as string,
 		config
 	);
+};

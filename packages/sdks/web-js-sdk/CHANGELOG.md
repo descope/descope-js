@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.27.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.26.2...web-js-sdk-1.27.0) (2025-03-13)
+
+
+### Features
+
+* Support noon secure cookie ([#1028](https://github.com/descope/descope-js/issues/1028)) RELEASE ([885786a](https://github.com/descope/descope-js/commit/885786ae96208bb96c7df18877674229b13f7cac))
+
 ## [1.26.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.26.1...web-js-sdk-1.26.2) (2025-03-06)
 
 ### Dependency Updates

@@ -2,6 +2,39 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.0](https://github.com/descope/descope-js/compare/angular-sdk-0.12.0...angular-sdk-0.13.0) (2025-03-13)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.6`
+* `audit-management-widget` updated to version `0.4.6`
+* `role-management-widget` updated to version `0.3.6`
+* `user-management-widget` updated to version `0.7.6`
+* `user-profile-widget` updated to version `0.4.1`
+* `applications-portal-widget` updated to version `0.3.6`
+* `web-component` updated to version `3.39.1`
+* `web-js-sdk` updated to version `1.27.0`
+
+### Features
+
+* Support noon secure cookie ([#1028](https://github.com/descope/descope-js/issues/1028)) RELEASE ([885786a](https://github.com/descope/descope-js/commit/885786ae96208bb96c7df18877674229b13f7cac))
+
+## [0.12.0](https://github.com/descope/descope-js/compare/angular-sdk-0.11.0...angular-sdk-0.12.0) (2025-03-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.5`
+* `audit-management-widget` updated to version `0.4.5`
+* `role-management-widget` updated to version `0.3.5`
+* `user-management-widget` updated to version `0.7.5`
+* `user-profile-widget` updated to version `0.4.0`
+* `applications-portal-widget` updated to version `0.3.5`
+* `web-component` updated to version `3.39.0`
+
+### Features
+
+* added option to dismiss screen error on input ([#1045](https://github.com/descope/descope-js/issues/1045)) ([4d9e58d](https://github.com/descope/descope-js/commit/4d9e58dfdc6ab8e219ecf1506e9fd0ec731012cd))
+
 ## [0.11.0](https://github.com/descope/descope-js/compare/angular-sdk-0.10.1...angular-sdk-0.11.0) (2025-03-06)
 
 ### Dependency Updates

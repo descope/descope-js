@@ -1,1 +1,1 @@
-export type TempType = {};
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';

@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.2.0...sdk-helpers-0.3.0) (2025-03-11)
+
+
+### Features
+
+* add totp to UPW ([#1043](https://github.com/descope/descope-js/issues/1043)) ([6908440](https://github.com/descope/descope-js/commit/69084402ebebe76e8e2c05f64cfc0d8036a4e250))
+
 ## [0.2.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.1.67...sdk-helpers-0.2.0) (2025-02-11)
 
 
