@@ -1,5 +1,6 @@
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import logger from '../helpers/logger';
+import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
 /**
  * Get the JWT expiration WITHOUT VALIDATING the JWT
@@ -44,4 +45,17 @@ export const createTimerFunctions = () => {
   };
 
   return { clearAllTimers, setTimer };
+};
+
+export const getAutoRefreshTimeout = (sessionExpiration: Date) => {
+  let timeout = millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
+
+  if (timeout > MAX_TIMEOUT) {
+    logger.debug(
+      `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`,
+    );
+    timeout = MAX_TIMEOUT;
+  }
+
+  return timeout;
 };

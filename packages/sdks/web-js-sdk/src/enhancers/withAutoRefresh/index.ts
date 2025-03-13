@@ -5,15 +5,12 @@ import { addHooks, getAuthInfoFromResponse } from '../helpers';
 import {
   createTimerFunctions,
   getTokenExpiration,
-  millisecondsUntilDate,
+  getAutoRefreshTimeout,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
-import { IS_BROWSER, MAX_TIMEOUT } from '../../constants';
+import { IS_BROWSER, REFRESH_THRESHOLD } from '../../constants';
 import { getRefreshToken } from '../withPersistTokens/helpers';
-
-// The amount of time (ms) to trigger the refresh before session expires
-const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
 
 /**
  * Automatically refresh the session token before it expires
@@ -37,6 +34,7 @@ export const withAutoRefresh =
         // tab becomes visible and the session is expired, do a refresh
         if (
           document.visibilityState === 'visible' &&
+          sessionExpirationDate &&
           new Date() > sessionExpirationDate
         ) {
           logger.debug('Expiration time passed, refreshing session');
@@ -66,16 +64,15 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
-        let timeout =
-          millisecondsUntilDate(sessionExpirationDate) - REFRESH_THRESHOLD;
-
-        if (timeout > MAX_TIMEOUT) {
-          logger.debug(
-            `Timeout is too large (${timeout}ms), setting it to ${MAX_TIMEOUT}ms`,
-          );
-          timeout = MAX_TIMEOUT;
-        }
+        const timeout = getAutoRefreshTimeout(sessionExpirationDate);
         clearAllTimers();
+
+        if (timeout <= REFRESH_THRESHOLD) {
+          logger.debug(
+            'Session is too close to expiration, not setting refresh timer',
+          );
+          return;
+        }
 
         const refreshTimeStr = new Date(
           Date.now() + timeout,
