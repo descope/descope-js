@@ -271,6 +271,26 @@ describe('autoRefresh', () => {
     expect(loggerDebugMock).not.toHaveBeenCalled();
   });
 
+  it('should not refresh token when visibilitychange event and there is no session', async () => {
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+
+    await new Promise(process.nextTick);
+
+    // trigger visibilitychange event and ensure refresh called
+    const event = new Event('visibilitychange');
+    document.dispatchEvent(event);
+    expect(refreshSpy).not.toHaveBeenCalled();
+
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      'Expiration time passed, refreshing session',
+    );
+  });
+
   it('should refresh token when visibilitychange event and session expired', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
@@ -300,27 +320,7 @@ describe('autoRefresh', () => {
     expect(loggerDebugMock).toHaveBeenCalledWith(
       'Expiration time passed, refreshing session',
     );
-  });
-
-  it('should not refresh token when visibilitychange event and there is no session', async () => {
-    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-    const loggerDebugMock = logger.debug as jest.Mock;
-
-    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
-    const refreshSpy = jest
-      .spyOn(sdk, 'refresh')
-      .mockReturnValue(new Promise(() => {}));
-
-    await new Promise(process.nextTick);
-
-    // trigger visibilitychange event and ensure refresh called
-    const event = new Event('visibilitychange');
-    document.dispatchEvent(event);
-    expect(refreshSpy).not.toHaveBeenCalled();
-
-    expect(loggerDebugMock).not.toHaveBeenCalledWith(
-      'Expiration time passed, refreshing session',
-    );
+    loggerDebugMock.mockClear();
   });
 
   it('should handle a case where jwt decoding fail', async () => {
