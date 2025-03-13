@@ -88,7 +88,7 @@ const withOauth = (httpClient: HttpClient) => ({
         apiPaths.oauth.oneTap.getOneTapClientId.replace('{provider}', provider),
       ),
     ),
-  exchangeProviderToken: (
+  exchangeOneTapIDToken: (
     provider: string,
     idToken: string,
     nonce: string,
