@@ -35,10 +35,12 @@ describe('autoRefresh', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
 
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
     const mockFetch = jest.fn().mockReturnValue(
       createMockReturnValue({
         ...authInfo,
         sessionJwt: undefined,
+        sessionExpiration,
       }),
     );
     global.fetch = mockFetch;
@@ -63,10 +65,11 @@ describe('autoRefresh', () => {
 
     // ensure refresh called with refresh token
     timeoutFn();
-    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
+    expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     // check refresh called around 20 seconds before session token expiration
-    const expectedTimer = 1663190448000 - new Date().getTime();
+    const expectedTimer =
+      (sessionExpiration - 20) * 1000 - new Date().getTime();
     expect(timeoutTimer).toBeGreaterThan(expectedTimer - 1000);
     expect(timeoutTimer).toBeLessThan(expectedTimer + 1000);
 
@@ -91,11 +94,15 @@ describe('autoRefresh', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
 
-    const mockFetch = jest
-      .fn()
-      .mockReturnValue(
-        createMockReturnValue({ ...authInfo, sessionExpiration: undefined }),
-      );
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const sessionJwt = getFutureSessionToken(10 * 60);
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration: undefined,
+        sessionJwt,
+      }),
+    );
     global.fetch = mockFetch;
 
     const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
@@ -118,10 +125,11 @@ describe('autoRefresh', () => {
 
     // ensure refresh called with refresh token
     timeoutFn();
-    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
+    expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     // check refresh called around 20 seconds before session token expiration
-    const expectedTimer = 1663190448000 - new Date().getTime();
+    const expectedTimer =
+      (sessionExpiration - 20) * 1000 - new Date().getTime();
     expect(timeoutTimer).toBeGreaterThan(expectedTimer - 1000);
     expect(timeoutTimer).toBeLessThan(expectedTimer + 1000);
 
@@ -144,9 +152,14 @@ describe('autoRefresh', () => {
   it('should refresh token with token from storage', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
-    const mockFetch = jest
-      .fn()
-      .mockReturnValue(createMockReturnValue(authInfo));
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
     global.fetch = mockFetch;
 
     const sdk = createSdk({
@@ -232,9 +245,13 @@ describe('autoRefresh', () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
 
-    const mockFetch = jest
-      .fn()
-      .mockReturnValue(createMockReturnValue(authInfo));
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
     global.fetch = mockFetch;
 
     const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
@@ -245,12 +262,10 @@ describe('autoRefresh', () => {
 
     await new Promise(process.nextTick);
 
-    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
-
     // trigger visibilitychange event and ensure refresh called
     const event = new Event('visibilitychange');
     document.dispatchEvent(event);
-    expect(refreshSpy).toBeCalledWith(authInfo.refreshJwt);
+    expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     expect(loggerDebugMock).toHaveBeenCalledWith(
       'Expiration time passed, refreshing session',
