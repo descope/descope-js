@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.8.0](https://github.com/descope/descope-js/compare/vue-sdk-2.7.0...vue-sdk-2.8.0) (2025-03-13)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.6`
+* `audit-management-widget` updated to version `0.4.6`
+* `role-management-widget` updated to version `0.3.6`
+* `user-management-widget` updated to version `0.7.6`
+* `user-profile-widget` updated to version `0.4.1`
+* `applications-portal-widget` updated to version `0.3.6`
+* `web-component` updated to version `3.39.1`
+* `web-js-sdk` updated to version `1.27.0`
+
+### Features
+
+* Support noon secure cookie ([#1028](https://github.com/descope/descope-js/issues/1028)) RELEASE ([885786a](https://github.com/descope/descope-js/commit/885786ae96208bb96c7df18877674229b13f7cac))
+
 ## [2.7.0](https://github.com/descope/descope-js/compare/vue-sdk-2.6.0...vue-sdk-2.7.0) (2025-03-11)
 
 ### Dependency Updates
