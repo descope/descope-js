@@ -66,7 +66,7 @@ describe('sdk', () => {
     });
   });
 
-  it('should set dsc query param to false on refresh when the refresh and session token do not exist', async () => {
+  it('should set dcs and dcr query params to false on refresh when the refresh and session token do not exist', async () => {
     localStorage.removeItem('DS'); // no session token
     localStorage.removeItem('DSR'); // no refresh token
 
