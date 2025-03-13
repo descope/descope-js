@@ -106,7 +106,14 @@ type PromptNotification = {
 };
 
 const generateNonce = () => {
-  return Math.random().toString(36).substring(2);
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint8Array(16); // 16 bytes = 128 bits
+    window.crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  } else {
+    // Fallback (not cryptographically secure)
+    return Math.random().toString(36).substring(2);
+  }
 };
 
 /**
@@ -138,7 +145,7 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     return new Promise((resolve) => {
       const callback = (res: CredentialResponse) => {
         resolve(
-          sdk.oauth.exchangeProviderToken(
+          sdk.oauth.exchangeOneTapIDToken(
             readyProvider,
             res.credential,
             nonce,

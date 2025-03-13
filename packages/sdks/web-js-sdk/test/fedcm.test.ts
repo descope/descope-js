@@ -3,7 +3,7 @@ import createSdk from '../src/index';
 const coreJs = {
   oauth: {
     getOneTapClientId: jest.fn(),
-    exchangeProviderToken: jest.fn(),
+    exchangeOneTapIDToken: jest.fn(),
   },
   webauthn: {},
   refresh: jest.fn(),
@@ -112,7 +112,7 @@ describe('fedcm', () => {
       await new Promise(process.nextTick);
       const callback = googleClient.initialize.mock.calls[0][0].callback;
       callback({ credential: 'JWT' });
-      expect(coreJs.oauth.exchangeProviderToken).toHaveBeenCalledWith(
+      expect(coreJs.oauth.exchangeOneTapIDToken).toHaveBeenCalledWith(
         'google',
         'JWT',
         expect.any(String),
