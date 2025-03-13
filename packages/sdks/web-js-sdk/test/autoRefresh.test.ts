@@ -89,6 +89,36 @@ describe('autoRefresh', () => {
     );
   });
 
+  it('should not refresh token after interval when the session expiration is too close', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10; // 10 seconds from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionJwt: undefined,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    // ensure logger called
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^Setting refresh timer for/),
+    );
+    loggerDebugMock.mockClear();
+
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
+  });
+
   it('should refresh token after interval if only sessionToken was returned', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
@@ -268,6 +298,27 @@ describe('autoRefresh', () => {
     expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Expiration time passed, refreshing session',
+    );
+  });
+
+  it('should not refresh token when visibilitychange event and there is no session', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+
+    await new Promise(process.nextTick);
+
+    // trigger visibilitychange event and ensure refresh called
+    const event = new Event('visibilitychange');
+    document.dispatchEvent(event);
+    expect(refreshSpy).not.toHaveBeenCalled();
+
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
       'Expiration time passed, refreshing session',
     );
   });
