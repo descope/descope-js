@@ -40,7 +40,7 @@ export default {
     finishNative: 'v1/auth/oauth/native/finish',
     oneTap: {
       getOneTapClientId: '/v1/auth/onetap/clientid/{provider}',
-      exchangeOneTapIDToken: '/v1/auth/oauth/onetap/idtoken/exchange',
+      exchangeOneTapIDToken: '/v1/auth/onetap/idtoken/exchange',
     },
   },
   saml: {
