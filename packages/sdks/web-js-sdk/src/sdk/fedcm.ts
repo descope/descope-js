@@ -105,6 +105,17 @@ type PromptNotification = {
   getSkippedReason: () => string;
 };
 
+const generateNonce = () => {
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint8Array(16); // 16 bytes = 128 bits
+    window.crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  } else {
+    // Fallback (not cryptographically secure)
+    return Math.random().toString(36).substring(2);
+  }
+};
+
 /**
  * Constructs a higher level FedCM API that wraps the functions from code-js-sdk.
  * @param sdk The CoreSdk instance.
@@ -119,26 +130,26 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     onDismissed?: (reason?: string) => void,
   ) {
     const readyProvider = provider ?? 'google';
-    const startResponse = await sdk.oauth.startNative(
-      readyProvider,
-      loginOptions,
-      true,
-    );
-    if (!startResponse.ok) {
-      return startResponse as unknown as SdkResponse<JWTResponse>;
-    }
 
-    const { clientId, stateId, nonce } = startResponse.data;
+    const nonce = generateNonce();
     const googleClient = await getGoogleClient();
+
+    const clientIdRes = await sdk.oauth.getOneTapClientId(readyProvider);
+    if (!clientIdRes.ok) {
+      throw new Error(
+        'Failed to get OneTap client ID for provider ' + readyProvider,
+      );
+    }
+    const clientId = clientIdRes.data.clientId;
+
     return new Promise((resolve) => {
       const callback = (res: CredentialResponse) => {
         resolve(
-          sdk.oauth.finishNative(
+          sdk.oauth.exchangeOneTapIDToken(
             readyProvider,
-            stateId,
-            '',
-            '',
             res.credential,
+            nonce,
+            loginOptions,
           ),
         );
       };
