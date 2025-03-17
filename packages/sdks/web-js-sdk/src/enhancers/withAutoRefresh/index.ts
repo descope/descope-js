@@ -68,6 +68,11 @@ export const withAutoRefresh =
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {
+          /*
+            When receiving a session with very short expiration - it means that the refresh token is also close to expiration
+            This happens because session expiration cannot be more than the refresh expiration
+            In this case - the user is going to be logged out soon, so we don't want to set a refresh timer
+          */
           logger.debug(
             'Session is too close to expiration, not setting refresh timer',
           );
