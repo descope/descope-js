@@ -12,7 +12,7 @@ export type Audit = {
   actorId: string;
   type: string;
   occurred: number;
-  occurredFormatted?: string;
+  occurredRaw?: string;
   device: string;
   method: string;
   geo: string;

@@ -56,7 +56,8 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         'oidc_generated_user',
         conditionalJsonParse(oidc_generated_user),
       ),
-      occurredFormatted: !occurred
+      occuredRaw: occurred,
+      occurred: !occurred
         ? 'N/A'
         : new Date(Number(occurred) || 0).toLocaleString(),
     };
