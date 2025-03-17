@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.10.0...nextjs-sdk-0.11.0) (2025-03-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.27.0`
+* `react-sdk` updated to version `2.11.0`
+* `web-component` updated to version `3.39.1`
+
+### Features
+
+* Support noon secure cookie ([#1028](https://github.com/descope/descope-js/issues/1028)) RELEASE ([885786a](https://github.com/descope/descope-js/commit/885786ae96208bb96c7df18877674229b13f7cac))
+
+
+### Bug Fixes
+
+* next.js readme ([#1047](https://github.com/descope/descope-js/issues/1047)) ([7038038](https://github.com/descope/descope-js/commit/703803838eca1eb780a4a9de0367ab01864509b1))
+
 ## [0.10.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.9.0...nextjs-sdk-0.10.0) (2025-03-11)
 
 ### Dependency Updates
