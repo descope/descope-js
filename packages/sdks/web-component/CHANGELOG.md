@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.39.2](https://github.com/descope/descope-js/compare/web-component-3.39.1...web-component-3.39.2) (2025-03-16)
+
+
+### Bug Fixes
+
+* Handle buttons by data-type RELEASE ([#1049](https://github.com/descope/descope-js/issues/1049)) ([1decdb0](https://github.com/descope/descope-js/commit/1decdb0285f8f01408903488c30baa3cd752c641))
+
 ## [3.39.1](https://github.com/descope/descope-js/compare/web-component-3.39.0...web-component-3.39.1) (2025-03-13)
 
 ### Dependency Updates
