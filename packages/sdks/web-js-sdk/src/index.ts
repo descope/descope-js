@@ -1,6 +1,7 @@
 import { compose } from './enhancers/helpers';
 import { withAnalytics } from './enhancers/withAnalytics';
 import { withAutoRefresh } from './enhancers/withAutoRefresh';
+import { withConditionalRefresh } from './enhancers/withConditionalRefresh';
 import { withFingerprint } from './enhancers/withFingerprint';
 import { withLastLoggedInUser } from './enhancers/withLastLoggedInUser';
 import { withNotifications } from './enhancers/withNotifications';
@@ -11,6 +12,7 @@ const decoratedCreateSdk = compose(
   withFingerprint,
   withAutoRefresh,
   withAnalytics,
+  withConditionalRefresh,
   withNotifications,
   withLastLoggedInUser, // must be one before last due to TS types
   withPersistTokens, // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727

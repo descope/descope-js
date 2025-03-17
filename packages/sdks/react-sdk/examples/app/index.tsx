@@ -15,6 +15,11 @@ root.render(
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
       refreshCookieName={process.env.DESCOPE_REFRESH_COOKIE_NAME}
+      // we want to pass undefined if the value is not set
+      forceRefreshOnFirstUse={
+        process.env.DESCOPE_REFRESH_ON_FIRST_USE &&
+        process.env.DESCOPE_REFRESH_ON_FIRST_USE === 'true'
+      }
     >
       <App />
     </AuthProvider>
