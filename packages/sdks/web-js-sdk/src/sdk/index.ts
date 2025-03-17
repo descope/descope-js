@@ -6,9 +6,11 @@ import {
   getSessionToken,
   getRefreshToken,
 } from '../enhancers/withPersistTokens/helpers';
+import createOidc from './oidc';
+import { WebSdkConfig } from '../types';
 
-const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
-  const coreSdk = createCoreSdk(...args);
+const createSdk = (config: WebSdkConfig) => {
+  const coreSdk = createCoreSdk(config);
 
   return {
     ...coreSdk,
@@ -24,7 +26,8 @@ const createSdk = (...args: Parameters<typeof createCoreSdk>) => {
     },
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),
-    fedcm: createFedCM(coreSdk, args[0].projectId),
+    fedcm: createFedCM(coreSdk, config.projectId),
+    oidc: createOidc(coreSdk, config.projectId, config.oidcConfig),
   };
 };
 

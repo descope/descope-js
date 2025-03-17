@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>Getting Token ...</h1>
+    </div>
+
+    <script>
+      const h1Ele = document.getElementsByTagName('h1')[0];
+
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const projectId = urlSearchParams.get('projectId');
+
+      if (!projectId) {
+        // redirect to the index page
+        window.location.href = window.location.href
+          .split('/')
+          .slice(0, -1)
+          .join('/');
+      }
+
+      const sdk = Descope({ projectId });
+
+      sdk.oidc
+        .token()
+        .then((resp) => {
+          // change the h1 text to "Done!"
+          h1Ele.innerText = 'Done!';
+          if (resp?.ok === false) alert(JSON.stringify(resp, null, 4));
+
+          // create logout button
+          const logoutButton = document.createElement('button');
+          logoutButton.innerText = 'Logout';
+          logoutButton.onclick = async function () {
+            const res = await sdk.oidc.logout();
+            if (res?.ok === false) alert(JSON.stringify(res, null, 4));
+            // remove the last element of the URL
+            window.location.href = window.location.href
+              .split('/')
+              .slice(0, -1)
+              .join('/');
+          };
+          document.body.appendChild(logoutButton);
+          // create a code element to display the response inside a div
+          const codeEle = document.createElement('code');
+          codeEle.innerText = JSON.stringify(resp, null, 4);
+
+          // create a div to hold the code element
+          const divEle = document.createElement('div');
+          divEle.appendChild(codeEle);
+
+          document.body.appendChild(divEle);
+        })
+        .catch((err) => {
+          console.error(err);
+          h1Ele.innerText = 'Error!';
+        });
+    </script>
+  </body>
+</html>

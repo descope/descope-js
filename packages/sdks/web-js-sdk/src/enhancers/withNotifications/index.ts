@@ -30,15 +30,18 @@ export const withNotifications =
         const userDetails = await getUserFromResponse(res);
         if (userDetails) userPS.pub(userDetails);
 
-        const { sessionJwt, sessionExpiration } =
+        const authInfo =
           await getAuthInfoFromResponse(res);
+          const sessionJwt = authInfo?.sessionJwt || authInfo.access_token;
+
+
         if (sessionJwt) sessionPS.pub(sessionJwt);
 
-        if (sessionExpiration || sessionJwt) {
+        if (authInfo.sessionExpiration || sessionJwt) {
           // We also publish the session expiration if there is a session jwt
           // as a temporary fix for the issue where the session expiration is not
           // being sent in the response in Flows (42 is a magic number)
-          sessionExpirationPS.pub(sessionExpiration || 42);
+          sessionExpirationPS.pub(authInfo.sessionExpiration || 42);
         }
       }
     };

@@ -47,9 +47,12 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
-      const { refreshJwt, sessionJwt, sessionExpiration } =
-        (await getAuthInfoFromResponse(res)) as any;
+      const authInfo =
+        (await getAuthInfoFromResponse(res));
 
+      const sessionJwt = authInfo.sessionJwt || authInfo.access_token;
+      const refreshJwt = authInfo.refreshJwt || authInfo.refresh_token;
+      const sessionExpiration = authInfo.sessionExpiration || authInfo.expires_in; // Asaf - see if expire in or expire_at is the correct one
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
         logger.debug('Received 401, canceling all timers');
