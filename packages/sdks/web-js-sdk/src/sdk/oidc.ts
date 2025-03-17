@@ -1,5 +1,7 @@
 import { JWTResponse, SdkResponse, URLResponse } from '@descope/core-js-sdk';
 import type {
+  CreateSigninRequestArgs,
+  CreateSignoutRequestArgs,
   OidcClient,
   OidcClientSettings,
   SigninResponse,
@@ -173,9 +175,9 @@ const createOidc = (
   oidcConfig?: OidcConfig,
 ) => {
   // we build the
-  const authorize = async (): Promise<SdkResponse<URLResponse>> => {
+  const authorize = async (arg: CreateSigninRequestArgs): Promise<SdkResponse<URLResponse>> => {
     const { client } = await getOidcClient(sdk, projectId, oidcConfig);
-    const { url } = await client.createSigninRequest({});
+    const { url } = await client.createSigninRequest(arg);
     return { ok: true, data: { url } };
   };
 
@@ -200,7 +202,7 @@ const createOidc = (
     return signInRes;
   };
 
-  const logout = async (postLogoutRedirectUri?: string) => {
+  const logout = async (arg?: CreateSignoutRequestArgs) => {
     const { client, stateUserKey } = await getOidcClient(
       sdk,
       projectId,
@@ -209,10 +211,7 @@ const createOidc = (
     const user = getUserFromStorage(stateUserKey);
 
     if (user) {
-      const { url } = await client.createSignoutRequest({
-        id_token_hint: user.id_token,
-        post_logout_redirect_uri: postLogoutRedirectUri,
-      });
+      const { url } = await client.createSignoutRequest(arg);
       window.localStorage.removeItem(stateUserKey);
       window.location.replace(url);
     }
