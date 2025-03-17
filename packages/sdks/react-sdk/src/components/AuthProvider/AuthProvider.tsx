@@ -31,6 +31,8 @@ interface IAuthProviderProps {
   // Use this option if the authentication is done via cookie, and configured with a different name
   // Currently, this is done using Descope Flows
   refreshCookieName?: string;
+  // If true, session will be refreshed even if the user is not logged in (default: true)
+  forceRefreshOnFirstUse?: boolean;
   children?: React.ReactNode;
 }
 
@@ -43,6 +45,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
+  // Currently the default is true
+  // but we want to change it to false after we make sure it works on all cases
+  forceRefreshOnFirstUse = true,
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -83,14 +88,20 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
   const fetchSession = useCallback(() => {
     // We want that the session will fetched only once
-    if (isSessionFetched.current) return;
+    if (
+      // already fetched
+      isSessionFetched.current ||
+      // no refresh expiration means the user is not logged in
+      (!forceRefreshOnFirstUse && !sdk.getRefreshExpiration())
+    )
+      return;
     isSessionFetched.current = true;
 
     setIsSessionLoading(true);
     withValidation(sdk?.refresh)().then(() => {
       setIsSessionLoading(false);
     });
-  }, [sdk]);
+  }, [sdk, forceRefreshOnFirstUse]);
 
   const fetchUser = useCallback(() => {
     // We want that the user will fetched only once
