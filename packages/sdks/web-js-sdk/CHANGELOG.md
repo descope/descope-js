@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.27.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.0...web-js-sdk-1.27.1) (2025-03-17)
+
+
+### Bug Fixes
+
+* short timeout ([#1048](https://github.com/descope/descope-js/issues/1048)) RELEASE ([8759f11](https://github.com/descope/descope-js/commit/8759f110b4706c7a3e4fb2e56e6112f6eae97494))
+
 ## [1.27.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.26.2...web-js-sdk-1.27.0) (2025-03-13)
 
 
