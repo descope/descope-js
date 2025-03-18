@@ -7,7 +7,7 @@ import {
   getRefreshToken,
 } from '../enhancers/withPersistTokens/helpers';
 import createOidc from './oidc';
-import { WebSdkConfig } from '../types';
+import { CoreSdk, WebSdkConfig } from '../types';
 import logger from '../enhancers/helpers/logger';
 
 const OIDC_LOGOUT_ERROR_CODE = 'J161000';
@@ -21,7 +21,7 @@ const createSdk = (config: WebSdkConfig) => {
   return {
     ...coreSdk,
     // Asaf - returning in a different format may break other enhancers
-    refresh: async (token?: string) => {
+    refresh: async (token?: string): ReturnType<CoreSdk['refresh']> => {
       console.log('@@@ calling refresh', {
         token,
       });
