@@ -13,7 +13,7 @@ declare global {
 // Token refresh time: 105 seconds (2 minutes minus 15 seconds)
 // Set to refresh the token shortly before expiration to ensure
 // we always have a valid token when submitting the form
-const TOKEN_REFRESH_TIME = 105000;
+const TOKEN_REFRESH_TIME_MS = 105000;
 
 export const loadGRecaptcha = (
   initArgs: {
