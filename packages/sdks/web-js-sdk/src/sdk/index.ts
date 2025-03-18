@@ -8,8 +8,10 @@ import {
 } from '../enhancers/withPersistTokens/helpers';
 import createOidc from './oidc';
 import { WebSdkConfig } from '../types';
+import logger from '../enhancers/helpers/logger';
 
 const OIDC_LOGOUT_ERROR_CODE = 'J161000';
+const OIDC_REFRESH_ERROR_CODE = 'J161001';
 
 const createSdk = (config: WebSdkConfig) => {
   const coreSdk = createCoreSdk(config);
@@ -19,10 +21,26 @@ const createSdk = (config: WebSdkConfig) => {
   return {
     ...coreSdk,
     // Asaf - returning in a different format may break other enhancers
-    refresh: (token?: string) => {
+    refresh: async (token?: string) => {
+      console.log('@@@ calling refresh', {
+        token,
+      });
       if (config.oidcConfig) {
-        const res = oidc.refreshToken(token);
-        return Promise.resolve({ ok: true });
+        // Asaf - think if we want to return the value as well
+        try {
+          await oidc.refreshToken(token);
+          return Promise.resolve({ ok: true });
+        } catch (error) {
+          // Asaf - think about this log
+          logger.debug('Failed to refresh with oidc', error);
+          return Promise.resolve({
+            ok: false,
+            error: {
+              errorCode: OIDC_REFRESH_ERROR_CODE,
+              errorDescription: error.toString(),
+            },
+          });
+        }
       }
       // Descope use this query param to monitor if refresh is made
       // When the user is already logged in in the past or not (We want to optimize that in the future)

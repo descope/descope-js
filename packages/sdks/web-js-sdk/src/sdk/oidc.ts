@@ -1,4 +1,9 @@
-import { JWTResponse, SdkResponse, URLResponse } from '@descope/core-js-sdk';
+import {
+  JWTResponse,
+  RequestConfig,
+  SdkResponse,
+  URLResponse,
+} from '@descope/core-js-sdk';
 import type {
   CreateSigninRequestArgs,
   CreateSignoutRequestArgs,
@@ -7,7 +12,7 @@ import type {
   SigninResponse,
   WebStorageStateStore,
 } from 'oidc-client-ts';
-import { CoreSdk, WebJWTResponse } from '../types';
+import { CoreSdk } from '../types';
 import {
   OIDC_CLIENT_TS_DESCOPE_CDN_URL,
   OIDC_CLIENT_TS_JSDELIVR_CDN_URL,
@@ -15,9 +20,16 @@ import {
 import { getIdToken } from '../enhancers/withPersistTokens/helpers';
 
 interface OidcConfig {
+  // default is Descope Project ID
   clientId?: string;
+  // default is current URL
   redirectUri?: string;
+  // default is openid email roles descope.custom_claims offline_access
   scope?: string;
+  // default is undefined
+  metadataUrl?: string;
+  //
+  authority?: string;
 }
 
 type OidcModule = {
@@ -148,6 +160,15 @@ const getOidcClient = async (
   if (oidcConfig?.scope) {
     settings.scope = oidcConfig.scope;
   }
+  if (oidcConfig?.metadataUrl) {
+    settings.metadataUrl = oidcConfig.metadataUrl;
+    console.log('@@@ metadataUrl', settings.metadataUrl);
+  }
+  if (oidcConfig?.authority) {
+    settings.authority = oidcConfig.authority;
+    console.log('@@@ authority', settings.authority);
+  }
+  console.log('@@@ redirect_uri', settings.redirect_uri);
   return {
     client: new OidcClient(settings),
     stateUserKey,
@@ -209,12 +230,15 @@ const createOidc = (
     if (!arg) {
       arg = {};
     }
-    if (!arg.id_token_hint) {
-      // if id_token_hint is not provided, we will use the one from the storage
-      arg.id_token_hint = getIdToken();
-    }
 
-    const { url } = await client.createSignoutRequest(arg);
+    // if id_token_hint is not provided, we will use the one from the storage
+    arg.id_token_hint = arg.id_token_hint || getIdToken();
+    arg.post_logout_redirect_uri =
+      arg.post_logout_redirect_uri || window.location.href;
+
+    const res = await client.createSignoutRequest(arg);
+    console.log('@@@ logout response', res.url);
+    const { url } = res;
     window.localStorage.removeItem(stateUserKey);
     window.location.replace(url);
   };
@@ -229,9 +253,17 @@ const createOidc = (
     if (!user) {
       throw new Error('User not found in storage to refresh token');
     }
+
+    let refresh_token = refreshToken;
+    if (!refresh_token) {
+      // if refresh token is not provided, we will use the one from the hooks
+      const config = {} as RequestConfig;
+      sdk.httpClient.hooks.beforeRequest(config);
+      refresh_token = config.token;
+    }
     const res = await client.useRefreshToken({
       state: {
-        refresh_token: refreshToken,
+        refresh_token,
         session_state: user.session_state,
         profile: user.profile,
       },

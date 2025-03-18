@@ -47,7 +47,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isAuthenticated) {
-    const route = process.env.DESCOPE_IS_OIDC ? '/oidc-login' : '/login';
+    const route = process.env.DESCOPE_OIDC_ENABLED ? '/oidc-login' : '/login';
     return <Navigate to={route} replace />;
   }
 
