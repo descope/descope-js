@@ -364,7 +364,6 @@ async function startOneTap(
         return;
       }
 
-      // Fallback to onSkip
       if (onSkipped && notification?.isSkippedMoment()) {
         const reason = notification.getSkippedReason?.();
         onSkipped?.(reason);
