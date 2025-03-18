@@ -65,7 +65,7 @@ export const loadGRecaptcha = (
             // if the component is still connected, we should try to get a new token before the token expires (2 minutes)
             timer = setTimeout(() => {
               getNewToken(grecaptchaInstance, currentNode);
-            }, TOKEN_REFRESH_TIME);
+            }, TOKEN_REFRESH_TIME_MS);
           }
         });
     });
@@ -101,7 +101,7 @@ export const loadGRecaptcha = (
     const currentTime = Date.now();
     const timeDiff = currentTime - lastTokenFetchTime;
 
-    if (timeDiff > TOKEN_REFRESH_TIME) {
+    if (timeDiff > TOKEN_REFRESH_TIME_MS) {
       stopTimer();
       const prev = lastTokenFetchTime;
       resumeScriptExecution();
