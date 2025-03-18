@@ -271,6 +271,39 @@ describe('autoRefresh', () => {
     expect(loggerDebugMock).not.toHaveBeenCalled();
   });
 
+  it('should not auto refresh when isDescopeBridge is set on window', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+    const origWindow = window;
+
+    // mock window object
+    Object.defineProperty(global, 'window', {
+      writable: true,
+      configurable: true,
+      value: {
+        isDescopeBridge: true,
+      },
+    });
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    global.window = origWindow;
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
+    expect(refreshSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).not.toHaveBeenCalled();
+  });
+
   it('should not refresh token when visibilitychange event and there is no session', async () => {
     const loggerDebugMock = logger.debug as jest.Mock;
 
