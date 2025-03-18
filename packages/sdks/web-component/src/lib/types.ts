@@ -153,6 +153,11 @@ export interface ScriptElement extends HTMLDivElement {
 export type ScriptModule = {
   stop: () => void;
   start: () => void;
+  /**
+   * Refreshes any tokens or state that might be needed before form submission
+   * Currently implemented for reCAPTCHA to ensure we have a fresh token
+   */
+  refresh?: () => Promise<void>;
 };
 
 export type ClientScript = {
