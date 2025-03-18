@@ -5,6 +5,7 @@ import {
   JWTResponse,
   LoginOptions,
   ClientIdResponse,
+  VerifyOneTapIDTokenResponse,
 } from '../types';
 import { transformResponse } from '../helpers';
 import { Oauth, OAuthProviders } from './types';
@@ -88,13 +89,27 @@ const withOauth = (httpClient: HttpClient) => ({
         apiPaths.oauth.oneTap.getOneTapClientId.replace('{provider}', provider),
       ),
     ),
+  verifyOneTapIDToken: (
+    provider: string,
+    idToken: string,
+    nonce: string,
+    loginOptions?: LoginOptions,
+  ) =>
+    transformResponse<VerifyOneTapIDTokenResponse>(
+      httpClient.post(apiPaths.oauth.oneTap.verifyOneTapIDToken, {
+        provider,
+        idToken,
+        nonce,
+        loginOptions,
+      }),
+    ),
   exchangeOneTapIDToken: (
     provider: string,
     idToken: string,
     nonce: string,
     loginOptions?: LoginOptions,
   ) =>
-    transformResponse(
+    transformResponse<JWTResponse>(
       httpClient.post(apiPaths.oauth.oneTap.exchangeOneTapIDToken, {
         provider,
         idToken,

@@ -41,6 +41,7 @@ export default {
     oneTap: {
       getOneTapClientId: '/v1/auth/onetap/clientid/{provider}',
       exchangeOneTapIDToken: '/v1/auth/onetap/idtoken/exchange',
+      verifyOneTapIDToken: '/v1/auth/onetap/idtoken/verify',
     },
   },
   saml: {

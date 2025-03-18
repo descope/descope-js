@@ -210,6 +210,10 @@ export type ClientIdResponse = {
   clientId: string;
 };
 
+export type VerifyOneTapIDTokenResponse = {
+  code: string;
+};
+
 /** Phone delivery methods which are currently supported */
 export enum DeliveryPhone {
   sms = 'sms',
