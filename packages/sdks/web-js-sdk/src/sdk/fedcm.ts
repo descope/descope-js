@@ -125,43 +125,46 @@ const generateNonce = () => {
  */
 const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   onetap: {
-    requestExchangeCode(options?: {
+    requestExchangeCode(options: {
       provider?: string;
       oneTapConfig?: OneTapConfig;
       loginOptions?: LoginOptions;
-      onSkip?: (reason?: string) => void;
+      onSkipped?: (reason?: string) => void;
       onDismissed?: (reason?: string) => void;
-      onError?: (error: Error) => void;
-      onSuccess?: (code: string) => void;
+      onFailed?: (error: Error) => void;
+      onCodeReceived: (code: string) => void;
     }) {
-      requestOneTapExchangeCode(sdk, options);
+      performOneTap(sdk, options);
     },
 
     requestAuthentication(options?: {
       provider?: string;
       oneTapConfig?: OneTapConfig;
       loginOptions?: LoginOptions;
-      onSkip?: (reason?: string) => void;
+      onSkipped?: (reason?: string) => void;
       onDismissed?: (reason?: string) => void;
-      onError?: (error: Error) => void;
-      onSuccess?: (response: JWTResponse) => void;
+      onFailed?: (error: Error) => void;
+      onAuthenticated?: (response: JWTResponse) => void;
     }) {
-      requestOneTapAuthentication(sdk, options);
+      performOneTap(sdk, options);
     },
   },
 
+  /**
+   * @deprecated Call `onetap.requestAuthentication` instead.
+   */
   oneTap(
     provider?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
-    onSkip?: (reason?: string) => void,
+    onSkipped?: (reason?: string) => void,
     onDismissed?: (reason?: string) => void,
   ) {
-    requestOneTapAuthentication(sdk, {
+    performOneTap(sdk, {
       provider,
       oneTapConfig,
       loginOptions,
-      onSkip,
+      onSkipped,
       onDismissed,
     });
   },
@@ -259,114 +262,86 @@ async function getGoogleClient(): Promise<{
   });
 }
 
-async function requestOneTapExchangeCode(
-  sdk: CoreSdk,
-  options?: {
-    provider?: string;
-    oneTapConfig?: OneTapConfig;
-    loginOptions?: LoginOptions;
-    onSkip?: (reason?: string) => void;
-    onDismissed?: (reason?: string) => void;
-    onError?: (error: Error) => void;
-    onSuccess?: (code: string) => void;
-  },
-) {
-  try {
-    const auth = await performOneTap(
-      sdk,
-      options?.provider,
-      options?.oneTapConfig,
-      options?.onSkip,
-      options?.onDismissed,
-    );
-    if (!auth.credental) {
-      return null;
-    }
-    const response = await sdk.oauth.verifyOneTapIDToken(
-      auth.provider,
-      auth.credental,
-      auth.nonce,
-      options?.loginOptions,
-    );
-    if (!response.ok || !response.data) {
-      throw new Error(
-        'Failed to verify OneTap client ID for provider ' + auth.provider,
-      );
-    }
-    options?.onSuccess?.(response.data.code);
-  } catch (e) {
-    options?.onError?.(e);
-  }
-}
-
-async function requestOneTapAuthentication(
-  sdk: CoreSdk,
-  options?: {
-    provider?: string;
-    oneTapConfig?: OneTapConfig;
-    loginOptions?: LoginOptions;
-    onSkip?: (reason?: string) => void;
-    onDismissed?: (reason?: string) => void;
-    onError?: (error: Error) => void;
-    onSuccess?: (response: JWTResponse) => void;
-  },
-) {
-  try {
-    const auth = await performOneTap(
-      sdk,
-      options?.provider,
-      options?.oneTapConfig,
-      options?.onSkip,
-      options?.onDismissed,
-    );
-    if (!auth.credental) {
-      return null;
-    }
-    const response = await sdk.oauth.exchangeOneTapIDToken(
-      auth.provider,
-      auth.credental,
-      auth.nonce,
-      options?.loginOptions,
-    );
-    if (!response.ok || !response.data) {
-      throw new Error(
-        'Failed to exchange OneTap client ID for provider ' + auth.provider,
-      );
-    }
-    options?.onSuccess?.(response.data);
-  } catch (e) {
-    options?.onError?.(e);
-  }
-}
-
 async function performOneTap(
   sdk: CoreSdk,
-  provider?: string,
+  options?: {
+    provider?: string;
+    oneTapConfig?: OneTapConfig;
+    loginOptions?: LoginOptions;
+    onSkipped?: (reason?: string) => void;
+    onDismissed?: (reason?: string) => void;
+    onFailed?: (error: Error) => void;
+    onCodeReceived?: (code: string) => void;
+    onAuthenticated?: (response: JWTResponse) => void;
+  },
+) {
+  try {
+    const auth = await startOneTap(
+      sdk,
+      options.provider,
+      options.oneTapConfig,
+      options.onSkipped,
+      options.onDismissed,
+    );
+    if (!auth.credental) {
+      return null;
+    }
+    if (options?.onCodeReceived) {
+      const response = await sdk.oauth.verifyOneTapIDToken(
+        auth.provider,
+        auth.credental,
+        auth.nonce,
+        options?.loginOptions,
+      );
+      if (!response.ok || !response.data) {
+        throw new Error(
+          'Failed to verify OneTap client ID for provider ' + auth.provider,
+        );
+      }
+      options?.onCodeReceived?.(response.data.code);
+    } else {
+      const response = await sdk.oauth.exchangeOneTapIDToken(
+        auth.provider,
+        auth.credental,
+        auth.nonce,
+        options?.loginOptions,
+      );
+      if (!response.ok || !response.data) {
+        throw new Error(
+          'Failed to exchange OneTap client ID for provider ' + auth.provider,
+        );
+      }
+      options?.onAuthenticated?.(response.data);
+    }
+  } catch (e) {
+    options?.onFailed?.(e);
+  }
+}
+
+async function startOneTap(
+  sdk: CoreSdk,
+  provider: string = 'google',
   oneTapConfig?: OneTapConfig,
-  onSkip?: (reason?: string) => void,
+  onSkipped?: (reason?: string) => void,
   onDismissed?: (reason?: string) => void,
 ): Promise<{
   provider: string;
   nonce: string;
   credental?: string;
 }> {
-  const readyProvider = provider ?? 'google';
-
   const nonce = generateNonce();
   const googleClient = await getGoogleClient();
 
-  const clientIdRes = await sdk.oauth.getOneTapClientId(readyProvider);
+  const clientIdRes = await sdk.oauth.getOneTapClientId(provider);
   if (!clientIdRes.ok) {
-    throw new Error(
-      'Failed to get OneTap client ID for provider ' + readyProvider,
-    );
+    throw new Error('Failed to get OneTap client ID for provider ' + provider);
   }
   const clientId = clientIdRes.data.clientId;
 
   return new Promise((resolve) => {
     const callback = (response?: CredentialResponse) => {
       resolve({
-        provider: readyProvider,
+        provider,
         nonce,
         credental: response?.credential,
       });
@@ -390,9 +365,9 @@ async function performOneTap(
       }
 
       // Fallback to onSkip
-      if (onSkip && notification?.isSkippedMoment()) {
+      if (onSkipped && notification?.isSkippedMoment()) {
         const reason = notification.getSkippedReason?.();
-        onSkip?.(reason);
+        onSkipped?.(reason);
         callback();
         return;
       }
