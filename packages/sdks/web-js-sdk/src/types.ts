@@ -16,8 +16,7 @@ export type ReplaceParam<
 export type CreateCoreSdk = typeof createCoreSdk;
 export type CoreSdk = ReturnType<CreateCoreSdk>;
 export type CoreSdkConfig = Head<Parameters<CreateCoreSdk>>;
-export type WebSdkConfig = CoreSdkConfig & { oidcConfig?: OidcConfig } // Extends with oidcConfig
-
+export type WebSdkConfig = CoreSdkConfig & { oidcConfig?: OidcConfig }; // Extends with oidcConfig
 
 /* JWT response might be an OIDC response */
 // Asaf - think of better type composition
@@ -32,5 +31,6 @@ export type AfterRequestHook = Extract<
   Function
 >;
 
+export type { OidcConfig };
 
 export type { UserResponse, PasskeyOptions } from '@descope/core-js-sdk';

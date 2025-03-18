@@ -30,10 +30,10 @@ export const withNotifications =
         const userDetails = await getUserFromResponse(res);
         if (userDetails) userPS.pub(userDetails);
 
-        const authInfo =
-          await getAuthInfoFromResponse(res);
-          const sessionJwt = authInfo?.sessionJwt || authInfo.access_token;
+        const authInfo = await getAuthInfoFromResponse(res);
 
+        console.log('@@@ withNotifications', authInfo);
+        const sessionJwt = authInfo?.sessionJwt || authInfo.access_token;
 
         if (sessionJwt) sessionPS.pub(sessionJwt);
 

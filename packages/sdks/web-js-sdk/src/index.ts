@@ -16,7 +16,7 @@ const decoratedCreateSdk = compose(
   withPersistTokens, // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
 )(createSdk);
 
-export type { UserResponse } from './types';
+export type { UserResponse, OidcConfig } from './types';
 
 // Note: make sure to update ./test/umd.test.ts when adding new constants
 export {

@@ -1,7 +1,11 @@
 import { JWTResponse } from '@descope/core-js-sdk';
 import Cookies from 'js-cookie';
 import { BeforeRequestHook, WebJWTResponse } from '../../types';
-import { ID_TOKEN_KEY, REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
+import {
+  ID_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from './constants';
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -19,14 +23,15 @@ import { CookieConfig, SameSite } from './types';
 function setJwtTokenCookie(
   name: string,
   value: string,
-  authInfo: Partial<WebJWTResponse & { cookieSameSite: SameSite; cookieSecure: boolean }>,
+  authInfo: Partial<
+    WebJWTResponse & { cookieSameSite: SameSite; cookieSecure: boolean }
+  >,
 ) {
-
   if (value) {
     // Asaf - check this case that
     // a) expires_at is at the same unit as the cookie expiration
     // b) it works well without cookieDomain and cookiePath
-    const { cookieDomain, cookiePath, cookieSameSite, cookieSecure }  = authInfo;
+    const { cookieDomain, cookiePath, cookieSameSite, cookieSecure } = authInfo;
     const cookieExpiration = authInfo.cookieExpiration || authInfo.expires_at; // Asaf - see if expire_in or expire_at is the correct one
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
     // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
@@ -67,6 +72,12 @@ export const persistTokens = (
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
+  console.log(
+    '@@@ persistTokens',
+    authInfo,
+    sessionTokenViaCookie,
+    storagePrefix,
+  );
   // persist refresh token
   const refreshToken = authInfo.refreshJwt || authInfo.refresh_token;
   refreshToken &&
@@ -82,7 +93,7 @@ export const persistTokens = (
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
       setJwtTokenCookie(SESSION_TOKEN_KEY, sessionToken, {
-        ...authInfo as Partial<JWTResponse>,
+        ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,
       });

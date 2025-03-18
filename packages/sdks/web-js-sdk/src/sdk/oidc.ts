@@ -12,6 +12,7 @@ import {
   OIDC_CLIENT_TS_DESCOPE_CDN_URL,
   OIDC_CLIENT_TS_JSDELIVR_CDN_URL,
 } from '../constants';
+import { getIdToken } from '../enhancers/withPersistTokens/helpers';
 
 interface OidcConfig {
   clientId?: string;
@@ -124,7 +125,6 @@ const getOidcClient = async (
   const stateUserKey = `${clientId}_user`;
 
   const authority = sdk.httpClient.buildUrl(projectId);
-  console.log('@@@ CreateClient', { authority });
   const settings: OidcClientSettings = {
     authority,
     client_id: projectId,
@@ -160,13 +160,21 @@ const createOidc = (
   oidcConfig?: OidcConfig,
 ) => {
   // we build the
-  const authorize = async (arg: CreateSigninRequestArgs): Promise<SdkResponse<URLResponse>> => {
+  const authorize = async (
+    arg: CreateSigninRequestArgs = {},
+  ): Promise<SdkResponse<URLResponse>> => {
+    console.log('@@@ calling authorize', {
+      arg,
+    });
     const { client } = await getOidcClient(sdk, projectId, oidcConfig);
-    const { url } = await client.createSigninRequest(arg);
+    const signInReq = await client.createSigninRequest(arg);
+    console.log('@@@ authorize response', signInReq);
+    const { url } = signInReq;
     return { ok: true, data: { url } };
   };
 
   const token = async (): Promise<any> => {
+    console.log('@@@ calling token');
     const { client, stateUserKey } = await getOidcClient(
       sdk,
       projectId,
@@ -180,6 +188,8 @@ const createOidc = (
       {} as any,
       new Response(JSON.stringify(signInRes)),
     );
+
+    console.log('@@@ token response', signInRes);
     window.localStorage.setItem(
       stateUserKey,
       JSON.stringify(oidcSignInResToStorage(signInRes)),
@@ -188,18 +198,25 @@ const createOidc = (
   };
 
   const logout = async (arg?: CreateSignoutRequestArgs) => {
+    console.log('@@@ calling logout', {
+      arg,
+    });
     const { client, stateUserKey } = await getOidcClient(
       sdk,
       projectId,
       oidcConfig,
     );
-    const user = getUserFromStorage(stateUserKey);
-
-    if (user) {
-      const { url } = await client.createSignoutRequest(arg);
-      window.localStorage.removeItem(stateUserKey);
-      window.location.replace(url);
+    if (!arg) {
+      arg = {};
     }
+    if (!arg.id_token_hint) {
+      // if id_token_hint is not provided, we will use the one from the storage
+      arg.id_token_hint = getIdToken();
+    }
+
+    const { url } = await client.createSignoutRequest(arg);
+    window.localStorage.removeItem(stateUserKey);
+    window.location.replace(url);
   };
 
   const refreshToken = async (refreshToken: string) => {
@@ -219,6 +236,8 @@ const createOidc = (
         profile: user.profile,
       },
     });
+
+    console.log('@@@ refresh token response', res);
 
     // In order to make sure all the after-hooks are running with the success response
     // we are generating a fake response with the success data and calling the http client after hook fn with it
