@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { computed, inject, watch } from 'vue';
 import { DESCOPE_INJECTION_KEY } from './constants';
-import type * as _2 from '../../web-js-sdk/node_modules/oidc-client-ts/dist/types/oidc-client-ts'; // eslint-disable-line
+import type * as _2 from '@descope/web-js-sdk/node_modules/oidc-client-ts/dist/types/oidc-client-ts'; // eslint-disable-line
 
 const injectDescope = () => {
   const context = inject(DESCOPE_INJECTION_KEY);
