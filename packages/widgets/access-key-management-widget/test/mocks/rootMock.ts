@@ -17,11 +17,11 @@ export default `
       <descope-badge bordered="true" data-pattern="expired" mode="default" size="xs" st-text-transform="capitalize"></descope-badge>
       <descope-badge bordered="true" data-pattern="active" mode="primary" size="xs" st-text-transform="capitalize"></descope-badge>
     </descope-grid-custom-column>
-    <descope-grid-text-column header="Expiration Time" path="expireTimeFormatted" resizable="true" sortable="true"></descope-grid-text-column>
+    <descope-grid-text-column header="Expiration Time" path="expireTime" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Roles" path="roleNames" resizable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Permitted IPs" path="permittedIps" resizable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Created By" path="createdBy" resizable="true" sortable="true"></descope-grid-text-column>
-    <descope-grid-text-column header="Created Time" path="createdTimeFormatted" resizable="true" sortable="true"></descope-grid-text-column>
+    <descope-grid-text-column header="Created Time" path="createdTime" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Bound To User" path="boundUserId" resizable="true" sortable="true"></descope-grid-text-column>
   </descope-grid>
 </descope-container>

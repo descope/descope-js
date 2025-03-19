@@ -12,8 +12,8 @@ export type AccessKey = {
   status: string;
   createdTime: number;
   expireTime: number;
-  expireTimeFormatted?: string;
-  createdTimeFormatted?: string;
+  expireTimeRaw?: string;
+  createdTimeRaw?: string;
   createdBy: string;
   clientId: string;
   editable: boolean;

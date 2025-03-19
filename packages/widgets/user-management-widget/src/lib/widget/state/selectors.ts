@@ -25,6 +25,8 @@ export const getFormattedUserList = createSelector(
     users.map((user) => ({
       ...user,
       ...{
+        createdTimeRaw: user?.createdTime,
+        createdTime: new Date((user?.createdTime || 0) * 1000).toLocaleString(),
         customAttributes: Object.fromEntries(
           Object.entries(user.customAttributes).map(([attr, val]) => [
             attr,
