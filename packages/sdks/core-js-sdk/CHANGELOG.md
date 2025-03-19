@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.39.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.38.0...core-js-sdk-2.39.0) (2025-03-19)
+
+
+### Features
+
+* Add SCIM attribute to user RELEASE ([164cefb](https://github.com/descope/descope-js/commit/164cefba08b2c4c227604fb77d289a60472a35ff))
+
 ## [2.38.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.37.0...core-js-sdk-2.38.0) (2025-03-06)
 
 
