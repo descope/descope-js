@@ -9,6 +9,7 @@ type Config = Pick<
   | 'persistTokens'
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
+  | 'oidcConfig'
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
 >;
@@ -19,6 +20,7 @@ export default ({
   persistTokens,
   sessionTokenViaCookie,
   refreshCookieName,
+  oidcConfig,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
 }: Config): ReturnType<typeof createSdk> =>
@@ -33,6 +35,7 @@ export default ({
       baseHeaders,
       persistTokens,
       refreshCookieName,
+      oidcConfig,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       autoRefresh: true,

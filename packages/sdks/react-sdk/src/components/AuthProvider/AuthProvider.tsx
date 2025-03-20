@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { CookieConfig } from '@descope/web-js-sdk';
+import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
@@ -24,6 +24,9 @@ interface IAuthProviderProps {
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: CookieConfig;
+  // An object that contains the configuration for the OIDC client
+  // If provided, the SDK refresh and logout functions will use the OIDC client
+  oidcConfig?: OidcConfig;
   // If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
@@ -40,6 +43,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
+  oidcConfig = {},
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
@@ -57,6 +61,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     baseUrl,
     persistTokens,
     sessionTokenViaCookie,
+    oidcConfig,
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
     refreshCookieName,

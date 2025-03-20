@@ -27,12 +27,20 @@
         const projectId = new FormData(e.target).get('input');
 
         const sdk = Descope({ projectId });
-        const url = new URL(location.href);
-        url.pathname += 'exchange.html';
-        url.searchParams.set('projectId', projectId);
-        const res = await sdk.oauth.start.google(url.toString());
-        if (res?.ok === false) alert(JSON.stringify(res, null, 4));
 
+        const url = new URL(location.href);
+        url.pathname += 'get-token.html';
+        url.searchParams.set('projectId', projectId);
+        const redirectUri = url.toString();
+
+        const oidcConfig = {
+          // if not specified, clientId is the project ID
+          clientId: projectId,
+          redirectUri,
+          scope: 'openid profile email',
+        };
+        const res = await sdk.oidc.authorize(oidcConfig);
+        if (res?.ok === false) alert(JSON.stringify(res, null, 4));
         window.location.href = res.data.url;
 
         h1Ele.innerText = 'Redirecting...';
