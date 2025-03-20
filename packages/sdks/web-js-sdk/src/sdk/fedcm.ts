@@ -105,70 +105,70 @@ type PromptNotification = {
   getSkippedReason: () => string;
 };
 
+const generateNonce = () => {
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint8Array(16); // 16 bytes = 128 bits
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join(
+      '',
+    );
+  } else {
+    // Fallback (not cryptographically secure)
+    return Math.random().toString(36).substring(2);
+  }
+};
+
 /**
  * Constructs a higher level FedCM API that wraps the functions from code-js-sdk.
  * @param sdk The CoreSdk instance.
  * @returns The FedCM API.
  */
 const createFedCM = (sdk: CoreSdk, projectId: string) => ({
-  async oneTap(
+  onetap: {
+    requestExchangeCode(options: {
+      provider?: string;
+      oneTapConfig?: OneTapConfig;
+      loginOptions?: LoginOptions;
+      onSkipped?: (reason?: string) => void;
+      onDismissed?: (reason?: string) => void;
+      onFailed?: (error: Error) => void;
+      onCodeReceived: (code: string) => void;
+    }) {
+      performOneTap(sdk, options);
+    },
+
+    requestAuthentication(options?: {
+      provider?: string;
+      oneTapConfig?: OneTapConfig;
+      loginOptions?: LoginOptions;
+      onSkipped?: (reason?: string) => void;
+      onDismissed?: (reason?: string) => void;
+      onFailed?: (error: Error) => void;
+      onAuthenticated?: (response: JWTResponse) => void;
+    }) {
+      performOneTap(sdk, options);
+    },
+  },
+
+  /**
+   * @deprecated Call `onetap.requestAuthentication` instead.
+   */
+  oneTap(
     provider?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
-    onSkip?: (reason?: string) => void,
+    onSkipped?: (reason?: string) => void,
     onDismissed?: (reason?: string) => void,
   ) {
-    const readyProvider = provider ?? 'google';
-    const startResponse = await sdk.oauth.startNative(
-      readyProvider,
+    performOneTap(sdk, {
+      provider,
+      oneTapConfig,
       loginOptions,
-      true,
-    );
-    if (!startResponse.ok) {
-      return startResponse as unknown as SdkResponse<JWTResponse>;
-    }
-
-    const { clientId, stateId, nonce } = startResponse.data;
-    const googleClient = await getGoogleClient();
-    return new Promise((resolve) => {
-      const callback = (res: CredentialResponse) => {
-        resolve(
-          sdk.oauth.finishNative(
-            readyProvider,
-            stateId,
-            '',
-            '',
-            res.credential,
-          ),
-        );
-      };
-
-      // initialize google client
-      googleClient.initialize({
-        ...oneTapConfig,
-        itp_support: oneTapConfig?.itp_support ?? true,
-        use_fedcm_for_prompt: oneTapConfig?.use_fedcm_for_prompt ?? true,
-        client_id: clientId,
-        callback,
-        nonce,
-      });
-
-      googleClient.prompt((notification) => {
-        if (onDismissed && notification?.isDismissedMoment()) {
-          const reason = notification.getDismissedReason?.();
-          onDismissed?.(reason);
-          return;
-        }
-
-        // Fallback to onSkip
-        if (onSkip && notification?.isSkippedMoment()) {
-          const reason = notification.getSkippedReason?.();
-          onSkip?.(reason);
-          return;
-        }
-      });
+      onSkipped,
+      onDismissed,
     });
   },
+
   async launch(
     context?: IdentityCredentialRequestOptionsContext,
   ): Promise<SdkResponse<JWTResponse>> {
@@ -189,9 +189,11 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
     const res = await navigator.credentials?.get(req as any);
     return sdk.refresh((res as any as FedCMAssertionResponse).token);
   },
+
   isSupported(): boolean {
     return IS_BROWSER && 'IdentityCredential' in window;
   },
+
   async isLoggedIn(
     context?: IdentityCredentialRequestOptionsContext,
   ): Promise<boolean> {
@@ -257,6 +259,118 @@ async function getGoogleClient(): Promise<{
     googleScript.onerror = function () {
       reject('Failed to load Google GSI client script - failed to load');
     };
+  });
+}
+
+async function performOneTap(
+  sdk: CoreSdk,
+  options?: {
+    provider?: string;
+    oneTapConfig?: OneTapConfig;
+    loginOptions?: LoginOptions;
+    onSkipped?: (reason?: string) => void;
+    onDismissed?: (reason?: string) => void;
+    onFailed?: (error: Error) => void;
+    onCodeReceived?: (code: string) => void;
+    onAuthenticated?: (response: JWTResponse) => void;
+  },
+) {
+  try {
+    const auth = await startOneTap(
+      sdk,
+      options.provider,
+      options.oneTapConfig,
+      options.onSkipped,
+      options.onDismissed,
+    );
+    if (!auth.credential) {
+      return null;
+    }
+    if (options?.onCodeReceived) {
+      const response = await sdk.oauth.verifyOneTapIDToken(
+        auth.provider,
+        auth.credential,
+        auth.nonce,
+        options?.loginOptions,
+      );
+      if (!response.ok || !response.data) {
+        throw new Error(
+          'Failed to verify OneTap client ID for provider ' + auth.provider,
+        );
+      }
+      options?.onCodeReceived?.(response.data.code);
+    } else {
+      const response = await sdk.oauth.exchangeOneTapIDToken(
+        auth.provider,
+        auth.credential,
+        auth.nonce,
+        options?.loginOptions,
+      );
+      if (!response.ok || !response.data) {
+        throw new Error(
+          'Failed to exchange OneTap client ID for provider ' + auth.provider,
+        );
+      }
+      options?.onAuthenticated?.(response.data);
+    }
+  } catch (e) {
+    options?.onFailed?.(e);
+  }
+}
+
+async function startOneTap(
+  sdk: CoreSdk,
+  provider: string = 'google',
+  oneTapConfig?: OneTapConfig,
+  onSkipped?: (reason?: string) => void,
+  onDismissed?: (reason?: string) => void,
+): Promise<{
+  provider: string;
+  nonce: string;
+  credential?: string;
+}> {
+  const nonce = generateNonce();
+  const googleClient = await getGoogleClient();
+
+  const clientIdRes = await sdk.oauth.getOneTapClientId(provider);
+  if (!clientIdRes.ok) {
+    throw new Error('Failed to get OneTap client ID for provider ' + provider);
+  }
+  const clientId = clientIdRes.data.clientId;
+
+  return new Promise((resolve) => {
+    const callback = (response?: CredentialResponse) => {
+      resolve({
+        provider,
+        nonce,
+        credential: response?.credential,
+      });
+    };
+
+    googleClient.initialize({
+      ...oneTapConfig,
+      itp_support: oneTapConfig?.itp_support ?? true,
+      use_fedcm_for_prompt: oneTapConfig?.use_fedcm_for_prompt ?? true,
+      client_id: clientId,
+      callback,
+      nonce,
+    });
+
+    googleClient.prompt((notification) => {
+      if (onDismissed && notification?.isDismissedMoment()) {
+        const reason = notification.getDismissedReason?.();
+        onDismissed?.(reason);
+        callback();
+        return;
+      }
+
+      if (onSkipped && notification?.isSkippedMoment()) {
+        const reason = notification.getSkippedReason?.();
+        onSkipped?.(reason);
+        callback();
+        return;
+      }
+    });
   });
 }
 
