@@ -2,19 +2,22 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { configMixin } from '../configMixin';
 import { injectScriptMixin } from '../injectScriptMixin';
 import { loggerMixin } from '../loggerMixin';
+import { generateScriptPath, getDescopeUiComponentsList } from './helpers';
 import {
-  getDescopeUiComponentsList
-} from './helpers';
-
-type ErrorCb = (error: string) => void;
-type LoadCb = () => void;
+  DESCOPE_UI_SCRIPT_ID,
+  UI_COMPONENT_URL_PATH,
+  UI_COMPONENTS_URL_KEY,
+} from './constants';
 
 export const descopeUiMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(loggerMixin, configMixin, injectScriptMixin)(superclass);
+    const BaseClass = compose(
+      loggerMixin,
+      configMixin,
+      injectScriptMixin,
+    )(superclass);
 
     return class DescopeUiMixinClass extends BaseClass {
-
       // eslint-disable-next-line class-methods-use-this
       async #getComponentsVersion() {
         const config = await this.config;
@@ -82,20 +85,28 @@ export const descopeUiMixin = createSingletonMixin(
       }
 
       #getDescopeUi() {
-        return new Promise((res, rej) => {
+        return new Promise(async (res, rej) => {
           if (globalThis.DescopeUI) {
             return globalThis.DescopeUI;
           }
 
-          this.registerScript('id', componentsUrl).then(
+          this.registerScript(
+            DESCOPE_UI_SCRIPT_ID,
+            generateScriptPath(
+              UI_COMPONENT_URL_PATH,
+              await this.#getComponentsVersion(),
+            ),
+            UI_COMPONENTS_URL_KEY,
+          ).then(
             () => {
               this.logger.debug('DescopeUI was loaded');
-              return globalThis.DescopeUI
+              return globalThis.DescopeUI;
             },
             (error) => {
-              this.logger.error(error)
-              rej(error)
-            })
+              this.logger.error(error);
+              rej(error);
+            },
+          );
 
           // in case the load event was dispatched before we registered, we have a fallback
           setTimeout(() => {
@@ -119,7 +130,6 @@ export const descopeUiMixin = createSingletonMixin(
           ),
         );
       }
-
     };
   },
 );
