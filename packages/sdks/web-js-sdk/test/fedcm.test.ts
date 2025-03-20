@@ -129,6 +129,7 @@ describe('fedcm', () => {
       await new Promise(process.nextTick);
       const callback = googleClient.initialize.mock.calls[0][0].callback;
       callback({ credential: 'JWT' });
+      await new Promise(process.nextTick);
       expect(onAuthenticated).toHaveBeenCalled();
     });
     it('call verify when user signs in with google with state id and the jwt', async () => {
@@ -149,6 +150,7 @@ describe('fedcm', () => {
       await new Promise(process.nextTick);
       const callback = googleClient.initialize.mock.calls[0][0].callback;
       callback({ credential: 'JWT' });
+      await new Promise(process.nextTick);
       expect(onCodeReceived).toHaveBeenCalledWith('foo');
     });
     it('call onSkipped callback on prompt skip', async () => {

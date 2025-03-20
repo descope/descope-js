@@ -283,13 +283,13 @@ async function performOneTap(
       options.onSkipped,
       options.onDismissed,
     );
-    if (!auth.credental) {
+    if (!auth.credential) {
       return null;
     }
     if (options?.onCodeReceived) {
       const response = await sdk.oauth.verifyOneTapIDToken(
         auth.provider,
-        auth.credental,
+        auth.credential,
         auth.nonce,
         options?.loginOptions,
       );
@@ -302,7 +302,7 @@ async function performOneTap(
     } else {
       const response = await sdk.oauth.exchangeOneTapIDToken(
         auth.provider,
-        auth.credental,
+        auth.credential,
         auth.nonce,
         options?.loginOptions,
       );
@@ -327,7 +327,7 @@ async function startOneTap(
 ): Promise<{
   provider: string;
   nonce: string;
-  credental?: string;
+  credential?: string;
 }> {
   const nonce = generateNonce();
   const googleClient = await getGoogleClient();
@@ -343,7 +343,7 @@ async function startOneTap(
       resolve({
         provider,
         nonce,
-        credental: response?.credential,
+        credential: response?.credential,
       });
     };
 
