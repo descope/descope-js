@@ -2,14 +2,18 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { configMixin } from '../configMixin';
 import { loggerMixin } from '../loggerMixin';
 import {
+  BASE_CDN_URL,
+  BASE_CDN_URL_FALLBACK,
+  BASE_CDN_URL_FALLBACK_2,
   DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
   DESCOPE_UI_FALLBACK_SCRIPT_ID,
-  UI_COMPONENTS_FALLBACK_2_URL,
-  UI_COMPONENTS_FALLBACK_URL
 } from './constants';
-import {
-  setupScript
-} from './helpers';
+import { setupScript } from './helpers';
+import { IS_LOCAL_STORAGE } from '../../constants';
+
+declare global {
+  var descope: any;
+}
 
 type ErrorCb = (error: string) => void;
 type LoadCb = () => void;
@@ -70,10 +74,10 @@ export const injectScriptMixin = createSingletonMixin(
           loadCbs.forEach((cb: LoadCb) => cb());
         });
 
-        fallbackScriptEle.src = scriptUrl
+        fallbackScriptEle.src = scriptUrl;
       }
 
-      #registerEvents(scriptEle: HTMLScriptElement) {
+      #registerEvents(scriptEle: HTMLScriptElement, path: string) {
         scriptEle.addEventListener('error', () => {
           scriptEle[this.#errorCbsSym].forEach((cb: ErrorCb) =>
             cb(
@@ -90,13 +94,13 @@ export const injectScriptMixin = createSingletonMixin(
                 scriptEle[this.#errorCbsSym],
                 scriptEle[this.#loadCbsSym],
                 DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
-                UI_COMPONENTS_FALLBACK_2_URL,
+                new URL(path, BASE_CDN_URL_FALLBACK_2).href,
               ),
               ...scriptEle[this.#errorCbsSym],
             ],
             scriptEle[this.#loadCbsSym],
             DESCOPE_UI_FALLBACK_SCRIPT_ID,
-            UI_COMPONENTS_FALLBACK_URL,
+            new URL(path, BASE_CDN_URL_FALLBACK).href,
           );
         });
 
@@ -105,7 +109,7 @@ export const injectScriptMixin = createSingletonMixin(
         });
       }
 
-      async registerScript(scriptId: string, url: string) {
+      async registerScript(scriptId: string, path: string, localKey?: string) {
         return new Promise((res, rej) => {
           if (!document.querySelector(`script#${scriptId}`)) {
             this.logger.debug(
@@ -118,23 +122,45 @@ export const injectScriptMixin = createSingletonMixin(
             document.body.append(scriptEle);
 
             this.#exposeAlternateEvents(scriptEle);
-            this.#registerEvents(scriptEle);
+            this.#registerEvents(scriptEle, path);
 
             scriptEle.onerror = (error) => {
               scriptEle.setAttribute('status', 'error');
               rej(error);
-            }
+            };
             scriptEle.onload = () => {
               scriptEle.setAttribute('status', 'loaded');
               res(scriptEle);
-            }
+            };
 
-            scriptEle.src = url;
+            if (
+              IS_LOCAL_STORAGE &&
+              localKey &&
+              localStorage.getItem(localKey)
+            ) {
+              scriptEle.src = localStorage.getItem(localKey);
+            } else if (this.baseCdnUrl) {
+              const url = new URL(this.baseCdnUrl);
+              if (url.pathname === '/') {
+                scriptEle.src = new URL(
+                  path,
+                  url.protocol + '//' + url.host + '/',
+                ).href;
+              } else {
+                scriptEle.src = url.href;
+              }
+            } else {
+              scriptEle.src = new URL(path, BASE_CDN_URL).href;
+            }
           } else {
-            this.logger.debug(`Script with id ${scriptId} already exists`, this);
+            this.logger.debug(
+              `Script with id ${scriptId} already exists`,
+              this,
+            );
             const existingScript = document.getElementById(scriptId);
 
-            const fn = existingScript.getAttribute('status') === 'loaded' ? res : rej;
+            const fn =
+              existingScript.getAttribute('status') === 'loaded' ? res : rej;
             fn(existingScript);
           }
         });
@@ -146,12 +172,3 @@ export const injectScriptMixin = createSingletonMixin(
     };
   },
 );
-
-const generateBaseCdnUrl = (defaultUrl: string, override: string | null) => {
-  if (!override) return defaultUrl;
-  const url = new URL(override);
-
-  if (url.pathname === '/') return override;
-
-  url.pathname = defaultUrl;
-}

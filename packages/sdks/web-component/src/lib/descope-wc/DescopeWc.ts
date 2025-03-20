@@ -61,7 +61,7 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
-import loadSdkScript, { getScriptResultPath } from './sdkScripts';
+import { getScriptResultPath } from './sdkScripts';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -230,7 +230,11 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        const module = await loadSdkScript(script.id);
+        await this.registerScript(
+          script.id,
+          `npm/@descope/flow-scripts@latest/dist/${script.id}.js`,
+        );
+        const module = window.descope?.[script.id]?.ts;
         return new Promise((resolve, reject) => {
           try {
             const moduleRes = module(
