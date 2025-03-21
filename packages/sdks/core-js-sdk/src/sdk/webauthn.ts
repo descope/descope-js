@@ -9,7 +9,12 @@ import {
   PasskeyOptions,
   WebAuthnStartResponse,
 } from './types';
-import { string, stringNonEmpty, withValidations } from './validations';
+import {
+  isStringOrUndefinedValidator,
+  string,
+  stringNonEmpty,
+  withValidations,
+} from './validations';
 
 const loginIdStringValidations = string('loginId');
 const loginIdNonEmptyValidations = stringNonEmpty('loginId');
@@ -31,7 +36,7 @@ const withSignInStartValidations = withValidations(
 const withUpdateStartValidations = withValidations(
   loginIdNonEmptyValidations,
   originValidations,
-  stringNonEmpty('token'),
+  isStringOrUndefinedValidator('token'),
 );
 const withFinishValidations = withValidations(
   stringNonEmpty('transactionId'),
@@ -127,7 +132,7 @@ const withWebauthn = (httpClient: HttpClient) => ({
       (
         loginId: string,
         origin: string,
-        token: string,
+        token?: string,
         passkeyOptions?: PasskeyOptions,
       ): Promise<SdkResponse<WebAuthnStartResponse>> =>
         transformResponse(

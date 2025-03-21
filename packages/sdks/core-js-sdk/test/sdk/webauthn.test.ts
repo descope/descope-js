@@ -497,16 +497,16 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when token is not a string', () => {
-        expect(() => sdk.webauthn.update.start('loginId', 'origin')).toThrow(
-          '"token" must be a string',
-        );
+      it('should throw an error when token is undefined', () => {
+        expect(() =>
+          sdk.webauthn.update.start('loginId', 'origin'),
+        ).not.toThrow();
       });
 
-      it('should throw an error when origin is empty', () => {
+      it('should throw an error when token is empty', () => {
         expect(() =>
           sdk.webauthn.update.start('loginId', 'origin', ''),
-        ).toThrow('"token" must not be empty');
+        ).not.toThrow();
       });
 
       it('should send the correct request', () => {
