@@ -1,12 +1,12 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { configMixin } from '../configMixin';
-import { injectScriptMixin } from '../injectScriptMixin';
+import { injectNpmLibMixin } from '../injectNpmLibMixin';
 import { loggerMixin } from '../loggerMixin';
-import { generateScriptPath, getDescopeUiComponentsList } from './helpers';
+import { getDescopeUiComponentsList } from './helpers';
 import {
-  DESCOPE_UI_SCRIPT_ID,
-  UI_COMPONENT_URL_PATH,
-  UI_COMPONENTS_URL_KEY,
+  JS_FILE_PATH,
+  LOCAL_STORAGE_OVERRIDE,
+  WEB_COMPONENTS_UI_LIB_NAME,
 } from './constants';
 
 export const descopeUiMixin = createSingletonMixin(
@@ -14,7 +14,8 @@ export const descopeUiMixin = createSingletonMixin(
     const BaseClass = compose(
       loggerMixin,
       configMixin,
-      injectScriptMixin,
+      injectNpmLibMixin,
+      injectNpmLibMixin,
     )(superclass);
 
     return class DescopeUiMixinClass extends BaseClass {
@@ -84,37 +85,24 @@ export const descopeUiMixin = createSingletonMixin(
         return undefined;
       }
 
-      #getDescopeUi() {
-        return new Promise(async (res, rej) => {
-          if (globalThis.DescopeUI) {
-            return globalThis.DescopeUI;
-          }
+      async #getDescopeUi() {
+        if (globalThis.DescopeUI) {
+          return globalThis.DescopeUI;
+        }
 
-          this.registerScript(
-            DESCOPE_UI_SCRIPT_ID,
-            generateScriptPath(
-              UI_COMPONENT_URL_PATH,
-              await this.#getComponentsVersion(),
-            ),
-            UI_COMPONENTS_URL_KEY,
-          ).then(
-            () => {
-              this.logger.debug('DescopeUI was loaded');
-              return globalThis.DescopeUI;
-            },
-            (error) => {
-              this.logger.error(error);
-              rej(error);
-            },
+        try {
+          await this.injectNpmLib(
+            WEB_COMPONENTS_UI_LIB_NAME,
+            await this.#getComponentsVersion(),
+            JS_FILE_PATH,
+            [LOCAL_STORAGE_OVERRIDE],
           );
-
-          // in case the load event was dispatched before we registered, we have a fallback
-          setTimeout(() => {
-            if (globalThis.DescopeUI) {
-              res(globalThis.DescopeUI);
-            }
-          });
-        });
+          this.logger.debug('DescopeUI was loaded');
+          return globalThis.DescopeUI;
+        } catch (error) {
+          this.logger.error(error);
+          throw new Error('DescopeUI was not loaded');
+        }
       }
 
       async loadDescopeUiComponents(
