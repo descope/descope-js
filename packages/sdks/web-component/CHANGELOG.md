@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.40.2](https://github.com/descope/descope-js/compare/web-component-3.40.1...web-component-3.40.2) (2025-03-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.28.0`
+## [3.40.1](https://github.com/descope/descope-js/compare/web-component-3.40.0...web-component-3.40.1) (2025-03-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.27.2`
+## [3.40.0](https://github.com/descope/descope-js/compare/web-component-3.39.3...web-component-3.40.0) (2025-03-19)
+
+
+### Features
+
+* **client-scripts:** add token refresh functionality ([#1053](https://github.com/descope/descope-js/issues/1053)) ([ee4e342](https://github.com/descope/descope-js/commit/ee4e342f8c893d55f19cad368c1a704bc479f1ea))
+
 ## [3.39.3](https://github.com/descope/descope-js/compare/web-component-3.39.2...web-component-3.39.3) (2025-03-17)
 
 ### Dependency Updates

@@ -94,7 +94,7 @@ const createWebAuthn = (sdk: CoreSdk) => ({
 
   async update(
     identifier: string,
-    token: string,
+    token?: string,
     passkeyOptions?: PasskeyOptions,
   ) {
     const startResponse = await sdk.webauthn.update.start(

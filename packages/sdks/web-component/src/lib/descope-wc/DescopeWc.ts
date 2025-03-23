@@ -56,6 +56,7 @@ import {
   NextFn,
   NextFnReturnPromiseValue,
   ScriptElement,
+  ScriptModule,
   SdkConfig,
   StepState,
 } from '../types';
@@ -170,6 +171,22 @@ class DescopeWc extends BaseDescopeWc {
         origin?: string;
       }
     | undefined;
+
+  /**
+   * Get all loaded SDK script modules from elements with data-script-id attribute
+   * @returns Array of script modules that can be refreshed before form submission
+   */
+  loadSdkScriptsModules() {
+    // Get all modules from the data-script-id elements
+    const scriptElements = this.shadowRoot.querySelectorAll(
+      'div[data-script-id]',
+    );
+
+    // Filter out elements without moduleRes property
+    return Array.from(scriptElements)
+      .map((el) => (el as ScriptElement).moduleRes)
+      .filter((module): module is ScriptModule => !!module);
+  }
 
   loadSdkScripts(scripts: ClientScript[]) {
     if (!scripts?.length) {
@@ -1444,6 +1461,26 @@ class DescopeWc extends BaseDescopeWc {
             (Date.now() - now).toString(),
           );
         }
+
+        // Get all script modules and refresh them before form submission
+        const sdkScriptsModules = this.loadSdkScriptsModules();
+
+        if (sdkScriptsModules.length > 0) {
+          // Only attempt to refresh modules that actually have a refresh function
+          const refreshPromises = sdkScriptsModules
+            .filter((module) => typeof module.refresh === 'function')
+            .map((module) => module.refresh!());
+
+          if (refreshPromises.length > 0) {
+            // Use timeout to prevent hanging if refresh takes too long
+            await timeoutPromise(
+              SDK_SCRIPTS_LOAD_TIMEOUT,
+              Promise.all(refreshPromises),
+              null,
+            );
+          }
+        }
+
         const contextArgs = this.getComponentsContext();
 
         const actionArgs = {
