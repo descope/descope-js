@@ -8,7 +8,6 @@ import {
 } from '../enhancers/withPersistTokens/helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
-import logger from '../enhancers/helpers/logger';
 
 const OIDC_LOGOUT_ERROR_CODE = 'J161000';
 const OIDC_REFRESH_ERROR_CODE = 'J161001';
@@ -20,19 +19,12 @@ const createSdk = (config: WebSdkConfig) => {
 
   return {
     ...coreSdk,
-    // Asaf - returning in a different format may break other enhancers
     refresh: async (token?: string): ReturnType<CoreSdk['refresh']> => {
-      console.log('@@@ calling refresh', {
-        token,
-      });
       if (config.oidcConfig) {
-        // Asaf - think if we want to return the value as well
         try {
-          await oidc.refreshToken(token);
+          const res = await oidc.refreshToken(token);
           return Promise.resolve({ ok: true });
         } catch (error) {
-          // Asaf - think about this log
-          logger.debug('Failed to refresh with oidc', error);
           return Promise.resolve({
             ok: false,
             error: {
@@ -53,7 +45,6 @@ const createSdk = (config: WebSdkConfig) => {
     },
     // Call the logout function according to the oidcConfig
     // And return the response in the same format
-    // Asaf - returning in a different format breaks other enhancers
     logout: async (token?: string): Promise<SdkResponse<never>> => {
       if (config.oidcConfig) {
         // logout is made with id_token_hint
@@ -61,7 +52,6 @@ const createSdk = (config: WebSdkConfig) => {
           await oidc.logout({ id_token_hint: token });
           return Promise.resolve({ ok: true });
         } catch (error) {
-          console.error('Failed to logout with oidc', error);
           return Promise.resolve({
             ok: false,
             error: {

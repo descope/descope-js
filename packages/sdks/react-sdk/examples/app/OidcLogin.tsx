@@ -1,17 +1,14 @@
 /* eslint-disable no-console */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSession, useDescope } from '../../src';
 
 const OidcLogin = () => {
   const [errorMessage, setErrorMessage] = useState('');
-  const [searchParams] = useSearchParams();
   const sdk = useDescope();
 
   const { isAuthenticated, isSessionLoading } = useSession();
   const navigate = useNavigate();
-
-  const isGettingToken = searchParams.has('code');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -20,30 +17,19 @@ const OidcLogin = () => {
   }, [navigate, isAuthenticated]);
 
   const onLogin = useCallback(() => {
-    console.log('@@@Logging in with OIDC');
-    sdk.oidc.authorize().then((res) => {
-      if (!res.ok) {
-        setErrorMessage(JSON.stringify(res.error));
-        return;
-      }
-      window.location.href = res.data.url;
-    });
-  }, [sdk]);
-
-  useEffect(() => {
-    // can happen only once, when the user is redirected back from the OIDC provider
-    if (isGettingToken) {
-      sdk.oidc.token().then((res) => {
+    sdk.oidc
+      .login({
+        redirect_uri: window.location.origin,
+      })
+      .then((res) => {
         if (!res.ok) {
           setErrorMessage(JSON.stringify(res.error));
           return;
         }
-        navigate('/');
+        // the function will redirect the user to the OIDC login page
+        // and will return the user to the origin URL after the login
       });
-    }
-  }, []);
-
-  const isLoading = isSessionLoading || isGettingToken;
+  }, [sdk]);
 
   return (
     <div
@@ -55,8 +41,8 @@ const OidcLogin = () => {
       }}
     >
       <h2>OIDC Login</h2>
-      {isLoading && <div>Loading...</div>}
-      {!isLoading && (
+      {isSessionLoading && <div>Loading...</div>}
+      {!isSessionLoading && (
         <button
           style={{
             padding: '10px',

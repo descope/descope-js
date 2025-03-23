@@ -30,18 +30,16 @@ export const withNotifications =
         const userDetails = await getUserFromResponse(res);
         if (userDetails) userPS.pub(userDetails);
 
-        const authInfo = await getAuthInfoFromResponse(res);
-
-        console.log('@@@ withNotifications', authInfo);
-        const sessionJwt = authInfo?.sessionJwt || authInfo.access_token;
+        const { sessionJwt, sessionExpiration } =
+          await getAuthInfoFromResponse(res);
 
         if (sessionJwt) sessionPS.pub(sessionJwt);
 
-        if (authInfo.sessionExpiration || sessionJwt) {
+        if (sessionExpiration || sessionJwt) {
           // We also publish the session expiration if there is a session jwt
           // as a temporary fix for the issue where the session expiration is not
           // being sent in the response in Flows (42 is a magic number)
-          sessionExpirationPS.pub(authInfo.sessionExpiration || 42);
+          sessionExpirationPS.pub(sessionExpiration || 42);
         }
       }
     };
@@ -60,7 +58,11 @@ export const withNotifications =
         return resp;
       };
 
-    const wrappedSdk = wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
+    const wrappedSdk = wrapWith(
+      sdk,
+      ['logout', 'logoutAll', 'oidc.logout'],
+      wrapper,
+    );
 
     return Object.assign(wrappedSdk, {
       onSessionTokenChange: sessionPS.sub,

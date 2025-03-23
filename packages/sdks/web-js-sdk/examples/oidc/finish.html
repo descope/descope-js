@@ -6,7 +6,7 @@
   </head>
   <body>
     <div>
-      <h1>Getting Token ...</h1>
+      <h1>Finishing OIDC Authentication (Exchanging Token)...</h1>
     </div>
 
     <script>
@@ -26,7 +26,7 @@
       const sdk = Descope({ projectId });
 
       sdk.oidc
-        .token()
+        .finishLogin()
         .then((resp) => {
           // change the h1 text to "Done!"
           h1Ele.innerText = 'Done!';
@@ -38,7 +38,7 @@
           logoutButton.onclick = async function () {
             const res = await sdk.oidc.logout();
             if (res?.ok === false) alert(JSON.stringify(res, null, 4));
-            // remove the last element of the URL
+            // go back to the index page
             window.location.href = window.location.href
               .split('/')
               .slice(0, -1)

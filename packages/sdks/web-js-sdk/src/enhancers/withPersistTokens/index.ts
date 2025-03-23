@@ -64,7 +64,7 @@ export const withPersistTokens =
 
     const wrappedSdk = wrapWith(
       sdk,
-      ['logout', 'logoutAll'], // Asaf - think if we need to add `oidc.logout` here as well
+      ['logout', 'logoutAll', 'oidc.logout'],
       wrapper(storagePrefix),
     );
 

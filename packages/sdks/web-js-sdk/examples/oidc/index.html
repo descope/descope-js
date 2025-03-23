@@ -29,7 +29,7 @@
         const sdk = Descope({ projectId });
 
         const url = new URL(location.href);
-        url.pathname += 'get-token.html';
+        url.pathname += 'finish.html';
         url.searchParams.set('projectId', projectId);
         const redirectUri = url.toString();
 
@@ -39,7 +39,7 @@
           redirectUri,
           scope: 'openid profile email',
         };
-        const res = await sdk.oidc.authorize(oidcConfig);
+        const res = await sdk.oidc.login(oidcConfig);
         if (res?.ok === false) alert(JSON.stringify(res, null, 4));
         window.location.href = res.data.url;
 

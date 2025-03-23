@@ -1,7 +1,17 @@
 import createCoreSdk, { JWTResponse } from '@descope/core-js-sdk';
 import { SigninResponse } from 'oidc-client-ts';
-import { OidcConfig } from './sdk/oidc';
+
 type Head<T extends ReadonlyArray<any>> = T extends readonly [] ? never : T[0];
+
+export type OidcConfigOptions = {
+  applicationId?: string;
+  // default is current URL
+  redirectUri?: string;
+  // default is openid email roles descope.custom_claims offline_access
+  scope?: string;
+};
+
+export type OidcConfig = boolean | OidcConfigOptions;
 
 // Replace specific param of a function in a specific index, with a new type
 export type ReplaceParam<
@@ -18,9 +28,14 @@ export type CoreSdk = ReturnType<CreateCoreSdk>;
 export type CoreSdkConfig = Head<Parameters<CreateCoreSdk>>;
 export type WebSdkConfig = CoreSdkConfig & { oidcConfig?: OidcConfig }; // Extends with oidcConfig
 
-/* JWT response might be an OIDC response */
-// Asaf - think of better type composition
-export type WebJWTResponse = JWTResponse & SigninResponse;
+/* JWT response with idToken */
+export type WebJWTResponse = JWTResponse & { idToken?: string };
+
+// type that is JWTResponse and SigninResponse
+export type WebSigninResponse = WebJWTResponse &
+  SigninResponse & {
+    refresh_expire_in?: number;
+  };
 
 export type BeforeRequestHook = Extract<
   CoreSdkConfig['hooks']['beforeRequest'],
@@ -30,7 +45,5 @@ export type AfterRequestHook = Extract<
   CoreSdkConfig['hooks']['afterRequest'],
   Function
 >;
-
-export type { OidcConfig };
 
 export type { UserResponse, PasskeyOptions } from '@descope/core-js-sdk';

@@ -50,7 +50,7 @@ describe('OIDC', () => {
     });
   });
 
-  describe('authorize', () => {
+  describe('login', () => {
     it('should call createSigninRequest with correct params', async () => {
       const mockCreateSigninRequest = jest
         .fn()
@@ -60,29 +60,118 @@ describe('OIDC', () => {
       }));
 
       const oidc = createOidc(sdk, 'projectID');
-      const response = await oidc.authorize();
+      const response = await oidc.login();
 
       expect(mockCreateSigninRequest).toHaveBeenCalledWith({});
       expect(response).toEqual({ ok: true, data: { url: 'mockUrl' } });
     });
+
+    it('should pass custom parameters to createSigninRequest', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.login({ login_hint: 'test@example.com' });
+
+      expect(mockCreateSigninRequest).toHaveBeenCalledWith({
+        login_hint: 'test@example.com',
+      });
+    });
+
+    it('should handle errors during authorization', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockRejectedValue(new Error('Authorization failed'));
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      await expect(oidc.login()).rejects.toThrow('Authorization failed');
+    });
   });
 
-  describe('token', () => {
+  describe('finishLogin', () => {
     it('should call processSigninResponse and sdk.refresh with correct params', async () => {
+      const mockResponse = {
+        refresh_token: 'mockRefreshToken',
+      };
       const mockProcessSigninResponse = jest
         .fn()
-        .mockResolvedValue({ refresh_token: 'mockRefreshToken' });
+        .mockResolvedValue(mockResponse);
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        processSigninResponse: mockProcessSigninResponse,
+      }));
+
+      const oidc = createOidc(sdk, 'projectId');
+      const response = await oidc.finishLogin();
+
+      expect(mockProcessSigninResponse).toHaveBeenCalledWith(
+        window.location.href,
+      );
+      expect(response).toEqual(mockResponse);
+    });
+
+    it('should handle errors during finish authorization processing', async () => {
+      const mockProcessSigninResponse = jest
+        .fn()
+        .mockRejectedValue(new Error('Token processing failed'));
       (OidcClient as jest.Mock).mockImplementation(() => ({
         processSigninResponse: mockProcessSigninResponse,
       }));
 
       const oidc = createOidc(sdk, 'projectID');
-      const response = await oidc.token();
-
-      expect(mockProcessSigninResponse).toHaveBeenCalledWith(
-        window.location.href,
+      await expect(oidc.finishLogin()).rejects.toThrow(
+        'Token processing failed',
       );
-      expect(sdk.refresh).toHaveBeenCalledWith('mockRefreshToken');
+    });
+  });
+
+  describe('refreshToken', () => {
+    it('should refresh token successfully', async () => {
+      const mockResponse = {
+        id_token: 'newIdToken',
+        refresh_token: 'newRefreshToken',
+      };
+      const mockUseRefreshToken = jest.fn().mockResolvedValue(mockResponse);
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        useRefreshToken: mockUseRefreshToken,
+      }));
+
+      // Mock localStorage
+      const mockUser = {
+        id_token: 'oldToken',
+        session_state: 'sessionState',
+        profile: { sub: 'user123' },
+      };
+      Storage.prototype.getItem = jest
+        .fn()
+        .mockReturnValue(JSON.stringify(mockUser));
+
+      const oidc = createOidc(sdk, 'projectID');
+      const response = await oidc.refreshToken('oldRefreshToken');
+
+      expect(mockUseRefreshToken).toHaveBeenCalledWith({
+        state: {
+          refresh_token: 'oldRefreshToken',
+          session_state: 'sessionState',
+          profile: { sub: 'user123' },
+        },
+      });
+      expect(response).toEqual(mockResponse);
+    });
+
+    it('should handle missing user in storage', async () => {
+      Storage.prototype.getItem = jest.fn().mockReturnValue(null);
+
+      const oidc = createOidc(sdk, 'projectID');
+      await expect(oidc.refreshToken('refreshToken')).rejects.toThrow(
+        'User not found in storage to refresh token',
+      );
     });
   });
 
@@ -101,6 +190,63 @@ describe('OIDC', () => {
 
       expect(mockCreateSignoutRequest).toHaveBeenCalled();
       expect(window.location.replace).toHaveBeenCalledWith('mockLogoutUrl');
+    });
+
+    it('should handle custom logout parameters', async () => {
+      const mockCreateSignoutRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockLogoutUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSignoutRequest: mockCreateSignoutRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      const customLogoutParams = {
+        id_token_hint: 'customToken',
+        post_logout_redirect_uri: 'https://custom-redirect.com',
+      };
+
+      await oidc.logout(customLogoutParams);
+
+      expect(mockCreateSignoutRequest).toHaveBeenCalledWith(customLogoutParams);
+      expect(window.location.replace).toHaveBeenCalledWith('mockLogoutUrl');
+    });
+
+    it('should clear user from localStorage on logout', async () => {
+      const mockCreateSignoutRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockLogoutUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSignoutRequest: mockCreateSignoutRequest,
+      }));
+
+      Storage.prototype.removeItem = jest.fn();
+
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.logout();
+
+      expect(localStorage.removeItem).toHaveBeenCalled();
+    });
+  });
+
+  describe('OIDC initialization', () => {
+    it('should initialize with application ID', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', { applicationId: 'app123' });
+      await oidc.login();
+
+      expect(sdk.httpClient.buildUrl).toHaveBeenCalledWith('projectID');
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com/app123',
+        }),
+      );
     });
   });
 });

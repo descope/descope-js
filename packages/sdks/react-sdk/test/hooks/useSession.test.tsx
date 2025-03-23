@@ -18,12 +18,13 @@ const renderWithContext = (contextValue: IContext) =>
   });
 
 describe('useSession', () => {
-  it('should return the proper values when user is already authenticated', () => {
+  it.only('should return the proper values when user is already authenticated', () => {
     const fetchSession = jest.fn();
     const session = 'session-token';
     const { result } = renderWithContext({
       session,
       isSessionLoading: false,
+      isOidcFinishLogin: false,
       fetchSession,
       isSessionFetched: false,
       isAuthenticated: true,

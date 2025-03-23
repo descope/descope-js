@@ -12,12 +12,11 @@ root.render(
   <BrowserRouter>
     <AuthProvider
       projectId={process.env.DESCOPE_PROJECT_ID!}
-      oidcConfig={
-        process.env.DESCOPE_OIDC_ENABLED === 'true'
-          ? {
-              authority: process.env.DESCOPE_OIDC_AUTHORITY,
-            }
-          : undefined
+      oidc={
+        process.env.DESCOPE_OIDC_ENABLED === 'true' ||
+        (true && {
+          applicationId: process.env.DESCOPE_OIDC_APPLICATION_ID,
+        })
       }
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}

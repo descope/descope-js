@@ -1,9 +1,4 @@
-import {
-  JWTResponse,
-  RequestConfig,
-  SdkResponse,
-  URLResponse,
-} from '@descope/core-js-sdk';
+import { RequestConfig, SdkResponse, URLResponse } from '@descope/core-js-sdk';
 import type {
   CreateSigninRequestArgs,
   CreateSignoutRequestArgs,
@@ -12,25 +7,13 @@ import type {
   SigninResponse,
   WebStorageStateStore,
 } from 'oidc-client-ts';
-import { CoreSdk } from '../types';
 import {
   OIDC_CLIENT_TS_DESCOPE_CDN_URL,
   OIDC_CLIENT_TS_JSDELIVR_CDN_URL,
-} from '../constants';
-import { getIdToken } from '../enhancers/withPersistTokens/helpers';
-
-interface OidcConfig {
-  // default is Descope Project ID
-  clientId?: string;
-  // default is current URL
-  redirectUri?: string;
-  // default is openid email roles descope.custom_claims offline_access
-  scope?: string;
-  // default is undefined
-  metadataUrl?: string;
-  //
-  authority?: string;
-}
+} from '../../constants';
+import { getIdToken } from '../../enhancers/withPersistTokens/helpers';
+import { CoreSdk, OidcConfig, OidcConfigOptions } from '../../types';
+import { hasOidcParamsInUrl, removeOidcParamFromUrl } from './helpers';
 
 type OidcModule = {
   OidcClient: typeof OidcClient;
@@ -116,7 +99,7 @@ const getUserFromStorage = (
 const getOidcClient = async (
   sdk: CoreSdk,
   projectId: string,
-  oidcConfig?: OidcConfig,
+  oidcConfig?: OidcConfigOptions,
 ) => {
   if (!scriptLoadingPromise) {
     scriptLoadingPromise = loadOIDCModule();
@@ -129,14 +112,19 @@ const getOidcClient = async (
     );
   }
 
-  const clientId = oidcConfig?.clientId || projectId;
+  const clientId = projectId;
   const redirectUri = oidcConfig?.redirectUri || window.location.href;
   const scope =
     oidcConfig?.scope ||
     'openid email roles descope.custom_claims offline_access';
   const stateUserKey = `${clientId}_user`;
 
-  const authority = sdk.httpClient.buildUrl(projectId);
+  let authority = sdk.httpClient.buildUrl(projectId);
+  if (oidcConfig?.applicationId) {
+    // append the applicationId to the authority
+    authority = `${authority}/${oidcConfig.applicationId}`;
+  }
+
   const settings: OidcClientSettings = {
     authority,
     client_id: projectId,
@@ -151,24 +139,12 @@ const getOidcClient = async (
     fetchRequestCredentials: 'same-origin',
   };
 
-  if (oidcConfig?.clientId) {
-    settings.client_id = oidcConfig.clientId;
-  }
   if (oidcConfig?.redirectUri) {
     settings.redirect_uri = oidcConfig.redirectUri;
   }
   if (oidcConfig?.scope) {
     settings.scope = oidcConfig.scope;
   }
-  if (oidcConfig?.metadataUrl) {
-    settings.metadataUrl = oidcConfig.metadataUrl;
-    console.log('@@@ metadataUrl', settings.metadataUrl);
-  }
-  if (oidcConfig?.authority) {
-    settings.authority = oidcConfig.authority;
-    console.log('@@@ authority', settings.authority);
-  }
-  console.log('@@@ redirect_uri', settings.redirect_uri);
   return {
     client: new OidcClient(settings),
     stateUserKey,
@@ -180,53 +156,76 @@ const createOidc = (
   projectId: string,
   oidcConfig?: OidcConfig,
 ) => {
-  // we build the
-  const authorize = async (
-    arg: CreateSigninRequestArgs = {},
-  ): Promise<SdkResponse<URLResponse>> => {
-    console.log('@@@ calling authorize', {
-      arg,
-    });
-    const { client } = await getOidcClient(sdk, projectId, oidcConfig);
-    const signInReq = await client.createSigninRequest(arg);
-    console.log('@@@ authorize response', signInReq);
-    const { url } = signInReq;
-    return { ok: true, data: { url } };
+  const getCachedClient = async (): Promise<{
+    client: OidcClient;
+    stateUserKey: string;
+  }> => {
+    let client, stateUserKey;
+    if (!client || !stateUserKey) {
+      ({ client, stateUserKey } = await getOidcClient(
+        sdk,
+        projectId,
+        oidcConfig as OidcConfigOptions,
+      ));
+    }
+    return { client, stateUserKey };
   };
 
-  const token = async (): Promise<any> => {
-    console.log('@@@ calling token');
-    const { client, stateUserKey } = await getOidcClient(
-      sdk,
-      projectId,
-      oidcConfig,
-    );
-    const signInRes = await client.processSigninResponse(window.location.href);
+  // Start the login process by creating a signin request
+  // And redirecting the user to the returned URL
+  const login = async (
+    arg: CreateSigninRequestArgs = {},
+    disableNavigation: boolean = false,
+  ): Promise<SdkResponse<URLResponse>> => {
+    const { client } = await getCachedClient();
+    const res = await client.createSigninRequest(arg);
+    const { url } = res;
+    if (!disableNavigation) {
+      window.location.href = url;
+    }
+    return { ok: true, data: res };
+  };
+
+  // Finish the login process by processing the signin response
+  // This function should be called after the user is redirected from the OIDC IdP
+  const finishLogin = async (url: string = ''): Promise<any> => {
+    const { client, stateUserKey } = await getCachedClient();
+    const res = await client.processSigninResponse(url || window.location.href);
 
     // In order to make sure all the after-hooks are running with the success response
     // we are generating a fake response with the success data and calling the http client after hook fn with it
-    await sdk.httpClient.hooks.afterRequest(
+    await sdk.httpClient.hooks?.afterRequest(
       {} as any,
-      new Response(JSON.stringify(signInRes)),
+      new Response(JSON.stringify(res)),
     );
 
-    console.log('@@@ token response', signInRes);
     window.localStorage.setItem(
       stateUserKey,
-      JSON.stringify(oidcSignInResToStorage(signInRes)),
+      JSON.stringify(oidcSignInResToStorage(res)),
     );
-    return signInRes;
+    // remove the code from the URL
+    removeOidcParamFromUrl();
+
+    return res;
   };
 
-  const logout = async (arg?: CreateSignoutRequestArgs) => {
-    console.log('@@@ calling logout', {
-      arg,
-    });
-    const { client, stateUserKey } = await getOidcClient(
-      sdk,
-      projectId,
-      oidcConfig,
-    );
+  // Finish the login process if the OIDC params are in the URL, if not, do nothing
+  // This function should be called after the user is redirected
+  // Note: high level SDKs should call this function to check if the user is in the middle of the login process
+  // Asaf - alternative name: conditionallyFinishLogin
+  const finishLoginIfNeed = async (url: string = ''): Promise<any> => {
+    if (hasOidcParamsInUrl()) {
+      return await finishLogin(url);
+    }
+  };
+
+  // Start the logout process by creating a signout request
+  // And redirecting the user to the returned URL
+  const logout = async (
+    arg?: CreateSignoutRequestArgs,
+    disableNavigation: boolean = false,
+  ): Promise<any> => {
+    const { client, stateUserKey } = await getCachedClient();
     if (!arg) {
       arg = {};
     }
@@ -237,17 +236,17 @@ const createOidc = (
       arg.post_logout_redirect_uri || window.location.href;
 
     const res = await client.createSignoutRequest(arg);
-    console.log('@@@ logout response', res.url);
     const { url } = res;
     window.localStorage.removeItem(stateUserKey);
-    window.location.replace(url);
+    if (!disableNavigation) {
+      window.location.replace(url);
+    }
+    return res;
   };
 
+  // Refresh the access token using the refresh token
   const refreshToken = async (refreshToken: string) => {
-    console.trace('@@@ calling refresh token', {
-      refreshToken,
-    });
-    const { client, stateUserKey } = await getOidcClient(sdk, projectId);
+    const { client, stateUserKey } = await getCachedClient();
 
     const user = getUserFromStorage(stateUserKey);
     if (!user) {
@@ -269,11 +268,9 @@ const createOidc = (
       },
     });
 
-    console.log('@@@ refresh token response', res);
-
     // In order to make sure all the after-hooks are running with the success response
     // we are generating a fake response with the success data and calling the http client after hook fn with it
-    await sdk.httpClient.hooks.afterRequest(
+    await sdk.httpClient.hooks?.afterRequest(
       {} as any,
       new Response(JSON.stringify(res)),
     );
@@ -282,10 +279,11 @@ const createOidc = (
   };
 
   return {
-    logout,
-    authorize,
-    token,
+    login,
+    finishLogin,
+    finishLoginIfNeed,
     refreshToken,
+    logout,
   };
 };
 

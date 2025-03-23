@@ -28,11 +28,13 @@ function setJwtTokenCookie(
   >,
 ) {
   if (value) {
-    // Asaf - check this case that
-    // a) expires_at is at the same unit as the cookie expiration
-    // b) it works well without cookieDomain and cookiePath
-    const { cookieDomain, cookiePath, cookieSameSite, cookieSecure } = authInfo;
-    const cookieExpiration = authInfo.cookieExpiration || authInfo.expires_at; // Asaf - see if expire_in or expire_at is the correct one
+    const {
+      cookieDomain,
+      cookiePath,
+      cookieSameSite,
+      cookieExpiration,
+      cookieSecure,
+    } = authInfo;
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
     // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
     const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
@@ -72,38 +74,31 @@ export const persistTokens = (
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
-  console.log(
-    '@@@ persistTokens',
-    authInfo,
-    sessionTokenViaCookie,
-    storagePrefix,
-  );
   // persist refresh token
-  const refreshToken = authInfo.refreshJwt || authInfo.refresh_token;
-  refreshToken &&
-    setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshToken);
+  const { sessionJwt, refreshJwt } = authInfo;
+  refreshJwt &&
+    setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
 
   // persist session token
-  const sessionToken = authInfo.sessionJwt || authInfo.access_token;
-  if (sessionToken) {
+  if (sessionJwt) {
     if (sessionTokenViaCookie) {
       // Cookie configs will fallback to default values in both cases
       // 1. sessionTokenViaCookie is a boolean
       // 2. sessionTokenViaCookie is an object without the property
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
-      setJwtTokenCookie(SESSION_TOKEN_KEY, sessionToken, {
+      setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,
       });
     } else {
-      setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionToken);
+      setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
     }
   }
 
-  if (authInfo.id_token) {
-    setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, authInfo.id_token);
+  if (authInfo.idToken) {
+    setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, authInfo.idToken);
   }
 };
 
@@ -139,10 +134,6 @@ export function clearTokens(prefix: string = '') {
 export const beforeRequest =
   (prefix?: string): BeforeRequestHook =>
   (config) => {
-    console.log('@@@ beforeRequest', {
-      token: config.token,
-      refresh: getRefreshToken(prefix),
-    });
     return Object.assign(config, {
       token: config.token || getRefreshToken(prefix),
     });

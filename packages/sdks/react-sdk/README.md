@@ -712,6 +712,111 @@ const handleUpdateUser = useCallback(() => {
 
 To learn more please see the [Descope Documentation and API reference page](https://docs.descope.com/).
 
+## OIDC Login
+
+Descope also supports OIDC login. To enable OIDC login, pass `oidcConfig` prop to the `AuthProvider` component. Example:
+
+### AuthProvider setup with OIDC
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  return (
+    <AuthProvider
+      projectId="my-project-id" // also serves as the client ID
+      oidc={true}
+
+      /* alternatively, you can pass the oidcConfig object
+        oidc={{
+          applicationId: 'my-application-id', // optional, if not provided, the default OIDC application will be used
+           
+          redirectUri: 'https://my-app.com/redirect', // optional, if not provided, the default redirect URI will be used
+          
+          
+          scope: 'openid profile email', // optional, if not provided, default is openid email offline_access roles descope.custom_claims
+        }}
+      */
+    >
+      <App />
+    </AuthProvider>
+  );
+};
+```
+
+### Login
+
+Use the `oidc.login` method from the `useDescope` hook to trigger the OIDC login. Example:
+
+```js
+const MyComponent = () => {
+  const sdk = useDescope();
+
+  return (
+    // ...
+    <button
+      onClick={() => {
+        sdk.oidc.login({
+          // by default, the login will redirect the user to the current URL
+          // if you want to redirect the user to a different URL, you can specify it here
+          redirect_uri: window.location.origin,
+        });
+      }}
+    >
+      Login with OIDC
+    </button>
+  );
+};
+```
+
+### Redirect back from OIDC provider
+
+The `AuthProvider` will automatically handle the redirect back from the OIDC provider. The user will be redirected to the `redirect_uri` specified in the `oidc.login` method.
+
+### Logout
+
+You can call `sdk.logout` to logout the user. Example:
+
+```js
+const MyComponent = () => {
+  const sdk = useDescope();
+
+  return (
+    // ...
+    <button
+      onClick={() => {
+        sdk.logout();
+      }}
+    >
+      Logout
+    </button>
+  );
+};
+```
+
+If you want to redirect the user to a different URL after logout, you can use `oidc.logout` method. Example:
+
+```js
+const MyComponent = () => {
+  const sdk = useDescope();
+
+  return (
+    // ...
+    <button
+      onClick={() => {
+        sdk.oidc.logout({
+          // by default, the logout will redirect the user to the current URL
+          // if you want to redirect the user to a different URL, you can specify it here
+          post_logout_redirect_uri: window.location.origin + '/after-logout',
+        });
+      }}
+    >
+      Logout
+    </button>
+  );
+};
+```
+
 ## Contact Us
 
 If you need help you can email [Descope Support](mailto:support@descope.com)
