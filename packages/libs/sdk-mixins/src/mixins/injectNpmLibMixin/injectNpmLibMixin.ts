@@ -24,13 +24,7 @@ export const injectNpmLibMixin = createSingletonMixin(
         );
         return injectScriptWithFallbacks(
           generateLibUrls(
-            [
-              ...overrides.map((override) => ({
-                url: override,
-                isFullUrl: true,
-              })),
-              ...BASE_URLS,
-            ],
+            [...overrides, this.baseCdnUrl, ...BASE_URLS],
             libName,
             version,
             filePath,

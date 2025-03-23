@@ -101,27 +101,26 @@ const hashUrl = (url: URL) => {
 };
 
 export const generateLibUrls = (
-  baseUrls: (string | { url: string; isFullUrl: boolean })[],
+  baseUrls: string[],
   libName: string,
   version: string,
   path = '',
 ) =>
   baseUrls.flatMap((baseUrl) => {
-    const isFullUrl = typeof baseUrl !== 'string' && baseUrl.isFullUrl;
-    const urlStr = typeof baseUrl !== 'string' ? baseUrl.url : baseUrl;
-
-    if (!urlStr) {
+    if (!baseUrl) {
       return [];
     }
 
     let url: URL;
     try {
-      url = new URL(urlStr);
+      url = new URL(baseUrl);
     } catch (e) {
-      throw new Error(`Invalid URL: ${urlStr}`);
+      throw new Error(`Invalid URL: ${baseUrl}`);
     }
 
-    if (!isFullUrl) {
+    const isUrlIncludesPath = url.pathname !== '/';
+
+    if (!isUrlIncludesPath) {
       url.pathname = `/npm/${libName}@${version}/${path}`;
     }
 
