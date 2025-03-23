@@ -61,6 +61,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isSessionLoading, setIsSessionLoading] = useState(false);
 
   const [isOidcFinishLogin, setIsOidcFinishLogin] = useState(false);
+  const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
     projectId,
@@ -95,7 +96,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   // if oidc config is enabled, and we have oidc params in the url
   // we will finish the login (this should run only once)
   useEffect(() => {
-    if (sdk && oidcConfig && hasOidcParamsInUrl()) {
+    if (sdk && oidcConfig && hasOidcParamsInUrl() && !isOidcFinishedLogin.current) {
+      isOidcFinishedLogin.current = true;
       setIsOidcFinishLogin(true);
       sdk.oidc.finishLoginIfNeed().finally(() => {
         setIsOidcFinishLogin(false);
