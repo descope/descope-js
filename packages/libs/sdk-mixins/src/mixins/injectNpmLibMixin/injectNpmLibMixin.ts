@@ -4,6 +4,11 @@ import { loggerMixin } from '../loggerMixin';
 import { BASE_URLS } from './constants';
 import { generateLibUrls, injectScriptWithFallbacks } from './helpers';
 
+// scripts load to window under descope object
+declare global {
+  var descope: any;
+}
+
 export const injectNpmLibMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(loggerMixin, configMixin)(superclass);

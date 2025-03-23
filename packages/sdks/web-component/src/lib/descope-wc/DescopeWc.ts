@@ -230,9 +230,10 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        await this.registerScript(
-          script.id,
-          `npm/@descope/flow-scripts@latest/dist/${script.id}.js`,
+        await this.injectNpmLib(
+          '@descope/flow-scripts',
+          'latest',
+          `dist/${script.id}.js`,
         );
         const module = window.descope?.[script.id]?.ts;
         return new Promise((resolve, reject) => {
