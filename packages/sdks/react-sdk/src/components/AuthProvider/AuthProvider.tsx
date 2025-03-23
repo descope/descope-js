@@ -30,7 +30,7 @@ interface IAuthProviderProps {
   sessionTokenViaCookie?: CookieConfig;
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
-  oidc?: OidcConfig;
+  oidcConfig?: OidcConfig;
   // If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
@@ -47,7 +47,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
-  oidc: oidcConfig = undefined,
+  oidcConfig = undefined,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',

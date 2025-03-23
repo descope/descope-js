@@ -641,19 +641,21 @@ npm i && npm start
 
 See the following table for customization environment variables for the example app:
 
-| Env Variable            | Description                                                                                                   | Default value                    |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| DESCOPE_FLOW_ID         | Which flow ID to use in the login page                                                                        | **sign-up-or-in**                |
-| DESCOPE_BASE_URL        | Custom Descope base URL                                                                                       | None                             |
-| DESCOPE_BASE_STATIC_URL | Allows to override the base URL that is used to fetch static files                                            | https://static.descope.com/pages |
-| DESCOPE_THEME           | Flow theme                                                                                                    | None                             |
-| DESCOPE_LOCALE          | Flow locale                                                                                                   | Browser's locale                 |
-| DESCOPE_REDIRECT_URL    | Flow redirect URL for OAuth/SSO/Magic Link/Enchanted Link                                                     | None                             |
-| DESCOPE_TENANT_ID       | Flow tenant ID for SSO/SAML                                                                                   | None                             |
-| DESCOPE_DEBUG_MODE      | **"true"** - Enable debugger</br>**"false"** - Disable flow debugger                                          | None                             |
-| DESCOPE_STEP_UP_FLOW_ID | Step up flow ID to show to logged in user (via button). e.g. "step-up". Button will be hidden if not provided | None                             |
-| DESCOPE_TELEMETRY_KEY   | **String** - Telemetry public key provided by Descope Inc                                                     | None                             |
-|                         |                                                                                                               |                                  |
+| Env Variable                | Description                                                                                                   | Default value                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| DESCOPE_FLOW_ID             | Which flow ID to use in the login page                                                                        | **sign-up-or-in**                |
+| DESCOPE_BASE_URL            | Custom Descope base URL                                                                                       | None                             |
+| DESCOPE_BASE_STATIC_URL     | Allows to override the base URL that is used to fetch static files                                            | https://static.descope.com/pages |
+| DESCOPE_THEME               | Flow theme                                                                                                    | None                             |
+| DESCOPE_LOCALE              | Flow locale                                                                                                   | Browser's locale                 |
+| DESCOPE_REDIRECT_URL        | Flow redirect URL for OAuth/SSO/Magic Link/Enchanted Link                                                     | None                             |
+| DESCOPE_TENANT_ID           | Flow tenant ID for SSO/SAML                                                                                   | None                             |
+| DESCOPE_DEBUG_MODE          | **"true"** - Enable debugger</br>**"false"** - Disable flow debugger                                          | None                             |
+| DESCOPE_STEP_UP_FLOW_ID     | Step up flow ID to show to logged in user (via button). e.g. "step-up". Button will be hidden if not provided | None                             |
+| DESCOPE_TELEMETRY_KEY       | **String** - Telemetry public key provided by Descope Inc                                                     | None                             |
+|                             |                                                                                                               |                                  |
+| DESCOPE_OIDC_ENABLED        | **"true"** - Use OIDC login                                                                                   | None                             |
+| DESCOPE_OIDC_APPLICATION_ID | Descope OIDC Application ID, In case OIDC login is used                                                       | None                             |
 
 Example for `.env` file template:
 
@@ -725,17 +727,17 @@ const AppRoot = () => {
   return (
     <AuthProvider
       projectId="my-project-id" // also serves as the client ID
-      oidc={true}
+      oidcConfig={true}
 
       /* alternatively, you can pass the oidcConfig object
-        oidc={{
-          applicationId: 'my-application-id', // optional, if not provided, the default OIDC application will be used
-           
-          redirectUri: 'https://my-app.com/redirect', // optional, if not provided, the default redirect URI will be used
+      oidcConfig={{
+        applicationId: 'my-application-id', // optional, if not provided, the default OIDC application will be used
           
-          
-          scope: 'openid profile email', // optional, if not provided, default is openid email offline_access roles descope.custom_claims
-        }}
+        redirectUri: 'https://my-app.com/redirect', // optional, if not provided, the default redirect URI will be used
+        
+        
+        scope: 'openid profile email', // optional, if not provided, default is openid email offline_access roles descope.custom_claims
+      }}
       */
     >
       <App />
