@@ -41,14 +41,8 @@ import * as helpers from '../src/lib/helpers/helpers';
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
-// We load forter script in the test because we mock it and ensure it is called properly
-import loadForter from '../src/lib/descope-wc/sdkScripts/forter';
-import recaptcha from '../src/lib/descope-wc/sdkScripts/grecaptcha';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
-
-jest.mock('../src/lib/descope-wc/sdkScripts/forter', () => jest.fn());
-jest.mock('../src/lib/descope-wc/sdkScripts/grecaptcha');
 
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
@@ -164,6 +158,9 @@ class DescopeButton extends HTMLElement {
 
 customElements.define('descope-button', DescopeButton);
 const origAppend = document.body.append;
+const orginalCreateElement = document.createElement;
+
+const mockClientScript = jest.fn();
 
 describe('web-component', () => {
   beforeEach(() => {
@@ -214,6 +211,30 @@ describe('web-component', () => {
     window.location.search = '';
     themeContent = {};
     pageContent = '';
+  });
+  document.body.classList = [];
+  Object.defineProperty(document.body.classList, 'toggle', {
+    enumerable: false,
+    writable: true,
+    value(className) {
+      let index = this.indexOf(className);
+      index > -1 ? this.splice(index, 1) : this.push(className);
+      return !(index > -1);
+    },
+  });
+
+  const scriptMock = Object.assign(document.createElement('script'), {
+    setAttribute: jest.fn(),
+    addEventListener: jest.fn(),
+    onload: jest.fn(),
+    onerror: jest.fn(),
+  });
+
+  jest.spyOn(document, 'createElement').mockImplementation((element) => {
+    if (element.toLowerCase() === 'script') {
+      return scriptMock;
+    }
+    return orginalCreateElement.apply(document, [element]);
   });
 
   it('should switch theme on the fly', async () => {
@@ -1765,7 +1786,7 @@ describe('web-component', () => {
 
   it('should load sdk script when flow configured with sdk script', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
-
+    window.descope = { forter: { ts: mockClientScript } };
     // We use specific connector which exists to test it all end to end
     // but we override it above
     const scriptId = 'forter';
@@ -1791,26 +1812,29 @@ describe('web-component', () => {
 
     pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
 
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-url="http://base.url"></descope-wc>`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-cdn-url="https://localhost" base-url="http://base.url"></descope-wc>`;
 
     await waitFor(() => screen.findByShadowText('Click'), {
       timeout: WAIT_TIMEOUT,
     });
+    scriptMock.onload();
 
     // ensure loadForter is called
-    expect(loadForter).toHaveBeenCalledWith(
-      {
-        siteId: 'some-site-id',
-      },
-      expect.objectContaining({
-        baseUrl: 'http://base.url',
-      }),
-      expect.any(Function),
+    await waitFor(() =>
+      expect(mockClientScript).toHaveBeenCalledWith(
+        {
+          siteId: 'some-site-id',
+        },
+        expect.objectContaining({
+          baseUrl: 'http://base.url',
+        }),
+        expect.any(Function),
+      ),
     );
 
     // trigger the callback, to simulate the script loaded
     // get the 3rd argument of the first call to loadForter
-    const callback = (loadForter as jest.Mock).mock.calls[0][2];
+    const callback = (mockClientScript as jest.Mock).mock.calls[0][2];
     callback(resultValue);
 
     fireEvent.click(screen.getByShadowText('Click'));
@@ -4479,18 +4503,16 @@ describe('web-component', () => {
       const errorSpy = jest.spyOn(console, 'error');
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
       await waitFor(
         () =>
-          expect(document.getElementById('load-descope-ui')).toHaveAttribute(
-            'src',
-            expect.stringContaining('https'),
-          ),
+          expect(
+            document.querySelector(`script[id*="@descope/web-components-ui"]`),
+          ).toHaveAttribute('src', expect.stringContaining('https')),
         { timeout: WAIT_TIMEOUT },
       );
 
       document
-        .getElementById('load-descope-ui')
+        .querySelector('script[id*="@descope/web-components-ui"]')
         .dispatchEvent(new Event('error'));
 
       await waitFor(
@@ -5105,13 +5127,8 @@ describe('web-component', () => {
   });
 
   describe('clientScripts', () => {
-    beforeEach(() => {
-      recaptcha.mockImplementationOnce(() => ({
-        stop: jest.fn(),
-        start: jest.fn(),
-      }));
-    });
     it('should run client script from config.json', async () => {
+      window.descope = { forter: { ts: mockClientScript } };
       configContent = {
         flows: {
           'sign-in': {
@@ -5138,7 +5155,7 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      expect(recaptcha).toHaveBeenCalledWith(
+      expect(mockClientScript).toHaveBeenCalledWith(
         {
           enterprise: true,
           siteKey: 'SITE_KEY',

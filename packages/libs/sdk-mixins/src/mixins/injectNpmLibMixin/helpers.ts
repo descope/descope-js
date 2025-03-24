@@ -20,7 +20,7 @@ const hashUrl = (url: URL) => {
     hash = hash & hash; // Convert to 32-bit integer
   }
 
-  return `npm-lib-${Math.abs(hash).toString()}`;
+  return `${Math.abs(hash).toString()}`;
 };
 
 const setupScript = (id: string) => {
@@ -106,9 +106,10 @@ export const generateLibUrls = (
   version: string,
   path = '',
 ) =>
-  baseUrls.flatMap((baseUrl) => {
+  baseUrls.reduce((prev, curr) => {
+    const baseUrl = curr;
     if (!baseUrl) {
-      return [];
+      return prev;
     }
 
     let url: URL;
@@ -124,8 +125,11 @@ export const generateLibUrls = (
       url.pathname = `/npm/${libName}@${version}/${path}`;
     }
 
-    return {
-      url: url,
-      id: hashUrl(url),
-    };
-  });
+    return [
+      ...prev,
+      {
+        url: url,
+        id: `npmlib-${libName}-${hashUrl(url)}`,
+      },
+    ];
+  }, []);

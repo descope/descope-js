@@ -20,6 +20,7 @@ import {
   getAnimationDirection,
   getElementDescopeAttributes,
   getFirstNonEmptyValue,
+  getScriptResultPath,
   getUserLocale,
   handleAutoFocus,
   handleReportValidityOnBlur,
@@ -61,7 +62,6 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
-import { getScriptResultPath } from './sdkScripts';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
