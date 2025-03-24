@@ -1,10 +1,3 @@
-export const setupScript = (id: string) => {
-  const scriptEle = document.createElement('script');
-  scriptEle.id = id;
-
-  return scriptEle;
-};
-
 const getExistingScript = (scriptId: string): HTMLScriptElement => {
   return document.querySelector(`script#${scriptId}`);
 };
@@ -17,7 +10,27 @@ const isScriptError = (script: HTMLScriptElement) => {
   return script.getAttribute('status') === 'error';
 };
 
-export type ScriptData = {
+const hashUrl = (url: URL) => {
+  let hash = 0;
+  const urlStr = url.toString();
+
+  for (let i = 0; i < urlStr.length; i++) {
+    const char = urlStr.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+
+  return `npm-lib-${Math.abs(hash).toString()}`;
+};
+
+const setupScript = (id: string) => {
+  const scriptEle = document.createElement('script');
+  scriptEle.id = id;
+
+  return scriptEle;
+};
+
+type ScriptData = {
   id: string;
   url: URL;
 };
@@ -85,19 +98,6 @@ export const injectScriptWithFallbacks = async (
     }
   }
   throw new Error('All scripts failed to load');
-};
-
-const hashUrl = (url: URL) => {
-  let hash = 0;
-  const urlStr = url.toString();
-
-  for (let i = 0; i < urlStr.length; i++) {
-    const char = urlStr.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-
-  return `npm-lib-${Math.abs(hash).toString()}`;
 };
 
 export const generateLibUrls = (
