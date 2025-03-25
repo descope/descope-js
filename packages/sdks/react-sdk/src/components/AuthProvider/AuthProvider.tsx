@@ -60,7 +60,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(false);
 
-  const [isOidcLoading, setisOidcLoading] = useState(false);
+  const [isOidcLoading, setIsOidcLoading] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -103,9 +103,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       !isOidcFinishedLogin.current
     ) {
       isOidcFinishedLogin.current = true;
-      setisOidcLoading(true);
+      setIsOidcLoading(true);
       sdk.oidc.finishLoginIfNeed().finally(() => {
-        setisOidcLoading(false);
+        setIsOidcLoading(false);
         // We want that the session will fetched only once
         isSessionFetched.current = true;
       });
