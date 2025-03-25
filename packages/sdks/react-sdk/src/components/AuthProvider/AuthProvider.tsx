@@ -60,7 +60,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(false);
 
-  const [isOidcFinishLogin, setIsOidcFinishLogin] = useState(false);
+  const [isOidcLoading, setisOidcLoading] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -98,9 +98,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   useEffect(() => {
     if (sdk && oidcConfig && hasOidcParamsInUrl() && !isOidcFinishedLogin.current) {
       isOidcFinishedLogin.current = true;
-      setIsOidcFinishLogin(true);
+      setisOidcLoading(true);
       sdk.oidc.finishLoginIfNeed().finally(() => {
-        setIsOidcFinishLogin(false);
+        setisOidcLoading(false);
         // We want that the session will fetched only once
         isSessionFetched.current = true;
       });
@@ -139,7 +139,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       session,
       isAuthenticated,
       isSessionLoading,
-      isOidcFinishLogin,
+      isOidcLoading,
       isSessionFetched: isSessionFetched.current,
       projectId,
       baseUrl,
@@ -160,7 +160,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       session,
       isAuthenticated,
       isSessionLoading,
-      isOidcFinishLogin,
+      isOidcLoading,
       isSessionFetched.current,
       projectId,
       baseUrl,
