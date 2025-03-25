@@ -1,9 +1,11 @@
 name: Release - React SDK next
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ['Release']
+    branches: [main]
+    types:
+      - completed
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -58,7 +60,7 @@ jobs:
           fi
       - name: Build
         if: steps.check.outputs.run == 'true'
-        run: npm run version:ci
+        run: npm run version:ci -- --filter=@descope/react-sdk
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
