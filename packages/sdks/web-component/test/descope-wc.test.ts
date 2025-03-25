@@ -218,7 +218,11 @@ describe('web-component', () => {
     writable: true,
     value(className) {
       let index = this.indexOf(className);
-      index > -1 ? this.splice(index, 1) : this.push(className);
+      if (index > -1) {
+        this.splice(index, 1);
+      } else {
+        this.push(className);
+      }
       return !(index > -1);
     },
   });
