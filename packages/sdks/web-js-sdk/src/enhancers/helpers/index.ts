@@ -41,7 +41,7 @@ const oidcAccessTokenExpiration = (response: WebSigninResponse) => {
 
 const normalizeWebJWTResponseToJWTResponse = (
   response: WebSigninResponse,
-): JWTResponse => {
+): WebJWTResponse => {
   const { access_token, id_token, refresh_token, refresh_expire_in, ...rest } =
     response;
   return {
@@ -87,7 +87,7 @@ export { compose } from './compose';
  */
 export const getAuthInfoFromResponse = async (
   res: Response,
-): Promise<Partial<JWTResponse>> => {
+): Promise<Partial<WebJWTResponse>> => {
   if (!res?.ok) return {};
   const body = await res?.clone().json();
   const authInfo = body?.authInfo || body || ({} as Partial<WebJWTResponse>);

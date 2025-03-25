@@ -12,3 +12,6 @@ export const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
 
 export const OIDC_CLIENT_TS_DESCOPE_CDN_URL = `https://descopecdn.com/npm/oidc-client-ts@${OIDC_CLIENT_TS_VERSION}/dist/browser/oidc-client-ts.min.js`;
 export const OIDC_CLIENT_TS_JSDELIVR_CDN_URL = `https://cdn.jsdelivr.net/npm/oidc-client-ts@${OIDC_CLIENT_TS_VERSION}/dist/browser/oidc-client-ts.min.js`;
+
+export const OIDC_LOGOUT_ERROR_CODE = 'J161000';
+export const OIDC_REFRESH_ERROR_CODE = 'J161001';

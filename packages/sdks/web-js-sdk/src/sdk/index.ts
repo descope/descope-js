@@ -8,9 +8,7 @@ import {
 } from '../enhancers/withPersistTokens/helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
-
-const OIDC_LOGOUT_ERROR_CODE = 'J161000';
-const OIDC_REFRESH_ERROR_CODE = 'J161001';
+import { OIDC_LOGOUT_ERROR_CODE, OIDC_REFRESH_ERROR_CODE } from '../constants';
 
 const createSdk = (config: WebSdkConfig) => {
   const coreSdk = createCoreSdk(config);
@@ -22,7 +20,7 @@ const createSdk = (config: WebSdkConfig) => {
     refresh: async (token?: string): ReturnType<CoreSdk['refresh']> => {
       if (config.oidcConfig) {
         try {
-          const res = await oidc.refreshToken(token);
+          await oidc.refreshToken(token);
           return Promise.resolve({ ok: true });
         } catch (error) {
           return Promise.resolve({

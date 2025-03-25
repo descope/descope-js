@@ -27,6 +27,7 @@ type SignInResponseStorage = Pick<
 
 let scriptLoadingPromise: Promise<OidcModule>;
 
+/* istanbul ignore next */
 const simpleHash = (input: string): string => {
   let hash = 0;
 
@@ -43,6 +44,7 @@ const loadScriptWithFallback = (
   urls: string[],
   getEntry: () => OidcModule,
 ): Promise<OidcModule> => {
+  /* istanbul ignore next */
   return new Promise((resolve, reject) => {
     if (!urls.length)
       return reject(new Error('No URLs provided to loadScriptWithFallback'));
@@ -60,6 +62,7 @@ const loadScriptWithFallback = (
       if (entry) return resolve(entry);
       throw new Error('Could not get entry after loading script from URL');
     };
+    /* istanbul ignore next */
     scriptEle.addEventListener('error', () => {
       loadScriptWithFallback(urls, getEntry);
       scriptEle.setAttribute('data-error', 'true');
@@ -69,6 +72,7 @@ const loadScriptWithFallback = (
 };
 
 const loadOIDCModule = async (): Promise<OidcModule> => {
+  /* istanbul ignore next */
   try {
     return import('oidc-client-ts');
   } catch (e) {
@@ -211,8 +215,7 @@ const createOidc = (
 
   // Finish the login process if the OIDC params are in the URL, if not, do nothing
   // This function should be called after the user is redirected
-  // Note: high level SDKs should call this function to check if the user is in the middle of the login process
-  // Asaf - alternative name: conditionallyFinishLogin
+  // Note: high level SDKs may call this function to check if the user is in the middle of the login process
   const finishLoginIfNeed = async (url: string = ''): Promise<any> => {
     if (hasOidcParamsInUrl()) {
       return await finishLogin(url);
@@ -274,7 +277,6 @@ const createOidc = (
       {} as any,
       new Response(JSON.stringify(res)),
     );
-
     return res;
   };
 

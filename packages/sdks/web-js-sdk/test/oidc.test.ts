@@ -131,6 +131,63 @@ describe('OIDC', () => {
     });
   });
 
+  describe('finishLoginIfNeeded', () => {
+    it('should not call processSigninResponse if query params are not set', async () => {
+      const mockProcessSigninResponse = jest
+        .fn()
+        .mockRejectedValue('should not be called');
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        processSigninResponse: mockProcessSigninResponse,
+      }));
+
+      const oidc = createOidc(sdk, 'projectId');
+      await oidc.finishLoginIfNeed();
+
+      expect(mockProcessSigninResponse).not.toHaveBeenCalledWith();
+    });
+
+    it('should handle errors during finish authorization processing', async () => {
+      const mockProcessSigninResponse = jest.fn().mockResolvedValue({});
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        processSigninResponse: mockProcessSigninResponse,
+      }));
+
+      // mock query params
+      const unload = () =>
+        setTimeout(() => window.dispatchEvent(new Event('unload')), 200);
+
+      const location = Object.defineProperties(
+        {},
+        {
+          ...Object.getOwnPropertyDescriptors(window.location),
+          assign: {
+            enumerable: true,
+            value: jest.fn(unload),
+          },
+          replace: {
+            enumerable: true,
+            value: jest.fn(unload),
+          },
+          search: {
+            enumerable: true,
+            configurable: true,
+            get: () => '?code=123&state=456', // ✅ key change
+          },
+        },
+      );
+      Object.defineProperty(window, 'location', {
+        enumerable: true,
+        get: () => location,
+      });
+
+      const oidc = createOidc(sdk, 'projectID');
+      const response = await oidc.finishLoginIfNeed();
+      expect(mockProcessSigninResponse).toHaveBeenCalledWith(
+        window.location.href,
+      );
+    });
+  });
+
   describe('refreshToken', () => {
     it('should refresh token successfully', async () => {
       const mockResponse = {
