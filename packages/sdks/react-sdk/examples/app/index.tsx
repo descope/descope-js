@@ -12,6 +12,11 @@ root.render(
   <BrowserRouter>
     <AuthProvider
       projectId={process.env.DESCOPE_PROJECT_ID!}
+      oidcConfig={
+        process.env.DESCOPE_OIDC_ENABLED === 'true' && {
+          applicationId: process.env.DESCOPE_OIDC_APPLICATION_ID,
+        }
+      }
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
       refreshCookieName={process.env.DESCOPE_REFRESH_COOKIE_NAME}

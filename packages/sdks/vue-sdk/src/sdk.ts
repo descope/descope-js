@@ -2,6 +2,7 @@
 // eslint-disable-next-line
 import type * as _1 from '@descope/core-js-sdk';
 import createSdk from '@descope/web-js-sdk';
+import type * as _2 from '@descope/web-js-sdk/node_modules/oidc-client-ts/dist/types/oidc-client-ts'; // eslint-disable-line
 import { IS_BROWSER } from './constants';
 import { wrapInTry } from './utils';
 
