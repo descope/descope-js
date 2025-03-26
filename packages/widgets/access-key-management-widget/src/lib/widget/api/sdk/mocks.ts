@@ -11,14 +11,18 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
 } = {}) =>
   new Promise((resolve) => {
     const keys: AccessKey[] = [];
+    const timeMock = new Date().getTime() / 1000 + 60 * 60 * 24 * 30;
+    const timeMockFormatted = new Date(timeMock).toLocaleString();
     for (let i = 1; i < 10; i += 1) {
       keys.push({
         id: `access-key-id-${i}`,
         name: `Access Key ${i}`,
         createdBy: `User ${i}`,
         editable: true,
-        expireTime: new Date().getTime() / 1000 + 60 * 60 * 24 * 30,
-        createdTime: new Date().getTime() / 1000,
+        expireTime: timeMock,
+        expireTimeFormatted: timeMockFormatted,
+        createdTime: timeMock,
+        createdTimeFormatted: timeMockFormatted,
         roleNames: [`Role ${i}`],
         permittedIps: ['127.1.2.3'],
         status: 'active',
