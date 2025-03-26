@@ -25,10 +25,7 @@ describe('AuthProvider', () => {
   it('Should trigger oidc finish login', async () => {
     mockHasOidcParamsInUrl.mockReturnValue(true);
     render(
-      <AuthProvider
-        projectId="pr1"
-        oidcConfig
-      >
+      <AuthProvider projectId="pr1" oidcConfig>
         <div>hello</div>
       </AuthProvider>,
     );
@@ -50,10 +47,7 @@ describe('AuthProvider', () => {
   it('Should not trigger oidc finish login oidc is not enabled', async () => {
     mockHasOidcParamsInUrl.mockReturnValue(false);
     render(
-      <AuthProvider
-        projectId="pr1"
-        oidcConfig={false}
-      >
+      <AuthProvider projectId="pr1" oidcConfig={false}>
         <div>hello</div>
       </AuthProvider>,
     );
