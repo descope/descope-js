@@ -67,6 +67,7 @@ export type UserResponse = User & {
   createTime: number;
   TOTP: boolean;
   SAML: boolean;
+  SCIM: boolean;
   password: boolean;
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
@@ -204,6 +205,14 @@ export type PasswordPolicyResponse = {
   uppercase: boolean;
   number: boolean;
   nonAlphanumeric: boolean;
+};
+
+export type ClientIdResponse = {
+  clientId: string;
+};
+
+export type VerifyOneTapIDTokenResponse = {
+  code: string;
 };
 
 /** Phone delivery methods which are currently supported */

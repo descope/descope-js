@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.28.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.2...web-js-sdk-1.28.0) (2025-03-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.40.0`
+
+### Features
+
+* Add exchangeProviderToken API to onetap ([#1029](https://github.com/descope/descope-js/issues/1029)) ([c78ffe4](https://github.com/descope/descope-js/commit/c78ffe41fad786db8d457ad97c23fcd33a0700f9))
+
+
+### Bug Fixes
+
+* allow empty token on webauthn update ([#1059](https://github.com/descope/descope-js/issues/1059)) RELEASE ([34d6896](https://github.com/descope/descope-js/commit/34d689670dd63443113ea5f341b300cb5debe1fb))
+
+## [1.27.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.1...web-js-sdk-1.27.2) (2025-03-19)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.39.0`
 ## [1.27.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.0...web-js-sdk-1.27.1) (2025-03-17)
 
 
