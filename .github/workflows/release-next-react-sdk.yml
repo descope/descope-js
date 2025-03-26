@@ -58,9 +58,6 @@ jobs:
           else
             echo "run=false" >> $GITHUB_OUTPUT
           fi
-      - name: Build
-        if: steps.check.outputs.run == 'true'
-        run: npm run version:ci -- --filter=@descope/react-sdk
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
