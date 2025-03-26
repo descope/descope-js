@@ -39,6 +39,9 @@ export const getUsersList = createSelector(getFormattedUserList, (users) =>
   users.map((user) => ({
     ...user,
     ...flatten(user?.customAttributes, 'customAttributes'),
+    createdTimeFormatted: new Date(
+      (user?.createdTime || 0) * 1000,
+    ).toLocaleString(),
     status: userStatusMappings[user.status] || user.status,
     roles: user.roleNames,
   })),
