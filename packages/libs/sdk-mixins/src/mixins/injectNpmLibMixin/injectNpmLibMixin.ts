@@ -1,5 +1,4 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { configMixin } from '../configMixin';
 import { loggerMixin } from '../loggerMixin';
 import { BASE_URLS } from './constants';
 import { generateLibUrls, injectScriptWithFallbacks } from './helpers';
@@ -11,7 +10,7 @@ declare global {
 
 export const injectNpmLibMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(loggerMixin, configMixin)(superclass);
+    const BaseClass = compose(loggerMixin)(superclass);
 
     return class InjectNpmLibMixinClass extends BaseClass {
       get baseCdnUrl() {

@@ -15,7 +15,6 @@ export const descopeUiMixin = createSingletonMixin(
       loggerMixin,
       configMixin,
       injectNpmLibMixin,
-      injectNpmLibMixin,
     )(superclass);
 
     return class DescopeUiMixinClass extends BaseClass {
