@@ -1,7 +1,11 @@
 import { JWTResponse } from '@descope/core-js-sdk';
 import Cookies from 'js-cookie';
-import { BeforeRequestHook } from '../../types';
-import { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from './constants';
+import { BeforeRequestHook, WebJWTResponse } from '../../types';
+import {
+  ID_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from './constants';
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -19,15 +23,18 @@ import { CookieConfig, SameSite } from './types';
 function setJwtTokenCookie(
   name: string,
   value: string,
-  {
-    cookiePath,
-    cookieDomain,
-    cookieExpiration,
-    cookieSameSite = 'Strict',
-    cookieSecure = true,
-  }: Partial<JWTResponse & { cookieSameSite: SameSite; cookieSecure: boolean }>,
+  authInfo: Partial<
+    WebJWTResponse & { cookieSameSite: SameSite; cookieSecure: boolean }
+  >,
 ) {
   if (value) {
+    const {
+      cookieDomain,
+      cookiePath,
+      cookieSameSite,
+      cookieExpiration,
+      cookieSecure,
+    } = authInfo;
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
     // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
     const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
@@ -63,11 +70,12 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
 }
 
 export const persistTokens = (
-  { refreshJwt, sessionJwt, ...cookieParams } = {} as Partial<JWTResponse>,
+  authInfo = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
 ) => {
   // persist refresh token
+  const { sessionJwt, refreshJwt } = authInfo;
   refreshJwt &&
     setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
 
@@ -80,13 +88,17 @@ export const persistTokens = (
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
       setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
-        ...cookieParams,
+        ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,
       });
     } else {
       setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
     }
+  }
+
+  if (authInfo.idToken) {
+    setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, authInfo.idToken);
   }
 };
 
@@ -107,14 +119,22 @@ export function getSessionToken(prefix: string = ''): string {
   );
 }
 
+export function getIdToken(prefix: string = ''): string {
+  return getLocalStorage(`${prefix}${ID_TOKEN_KEY}`) || '';
+}
+
 /** Remove both the localStorage refresh JWT and the session cookie */
 export function clearTokens(prefix: string = '') {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
+  removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
   Cookies.remove(SESSION_TOKEN_KEY);
 }
 
 export const beforeRequest =
   (prefix?: string): BeforeRequestHook =>
-  (config) =>
-    Object.assign(config, { token: config.token || getRefreshToken(prefix) });
+  (config) => {
+    return Object.assign(config, {
+      token: config.token || getRefreshToken(prefix),
+    });
+  };

@@ -93,6 +93,7 @@ export interface IContext {
   session: string;
   isAuthenticated: boolean;
   isSessionLoading: boolean;
+  isOidcLoading: boolean;
   isSessionFetched: boolean;
   projectId: string;
   baseUrl?: string;

@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { CookieConfig } from '@descope/web-js-sdk';
+import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
@@ -24,6 +24,9 @@ interface IAuthProviderProps {
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: CookieConfig;
+  // If truthy he SDK refresh and logout functions will use the OIDC client
+  // Accepts boolean or OIDC configuration
+  oidcConfig?: OidcConfig;
   // If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
@@ -40,6 +43,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
+  oidcConfig = undefined,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
@@ -52,11 +56,16 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(false);
 
+  // if oidc config is enabled, we attempt to finish the login, so we start as loading
+  const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
+  const isOidcFinishedLogin = useRef(false);
+
   const sdk = useSdk({
     projectId,
     baseUrl,
     persistTokens,
     sessionTokenViaCookie,
+    oidcConfig,
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
     refreshCookieName,
@@ -80,6 +89,19 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
   const isSessionFetched = useRef(false);
   const isUserFetched = useRef(false);
+
+  // if oidc config is enabled, and we have oidc params in the url
+  // we will finish the login (this should run only once)
+  useEffect(() => {
+    if (sdk && oidcConfig && !isOidcFinishedLogin.current) {
+      isOidcFinishedLogin.current = true;
+      sdk.oidc.finishLoginIfNeed().finally(() => {
+        setIsOidcLoading(false);
+        // We want that the session will fetched only once
+        isSessionFetched.current = true;
+      });
+    }
+  }, []);
 
   const fetchSession = useCallback(() => {
     // We want that the session will fetched only once
@@ -113,6 +135,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       session,
       isAuthenticated,
       isSessionLoading,
+      isOidcLoading,
       isSessionFetched: isSessionFetched.current,
       projectId,
       baseUrl,
@@ -133,6 +156,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       session,
       isAuthenticated,
       isSessionLoading,
+      isOidcLoading,
       isSessionFetched.current,
       projectId,
       baseUrl,
