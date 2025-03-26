@@ -18,7 +18,7 @@ const OidcLogin = () => {
 
   const onLogin = useCallback(() => {
     sdk.oidc
-      .login({
+      .loginWithRedirect({
         redirect_uri: window.location.origin,
       })
       .then((res) => {

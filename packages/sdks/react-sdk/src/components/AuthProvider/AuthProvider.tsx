@@ -6,11 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {
-  CookieConfig,
-  OidcConfig,
-  hasOidcParamsInUrl,
-} from '@descope/web-js-sdk';
+import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
@@ -60,7 +56,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(false);
 
-  const [isOidcLoading, setIsOidcLoading] = useState(false);
+  // if oidc config is enabled, we attempt to finish the login, so we start as loading
+  const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -96,15 +93,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   // if oidc config is enabled, and we have oidc params in the url
   // we will finish the login (this should run only once)
   useEffect(() => {
-    if (
-      sdk &&
-      oidcConfig &&
-      hasOidcParamsInUrl() &&
-      !isOidcFinishedLogin.current
-    ) {
+    if (sdk && oidcConfig && !isOidcFinishedLogin.current) {
       isOidcFinishedLogin.current = true;
-      setIsOidcLoading(true);
-      sdk.oidc.finishLogin().finally(() => {
+      sdk.oidc.finishLoginIfNeed().finally(() => {
         setIsOidcLoading(false);
         // We want that the session will fetched only once
         isSessionFetched.current = true;

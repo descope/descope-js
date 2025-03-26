@@ -39,7 +39,7 @@
           redirectUri,
           scope: 'openid profile email',
         };
-        const res = await sdk.oidc.login(oidcConfig);
+        const res = await sdk.oidc.loginWithRedirect(oidcConfig);
         if (res?.ok === false) alert(JSON.stringify(res, null, 4));
         window.location.href = res.data.url;
 

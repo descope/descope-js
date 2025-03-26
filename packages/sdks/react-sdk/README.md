@@ -748,7 +748,7 @@ const AppRoot = () => {
 
 ### Login
 
-Use the `oidc.login` method from the `useDescope` hook to trigger the OIDC login. Example:
+Use the `oidc.loginWithRedirect` method from the `useDescope` hook to trigger the OIDC login. Example:
 
 ```js
 const MyComponent = () => {
@@ -758,9 +758,9 @@ const MyComponent = () => {
     // ...
     <button
       onClick={() => {
-        sdk.oidc.login({
-          // by default, the login will redirect the user to the current URL
-          // if you want to redirect the user to a different URL, you can specify it here
+        sdk.oidc.loginWithRedirect({
+          // By default, the login will redirect the user to the current URL
+          // If you want to redirect the user to a different URL, you can specify it here
           redirect_uri: window.location.origin,
         });
       }}

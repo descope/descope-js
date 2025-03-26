@@ -50,7 +50,7 @@ describe('OIDC', () => {
     });
   });
 
-  describe('login', () => {
+  describe('loginWithRedirect', () => {
     it('should call createSigninRequest with correct params', async () => {
       const mockCreateSigninRequest = jest
         .fn()
@@ -60,7 +60,7 @@ describe('OIDC', () => {
       }));
 
       const oidc = createOidc(sdk, 'projectID');
-      const response = await oidc.login();
+      const response = await oidc.loginWithRedirect();
 
       expect(mockCreateSigninRequest).toHaveBeenCalledWith({});
       expect(response).toEqual({ ok: true, data: { url: 'mockUrl' } });
@@ -75,7 +75,7 @@ describe('OIDC', () => {
       }));
 
       const oidc = createOidc(sdk, 'projectID');
-      await oidc.login({ login_hint: 'test@example.com' });
+      await oidc.loginWithRedirect({ login_hint: 'test@example.com' });
 
       expect(mockCreateSigninRequest).toHaveBeenCalledWith({
         login_hint: 'test@example.com',
@@ -91,7 +91,9 @@ describe('OIDC', () => {
       }));
 
       const oidc = createOidc(sdk, 'projectID');
-      await expect(oidc.login()).rejects.toThrow('Authorization failed');
+      await expect(oidc.loginWithRedirect()).rejects.toThrow(
+        'Authorization failed',
+      );
     });
   });
 
@@ -296,7 +298,7 @@ describe('OIDC', () => {
       }));
 
       const oidc = createOidc(sdk, 'projectID', { applicationId: 'app123' });
-      await oidc.login();
+      await oidc.loginWithRedirect();
 
       expect(sdk.httpClient.buildUrl).toHaveBeenCalledWith('projectID');
       expect(OidcClient).toHaveBeenCalledWith(

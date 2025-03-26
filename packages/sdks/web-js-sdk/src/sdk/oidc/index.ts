@@ -177,7 +177,7 @@ const createOidc = (
 
   // Start the login process by creating a signin request
   // And redirecting the user to the returned URL
-  const login = async (
+  const loginWithRedirect = async (
     arg: CreateSigninRequestArgs = {},
     disableNavigation: boolean = false,
   ): Promise<SdkResponse<URLResponse>> => {
@@ -281,7 +281,7 @@ const createOidc = (
   };
 
   return {
-    login,
+    loginWithRedirect,
     finishLogin,
     finishLoginIfNeed,
     refreshToken,

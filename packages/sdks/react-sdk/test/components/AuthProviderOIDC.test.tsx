@@ -7,7 +7,7 @@ const mockHasOidcParamsInUrl = jest.fn(() => false);
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
   default: jest.fn(() => ({
-    oidc: { finishLogin: () => mockFinishLogin() },
+    oidc: { finishLoginIfNeed: () => mockFinishLogin() },
     onSessionTokenChange: jest.fn(() => jest.fn()),
     onUserChange: jest.fn(() => jest.fn()),
     onIsAuthenticatedChange: jest.fn(() => jest.fn()),
@@ -22,7 +22,7 @@ describe('AuthProvider', () => {
     jest.clearAllMocks();
   });
 
-  it('Should trigger oidc finish login when url params', async () => {
+  it('Should trigger oidc finish login', async () => {
     mockHasOidcParamsInUrl.mockReturnValue(true);
     render(
       <AuthProvider
@@ -47,12 +47,12 @@ describe('AuthProvider', () => {
     });
   });
 
-  it('Should not trigger oidc finish login when url params', async () => {
+  it('Should not trigger oidc finish login oidc is not enabled', async () => {
     mockHasOidcParamsInUrl.mockReturnValue(false);
     render(
       <AuthProvider
         projectId="pr1"
-        oidcConfig
+        oidcConfig={false}
       >
         <div>hello</div>
       </AuthProvider>,
@@ -62,7 +62,7 @@ describe('AuthProvider', () => {
       expect(require('@descope/web-js-sdk').default).toHaveBeenCalledWith(
         expect.objectContaining({
           projectId: 'pr1',
-          oidcConfig: true,
+          oidcConfig: false,
         }),
       );
     });
