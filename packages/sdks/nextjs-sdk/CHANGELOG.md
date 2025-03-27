@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.11.6...nextjs-sdk-0.12.0) (2025-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.0`
+* `react-sdk` updated to version `2.12.0`
+* `web-component` updated to version `3.40.4`
+
+### Features
+
+* OIDC client ([#1055](https://github.com/descope/descope-js/issues/1055)) ([70a5c48](https://github.com/descope/descope-js/commit/70a5c48c184fb89ac825667e3a87da0362a6d531))
+
 ## [0.11.6](https://github.com/descope/descope-js/compare/nextjs-sdk-0.11.5...nextjs-sdk-0.11.6) (2025-03-26)
 
 ### Dependency Updates
