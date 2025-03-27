@@ -51,7 +51,6 @@ import {
   ClientScript,
   ComponentsConfig,
   CustomScreenState,
-  Direction,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
