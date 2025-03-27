@@ -1,7 +1,10 @@
 import Cookies from 'js-cookie';
-import { getSessionToken } from '../src/enhancers/withPersistTokens/helpers';
+import {
+  getIdToken,
+  getSessionToken,
+} from '../src/enhancers/withPersistTokens/helpers';
 import createSdk from '../src/index';
-import { authInfo } from './mocks';
+import { authInfo, oidcAuthInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
 globalThis.Headers = class Headers {
@@ -282,6 +285,23 @@ describe('persistTokens', () => {
     expect(setMock).not.toHaveBeenCalled();
   });
 
+  it('should set cookie domain when it is the same as current domain', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(oidcAuthInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSI')).toEqual(oidcAuthInfo.id_token);
+  });
+
   describe('getSessionToken', () => {
     it('should get session from from cookie', async () => {
       const getMock = Cookies.get as jest.Mock;
@@ -317,6 +337,7 @@ describe('persistTokens', () => {
 
     it('should clear tokens on on logout', async () => {
       localStorage.setItem('DSR', authInfo.refreshJwt);
+      localStorage.setItem('DSI', 'id-token-1');
       // mock one response with auth info, and another one for logout
       const mockFetch = jest
         .fn()
@@ -332,6 +353,7 @@ describe('persistTokens', () => {
       await sdk.logout(authInfo.refreshJwt);
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
+      expect(localStorage.getItem('DSI')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
       expect(removeMock).toHaveBeenCalledWith('DS');
     });
@@ -383,6 +405,14 @@ describe('persistTokens', () => {
       jest.resetModules();
 
       expect(warnSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getIdToken', () => {
+    it('should get session from from local storage', async () => {
+      localStorage.setItem('DSI', 'id-token-1');
+
+      expect(getIdToken()).toEqual('id-token-1');
     });
   });
 });

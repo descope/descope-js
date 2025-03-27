@@ -2,6 +2,34 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.0](https://github.com/descope/descope-js/compare/angular-sdk-0.13.6...angular-sdk-0.14.0) (2025-03-27)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.11`
+* `audit-management-widget` updated to version `0.4.11`
+* `role-management-widget` updated to version `0.3.11`
+* `user-management-widget` updated to version `0.7.11`
+* `user-profile-widget` updated to version `0.4.8`
+* `applications-portal-widget` updated to version `0.3.11`
+* `web-component` updated to version `3.40.4`
+* `web-js-sdk` updated to version `1.29.0`
+
+### Features
+
+* OIDC client ([#1055](https://github.com/descope/descope-js/issues/1055)) ([70a5c48](https://github.com/descope/descope-js/commit/70a5c48c184fb89ac825667e3a87da0362a6d531))
+
+## [0.13.6](https://github.com/descope/descope-js/compare/angular-sdk-0.13.5...angular-sdk-0.13.6) (2025-03-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.10`
+* `audit-management-widget` updated to version `0.4.10`
+* `role-management-widget` updated to version `0.3.10`
+* `user-management-widget` updated to version `0.7.10`
+* `user-profile-widget` updated to version `0.4.7`
+* `applications-portal-widget` updated to version `0.3.10`
+* `web-component` updated to version `3.40.3`
 ## [0.13.5](https://github.com/descope/descope-js/compare/angular-sdk-0.13.4...angular-sdk-0.13.5) (2025-03-21)
 
 ### Dependency Updates

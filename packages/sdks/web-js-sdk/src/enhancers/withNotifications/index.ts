@@ -32,6 +32,7 @@ export const withNotifications =
 
         const { sessionJwt, sessionExpiration } =
           await getAuthInfoFromResponse(res);
+
         if (sessionJwt) sessionPS.pub(sessionJwt);
 
         if (sessionExpiration || sessionJwt) {
@@ -57,7 +58,11 @@ export const withNotifications =
         return resp;
       };
 
-    const wrappedSdk = wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
+    const wrappedSdk = wrapWith(
+      sdk,
+      ['logout', 'logoutAll', 'oidc.logout'],
+      wrapper,
+    );
 
     return Object.assign(wrappedSdk, {
       onSessionTokenChange: sessionPS.sub,

@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.40.4](https://github.com/descope/descope-js/compare/web-component-3.40.3...web-component-3.40.4) (2025-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.0`
+## [3.40.3](https://github.com/descope/descope-js/compare/web-component-3.40.2...web-component-3.40.3) (2025-03-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.3`
+
+### Bug Fixes
+
+* reset external style to work with BYOS ([#1064](https://github.com/descope/descope-js/issues/1064)) ([c8e16a3](https://github.com/descope/descope-js/commit/c8e16a342641977d4a47332abf1c4b838a22a598))
+
 ## [3.40.2](https://github.com/descope/descope-js/compare/web-component-3.40.1...web-component-3.40.2) (2025-03-21)
 
 ### Dependency Updates

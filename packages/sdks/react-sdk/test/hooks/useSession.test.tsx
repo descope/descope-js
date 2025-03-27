@@ -24,6 +24,7 @@ describe('useSession', () => {
     const { result } = renderWithContext({
       session,
       isSessionLoading: false,
+      isOidcLoading: false,
       fetchSession,
       isSessionFetched: false,
       isAuthenticated: true,

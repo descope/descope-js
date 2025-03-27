@@ -47,8 +47,8 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
-      const { refreshJwt, sessionJwt, sessionExpiration } =
-        (await getAuthInfoFromResponse(res)) as any;
+      const { sessionJwt, refreshJwt, sessionExpiration } =
+        await getAuthInfoFromResponse(res);
 
       // if we got 401 we want to cancel all timers
       if (res?.status === 401) {
@@ -108,5 +108,5 @@ export const withAutoRefresh =
         return resp;
       };
 
-    return wrapWith(sdk, ['logout', 'logoutAll'], wrapper);
+    return wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper);
   };
