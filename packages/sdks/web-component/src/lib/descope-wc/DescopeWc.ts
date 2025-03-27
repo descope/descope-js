@@ -84,7 +84,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #conditionalUiAbortController = null;
 
-  onScreenUpdate: (
+  onScreenUpdate?: (
     screenName: string,
     context: CustomScreenState,
     next: StepState['next'],
@@ -119,17 +119,44 @@ class DescopeWc extends BaseDescopeWc {
 
   // Native bridge version native / web syncing - change this when
   // a major change happens that requires some form of compatibility
-  bridgeVersion = 1;
+  bridgeVersion = 2;
 
-  // This callback will be initialized once a 'nativeBridge' action is
-  // received from a start or next request. It will then be called by
-  // nativeResume if appropriate as part of handling some payload types.
-  nativeComplete: (input: Record<string, any>) => Promise<void>;
+  nativeCallbacks: {
+    // This callback will be initialized once a 'nativeBridge' action is
+    // received from a start or next request. It will then be called by
+    // nativeResume if appropriate as part of handling some payload types.
+    complete?: (input: Record<string, any>) => Promise<void>;
+
+    screenResolve?: (value: boolean) => void;
+
+    screenNext?: StepState['next'];
+  } = {};
+
+  async nativeBeforeScreen(
+    screen: string,
+    context: CustomScreenState,
+    next: StepState['next'],
+  ): Promise<boolean> {
+    if (this.nativeOptions?.bridgeVersion >= 2) {
+      return new Promise<boolean>((resolve) => {
+        this.nativeCallbacks.screenNext = next;
+        this.nativeCallbacks.screenResolve = resolve;
+        this.nativeNotifyBridge('beforeScreen', { screen, context });
+      });
+    }
+    return false;
+  }
+
+  nativeAfterScreen(screen: string) {
+    if (this.nativeOptions?.bridgeVersion >= 2) {
+      this.nativeNotifyBridge('afterScreen', { screen });
+    }
+  }
 
   // This callback is called by the native layer to resume a flow
   // that's waiting for some external trigger, such as a magic link
   // redirect or native OAuth authentication.
-  nativeResume = (type: string, payload: string) => {
+  nativeResume(type: string, payload: string) {
     const response = JSON.parse(payload);
     this.logger.info(`nativeResume received payload of type '${type}'`);
     if (type === 'oauthWeb' || type === 'sso') {
@@ -138,7 +165,7 @@ class DescopeWc extends BaseDescopeWc {
         const url = new URL(response.url);
         exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
       }
-      this.nativeComplete({
+      this.nativeCallbacks.complete?.({
         exchangeCode,
         idpInitiated: true,
       });
@@ -152,17 +179,38 @@ class DescopeWc extends BaseDescopeWc {
       this.#resetPollingTimeout();
       // update the state along with cancelling out the action to abort the polling mechanism
       this.flowState.update({ token, stepId, action: undefined });
+    } else if (type === 'beforeScreen') {
+      const screenResolve = this.nativeCallbacks.screenResolve;
+      this.nativeCallbacks.screenResolve = null;
+      const { override } = response;
+      if (!override) {
+        this.nativeCallbacks.screenNext = null;
+      }
+      screenResolve?.(override);
+    } else if (type === 'resumeScreen') {
+      const { interactionId, form } = response;
+      const screenNext = this.nativeCallbacks.screenNext;
+      this.nativeCallbacks.screenNext = null;
+      screenNext?.(interactionId, form);
     } else {
       // expected: 'oauthNative', 'webauthnCreate', 'webauthnGet', 'failure'
-      this.nativeComplete(response);
+      this.nativeCallbacks.complete?.(response);
     }
-  };
+  }
+
+  nativeNotifyBridge(type: string, payload: Record<string, any>) {
+    this.#dispatch('bridge', {
+      type,
+      payload,
+    });
+  }
 
   // This object is set by the native layer to
   // inject native specific data into the 'flowState'.
   nativeOptions:
     | {
         platform: 'ios' | 'android';
+        bridgeVersion: number;
         oauthProvider?: string;
         oauthRedirect?: string;
         magicLinkRedirect?: string;
@@ -423,14 +471,16 @@ class DescopeWc extends BaseDescopeWc {
       ...stepStateUpdate,
     };
 
-    const isCustomScreen: boolean = Boolean(
-      await this.onScreenUpdate?.(
-        stepName,
-        transformStepStateForCustomScreen(state),
-        next,
-        this,
-      ),
-    );
+    const context = transformStepStateForCustomScreen(state);
+
+    // first check if we're running in a native bridge and the app wants a custom screen
+    let isCustomScreen = await this.nativeBeforeScreen(stepName, context, next);
+    if (!isCustomScreen) {
+      // now check any custom callbacks that have been set on the component itself
+      isCustomScreen = Boolean(
+        await this.onScreenUpdate?.(stepName, context, next, this),
+      );
+    }
 
     const isFirstScreen = !this.stepState.current.htmlFilename;
     this.#toggleScreenVisibility(isCustomScreen);
@@ -516,6 +566,7 @@ class DescopeWc extends BaseDescopeWc {
     const nativeOptions = this.nativeOptions
       ? {
           platform: this.nativeOptions.platform,
+          bridgeVersion: this.nativeOptions.bridgeVersion,
           oauthProvider: this.nativeOptions.oauthProvider,
           oauthRedirect: this.nativeOptions.oauthRedirect,
           magicLinkRedirect: this.nativeOptions.magicLinkRedirect,
@@ -730,7 +781,7 @@ class DescopeWc extends BaseDescopeWc {
       // prepare a callback with the current flow state, and accept
       // the input to be a JSON, passed down from the native layer.
       // this function will be called as an async response to a 'bridge' event
-      this.nativeComplete = async (input: Record<string, any>) => {
+      this.nativeCallbacks.complete = async (input: Record<string, any>) => {
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
@@ -742,7 +793,7 @@ class DescopeWc extends BaseDescopeWc {
         this.#handleSdkResponse(sdkResp);
       };
       // notify the bridging native layer that a native action is requested via 'bridge' event.
-      // the response will be in the form of calling the `nativeComplete` callback
+      // the response will be in the form of calling the `nativeCallbacks.complete` callback
       this.#dispatch('bridge', {
         type: nativeResponseType,
         payload: nativePayload,
@@ -1236,6 +1287,7 @@ class DescopeWc extends BaseDescopeWc {
       this.#dispatch('ready', {});
     }
 
+    this.nativeAfterScreen(stepName);
     this.#dispatch('page-updated', { screenName: stepName });
     this.#dispatch('screen-updated', { screenName: stepName });
   }
