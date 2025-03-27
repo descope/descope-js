@@ -129,7 +129,9 @@ export const generateLibUrls = (
       ...prev,
       {
         url: url,
-        id: `npmlib-${libName}-${hashUrl(url)}`,
+        id: `npmlib-${libName
+          .replaceAll('@', '')
+          .replaceAll('/', '_')}-${hashUrl(url)}`,
       },
     ];
   }, []);
