@@ -34,8 +34,8 @@ interface IAuthProviderProps {
   // Use this option if the authentication is done via cookie, and configured with a different name
   // Currently, this is done using Descope Flows
   refreshCookieName?: string;
-  // Function to get external access token, for seamless migration from external system
-  getExternalAccessToken?: () => Promise<string>;
+  // Function to get external token, for seamless migration from external system
+  getExternalToken?: () => Promise<string>;
   children?: React.ReactNode;
 }
 
@@ -49,7 +49,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
-  getExternalAccessToken = undefined,
+  getExternalToken = undefined,
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -72,7 +72,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
     refreshCookieName,
-    getExternalAccessToken,
+    getExternalToken,
   });
 
   useEffect(() => {

@@ -12,7 +12,7 @@ type Config = Pick<
   | 'oidcConfig'
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
-  | 'getExternalAccessToken'
+  | 'getExternalToken'
 >;
 
 export default ({
@@ -24,14 +24,14 @@ export default ({
   oidcConfig,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
-  getExternalAccessToken,
+  getExternalToken,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
     if (!projectId) {
       return undefined;
     }
     console.log('@@@ useSdk with', {
-      getExternalAccessToken
+      getExternalToken
     })
     return createSdk({
       projectId,
@@ -44,6 +44,6 @@ export default ({
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       autoRefresh: true,
-      getExternalAccessToken,
+      getExternalToken,
     });
-  }, [projectId, baseUrl, sessionTokenViaCookie, getExternalAccessToken]);
+  }, [projectId, baseUrl, sessionTokenViaCookie, getExternalToken]);

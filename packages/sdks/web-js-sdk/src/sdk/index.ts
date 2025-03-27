@@ -11,7 +11,7 @@ import { CoreSdk, WebSdkConfig } from '../types';
 import { OIDC_LOGOUT_ERROR_CODE, OIDC_REFRESH_ERROR_CODE } from '../constants';
 
 const createSdk = (config: WebSdkConfig & {
-  getExternalAccessToken?: () => Promise<string>;
+  getExternalToken?: () => Promise<string>;
 }) => {
   const coreSdk = createCoreSdk(config);
 
@@ -41,7 +41,7 @@ const createSdk = (config: WebSdkConfig & {
       return coreSdk.refresh(token, {
         dcs: currentSessionToken ? 't' : 'f',
         dcr: currentRefreshToken ? 't' : 'f',
-      }, await config?.getExternalAccessToken());
+      }, await config?.getExternalToken());
     },
     // Call the logout function according to the oidcConfig
     // And return the response in the same format
