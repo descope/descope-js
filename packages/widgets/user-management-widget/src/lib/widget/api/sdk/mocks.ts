@@ -13,6 +13,7 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
 }) =>
   new Promise((resolve) => {
     const users: User[] = [];
+    const timeMock = new Date().getTime();
     for (let i = 1; i < 10; i += 1) {
       users.push({
         loginIds: [`user${i}@company.com`],
@@ -27,7 +28,8 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
         userTenants: [],
         status: 'enabled',
         editable: true,
-        createdTime: new Date().getTime(),
+        createdTime: timeMock,
+        createdTimeFormatted: new Date((timeMock || 0) * 1000).toLocaleString(),
         customAttributes: {},
         familyName: '',
         givenName: '',

@@ -9,6 +9,7 @@ type Config = Pick<
   | 'persistTokens'
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
+  | 'oidcConfig'
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
   | 'getExternalAccessToken'
@@ -20,6 +21,7 @@ export default ({
   persistTokens,
   sessionTokenViaCookie,
   refreshCookieName,
+  oidcConfig,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
   getExternalAccessToken,
@@ -38,6 +40,7 @@ export default ({
       baseHeaders,
       persistTokens,
       refreshCookieName,
+      oidcConfig,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       autoRefresh: true,

@@ -10,8 +10,9 @@ import {
   getRefreshToken,
   getSessionToken,
   persistTokens,
+  getIdToken,
 } from './helpers';
-import { CookieConfig, PersistTokensOptions, SameSite } from './types';
+import { CookieConfig, PersistTokensOptions } from './types';
 
 /**
  * Persist authentication tokens in cookie/storage
@@ -28,6 +29,7 @@ export const withPersistTokens =
     : ReturnType<T> & {
         getRefreshToken: () => string;
         getSessionToken: () => string;
+        getIdToken: () => string;
       } => {
     if (!isPersistTokens || !IS_BROWSER) {
       if (isPersistTokens) {
@@ -62,16 +64,18 @@ export const withPersistTokens =
 
     const wrappedSdk = wrapWith(
       sdk,
-      ['logout', 'logoutAll'],
+      ['logout', 'logoutAll', 'oidc.logout'],
       wrapper(storagePrefix),
     );
 
     const refreshToken = () => getRefreshToken(storagePrefix);
     const sessionToken = () => getSessionToken(storagePrefix);
+    const idToken = () => getIdToken(storagePrefix);
 
     return Object.assign(wrappedSdk, {
       getRefreshToken: refreshToken,
       getSessionToken: sessionToken,
+      getIdToken: idToken,
     }) as any;
   };
 

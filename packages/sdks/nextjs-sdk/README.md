@@ -1,13 +1,13 @@
-# Descope SDK for NextJS
+# Descope SDK for Next.js
 
-The Descope SDK for NextJS provides convenient access to the Descope for an application written on top of NextJS. You can read more on the [Descope Website](https://descope.com).
+The Descope SDK for Next.js provides convenient access to the Descope for an application written on top of Next.js. You can read more on the [Descope Website](https://descope.com).
 
 This SDK uses under the hood the Descope React SDK and Descope Node SDK
 Refer to the [Descope React SDK](https://github.com/descope/descope-js/tree/main/packages/sdks/react-sdk) and [Descope Node SDK](https://github.com/descope/node-sdk) for more details.
 
 ## Requirements
 
-- The SDK supports NextJS version 13 and above.
+- The SDK supports Next.js version 13 and above.
 - A Descope `Project ID` is required for using the SDK. Find it on the [project page in the Descope Console](https://app.descope.com/settings/project).
 
 ## Installing the SDK
@@ -47,9 +47,9 @@ export default function RootLayout({
 }
 ```
 
-Note: `AuthProvider` uses `sessionTokenViaCookie` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
-The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
+Note: `AuthProvider` uses `sessionTokenViaCookie={true}` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
+The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
 #### Use Descope to render Flow
 
@@ -131,7 +131,7 @@ const App = () => {
 
 ##### Require authentication for application (Middleware)
 
-You can use NextJS Middleware to require authentication for a page/route or a group of pages/routes.
+You can use Next.js Middleware to require authentication for a page/route or a group of pages/routes.
 
 Descope SDK provides a middleware function that can be used to require authentication for a page/route or a group of pages/routes.
 
@@ -154,6 +154,10 @@ export default authMiddleware({
 	publicRoutes?: string[],
 	privateRoutes?: string[]
 	// If you having privateRoutes and publicRoutes defined at the same time, privateRoutes will be ignored.
+
+  // Optional: log level for the middleware
+  // Defaults to 'info'
+  // logLevel: 'debug' | 'info' | 'warn' | 'error'
 })
 
 export const config = {
@@ -225,7 +229,7 @@ Route handler:
 // src/pages/api/routes.ts
 export async function GET() {
 	const currSession = await session();
-	if (!currSession.isAuthenticated) {
+	if (!currSession) {
 		// ...
 	}
 
@@ -234,12 +238,29 @@ export async function GET() {
 }
 ```
 
+The `session()` function uses Next.js's `cookies()` and `headers()` functions to retrieve the session token. If you are using Next.js Version 13, you can use the `getSession(req)` instead.
+
+```js
+import { getSession } from '@descope/nextjs-sdk/server';
+
+export async function GET(req) {
+	const currSession = await getSession(req);
+
+	// ...
+}
+```
+
 ##### Optional Parameters
 
 If the middleware did not set a session, The `session()` function will attempt to retrieve the session token from cookies and validates it, this requires the project ID to be either set in the environment variables or passed as a parameter to the function.
+You can also pass the log level to the function (defaults to 'info').
 
 ```
-session({ projectId?: string, baseUrl?: string })
+session({
+  projectId?: string;
+  baseUrl?: string;
+  logLevel?: 'debug' | 'info' | 'warn' | 'error'
+})
 ```
 
 - **projectId:** The Descope Project ID. If not provided, the function will fall back to `DESCOPE_PROJECT_ID` from the environment variables.

@@ -1,7 +1,10 @@
 import Cookies from 'js-cookie';
-import { getSessionToken } from '../src/enhancers/withPersistTokens/helpers';
+import {
+  getIdToken,
+  getSessionToken,
+} from '../src/enhancers/withPersistTokens/helpers';
 import createSdk from '../src/index';
-import { authInfo } from './mocks';
+import { authInfo, oidcAuthInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
 globalThis.Headers = class Headers {
@@ -105,6 +108,64 @@ describe('persistTokens', () => {
         expires: new Date(authInfo.cookieExpiration * 1000),
         sameSite: 'Lax',
         secure: true,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    });
+
+    it('should set cookie secure as false it is configured to', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Strict',
+        secure: false,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    });
+
+    it('should set cookie to both SameSite Lax and secure as false when they are configured', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { sameSite: 'Lax', secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toHaveBeenCalledWith('DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Lax',
+        secure: false,
       });
       expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
     });
@@ -224,6 +285,23 @@ describe('persistTokens', () => {
     expect(setMock).not.toHaveBeenCalled();
   });
 
+  it('should set cookie domain when it is the same as current domain', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(oidcAuthInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSI')).toEqual(oidcAuthInfo.id_token);
+  });
+
   describe('getSessionToken', () => {
     it('should get session from from cookie', async () => {
       const getMock = Cookies.get as jest.Mock;
@@ -259,6 +337,7 @@ describe('persistTokens', () => {
 
     it('should clear tokens on on logout', async () => {
       localStorage.setItem('DSR', authInfo.refreshJwt);
+      localStorage.setItem('DSI', 'id-token-1');
       // mock one response with auth info, and another one for logout
       const mockFetch = jest
         .fn()
@@ -274,6 +353,7 @@ describe('persistTokens', () => {
       await sdk.logout(authInfo.refreshJwt);
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
+      expect(localStorage.getItem('DSI')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
       expect(removeMock).toHaveBeenCalledWith('DS');
     });
@@ -325,6 +405,14 @@ describe('persistTokens', () => {
       jest.resetModules();
 
       expect(warnSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getIdToken', () => {
+    it('should get session from from local storage', async () => {
+      localStorage.setItem('DSI', 'id-token-1');
+
+      expect(getIdToken()).toEqual('id-token-1');
     });
   });
 });

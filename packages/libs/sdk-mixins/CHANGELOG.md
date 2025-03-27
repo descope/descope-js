@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.3](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.2...sdk-mixins-0.11.3) (2025-03-26)
+
+
+### Bug Fixes
+
+* reset external style to work with BYOS ([#1064](https://github.com/descope/descope-js/issues/1064)) ([c8e16a3](https://github.com/descope/descope-js/commit/c8e16a342641977d4a47332abf1c4b838a22a598))
+
+## [0.11.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.1...sdk-mixins-0.11.2) (2025-03-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.3.0`
+* `sdk-component-drivers` updated to version `0.2.52`
 ## [0.11.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.0...sdk-mixins-0.11.1) (2025-03-04)
 
 

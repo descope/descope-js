@@ -56,6 +56,7 @@ app.mount('#app');
   <!-- client="{ version: '1.2.3' }" client is an object the initial client context in the flow execution. Keys passed can be accessed in flows actions and conditions prefixed with "client.". NOTE: client is not required. If not provided, context key will be empty. -->
   <!-- styleId="my-awesome-style" Use a custom style name or keep empty to use the default style. -->
   <!-- nonce="rAnd0m" Set a CSP nonce that will be used for style and script tags -->
+  <!-- dismissScreenErrorOnInput=true Clear screen error message on user input -->
 </template>
 
 <script setup>
@@ -206,8 +207,8 @@ app.use(descope, {
 });
 ```
 
-Note: The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
+Note: The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
 Now, whenever you call `fetch`, the cookie will automatically be sent with the request.  
 Descope backend SDKs also support extracting the token from the `DS` cookie.

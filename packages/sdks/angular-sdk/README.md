@@ -187,6 +187,9 @@ export class AppComponent {
     Set a CSP nonce that will be used for style and script tags.
     nonce="rAnd0m"
 
+    Clear screen error message on user input.
+    dismissScreenErrorOnInput=true
+
      logger is an object describing how to log info, warn and errors.
      NOTE: logger is not required. If not provided, the logs will be printed to the console.
      Example:
@@ -452,8 +455,8 @@ Notes:
 
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `session` observable of `DescopeAuthService`.
-- The session token cookie is set to [`SameSite=Strict`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) by default.
-  If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax'}`
+- The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
+  If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
 ### Last User Persistence
 

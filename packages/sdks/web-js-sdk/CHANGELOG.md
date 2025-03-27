@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.29.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.28.0...web-js-sdk-1.29.0) (2025-03-27)
+
+
+### Features
+
+* OIDC client ([#1055](https://github.com/descope/descope-js/issues/1055)) ([70a5c48](https://github.com/descope/descope-js/commit/70a5c48c184fb89ac825667e3a87da0362a6d531))
+
+## [1.28.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.2...web-js-sdk-1.28.0) (2025-03-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.40.0`
+
+### Features
+
+* Add exchangeProviderToken API to onetap ([#1029](https://github.com/descope/descope-js/issues/1029)) ([c78ffe4](https://github.com/descope/descope-js/commit/c78ffe41fad786db8d457ad97c23fcd33a0700f9))
+
+
+### Bug Fixes
+
+* allow empty token on webauthn update ([#1059](https://github.com/descope/descope-js/issues/1059)) RELEASE ([34d6896](https://github.com/descope/descope-js/commit/34d689670dd63443113ea5f341b300cb5debe1fb))
+
+## [1.27.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.1...web-js-sdk-1.27.2) (2025-03-19)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.39.0`
+## [1.27.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.27.0...web-js-sdk-1.27.1) (2025-03-17)
+
+
+### Bug Fixes
+
+* short timeout ([#1048](https://github.com/descope/descope-js/issues/1048)) RELEASE ([8759f11](https://github.com/descope/descope-js/commit/8759f110b4706c7a3e4fb2e56e6112f6eae97494))
+
+## [1.27.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.26.2...web-js-sdk-1.27.0) (2025-03-13)
+
+
+### Features
+
+* Support noon secure cookie ([#1028](https://github.com/descope/descope-js/issues/1028)) RELEASE ([885786a](https://github.com/descope/descope-js/commit/885786ae96208bb96c7df18877674229b13f7cac))
+
 ## [1.26.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.26.1...web-js-sdk-1.26.2) (2025-03-06)
 
 ### Dependency Updates

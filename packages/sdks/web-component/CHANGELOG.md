@@ -2,6 +2,66 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.40.4](https://github.com/descope/descope-js/compare/web-component-3.40.3...web-component-3.40.4) (2025-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.0`
+## [3.40.3](https://github.com/descope/descope-js/compare/web-component-3.40.2...web-component-3.40.3) (2025-03-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.3`
+
+### Bug Fixes
+
+* reset external style to work with BYOS ([#1064](https://github.com/descope/descope-js/issues/1064)) ([c8e16a3](https://github.com/descope/descope-js/commit/c8e16a342641977d4a47332abf1c4b838a22a598))
+
+## [3.40.2](https://github.com/descope/descope-js/compare/web-component-3.40.1...web-component-3.40.2) (2025-03-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.28.0`
+## [3.40.1](https://github.com/descope/descope-js/compare/web-component-3.40.0...web-component-3.40.1) (2025-03-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.27.2`
+## [3.40.0](https://github.com/descope/descope-js/compare/web-component-3.39.3...web-component-3.40.0) (2025-03-19)
+
+
+### Features
+
+* **client-scripts:** add token refresh functionality ([#1053](https://github.com/descope/descope-js/issues/1053)) ([ee4e342](https://github.com/descope/descope-js/commit/ee4e342f8c893d55f19cad368c1a704bc479f1ea))
+
+## [3.39.3](https://github.com/descope/descope-js/compare/web-component-3.39.2...web-component-3.39.3) (2025-03-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.27.1`
+## [3.39.2](https://github.com/descope/descope-js/compare/web-component-3.39.1...web-component-3.39.2) (2025-03-16)
+
+
+### Bug Fixes
+
+* Handle buttons by data-type RELEASE ([#1049](https://github.com/descope/descope-js/issues/1049)) ([1decdb0](https://github.com/descope/descope-js/commit/1decdb0285f8f01408903488c30baa3cd752c641))
+
+## [3.39.1](https://github.com/descope/descope-js/compare/web-component-3.39.0...web-component-3.39.1) (2025-03-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.27.0`
+## [3.39.0](https://github.com/descope/descope-js/compare/web-component-3.38.2...web-component-3.39.0) (2025-03-11)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.3.0`
+* `sdk-mixins` updated to version `0.11.2`
+
+### Features
+
+* added option to dismiss screen error on input ([#1045](https://github.com/descope/descope-js/issues/1045)) ([4d9e58d](https://github.com/descope/descope-js/commit/4d9e58dfdc6ab8e219ecf1506e9fd0ec731012cd))
+
 ## [3.38.2](https://github.com/descope/descope-js/compare/web-component-3.38.1...web-component-3.38.2) (2025-03-06)
 
 ### Dependency Updates

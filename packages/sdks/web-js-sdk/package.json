@@ -1,6 +1,6 @@
 {
   "name": "@descope/web-js-sdk",
-  "version": "1.26.2",
+  "version": "1.29.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -23,7 +23,7 @@
   "type": "module",
   "description": "Descope JavaScript web SDK",
   "scripts": {
-    "start": "npm run generateCerts && npx nx run web-js-sdk:build && npm run build && http-server -S -o ./examples",
+    "start": "npm run generateCerts && npx nx run web-js-sdk:build && npm run build && http-server -p 8081 -S -o ./examples",
     "build": "rimraf dist && rollup -c",
     "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'",
@@ -49,8 +49,8 @@
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": "20.17.13",
     "@types/js-cookie": "^3.0.2",
+    "@types/node": "20.17.13",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-typescript": "18.0.0",
@@ -70,6 +70,7 @@
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
     "lint-staged": "^15.0.0",
+    "oidc-client-ts": "3.2.0",
     "prettier": "^3.0.0",
     "pretty-quick": "^4.0.0",
     "rimraf": "^5.0.0",

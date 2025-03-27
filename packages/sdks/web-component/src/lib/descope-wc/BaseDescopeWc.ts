@@ -140,7 +140,6 @@ class BaseDescopeWc extends BaseClass {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(`
     :host {
-      all: initial;
 			width: 100%;
       display: block;
 		}
@@ -152,6 +151,7 @@ class BaseDescopeWc extends BaseClass {
 		}
 
     #content-root {
+      all: initial;
       transition: opacity 300ms ease-in-out;
     }
 
