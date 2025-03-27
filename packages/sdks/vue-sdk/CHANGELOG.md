@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.9.1](https://github.com/descope/descope-js/compare/vue-sdk-2.9.0...vue-sdk-2.9.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* fix oidc client TS issue ([#1068](https://github.com/descope/descope-js/issues/1068)) RELEASE ([6f4f786](https://github.com/descope/descope-js/commit/6f4f78655456e4478fb0b44ec4179706cd5aa4cd))
+
 ## [2.9.0](https://github.com/descope/descope-js/compare/vue-sdk-2.8.6...vue-sdk-2.9.0) (2025-03-27)
 
 ### Dependency Updates
