@@ -4,7 +4,7 @@ import { App, Ref, computed, readonly, ref, unref, watch } from 'vue';
 import { DESCOPE_INJECTION_KEY, baseHeaders } from './constants';
 import { UserData, type Options, type Sdk } from './types';
 import createSdk from './sdk';
-import type * as _2 from '@descope/web-js-sdk/node_modules/oidc-client-ts/dist/types/oidc-client-ts'; // eslint-disable-line
+import type * as _2 from 'oidc-client-ts'; // eslint-disable-line
 
 const routeGuardInternal = ref<(() => Promise<boolean>) | null>(null);
 export const routeGuard = () => unref(routeGuardInternal)?.();

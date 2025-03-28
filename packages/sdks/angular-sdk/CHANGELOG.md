@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.2](https://github.com/descope/descope-js/compare/angular-sdk-0.14.1...angular-sdk-0.14.2) (2025-03-28)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.9`
+* `web-component` updated to version `3.40.5`
+## [0.14.1](https://github.com/descope/descope-js/compare/angular-sdk-0.14.0...angular-sdk-0.14.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* fix oidc client TS issue ([#1068](https://github.com/descope/descope-js/issues/1068)) RELEASE ([6f4f786](https://github.com/descope/descope-js/commit/6f4f78655456e4478fb0b44ec4179706cd5aa4cd))
+
 ## [0.14.0](https://github.com/descope/descope-js/compare/angular-sdk-0.13.6...angular-sdk-0.14.0) (2025-03-27)
 
 ### Dependency Updates
