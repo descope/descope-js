@@ -1258,7 +1258,7 @@ describe('web-component', () => {
     const rootEle = shadowEle.querySelector('#content-root');
     const spyAddEventListener = jest.spyOn(rootEle, 'addEventListener');
 
-    spyAddEventListener.mockImplementationOnce(
+    spyAddEventListener.mockImplementation(
       (_, cb) => typeof cb === 'function' && cb({} as Event),
     );
 
