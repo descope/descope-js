@@ -51,7 +51,6 @@ import {
   ClientScript,
   ComponentsConfig,
   CustomScreenState,
-  Direction,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
@@ -433,11 +432,12 @@ class DescopeWc extends BaseDescopeWc {
       ),
     );
 
+    const isFirstScreen = !this.stepState.current.htmlFilename;
+    this.#toggleScreenVisibility(isCustomScreen, isFirstScreen);
     if (isCustomScreen) {
       this.loggerWrapper.debug('Rendering a custom screen');
-      this.contentRootElement.innerHTML = '';
       this.#dispatchPageEvents({
-        isFirstScreen: !this.stepState.current.htmlFilename,
+        isFirstScreen,
         stepName: stepStateUpdate.stepName,
       });
 
@@ -451,7 +451,6 @@ class DescopeWc extends BaseDescopeWc {
       });
     }
     this.stepState.forceUpdate = isCustomScreen;
-    this.#toggleScreenVisibility(isCustomScreen);
   }
 
   async onFlowChange(
@@ -872,10 +871,36 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
-  #toggleScreenVisibility = (isCustomScreen: boolean) => {
-    this.contentRootElement.classList.toggle('hidden', isCustomScreen);
-    this.slotElement.classList.toggle('hidden', !isCustomScreen);
+  #toggleScreenVisibility = (
+    isCustomScreen: boolean,
+    isFirstScreen: boolean,
+  ) => {
+    const toggleVisibility = () => {
+      this.contentRootElement.classList.toggle('hidden', isCustomScreen);
+      this.slotElement.classList.toggle('hidden', !isCustomScreen);
+      if (isCustomScreen) {
+        this.contentRootElement.innerHTML = '';
+      }
+    };
+
+    if (isFirstScreen) toggleVisibility();
+    else this.#handlePageSwitchTransition(toggleVisibility);
   };
+
+  #handlePageSwitchTransition(onTransitionEnd: () => void) {
+    const transitionEndHandler = () => {
+      this.loggerWrapper.debug('page switch transition end');
+      this.contentRootElement.classList.remove('fade-out');
+      onTransitionEnd();
+    };
+    this.contentRootElement.addEventListener(
+      'transitionend',
+      transitionEndHandler,
+      { once: true },
+    );
+    this.loggerWrapper.debug('page switch transition start');
+    this.contentRootElement.classList.add('fade-out');
+  }
 
   #handlePollingResponse = (
     executionId: string,
@@ -1319,7 +1344,7 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    this.#handleAnimation(injectNextPage, direction);
+    this.#handlePageSwitchTransition(injectNextPage);
   }
 
   #validateInputs() {
@@ -1549,30 +1574,6 @@ class DescopeWc extends BaseDescopeWc {
           });
         });
     }
-  }
-
-  #handleAnimation(injectNextPage: () => void, direction: Direction) {
-    this.contentRootElement.addEventListener(
-      'transitionend',
-      () => {
-        this.contentRootElement.classList.remove('fade-out');
-        injectNextPage();
-      },
-      { once: true },
-    );
-
-    const transitionClass =
-      direction === Direction.forward ? 'slide-forward' : 'slide-backward';
-
-    Array.from(
-      this.contentRootElement.getElementsByClassName('input-container'),
-    ).forEach((ele, i) => {
-      // eslint-disable-next-line no-param-reassign
-      (ele as HTMLElement).style['transition-delay'] = `${i * 40}ms`;
-      ele.classList.add(transitionClass);
-    });
-
-    this.contentRootElement.classList.add('fade-out');
   }
 
   #dispatch(eventName: string, detail: any) {

@@ -152,7 +152,7 @@ class BaseDescopeWc extends BaseClass {
 
     #content-root {
       all: initial;
-      transition: opacity 300ms ease-in-out;
+      transition: opacity 200ms ease-in-out;
     }
 
 		#root[data-theme] {
@@ -160,7 +160,7 @@ class BaseDescopeWc extends BaseClass {
 		}
 
 		.fade-out {
-			opacity: 0.1;
+			opacity: 0.1!important;
 		}
 
     .hidden {
