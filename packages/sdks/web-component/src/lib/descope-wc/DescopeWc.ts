@@ -433,7 +433,7 @@ class DescopeWc extends BaseDescopeWc {
     );
 
     const isFirstScreen = !this.stepState.current.htmlFilename;
-    this.#toggleScreenVisibility(isCustomScreen, isFirstScreen);
+    this.#toggleScreenVisibility(isCustomScreen);
     if (isCustomScreen) {
       this.loggerWrapper.debug('Rendering a custom screen');
       this.#dispatchPageEvents({
@@ -871,10 +871,7 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
-  #toggleScreenVisibility = (
-    isCustomScreen: boolean,
-    isFirstScreen: boolean,
-  ) => {
+  #toggleScreenVisibility = (isCustomScreen: boolean) => {
     const toggleVisibility = () => {
       this.contentRootElement.classList.toggle('hidden', isCustomScreen);
       this.slotElement.classList.toggle('hidden', !isCustomScreen);
@@ -883,8 +880,11 @@ class DescopeWc extends BaseDescopeWc {
       }
     };
 
-    if (isFirstScreen) toggleVisibility();
-    else this.#handlePageSwitchTransition(toggleVisibility);
+    if (isCustomScreen && this.contentRootElement.hasChildNodes()) {
+      this.#handlePageSwitchTransition(toggleVisibility);
+    } else {
+      toggleVisibility();
+    }
   };
 
   #handlePageSwitchTransition(onTransitionEnd: () => void) {
