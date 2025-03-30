@@ -1794,7 +1794,7 @@ describe('web-component', () => {
 
   it('should load sdk script when flow configured with sdk script', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
-    window.descope = { forter: { ts: mockClientScript } };
+    window.descope = { forter: mockClientScript };
     // We use specific connector which exists to test it all end to end
     // but we override it above
     const scriptId = 'forter';
@@ -5148,7 +5148,7 @@ describe('web-component', () => {
         }
         return orginalCreateElement.apply(document, [element]);
       });
-      window.descope = { grecaptcha: { ts: mockClientScript } };
+      window.descope = { grecaptcha: mockClientScript };
     });
     it('should run client script from config.json', async () => {
       configContent = {
