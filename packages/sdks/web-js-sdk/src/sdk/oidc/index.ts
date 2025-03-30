@@ -49,24 +49,30 @@ const loadScriptWithFallback = (
     if (!urls.length)
       return reject(new Error('No URLs provided to loadScriptWithFallback'));
 
+    console.log('@@@ getting oidc-client-ts from CDN', urls);
     const entry = getEntry();
     if (entry) return resolve(entry);
 
+    console.log('@@@ 1');
     const url = urls.shift();
 
+    console.log('@@@ 2', url);
     const scriptEle = document.createElement('script');
     scriptEle.src = url;
     scriptEle.id = simpleHash(url);
     scriptEle.onload = () => {
+      console.log('@@@ 3');
       const entry = getEntry();
       if (entry) return resolve(entry);
       throw new Error('Could not get entry after loading script from URL');
     };
     /* istanbul ignore next */
     scriptEle.addEventListener('error', () => {
+      console.log('@@@ 4');
       loadScriptWithFallback(urls, getEntry);
       scriptEle.setAttribute('data-error', 'true');
     });
+    console.log('@@@ 5');
     document.body.appendChild(scriptEle);
   });
 };
@@ -74,12 +80,15 @@ const loadScriptWithFallback = (
 const loadOIDCModule = async (): Promise<OidcModule> => {
   /* istanbul ignore next */
   try {
-    return import('oidc-client-ts');
+    return require('oidc-client-ts');
   } catch (e) {
-    return loadScriptWithFallback(
+    const res = loadScriptWithFallback(
       [OIDC_CLIENT_TS_DESCOPE_CDN_URL, OIDC_CLIENT_TS_JSDELIVR_CDN_URL],
       () => window['oidc'],
     );
+
+    console.log('@@@ 6');
+    return res;
   }
 };
 
