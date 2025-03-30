@@ -234,7 +234,7 @@ class DescopeWc extends BaseDescopeWc {
           'latest',
           `dist/${script.id}.js`,
         );
-        const module = window.descope?.[script.id]?.ts;
+        const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
             const moduleRes = module(
