@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.40.6](https://github.com/descope/descope-js/compare/web-component-3.40.5...web-component-3.40.6) (2025-03-29)
+
+
+### Bug Fixes
+
+* transition RELEASE ([#1071](https://github.com/descope/descope-js/issues/1071)) ([bbc386e](https://github.com/descope/descope-js/commit/bbc386e6d5214901e5d2f690317ae02392cf994a))
+
 ## [3.40.5](https://github.com/descope/descope-js/compare/web-component-3.40.4...web-component-3.40.5) (2025-03-28)
 
 
