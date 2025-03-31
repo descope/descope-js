@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.40.7](https://github.com/descope/descope-js/compare/web-component-3.40.6...web-component-3.40.7) (2025-03-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.1`
+## [3.40.6](https://github.com/descope/descope-js/compare/web-component-3.40.5...web-component-3.40.6) (2025-03-29)
+
+
+### Bug Fixes
+
+* transition RELEASE ([#1071](https://github.com/descope/descope-js/issues/1071)) ([bbc386e](https://github.com/descope/descope-js/commit/bbc386e6d5214901e5d2f690317ae02392cf994a))
+
+## [3.40.5](https://github.com/descope/descope-js/compare/web-component-3.40.4...web-component-3.40.5) (2025-03-28)
+
+
+### Bug Fixes
+
+* flow page transition RELEASE ([#1069](https://github.com/descope/descope-js/issues/1069)) ([72d0576](https://github.com/descope/descope-js/commit/72d0576e1378b3259910189c24a99ef17848fc40))
+
 ## [3.40.4](https://github.com/descope/descope-js/compare/web-component-3.40.3...web-component-3.40.4) (2025-03-27)
 
 ### Dependency Updates

@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.9.4](https://github.com/descope/descope-js/compare/vue-sdk-2.9.3...vue-sdk-2.9.4) (2025-03-30)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.12`
+* `audit-management-widget` updated to version `0.4.12`
+* `role-management-widget` updated to version `0.3.12`
+* `user-management-widget` updated to version `0.7.12`
+* `user-profile-widget` updated to version `0.4.11`
+* `applications-portal-widget` updated to version `0.3.12`
+* `web-component` updated to version `3.40.7`
+* `web-js-sdk` updated to version `1.29.1`
+## [2.9.3](https://github.com/descope/descope-js/compare/vue-sdk-2.9.2...vue-sdk-2.9.3) (2025-03-29)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.10`
+* `web-component` updated to version `3.40.6`
+## [2.9.2](https://github.com/descope/descope-js/compare/vue-sdk-2.9.1...vue-sdk-2.9.2) (2025-03-28)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.9`
+* `web-component` updated to version `3.40.5`
+## [2.9.1](https://github.com/descope/descope-js/compare/vue-sdk-2.9.0...vue-sdk-2.9.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* fix oidc client TS issue ([#1068](https://github.com/descope/descope-js/issues/1068)) RELEASE ([6f4f786](https://github.com/descope/descope-js/commit/6f4f78655456e4478fb0b44ec4179706cd5aa4cd))
+
 ## [2.9.0](https://github.com/descope/descope-js/compare/vue-sdk-2.8.6...vue-sdk-2.9.0) (2025-03-27)
 
 ### Dependency Updates
