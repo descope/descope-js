@@ -72,9 +72,6 @@ export default (httpClient: HttpClient) => ({
       if (externalToken) {
         body['externalToken'] = externalToken;
       }
-      console.log('@@@ core-sdk refresh with', {
-        externalToken,
-      });
       return transformResponse<JWTResponse>(
         httpClient.post(apiPaths.refresh, body, { token, queryParams }),
       );

@@ -30,9 +30,6 @@ export default ({
     if (!projectId) {
       return undefined;
     }
-    console.log('@@@ useSdk with', {
-      getExternalToken
-    })
     return createSdk({
       projectId,
       baseUrl,
