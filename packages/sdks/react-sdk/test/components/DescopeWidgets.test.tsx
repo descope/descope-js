@@ -174,13 +174,13 @@ describe('Descope Widgets', () => {
     const { container } = render(
       <Context.Provider value={contextValue}>
         <UserProfile widgetId="widget1" />
-      </Context.Provider>
+      </Context.Provider>,
     );
 
     await waitFor(() =>
       expect(
-        container.querySelector('descope-user-profile-widget')
-      ).toBeInTheDocument()
+        container.querySelector('descope-user-profile-widget'),
+      ).toBeInTheDocument(),
     );
 
     const widget = container.querySelector('descope-user-profile-widget');

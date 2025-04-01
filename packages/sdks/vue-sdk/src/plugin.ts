@@ -83,6 +83,12 @@ export default {
         );
       });
 
+    function resetAuth() {
+      sessionToken.value = '';
+      isAuthenticated.value = false;
+      user.value = null;
+    }
+
     app.provide(DESCOPE_INJECTION_KEY, {
       session: {
         fetchSession,
@@ -99,6 +105,7 @@ export default {
       },
       sdk,
       options,
+      resetAuth, // added resetAuth to the injection
     });
   },
 };
