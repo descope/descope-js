@@ -50,7 +50,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
         setSession('');
         setUser(null);
       },
-      [onLogout, setSession, setUser],
+      [onLogout, setSession, setIsAuthenticated, setUser],
     );
 
     useEffect(() => {
