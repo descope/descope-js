@@ -11,11 +11,7 @@ import { CoreSdk, WebSdkConfig } from '../types';
 import { OIDC_LOGOUT_ERROR_CODE, OIDC_REFRESH_ERROR_CODE } from '../constants';
 import logger from '../enhancers/helpers/logger';
 
-const createSdk = (
-  config: WebSdkConfig & {
-    getExternalToken?: () => Promise<string>;
-  },
-) => {
+const createSdk = (config: WebSdkConfig) => {
   const coreSdk = createCoreSdk(config);
 
   const oidc = createOidc(coreSdk, config.projectId, config.oidcConfig);
@@ -43,13 +39,11 @@ const createSdk = (
       const currentRefreshToken = getRefreshToken();
 
       let externalToken = '';
-      if (config.getExternalToken) {
-        try {
-          externalToken = await config.getExternalToken();
-        } catch (error) {
-          logger.debug('Error getting external token while refreshing', error);
-          // continue without external token
-        }
+      try {
+        externalToken = await config.getExternalToken?.();
+      } catch (error) {
+        logger.debug('Error getting external token while refreshing', error);
+        // continue without external token
       }
       return coreSdk.refresh(
         token,
