@@ -10,6 +10,7 @@ import {
   UserManagement,
   UserProfile,
 } from '../../src';
+import Context from '../../src/hooks/Context';
 
 Object.defineProperty(global, 'Response', {
   value: class {},
@@ -157,6 +158,37 @@ describe('Descope Widgets', () => {
     const widget = document.querySelector('descope-user-profile-widget');
     expect(widget).toHaveAttribute('widget-id', 'widget1');
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
+  });
+
+  it('render User Profile and triggers logout', async () => {
+    const setIsAuthenticatedMock = jest.fn();
+    const setSessionMock = jest.fn();
+    const setUserMock = jest.fn();
+    const contextValue = {
+      projectId: 'project1',
+      setIsAuthenticated: setIsAuthenticatedMock,
+      setSession: setSessionMock,
+      setUser: setUserMock,
+    };
+
+    const { container } = render(
+      <Context.Provider value={contextValue}>
+        <UserProfile widgetId="widget1" />
+      </Context.Provider>
+    );
+
+    await waitFor(() =>
+      expect(
+        container.querySelector('descope-user-profile-widget')
+      ).toBeInTheDocument()
+    );
+
+    const widget = container.querySelector('descope-user-profile-widget');
+    // Dispatch logout event
+    widget.dispatchEvent(new CustomEvent('logout', { bubbles: true }));
+    expect(setIsAuthenticatedMock).toHaveBeenCalledWith(false);
+    expect(setSessionMock).toHaveBeenCalledWith('');
+    expect(setUserMock).toHaveBeenCalledWith(null);
   });
 
   it('render ApplicationsPortal', async () => {
