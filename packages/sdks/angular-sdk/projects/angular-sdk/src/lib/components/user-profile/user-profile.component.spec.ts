@@ -31,7 +31,10 @@ describe('DescopeUserProfileComponent', () => {
         hooks: {
           afterRequest: afterRequestHooksSpy
         }
-      }
+      },
+      onSessionTokenChange: jest.fn(),
+      onIsAuthenticatedChange: jest.fn(),
+      onUserChange: jest.fn()
     });
 
     TestBed.configureTestingModule({
