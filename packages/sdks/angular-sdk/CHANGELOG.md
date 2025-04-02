@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.6](https://github.com/descope/descope-js/compare/angular-sdk-0.14.5...angular-sdk-0.14.6) (2025-04-02)
+
+
+### Bug Fixes
+
+* user profile handle logout ([#1075](https://github.com/descope/descope-js/issues/1075)) RELEASE ([d195f21](https://github.com/descope/descope-js/commit/d195f21bc4afe5793d59cdb49ffb902c94af1f6c))
+
 ## [0.14.5](https://github.com/descope/descope-js/compare/angular-sdk-0.14.4...angular-sdk-0.14.5) (2025-04-01)
 
 ### Dependency Updates
