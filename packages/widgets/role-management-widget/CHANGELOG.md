@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.14](https://github.com/descope/descope-js/compare/role-management-widget-0.3.13...role-management-widget-0.3.14) (2025-04-02)
+
+
+### Bug Fixes
+
+* Roles widget edit button RELEASE ([#1076](https://github.com/descope/descope-js/issues/1076)) ([7a4305d](https://github.com/descope/descope-js/commit/7a4305debcd02cee4ee78d83856a4a109d9a6fa0))
+
 ## [0.3.13](https://github.com/descope/descope-js/compare/role-management-widget-0.3.12...role-management-widget-0.3.13) (2025-04-02)
 
 ### Dependency Updates
