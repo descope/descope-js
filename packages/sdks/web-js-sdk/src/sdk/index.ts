@@ -39,12 +39,15 @@ const createSdk = (config: WebSdkConfig) => {
       const currentRefreshToken = getRefreshToken();
 
       let externalToken = '';
-      try {
-        externalToken = await config.getExternalToken?.();
-      } catch (error) {
-        logger.debug('Error getting external token while refreshing', error);
-        // continue without external token
+      if (config.getExternalToken) {
+        try {
+          externalToken = await config.getExternalToken?.();
+        } catch (error) {
+          logger.debug('Error getting external token while refreshing', error);
+          // continue without external token
+        }
       }
+
       return coreSdk.refresh(
         token,
         {
