@@ -106,6 +106,7 @@ export interface IContext {
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   setSession: React.Dispatch<React.SetStateAction<string>>;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type DescopeProps = {
