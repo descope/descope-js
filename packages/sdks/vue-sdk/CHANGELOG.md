@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.9.6](https://github.com/descope/descope-js/compare/vue-sdk-2.9.5...vue-sdk-2.9.6) (2025-04-02)
+
+
+### Bug Fixes
+
+* user profile handle logout ([#1075](https://github.com/descope/descope-js/issues/1075)) RELEASE ([d195f21](https://github.com/descope/descope-js/commit/d195f21bc4afe5793d59cdb49ffb902c94af1f6c))
+
 ## [2.9.5](https://github.com/descope/descope-js/compare/vue-sdk-2.9.4...vue-sdk-2.9.5) (2025-04-01)
 
 ### Dependency Updates
