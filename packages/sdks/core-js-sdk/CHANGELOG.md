@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.41.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.40.0...core-js-sdk-2.41.0) (2025-04-02)
+
+
+### Features
+
+* pass external token ([#1067](https://github.com/descope/descope-js/issues/1067)) RELEASE ([2ce500f](https://github.com/descope/descope-js/commit/2ce500fa195df1a9d27bfaae4ba79bf046f27fb6))
+
 ## [2.40.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.39.0...core-js-sdk-2.40.0) (2025-03-21)
 
 
