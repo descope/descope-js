@@ -149,6 +149,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       refreshCookieName,
       setUser,
       setSession,
+      setIsAuthenticated,
       sdk,
     }),
     [
@@ -169,6 +170,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       refreshCookieName,
       setUser,
       setSession,
+      setIsAuthenticated,
       sdk,
     ],
   );
