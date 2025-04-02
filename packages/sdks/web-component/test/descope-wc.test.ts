@@ -209,20 +209,6 @@ describe('web-component', () => {
     });
     (createSdk as jest.Mock).mockReturnValue(sdk);
 
-    document.body.classList = [];
-    Object.defineProperty(document.body.classList, 'toggle', {
-      enumerable: false,
-      writable: true,
-      value(className) {
-        const index = this.indexOf(className);
-        if (index > -1) {
-          this.splice(index, 1);
-        } else {
-          this.push(className);
-        }
-        return !(index > -1);
-      },
-    });
     invokeScriptOnload();
 
     jest.spyOn(document, 'createElement').mockImplementation((element) => {
