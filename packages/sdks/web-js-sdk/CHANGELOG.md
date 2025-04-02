@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.29.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.29.0...web-js-sdk-1.29.1) (2025-03-30)
+
+
+### Bug Fixes
+
+* OIDC client ts ([#1072](https://github.com/descope/descope-js/issues/1072)) RELEASE ([00e39d9](https://github.com/descope/descope-js/commit/00e39d919979a315af510870e50218ca364e0ed6))
+
 ## [1.29.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.28.0...web-js-sdk-1.29.0) (2025-03-27)
 
 
