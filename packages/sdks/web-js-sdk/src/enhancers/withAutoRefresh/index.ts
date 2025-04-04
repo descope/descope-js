@@ -1,7 +1,7 @@
 import { SdkFnWrapper, wrapWith } from '@descope/core-js-sdk';
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook } from '../../types';
-import { addHooks, getAuthInfoFromResponse } from '../helpers';
+import { addHooks, getAuthInfoFromResponse, isDescopeBridge } from '../helpers';
 import {
   createTimerFunctions,
   getTokenExpiration,
@@ -19,7 +19,7 @@ import { getRefreshToken } from '../withPersistTokens/helpers';
 export const withAutoRefresh =
   <T extends CreateWebSdk>(createSdk: T) =>
   ({ autoRefresh, ...config }: Parameters<T>[0] & AutoRefreshOptions) => {
-    if (!autoRefresh) return createSdk(config);
+    if (!autoRefresh || isDescopeBridge()) return createSdk(config);
 
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
