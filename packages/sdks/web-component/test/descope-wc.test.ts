@@ -83,6 +83,8 @@ const defaultOptionsValues = {
   thirdPartyAppId: null,
   thirdPartyAppStateId: null,
   applicationScopes: null,
+  outboundAppId: null,
+  outboundOAuthAppScopes: null,
 };
 
 class MockFileReader {
