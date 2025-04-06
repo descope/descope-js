@@ -1333,7 +1333,7 @@ class DescopeWc extends BaseDescopeWc {
       // open in a new tab should be done after the screen is rendered
       // because in some cases, the page will have a loader that
       // should run during the redirect process
-      if (openInNewTabUrl && !prevState.openInNewTabUrl) {
+      if (openInNewTabUrl) {
         window.open(openInNewTabUrl, '_blank');
       }
     };
