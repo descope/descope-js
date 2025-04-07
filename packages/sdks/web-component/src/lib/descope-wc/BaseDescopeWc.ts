@@ -259,13 +259,13 @@ class BaseDescopeWc extends BaseClass {
   }
 
   get outboundAppId() {
-    return this.getAttribute('outbound-app-id') || undefined;
+    return this.getAttribute('outbound-app-id');
   }
 
   get outboundAppScopes() {
     try {
       const scopes = JSON.parse(this.getAttribute('outbound-app-scopes'));
-      if (!scopes) return undefined;
+      if (!scopes) return null;
       return scopes;
     } catch (err) {
       return null;
