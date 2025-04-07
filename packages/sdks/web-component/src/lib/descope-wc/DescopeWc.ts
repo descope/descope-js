@@ -492,6 +492,8 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
+    const outboundAppId = this.outboundAppId;
+    const outboundAppScopes = this.outboundAppScopes;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
@@ -578,6 +580,8 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             locale: getUserLocale(locale).locale,
             nativeOptions,
+            outboundAppId,
+            outboundAppScopes,
           },
           conditionInteractionId,
           '',
@@ -821,6 +825,8 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale).locale,
             nativeOptions,
+            outboundAppId,
+            outboundAppScopes,
           },
           conditionInteractionId,
           interactionId,
