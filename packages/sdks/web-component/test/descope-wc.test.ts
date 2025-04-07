@@ -2009,6 +2009,40 @@ describe('web-component', () => {
     );
   });
 
+  it('should call start with outbound attributes when provided', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 1 },
+      },
+    };
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" outbound-app-id="app-id" outbound-app-scopes='["scope1", "scope2"]'></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: 20000,
+    });
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.objectContaining({
+          outboundAppId: 'app-id',
+          outboundAppScopes: ['scope1', 'scope2'],
+        }),
+        undefined,
+        '',
+        '1.2.3',
+        {
+          'sign-in': 1,
+        },
+        {},
+      ),
+    );
+  });
+
   it('should call start with refresh cookie name when provided', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     configContent = {
