@@ -348,6 +348,8 @@ export type Options = {
   nativeOptions?: NativeOptions;
   thirdPartyAppStateId?: string;
   applicationScopes?: string; // Relevant for sso application and third party application
+  outboundAppId?: string;
+  outboundAppScopes?: string[];
 };
 
 export type ResponseData = Record<string, any>;
