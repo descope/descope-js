@@ -444,6 +444,28 @@ const AppRoot = () => {
 
 Descope stores the last user information in local storage. If you wish to disable this feature, you can pass `storeLastAuthenticatedUser={false}` to the `AuthProvider` component. Please note that some features related to the last authenticated user may not function as expected if this behavior is disabled. Local storage is being cleared when the user logs out, if you want the avoid clearing the local storage, you can pass `keepLastAuthenticatedUserAfterLogout={true}` to the `AuthProvider` component.
 
+### Seamless Session Migration
+
+If you are migrating from an external authentication provider to Descope, you can use the `getExternalToken` prop in the `AuthProvider` component. This function should return a valid token from the external provider. The SDK will then use this token to authenticate the user with Descope.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  return (
+    <AuthProvider
+      projectId="my-project-id"
+      getExternalToken={async () => {
+        // Bring token from external provider (e.g. get access token from another auth provider)
+        return 'my-external-token';
+      }}
+    >
+      <App />
+    </AuthProvider>
+  );
+};
+```
+
 ### Widgets
 
 Widgets are components that allow you to expose management features for tenant-based implementation. In certain scenarios, your customers may require the capability to perform managerial actions independently, alleviating the necessity to contact you. Widgets serve as a feature enabling you to delegate these capabilities to your customers in a modular manner.

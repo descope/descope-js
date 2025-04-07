@@ -53,6 +53,12 @@ In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the ho
   /*  When managing multiple Descope projects on the same domain, you can prevent refresh cookie conflicts by assigning a custom name to your refresh token cookie during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` option.
   */
   refreshCookieName: "cookie-1"
+
+  // Pass this function to the SDK if you want to seamlessly migrate session from an external authentication provider to Descope.
+  getExternalToken: async () => {
+    // Bring token from external provider (e.g. get access token from another auth provider)
+    return 'my-external-token';
+  },
 });
 
 sdk.onSessionTokenChange((newSession, oldSession) => {
@@ -93,6 +99,66 @@ if (!res.ok) {
 // Can be used to pass token to server on header
 const sessionToken = sdk.getSessionToken();
 ```
+
+### Usage with OIDC
+
+Descope also supports OIDC login. To enable OIDC login, pass `oidcConfig` attribute to the SDK initialization. The `oidcConfig` attribute is either a boolean or a configuration object. If you pass `oidcConfig: true`, the SDK will use the Descope OIDC default application
+
+```js
+// Initialize the SDK with OIDC
+const sdk = descopeSdk({
+  projectId: 'xxx',
+  oidcConfig: true,
+});
+
+// Initialize the SDK with custom OIDC application
+const sdk = descopeSdk({
+  projectId: 'xxx',
+  oidcConfig: {
+    applicationId: 'my-application-id', // optional, if not provided, the default OIDC application will be used
+
+    redirectUri: 'https://my-app.com/redirect', // optional, if not provided, the default redirect URI will be used
+
+    scope: 'openid profile email', // optional, if not provided, default is openid email offline_access roles descope.custom_claims
+  },
+});
+```
+
+#### Start OIDC login
+
+Login with OIDC is done by calling the `loginWithRedirect` method. This method will redirect the user to the Descope OIDC login page. After the user logs in, they will be redirected back to the application to finish the login process.
+
+```js
+await sdk.oidc.loginWithRedirect({
+  // By default, the login will redirect the user to the current URL
+  // If you want to redirect the user to a different URL, you can specify it here
+  redirect_uri: window.location.origin,
+});
+```
+
+#### Finish OIDC login
+
+After the user is redirected back to the application with oidc code and state query parameters, you need to call the `oidc.finishLogin` or `oidc.finishLoginIfNeed` methods to finish the login process
+
+Using `finishLoginIfNeed` (recommended):
+
+```js
+// Call this method to finish the login process.
+// This method will only finish the login process if the user was redirected back to the application after login.
+await sdk.oidc.finishLoginIfNeed();
+```
+
+Using `finishLogin`:
+
+```js
+// Call this method to finish the login process, which takes the code and state query parameters from the URL, and exchanges them for a session
+// Note: Call this method only if the user was redirected back to the application after login, this is usually done according the the code/state query parameters
+await sdk.oidc.finishLogin();
+```
+
+#### Manage OIDC session
+
+The SDK will automatically manage the OIDC session for you, according to `persistTokens` and `autoRefresh` options. The SDK will automatically refresh the OIDC session when it expires, and will store the session token in the browser storage or cookies, according to the `persistTokens` option.
 
 ### Run Example
 

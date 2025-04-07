@@ -52,6 +52,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
+            theme: this.theme,
           }),
         );
         this.#flow.onSuccess(() => {

@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.13.1](https://github.com/descope/descope-js/compare/react-sdk-2.13.0...react-sdk-2.13.1) (2025-04-02)
+
+### Dependency Updates
+
+* `role-management-widget` updated to version `0.3.14`
+## [2.13.0](https://github.com/descope/descope-js/compare/react-sdk-2.12.6...react-sdk-2.13.0) (2025-04-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.13`
+* `audit-management-widget` updated to version `0.4.13`
+* `role-management-widget` updated to version `0.3.13`
+* `user-management-widget` updated to version `0.7.13`
+* `user-profile-widget` updated to version `0.4.13`
+* `applications-portal-widget` updated to version `0.3.13`
+* `web-component` updated to version `3.40.8`
+* `web-js-sdk` updated to version `1.30.0`
+* `core-js-sdk` updated to version `2.41.0`
+
+### Features
+
+* pass external token ([#1067](https://github.com/descope/descope-js/issues/1067)) RELEASE ([2ce500f](https://github.com/descope/descope-js/commit/2ce500fa195df1a9d27bfaae4ba79bf046f27fb6))
+
+## [2.12.6](https://github.com/descope/descope-js/compare/react-sdk-2.12.5...react-sdk-2.12.6) (2025-04-02)
+
+
+### Bug Fixes
+
+* user profile handle logout ([#1075](https://github.com/descope/descope-js/issues/1075)) RELEASE ([d195f21](https://github.com/descope/descope-js/commit/d195f21bc4afe5793d59cdb49ffb902c94af1f6c))
+
+## [2.12.5](https://github.com/descope/descope-js/compare/react-sdk-2.12.4...react-sdk-2.12.5) (2025-04-01)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.12`
 ## [2.12.4](https://github.com/descope/descope-js/compare/react-sdk-2.12.3...react-sdk-2.12.4) (2025-03-30)
 
 ### Dependency Updates
