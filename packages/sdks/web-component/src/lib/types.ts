@@ -129,7 +129,6 @@ export type StepState = {
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
-  openInNewTabUrl?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<
