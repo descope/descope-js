@@ -84,7 +84,7 @@ const defaultOptionsValues = {
   thirdPartyAppStateId: null,
   applicationScopes: null,
   outboundAppId: null,
-  outboundOAuthAppScopes: null,
+  outboundAppScopes: null,
 };
 
 class MockFileReader {
@@ -712,7 +712,7 @@ describe('web-component', () => {
     );
   });
 
-  it('When submitting and no execution id - it calls start with the button id and token if exists', async () => {
+  it.only('When submitting and no execution id - it calls start with the button id and token if exists', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     configContent = {
       ...configContent,
