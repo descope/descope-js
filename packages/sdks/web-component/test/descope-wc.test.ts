@@ -712,7 +712,7 @@ describe('web-component', () => {
     );
   });
 
-  it.only('When submitting and no execution id - it calls start with the button id and token if exists', async () => {
+  it('When submitting and no execution id - it calls start with the button id and token if exists', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     configContent = {
       ...configContent,
