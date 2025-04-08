@@ -53,7 +53,7 @@ jobs:
         id: 'check'
         run: |
           # Check if the affected projects include "react-sdk" or "web-component" since the last commit
-          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep -q "react-sdk\|web-component"); then
+          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep "react-sdk\|web-component"); then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
