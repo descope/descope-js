@@ -1,6 +1,6 @@
 import { JWTResponse } from '@descope/core-js-sdk';
 import Cookies from 'js-cookie';
-import { BeforeRequestHook, WebJWTResponse } from '../../types';
+import { BeforeRequestHook, CoreSdkConfig, WebJWTResponse } from '../../types';
 import {
   ID_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
@@ -13,6 +13,7 @@ import {
 } from '../helpers';
 import { CookieConfig, SameSite } from './types';
 
+type Logger = CoreSdkConfig['logger'];
 /**
  * Store the session JWT as a cookie on the given domain and path with the given expiration.
  * This is useful so that the application backend will automatically get the cookie for the session
@@ -26,6 +27,7 @@ function setJwtTokenCookie(
   authInfo: Partial<
     WebJWTResponse & { cookieSameSite: SameSite; cookieSecure: boolean }
   >,
+  logger: Logger = undefined,
 ) {
   if (value) {
     const {
@@ -38,6 +40,11 @@ function setJwtTokenCookie(
     const expires = new Date(cookieExpiration * 1000); // we are getting response from the server in seconds instead of ms
     // Since its a JS cookie, we don't set the domain because we want the cookie to be on the same domain as the application
     const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
+    logger?.debug?.('Setting session cookie', {
+      authInfo,
+      domainMatches,
+      expires,
+    });
     Cookies.set(name, value, {
       path: cookiePath,
       domain: domainMatches ? cookieDomain : undefined,
@@ -45,6 +52,16 @@ function setJwtTokenCookie(
       sameSite: cookieSameSite,
       secure: cookieSecure,
     });
+
+    // ensure that the cookie is set as expected
+    const cookie = Cookies.get(name);
+    if (cookie !== value) {
+      logger?.warn?.(`Failed to set cookie`, {
+        // print the last 10 characters of the cookie and the value
+        currentSessionSuffix: cookie?.slice(-10),
+        requestSessionSuffix: value.slice(-10),
+      });
+    }
   }
 }
 
@@ -73,6 +90,7 @@ export const persistTokens = (
   authInfo = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
+  logger: Logger = undefined,
 ) => {
   // persist refresh token
   const { sessionJwt, refreshJwt } = authInfo;
@@ -87,11 +105,16 @@ export const persistTokens = (
       // 2. sessionTokenViaCookie is an object without the property
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
-      setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
-        ...(authInfo as Partial<JWTResponse>),
-        cookieSameSite,
-        cookieSecure,
-      });
+      setJwtTokenCookie(
+        SESSION_TOKEN_KEY,
+        sessionJwt,
+        {
+          ...(authInfo as Partial<JWTResponse>),
+          cookieSameSite,
+          cookieSecure,
+        },
+        logger,
+      );
     } else {
       setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
     }

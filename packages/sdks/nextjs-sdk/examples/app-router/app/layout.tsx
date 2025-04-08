@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthProvider } from '@descope/nextjs-sdk';
+import DescopeAuthProvider from './DescopeAuthProvider';
 
 export const metadata = {
 	title: 'Descope Next.js'
@@ -7,7 +7,7 @@ export const metadata = {
 
 export default ({ children }: { children: React.ReactNode }) => {
 	return (
-		<AuthProvider
+		<DescopeAuthProvider
 			projectId={process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID}
 			baseUrl={process.env.NEXT_PUBLIC_DESCOPE_BASE_URL}
 			baseStaticUrl={process.env.NEXT_PUBLIC_DESCOPE_BASE_STATIC_URL}
@@ -16,6 +16,6 @@ export default ({ children }: { children: React.ReactNode }) => {
 			<html lang="en">
 				<body>{children}</body>
 			</html>
-		</AuthProvider>
+		</DescopeAuthProvider>
 	);
 };
