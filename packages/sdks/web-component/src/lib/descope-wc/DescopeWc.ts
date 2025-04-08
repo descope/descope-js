@@ -231,7 +231,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.3', // currently using a fixed package version for the scripts
+          'latest', // currently using always latest version for the scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
