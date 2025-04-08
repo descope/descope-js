@@ -473,7 +473,6 @@ class DescopeWc extends BaseDescopeWc {
       screenId,
       screenState,
       redirectTo,
-      openInNewTabUrl,
       redirectUrl,
       token,
       code,
@@ -498,6 +497,8 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
+    const outboundAppId = this.outboundAppId;
+    const outboundAppScopes = this.outboundAppScopes;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
@@ -584,6 +585,8 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             locale: getUserLocale(locale).locale,
             nativeOptions,
+            outboundAppId,
+            outboundAppScopes,
           },
           conditionInteractionId,
           '',
@@ -805,7 +808,6 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
-      openInNewTabUrl,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -828,6 +830,8 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale).locale,
             nativeOptions,
+            outboundAppId,
+            outboundAppScopes,
           },
           conditionInteractionId,
           interactionId,
@@ -1059,7 +1063,8 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper.error(errorText);
     }
 
-    const { status, authInfo, lastAuth, action } = sdkResp.data;
+    const { status, authInfo, lastAuth, action, openInNewTabUrl } =
+      sdkResp.data;
 
     if (action !== RESPONSE_ACTIONS.poll) {
       this.#resetPollingTimeout();
@@ -1073,13 +1078,17 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    if (openInNewTabUrl) {
+      window.open(openInNewTabUrl, '_blank');
+      // we should not return here so the screen will be rendered
+    }
+
     const {
       executionId,
       stepId,
       stepName,
       screen,
       redirect,
-      openInNewTabUrl,
       webauthn,
       error,
       samlIdpResponse,
@@ -1122,7 +1131,6 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       action,
       redirectTo: redirect?.url,
-      openInNewTabUrl,
       screenId: screen?.id,
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
@@ -1237,14 +1245,8 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const {
-      htmlFilename,
-      htmlLocaleFilename,
-      direction,
-      next,
-      screenState,
-      openInNewTabUrl,
-    } = currentState;
+    const { htmlFilename, htmlLocaleFilename, direction, next, screenState } =
+      currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
@@ -1333,13 +1335,6 @@ class DescopeWc extends BaseDescopeWc {
       if (loader) {
         // Loader component in the screen triggers polling interaction
         next(CUSTOM_INTERACTIONS.polling, {});
-      }
-
-      // open in a new tab should be done after the screen is rendered
-      // because in some cases, the page will have a loader that
-      // should run during the redirect process
-      if (openInNewTabUrl && !prevState.openInNewTabUrl) {
-        window.open(openInNewTabUrl, '_blank');
       }
     };
 

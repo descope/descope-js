@@ -258,6 +258,20 @@ class BaseDescopeWc extends BaseClass {
     return extractNestedAttribute(this.formConfig, 'value');
   }
 
+  get outboundAppId() {
+    return this.getAttribute('outbound-app-id');
+  }
+
+  get outboundAppScopes() {
+    try {
+      const scopes = JSON.parse(this.getAttribute('outbound-app-scopes'));
+      if (!scopes) return null;
+      return scopes;
+    } catch (err) {
+      return null;
+    }
+  }
+
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
@@ -276,6 +290,8 @@ class BaseDescopeWc extends BaseClass {
       'validate-on-blur',
       'style-id',
       'nonce',
+      'outbound-app-id',
+      'outbound-app-scopes',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
