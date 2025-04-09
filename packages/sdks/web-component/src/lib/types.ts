@@ -129,6 +129,7 @@ export type StepState = {
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
+  action?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<
@@ -139,6 +140,7 @@ export type CustomScreenState = Omit<
     text: ScreenState['errorText'];
     type: ScreenState['errorType'];
   };
+  action?: string;
 };
 
 export type DebugState = {
