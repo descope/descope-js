@@ -53,7 +53,7 @@ jobs:
         id: 'check'
         run: |
           # Check if the affected projects include "react-sdk" or "web-component" since the last commit
-          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep "react-sdk\|web-component"); then
+          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep "react-sdk\|web-component\|web-js-sdk"); then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
@@ -61,6 +61,9 @@ jobs:
         env:
           CI: true
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+      - name: Build
+        if: steps.check.outputs.run == 'true'
+        run: pnpm run build
       - name: Set Next Version
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
