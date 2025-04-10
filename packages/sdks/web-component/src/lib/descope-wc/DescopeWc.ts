@@ -803,6 +803,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      action,
     };
 
     const lastAuth = getLastAuth(loginId);

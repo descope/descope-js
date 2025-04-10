@@ -5565,6 +5565,7 @@ describe('web-component', () => {
               text: 'errorText',
               type: 'errorType',
             },
+            action: 'screen',
           },
           expect.any(Function),
           expect.any(HTMLElement),
