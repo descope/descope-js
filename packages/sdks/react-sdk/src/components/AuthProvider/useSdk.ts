@@ -9,8 +9,10 @@ type Config = Pick<
   | 'persistTokens'
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
+  | 'oidcConfig'
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
+  | 'getExternalToken'
 >;
 
 export default ({
@@ -19,8 +21,10 @@ export default ({
   persistTokens,
   sessionTokenViaCookie,
   refreshCookieName,
+  oidcConfig,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
+  getExternalToken,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
     if (!projectId) {
@@ -33,8 +37,10 @@ export default ({
       baseHeaders,
       persistTokens,
       refreshCookieName,
+      oidcConfig,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       autoRefresh: true,
+      getExternalToken,
     });
-  }, [projectId, baseUrl, sessionTokenViaCookie]);
+  }, [projectId, baseUrl, sessionTokenViaCookie, getExternalToken]);

@@ -6,6 +6,8 @@ const search: (
 ) => Promise<Audit[]> = async ({ text, sort }) =>
   new Promise((resolve) => {
     const audits: Audit[] = [];
+    const timeMock = new Date().getTime() / 1000 + 60 * 60 * 24 * 30;
+    const timeMockFormatted = new Date(timeMock).toLocaleString();
     for (let i = 1; i < 9; i += 1) {
       audits.push({
         id: `Audit ${i}`,
@@ -18,7 +20,8 @@ const search: (
         geo: `Geo ${i}`,
         remoteAddress: `127.0.0.${i}`,
         externalIds: [`Login ID ${i}`],
-        occurred: new Date().getTime(),
+        occurred: timeMock,
+        occurredFormatted: timeMockFormatted,
       });
     }
 

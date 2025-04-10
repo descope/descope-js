@@ -45,6 +45,7 @@ export type User = {
   editable: boolean;
   customAttributes: CustomAttributes;
   createdTime: number;
+  createdTimeFormatted?: string;
   TOTP: boolean;
   SAML: boolean;
   // OAuth: {},

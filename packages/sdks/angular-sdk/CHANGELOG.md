@@ -2,6 +2,132 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.11](https://github.com/descope/descope-js/compare/angular-sdk-0.14.10...angular-sdk-0.14.11) (2025-04-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.15`
+* `audit-management-widget` updated to version `0.4.15`
+* `role-management-widget` updated to version `0.3.16`
+* `user-management-widget` updated to version `0.7.15`
+* `user-profile-widget` updated to version `0.4.16`
+* `applications-portal-widget` updated to version `0.3.15`
+* `web-component` updated to version `3.41.1`
+* `web-js-sdk` updated to version `1.31.1`
+* `core-js-sdk` updated to version `2.43.0`
+## [0.14.10](https://github.com/descope/descope-js/compare/angular-sdk-0.14.9...angular-sdk-0.14.10) (2025-04-09)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.14`
+* `audit-management-widget` updated to version `0.4.14`
+* `role-management-widget` updated to version `0.3.15`
+* `user-management-widget` updated to version `0.7.14`
+* `user-profile-widget` updated to version `0.4.15`
+* `applications-portal-widget` updated to version `0.3.14`
+* `web-component` updated to version `3.41.0`
+* `web-js-sdk` updated to version `1.31.0`
+* `core-js-sdk` updated to version `2.42.0`
+
+### Bug Fixes
+
+* issue 10142 RELEASE ([#1081](https://github.com/descope/descope-js/issues/1081)) ([5e89555](https://github.com/descope/descope-js/commit/5e89555de33041f030708b2bdba2cac6fbb622ff))
+
+## [0.14.9](https://github.com/descope/descope-js/compare/angular-sdk-0.14.8...angular-sdk-0.14.9) (2025-04-07)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.14`
+* `web-component` updated to version `3.40.9`
+## [0.14.8](https://github.com/descope/descope-js/compare/angular-sdk-0.14.7...angular-sdk-0.14.8) (2025-04-02)
+
+### Dependency Updates
+
+* `role-management-widget` updated to version `0.3.14`
+## [0.14.7](https://github.com/descope/descope-js/compare/angular-sdk-0.14.6...angular-sdk-0.14.7) (2025-04-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.13`
+* `audit-management-widget` updated to version `0.4.13`
+* `role-management-widget` updated to version `0.3.13`
+* `user-management-widget` updated to version `0.7.13`
+* `user-profile-widget` updated to version `0.4.13`
+* `applications-portal-widget` updated to version `0.3.13`
+* `web-component` updated to version `3.40.8`
+* `web-js-sdk` updated to version `1.30.0`
+* `core-js-sdk` updated to version `2.41.0`
+## [0.14.6](https://github.com/descope/descope-js/compare/angular-sdk-0.14.5...angular-sdk-0.14.6) (2025-04-02)
+
+
+### Bug Fixes
+
+* user profile handle logout ([#1075](https://github.com/descope/descope-js/issues/1075)) RELEASE ([d195f21](https://github.com/descope/descope-js/commit/d195f21bc4afe5793d59cdb49ffb902c94af1f6c))
+
+## [0.14.5](https://github.com/descope/descope-js/compare/angular-sdk-0.14.4...angular-sdk-0.14.5) (2025-04-01)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.12`
+## [0.14.4](https://github.com/descope/descope-js/compare/angular-sdk-0.14.3...angular-sdk-0.14.4) (2025-03-30)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.12`
+* `audit-management-widget` updated to version `0.4.12`
+* `role-management-widget` updated to version `0.3.12`
+* `user-management-widget` updated to version `0.7.12`
+* `user-profile-widget` updated to version `0.4.11`
+* `applications-portal-widget` updated to version `0.3.12`
+* `web-component` updated to version `3.40.7`
+* `web-js-sdk` updated to version `1.29.1`
+## [0.14.3](https://github.com/descope/descope-js/compare/angular-sdk-0.14.2...angular-sdk-0.14.3) (2025-03-29)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.10`
+* `web-component` updated to version `3.40.6`
+## [0.14.2](https://github.com/descope/descope-js/compare/angular-sdk-0.14.1...angular-sdk-0.14.2) (2025-03-28)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.9`
+* `web-component` updated to version `3.40.5`
+## [0.14.1](https://github.com/descope/descope-js/compare/angular-sdk-0.14.0...angular-sdk-0.14.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* fix oidc client TS issue ([#1068](https://github.com/descope/descope-js/issues/1068)) RELEASE ([6f4f786](https://github.com/descope/descope-js/commit/6f4f78655456e4478fb0b44ec4179706cd5aa4cd))
+
+## [0.14.0](https://github.com/descope/descope-js/compare/angular-sdk-0.13.6...angular-sdk-0.14.0) (2025-03-27)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.11`
+* `audit-management-widget` updated to version `0.4.11`
+* `role-management-widget` updated to version `0.3.11`
+* `user-management-widget` updated to version `0.7.11`
+* `user-profile-widget` updated to version `0.4.8`
+* `applications-portal-widget` updated to version `0.3.11`
+* `web-component` updated to version `3.40.4`
+* `web-js-sdk` updated to version `1.29.0`
+
+### Features
+
+* OIDC client ([#1055](https://github.com/descope/descope-js/issues/1055)) ([70a5c48](https://github.com/descope/descope-js/commit/70a5c48c184fb89ac825667e3a87da0362a6d531))
+
+## [0.13.6](https://github.com/descope/descope-js/compare/angular-sdk-0.13.5...angular-sdk-0.13.6) (2025-03-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.10`
+* `audit-management-widget` updated to version `0.4.10`
+* `role-management-widget` updated to version `0.3.10`
+* `user-management-widget` updated to version `0.7.10`
+* `user-profile-widget` updated to version `0.4.7`
+* `applications-portal-widget` updated to version `0.3.10`
+* `web-component` updated to version `3.40.3`
 ## [0.13.5](https://github.com/descope/descope-js/compare/angular-sdk-0.13.4...angular-sdk-0.13.5) (2025-03-21)
 
 ### Dependency Updates

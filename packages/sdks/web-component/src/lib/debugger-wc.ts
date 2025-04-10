@@ -33,6 +33,7 @@ const icon = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns=
 
 const style = `
   .debugger {
+    all: initial;
     width: ${INITIAL_WIDTH}px;
     height: ${INITIAL_HEIGHT}px;
     background-color: #FAFAFA;

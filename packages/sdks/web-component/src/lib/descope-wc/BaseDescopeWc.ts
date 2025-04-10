@@ -140,7 +140,6 @@ class BaseDescopeWc extends BaseClass {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(`
     :host {
-      all: initial;
 			width: 100%;
       display: block;
 		}
@@ -152,7 +151,8 @@ class BaseDescopeWc extends BaseClass {
 		}
 
     #content-root {
-      transition: opacity 300ms ease-in-out;
+      all: initial;
+      transition: opacity 200ms ease-in-out;
     }
 
 		#root[data-theme] {
@@ -160,7 +160,7 @@ class BaseDescopeWc extends BaseClass {
 		}
 
 		.fade-out {
-			opacity: 0.1;
+			opacity: 0.1!important;
 		}
 
     .hidden {
@@ -258,6 +258,20 @@ class BaseDescopeWc extends BaseClass {
     return extractNestedAttribute(this.formConfig, 'value');
   }
 
+  get outboundAppId() {
+    return this.getAttribute('outbound-app-id');
+  }
+
+  get outboundAppScopes() {
+    try {
+      const scopes = JSON.parse(this.getAttribute('outbound-app-scopes'));
+      if (!scopes) return null;
+      return scopes;
+    } catch (err) {
+      return null;
+    }
+  }
+
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
@@ -276,6 +290,8 @@ class BaseDescopeWc extends BaseClass {
       'validate-on-blur',
       'style-id',
       'nonce',
+      'outbound-app-id',
+      'outbound-app-scopes',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {

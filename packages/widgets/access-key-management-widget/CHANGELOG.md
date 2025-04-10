@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.15](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.14...access-key-management-widget-0.4.15) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
+## [0.4.14](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.13...access-key-management-widget-0.4.14) (2025-04-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.0`
+## [0.4.13](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.12...access-key-management-widget-0.4.13) (2025-04-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.30.0`
+## [0.4.12](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.11...access-key-management-widget-0.4.12) (2025-03-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.1`
+## [0.4.11](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.10...access-key-management-widget-0.4.11) (2025-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.0`
+## [0.4.10](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.9...access-key-management-widget-0.4.10) (2025-03-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.3`
+
+### Bug Fixes
+
+* Add formatted time to widget mocks RELEASE ([#1066](https://github.com/descope/descope-js/issues/1066)) ([739ac9e](https://github.com/descope/descope-js/commit/739ac9e821a3e2ead082782c91922817ab38c567))
+
 ## [0.4.9](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.8...access-key-management-widget-0.4.9) (2025-03-21)
 
 ### Dependency Updates

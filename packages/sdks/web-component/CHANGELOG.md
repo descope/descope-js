@@ -2,6 +2,72 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.41.1](https://github.com/descope/descope-js/compare/web-component-3.41.0...web-component-3.41.1) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
+
+### Bug Fixes
+
+* add action to byos context RELEASE ([#1082](https://github.com/descope/descope-js/issues/1082)) ([2d342e6](https://github.com/descope/descope-js/commit/2d342e6a2dd1d08cceaafe5de0fd6644ed544d01))
+
+## [3.41.0](https://github.com/descope/descope-js/compare/web-component-3.40.9...web-component-3.41.0) (2025-04-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.0`
+
+### Features
+
+* add support in outbound apps ([#1078](https://github.com/descope/descope-js/issues/1078)) ([35f9623](https://github.com/descope/descope-js/commit/35f96237e192e6c302dbccf8b8826c506baf7abf))
+
+## [3.40.9](https://github.com/descope/descope-js/compare/web-component-3.40.8...web-component-3.40.9) (2025-04-07)
+
+
+### Bug Fixes
+
+* open in new tab RELEASE ([#1079](https://github.com/descope/descope-js/issues/1079)) ([65073a8](https://github.com/descope/descope-js/commit/65073a844ee180a3fc83aa66173bc67154101780))
+
+## [3.40.8](https://github.com/descope/descope-js/compare/web-component-3.40.7...web-component-3.40.8) (2025-04-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.30.0`
+## [3.40.7](https://github.com/descope/descope-js/compare/web-component-3.40.6...web-component-3.40.7) (2025-03-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.1`
+## [3.40.6](https://github.com/descope/descope-js/compare/web-component-3.40.5...web-component-3.40.6) (2025-03-29)
+
+
+### Bug Fixes
+
+* transition RELEASE ([#1071](https://github.com/descope/descope-js/issues/1071)) ([bbc386e](https://github.com/descope/descope-js/commit/bbc386e6d5214901e5d2f690317ae02392cf994a))
+
+## [3.40.5](https://github.com/descope/descope-js/compare/web-component-3.40.4...web-component-3.40.5) (2025-03-28)
+
+
+### Bug Fixes
+
+* flow page transition RELEASE ([#1069](https://github.com/descope/descope-js/issues/1069)) ([72d0576](https://github.com/descope/descope-js/commit/72d0576e1378b3259910189c24a99ef17848fc40))
+
+## [3.40.4](https://github.com/descope/descope-js/compare/web-component-3.40.3...web-component-3.40.4) (2025-03-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.0`
+## [3.40.3](https://github.com/descope/descope-js/compare/web-component-3.40.2...web-component-3.40.3) (2025-03-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.11.3`
+
+### Bug Fixes
+
+* reset external style to work with BYOS ([#1064](https://github.com/descope/descope-js/issues/1064)) ([c8e16a3](https://github.com/descope/descope-js/commit/c8e16a342641977d4a47332abf1c4b838a22a598))
+
 ## [3.40.2](https://github.com/descope/descope-js/compare/web-component-3.40.1...web-component-3.40.2) (2025-03-21)
 
 ### Dependency Updates

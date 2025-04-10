@@ -51,7 +51,6 @@ import {
   ClientScript,
   ComponentsConfig,
   CustomScreenState,
-  Direction,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
@@ -433,11 +432,12 @@ class DescopeWc extends BaseDescopeWc {
       ),
     );
 
+    const isFirstScreen = !this.stepState.current.htmlFilename;
+    this.#toggleScreenVisibility(isCustomScreen);
     if (isCustomScreen) {
       this.loggerWrapper.debug('Rendering a custom screen');
-      this.contentRootElement.innerHTML = '';
       this.#dispatchPageEvents({
-        isFirstScreen: !this.stepState.current.htmlFilename,
+        isFirstScreen,
         stepName: stepStateUpdate.stepName,
       });
 
@@ -451,7 +451,6 @@ class DescopeWc extends BaseDescopeWc {
       });
     }
     this.stepState.forceUpdate = isCustomScreen;
-    this.#toggleScreenVisibility(isCustomScreen);
   }
 
   async onFlowChange(
@@ -469,7 +468,6 @@ class DescopeWc extends BaseDescopeWc {
       screenId,
       screenState,
       redirectTo,
-      openInNewTabUrl,
       redirectUrl,
       token,
       code,
@@ -494,6 +492,8 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
+    const outboundAppId = this.outboundAppId;
+    const outboundAppScopes = this.outboundAppScopes;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
@@ -580,6 +580,8 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             locale: getUserLocale(locale).locale,
             nativeOptions,
+            outboundAppId,
+            outboundAppScopes,
           },
           conditionInteractionId,
           '',
@@ -801,7 +803,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
-      openInNewTabUrl,
+      action,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -824,6 +826,8 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             locale: getUserLocale(locale).locale,
             nativeOptions,
+            outboundAppId,
+            outboundAppScopes,
           },
           conditionInteractionId,
           interactionId,
@@ -873,9 +877,35 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
-    this.contentRootElement.classList.toggle('hidden', isCustomScreen);
-    this.slotElement.classList.toggle('hidden', !isCustomScreen);
+    const toggleVisibility = () => {
+      this.contentRootElement.classList.toggle('hidden', isCustomScreen);
+      this.slotElement.classList.toggle('hidden', !isCustomScreen);
+      if (isCustomScreen) {
+        this.contentRootElement.innerHTML = '';
+      }
+    };
+
+    if (isCustomScreen && this.contentRootElement.hasChildNodes()) {
+      this.#handlePageSwitchTransition(toggleVisibility);
+    } else {
+      toggleVisibility();
+    }
   };
+
+  #handlePageSwitchTransition(onTransitionEnd: () => void) {
+    const transitionEndHandler = () => {
+      this.loggerWrapper.debug('page switch transition end');
+      this.contentRootElement.classList.remove('fade-out');
+      onTransitionEnd();
+    };
+    this.contentRootElement.addEventListener(
+      'transitionend',
+      transitionEndHandler,
+      { once: true },
+    );
+    this.loggerWrapper.debug('page switch transition start');
+    this.contentRootElement.classList.add('fade-out');
+  }
 
   #handlePollingResponse = (
     executionId: string,
@@ -1029,7 +1059,8 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper.error(errorText);
     }
 
-    const { status, authInfo, lastAuth, action } = sdkResp.data;
+    const { status, authInfo, lastAuth, action, openInNewTabUrl } =
+      sdkResp.data;
 
     if (action !== RESPONSE_ACTIONS.poll) {
       this.#resetPollingTimeout();
@@ -1043,13 +1074,17 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    if (openInNewTabUrl) {
+      window.open(openInNewTabUrl, '_blank');
+      // we should not return here so the screen will be rendered
+    }
+
     const {
       executionId,
       stepId,
       stepName,
       screen,
       redirect,
-      openInNewTabUrl,
       webauthn,
       error,
       samlIdpResponse,
@@ -1092,7 +1127,6 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       action,
       redirectTo: redirect?.url,
-      openInNewTabUrl,
       screenId: screen?.id,
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
@@ -1207,14 +1241,8 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const {
-      htmlFilename,
-      htmlLocaleFilename,
-      direction,
-      next,
-      screenState,
-      openInNewTabUrl,
-    } = currentState;
+    const { htmlFilename, htmlLocaleFilename, direction, next, screenState } =
+      currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
@@ -1304,13 +1332,6 @@ class DescopeWc extends BaseDescopeWc {
         // Loader component in the screen triggers polling interaction
         next(CUSTOM_INTERACTIONS.polling, {});
       }
-
-      // open in a new tab should be done after the screen is rendered
-      // because in some cases, the page will have a loader that
-      // should run during the redirect process
-      if (openInNewTabUrl && !prevState.openInNewTabUrl) {
-        window.open(openInNewTabUrl, '_blank');
-      }
     };
 
     // no animation
@@ -1319,7 +1340,7 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
-    this.#handleAnimation(injectNextPage, direction);
+    this.#handlePageSwitchTransition(injectNextPage);
   }
 
   #validateInputs() {
@@ -1549,30 +1570,6 @@ class DescopeWc extends BaseDescopeWc {
           });
         });
     }
-  }
-
-  #handleAnimation(injectNextPage: () => void, direction: Direction) {
-    this.contentRootElement.addEventListener(
-      'transitionend',
-      () => {
-        this.contentRootElement.classList.remove('fade-out');
-        injectNextPage();
-      },
-      { once: true },
-    );
-
-    const transitionClass =
-      direction === Direction.forward ? 'slide-forward' : 'slide-backward';
-
-    Array.from(
-      this.contentRootElement.getElementsByClassName('input-container'),
-    ).forEach((ele, i) => {
-      // eslint-disable-next-line no-param-reassign
-      (ele as HTMLElement).style['transition-delay'] = `${i * 40}ms`;
-      ele.classList.add(transitionClass);
-    });
-
-    this.contentRootElement.classList.add('fade-out');
   }
 
   #dispatch(eventName: string, detail: any) {

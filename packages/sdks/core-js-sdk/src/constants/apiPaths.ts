@@ -44,6 +44,9 @@ export default {
       verifyOneTapIDToken: '/v1/auth/onetap/idtoken/verify',
     },
   },
+  outbound: {
+    connect: '/v1/outbound/oauth/connect',
+  },
   saml: {
     start: '/v1/auth/saml/authorize',
     exchange: '/v1/auth/saml/exchange',

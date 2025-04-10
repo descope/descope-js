@@ -444,6 +444,28 @@ const AppRoot = () => {
 
 Descope stores the last user information in local storage. If you wish to disable this feature, you can pass `storeLastAuthenticatedUser={false}` to the `AuthProvider` component. Please note that some features related to the last authenticated user may not function as expected if this behavior is disabled. Local storage is being cleared when the user logs out, if you want the avoid clearing the local storage, you can pass `keepLastAuthenticatedUserAfterLogout={true}` to the `AuthProvider` component.
 
+### Seamless Session Migration
+
+If you are migrating from an external authentication provider to Descope, you can use the `getExternalToken` prop in the `AuthProvider` component. This function should return a valid token from the external provider. The SDK will then use this token to authenticate the user with Descope.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  return (
+    <AuthProvider
+      projectId="my-project-id"
+      getExternalToken={async () => {
+        // Bring token from external provider (e.g. get access token from another auth provider)
+        return 'my-external-token';
+      }}
+    >
+      <App />
+    </AuthProvider>
+  );
+};
+```
+
 ### Widgets
 
 Widgets are components that allow you to expose management features for tenant-based implementation. In certain scenarios, your customers may require the capability to perform managerial actions independently, alleviating the necessity to contact you. Widgets serve as a feature enabling you to delegate these capabilities to your customers in a modular manner.
@@ -641,19 +663,21 @@ npm i && npm start
 
 See the following table for customization environment variables for the example app:
 
-| Env Variable            | Description                                                                                                   | Default value                    |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| DESCOPE_FLOW_ID         | Which flow ID to use in the login page                                                                        | **sign-up-or-in**                |
-| DESCOPE_BASE_URL        | Custom Descope base URL                                                                                       | None                             |
-| DESCOPE_BASE_STATIC_URL | Allows to override the base URL that is used to fetch static files                                            | https://static.descope.com/pages |
-| DESCOPE_THEME           | Flow theme                                                                                                    | None                             |
-| DESCOPE_LOCALE          | Flow locale                                                                                                   | Browser's locale                 |
-| DESCOPE_REDIRECT_URL    | Flow redirect URL for OAuth/SSO/Magic Link/Enchanted Link                                                     | None                             |
-| DESCOPE_TENANT_ID       | Flow tenant ID for SSO/SAML                                                                                   | None                             |
-| DESCOPE_DEBUG_MODE      | **"true"** - Enable debugger</br>**"false"** - Disable flow debugger                                          | None                             |
-| DESCOPE_STEP_UP_FLOW_ID | Step up flow ID to show to logged in user (via button). e.g. "step-up". Button will be hidden if not provided | None                             |
-| DESCOPE_TELEMETRY_KEY   | **String** - Telemetry public key provided by Descope Inc                                                     | None                             |
-|                         |                                                                                                               |                                  |
+| Env Variable                | Description                                                                                                   | Default value                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| DESCOPE_FLOW_ID             | Which flow ID to use in the login page                                                                        | **sign-up-or-in**                |
+| DESCOPE_BASE_URL            | Custom Descope base URL                                                                                       | None                             |
+| DESCOPE_BASE_STATIC_URL     | Allows to override the base URL that is used to fetch static files                                            | https://static.descope.com/pages |
+| DESCOPE_THEME               | Flow theme                                                                                                    | None                             |
+| DESCOPE_LOCALE              | Flow locale                                                                                                   | Browser's locale                 |
+| DESCOPE_REDIRECT_URL        | Flow redirect URL for OAuth/SSO/Magic Link/Enchanted Link                                                     | None                             |
+| DESCOPE_TENANT_ID           | Flow tenant ID for SSO/SAML                                                                                   | None                             |
+| DESCOPE_DEBUG_MODE          | **"true"** - Enable debugger</br>**"false"** - Disable flow debugger                                          | None                             |
+| DESCOPE_STEP_UP_FLOW_ID     | Step up flow ID to show to logged in user (via button). e.g. "step-up". Button will be hidden if not provided | None                             |
+| DESCOPE_TELEMETRY_KEY       | **String** - Telemetry public key provided by Descope Inc                                                     | None                             |
+|                             |                                                                                                               |                                  |
+| DESCOPE_OIDC_ENABLED        | **"true"** - Use OIDC login                                                                                   | None                             |
+| DESCOPE_OIDC_APPLICATION_ID | Descope OIDC Application ID, In case OIDC login is used                                                       | None                             |
 
 Example for `.env` file template:
 
@@ -711,6 +735,111 @@ const handleUpdateUser = useCallback(() => {
 ## Learn More
 
 To learn more please see the [Descope Documentation and API reference page](https://docs.descope.com/).
+
+## OIDC Login
+
+Descope also supports OIDC login. To enable OIDC login, pass `oidcConfig` prop to the `AuthProvider` component. Example:
+
+### AuthProvider setup with OIDC
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  return (
+    <AuthProvider
+      projectId="my-project-id" // also serves as the client ID
+      oidcConfig={true}
+
+      /* alternatively, you can pass the oidcConfig object
+      oidcConfig={{
+        applicationId: 'my-application-id', // optional, if not provided, the default OIDC application will be used
+          
+        redirectUri: 'https://my-app.com/redirect', // optional, if not provided, the default redirect URI will be used
+        
+        
+        scope: 'openid profile email', // optional, if not provided, default is openid email offline_access roles descope.custom_claims
+      }}
+      */
+    >
+      <App />
+    </AuthProvider>
+  );
+};
+```
+
+### Login
+
+Use the `oidc.loginWithRedirect` method from the `useDescope` hook to trigger the OIDC login. Example:
+
+```js
+const MyComponent = () => {
+  const sdk = useDescope();
+
+  return (
+    // ...
+    <button
+      onClick={() => {
+        sdk.oidc.loginWithRedirect({
+          // By default, the login will redirect the user to the current URL
+          // If you want to redirect the user to a different URL, you can specify it here
+          redirect_uri: window.location.origin,
+        });
+      }}
+    >
+      Login with OIDC
+    </button>
+  );
+};
+```
+
+### Redirect back from OIDC provider
+
+The `AuthProvider` will automatically handle the redirect back from the OIDC provider. The user will be redirected to the `redirect_uri` specified in the `oidc.login` method.
+
+### Logout
+
+You can call `sdk.logout` to logout the user. Example:
+
+```js
+const MyComponent = () => {
+  const sdk = useDescope();
+
+  return (
+    // ...
+    <button
+      onClick={() => {
+        sdk.logout();
+      }}
+    >
+      Logout
+    </button>
+  );
+};
+```
+
+If you want to redirect the user to a different URL after logout, you can use `oidc.logout` method. Example:
+
+```js
+const MyComponent = () => {
+  const sdk = useDescope();
+
+  return (
+    // ...
+    <button
+      onClick={() => {
+        sdk.oidc.logout({
+          // by default, the logout will redirect the user to the current URL
+          // if you want to redirect the user to a different URL, you can specify it here
+          post_logout_redirect_uri: window.location.origin + '/after-logout',
+        });
+      }}
+    >
+      Logout
+    </button>
+  );
+};
+```
 
 ## Contact Us
 

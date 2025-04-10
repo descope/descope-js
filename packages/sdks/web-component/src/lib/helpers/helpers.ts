@@ -679,5 +679,9 @@ export const transformStepStateForCustomScreen = (
     sanitizedState.error = { text: errorText, type: errorType };
   }
 
+  if (state.action) {
+    sanitizedState.action = state.action;
+  }
+
   return sanitizedState;
 };

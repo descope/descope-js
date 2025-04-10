@@ -5,7 +5,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { formMixin, loggerMixin } from '@descope/sdk-mixins';
-import { getIsSingleRolesSelected } from '../../../state/selectors';
+import { getIsSelectedRoleEditable } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initEditRoleModalMixin } from './initEditRoleModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -33,8 +33,8 @@ export const initEditRoleButtonMixin = createSingletonMixin(
       }
 
       #onIsRoleSelectedUpdate = withMemCache(
-        (isSelected: ReturnType<typeof getIsSingleRolesSelected>) => {
-          if (isSelected) {
+        (isEditable: ReturnType<typeof getIsSelectedRoleEditable>) => {
+          if (isEditable) {
             this.editButton.enable();
           } else {
             this.editButton.disable();
@@ -49,7 +49,7 @@ export const initEditRoleButtonMixin = createSingletonMixin(
 
         this.subscribe(
           this.#onIsRoleSelectedUpdate.bind(this),
-          getIsSingleRolesSelected,
+          getIsSelectedRoleEditable,
         );
       }
     },

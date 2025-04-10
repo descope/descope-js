@@ -4,6 +4,7 @@
 import type * as _1 from '@descope/core-js-sdk';
 import { Injectable } from '@angular/core';
 import type { UserResponse } from '@descope/web-js-sdk';
+import type * as _2 from 'oidc-client-ts'; // eslint-disable-line
 import createSdk from '@descope/web-js-sdk';
 import { BehaviorSubject, finalize, Observable, tap } from 'rxjs';
 import { observabilify, Observablefied } from '../utils/helpers';
@@ -19,7 +20,10 @@ export interface DescopeSession {
   sessionToken: string | null;
 }
 
-export type DescopeUser = { user?: UserResponse; isUserLoading: boolean };
+export type DescopeUser = {
+  user?: UserResponse | null;
+  isUserLoading: boolean;
+};
 
 @Injectable({
   providedIn: 'root'
@@ -167,7 +171,7 @@ export class DescopeAuthService {
     return this.sessionSubject.value.isAuthenticated;
   }
 
-  private setSession(sessionToken: string | null) {
+  setSession(sessionToken: string | null) {
     const currentSession = this.sessionSubject.value;
     this.sessionSubject.next({
       ...currentSession,
@@ -175,7 +179,7 @@ export class DescopeAuthService {
     });
   }
 
-  private setIsAuthenticated(isAuthenticated: boolean) {
+  setIsAuthenticated(isAuthenticated: boolean) {
     const currentSession = this.sessionSubject.value;
     this.sessionSubject.next({
       ...currentSession,
@@ -183,7 +187,7 @@ export class DescopeAuthService {
     });
   }
 
-  private setUser(user: UserResponse) {
+  setUser(user: UserResponse | null) {
     const currentUser = this.userSubject.value;
     this.userSubject.next({
       isUserLoading: currentUser.isUserLoading,
