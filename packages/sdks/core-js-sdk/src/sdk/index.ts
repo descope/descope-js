@@ -13,6 +13,7 @@ import {
 } from './helpers';
 import withMagicLink from './magicLink';
 import withOauth from './oauth';
+import withOutbound from './outbound';
 import withOtp from './otp';
 import withSaml from './saml';
 import withTotp from './totp';
@@ -48,6 +49,7 @@ export default (httpClient: HttpClient) => ({
   magicLink: withMagicLink(httpClient),
   enchantedLink: withEnchantedLink(httpClient),
   oauth: withOauth(httpClient),
+  outbound: withOutbound(httpClient),
   saml: withSaml(httpClient),
   totp: withTotp(httpClient),
   notp: withNotp(httpClient),
