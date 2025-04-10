@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.41.1](https://github.com/descope/descope-js/compare/web-component-3.41.0...web-component-3.41.1) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
+
+### Bug Fixes
+
+* add action to byos context RELEASE ([#1082](https://github.com/descope/descope-js/issues/1082)) ([2d342e6](https://github.com/descope/descope-js/commit/2d342e6a2dd1d08cceaafe5de0fd6644ed544d01))
+
 ## [3.41.0](https://github.com/descope/descope-js/compare/web-component-3.40.9...web-component-3.41.0) (2025-04-09)
 
 ### Dependency Updates
