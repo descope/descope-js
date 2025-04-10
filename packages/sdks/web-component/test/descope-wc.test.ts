@@ -5719,7 +5719,7 @@ describe('web-component', () => {
     it('should allow lazy render when window attribute is set (for mobile)', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      window.isDescopeBridge = true;
+      window.descopeBridge = {};
 
       pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
 

@@ -271,7 +271,7 @@ describe('autoRefresh', () => {
     expect(loggerDebugMock).not.toHaveBeenCalled();
   });
 
-  it('should not auto refresh when isDescopeBridge is set on window', async () => {
+  it('should not auto refresh when descopeBridge is set on window', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
     const origWindow = window;
@@ -281,7 +281,7 @@ describe('autoRefresh', () => {
       writable: true,
       configurable: true,
       value: {
-        isDescopeBridge: true,
+        descopeBridge: {},
       },
     });
 
