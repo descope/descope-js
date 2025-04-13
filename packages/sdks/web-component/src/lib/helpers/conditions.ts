@@ -25,12 +25,24 @@ const conditionsMap: ConditionsMap = {
     'less-than-or-equal': (ctx, predicate: number) =>
       (ctx.abTestingKey || 0) <= predicate,
     'in-range': (ctx, predicate: string) => {
-      const [min, max] = predicate?.split(',').map(Number);
-      return (ctx.abTestingKey || 0) >= min && (ctx.abTestingKey || 0) <= max;
+      const [min, max] = predicate
+        ? predicate.split(',').map(Number)
+        : [undefined, undefined];
+      return (
+        (ctx.abTestingKey || 0) >= (min ?? 0) &&
+        (ctx.abTestingKey || 0) <= (max ?? 0)
+      );
     },
     'not-in-range': (ctx, predicate: string) => {
-      const [min, max] = predicate?.split(',').map(Number);
-      if (!min || !max || isNaN(min) || isNaN(max)) {
+      const [min, max] = predicate
+        ? predicate.split(',').map(Number)
+        : [undefined, undefined];
+      if (
+        min === undefined ||
+        max === undefined ||
+        Number.isNaN(min) ||
+        Number.isNaN(max)
+      ) {
         // if no range is provided, return true, this is consistent with Descope server behavior
         return true;
       }
@@ -38,7 +50,7 @@ const conditionsMap: ConditionsMap = {
     },
     'devised-by': (ctx, predicate: string) => {
       const predicateNum = Number(predicate);
-      if (isNaN(predicateNum)) {
+      if (Number.isNaN(predicateNum)) {
         return false;
       }
       return (ctx.abTestingKey || 0) % predicateNum === 0;
