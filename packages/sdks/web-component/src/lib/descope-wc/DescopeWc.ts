@@ -123,7 +123,7 @@ class DescopeWc extends BaseDescopeWc {
 
   // A collection of callbacks that are maintained as part of the web-component state
   // when it's connected to a native bridge.
-  #nativeCallbacks: {
+  nativeCallbacks: {
     // This callback will be initialized once a 'nativeBridge' action is
     // received from a start or next request. It will then be called by
     // nativeResume if appropriate as part of handling some payload types.
@@ -148,8 +148,8 @@ class DescopeWc extends BaseDescopeWc {
   ): Promise<boolean> {
     if (this.nativeOptions?.bridgeVersion >= 2) {
       return new Promise<boolean>((resolve) => {
-        this.#nativeCallbacks.screenNext = next;
-        this.#nativeCallbacks.screenResolve = resolve;
+        this.nativeCallbacks.screenNext = next;
+        this.nativeCallbacks.screenResolve = resolve;
         this.#nativeNotifyBridge('beforeScreen', { screen, context });
       });
     }
@@ -174,7 +174,7 @@ class DescopeWc extends BaseDescopeWc {
         const url = new URL(response.url);
         exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
       }
-      this.#nativeCallbacks.complete?.({
+      this.nativeCallbacks.complete?.({
         exchangeCode,
         idpInitiated: true,
       });
@@ -189,21 +189,21 @@ class DescopeWc extends BaseDescopeWc {
       // update the state along with cancelling out the action to abort the polling mechanism
       this.flowState.update({ token, stepId, action: undefined });
     } else if (type === 'beforeScreen') {
-      const screenResolve = this.#nativeCallbacks.screenResolve;
-      this.#nativeCallbacks.screenResolve = null;
+      const screenResolve = this.nativeCallbacks.screenResolve;
+      this.nativeCallbacks.screenResolve = null;
       const { override } = response;
       if (!override) {
-        this.#nativeCallbacks.screenNext = null;
+        this.nativeCallbacks.screenNext = null;
       }
       screenResolve?.(override);
     } else if (type === 'resumeScreen') {
       const { interactionId, form } = response;
-      const screenNext = this.#nativeCallbacks.screenNext;
-      this.#nativeCallbacks.screenNext = null;
+      const screenNext = this.nativeCallbacks.screenNext;
+      this.nativeCallbacks.screenNext = null;
       screenNext?.(interactionId, form);
     } else {
       // expected: 'oauthNative', 'webauthnCreate', 'webauthnGet', 'failure'
-      this.#nativeCallbacks.complete?.(response);
+      this.nativeCallbacks.complete?.(response);
     }
   }
 
@@ -793,7 +793,7 @@ class DescopeWc extends BaseDescopeWc {
       // prepare a callback with the current flow state, and accept
       // the input to be a JSON, passed down from the native layer.
       // this function will be called as an async response to a 'bridge' event
-      this.#nativeCallbacks.complete = async (input: Record<string, any>) => {
+      this.nativeCallbacks.complete = async (input: Record<string, any>) => {
         const sdkResp = await this.sdk.flow.next(
           executionId,
           stepId,
