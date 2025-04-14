@@ -500,6 +500,7 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper.debug('Showing a custom screen');
       this.#dispatchPageEvents({
         isFirstScreen,
+        isCustomScreen,
         stepName: stepStateUpdate.stepName,
       });
 
@@ -1286,9 +1287,11 @@ class DescopeWc extends BaseDescopeWc {
 
   #dispatchPageEvents({
     isFirstScreen,
+    isCustomScreen,
     stepName,
   }: {
     isFirstScreen: boolean;
+    isCustomScreen: boolean;
     stepName: string;
   }) {
     if (isFirstScreen) {
@@ -1297,7 +1300,10 @@ class DescopeWc extends BaseDescopeWc {
       this.#dispatch('ready', {});
     }
 
-    this.#nativeAfterScreen(stepName);
+    if (!isCustomScreen) {
+      this.#nativeAfterScreen(stepName);
+    }
+
     this.#dispatch('page-updated', { screenName: stepName });
     this.#dispatch('screen-updated', { screenName: stepName });
   }
@@ -1379,6 +1385,7 @@ class DescopeWc extends BaseDescopeWc {
 
         this.#dispatchPageEvents({
           isFirstScreen,
+          isCustomScreen: false,
           stepName: currentState.stepName,
         });
 
