@@ -2388,8 +2388,8 @@ describe('web-component', () => {
 
       const wcEle = document.getElementsByTagName('descope-wc')[0];
 
-      // nativeComplete starts as undefined
-      expect(wcEle.nativeComplete).not.toBeDefined();
+      // nativeCallbacks.complete starts as undefined
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
 
       wcEle.addEventListener('success', onSuccess);
       wcEle.addEventListener('bridge', onBridge);
@@ -2399,9 +2399,12 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
-        timeout: WAIT_TIMEOUT,
-      });
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
 
       await waitFor(
         () =>
@@ -2476,7 +2479,7 @@ describe('web-component', () => {
       const wcEle = document.getElementsByTagName('descope-wc')[0];
 
       // nativeComplete starts as undefined
-      expect(wcEle.nativeComplete).not.toBeDefined();
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
 
       wcEle.addEventListener('success', onSuccess);
       wcEle.addEventListener('bridge', onBridge);
@@ -2486,9 +2489,12 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
-        timeout: WAIT_TIMEOUT,
-      });
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
 
       await waitFor(
         () =>
