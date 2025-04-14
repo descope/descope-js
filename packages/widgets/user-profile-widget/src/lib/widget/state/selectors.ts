@@ -23,3 +23,9 @@ export const getUserCustomAttrs = createSelector(
   getMe,
   (me) => me.customAttributes as Record<string, any>,
 );
+
+export const getUserBuiltinAttrs = createSelector(getMe, (me) => ({
+  givenName: me.givenName,
+  middleName: me.middleName,
+  familyName: me.familyName,
+}));
