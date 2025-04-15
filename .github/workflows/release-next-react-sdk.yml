@@ -60,7 +60,7 @@ jobs:
       - name: Build
         run: pnpm affected:ci --target build
       - name: Bump version
-        run: nx exec --affected --base=$(sh ./tools/scripts/latestTag.sh) -- npm version "${NEXT_VERSION}" --git-tag-version=false
+        run: npx nx exec --affected --base=$(sh ./tools/scripts/latestTag.sh) -- npm version "${NEXT_VERSION}" --git-tag-version=false
       - name: Publish
         run: pnpm publish --access=public --no-git-checks --tag=next
         env:
