@@ -1,9 +1,6 @@
-name: Release - React SDK next
+name: Release next
 
 on:
-  push:
-    branches:
-      - nextForAll
   workflow_run:
     workflows: ['Release']
     branches: [main]
