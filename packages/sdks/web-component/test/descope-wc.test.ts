@@ -2406,8 +2406,8 @@ describe('web-component', () => {
 
       const wcEle = document.getElementsByTagName('descope-wc')[0];
 
-      // nativeComplete starts as undefined
-      expect(wcEle.nativeComplete).not.toBeDefined();
+      // nativeCallbacks.complete starts as undefined
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
 
       wcEle.addEventListener('success', onSuccess);
       wcEle.addEventListener('bridge', onBridge);
@@ -2417,9 +2417,12 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
-        timeout: WAIT_TIMEOUT,
-      });
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
 
       await waitFor(
         () =>
@@ -2494,7 +2497,7 @@ describe('web-component', () => {
       const wcEle = document.getElementsByTagName('descope-wc')[0];
 
       // nativeComplete starts as undefined
-      expect(wcEle.nativeComplete).not.toBeDefined();
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
 
       wcEle.addEventListener('success', onSuccess);
       wcEle.addEventListener('bridge', onBridge);
@@ -2504,9 +2507,12 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
-        timeout: WAIT_TIMEOUT,
-      });
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
 
       await waitFor(
         () =>
@@ -5455,6 +5461,7 @@ describe('web-component', () => {
               text: 'errorText',
               type: 'errorType',
             },
+            action: 'screen',
           },
           expect.any(Function),
           expect.any(HTMLElement),
@@ -5608,7 +5615,7 @@ describe('web-component', () => {
     it('should allow lazy render when window attribute is set (for mobile)', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      window.isDescopeBridge = true;
+      window.descopeBridge = {};
 
       pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
 

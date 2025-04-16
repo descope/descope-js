@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.42.0](https://github.com/descope/descope-js/compare/web-component-3.41.1...web-component-3.42.0) (2025-04-15)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.12.0`
+* `web-js-sdk` updated to version `1.31.2`
+
+### Features
+
+* Add native bridge code for custom screens into web-component ([#1074](https://github.com/descope/descope-js/issues/1074)) ([3b4b53b](https://github.com/descope/descope-js/commit/3b4b53b0233935895cfd3d1a1e920c35828ae38a))
+* more conditions ([#1086](https://github.com/descope/descope-js/issues/1086)) ([9316697](https://github.com/descope/descope-js/commit/9316697b4453a0100f301bbc6c7735da413b7d3e))
+
+## [3.41.1](https://github.com/descope/descope-js/compare/web-component-3.41.0...web-component-3.41.1) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
+
+### Bug Fixes
+
+* add action to byos context RELEASE ([#1082](https://github.com/descope/descope-js/issues/1082)) ([2d342e6](https://github.com/descope/descope-js/commit/2d342e6a2dd1d08cceaafe5de0fd6644ed544d01))
+
 ## [3.41.0](https://github.com/descope/descope-js/compare/web-component-3.40.9...web-component-3.41.0) (2025-04-09)
 
 ### Dependency Updates
