@@ -348,6 +348,8 @@ export type Options = {
   nativeOptions?: NativeOptions;
   thirdPartyAppStateId?: string;
   applicationScopes?: string; // Relevant for sso application and third party application
+  outboundAppId?: string;
+  outboundAppScopes?: string[];
 };
 
 export type ResponseData = Record<string, any>;
@@ -396,4 +398,6 @@ export type UpdateOptions<T extends boolean> = {
   addToLoginIDs?: T;
   onMergeUseExisting?: T extends true ? boolean : never;
   templateOptions?: TemplateOptions;
+  templateId?: string;
+  providerId?: string;
 };

@@ -83,6 +83,8 @@ const defaultOptionsValues = {
   thirdPartyAppId: null,
   thirdPartyAppStateId: null,
   applicationScopes: null,
+  outboundAppId: null,
+  outboundAppScopes: null,
 };
 
 class MockFileReader {
@@ -2007,6 +2009,40 @@ describe('web-component', () => {
     );
   });
 
+  it('should call start with outbound attributes when provided', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    configContent = {
+      ...configContent,
+      flows: {
+        'sign-in': { version: 1 },
+      },
+    };
+    pageContent = '<div>hey</div>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" outbound-app-id="app-id" outbound-app-scopes='["scope1", "scope2"]'></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: 20000,
+    });
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.objectContaining({
+          outboundAppId: 'app-id',
+          outboundAppScopes: ['scope1', 'scope2'],
+        }),
+        undefined,
+        '',
+        '1.2.3',
+        {
+          'sign-in': 1,
+        },
+        {},
+      ),
+    );
+  });
+
   it('should call start with refresh cookie name when provided', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     configContent = {
@@ -2352,8 +2388,8 @@ describe('web-component', () => {
 
       const wcEle = document.getElementsByTagName('descope-wc')[0];
 
-      // nativeComplete starts as undefined
-      expect(wcEle.nativeComplete).not.toBeDefined();
+      // nativeCallbacks.complete starts as undefined
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
 
       wcEle.addEventListener('success', onSuccess);
       wcEle.addEventListener('bridge', onBridge);
@@ -2363,9 +2399,12 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
-        timeout: WAIT_TIMEOUT,
-      });
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
 
       await waitFor(
         () =>
@@ -2440,7 +2479,7 @@ describe('web-component', () => {
       const wcEle = document.getElementsByTagName('descope-wc')[0];
 
       // nativeComplete starts as undefined
-      expect(wcEle.nativeComplete).not.toBeDefined();
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
 
       wcEle.addEventListener('success', onSuccess);
       wcEle.addEventListener('bridge', onBridge);
@@ -2450,9 +2489,12 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      await waitFor(() => expect(wcEle.nativeComplete).toBeDefined(), {
-        timeout: WAIT_TIMEOUT,
-      });
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
 
       await waitFor(
         () =>
@@ -5529,6 +5571,7 @@ describe('web-component', () => {
               text: 'errorText',
               type: 'errorType',
             },
+            action: 'screen',
           },
           expect.any(Function),
           expect.any(HTMLElement),
@@ -5682,7 +5725,7 @@ describe('web-component', () => {
     it('should allow lazy render when window attribute is set (for mobile)', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
-      window.isDescopeBridge = true;
+      window.descopeBridge = {};
 
       pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
 

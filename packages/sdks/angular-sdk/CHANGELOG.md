@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.12](https://github.com/descope/descope-js/compare/angular-sdk-0.14.11...angular-sdk-0.14.12) (2025-04-15)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.16`
+* `audit-management-widget` updated to version `0.4.16`
+* `role-management-widget` updated to version `0.3.17`
+* `user-management-widget` updated to version `0.7.16`
+* `user-profile-widget` updated to version `0.4.17`
+* `applications-portal-widget` updated to version `0.3.16`
+* `web-component` updated to version `3.42.0`
+* `web-js-sdk` updated to version `1.31.2`
+## [0.14.11](https://github.com/descope/descope-js/compare/angular-sdk-0.14.10...angular-sdk-0.14.11) (2025-04-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.15`
+* `audit-management-widget` updated to version `0.4.15`
+* `role-management-widget` updated to version `0.3.16`
+* `user-management-widget` updated to version `0.7.15`
+* `user-profile-widget` updated to version `0.4.16`
+* `applications-portal-widget` updated to version `0.3.15`
+* `web-component` updated to version `3.41.1`
+* `web-js-sdk` updated to version `1.31.1`
+* `core-js-sdk` updated to version `2.43.0`
+## [0.14.10](https://github.com/descope/descope-js/compare/angular-sdk-0.14.9...angular-sdk-0.14.10) (2025-04-09)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.14`
+* `audit-management-widget` updated to version `0.4.14`
+* `role-management-widget` updated to version `0.3.15`
+* `user-management-widget` updated to version `0.7.14`
+* `user-profile-widget` updated to version `0.4.15`
+* `applications-portal-widget` updated to version `0.3.14`
+* `web-component` updated to version `3.41.0`
+* `web-js-sdk` updated to version `1.31.0`
+* `core-js-sdk` updated to version `2.42.0`
+
+### Bug Fixes
+
+* issue 10142 RELEASE ([#1081](https://github.com/descope/descope-js/issues/1081)) ([5e89555](https://github.com/descope/descope-js/commit/5e89555de33041f030708b2bdba2cac6fbb622ff))
+
 ## [0.14.9](https://github.com/descope/descope-js/compare/angular-sdk-0.14.8...angular-sdk-0.14.9) (2025-04-07)
 
 ### Dependency Updates

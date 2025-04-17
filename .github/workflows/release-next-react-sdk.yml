@@ -1,4 +1,4 @@
-name: Release - React SDK next
+name: Release next
 
 on:
   workflow_run:
@@ -69,11 +69,12 @@ jobs:
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
           CURRENT_DATE=$(date +'%Y%m%d')
           echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
-      - name: Run pnpm publish
-        if: steps.check.outputs.run == 'true'
-        run: |
-          pnpm --filter "@descope/react-sdk" exec npm version "${NEXT_VERSION}" --git-tag-version=false
-          pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
+      - name: Build
+        run: pnpm affected:ci --target build
+      - name: Bump version
+        run: npx nx exec --affected --base=$(sh ./tools/scripts/latestTag.sh) -- npm version "${NEXT_VERSION}" --git-tag-version=false
+      - name: Publish
+        run: pnpm -r publish --access=public --no-git-checks --tag=next
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}

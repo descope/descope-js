@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.3...sdk-mixins-0.12.0) (2025-04-15)
+
+
+### Features
+
+* more conditions ([#1086](https://github.com/descope/descope-js/issues/1086)) ([9316697](https://github.com/descope/descope-js/commit/9316697b4453a0100f301bbc6c7735da413b7d3e))
+
+
+### Bug Fixes
+
+* retry when fetching resource throwing ([#1087](https://github.com/descope/descope-js/issues/1087)) ([01dd607](https://github.com/descope/descope-js/commit/01dd607335eddcf0bcf5768fd371c8133c994e3c))
+
 ## [0.11.3](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.2...sdk-mixins-0.11.3) (2025-03-26)
 
 
