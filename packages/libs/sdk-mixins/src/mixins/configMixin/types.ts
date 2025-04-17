@@ -16,13 +16,18 @@ type Operator =
   | 'not-equal'
   | 'contains'
   | 'greater-than'
+  | 'greater-than-or-equal'
   | 'less-than'
+  | 'less-than-or-equal'
   | 'empty'
   | 'not-empty'
   | 'is-true'
   | 'is-false'
   | 'in'
-  | 'not-in';
+  | 'not-in'
+  | 'in-range'
+  | 'not-in-range'
+  | 'devised-by';
 
 type Style = {
   dark: ThemeTemplate;

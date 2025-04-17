@@ -129,6 +129,7 @@ export type StepState = {
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
+  action?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<
@@ -139,6 +140,7 @@ export type CustomScreenState = Omit<
     text: ScreenState['errorText'];
     type: ScreenState['errorType'];
   };
+  action?: string;
 };
 
 export type DebugState = {
@@ -180,13 +182,18 @@ type Operator =
   | 'not-equal'
   | 'contains'
   | 'greater-than'
+  | 'greater-than-or-equal'
   | 'less-than'
+  | 'less-than-or-equal'
   | 'empty'
   | 'not-empty'
   | 'is-true'
   | 'is-false'
   | 'in'
-  | 'not-in';
+  | 'not-in'
+  | 'in-range'
+  | 'not-in-range'
+  | 'devised-by';
 
 export interface ClientConditionResult {
   screenId: string;
