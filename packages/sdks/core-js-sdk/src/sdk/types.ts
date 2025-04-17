@@ -398,4 +398,6 @@ export type UpdateOptions<T extends boolean> = {
   addToLoginIDs?: T;
   onMergeUseExisting?: T extends true ? boolean : never;
   templateOptions?: TemplateOptions;
+  templateId?: string;
+  providerId?: string;
 };
