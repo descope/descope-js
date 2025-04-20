@@ -405,6 +405,7 @@ class DescopeWc extends BaseDescopeWc {
           passcodeEle.shadowRoot
             .querySelectorAll('descope-text-field[data-id]')
             .forEach((input: HTMLInputElement) => {
+              // eslint-disable-next-line no-param-reassign
               input.value = '';
             });
         });
