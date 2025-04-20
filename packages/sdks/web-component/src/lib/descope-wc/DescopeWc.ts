@@ -873,7 +873,6 @@ class DescopeWc extends BaseDescopeWc {
         form: {
           ...this.formConfigValues,
           ...screenState?.form,
-          // ...(screenState?.errorText || screenState?.errorType ? {code: ''} : {})
         },
         lastAuth: {
           loginId,
