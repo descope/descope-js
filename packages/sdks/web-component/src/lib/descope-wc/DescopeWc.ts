@@ -378,10 +378,37 @@ class DescopeWc extends BaseDescopeWc {
         ...state
       }) => ({ ...state, screenState }),
     );
+
     this.stepState?.subscribe(this.#handleGlobalErrors.bind(this), (state) => ({
       errorText: state?.screenState?.errorText,
       errorType: state?.screenState?.errorType,
     }));
+
+    this.stepState?.subscribe(
+      this.#handlePasscodeCleanup.bind(this),
+      (state) => ({
+        errorText: state?.screenState?.errorText,
+        errorType: state?.screenState?.errorType,
+      }),
+    );
+  }
+
+  // because the screen does not re-render,
+  // in case of an OTP code error, we want to clean the invalid code
+  #handlePasscodeCleanup({ errorText, errorType }) {
+    if (errorType || errorText) {
+      this.contentRootElement
+        .querySelectorAll('descope-passcode[data-auto-submit="true"]')
+        .forEach((passcodeEle: HTMLInputElement) => {
+          // currently we do not have a way to reset the code value
+          // so we are clearing the inputs
+          passcodeEle.shadowRoot
+            .querySelectorAll('descope-text-field[data-id]')
+            .forEach((input: HTMLInputElement) => {
+              input.value = '';
+            });
+        });
+    }
   }
 
   // eslint-disable-next-line no-underscore-dangle
@@ -846,6 +873,7 @@ class DescopeWc extends BaseDescopeWc {
         form: {
           ...this.formConfigValues,
           ...screenState?.form,
+          // ...(screenState?.errorText || screenState?.errorType ? {code: ''} : {})
         },
         lastAuth: {
           loginId,
