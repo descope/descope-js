@@ -61,6 +61,8 @@ jobs:
         run: pnpm run build:ci
       - name: Bump version
         run: pnpm print-affected:ci | xargs -I {} pnpm --filter={} exec npm version "${NEXT_VERSION}" --git-tag-version=false
+      - name: Diff
+        run: git --no-pager diff
       # - name: Publish
       #   run: pnpm -r publish --access=public --no-git-checks --tag=next
       #   env:
