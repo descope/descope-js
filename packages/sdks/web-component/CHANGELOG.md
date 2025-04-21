@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.42.1](https://github.com/descope/descope-js/compare/web-component-3.42.0...web-component-3.42.1) (2025-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.3`
+
+### Bug Fixes
+
+* clear otp code in case it's invalid RELEASE ([#1091](https://github.com/descope/descope-js/issues/1091)) ([54a06cb](https://github.com/descope/descope-js/commit/54a06cb2d2ed9123e9e0ca651a90b59f62dc2f6a))
+
 ## [3.42.0](https://github.com/descope/descope-js/compare/web-component-3.41.1...web-component-3.42.0) (2025-04-15)
 
 ### Dependency Updates
