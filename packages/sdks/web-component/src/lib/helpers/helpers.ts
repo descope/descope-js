@@ -520,10 +520,10 @@ export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
       };
 
       ref.timer = setTimeout(() => {
-        ele.removeEventListener('click', onClick);
+        rootEle.removeEventListener('click', onClick);
         onBlur();
         ref.timer = undefined;
-      }, 100);
+      }, 150);
 
       rootEle.addEventListener('click', onClick, { once: true });
     });
