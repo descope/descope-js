@@ -60,7 +60,7 @@ jobs:
       - name: Build
         run: pnpm run build:ci
       - name: Bump version
-        run: pnpm affected:ci npm version "${NEXT_VERSION}" --git-tag-version=false
+        run: pnpm print-affected:ci | xargs -I {} pnpm --filter={} exec npm version "${NEXT_VERSION}" --git-tag-version=false
       # - name: Publish
       #   run: pnpm -r publish --access=public --no-git-checks --tag=next
       #   env:
