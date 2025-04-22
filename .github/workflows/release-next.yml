@@ -3,7 +3,7 @@ name: Release next
 on:
   workflow_run:
     workflows: ['Release']
-    branches: [main]
+    branches: [main,tom/debug]
     types:
       - completed
 
