@@ -1,11 +1,8 @@
 name: Release next
 
 on:
-  workflow_run:
-    workflows: ['Release']
-    branches: [main,tom/debug]
-    types:
-      - completed
+  push:
+    branches: [tom/debug]
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
