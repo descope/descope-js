@@ -390,6 +390,7 @@ class DescopeWc extends BaseDescopeWc {
         errorText: state?.screenState?.errorText,
         errorType: state?.screenState?.errorType,
       }),
+      { forceUpdate: true },
     );
   }
 
@@ -409,6 +410,7 @@ class DescopeWc extends BaseDescopeWc {
               input.value = '';
             });
         });
+      handleAutoFocus(this.contentRootElement, this.autoFocus, false);
     }
   }
 
