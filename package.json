@@ -13,7 +13,7 @@
     "licenseCheck": "nx affected --target licenseCheck",
     "test": "nx affected --target test",
     "test:e2e": "nx affected  --target test:e2e",
-    "print-affected": "nx print-affected --select=projects",
+    "print-affected": "nx show projects --affected",
     "affected:ci": "nx affected --base=$(sh ./tools/scripts/latestTag.sh)",
     "preversion:ci": "sh ./tools/scripts/latestTag.sh",
     "version:ci": "pnpm affected:ci --target version --noVerify=true --parallel 1",
