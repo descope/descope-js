@@ -410,6 +410,9 @@ class DescopeWc extends BaseDescopeWc {
               input.value = '';
             });
         });
+
+      // this should not be handled here, it's a workaround for focusing the code component on error
+      // maybe it's about time to refactor this sdk
       handleAutoFocus(this.contentRootElement, this.autoFocus, false);
     }
   }
