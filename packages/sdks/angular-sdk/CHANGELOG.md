@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.16](https://github.com/descope/descope-js/compare/angular-sdk-0.14.15...angular-sdk-0.14.16) (2025-04-23)
+
+
+### Bug Fixes
+
+* remove engines declarations ([#1095](https://github.com/descope/descope-js/issues/1095)) RELEASE ([a28fcd6](https://github.com/descope/descope-js/commit/a28fcd65d2f07ad4b801d5ae24a6d8653edbee13))
+
 ## [0.14.15](https://github.com/descope/descope-js/compare/angular-sdk-0.14.14...angular-sdk-0.14.15) (2025-04-22)
 
 ### Dependency Updates
