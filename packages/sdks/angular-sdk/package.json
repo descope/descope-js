@@ -6,10 +6,6 @@
     "@angular/core": ">=16.0.0"
   },
   "license": "MIT",
-  "engines": {
-    "node": "^16.14.0 || >=18.10.0",
-    "npm": ">= 8.1.0"
-  },
   "module": "dist/fesm2022/descope-angular-sdk.mjs",
   "typings": "dist/index.d.ts",
   "exports": {
