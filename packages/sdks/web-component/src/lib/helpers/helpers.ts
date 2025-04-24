@@ -22,6 +22,7 @@ import {
   THIRD_PARTY_APP_ID_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
+  SDK_SCRIPT_RESULTS_KEY,
 } from '../constants';
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
 import {
@@ -717,3 +718,8 @@ export const transformStepStateForCustomScreen = (
 
   return sanitizedState;
 };
+
+export function getScriptResultPath(scriptId: string, resultKey?: string) {
+  const path = resultKey ? `${scriptId}_${resultKey}` : scriptId;
+  return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
+}
