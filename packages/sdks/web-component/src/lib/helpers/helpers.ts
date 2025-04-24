@@ -485,16 +485,48 @@ export const handleAutoFocus = (
 export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
     ele.addEventListener('blur', () => {
-      // reportValidity also focus the element if it's invalid
-      // in order to prevent this we need to override the focus method
-      const origFocus = ele.focus;
-      // eslint-disable-next-line no-param-reassign
-      ele.focus = () => {};
-      ele.reportValidity?.();
-      setTimeout(() => {
+      const onBlur = () => {
+        // reportValidity also focus the element if it's invalid
+        // in order to prevent this we need to override the focus method
+        const origFocus = ele.focus;
         // eslint-disable-next-line no-param-reassign
-        ele.focus = origFocus;
-      });
+        ele.focus = () => {};
+        ele.reportValidity?.();
+        setTimeout(() => {
+          // eslint-disable-next-line no-param-reassign
+          ele.focus = origFocus;
+        });
+      };
+
+      const isInputAlreadyInErrorState = ele.getAttribute('invalid') === 'true';
+
+      if (isInputAlreadyInErrorState || ele.value?.length) {
+        onBlur();
+        return;
+      }
+
+      // If the input is not in an error state, has no value, and a `formnovalidate` button was clicked,
+      // we want to prevent triggering validation.
+      // This handles a case where a required input was focused, and the user then clicked a social login button —
+      // in that case, we don't want the required error message to flash for a split second.
+      const ref = { timer: undefined };
+
+      const onClick = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+
+        if (target.getAttribute('formnovalidate') === 'true') {
+          clearTimeout(ref.timer);
+          ref.timer = undefined;
+        }
+      };
+
+      ref.timer = setTimeout(() => {
+        rootEle.removeEventListener('click', onClick);
+        onBlur();
+        ref.timer = undefined;
+      }, 150);
+
+      rootEle.addEventListener('click', onClick, { once: true });
     });
   });
 };

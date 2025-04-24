@@ -55,9 +55,9 @@ jobs:
           CURRENT_DATE=$(date +'%Y%m%d')
           echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
       - name: Build
-        run: pnpm affected:ci --target build
+        run: pnpm run build:ci
       - name: Bump version
-        run: npx nx exec --affected --base=$(sh ./tools/scripts/latestTag.sh) -- npm version "${NEXT_VERSION}" --git-tag-version=false
+        run: pnpm print-affected:ci | xargs -I {} pnpm --filter={} exec npm version "${NEXT_VERSION}" --git-tag-version=false
       - name: Publish
         run: pnpm -r publish --access=public --no-git-checks --tag=next
         env:

@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.42.3](https://github.com/descope/descope-js/compare/web-component-3.42.2...web-component-3.42.3) (2025-04-22)
+
+
+### Bug Fixes
+
+* issue 10327 RELEASE ([#1094](https://github.com/descope/descope-js/issues/1094)) ([2785319](https://github.com/descope/descope-js/commit/27853190211b58ce7d37990d66d705bb0e0cf8d2))
+
+## [3.42.2](https://github.com/descope/descope-js/compare/web-component-3.42.1...web-component-3.42.2) (2025-04-21)
+
+
+### Bug Fixes
+
+* issue 8002 RELEASE ([#1090](https://github.com/descope/descope-js/issues/1090)) ([ed58444](https://github.com/descope/descope-js/commit/ed58444c08c0433ccdf8dbf95714eebd2b2cc76f))
+
+## [3.42.1](https://github.com/descope/descope-js/compare/web-component-3.42.0...web-component-3.42.1) (2025-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.3`
+
+### Bug Fixes
+
+* clear otp code in case it's invalid RELEASE ([#1091](https://github.com/descope/descope-js/issues/1091)) ([54a06cb](https://github.com/descope/descope-js/commit/54a06cb2d2ed9123e9e0ca651a90b59f62dc2f6a))
+
 ## [3.42.0](https://github.com/descope/descope-js/compare/web-component-3.41.1...web-component-3.42.0) (2025-04-15)
 
 ### Dependency Updates

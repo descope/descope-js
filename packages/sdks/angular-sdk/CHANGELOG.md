@@ -2,6 +2,38 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.16](https://github.com/descope/descope-js/compare/angular-sdk-0.14.15...angular-sdk-0.14.16) (2025-04-23)
+
+
+### Bug Fixes
+
+* remove engines declarations ([#1095](https://github.com/descope/descope-js/issues/1095)) RELEASE ([a28fcd6](https://github.com/descope/descope-js/commit/a28fcd65d2f07ad4b801d5ae24a6d8653edbee13))
+
+## [0.14.15](https://github.com/descope/descope-js/compare/angular-sdk-0.14.14...angular-sdk-0.14.15) (2025-04-22)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.20`
+* `web-component` updated to version `3.42.3`
+## [0.14.14](https://github.com/descope/descope-js/compare/angular-sdk-0.14.13...angular-sdk-0.14.14) (2025-04-21)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.19`
+* `web-component` updated to version `3.42.2`
+## [0.14.13](https://github.com/descope/descope-js/compare/angular-sdk-0.14.12...angular-sdk-0.14.13) (2025-04-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.17`
+* `audit-management-widget` updated to version `0.4.17`
+* `role-management-widget` updated to version `0.3.18`
+* `user-management-widget` updated to version `0.7.17`
+* `user-profile-widget` updated to version `0.4.18`
+* `applications-portal-widget` updated to version `0.3.17`
+* `web-component` updated to version `3.42.1`
+* `web-js-sdk` updated to version `1.31.3`
+* `core-js-sdk` updated to version `2.43.1`
 ## [0.14.12](https://github.com/descope/descope-js/compare/angular-sdk-0.14.11...angular-sdk-0.14.12) (2025-04-15)
 
 ### Dependency Updates

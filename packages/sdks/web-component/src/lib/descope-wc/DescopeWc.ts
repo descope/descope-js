@@ -287,7 +287,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          'latest', // currently using always latest version for the scripts
+          '1.0.4', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
@@ -383,10 +383,43 @@ class DescopeWc extends BaseDescopeWc {
         ...state
       }) => ({ ...state, screenState }),
     );
+
     this.stepState?.subscribe(this.#handleGlobalErrors.bind(this), (state) => ({
       errorText: state?.screenState?.errorText,
       errorType: state?.screenState?.errorType,
     }));
+
+    this.stepState?.subscribe(
+      this.#handlePasscodeCleanup.bind(this),
+      (state) => ({
+        errorText: state?.screenState?.errorText,
+        errorType: state?.screenState?.errorType,
+      }),
+      { forceUpdate: true },
+    );
+  }
+
+  // because the screen does not re-render,
+  // in case of an OTP code error, we want to clean the invalid code
+  #handlePasscodeCleanup({ errorText, errorType }) {
+    if (errorType || errorText) {
+      this.contentRootElement
+        .querySelectorAll('descope-passcode[data-auto-submit="true"]')
+        .forEach((passcodeEle: HTMLInputElement) => {
+          // currently we do not have a way to reset the code value
+          // so we are clearing the inputs
+          passcodeEle.shadowRoot
+            .querySelectorAll('descope-text-field[data-id]')
+            .forEach((input: HTMLInputElement) => {
+              // eslint-disable-next-line no-param-reassign
+              input.value = '';
+            });
+        });
+
+      // this should not be handled here, it's a workaround for focusing the code component on error
+      // maybe it's about time to refactor this sdk
+      handleAutoFocus(this.contentRootElement, this.autoFocus, false);
+    }
   }
 
   // eslint-disable-next-line no-underscore-dangle

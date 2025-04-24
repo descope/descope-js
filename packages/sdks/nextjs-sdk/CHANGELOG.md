@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.16](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.15...nextjs-sdk-0.12.16) (2025-04-23)
+
+
+### Bug Fixes
+
+* remove engines declarations ([#1095](https://github.com/descope/descope-js/issues/1095)) RELEASE ([a28fcd6](https://github.com/descope/descope-js/commit/a28fcd65d2f07ad4b801d5ae24a6d8653edbee13))
+
+## [0.12.15](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.14...nextjs-sdk-0.12.15) (2025-04-22)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.5`
+* `web-component` updated to version `3.42.3`
+## [0.12.14](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.13...nextjs-sdk-0.12.14) (2025-04-21)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.4`
+* `web-component` updated to version `3.42.2`
+## [0.12.13](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.12...nextjs-sdk-0.12.13) (2025-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.3`
+* `react-sdk` updated to version `2.14.3`
+* `core-js-sdk` updated to version `2.43.1`
+* `web-component` updated to version `3.42.1`
 ## [0.12.12](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.11...nextjs-sdk-0.12.12) (2025-04-15)
 
 ### Dependency Updates
