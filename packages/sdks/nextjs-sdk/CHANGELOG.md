@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.16...nextjs-sdk-0.13.0) (2025-04-28)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.6`
+* `web-component` updated to version `3.43.0`
+
+### Features
+
+* change nextjs default cookie to samesite lax ([#1097](https://github.com/descope/descope-js/issues/1097)) RELEASE ([2d537b7](https://github.com/descope/descope-js/commit/2d537b74f92d564c581c48625a2adac84a79277a))
+
 ## [0.12.16](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.15...nextjs-sdk-0.12.16) (2025-04-23)
 
 
