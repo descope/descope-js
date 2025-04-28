@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.12.0...sdk-mixins-0.13.0) (2025-04-28)
+
+
+### Features
+
+* add scripts support ([#1063](https://github.com/descope/descope-js/issues/1063)) ([26df9ba](https://github.com/descope/descope-js/commit/26df9ba977f0b1b74437968d8203eaffd3276878))
+
 ## [0.12.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.11.3...sdk-mixins-0.12.0) (2025-04-15)
 
 
