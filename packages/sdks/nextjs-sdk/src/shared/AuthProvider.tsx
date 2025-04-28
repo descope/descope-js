@@ -12,7 +12,7 @@ Object.assign(baseHeaders, nextBaseHeaders);
 
 const AuthProvider: typeof AuthProviderComp = ({ ...props }) => (
 	// by default we use sessionTokenViaCookie, so middleware will work out of the box
-	<AuthProviderComp sessionTokenViaCookie {...props} />
+	<AuthProviderComp sessionTokenViaCookie={{ sameSite: 'Lax' }} {...props} />
 );
 
 export default AuthProvider;
