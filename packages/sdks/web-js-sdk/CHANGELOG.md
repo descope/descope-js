@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.32.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.4...web-js-sdk-1.32.0) (2025-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.0`
+
+### Features
+
+* Add default project ID header to core ([#1103](https://github.com/descope/descope-js/issues/1103)) RELEASE ([f59033c](https://github.com/descope/descope-js/commit/f59033cbde29c52419e042bec1ff31be42869899))
+
 ## [1.31.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.3...web-js-sdk-1.31.4) (2025-04-29)
 
 ## [1.31.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.2...web-js-sdk-1.31.3) (2025-04-21)
