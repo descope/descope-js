@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.8](https://github.com/descope/descope-js/compare/react-sdk-2.14.7...react-sdk-2.14.8) (2025-04-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.20`
+* `audit-management-widget` updated to version `0.4.20`
+* `role-management-widget` updated to version `0.3.21`
+* `user-management-widget` updated to version `0.7.20`
+* `user-profile-widget` updated to version `0.4.23`
+* `applications-portal-widget` updated to version `0.3.20`
+* `web-component` updated to version `3.43.2`
+* `web-js-sdk` updated to version `1.32.0`
+* `core-js-sdk` updated to version `2.44.0`
+## [2.14.7](https://github.com/descope/descope-js/compare/react-sdk-2.14.6...react-sdk-2.14.7) (2025-04-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.19`
+* `audit-management-widget` updated to version `0.4.19`
+* `role-management-widget` updated to version `0.3.20`
+* `user-management-widget` updated to version `0.7.19`
+* `user-profile-widget` updated to version `0.4.22`
+* `applications-portal-widget` updated to version `0.3.19`
+* `web-component` updated to version `3.43.1`
+* `web-js-sdk` updated to version `1.31.4`
 ## [2.14.6](https://github.com/descope/descope-js/compare/react-sdk-2.14.5...react-sdk-2.14.6) (2025-04-28)
 
 ### Dependency Updates
