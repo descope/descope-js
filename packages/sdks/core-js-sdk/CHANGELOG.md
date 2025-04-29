@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.44.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.43.1...core-js-sdk-2.44.0) (2025-04-29)
+
+
+### Features
+
+* Add default project ID header to core ([#1103](https://github.com/descope/descope-js/issues/1103)) RELEASE ([f59033c](https://github.com/descope/descope-js/commit/f59033cbde29c52419e042bec1ff31be42869899))
+
 ## [2.43.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.43.0...core-js-sdk-2.43.1) (2025-04-21)
 
 ## [2.43.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.42.0...core-js-sdk-2.43.0) (2025-04-10)
