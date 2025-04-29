@@ -19,6 +19,7 @@ root.render(
       }
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
+      baseCdnUrl={process.env.DESCOPE_BASE_CDN_URL}
       refreshCookieName={process.env.DESCOPE_REFRESH_COOKIE_NAME}
     >
       <App />
