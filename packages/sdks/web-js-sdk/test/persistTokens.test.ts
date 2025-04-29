@@ -17,6 +17,7 @@ const descopeHeaders = {
   'x-descope-sdk-name': 'web-js',
   'x-descope-sdk-version': global.BUILD_VERSION,
   'x-descope-sdk-session-id': expect.any(String),
+  'x-descope-project-id': 'pid',
 };
 
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
