@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.9](https://github.com/descope/descope-js/compare/react-sdk-2.14.8...react-sdk-2.14.9) (2025-05-05)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.24`
+* `web-component` updated to version `3.43.3`
+
+### Bug Fixes
+
+* add base cdn url to react sdk ([#1100](https://github.com/descope/descope-js/issues/1100)) ([95705d9](https://github.com/descope/descope-js/commit/95705d9b2fdf889ef8fcf84478221c46ab5e335c))
+
 ## [2.14.8](https://github.com/descope/descope-js/compare/react-sdk-2.14.7...react-sdk-2.14.8) (2025-04-29)
 
 ### Dependency Updates
