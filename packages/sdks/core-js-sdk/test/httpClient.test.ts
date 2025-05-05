@@ -9,15 +9,17 @@ globalThis.fetch = mockFetch;
 
 const afterRequestHook = jest.fn();
 
+const projectId = '456';
 const descopeHeaders = {
   'x-descope-sdk-name': 'core-js',
   'x-descope-sdk-version': globalThis.BUILD_VERSION,
   'x-descope-sdk-session-id': getClientSessionId(),
+  'x-descope-project-id': projectId,
 };
 
 const httpClient = createHttpClient({
   baseUrl: 'http://descope.com',
-  projectId: '456',
+  projectId,
   baseConfig: { baseHeaders: { test: '123' } },
 });
 
@@ -37,7 +39,7 @@ const transformResponse = async (response: ExtendedResponse) => {
 
 const hookedHttpClient = createHttpClient({
   baseUrl: 'http://descope.com',
-  projectId: '456',
+  projectId,
   baseConfig: { baseHeaders: { test: '123' } },
   hooks: {
     beforeRequest: (config) => {
@@ -173,7 +175,7 @@ describe('httpClient', () => {
   it('should use cookiePolicy when provided', () => {
     const httpClient = createHttpClient({
       baseUrl: 'http://descope.com',
-      projectId: '456',
+      projectId,
       baseConfig: { baseHeaders: { test: '123' } },
       cookiePolicy: 'same-origin',
     });
@@ -202,7 +204,7 @@ describe('httpClient', () => {
   it('should omit cookiePolicy when null is provided', () => {
     const httpClient = createHttpClient({
       baseUrl: 'http://descope.com',
-      projectId: '456',
+      projectId,
       baseConfig: { baseHeaders: { test: '123' } },
       cookiePolicy: null,
     });
@@ -249,7 +251,7 @@ describe('httpClient', () => {
   it('should call fetch with project id in bearer token when null is passed as a token', () => {
     const httpClient = createHttpClient({
       baseUrl: 'http://descope.com',
-      projectId: '456',
+      projectId,
     });
 
     httpClient.get('1/2/3', { token: null });
@@ -316,7 +318,7 @@ describe('httpClient', () => {
 
   it('should not throw when not providing config or logger', () => {
     expect(
-      createHttpClient({ baseUrl: 'http://descope.com', projectId: '456' }).get,
+      createHttpClient({ baseUrl: 'http://descope.com', projectId }).get,
     ).not.toThrow();
   });
 
@@ -495,7 +497,7 @@ describe('createFetchLogger', () => {
   it('should allow using baseurl with path', () => {
     const httpClient = createHttpClient({
       baseUrl: 'http://descope.com/auth/ds',
-      projectId: '456',
+      projectId,
     });
 
     httpClient.get('1/2/3', {
