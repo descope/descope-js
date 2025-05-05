@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.4](https://github.com/descope/descope-js/compare/web-component-3.43.3...web-component-3.43.4) (2025-05-05)
+
+
+### Bug Fixes
+
+* RELEASE update scripts version ([#1108](https://github.com/descope/descope-js/issues/1108)) ([6d3a21b](https://github.com/descope/descope-js/commit/6d3a21b4c29f5ad548d66f26e7aaec0d10355ee7))
+
 ## [3.43.3](https://github.com/descope/descope-js/compare/web-component-3.43.2...web-component-3.43.3) (2025-05-05)
 
 
