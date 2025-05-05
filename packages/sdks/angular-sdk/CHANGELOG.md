@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.4](https://github.com/descope/descope-js/compare/angular-sdk-0.15.3...angular-sdk-0.15.4) (2025-05-05)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.4.25`
+* `web-component` updated to version `3.43.4`
 ## [0.15.3](https://github.com/descope/descope-js/compare/angular-sdk-0.15.2...angular-sdk-0.15.3) (2025-05-05)
 
 ### Dependency Updates
