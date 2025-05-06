@@ -137,7 +137,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadComponentsStyle() {
-        const theme = { ...(await this.#themeResource) } as Record<string, any>;
+        const theme = await this.#themeResource;
         if (!theme) return;
 
         const descopeUi = await this.descopeUi;
@@ -206,11 +206,15 @@ export const themeMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        await Promise.all([
-          this.#loadGlobalStyle(),
-          this.#loadComponentsStyle(),
-          this.#onThemeChange(),
-        ]);
+        this.#onThemeChange();
+        try {
+          await Promise.all([
+            this.#loadGlobalStyle(),
+            this.#loadComponentsStyle(),
+          ]);
+        } catch (e) {
+          this.logger.error('Failed to load theme', e);
+        }
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
