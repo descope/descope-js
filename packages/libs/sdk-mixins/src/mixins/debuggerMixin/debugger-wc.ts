@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
-import { State } from '@descope/sdk-helpers';
+import { compose, State } from '@descope/sdk-helpers';
 import {
   addOnResize,
   dragElement,
   limitCoordinateToScreenBoundaries,
 } from './helpers';
 import { DebuggerMessage } from './types';
+import { injectStyleMixin } from '../injectStyleMixin';
 
 const INITIAL_POS_THRESHOLD = 32;
 const INITIAL_WIDTH = 300;
@@ -141,7 +142,9 @@ const style = `
 
 type MessagesState = { messages: DebuggerMessage[] };
 
-class Debugger extends HTMLElement {
+const BaseClass = compose(injectStyleMixin)(HTMLElement);
+
+class Debugger extends BaseClass {
   #messagesState = new State<MessagesState>({ messages: [] });
 
   #rootEle: HTMLDivElement;
@@ -159,13 +162,7 @@ class Debugger extends HTMLElement {
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot?.appendChild(template.content.cloneNode(true));
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(style);
-    this.shadowRoot.adoptedStyleSheets ??= [];
-    this.shadowRoot.adoptedStyleSheets = [
-      ...this.shadowRoot.adoptedStyleSheets,
-      sheet,
-    ];
+    this.injectStyle(style);
 
     this.#rootEle =
       this.shadowRoot!.querySelector<HTMLDivElement>('.debugger')!;
