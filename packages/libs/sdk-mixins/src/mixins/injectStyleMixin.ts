@@ -1,6 +1,5 @@
-import { createSingletonMixin } from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { cspNonceMixin } from './cspNonceMixin';
-import { compose } from 'redux';
 
 // we should mimic the CSSStyleSheet API for the fns we are using
 class CSSStyleSheetMock {
