@@ -1,6 +1,5 @@
-import { createSingletonMixin } from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { injectStyleMixin } from './injectStyleMixin';
-import { compose } from 'redux';
 
 const CONTENT_ROOT_ID = 'content-root';
 const ROOT_ID = 'root';
