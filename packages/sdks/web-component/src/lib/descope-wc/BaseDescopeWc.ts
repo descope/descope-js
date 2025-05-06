@@ -535,11 +535,11 @@ class BaseDescopeWc extends BaseClass {
       }),
     );
 
-    this.#validateAttrs();
-
     await super.init?.();
     this.#debugState.subscribe(this.#handleDebugMode.bind(this));
     this.#debugState.update({ isDebug: this.debug });
+
+    this.#validateAttrs();
 
     if (await this.#getIsFlowsVersionMismatch()) {
       this.loggerWrapper.error(
