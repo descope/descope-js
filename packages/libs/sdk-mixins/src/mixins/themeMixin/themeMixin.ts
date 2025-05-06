@@ -206,9 +206,11 @@ export const themeMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.#loadGlobalStyle();
-        this.#loadComponentsStyle();
-        this.#onThemeChange();
+        await Promise.all([
+          this.#loadGlobalStyle(),
+          this.#loadComponentsStyle(),
+          this.#onThemeChange(),
+        ]);
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
