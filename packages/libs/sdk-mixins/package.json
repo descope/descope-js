@@ -40,6 +40,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/mixins/staticResourcesMixin/index.js"
       }
+    },
+    "./inject-style-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/injectStyleMixin.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/injectStyleMixin.js"
+      }
     }
   },
   "type": "module",

@@ -3,6 +3,7 @@ import { compose } from '@descope/sdk-helpers';
 import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
+import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
@@ -45,6 +46,7 @@ const BaseClass = compose(
   themeMixin,
   staticResourcesMixin,
   formMountMixin,
+  injectStyleMixin,
 )(HTMLElement);
 
 // this base class is responsible for WC initialization
@@ -66,7 +68,6 @@ class BaseDescopeWc extends BaseClass {
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
       'style-id',
-      'nonce',
     ];
   }
 
@@ -137,8 +138,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #loadInitStyle() {
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(`
+    this.injectStyle(`
     :host {
 			width: 100%;
       display: block;
@@ -167,11 +167,6 @@ class BaseDescopeWc extends BaseClass {
       display: none;
     }
     `);
-    this.shadowRoot.adoptedStyleSheets ??= [];
-    this.shadowRoot.adoptedStyleSheets = [
-      ...this.shadowRoot.adoptedStyleSheets,
-      sheet,
-    ];
   }
 
   #initShadowDom() {
@@ -289,7 +284,6 @@ class BaseDescopeWc extends BaseClass {
       'client',
       'validate-on-blur',
       'style-id',
-      'nonce',
       'outbound-app-id',
       'outbound-app-scopes',
     ];
@@ -533,14 +527,6 @@ class BaseDescopeWc extends BaseClass {
 
   static descopeUI: any;
 
-  #handleNonce() {
-    if (this.getAttribute('nonce')) {
-      // the key name "DESCOPE_NONCE" is in use also by the web-components-ui
-      // it's used to set Vaadins style tags nonce
-      (window as any).DESCOPE_NONCE = this.getAttribute('nonce');
-    }
-  }
-
   async init() {
     this.flowStatus = 'loading';
     ['ready', 'error', 'success'].forEach((status: FlowStatus) =>
@@ -549,12 +535,11 @@ class BaseDescopeWc extends BaseClass {
       }),
     );
 
+    this.#validateAttrs();
+
     await super.init?.();
     this.#debugState.subscribe(this.#handleDebugMode.bind(this));
     this.#debugState.update({ isDebug: this.debug });
-
-    this.#validateAttrs();
-    this.#handleNonce();
 
     if (await this.#getIsFlowsVersionMismatch()) {
       this.loggerWrapper.error(
@@ -649,10 +634,6 @@ class BaseDescopeWc extends BaseClass {
       this.#validateAttrs();
 
       const isInitialRun = oldValue === null;
-
-      if (attrName === 'nonce') {
-        this.#handleNonce();
-      }
 
       this.#flowState.update(({ stepId, executionId }) => {
         let newStepId = stepId;
