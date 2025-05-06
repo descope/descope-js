@@ -2,6 +2,35 @@ import { createSingletonMixin } from '@descope/sdk-helpers';
 import { cspNonceMixin } from './cspNonceMixin';
 import { compose } from 'redux';
 
+// we should mimic the CSSStyleSheet API for the fns we are using
+class CSSStyleSheetMock {
+  styleEle: HTMLStyleElement;
+  ref: ShadowRoot | HTMLElement | null;
+  constructor(ref: ShadowRoot, nonce: string, { prepend = false } = {}) {
+    this.styleEle = document.createElement('style');
+    this.styleEle.setAttribute('nonce', nonce);
+    this.ref = ref;
+
+    if (!this.ref) {
+      return;
+    }
+
+    if (prepend) {
+      this.ref.prepend(this.styleEle);
+    } else {
+      this.ref.append(this.styleEle);
+    }
+  }
+
+  replaceSync(cssString: string) {
+    this.styleEle.textContent = cssString;
+  }
+
+  get cssRules() {
+    return this.styleEle.sheet?.cssRules;
+  }
+}
+
 export const injectStyleMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(cspNonceMixin)(superclass);
@@ -37,32 +66,3 @@ export const injectStyleMixin = createSingletonMixin(
     };
   },
 );
-
-// we should mimic the CSSStyleSheet API for the fns we are using
-class CSSStyleSheetMock {
-  styleEle: HTMLStyleElement;
-  ref: ShadowRoot | HTMLElement | null;
-  constructor(ref: ShadowRoot, nonce: string, { prepend = false } = {}) {
-    this.styleEle = document.createElement('style');
-    this.styleEle.setAttribute('nonce', nonce);
-    this.ref = ref;
-
-    if (!this.ref) {
-      return;
-    }
-
-    if (prepend) {
-      this.ref.prepend(this.styleEle);
-    } else {
-      this.ref.append(this.styleEle);
-    }
-  }
-
-  replaceSync(cssString: string) {
-    this.styleEle.textContent = cssString;
-  }
-
-  get cssRules() {
-    return this.styleEle.sheet?.cssRules;
-  }
-}

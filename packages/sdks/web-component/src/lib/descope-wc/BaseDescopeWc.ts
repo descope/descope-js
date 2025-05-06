@@ -3,6 +3,7 @@ import { compose } from '@descope/sdk-helpers';
 import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
+// eslint-disable-next-line import/no-duplicates
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 import createSdk from '@descope/web-js-sdk';
 import {
