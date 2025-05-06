@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.5](https://github.com/descope/descope-js/compare/web-component-3.43.4...web-component-3.43.5) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.1`
+
+### Bug Fixes
+
+* CSSStyleSheet fallback for older browser RELEASE ([#1109](https://github.com/descope/descope-js/issues/1109)) ([c1770da](https://github.com/descope/descope-js/commit/c1770da62f755148bf91a08d9736ec77c342b24c))
+
 ## [3.43.4](https://github.com/descope/descope-js/compare/web-component-3.43.3...web-component-3.43.4) (2025-05-05)
 
 
