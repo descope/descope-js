@@ -266,7 +266,7 @@ describe('debugger', () => {
         expect(
           screen.getByShadowText('error description!'),
         ).toBeInTheDocument(),
-      { timeout: 6000 },
+      { timeout: 3000 },
     );
 
     fireEvent.click(screen.getByShadowText('error description!'));
