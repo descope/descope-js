@@ -110,7 +110,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5557');
+    await page.goto('http://localhost:5557', { waitUntil: 'networkidle' });
   });
 
   test('access keys table', async ({ page }) => {

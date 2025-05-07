@@ -93,7 +93,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5556');
+    await page.goto('http://localhost:5556', { waitUntil: 'networkidle' });
   });
 
   test('roles table', async ({ page }) => {
