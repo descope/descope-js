@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.22](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.21...access-key-management-widget-0.4.22) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.2`
+## [0.4.21](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.20...access-key-management-widget-0.4.21) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.1`
 ## [0.4.20](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.19...access-key-management-widget-0.4.20) (2025-04-29)
 
 ### Dependency Updates

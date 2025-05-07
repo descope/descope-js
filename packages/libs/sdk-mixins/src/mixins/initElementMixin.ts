@@ -1,11 +1,13 @@
-import { createSingletonMixin } from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import { injectStyleMixin } from './injectStyleMixin';
 
 const CONTENT_ROOT_ID = 'content-root';
 const ROOT_ID = 'root';
 
 export const initElementMixin = createSingletonMixin(
-  <T extends CustomElementConstructor>(superclass: T) =>
-    class InitElementMixinClass extends superclass {
+  <T extends CustomElementConstructor>(superclass: T) => {
+    const BaseClass = compose(injectStyleMixin)(superclass);
+    return class InitElementMixinClass extends BaseClass {
       // the content of contentRootElement is being replaced dynamically
       // do not place content which is not dynamic inside
       contentRootElement: HTMLElement;
@@ -21,8 +23,7 @@ export const initElementMixin = createSingletonMixin(
           </div>
           `;
 
-        const sheet = new CSSStyleSheet();
-        sheet.replaceSync(`
+        this.injectStyle(`
             #${ROOT_ID}, #${CONTENT_ROOT_ID} {
               height: 100%;
             }
@@ -32,15 +33,10 @@ export const initElementMixin = createSingletonMixin(
             }
           `);
 
-        this.shadowRoot.adoptedStyleSheets ??= [];
-        this.shadowRoot.adoptedStyleSheets = [
-          ...this.shadowRoot.adoptedStyleSheets,
-          sheet,
-        ];
-
         this.contentRootElement =
           this.shadowRoot?.getElementById(CONTENT_ROOT_ID)!;
         this.rootElement = this.shadowRoot?.getElementById(ROOT_ID)!;
       }
-    },
+    };
+  },
 );
