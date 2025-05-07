@@ -367,6 +367,8 @@ test.describe('widget', () => {
       .locator('input')
       .first();
 
+    await searchInput.waitFor({ state: 'visible' });
+
     // focus search input
     await searchInput.focus();
 
