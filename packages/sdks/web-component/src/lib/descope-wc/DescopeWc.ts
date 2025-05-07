@@ -287,7 +287,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.4', // currently using a fixed version when loading scripts
+          '1.0.6', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
@@ -511,6 +511,8 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
+  #isPrevCustomScreen = false;
+
   async #handleCustomScreen(stepStateUpdate: Partial<StepState>) {
     const { next, stepName, ...state } = {
       ...this.stepState.current,
@@ -534,6 +536,28 @@ class DescopeWc extends BaseDescopeWc {
 
     const isFirstScreen = !this.stepState.current.htmlFilename;
     this.#toggleScreenVisibility(isCustomScreen);
+
+    // if we switched from a custom screen to a regular screen or the other way around
+    if (this.#isPrevCustomScreen !== isCustomScreen) {
+      const [currentMode, prevMode] = ['flow', 'custom'].sort(() =>
+        isCustomScreen ? -1 : 1,
+      );
+      this.loggerWrapper.debug(
+        `Switching from ${prevMode} screen to ${currentMode} screen`,
+      );
+
+      this.#isPrevCustomScreen = isCustomScreen;
+
+      if (isCustomScreen) {
+        // we are unsubscribing all the listeners because we are going to render a custom screen
+        // and we do not want that onStepChange will be called
+        this.stepState.unsubscribeAll();
+      } else {
+        // we are subscribing to the step state again because we are going to render a regular screen
+        this.#subscribeStepState();
+      }
+    }
+
     if (isCustomScreen) {
       this.loggerWrapper.debug('Showing a custom screen');
       this.#dispatchPageEvents({
@@ -541,16 +565,8 @@ class DescopeWc extends BaseDescopeWc {
         isCustomScreen,
         stepName: stepStateUpdate.stepName,
       });
-
-      // we are unsubscribing all the listeners because we are going to render a custom screen
-      // and we do not want that onStepChange will be called
-      this.stepState.unsubscribeAll();
-      const subscribeId = this.stepState.subscribe(() => {
-        // after state was updated, we want to re-subscribe the onStepChange listener
-        this.stepState.unsubscribe(subscribeId);
-        this.#subscribeStepState();
-      });
     }
+
     this.stepState.forceUpdate = isCustomScreen;
   }
 

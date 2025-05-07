@@ -2,6 +2,65 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.7](https://github.com/descope/descope-js/compare/web-component-3.43.6...web-component-3.43.7) (2025-05-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.3`
+
+### Bug Fixes
+
+* issue 10504 RELEASE ([#1110](https://github.com/descope/descope-js/issues/1110)) ([048a20a](https://github.com/descope/descope-js/commit/048a20ae1731e9ae3d06038213ceb4f124b7d64e))
+
+## [3.43.6](https://github.com/descope/descope-js/compare/web-component-3.43.5...web-component-3.43.6) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.2`
+## [3.43.5](https://github.com/descope/descope-js/compare/web-component-3.43.4...web-component-3.43.5) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.1`
+
+### Bug Fixes
+
+* CSSStyleSheet fallback for older browser RELEASE ([#1109](https://github.com/descope/descope-js/issues/1109)) ([c1770da](https://github.com/descope/descope-js/commit/c1770da62f755148bf91a08d9736ec77c342b24c))
+
+## [3.43.4](https://github.com/descope/descope-js/compare/web-component-3.43.3...web-component-3.43.4) (2025-05-05)
+
+
+### Bug Fixes
+
+* RELEASE update scripts version ([#1108](https://github.com/descope/descope-js/issues/1108)) ([6d3a21b](https://github.com/descope/descope-js/commit/6d3a21b4c29f5ad548d66f26e7aaec0d10355ee7))
+
+## [3.43.3](https://github.com/descope/descope-js/compare/web-component-3.43.2...web-component-3.43.3) (2025-05-05)
+
+
+### Bug Fixes
+
+* issue 10441 RELEASE ([#1107](https://github.com/descope/descope-js/issues/1107)) ([ed43e0d](https://github.com/descope/descope-js/commit/ed43e0d939b632f3ddc4e2808ce6f0bd151e94d0))
+
+## [3.43.2](https://github.com/descope/descope-js/compare/web-component-3.43.1...web-component-3.43.2) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.32.0`
+## [3.43.1](https://github.com/descope/descope-js/compare/web-component-3.43.0...web-component-3.43.1) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.4`
+## [3.43.0](https://github.com/descope/descope-js/compare/web-component-3.42.3...web-component-3.43.0) (2025-04-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.0`
+
+### Features
+
+* add scripts support ([#1063](https://github.com/descope/descope-js/issues/1063)) ([26df9ba](https://github.com/descope/descope-js/commit/26df9ba977f0b1b74437968d8203eaffd3276878))
+
 ## [3.42.3](https://github.com/descope/descope-js/compare/web-component-3.42.2...web-component-3.42.3) (2025-04-22)
 
 

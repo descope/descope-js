@@ -2,6 +2,58 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.28](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.27...user-profile-widget-0.4.28) (2025-05-07)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.7`
+* `sdk-mixins` updated to version `0.13.3`
+
+### Bug Fixes
+
+* issue 10504 RELEASE ([#1110](https://github.com/descope/descope-js/issues/1110)) ([048a20a](https://github.com/descope/descope-js/commit/048a20ae1731e9ae3d06038213ceb4f124b7d64e))
+
+## [0.4.27](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.26...user-profile-widget-0.4.27) (2025-05-06)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.6`
+* `sdk-mixins` updated to version `0.13.2`
+## [0.4.26](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.25...user-profile-widget-0.4.26) (2025-05-06)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.5`
+* `sdk-mixins` updated to version `0.13.1`
+## [0.4.25](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.24...user-profile-widget-0.4.25) (2025-05-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.4`
+## [0.4.24](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.23...user-profile-widget-0.4.24) (2025-05-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.3`
+## [0.4.23](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.22...user-profile-widget-0.4.23) (2025-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.0`
+* `web-js-sdk` updated to version `1.32.0`
+* `web-component` updated to version `3.43.2`
+## [0.4.22](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.21...user-profile-widget-0.4.22) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.4`
+* `web-component` updated to version `3.43.1`
+## [0.4.21](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.20...user-profile-widget-0.4.21) (2025-04-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.0`
+* `sdk-mixins` updated to version `0.13.0`
 ## [0.4.20](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.19...user-profile-widget-0.4.20) (2025-04-22)
 
 ### Dependency Updates

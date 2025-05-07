@@ -2,6 +2,64 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.8](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.7...nextjs-sdk-0.13.8) (2025-05-07)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.13`
+* `web-component` updated to version `3.43.7`
+## [0.13.7](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.6...nextjs-sdk-0.13.7) (2025-05-06)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.12`
+* `web-component` updated to version `3.43.6`
+## [0.13.6](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.5...nextjs-sdk-0.13.6) (2025-05-06)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.11`
+* `web-component` updated to version `3.43.5`
+## [0.13.5](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.4...nextjs-sdk-0.13.5) (2025-05-05)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.10`
+* `web-component` updated to version `3.43.4`
+## [0.13.4](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.3...nextjs-sdk-0.13.4) (2025-05-05)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.9`
+* `web-component` updated to version `3.43.3`
+## [0.13.3](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.2...nextjs-sdk-0.13.3) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.32.0`
+* `react-sdk` updated to version `2.14.8`
+* `core-js-sdk` updated to version `2.44.0`
+* `web-component` updated to version `3.43.2`
+## [0.13.2](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.1...nextjs-sdk-0.13.2) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.4`
+* `react-sdk` updated to version `2.14.7`
+* `web-component` updated to version `3.43.1`
+## [0.13.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.0...nextjs-sdk-0.13.1) (2025-04-28)
+
+## [0.13.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.16...nextjs-sdk-0.13.0) (2025-04-28)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.14.6`
+* `web-component` updated to version `3.43.0`
+
+### Features
+
+* change nextjs default cookie to samesite lax ([#1097](https://github.com/descope/descope-js/issues/1097)) RELEASE ([2d537b7](https://github.com/descope/descope-js/commit/2d537b74f92d564c581c48625a2adac84a79277a))
+
 ## [0.12.16](https://github.com/descope/descope-js/compare/nextjs-sdk-0.12.15...nextjs-sdk-0.12.16) (2025-04-23)
 
 
