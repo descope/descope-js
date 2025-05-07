@@ -83,7 +83,7 @@ test.describe('widget', () => {
 
     finishFlowBtn.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     expect(await avatar.getAttribute('img')).toBe(
       'https://example.com/avatar.jpg',
