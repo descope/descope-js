@@ -1,4 +1,3 @@
-import { get } from 'http';
 import {
   FLOW_NONCE_HEADER,
   FLOW_NONCE_PREFIX,
@@ -9,14 +8,16 @@ import {
 import { StorageItem } from './types';
 import { RequestConfig } from '@descope/core-js-sdk';
 
-export const getNonceKeyForExecution = (
+// Helper to create storage key from execution ID
+const getNonceKeyForExecution = (
   executionId: string,
   prefix: string = FLOW_NONCE_PREFIX,
 ): string => {
   return `${prefix}${executionId}`;
 };
 
-export const getFlowNonce = (
+// Get nonce from storage with expiration check
+const getFlowNonce = (
   executionId: string,
   prefix: string = FLOW_NONCE_PREFIX,
 ): string | null => {
@@ -37,12 +38,14 @@ export const getFlowNonce = (
 
     return item.value;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Error getting flow nonce:', e);
     return null;
   }
 };
 
-export const setFlowNonce = (
+// Store nonce with appropriate TTL
+const setFlowNonce = (
   executionId: string,
   nonce: string,
   isStart: boolean,
@@ -60,11 +63,13 @@ export const setFlowNonce = (
 
     localStorage.setItem(key, JSON.stringify(item));
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Error setting flow nonce:', e);
   }
 };
 
-export const removeFlowNonce = (
+// Remove nonce from storage
+const removeFlowNonce = (
   executionId: string,
   prefix: string = FLOW_NONCE_PREFIX,
 ): void => {
@@ -72,16 +77,19 @@ export const removeFlowNonce = (
     const key = getNonceKeyForExecution(executionId, prefix);
     localStorage.removeItem(key);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Error removing flow nonce:', e);
   }
 };
 
-const extractExecId = (executionId: string) => {
+// Extract execution ID from special format
+const extractExecId = (executionId: string): string => {
   const regex = /.*\|#\|(.*)/;
   return regex.exec(executionId)?.[1] || '';
 };
 
-export const extractFlowNonce = async (
+// Extract nonce and execution ID from response
+const extractFlowNonce = async (
   req: RequestConfig,
   response: Response,
 ): Promise<{ nonce: string | null; executionId: string | null }> => {
@@ -105,16 +113,17 @@ export const extractFlowNonce = async (
       executionId = getExecutionIdFromRequest(req);
     }
 
-    return { nonce, executionId: extractExecId(executionId) };
+    return {
+      nonce,
+      executionId: executionId ? extractExecId(executionId) : null,
+    };
   } catch (e) {
-    console.error('Error extracting flow nonce from response:', e);
     return { nonce: null, executionId: null };
   }
 };
 
-export const getExecutionIdFromRequest = (
-  req: RequestConfig,
-): string | null => {
+// Get execution ID from request object
+const getExecutionIdFromRequest = (req: RequestConfig): string | null => {
   if (req.path === FLOW_NEXT_PATH && req.body && req.body.executionId) {
     return extractExecId(req.body.executionId);
   }
@@ -122,9 +131,8 @@ export const getExecutionIdFromRequest = (
   return null;
 };
 
-export const cleanupExpiredNonces = (
-  prefix: string = FLOW_NONCE_PREFIX,
-): void => {
+// Remove expired nonces from storage
+const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -146,6 +154,17 @@ export const cleanupExpiredNonces = (
       }
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Error cleaning up expired nonces:', e);
   }
+};
+
+export {
+  getNonceKeyForExecution,
+  getFlowNonce,
+  setFlowNonce,
+  removeFlowNonce,
+  extractFlowNonce,
+  getExecutionIdFromRequest,
+  cleanupExpiredNonces,
 };

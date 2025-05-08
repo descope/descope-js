@@ -24,7 +24,7 @@ export const withFlowNonce =
   (config: Parameters<T>[0] & FlowNonceOptions): ReturnType<T> => {
     const {
       enableFlowNonce = true,
-      storagePrefix = FLOW_NONCE_PREFIX,
+      nonceStoragePrefix = FLOW_NONCE_PREFIX,
       ...sdkConfig
     } = config;
 
@@ -32,7 +32,7 @@ export const withFlowNonce =
       return createSdk(sdkConfig) as ReturnType<T>;
     }
 
-    cleanupExpiredNonces(storagePrefix);
+    cleanupExpiredNonces(nonceStoragePrefix);
 
     const afterRequest: AfterRequestHook = async (req, res) => {
       if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) {
@@ -42,7 +42,7 @@ export const withFlowNonce =
 
       if (nonce && executionId) {
         const isStart = req.path === FLOW_START_PATH;
-        setFlowNonce(executionId, nonce, isStart, storagePrefix);
+        setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix);
       }
     };
 
@@ -51,7 +51,7 @@ export const withFlowNonce =
         const executionId = getExecutionIdFromRequest(req);
 
         if (executionId) {
-          const nonce = getFlowNonce(executionId, storagePrefix);
+          const nonce = getFlowNonce(executionId, nonceStoragePrefix);
           if (nonce) {
             req.headers = req.headers || {};
             req.headers[FLOW_NONCE_HEADER] = nonce;

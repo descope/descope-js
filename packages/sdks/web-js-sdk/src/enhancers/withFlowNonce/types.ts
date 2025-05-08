@@ -44,5 +44,5 @@ export interface FlowNonceOptions {
    *
    * @default 'descopeFlowNonce'
    */
-  storagePrefix?: string;
+  nonceStoragePrefix?: string;
 }
