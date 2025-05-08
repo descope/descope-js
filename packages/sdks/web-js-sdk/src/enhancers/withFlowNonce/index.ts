@@ -1,13 +1,20 @@
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook, BeforeRequestHook } from '../../types';
 import { addHooks } from '../helpers';
-import { FLOW_NONCE_KEY } from './constants';
 import {
-  extractFlowNonceFromResponse,
+  FLOW_NEXT_PATH,
+  FLOW_NONCE_HEADER,
+  FLOW_NONCE_PREFIX,
+  FLOW_START_PATH,
+} from './constants';
+import {
+  cleanupExpiredNonces,
+  extractFlowNonce,
+  getExecutionIdFromRequest,
   getFlowNonce,
   setFlowNonce,
 } from './helpers';
-import { FlowNonceOptions, StorageInterface } from './types';
+import { FlowNonceOptions } from './types';
 
 /**
  * Adds flow nonce handling to the SDK
@@ -15,40 +22,50 @@ import { FlowNonceOptions, StorageInterface } from './types';
 export const withFlowNonce =
   <T extends CreateWebSdk>(createSdk: T) =>
   (config: Parameters<T>[0] & FlowNonceOptions): ReturnType<T> => {
-    // Extract flow nonce options
     const {
-      storage = localStorage as StorageInterface,
       enableFlowNonce = true,
+      storagePrefix = FLOW_NONCE_PREFIX,
       ...sdkConfig
     } = config;
 
-    // If flow nonce is disabled, just return the regular SDK
     if (!enableFlowNonce) {
       return createSdk(sdkConfig) as ReturnType<T>;
     }
 
-    // After request hook to store the nonce
-    const afterRequest: AfterRequestHook = async (_req, res) => {
-      const nonce = extractFlowNonceFromResponse(res);
-      if (nonce) {
-        setFlowNonce(nonce, storage);
+    cleanupExpiredNonces(storagePrefix);
+
+    const afterRequest: AfterRequestHook = async (req, res) => {
+      if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) {
+        return;
+      }
+      const { nonce, executionId } = await extractFlowNonce(req, res);
+
+      if (nonce && executionId) {
+        const isStart = req.path === FLOW_START_PATH;
+        setFlowNonce(executionId, nonce, isStart, storagePrefix);
       }
     };
 
-    // Before request hook to add the nonce to the request
     const beforeRequest: BeforeRequestHook = (req) => {
-      if (req.path === '/flow/v1/next') {
-        const nonce = getFlowNonce(storage);
-        if (nonce) {
-          req.headers = req.headers || {};
-          req.headers[FLOW_NONCE_KEY] = nonce;
+      if (req.path === FLOW_NEXT_PATH) {
+        const executionId = getExecutionIdFromRequest(req);
+
+        if (executionId) {
+          const nonce = getFlowNonce(executionId, storagePrefix);
+          if (nonce) {
+            req.headers = req.headers || {};
+            req.headers[FLOW_NONCE_HEADER] = nonce;
+          }
         }
       }
       return req;
     };
 
-    // Create the SDK with the hooks
     return createSdk(
       addHooks(sdkConfig, { afterRequest, beforeRequest }),
     ) as ReturnType<T>;
   };
+
+export * from './helpers';
+export * from './types';
+export * from './constants';
