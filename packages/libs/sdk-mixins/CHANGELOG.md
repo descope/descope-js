@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.3](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.2...sdk-mixins-0.13.3) (2025-05-07)
+
+
+### Bug Fixes
+
+* issue 10504 RELEASE ([#1110](https://github.com/descope/descope-js/issues/1110)) ([048a20a](https://github.com/descope/descope-js/commit/048a20ae1731e9ae3d06038213ceb4f124b7d64e))
+
+## [0.13.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.1...sdk-mixins-0.13.2) (2025-05-06)
+
+
+### Bug Fixes
+
+* wrong import RELEASE ([#1111](https://github.com/descope/descope-js/issues/1111)) ([1af98e3](https://github.com/descope/descope-js/commit/1af98e3d0adc4535f60052e15a2355a7ec849628))
+
+## [0.13.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.0...sdk-mixins-0.13.1) (2025-05-06)
+
+
+### Bug Fixes
+
+* CSSStyleSheet fallback for older browser RELEASE ([#1109](https://github.com/descope/descope-js/issues/1109)) ([c1770da](https://github.com/descope/descope-js/commit/c1770da62f755148bf91a08d9736ec77c342b24c))
+
 ## [0.13.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.12.0...sdk-mixins-0.13.0) (2025-04-28)
 
 

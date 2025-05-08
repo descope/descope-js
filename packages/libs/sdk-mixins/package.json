@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-mixins",
-  "version": "0.13.0",
+  "version": "0.13.3",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-mixins",
   "bugs": {
@@ -39,6 +39,16 @@
       "require": {
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/mixins/staticResourcesMixin/index.js"
+      }
+    },
+    "./inject-style-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/injectStyleMixin.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/injectStyleMixin.js"
       }
     }
   },

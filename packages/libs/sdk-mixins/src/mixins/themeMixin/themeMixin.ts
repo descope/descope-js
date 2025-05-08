@@ -10,6 +10,7 @@ import { DEFAULT_STYLE_ID } from './constants';
 import { loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
+import { injectStyleMixin } from '../injectStyleMixin';
 
 const themeValidation = (_: string, theme: string | null) =>
   (theme || false) &&
@@ -29,10 +30,11 @@ export const themeMixin = createSingletonMixin(
       configMixin,
       initElementMixin,
       observeAttributesMixin,
+      injectStyleMixin,
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
-      #globalStyle: CSSStyleSheet;
+      #globalStyle: ReturnType<typeof this.injectStyle>;
 
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
@@ -123,12 +125,7 @@ export const themeMixin = createSingletonMixin(
         if (!theme) return;
 
         if (!this.#globalStyle) {
-          this.#globalStyle = new CSSStyleSheet();
-          this.shadowRoot.adoptedStyleSheets ??= [];
-          this.shadowRoot.adoptedStyleSheets = [
-            ...this.shadowRoot.adoptedStyleSheets,
-            this.#globalStyle,
-          ];
+          this.#globalStyle = this.injectStyle('');
         }
 
         this.#globalStyle.replaceSync(
@@ -137,7 +134,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadComponentsStyle() {
-        const theme = { ...(await this.#themeResource) } as Record<string, any>;
+        const theme = await this.#themeResource;
         if (!theme) return;
 
         const descopeUi = await this.descopeUi;
@@ -206,9 +203,11 @@ export const themeMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.#loadGlobalStyle();
-        this.#loadComponentsStyle();
         this.#onThemeChange();
+        await Promise.all([
+          this.#loadGlobalStyle(),
+          this.#loadComponentsStyle(),
+        ]);
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
