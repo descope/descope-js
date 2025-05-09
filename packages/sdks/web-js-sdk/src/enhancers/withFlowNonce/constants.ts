@@ -1,5 +1,5 @@
 export const FLOW_NONCE_PREFIX = 'descopeFlowNonce';
-export const FLOW_NONCE_HEADER = 'x-descope-flow-nonce';
+export const FLOW_NONCE_HEADER = 'X-Descope-Flow-Nonce';
 
 export const FLOW_START_PATH = '/v1/flow/start';
 export const FLOW_NEXT_PATH = '/v1/flow/next';
