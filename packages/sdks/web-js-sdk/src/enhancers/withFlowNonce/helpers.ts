@@ -124,7 +124,7 @@ const extractFlowNonce = async (
 
 // Get execution ID from request object
 const getExecutionIdFromRequest = (req: RequestConfig): string | null => {
-  if (req.path === FLOW_NEXT_PATH && req.body && req.body.executionId) {
+  if (req.path === FLOW_NEXT_PATH && req.body?.executionId) {
     return extractExecId(req.body.executionId);
   }
 
