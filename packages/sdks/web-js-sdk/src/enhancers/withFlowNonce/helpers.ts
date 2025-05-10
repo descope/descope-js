@@ -100,12 +100,7 @@ const extractFlowNonce = async (
     let executionId = await response
       .clone()
       .json()
-      .then((data) => {
-        if (data && data.executionId) {
-          return data.executionId;
-        }
-        return null;
-      })
+      .then((data) => data?.executionId || null)
       .catch(() => null);
 
     if (!executionId) {
