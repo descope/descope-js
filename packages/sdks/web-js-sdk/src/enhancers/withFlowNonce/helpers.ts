@@ -83,9 +83,9 @@ const removeFlowNonce = (
 };
 
 // Extract execution ID from special format
-const extractExecId = (executionId: string): string => {
+const extractExecId = (executionId: string): string | null => {
   const regex = /.*\|#\|(.*)/;
-  return regex.exec(executionId)?.[1] || '';
+  return regex.exec(executionId)?.[1] || null;
 };
 
 // Extract nonce and execution ID from response
@@ -110,7 +110,7 @@ const extractFlowNonce = async (
 
     return {
       nonce,
-      executionId: executionId ? extractExecId(executionId) : null,
+      executionId: extractExecId(executionId),
     };
   } catch (e) {
     return { nonce: null, executionId: null };
