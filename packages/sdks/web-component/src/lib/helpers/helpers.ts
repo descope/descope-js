@@ -717,11 +717,21 @@ export const transformStepStateForCustomScreen = (
   }
 
   if (state.screenState?.componentsConfig?.thirdPartyAppApproveScopes?.data) {
-    sanitizedState.thirdPartyAppApproveScopes =
+    sanitizedState.inboundAppApproveScopes =
       state.screenState.componentsConfig.thirdPartyAppApproveScopes.data;
   }
 
   return sanitizedState;
+};
+
+export const transformScreenInputs = (inputs: Record<string, any>) => {
+  const res = { ...inputs };
+
+  if (inputs.inboundAppApproveScopes) {
+    res.thirdPartyAppApproveScopes = inputs.inboundAppApproveScopes;
+  }
+
+  return res;
 };
 
 export function getScriptResultPath(scriptId: string, resultKey?: string) {

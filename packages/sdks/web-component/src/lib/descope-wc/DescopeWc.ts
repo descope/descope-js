@@ -32,6 +32,7 @@ import {
   State,
   submitForm,
   timeoutPromise,
+  transformScreenInputs,
   transformStepStateForCustomScreen,
   updateScreenFromScreenState,
   updateTemplateFromScreenState,
@@ -951,7 +952,7 @@ class DescopeWc extends BaseDescopeWc {
           flowVersions,
           {
             ...this.formConfigValues,
-            ...inputs,
+            ...transformScreenInputs(inputs),
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
             ...(token && { token }),
@@ -975,7 +976,7 @@ class DescopeWc extends BaseDescopeWc {
           interactionId,
           flowConfig.version,
           projectConfig.componentsVersion,
-          input,
+          transformScreenInputs(input),
         );
 
         this.#handleSdkResponse(res);

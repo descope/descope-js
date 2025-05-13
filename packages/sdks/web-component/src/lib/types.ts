@@ -141,7 +141,7 @@ export type CustomScreenState = Omit<
     type: ScreenState['errorType'];
   };
   action?: string;
-  thirdPartyAppApproveScopes?: {
+  inboundAppApproveScopes?: {
     desc: string;
     id: string;
     required: boolean;
