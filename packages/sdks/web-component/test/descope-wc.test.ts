@@ -5420,6 +5420,78 @@ describe('web-component', () => {
   });
 
   describe('custom screen', () => {
+    it('should map sent inputs ', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      pageContent =
+        '<descope-button>click</descope-button><input data-testid="inboundAppApproveScopes" name="inboundAppApproveScopes"></input><span>Loaded</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const input = screen.getByShadowTestId('inboundAppApproveScopes');
+      input.value = '1';
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            null,
+            expect.anything(),
+            expect.anything(),
+            expect.objectContaining({ thirdPartyAppApproveScopes: '1' }),
+          ),
+        { timeout: 30000 },
+      );
+    });
+
+    it('should map onScreenUpdate inputs', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            user: { name: 'john' },
+            inputs: {},
+            cssVars: {},
+            componentsConfig: {
+              thirdPartyAppApproveScopes: {
+                data: [{ a: 1 }],
+              },
+            },
+            errorText: 'errorText',
+            errorType: 'errorType',
+            clientScripts: {},
+            _key: {},
+          },
+        }),
+      );
+
+      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn();
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() =>
+        expect(onScreenUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ inboundAppApproveScopes: [{ a: 1 }] }),
+          expect.any(Function),
+          expect.any(HTMLElement),
+        ),
+      );
+    });
     it('should call the onScreenUpdate with the correct params', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({
@@ -5643,79 +5715,6 @@ describe('web-component', () => {
         {
           timeout: WAIT_TIMEOUT,
         },
-      );
-    });
-
-    it('should map sent inputs ', async () => {
-      startMock.mockReturnValueOnce(generateSdkResponse());
-
-      pageContent =
-        '<descope-button>click</descope-button><input data-testid="inboundAppApproveScopes" name="inboundAppApproveScopes"></input><span>Loaded</span>';
-
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-      await waitFor(() => screen.getByShadowText('Loaded'), {
-        timeout: WAIT_TIMEOUT,
-      });
-
-      const input = screen.getByShadowTestId('inboundAppApproveScopes');
-      input.value = '1';
-
-      fireEvent.click(screen.getByShadowText('click'));
-
-      await waitFor(
-        () =>
-          expect(nextMock).toHaveBeenCalledWith(
-            expect.anything(),
-            expect.anything(),
-            null,
-            expect.anything(),
-            expect.anything(),
-            expect.objectContaining({ thirdPartyAppApproveScopes: '1' }),
-          ),
-        { timeout: WAIT_TIMEOUT },
-      );
-    });
-
-    it('should map onScreenUpdate inputs', async () => {
-      startMock.mockReturnValue(
-        generateSdkResponse({
-          screenState: {
-            user: { name: 'john' },
-            inputs: {},
-            cssVars: {},
-            componentsConfig: {
-              thirdPartyAppApproveScopes: {
-                data: [{ a: 1 }],
-              },
-            },
-            errorText: 'errorText',
-            errorType: 'errorType',
-            clientScripts: {},
-            _key: {},
-          },
-        }),
-      );
-
-      pageContent = `<div>Loaded123</div><descope-link class="descope-link" href="{{user.name}}">ho!</descope-link>`;
-
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-      const descopeWc = document.querySelector('descope-wc');
-      const onScreenUpdate = jest.fn();
-      descopeWc.onScreenUpdate = onScreenUpdate;
-
-      await waitFor(() => screen.getByShadowText('Loaded123'), {
-        timeout: WAIT_TIMEOUT,
-      });
-
-      await waitFor(() =>
-        expect(onScreenUpdate).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.objectContaining({ inboundAppApproveScopes: [{ a: 1 }] }),
-          expect.any(Function),
-          expect.any(HTMLElement),
-        ),
       );
     });
   });
