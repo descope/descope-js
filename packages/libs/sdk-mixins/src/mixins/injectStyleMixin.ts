@@ -65,3 +65,5 @@ export const injectStyleMixin = createSingletonMixin(
     };
   },
 );
+
+export type InjectedStyle = CSSStyleSheet | CSSStyleSheetMock;
