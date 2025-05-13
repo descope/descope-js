@@ -716,6 +716,11 @@ export const transformStepStateForCustomScreen = (
     sanitizedState.action = state.action;
   }
 
+  if (state.screenState?.componentsConfig?.thirdPartyAppApproveScopes?.data) {
+    sanitizedState.thirdPartyAppApproveScopes =
+      state.screenState.componentsConfig.thirdPartyAppApproveScopes.data;
+  }
+
   return sanitizedState;
 };
 

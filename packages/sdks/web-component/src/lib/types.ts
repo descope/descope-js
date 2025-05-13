@@ -141,6 +141,11 @@ export type CustomScreenState = Omit<
     type: ScreenState['errorType'];
   };
   action?: string;
+  thirdPartyAppApproveScopes?: {
+    desc: string;
+    id: string;
+    required: boolean;
+  }[];
 };
 
 export type DebugState = {
