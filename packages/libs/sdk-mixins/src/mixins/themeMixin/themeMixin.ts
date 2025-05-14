@@ -10,7 +10,7 @@ import { DEFAULT_STYLE_ID } from './constants';
 import { loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
-import { injectStyleMixin } from '../injectStyleMixin';
+import { InjectedStyle, injectStyleMixin } from '../injectStyleMixin';
 
 const themeValidation = (_: string, theme: string | null) =>
   (theme || false) &&
@@ -34,7 +34,7 @@ export const themeMixin = createSingletonMixin(
     )(superclass);
 
     return class ThemeMixinClass extends BaseClass {
-      #globalStyle: ReturnType<typeof this.injectStyle>;
+      #globalStyle: InjectedStyle;
 
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
