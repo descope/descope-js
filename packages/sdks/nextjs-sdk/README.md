@@ -165,6 +165,52 @@ export const config = {
 }
 ```
 
+##### Chaining Next.js Middleware Together
+
+You can chain the Descope Next.js SDK middleware with other middleware functions to apply multiple layers of processing to incoming requests. 
+
+This can help ensure the following things:
+
+- Authentication before applying other middleware logic.
+- Allows for a more modular middleware architecture.
+- Provides custom handling for different request types.
+
+For example, you can integrate Descope authentication with Next.js internationalization middleware:
+
+```ts
+// src/middleware.ts
+import { authMiddleware } from '@descope/nextjs-sdk/server';
+import createIntlMiddleware from 'next-intl/middleware';
+
+const intlMiddleware = createIntlMiddleware({
+  locales: ['en', 'es', 'fr'],
+  defaultLocale: 'en'
+});
+
+export default async function middleware(req) {
+  const authResponse = await authMiddleware({
+    publicRoutes: ['/home', '/about'],
+    privateRoutes: ['/dashboard', '/profile']
+  })(req);
+
+  if (authResponse) return authResponse; // Redirect if authentication fails
+
+  // Run internationalization middleware
+  return intlMiddleware(req);
+}
+
+export const config = {
+  matcher: ['/((?!_next|.*\\..*).*)', '/(api|trpc)(.*)']
+};
+```
+
+In the code above, we see: 
+
+1. The Descope middleware runs first, ensuring authentication for private routes.
+2. If the user is **not authenticated**, they are redirected before proceeding to other middleware.
+3. If authentication is successful, the request is passed to the next middleware.
+4. Localization middleware processes the request after authentication, setting language preferences.
+
 ##### Public and Private Route Definitions
 
 - **All routes are private by default.**
