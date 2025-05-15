@@ -803,7 +803,8 @@ class DescopeWc extends BaseDescopeWc {
         return;
       }
       if (redirectIsPopup) {
-        openCenteredPopup(redirectTo, '?', 300, 300);
+        // this width is below the breakpoint of most providers
+        openCenteredPopup(redirectTo, '?', 598, 700);
 
         const onPostMessage = (event: MessageEvent) => {
           if (event.origin !== window.location.origin) return;
