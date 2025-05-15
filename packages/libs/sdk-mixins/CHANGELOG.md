@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.4](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.3...sdk-mixins-0.13.4) (2025-05-14)
+
+
+### Bug Fixes
+
+* export inject style type ([#1115](https://github.com/descope/descope-js/issues/1115)) ([836d51d](https://github.com/descope/descope-js/commit/836d51dceae93be6203b0c7922df07f9e360ce33))
+
 ## [0.13.3](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.2...sdk-mixins-0.13.3) (2025-05-07)
 
 
