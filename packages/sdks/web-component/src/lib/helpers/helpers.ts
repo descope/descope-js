@@ -764,7 +764,7 @@ export const openCenteredPopup = (
   const popup = window.open(
     url,
     title,
-    `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=no`,
+    `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`,
   );
 
   popup.focus();
