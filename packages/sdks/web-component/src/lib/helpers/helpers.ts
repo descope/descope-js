@@ -346,7 +346,7 @@ export const handleUrlParams = (
   // this is used for oauth when we want to open the provider login page in a new tab
   const isPopup = getIsPopupFromUrl();
   if (isPopup) {
-    clearCodeFromUrl();
+    clearIsPopupFromUrl();
   }
 
   const exchangeError = getExchangeErrorFromUrl();
