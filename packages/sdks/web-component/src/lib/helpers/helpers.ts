@@ -747,16 +747,22 @@ export const openCenteredPopup = (
   h: number,
 ) => {
   const dualScreenLeft =
-    window.screenLeft !== undefined ? window.screenLeft : (screen as any).left;
+    window.screenLeft !== undefined
+      ? window.screenLeft
+      : (window.screen as any).left;
   const dualScreenTop =
-    window.screenTop !== undefined ? window.screenTop : (screen as any).top;
+    window.screenTop !== undefined
+      ? window.screenTop
+      : (window.screen as any).top;
 
   const width =
-    window.innerWidth || document.documentElement.clientWidth || screen.width;
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    window.screen.width;
   const height =
     window.innerHeight ||
     document.documentElement.clientHeight ||
-    screen.height;
+    window.screen.height;
 
   const left = (width - w) / 2 + dualScreenLeft;
   const top = (height - h) / 2 + dualScreenTop;

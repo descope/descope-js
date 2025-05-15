@@ -190,7 +190,7 @@ class DescopeWc extends BaseDescopeWc {
       // update the state along with cancelling out the action to abort the polling mechanism
       this.flowState.update({ token, stepId, action: undefined });
     } else if (type === 'beforeScreen') {
-      const screenResolve = this.nativeCallbacks.screenResolve;
+      const { screenResolve } = this.nativeCallbacks;
       this.nativeCallbacks.screenResolve = null;
       const { override } = response;
       if (!override) {
@@ -199,7 +199,7 @@ class DescopeWc extends BaseDescopeWc {
       screenResolve?.(override);
     } else if (type === 'resumeScreen') {
       const { interactionId, form } = response;
-      const screenNext = this.nativeCallbacks.screenNext;
+      const { screenNext } = this.nativeCallbacks;
       this.nativeCallbacks.screenNext = null;
       screenNext?.(interactionId, form);
     } else {
@@ -612,8 +612,8 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
-    const outboundAppId = this.outboundAppId;
-    const outboundAppScopes = this.outboundAppScopes;
+    const { outboundAppId } = this;
+    const { outboundAppScopes } = this;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
@@ -809,6 +809,7 @@ class DescopeWc extends BaseDescopeWc {
         const onPostMessage = (event: MessageEvent) => {
           if (event.origin !== window.location.origin) return;
 
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const { action, data } = event.data;
           if (action === 'code') {
             window.removeEventListener('message', onPostMessage);
