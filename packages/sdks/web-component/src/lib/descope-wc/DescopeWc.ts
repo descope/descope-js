@@ -808,10 +808,10 @@ class DescopeWc extends BaseDescopeWc {
         const onPostMessage = (event: MessageEvent) => {
           if (event.origin !== window.location.origin) return;
 
-          window.removeEventListener('message', onPostMessage);
-
           const { action, data } = event.data;
           if (action === 'code') {
+            window.removeEventListener('message', onPostMessage);
+
             this.flowState.update({
               code: data.code,
             });
