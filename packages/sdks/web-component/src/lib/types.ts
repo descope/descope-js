@@ -97,12 +97,14 @@ export type FlowState = {
   executionId: string;
   action: string;
   redirectTo: string;
+  redirectIsPopup: boolean;
   openInNewTabUrl?: string;
   redirectUrl: string;
   screenId: string;
   screenState: ScreenState;
   token: string;
   code: string;
+  isPopup: boolean;
   exchangeError: string;
   webauthnTransactionId: string;
   webauthnOptions: string;

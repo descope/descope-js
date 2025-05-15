@@ -27,6 +27,7 @@ import {
   injectSamlIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
+  openCenteredPopup,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
@@ -585,9 +586,11 @@ class DescopeWc extends BaseDescopeWc {
       screenId,
       screenState,
       redirectTo,
+      redirectIsPopup,
       redirectUrl,
       token,
       code,
+      isPopup,
       exchangeError,
       webauthnTransactionId,
       webauthnOptions,
@@ -724,6 +727,14 @@ class DescopeWc extends BaseDescopeWc {
       }
     }
 
+    if (isChanged('code') && code && isChanged('isPopup') && isPopup) {
+      window.opener.postMessage(
+        { action: 'code', data: { code } },
+        window.location.origin,
+      );
+      window.close();
+    }
+
     // if there is a descope url param on the url its because the user clicked on email link or redirected back to the app
     // we should call next with the params
     if (
@@ -791,7 +802,26 @@ class DescopeWc extends BaseDescopeWc {
         });
         return;
       }
-      window.location.assign(redirectTo);
+      if (redirectIsPopup) {
+        openCenteredPopup(redirectTo, '?', 300, 300);
+
+        const onPostMessage = (event: MessageEvent) => {
+          if (event.origin !== window.location.origin) return;
+
+          window.removeEventListener('message', onPostMessage);
+
+          const { action, data } = event.data;
+          if (action === 'code') {
+            this.flowState.update({
+              code: data.code,
+            });
+          }
+        };
+
+        window.addEventListener('message', onPostMessage);
+      } else {
+        window.location.assign(redirectTo);
+      }
       return;
     }
 
@@ -1243,6 +1273,7 @@ class DescopeWc extends BaseDescopeWc {
       executionId,
       action,
       redirectTo: redirect?.url,
+      redirectIsPopup: redirect?.isPopup,
       screenId: screen?.id,
       screenState: screen?.state,
       webauthnTransactionId: webauthn?.transactionId,
