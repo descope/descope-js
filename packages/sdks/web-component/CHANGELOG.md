@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.12](https://github.com/descope/descope-js/compare/web-component-3.43.11...web-component-3.43.12) (2025-05-18)
+
+
+### Bug Fixes
+
+* oauth race condition ([#1119](https://github.com/descope/descope-js/issues/1119)) RELEASE ([d4ccbc3](https://github.com/descope/descope-js/commit/d4ccbc31e77cfc40f33c06b56bbb8c8a3c97a5cd))
+
 ## [3.43.11](https://github.com/descope/descope-js/compare/web-component-3.43.10...web-component-3.43.11) (2025-05-18)
 
 
