@@ -734,6 +734,7 @@ class DescopeWc extends BaseDescopeWc {
         window.location.origin,
       );
       window.close();
+      return;
     }
 
     // if there is a descope url param on the url its because the user clicked on email link or redirected back to the app
