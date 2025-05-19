@@ -9,7 +9,7 @@ import { logger, setLogger } from './logger';
 
 type MiddlewareOptions = {
 	// The Descope project ID to use for authentication
-	// Defaults to process.env.NEXT_DESCOPE_PROJECT_ID
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
 	projectId?: string;
 
 	// The base URL to use for authentication
