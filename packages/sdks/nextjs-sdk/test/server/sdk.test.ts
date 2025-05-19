@@ -44,9 +44,9 @@ describe('sdk', () => {
 			);
 
 			// Clean up environment variables to avoid side effects
-			delete process.env.DESCOPE_PROJECT_ID;
+			delete process.env.NEXT_PUBLIC_DESCOPE_BASE_URL;
 			delete process.env.DESCOPE_MANAGEMENT_KEY;
-			delete process.env.DESCOPE_BASE_URL;
+			delete process.env.NEXT_PUBLIC_DESCOPE_BASE_URL;
 		});
 
 		it('should create a new sdk with legacy env variables', () => {
