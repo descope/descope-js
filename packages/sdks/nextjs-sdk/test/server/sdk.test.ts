@@ -28,6 +28,28 @@ describe('sdk', () => {
 		});
 
 		it('should create a new sdk with env variables', () => {
+			process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID = 'envProjectId';
+			process.env.DESCOPE_MANAGEMENT_KEY = 'envManagementKey';
+			process.env.NEXT_PUBLIC_DESCOPE_BASE_URL = 'envBaseUrl';
+
+			createSdk();
+
+			expect(descopeSdk).toHaveBeenCalledWith(
+				expect.objectContaining({
+					projectId: 'envProjectId',
+					managementKey: 'envManagementKey',
+					baseUrl: 'envBaseUrl',
+					baseHeaders: expect.any(Object)
+				})
+			);
+
+			// Clean up environment variables to avoid side effects
+			delete process.env.DESCOPE_PROJECT_ID;
+			delete process.env.DESCOPE_MANAGEMENT_KEY;
+			delete process.env.DESCOPE_BASE_URL;
+		});
+
+		it('should create a new sdk with legacy env variables', () => {
 			process.env.DESCOPE_PROJECT_ID = 'envProjectId';
 			process.env.DESCOPE_MANAGEMENT_KEY = 'envManagementKey';
 			process.env.DESCOPE_BASE_URL = 'envBaseUrl';
@@ -72,6 +94,7 @@ describe('sdk', () => {
 		it("should throw an error if no projectId is provided and it's not in env", () => {
 			// environment variable is not set and no projectId is provided
 			delete process.env.DESCOPE_PROJECT_ID;
+			delete process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID;
 
 			expect(() => getGlobalSdk()).toThrow(
 				'Descope project ID is required to create the SDK'
