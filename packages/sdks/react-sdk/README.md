@@ -390,7 +390,7 @@ If project settings are configured to manage session token in cookies, Descope s
 You can also use the following functions to assist with various actions managing your JWT.
 
 `getSessionToken()` - Get current session token.
-`getRefreshToken()` - Get current refresh token.
+`getRefreshToken()` - Get current refresh token. Note: Relevant only if the refresh token is stored in local storage. If the refresh token is stored in an `httpOnly` cookie, it will return an empty string.
 `refresh(token = getRefreshToken())` - Force a refresh on current session token using an existing valid refresh token.
 `isSessionTokenExpired(token = getSessionToken())` - Check whether the current session token is expired. Provide a session token if is not persisted (see [token persistence](#token-persistence)).
 `isRefreshTokenExpired(token = getRefreshToken())` - Check whether the current refresh token is expired. Provide a refresh token if is not persisted (see [token persistence](#token-persistence)).
