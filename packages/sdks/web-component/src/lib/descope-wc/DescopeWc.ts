@@ -386,10 +386,14 @@ class DescopeWc extends BaseDescopeWc {
       }) => ({ ...state, screenState }),
     );
 
-    this.stepState?.subscribe(this.#handleGlobalErrors.bind(this), (state) => ({
-      errorText: state?.screenState?.errorText,
-      errorType: state?.screenState?.errorType,
-    }));
+    this.stepState?.subscribe(
+      this.#handleGlobalErrors.bind(this),
+      (state) => ({
+        errorText: state?.screenState?.errorText,
+        errorType: state?.screenState?.errorType,
+      }),
+      { forceUpdate: true },
+    );
 
     this.stepState?.subscribe(
       this.#handlePasscodeCleanup.bind(this),
