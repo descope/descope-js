@@ -1,12 +1,18 @@
+import { RequestConfig } from '@descope/core-js-sdk';
 import {
+  getLocalStorage,
+  isLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '../helpers';
+import {
+  FLOW_NEXT_PATH,
+  FLOW_NEXT_TTL,
   FLOW_NONCE_HEADER,
   FLOW_NONCE_PREFIX,
-  FLOW_NEXT_TTL,
   FLOW_START_TTL,
-  FLOW_NEXT_PATH,
 } from './constants';
 import { StorageItem } from './types';
-import { RequestConfig } from '@descope/core-js-sdk';
 
 // Helper to create storage key from execution ID
 const getNonceKeyForExecution = (
@@ -23,7 +29,7 @@ const getFlowNonce = (
 ): string | null => {
   try {
     const key = getNonceKeyForExecution(executionId, prefix);
-    const itemStr = localStorage.getItem(key);
+    const itemStr = getLocalStorage(key);
 
     if (!itemStr) {
       return null;
@@ -61,7 +67,7 @@ const setFlowNonce = (
       isStart,
     };
 
-    localStorage.setItem(key, JSON.stringify(item));
+    setLocalStorage(key, JSON.stringify(item));
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('Error setting flow nonce:', e);
@@ -75,7 +81,7 @@ const removeFlowNonce = (
 ): void => {
   try {
     const key = getNonceKeyForExecution(executionId, prefix);
-    localStorage.removeItem(key);
+    removeLocalStorage(key);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('Error removing flow nonce:', e);
@@ -129,21 +135,24 @@ const getExecutionIdFromRequest = (req: RequestConfig): string | null => {
 // Remove expired nonces from storage
 const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
   try {
+    if (!isLocalStorage) {
+      return;
+    }
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
 
       if (key && key.startsWith(prefix)) {
-        const itemStr = localStorage.getItem(key);
+        const itemStr = getLocalStorage(key);
 
         if (itemStr) {
           try {
             const item: StorageItem = JSON.parse(itemStr);
 
             if (item.expiry < Date.now()) {
-              localStorage.removeItem(key);
+              removeLocalStorage(key);
             }
           } catch (parseError) {
-            localStorage.removeItem(key);
+            removeLocalStorage(key);
           }
         }
       }
@@ -155,11 +164,11 @@ const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
 };
 
 export {
-  getNonceKeyForExecution,
-  getFlowNonce,
-  setFlowNonce,
-  removeFlowNonce,
+  cleanupExpiredNonces,
   extractFlowNonce,
   getExecutionIdFromRequest,
-  cleanupExpiredNonces,
+  getFlowNonce,
+  getNonceKeyForExecution,
+  removeFlowNonce,
+  setFlowNonce,
 };
