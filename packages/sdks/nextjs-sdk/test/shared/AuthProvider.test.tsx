@@ -23,11 +23,11 @@ describe('AuthProvider', () => {
 		expect(baseHeaders).toEqual(nextBaseHeaders);
 	});
 
-	it('should render and pass sessionTokenViaCookie as true by default', () => {
+	it('should render and pass sessionTokenViaCookie with sameSite Lax by default', () => {
 		render(<AuthProvider projectId="project1" />);
 		expect(AuthProviderComp).toHaveBeenCalledWith(
 			expect.objectContaining({
-				sessionTokenViaCookie: true
+				sessionTokenViaCookie: { sameSite: 'Lax' }
 			}),
 			expect.anything() // This accounts for the second argument to a component function, which is the ref in class components
 		);

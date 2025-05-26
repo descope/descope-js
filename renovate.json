@@ -1,4 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>descope/renovate-config", "security:only-security-updates"]
+  "extends": [
+    "local>descope/renovate-config",
+    "security:only-security-updates"
+  ],
+  "packageRules": [
+    {
+      "dependencyType": "peerDependencies",
+      "enabled": false
+    }
+  ]
 }

@@ -75,7 +75,7 @@
     "import/no-dynamic-require": 2,
     "import/no-self-import": 2,
     "import/no-useless-path-segments": 2,
-    "import/prefer-default-export": 1,
+    "import/prefer-default-export": 0,
     "import/no-extraneous-dependencies": [
       2,
       {

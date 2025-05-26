@@ -146,13 +146,13 @@ export class DescopeComponent implements OnInit, OnChanges {
     if (this.validateOnBlur) {
       this.webComponent.setAttribute(
         'validate-on-blur',
-        this.autoFocus.toString()
+        this.validateOnBlur.toString()
       );
     }
     if (this.restartOnError) {
       this.webComponent.setAttribute(
         'restart-on-error',
-        this.autoFocus.toString()
+        this.restartOnError.toString()
       );
     }
     if (this.debug) {

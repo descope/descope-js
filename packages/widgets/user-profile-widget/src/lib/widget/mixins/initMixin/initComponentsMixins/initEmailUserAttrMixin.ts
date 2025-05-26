@@ -61,6 +61,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
+            theme: this.theme,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -89,6 +90,9 @@ export const initEmailUserAttrMixin = createSingletonMixin(
             flowId: this.emailUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
+            theme: this.theme,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

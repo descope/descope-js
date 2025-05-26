@@ -17,6 +17,8 @@ interface IAuthProviderProps {
   baseUrl?: string;
   // allows to override the base URL that is used to fetch static files
   baseStaticUrl?: string;
+  // allows to override the base URL that is used to fetch external script files
+  baseCdnUrl?: string;
   // If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
@@ -34,6 +36,8 @@ interface IAuthProviderProps {
   // Use this option if the authentication is done via cookie, and configured with a different name
   // Currently, this is done using Descope Flows
   refreshCookieName?: string;
+  // Function to get external token, for seamless migration from external system
+  getExternalToken?: () => Promise<string>;
   children?: React.ReactNode;
 }
 
@@ -41,12 +45,14 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   projectId,
   baseUrl = '',
   baseStaticUrl = '',
+  baseCdnUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
   oidcConfig = undefined,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
+  getExternalToken = undefined,
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -69,6 +75,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
     refreshCookieName,
+    getExternalToken,
   });
 
   useEffect(() => {
@@ -140,11 +147,13 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
       setUser,
       setSession,
+      setIsAuthenticated,
       sdk,
     }),
     [
@@ -161,10 +170,12 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
       setUser,
       setSession,
+      setIsAuthenticated,
       sdk,
     ],
   );

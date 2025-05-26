@@ -1,6 +1,7 @@
 import React, {
   lazy,
   Suspense,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useState,
@@ -28,16 +29,37 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
 
     useImperativeHandle(ref, () => innerRef);
 
-    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
-      React.useContext(Context);
+    const {
+      projectId,
+      baseUrl,
+      baseStaticUrl,
+      baseCdnUrl,
+      refreshCookieName,
+      setSession,
+      setUser,
+      setIsAuthenticated,
+    } = React.useContext(Context);
+
+    const handleLogout = useCallback(
+      (e: CustomEvent) => {
+        if (onLogout) {
+          onLogout(e);
+        }
+        // we want to clear the session and user when the logout event is triggered
+        setIsAuthenticated(false);
+        setSession('');
+        setUser(null);
+      },
+      [onLogout, setSession, setIsAuthenticated, setUser],
+    );
 
     useEffect(() => {
-      if (innerRef && onLogout) {
-        innerRef.addEventListener('logout', onLogout);
-        return () => innerRef.removeEventListener('logout', onLogout);
+      if (innerRef) {
+        innerRef.addEventListener('logout', handleLogout);
+        return () => innerRef.removeEventListener('logout', handleLogout);
       }
       return undefined;
-    }, [innerRef, onLogout]);
+    }, [innerRef, handleLogout]);
 
     return (
 	<Suspense fallback={null}>

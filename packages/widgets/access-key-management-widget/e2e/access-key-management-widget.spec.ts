@@ -110,7 +110,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5557');
+    await page.goto('http://localhost:5557', { waitUntil: 'networkidle' });
   });
 
   test('access keys table', async ({ page }) => {
@@ -366,6 +366,8 @@ test.describe('widget', () => {
       .getByTestId('search-input')
       .locator('input')
       .first();
+
+    await searchInput.waitFor({ state: 'visible' });
 
     // focus search input
     await searchInput.focus();

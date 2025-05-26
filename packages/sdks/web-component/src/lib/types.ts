@@ -97,12 +97,14 @@ export type FlowState = {
   executionId: string;
   action: string;
   redirectTo: string;
+  redirectIsPopup: boolean;
   openInNewTabUrl?: string;
   redirectUrl: string;
   screenId: string;
   screenState: ScreenState;
   token: string;
   code: string;
+  isPopup: boolean;
   exchangeError: string;
   webauthnTransactionId: string;
   webauthnOptions: string;
@@ -129,7 +131,7 @@ export type StepState = {
   next: NextFn;
   direction: Direction | undefined;
   samlIdpUsername: string;
-  openInNewTabUrl?: string;
+  action?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<
@@ -140,6 +142,12 @@ export type CustomScreenState = Omit<
     text: ScreenState['errorText'];
     type: ScreenState['errorType'];
   };
+  action?: string;
+  inboundAppApproveScopes?: {
+    desc: string;
+    id: string;
+    required: boolean;
+  }[];
 };
 
 export type DebugState = {
@@ -181,13 +189,18 @@ type Operator =
   | 'not-equal'
   | 'contains'
   | 'greater-than'
+  | 'greater-than-or-equal'
   | 'less-than'
+  | 'less-than-or-equal'
   | 'empty'
   | 'not-empty'
   | 'is-true'
   | 'is-false'
   | 'in'
-  | 'not-in';
+  | 'not-in'
+  | 'in-range'
+  | 'not-in-range'
+  | 'devised-by';
 
 export interface ClientConditionResult {
   screenId: string;

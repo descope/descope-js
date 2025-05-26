@@ -44,6 +44,30 @@ describe('sdk', () => {
         },
       );
     });
+
+    it('should send external token', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.refresh('token', undefined, 'external-token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.refresh,
+        {
+          externalToken: 'external-token',
+        },
+        {
+          token: 'token',
+        },
+      );
+    });
   });
 
   describe('selectTenant', () => {

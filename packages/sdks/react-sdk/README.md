@@ -390,7 +390,7 @@ If project settings are configured to manage session token in cookies, Descope s
 You can also use the following functions to assist with various actions managing your JWT.
 
 `getSessionToken()` - Get current session token.
-`getRefreshToken()` - Get current refresh token.
+`getRefreshToken()` - Get current refresh token. Note: Relevant only if the refresh token is stored in local storage. If the refresh token is stored in an `httpOnly` cookie, it will return an empty string.
 `refresh(token = getRefreshToken())` - Force a refresh on current session token using an existing valid refresh token.
 `isSessionTokenExpired(token = getSessionToken())` - Check whether the current session token is expired. Provide a session token if is not persisted (see [token persistence](#token-persistence)).
 `isRefreshTokenExpired(token = getRefreshToken())` - Check whether the current refresh token is expired. Provide a refresh token if is not persisted (see [token persistence](#token-persistence)).
@@ -443,6 +443,28 @@ const AppRoot = () => {
 ### Last User Persistence
 
 Descope stores the last user information in local storage. If you wish to disable this feature, you can pass `storeLastAuthenticatedUser={false}` to the `AuthProvider` component. Please note that some features related to the last authenticated user may not function as expected if this behavior is disabled. Local storage is being cleared when the user logs out, if you want the avoid clearing the local storage, you can pass `keepLastAuthenticatedUserAfterLogout={true}` to the `AuthProvider` component.
+
+### Seamless Session Migration
+
+If you are migrating from an external authentication provider to Descope, you can use the `getExternalToken` prop in the `AuthProvider` component. This function should return a valid token from the external provider. The SDK will then use this token to authenticate the user with Descope.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const AppRoot = () => {
+  return (
+    <AuthProvider
+      projectId="my-project-id"
+      getExternalToken={async () => {
+        // Bring token from external provider (e.g. get access token from another auth provider)
+        return 'my-external-token';
+      }}
+    >
+      <App />
+    </AuthProvider>
+  );
+};
+```
 
 ### Widgets
 

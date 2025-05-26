@@ -153,14 +153,14 @@ const createFedCM = (sdk: CoreSdk, projectId: string) => ({
   /**
    * @deprecated Call `onetap.requestAuthentication` instead.
    */
-  oneTap(
+  async oneTap(
     provider?: string,
     oneTapConfig?: OneTapConfig,
     loginOptions?: LoginOptions,
     onSkipped?: (reason?: string) => void,
     onDismissed?: (reason?: string) => void,
   ) {
-    performOneTap(sdk, {
+    await performOneTapAsync(sdk, {
       provider,
       oneTapConfig,
       loginOptions,
@@ -276,45 +276,60 @@ async function performOneTap(
   },
 ) {
   try {
-    const auth = await startOneTap(
-      sdk,
-      options.provider,
-      options.oneTapConfig,
-      options.onSkipped,
-      options.onDismissed,
-    );
-    if (!auth.credential) {
-      return null;
-    }
-    if (options?.onCodeReceived) {
-      const response = await sdk.oauth.verifyOneTapIDToken(
-        auth.provider,
-        auth.credential,
-        auth.nonce,
-        options?.loginOptions,
-      );
-      if (!response.ok || !response.data) {
-        throw new Error(
-          'Failed to verify OneTap client ID for provider ' + auth.provider,
-        );
-      }
-      options?.onCodeReceived?.(response.data.code);
-    } else {
-      const response = await sdk.oauth.exchangeOneTapIDToken(
-        auth.provider,
-        auth.credential,
-        auth.nonce,
-        options?.loginOptions,
-      );
-      if (!response.ok || !response.data) {
-        throw new Error(
-          'Failed to exchange OneTap client ID for provider ' + auth.provider,
-        );
-      }
-      options?.onAuthenticated?.(response.data);
-    }
+    await performOneTapAsync(sdk, options);
   } catch (e) {
     options?.onFailed?.(e);
+  }
+}
+
+async function performOneTapAsync(
+  sdk: CoreSdk,
+  options?: {
+    provider?: string;
+    oneTapConfig?: OneTapConfig;
+    loginOptions?: LoginOptions;
+    onSkipped?: (reason?: string) => void;
+    onDismissed?: (reason?: string) => void;
+    onCodeReceived?: (code: string) => void;
+    onAuthenticated?: (response: JWTResponse) => void;
+  },
+) {
+  const auth = await startOneTap(
+    sdk,
+    options.provider,
+    options.oneTapConfig,
+    options.onSkipped,
+    options.onDismissed,
+  );
+  if (!auth.credential) {
+    return null;
+  }
+  if (options?.onCodeReceived) {
+    const response = await sdk.oauth.verifyOneTapIDToken(
+      auth.provider,
+      auth.credential,
+      auth.nonce,
+      options?.loginOptions,
+    );
+    if (!response.ok || !response.data) {
+      throw new Error(
+        'Failed to verify OneTap client ID for provider ' + auth.provider,
+      );
+    }
+    options?.onCodeReceived?.(response.data.code);
+  } else {
+    const response = await sdk.oauth.exchangeOneTapIDToken(
+      auth.provider,
+      auth.credential,
+      auth.nonce,
+      options?.loginOptions,
+    );
+    if (!response.ok || !response.data) {
+      throw new Error(
+        'Failed to exchange OneTap client ID for provider ' + auth.provider,
+      );
+    }
+    options?.onAuthenticated?.(response.data);
   }
 }
 

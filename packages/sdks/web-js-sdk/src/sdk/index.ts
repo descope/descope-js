@@ -9,6 +9,7 @@ import {
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
 import { OIDC_LOGOUT_ERROR_CODE, OIDC_REFRESH_ERROR_CODE } from '../constants';
+import logger from '../enhancers/helpers/logger';
 
 const createSdk = (config: WebSdkConfig) => {
   const coreSdk = createCoreSdk(config);
@@ -36,10 +37,25 @@ const createSdk = (config: WebSdkConfig) => {
       // When the user is already logged in in the past or not (We want to optimize that in the future)
       const currentSessionToken = getSessionToken();
       const currentRefreshToken = getRefreshToken();
-      return coreSdk.refresh(token, {
-        dcs: currentSessionToken ? 't' : 'f',
-        dcr: currentRefreshToken ? 't' : 'f',
-      });
+
+      let externalToken = '';
+      if (config.getExternalToken) {
+        try {
+          externalToken = await config.getExternalToken?.();
+        } catch (error) {
+          logger.debug('Error getting external token while refreshing', error);
+          // continue without external token
+        }
+      }
+
+      return coreSdk.refresh(
+        token,
+        {
+          dcs: currentSessionToken ? 't' : 'f',
+          dcr: currentRefreshToken ? 't' : 'f',
+        },
+        externalToken,
+      );
     },
     // Call the logout function according to the oidcConfig
     // And return the response in the same format

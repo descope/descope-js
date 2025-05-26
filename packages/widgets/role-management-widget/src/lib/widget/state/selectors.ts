@@ -31,6 +31,13 @@ export const getIsSingleRolesSelected = createSelector(
   (selected) => selected.length === 1,
 );
 
+export const getIsSelectedRoleEditable = createSelector(
+  getSelectedRoles,
+  getIsSingleRolesSelected,
+  (selected, singleRoleSelected) =>
+    singleRoleSelected && selected[0].editable === 'yes',
+);
+
 export const getSelectedRolesDetailsForDisplay = createSelector(
   getSelectedRoles,
   (selectedRoles) => {

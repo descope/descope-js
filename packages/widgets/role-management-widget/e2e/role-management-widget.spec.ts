@@ -93,7 +93,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5556');
+    await page.goto('http://localhost:5556', { waitUntil: 'networkidle' });
   });
 
   test('roles table', async ({ page }) => {
@@ -263,6 +263,8 @@ test.describe('widget', () => {
       .getByTestId('search-input')
       .locator('input')
       .first();
+
+    await searchInput.waitFor({ state: 'visible' });
 
     // focus search input
     await searchInput.focus();

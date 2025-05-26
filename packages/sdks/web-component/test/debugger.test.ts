@@ -105,7 +105,7 @@ describe('debugger', () => {
 
       switch (true) {
         case url.endsWith('theme.json'): {
-          return { ...res, json: () => ({}) };
+          return { ...res, json: () => null };
         }
         case url.endsWith('.html'): {
           return { ...res, text: () => pageContent };

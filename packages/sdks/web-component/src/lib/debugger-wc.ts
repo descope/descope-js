@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+import { compose } from '@descope/sdk-helpers';
+import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 import {
   addOnResize,
   dragElement,
@@ -139,7 +141,9 @@ const style = `
 
 type MessagesState = { messages: DebuggerMessage[] };
 
-class Debugger extends HTMLElement {
+const BaseClass = compose(injectStyleMixin)(HTMLElement);
+
+class Debugger extends BaseClass {
   #messagesState = new State<MessagesState>({ messages: [] });
 
   #rootEle: HTMLDivElement;
@@ -166,13 +170,7 @@ class Debugger extends HTMLElement {
   }
 
   #initStyle() {
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(style);
-    this.shadowRoot.adoptedStyleSheets ??= [];
-    this.shadowRoot.adoptedStyleSheets = [
-      ...this.shadowRoot.adoptedStyleSheets,
-      sheet,
-    ];
+    this.injectStyle(style);
 
     this.#rootEle.style.top = `${INITIAL_POS_THRESHOLD}px`;
     this.#rootEle.style.left = `${
@@ -247,7 +245,8 @@ class Debugger extends HTMLElement {
     this.#rootEle.style.left = `${left}px`;
   }
 
-  connectedCallback() {
+  async init() {
+    super.init?.();
     dragElement(this.#rootEle, this.#headerEle, {
       top: 'all',
       bottom: 100,

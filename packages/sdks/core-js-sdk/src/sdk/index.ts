@@ -13,6 +13,7 @@ import {
 } from './helpers';
 import withMagicLink from './magicLink';
 import withOauth from './oauth';
+import withOutbound from './outbound';
 import withOtp from './otp';
 import withSaml from './saml';
 import withTotp from './totp';
@@ -48,6 +49,7 @@ export default (httpClient: HttpClient) => ({
   magicLink: withMagicLink(httpClient),
   enchantedLink: withEnchantedLink(httpClient),
   oauth: withOauth(httpClient),
+  outbound: withOutbound(httpClient),
   saml: withSaml(httpClient),
   totp: withTotp(httpClient),
   notp: withNotp(httpClient),
@@ -63,10 +65,19 @@ export default (httpClient: HttpClient) => ({
    * @returns The updated authentication info (JWTs)
    */
   refresh: withOptionalTokenValidations(
-    (token?: string, queryParams?: { [key: string]: string }) =>
-      transformResponse<JWTResponse>(
-        httpClient.post(apiPaths.refresh, {}, { token, queryParams }),
-      ),
+    (
+      token?: string,
+      queryParams?: { [key: string]: string },
+      externalToken?: string,
+    ) => {
+      const body = {};
+      if (externalToken) {
+        body['externalToken'] = externalToken;
+      }
+      return transformResponse<JWTResponse>(
+        httpClient.post(apiPaths.refresh, body, { token, queryParams }),
+      );
+    },
   ),
   /**
    * Selects a tenant for the current session
@@ -116,14 +127,14 @@ export default (httpClient: HttpClient) => ({
     [isArrayOrBool('"tenants" must a string array or a boolean')],
     [isStringOrUndefined('"token" must be string or undefined')],
   )((tenants: true | string[], token?: string) => {
-    const bdy = {};
+    const body = {};
     if (typeof tenants === 'boolean') {
-      bdy['dct'] = tenants;
+      body['dct'] = tenants;
     } else {
-      bdy['ids'] = tenants;
+      body['ids'] = tenants;
     }
     return transformResponse<TenantsResponse>(
-      httpClient.post(apiPaths.myTenants, bdy, { token }),
+      httpClient.post(apiPaths.myTenants, body, { token }),
     );
   }),
   /**

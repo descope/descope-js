@@ -1,32 +1,23 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { configMixin } from '../configMixin';
+import { injectNpmLibMixin } from '../injectNpmLibMixin';
 import { loggerMixin } from '../loggerMixin';
+import { getDescopeUiComponentsList } from './helpers';
 import {
-  DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
-  DESCOPE_UI_FALLBACK_SCRIPT_ID,
-  DESCOPE_UI_SCRIPT_ID,
-  UI_COMPONENTS_FALLBACK_2_URL,
-  UI_COMPONENTS_FALLBACK_URL,
-  UI_COMPONENTS_URL,
+  JS_FILE_PATH,
+  LOCAL_STORAGE_OVERRIDE,
+  WEB_COMPONENTS_UI_LIB_NAME,
 } from './constants';
-import {
-  generateScriptUrl,
-  getDescopeUiComponentsList,
-  setupScript,
-} from './helpers';
-
-type ErrorCb = (error: string) => void;
-type LoadCb = () => void;
 
 export const descopeUiMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(loggerMixin, configMixin)(superclass);
+    const BaseClass = compose(
+      loggerMixin,
+      configMixin,
+      injectNpmLibMixin,
+    )(superclass);
 
     return class DescopeUiMixinClass extends BaseClass {
-      #errorCbsSym = Symbol('errorCbs');
-
-      #loadCbsSym = Symbol('loadCbs');
-
       // eslint-disable-next-line class-methods-use-this
       async #getComponentsVersion() {
         const config = await this.config;
@@ -39,116 +30,6 @@ export const descopeUiMixin = createSingletonMixin(
         }
 
         return componentsVersion;
-      }
-
-      // in order to allow only single load of DescopeUI across different instances,
-      // and also allow fallback in case the components cannot be loaded from descope domain
-      // we are managing an alternative way to register to the script events
-      #exposeAlternateEvents(scriptEle: HTMLScriptElement) {
-        const errorCbsSym = this.#errorCbsSym;
-        const loadCbsSym = this.#loadCbsSym;
-
-        // eslint-disable-next-line no-param-reassign
-        scriptEle[errorCbsSym] = [];
-        // eslint-disable-next-line no-param-reassign
-        scriptEle[loadCbsSym] = [];
-
-        Object.defineProperty(scriptEle, 'onerror', {
-          set(cb: ErrorCb) {
-            scriptEle[errorCbsSym].push(cb);
-          },
-        });
-
-        Object.defineProperty(scriptEle, 'onload', {
-          set(cb: LoadCb) {
-            scriptEle[loadCbsSym].push(cb);
-          },
-        });
-      }
-
-      async #handleFallbackScript(
-        errorCbs: ErrorCb[],
-        loadCbs: LoadCb[],
-        elemId: string,
-        scriptUrl: string,
-      ) {
-        this.logger.debug('Trying to load DescopeUI from a fallback URL');
-        const fallbackScriptEle = setupScript(elemId);
-        document.body.append(fallbackScriptEle);
-
-        fallbackScriptEle.addEventListener('error', () => {
-          errorCbs.forEach((cb: ErrorCb) =>
-            cb(
-              `Cannot load DescopeUI from fallback URL, Make sure this URL is valid and return the correct script: "${fallbackScriptEle.src}"`,
-            ),
-          );
-        });
-
-        fallbackScriptEle.addEventListener('load', () => {
-          loadCbs.forEach((cb: LoadCb) => cb());
-        });
-
-        fallbackScriptEle.src = generateScriptUrl(
-          scriptUrl,
-          await this.#getComponentsVersion(),
-        );
-      }
-
-      #registerEvents(scriptEle: HTMLScriptElement) {
-        scriptEle.addEventListener('error', () => {
-          scriptEle[this.#errorCbsSym].forEach((cb: ErrorCb) =>
-            cb(
-              `Cannot load DescopeUI from main URL, Make sure this URL is valid and return the correct script: "${scriptEle.src}"`,
-            ),
-          );
-
-          // in case we could not load DescopeUI from the main URL, we are trying to load it from a fallback URL
-          this.#handleFallbackScript(
-            [
-              // we are adding a second fallback
-              this.#handleFallbackScript.bind(
-                this,
-                scriptEle[this.#errorCbsSym],
-                scriptEle[this.#loadCbsSym],
-                DESCOPE_UI_FALLBACK_2_SCRIPT_ID,
-                UI_COMPONENTS_FALLBACK_2_URL,
-              ),
-              ...scriptEle[this.#errorCbsSym],
-            ],
-            scriptEle[this.#loadCbsSym],
-            DESCOPE_UI_FALLBACK_SCRIPT_ID,
-            UI_COMPONENTS_FALLBACK_URL,
-          );
-        });
-
-        scriptEle.addEventListener('load', () => {
-          scriptEle[this.#loadCbsSym].forEach((cb: LoadCb) => cb());
-        });
-      }
-
-      async #getDescopeUiLoadingScript() {
-        if (!document.querySelector(`script#${DESCOPE_UI_SCRIPT_ID}`)) {
-          this.logger.debug(
-            'DescopeUI loading script does not exist, creating it',
-            this,
-          );
-
-          const scriptEle = setupScript(DESCOPE_UI_SCRIPT_ID);
-
-          document.body.append(scriptEle);
-
-          this.#exposeAlternateEvents(scriptEle);
-          this.#registerEvents(scriptEle);
-
-          scriptEle.src = generateScriptUrl(
-            this.baseCdnUrl || UI_COMPONENTS_URL,
-            await this.#getComponentsVersion(),
-          );
-        } else {
-          this.logger.debug('DescopeUI loading script already exists', this);
-        }
-
-        return document.getElementById(DESCOPE_UI_SCRIPT_ID);
       }
 
       #descopeUi: Promise<any>;
@@ -203,6 +84,26 @@ export const descopeUiMixin = createSingletonMixin(
         return undefined;
       }
 
+      async #getDescopeUi() {
+        if (globalThis.DescopeUI) {
+          return globalThis.DescopeUI;
+        }
+
+        try {
+          await this.injectNpmLib(
+            WEB_COMPONENTS_UI_LIB_NAME,
+            await this.#getComponentsVersion(),
+            JS_FILE_PATH,
+            [LOCAL_STORAGE_OVERRIDE],
+          );
+          this.logger.debug('DescopeUI was loaded');
+          return globalThis.DescopeUI;
+        } catch (error) {
+          this.logger.error(error);
+          throw new Error('DescopeUI was not loaded');
+        }
+      }
+
       async loadDescopeUiComponents(
         templateOrComponentNames: HTMLTemplateElement | string[],
       ) {
@@ -215,35 +116,6 @@ export const descopeUiMixin = createSingletonMixin(
             this.#loadDescopeUiComponent(componentName),
           ),
         );
-      }
-
-      #getDescopeUi() {
-        return new Promise((res) => {
-          if (globalThis.DescopeUI) {
-            res(globalThis.DescopeUI);
-          }
-
-          this.#getDescopeUiLoadingScript().then((scriptEle) => {
-            // eslint-disable-next-line no-param-reassign
-            scriptEle!.onerror = this.logger.error;
-            // eslint-disable-next-line no-param-reassign
-            scriptEle!.onload = () => {
-              this.logger.debug('DescopeUI was loaded');
-              res(globalThis.DescopeUI);
-            };
-
-            // in case the load event was dispatched before we registered, we have a fallback
-            setTimeout(() => {
-              if (globalThis.DescopeUI) {
-                res(globalThis.DescopeUI);
-              }
-            });
-          });
-        });
-      }
-
-      get baseCdnUrl() {
-        return this.getAttribute('base-cdn-url');
       }
     };
   },

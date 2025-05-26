@@ -3,13 +3,31 @@ import { Logger } from '../loggerMixin';
 type FetchParams = Parameters<typeof fetch>;
 const notLastMsgSuffix = 'Trying the next fallback URL...';
 
+// reties in case on network error
+const fetchWithRetry = async (
+  url: string,
+  init: FetchParams['1'],
+  { logger }: { logger?: Logger } = {},
+) => {
+  try {
+    return await fetch(url, init);
+  } catch (e) {
+    // if there is an exception, we want to retry
+    // so we can overcome network errors
+    logger?.debug(
+      `Network error fetching URL ${url} [${e.message}], retrying...`,
+    );
+    return fetch(url, init);
+  }
+};
+
 export const fetchWithFallbacks = async (
   fallbacks: FetchParams['0'] | FetchParams['0'][],
   init: FetchParams['1'],
   {
     logger,
     onSuccess,
-  }: { logger?: Logger; onSuccess?: (urlIndex: number) => void },
+  }: { logger?: Logger; onSuccess?: (urlIndex: number) => void } = {},
 ): ReturnType<typeof fetch> => {
   const fallbacksArr = Array.isArray(fallbacks) ? fallbacks : [fallbacks];
 
@@ -18,9 +36,10 @@ export const fetchWithFallbacks = async (
     const isLast = index === fallbacksArr.length - 1;
 
     try {
-      const res = await fetch(url.toString(), init);
+      const res = await fetchWithRetry(url.toString(), init, { logger });
       if (res.ok) {
         onSuccess?.(index);
+        logger?.debug(`Successfully fetched URL ${url}`);
         return res;
       }
 

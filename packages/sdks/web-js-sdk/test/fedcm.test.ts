@@ -54,6 +54,7 @@ describe('fedcm', () => {
         ok: false,
         error: 'error',
       });
+      let err: Error;
       try {
         await sdk.fedcm.oneTap(
           'google',
@@ -61,10 +62,25 @@ describe('fedcm', () => {
           { stepup: false },
         );
       } catch (e) {
-        expect(e).toEqual(
-          new Error('Failed to get OneTap client ID for provider google'),
-        );
+        err = e;
       }
+      expect(err).toEqual(
+        new Error('Failed to get OneTap client ID for provider google'),
+      );
+    });
+    it('throw error when getOneTapClientId throws', async () => {
+      coreJs.oauth.getOneTapClientId.mockRejectedValue(new Error('foo'));
+      let err: Error;
+      try {
+        await sdk.fedcm.oneTap(
+          'google',
+          { auto_select: true },
+          { stepup: false },
+        );
+      } catch (e) {
+        err = e;
+      }
+      expect(err).toEqual(new Error('foo'));
     });
     it('call google client initialize with the correct params', async () => {
       coreJs.oauth.getOneTapClientId.mockResolvedValue({

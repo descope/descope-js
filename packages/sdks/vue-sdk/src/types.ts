@@ -46,4 +46,5 @@ export type Context = {
   sdk: Sdk;
   user: User;
   session: Session;
+  resetAuth: () => void;
 };

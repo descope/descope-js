@@ -26,7 +26,10 @@ export type ReplaceParam<
 export type CreateCoreSdk = typeof createCoreSdk;
 export type CoreSdk = ReturnType<CreateCoreSdk>;
 export type CoreSdkConfig = Head<Parameters<CreateCoreSdk>>;
-export type WebSdkConfig = CoreSdkConfig & { oidcConfig?: OidcConfig }; // Extends with oidcConfig
+export type WebSdkConfig = CoreSdkConfig & {
+  oidcConfig?: OidcConfig;
+  getExternalToken?: () => Promise<string>;
+};
 
 /* JWT response with idToken */
 export type WebJWTResponse = JWTResponse & { idToken?: string };

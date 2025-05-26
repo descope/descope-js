@@ -33,11 +33,15 @@ declare const BUILD_VERSION: string;
 /**
  * Create descope custom headers
  */
-const createDescopeHeaders = (refreshCookieName?: string) => {
+const createDescopeHeaders = (
+  projectId: string,
+  refreshCookieName?: string,
+) => {
   const res = {
     'x-descope-sdk-session-id': getClientSessionId(),
     'x-descope-sdk-name': 'core-js',
     'x-descope-sdk-version': BUILD_VERSION,
+    'x-descope-project-id': projectId,
   };
 
   if (refreshCookieName) {
@@ -84,7 +88,7 @@ const createHttpClient = ({
     const requestInit: RequestInit = {
       headers: mergeHeaders(
         createAuthorizationHeader(projectId, token),
-        createDescopeHeaders(refreshCookieName),
+        createDescopeHeaders(projectId, refreshCookieName),
         baseConfig?.baseHeaders || {},
         isJson(serializedBody) ? jsonHeaders : {}, // add json content headers if body is json
         headers,

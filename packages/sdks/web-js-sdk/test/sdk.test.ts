@@ -114,6 +114,46 @@ describe('sdk', () => {
     );
   });
 
+  it('should send external token when getExternalToken is passed', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(flowResponse));
+    global.fetch = mockFetch;
+    const getExternalTokenMock = jest.fn().mockResolvedValue('external-token');
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      getExternalToken: getExternalTokenMock,
+    });
+    await sdk.refresh('token');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.descope.com/v1/auth/refresh?dcs=f&dcr=f',
+      expect.objectContaining({
+        body: JSON.stringify({ externalToken: 'external-token' }),
+      }),
+    );
+  });
+
+  it('should not fail token when getExternalToken throws error', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(flowResponse));
+    global.fetch = mockFetch;
+    const getExternalTokenMock = jest
+      .fn()
+      .mockRejectedValue(new Error('error'));
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      getExternalToken: getExternalTokenMock,
+    });
+    await sdk.refresh('token');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.descope.com/v1/auth/refresh?dcs=f&dcr=f',
+      expect.any(Object),
+    );
+  });
+
   it('should export constants', () => {
     expect(SESSION_TOKEN_KEY).toBeDefined();
     expect(REFRESH_TOKEN_KEY).toBeDefined();

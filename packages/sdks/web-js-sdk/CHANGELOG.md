@@ -2,6 +2,71 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.33.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.1...web-js-sdk-1.33.2) (2025-05-22)
+
+## [1.33.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.0...web-js-sdk-1.33.1) (2025-05-15)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.1`
+## [1.33.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.32.0...web-js-sdk-1.33.0) (2025-05-11)
+
+
+### Features
+
+* implement flow nonce header handling  ([#1112](https://github.com/descope/descope-js/issues/1112)) ([0dd892d](https://github.com/descope/descope-js/commit/0dd892dde09db2ac4b662f4e4611d88aa715b8d2))
+
+## [1.32.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.4...web-js-sdk-1.32.0) (2025-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.0`
+
+### Features
+
+* Add default project ID header to core ([#1103](https://github.com/descope/descope-js/issues/1103)) RELEASE ([f59033c](https://github.com/descope/descope-js/commit/f59033cbde29c52419e042bec1ff31be42869899))
+
+## [1.31.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.3...web-js-sdk-1.31.4) (2025-04-29)
+
+## [1.31.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.2...web-js-sdk-1.31.3) (2025-04-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.43.1`
+## [1.31.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.1...web-js-sdk-1.31.2) (2025-04-15)
+
+## [1.31.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.0...web-js-sdk-1.31.1) (2025-04-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.43.0`
+## [1.31.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.30.0...web-js-sdk-1.31.0) (2025-04-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.42.0`
+
+### Features
+
+* add support in outbound apps ([#1078](https://github.com/descope/descope-js/issues/1078)) ([35f9623](https://github.com/descope/descope-js/commit/35f96237e192e6c302dbccf8b8826c506baf7abf))
+
+## [1.30.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.29.1...web-js-sdk-1.30.0) (2025-04-02)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.41.0`
+
+### Features
+
+* pass external token ([#1067](https://github.com/descope/descope-js/issues/1067)) RELEASE ([2ce500f](https://github.com/descope/descope-js/commit/2ce500fa195df1a9d27bfaae4ba79bf046f27fb6))
+
+## [1.29.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.29.0...web-js-sdk-1.29.1) (2025-03-30)
+
+
+### Bug Fixes
+
+* OIDC client ts ([#1072](https://github.com/descope/descope-js/issues/1072)) RELEASE ([00e39d9](https://github.com/descope/descope-js/commit/00e39d919979a315af510870e50218ca364e0ed6))
+
 ## [1.29.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.28.0...web-js-sdk-1.29.0) (2025-03-27)
 
 
