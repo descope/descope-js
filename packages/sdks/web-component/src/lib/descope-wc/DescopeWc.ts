@@ -1546,7 +1546,7 @@ class DescopeWc extends BaseDescopeWc {
     // Adding event listeners to all buttons without the exclude attribute
     this.contentRootElement
       .querySelectorAll(
-        `descope-button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}]), [data-type="button"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}]`,
+        `descope-button:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}]), [data-type="button"]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON}])`,
       )
       .forEach((button: HTMLButtonElement) => {
         // eslint-disable-next-line no-param-reassign
