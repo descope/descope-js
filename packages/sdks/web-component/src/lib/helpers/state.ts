@@ -13,7 +13,11 @@ type UpdateStateCb<T> = (state: T) => Partial<T>;
 
 type Subscribers<T> = Record<
   string,
-  { cb: SubscribeCb<ReturnType<SelectorCb<T>>>; selector: SelectorCb<T> }
+  {
+    cb: SubscribeCb<ReturnType<SelectorCb<T>>>;
+    selector: SelectorCb<T>;
+    forceUpdate: boolean;
+  }
 >;
 
 export type SelectorCb<T> = (state: T) => any;
@@ -91,32 +95,36 @@ class State<T extends StateObject> {
     Object.freeze(this.#state);
 
     setTimeout(() => {
-      Object.values(this.#subscribers).forEach(({ cb, selector }) => {
-        const partialPrevState = selector(prevState);
-        const partialNextState = selector(nextState);
+      Object.values(this.#subscribers).forEach(
+        ({ cb, selector, forceUpdate }) => {
+          const partialPrevState = selector(prevState);
+          const partialNextState = selector(nextState);
 
-        if (
-          this.#forceUpdateAll ||
-          (isPlainObject(partialNextState)
-            ? !compareObjects(partialPrevState, partialNextState)
-            : partialPrevState !== partialNextState)
-        ) {
-          cb(
-            partialNextState,
-            partialPrevState,
-            createIsChanged(partialNextState, partialPrevState),
-          );
-        }
-      });
+          if (
+            this.#forceUpdateAll ||
+            forceUpdate ||
+            (isPlainObject(partialNextState)
+              ? !compareObjects(partialPrevState, partialNextState)
+              : partialPrevState !== partialNextState)
+          ) {
+            cb(
+              partialNextState,
+              partialPrevState,
+              createIsChanged(partialNextState, partialPrevState),
+            );
+          }
+        },
+      );
     }, 0);
   };
 
   subscribe<R extends any | Partial<T>>(
     cb: SubscribeCb<R>,
     selector: (state: T) => R = (state: T) => state as unknown as R,
+    { forceUpdate = false }: { forceUpdate?: boolean } = {},
   ) {
     this.#token += 1;
-    this.#subscribers[this.#token] = { cb, selector };
+    this.#subscribers[this.#token] = { cb, selector, forceUpdate };
 
     return this.#token.toString();
   }

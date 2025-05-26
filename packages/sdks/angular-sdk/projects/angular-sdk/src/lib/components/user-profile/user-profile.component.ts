@@ -10,6 +10,7 @@ import {
 import DescopeUserProfileWidget from '@descope/user-profile-widget';
 import { ILogger } from '@descope/web-component';
 import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthService } from '../../services/descope-auth.service';
 
 @Component({
   selector: 'user-profile',
@@ -34,7 +35,8 @@ export class UserProfileComponent implements OnInit, OnChanges {
 
   constructor(
     private elementRef: ElementRef,
-    descopeConfig: DescopeAuthConfig
+    descopeConfig: DescopeAuthConfig,
+    private descopeAuthService: DescopeAuthService
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -77,10 +79,11 @@ export class UserProfileComponent implements OnInit, OnChanges {
       (this.webComponent as any).logger = this.logger;
     }
 
-    if (this.logout) {
-      this.webComponent.addEventListener('logout', (e: Event) => {
-        this.logout?.emit(e as CustomEvent);
-      });
-    }
+    this.webComponent.addEventListener('logout', (e: Event) => {
+      this.logout?.emit(e as CustomEvent);
+      this.descopeAuthService.setSession('');
+      this.descopeAuthService.setIsAuthenticated(false);
+      this.descopeAuthService.setUser(null);
+    });
   }
 }

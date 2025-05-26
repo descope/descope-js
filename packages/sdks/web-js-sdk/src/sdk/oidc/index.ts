@@ -74,7 +74,7 @@ const loadScriptWithFallback = (
 const loadOIDCModule = async (): Promise<OidcModule> => {
   /* istanbul ignore next */
   try {
-    return import('oidc-client-ts');
+    return require('oidc-client-ts');
   } catch (e) {
     return loadScriptWithFallback(
       [OIDC_CLIENT_TS_DESCOPE_CDN_URL, OIDC_CLIENT_TS_JSDELIVR_CDN_URL],

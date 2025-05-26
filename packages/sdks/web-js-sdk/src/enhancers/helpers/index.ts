@@ -112,6 +112,10 @@ export const getUserFromResponse = async (
   );
 };
 
+// This window flag is set by mobile frameworks
+export const isDescopeBridge = () =>
+  typeof window !== 'undefined' && !!window['descopeBridge'];
+
 export const isLocalStorage = typeof localStorage !== 'undefined';
 
 export const setLocalStorage = (key: string, value: string) =>

@@ -106,6 +106,7 @@ export interface IContext {
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   setSession: React.Dispatch<React.SetStateAction<string>>;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type DescopeProps = {
@@ -126,6 +127,8 @@ export type DescopeProps = {
   debug?: boolean;
   telemetryKey?: string;
   redirectUrl?: string;
+  outboundAppId?: string;
+  outboundAppScopes?: string[];
   errorTransformer?: (error: { text: string; type: string }) => string;
   // use to override screen's form inputs in flow execution
   form?: Record<string, any>;

@@ -393,7 +393,7 @@ You can securely communicate with your backend either by using `DescopeIntercept
 You can also use the following helper methods on `DescopeAuthService` to assist with various actions managing your JWT.
 
 - `getSessionToken()` - Get current session token.
-- `getRefreshToken()` - Get current refresh token.
+- `getRefreshToken()` - Get current refresh token. Note: Relevant only if the refresh token is stored in local storage. If the refresh token is stored in an `httpOnly` cookie, it will return an empty string.
 - `isAuthenticated()` - Returns boolean whether user is authenticated
 - `refreshSession` - Force a refresh on current session token using an existing valid refresh token.
 - `refreshUser` - Force a refresh on current user using an existing valid refresh token.

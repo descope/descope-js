@@ -2,6 +2,99 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.28](https://github.com/descope/descope-js/compare/role-management-widget-0.3.27...role-management-widget-0.3.28) (2025-05-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.2`
+## [0.3.27](https://github.com/descope/descope-js/compare/role-management-widget-0.3.26...role-management-widget-0.3.27) (2025-05-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.1`
+## [0.3.26](https://github.com/descope/descope-js/compare/role-management-widget-0.3.25...role-management-widget-0.3.26) (2025-05-14)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.4`
+## [0.3.25](https://github.com/descope/descope-js/compare/role-management-widget-0.3.24...role-management-widget-0.3.25) (2025-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.0`
+## [0.3.24](https://github.com/descope/descope-js/compare/role-management-widget-0.3.23...role-management-widget-0.3.24) (2025-05-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.3`
+
+### Bug Fixes
+
+* issue 10504 RELEASE ([#1110](https://github.com/descope/descope-js/issues/1110)) ([048a20a](https://github.com/descope/descope-js/commit/048a20ae1731e9ae3d06038213ceb4f124b7d64e))
+
+## [0.3.23](https://github.com/descope/descope-js/compare/role-management-widget-0.3.22...role-management-widget-0.3.23) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.2`
+## [0.3.22](https://github.com/descope/descope-js/compare/role-management-widget-0.3.21...role-management-widget-0.3.22) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.1`
+## [0.3.21](https://github.com/descope/descope-js/compare/role-management-widget-0.3.20...role-management-widget-0.3.21) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.32.0`
+## [0.3.20](https://github.com/descope/descope-js/compare/role-management-widget-0.3.19...role-management-widget-0.3.20) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.4`
+## [0.3.19](https://github.com/descope/descope-js/compare/role-management-widget-0.3.18...role-management-widget-0.3.19) (2025-04-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.0`
+## [0.3.18](https://github.com/descope/descope-js/compare/role-management-widget-0.3.17...role-management-widget-0.3.18) (2025-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.3`
+## [0.3.17](https://github.com/descope/descope-js/compare/role-management-widget-0.3.16...role-management-widget-0.3.17) (2025-04-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.2`
+* `sdk-mixins` updated to version `0.12.0`
+## [0.3.16](https://github.com/descope/descope-js/compare/role-management-widget-0.3.15...role-management-widget-0.3.16) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
+## [0.3.15](https://github.com/descope/descope-js/compare/role-management-widget-0.3.14...role-management-widget-0.3.15) (2025-04-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.0`
+## [0.3.14](https://github.com/descope/descope-js/compare/role-management-widget-0.3.13...role-management-widget-0.3.14) (2025-04-02)
+
+
+### Bug Fixes
+
+* Roles widget edit button RELEASE ([#1076](https://github.com/descope/descope-js/issues/1076)) ([7a4305d](https://github.com/descope/descope-js/commit/7a4305debcd02cee4ee78d83856a4a109d9a6fa0))
+
+## [0.3.13](https://github.com/descope/descope-js/compare/role-management-widget-0.3.12...role-management-widget-0.3.13) (2025-04-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.30.0`
+## [0.3.12](https://github.com/descope/descope-js/compare/role-management-widget-0.3.11...role-management-widget-0.3.12) (2025-03-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.29.1`
 ## [0.3.11](https://github.com/descope/descope-js/compare/role-management-widget-0.3.10...role-management-widget-0.3.11) (2025-03-27)
 
 ### Dependency Updates
