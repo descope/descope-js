@@ -2,6 +2,157 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.14](https://github.com/descope/descope-js/compare/web-component-3.43.13...web-component-3.43.14) (2025-05-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.2`
+## [3.43.13](https://github.com/descope/descope-js/compare/web-component-3.43.12...web-component-3.43.13) (2025-05-20)
+
+
+### Bug Fixes
+
+* issue 10689 RELEASE ([#1121](https://github.com/descope/descope-js/issues/1121)) ([a644bf6](https://github.com/descope/descope-js/commit/a644bf61c76a3dbc3d0d0449d62db4e0fd861e63))
+
+## [3.43.12](https://github.com/descope/descope-js/compare/web-component-3.43.11...web-component-3.43.12) (2025-05-18)
+
+
+### Bug Fixes
+
+* oauth race condition ([#1119](https://github.com/descope/descope-js/issues/1119)) RELEASE ([d4ccbc3](https://github.com/descope/descope-js/commit/d4ccbc31e77cfc40f33c06b56bbb8c8a3c97a5cd))
+
+## [3.43.11](https://github.com/descope/descope-js/compare/web-component-3.43.10...web-component-3.43.11) (2025-05-18)
+
+
+### Bug Fixes
+
+* issue-9913 RELEASE ([#1116](https://github.com/descope/descope-js/issues/1116)) ([432190c](https://github.com/descope/descope-js/commit/432190c85ba0c258cc3341d30d5ceb9d3ba4ac71))
+
+## [3.43.10](https://github.com/descope/descope-js/compare/web-component-3.43.9...web-component-3.43.10) (2025-05-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.1`
+
+### Bug Fixes
+
+* Issue9119 RELEASE ([#1118](https://github.com/descope/descope-js/issues/1118)) RELEASE ([78a5583](https://github.com/descope/descope-js/commit/78a55837ca7ecdef9273d3e79402c17ab39ead49))
+
+## [3.43.9](https://github.com/descope/descope-js/compare/web-component-3.43.8...web-component-3.43.9) (2025-05-14)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.4`
+## [3.43.8](https://github.com/descope/descope-js/compare/web-component-3.43.7...web-component-3.43.8) (2025-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.0`
+## [3.43.7](https://github.com/descope/descope-js/compare/web-component-3.43.6...web-component-3.43.7) (2025-05-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.3`
+
+### Bug Fixes
+
+* issue 10504 RELEASE ([#1110](https://github.com/descope/descope-js/issues/1110)) ([048a20a](https://github.com/descope/descope-js/commit/048a20ae1731e9ae3d06038213ceb4f124b7d64e))
+
+## [3.43.6](https://github.com/descope/descope-js/compare/web-component-3.43.5...web-component-3.43.6) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.2`
+## [3.43.5](https://github.com/descope/descope-js/compare/web-component-3.43.4...web-component-3.43.5) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.1`
+
+### Bug Fixes
+
+* CSSStyleSheet fallback for older browser RELEASE ([#1109](https://github.com/descope/descope-js/issues/1109)) ([c1770da](https://github.com/descope/descope-js/commit/c1770da62f755148bf91a08d9736ec77c342b24c))
+
+## [3.43.4](https://github.com/descope/descope-js/compare/web-component-3.43.3...web-component-3.43.4) (2025-05-05)
+
+
+### Bug Fixes
+
+* RELEASE update scripts version ([#1108](https://github.com/descope/descope-js/issues/1108)) ([6d3a21b](https://github.com/descope/descope-js/commit/6d3a21b4c29f5ad548d66f26e7aaec0d10355ee7))
+
+## [3.43.3](https://github.com/descope/descope-js/compare/web-component-3.43.2...web-component-3.43.3) (2025-05-05)
+
+
+### Bug Fixes
+
+* issue 10441 RELEASE ([#1107](https://github.com/descope/descope-js/issues/1107)) ([ed43e0d](https://github.com/descope/descope-js/commit/ed43e0d939b632f3ddc4e2808ce6f0bd151e94d0))
+
+## [3.43.2](https://github.com/descope/descope-js/compare/web-component-3.43.1...web-component-3.43.2) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.32.0`
+## [3.43.1](https://github.com/descope/descope-js/compare/web-component-3.43.0...web-component-3.43.1) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.4`
+## [3.43.0](https://github.com/descope/descope-js/compare/web-component-3.42.3...web-component-3.43.0) (2025-04-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.0`
+
+### Features
+
+* add scripts support ([#1063](https://github.com/descope/descope-js/issues/1063)) ([26df9ba](https://github.com/descope/descope-js/commit/26df9ba977f0b1b74437968d8203eaffd3276878))
+
+## [3.42.3](https://github.com/descope/descope-js/compare/web-component-3.42.2...web-component-3.42.3) (2025-04-22)
+
+
+### Bug Fixes
+
+* issue 10327 RELEASE ([#1094](https://github.com/descope/descope-js/issues/1094)) ([2785319](https://github.com/descope/descope-js/commit/27853190211b58ce7d37990d66d705bb0e0cf8d2))
+
+## [3.42.2](https://github.com/descope/descope-js/compare/web-component-3.42.1...web-component-3.42.2) (2025-04-21)
+
+
+### Bug Fixes
+
+* issue 8002 RELEASE ([#1090](https://github.com/descope/descope-js/issues/1090)) ([ed58444](https://github.com/descope/descope-js/commit/ed58444c08c0433ccdf8dbf95714eebd2b2cc76f))
+
+## [3.42.1](https://github.com/descope/descope-js/compare/web-component-3.42.0...web-component-3.42.1) (2025-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.3`
+
+### Bug Fixes
+
+* clear otp code in case it's invalid RELEASE ([#1091](https://github.com/descope/descope-js/issues/1091)) ([54a06cb](https://github.com/descope/descope-js/commit/54a06cb2d2ed9123e9e0ca651a90b59f62dc2f6a))
+
+## [3.42.0](https://github.com/descope/descope-js/compare/web-component-3.41.1...web-component-3.42.0) (2025-04-15)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.12.0`
+* `web-js-sdk` updated to version `1.31.2`
+
+### Features
+
+* Add native bridge code for custom screens into web-component ([#1074](https://github.com/descope/descope-js/issues/1074)) ([3b4b53b](https://github.com/descope/descope-js/commit/3b4b53b0233935895cfd3d1a1e920c35828ae38a))
+* more conditions ([#1086](https://github.com/descope/descope-js/issues/1086)) ([9316697](https://github.com/descope/descope-js/commit/9316697b4453a0100f301bbc6c7735da413b7d3e))
+
+## [3.41.1](https://github.com/descope/descope-js/compare/web-component-3.41.0...web-component-3.41.1) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
+
+### Bug Fixes
+
+* add action to byos context RELEASE ([#1082](https://github.com/descope/descope-js/issues/1082)) ([2d342e6](https://github.com/descope/descope-js/commit/2d342e6a2dd1d08cceaafe5de0fd6644ed544d01))
+
 ## [3.41.0](https://github.com/descope/descope-js/compare/web-component-3.40.9...web-component-3.41.0) (2025-04-09)
 
 ### Dependency Updates

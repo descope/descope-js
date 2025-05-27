@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.44.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.0...core-js-sdk-2.44.1) (2025-05-15)
+
+
+### Bug Fixes
+
+* Issue9119 RELEASE ([#1118](https://github.com/descope/descope-js/issues/1118)) RELEASE ([78a5583](https://github.com/descope/descope-js/commit/78a55837ca7ecdef9273d3e79402c17ab39ead49))
+
+## [2.44.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.43.1...core-js-sdk-2.44.0) (2025-04-29)
+
+
+### Features
+
+* Add default project ID header to core ([#1103](https://github.com/descope/descope-js/issues/1103)) RELEASE ([f59033c](https://github.com/descope/descope-js/commit/f59033cbde29c52419e042bec1ff31be42869899))
+
+## [2.43.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.43.0...core-js-sdk-2.43.1) (2025-04-21)
+
+## [2.43.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.42.0...core-js-sdk-2.43.0) (2025-04-10)
+
+
+### Features
+
+* outbound connect api ([#1084](https://github.com/descope/descope-js/issues/1084)) ([bc0b310](https://github.com/descope/descope-js/commit/bc0b310b72d81e46bb6a0f9d97587441134deb35))
+
 ## [2.42.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.41.0...core-js-sdk-2.42.0) (2025-04-09)
 
 

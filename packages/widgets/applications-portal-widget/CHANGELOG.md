@@ -2,6 +2,72 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.27](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.26...applications-portal-widget-0.3.27) (2025-05-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.2`
+## [0.3.26](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.25...applications-portal-widget-0.3.26) (2025-05-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.1`
+## [0.3.25](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.24...applications-portal-widget-0.3.25) (2025-05-14)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.4`
+## [0.3.24](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.23...applications-portal-widget-0.3.24) (2025-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.0`
+## [0.3.23](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.22...applications-portal-widget-0.3.23) (2025-05-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.3`
+## [0.3.22](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.21...applications-portal-widget-0.3.22) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.2`
+## [0.3.21](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.20...applications-portal-widget-0.3.21) (2025-05-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.1`
+## [0.3.20](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.19...applications-portal-widget-0.3.20) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.32.0`
+## [0.3.19](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.18...applications-portal-widget-0.3.19) (2025-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.4`
+## [0.3.18](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.17...applications-portal-widget-0.3.18) (2025-04-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.0`
+## [0.3.17](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.16...applications-portal-widget-0.3.17) (2025-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.3`
+## [0.3.16](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.15...applications-portal-widget-0.3.16) (2025-04-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.2`
+* `sdk-mixins` updated to version `0.12.0`
+## [0.3.15](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.14...applications-portal-widget-0.3.15) (2025-04-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.31.1`
 ## [0.3.14](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.13...applications-portal-widget-0.3.14) (2025-04-09)
 
 ### Dependency Updates

@@ -47,9 +47,9 @@ export default function RootLayout({
 }
 ```
 
-Note: `AuthProvider` uses `sessionTokenViaCookie={true}` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
-The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
+Note: `AuthProvider` uses `sessionTokenViaCookie={{ sameSite: 'Lax' }}` by default, in order that the [AuthMiddleware](<#Require-authentication-for-application-(Middleware)>) will work out of the box.
+The session token cookie is set to [`SameSite=Lax; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
+If you need to customize this, you can set `sessionTokenViaCookie={{sameSite: 'Strict'}}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
 
 #### Use Descope to render Flow
 
@@ -141,7 +141,7 @@ import { authMiddleware } from '@descope/nextjs-sdk/server'
 
 export default authMiddleware({
 	// The Descope project ID to use for authentication
-	// Defaults to process.env.DESCOPE_PROJECT_ID
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
 	projectId: 'your-descope-project-id',
 
 	// The URL to redirect to if the user is not authenticated
@@ -263,7 +263,7 @@ session({
 })
 ```
 
-- **projectId:** The Descope Project ID. If not provided, the function will fall back to `DESCOPE_PROJECT_ID` from the environment variables.
+- **projectId:** The Descope Project ID. If not provided, the function will fall back to `NEXT_PUBLIC_DESCOPE_PROJECT_ID` from the environment variables.
 - **baseUrl:** The Descope API base URL.
 
 This allows developers to use `session()` even if the project ID is not set in the environment.
@@ -282,7 +282,7 @@ import { createSdk } from '@descope/nextjs-sdk/server';
 
 const sdk = createSdk({
 	// The Descope project ID to use for authentication
-	// Defaults to process.env.DESCOPE_PROJECT_ID
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
 	projectId: 'your-descope-project-id',
 
 	// The Descope management key to use for management operations
@@ -290,7 +290,7 @@ const sdk = createSdk({
 	managementKey: 'your-descope-management-key'
 
 	// Optional: Descope API base URL
-	// Defaults to process.env.DESCOPE_BASE_URL
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_BASE_URL
 	// baseUrl: 'https://...'
 });
 

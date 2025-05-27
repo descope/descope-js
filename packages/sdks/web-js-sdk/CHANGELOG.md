@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.33.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.1...web-js-sdk-1.33.2) (2025-05-22)
+
+## [1.33.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.0...web-js-sdk-1.33.1) (2025-05-15)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.1`
+## [1.33.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.32.0...web-js-sdk-1.33.0) (2025-05-11)
+
+
+### Features
+
+* implement flow nonce header handling  ([#1112](https://github.com/descope/descope-js/issues/1112)) ([0dd892d](https://github.com/descope/descope-js/commit/0dd892dde09db2ac4b662f4e4611d88aa715b8d2))
+
+## [1.32.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.4...web-js-sdk-1.32.0) (2025-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.0`
+
+### Features
+
+* Add default project ID header to core ([#1103](https://github.com/descope/descope-js/issues/1103)) RELEASE ([f59033c](https://github.com/descope/descope-js/commit/f59033cbde29c52419e042bec1ff31be42869899))
+
+## [1.31.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.3...web-js-sdk-1.31.4) (2025-04-29)
+
+## [1.31.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.2...web-js-sdk-1.31.3) (2025-04-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.43.1`
+## [1.31.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.1...web-js-sdk-1.31.2) (2025-04-15)
+
+## [1.31.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.0...web-js-sdk-1.31.1) (2025-04-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.43.0`
 ## [1.31.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.30.0...web-js-sdk-1.31.0) (2025-04-09)
 
 ### Dependency Updates

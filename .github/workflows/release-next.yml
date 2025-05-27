@@ -1,4 +1,4 @@
-name: Release - React SDK next
+name: Release next
 
 on:
   workflow_run:
@@ -49,28 +49,17 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
           CI: true
-      - name: Check if should run
-        id: 'check'
-        run: |
-          # Check if the affected projects include "react-sdk" or "web-component" since the last commit
-          if $(npx nx show projects --affected --base HEAD~1 --head HEAD | grep -q "react-sdk\|web-component"); then
-            echo "run=true" >> $GITHUB_OUTPUT
-          else
-            echo "run=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          CI: true
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
       - name: Set Next Version
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
           CURRENT_DATE=$(date +'%Y%m%d')
           echo "NEXT_VERSION=0.0.0-next-${SHORT_SHA}-${CURRENT_DATE}" >> $GITHUB_ENV
-      - name: Run pnpm publish
-        if: steps.check.outputs.run == 'true'
-        run: |
-          pnpm --filter "@descope/react-sdk" exec npm version "${NEXT_VERSION}" --git-tag-version=false
-          pnpm --filter "@descope/react-sdk" publish --access=public --no-git-checks --tag=next
+      - name: Build
+        run: pnpm run build:ci
+      - name: Bump version
+        run: pnpm print-affected:ci | xargs -I {} pnpm --filter={} exec npm version "${NEXT_VERSION}" --git-tag-version=false
+      - name: Publish
+        run: pnpm -r publish --access=public --no-git-checks --tag=next
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}

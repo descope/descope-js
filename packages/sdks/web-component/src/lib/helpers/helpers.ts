@@ -22,6 +22,8 @@ import {
   THIRD_PARTY_APP_ID_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
+  SDK_SCRIPT_RESULTS_KEY,
+  URL_REDIRECT_MODE_PARAM_NAME,
 } from '../constants';
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
 import {
@@ -161,12 +163,20 @@ export function getCodeFromUrl() {
   return getUrlParam(URL_CODE_PARAM_NAME) || undefined;
 }
 
+export function getIsPopupFromUrl() {
+  return getUrlParam(URL_REDIRECT_MODE_PARAM_NAME) === 'popup';
+}
+
 export function getExchangeErrorFromUrl() {
   return getUrlParam(URL_ERR_PARAM_NAME) || undefined;
 }
 
 export function clearCodeFromUrl() {
   resetUrlParam(URL_CODE_PARAM_NAME);
+}
+
+export function clearIsPopupFromUrl() {
+  resetUrlParam(URL_REDIRECT_MODE_PARAM_NAME);
 }
 
 export function clearExchangeErrorFromUrl() {
@@ -333,6 +343,12 @@ export const handleUrlParams = (
     clearCodeFromUrl();
   }
 
+  // this is used for oauth when we want to open the provider login page in a new tab
+  const isPopup = getIsPopupFromUrl();
+  if (isPopup) {
+    clearIsPopupFromUrl();
+  }
+
   const exchangeError = getExchangeErrorFromUrl();
   if (exchangeError) {
     clearExchangeErrorFromUrl();
@@ -409,6 +425,7 @@ export const handleUrlParams = (
     stepId,
     token,
     code,
+    isPopup,
     exchangeError,
     redirectAuthCodeChallenge,
     redirectAuthCallbackUrl,
@@ -484,16 +501,48 @@ export const handleAutoFocus = (
 export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
     ele.addEventListener('blur', () => {
-      // reportValidity also focus the element if it's invalid
-      // in order to prevent this we need to override the focus method
-      const origFocus = ele.focus;
-      // eslint-disable-next-line no-param-reassign
-      ele.focus = () => {};
-      ele.reportValidity?.();
-      setTimeout(() => {
+      const onBlur = () => {
+        // reportValidity also focus the element if it's invalid
+        // in order to prevent this we need to override the focus method
+        const origFocus = ele.focus;
         // eslint-disable-next-line no-param-reassign
-        ele.focus = origFocus;
-      });
+        ele.focus = () => {};
+        ele.reportValidity?.();
+        setTimeout(() => {
+          // eslint-disable-next-line no-param-reassign
+          ele.focus = origFocus;
+        });
+      };
+
+      const isInputAlreadyInErrorState = ele.getAttribute('invalid') === 'true';
+
+      if (isInputAlreadyInErrorState || ele.value?.length) {
+        onBlur();
+        return;
+      }
+
+      // If the input is not in an error state, has no value, and a `formnovalidate` button was clicked,
+      // we want to prevent triggering validation.
+      // This handles a case where a required input was focused, and the user then clicked a social login button —
+      // in that case, we don't want the required error message to flash for a split second.
+      const ref = { timer: undefined };
+
+      const onClick = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+
+        if (target.getAttribute('formnovalidate') === 'true') {
+          clearTimeout(ref.timer);
+          ref.timer = undefined;
+        }
+      };
+
+      ref.timer = setTimeout(() => {
+        rootEle.removeEventListener('click', onClick);
+        onBlur();
+        ref.timer = undefined;
+      }, 150);
+
+      rootEle.addEventListener('click', onClick, { once: true });
     });
   });
 };
@@ -679,5 +728,67 @@ export const transformStepStateForCustomScreen = (
     sanitizedState.error = { text: errorText, type: errorType };
   }
 
+  if (state.action) {
+    sanitizedState.action = state.action;
+  }
+
+  if (state.screenState?.componentsConfig?.thirdPartyAppApproveScopes?.data) {
+    sanitizedState.inboundAppApproveScopes =
+      state.screenState.componentsConfig.thirdPartyAppApproveScopes.data;
+  }
+
   return sanitizedState;
+};
+
+export const transformScreenInputs = (inputs: Record<string, any>) => {
+  const res = { ...inputs };
+
+  if (inputs.inboundAppApproveScopes) {
+    res.thirdPartyAppApproveScopes = inputs.inboundAppApproveScopes;
+  }
+
+  return res;
+};
+
+export function getScriptResultPath(scriptId: string, resultKey?: string) {
+  const path = resultKey ? `${scriptId}_${resultKey}` : scriptId;
+  return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
+}
+
+export const openCenteredPopup = (
+  url: string,
+  title: string,
+  w: number,
+  h: number,
+) => {
+  const dualScreenLeft =
+    window.screenLeft !== undefined
+      ? window.screenLeft
+      : (window.screen as any).left;
+  const dualScreenTop =
+    window.screenTop !== undefined
+      ? window.screenTop
+      : (window.screen as any).top;
+
+  const width =
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    window.screen.width;
+  const height =
+    window.innerHeight ||
+    document.documentElement.clientHeight ||
+    window.screen.height;
+
+  const left = (width - w) / 2 + dualScreenLeft;
+  const top = (height - h) / 2 + dualScreenTop;
+
+  const popup = window.open(
+    url,
+    title,
+    `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`,
+  );
+
+  popup.focus();
+
+  return popup;
 };

@@ -17,6 +17,8 @@ interface IAuthProviderProps {
   baseUrl?: string;
   // allows to override the base URL that is used to fetch static files
   baseStaticUrl?: string;
+  // allows to override the base URL that is used to fetch external script files
+  baseCdnUrl?: string;
   // If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
@@ -43,6 +45,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   projectId,
   baseUrl = '',
   baseStaticUrl = '',
+  baseCdnUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
   oidcConfig = undefined,
@@ -144,6 +147,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
@@ -166,6 +170,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       projectId,
       baseUrl,
       baseStaticUrl,
+      baseCdnUrl,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
       setUser,
