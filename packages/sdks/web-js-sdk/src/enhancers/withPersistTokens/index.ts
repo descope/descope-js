@@ -51,6 +51,7 @@ export const withPersistTokens =
           await getAuthInfoFromResponse(res),
           sessionTokenViaCookie,
           storagePrefix,
+          config.logger,
         );
       }
     };
