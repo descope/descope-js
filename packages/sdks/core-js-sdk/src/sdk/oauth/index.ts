@@ -19,12 +19,14 @@ const withOauth = (httpClient: HttpClient) => ({
       redirectUrl?: string,
       loginOptions?: LoginOptions,
       token?: string,
+      loginHint?: string,
     ) => {
       return transformResponse(
         httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
           queryParams: {
             provider,
             ...(redirectUrl && { redirectURL: redirectUrl }),
+            ...(loginHint && { loginHint }),
           },
           token,
         }),
@@ -37,12 +39,14 @@ const withOauth = (httpClient: HttpClient) => ({
           redirectUrl?: string,
           loginOptions?: LoginOptions,
           token?: string,
+          loginHint?: string,
         ) =>
           transformResponse(
             httpClient.post(apiPaths.oauth.start, loginOptions || {}, {
               queryParams: {
                 provider,
                 ...(redirectUrl && { redirectURL: redirectUrl }),
+                ...(loginHint && { loginHint }),
               },
               token,
             }),
