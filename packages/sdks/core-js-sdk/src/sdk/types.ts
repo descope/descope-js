@@ -134,6 +134,7 @@ export type JWTResponse = {
   user?: UserResponse;
   firstSeen?: boolean;
   sessionExpiration: number;
+  externalToken?: string; // When Descope is configured to add an external token to the authentication response
 };
 
 /** Authentication info result from exchanging access keys for a session */
