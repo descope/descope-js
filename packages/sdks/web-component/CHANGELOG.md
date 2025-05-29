@@ -2,6 +2,52 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.14](https://github.com/descope/descope-js/compare/web-component-3.43.13...web-component-3.43.14) (2025-05-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.2`
+## [3.43.13](https://github.com/descope/descope-js/compare/web-component-3.43.12...web-component-3.43.13) (2025-05-20)
+
+
+### Bug Fixes
+
+* issue 10689 RELEASE ([#1121](https://github.com/descope/descope-js/issues/1121)) ([a644bf6](https://github.com/descope/descope-js/commit/a644bf61c76a3dbc3d0d0449d62db4e0fd861e63))
+
+## [3.43.12](https://github.com/descope/descope-js/compare/web-component-3.43.11...web-component-3.43.12) (2025-05-18)
+
+
+### Bug Fixes
+
+* oauth race condition ([#1119](https://github.com/descope/descope-js/issues/1119)) RELEASE ([d4ccbc3](https://github.com/descope/descope-js/commit/d4ccbc31e77cfc40f33c06b56bbb8c8a3c97a5cd))
+
+## [3.43.11](https://github.com/descope/descope-js/compare/web-component-3.43.10...web-component-3.43.11) (2025-05-18)
+
+
+### Bug Fixes
+
+* issue-9913 RELEASE ([#1116](https://github.com/descope/descope-js/issues/1116)) ([432190c](https://github.com/descope/descope-js/commit/432190c85ba0c258cc3341d30d5ceb9d3ba4ac71))
+
+## [3.43.10](https://github.com/descope/descope-js/compare/web-component-3.43.9...web-component-3.43.10) (2025-05-15)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.1`
+
+### Bug Fixes
+
+* Issue9119 RELEASE ([#1118](https://github.com/descope/descope-js/issues/1118)) RELEASE ([78a5583](https://github.com/descope/descope-js/commit/78a55837ca7ecdef9273d3e79402c17ab39ead49))
+
+## [3.43.9](https://github.com/descope/descope-js/compare/web-component-3.43.8...web-component-3.43.9) (2025-05-14)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.4`
+## [3.43.8](https://github.com/descope/descope-js/compare/web-component-3.43.7...web-component-3.43.8) (2025-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.0`
 ## [3.43.7](https://github.com/descope/descope-js/compare/web-component-3.43.6...web-component-3.43.7) (2025-05-07)
 
 ### Dependency Updates

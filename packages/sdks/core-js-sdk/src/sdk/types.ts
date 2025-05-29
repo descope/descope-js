@@ -289,6 +289,7 @@ export type FlowResponse = {
   // redirect data - if action is 'redirect'
   redirect?: {
     url: string;
+    isPopup?: boolean;
   };
   // SAML IDP response (this will be used to build the html form response goes from the IDP through the end user browser to the SP)
   samlIdpResponse?: {

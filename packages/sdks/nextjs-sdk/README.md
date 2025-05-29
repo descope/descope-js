@@ -141,7 +141,7 @@ import { authMiddleware } from '@descope/nextjs-sdk/server'
 
 export default authMiddleware({
 	// The Descope project ID to use for authentication
-	// Defaults to process.env.DESCOPE_PROJECT_ID
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
 	projectId: 'your-descope-project-id',
 
 	// The URL to redirect to if the user is not authenticated
@@ -263,7 +263,7 @@ session({
 })
 ```
 
-- **projectId:** The Descope Project ID. If not provided, the function will fall back to `DESCOPE_PROJECT_ID` from the environment variables.
+- **projectId:** The Descope Project ID. If not provided, the function will fall back to `NEXT_PUBLIC_DESCOPE_PROJECT_ID` from the environment variables.
 - **baseUrl:** The Descope API base URL.
 
 This allows developers to use `session()` even if the project ID is not set in the environment.
@@ -282,7 +282,7 @@ import { createSdk } from '@descope/nextjs-sdk/server';
 
 const sdk = createSdk({
 	// The Descope project ID to use for authentication
-	// Defaults to process.env.DESCOPE_PROJECT_ID
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
 	projectId: 'your-descope-project-id',
 
 	// The Descope management key to use for management operations
@@ -290,7 +290,7 @@ const sdk = createSdk({
 	managementKey: 'your-descope-management-key'
 
 	// Optional: Descope API base URL
-	// Defaults to process.env.DESCOPE_BASE_URL
+	// Defaults to process.env.NEXT_PUBLIC_DESCOPE_BASE_URL
 	// baseUrl: 'https://...'
 });
 

@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.33.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.1...web-js-sdk-1.33.2) (2025-05-22)
+
+## [1.33.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.0...web-js-sdk-1.33.1) (2025-05-15)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.1`
+## [1.33.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.32.0...web-js-sdk-1.33.0) (2025-05-11)
+
+
+### Features
+
+* implement flow nonce header handling  ([#1112](https://github.com/descope/descope-js/issues/1112)) ([0dd892d](https://github.com/descope/descope-js/commit/0dd892dde09db2ac4b662f4e4611d88aa715b8d2))
+
 ## [1.32.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.31.4...web-js-sdk-1.32.0) (2025-04-29)
 
 ### Dependency Updates
