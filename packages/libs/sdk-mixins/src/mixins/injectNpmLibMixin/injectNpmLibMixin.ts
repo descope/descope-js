@@ -14,7 +14,7 @@ export const injectNpmLibMixin = createSingletonMixin(
 
     return class InjectNpmLibMixinClass extends BaseClass {
       get baseCdnUrl() {
-        return this.getAttribute('base-cdn-url');
+        return this.getAttribute('base-cdn-url') || '';
       }
 
       injectNpmLib(

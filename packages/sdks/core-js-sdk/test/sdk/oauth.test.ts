@@ -55,6 +55,26 @@ describe('oauth', () => {
       );
     });
 
+    it('should override the redirect url when provided and use loginHint', () => {
+      sdk.oauth.start.facebook(
+        'http://redirecturl.com/',
+        undefined,
+        undefined,
+        'someloginhint',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.oauth.start,
+        {},
+        {
+          queryParams: {
+            provider: 'facebook',
+            redirectURL: 'http://redirecturl.com/',
+            loginHint: 'someloginhint',
+          },
+        },
+      );
+    });
+
     it('should run start with provider name', () => {
       sdk.oauth.start('test', 'http://redirecturl.com/');
       expect(mockHttpClient.post).toHaveBeenCalledWith(

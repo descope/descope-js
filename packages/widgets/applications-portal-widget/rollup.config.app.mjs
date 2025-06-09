@@ -28,6 +28,7 @@ export default {
           process.env.DESCOPE_BASE_STATIC_URL || '',
         ),
         DESCOPE_WIDGET_ID: JSON.stringify(process.env.DESCOPE_WIDGET_ID || ''),
+        DESCOPE_TENANT: JSON.stringify(process.env.DESCOPE_TENANT || ''),
       },
     }),
     del({ targets: 'build' }),
