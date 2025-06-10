@@ -82,19 +82,11 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
               'descope-user-attribute[data-id^="builtin."]',
             );
 
-          console.log(
-            'allBuiltinAttributesComponents',
-            allBuiltinAttributesComponents,
-          );
-
           Array.from(allBuiltinAttributesComponents).forEach((nodeEle) => {
             const field = nodeEle
               .getAttribute('data-id')
               .replace('builtin.', '');
             const val = userBuiltinAttributes[field];
-
-            console.log('field', field);
-            console.log('val', val);
 
             const compInstance = new UserAttributeDriver(nodeEle, {
               logger: this.logger,
@@ -168,8 +160,6 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
-
-        console.log('onWidgetRootReady');
 
         this.#updateBuiltinValueUserAttrs(getUserBuiltinAttrs(this.state));
 
