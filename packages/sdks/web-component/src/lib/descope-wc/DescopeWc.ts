@@ -828,7 +828,7 @@ class DescopeWc extends BaseDescopeWc {
 
         window.addEventListener('message', onPostMessage);
       } else {
-        window.location.assign(redirectTo);
+        this.handleRedirect(redirectTo);
       }
       return;
     }
@@ -1029,6 +1029,12 @@ class DescopeWc extends BaseDescopeWc {
     // update step state
     this.stepState.update(stepStateUpdate);
   }
+
+  // this function is used to handle redirects in the web component
+  // it can be overridden by the user to handle redirects in a custom way
+  handleRedirect = (redirectTo: string) => {
+    window.location.assign(redirectTo);
+  };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
     const toggleVisibility = () => {
