@@ -1,1 +1,16 @@
-{}
+{
+  "packages/widgets/access-key-management-widget": "0.4.29",
+  "packages/widgets/applications-portal-widget": "0.3.29",
+  "packages/sdks/core-js-sdk": "2.44.3",
+  "packages/widgets/role-management-widget": "0.3.30",
+  "packages/libs/sdk-mixins": "0.13.5",
+  "packages/widgets/user-management-widget": "0.7.29",
+  "packages/widgets/user-profile-widget": "0.5.0",
+  "packages/sdks/web-component": "3.43.16",
+  "packages/sdks/angular-sdk": "0.15.17",
+  "packages/widgets/audit-management-widget": "0.4.30",
+  "packages/sdks/nextjs-sdk": "0.13.18",
+  "packages/sdks/react-sdk": "2.14.23",
+  "packages/sdks/vue-sdk": "2.9.33",
+  "packages/sdks/web-js-sdk": "1.33.5"
+}
