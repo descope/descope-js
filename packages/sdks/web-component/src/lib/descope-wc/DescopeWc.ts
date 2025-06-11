@@ -1032,6 +1032,7 @@ class DescopeWc extends BaseDescopeWc {
 
   // this function is used to handle redirects in the web component
   // it can be overridden by the user to handle redirects in a custom way
+  // eslint-disable-next-line class-methods-use-this
   handleRedirect = (redirectTo: string) => {
     window.location.assign(redirectTo);
   };
