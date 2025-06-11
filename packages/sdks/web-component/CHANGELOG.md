@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.15](https://github.com/descope/descope-js/compare/web-component-3.43.14...web-component-3.43.15) (2025-06-11)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.5`
+* `web-js-sdk` updated to version `1.33.3`
+
+### Bug Fixes
+
+* allow custom redirect RELEASE ([#1128](https://github.com/descope/descope-js/issues/1128)) ([03bb9f8](https://github.com/descope/descope-js/commit/03bb9f8c66459e314b0fa050d59909d9eab887e7))
+
 ## [3.43.14](https://github.com/descope/descope-js/compare/web-component-3.43.13...web-component-3.43.14) (2025-05-22)
 
 ### Dependency Updates
