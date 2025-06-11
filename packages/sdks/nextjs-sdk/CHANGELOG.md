@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.18](https://github.com/descope/descope-js/compare/nextjs-sdk-v0.13.18...nextjs-sdk-v0.13.18) (2025-06-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @descope/react-sdk bumped to 2.14.23
+    * @descope/core-js-sdk bumped to 2.44.4
+    * @descope/web-component bumped to 3.43.17
+  * optionalDependencies
+    * @descope/web-js-sdk bumped from >=1 to >=1.33.5
+
 ## [0.13.17](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.16...nextjs-sdk-0.13.17) (2025-06-11)
 
 ### Dependency Updates
