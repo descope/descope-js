@@ -1,0 +1,28 @@
+{
+  "bootstrap-sha": "2a8ef808c589947a429dd63ed73bbc8d6860477a",
+  "release-type": "node",
+  "plugins": [
+    {
+      "type": "node-workspace"
+    }
+  ],
+  "packages": {
+    "packages/sdks/angular-sdk": {},
+    "packages/sdks/web-component": {},
+    "packages/sdks/nextjs-sdk": {},
+    "packages/sdks/vue-sdk": {},
+    "packages/sdks/web-js-sdk": {},
+    "packages/sdks/react-sdk": {},
+    "packages/sdks/core-js-sdk": {},
+    "packages/libs/sdk-helpers": {},
+    "packages/libs/sdk-mixins": {},
+    "packages/libs/sdk-component-drivers": {},
+    "packages/libs/escape-markdown": {},
+    "packages/widgets/audit-management-widget": {},
+    "packages/widgets/user-profile-widget": {},
+    "packages/widgets/user-management-widget": {},
+    "packages/widgets/applications-portal-widget": {},
+    "packages/widgets/access-key-management-widget": {},
+    "packages/widgets/role-management-widget": {}
+  }
+}
