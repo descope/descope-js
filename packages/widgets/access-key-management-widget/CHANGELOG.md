@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.30](https://github.com/descope/descope-js/compare/access-key-management-widget-v0.4.29...access-key-management-widget-v0.4.30) (2025-06-11)
+
+
+### Bug Fixes
+
+* Replace SDK URLs ([#1123](https://github.com/descope/descope-js/issues/1123)) ([e77a376](https://github.com/descope/descope-js/commit/e77a3762b2fa2ce5064719c9769327b66c10e043))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @descope/web-js-sdk bumped to 1.33.5
+    * @descope/sdk-mixins bumped to 0.13.6
+
 ## [0.4.29](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.28...access-key-management-widget-0.4.29) (2025-06-11)
 
 ### Dependency Updates

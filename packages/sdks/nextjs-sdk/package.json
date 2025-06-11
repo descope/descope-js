@@ -1,6 +1,6 @@
 {
 	"name": "@descope/nextjs-sdk",
-	"version": "0.13.17",
+	"version": "0.13.18",
 	"description": "Descope NextJS SDK",
 	"author": "Descope Team <info@descope.com>",
 	"homepage": "https://github.com/descope/descope-js",
@@ -144,6 +144,6 @@
 		"react": ">=18"
 	},
 	"optionalDependencies": {
-		"@descope/web-js-sdk": ">=1"
+		"@descope/web-js-sdk": ">=1.33.5"
 	}
 }
