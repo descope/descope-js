@@ -64,7 +64,7 @@ export type UserResponse = User & {
   picture?: string;
   roleNames?: string[];
   userTenants?: UserTenant[];
-  createTime: number;
+  createdTime: number;
   TOTP: boolean;
   SAML: boolean;
   SCIM: boolean;
