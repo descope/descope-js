@@ -127,7 +127,7 @@ export const staticResourcesMixin = createSingletonMixin(
       }
 
       get baseStaticUrl() {
-        return this.getAttribute('base-static-url');
+        return this.getAttribute('base-static-url') || '';
       }
     };
   },
