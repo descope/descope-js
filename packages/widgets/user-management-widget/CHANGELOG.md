@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.30](https://github.com/descope/descope-js/compare/user-management-widget-0.7.29...user-management-widget-0.7.30) (2025-06-13)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.6`
 ## [0.7.29](https://github.com/descope/descope-js/compare/user-management-widget-0.7.28...user-management-widget-0.7.29) (2025-06-11)
 
 ### Dependency Updates
