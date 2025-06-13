@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.17](https://github.com/descope/descope-js/compare/web-component-3.43.16...web-component-3.43.17) (2025-06-13)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.6`
 ## [3.43.16](https://github.com/descope/descope-js/compare/web-component-3.43.15...web-component-3.43.16) (2025-06-11)
 
 ### Dependency Updates
