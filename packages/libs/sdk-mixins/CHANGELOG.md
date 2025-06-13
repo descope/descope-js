@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.6](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.5...sdk-mixins-0.13.6) (2025-06-13)
+
+
+### Bug Fixes
+
+* issue 11044 RELEASE ([#1131](https://github.com/descope/descope-js/issues/1131)) ([260b173](https://github.com/descope/descope-js/commit/260b173add7369597a6254463e5d74e3fca4e579))
+
 ## [0.13.5](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.4...sdk-mixins-0.13.5) (2025-06-11)
 
 
