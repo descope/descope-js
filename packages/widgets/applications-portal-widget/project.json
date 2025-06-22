@@ -4,14 +4,6 @@
   "sourceRoot": "packages/widgets/applications-portal-widget/src",
   "projectType": "library",
   "targets": {
-    "version": {
-      "executor": "@jscutlery/semver:version",
-      "options": {
-        "trackDeps": true,
-        "push": false,
-        "preset": "conventional"
-      }
-    },
     "licenseCheck": {
       "executor": "nx:run-commands",
       "options": {
