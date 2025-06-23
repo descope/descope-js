@@ -4,7 +4,7 @@ The Descope SDK for React provides convenient access to the Descope for an appli
 
 ## Requirements
 
-- The SDK supports React version 16 and above.
+- The SDK supports React version 17 and above.
 - A Descope `Project ID` is required for using the SDK. Find it on the [project page in the Descope Console](https://app.descope.com/settings/project).
 
 ## Installing the SDK
