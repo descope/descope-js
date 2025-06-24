@@ -1,7 +1,7 @@
 {
-  "name": "tenant-admin-widget",
+  "name": "tenant-profile-widget",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/widgets/tenant-admin-widget/src",
+  "sourceRoot": "packages/widgets/tenant-profile-widget/src",
   "projectType": "library",
   "targets": {
     "version": {

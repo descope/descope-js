@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import '@descope/web-component';
-import { TenantAdminWidget } from './widget';
+import { TenantProfileWidget } from './widget';
 
 declare global {
   interface HTMLElement {
@@ -13,6 +13,6 @@ declare global {
   }
 }
 
-export default TenantAdminWidget;
+export default TenantProfileWidget;
 
-customElements.define('descope-tenant-admin-widget', TenantAdminWidget);
+customElements.define('descope-tenant-profile-widget', TenantProfileWidget);

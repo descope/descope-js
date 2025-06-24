@@ -13,7 +13,7 @@ export const createSdk = (
     ...config,
     persistTokens: true,
     baseHeaders: {
-      'x-descope-widget-type': 'tenant-admin-widget',
+      'x-descope-widget-type': 'tenant-profile-widget',
       'x-descope-widget-id': widgetId,
       'x-descope-widget-version': BUILD_VERSION,
     },

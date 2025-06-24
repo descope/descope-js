@@ -62,7 +62,9 @@
         const shouldLogin = (await getShouldLogin()) && !isMock;
         const rootEle = document.querySelector('.container');
 
-        const widgetEle = document.createElement('descope-tenant-admin-widget');
+        const widgetEle = document.createElement(
+          'descope-tenant-profile-widget',
+        );
         widgetEle.setAttribute('project-id', DESCOPE_PROJECT_ID);
         widgetEle.setAttribute('base-url', DESCOPE_BASE_URL);
         widgetEle.setAttribute('base-static-url', DESCOPE_BASE_STATIC_URL);

@@ -56,7 +56,7 @@ const configContent = {
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
 
-describe('tenant-admin-widget', () => {
+describe('tenant-profile-widget', () => {
   beforeEach(() => {
     fetchMock.mockImplementation((url: string) => {
       const res = {

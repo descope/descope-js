@@ -16,7 +16,7 @@ const rootMixin = (superclass: CustomElementConstructor) =>
 
       WebComponent.sdkConfigOverrides = {
         baseHeaders: {
-          'x-descope-widget-type': 'tenant-admin-widget',
+          'x-descope-widget-type': 'tenant-profile-widget',
           'x-descope-widget-id': this.getAttribute('widget-id'),
           'x-descope-widget-version': BUILD_VERSION,
         },
@@ -24,4 +24,4 @@ const rootMixin = (superclass: CustomElementConstructor) =>
     }
   };
 
-export const TenantAdminWidget = compose(rootMixin)(HTMLElement);
+export const TenantProfileWidget = compose(rootMixin)(HTMLElement);

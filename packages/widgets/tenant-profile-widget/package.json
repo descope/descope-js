@@ -1,5 +1,5 @@
 {
-  "name": "@descope/tenant-admin-widget",
+  "name": "@descope/tenant-profile-widget",
   "version": "0.0.1",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
@@ -10,9 +10,9 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
-  "description": "Descope tenant admin widget",
+  "description": "Descope tenant profile widget",
   "scripts": {
-    "start": "npx nx run tenant-admin-widget:build && rollup -wc rollup.config.app.serve.mjs",
+    "start": "npx nx run tenant-profile-widget:build && rollup -wc rollup.config.app.serve.mjs",
     "build:app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
     "test": "npm run test:unit",

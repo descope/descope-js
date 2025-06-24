@@ -23,7 +23,7 @@ export default [
       dir: 'dist',
       format: 'iife',
       sourcemap: true,
-      name: 'descope-tenant-admin-widget',
+      name: 'descope-tenant-profile-widget',
       extend: true,
       inlineDynamicImports: true,
     },
