@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.24](https://github.com/descope/descope-js/compare/react-sdk-2.14.23...react-sdk-2.14.24) (2025-06-24)
+
+
+### Bug Fixes
+
+* Fixed README to say we don't support React 16 ([#1135](https://github.com/descope/descope-js/issues/1135)) ([acebe7d](https://github.com/descope/descope-js/commit/acebe7deca9127e733ca09480218b3805e9792ea))
+* issue 11105 RELEASE ([#1136](https://github.com/descope/descope-js/issues/1136)) ([02da76d](https://github.com/descope/descope-js/commit/02da76d9a34909217a32b768366145845bbd2b15))
+
 ## [2.14.23](https://github.com/descope/descope-js/compare/react-sdk-2.14.22...react-sdk-2.14.23) (2025-06-13)
 
 ### Dependency Updates
