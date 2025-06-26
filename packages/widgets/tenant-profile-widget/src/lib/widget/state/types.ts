@@ -7,6 +7,11 @@ export type State = {
     error: unknown;
     data: Record<string, any>;
   };
+  tenant: {
+    loading: boolean;
+    error: unknown;
+    data: Record<string, any>;
+  };
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;

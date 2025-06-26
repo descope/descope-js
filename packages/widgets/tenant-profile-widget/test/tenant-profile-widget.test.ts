@@ -90,7 +90,7 @@ describe('tenant-profile-widget', () => {
 
   describe('sdk', () => {
     it('me', async () => {
-      const sdk = createSdk({ projectId: mockProjectId }, false);
+      const sdk = createSdk({ projectId: mockProjectId }, 'tenant-1', false);
       const result = await sdk.user.me();
 
       await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {

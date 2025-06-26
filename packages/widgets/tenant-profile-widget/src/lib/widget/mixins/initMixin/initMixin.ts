@@ -1,6 +1,9 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
+import { initTenantEmailDomainsMixin } from './initComponentsMixins/initTenantEmailDomainsMixin';
+import { initTenantEnforceSSOMixin } from './initComponentsMixins/initTenantEnforceSSOMixin';
+import { initTenantNameMixin } from './initComponentsMixins/initTenantNameMixin';
 import { initWidgetRootMixin } from './initComponentsMixins/initWidgetRootMixin';
 
 export const initMixin = createSingletonMixin(
@@ -11,6 +14,9 @@ export const initMixin = createSingletonMixin(
       themeMixin,
       flowRedirectUrlMixin, // This mixin must be before all other mixins that loads flows,
       initWidgetRootMixin,
+      initTenantNameMixin,
+      initTenantEmailDomainsMixin,
+      initTenantEnforceSSOMixin,
     )(superclass) {
       async init() {
         await super.init?.();

@@ -29,6 +29,7 @@ export const apiMixin = createSingletonMixin(
             baseUrl: this.baseUrl,
             refreshCookieName: this.refreshCookieName,
           },
+          this.tenantId,
           this.mock === 'true',
           this.widgetId,
         );
@@ -36,6 +37,10 @@ export const apiMixin = createSingletonMixin(
 
       get widgetId() {
         return this.getAttribute('widget-id');
+      }
+
+      get tenantId() {
+        return this.getAttribute('tenant');
       }
 
       get mock() {
@@ -53,11 +58,14 @@ export const apiMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.observeAttributes(['project-id', 'base-url'], () => {
-          if (this.#api) {
-            this.#createSdk();
-          }
-        });
+        this.observeAttributes(
+          ['project-id', 'base-url', 'tenant', 'mock'],
+          () => {
+            if (this.#api) {
+              this.#createSdk();
+            }
+          },
+        );
       }
     };
   },

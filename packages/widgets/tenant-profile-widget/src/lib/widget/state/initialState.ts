@@ -6,4 +6,9 @@ export const initialState: State = {
     error: null,
     data: {},
   },
+  tenant: {
+    loading: false,
+    error: null,
+    data: {},
+  },
 };

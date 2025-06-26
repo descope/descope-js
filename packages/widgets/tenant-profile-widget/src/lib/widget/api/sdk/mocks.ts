@@ -1,4 +1,4 @@
-import { User } from '../types';
+import { Tenant, User } from '../types';
 
 const me: () => Promise<User> = async () =>
   new Promise((resolve) => {
@@ -33,4 +33,44 @@ const user = {
   me,
 };
 
-export { user };
+const get: () => Promise<Tenant> = async () =>
+  new Promise((resolve) => {
+    resolve({
+      // create tenant mocks
+      tenantId: 'tenant-1',
+      roleNames: ['admin'],
+      id: 'tenant-1',
+      name: 'Test Tenant',
+      selfProvisioningDomains: ['test.com', 'bars.com'],
+      customAttributes: {},
+      authType: 'password',
+      domains: [],
+      createdTime: Date.now(),
+      disabled: false,
+      enforceSSO: true,
+    });
+  });
+
+const update: (tenant: Tenant) => Promise<Tenant> = async () =>
+  new Promise((resolve) => {
+    resolve({
+      tenantId: 'tenant-1',
+      roleNames: ['admin'],
+      id: 'tenant-1',
+      name: 'Test Tenant',
+      selfProvisioningDomains: ['test.com'],
+      customAttributes: {},
+      authType: 'password',
+      domains: [],
+      createdTime: Date.now(),
+      disabled: false,
+      enforceSSO: true,
+    });
+  });
+
+const tenantMock = {
+  get,
+  update,
+};
+
+export { tenantMock, user };

@@ -1,11 +1,13 @@
 import '@descope/core-js-sdk';
 import createWebSdk from '@descope/web-js-sdk';
+import { createTenantSdk } from './createTenantSdk';
 import { createUserSdk } from './createUserSdk';
 
 declare const BUILD_VERSION: string;
 
 export const createSdk = (
   config: Parameters<typeof createWebSdk>[0],
+  tenant: string,
   mock: boolean,
   widgetId?: string,
 ) => {
@@ -26,6 +28,11 @@ export const createSdk = (
         ? webSdk.logout
         : <typeof webSdk.logout>(<unknown>(async () => {})),
     },
+    tenant: createTenantSdk({
+      httpClient: webSdk.httpClient,
+      tenantId: tenant,
+      mock,
+    }),
   };
 };
 

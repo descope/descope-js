@@ -5,7 +5,7 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import { getMe } from '../state/asyncActions';
+import { getMe, getTenant } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
 
@@ -18,9 +18,12 @@ export const stateManagementMixin = createSingletonMixin(
         reducers: {},
         extraReducers: (builder) => {
           getMe.reducer(builder);
+          getTenant.reducer(builder);
+          // updateTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
+          getTenant: getTenant.action,
         },
       }),
       initLifecycleMixin,

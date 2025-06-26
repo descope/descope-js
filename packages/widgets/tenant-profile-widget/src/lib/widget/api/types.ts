@@ -8,8 +8,16 @@ type CustomAttributes = Record<string, CustomAttributeType>;
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
-type Tenant = AssociatedTenant & {
-  tenantName: string;
+export type Tenant = AssociatedTenant & {
+  id: string;
+  name: string;
+  selfProvisioningDomains: string[];
+  customAttributes: CustomAttributes;
+  authType: string;
+  domains: string[];
+  createdTime: number;
+  disabled: boolean;
+  enforceSSO: boolean;
 };
 
 export type HttpClient = Sdk['httpClient'];

@@ -41,29 +41,22 @@ export default `
     st-gap="2rem"
     >
     <descope-user-attribute
-      edit-flow-id="test-widget"
-      delete-flow-id="test-widget"
-      data-id="email"
-      placeholder="Add an email"
+      data-id="tenant-name"
+      label="Tenant Name"
       full-width="true"
-      label="Email"
       required="false"
-    ></descope-user-attribute
-    ><descope-user-attribute
-      edit-flow-id="test-widget"
-      delete-flow-id="test-widget"
-      data-id="name"
+    ></descope-user-attribute>
+    <descope-user-attribute
+      data-id="tenant-email-domains"
+      label="Tenant Email Domains"
       full-width="true"
-      label="Name"
       required="false"
-    ></descope-user-attribute
-    ><descope-user-attribute
-      edit-flow-id="test-widget"
-      delete-flow-id="test-widget"
-      data-id="phone"
-      placeholder="Add a phone number"
+    ></descope-user-attribute>
+    <descope-user-attribute
+      data-id="tenant-enforce-sso"
+      label="Tenant Enforce SSO"
+      type="boolean"
       full-width="true"
-      label="Phone"
       required="false"
     ></descope-user-attribute></descope-container
   >
