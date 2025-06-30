@@ -1,11 +1,11 @@
 import html from '@open-wc/rollup-plugin-html';
-import typescript from '@rollup/plugin-typescript';
-import del from 'rollup-plugin-delete';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import typescript from '@rollup/plugin-typescript';
 import dotenv from 'dotenv';
 import define from 'rollup-plugin-define';
+import del from 'rollup-plugin-delete';
 import svg from 'rollup-plugin-svg-import';
 
 import packageJson from './package.json' assert { type: 'json' };
@@ -28,6 +28,7 @@ export default {
           process.env.DESCOPE_BASE_STATIC_URL || '',
         ),
         DESCOPE_WIDGET_ID: JSON.stringify(process.env.DESCOPE_WIDGET_ID || ''),
+        DESCOPE_TENANT_ID: JSON.stringify(process.env.DESCOPE_TENANT_ID || ''),
       },
     }),
     del({ targets: 'build' }),
