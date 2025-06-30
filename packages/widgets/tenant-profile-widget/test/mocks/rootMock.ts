@@ -17,7 +17,7 @@ export default `
     id="avatarContainer"
     st-horizontal-padding="0rem"
     st-vertical-padding="0rem"
-    st-align-items="start"
+    st-align-items="start"  
     st-justify-content="flex-start"
     st-background-color="#ffffff00"
     st-host-width="100%"

@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import '@descope/web-component';
+import type { Unsubscribe } from 'redux'; //  workaround for https://github.com/microsoft/TypeScript/issues/42873
 import { TenantProfileWidget } from './widget';
+import '@descope/web-component';
 
 declare global {
   interface HTMLElement {

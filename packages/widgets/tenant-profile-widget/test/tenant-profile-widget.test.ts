@@ -83,7 +83,6 @@ describe('tenant-profile-widget', () => {
 
   afterEach(() => {
     document.getElementsByTagName('head')[0].innerHTML = '';
-    document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
     mockHttpClient.reset();
   });

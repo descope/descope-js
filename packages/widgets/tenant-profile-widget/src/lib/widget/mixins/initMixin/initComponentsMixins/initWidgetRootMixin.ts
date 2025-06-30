@@ -23,14 +23,17 @@ export const initWidgetRootMixin = createSingletonMixin(
       stateManagementMixin,
     )(superclass) {
       async #initWidgetRoot() {
+        /*
         const importRoot = await import('./rootMock').then(
           (module) => module.default,
         );
+        */
 
         const template = createTemplate(
-          importRoot,
-          // await this.fetchWidgetPage('root.html'),
+          // await import('../../../../../../test/mocks/rootMock').then(module => module.default)
+          await this.fetchWidgetPage('root.html'),
         );
+
         await this.loadDescopeUiComponents(template);
         this.contentRootElement.append(template.content.cloneNode(true));
       }

@@ -69,7 +69,8 @@
     "@descope/applications-portal-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
-    "@descope/core-js-sdk": "workspace:*"
+    "@descope/core-js-sdk": "workspace:*",
+    "@descope/tenant-profile-widget": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",
