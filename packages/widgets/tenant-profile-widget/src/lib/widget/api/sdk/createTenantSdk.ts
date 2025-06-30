@@ -1,5 +1,5 @@
 import { apiPaths } from '../apiPaths';
-import { HttpClient, Tenant } from '../types';
+import { HttpClient } from '../types';
 import { withErrorHandler } from './helpers';
 import { tenantMock } from './mocks';
 
@@ -18,22 +18,10 @@ export const createTenantSdk = ({
     }
     if (!tenantId) throw new Error('tenantId is not defined');
 
-    const url = `${apiPaths.tenant.get}?id=${encodeURIComponent(tenantId)}`;
+    const url = `${apiPaths.tenant.get}?tenant=${encodeURIComponent(
+      tenantId,
+    )}&id=${encodeURIComponent(tenantId)}`;
     const res = await httpClient.get(url);
-    await withErrorHandler(res);
-    const data = await res.json();
-    return data.tenant;
-  };
-
-  const update = async (tenant: Tenant) => {
-    if (mock) {
-      return tenantMock.update(tenant);
-    }
-
-    const url = `${apiPaths.tenant.update}?id=${encodeURIComponent(tenant.id)}`;
-    const res = await httpClient.put(url, {
-      body: tenant,
-    });
     await withErrorHandler(res);
     const data = await res.json();
     return data.tenant;
@@ -41,6 +29,5 @@ export const createTenantSdk = ({
 
   return {
     get,
-    update,
   };
 };

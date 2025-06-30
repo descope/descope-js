@@ -4,6 +4,5 @@ export const apiPaths = {
   },
   tenant: {
     get: '/v1/mgmt/tenant',
-    update: '/v1/mgmt/tenant',
   },
 };
