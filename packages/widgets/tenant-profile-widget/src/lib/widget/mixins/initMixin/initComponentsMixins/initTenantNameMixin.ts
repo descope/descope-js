@@ -107,7 +107,7 @@ export const initTenantNameMixin = createSingletonMixin(
         this.tenantNameDriver = new UserAttributeDriver(
           () =>
             this.shadowRoot?.querySelector(
-              'descope-user-attribute[data-id="tenant-name"]',
+              'descope-user-attribute[data-id="tenant-name-edit"]',
             ),
           { logger: this.logger },
         );

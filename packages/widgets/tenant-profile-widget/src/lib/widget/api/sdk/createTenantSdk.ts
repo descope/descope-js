@@ -24,7 +24,7 @@ export const createTenantSdk = ({
     const res = await httpClient.get(url);
     await withErrorHandler(res);
     const data = await res.json();
-    return data.tenant;
+    return data;
   };
 
   return {
