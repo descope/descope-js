@@ -109,7 +109,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
         this.tenantEmailDomainsDriver = new UserAttributeDriver(
           () =>
             this.shadowRoot?.querySelector(
-              'descope-user-attribute[data-id="tenant-email-domains"]',
+              'descope-user-attribute[data-id="tenant-email-domain-edit"]',
             ),
           { logger: this.logger },
         );

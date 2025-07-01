@@ -109,7 +109,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
         this.tenantEnforceSSODriver = new UserAttributeDriver(
           () =>
             this.shadowRoot?.querySelector(
-              'descope-user-attribute[data-id="tenant-enforce-sso"]',
+              'descope-user-attribute[data-id="tenant-enforce-sso-edit"]',
             ),
           { logger: this.logger },
         );

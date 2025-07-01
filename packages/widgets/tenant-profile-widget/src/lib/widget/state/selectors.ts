@@ -3,10 +3,7 @@ import { State } from './types';
 
 export const getMe = (state: State) => state.me.data;
 
-export const getTenant = (state: State) => {
-  console.log('XXX getTenant', state.tenant.data);
-  return state.tenant.data;
-};
+export const getTenant = (state: State) => state.tenant.data;
 
 export const getTenantCustomAttributes = createSelector(
   getTenant,
