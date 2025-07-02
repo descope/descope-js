@@ -1,6 +1,50 @@
 # @descope/mcp-sdk
 
-Secure Model Context Protocol (MCP) SDK for Node.js with Descope authentication. Build MCP servers with enterprise-grade authentication, scope-based access control, and OAuth 2.0 compliance.
+[![Version](https://img.shields.io/npm/v/@descope/mcp-sdk.svg)](https://www.npmjs.com/package/@descope/mcp-sdk)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green)](https://modelcontextprotocol.io)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+🚀 **Build secure MCP servers with enterprise-grade authentication in minutes**
+
+Secure Model Context Protocol (MCP) SDK for Node.js with Descope authentication. Create authenticated tools, access external provider tokens, and ensure OAuth 2.0 compliance—all with just a few lines of code.
+
+## ✨ What You Get
+
+🔧 **Authenticated MCP Tools** - Built-in scope validation and user context  
+🔗 **Outbound Token Access** - Seamlessly connect to GitHub, Google, Slack, and more  
+⚡ **OAuth 2.0 Compliance** - Automatic error responses and WWW-Authenticate headers  
+📚 **Framework Ready** - Complete examples for Express.js and Next.js  
+🛡️ **Enterprise Security** - Powered by Descope's authentication platform
+
+## 🚀 Quick Start
+
+```bash
+npm install @descope/mcp-sdk
+```
+
+Create your first authenticated tool:
+
+```typescript
+import { createAuthenticatedTool } from '@descope/mcp-sdk';
+
+const userProfileTool = createAuthenticatedTool(
+  {
+    name: 'getUserProfile',
+    description: 'Get authenticated user profile',
+    requiredScopes: ['user:read'], // Automatic validation!
+  },
+  async ({ descope }) => {
+    return {
+      userId: descope.userId,
+      scopes: descope.userScopes,
+      // Access external providers too:
+      githubToken: await descope.getOutboundToken('github-app'),
+    };
+  },
+);
+```
 
 ## Prerequisites
 
@@ -131,77 +175,6 @@ export default async function handler(req, res) {
 
 > 💡 **See Complete Framework Examples**: Check `/examples/metadata/` for full implementations with authentication, error handling, and MCP tool integration.
 
-## Installation
-
-```bash
-npm install @descope/mcp-sdk
-```
-
-## Quick Start
-
-### 1. Setup Authentication Middleware with Scope Validation
-
-```typescript
-import { createMcpAuthMiddleware } from '@descope/mcp-sdk';
-
-// Create middleware with automatic scope validation
-const authMiddleware = await createMcpAuthMiddleware({
-  requiredScopes: ['mcp:access'], // Automatically returns 403 + WWW-Authenticate if missing
-});
-
-// When user lacks 'mcp:access' scope, automatically returns:
-// 403 Forbidden with header: WWW-Authenticate: Bearer, error="insufficient_scope", scope="mcp:access"
-```
-
-### 2. Build Tools with Multi-Provider Token Access
-
-```typescript
-import { createAuthenticatedTool } from '@descope/mcp-sdk';
-
-const syncGitHubRepos = createAuthenticatedTool(
-  {
-    name: 'syncGitHubRepos',
-    description: 'Sync user repositories from GitHub',
-    requiredScopes: ['github:read'], // Scope validation happens automatically
-  },
-  async ({ descope }) => {
-    // Get GitHub token via Descope outbound app - no complex OAuth flow needed!
-    const githubToken = await descope.getOutboundToken('github-app');
-
-    if (!githubToken) {
-      return { error: 'GitHub access not configured for user' };
-    }
-
-    // Call GitHub API with the token
-    const repos = await fetch('https://api.github.com/user/repos', {
-      headers: { Authorization: `Bearer ${githubToken}` },
-    }).then((r) => r.json());
-
-    return { repositories: repos.map((r) => r.name) };
-  },
-);
-```
-
-### 3. Serve Protected Resource Metadata
-
-For framework-specific implementations, see the [Easy Protected Resource Metadata APIs](#-3-easy-protected-resource-metadata-apis) section above or check the complete examples in `/examples/metadata/`:
-
-- **Express.js**: `/examples/metadata/express-metadata.ts`
-- **Next.js App Router**: `/examples/metadata/nextjs-app-router.ts`
-- **Next.js Pages Router**: `/examples/metadata/nextjs-pages-router.ts`
-
-Basic metadata generation:
-
-```typescript
-import { buildResourceMetadata } from '@descope/mcp-sdk';
-
-const metadata = buildResourceMetadata({
-  resource: 'https://api.example.com',
-  authorizationServers: ['https://auth.descope.com/YOUR_PROJECT_ID'],
-  scopes: ['mcp:read', 'mcp:write', 'github:read'],
-});
-```
-
 ## Automatic OAuth 2.0 Error Handling
 
 When required scopes are missing, the SDK automatically returns proper OAuth 2.0 error responses:
@@ -223,7 +196,7 @@ When required scopes are missing, the SDK automatically returns proper OAuth 2.0
 
 ## API Reference
 
-### createAuthMiddleware(options)
+### createMcpAuthMiddleware(options)
 
 Creates authentication middleware for MCP requests.
 
@@ -235,7 +208,7 @@ interface AuthMiddlewareOptions {
 }
 ```
 
-### defineToolWithDescope(options, handler)
+### createAuthenticatedTool(options, handler)
 
 Creates an MCP tool with Descope authentication and context.
 
@@ -375,15 +348,6 @@ Each example includes:
 - ✅ MCP tool integration with authentication
 - ✅ Proper error handling with WWW-Authenticate headers
 - ✅ TypeScript definitions and best practices
-
-## Key Benefits Summary
-
-✅ **No Manual Scope Checking** - Define `requiredScopes` once, get automatic validation  
-✅ **Multi-Provider Token Access** - Get GitHub, Google, Slack tokens via Descope outbound apps  
-✅ **OAuth 2.0 Compliance** - Proper WWW-Authenticate headers and error responses  
-✅ **Protected Resource Metadata** - RFC 9728 compliant endpoints with minimal setup  
-✅ **Enterprise Security** - Built on Descope's enterprise authentication platform  
-✅ **Framework Support** - Complete examples for Express.js and Next.js (App Router & Pages Router)
 
 ## Environment Variables
 

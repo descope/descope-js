@@ -9,23 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial release of @descope/mcp-sdk
-- Core TokenManager for JWT validation and outbound token management
-- defineToolWithDescope function for creating authenticated MCP tools
-- Automatic scope validation and authorization
-- Type-safe tool builder with Zod schema validation
-- Authentication middleware for custom MCP servers
-- Token caching for improved performance
+- `createAuthenticatedTool` function for building authenticated MCP tools with automatic scope validation
+- `createMcpAuthMiddleware` for authentication middleware with OAuth 2.0 compliance
+- `getOutboundToken` for accessing external provider tokens (GitHub, Google, Slack, etc.)
+- OAuth 2.0 Protected Resource Metadata (RFC 9728) support with `buildResourceMetadata`
+- `buildWWWAuthenticate` for compliant OAuth error responses
+- Type-safe tool builder with JSON Schema validation
+- Comprehensive framework examples (Express.js, Next.js App Router, Next.js Pages Router)
+- Full TypeScript support with type definitions
 - Comprehensive test suite with unit and integration tests
-- Examples for basic tools and multi-provider integration
-- Full TypeScript support with generic types
 - Documentation and API reference
 
 ### Features
+- ✅ Authenticated MCP tools with built-in scope checking
+- ✅ Outbound token access via Descope for external providers
+- ✅ Automatic OAuth 2.0 scope validation with compliant error responses
+- ✅ Protected Resource Metadata (RFC 9728) endpoints
 - ✅ JWT validation with signature verification
-- ✅ Scope-based authorization system
-- ✅ Outbound token fetching for third-party APIs
-- ✅ Request/response type safety with Zod
-- ✅ Error handling with standardized MCP error responses
+- ✅ WWW-Authenticate header generation for OAuth compliance
 - ✅ Token caching and performance optimization
 - ✅ Environment variable configuration
-- ✅ Middleware support for custom authentication flows
+- ✅ Framework integration examples
