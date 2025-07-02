@@ -24,7 +24,7 @@ export const fetchWidgetPagesMixin = createSingletonMixin(
           `${WIDGET_PAGES_BASE_DIR}/${this.widgetId}/${filename}`,
           'text',
         );
-        return res.body;
+        return res?.body;
       }
     };
   },

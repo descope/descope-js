@@ -21,6 +21,7 @@
         height: 100vh;
         margin: 0;
       }
+
       .container {
         width: 80%;
         min-height: 300px;
@@ -31,6 +32,7 @@
       }
     </style>
   </head>
+
   <body>
     <script type="module" src="../lib/index.ts"></script>
 
@@ -80,6 +82,7 @@
           const flowEle = document.createElement('descope-wc');
           flowEle.setAttribute('project-id', DESCOPE_PROJECT_ID);
           flowEle.setAttribute('base-url', DESCOPE_BASE_URL);
+          flowEle.setAttribute('base-static-url', DESCOPE_BASE_STATIC_URL);
           flowEle.setAttribute('flow-id', 'sign-up-or-in');
           flowEle.setAttribute('debug', 'false');
           flowEle.addEventListener('success', () => {

@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.30](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.29...applications-portal-widget-0.3.30) (2025-06-13)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.6`
+## [0.3.29](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.28...applications-portal-widget-0.3.29) (2025-06-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.4`
+## [0.3.28](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.27...applications-portal-widget-0.3.28) (2025-06-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.3`
+* `sdk-mixins` updated to version `0.13.5`
+
+### Bug Fixes
+
+* AppsPortal widget tenant ID ([#1125](https://github.com/descope/descope-js/issues/1125)) ([3ce8f74](https://github.com/descope/descope-js/commit/3ce8f74948123b8cdad29ccebae4abd8cb247909))
+* Replace SDK URLs ([#1123](https://github.com/descope/descope-js/issues/1123)) ([e77a376](https://github.com/descope/descope-js/commit/e77a3762b2fa2ce5064719c9769327b66c10e043))
+
 ## [0.3.27](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.26...applications-portal-widget-0.3.27) (2025-05-22)
 
 ### Dependency Updates

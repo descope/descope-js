@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.1...user-profile-widget-0.5.2) (2025-07-02)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.18`
+
+### Bug Fixes
+
+* UPW login flow ([#1141](https://github.com/descope/descope-js/issues/1141)) ([cefc72f](https://github.com/descope/descope-js/commit/cefc72ff3e38d009b4fd1e4930af86f7cfafb57c))
+
+## [0.5.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.0...user-profile-widget-0.5.1) (2025-06-13)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.17`
+* `sdk-mixins` updated to version `0.13.6`
+## [0.5.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.36...user-profile-widget-0.5.0) (2025-06-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.3`
+* `web-js-sdk` updated to version `1.33.4`
+* `web-component` updated to version `3.43.16`
+
+### Features
+
+* Add builtin mixin support ([#1085](https://github.com/descope/descope-js/issues/1085)) ([fd64f84](https://github.com/descope/descope-js/commit/fd64f845386a4c40c07de817ac29d45eb0d34b84))
+
+## [0.4.36](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.35...user-profile-widget-0.4.36) (2025-06-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.2`
+* `web-js-sdk` updated to version `1.33.3`
+* `web-component` updated to version `3.43.15`
+* `sdk-mixins` updated to version `0.13.5`
 ## [0.4.35](https://github.com/descope/descope-js/compare/user-profile-widget-0.4.34...user-profile-widget-0.4.35) (2025-05-22)
 
 ### Dependency Updates

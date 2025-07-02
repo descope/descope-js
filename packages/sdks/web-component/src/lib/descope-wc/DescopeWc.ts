@@ -289,7 +289,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.6', // currently using a fixed version when loading scripts
+          '1.0.9', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
@@ -828,7 +828,7 @@ class DescopeWc extends BaseDescopeWc {
 
         window.addEventListener('message', onPostMessage);
       } else {
-        window.location.assign(redirectTo);
+        this.handleRedirect(redirectTo);
       }
       return;
     }
@@ -1029,6 +1029,13 @@ class DescopeWc extends BaseDescopeWc {
     // update step state
     this.stepState.update(stepStateUpdate);
   }
+
+  // this function is used to handle redirects in the web component
+  // it can be overridden by the user to handle redirects in a custom way
+  // eslint-disable-next-line class-methods-use-this
+  handleRedirect = (redirectTo: string) => {
+    window.location.assign(redirectTo);
+  };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
     const toggleVisibility = () => {
