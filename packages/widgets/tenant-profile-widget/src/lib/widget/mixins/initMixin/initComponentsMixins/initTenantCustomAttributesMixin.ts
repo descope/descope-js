@@ -64,7 +64,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         );
         this.#editFlows[flowId]?.onSuccess(() => {
           this.#editModals[flowId]?.close();
-          this.actions.getMe();
+          this.actions.getTenant();
         });
       }
 
@@ -83,7 +83,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {
           this.#deleteModals[flowId]?.close();
-          this.actions.getMe();
+          this.actions.getTenant();
         });
       }
 

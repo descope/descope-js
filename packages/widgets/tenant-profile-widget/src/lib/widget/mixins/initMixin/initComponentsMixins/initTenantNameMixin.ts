@@ -35,14 +35,12 @@ export const initTenantNameMixin = createSingletonMixin(
 
       #editFlow: FlowDriver;
 
-      #deleteModal: ModalDriver;
-
-      #deleteFlow: FlowDriver;
-
       #initEditModal() {
         if (!this.tenantNameDriver.editFlowId) return;
 
-        this.#editModal = this.createModal({ 'data-id': 'edit-tenant-name' });
+        this.#editModal = this.createModal({
+          'data-id': 'tenant-profile-set-name',
+        });
         this.#editFlow = new FlowDriver(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -66,40 +64,7 @@ export const initTenantNameMixin = createSingletonMixin(
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
-          this.actions.getMe();
-        });
-      }
-
-      #initDeleteModal() {
-        if (!this.tenantNameDriver.deleteFlowId) return;
-
-        this.#deleteModal = this.createModal({
-          'data-id': 'delete-tenant-name',
-        });
-        this.#deleteFlow = new FlowDriver(
-          () => this.#deleteModal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
-        this.#initDeleteModalContent();
-        this.syncFlowTheme(this.#deleteFlow);
-      }
-
-      #initDeleteModalContent() {
-        this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.tenantNameDriver.deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-          }),
-        );
-        this.#deleteFlow.onSuccess(() => {
-          this.#deleteModal.close();
-          this.actions.getMe();
+          this.actions.getTenant();
         });
       }
 
@@ -115,10 +80,6 @@ export const initTenantNameMixin = createSingletonMixin(
         this.tenantNameDriver.onEditClick(() => {
           this.#editModal?.open();
         });
-
-        this.tenantNameDriver.onDeleteClick(() => {
-          this.#deleteModal?.open();
-        });
       }
 
       #onValueUpdate = withMemCache(
@@ -132,7 +93,6 @@ export const initTenantNameMixin = createSingletonMixin(
 
         this.#initTenantName();
         this.#initEditModal();
-        this.#initDeleteModal();
 
         this.#onValueUpdate(getTenantName(this.state));
 

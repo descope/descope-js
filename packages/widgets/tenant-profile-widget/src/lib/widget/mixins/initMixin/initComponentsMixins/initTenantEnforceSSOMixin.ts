@@ -68,7 +68,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
-          this.actions.getMe();
+          this.actions.getTenant();
         });
       }
 
@@ -101,7 +101,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();
-          this.actions.getMe();
+          this.actions.getTenant();
         });
       }
 

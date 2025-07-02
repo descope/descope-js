@@ -1,10 +1,10 @@
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  cookieConfigMixin,
   initLifecycleMixin,
   loggerMixin,
   modalMixin,
-  cookieConfigMixin,
   themeMixin,
 } from '@descope/sdk-mixins';
 import { createFlowTemplate, getUrlParam, resetUrlParam } from './helpers';
@@ -55,6 +55,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
         flow.onSuccess(() => {
           modal.close();
           this.actions.getMe();
+          this.actions.getTenant();
         });
 
         modal.afterClose = () => {
