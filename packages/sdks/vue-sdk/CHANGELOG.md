@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.9.34](https://github.com/descope/descope-js/compare/vue-sdk-2.9.33...vue-sdk-2.9.34) (2025-07-02)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.5.2`
+* `web-component` updated to version `3.43.18`
+## [2.9.33](https://github.com/descope/descope-js/compare/vue-sdk-2.9.32...vue-sdk-2.9.33) (2025-06-13)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.30`
+* `audit-management-widget` updated to version `0.4.30`
+* `role-management-widget` updated to version `0.3.31`
+* `user-management-widget` updated to version `0.7.30`
+* `user-profile-widget` updated to version `0.5.1`
+* `applications-portal-widget` updated to version `0.3.30`
+* `web-component` updated to version `3.43.17`
+## [2.9.32](https://github.com/descope/descope-js/compare/vue-sdk-2.9.31...vue-sdk-2.9.32) (2025-06-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.29`
+* `audit-management-widget` updated to version `0.4.29`
+* `role-management-widget` updated to version `0.3.30`
+* `user-management-widget` updated to version `0.7.29`
+* `user-profile-widget` updated to version `0.5.0`
+* `applications-portal-widget` updated to version `0.3.29`
+* `web-component` updated to version `3.43.16`
+* `web-js-sdk` updated to version `1.33.4`
+* `core-js-sdk` updated to version `2.44.3`
+## [2.9.31](https://github.com/descope/descope-js/compare/vue-sdk-2.9.30...vue-sdk-2.9.31) (2025-06-11)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.28`
+* `audit-management-widget` updated to version `0.4.28`
+* `role-management-widget` updated to version `0.3.29`
+* `user-management-widget` updated to version `0.7.28`
+* `user-profile-widget` updated to version `0.4.36`
+* `applications-portal-widget` updated to version `0.3.28`
+* `web-component` updated to version `3.43.15`
+* `web-js-sdk` updated to version `1.33.3`
+* `core-js-sdk` updated to version `2.44.2`
 ## [2.9.30](https://github.com/descope/descope-js/compare/vue-sdk-2.9.29...vue-sdk-2.9.30) (2025-05-22)
 
 ### Dependency Updates
