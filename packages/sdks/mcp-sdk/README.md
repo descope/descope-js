@@ -40,7 +40,7 @@ const userProfileTool = createAuthenticatedTool(
       userId: descope.userId,
       scopes: descope.userScopes,
       // Access external providers too:
-      githubToken: await descope.getOutboundToken('github-app'),
+      githubToken: await descope.getOutboundToken('github', ['repo:read']),
     };
   },
 );
@@ -95,7 +95,7 @@ const tool = createAuthenticatedTool(
   },
   async ({ descope }) => {
     // Get GitHub token for the authenticated user via Descope
-    const githubToken = await descope.getOutboundToken('github-app');
+    const githubToken = await descope.getOutboundToken('github', ['repo:read']);
 
     // Use GitHub token to call GitHub API
     const response = await fetch('https://api.github.com/user/repos', {
