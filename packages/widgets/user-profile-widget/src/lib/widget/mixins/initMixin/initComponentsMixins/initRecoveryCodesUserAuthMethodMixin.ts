@@ -3,11 +3,7 @@ import {
   ModalDriver,
   UserAuthMethodDriver,
 } from '@descope/sdk-component-drivers';
-import {
-  compose,
-  createSingletonMixin,
-  withMemCache,
-} from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   cookieConfigMixin,
   loggerMixin,
@@ -15,7 +11,6 @@ import {
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { getHasRecoveryCodes } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
@@ -80,21 +75,11 @@ export const initRecoveryCodesUserAuthMethodMixin = createSingletonMixin(
         });
       }
 
-      #onFulfilledUpdate = withMemCache(
-        (hasRecoveryCodes: ReturnType<typeof getHasRecoveryCodes>) => {
-          this.recoveryCodesUserAuthMethod.fulfilled = hasRecoveryCodes;
-        },
-      );
-
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
         this.#initRecoveryCodesAuthMethod();
         this.#initModal();
-
-        this.#onFulfilledUpdate(getHasRecoveryCodes(this.state));
-
-        this.subscribe(this.#onFulfilledUpdate.bind(this), getHasRecoveryCodes);
       }
     },
 );
