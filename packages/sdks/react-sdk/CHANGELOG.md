@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.25](https://github.com/descope/descope-js/compare/react-sdk-2.14.24...react-sdk-2.14.25) (2025-07-02)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.5.2`
+* `web-component` updated to version `3.43.18`
+
+### Bug Fixes
+
+* Fixed README to say we support React 16 ([#1139](https://github.com/descope/descope-js/issues/1139)) ([e3e02f2](https://github.com/descope/descope-js/commit/e3e02f29ff2c48e596bbffdbde5cface00225c6f))
+
 ## [2.14.24](https://github.com/descope/descope-js/compare/react-sdk-2.14.23...react-sdk-2.14.24) (2025-06-24)
 
 
