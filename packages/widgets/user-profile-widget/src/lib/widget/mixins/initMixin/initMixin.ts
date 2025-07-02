@@ -28,8 +28,8 @@ export const initMixin = createSingletonMixin(
       initPasskeyUserAuthMethodMixin,
       initPasswordUserAuthMethodMixin,
       initTotpUserAuthMethodMixin,
-      initUserBuiltinAttributesMixin,
       initRecoveryCodesUserAuthMethodMixin,
+      initUserBuiltinAttributesMixin,
       initLogoutMixin,
     )(superclass) {
       async init() {
