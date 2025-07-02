@@ -19,7 +19,6 @@ export const stateManagementMixin = createSingletonMixin(
         extraReducers: (builder) => {
           getMe.reducer(builder);
           getTenant.reducer(builder);
-          // updateTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,

@@ -51,26 +51,8 @@ const get: () => Promise<Tenant> = async () =>
     });
   });
 
-const update: (tenant: Tenant) => Promise<Tenant> = async () =>
-  new Promise((resolve) => {
-    resolve({
-      tenantId: 'tenant-1',
-      roleNames: ['admin'],
-      id: 'tenant-1',
-      name: 'Test Tenant',
-      selfProvisioningDomains: ['test.com'],
-      customAttributes: {},
-      authType: 'password',
-      domains: [],
-      createdTime: Date.now(),
-      disabled: false,
-      enforceSSO: true,
-    });
-  });
-
 const tenantMock = {
   get,
-  update,
 };
 
 export { tenantMock, user };
