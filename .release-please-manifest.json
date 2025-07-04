@@ -1,0 +1,19 @@
+{
+  "packages/sdks/core-js-sdk": "2.44.3",
+  "packages/sdks/web-js-sdk": "1.33.4",
+  "packages/sdks/react-sdk": "2.14.23",
+  "packages/sdks/vue-sdk": "2.9.33",
+  "packages/sdks/nextjs-sdk": "0.13.18",
+  "packages/sdks/angular-sdk": "0.15.17",
+  "packages/sdks/web-component": "3.43.17",
+  "packages/widgets/role-management-widget": "0.3.31",
+  "packages/widgets/access-key-management-widget": "0.4.30",
+  "packages/widgets/applications-portal-widget": "0.3.30",
+  "packages/widgets/audit-management-widget": "0.4.30",
+  "packages/widgets/user-profile-widget": "0.5.1",
+  "packages/widgets/user-management-widget": "0.7.30",
+  "packages/libs/sdk-component-drivers": "0.2.52",
+  "packages/libs/sdk-helpers": "0.3.0",
+  "packages/libs/sdk-mixins": "0.13.6",
+  "packages/libs/escape-markdown": "0.1.5"
+}
