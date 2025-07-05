@@ -264,6 +264,26 @@ Descope SDK is automatically refreshes the session token when it is about to exp
 If the Descope project settings are configured to manage tokens in cookies.
 you must also configure a custom domain, and set it as the `baseUrl` to the `descope` plugin. See the above [`plugin` usage](#add-descope-plugin-to-your-application) for usage example.
 
+### Auto refresh session token
+
+Descope SDK automatically refreshes the session token when it is about to expire. This is done in the background using the refresh token, without any additional configuration.
+If you want to disable this behavior, you can pass `autoRefresh: false` to the Descope plugin. This will prevent the SDK from automatically refreshing the session token.
+
+Example:
+
+```js
+import { createApp } from 'vue';
+import App from './App.vue';
+import descope from '@descope/vue-sdk';
+
+const app = createApp(App);
+app.use(descope, {
+  projectId: 'my-project-id',
+  autoRefresh: false,
+});
+app.mount('#app');
+```
+
 ### Token Persistence
 
 Descope stores two tokens: the session token and the refresh token.

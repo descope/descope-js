@@ -21,6 +21,8 @@ interface IAuthProviderProps {
   baseCdnUrl?: string;
   // If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
+  // If true, the SDK will automatically refresh the session token when it is about to expire
+  autoRefresh?: boolean;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
   // stored on local storage and can accessed with getSessionToken function
   // Use this option if session token will stay small (less than 1k)
@@ -48,6 +50,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseCdnUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
+  autoRefresh = true,
   oidcConfig = undefined,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
@@ -70,6 +73,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     projectId,
     baseUrl,
     persistTokens,
+    autoRefresh,
     sessionTokenViaCookie,
     oidcConfig,
     storeLastAuthenticatedUser,
