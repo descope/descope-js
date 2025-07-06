@@ -1150,6 +1150,16 @@ class DescopeWc extends BaseDescopeWc {
             'polling - Response has an error',
             JSON.stringify(sdkResp.error, null, 4),
           );
+
+          // Check if this error means we should stop polling
+          if (this.#isFlowGoneError(sdkResp.error.errorCode)) {
+            this.logger.info(
+              `polling - Flow is gone (${sdkResp.error.errorCode}), stopping polling`,
+            );
+            this.#resetPollingTimeout();
+            this.#handleSdkResponse(sdkResp); // Let existing error handling deal with it
+            return; // Don't reschedule
+          }
         }
 
         // will poll again if needed
@@ -1170,6 +1180,14 @@ class DescopeWc extends BaseDescopeWc {
     clearTimeout(this.#pollingTimeout);
     this.#pollingTimeout = null;
   };
+
+  // eslint-disable-next-line class-methods-use-this
+  #isFlowGoneError(errorCode: string): boolean {
+    return (
+      errorCode === 'E103205' || // Flow timed out
+      errorCode === 'E102004'
+    ); // Flow requested is in old version
+  }
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
