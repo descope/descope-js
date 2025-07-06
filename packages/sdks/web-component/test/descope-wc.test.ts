@@ -2337,6 +2337,120 @@ describe('web-component', () => {
 
       wcEle.removeEventListener('success', onSuccess);
     });
+
+    it(
+      'Should stop polling when flow is gone (E103205 - Flow timed out)',
+      async () => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+
+        // First call returns poll action, second call returns flow timeout error
+        nextMock
+          .mockReturnValueOnce(
+            generateSdkResponse({
+              action: RESPONSE_ACTIONS.poll,
+            }),
+          )
+          .mockReturnValueOnce({
+            ok: false,
+            error: {
+              errorCode: 'E103205',
+              errorDescription: 'Flow timed out',
+              errorMessage: 'The flow has expired',
+            },
+          });
+
+        pageContent =
+          '<div data-type="polling">...</div><span>It works!</span>';
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        // Wait for initial polling call triggered by the polling element
+        await waitFor(
+          () =>
+            expect(nextMock).toHaveBeenCalledWith(
+              '0',
+              '0',
+              CUSTOM_INTERACTIONS.polling,
+              1,
+              '1.2.3',
+              {},
+            ),
+          {
+            timeout: WAIT_TIMEOUT,
+          },
+        );
+
+        // This should trigger the next polling call which returns the error
+        jest.runAllTimers();
+
+        // Wait for polling calls that should eventually stop due to flow timeout error
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(3), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        // After getting the error response, verify polling stops and no more calls are made
+        const callCountAfterError = nextMock.mock.calls.length;
+        jest.advanceTimersByTime(10000); // Advance by 10 seconds
+        expect(nextMock.mock.calls.length).toBe(callCountAfterError); // Should not increase
+      },
+      WAIT_TIMEOUT,
+    );
+
+    it(
+      'Should stop polling when flow is gone (E102004 - Flow old version)',
+      async () => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+
+        // First call returns poll action, second call returns flow old version error
+        nextMock
+          .mockReturnValueOnce(
+            generateSdkResponse({
+              action: RESPONSE_ACTIONS.poll,
+            }),
+          )
+          .mockReturnValueOnce({
+            ok: false,
+            error: {
+              errorCode: 'E102004',
+              errorDescription: 'Flow requested is in old version',
+              errorMessage: 'The flow version is outdated',
+            },
+          });
+
+        pageContent =
+          '<div data-type="polling">...</div><span>It works!</span>';
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        // Wait for initial polling call triggered by the polling element
+        await waitFor(
+          () =>
+            expect(nextMock).toHaveBeenCalledWith(
+              '0',
+              '0',
+              CUSTOM_INTERACTIONS.polling,
+              1,
+              '1.2.3',
+              {},
+            ),
+          {
+            timeout: WAIT_TIMEOUT,
+          },
+        );
+
+        // This should trigger the next polling call which returns the error
+        jest.runAllTimers();
+
+        // Wait for polling calls that should eventually stop due to flow old version error
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(3), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        // After getting the error response, verify polling stops and no more calls are made
+        const callCountAfterError = nextMock.mock.calls.length;
+        jest.advanceTimersByTime(10000); // Advance by 10 seconds
+        expect(nextMock.mock.calls.length).toBe(callCountAfterError); // Should not increase
+      },
+      WAIT_TIMEOUT,
+    );
   });
 
   it(
