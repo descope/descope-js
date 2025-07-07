@@ -34,8 +34,15 @@ export const createTenantSdk = ({
     }
     if (!tenantId) throw new Error('tenantId is not defined');
 
-    const url = `${apiPaths.tenant.getTenantAdminLinkSSO}?tenantId=${tenantIdEncoded}`;
-    const res = await httpClient.get(url);
+    const res = await httpClient.post(
+      `${apiPaths.tenant.getTenantAdminLinkSSO}?tenant=${tenantIdEncoded}`,
+      {
+        tenantId: tenantIdEncoded,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
     await withErrorHandler(res);
     const data = await res.json();
     return data;
