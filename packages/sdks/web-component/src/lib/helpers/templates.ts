@@ -282,7 +282,6 @@ export const updateTemplateFromScreenState = (
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
   setElementConfig(baseEle, componentsConfig, 'name', logger);
-  debugger;
   setElementConfig(baseEle, componentsConfig, 'data-name', logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
