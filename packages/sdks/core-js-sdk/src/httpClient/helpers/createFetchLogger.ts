@@ -74,6 +74,11 @@ const buildRequestLog = (args: Parameters<Fetch>) =>
     .body(args[1].body)
     .build();
 
+// we should retry once in case we got these status codes:
+// 521: Web Server Is Down (Cloudflare error)
+// 524: A Timeout Occurred (Cloudflare error)
+const retryStatusCode = [521, 524];
+
 /** Log the response object */
 const buildResponseLog = async (resp: Response & { retries?: number }) => {
   const respBody = await resp.text();
@@ -108,11 +113,6 @@ const fetchWrapper =
 
     return resp;
   };
-
-// we should retry once in case we got these status codes:
-// 521: Web Server Is Down (Cloudflare error)
-// 524: A Timeout Occurred (Cloudflare error)
-const retryStatusCode = [521, 524];
 
 /**
  * Create a fetch with a logger wrapped around it if a logger is given
