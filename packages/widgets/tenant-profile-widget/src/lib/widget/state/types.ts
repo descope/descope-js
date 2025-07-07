@@ -12,6 +12,11 @@ export type State = {
     error: unknown;
     data: Record<string, any>;
   };
+  tenantAdminLinkSSO: {
+    loading: boolean;
+    error: unknown;
+    data: string;
+  };
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;

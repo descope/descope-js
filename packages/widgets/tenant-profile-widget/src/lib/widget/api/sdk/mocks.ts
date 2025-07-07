@@ -1,4 +1,4 @@
-import { Tenant, User } from '../types';
+import { Tenant, TenantAdminLinkSSOResponse, User } from '../types';
 
 const me: () => Promise<User> = async () =>
   new Promise((resolve) => {
@@ -51,8 +51,17 @@ const get: () => Promise<Tenant> = async () =>
     });
   });
 
+const getTenantAdminLinkSSO: () => Promise<TenantAdminLinkSSOResponse> =
+  async () =>
+    new Promise((resolve) => {
+      resolve({
+        adminSSOConfigurationLink: 'https://example.com',
+      });
+    });
+
 const tenantMock = {
   get,
+  getTenantAdminLinkSSO,
 };
 
 export { tenantMock, user };

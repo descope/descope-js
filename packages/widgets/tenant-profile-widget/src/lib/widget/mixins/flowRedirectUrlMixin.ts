@@ -56,6 +56,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
           modal.close();
           this.actions.getMe();
           this.actions.getTenant();
+          this.actions.getTenantAdminLinkSSO();
         });
 
         modal.afterClose = () => {

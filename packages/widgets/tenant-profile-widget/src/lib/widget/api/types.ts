@@ -20,6 +20,10 @@ export type Tenant = AssociatedTenant & {
   enforceSSO: boolean;
 };
 
+export type TenantAdminLinkSSOResponse = {
+  adminSSOConfigurationLink: string;
+};
+
 export type HttpClient = Sdk['httpClient'];
 
 export type AssociatedTenant = {

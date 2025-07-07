@@ -12,9 +12,8 @@ export const createTenantSdk = ({
   tenantId?: string;
   mock: boolean;
 }) => {
-  const queryParams = `?tenant=${encodeURIComponent(
-    tenantId,
-  )}&id=${encodeURIComponent(tenantId)}`;
+  const tenantIdEncoded = encodeURIComponent(tenantId || '');
+  const queryParams = `?tenant=${tenantIdEncoded}&id=${tenantIdEncoded}`;
 
   const get = async () => {
     if (mock) {
@@ -29,7 +28,21 @@ export const createTenantSdk = ({
     return data;
   };
 
+  const getTenantAdminLinkSSO = async () => {
+    if (mock) {
+      return tenantMock.getTenantAdminLinkSSO();
+    }
+    if (!tenantId) throw new Error('tenantId is not defined');
+
+    const url = `${apiPaths.tenant.getTenantAdminLinkSSO}?tenantId=${tenantIdEncoded}`;
+    const res = await httpClient.get(url);
+    await withErrorHandler(res);
+    const data = await res.json();
+    return data;
+  };
+
   return {
     get,
+    getTenantAdminLinkSSO,
   };
 };

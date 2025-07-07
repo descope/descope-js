@@ -47,6 +47,7 @@ export const initWidgetRootMixin = createSingletonMixin(
         await Promise.all([
           this.actions.getMe(),
           this.actions.getTenant(),
+          this.actions.getTenantAdminLinkSSO(),
           this.#initWidgetRoot(),
         ]);
 

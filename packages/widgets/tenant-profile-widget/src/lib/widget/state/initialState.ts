@@ -11,4 +11,9 @@ export const initialState: State = {
     error: null,
     data: {},
   },
+  tenantAdminLinkSSO: {
+    loading: false,
+    error: null,
+    data: '',
+  },
 };
