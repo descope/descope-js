@@ -751,6 +751,94 @@ describe('createFetchLogger', () => {
       expect(await response.json()).toEqual({ success: true });
       expect(response.clone()).toBe(response);
     });
+
+    it('should log the correct message when retries', async () => {
+      const logger = {
+        log: jest.fn(),
+        error: jest.fn(),
+        debug: jest.fn(),
+        warn: jest.fn(),
+      };
+
+      const httpClient = createHttpClient({
+        baseUrl: 'http://descope.com',
+        projectId: '123',
+        hooks: {
+          afterRequest: afterRequestHook,
+        },
+        logger,
+      });
+
+      // Setup retry scenario
+      mockFetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => '{"error": "timeout"}',
+          json: () => Promise.resolve({ error: 'timeout' }),
+          url: 'http://descope.com/test',
+          headers: new Headers({ header: 'header' }),
+          status: 524,
+          statusText: 'A Timeout Occurred',
+          clone: function () {
+            return this;
+          },
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: () => '{"success": true}',
+          json: () => Promise.resolve({ success: true }),
+          url: 'http://descope.com/test',
+          headers: new Headers({ header: 'header' }),
+          status: 200,
+          statusText: 'OK',
+          clone: function () {
+            return this;
+          },
+        });
+
+      await httpClient.post('test', { data: 'test' });
+
+      expect(logger.log).toHaveBeenCalledWith(
+        expect.stringContaining('Retries: 1'),
+      );
+    });
+
+    it('should log the correct message when no retries', async () => {
+      const logger = {
+        log: jest.fn(),
+        error: jest.fn(),
+        debug: jest.fn(),
+        warn: jest.fn(),
+      };
+
+      const httpClient = createHttpClient({
+        baseUrl: 'http://descope.com',
+        projectId: '123',
+        hooks: {
+          afterRequest: afterRequestHook,
+        },
+        logger,
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        text: () => '{"success": true}',
+        json: () => Promise.resolve({ success: true }),
+        url: 'http://descope.com/test',
+        headers: new Headers({ header: 'header' }),
+        status: 200,
+        statusText: 'OK',
+        clone: function () {
+          return this;
+        },
+      });
+
+      await httpClient.post('test', { data: 'test' });
+
+      expect(logger.log).toHaveBeenCalledWith(
+        expect.not.stringContaining('Retries:'),
+      );
+    });
   });
 
   describe('retry functionality with hooks', () => {
@@ -921,94 +1009,6 @@ describe('createFetchLogger', () => {
       // The transformation is applied to the final response
       const responseData = await response.json();
       expect(responseData).toEqual({ data: 'value', transformed: true });
-    });
-
-    it('should log the correct message when retries', async () => {
-      const logger = {
-        log: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-      };
-
-      const httpClient = createHttpClient({
-        baseUrl: 'http://descope.com',
-        projectId: '123',
-        hooks: {
-          afterRequest: afterRequestHook,
-        },
-        logger,
-      });
-
-      // Setup retry scenario
-      mockFetch
-        .mockResolvedValueOnce({
-          ok: false,
-          text: () => '{"error": "timeout"}',
-          json: () => Promise.resolve({ error: 'timeout' }),
-          url: 'http://descope.com/test',
-          headers: new Headers({ header: 'header' }),
-          status: 524,
-          statusText: 'A Timeout Occurred',
-          clone: function () {
-            return this;
-          },
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          text: () => '{"success": true}',
-          json: () => Promise.resolve({ success: true }),
-          url: 'http://descope.com/test',
-          headers: new Headers({ header: 'header' }),
-          status: 200,
-          statusText: 'OK',
-          clone: function () {
-            return this;
-          },
-        });
-
-      await httpClient.post('test', { data: 'test' });
-
-      expect(logger.log).toHaveBeenCalledWith(
-        expect.stringContaining('Retries: 1'),
-      );
-    });
-
-    it('should log the correct message when no retries', async () => {
-      const logger = {
-        log: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-      };
-
-      const httpClient = createHttpClient({
-        baseUrl: 'http://descope.com',
-        projectId: '123',
-        hooks: {
-          afterRequest: afterRequestHook,
-        },
-        logger,
-      });
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        text: () => '{"success": true}',
-        json: () => Promise.resolve({ success: true }),
-        url: 'http://descope.com/test',
-        headers: new Headers({ header: 'header' }),
-        status: 200,
-        statusText: 'OK',
-        clone: function () {
-          return this;
-        },
-      });
-
-      await httpClient.post('test', { data: 'test' });
-
-      expect(logger.log).toHaveBeenCalledWith(
-        expect.not.stringContaining('Retries:'),
-      );
     });
   });
 });

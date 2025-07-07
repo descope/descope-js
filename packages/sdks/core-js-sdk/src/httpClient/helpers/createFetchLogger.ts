@@ -94,8 +94,8 @@ const fetchWrapper =
     let resp: Response & { retries?: number } = await fetch(...args);
 
     if (retryStatusCode.includes(resp.status)) {
-      resp.retries = 1;
       resp = await fetch(...args);
+      resp.retries = 1;
     }
 
     // we found out that cloning the response is problematic when using node fetch
