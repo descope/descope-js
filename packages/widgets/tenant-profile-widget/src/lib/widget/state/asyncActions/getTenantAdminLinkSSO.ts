@@ -16,7 +16,8 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.tenantAdminLinkSSO.data = action.payload;
+      state.tenantAdminLinkSSO.data =
+        action.payload?.adminSSOConfigurationLink || '';
     },
   },
   withRequestStatus((state: State) => state.tenantAdminLinkSSO),

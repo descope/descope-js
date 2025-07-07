@@ -24,13 +24,13 @@ export const initWidgetRootMixin = createSingletonMixin(
     )(superclass) {
       async #initWidgetRoot() {
         /*
-        const importRoot = await import('./rootMock').then(
-          (module) => module.default,
-        );
+        const importRoot = await import(
+          '../../../../../../test/mocks/rootMock'
+        ).then((module) => module.default);
         */
 
         const template = createTemplate(
-          // await import('../../../../../../test/mocks/rootMock').then(module => module.default)
+          // importRoot,
           await this.fetchWidgetPage('root.html'),
         );
 

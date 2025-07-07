@@ -41,7 +41,7 @@ const get: () => Promise<Tenant> = async () =>
       roleNames: ['admin'],
       id: 'tenant-1',
       name: 'Test Tenant',
-      selfProvisioningDomains: ['test.com', 'bars.com'],
+      selfProvisioningDomains: ['example1.com', 'example2.com'],
       customAttributes: {},
       authType: 'password',
       domains: [],
@@ -55,7 +55,7 @@ const getTenantAdminLinkSSO: () => Promise<TenantAdminLinkSSOResponse> =
   async () =>
     new Promise((resolve) => {
       resolve({
-        adminSSOConfigurationLink: 'https://example.com',
+        adminSSOConfigurationLink: '',
       });
     });
 
