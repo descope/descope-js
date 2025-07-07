@@ -196,6 +196,7 @@ export const setCssVars = (
 const setElementConfig = (
   baseEle: DocumentFragment,
   componentsConfig: ComponentsConfig,
+  baseSelector?: string,
   logger?: { error: (message: string, description: string) => void },
 ) => {
   if (!componentsConfig) {
@@ -204,7 +205,7 @@ const setElementConfig = (
   const { componentsDynamicAttrs, ...rest } = componentsConfig;
 
   const configMap = Object.keys(rest).reduce((acc, componentName) => {
-    acc[`[name=${componentName}]`] = rest[componentName];
+    acc[`[${baseSelector}=${componentName}]`] = rest[componentName];
     return acc;
   }, {});
 
@@ -280,7 +281,9 @@ export const updateTemplateFromScreenState = (
   replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
-  setElementConfig(baseEle, componentsConfig, logger);
+  setElementConfig(baseEle, componentsConfig, 'name', logger);
+  debugger;
+  setElementConfig(baseEle, componentsConfig, 'data-name', logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
 };
