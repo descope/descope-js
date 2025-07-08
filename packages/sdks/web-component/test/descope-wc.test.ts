@@ -268,7 +268,9 @@ describe('web-component', () => {
 
     nextMock.mockClear();
 
-    await new Promise((resolve) => setTimeout(resolve, 4000));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 4000);
+    });
 
     expect(nextMock).toHaveBeenCalledTimes(1);
 
