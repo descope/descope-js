@@ -7,6 +7,7 @@ type Config = Pick<
   | 'projectId'
   | 'baseUrl'
   | 'persistTokens'
+  | 'autoRefresh'
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
   | 'oidcConfig'
@@ -19,6 +20,7 @@ export default ({
   projectId,
   baseUrl,
   persistTokens,
+  autoRefresh,
   sessionTokenViaCookie,
   refreshCookieName,
   oidcConfig,
@@ -36,11 +38,11 @@ export default ({
       sessionTokenViaCookie,
       baseHeaders,
       persistTokens,
+      autoRefresh,
       refreshCookieName,
       oidcConfig,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
-      autoRefresh: true,
       getExternalToken,
     });
   }, [projectId, baseUrl, sessionTokenViaCookie, getExternalToken]);
