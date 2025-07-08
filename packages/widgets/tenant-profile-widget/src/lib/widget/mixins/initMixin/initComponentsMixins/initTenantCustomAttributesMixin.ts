@@ -51,6 +51,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       }
 
       #initEditModalContent(flowId: string) {
+        const customAttributes = getTenantCustomAttributes(this.state);
         this.#editModals[flowId]?.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -60,6 +61,15 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            form: JSON.stringify({
+              ...Object.entries(customAttributes).reduce(
+                (acc, [key, value]) => {
+                  acc[`customAttributes.${key}`] = value;
+                  return acc;
+                },
+                {} as Record<string, any>,
+              ),
+            }),
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {

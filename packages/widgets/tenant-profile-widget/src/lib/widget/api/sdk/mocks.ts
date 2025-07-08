@@ -55,7 +55,7 @@ const getTenantAdminLinkSSO: () => Promise<TenantAdminLinkSSOResponse> =
   async () =>
     new Promise((resolve) => {
       resolve({
-        adminSSOConfigurationLink: '',
+        adminSSOConfigurationLink: '_blank',
       });
     });
 

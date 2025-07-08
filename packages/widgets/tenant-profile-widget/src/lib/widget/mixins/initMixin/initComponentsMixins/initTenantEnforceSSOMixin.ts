@@ -64,6 +64,9 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            form: JSON.stringify({
+              tenantEnforceSSO: getTenantEnforceSSO(this.state),
+            }),
           }),
         );
         this.#editFlow.onSuccess(() => {

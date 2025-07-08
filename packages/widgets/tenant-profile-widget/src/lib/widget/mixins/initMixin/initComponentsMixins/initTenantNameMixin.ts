@@ -60,6 +60,7 @@ export const initTenantNameMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            form: JSON.stringify({ tenantName: getTenantName(this.state) }),
           }),
         );
         this.#editFlow.onSuccess(() => {
