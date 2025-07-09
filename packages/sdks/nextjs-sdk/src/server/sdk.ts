@@ -43,6 +43,7 @@ export const getGlobalSdk = (config?: CreateSdkParams): Sdk => {
 	let globalSdk = globalSdks[projectId];
 	if (!globalSdk) {
 		globalSdk = createSdk(config);
+		globalSdks[projectId] = globalSdk;
 	}
 
 	return globalSdk;
