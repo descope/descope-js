@@ -11,7 +11,8 @@ type CreateServerSdkParams = Omit<
 
 type CreateSdkParams = Pick<CreateServerSdkParams, 'projectId' | 'baseUrl'>;
 
-let globalSdk: Sdk;
+// we support multiple sdks, so the developer can work with multiple projects
+const globalSdks: Record<string, Sdk> = {};
 
 const getProjectId = (config?: CreateSdkParams): string =>
 	config?.projectId ||
@@ -33,12 +34,14 @@ export const createSdk = (config?: CreateServerSdkParams): Sdk =>
 		}
 	});
 
+// caches the SDK for each project ID
 export const getGlobalSdk = (config?: CreateSdkParams): Sdk => {
 	const projectId = getProjectId(config);
+	if (!projectId) {
+		throw new Error('Descope project ID is required to create the SDK');
+	}
+	let globalSdk = globalSdks[projectId];
 	if (!globalSdk) {
-		if (!projectId) {
-			throw new Error('Descope project ID is required to create the SDK');
-		}
 		globalSdk = createSdk(config);
 	}
 
