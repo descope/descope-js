@@ -4,7 +4,9 @@ import Link from 'next/link';
 import UserDetails from './UserDetails';
 
 const Page = async () => {
-	const sessionRes = await session();
+	const sessionRes = await session({
+		logLevel: process.env.DESCOPE_LOG_LEVEL as any
+	});
 	return (
 		<div>
 			<h1>App Router Home</h1>

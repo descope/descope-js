@@ -113,7 +113,7 @@ const createAuthMiddleware =
 	(options: MiddlewareOptions = {}) =>
 	async (req: NextRequest) => {
 		setLogger(options.logLevel);
-		logger.debug('Auth middleware starts');
+		logger.debug(`Auth middleware starts for route ${req.nextUrl.pathname}`);
 
 		const jwt = getSessionJwt(req);
 
@@ -140,12 +140,14 @@ const createAuthMiddleware =
 				if (searchParams) {
 					url.search = searchParams;
 				}
-				logger.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
+				logger.debug(
+					`Auth middleware, Redirecting to ${redirectUrl} for route ${req.nextUrl.pathname}`
+				);
 				return NextResponse.redirect(url);
 			}
 		}
 
-		logger.debug('Auth middleware finishes');
+		logger.debug(`Auth middleware finishes for route ${req.nextUrl.pathname}`);
 		// add the session to the request, if it exists
 		const headers = addSessionToHeadersIfExists(req.headers, session);
 		return NextResponse.next({
