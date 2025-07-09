@@ -4,7 +4,7 @@ import '../src/lib/index';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import { createSdk } from '../src/lib/widget/api/sdk';
 import rootMock from './mocks/rootMock';
-import { mockSsoApps } from './mocks/mockSsoApps';
+import { mockOutboundApps } from './mocks/mockOutboundApps';
 
 const origAppend = document.body.append;
 
@@ -20,8 +20,8 @@ export const mockHttpClient = {
       mockHttpClient[key].mockResolvedValue({
         ok: true,
         status: 200,
-        json: () => Promise.resolve({ apps: mockSsoApps }),
-        text: () => Promise.resolve(JSON.stringify({ apps: mockSsoApps })),
+        json: () => Promise.resolve({ apps: mockOutboundApps }),
+        text: () => Promise.resolve(JSON.stringify({ apps: mockOutboundApps })),
       }),
     ),
 };
@@ -32,13 +32,15 @@ jest.mock('@descope/web-js-sdk', () => ({
   default: jest.fn(() => ({ httpClient: mockHttpClient })),
 }));
 
-jest.mock('../src/lib/widget/api/sdk/createSsoAppsSdk', () => {
+jest.mock('../src/lib/widget/api/sdk/createOutboundAppsSdk', () => {
   const actualModule = jest.requireActual(
-    '../src/lib/widget/api/sdk/createSsoAppsSdk',
+    '../src/lib/widget/api/sdk/createOutboundAppsSdk',
   );
   return {
     __esModule: true,
-    createSsoAppsSdk: jest.fn((props) => actualModule.createSsoAppsSdk(props)),
+    createOutboundAppsSdk: jest.fn((props) =>
+      actualModule.createOutboundAppsSdk(props),
+    ),
   };
 });
 
@@ -99,8 +101,8 @@ describe('application-portal-widget', () => {
         ),
       );
 
-      expect(result.apps[0].id).toEqual(mockSsoApps[0].id);
-      expect(result.apps[1].id).toEqual(mockSsoApps[1].id);
+      expect(result.apps[0].id).toEqual(mockOutboundApps[0].id);
+      expect(result.apps[1].id).toEqual(mockOutboundApps[1].id);
     });
   });
 });

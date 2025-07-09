@@ -20,7 +20,7 @@ export const stateManagementMixin = createSingletonMixin(
           getAllOutboundApps.reducer(builder);
         },
         asyncActions: {
-          loadSSOApps: getAllOutboundApps.action,
+          getOutboundApps: getAllOutboundApps.action,
         },
       }),
       initLifecycleMixin,

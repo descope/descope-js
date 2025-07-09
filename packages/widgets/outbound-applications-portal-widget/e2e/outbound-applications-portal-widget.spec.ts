@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import rootMock from '../test/mocks/rootMock';
-import { mockSsoApps } from '../test/mocks/mockSsoApps';
+import { mockOutboundApps } from '../test/mocks/mockOutboundApps';
 
 const configContent = {
   flows: {
@@ -39,7 +39,7 @@ test.describe('widget', () => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ apps: mockSsoApps }),
+        body: JSON.stringify({ apps: mockOutboundApps }),
       }),
     );
 

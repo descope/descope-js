@@ -8,6 +8,11 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  connectedOutboundAppsIds: {
+    data: string[];
+    loading: boolean;
+    error: unknown;
+  };
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;

@@ -47,7 +47,7 @@ export const initWidgetRootMixin = createSingletonMixin(
 
         const [template] = await Promise.all([
           this.#initWidgetRoot(),
-          this.actions.loadSSOApps(),
+          this.actions.getOutboundApps(),
         ]);
         // we want to render the template only after the data was fetched
         // so we won't show the apps-list empty state until the data is loaded

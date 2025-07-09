@@ -1,5 +1,5 @@
 import createWebSdk from '@descope/web-js-sdk';
-import { createOutboundAppsSdk } from './createSsoAppsSdk';
+import { createOutboundAppsSdk } from './createOutboundAppsSdk';
 
 declare const BUILD_VERSION: string;
 

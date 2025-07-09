@@ -6,4 +6,9 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  connectedOutboundAppsIds: {
+    data: [],
+    loading: false,
+    error: null,
+  },
 };
