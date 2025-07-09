@@ -8,6 +8,5 @@ export type OutboundApplication = {
   id: string;
   name: string;
   description?: string;
-  enabled: boolean;
   logo?: string;
 };

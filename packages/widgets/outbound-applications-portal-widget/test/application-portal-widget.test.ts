@@ -88,14 +88,14 @@ describe('application-portal-widget', () => {
   describe('sdk', () => {
     it('load', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, false);
-      const result = await sdk.outboundApps.load();
+      const result = await sdk.outboundApps.getAllOutboundApps();
 
       await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
         timeout: 5000,
       });
       await waitFor(() =>
         expect(mockHttpClient.get).toHaveBeenCalledWith(
-          apiPaths.outboundApps.load,
+          apiPaths.outboundApps.getAllOutboundApps,
         ),
       );
 

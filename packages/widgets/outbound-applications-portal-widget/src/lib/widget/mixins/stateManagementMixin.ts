@@ -5,7 +5,7 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import { loadOutboundApps } from '../state/asyncActions';
+import { getAllOutboundApps } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
 
@@ -17,10 +17,10 @@ export const stateManagementMixin = createSingletonMixin(
         initialState,
         reducers: {},
         extraReducers: (builder) => {
-          loadOutboundApps.reducer(builder);
+          getAllOutboundApps.reducer(builder);
         },
         asyncActions: {
-          loadSSOApps: loadOutboundApps.action,
+          loadSSOApps: getAllOutboundApps.action,
         },
       }),
       initLifecycleMixin,

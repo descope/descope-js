@@ -1,1 +1,2 @@
-export * from './loadSSOApps';
+export * from './getAllOutboundApps';
+export * from './getConnectedOutboundApps';

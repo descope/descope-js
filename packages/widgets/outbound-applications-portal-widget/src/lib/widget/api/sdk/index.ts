@@ -1,5 +1,5 @@
 import createWebSdk from '@descope/web-js-sdk';
-import { createSsoAppsSdk } from './createSsoAppsSdk';
+import { createOutboundAppsSdk } from './createSsoAppsSdk';
 
 declare const BUILD_VERSION: string;
 
@@ -19,7 +19,10 @@ export const createSdk = (
   });
 
   return {
-    outboundApps: createSsoAppsSdk({ httpClient: webSdk.httpClient, mock }),
+    outboundApps: createOutboundAppsSdk({
+      httpClient: webSdk.httpClient,
+      mock,
+    }),
   };
 };
 

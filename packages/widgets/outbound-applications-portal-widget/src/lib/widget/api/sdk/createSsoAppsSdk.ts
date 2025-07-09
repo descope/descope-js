@@ -3,18 +3,31 @@ import { HttpClient } from '../types';
 import { withErrorHandler } from './helpers';
 import { outboundApps } from './mocks';
 
-export const createSsoAppsSdk = ({
+export const createOutboundAppsSdk = ({
   httpClient,
   mock,
 }: {
   httpClient: HttpClient;
   mock: boolean;
 }) => {
-  const load = async () => {
+  const getAllOutboundApps = async () => {
     if (mock) {
-      return outboundApps.load();
+      return outboundApps.getAllOutboundApps();
     }
-    const res = await httpClient.get(apiPaths.outboundApps.load);
+    const res = await httpClient.get(apiPaths.outboundApps.getAllOutboundApps);
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
+  const getConnectedOutboundApps = async () => {
+    if (mock) {
+      return outboundApps.getConnectedOutboundApps();
+    }
+    const res = await httpClient.get(
+      apiPaths.outboundApps.getConnectedOutboundApps,
+    );
 
     await withErrorHandler(res);
 
@@ -22,6 +35,7 @@ export const createSsoAppsSdk = ({
   };
 
   return {
-    load,
+    getAllOutboundApps,
+    getConnectedOutboundApps,
   };
 };

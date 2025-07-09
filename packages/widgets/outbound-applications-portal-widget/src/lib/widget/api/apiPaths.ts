@@ -1,6 +1,6 @@
 export const apiPaths = {
   outboundApps: {
-    load: '/v1/mgmt/outbound/apps',
-    load2: '/v1/mgmt/outbound/apps-with-user-token',
+    getAllOutboundApps: '/v1/mgmt/outbound/apps',
+    getConnectedOutboundApps: '/v1/mgmt/outbound/apps-with-user-token',
   },
 };
