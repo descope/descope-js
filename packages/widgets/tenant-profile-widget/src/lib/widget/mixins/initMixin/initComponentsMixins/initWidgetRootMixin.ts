@@ -11,6 +11,7 @@ import {
 } from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
+import { createErrorComponent } from './ErrorComponent';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -44,13 +45,30 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        await Promise.all([
-          this.actions.getMe(),
-          this.actions.getTenant(),
-          this.actions.getTenantAdminLinkSSO(),
-          this.#initWidgetRoot(),
-        ]);
+        try {
+          await Promise.all([
+            this.actions.getMe(),
+            this.actions.getTenant(),
+            this.actions.getTenantAdminLinkSSO(),
+          ]);
+        } catch (e) {
+          // Errors are handled in state, but catch just in case
+        }
 
+        // Check for errors in state
+        const { me, tenant, tenantAdminLinkSSO } = this.state;
+        const error = me.error || tenant.error || tenantAdminLinkSSO.error;
+        if (error) {
+          this.contentRootElement.innerHTML = '';
+          const mainMessage =
+            typeof error === 'object' && error !== null && 'message' in error
+              ? (error.message as string)
+              : String(error) || 'An error occurred';
+          this.contentRootElement.append(createErrorComponent({ mainMessage }));
+          return;
+        }
+
+        await this.#initWidgetRoot();
         this.onWidgetRootReady();
       }
     },
