@@ -50,8 +50,15 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         return (val || '').toString();
       }
 
-      #initEditModalContent(flowId: string) {
-        const customAttributes = getTenantCustomAttributes(this.state);
+      #initEditModalContent(
+        flowId: string,
+        type: string,
+        attName: string,
+        value: any,
+      ) {
+        const customAttributeValue =
+          type === AttributeTypeName.ARRAY ? (value || []).join(',') : value;
+
         this.#editModals[flowId]?.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -62,13 +69,9 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             form: JSON.stringify({
-              ...Object.entries(customAttributes).reduce(
-                (acc, [key, value]) => {
-                  acc[`customAttributes.${key}`] = value;
-                  return acc;
-                },
-                {} as Record<string, any>,
-              ),
+              customAttributes: {
+                [attName]: customAttributeValue,
+              },
             }),
           }),
         );
@@ -120,7 +123,14 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
             compInstance.value =
               TenantCustomAttributesMixinClass.getFormattedValue(type, val);
 
-            this.#initEditFlow(nodeEle, customAttrName, compInstance);
+            this.#initEditFlow(
+              nodeEle,
+              customAttrName,
+              compInstance,
+              type,
+              customAttrName,
+              val,
+            );
             this.#initDeleteFlow(nodeEle, customAttrName, compInstance);
           });
         },
@@ -130,6 +140,9 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         nodeEle: Element,
         customAttrName: string,
         compInstance: UserAttributeDriver,
+        type: string,
+        attName: string,
+        val: string,
       ) {
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (editFlowId) {
@@ -149,7 +162,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
             this.#editModals?.[editFlowId]?.open();
           });
 
-          this.#initEditModalContent(editFlowId);
+          this.#initEditModalContent(editFlowId, type, attName, val);
           this.syncFlowTheme(this.#editFlows[editFlowId]);
         }
       }
