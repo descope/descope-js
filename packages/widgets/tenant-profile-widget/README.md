@@ -10,6 +10,7 @@ In the widget package create an `.env` file which includes;
 DESCOPE_BASE_URL=   # env base url
 DESCOPE_PROJECT_ID= # project ID
 DESCOPE_WIDGET_ID=  # default: tenant-profile-widget
+DESCOPE_TENANT_ID=  # tenant id
 DEBUG_MODE=         # "true" / "false", default: "false"
 DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 ```
@@ -22,7 +23,7 @@ DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 <descope-tenant-profile-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
-  tenant="<DESCOPE_TENANT>"
+  tenant="<DESCOPE_TENANT_ID>"
   debug="<DEBUG_MODE>"
   theme="<DESCOPE_THEME>"
   widget-id="<DESCOPE_WIDGET_ID>"
