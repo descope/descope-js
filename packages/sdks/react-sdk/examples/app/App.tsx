@@ -1,16 +1,17 @@
 import React from 'react';
-import { Outlet, Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { useSession } from '../../src';
 import Home from './Home';
 import Login from './Login';
-import StepUp from './StepUp';
-import { useSession } from '../../src';
-import ManageUsers from './ManageUsers';
-import ManageRoles from './ManageRoles';
 import ManageAccessKeys from './ManageAccessKeys';
 import ManageAudit from './ManageAudit';
-import MyUserProfile from './MyUserProfile';
+import ManageRoles from './ManageRoles';
+import ManageUsers from './ManageUsers';
 import MyApplicationsPortal from './MyApplicationsPortal';
+import MyTenantProfile from './MyTenantProfile';
+import MyUserProfile from './MyUserProfile';
 import OidcLogin from './OidcLogin';
+import StepUp from './StepUp';
 
 const Layout = () => (
   <div
@@ -110,6 +111,14 @@ const App = () => (
         element={
           <ProtectedRoute>
             <MyApplicationsPortal />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tenant-profile"
+        element={
+          <ProtectedRoute>
+            <MyTenantProfile />
           </ProtectedRoute>
         }
       />

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": false,
+    "noErrorTruncation": true,
+    "typeRoots": ["./node_modules/@types"]
+  },
+
+  "include": ["**/*.ts", "./src/lib/custom.d.ts"],
+  "exclude": ["node_modules", "build", "dist"]
+}
