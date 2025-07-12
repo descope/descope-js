@@ -53,14 +53,14 @@ test.describe('tenant profile widget', () => {
       }),
     );
 
-    await page.route('**/mgmt/tenant', async (route) =>
+    await page.route('**/mgmt/tenant?**', async (route) =>
       route.fulfill({
         json: mockTenant,
       }),
     );
 
     await page.route(
-      '**/mgmt/tenant/adminlinks/sso/authenticated',
+      '**/mgmt/tenant/adminlinks/sso/authenticated?**',
       async (route) =>
         route.fulfill({
           json: mockTenantAdminLinkSSO,
