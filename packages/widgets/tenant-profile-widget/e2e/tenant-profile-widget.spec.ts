@@ -77,21 +77,33 @@ test.describe('tenant profile widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 
-  test.describe('user attributes', () => {
+  test.describe('tenant attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
-      { name: 'tenant-name-edit', action: 'edit', newValue: 'New Name' },
+      {
+        name: 'tenant-name-edit',
+        action: 'edit',
+        newValue: 'New Name',
+        editModalName: 'tenant-profile-set-name',
+      },
       {
         name: 'tenant-email-domains-edit',
         action: 'edit',
         newValue: 'example1.com,example2.com',
+        editModalName: 'tenant-profile-set-email-domains',
       },
       {
         name: 'tenant-email-domains-edit',
         action: 'delete',
         newValue: '',
+        editModalName: 'tenant-profile-set-email-domains',
       },
-      { name: 'tenant-enforce-sso-edit', action: 'edit', newValue: 'true' },
+      {
+        name: 'tenant-enforce-sso-edit',
+        action: 'edit',
+        newValue: 'true',
+        editModalName: 'tenant-profile-set-enforce-sso',
+      },
       { name: 'tenant-enforce-sso-edit', action: 'delete', newValue: '' },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
@@ -110,7 +122,7 @@ test.describe('tenant profile widget', () => {
         await page.waitForTimeout(MODAL_TIMEOUT);
 
         const finishFlowBtn = page
-          .locator(`descope-modal[data-id="${attr.action}-${attr.name}"]`)
+          .locator(`descope-modal[data-id="${attr.editModalName}"]`)
           .locator('button', { hasText: 'Finish Flow' });
 
         await page.route('**/mgmt/tenant', async (route) =>
