@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { mockTenant, mockTenantAdminLinkSSO } from '../test/mocks/mockTenant';
 import mockTheme from '../test/mocks/mockTheme';
 import { mockUser } from '../test/mocks/mockUser';
 import rootMock from '../test/mocks/rootMock';
@@ -13,7 +14,7 @@ const configContent = {
 const MODAL_TIMEOUT = 500;
 const STATE_TIMEOUT = 2000;
 
-test.describe('widget', () => {
+test.describe('tenant profile widget', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       window.localStorage.setItem(
@@ -54,12 +55,16 @@ test.describe('widget', () => {
 
     await page.route('**/mgmt/tenant', async (route) =>
       route.fulfill({
-        json: {
-          customAttributes: {
-            test: 'test',
-          },
-        },
+        json: mockTenant,
       }),
+    );
+
+    await page.route(
+      '**/mgmt/tenant/adminlinks/sso/authenticated',
+      async (route) =>
+        route.fulfill({
+          json: mockTenantAdminLinkSSO,
+        }),
     );
 
     await page.route('**/auth/logout', async (route) =>
@@ -72,35 +77,22 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 
-  test('logout', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const logout = page.locator('descope-button[data-id="logout"]').first();
-
-    let isLoggedOut = false;
-
-    page.on('request', (request) => {
-      if (request.url().endsWith('/auth/logout')) {
-        isLoggedOut = true;
-      }
-    });
-
-    logout.click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    expect(isLoggedOut).toBe(true);
-  });
-
   test.describe('user attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
-      { name: 'email', action: 'edit', newValue: 'bla@bla.com' },
-      { name: 'email', action: 'delete', newValue: '' },
-      { name: 'name', action: 'edit', newValue: 'New Name' },
-      { name: 'name', action: 'delete', newValue: '' },
-      { name: 'phone', action: 'edit', newValue: '+9721234567' },
-      { name: 'phone', action: 'delete', newValue: '' },
+      { name: 'tenant-name-edit', action: 'edit', newValue: 'New Name' },
+      {
+        name: 'tenant-email-domains-edit',
+        action: 'edit',
+        newValue: 'example1.com,example2.com',
+      },
+      {
+        name: 'tenant-email-domains-edit',
+        action: 'delete',
+        newValue: '',
+      },
+      { name: 'tenant-enforce-sso-edit', action: 'edit', newValue: 'true' },
+      { name: 'tenant-enforce-sso-edit', action: 'delete', newValue: '' },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
         await page.waitForTimeout(STATE_TIMEOUT);
@@ -121,9 +113,9 @@ test.describe('widget', () => {
           .locator(`descope-modal[data-id="${attr.action}-${attr.name}"]`)
           .locator('button', { hasText: 'Finish Flow' });
 
-        await page.route('**/auth/me', async (route) =>
+        await page.route('**/mgmt/tenant', async (route) =>
           route.fulfill({
-            json: { ...mockUser, [attr.name]: attr.newValue },
+            json: { ...mockTenant, [attr.name]: attr.newValue },
           }),
         );
 
@@ -136,46 +128,20 @@ test.describe('widget', () => {
     }
   });
 
-  test.describe('user auth methods', () => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const attr of [
-      { name: 'passkey', flagPath: 'webauthn', fulfilled: 'true' },
-      { name: 'password', flagPath: 'password', fulfilled: null },
-      { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
-    ]) {
-      test(`${attr.name}`, async ({ page }) => {
-        await page.waitForTimeout(STATE_TIMEOUT);
+  test.describe('tenant admin sso configuration link', () => {
+    test(`get tenant admin sso configuration link`, async ({ page }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
 
-        const userAttr = page
-          .locator(`descope-user-auth-method[data-id="${attr.name}"]`)
-          .first();
+      const userAttr = page
+        .locator(`descope-link[data-id="tenant-admin-sso-configuration-link"]`)
+        .first();
 
-        const editBtn = userAttr.locator(`descope-button`).first();
+      await expect(userAttr).toHaveText('SSO Setup');
 
-        editBtn.click();
-
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
-        const finishFlowBtn = page
-          .locator(`descope-modal[data-id="${attr.name}"]`)
-          .locator('button', { hasText: 'Finish Flow' });
-
-        await page.route('**/auth/me', async (route) =>
-          route.fulfill({
-            json: { ...mockUser, [attr.flagPath]: true },
-          }),
-        );
-
-        finishFlowBtn.click();
-
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
-        if (attr.fulfilled !== null) {
-          await expect(userAttr).toHaveAttribute('fulfilled', attr.fulfilled);
-        } else {
-          await expect(userAttr).not.toHaveAttribute('fulfilled');
-        }
-      });
-    }
+      await expect(userAttr).toHaveAttribute(
+        'href',
+        mockTenantAdminLinkSSO.adminSSOConfigurationLink,
+      );
+    });
   });
 });
