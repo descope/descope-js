@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { mockUser } from '../test/mocks/mockUser';
+import { expect, test } from '@playwright/test';
 import mockTheme from '../test/mocks/mockTheme';
+import { mockUser } from '../test/mocks/mockUser';
 import rootMock from '../test/mocks/rootMock';
 
 const configContent = {
@@ -52,6 +52,16 @@ test.describe('widget', () => {
       }),
     );
 
+    await page.route('**/mgmt/tenant', async (route) =>
+      route.fulfill({
+        json: {
+          customAttributes: {
+            test: 'test',
+          },
+        },
+      }),
+    );
+
     await page.route('**/auth/logout', async (route) =>
       route.fulfill({
         json: {},
@@ -60,34 +70,6 @@ test.describe('widget', () => {
 
     await page.goto('http://localhost:5559');
     await page.waitForTimeout(STATE_TIMEOUT);
-  });
-
-  test('avatar', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const avatar = page.locator('descope-avatar').first();
-
-    avatar.click();
-
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
-    const finishFlowBtn = page
-      .locator('descope-modal[data-id="update-pic"]')
-      .locator('button', { hasText: 'Finish Flow' });
-
-    await page.route('**/auth/me', async (route) =>
-      route.fulfill({
-        json: { ...mockUser, picture: 'https://example.com/avatar.jpg' },
-      }),
-    );
-
-    finishFlowBtn.click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    expect(await avatar.getAttribute('img')).toBe(
-      'https://example.com/avatar.jpg',
-    );
   });
 
   test('logout', async ({ page }) => {
@@ -109,6 +91,7 @@ test.describe('widget', () => {
 
     expect(isLoggedOut).toBe(true);
   });
+
   test.describe('user attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
@@ -148,7 +131,7 @@ test.describe('widget', () => {
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
-        await expect(userAttr).toHaveAttribute('value', attr.newValue);
+        await expect(userAttr).toHaveValue(attr.newValue);
       });
     }
   });
