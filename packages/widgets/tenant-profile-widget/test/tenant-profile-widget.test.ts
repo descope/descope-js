@@ -27,6 +27,23 @@ export const mockHttpClient = {
           text: () => Promise.resolve(JSON.stringify(mockTenant)),
         });
       }
+      if (url.includes(apiPaths.user.me)) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(mockUser),
+          text: () => Promise.resolve(JSON.stringify(mockUser)),
+        });
+      }
+      // Default fallback
+      return Promise.resolve({
+        ok: false,
+        status: 404,
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve(''),
+      });
+    });
+    mockHttpClient.post.mockImplementation((url) => {
       if (url.includes(apiPaths.tenant.getTenantAdminLinkSSO)) {
         return Promise.resolve({
           ok: true,
@@ -39,14 +56,6 @@ export const mockHttpClient = {
                   'https://api.descope.TESTEST/sso/setup?tenantId=tenant-1',
               }),
             ),
-        });
-      }
-      if (url.includes(apiPaths.user.me)) {
-        return Promise.resolve({
-          ok: true,
-          status: 200,
-          json: () => Promise.resolve(mockUser),
-          text: () => Promise.resolve(JSON.stringify(mockUser)),
         });
       }
       // Default fallback
@@ -168,12 +177,17 @@ describe('tenant-profile-widget', () => {
       const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
       const result = await sdk.tenant.getTenantAdminLinkSSO();
 
-      await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
-        timeout: 5000,
-      });
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        {
+          timeout: 5000,
+        },
+      );
       await waitFor(() =>
-        expect(mockHttpClient.get).toHaveBeenCalledWith(
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
           `${apiPaths.tenant.getTenantAdminLinkSSO}?tenant=${tenantId}`,
+          { tenantId },
+          { headers: { 'Content-Type': 'application/json' } },
         ),
       );
 
