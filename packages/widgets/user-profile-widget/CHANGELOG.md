@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.2...user-profile-widget-0.5.3) (2025-07-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.44.4`
+* `web-js-sdk` updated to version `1.33.5`
+* `web-component` updated to version `3.43.19`
+## [0.5.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.1...user-profile-widget-0.5.2) (2025-07-02)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.18`
+
+### Bug Fixes
+
+* UPW login flow ([#1141](https://github.com/descope/descope-js/issues/1141)) ([cefc72f](https://github.com/descope/descope-js/commit/cefc72ff3e38d009b4fd1e4930af86f7cfafb57c))
+
 ## [0.5.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.0...user-profile-widget-0.5.1) (2025-06-13)
 
 ### Dependency Updates
