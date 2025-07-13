@@ -65,7 +65,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             form: JSON.stringify({
-              selfProvisioningDomains: getTenantEmailDomains(this.state)?.join(
+              selfProvisionDomains: getTenantEmailDomains(this.state)?.join(
                 ',',
               ),
             }),
