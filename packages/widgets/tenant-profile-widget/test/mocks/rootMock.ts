@@ -40,13 +40,17 @@ export default `
       data-id="tenant-name-edit"
       label="Tenant Name"
       full-width="true"
-      required="false"
+      required="true"
+      edit-flow-id="tenant-profile-set-name"
+      delete-flow-id=""
     ></descope-user-attribute>
     <descope-user-attribute
       data-id="tenant-email-domains-edit"
       label="Tenant Email Domains"
       full-width="true"
       required="false"
+      edit-flow-id="edit-tenant-email-domains"
+      delete-flow-id="delete-tenant-email-domains"
     ></descope-user-attribute>
     <descope-user-attribute
       data-id="tenant-enforce-sso-edit"
@@ -54,6 +58,8 @@ export default `
       type="boolean"
       full-width="true"
       required="false"
+      edit-flow-id="edit-tenant-enforce-sso"
+      delete-flow-id="delete-tenant-enforce-sso"
     ></descope-user-attribute>
     <descope-divider id="2mXCne0kTY" italic="false" mode="primary" variant="body1" vertical="false"></descope-divider>
     <descope-container

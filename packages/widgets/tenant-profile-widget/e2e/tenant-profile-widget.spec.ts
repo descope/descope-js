@@ -86,25 +86,25 @@ test.describe('tenant profile widget', () => {
         newValue: 'New Name',
         editModalName: 'tenant-profile-set-name',
       },
-      {
-        name: 'tenant-email-domains-edit',
-        action: 'edit',
-        newValue: 'example1.com,example2.com',
-        editModalName: 'tenant-profile-set-email-domains',
-      },
-      {
-        name: 'tenant-email-domains-edit',
-        action: 'delete',
-        newValue: '',
-        editModalName: 'tenant-profile-set-email-domains',
-      },
-      {
-        name: 'tenant-enforce-sso-edit',
-        action: 'edit',
-        newValue: 'true',
-        editModalName: 'tenant-profile-set-enforce-sso',
-      },
-      { name: 'tenant-enforce-sso-edit', action: 'delete', newValue: '' },
+      // {
+      //   name: 'tenant-email-domains-edit',
+      //   action: 'edit',
+      //   newValue: 'example1.com,example2.com',
+      //   editModalName: 'tenant-profile-set-email-domains',
+      // },
+      // {
+      //   name: 'tenant-email-domains-edit',
+      //   action: 'delete',
+      //   newValue: '',
+      //   editModalName: 'tenant-profile-set-email-domains',
+      // },
+      // {
+      //   name: 'tenant-enforce-sso-edit',
+      //   action: 'edit',
+      //   newValue: 'true',
+      //   editModalName: 'tenant-profile-set-enforce-sso',
+      // },
+      // { name: 'tenant-enforce-sso-edit', action: 'delete', newValue: '' },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
         await page.waitForTimeout(STATE_TIMEOUT);

@@ -100,9 +100,6 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
-            form: JSON.stringify({
-              tenantEmailDomains: getTenantEmailDomains(this.state),
-            }),
           }),
         );
         this.#deleteFlow.onSuccess(() => {
