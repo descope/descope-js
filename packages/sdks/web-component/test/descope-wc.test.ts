@@ -33,6 +33,7 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
   SDK_SCRIPTS_LOAD_TIMEOUT,
+  FLOW_TIMED_OUT_ERROR_CODE,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -232,6 +233,49 @@ describe('web-component', () => {
     themeContent = {};
     pageContent = '';
   });
+
+  it('When has polling element, and next poll returns error response', async () => {
+    jest.useRealTimers();
+
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    nextMock
+      .mockReturnValueOnce(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+        }),
+      )
+      .mockReturnValue(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+          ok: false,
+          requestErrorCode: FLOW_TIMED_OUT_ERROR_CODE,
+        }),
+      );
+
+    pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    const onError = jest.fn();
+
+    const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+    wcEle.addEventListener('error', onError);
+
+    await waitFor(() => expect(onError).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    nextMock.mockClear();
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 4000);
+    });
+
+    expect(nextMock).toHaveBeenCalledTimes(1);
+
+    wcEle.removeEventListener('error', onError);
+  }, 20000);
 
   it('should switch theme on the fly', async () => {
     startMock.mockReturnValue(generateSdkResponse());

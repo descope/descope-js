@@ -9,6 +9,9 @@ import {
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
+  FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE,
+  FLOW_TIMED_OUT_ERROR_CODE,
+  POLLING_STATUS_NOT_FOUND_ERROR_CODE,
   RESPONSE_ACTIONS,
   SDK_SCRIPTS_LOAD_TIMEOUT,
   URL_CODE_PARAM_NAME,
@@ -1080,6 +1083,11 @@ class DescopeWc extends BaseDescopeWc {
     const pollingThrottleDelay = 500;
     const pollingThrottleThreshold = 500;
     const pollingThrottleTimeout = 1000;
+    const stopOnErrors = [
+      FLOW_TIMED_OUT_ERROR_CODE,
+      POLLING_STATUS_NOT_FOUND_ERROR_CODE,
+    ];
+
     if (this.flowState.current.action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.logger.debug('polling - Scheduling polling request');
@@ -1152,14 +1160,22 @@ class DescopeWc extends BaseDescopeWc {
           );
         }
 
-        // will poll again if needed
-        // handleSdkResponse will clear the timeout if the response action is not polling response
-        this.#handlePollingResponse(
-          executionId,
-          stepId,
-          flowVersion,
-          componentsVersion,
-        );
+        // we want to stop polling for some errors
+        if (
+          !sdkResp?.error?.errorCode ||
+          !stopOnErrors.includes(sdkResp.error.errorCode)
+        ) {
+          // will poll again if needed
+          // handleSdkResponse will clear the timeout if the response action is not polling response
+          this.#handlePollingResponse(
+            executionId,
+            stepId,
+            flowVersion,
+            componentsVersion,
+          );
+        } else {
+          this.logger.debug('polling - Stopping polling due to error');
+        }
 
         this.#handleSdkResponse(sdkResp);
       }, delay);
@@ -1190,11 +1206,10 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorMessage || defaultDescription,
       );
 
-      // E102004 = Flow requested is in old version
-      // E103205 = Flow timed out
       const errorCode = sdkResp?.error?.errorCode;
       if (
-        (errorCode === 'E102004' || errorCode === 'E103205') &&
+        (errorCode === FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE ||
+          errorCode === FLOW_TIMED_OUT_ERROR_CODE) &&
         this.isRestartOnError
       ) {
         this.#handleFlowRestart();

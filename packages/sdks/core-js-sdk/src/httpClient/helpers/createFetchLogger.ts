@@ -10,6 +10,7 @@ const httpLogBuilder = () => {
     Headers?: string;
     Body?: string;
     Status?: string;
+    Retries?: number;
   } = {};
 
   return {
@@ -48,6 +49,11 @@ const httpLogBuilder = () => {
       return this;
     },
 
+    retries(retries: number) {
+      msg.Retries = retries;
+      return this;
+    },
+
     build() {
       return Object.keys(msg)
         .flatMap((key) =>
@@ -68,8 +74,13 @@ const buildRequestLog = (args: Parameters<Fetch>) =>
     .body(args[1].body)
     .build();
 
+// we should retry once in case we got these status codes:
+// 521: Web Server Is Down (Cloudflare error)
+// 524: A Timeout Occurred (Cloudflare error)
+const retryStatusCodes = [521, 524];
+
 /** Log the response object */
-const buildResponseLog = async (resp: Response) => {
+const buildResponseLog = async (resp: Response & { retries?: number }) => {
   const respBody = await resp.text();
 
   return httpLogBuilder()
@@ -78,13 +89,19 @@ const buildResponseLog = async (resp: Response) => {
     .status(`${resp.status} ${resp.statusText}`)
     .headers(resp.headers)
     .body(respBody)
+    .retries(resp.retries)
     .build();
 };
 
 const fetchWrapper =
   (fetch: Fetch) =>
   async (...args: Parameters<Fetch>) => {
-    const resp = await fetch(...args);
+    let resp: Response & { retries?: number } = await fetch(...args);
+
+    if (retryStatusCodes.includes(resp.status)) {
+      resp = await fetch(...args);
+      resp.retries = 1;
+    }
 
     // we found out that cloning the response is problematic when using node fetch
     // so instead, we are reading the body stream once and overriding the clone, text & json functions
@@ -104,21 +121,21 @@ const fetchWrapper =
  *
  */
 const createFetchLogger = (logger: Logger, receivedFetch?: Fetch) => {
-  const fetchInternal = fetchWrapper(receivedFetch || fetch);
-  if (!fetchInternal)
+  const baseFetch = receivedFetch || fetch;
+  if (!baseFetch)
     // eslint-disable-next-line no-console
     logger?.warn(
       'Fetch is not defined, you will not be able to send http requests, if you are running in a test, make sure fetch is defined globally',
     );
 
-  if (!logger) return fetchInternal;
+  if (!logger) return fetchWrapper(baseFetch);
   return async (...args: Parameters<Fetch>) => {
-    if (!fetchInternal)
+    if (!baseFetch)
       throw Error(
         'Cannot send http request, fetch is not defined, if you are running in a test, make sure fetch is defined globally',
       );
     logger.log(buildRequestLog(args));
-    const resp = await fetchInternal(...args);
+    const resp = await fetchWrapper(baseFetch)(...args);
 
     logger[resp.ok ? 'log' : 'error'](await buildResponseLog(resp));
 
