@@ -16,7 +16,7 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.connectedOutboundAppsIds.data = action.payload?.apps;
+      state.connectedOutboundAppsIds.data = action.payload?.appIds;
     },
   },
   withRequestStatus((state: State) => state.connectedOutboundAppsIds),

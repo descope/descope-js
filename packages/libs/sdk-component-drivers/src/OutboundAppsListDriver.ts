@@ -18,4 +18,14 @@ export class OutboundAppsListDriver extends BaseDriver {
       data: Data;
     };
   }
+
+  get connectFlowId() {
+    return this.ele?.getAttribute('connect-flow-id') || '';
+  }
+
+  onConnectClick(cb: (e: Event) => void) {
+    this.ele?.addEventListener('connect-clicked', cb);
+
+    return () => this.ele?.removeEventListener('connect-clicked', cb);
+  }
 }

@@ -48,10 +48,10 @@ export const initWidgetRootMixin = createSingletonMixin(
         await this.actions.getMe();
 
         await Promise.all([
+          this.actions.getOutboundApps(),
           this.actions.getConnectedOutboundApps({
             userId: this.state.me.data.userId,
           }),
-          this.actions.getOutboundApps(),
         ]);
 
         const [template] = await Promise.all([this.#initWidgetRoot()]);
