@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.20...nextjs-sdk-0.14.0) (2025-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.5`
+* `react-sdk` updated to version `2.14.26`
+* `core-js-sdk` updated to version `2.44.4`
+* `web-component` updated to version `3.43.19`
+
+### Features
+
+* Support multiple global sdks in next sdk ([#1154](https://github.com/descope/descope-js/issues/1154)) RELEASE ([b91186d](https://github.com/descope/descope-js/commit/b91186de2d4122018dfb892bb8b31c5aa4a9ffc8))
+
 ## [0.13.20](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.19...nextjs-sdk-0.13.20) (2025-07-02)
 
 ### Dependency Updates
