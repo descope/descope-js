@@ -5,9 +5,13 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import { getAllOutboundApps } from '../state/asyncActions';
+import {
+  getAllOutboundApps,
+  getConnectedOutboundApps,
+} from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
+import { getMe } from '../state/asyncActions/getMe';
 
 export const stateManagementMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
@@ -17,10 +21,14 @@ export const stateManagementMixin = createSingletonMixin(
         initialState,
         reducers: {},
         extraReducers: (builder) => {
+          getMe.reducer(builder);
+          getConnectedOutboundApps.reducer(builder);
           getAllOutboundApps.reducer(builder);
         },
         asyncActions: {
+          getMe: getMe.action,
           getOutboundApps: getAllOutboundApps.action,
+          getConnectedOutboundApps: getConnectedOutboundApps.action,
         },
       }),
       initLifecycleMixin,

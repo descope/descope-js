@@ -7,19 +7,17 @@ import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
-  FirstParameter<Sdk['outboundApps']['getConnectedOutboundApps']>,
+  FirstParameter<Sdk['user']['me']>,
   ThunkConfigExtraApi
->('outboundApps/getConnectedOutboundApps', (arg, { extra: { api } }) =>
-  api.outboundApps.getConnectedOutboundApps(arg),
-);
+>('users/me', (arg, { extra: { api } }) => api.user.me());
 
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.connectedOutboundAppsIds.data = action.payload?.apps;
+      state.me.data = action.payload;
     },
   },
-  withRequestStatus((state: State) => state.connectedOutboundAppsIds),
+  withRequestStatus((state: State) => state.me),
 );
 
-export const getConnectedOutboundApps = { action, reducer };
+export const getMe = { action, reducer };

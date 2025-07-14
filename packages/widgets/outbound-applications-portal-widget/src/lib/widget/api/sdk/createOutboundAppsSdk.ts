@@ -9,6 +9,7 @@ export const createOutboundAppsSdk = ({
 }: {
   httpClient: HttpClient;
   mock: boolean;
+  userId?: string;
 }) => {
   const getAllOutboundApps = async () => {
     if (mock) {
@@ -21,12 +22,16 @@ export const createOutboundAppsSdk = ({
     return res.json();
   };
 
-  const getConnectedOutboundApps = async () => {
+  const getConnectedOutboundApps = async ({ userId }) => {
     if (mock) {
       return outboundApps.getConnectedOutboundApps();
     }
+
     const res = await httpClient.get(
       apiPaths.outboundApps.getConnectedOutboundApps,
+      {
+        queryParams: { userId },
+      },
     );
 
     await withErrorHandler(res);

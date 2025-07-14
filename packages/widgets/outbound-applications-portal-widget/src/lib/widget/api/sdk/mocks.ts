@@ -1,4 +1,4 @@
-import { OutboundApplication } from '../types';
+import { User, OutboundApplication } from '../types';
 
 const getAllOutboundApps: () => Promise<{
   apps: OutboundApplication[];
@@ -35,9 +35,20 @@ const getConnectedOutboundApps: () => Promise<{ apps: string[] }> = async () =>
     });
   });
 
+const me: () => Promise<User> = async () =>
+  new Promise((resolve) => {
+    resolve({
+      userId: `user-1`,
+    });
+  });
+
 const outboundApps = {
   getAllOutboundApps,
   getConnectedOutboundApps,
 };
 
-export { outboundApps };
+const user = {
+  me,
+};
+
+export { outboundApps, user };

@@ -1,7 +1,7 @@
 import { OutboundAppsListDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { getAppsList, getConnectedAppsList } from '../../../state/selectors';
+import { getAppsList } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -22,23 +22,9 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.appsList.data = appsList;
       }
 
-      #initAllApps(appsList: ReturnType<typeof getAppsList>) {
-        console.log('alls apps', appsList);
-        this.appsList.data = appsList;
-      }
-
-      #initConnectedApps(
-        connectedAppsIds: ReturnType<typeof getConnectedAppsList>,
-      ) {
-        console.log('connected apps', connectedAppsIds);
-        // this.appsList.data = appsList;
-      }
-
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
         this.#initAppsList(getAppsList(this.state));
-        this.#initAllApps(getAppsList(this.state));
-        this.#initConnectedApps(getConnectedAppsList(this.state));
       }
     },
 );

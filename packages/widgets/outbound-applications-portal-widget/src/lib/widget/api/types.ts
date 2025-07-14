@@ -4,6 +4,10 @@ export type Sdk = ReturnType<typeof createWebSdk>;
 
 export type HttpClient = Sdk['httpClient'];
 
+export type User = {
+  userId: string;
+};
+
 export type OutboundApplication = {
   id: string;
   name: string;

@@ -13,6 +13,11 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  me: {
+    loading: boolean;
+    error: unknown;
+    data: Record<string, any>;
+  };
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;

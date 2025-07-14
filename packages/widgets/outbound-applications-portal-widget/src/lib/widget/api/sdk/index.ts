@@ -1,5 +1,6 @@
 import createWebSdk from '@descope/web-js-sdk';
 import { createOutboundAppsSdk } from './createOutboundAppsSdk';
+import { createUserSdk } from './createUserSdk';
 
 declare const BUILD_VERSION: string;
 
@@ -23,6 +24,9 @@ export const createSdk = (
       httpClient: webSdk.httpClient,
       mock,
     }),
+    user: {
+      ...createUserSdk({ httpClient: webSdk.httpClient, mock }),
+    },
   };
 };
 

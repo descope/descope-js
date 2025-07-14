@@ -11,4 +11,9 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  me: {
+    loading: false,
+    error: null,
+    data: {},
+  },
 };
