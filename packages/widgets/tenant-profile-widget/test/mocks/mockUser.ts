@@ -3,7 +3,7 @@ export const mockUser = {
   userId: 'U2b2Jq9PXd6OBWIe7jOJ8aFbouGy',
   name: 'Test User',
   email: 'email1@email1.com',
-  phone: '+9725485454',
+  phone: '+9721111111',
   verifiedEmail: true,
   verifiedPhone: false,
   roleNames: ['Tenant Admin', 'Role 2'],
