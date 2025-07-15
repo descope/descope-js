@@ -22,12 +22,7 @@ export const createSdk = (
   });
 
   return {
-    user: {
-      ...createUserSdk({ httpClient: webSdk.httpClient, mock }),
-      logout: !mock
-        ? webSdk.logout
-        : <typeof webSdk.logout>(<unknown>(async () => {})),
-    },
+    user: createUserSdk({ httpClient: webSdk.httpClient, mock }),
     tenant: createTenantSdk({
       httpClient: webSdk.httpClient,
       tenantId: tenant,
