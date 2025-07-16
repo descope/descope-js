@@ -735,9 +735,14 @@ class DescopeWc extends BaseDescopeWc {
       }
     }
 
-    if (isChanged('code') && code && isChanged('isPopup') && isPopup) {
+    if (
+      ((isChanged('code') && code) ||
+        (isChanged('exchangeError') && exchangeError)) &&
+      isChanged('isPopup') &&
+      isPopup
+    ) {
       window.opener.postMessage(
-        { action: 'code', data: { code } },
+        { action: 'code', data: { code, exchangeError } },
         window.location.origin,
       );
       window.close();
@@ -825,6 +830,7 @@ class DescopeWc extends BaseDescopeWc {
 
             this.flowState.update({
               code: data.code,
+              exchangeError: data.exchangeError,
             });
           }
         };
