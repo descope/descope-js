@@ -1,7 +1,5 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
-import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
-import { initOutboundAppsListMixin } from './initComponentsMixins/initOutboundAppsListMixin';
 import { initWidgetRootMixin } from './initComponentsMixins/initWidgetRootMixin';
 
 export const customAppsMixin = createSingletonMixin(

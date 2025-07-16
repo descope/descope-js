@@ -11,6 +11,7 @@ import {
 } from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
+import { getUserId } from '../../../state/selectors';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -50,7 +51,7 @@ export const initWidgetRootMixin = createSingletonMixin(
         await Promise.all([
           this.actions.getOutboundApps(),
           this.actions.getConnectedOutboundApps({
-            userId: this.state.me.data.userId,
+            userId: getUserId(this.state),
           }),
         ]);
 

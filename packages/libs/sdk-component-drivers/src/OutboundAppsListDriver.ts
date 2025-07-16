@@ -2,6 +2,8 @@ import { BaseDriver } from './BaseDriver';
 
 type Data = { name: string; icon: string }[];
 
+type Detail = { id: string; action: string };
+
 export class OutboundAppsListDriver extends BaseDriver {
   nodeName = 'descope-outbound-apps';
 
@@ -23,9 +25,21 @@ export class OutboundAppsListDriver extends BaseDriver {
     return this.ele?.getAttribute('connect-flow-id') || '';
   }
 
-  onConnectClick(cb: (e: Event) => void) {
-    this.ele?.addEventListener('connect-clicked', cb);
+  get disconnectFlowId() {
+    return this.ele?.getAttribute('disconnect-flow-id') || '';
+  }
 
-    return () => this.ele?.removeEventListener('connect-clicked', cb);
+  onConnectClick(cb: (detail: Detail) => void) {
+    const handler = (e: CustomEvent<Detail>) => cb(e.detail);
+    this.ele?.addEventListener('connect-clicked', handler);
+
+    return () => this.ele?.removeEventListener('connect-clicked', handler);
+  }
+
+  onDisconnectClick(cb: (detail: Detail) => void) {
+    const handler = (e: CustomEvent<Detail>) => cb(e.detail);
+    this.ele?.addEventListener('disconnect-clicked', handler);
+
+    return () => this.ele?.removeEventListener('disconnect-clicked', handler);
   }
 }

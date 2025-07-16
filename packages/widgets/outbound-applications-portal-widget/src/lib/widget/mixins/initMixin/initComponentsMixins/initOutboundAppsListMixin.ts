@@ -9,7 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
-import { getAppsList } from '../../../state/selectors';
+import { getAppsList, getConnectedAppsList } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
@@ -30,7 +30,11 @@ export const initOutboundAppsListMixin = createSingletonMixin(
 
       #connectModal: ModalDriver;
 
+      #disconnectModal: ModalDriver;
+
       #connectFlow: FlowDriver;
+
+      #disconnectFlow: FlowDriver;
 
       #initConnectModal() {
         if (!this.obAppsList.connectFlowId) return;
@@ -47,11 +51,29 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#connectModal.afterClose =
           this.#initConnectModalContent.bind(this);
 
-        this.#initConnectModalContent();
+        // we don't have the app id yet, so we don't init here
+        // this.#initConnectModalContent();
         this.syncFlowTheme(this.#connectFlow);
       }
 
-      #initConnectModalContent() {
+      #initDisconnectModal() {
+        this.#disconnectModal = this.createModal({
+          'data-id': 'outbound-apps-disconnect',
+        });
+
+        this.#disconnectFlow = new FlowDriver(
+          () => this.#disconnectModal.ele?.querySelector('descope-wc'),
+          { logger: this.logger },
+        );
+
+        this.#disconnectModal.afterClose =
+          this.#initDisconnectModalContent.bind(this);
+
+        // this.#initDisconnectModalContent();
+        this.syncFlowTheme(this.#disconnectFlow);
+      }
+
+      #initConnectModalContent(appId: string) {
         this.#connectModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -61,10 +83,31 @@ export const initOutboundAppsListMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            form: `{ "outboundappid": "${appId}" }`,
           }),
         );
         this.#connectFlow.onSuccess(() => {
           this.#connectModal.close();
+          // TODO: Update data
+        });
+      }
+
+      #initDisconnectModalContent(appId: string) {
+        this.#disconnectModal.setContent(
+          createFlowTemplate({
+            projectId: this.projectId,
+            flowId: this.obAppsList.disconnectFlowId,
+            baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
+            theme: this.theme,
+            form: `{ "appId": "${appId}", "userId": "${this.state.me.data.userId}" }`,
+          }),
+        );
+        this.#disconnectFlow.onSuccess(() => {
+          this.#disconnectModal.close();
+          // console.log('trigger delete token for app id', appId)
           // TODO: Update data
         });
       }
@@ -75,19 +118,36 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.obAppsList.onConnectClick(() => {
+        this.obAppsList.onConnectClick(({ id }) => {
+          this.#initConnectModalContent(id);
           this.#connectModal?.open();
         });
 
-        // console.log(this.#customAppsIds);
+        this.obAppsList.onDisconnectClick(({ id }) => {
+          this.#initDisconnectModalContent(id);
+          this.#disconnectModal?.open();
+        });
+
         this.obAppsList.data = this.filterAllowedApps(appsList);
       }
+
+      #onConnectedAppsUpdate = withMemCache(
+        (connectedAppsUpdate: ReturnType<typeof getConnectedAppsList>) => {
+          console.log('connected apps changed');
+        },
+      );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
         this.#initAppsList(getAppsList(this.state));
         this.#initConnectModal();
+        this.#initDisconnectModal();
+
+        this.subscribe(
+          this.#onConnectedAppsUpdate.bind(this),
+          getConnectedAppsList,
+        );
       }
     },
 );

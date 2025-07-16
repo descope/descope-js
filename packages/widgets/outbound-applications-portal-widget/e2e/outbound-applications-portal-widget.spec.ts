@@ -2,7 +2,11 @@ import { test, expect } from '@playwright/test';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import rootMock from '../test/mocks/rootMock';
-import { mockOutboundApps } from '../test/mocks/mockOutboundApps';
+import {
+  mockConnectedApps,
+  mockOutboundApps,
+  mockUser,
+} from '../test/mocks/mockOutboundApps';
 
 const configContent = {
   flows: {
@@ -11,7 +15,7 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const apiPath = (prop: 'outboundApps', path: string) =>
+const apiPath = (prop: 'outboundApps' | 'user', path: string) =>
   `**/*${apiPaths[prop][path]}`;
 
 test.describe('widget', () => {
@@ -19,7 +23,7 @@ test.describe('widget', () => {
     await page.addInitScript(() =>
       window.localStorage.setItem(
         'base.ui.components.url',
-        'http://localhost:8769/umd/index.js',
+        'http://localhost:5500/umd/index.js',
       ),
     );
 
@@ -35,6 +39,14 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMock }),
     );
 
+    await page.route(apiPath('user', 'me'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ apps: mockUser }),
+      }),
+    );
+
     await page.route(apiPath('outboundApps', 'load'), async (route) =>
       route.fulfill({
         status: 200,
@@ -43,36 +55,36 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.route('**/auth/me', async (route) =>
-      route.fulfill({
-        json: {
-          userTenants: [
-            {
-              tenantId: 'tid',
-              roleNames: ['Tenant Admin'],
-            },
-          ],
-        },
-      }),
+    await page.route(
+      apiPath('outboundApps', 'getConnectedOutboundApps'),
+      async (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ appsIds: mockConnectedApps }),
+        }),
     );
 
     await page.goto('http://localhost:5560');
   });
 
-  // test('saml apps are in the list', async ({ page }) => {
-  //   for (const app of samlApps) {
-  //     await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
-  //   }
+  test('outbound apps are in the list', async ({ page }) => {
+    for (const app of mockOutboundApps) {
+      await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
+      await expect(
+        page.locator(`text=${app.description}`).first(),
+      ).toBeVisible();
+    }
+  });
+  // test('click app opens a new tab', async ({ page }) => {
+  //   const newTabPromise = page.waitForEvent('popup');
+
+  //   const app = page.locator(`text=${samlApps[0].name}`).first();
+  //   await app.click();
+
+  //   const newTab = await newTabPromise;
+  //   await newTab.waitForLoadState();
+
+  //   await expect(newTab).toHaveURL(samlApps[0].samlSettings.idpInitiatedUrl);
   // });
-  //   test('click app opens a new tab', async ({ page }) => {
-  //     const newTabPromise = page.waitForEvent('popup');
-
-  //     const app = page.locator(`text=${samlApps[0].name}`).first();
-  //     await app.click();
-
-  //     const newTab = await newTabPromise;
-  //     await newTab.waitForLoadState();
-
-  //     await expect(newTab).toHaveURL(samlApps[0].samlSettings.idpInitiatedUrl);
-  //   });
 });
