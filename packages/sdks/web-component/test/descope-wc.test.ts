@@ -33,6 +33,7 @@ import {
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
   SDK_SCRIPTS_LOAD_TIMEOUT,
+  FLOW_TIMED_OUT_ERROR_CODE,
 } from '../src/lib/constants';
 import DescopeWc from '../src/lib/descope-wc';
 // eslint-disable-next-line import/no-namespace
@@ -231,6 +232,243 @@ describe('web-component', () => {
     window.location.search = '';
     themeContent = {};
     pageContent = '';
+  });
+
+  it('When has polling element, and next poll returns error response', async () => {
+    jest.useRealTimers();
+
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    nextMock
+      .mockReturnValueOnce(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+        }),
+      )
+      .mockReturnValue(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+          ok: false,
+          requestErrorCode: FLOW_TIMED_OUT_ERROR_CODE,
+        }),
+      );
+
+    pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    const onError = jest.fn();
+
+    const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+    wcEle.addEventListener('error', onError);
+
+    await waitFor(() => expect(onError).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    nextMock.mockClear();
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 4000);
+    });
+
+    expect(nextMock).toHaveBeenCalledTimes(1);
+
+    wcEle.removeEventListener('error', onError);
+  }, 20000);
+
+  it('should set loading attribute on submitter and disable other enabled elements', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = `
+      <span>Test Page</span>
+      <descope-button id="submit">Submit</descope-button>
+      <descope-button id="another">Another Button</descope-button>
+      <input id="input" placeholder="Input"/>
+      `;
+    document.body.innerHTML = `<descope-wc flow-id="test-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Test Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('Submit'));
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Submit')).toHaveAttribute(
+          'loading',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Another Button')).toHaveAttribute(
+          'disabled',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowPlaceholderText('Input')).toHaveAttribute(
+          'disabled',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('should restore states when staying on the same screen', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    nextMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = `
+      <span>Test Page</span>
+      <descope-button id="submit">Submit</descope-button>
+      <descope-button id="another">Another Button</descope-button>
+      <input id="input" placeholder="Input"/>
+      `;
+    document.body.innerHTML = `<descope-wc flow-id="test-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Test Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('Submit'));
+
+    const submitButton = screen.getByShadowText('Submit');
+    const anotherButton = screen.getByShadowText('Another Button');
+    const inputField = screen.getByShadowPlaceholderText('Input');
+
+    // wait for the loading state to be set
+    await waitFor(
+      () => {
+        expect(submitButton).toHaveAttribute('loading', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(anotherButton).toHaveAttribute('disabled', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(inputField).toHaveAttribute('disabled', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    // wait for loading state to be removed
+    await waitFor(
+      () => {
+        expect(submitButton).not.toHaveAttribute('loading');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(anotherButton).not.toHaveAttribute('disabled');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(inputField).not.toHaveAttribute('disabled');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('should NOT restore states when navigating to a different screen', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+
+    pageContent = `
+      <span>Test Page</span>
+      <descope-button id="submit">Submit</descope-button>
+      <descope-button id="another">Another Button</descope-button>
+      <input id="input" placeholder="Input"/>
+      `;
+    document.body.innerHTML = `<descope-wc flow-id="test-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Test Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const submitButton = screen.getByShadowText('Submit');
+    const anotherButton = screen.getByShadowText('Another Button');
+    const inputField = screen.getByShadowPlaceholderText('Input');
+
+    pageContent = `
+      <span>Test Page 2</span>
+      <descope-button id="submit">Submit</descope-button>
+      <descope-button id="another">Another Button</descope-button>
+      <input id="input" placeholder="Input"/>
+      `;
+
+    fireEvent.click(submitButton);
+
+    // wait for the loading state to be set
+    await waitFor(
+      () => {
+        expect(submitButton).toHaveAttribute('loading', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(anotherButton).toHaveAttribute('disabled', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(inputField).toHaveAttribute('disabled', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    // wait for the next screen to be rendered
+    await waitFor(() => screen.getByShadowText('Test Page 2'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // check that the loading state is not restored
+    await waitFor(
+      () => {
+        expect(submitButton).toHaveAttribute('loading', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(anotherButton).toHaveAttribute('disabled', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(inputField).toHaveAttribute('disabled', 'true');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should switch theme on the fly', async () => {
@@ -5391,9 +5629,7 @@ describe('web-component', () => {
       });
       await waitFor(
         () =>
-          expect(screen.getByShadowText('click')).not.toHaveAttribute(
-            'loading',
-          ),
+          expect(screen.getByShadowText('click')).toHaveAttribute('loading'),
         {
           timeout: WAIT_TIMEOUT,
         },
