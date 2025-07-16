@@ -77,6 +77,19 @@ test.describe('tenant profile widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 
+  const mockTenantAfterEdit = {
+    ...mockTenant,
+    name: 'New Name',
+    selfProvisioningDomains: ['newDomain.com', 'example2.com'],
+    enforceSSO: false,
+  };
+
+  const mockTenantAfterDelete = {
+    ...mockTenant,
+    selfProvisioningDomains: [],
+    enforceSSO: false,
+  };
+
   test.describe('tenant attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
@@ -84,27 +97,32 @@ test.describe('tenant profile widget', () => {
         name: 'tenant-name-edit',
         action: 'edit',
         newValue: 'New Name',
-        editModalName: 'tenant-profile-set-name',
+        modalName: 'tenant-profile-set-name',
       },
-      // {
-      //   name: 'tenant-email-domains-edit',
-      //   action: 'edit',
-      //   newValue: 'example1.com,example2.com',
-      //   editModalName: 'tenant-profile-set-email-domains',
-      // },
-      // {
-      //   name: 'tenant-email-domains-edit',
-      //   action: 'delete',
-      //   newValue: '',
-      //   editModalName: 'tenant-profile-set-email-domains',
-      // },
-      // {
-      //   name: 'tenant-enforce-sso-edit',
-      //   action: 'edit',
-      //   newValue: 'true',
-      //   editModalName: 'tenant-profile-set-enforce-sso',
-      // },
-      // { name: 'tenant-enforce-sso-edit', action: 'delete', newValue: '' },
+      {
+        name: 'tenant-email-domains-edit',
+        action: 'edit',
+        newValue: ['newDomain.com', 'example2.com'],
+        modalName: 'edit-tenant-email-domains',
+      },
+      {
+        name: 'tenant-email-domains-edit',
+        action: 'delete',
+        newValue: '',
+        modalName: 'delete-tenant-email-domains',
+      },
+      {
+        name: 'tenant-enforce-sso-edit',
+        action: 'edit',
+        newValue: 'false',
+        modalName: 'edit-tenant-enforce-sso',
+      },
+      {
+        name: 'tenant-enforce-sso-edit',
+        action: 'delete',
+        newValue: 'false',
+        modalName: 'delete-tenant-enforce-sso',
+      },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
         await page.waitForTimeout(STATE_TIMEOUT);
@@ -122,12 +140,15 @@ test.describe('tenant profile widget', () => {
         await page.waitForTimeout(MODAL_TIMEOUT);
 
         const finishFlowBtn = page
-          .locator(`descope-modal[data-id="${attr.editModalName}"]`)
+          .locator(`descope-modal[data-id="${attr.modalName}"]`)
           .locator('button', { hasText: 'Finish Flow' });
 
-        await page.route('**/mgmt/tenant', async (route) =>
+        await page.route('**/mgmt/tenant?**', async (route) =>
           route.fulfill({
-            json: { ...mockTenant, [attr.name]: attr.newValue },
+            json:
+              attr.action === 'edit'
+                ? mockTenantAfterEdit
+                : mockTenantAfterDelete,
           }),
         );
 
@@ -135,17 +156,21 @@ test.describe('tenant profile widget', () => {
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
-        await expect(userAttr).toHaveValue(attr.newValue);
+        // eslint-disable-next-line jest-dom/prefer-to-have-value
+        await expect(userAttr).toHaveAttribute(
+          'value',
+          attr.newValue.toString(),
+        );
       });
     }
   });
 
   test.describe('tenant admin sso configuration link', () => {
-    test(`get tenant admin sso configuration link`, async ({ page }) => {
+    test('get tenant admin sso configuration link', async ({ page }) => {
       await page.waitForTimeout(STATE_TIMEOUT);
 
       const userAttr = page
-        .locator(`descope-link[data-id="tenant-admin-sso-configuration-link"]`)
+        .locator(`descope-link[data-id="tenant-admin-link-sso"]`)
         .first();
 
       await expect(userAttr).toHaveText('SSO Setup');
