@@ -13,6 +13,11 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  allowedAppsIds: {
+    data: string[];
+    loading: boolean;
+    error: unknown;
+  };
   me: {
     loading: boolean;
     error: unknown;

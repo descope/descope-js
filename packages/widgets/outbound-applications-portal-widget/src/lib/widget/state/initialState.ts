@@ -11,6 +11,11 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  allowedAppsIds: {
+    data: [],
+    loading: false,
+    error: null,
+  },
   me: {
     loading: false,
     error: null,

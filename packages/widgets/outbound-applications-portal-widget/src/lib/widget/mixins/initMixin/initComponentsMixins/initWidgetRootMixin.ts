@@ -48,6 +48,9 @@ export const initWidgetRootMixin = createSingletonMixin(
 
         await this.actions.getMe();
 
+        const allowedAppsIds = this.getAttribute('allowed-outbound-apps-ids');
+        await this.actions.setAllowedAppsIds(allowedAppsIds || '');
+
         await Promise.all([
           this.actions.getOutboundApps(),
           this.actions.getConnectedOutboundApps({

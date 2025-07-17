@@ -7,6 +7,8 @@ export const getOutboundAppsList = (state: State) =>
 export const connectedOutboundAppsList = (state: State) =>
   state.connectedOutboundAppsIds.data;
 
+export const allowedAppsIds = (state: State) => state.allowedAppsIds.data;
+
 export const getConnectedAppsList = createSelector(
   connectedOutboundAppsList,
   (connectedIds) => {
@@ -14,27 +16,20 @@ export const getConnectedAppsList = createSelector(
   },
 );
 
-export const getMappedAppsList = createSelector(
+export const getAppsList = createSelector(
   getOutboundAppsList,
   connectedOutboundAppsList,
-  (obApps, connectedIds) =>
-    obApps.map((app) => ({
-      id: app.id,
-      name: app.name,
-      description: app.description,
-      logo: app.logo,
-      isConnected: connectedIds.includes(app.id),
-    })),
-);
-
-export const getAppsList = createSelector(getMappedAppsList, (obApps) =>
-  obApps.map((app) => ({
-    appId: app.id,
-    name: app.name,
-    description: app.description,
-    logo: app.logo,
-    isConnected: app.isConnected,
-  })),
+  allowedAppsIds,
+  (obApps, connectedIds, allowedIds) =>
+    obApps
+      .filter((app) => allowedIds.length === 0 || allowedIds.includes(app.id))
+      .map((app) => ({
+        appId: app.id,
+        name: app.name,
+        description: app.description,
+        logo: app.logo,
+        isConnected: connectedIds.includes(app.id),
+      })),
 );
 
 export const getMe = (state: State) => state.me.data;

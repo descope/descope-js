@@ -12,14 +12,12 @@ import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import {
   getAppsList,
   getConnectedAppsList,
-  getMappedAppsList,
   getUserId,
 } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { customAppsMixin } from '../customAppsMixin';
 
 export const initOutboundAppsListMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -29,7 +27,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       modalMixin,
-      customAppsMixin,
+      // customAppsMixin,
     )(superclass) {
       #obAppsList: OutboundAppsListDriver;
 
@@ -92,7 +90,9 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         );
         this.#connectFlow.onSuccess(() => {
           this.#connectModal.close();
-          // TODO: Update data
+          this.actions.getConnectedOutboundApps({
+            userId: getUserId(this.state),
+          });
         });
       }
 
@@ -133,15 +133,12 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           this.#disconnectModal?.open();
         });
 
-        this.#obAppsList.data = this.filterAllowedApps(appsList);
+        this.#obAppsList.data = appsList;
       }
 
-      #onConnectedAppsUpdate = withMemCache(
-        (connectedAppsUpdate: ReturnType<typeof getConnectedAppsList>) => {
-          // TODO: apply connectedAppsUpdate to allowed list
-          this.#obAppsList.data = getMappedAppsList(this.state);
-        },
-      );
+      #onConnectedAppsUpdate = withMemCache(() => {
+        this.#obAppsList.data = getAppsList(this.state);
+      });
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
