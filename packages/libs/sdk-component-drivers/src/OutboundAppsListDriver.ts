@@ -1,6 +1,6 @@
 import { BaseDriver } from './BaseDriver';
 
-type Data = { name: string; icon: string }[];
+type Data = { name: string; logo: string }[];
 
 type Detail = { id: string; action: string };
 

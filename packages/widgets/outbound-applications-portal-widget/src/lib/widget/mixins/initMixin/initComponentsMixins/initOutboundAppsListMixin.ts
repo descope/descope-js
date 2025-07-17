@@ -9,7 +9,12 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
-import { getAppsList, getConnectedAppsList } from '../../../state/selectors';
+import {
+  getAppsList,
+  getConnectedAppsList,
+  getMappedAppsList,
+  getUserId,
+} from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
@@ -26,7 +31,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       modalMixin,
       customAppsMixin,
     )(superclass) {
-      obAppsList: OutboundAppsListDriver;
+      #obAppsList: OutboundAppsListDriver;
 
       #connectModal: ModalDriver;
 
@@ -37,7 +42,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       #disconnectFlow: FlowDriver;
 
       #initConnectModal() {
-        if (!this.obAppsList.connectFlowId) return;
+        if (!this.#obAppsList.connectFlowId) return;
 
         this.#connectModal = this.createModal({
           'data-id': 'outbound-apps-connect',
@@ -51,8 +56,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#connectModal.afterClose =
           this.#initConnectModalContent.bind(this);
 
-        // we don't have the app id yet, so we don't init here
-        // this.#initConnectModalContent();
+        this.#initConnectModalContent('');
         this.syncFlowTheme(this.#connectFlow);
       }
 
@@ -69,7 +73,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#disconnectModal.afterClose =
           this.#initDisconnectModalContent.bind(this);
 
-        // this.#initDisconnectModalContent();
+        this.#initDisconnectModalContent('');
         this.syncFlowTheme(this.#disconnectFlow);
       }
 
@@ -77,7 +81,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#connectModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.obAppsList.connectFlowId,
+            flowId: this.#obAppsList.connectFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -96,44 +100,46 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#disconnectModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.obAppsList.disconnectFlowId,
+            flowId: this.#obAppsList.disconnectFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
-            form: `{ "appId": "${appId}", "userId": "${this.state.me.data.userId}" }`,
+            outboundAppId: appId,
           }),
         );
         this.#disconnectFlow.onSuccess(() => {
           this.#disconnectModal.close();
-          // console.log('trigger delete token for app id', appId)
-          // TODO: Update data
+          this.actions.getConnectedOutboundApps({
+            userId: getUserId(this.state),
+          });
         });
       }
 
       #initAppsList(appsList: ReturnType<typeof getAppsList>) {
-        this.obAppsList = new OutboundAppsListDriver(
+        this.#obAppsList = new OutboundAppsListDriver(
           () => this.shadowRoot?.querySelector('descope-outbound-apps'),
           { logger: this.logger },
         );
 
-        this.obAppsList.onConnectClick(({ id }) => {
+        this.#obAppsList.onConnectClick(({ id }) => {
           this.#initConnectModalContent(id);
           this.#connectModal?.open();
         });
 
-        this.obAppsList.onDisconnectClick(({ id }) => {
+        this.#obAppsList.onDisconnectClick(({ id }) => {
           this.#initDisconnectModalContent(id);
           this.#disconnectModal?.open();
         });
 
-        this.obAppsList.data = this.filterAllowedApps(appsList);
+        this.#obAppsList.data = this.filterAllowedApps(appsList);
       }
 
       #onConnectedAppsUpdate = withMemCache(
         (connectedAppsUpdate: ReturnType<typeof getConnectedAppsList>) => {
-          console.log('connected apps changed');
+          // TODO: apply connectedAppsUpdate to allowed list
+          this.#obAppsList.data = getMappedAppsList(this.state);
         },
       );
 
