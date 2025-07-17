@@ -39,9 +39,9 @@ export class DescopeAuthService {
     this.descopeSdk = observabilify<DescopeSDK>(
       createSdk({
         persistTokens: isBrowser() as true,
-        ...config,
         storeLastAuthenticatedUser: isBrowser() as true,
         autoRefresh: isBrowser() as true,
+        ...config,
         baseHeaders
       })
     );

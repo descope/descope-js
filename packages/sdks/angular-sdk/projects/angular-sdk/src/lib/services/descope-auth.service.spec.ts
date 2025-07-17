@@ -74,6 +74,41 @@ describe('DescopeAuthService', () => {
     expect(onUserChangeSpy).toHaveBeenCalled();
   });
 
+  it('should be created with default autoRefresh option', () => {
+    expect(service).toBeTruthy();
+    expect(mockedCreateSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ...mockConfig,
+        autoRefresh: true
+      })
+    );
+    expect(onSessionTokenChangeSpy).toHaveBeenCalled();
+    expect(onIsAuthenticatedChangeSpy).toHaveBeenCalled();
+    expect(onUserChangeSpy).toHaveBeenCalled();
+  });
+
+  it('should be created with custom autoRefresh option', () => {
+    const customConfig = { ...mockConfig, autoRefresh: false };
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        DescopeAuthConfig,
+        { provide: DescopeAuthConfig, useValue: customConfig }
+      ]
+    });
+
+    const customService = TestBed.inject(DescopeAuthService);
+
+    expect(customService).toBeTruthy();
+    expect(mockedCreateSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ...customConfig,
+        autoRefresh: false
+      })
+    );
+  });
+
   describe('getSessionToken', () => {
     it('should call getSessionToken from sdk', () => {
       const token = 'abcd';
