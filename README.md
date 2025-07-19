@@ -1,4 +1,4 @@
-# Descope JS
+# 🔐 Descope JS
 
 ![github-header-image (2) (1)](https://github.com/descope/.github/assets/32936811/d904d37e-e3fa-4331-9f10-2880bb708f64)
 
@@ -34,7 +34,7 @@ This repository hosts multiple packages, sdks, widgets, located under the `./pac
 
 For more detailed information, please consult the README and the specific instructions provided for each package.
 
-## Contribution
+## 🤝 Contribution
 
 This monorepo is built and managed using [NX](https://nx.dev/). In order to use the repo locally.
 
@@ -44,15 +44,15 @@ This monorepo is built and managed using [NX](https://nx.dev/). In order to use 
 
 You can find README and examples in each package.
 
-#### Notes
+#### 📝 Notes
 
 - **Pull Request** title (which is used as the squash & merge commit messages) must met [conventional commits](https://www.conventionalcommits.org) (e.g. "fix: ..." / "chore: ...", "feat: ...")
-- **Release new versions** is done by merging a commit message containing the word `RELEASE` (e.g. `chore: ... RELEASE`)
+- **Release new versions** are automated via [release-please](https://github.com/googleapis/release-please) - conventional commits automatically trigger release PRs
 
-## Contact Us
+## 📞 Contact Us
 
 If you need help you can email [Descope Support](mailto:support@descope.com)
 
-## License
+## 📄 License
 
 The Descope JS is licensed for use under the terms and conditions of the [MIT license Agreement](./LICENSE).

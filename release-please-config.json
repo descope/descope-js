@@ -1,0 +1,128 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "main",
+  "release-type": "node",
+  "separate-pull-requests": false,
+  "group-pull-request-title-pattern": "chore: release packages",
+  "packages": {
+    "packages/sdks/core-js-sdk": {
+      "package-name": "core-js-sdk",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "core-js-sdk-${version}",
+      "initial-version": "2.44.3"
+    },
+    "packages/sdks/web-js-sdk": {
+      "package-name": "web-js-sdk",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "web-js-sdk-${version}",
+      "initial-version": "1.33.4"
+    },
+    "packages/sdks/react-sdk": {
+      "package-name": "react-sdk",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "react-sdk-${version}",
+      "initial-version": "2.14.23"
+    },
+    "packages/sdks/vue-sdk": {
+      "package-name": "vue-sdk",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "vue-sdk-${version}",
+      "initial-version": "2.9.33"
+    },
+    "packages/sdks/nextjs-sdk": {
+      "package-name": "nextjs-sdk",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "nextjs-sdk-${version}",
+      "initial-version": "0.13.18"
+    },
+    "packages/sdks/angular-sdk": {
+      "package-name": "angular-sdk",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "angular-sdk-${version}",
+      "initial-version": "0.15.17"
+    },
+    "packages/sdks/web-component": {
+      "package-name": "web-component",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "web-component-${version}",
+      "initial-version": "3.43.17"
+    },
+    "packages/widgets/role-management-widget": {
+      "package-name": "role-management-widget",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "role-management-widget-${version}",
+      "initial-version": "0.3.31"
+    },
+    "packages/widgets/access-key-management-widget": {
+      "package-name": "access-key-management-widget",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "access-key-management-widget-${version}",
+      "initial-version": "0.4.30"
+    },
+    "packages/widgets/applications-portal-widget": {
+      "package-name": "applications-portal-widget",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "applications-portal-widget-${version}",
+      "initial-version": "0.3.30"
+    },
+    "packages/widgets/audit-management-widget": {
+      "package-name": "audit-management-widget",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "audit-management-widget-${version}",
+      "initial-version": "0.4.30"
+    },
+    "packages/widgets/user-profile-widget": {
+      "package-name": "user-profile-widget",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "user-profile-widget-${version}",
+      "initial-version": "0.5.1"
+    },
+    "packages/widgets/user-management-widget": {
+      "package-name": "user-management-widget",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "user-management-widget-${version}",
+      "initial-version": "0.7.30"
+    },
+    "packages/libs/sdk-component-drivers": {
+      "package-name": "sdk-component-drivers",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "sdk-component-drivers-${version}",
+      "initial-version": "0.2.52"
+    },
+    "packages/libs/sdk-helpers": {
+      "package-name": "sdk-helpers",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "sdk-helpers-${version}",
+      "initial-version": "0.3.0"
+    },
+    "packages/libs/sdk-mixins": {
+      "package-name": "sdk-mixins",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "sdk-mixins-${version}",
+      "initial-version": "0.13.6"
+    },
+    "packages/libs/escape-markdown": {
+      "package-name": "escape-markdown",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "tag-name": "escape-markdown-${version}",
+      "initial-version": "0.1.5"
+    }
+  }
+}
