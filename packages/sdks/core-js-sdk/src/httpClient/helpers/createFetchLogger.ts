@@ -108,7 +108,13 @@ const fetchWrapper =
     const respText = await resp.text();
 
     resp.text = () => Promise.resolve(respText);
-    resp.json = () => Promise.resolve(JSON.parse(respText));
+    resp.json = () => Promise.resolve(() => {
+      try {
+        return JSON.parse(respText);
+      } catch (e) {
+        return {};
+      }
+    });
     resp.clone = () => resp;
 
     return resp;
