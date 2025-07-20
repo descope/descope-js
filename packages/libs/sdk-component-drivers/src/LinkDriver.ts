@@ -15,6 +15,6 @@ export class LinkDriver extends BaseDriver {
   }
 
   set href(href: string) {
-    if (this.ele) this.ele.setAttribute('href', href ?? '');
+    this.ele?.setAttribute('href', href ?? '');
   }
 }

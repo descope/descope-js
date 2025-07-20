@@ -9,6 +9,11 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
+import {
+  getMeError,
+  getTenantAdminLinkSSOError,
+  getTenantError,
+} from '../../../state/selectors';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { createErrorComponent } from './ErrorComponent';
@@ -56,8 +61,11 @@ export const initWidgetRootMixin = createSingletonMixin(
         }
 
         // Check for errors in state
-        const { me, tenant, tenantAdminLinkSSO } = this.state;
-        const error = me.error || tenant.error || tenantAdminLinkSSO.error;
+        const error =
+          getMeError(this.state) ||
+          getTenantError(this.state) ||
+          getTenantAdminLinkSSOError(this.state);
+
         if (error) {
           this.contentRootElement.innerHTML = '';
           const mainMessage =

@@ -20,6 +20,16 @@ import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
+const getFormattedValue = (type: string, val: any) => {
+  if (type === AttributeTypeName.DATE && val) {
+    return new Date(val).toLocaleString();
+  }
+  if (type === AttributeTypeName.BOOLEAN && val !== undefined) {
+    return !val ? 'False' : 'True';
+  }
+  return (val || '').toString();
+};
+
 export const initTenantCustomAttributesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantCustomAttributesMixinClass extends compose(
@@ -38,17 +48,6 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       #deleteModals: Record<string, ModalDriver> = {};
 
       #deleteFlows: Record<string, FlowDriver> = {};
-
-      static getFormattedValue(type: string, val: any) {
-        if (type === AttributeTypeName.DATE && val) {
-          // to full date time
-          return new Date(val).toLocaleString();
-        }
-        if (type === AttributeTypeName.BOOLEAN && val !== undefined) {
-          return !val ? 'False' : 'True';
-        }
-        return (val || '').toString();
-      }
 
       #initEditModalContent(
         flowId: string,
@@ -120,8 +119,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               logger: this.logger,
             });
 
-            compInstance.value =
-              TenantCustomAttributesMixinClass.getFormattedValue(type, val);
+            compInstance.value = getFormattedValue(type, val);
 
             this.#initEditFlow(
               nodeEle,
