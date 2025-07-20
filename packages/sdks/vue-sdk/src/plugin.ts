@@ -21,8 +21,8 @@ export default {
   install: function (app: App, options: Options) {
     const sdk = createSdk({
       persistTokens: true,
-      ...options,
       autoRefresh: true,
+      ...options,
       baseHeaders,
     });
 
