@@ -19,7 +19,7 @@ export const mockHttpClient = {
   delete: jest.fn(),
   reset: () => {
     mockHttpClient.get.mockImplementation((url) => {
-      if (url.includes(apiPaths.tenant.get)) {
+      if (url.includes(apiPaths.tenant.details)) {
         return Promise.resolve({
           ok: true,
           status: 200,
@@ -44,7 +44,7 @@ export const mockHttpClient = {
       });
     });
     mockHttpClient.post.mockImplementation((url) => {
-      if (url.includes(apiPaths.tenant.getTenantAdminLinkSSO)) {
+      if (url.includes(apiPaths.tenant.adminLinkSso)) {
         return Promise.resolve({
           ok: true,
           status: 200,
@@ -161,13 +161,13 @@ describe('tenant-profile-widget', () => {
     it('tenant', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
 
-      const tenantResult = await sdk.tenant.get();
+      const tenantResult = await sdk.tenant.details();
       await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
         timeout: 5000,
       });
       await waitFor(() =>
         expect(mockHttpClient.get).toHaveBeenCalledWith(
-          `${apiPaths.tenant.get}?tenant=${tenantId}&id=${tenantId}`,
+          `${apiPaths.tenant.details}?tenant=${tenantId}&id=${tenantId}`,
         ),
       );
       expect(tenantResult).toEqual(mockTenant);
@@ -175,7 +175,7 @@ describe('tenant-profile-widget', () => {
 
     it('tenant admin link sso', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
-      const result = await sdk.tenant.getTenantAdminLinkSSO();
+      const result = await sdk.tenant.adminLinkSso();
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -185,7 +185,7 @@ describe('tenant-profile-widget', () => {
       );
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
-          `${apiPaths.tenant.getTenantAdminLinkSSO}?tenant=${tenantId}`,
+          `${apiPaths.tenant.adminLinkSso}?tenant=${tenantId}`,
           { tenantId },
           { headers: { 'Content-Type': 'application/json' } },
         ),

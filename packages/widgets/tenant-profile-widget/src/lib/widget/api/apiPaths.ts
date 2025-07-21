@@ -3,7 +3,7 @@ export const apiPaths = {
     me: '/v1/auth/me',
   },
   tenant: {
-    get: '/v1/mgmt/tenant',
-    getTenantAdminLinkSSO: '/v1/mgmt/tenant/adminlinks/sso/authenticated',
+    details: '/v1/mgmt/tenant',
+    adminLinkSso: '/v1/mgmt/tenant/adminlinks/sso/authenticated',
   },
 };

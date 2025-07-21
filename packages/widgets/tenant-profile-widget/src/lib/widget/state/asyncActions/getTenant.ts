@@ -7,9 +7,9 @@ import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
-  FirstParameter<Sdk['tenant']['get']>,
+  FirstParameter<Sdk['tenant']['details']>,
   ThunkConfigExtraApi
->('tenant/get', (arg, { extra: { api } }) => api.tenant.get());
+>('tenant/details', (arg, { extra: { api } }) => api.tenant.details());
 
 const reducer = buildAsyncReducer(action)(
   {

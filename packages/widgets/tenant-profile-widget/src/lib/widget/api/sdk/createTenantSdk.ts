@@ -15,27 +15,27 @@ export const createTenantSdk = ({
   const tenantIdEncoded = encodeURIComponent(tenantId || '');
   const queryParams = `?tenant=${tenantIdEncoded}&id=${tenantIdEncoded}`;
 
-  const get = async () => {
+  const details = async () => {
     if (mock) {
       return tenantMock.get();
     }
     if (!tenantId) throw new Error('tenantId is not defined');
 
-    const url = `${apiPaths.tenant.get}${queryParams}`;
+    const url = `${apiPaths.tenant.details}${queryParams}`;
     const res = await httpClient.get(url);
     await withErrorHandler(res);
     const data = await res.json();
     return data;
   };
 
-  const getTenantAdminLinkSSO = async () => {
+  const adminLinkSso = async () => {
     if (mock) {
       return tenantMock.getTenantAdminLinkSSO();
     }
     if (!tenantId) throw new Error('tenantId is not defined');
 
     const res = await httpClient.post(
-      `${apiPaths.tenant.getTenantAdminLinkSSO}?tenant=${tenantIdEncoded}`,
+      `${apiPaths.tenant.adminLinkSso}?tenant=${tenantIdEncoded}`,
       {
         tenantId: tenantIdEncoded,
       },
@@ -49,7 +49,7 @@ export const createTenantSdk = ({
   };
 
   return {
-    get,
-    getTenantAdminLinkSSO,
+    details,
+    adminLinkSso,
   };
 };

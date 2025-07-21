@@ -7,10 +7,10 @@ import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
-  FirstParameter<Sdk['tenant']['getTenantAdminLinkSSO']>,
+  FirstParameter<Sdk['tenant']['adminLinkSso']>,
   ThunkConfigExtraApi
->('tenant/getTenantAdminLinkSSO', (arg, { extra: { api } }) =>
-  api.tenant.getTenantAdminLinkSSO(),
+>('tenant/adminLinkSso', (arg, { extra: { api } }) =>
+  api.tenant.adminLinkSso(),
 );
 
 const reducer = buildAsyncReducer(action)(
