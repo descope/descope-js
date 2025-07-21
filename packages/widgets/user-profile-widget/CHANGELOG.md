@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.3...user-profile-widget-0.6.0) (2025-07-21)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.20`
+* `sdk-mixins` updated to version `0.13.7`
+* `sdk-component-drivers` updated to version `0.3.0`
+
+### Features
+
+* support passkey removal ([#1165](https://github.com/descope/descope-js/issues/1165)) ([80f5a70](https://github.com/descope/descope-js/commit/80f5a70ac39889ca9ad7d91a0c68afec0c8320a6))
+
 ## [0.5.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.2...user-profile-widget-0.5.3) (2025-07-10)
 
 ### Dependency Updates
