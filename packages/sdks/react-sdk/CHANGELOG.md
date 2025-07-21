@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.15.0](https://github.com/descope/descope-js/compare/react-sdk-2.14.26...react-sdk-2.15.0) (2025-07-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.32`
+* `audit-management-widget` updated to version `0.4.32`
+* `role-management-widget` updated to version `0.3.33`
+* `user-management-widget` updated to version `0.7.32`
+* `user-profile-widget` updated to version `0.6.0`
+* `applications-portal-widget` updated to version `0.3.32`
+* `web-component` updated to version `3.43.20`
+
+### Features
+
+* add auto refresh config to web-framework sdks ([#1149](https://github.com/descope/descope-js/issues/1149)) ([1ebd85b](https://github.com/descope/descope-js/commit/1ebd85ba14f7558e32876d7f2964bf08ee8c93aa))
+
 ## [2.14.26](https://github.com/descope/descope-js/compare/react-sdk-2.14.25...react-sdk-2.14.26) (2025-07-10)
 
 ### Dependency Updates
