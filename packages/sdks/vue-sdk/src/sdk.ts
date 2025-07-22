@@ -15,8 +15,8 @@ const createSdkWrapper = <P extends Parameters<typeof createSdk>[0]>(
   const sdk = createSdk({
     persistTokens: IS_BROWSER as true,
     storeLastAuthenticatedUser: IS_BROWSER as true,
-    ...config,
     autoRefresh: IS_BROWSER as true,
+    ...config,
   });
   globalSdk = sdk;
 

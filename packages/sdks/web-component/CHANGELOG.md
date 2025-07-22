@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.43.20](https://github.com/descope/descope-js/compare/web-component-3.43.19...web-component-3.43.20) (2025-07-21)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.7`
+
+### Bug Fixes
+
+* disable components on submit ([#1160](https://github.com/descope/descope-js/issues/1160)) ([15b95e8](https://github.com/descope/descope-js/commit/15b95e8013b06af5b0526c7577b0f7765ea58078))
+* issue 11209 - stop polling on specific errors ([#1152](https://github.com/descope/descope-js/issues/1152)) ([c701149](https://github.com/descope/descope-js/commit/c701149386bff8c185f6235df16ec57356b8d566))
+
+## [3.43.19](https://github.com/descope/descope-js/compare/web-component-3.43.18...web-component-3.43.19) (2025-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.5`
 ## [3.43.18](https://github.com/descope/descope-js/compare/web-component-3.43.17...web-component-3.43.18) (2025-07-02)
 
 ## [3.43.17](https://github.com/descope/descope-js/compare/web-component-3.43.16...web-component-3.43.17) (2025-06-13)

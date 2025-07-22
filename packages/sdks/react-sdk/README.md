@@ -293,6 +293,11 @@ useEffect(() => {
 }, [refresh]);
 ```
 
+
+### Auto refresh session token
+Descope SDK automatically refreshes the session token when it is about to expire. This is done in the background using the refresh token, without any additional configuration.
+If you want to disable this behavior, you can pass `autoRefresh={false}` to the `AuthProvider` component. This will prevent the SDK from automatically refreshing the session token.
+
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
 
 ### Session token server validation (pass session token to server API)

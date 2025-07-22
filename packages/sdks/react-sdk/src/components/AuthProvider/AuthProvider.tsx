@@ -19,8 +19,10 @@ interface IAuthProviderProps {
   baseStaticUrl?: string;
   // allows to override the base URL that is used to fetch external script files
   baseCdnUrl?: string;
-  // If true, tokens will be stored on local storage and can accessed with getToken function
+  // Default is true. If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
+  // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire
+  autoRefresh?: boolean;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
   // stored on local storage and can accessed with getSessionToken function
   // Use this option if session token will stay small (less than 1k)
@@ -29,7 +31,7 @@ interface IAuthProviderProps {
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
   oidcConfig?: OidcConfig;
-  // If true, last authenticated user will be stored on local storage and can accessed with getUser function
+  // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   // If true, last authenticated user will not be removed after logout
   keepLastAuthenticatedUserAfterLogout?: boolean;
@@ -48,6 +50,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseCdnUrl = '',
   sessionTokenViaCookie = false,
   persistTokens = true,
+  autoRefresh = true,
   oidcConfig = undefined,
   storeLastAuthenticatedUser = true,
   keepLastAuthenticatedUserAfterLogout = false,
@@ -70,6 +73,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     projectId,
     baseUrl,
     persistTokens,
+    autoRefresh,
     sessionTokenViaCookie,
     oidcConfig,
     storeLastAuthenticatedUser,

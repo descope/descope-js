@@ -11,15 +11,18 @@ type CreateServerSdkParams = Omit<
 
 type CreateSdkParams = Pick<CreateServerSdkParams, 'projectId' | 'baseUrl'>;
 
-let globalSdk: Sdk;
+// we support multiple sdks, so the developer can work with multiple projects
+const globalSdks: Record<string, Sdk> = {};
+
+const getProjectId = (config?: CreateSdkParams): string =>
+	config?.projectId ||
+	process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID ||
+	process.env.DESCOPE_PROJECT_ID; // the last one for backward compatibility
 
 export const createSdk = (config?: CreateServerSdkParams): Sdk =>
 	descopeSdk({
 		...config,
-		projectId:
-			config?.projectId ||
-			process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID ||
-			process.env.DESCOPE_PROJECT_ID, // the last one for backward compatibility
+		projectId: getProjectId(config),
 		managementKey: config?.managementKey || process.env.DESCOPE_MANAGEMENT_KEY,
 		baseUrl:
 			config?.baseUrl ||
@@ -31,16 +34,16 @@ export const createSdk = (config?: CreateServerSdkParams): Sdk =>
 		}
 	});
 
+// caches the SDK for each project ID
 export const getGlobalSdk = (config?: CreateSdkParams): Sdk => {
+	const projectId = getProjectId(config);
+	if (!projectId) {
+		throw new Error('Descope project ID is required to create the SDK');
+	}
+	let globalSdk = globalSdks[projectId];
 	if (!globalSdk) {
-		if (
-			!config?.projectId &&
-			!process.env.DESCOPE_PROJECT_ID &&
-			!process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
-		) {
-			throw new Error('Descope project ID is required to create the SDK');
-		}
 		globalSdk = createSdk(config);
+		globalSdks[projectId] = globalSdk;
 	}
 
 	return globalSdk;
