@@ -59,6 +59,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.tenantEnforceSSODriver.editFlowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -95,6 +96,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.tenantEnforceSSODriver.deleteFlowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,

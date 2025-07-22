@@ -62,6 +62,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -86,6 +87,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,

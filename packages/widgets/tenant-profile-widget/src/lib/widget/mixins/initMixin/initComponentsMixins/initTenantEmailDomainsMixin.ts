@@ -59,6 +59,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.tenantEmailDomainsDriver.editFlowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -95,6 +96,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.tenantEmailDomainsDriver.deleteFlowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,

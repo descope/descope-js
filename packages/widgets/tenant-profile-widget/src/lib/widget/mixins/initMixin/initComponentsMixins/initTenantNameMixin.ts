@@ -55,6 +55,7 @@ export const initTenantNameMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.tenantNameDriver.editFlowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,

@@ -39,6 +39,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: widgetFlow,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,

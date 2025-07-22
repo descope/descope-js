@@ -3,6 +3,7 @@ import { createTemplate, kebabCase } from '@descope/sdk-helpers';
 type FlowConfig = {
   projectId: string;
   flowId: string;
+  tenant?: string;
   baseUrl?: string;
   baseStaticUrl?: string;
   baseCdnUrl?: string;
