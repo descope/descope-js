@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.3.0...sdk-component-drivers-0.4.0) (2025-07-22)
+
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
 ## [0.3.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.52...sdk-component-drivers-0.3.0) (2025-07-21)
 
 
