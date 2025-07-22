@@ -3,9 +3,7 @@ const flattenFormObject = (obj: any, prefix = '') =>
     if (Array.isArray(obj[el])) {
       return {
         ...res,
-        [el]: {
-          value: obj[el].map((item: any) => flattenFormObject(item)),
-        },
+        [el]: obj[el].map((item: any) => flattenFormObject(item)),
       };
     }
     if (typeof obj[el] === 'object' && obj[el] !== null && !obj[el]?.value) {
