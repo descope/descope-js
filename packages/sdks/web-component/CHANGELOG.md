@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.44.0](https://github.com/descope/descope-js/compare/web-component-3.43.20...web-component-3.44.0) (2025-07-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.8`
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
 ## [3.43.20](https://github.com/descope/descope-js/compare/web-component-3.43.19...web-component-3.43.20) (2025-07-21)
 
 ### Dependency Updates
