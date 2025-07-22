@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.32...access-key-management-widget-0.5.0) (2025-07-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.8`
+* `sdk-component-drivers` updated to version `0.4.0`
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
 ## [0.4.32](https://github.com/descope/descope-js/compare/access-key-management-widget-0.4.31...access-key-management-widget-0.4.32) (2025-07-21)
 
 ### Dependency Updates
