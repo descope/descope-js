@@ -1515,7 +1515,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -1837,7 +1837,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2015,7 +2015,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2193,7 +2193,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2371,7 +2371,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2552,7 +2552,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2737,7 +2737,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2918,7 +2918,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 1.110.0
+        version: 1.113.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -4247,59 +4247,71 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@descope-ui/common@0.0.17':
-    resolution: {integrity: sha512-GvR2d2miz49luglOtcHiuxiZeFJdyWaa+GGeDrD1XmQPrdTS2LohjBUKvV7CO3TdWYSoXDd70k0+9W0Lbqq9Qw==}
+  '@descope-ui/common@0.0.18':
+    resolution: {integrity: sha512-uLC9oIGGxGM9kbSWbWqikgTgiNuZ6FdDxKzBsdJqkKTwVeuLFKR8czTAoLFgio/AU0yyc93Y8JjDTcZJOghgpw==}
 
-  '@descope-ui/descope-address-field@0.0.20':
-    resolution: {integrity: sha512-eV9BJ35EoH3rJBJ+U4YjPwxu2kOk5qPlnneaXV1xpqJr25ZVupyyczrRiLHQia7hOFDinn8ubUBNX5xs5mqbqw==}
+  '@descope-ui/descope-address-field@0.0.21':
+    resolution: {integrity: sha512-zhj0oER3eZC3JFbKju7bz4OP8IkgnaO0e1v0cykIb8mM/UZeCxc+A94X1kYcIhSimbGvcQOPU4FbB8Z4YWHPeg==}
 
-  '@descope-ui/descope-autocomplete-field@0.0.21':
-    resolution: {integrity: sha512-Zm+EitN/OaF1Dk7IrwNwKYLhAewlDIzo/Gpw1AGejpTX5hroIiWzvUGIHeCyXHC27z1fJsg/kxrisA/qk0lphA==}
+  '@descope-ui/descope-apps-list@0.0.1':
+    resolution: {integrity: sha512-YffJlYztj/63+j7qpLr4KEhniTV8NY+bDmpcg92/+w7dbs7hQvqtG6OJ3np211TlGGthUX0jxtVRntukm80kJw==}
 
-  '@descope-ui/descope-avatar@0.0.18':
-    resolution: {integrity: sha512-Vj8alobroRqjHEx1TZSWsMeCwHg5K+LO+5unYnh9WGSOGCAGDV6/cpQUWDHb04bD6IJeoUYnIx63i5mx+kPj3g==}
+  '@descope-ui/descope-autocomplete-field@0.0.22':
+    resolution: {integrity: sha512-JOrc00rFSoaEQ1YBp9eoDv1M3RAnhQ3VChAWm+C/8KZbm8FCIrx1af08Ib/H8eTRi6V33ibe/yixayALBEr4pA==}
 
-  '@descope-ui/descope-button@0.0.17':
-    resolution: {integrity: sha512-IiE0hLR5E9+mPIvASF/Utk13B8WuIq5EWIMpW8mDWSyxilgxE6MEe/HWkrK+6+So6IKIbEsdCxazf3lPKL391w==}
+  '@descope-ui/descope-avatar@0.0.19':
+    resolution: {integrity: sha512-lF19qJwYHn0TR9F0JOXV0uWZIEGcNmAZsaJlIYp24dhvRHJDa5CuVADVWJjZmXi4lziqecCaH2+Kw9gUQ2WWVw==}
 
-  '@descope-ui/descope-collapsible-container@0.0.17':
-    resolution: {integrity: sha512-kW1UNK+kVlrwboInJDONrs7D7wHN4dtN5Z2JZfpBv+x5qvW4IHJMj3LQ+pihPHU34JLW4FKpXuyku7TwWjVlOw==}
+  '@descope-ui/descope-button@0.0.19':
+    resolution: {integrity: sha512-aGyn72IWJSbSJ098wf5A7AFkewJgFBVKqe496cks7xb199C+uGxxbYVqE/NMwsnR6GAXG59550m7k3Knt1IaFA==}
 
-  '@descope-ui/descope-combo-box@0.1.8':
-    resolution: {integrity: sha512-xgkclXOGrUiwUe63qjIM9ZZnabfusj3wvGko0UOlujGQpM1DsB1uBY7wpjjQBOm4ydqljFOleJMZQJRg3sw67Q==}
+  '@descope-ui/descope-collapsible-container@0.0.18':
+    resolution: {integrity: sha512-iBet7rSVzI7KXWrZH1I0oakukPMc7EM6jyZly6mY5kaWZl+HZGSgc9gt18ov0Wv+C4RqkLLn/9M9ZF7OnONmJQ==}
 
-  '@descope-ui/descope-enriched-text@0.0.2':
-    resolution: {integrity: sha512-Ox0+ErctsISG4s+iwlF8ZAroWEtOHZxoPplKr6groVonBBvByyHaSOu3g3ViTTimiGYnRt7fZnWhtfdU0Bt1hA==}
+  '@descope-ui/descope-combo-box@0.1.9':
+    resolution: {integrity: sha512-ctUB1StCudmzHbNSJ6zcHLIAuqENkeGf8QpI7lny5j+TQ1vYdHWStSYAo/Ch2Z8s8ejlW/FAV/ZXupAotwQiPw==}
 
-  '@descope-ui/descope-icon@0.0.16':
-    resolution: {integrity: sha512-zVf3JKH1aTYgazUL8FaFhYJg964cHVY0TQ5g1yRZO99aFqBokRYRyR2cRgnSiYjM2wFSsrhRIZUt9UB7P7nTTQ==}
+  '@descope-ui/descope-enriched-text@0.0.3':
+    resolution: {integrity: sha512-mNd/jbPLNgt2DOxusWzBhGdGksjwVV9HNAjeNh//cIuHKJf9wW+Xx/I0rTa9vcCEqJKsB7DWIlebjbq1oDJQFA==}
 
-  '@descope-ui/descope-image@0.0.9':
-    resolution: {integrity: sha512-rLIJYEaMx/AfGwGlgKJaBx1EhLnzpn4FCEy4HJ7JVVzCBDjUvhBH8GfoHFxCFZlDST9O4SkIPvDFDd3nSdn4Ow==}
+  '@descope-ui/descope-icon@0.0.17':
+    resolution: {integrity: sha512-auxK65qRu/fi9prWjpqiND7AAmV9L22D7ccGn9zT/nhai4D7tP25iH0/wOsLCYjjqiKLuycbz7u9WBrzJM8bxA==}
 
-  '@descope-ui/descope-link@0.0.2':
-    resolution: {integrity: sha512-pB5nNyjOy8wM2L2DPc0xeks+boir1h7EJijIYk/7F9HyQAN32Y9S2kxWqn1LkyaICYYD1VAY67fQ1DoZ+AZNIA==}
+  '@descope-ui/descope-image@0.0.10':
+    resolution: {integrity: sha512-SdFxcfAdCzB97vb8YUdCz9cnRaWV20LnbBE9599LheuZwkcW45VN5fkHJvwvwoQypopNa5JGouo1h14nBFijHQ==}
 
-  '@descope-ui/descope-password-strength@0.0.12':
-    resolution: {integrity: sha512-zPi36n9iznnCQlC8Z3vgZ4pgT+BhymRP9QwiiRpFx0wWSrnw4nTeB79C/rlNa0qx5xjmJoS10ME0KXp56z59Tg==}
+  '@descope-ui/descope-link@0.0.3':
+    resolution: {integrity: sha512-rUCG2kcgj+ugSSwpF2W/ItPaAvMAkt2cuU3wrxYnDelwBfxe6sMm3F6TfTqY4pmE5tY04BOIEnkD+OVArKl8wQ==}
 
-  '@descope-ui/descope-recovery-codes@0.0.5':
-    resolution: {integrity: sha512-WOlwe6UNF7WfZRUSHMzttYPMVEwCwXPIDKJ/qnOZsktK3MAxFymrbYqr3p5se3wS4QNhV8pcEB2A6LfJEGyiKw==}
+  '@descope-ui/descope-list-item@0.0.1':
+    resolution: {integrity: sha512-X1eMtAuMysp/6GAPgLqJ4xgfaC36Y8LkQJ9rI/f2TA1JkcwSJVaTvKcb6oto1S9H2w3FCaXSZPreIwqr1hW5wQ==}
 
-  '@descope-ui/descope-text@0.0.18':
-    resolution: {integrity: sha512-QI9fsojo7M9ZKLlxqmRJbxav5A2CPCCBcGXPu8PE7aEaMe4GXuBSAIXuiP+hRtz4negqXZBeqHZMQhxTuSHwjg==}
+  '@descope-ui/descope-list@0.0.1':
+    resolution: {integrity: sha512-k4wmnHAIQ5Z+jCvlJbGKDCJfIPA6KP8qJrYgYmQbJ4zeVwJCaPMjvCX5diW5CIiMwSOYmDat69JLo071WAYIVA==}
 
-  '@descope-ui/descope-timer-button@0.0.18':
-    resolution: {integrity: sha512-7JBS01bV5su4XKvkRt3PmoazFnDr8n/ip9gMu4Xk6VJ5Hs34rWRMPSfytDSsoYeWqTRuMqN0n/py2aKRCsrSYQ==}
+  '@descope-ui/descope-outbound-apps@0.0.3':
+    resolution: {integrity: sha512-MuXDX8/dhAdgb1hTOlqauDPWnf3ujREo6xPGNAnvMwxUyAlZF29oJ8KjUlcaGLtRtFflyThz/vcViVkfB6Hiww==}
 
-  '@descope-ui/descope-timer@0.0.16':
-    resolution: {integrity: sha512-oAaoMY+EJAYvQBqy9wX4565zhYts6Dm8i16P/YzUUcABAZAY32w4FlIvfr8gNP4tvt2IC4UVXt5kYlHLPaczTw==}
+  '@descope-ui/descope-password-strength@0.0.13':
+    resolution: {integrity: sha512-WvEvq8tzVDTaH0UqXvr367VDyy4wWWoEHSODuGcR9HBnN4XAvXOiddZn4TvojsucHygJg+Vml1TJLfBHWc1ISw==}
 
-  '@descope-ui/theme-globals@0.0.18':
-    resolution: {integrity: sha512-9+woemwEfY9vTUyx6z5HTc5bvCsXMJYsYBEwbgLhhTPL8gbpM/kEWFpMhnZz86IVYc0QeOnp3Zq3NNZj+rwcVQ==}
+  '@descope-ui/descope-recovery-codes@0.0.6':
+    resolution: {integrity: sha512-pouTMRwL1Fmjm7fzy2zWGJP6x0CFrJTf7ZL14heChk8q7MivkZJGQ8A7wlmoXlh1xVyfyjaPwd6Vh1O67Tsl6w==}
 
-  '@descope-ui/theme-input-wrapper@0.1.7':
-    resolution: {integrity: sha512-WE4vtRF95+n+pLe9fMtyYfof5oEMR8CUBzm47wafnMMXDRWIAKBsy6YDrLsSctQokM56BgwB+izwF/TFdzaTsA==}
+  '@descope-ui/descope-text@0.0.19':
+    resolution: {integrity: sha512-k5sPyL7B2DVBVqP+OhezSY/rnzVrTbT8uIzaLPr+su/zB/vvKRwsjb8JoB7rfZ8QCsLLGzQkAaqGxLAlXehrCQ==}
+
+  '@descope-ui/descope-timer-button@0.0.20':
+    resolution: {integrity: sha512-yg5FXSXXugHi+L8nrf5kT48qC606OYrUF0xqAssN0Unp4wyksGJ0jA0cGOZ8kHbmvBHh7oQIui3GbyGAhUxinw==}
+
+  '@descope-ui/descope-timer@0.0.17':
+    resolution: {integrity: sha512-hFfQWj4NX57P8R4NdGlyZJtXpRspJ9v3dS2rMPg/kcwepj+k1xwjY2y4Y4iW6P62ZdZ8+eg28uwCCaaVHQ3fXg==}
+
+  '@descope-ui/theme-globals@0.0.19':
+    resolution: {integrity: sha512-5ZZisXgwJ3wUix9frGmTUyuhyhnxeSotKiujHvSHzXUhrHNiM1oXt9K0xb1tg7ObaTYVCJbK1hdNK3Ed3GNkHQ==}
+
+  '@descope-ui/theme-input-wrapper@0.1.8':
+    resolution: {integrity: sha512-vHTR9NYKlyMICsgeCEcR5wpiZvwxmc25I3GmFZV1KBQbYeqPs72DE9xOKLyN278kSkaaQNSxTTRTCq2MjiNX0A==}
 
   '@descope/core-js-sdk@2.31.0':
     resolution: {integrity: sha512-y5Z8wQwmOt4IEt67XwS006jbtSVGumbcXDx6k+1/e3jHFzSLZdVnt9sgKKU0biQQl5jAi3GVNsilWVNIC4D2Ww==}
@@ -4318,8 +4330,8 @@ packages:
     resolution: {integrity: sha512-6r0ArtJkkky67wQR0J1cS5WRNcrE3dgMDE0wqWdmq/OZPIYVwLf950I24I4wPVh97Ya40TAqm8kt7VP1zJFfKw==}
     engines: {node: '>= 12.0.0'}
 
-  '@descope/web-components-ui@1.110.0':
-    resolution: {integrity: sha512-7obs7HSK02kGzUTLBrIB11qKuPPCt+bejLOWelFwaY1+nR6nFvSU6yJSGJCtOypkqgFXNNvU2BzBCqVkE29qkg==}
+  '@descope/web-components-ui@1.113.0':
+    resolution: {integrity: sha512-E5L2edoMmChZAdXY664djXu4StnA6MsIEyXVVxMBteRtivEXO3+LQuJ4TDzG+WWvoQCSXMgOmkJvgtaYkVONgA==}
 
   '@descope/web-js-sdk@1.29.1':
     resolution: {integrity: sha512-YUMJQ9TrEhp8SDtOcERF4tr7IguBt5//0sm8k8/tFc/9qb1uZ9Hz1z2+1NX8cnni+tMpOUH7tRFEoprpKayPEw==}
@@ -17530,127 +17542,157 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@descope-ui/common@0.0.17':
+  '@descope-ui/common@0.0.18':
     dependencies:
       color: 4.2.3
       element-internals-polyfill: 1.3.11
       lodash.debounce: 4.0.8
       lodash.merge: 4.6.2
 
-  '@descope-ui/descope-address-field@0.0.20':
+  '@descope-ui/descope-address-field@0.0.21':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-autocomplete-field': 0.0.21
-      '@descope-ui/theme-input-wrapper': 0.1.7
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-autocomplete-field': 0.0.22
+      '@descope-ui/theme-input-wrapper': 0.1.8
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-autocomplete-field@0.0.21':
+  '@descope-ui/descope-apps-list@0.0.1':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-combo-box': 0.1.8
-      '@descope-ui/theme-globals': 0.0.18
-      '@descope-ui/theme-input-wrapper': 0.1.7
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-avatar': 0.0.19
+      '@descope-ui/descope-list': 0.0.1
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/theme-globals': 0.0.19
+
+  '@descope-ui/descope-autocomplete-field@0.0.22':
+    dependencies:
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-combo-box': 0.1.9
+      '@descope-ui/theme-globals': 0.0.19
+      '@descope-ui/theme-input-wrapper': 0.1.8
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-avatar@0.0.18':
+  '@descope-ui/descope-avatar@0.0.19':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
       '@vaadin/avatar': 24.3.4
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-button@0.0.17':
+  '@descope-ui/descope-button@0.0.19':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-icon': 0.0.16
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-icon': 0.0.17
+      '@descope-ui/theme-globals': 0.0.19
       '@vaadin/button': 24.3.4
 
-  '@descope-ui/descope-collapsible-container@0.0.17':
+  '@descope-ui/descope-collapsible-container@0.0.18':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-icon': 0.0.16
-      '@descope-ui/descope-text': 0.0.18
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-icon': 0.0.17
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/theme-globals': 0.0.19
 
-  '@descope-ui/descope-combo-box@0.1.8':
+  '@descope-ui/descope-combo-box@0.1.9':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
-      '@descope-ui/theme-input-wrapper': 0.1.7
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
+      '@descope-ui/theme-input-wrapper': 0.1.8
       '@vaadin/combo-box': 24.3.4
 
-  '@descope-ui/descope-enriched-text@0.0.2':
+  '@descope-ui/descope-enriched-text@0.0.3':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-link': 0.0.2
-      '@descope-ui/descope-text': 0.0.18
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-link': 0.0.3
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/theme-globals': 0.0.19
       markdown-it: 14.1.0
 
-  '@descope-ui/descope-icon@0.0.16':
+  '@descope-ui/descope-icon@0.0.17':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-image': 0.0.9
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-image': 0.0.10
+      '@descope-ui/theme-globals': 0.0.19
       '@vaadin/icon': 24.3.4
       dompurify: 3.2.6
 
-  '@descope-ui/descope-image@0.0.9':
+  '@descope-ui/descope-image@0.0.10':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
       dompurify: 3.2.6
 
-  '@descope-ui/descope-link@0.0.2':
+  '@descope-ui/descope-link@0.0.3':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
 
-  '@descope-ui/descope-password-strength@0.0.12':
+  '@descope-ui/descope-list-item@0.0.1':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
-      '@descope-ui/theme-input-wrapper': 0.1.7
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
+
+  '@descope-ui/descope-list@0.0.1':
+    dependencies:
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-list-item': 0.0.1
+      '@descope-ui/theme-globals': 0.0.19
+
+  '@descope-ui/descope-outbound-apps@0.0.3':
+    dependencies:
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-avatar': 0.0.19
+      '@descope-ui/descope-button': 0.0.19
+      '@descope-ui/descope-icon': 0.0.17
+      '@descope-ui/descope-list': 0.0.1
+      '@descope-ui/descope-list-item': 0.0.1
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/theme-globals': 0.0.19
+
+  '@descope-ui/descope-password-strength@0.0.13':
+    dependencies:
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
+      '@descope-ui/theme-input-wrapper': 0.1.8
       '@zxcvbn-ts/core': 3.0.4
       '@zxcvbn-ts/language-common': 3.0.4
       '@zxcvbn-ts/language-en': 3.0.2
 
-  '@descope-ui/descope-recovery-codes@0.0.5':
+  '@descope-ui/descope-recovery-codes@0.0.6':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-text': 0.0.18
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/theme-globals': 0.0.19
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-text@0.0.18':
+  '@descope-ui/descope-text@0.0.19':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
 
-  '@descope-ui/descope-timer-button@0.0.18':
+  '@descope-ui/descope-timer-button@0.0.20':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-button': 0.0.17
-      '@descope-ui/descope-timer': 0.0.16
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-button': 0.0.19
+      '@descope-ui/descope-timer': 0.0.17
+      '@descope-ui/theme-globals': 0.0.19
 
-  '@descope-ui/descope-timer@0.0.16':
+  '@descope-ui/descope-timer@0.0.17':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-icon': 0.0.16
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-icon': 0.0.17
+      '@descope-ui/theme-globals': 0.0.19
 
-  '@descope-ui/theme-globals@0.0.18':
+  '@descope-ui/theme-globals@0.0.19':
     dependencies:
-      '@descope-ui/common': 0.0.17
+      '@descope-ui/common': 0.0.18
 
-  '@descope-ui/theme-input-wrapper@0.1.7':
+  '@descope-ui/theme-input-wrapper@0.1.8':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/theme-globals': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/theme-globals': 0.0.19
 
   '@descope/core-js-sdk@2.31.0':
     dependencies:
@@ -17698,24 +17740,28 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@descope/web-components-ui@1.110.0':
+  '@descope/web-components-ui@1.113.0':
     dependencies:
-      '@descope-ui/common': 0.0.17
-      '@descope-ui/descope-address-field': 0.0.20
-      '@descope-ui/descope-autocomplete-field': 0.0.21
-      '@descope-ui/descope-avatar': 0.0.18
-      '@descope-ui/descope-button': 0.0.17
-      '@descope-ui/descope-collapsible-container': 0.0.17
-      '@descope-ui/descope-combo-box': 0.1.8
-      '@descope-ui/descope-enriched-text': 0.0.2
-      '@descope-ui/descope-icon': 0.0.16
-      '@descope-ui/descope-image': 0.0.9
-      '@descope-ui/descope-link': 0.0.2
-      '@descope-ui/descope-password-strength': 0.0.12
-      '@descope-ui/descope-recovery-codes': 0.0.5
-      '@descope-ui/descope-text': 0.0.18
-      '@descope-ui/descope-timer': 0.0.16
-      '@descope-ui/descope-timer-button': 0.0.18
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-address-field': 0.0.21
+      '@descope-ui/descope-apps-list': 0.0.1
+      '@descope-ui/descope-autocomplete-field': 0.0.22
+      '@descope-ui/descope-avatar': 0.0.19
+      '@descope-ui/descope-button': 0.0.19
+      '@descope-ui/descope-collapsible-container': 0.0.18
+      '@descope-ui/descope-combo-box': 0.1.9
+      '@descope-ui/descope-enriched-text': 0.0.3
+      '@descope-ui/descope-icon': 0.0.17
+      '@descope-ui/descope-image': 0.0.10
+      '@descope-ui/descope-link': 0.0.3
+      '@descope-ui/descope-list': 0.0.1
+      '@descope-ui/descope-list-item': 0.0.1
+      '@descope-ui/descope-outbound-apps': 0.0.3
+      '@descope-ui/descope-password-strength': 0.0.13
+      '@descope-ui/descope-recovery-codes': 0.0.6
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/descope-timer': 0.0.17
+      '@descope-ui/descope-timer-button': 0.0.20
       '@vaadin/checkbox': 24.3.4
       '@vaadin/custom-field': 24.3.4
       '@vaadin/dialog': 24.3.4
