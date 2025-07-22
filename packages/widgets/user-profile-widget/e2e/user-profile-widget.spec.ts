@@ -156,7 +156,12 @@ test.describe('widget', () => {
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
-      { name: 'passkey', flagPath: 'webauthn', fulfilled: 'true' },
+      {
+        name: 'passkey',
+        action: 'add',
+        flagPath: 'webauthn',
+        fulfilled: 'true',
+      },
       { name: 'password', flagPath: 'password', fulfilled: null },
       { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
     ]) {
@@ -173,15 +178,21 @@ test.describe('widget', () => {
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
-        const finishFlowBtn = page
-          .locator(`descope-modal[data-id="${attr.name}"]`)
-          .locator('button', { hasText: 'Finish Flow' });
-
         await page.route('**/auth/me', async (route) =>
           route.fulfill({
             json: { ...mockUser, [attr.flagPath]: true },
           }),
         );
+
+        const finishFlowBtn = page
+          .locator(
+            `descope-modal[data-id="${attr.action ? attr.action + '-' : ''}${
+              attr.name
+            }"]`,
+          )
+          .locator('button', { hasText: 'Finish Flow' });
+
+        await finishFlowBtn.waitFor({ state: 'visible' });
 
         finishFlowBtn.click();
 

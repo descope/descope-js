@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.44.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.3...core-js-sdk-2.44.4) (2025-07-10)
+
+
+### Bug Fixes
+
+* Issue 11222 - retry on 521 and 524 ([#1151](https://github.com/descope/descope-js/issues/1151)) ([fa09b60](https://github.com/descope/descope-js/commit/fa09b60a848e7caff76d0a097853078e2eb51a41))
+
 ## [2.44.3](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.2...core-js-sdk-2.44.3) (2025-06-11)
 
 

@@ -31,25 +31,29 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
     )(superclass) {
       passkeyUserAuthMethod: UserAuthMethodDriver;
 
-      #modal: ModalDriver;
+      #addModal: ModalDriver;
 
-      #flow: FlowDriver;
+      #addFlow: FlowDriver;
 
-      #initModal() {
+      #removeModal: ModalDriver;
+
+      #removeFlow: FlowDriver;
+
+      #initAddModal() {
         if (!this.passkeyUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'passkey' });
-        this.#flow = new FlowDriver(
-          () => this.#modal.ele?.querySelector('descope-wc'),
+        this.#addModal = this.createModal({ 'data-id': 'add-passkey' });
+        this.#addFlow = new FlowDriver(
+          () => this.#addModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#modal.afterClose = this.#initModalContent.bind(this);
-        this.#initModalContent();
-        this.syncFlowTheme(this.#flow);
+        this.#addModal.afterClose = this.#initAddModalContent.bind(this);
+        this.#initAddModalContent();
+        this.syncFlowTheme(this.#addFlow);
       }
 
-      #initModalContent() {
-        this.#modal.setContent(
+      #initAddModalContent() {
+        this.#addModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.passkeyUserAuthMethod.flowId,
@@ -60,8 +64,39 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
             theme: this.theme,
           }),
         );
-        this.#flow.onSuccess(() => {
-          this.#modal.close();
+        this.#addFlow.onSuccess(() => {
+          this.#addModal.close();
+          this.actions.getMe();
+        });
+      }
+
+      #initRemoveModal() {
+        if (!this.passkeyUserAuthMethod.fulfilledFlowId) return;
+
+        this.#removeModal = this.createModal({ 'data-id': 'remove-passkey' });
+        this.#removeFlow = new FlowDriver(
+          () => this.#removeModal.ele?.querySelector('descope-wc'),
+          { logger: this.logger },
+        );
+        this.#removeModal.afterClose = this.#initRemoveModalContent.bind(this);
+        this.#initRemoveModalContent();
+        this.syncFlowTheme(this.#removeFlow);
+      }
+
+      #initRemoveModalContent() {
+        this.#removeModal.setContent(
+          createFlowTemplate({
+            projectId: this.projectId,
+            flowId: this.passkeyUserAuthMethod.fulfilledFlowId,
+            baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
+            theme: this.theme,
+          }),
+        );
+        this.#removeFlow.onSuccess(() => {
+          this.#removeModal.close();
           this.actions.getMe();
         });
       }
@@ -75,8 +110,12 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.passkeyUserAuthMethod.onButtonClick(() => {
-          this.#modal?.open();
+        this.passkeyUserAuthMethod.onUnfulfilledButtonClick(() => {
+          this.#addModal?.open();
+        });
+
+        this.passkeyUserAuthMethod.onFulfilledButtonClick(() => {
+          this.#removeModal?.open();
         });
       }
 
@@ -90,7 +129,8 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initPasskeyAuthMethod();
-        this.#initModal();
+        this.#initAddModal();
+        this.#initRemoveModal();
 
         this.#onFulfilledUpdate(getHasPasskey(this.state));
 

@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.16.0](https://github.com/descope/descope-js/compare/angular-sdk-0.15.19...angular-sdk-0.16.0) (2025-07-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.32`
+* `audit-management-widget` updated to version `0.4.32`
+* `role-management-widget` updated to version `0.3.33`
+* `user-management-widget` updated to version `0.7.32`
+* `user-profile-widget` updated to version `0.6.0`
+* `applications-portal-widget` updated to version `0.3.32`
+* `web-component` updated to version `3.43.20`
+
+### Features
+
+* add auto refresh config to web-framework sdks ([#1149](https://github.com/descope/descope-js/issues/1149)) ([1ebd85b](https://github.com/descope/descope-js/commit/1ebd85ba14f7558e32876d7f2964bf08ee8c93aa))
+
+## [0.15.19](https://github.com/descope/descope-js/compare/angular-sdk-0.15.18...angular-sdk-0.15.19) (2025-07-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.31`
+* `audit-management-widget` updated to version `0.4.31`
+* `role-management-widget` updated to version `0.3.32`
+* `user-management-widget` updated to version `0.7.31`
+* `user-profile-widget` updated to version `0.5.3`
+* `applications-portal-widget` updated to version `0.3.31`
+* `web-component` updated to version `3.43.19`
+* `web-js-sdk` updated to version `1.33.5`
+* `core-js-sdk` updated to version `2.44.4`
 ## [0.15.18](https://github.com/descope/descope-js/compare/angular-sdk-0.15.17...angular-sdk-0.15.18) (2025-07-02)
 
 ### Dependency Updates
