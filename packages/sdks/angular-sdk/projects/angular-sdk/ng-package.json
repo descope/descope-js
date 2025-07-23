@@ -13,6 +13,7 @@
     "@descope/access-key-management-widget",
     "@descope/audit-management-widget",
     "@descope/user-profile-widget",
-    "@descope/applications-portal-widget"
+    "@descope/applications-portal-widget",
+    "@descope/tenant-profile-widget"
   ]
 }

@@ -1,15 +1,16 @@
 /* eslint-disable testing-library/no-node-access */
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import AuthProvider from '../../src/components/AuthProvider';
 import {
   AccessKeyManagement,
   ApplicationsPortal,
   AuditManagement,
   RoleManagement,
+  TenantProfile,
   UserManagement,
   UserProfile,
 } from '../../src';
+import AuthProvider from '../../src/components/AuthProvider';
 import Context from '../../src/hooks/Context';
 
 Object.defineProperty(global, 'Response', {
@@ -25,6 +26,7 @@ jest.mock('@descope/access-key-management-widget', () => ({ default: {} }));
 jest.mock('@descope/audit-management-widget', () => ({ default: {} }));
 jest.mock('@descope/user-profile-widget', () => ({ default: {} }));
 jest.mock('@descope/applications-portal-widget', () => ({ default: {} }));
+jest.mock('@descope/tenant-profile-widget', () => ({ default: {} }));
 
 jest.mock('@descope/web-js-sdk', () => {
   const sdk = {
@@ -136,6 +138,26 @@ describe('Descope Widgets', () => {
     );
 
     const widget = document.querySelector('descope-audit-management-widget');
+    expect(widget).toHaveAttribute('tenant', 'tenant1');
+    expect(widget).toHaveAttribute('widget-id', 'widget1');
+    expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
+  });
+
+  it('render Tenant Profile', async () => {
+    renderWithProvider(
+      <TenantProfile widgetId="widget1" tenant="tenant1" />,
+      undefined,
+      'cookie-1',
+    );
+
+    // Wait for the web component to be in the document
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-tenant-profile-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-tenant-profile-widget');
     expect(widget).toHaveAttribute('tenant', 'tenant1');
     expect(widget).toHaveAttribute('widget-id', 'widget1');
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');

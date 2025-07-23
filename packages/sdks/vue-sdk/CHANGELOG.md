@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.10.1](https://github.com/descope/descope-js/compare/vue-sdk-2.10.0...vue-sdk-2.10.1) (2025-07-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.0`
+* `audit-management-widget` updated to version `0.5.0`
+* `role-management-widget` updated to version `0.4.0`
+* `user-management-widget` updated to version `0.8.0`
+* `user-profile-widget` updated to version `0.6.1`
+* `applications-portal-widget` updated to version `0.3.33`
+* `web-component` updated to version `3.44.0`
+## [2.10.0](https://github.com/descope/descope-js/compare/vue-sdk-2.9.35...vue-sdk-2.10.0) (2025-07-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.32`
+* `audit-management-widget` updated to version `0.4.32`
+* `role-management-widget` updated to version `0.3.33`
+* `user-management-widget` updated to version `0.7.32`
+* `user-profile-widget` updated to version `0.6.0`
+* `applications-portal-widget` updated to version `0.3.32`
+* `web-component` updated to version `3.43.20`
+
+### Features
+
+* add auto refresh config to web-framework sdks ([#1149](https://github.com/descope/descope-js/issues/1149)) ([1ebd85b](https://github.com/descope/descope-js/commit/1ebd85ba14f7558e32876d7f2964bf08ee8c93aa))
+
 ## [2.9.35](https://github.com/descope/descope-js/compare/vue-sdk-2.9.34...vue-sdk-2.9.35) (2025-07-10)
 
 ### Dependency Updates
