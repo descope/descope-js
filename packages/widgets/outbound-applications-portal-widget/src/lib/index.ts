@@ -5,7 +5,6 @@ import { ApplicationsPortalWidget } from './widget';
 export default ApplicationsPortalWidget;
 
 customElements.define(
-  // TODO: [outbound-applications-portal-widget] Change widget name
-  'descope-applications-portal-widget',
+  'descope-outbound-applications-portal-widget',
   ApplicationsPortalWidget,
 );

@@ -25,11 +25,10 @@ export const initWidgetRootMixin = createSingletonMixin(
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
-          // TODO: [outbound-applications-portal-widget] revert mocks
-          await import('../../../../../../test/mocks/rootMock').then(
-            (module) => module.default,
-          ),
-          // await this.fetchWidgetPage('root.html'),
+          // await import('../../../../../../test/mocks/rootMock').then(
+          //   (module) => module.default,
+          // ),
+          await this.fetchWidgetPage('root.html'),
         );
         await this.loadDescopeUiComponents(template);
 

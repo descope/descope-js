@@ -63,9 +63,8 @@
         const shouldLogin = (await getShouldLogin()) && !isMock;
         const rootEle = document.querySelector('.container');
 
-        // TODO: [outbound-applications-portal-widget] Change widget name
         const widgetEle = document.createElement(
-          'descope-applications-portal-widget',
+          'descope-outbound-applications-portal-widget',
         );
         widgetEle.setAttribute('project-id', DESCOPE_PROJECT_ID);
         widgetEle.setAttribute('base-url', DESCOPE_BASE_URL);
@@ -75,10 +74,10 @@
         widgetEle.setAttribute('debug', 'false');
         widgetEle.setAttribute('theme', 'light');
         // Uncomment to limit the apps list to specific app IDs
-        // widgetEle.setAttribute(
-        //   'allowed-outbound-apps-ids',
-        //   'google,google-calendar,google-contacts',
-        // );
+        widgetEle.setAttribute(
+          'allowed-outbound-apps-ids',
+          'google,google-calendar,google-contacts',
+        );
         if (isMock) {
           widgetEle.setAttribute('mock', 'true');
         }
