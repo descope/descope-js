@@ -50,6 +50,51 @@ describe('plugin', () => {
     expect(createSdk).toHaveBeenCalledWith(expect.objectContaining(options));
   });
 
+  it('should create sdk instance with default autoRefresh option', () => {
+    const provide = jest.fn();
+    const app = { provide } as any;
+    const options = {
+      projectId: 'pid',
+      baseUrl: 'burl',
+      sessionTokenViaCookie: false,
+    };
+
+    plugin.install(app, options);
+
+    expect(createSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        persistTokens: true,
+        autoRefresh: true,
+        storeLastAuthenticatedUser: true,
+        ...options,
+      }),
+    );
+  });
+
+  it('should create sdk instance with custom autoRefresh option', () => {
+    const provide = jest.fn();
+    const app = { provide } as any;
+    const options = {
+      projectId: 'pid',
+      baseUrl: 'burl',
+      sessionTokenViaCookie: false,
+      autoRefresh: false,
+    };
+
+    plugin.install(app, options);
+
+    expect(createSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        persistTokens: true,
+        autoRefresh: false,
+        storeLastAuthenticatedUser: true,
+        projectId: 'pid',
+        baseUrl: 'burl',
+        sessionTokenViaCookie: false,
+      }),
+    );
+  });
+
   it('should update the context when new session is received from sdk hook', () => {
     const provide = jest.fn();
     const app = { provide } as any;
