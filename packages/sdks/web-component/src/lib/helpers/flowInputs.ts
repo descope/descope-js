@@ -1,5 +1,17 @@
 const flattenFormObject = (obj: any, prefix = '') =>
   Object.keys(obj).reduce((res, el) => {
+    if (Array.isArray(obj[el])) {
+      return {
+        ...res,
+        [el]: {
+          value: obj[el].map((item: any) =>
+            typeof item === 'object' && item !== null
+              ? flattenFormObject(item)
+              : item,
+          ),
+        },
+      };
+    }
     if (typeof obj[el] === 'object' && obj[el] !== null && !obj[el]?.value) {
       return { ...res, ...flattenFormObject(obj[el], `${prefix + el}.`) };
     }
@@ -20,7 +32,7 @@ export const transformFlowInputFormData = (formData: string) => {
 };
 
 export const extractNestedAttribute = (
-  formData: Record<string, string | Record<string, string>>,
+  formData: Record<string, string | Record<string, string> | string[]>,
   attr: string,
 ) =>
   Object.fromEntries(

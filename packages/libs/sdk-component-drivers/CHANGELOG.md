@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.3.0...sdk-component-drivers-0.4.0) (2025-07-22)
+
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
+## [0.3.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.52...sdk-component-drivers-0.3.0) (2025-07-21)
+
+
+### Features
+
+* support passkey removal ([#1165](https://github.com/descope/descope-js/issues/1165)) ([80f5a70](https://github.com/descope/descope-js/commit/80f5a70ac39889ca9ad7d91a0c68afec0c8320a6))
+
 ## [0.2.52](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.2.51...sdk-component-drivers-0.2.52) (2025-03-11)
 
 ### Dependency Updates

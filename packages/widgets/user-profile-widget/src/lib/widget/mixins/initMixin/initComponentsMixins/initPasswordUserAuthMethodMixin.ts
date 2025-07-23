@@ -69,7 +69,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.passwordUserAuthMethod.onButtonClick(() => {
+        this.passwordUserAuthMethod.onUnfulfilledButtonClick(() => {
           this.#modal?.open();
         });
       }

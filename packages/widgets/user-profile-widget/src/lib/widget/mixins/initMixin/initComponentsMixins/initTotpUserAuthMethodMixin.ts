@@ -75,7 +75,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.totpUserAuthMethod.onButtonClick(() => {
+        this.totpUserAuthMethod.onUnfulfilledButtonClick(() => {
           this.#modal?.open();
         });
       }

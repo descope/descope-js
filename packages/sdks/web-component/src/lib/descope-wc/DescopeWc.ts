@@ -735,9 +735,14 @@ class DescopeWc extends BaseDescopeWc {
       }
     }
 
-    if (isChanged('code') && code && isChanged('isPopup') && isPopup) {
+    if (
+      ((isChanged('code') && code) ||
+        (isChanged('exchangeError') && exchangeError)) &&
+      isChanged('isPopup') &&
+      isPopup
+    ) {
       window.opener.postMessage(
-        { action: 'code', data: { code } },
+        { action: 'code', data: { code, exchangeError } },
         window.location.origin,
       );
       window.close();
@@ -825,6 +830,7 @@ class DescopeWc extends BaseDescopeWc {
 
             this.flowState.update({
               code: data.code,
+              exchangeError: data.exchangeError,
             });
           }
         };
@@ -1569,14 +1575,44 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #handleSubmitButtonLoader(submitter: HTMLElement) {
+  #handleComponentsLoadingState(submitter: HTMLElement) {
+    const enabledElements = Array.from(
+      this.contentRootElement.querySelectorAll(
+        ':not([disabled]), [disabled="false"]',
+      ),
+    ).filter((ele) => ele !== submitter);
+
+    const handleScreenIdUpdates = () => {
+      const unsubscribeScreenIdUpdates = this.stepState?.subscribe(
+        (screenId, prevScreenId) => {
+          // we want to restore components state only if we stay on the same screen
+          // if we are rendering a new screen, the components state (disabled/loading) will remain until the new screen is rendered
+          if (screenId === prevScreenId) {
+            submitter.removeAttribute('loading');
+            enabledElements.forEach((ele) => {
+              ele.removeAttribute('disabled');
+            });
+          }
+          this.stepState.unsubscribe(unsubscribeScreenIdUpdates);
+        },
+        (state) => state.screenId,
+        { forceUpdate: true },
+      );
+    };
+
+    // we are listening to the next request status
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
           submitter.setAttribute('loading', 'true');
+          enabledElements.forEach((ele) =>
+            ele.setAttribute('disabled', 'true'),
+          );
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
-          submitter.removeAttribute('loading');
+          // when next request is done, we want to listen to screenId updates
+          handleScreenIdUpdates();
         }
       },
     );
@@ -1650,7 +1686,7 @@ class DescopeWc extends BaseDescopeWc {
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
-        this.#handleSubmitButtonLoader(submitter);
+        this.#handleComponentsLoadingState(submitter);
 
         const formData = await this.#getFormData();
         const eleDescopeAttrs = getElementDescopeAttributes(submitter);

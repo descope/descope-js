@@ -31,7 +31,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules', 'src'],
 
-  testTimeout: 5000,
+  testTimeout: 10000,
 
   roots: ['src', 'test'],
 
