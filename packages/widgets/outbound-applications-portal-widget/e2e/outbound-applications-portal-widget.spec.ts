@@ -1,4 +1,6 @@
-import { test, expect } from './fixtures';
+import { expect } from '@playwright/test';
+import { createWidgetFixtures } from '@descope/e2e-helpers';
+
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import rootMock from '../test/mocks/rootMock';
@@ -7,6 +9,8 @@ import {
   mockOutboundApps,
   mockUser,
 } from '../test/mocks/mockOutboundApps';
+
+const test = createWidgetFixtures('outbound-applications-portal-widget');
 
 const configContent = {
   flows: {
@@ -20,11 +24,13 @@ const apiPath = (prop: 'outboundApps' | 'user', path: string) =>
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page, componentsPort }) => {
-    await page.addInitScript(() =>
-      window.localStorage.setItem(
-        'base.ui.components.url',
-        `http://localhost:${componentsPort}/umd/index.js`,
-      ),
+    await page.addInitScript(
+      (port) =>
+        window.localStorage.setItem(
+          'base.ui.components.url',
+          `http://localhost:${port}/umd/index.js`,
+        ),
+      componentsPort,
     );
 
     await page.route('*/**/config.json', async (route) =>
@@ -62,16 +68,6 @@ test.describe('widget', () => {
         }),
     );
 
-    await page.route(
-      apiPath('outboundApps', 'getConnectedOutboundApps'),
-      async (route) =>
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ appsIds: mockConnectedApps }),
-        }),
-    );
-
     await page.goto('/');
   });
 
@@ -82,12 +78,5 @@ test.describe('widget', () => {
         page.locator(`text=${app.description}`).first(),
       ).toBeVisible();
     }
-  });
-
-  test.skip('click connect opens a connect modal', async ({ page }) => {
-    const app = page.locator(`text=Connect`).first();
-    await app.click();
-
-    await expect(page.getByLabel('Emalil')).toBeVisible();
   });
 });

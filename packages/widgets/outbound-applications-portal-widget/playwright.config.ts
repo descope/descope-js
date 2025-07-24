@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
-import { componentsPort, widgetPort } from './e2e/constants';
+import { generatePortFromWidgetName } from '@descope/e2e-helpers';
+
+const widgetName = 'outbound-applications-portal-widget';
+const componentsPort = generatePortFromWidgetName(`${widgetName}-components`);
+const widgetPort = generatePortFromWidgetName(widgetName);
 
 /**
  * Read environment variables from file.
@@ -48,23 +52,23 @@ export default defineConfig({
       },
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: {
-    //     ...devices['Desktop Firefox'],
-    //     browserName: 'firefox',
-    //     screenshot: 'only-on-failure',
-    //   },
-    // },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        browserName: 'firefox',
+        screenshot: 'only-on-failure',
+      },
+    },
 
-    // {
-    //   name: 'webkit',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //     browserName: 'webkit',
-    //     screenshot: 'only-on-failure',
-    //   },
-    // },
+    {
+      name: 'webkit',
+      use: {
+        ...devices['Desktop Safari'],
+        browserName: 'webkit',
+        screenshot: 'only-on-failure',
+      },
+    },
 
     /* Test against mobile viewports. */
     // {

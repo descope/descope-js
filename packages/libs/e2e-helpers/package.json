@@ -44,6 +44,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@playwright/test": "^1.47.0",
     "tslib": "2.8.1"
   }
 }

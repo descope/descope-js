@@ -1,4 +1,4 @@
-import { generatePortFromWidgetName } from './port-generator';
+import { generatePortFromWidgetName } from '../src/port-generator';
 
 describe('generatePortFromWidgetName', () => {
   describe('valid inputs', () => {
