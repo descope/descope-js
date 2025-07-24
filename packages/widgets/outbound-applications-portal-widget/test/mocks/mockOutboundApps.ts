@@ -1,25 +1,29 @@
-export const mockOutboundApps = [
-  {
-    id: 'obapp1',
-    name: 'Github',
-    description: 'Github Connect',
-    logo: 'logo1',
-  },
-  {
-    id: 'obapp2',
-    name: 'Facebook',
-    description: 'Facebook connect',
-    logo: 'logo2',
-  },
-  {
-    id: 'obapp3',
-    name: 'Custom',
-    description: 'Custom auth',
-    logo: 'logo3',
-  },
-];
+export const mockOutboundApps = {
+  apps: [
+    {
+      id: 'obapp1',
+      name: 'Github',
+      description: 'Github Connect',
+      logo: '',
+    },
+    {
+      id: 'obapp2',
+      name: 'Facebook',
+      description: 'Facebook connect',
+      logo: '',
+    },
+    {
+      id: 'obapp3',
+      name: 'Custom',
+      description: 'Custom auth',
+      logo: '',
+    },
+  ],
+};
 
-export const mockConnectedApps = ['obapp1'];
+export const mockConnectedApps = {
+  appIds: ['obapp1'],
+};
 
 export const mockUser = {
   loginIds: ['test@user.com'],

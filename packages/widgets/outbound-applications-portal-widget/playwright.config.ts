@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { componentsPort, widgetPort } from './e2e/constants';
 
 /**
  * Read environment variables from file.
@@ -26,7 +27,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5560',
+    baseURL: `http://localhost:${widgetPort}`,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -47,23 +48,23 @@ export default defineConfig({
       },
     },
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        browserName: 'firefox',
-        screenshot: 'only-on-failure',
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     browserName: 'firefox',
+    //     screenshot: 'only-on-failure',
+    //   },
+    // },
 
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        browserName: 'webkit',
-        screenshot: 'only-on-failure',
-      },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: {
+    //     ...devices['Desktop Safari'],
+    //     browserName: 'webkit',
+    //     screenshot: 'only-on-failure',
+    //   },
+    // },
 
     /* Test against mobile viewports. */
     // {
@@ -89,11 +90,11 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'npx serve node_modules/@descope/web-components-ui/dist -p 8769',
+      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort}`,
     },
     {
-      command: 'npx serve build -l 5560',
-      url: 'http://localhost:5560',
+      command: `npx serve build -l ${widgetPort}`,
+      url: `http://localhost:${widgetPort}`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },

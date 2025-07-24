@@ -54,7 +54,6 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#connectModal.afterClose =
           this.#initConnectModalContent.bind(this);
 
-        this.#initConnectModalContent('');
         this.syncFlowTheme(this.#connectFlow);
       }
 
@@ -71,7 +70,6 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#disconnectModal.afterClose =
           this.#initDisconnectModalContent.bind(this);
 
-        this.#initDisconnectModalContent('');
         this.syncFlowTheme(this.#disconnectFlow);
       }
 
