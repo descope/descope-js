@@ -1,0 +1,25 @@
+{
+  "name": "e2e-helpers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/libs/e2e-helpers/src",
+  "projectType": "library",
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": false,
+        "preset": "conventional"
+      }
+    },
+    "licenseCheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

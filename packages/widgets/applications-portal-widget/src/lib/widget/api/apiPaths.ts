@@ -1,5 +1,5 @@
 export const apiPaths = {
   ssoApps: {
-    load: '/v1/mgmt/sso/idp/apps/load',
+    load: '/v1/mgmt/outbound/apps-with-user-token',
   },
 };
