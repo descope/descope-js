@@ -9,10 +9,13 @@ export const getSamlApps = createSelector(
     ssoAppsList?.filter?.((app) => app.appType === SSOAppType.saml),
 );
 
-export const getAppsList = createSelector(getSamlApps, (samlApps) =>
-  samlApps.map((app) => ({
+export const getAppsList = createSelector(getSSOAppsList, (apps) =>
+  apps.map((app) => ({
     name: app.name,
     icon: app.logo,
-    url: app.samlSettings.idpInitiatedUrl,
+    url:
+      app.appType === SSOAppType.saml
+        ? app.samlSettings?.idpInitiatedUrl
+        : app.oidcSettings?.customIdpInitiatedLoginPageUrl,
   })),
 );

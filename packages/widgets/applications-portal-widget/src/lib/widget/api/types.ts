@@ -9,14 +9,26 @@ export enum SSOAppType {
   saml = 'saml',
 }
 
-export type SSOApplication = {
+interface App {
   id: string;
   name: string;
   description?: string;
   enabled: boolean;
-  appType: SSOAppType;
   logo?: string;
+}
+
+export interface SamlApplication extends App {
+  appType: SSOAppType.saml;
   samlSettings?: {
     idpInitiatedUrl: string;
   };
-};
+}
+
+export interface OidcApplication extends App {
+  appType: SSOAppType.oidc;
+  oidcSettings?: {
+    customIdpInitiatedLoginPageUrl: string;
+  };
+}
+
+export type SSOApplication = SamlApplication | OidcApplication;
