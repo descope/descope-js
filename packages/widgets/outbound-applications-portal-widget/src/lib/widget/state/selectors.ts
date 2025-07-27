@@ -4,21 +4,14 @@ import { State } from './types';
 export const getOutboundAppsList = (state: State) =>
   state.outboundAppsList.data;
 
-export const connectedOutboundAppsList = (state: State) =>
+export const getConnectedOutboundAppsList = (state: State) =>
   state.connectedOutboundAppsIds.data;
 
 export const allowedAppsIds = (state: State) => state.allowedAppsIds.data;
 
-export const getConnectedAppsList = createSelector(
-  connectedOutboundAppsList,
-  (connectedIds) => {
-    return connectedIds;
-  },
-);
-
 export const getAppsList = createSelector(
   getOutboundAppsList,
-  connectedOutboundAppsList,
+  getConnectedOutboundAppsList,
   allowedAppsIds,
   (obApps, connectedIds, allowedIds) =>
     obApps

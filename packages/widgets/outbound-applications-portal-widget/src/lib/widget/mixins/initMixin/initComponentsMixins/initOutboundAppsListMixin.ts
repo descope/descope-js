@@ -9,11 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
-import {
-  getAppsList,
-  getConnectedAppsList,
-  getUserId,
-} from '../../../state/selectors';
+import { getAppsList, getUserId } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
@@ -134,8 +130,8 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#obAppsList.data = appsList;
       }
 
-      #onConnectedAppsUpdate = withMemCache(() => {
-        this.#obAppsList.data = getAppsList(this.state);
+      #onConnectedAppsUpdate = withMemCache((data) => {
+        this.#obAppsList.data = data;
       });
 
       async onWidgetRootReady() {
@@ -145,10 +141,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.#initConnectModal();
         this.#initDisconnectModal();
 
-        this.subscribe(
-          this.#onConnectedAppsUpdate.bind(this),
-          getConnectedAppsList,
-        );
+        this.subscribe(this.#onConnectedAppsUpdate.bind(this), getAppsList);
       }
     },
 );

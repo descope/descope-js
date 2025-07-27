@@ -12,11 +12,14 @@ import {
 
 const test = createWidgetFixtures('outbound-applications-portal-widget');
 
+const MODAL_TIMEOUT = 500;
+const STATE_TIMEOUT = 2000;
+
 const configContent = {
   flows: {
     flow1: { version: 1 },
   },
-  componentsVersion: '1.114.0',
+  componentsVersion: '1.2.3',
 };
 
 const apiPath = (prop: 'outboundApps' | 'user', path: string) =>
@@ -24,14 +27,23 @@ const apiPath = (prop: 'outboundApps' | 'user', path: string) =>
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page, componentsPort }) => {
-    await page.addInitScript(
-      (port) =>
-        window.localStorage.setItem(
-          'base.ui.components.url',
-          `http://localhost:${port}/umd/index.js`,
-        ),
-      componentsPort,
-    );
+    await page.addInitScript((port) => {
+      window.localStorage.setItem(
+        'base.ui.components.url',
+        `http://localhost:${port}/umd/index.js`,
+      ),
+        window.customElements.define(
+          'descope-wc',
+          class extends HTMLElement {
+            connectedCallback() {
+              this.innerHTML = '<button>Finish Flow</button>';
+              this.querySelector('button').onclick = () => {
+                this.dispatchEvent(new CustomEvent('success'));
+              };
+            }
+          },
+        );
+    }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
       route.fulfill({ json: configContent }),
@@ -71,12 +83,78 @@ test.describe('widget', () => {
     await page.goto('/');
   });
 
-  test('outbound apps are in the list', async ({ page }) => {
+  test('apps are in the list', async ({ page }) => {
     for (const app of mockOutboundApps.apps) {
       await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
       await expect(
         page.locator(`text=${app.description}`).first(),
       ).toBeVisible();
     }
+  });
+
+  test('app connect', async ({ page }) => {
+    const connectBtn = page
+      .locator('descope-list-item')
+      .nth(1)
+      .getByText('Connect');
+    await connectBtn.click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await page.route(
+      apiPath('outboundApps', 'getConnectedOutboundApps') +
+        `?userId=${mockUser.userId}`,
+      async (route) =>
+        route.fulfill({
+          json: { appIds: ['obapp1', 'obapp2'] },
+        }),
+    );
+
+    const finishFlowBtn = page
+      .locator('descope-modal[data-id="outbound-apps-connect"]')
+      .locator('button', { hasText: 'Finish Flow' });
+
+    finishFlowBtn.click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const disconnectBtn = page
+      .locator('descope-list-item')
+      .nth(1)
+      .getByText('Disconnect');
+    expect(disconnectBtn).toBeVisible();
+  });
+
+  test('app disconnect', async ({ page }) => {
+    const disconnectBtn = page
+      .locator('descope-list-item')
+      .first()
+      .getByText('Disconnect');
+    await disconnectBtn.click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await page.route(
+      apiPath('outboundApps', 'getConnectedOutboundApps') +
+        `?userId=${mockUser.userId}`,
+      async (route) =>
+        route.fulfill({
+          json: { appIds: [] },
+        }),
+    );
+
+    const finishFlowBtn = page
+      .locator('descope-modal[data-id="outbound-apps-disconnect"]')
+      .locator('button', { hasText: 'Finish Flow' });
+
+    finishFlowBtn.click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const connectBtn = page
+      .locator('descope-list-item')
+      .first()
+      .getByText('Connect');
+    expect(connectBtn).toBeVisible();
   });
 });

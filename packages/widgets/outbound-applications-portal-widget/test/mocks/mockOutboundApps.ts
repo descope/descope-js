@@ -3,19 +3,19 @@ export const mockOutboundApps = {
     {
       id: 'obapp1',
       name: 'Github',
-      description: 'Github Connect',
+      description: 'Github outbound app',
       logo: '',
     },
     {
       id: 'obapp2',
       name: 'Facebook',
-      description: 'Facebook connect',
+      description: 'Facebook outbound app',
       logo: '',
     },
     {
       id: 'obapp3',
       name: 'Custom',
-      description: 'Custom auth',
+      description: 'Custom auth outbound app',
       logo: '',
     },
   ],
