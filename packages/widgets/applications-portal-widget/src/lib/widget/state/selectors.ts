@@ -12,7 +12,11 @@ export const getSamlApps = createSelector(
 export const getOidcWithCustomIdpInitiatedLoginPageUrlApps = createSelector(
   getSSOAppsList,
   (ssoAppsList) =>
-    ssoAppsList?.filter?.((app) => app.appType === SSOAppType.oidc),
+    ssoAppsList?.filter?.(
+      (app) =>
+        app.appType === SSOAppType.oidc &&
+        app.oidcSettings?.customIdpInitiatedLoginPageUrl,
+    ),
 );
 
 export const getAppsList = createSelector(
