@@ -20,8 +20,8 @@ export const mockHttpClient = {
       mockHttpClient[key].mockResolvedValue({
         ok: true,
         status: 200,
-        json: () => Promise.resolve({ apps: mockOutboundApps }),
-        text: () => Promise.resolve(JSON.stringify({ apps: mockOutboundApps })),
+        json: () => Promise.resolve(mockOutboundApps),
+        text: () => Promise.resolve(JSON.stringify(mockOutboundApps)),
       }),
     ),
 };
@@ -101,8 +101,8 @@ describe('application-portal-widget', () => {
         ),
       );
 
-      expect(result.apps[0].id).toEqual(mockOutboundApps[0].id);
-      expect(result.apps[1].id).toEqual(mockOutboundApps[1].id);
+      expect(result.apps[0].id).toEqual(mockOutboundApps.apps[0].id);
+      expect(result.apps[1].id).toEqual(mockOutboundApps.apps[1].id);
     });
   });
 });

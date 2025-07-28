@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { generatePortFromWidgetName } from './port-generator';
+import { generatePortFromName } from './port-generator';
 
 export interface WidgetTestFixtures {
   widgetPort: number;
@@ -15,8 +15,8 @@ export interface WidgetTestFixtures {
  * @returns Extended test function with widget-specific fixtures
  */
 export function createWidgetFixtures(widgetName: string) {
-  const widgetPort = generatePortFromWidgetName(widgetName);
-  const componentsPort = generatePortFromWidgetName(`${widgetName}-components`);
+  const widgetPort = generatePortFromName(widgetName);
+  const componentsPort = generatePortFromName(`${widgetName}-components`);
   const baseURL = `http://localhost:${widgetPort}`;
 
   return base.extend<WidgetTestFixtures>({

@@ -1,9 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
-import { generatePortFromWidgetName } from '@descope/e2e-helpers';
+import { generatePortFromName } from '@descope/e2e-helpers';
 
 const widgetName = 'outbound-applications-portal-widget';
-const componentsPort = generatePortFromWidgetName(`${widgetName}-components`);
-const widgetPort = generatePortFromWidgetName(widgetName);
+const componentsPort = generatePortFromName(`${widgetName}-components`);
+const widgetPort = generatePortFromName(widgetName);
 
 /**
  * Read environment variables from file.

@@ -3,24 +3,19 @@ const PORT_RANGE_SIZE = 7000;
 const HASH_SHIFT_BITS = 5;
 
 /**
- * Generates a deterministic port number from a widget name using a simple hash function.
+ * Generates a deterministic port number from a name using a simple hash function.
  * Ports are generated in the range 3000-9999 to avoid system port conflicts.
  *
- * @param widgetName The widget name to generate a port for
+ * @param name Name to generate a port for
  * @returns A port number between 3000 and 9999
  * @throws Error if widgetName is empty or invalid
  */
-export function generatePortFromWidgetName(widgetName: string): number {
-  if (
-    !widgetName ||
-    typeof widgetName !== 'string' ||
-    widgetName.trim().length === 0
-  ) {
-    throw new Error('Widget name must be a non-empty string');
+export function generatePortFromName(name: string): number {
+  if (!name || typeof name !== 'string' || name.trim().length === 0) {
+    throw new Error('port generator: name must be specified!');
   }
 
-  // Simple djb2-style hash function - sufficient for widget name hashing
-  const hash = [...widgetName].reduce(
+  const hash = [...name].reduce(
     (hash, char) => (hash << HASH_SHIFT_BITS) - hash + char.charCodeAt(0),
     0,
   );

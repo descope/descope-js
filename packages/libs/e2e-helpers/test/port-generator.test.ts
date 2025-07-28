@@ -1,18 +1,18 @@
-import { generatePortFromWidgetName } from '../src/port-generator';
+import { generatePortFromName } from '../src/port-generator';
 
-describe('generatePortFromWidgetName', () => {
+describe('generatePortFromName', () => {
   describe('valid inputs', () => {
     it('should generate consistent ports for the same widget name', () => {
       const widgetName = 'test-widget';
-      const port1 = generatePortFromWidgetName(widgetName);
-      const port2 = generatePortFromWidgetName(widgetName);
+      const port1 = generatePortFromName(widgetName);
+      const port2 = generatePortFromName(widgetName);
 
       expect(port1).toBe(port2);
     });
 
     it('should generate different ports for different widget names', () => {
-      const port1 = generatePortFromWidgetName('widget-1');
-      const port2 = generatePortFromWidgetName('widget-2');
+      const port1 = generatePortFromName('widget-1');
+      const port2 = generatePortFromName('widget-2');
 
       expect(port1).not.toBe(port2);
     });
@@ -28,14 +28,14 @@ describe('generatePortFromWidgetName', () => {
       ];
 
       testNames.forEach((name) => {
-        const port = generatePortFromWidgetName(name);
+        const port = generatePortFromName(name);
         expect(port).toBeGreaterThanOrEqual(3000);
         expect(port).toBeLessThanOrEqual(9999);
       });
     });
 
     it('should generate integer ports', () => {
-      const port = generatePortFromWidgetName('test-widget');
+      const port = generatePortFromName('test-widget');
       expect(Number.isInteger(port)).toBe(true);
     });
 
@@ -50,8 +50,8 @@ describe('generatePortFromWidgetName', () => {
       ];
 
       specialNames.forEach((name) => {
-        expect(() => generatePortFromWidgetName(name)).not.toThrow();
-        const port = generatePortFromWidgetName(name);
+        expect(() => generatePortFromName(name)).not.toThrow();
+        const port = generatePortFromName(name);
         expect(port).toBeGreaterThanOrEqual(3000);
         expect(port).toBeLessThanOrEqual(9999);
       });
@@ -60,37 +60,37 @@ describe('generatePortFromWidgetName', () => {
 
   describe('invalid inputs', () => {
     it('should throw error for empty string', () => {
-      expect(() => generatePortFromWidgetName('')).toThrow(
+      expect(() => generatePortFromName('')).toThrow(
         'Widget name must be a non-empty string',
       );
     });
 
     it('should throw error for whitespace-only string', () => {
-      expect(() => generatePortFromWidgetName('   ')).toThrow(
+      expect(() => generatePortFromName('   ')).toThrow(
         'Widget name must be a non-empty string',
       );
     });
 
     it('should throw error for null input', () => {
-      expect(() => generatePortFromWidgetName(null as any)).toThrow(
+      expect(() => generatePortFromName(null as any)).toThrow(
         'Widget name must be a non-empty string',
       );
     });
 
     it('should throw error for undefined input', () => {
-      expect(() => generatePortFromWidgetName(undefined as any)).toThrow(
+      expect(() => generatePortFromName(undefined as any)).toThrow(
         'Widget name must be a non-empty string',
       );
     });
 
     it('should throw error for non-string input', () => {
-      expect(() => generatePortFromWidgetName(123 as any)).toThrow(
+      expect(() => generatePortFromName(123 as any)).toThrow(
         'Widget name must be a non-empty string',
       );
-      expect(() => generatePortFromWidgetName({} as any)).toThrow(
+      expect(() => generatePortFromName({} as any)).toThrow(
         'Widget name must be a non-empty string',
       );
-      expect(() => generatePortFromWidgetName([] as any)).toThrow(
+      expect(() => generatePortFromName([] as any)).toThrow(
         'Widget name must be a non-empty string',
       );
     });
@@ -106,9 +106,7 @@ describe('generatePortFromWidgetName', () => {
         'access-key-management-widget',
       ];
 
-      const ports = actualWidgets.map((name) =>
-        generatePortFromWidgetName(name),
-      );
+      const ports = actualWidgets.map((name) => generatePortFromName(name));
 
       // All ports should be unique
       const uniquePorts = new Set(ports);
