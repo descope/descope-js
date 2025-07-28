@@ -92,6 +92,32 @@ test.describe('widget', () => {
     }
   });
 
+  test('filter allowed apps by id', async ({ page }) => {
+    const allowedApp = mockOutboundApps.apps[0];
+
+    await page.evaluate((app) => {
+      const widget = document.querySelector(
+        'descope-outbound-applications-portal-widget',
+      );
+      widget?.setAttribute('allowed-outbound-apps-ids', app.id);
+    }, allowedApp);
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // Validate first app is visible
+    await expect(page.locator(`text=${allowedApp.name}`).first()).toBeVisible();
+    await expect(
+      page.locator(`text=${allowedApp.description}`).first(),
+    ).toBeVisible();
+
+    // Validate all other apps are not visible
+    for (let i = 1; i < mockOutboundApps.apps.length; i++) {
+      const app = mockOutboundApps.apps[i];
+      await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
+      await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
+    }
+  });
+
   test('app connect', async ({ page }) => {
     const connectBtn = page
       .locator('descope-list-item')

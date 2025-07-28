@@ -23,6 +23,10 @@ export const initWidgetRootMixin = createSingletonMixin(
       fetchWidgetPagesMixin,
       stateManagementMixin,
     )(superclass) {
+      static get observedAttributes() {
+        return ['allowed-outbound-apps-ids'];
+      }
+
       async #initWidgetRoot() {
         const template = createTemplate(
           // await import('../../../../../../test/mocks/rootMock').then(
@@ -37,6 +41,16 @@ export const initWidgetRootMixin = createSingletonMixin(
 
       #renderTemplate(template: HTMLTemplateElement) {
         this.contentRootElement.append(template.content.cloneNode(true));
+      }
+
+      attributeChangedCallback(
+        name: string,
+        oldValue: string,
+        newValue: string,
+      ) {
+        if (name === 'allowed-outbound-apps-ids' && oldValue !== newValue) {
+          this.actions.setAllowedAppsIds(newValue || '');
+        }
       }
 
       // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
