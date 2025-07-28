@@ -16,6 +16,11 @@ const apiPath = (prop: 'ssoApps', path: string) =>
   `**/*${apiPaths[prop][path]}`;
 
 const samlApps = mockSsoApps.filter((app) => app.appType === SSOAppType.saml);
+const oidcWithUrlApps = mockSsoApps.filter(
+  (app) =>
+    app.appType === SSOAppType.oidc &&
+    app.oidcSettings?.customIdpInitiatedLoginPageUrl,
+);
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -64,6 +69,11 @@ test.describe('widget', () => {
 
   test('saml apps are in the list', async ({ page }) => {
     for (const app of samlApps) {
+      await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
+    }
+  });
+  test('oidc apps with custom URL are in the list', async ({ page }) => {
+    for (const app of oidcWithUrlApps) {
       await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
     }
   });
