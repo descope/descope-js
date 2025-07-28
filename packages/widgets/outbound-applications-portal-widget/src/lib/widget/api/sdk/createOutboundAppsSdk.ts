@@ -1,5 +1,5 @@
 import { apiPaths } from '../apiPaths';
-import { HttpClient } from '../types';
+import { HttpClient, User } from '../types';
 import { withErrorHandler } from './helpers';
 import { outboundApps } from './mocks';
 
@@ -15,20 +15,20 @@ export const createOutboundAppsSdk = ({
     if (mock) {
       return outboundApps.getAllOutboundApps();
     }
-    const res = await httpClient.get(apiPaths.outboundApps.getAllOutboundApps);
+    const res = await httpClient.get(apiPaths.outboundApps.allOutboundApps);
 
     await withErrorHandler(res);
 
     return res.json();
   };
 
-  const getConnectedOutboundApps = async ({ userId }) => {
+  const getConnectedOutboundApps = async ({ userId }: User) => {
     if (mock) {
       return outboundApps.getConnectedOutboundApps();
     }
 
     const res = await httpClient.get(
-      apiPaths.outboundApps.getConnectedOutboundApps,
+      apiPaths.outboundApps.connectedOutboundApps,
       {
         queryParams: { userId },
       },

@@ -13,8 +13,6 @@ export const initialState: State = {
   },
   allowedAppsIds: {
     data: [],
-    loading: false,
-    error: null,
   },
   me: {
     loading: false,

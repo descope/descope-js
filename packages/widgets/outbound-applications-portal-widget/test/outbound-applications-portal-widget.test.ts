@@ -97,7 +97,7 @@ describe('application-portal-widget', () => {
       });
       await waitFor(() =>
         expect(mockHttpClient.get).toHaveBeenCalledWith(
-          apiPaths.outboundApps.getAllOutboundApps,
+          apiPaths.outboundApps.allOutboundApps,
         ),
       );
 

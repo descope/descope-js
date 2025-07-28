@@ -23,7 +23,6 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       modalMixin,
-      // customAppsMixin,
     )(superclass) {
       #obAppsList: OutboundAppsListDriver;
 

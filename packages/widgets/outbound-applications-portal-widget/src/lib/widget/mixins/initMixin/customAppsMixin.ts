@@ -10,14 +10,5 @@ export const customAppsMixin = createSingletonMixin(
       debuggerMixin,
       stateManagementMixin,
       initWidgetRootMixin,
-    )(superclass) {
-      initAllowedAppIds() {
-        const ids = this.getAttribute('allowed-outbound-apps-ids');
-        this.actions.setAllowedAppsIds(ids || '');
-      }
-
-      async onWidgetRootReady() {
-        await super.onWidgetRootReady?.();
-      }
-    },
+    )(superclass) {},
 );

@@ -1,5 +1,5 @@
-import { expect } from '@playwright/test';
-import { createWidgetFixtures } from '@descope/e2e-helpers';
+import { expect, test } from '@playwright/test';
+import { componentsPort } from '../playwright.config';
 
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -9,8 +9,6 @@ import {
   mockOutboundApps,
   mockUser,
 } from '../test/mocks/mockOutboundApps';
-
-const test = createWidgetFixtures('outbound-applications-portal-widget');
 
 const MODAL_TIMEOUT = 500;
 const STATE_TIMEOUT = 2000;
@@ -26,7 +24,7 @@ const apiPath = (prop: 'outboundApps' | 'user', path: string) =>
   `**/*${apiPaths[prop][path]}`;
 
 test.describe('widget', () => {
-  test.beforeEach(async ({ page, componentsPort }) => {
+  test.beforeEach(async ({ page }) => {
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -64,7 +62,7 @@ test.describe('widget', () => {
     );
 
     await page.route(
-      apiPath('outboundApps', 'getAllOutboundApps'),
+      apiPath('outboundApps', 'allOutboundApps'),
       async (route) =>
         route.fulfill({
           json: mockOutboundApps,
@@ -72,7 +70,7 @@ test.describe('widget', () => {
     );
 
     await page.route(
-      apiPath('outboundApps', 'getConnectedOutboundApps') +
+      apiPath('outboundApps', 'connectedOutboundApps') +
         `?userId=${mockUser.userId}`,
       async (route) =>
         route.fulfill({
@@ -128,7 +126,7 @@ test.describe('widget', () => {
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     await page.route(
-      apiPath('outboundApps', 'getConnectedOutboundApps') +
+      apiPath('outboundApps', 'connectedOutboundApps') +
         `?userId=${mockUser.userId}`,
       async (route) =>
         route.fulfill({
@@ -161,7 +159,7 @@ test.describe('widget', () => {
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     await page.route(
-      apiPath('outboundApps', 'getConnectedOutboundApps') +
+      apiPath('outboundApps', 'connectedOutboundApps') +
         `?userId=${mockUser.userId}`,
       async (route) =>
         route.fulfill({

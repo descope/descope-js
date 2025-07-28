@@ -1,6 +1,12 @@
 import { BaseDriver } from './BaseDriver';
 
-type Data = { name: string; logo: string }[];
+type Data = {
+  id: string;
+  name: string;
+  description?: string;
+  logo?: string;
+  isConnected?: boolean;
+}[];
 
 type Detail = { id: string; action: string };
 

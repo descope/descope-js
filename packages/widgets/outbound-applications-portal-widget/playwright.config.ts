@@ -1,9 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
 import { generatePortFromName } from '@descope/e2e-helpers';
 
-const widgetName = 'outbound-applications-portal-widget';
-const componentsPort = generatePortFromName(`${widgetName}-components`);
-const widgetPort = generatePortFromName(widgetName);
+import packageJson from '../../../package.json';
+export const widgetName = packageJson.name;
+export const componentsPort = generatePortFromName(widgetName, {
+  start: 0,
+  end: 9999,
+});
+export const widgetPort = generatePortFromName(widgetName, {
+  start: 10000,
+  end: 65000,
+});
 
 /**
  * Read environment variables from file.

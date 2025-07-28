@@ -16,13 +16,13 @@ export const getAppsList = createSelector(
   (obApps, connectedIds, allowedIds) =>
     obApps
       .filter((app) => allowedIds.length === 0 || allowedIds.includes(app.id))
-      .map((app) => ({
-        appId: app.id,
-        name: app.name,
-        description: app.description,
-        logo: app.logo,
-        isConnected: connectedIds.includes(app.id),
-      })),
+      .map((app) => {
+        const isConnected = connectedIds.includes(app.id);
+        return {
+          ...app,
+          isConnected,
+        };
+      }),
 );
 
 export const getMe = (state: State) => state.me.data;

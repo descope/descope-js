@@ -49,8 +49,16 @@ export const initWidgetRootMixin = createSingletonMixin(
         newValue: string,
       ) {
         if (name === 'allowed-outbound-apps-ids' && oldValue !== newValue) {
-          this.actions.setAllowedAppsIds(newValue || '');
+          this.actions.setAllowedAppsIds(this.#allowedIds);
         }
+      }
+
+      get #allowedIds() {
+        const ids = this.getAttribute('allowed-outbound-apps-ids') || '';
+        return ids
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
       }
 
       // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
@@ -61,8 +69,8 @@ export const initWidgetRootMixin = createSingletonMixin(
 
         await this.actions.getMe();
 
-        const allowedAppsIds = this.getAttribute('allowed-outbound-apps-ids');
-        await this.actions.setAllowedAppsIds(allowedAppsIds || '');
+        // const allowedAppsIds = this.getAttribute('allowed-outbound-apps-ids');
+        await this.actions.setAllowedAppsIds(this.#allowedIds);
 
         await Promise.all([
           this.actions.getOutboundApps(),
@@ -71,7 +79,7 @@ export const initWidgetRootMixin = createSingletonMixin(
           }),
         ]);
 
-        const [template] = await Promise.all([this.#initWidgetRoot()]);
+        const template = await this.#initWidgetRoot();
 
         // we want to render the template only after the data was fetched
         // so we won't show the apps-list empty state until the data is loaded

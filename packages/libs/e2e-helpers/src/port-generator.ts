@@ -1,16 +1,17 @@
-const PORT_RANGE_START = 3000;
-const PORT_RANGE_SIZE = 7000;
 const HASH_SHIFT_BITS = 5;
+
+type Range = {
+  start: number;
+  end: number;
+};
 
 /**
  * Generates a deterministic port number from a name using a simple hash function.
- * Ports are generated in the range 3000-9999 to avoid system port conflicts.
- *
- * @param name Name to generate a port for
- * @returns A port number between 3000 and 9999
- * @throws Error if widgetName is empty or invalid
  */
-export function generatePortFromName(name: string): number {
+export function generatePortFromName(
+  name: string,
+  range: Range = { start: 3000, end: 65000 },
+): number {
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     throw new Error('port generator: name must be specified!');
   }
@@ -20,6 +21,9 @@ export function generatePortFromName(name: string): number {
     0,
   );
 
-  // Generate port between 3000-9999
-  return PORT_RANGE_START + (Math.abs(hash) % PORT_RANGE_SIZE);
+  const { start, end } = range;
+
+  const rangeSize = end - start + 1;
+
+  return start + (Math.abs(hash) % rangeSize);
 }
