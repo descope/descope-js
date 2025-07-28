@@ -2,29 +2,29 @@ import { generatePortFromName } from '../src/port-generator';
 
 describe('generatePortFromName', () => {
   describe('valid inputs', () => {
-    it('should generate consistent ports for the same widget name', () => {
-      const widgetName = 'test-widget';
-      const port1 = generatePortFromName(widgetName);
-      const port2 = generatePortFromName(widgetName);
+    it('should generate consistent ports for the same name', () => {
+      const name = 'test-service';
+      const port1 = generatePortFromName(name);
+      const port2 = generatePortFromName(name);
 
       expect(port1).toBe(port2);
     });
 
-    it('should generate different ports for different widget names', () => {
-      const port1 = generatePortFromName('widget-1');
-      const port2 = generatePortFromName('widget-2');
+    it('should generate different ports for different names', () => {
+      const port1 = generatePortFromName('service-1');
+      const port2 = generatePortFromName('service-2');
 
       expect(port1).not.toBe(port2);
     });
 
     it('should generate ports within the expected range (3000-9999)', () => {
       const testNames = [
-        'test-widget',
-        'another-widget',
-        'very-long-widget-name-with-many-characters',
+        'test-service',
+        'another-service',
+        'very-long-service-name-with-many-characters',
         'short',
-        'widget-with-numbers-123',
-        'widget-with-special-chars-!@#',
+        'service-with-numbers-123',
+        'service-with-special-chars-!@#',
       ];
 
       testNames.forEach((name) => {
@@ -35,18 +35,18 @@ describe('generatePortFromName', () => {
     });
 
     it('should generate integer ports', () => {
-      const port = generatePortFromName('test-widget');
+      const port = generatePortFromName('test-service');
       expect(Number.isInteger(port)).toBe(true);
     });
 
-    it('should handle widget names with various characters', () => {
+    it('should handle names with various characters', () => {
       const specialNames = [
-        'widget-with-dashes',
-        'widget_with_underscores',
-        'WidgetWithCamelCase',
-        'widget.with.dots',
-        'widget123with456numbers',
-        'widget with spaces',
+        'service-with-dashes',
+        'service_with_underscores',
+        'ServiceWithCamelCase',
+        'service.with.dots',
+        'service123with456numbers',
+        'service with spaces',
       ];
 
       specialNames.forEach((name) => {
@@ -61,52 +61,52 @@ describe('generatePortFromName', () => {
   describe('invalid inputs', () => {
     it('should throw error for empty string', () => {
       expect(() => generatePortFromName('')).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
     });
 
     it('should throw error for whitespace-only string', () => {
       expect(() => generatePortFromName('   ')).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
     });
 
     it('should throw error for null input', () => {
       expect(() => generatePortFromName(null as any)).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
     });
 
     it('should throw error for undefined input', () => {
       expect(() => generatePortFromName(undefined as any)).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
     });
 
     it('should throw error for non-string input', () => {
       expect(() => generatePortFromName(123 as any)).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
       expect(() => generatePortFromName({} as any)).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
       expect(() => generatePortFromName([] as any)).toThrow(
-        'Widget name must be a non-empty string',
+        'port generator: name must be specified!',
       );
     });
   });
 
   describe('real-world examples', () => {
-    it('should generate expected ports for actual widget names', () => {
-      // Test with actual widget names from the codebase
-      const actualWidgets = [
-        'outbound-applications-portal-widget',
-        'outbound-applications-portal-widget-components',
-        'user-management-widget',
-        'access-key-management-widget',
+    it('should generate expected ports for actual service names', () => {
+      // Test with actual service names from the codebase
+      const actualServices = [
+        'outbound-applications-portal-service',
+        'outbound-applications-portal-service-components',
+        'user-management-service',
+        'access-key-management-service',
       ];
 
-      const ports = actualWidgets.map((name) => generatePortFromName(name));
+      const ports = actualServices.map((name) => generatePortFromName(name));
 
       // All ports should be unique
       const uniquePorts = new Set(ports);
