@@ -325,6 +325,83 @@ describe('web-component', () => {
     );
   });
 
+  it('should restore loading and disable state on pageshow', async () => {
+    jest.useRealTimers();
+
+    startMock.mockReturnValue(generateSdkResponse());
+
+    pageContent = `
+      <span>Test Page</span>
+      <descope-button id="submit">Submit</descope-button>
+      <descope-button id="another">Another Button</descope-button>
+      <input id="input" placeholder="Input"/>
+      `;
+    document.body.innerHTML = `<descope-wc flow-id="test-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Test Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('Submit'));
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Submit')).toHaveAttribute(
+          'loading',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Another Button')).toHaveAttribute(
+          'disabled',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowPlaceholderText('Input')).toHaveAttribute(
+          'disabled',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    fireEvent.pageShow(window, { persisted: true });
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Submit')).not.toHaveAttribute('loading');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Another Button')).not.toHaveAttribute(
+          'disabled',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowPlaceholderText('Input')).not.toHaveAttribute(
+          'disabled',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+  }, 10000);
+
   it('should restore states when staying on the same screen', async () => {
     startMock.mockReturnValue(generateSdkResponse());
     nextMock.mockReturnValue(generateSdkResponse());

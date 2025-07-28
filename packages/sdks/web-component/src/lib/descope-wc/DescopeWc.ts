@@ -1575,6 +1575,7 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
+  #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
   #handleComponentsLoadingState(submitter: HTMLElement) {
     const enabledElements = Array.from(
       this.contentRootElement.querySelectorAll(
@@ -1583,15 +1584,36 @@ class DescopeWc extends BaseDescopeWc {
     ).filter((ele) => ele !== submitter);
 
     const handleScreenIdUpdates = () => {
+      const restoreComponentsState = () => {
+        submitter.removeAttribute('loading');
+        enabledElements.forEach((ele) => {
+          ele.removeAttribute('disabled');
+        });
+      };
+
+      // we want to remove the previous pageshow listener to avoid multiple listeners
+      window.removeEventListener('pageshow', this.#prevPageShowListener);
+
+      this.#prevPageShowListener = (e) => {
+        if (e.persisted) {
+          this.logger.debug(
+            'Page was loaded from cache, restoring components state',
+          );
+          restoreComponentsState();
+        }
+      };
+      // we want to restore the components state when the page is shown from cache
+      window.addEventListener('pageshow', this.#prevPageShowListener, {
+        once: true,
+      });
+
+      // we want to restore the components state when the screenId is updated
       const unsubscribeScreenIdUpdates = this.stepState?.subscribe(
         (screenId, prevScreenId) => {
           // we want to restore components state only if we stay on the same screen
           // if we are rendering a new screen, the components state (disabled/loading) will remain until the new screen is rendered
           if (screenId === prevScreenId) {
-            submitter.removeAttribute('loading');
-            enabledElements.forEach((ele) => {
-              ele.removeAttribute('disabled');
-            });
+            restoreComponentsState();
           }
           this.stepState.unsubscribe(unsubscribeScreenIdUpdates);
         },
