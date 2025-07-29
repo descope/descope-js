@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.33...applications-portal-widget-0.4.0) (2025-07-29)
+
+
+### Features
+
+* APW - OIDC apps ([#1169](https://github.com/descope/descope-js/issues/1169)) ([d3f2ea3](https://github.com/descope/descope-js/commit/d3f2ea36e6f9dd60a93c7591d8d8564e8df78efe))
+
 ## [0.3.33](https://github.com/descope/descope-js/compare/applications-portal-widget-0.3.32...applications-portal-widget-0.3.33) (2025-07-22)
 
 ### Dependency Updates
