@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.44.1](https://github.com/descope/descope-js/compare/web-component-3.44.0...web-component-3.44.1) (2025-07-27)
+
+
+### Bug Fixes
+
+* restore components state when page is shown from cache RELEASE ([#1168](https://github.com/descope/descope-js/issues/1168)) ([1d49e62](https://github.com/descope/descope-js/commit/1d49e629e23b274ea47f6192c64a19fc47f960de))
+
 ## [3.44.0](https://github.com/descope/descope-js/compare/web-component-3.43.20...web-component-3.44.0) (2025-07-22)
 
 ### Dependency Updates
