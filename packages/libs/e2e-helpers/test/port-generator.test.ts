@@ -1,5 +1,8 @@
 import { generatePortFromName } from '../src/port-generator';
 
+const PORT_MIN = 3000;
+const PORT_MAX = 65000;
+
 describe('generatePortFromName', () => {
   describe('valid inputs', () => {
     it('should generate consistent ports for the same name', () => {
@@ -17,7 +20,7 @@ describe('generatePortFromName', () => {
       expect(port1).not.toBe(port2);
     });
 
-    it('should generate ports within the expected range (3000-9999)', () => {
+    it(`should generate ports within the expected range (${PORT_MIN}-${PORT_MAX})`, () => {
       const testNames = [
         'test-service',
         'another-service',
@@ -29,8 +32,8 @@ describe('generatePortFromName', () => {
 
       testNames.forEach((name) => {
         const port = generatePortFromName(name);
-        expect(port).toBeGreaterThanOrEqual(3000);
-        expect(port).toBeLessThanOrEqual(9999);
+        expect(port).toBeGreaterThanOrEqual(PORT_MIN);
+        expect(port).toBeLessThanOrEqual(PORT_MAX);
       });
     });
 
@@ -52,8 +55,8 @@ describe('generatePortFromName', () => {
       specialNames.forEach((name) => {
         expect(() => generatePortFromName(name)).not.toThrow();
         const port = generatePortFromName(name);
-        expect(port).toBeGreaterThanOrEqual(3000);
-        expect(port).toBeLessThanOrEqual(9999);
+        expect(port).toBeGreaterThanOrEqual(PORT_MIN);
+        expect(port).toBeLessThanOrEqual(PORT_MAX);
       });
     });
   });
@@ -114,8 +117,8 @@ describe('generatePortFromName', () => {
 
       // All ports should be in valid range
       ports.forEach((port) => {
-        expect(port).toBeGreaterThanOrEqual(3000);
-        expect(port).toBeLessThanOrEqual(9999);
+        expect(port).toBeGreaterThanOrEqual(PORT_MIN);
+        expect(port).toBeLessThanOrEqual(PORT_MAX);
       });
     });
   });
