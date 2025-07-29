@@ -1,7 +1,7 @@
 {
-  "name": "outbound-applications-portal-widget",
+  "name": "outbound-applications-widget",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/widgets/outbound-applications-portal-widget/src",
+  "sourceRoot": "packages/widgets/outbound-applications-widget/src",
   "projectType": "library",
   "targets": {
     "version": {

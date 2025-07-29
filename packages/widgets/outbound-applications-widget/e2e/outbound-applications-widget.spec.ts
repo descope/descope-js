@@ -95,7 +95,7 @@ test.describe('widget', () => {
 
     await page.evaluate((app) => {
       const widget = document.querySelector(
-        'descope-outbound-applications-portal-widget',
+        'descope-outbound-applications-widget',
       );
       widget?.setAttribute('allowed-outbound-apps-ids', app.id);
     }, allowedApp);

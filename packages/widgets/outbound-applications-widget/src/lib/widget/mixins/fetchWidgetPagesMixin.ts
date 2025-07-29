@@ -4,7 +4,7 @@ import {
   staticResourcesMixin,
 } from '@descope/sdk-mixins';
 
-const WIDGET_PAGES_BASE_DIR = 'outbound-applications-portal-widget';
+const WIDGET_PAGES_BASE_DIR = 'outbound-applications-widget';
 
 export const fetchWidgetPagesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {

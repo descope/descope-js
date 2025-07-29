@@ -1,4 +1,4 @@
-# @descope/outbound-applications-portal-widget
+# @descope/outbound-applications-widget
 
 ## Setup
 
@@ -9,7 +9,7 @@ In the widget package create an `.env` file which includes;
 ```
 DESCOPE_BASE_URL=   # env base url
 DESCOPE_PROJECT_ID= # project ID
-DESCOPE_WIDGET_ID=  # default: outbound-applications-portal-widget
+DESCOPE_WIDGET_ID=  # default: outbound-applications-widget
 DEBUG_MODE=         # "true" / "false", default: "false"
 DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 ```
@@ -17,22 +17,22 @@ DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 ### Example
 
 ```
-// replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/outbound-applications-portal-widget
-<script src="https://descopecdn.com/npm/@descope/outbound-applications-portal-widget@x.x.x/dist/index.js"></script>
-<descope-outbound-applications-portal-widget
+// replace x.x.x with the latest release of the widget: https://www.npmjs.com/package/@descope/outbound-applications-widget
+<script src="https://descopecdn.com/npm/@descope/outbound-applications-widget@x.x.x/dist/index.js"></script>
+<descope-outbound-applications-widget
   base-url="<DESCOPE_BASE_URL>"
   project-id="<DESCOPE_PROJECT_ID>"
   tenant="<DESCOPE_TENANT>"
   debug="<DEBUG_MODE>"
   theme="<DESCOPE_THEME>"
   widget-id="<DESCOPE_WIDGET_ID>"
-></descope-outbound-applications-portal-widget>
+></descope-outbound-applications-widget>
 
 <script>
   function onLogout(error) {
     window.location.reload();
   }
-  const descopeWidgetEle = document.getElementsByTagName('descope-outbound-applications-portal-widget')[0];
+  const descopeWidgetEle = document.getElementsByTagName('descope-outbound-applications-widget')[0];
   descopeWidgetEle.logout = onLogout;
 </script>
 ```

@@ -1,5 +1,5 @@
 {
-  "name": "@descope/outbound-applications-portal-widget",
+  "name": "@descope/outbound-applications-widget",
   "version": "0.3.30",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
@@ -12,7 +12,7 @@
   "types": "dist/index.d.ts",
   "description": "Descope applications portal widget",
   "scripts": {
-    "start": "npx nx run outbound-applications-portal-widget:build && rollup -c rollup.config.app.serve.mjs -w",
+    "start": "npx nx run outbound-applications-widget:build && rollup -c rollup.config.app.serve.mjs -w",
     "build:app": "rollup -c rollup.config.app.mjs",
     "build": "rollup -c",
     "test": "npm run test:unit",

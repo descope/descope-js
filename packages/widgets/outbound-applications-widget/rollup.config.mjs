@@ -23,7 +23,7 @@ export default [
       dir: 'dist',
       format: 'iife',
       sourcemap: true,
-      name: 'descope-outbound-applications-portal-widget',
+      name: 'descope-outbound-applications-widget',
       extend: true,
       inlineDynamicImports: true,
     },

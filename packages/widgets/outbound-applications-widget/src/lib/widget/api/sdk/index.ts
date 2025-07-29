@@ -13,7 +13,7 @@ export const createSdk = (
     ...config,
     persistTokens: true,
     baseHeaders: {
-      'x-descope-widget-type': 'outbound-applications-portal-widget',
+      'x-descope-widget-type': 'outbound-applications-widget',
       'x-descope-widget-id': widgetId,
       'x-descope-widget-version': BUILD_VERSION,
     },
