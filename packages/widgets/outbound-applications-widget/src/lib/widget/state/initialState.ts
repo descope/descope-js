@@ -12,7 +12,7 @@ export const initialState: State = {
     error: null,
   },
   allowedAppsIds: {
-    data: [],
+    data: undefined,
   },
   me: {
     loading: false,

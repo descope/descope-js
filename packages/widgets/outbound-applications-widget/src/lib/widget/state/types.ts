@@ -14,7 +14,7 @@ export type State = {
     error: unknown;
   };
   allowedAppsIds: {
-    data: string[];
+    data: string[] | undefined;
   };
   me: {
     loading: boolean;

@@ -54,7 +54,12 @@ export const initWidgetRootMixin = createSingletonMixin(
       }
 
       get #allowedIds() {
-        const ids = this.getAttribute('allowed-outbound-apps-ids') || '';
+        const hasAttr = this.hasAttribute('allowed-outbound-apps-ids');
+        if (!hasAttr) return undefined;
+
+        const ids = this.getAttribute('allowed-outbound-apps-ids');
+        if (hasAttr && !ids) return [];
+
         return ids
           .split(',')
           .map((s) => s.trim())

@@ -7,10 +7,7 @@ import { buildAsyncReducer } from './helpers';
 const action = createAsyncThunk<string[], string[], ThunkConfigExtraApi>(
   'allowedAppsIds/set',
   async (ids) => {
-    if (!ids.length) {
-      return [];
-    }
-
+    if (!ids.length) return [];
     return ids;
   },
 );
