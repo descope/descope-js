@@ -20,6 +20,7 @@ export const getAppsList = createSelector(
         const isConnected = connectedIds.includes(app.id);
         return {
           ...app,
+          appId: app.id,
           isConnected,
         };
       }),

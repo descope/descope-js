@@ -8,7 +8,6 @@ import {
 import {
   getAllOutboundApps,
   getConnectedOutboundApps,
-  setAllowedAppsIds,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -20,18 +19,20 @@ export const stateManagementMixin = createSingletonMixin(
       createStateManagementMixin({
         name: 'widget',
         initialState,
-        reducers: {},
+        reducers: {
+          setAllowedAppsIds: (state, { payload }) => {
+            state.allowedAppsIds.data = payload;
+          },
+        },
         extraReducers: (builder) => {
           getMe.reducer(builder);
           getConnectedOutboundApps.reducer(builder);
           getAllOutboundApps.reducer(builder);
-          setAllowedAppsIds.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
           getOutboundApps: getAllOutboundApps.action,
           getConnectedOutboundApps: getConnectedOutboundApps.action,
-          setAllowedAppsIds: setAllowedAppsIds.action,
         },
       }),
       initLifecycleMixin,
