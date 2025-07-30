@@ -2428,6 +2428,9 @@ importers:
       '@descope/sdk-mixins':
         specifier: workspace:*
         version: link:../../libs/sdk-mixins
+      '@descope/web-component':
+        specifier: workspace:*
+        version: link:../../sdks/web-component
       '@descope/web-js-sdk':
         specifier: workspace:*
         version: link:../../sdks/web-js-sdk
