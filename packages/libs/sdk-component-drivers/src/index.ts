@@ -15,3 +15,4 @@ export * from './UserAuthMethodDriver';
 export * from './FlowDriver';
 export * from './AppsListDriver';
 export * from './FlowButtonDriver';
+export * from './GenericFlowButtonDriver';

@@ -1,5 +1,5 @@
 import {
-  FlowButtonDriver,
+  GenericFlowButtonDriver,
   FlowDriver,
   ModalDriver,
 } from '@descope/sdk-component-drivers';
@@ -13,7 +13,11 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { createFlowTemplate } from '../../../../helpers';
-import { getSelectedUsersLoginIds } from '../../../state/selectors';
+import {
+  getEnableOneOrMore,
+  getEnableOnlyOne,
+  getSelectedUsersLoginIds,
+} from '../../../state/selectors';
 
 export const initGenericFlowButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -25,15 +29,12 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       formMixin,
       initWidgetRootMixin,
     )(superclass) {
-      // nameUserAttr: UserAttributeDriver;
-
       #modal: ModalDriver;
-
       #flow: FlowDriver;
-      flowButton: FlowButtonDriver;
+      flowButton: GenericFlowButtonDriver;
 
       #initFlowButton() {
-        this.flowButton = new FlowButtonDriver(
+        this.flowButton = new GenericFlowButtonDriver(
           this.shadowRoot?.querySelector('[data-id="generic-flow-button"]'),
           { logger: this.logger },
         );
@@ -41,6 +42,10 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           this.#initModalContent();
           this.#modal.open();
         });
+        this.#onIsUserSelectedUpdate(
+          getEnableOneOrMore(this.state),
+          getEnableOnlyOne(this.state),
+        );
       }
       #initModal() {
         this.#modal = this.createModal({ 'data-id': 'generic-flow-modal' });
@@ -63,6 +68,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            enableMode: this.flowButton.enableMode,
             form: JSON.stringify({
               users: getSelectedUsersLoginIds(this.state),
             }),
@@ -74,22 +80,49 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         });
       }
 
-      // #onIsUserSelectedUpdate = withMemCache(
-      //   (isEnabled: ReturnType<typeof getCanDelete>) => {
-      //     if (isEnabled) {
-      //       this.flowButton.enable();
-      //     } else {
-      //       this.flowButton.disable();
-      //     }
-      //   },
-      // );
+      #onIsUserSelectedUpdate = withMemCache(
+        (
+          isEnableOneOrMore: ReturnType<typeof getEnableOneOrMore>,
+          isEnableOnlyOne: ReturnType<typeof getEnableOnlyOne>,
+        ) => {
+          switch (this.flowButton.enableMode) {
+            case 'oneOrMore':
+              if (isEnableOneOrMore) {
+                this.flowButton.enable();
+              } else {
+                this.flowButton.disable();
+              }
+              break;
+            case 'onlyOne':
+              if (isEnableOnlyOne) {
+                this.flowButton.enable();
+              } else {
+                this.flowButton.disable();
+              }
+              break;
+            case 'always':
+              this.flowButton.enable();
+              break;
+            default:
+              this.flowButton.disable();
+              break;
+          }
+        },
+      );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
         this.#initModal();
         this.#initFlowButton();
-        // this.subscribe(this.#onIsUserSelectedUpdate.bind(this), getCanDelete);
+        this.subscribe(
+          () =>
+            this.#onIsUserSelectedUpdate(
+              getEnableOneOrMore(this.state),
+              getEnableOnlyOne(this.state),
+            ),
+          (state) => [getEnableOneOrMore(state), getEnableOnlyOne(state)],
+        );
       }
     },
 );
