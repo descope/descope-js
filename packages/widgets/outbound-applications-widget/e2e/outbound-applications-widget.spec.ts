@@ -90,95 +90,119 @@ test.describe('widget', () => {
     }
   });
 
-  test('filter allowed apps by id', async ({ page }) => {
-    const allowedApp = mockOutboundApps.apps[0];
+  test.describe('controls', () => {
+    test('app connect', async ({ page }) => {
+      const connectBtn = page
+        .locator('descope-list-item')
+        .nth(1)
+        .getByText('Connect');
+      await connectBtn.click();
 
-    await page.evaluate((app) => {
-      const widget = document.querySelector(
-        'descope-outbound-applications-widget',
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await page.route(
+        apiPath('outboundApps', 'connectedOutboundApps') +
+          `?userId=${mockUser.userId}`,
+        async (route) =>
+          route.fulfill({
+            json: { appIds: ['obapp1', 'obapp2'] },
+          }),
       );
-      widget?.setAttribute('allowed-outbound-apps-ids', app.id);
-    }, allowedApp);
 
-    await page.waitForTimeout(STATE_TIMEOUT);
+      const finishFlowBtn = page
+        .locator('descope-modal[data-id="outbound-apps-connect"]')
+        .locator('button', { hasText: 'Finish Flow' });
 
-    // Validate first app is visible
-    await expect(page.locator(`text=${allowedApp.name}`).first()).toBeVisible();
-    await expect(
-      page.locator(`text=${allowedApp.description}`).first(),
-    ).toBeVisible();
+      finishFlowBtn.click();
 
-    // Validate all other apps are not visible
-    for (let i = 1; i < mockOutboundApps.apps.length; i++) {
-      const app = mockOutboundApps.apps[i];
-      await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
-      await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
-    }
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const disconnectBtn = page
+        .locator('descope-list-item')
+        .nth(1)
+        .getByText('Disconnect');
+      expect(disconnectBtn).toBeVisible();
+    });
+
+    test('app disconnect', async ({ page }) => {
+      const disconnectBtn = page
+        .locator('descope-list-item')
+        .first()
+        .getByText('Disconnect');
+      await disconnectBtn.click();
+
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await page.route(
+        apiPath('outboundApps', 'connectedOutboundApps') +
+          `?userId=${mockUser.userId}`,
+        async (route) =>
+          route.fulfill({
+            json: { appIds: [] },
+          }),
+      );
+
+      const finishFlowBtn = page
+        .locator('descope-modal[data-id="outbound-apps-disconnect"]')
+        .locator('button', { hasText: 'Finish Flow' });
+
+      finishFlowBtn.click();
+
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const connectBtn = page
+        .locator('descope-list-item')
+        .first()
+        .getByText('Connect');
+      expect(connectBtn).toBeVisible();
+    });
   });
 
-  test('app connect', async ({ page }) => {
-    const connectBtn = page
-      .locator('descope-list-item')
-      .nth(1)
-      .getByText('Connect');
-    await connectBtn.click();
+  test.describe('filter allowed apps', () => {
+    test('filter by id', async ({ page }) => {
+      const allowedApp = mockOutboundApps.apps[0];
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+      await page.evaluate((app) => {
+        const widget = document.querySelector(
+          'descope-outbound-applications-widget',
+        );
+        widget?.setAttribute('allowed-outbound-apps-ids', app.id);
+      }, allowedApp);
 
-    await page.route(
-      apiPath('outboundApps', 'connectedOutboundApps') +
-        `?userId=${mockUser.userId}`,
-      async (route) =>
-        route.fulfill({
-          json: { appIds: ['obapp1', 'obapp2'] },
-        }),
-    );
+      await page.waitForTimeout(STATE_TIMEOUT);
 
-    const finishFlowBtn = page
-      .locator('descope-modal[data-id="outbound-apps-connect"]')
-      .locator('button', { hasText: 'Finish Flow' });
+      // Validate first app is visible
+      await expect(
+        page.locator(`text=${allowedApp.name}`).first(),
+      ).toBeVisible();
+      await expect(
+        page.locator(`text=${allowedApp.description}`).first(),
+      ).toBeVisible();
 
-    finishFlowBtn.click();
+      // Validate all other apps are not visible
+      for (let i = 1; i < mockOutboundApps.apps.length; i++) {
+        const app = mockOutboundApps.apps[i];
+        await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
+        await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
+      }
+    });
 
-    await page.waitForTimeout(STATE_TIMEOUT);
+    test('empty value filters all apps', async ({ page }) => {
+      await page.evaluate(() => {
+        const widget = document.querySelector(
+          'descope-outbound-applications-widget',
+        );
+        widget?.setAttribute('allowed-outbound-apps-ids', '');
+      });
 
-    const disconnectBtn = page
-      .locator('descope-list-item')
-      .nth(1)
-      .getByText('Disconnect');
-    expect(disconnectBtn).toBeVisible();
-  });
+      await page.waitForTimeout(STATE_TIMEOUT);
 
-  test('app disconnect', async ({ page }) => {
-    const disconnectBtn = page
-      .locator('descope-list-item')
-      .first()
-      .getByText('Disconnect');
-    await disconnectBtn.click();
-
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
-    await page.route(
-      apiPath('outboundApps', 'connectedOutboundApps') +
-        `?userId=${mockUser.userId}`,
-      async (route) =>
-        route.fulfill({
-          json: { appIds: [] },
-        }),
-    );
-
-    const finishFlowBtn = page
-      .locator('descope-modal[data-id="outbound-apps-disconnect"]')
-      .locator('button', { hasText: 'Finish Flow' });
-
-    finishFlowBtn.click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const connectBtn = page
-      .locator('descope-list-item')
-      .first()
-      .getByText('Connect');
-    expect(connectBtn).toBeVisible();
+      // Validate all apps are not visible
+      for (let i = 0; i < mockOutboundApps.apps.length; i++) {
+        const app = mockOutboundApps.apps[i];
+        await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
+        await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
+      }
+    });
   });
 });
