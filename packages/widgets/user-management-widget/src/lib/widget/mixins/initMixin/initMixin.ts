@@ -10,13 +10,16 @@ import { initNotificationsMixin } from './initComponentsMixins/initNotifications
 import { initRemovePasskeyButtonMixin } from './initComponentsMixins/initRemovePasskeyButtonMixin';
 import { initUsersTableMixin } from './initComponentsMixins/initUsersTableMixin';
 import { initResetPasswordButtonMixin } from './initComponentsMixins/initResetPasswordButtonMixin';
+import { initGenericFlowButtonMixin } from './initComponentsMixins/initGenericFlowButtonMixin';
+import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
 
 export const initMixin = createSingletonMixin(
-  <T extends CustomElementConstructor>(superclass: T) =>
-    /* @ts-ignore */
-    class InitMixinClass extends compose(
+  <T extends CustomElementConstructor>(superclass: T) => {
+    // Compose only up to 13 mixins, so we split into two compose calls
+    const BaseClass = compose(
       debuggerMixin,
       themeMixin,
+      flowRedirectUrlMixin, // This mixin must be before all other mixins that loads flows
       initUsersTableMixin,
       initCreateUserButtonMixin,
       initDeleteUsersButtonMixin,
@@ -26,10 +29,17 @@ export const initMixin = createSingletonMixin(
       initResetPasswordButtonMixin,
       initRemovePasskeyButtonMixin,
       initFilterUsersInputMixin,
+    )(superclass);
+
+    const FinalClass = compose(
       initNotificationsMixin,
-    )(superclass) {
+      initGenericFlowButtonMixin,
+    )(BaseClass);
+
+    return class InitMixinClass extends FinalClass {
       async init() {
         await super.init?.();
       }
-    },
+    };
+  },
 );
