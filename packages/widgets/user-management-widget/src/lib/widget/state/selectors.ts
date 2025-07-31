@@ -146,3 +146,6 @@ export const getCanResetPassword = createSelector(
 );
 
 export const getCanDelete = getIsUsersSelected;
+
+export const getEnableOneOrMore = getIsUsersSelected;
+export const getEnableOnlyOne = getIsSingleUsersSelected;
