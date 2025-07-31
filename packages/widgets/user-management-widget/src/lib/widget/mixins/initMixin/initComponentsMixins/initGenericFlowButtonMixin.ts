@@ -38,6 +38,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           this.shadowRoot?.querySelector('[data-id="generic-flow-button"]'),
           { logger: this.logger },
         );
+        this.flowButton.disable();
         this.flowButton.onClick(() => {
           this.#initModalContent();
           this.#modal.open();
