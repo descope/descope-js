@@ -27,6 +27,11 @@ export const getTenantEmailDomains = createSelector(
   (tenant) => tenant.selfProvisioningDomains || [],
 );
 
+export const getTenantSSOExclusions = createSelector(
+  getTenant,
+  (tenant) => tenant.enforceSSOExclusions || [],
+);
+
 export const getTenantEnforceSSO = createSelector(
   getTenant,
   (tenant) => tenant.enforceSSO || false,

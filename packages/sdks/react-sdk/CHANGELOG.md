@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.16.2](https://github.com/descope/descope-js/compare/react-sdk-2.16.1...react-sdk-2.16.2) (2025-07-29)
+
+### Dependency Updates
+
+* `applications-portal-widget` updated to version `0.4.0`
 ## [2.16.1](https://github.com/descope/descope-js/compare/react-sdk-2.16.0...react-sdk-2.16.1) (2025-07-27)
 
 ### Dependency Updates

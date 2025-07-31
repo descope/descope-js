@@ -4,6 +4,7 @@ import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
 import { initTenantAdminLinkSSOMixin } from './initComponentsMixins/initTenantAdminLinkSSOMixin';
 import { initTenantCustomAttributesMixin } from './initComponentsMixins/initTenantCustomAttributesMixin';
 import { initTenantEmailDomainsMixin } from './initComponentsMixins/initTenantEmailDomainsMixin';
+import { initTenantSSOExclusionsMixin } from './initComponentsMixins/initTenantSSOExclusionsMixin';
 import { initTenantEnforceSSOMixin } from './initComponentsMixins/initTenantEnforceSSOMixin';
 import { initTenantNameMixin } from './initComponentsMixins/initTenantNameMixin';
 import { initWidgetRootMixin } from './initComponentsMixins/initWidgetRootMixin';
@@ -18,6 +19,7 @@ export const initMixin = createSingletonMixin(
       initWidgetRootMixin,
       initTenantNameMixin,
       initTenantEmailDomainsMixin,
+      initTenantSSOExclusionsMixin,
       initTenantEnforceSSOMixin,
       initTenantCustomAttributesMixin,
       initTenantAdminLinkSSOMixin,
