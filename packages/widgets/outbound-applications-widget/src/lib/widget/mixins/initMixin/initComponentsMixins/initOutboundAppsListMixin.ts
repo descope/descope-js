@@ -64,6 +64,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
         this.syncFlowTheme(this.#connectFlow);
       }
 
+      // eslint-disable-next-line class-methods-use-this
       #onModalNeeded(modal: ModalDriver, sdk: any, callback: () => void) {
         modal.open();
         sdk.removeEventListener('page-updated', callback);
@@ -72,8 +73,9 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       #openModalIfNeeded(modal: ModalDriver, cbRef: () => void | null) {
         const sdk = modal.ele?.querySelector('descope-wc');
         const cb = () => this.#onModalNeeded(modal, sdk, cb);
+        // eslint-disable-next-line no-param-reassign
         cbRef = cb;
-        sdk?.addEventListener('page-updated', cb);
+        sdk?.addEventListener('page-updated', cbRef);
       }
 
       #initDisconnectModal() {
