@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.44.3](https://github.com/descope/descope-js/compare/web-component-3.44.2...web-component-3.44.3) (2025-07-31)
+
+
+### Bug Fixes
+
+* add logs to redirect in popup ([#1174](https://github.com/descope/descope-js/issues/1174)) ([f8b8eb1](https://github.com/descope/descope-js/commit/f8b8eb1b8ebb4ba56b53dd3e3fbf9505994776dd))
+
 ## [3.44.2](https://github.com/descope/descope-js/compare/web-component-3.44.1...web-component-3.44.2) (2025-07-31)
 
 
