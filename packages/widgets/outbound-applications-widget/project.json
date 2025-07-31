@@ -1,0 +1,29 @@
+{
+  "name": "outbound-applications-widget",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/widgets/outbound-applications-widget/src",
+  "projectType": "library",
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": false,
+        "preset": "conventional"
+      }
+    },
+    "licenseCheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
+        ]
+      }
+    },
+    "build:app": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    }
+  },
+  "tags": []
+}
