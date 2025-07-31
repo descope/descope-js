@@ -34,6 +34,10 @@ export const initOutboundAppsListMixin = createSingletonMixin(
 
       #disconnectFlow: FlowDriver;
 
+      #connectModalCallback: (() => void) | null = null;
+
+      #disconnectModalCallback: (() => void) | null = null;
+
       #initConnectModal() {
         if (!this.#obAppsList.connectFlowId) return;
 
@@ -41,15 +45,35 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           'data-id': 'outbound-apps-connect',
         });
 
+        this.#connectModal.afterClose = () => {
+          if (this.#connectModalCallback) {
+            const sdk = this.#connectModal.ele?.querySelector('descope-wc');
+            sdk?.removeEventListener(
+              'page-updated',
+              this.#connectModalCallback,
+            );
+            this.#connectModalCallback = null;
+          }
+        };
+
         this.#connectFlow = new FlowDriver(
           () => this.#connectModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
 
-        this.#connectModal.afterClose =
-          this.#initConnectModalContent.bind(this);
-
         this.syncFlowTheme(this.#connectFlow);
+      }
+
+      #onModalNeeded(modal: ModalDriver, sdk: any, callback: () => void) {
+        modal.open();
+        sdk.removeEventListener('page-updated', callback);
+      }
+
+      #openModalIfNeeded(modal: ModalDriver, cbRef: () => void | null) {
+        const sdk = modal.ele?.querySelector('descope-wc');
+        const cb = () => this.#onModalNeeded(modal, sdk, cb);
+        cbRef = cb;
+        sdk?.addEventListener('page-updated', cb);
       }
 
       #initDisconnectModal() {
@@ -62,8 +86,16 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.#disconnectModal.afterClose =
-          this.#initDisconnectModalContent.bind(this);
+        this.#disconnectModal.afterClose = () => {
+          if (this.#disconnectModalCallback) {
+            const sdk = this.#disconnectModal.ele?.querySelector('descope-wc');
+            sdk?.removeEventListener(
+              'page-updated',
+              this.#disconnectModalCallback,
+            );
+            this.#disconnectModalCallback = null;
+          }
+        };
 
         this.syncFlowTheme(this.#disconnectFlow);
       }
@@ -78,9 +110,12 @@ export const initOutboundAppsListMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
-            form: `{ "outboundappid": "${appId}" }`,
+            outboundAppId: appId,
           }),
         );
+
+        this.#openModalIfNeeded(this.#connectModal, this.#connectModalCallback);
+
         this.#connectFlow.onSuccess(() => {
           this.#connectModal.close();
           this.actions.getConnectedOutboundApps({
@@ -102,6 +137,12 @@ export const initOutboundAppsListMixin = createSingletonMixin(
             outboundAppId: appId,
           }),
         );
+
+        this.#openModalIfNeeded(
+          this.#disconnectModal,
+          this.#disconnectModalCallback,
+        );
+
         this.#disconnectFlow.onSuccess(() => {
           this.#disconnectModal.close();
           this.actions.getConnectedOutboundApps({
@@ -118,12 +159,10 @@ export const initOutboundAppsListMixin = createSingletonMixin(
 
         this.#obAppsList.onConnectClick(({ id }) => {
           this.#initConnectModalContent(id);
-          this.#connectModal?.open();
         });
 
         this.#obAppsList.onDisconnectClick(({ id }) => {
           this.#initDisconnectModalContent(id);
-          this.#disconnectModal?.open();
         });
 
         this.#obAppsList.data = appsList;

@@ -29,18 +29,7 @@ test.describe('widget', () => {
       window.localStorage.setItem(
         'base.ui.components.url',
         `http://localhost:${port}/umd/index.js`,
-      ),
-        window.customElements.define(
-          'descope-wc',
-          class extends HTMLElement {
-            connectedCallback() {
-              this.innerHTML = '<button>Finish Flow</button>';
-              this.querySelector('button').onclick = () => {
-                this.dispatchEvent(new CustomEvent('success'));
-              };
-            }
-          },
-        );
+      );
     }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
@@ -90,74 +79,6 @@ test.describe('widget', () => {
     }
   });
 
-  test.describe('controls', () => {
-    test('app connect', async ({ page }) => {
-      const connectBtn = page
-        .locator('descope-list-item')
-        .nth(1)
-        .getByText('Connect');
-      await connectBtn.click();
-
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
-      await page.route(
-        apiPath('outboundApps', 'connectedOutboundApps') +
-          `?userId=${mockUser.userId}`,
-        async (route) =>
-          route.fulfill({
-            json: { appIds: ['obapp1', 'obapp2'] },
-          }),
-      );
-
-      const finishFlowBtn = page
-        .locator('descope-modal[data-id="outbound-apps-connect"]')
-        .locator('button', { hasText: 'Finish Flow' });
-
-      finishFlowBtn.click();
-
-      await page.waitForTimeout(STATE_TIMEOUT);
-
-      const disconnectBtn = page
-        .locator('descope-list-item')
-        .nth(1)
-        .getByText('Disconnect');
-      expect(disconnectBtn).toBeVisible();
-    });
-
-    test('app disconnect', async ({ page }) => {
-      const disconnectBtn = page
-        .locator('descope-list-item')
-        .first()
-        .getByText('Disconnect');
-      await disconnectBtn.click();
-
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
-      await page.route(
-        apiPath('outboundApps', 'connectedOutboundApps') +
-          `?userId=${mockUser.userId}`,
-        async (route) =>
-          route.fulfill({
-            json: { appIds: [] },
-          }),
-      );
-
-      const finishFlowBtn = page
-        .locator('descope-modal[data-id="outbound-apps-disconnect"]')
-        .locator('button', { hasText: 'Finish Flow' });
-
-      finishFlowBtn.click();
-
-      await page.waitForTimeout(STATE_TIMEOUT);
-
-      const connectBtn = page
-        .locator('descope-list-item')
-        .first()
-        .getByText('Connect');
-      expect(connectBtn).toBeVisible();
-    });
-  });
-
   test.describe('filter allowed apps', () => {
     test('filter by id', async ({ page }) => {
       const allowedApp = mockOutboundApps.apps[0];
@@ -203,6 +124,111 @@ test.describe('widget', () => {
         await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
         await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
       }
+    });
+  });
+
+  test.describe('widget flows', () => {
+    test.describe('app disconnect', () => {
+      test.beforeEach(async ({ page }) => {
+        await page.addInitScript((port) => {
+          window.customElements.define(
+            'descope-wc',
+            class extends HTMLElement {
+              connectedCallback() {
+                this.innerHTML = '<button>Finish Flow</button>';
+                setTimeout(() => {
+                  this.dispatchEvent(new CustomEvent('page-updated'));
+                });
+                this.querySelector('button').onclick = () => {
+                  this.dispatchEvent(new CustomEvent('success'));
+                };
+              }
+            },
+          );
+        }, componentsPort);
+
+        await page.goto('/');
+      });
+
+      test('run flow with screens and trigger modal', async ({ page }) => {
+        const disconnectBtn = page
+          .locator('descope-button')
+          .filter({ hasText: 'Disconnect' })
+          .getByRole('button');
+        await disconnectBtn.click();
+
+        await page.waitForTimeout(MODAL_TIMEOUT);
+
+        await page.route(
+          apiPath('outboundApps', 'connectedOutboundApps') +
+            `?userId=${mockUser.userId}`,
+          async (route) =>
+            route.fulfill({
+              json: { appIds: [] },
+            }),
+        );
+
+        const finishFlowBtn = page
+          .locator('descope-modal[data-id="outbound-apps-disconnect"]')
+          .locator('button', { hasText: 'Finish Flow' });
+
+        finishFlowBtn.click();
+
+        await page.waitForTimeout(STATE_TIMEOUT);
+
+        const connectBtn = page
+          .locator('descope-list-item')
+          .first()
+          .getByText('Connect');
+
+        expect(connectBtn).toBeVisible();
+      });
+    });
+
+    test.describe('app connect', () => {
+      test.beforeEach(async ({ page }) => {
+        await page.addInitScript((port) => {
+          window.customElements.define(
+            'descope-wc',
+            class extends HTMLElement {
+              connectedCallback() {
+                setTimeout(() => {
+                  this.dispatchEvent(new CustomEvent('success'));
+                }, 1000);
+              }
+            },
+          );
+        }, componentsPort);
+
+        await page.goto('/');
+      });
+
+      test('run headless and not trigger modal', async ({ page }) => {
+        const connectBtn = page
+          .locator('descope-list-item')
+          .nth(1)
+          .getByText('Connect');
+
+        await connectBtn.click();
+
+        await page.route(
+          apiPath('outboundApps', 'connectedOutboundApps') +
+            `?userId=${mockUser.userId}`,
+          async (route) =>
+            route.fulfill({
+              json: { appIds: ['obapp1', 'obapp2'] },
+            }),
+        );
+
+        await page.waitForTimeout(STATE_TIMEOUT);
+
+        const disconnectBtn = page
+          .locator('descope-list-item')
+          .nth(1)
+          .getByText('Disconnect');
+
+        expect(disconnectBtn).toBeVisible();
+      });
     });
   });
 });

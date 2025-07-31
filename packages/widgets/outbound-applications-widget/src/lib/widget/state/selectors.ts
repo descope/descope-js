@@ -23,7 +23,8 @@ export const getAppsList = createSelector(
           appId: app.id,
           isConnected,
         };
-      }),
+      })
+      .sort((a, b) => a.name.localeCompare(b.name)),
 );
 
 export const getMe = (state: State) => state.me.data;
