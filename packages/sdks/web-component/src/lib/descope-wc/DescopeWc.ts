@@ -822,6 +822,7 @@ class DescopeWc extends BaseDescopeWc {
       if (redirectIsPopup) {
         // this width is below the breakpoint of most providers
         openCenteredPopup(redirectTo, '?', 598, 700);
+        const channel = new BroadcastChannel(executionId);
 
         const onPostMessage = (event: MessageEvent) => {
           if (event.origin !== window.location.origin) return;
@@ -838,7 +839,6 @@ class DescopeWc extends BaseDescopeWc {
           }
         };
 
-        const channel = new BroadcastChannel(executionId);
         channel.onmessage = onPostMessage;
       } else {
         this.handleRedirect(redirectTo);
