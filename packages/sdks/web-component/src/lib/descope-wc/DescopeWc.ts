@@ -741,11 +741,14 @@ class DescopeWc extends BaseDescopeWc {
       isChanged('isPopup') &&
       isPopup
     ) {
-      window.opener.postMessage(
-        { action: 'code', data: { code, exchangeError } },
-        window.location.origin,
-      );
+      const channel = new BroadcastChannel(executionId);
+      channel.postMessage({
+        data: { code, exchangeError },
+        action: 'code',
+      });
+      channel.close();
       window.close();
+
       return;
     }
 
@@ -826,7 +829,7 @@ class DescopeWc extends BaseDescopeWc {
           // eslint-disable-next-line @typescript-eslint/no-shadow
           const { action, data } = event.data;
           if (action === 'code') {
-            window.removeEventListener('message', onPostMessage);
+            channel.close();
 
             this.flowState.update({
               code: data.code,
@@ -835,7 +838,8 @@ class DescopeWc extends BaseDescopeWc {
           }
         };
 
-        window.addEventListener('message', onPostMessage);
+        const channel = new BroadcastChannel(executionId);
+        channel.onmessage = onPostMessage;
       } else {
         this.handleRedirect(redirectTo);
       }
