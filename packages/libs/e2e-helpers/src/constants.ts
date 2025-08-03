@@ -9,4 +9,4 @@ export const DEFAULT_CONFIG: Required<Options> = {
 export const WIDGET_TEST_PORTS_ENV_VARS = [
   'PLAYWRIGHT_COMPONENTS_PORT',
   'PLAYWRIGHT_WIDGET_PORT',
-] as const;
+];
