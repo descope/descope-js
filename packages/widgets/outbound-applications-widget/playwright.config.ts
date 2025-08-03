@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { getWidgetTestPorts } from '@descope/e2e-helpers';
 
-export const [componentsPort, widgetPort] = getWidgetTestPorts({ count: 2 });
+export const [componentsPort, widgetPort] = getWidgetTestPorts();
 
 /**
  * Read environment variables from file.
