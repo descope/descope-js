@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { componentsPort } from '../playwright.config';
-
+import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import rootMock from '../test/mocks/rootMock';
@@ -67,7 +66,7 @@ test.describe('widget', () => {
         }),
     );
 
-    await page.goto('/');
+    await page.goto(`http://localhost:${widgetPort}`);
   });
 
   test('apps are in the list', async ({ page }) => {
@@ -130,7 +129,7 @@ test.describe('widget', () => {
   test.describe('widget flows', () => {
     test.describe('app disconnect', () => {
       test.beforeEach(async ({ page }) => {
-        await page.addInitScript((port) => {
+        await page.addInitScript(() => {
           window.customElements.define(
             'descope-wc',
             class extends HTMLElement {
@@ -145,9 +144,9 @@ test.describe('widget', () => {
               }
             },
           );
-        }, componentsPort);
+        });
 
-        await page.goto('/');
+        await page.goto(`http://localhost:${widgetPort}`);
       });
 
       test('run flow with screens and trigger modal', async ({ page }) => {
@@ -187,7 +186,7 @@ test.describe('widget', () => {
 
     test.describe('app connect', () => {
       test.beforeEach(async ({ page }) => {
-        await page.addInitScript((port) => {
+        await page.addInitScript(() => {
           window.customElements.define(
             'descope-wc',
             class extends HTMLElement {
@@ -198,9 +197,9 @@ test.describe('widget', () => {
               }
             },
           );
-        }, componentsPort);
+        });
 
-        await page.goto('/');
+        await page.goto(`http://localhost:${widgetPort}`);
       });
 
       test('run headless and not trigger modal', async ({ page }) => {

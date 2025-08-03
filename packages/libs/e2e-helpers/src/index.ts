@@ -1,1 +1,1 @@
-export { generatePortFromName } from './port-generator';
+export { generatePorts, getWidgetTestPorts } from './port-generator';
