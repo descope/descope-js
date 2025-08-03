@@ -58,7 +58,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5559');
+    await page.goto('http://localhost:5569');
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 

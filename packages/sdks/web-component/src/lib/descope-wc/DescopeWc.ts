@@ -735,16 +735,34 @@ class DescopeWc extends BaseDescopeWc {
       }
     }
 
+    this.loggerWrapper.debug(
+      'Before popup postmessage send',
+      JSON.stringify({
+        isPopup,
+        code,
+        exchangeError,
+        isCodeChanged: isChanged('code'),
+        isExchangeErrorChanged: isChanged('exchangeError'),
+      }),
+    );
     if (
+      isPopup &&
       ((isChanged('code') && code) ||
-        (isChanged('exchangeError') && exchangeError)) &&
-      isChanged('isPopup') &&
-      isPopup
+        (isChanged('exchangeError') && exchangeError))
     ) {
-      window.opener.postMessage(
-        { action: 'code', data: { code, exchangeError } },
-        window.location.origin,
+      this.loggerWrapper.debug('Creating popup channel', executionId);
+      const channel = new BroadcastChannel(executionId);
+      this.loggerWrapper.debug(
+        'Posting message to popup channel',
+        JSON.stringify({ code, exchangeError }),
       );
+      channel.postMessage({
+        data: { code, exchangeError },
+        action: 'code',
+      });
+      this.loggerWrapper.debug('Popup channel message posted, closing channel');
+      channel.close();
+      this.loggerWrapper.debug('Popup channel closed, closing window');
       window.close();
       return;
     }
@@ -816,18 +834,44 @@ class DescopeWc extends BaseDescopeWc {
         });
         return;
       }
+
+      this.loggerWrapper.debug(`Redirect is popup ${redirectIsPopup}`);
       if (redirectIsPopup) {
         // this width is below the breakpoint of most providers
+        this.loggerWrapper.debug('Opening redirect in popup');
         openCenteredPopup(redirectTo, '?', 598, 700);
+        this.loggerWrapper.debug('Opened redirect in popup, creating channel');
+        const channel = new BroadcastChannel(executionId);
 
+        this.loggerWrapper.debug('Listening for postMessage on channel');
         const onPostMessage = (event: MessageEvent) => {
+          this.loggerWrapper.debug(
+            'Received postMessage on channel',
+            JSON.stringify(event),
+          );
+          this.loggerWrapper.debug(
+            'Comparing origins',
+            JSON.stringify({
+              eventOrigin: event.origin,
+              windowLocationOrigin: window.location.origin,
+            }),
+          );
           if (event.origin !== window.location.origin) return;
 
+          this.loggerWrapper.debug(
+            'PostMessage origin matches, processing message',
+          );
           // eslint-disable-next-line @typescript-eslint/no-shadow
           const { action, data } = event.data;
+          this.loggerWrapper.debug(
+            `PostMessage action: ${action}, data: ${JSON.stringify(data)}`,
+          );
           if (action === 'code') {
-            window.removeEventListener('message', onPostMessage);
-
+            this.loggerWrapper.debug('Closing channel');
+            channel.close();
+            this.loggerWrapper.debug(
+              'Updating flow state with code and exchangeError',
+            );
             this.flowState.update({
               code: data.code,
               exchangeError: data.exchangeError,
@@ -835,7 +879,7 @@ class DescopeWc extends BaseDescopeWc {
           }
         };
 
-        window.addEventListener('message', onPostMessage);
+        channel.onmessage = onPostMessage;
       } else {
         this.handleRedirect(redirectTo);
       }
