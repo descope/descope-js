@@ -41,5 +41,5 @@ export const getWidgetTestPorts = (options: Options = {}): number[] => {
     return newPorts;
   }
 
-  return cachedPorts.map((port) => parseInt(port!, 10));
+  return cachedPorts.map((port) => parseInt(port, 10));
 };
