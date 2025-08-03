@@ -1,17 +1,8 @@
 /**
- * Creates a standardized error for port generation issues.
+ * Standardized error for port options validation.
  */
-export const createPortError = (message: string): Error =>
+export const optionsError = (message: string): Error =>
   new Error(`Port Generator: ${message}`);
-
-/**
- * Validates that count is a positive integer.
- */
-export const validatePortCount = (count: number): void => {
-  if (!Number.isInteger(count) || count <= 0) {
-    throw createPortError('Count must be a positive integer');
-  }
-};
 
 /**
  * Validates port generation options.
@@ -21,17 +12,20 @@ export const validatePortOptions = (
   start: number,
   end: number,
 ): void => {
-  validatePortCount(count);
+  if (!Number.isInteger(count) || count <= 0) {
+    throw optionsError('Count must be a positive integer');
+  }
 
   if (start >= end) {
-    throw createPortError(
+    throw optionsError(
       `Start port (${start}) must be less than end port (${end})`,
     );
   }
 
   const rangeSize = end - start + 1;
+
   if (count > rangeSize) {
-    throw createPortError(
+    throw optionsError(
       `Cannot generate ${count} unique ports from range ${start}-${end} (only ${rangeSize} ports available)`,
     );
   }
@@ -39,12 +33,6 @@ export const validatePortOptions = (
 
 /**
  * Recursively generates unique random ports within the specified range.
- *
- * @param needed - Number of ports still needed
- * @param existing - Set of already generated ports
- * @param start - Minimum port number
- * @param rangeSize - Size of the port range
- * @returns Array of unique port numbers
  */
 export const generateUniquePorts = (
   needed: number,
@@ -59,11 +47,10 @@ export const generateUniquePorts = (
   const port = start + Math.floor(Math.random() * rangeSize);
 
   if (existing.has(port)) {
-    // Port collision - try again with recursion
     return generateUniquePorts(needed, existing, start, rangeSize);
   }
 
-  // Add unique port and continue
   existing.add(port);
+
   return generateUniquePorts(needed - 1, existing, start, rangeSize);
 };

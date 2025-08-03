@@ -6,5 +6,7 @@ export const DEFAULT_CONFIG: Required<Options> = {
   end: 30000,
 };
 
-export const ENV_COMPONENTS_PORT = 'PLAYWRIGHT_COMPONENTS_PORT';
-export const ENV_WIDGET_PORT = 'PLAYWRIGHT_WIDGET_PORT';
+export const WIDGET_TEST_PORTS_ENV_VARS = [
+  'PLAYWRIGHT_COMPONENTS_PORT',
+  'PLAYWRIGHT_WIDGET_PORT',
+] as const;
