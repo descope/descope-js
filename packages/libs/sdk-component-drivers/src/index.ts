@@ -7,6 +7,7 @@ export * from './LinkDriver';
 export * from './ModalDriver';
 export * from './MultiSelectDriver';
 export * from './NotificationDriver';
+export * from './OutboundAppsListDriver';
 export * from './SingleSelectDriver';
 export * from './TextDriver';
 export * from './TextFieldDriver';
