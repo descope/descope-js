@@ -31,6 +31,7 @@
   ],
   "devDependencies": {
     "@descope/web-components-ui": "latest",
+    "@descope/e2e-helpers": "workspace:*",
     "@open-wc/rollup-plugin-html": "1.2.5",
     "@playwright/test": "1.47.0",
     "@rollup/plugin-commonjs": "^28.0.0",
