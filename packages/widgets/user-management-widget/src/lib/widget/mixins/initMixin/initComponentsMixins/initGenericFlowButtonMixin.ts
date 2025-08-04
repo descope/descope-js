@@ -16,7 +16,8 @@ import { createFlowTemplate } from '../../../../helpers';
 import {
   getEnableOneOrMore,
   getEnableOnlyOne,
-  getSelectedUsersLoginIds,
+  getSelectedUsersMap,
+  getSelectedUsersUserIds,
 } from '../../../state/selectors';
 
 export const initGenericFlowButtonMixin = createSingletonMixin(
@@ -40,6 +41,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         button.disable();
         button.onClick(() => {
           this.#initModalContent(button.flowId, button.enableMode);
+          // wait here for the flow to be ready
           this.#modal.open();
         });
         this.#onIsUserSelectedUpdate(
@@ -66,7 +68,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#modal.afterClose = this.#initModalContent.bind(this);
         this.syncFlowTheme(this.#flow);
       }
 
@@ -84,8 +85,9 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             enableMode,
-            form: JSON.stringify({
-              users: getSelectedUsersLoginIds(this.state),
+            client: JSON.stringify({
+              userIds: getSelectedUsersUserIds(this.state),
+              loginIds: getSelectedUsersMap(this.state),
             }),
           }),
         );

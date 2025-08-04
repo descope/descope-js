@@ -13,7 +13,7 @@ type FlowConfig = {
   baseCdnUrl?: string;
   refreshCookieName?: string;
   theme?: string;
-  form?: string;
+  client?: string;
   enableMode?: 'oneOrMore' | 'onlyOne' | 'always';
 };
 
