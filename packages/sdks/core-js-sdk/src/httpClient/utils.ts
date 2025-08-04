@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary */
 
-const getSrcArr = (source: HeadersInit) => {
+type SdkHeaders = HeadersInit | Record<string, () => string>;
+
+const getSrcArr = (source: SdkHeaders) => {
   if (Array.isArray(source)) return source;
   if (source instanceof Headers) return Array.from(source.entries());
   if (!source) return [];
@@ -8,18 +10,18 @@ const getSrcArr = (source: HeadersInit) => {
 };
 
 /** Merge the given list of headers into a single Headers object */
-export const mergeHeaders = (...sources: HeadersInit[]) =>
+export const mergeHeaders = (...sources: SdkHeaders[]) =>
   new Headers(
-    sources.reduce((acc: Record<string, string>, source) => {
-      const srcArr = getSrcArr(source);
-      srcArr.reduce((_, [key, value]) => {
-        acc[key] = value;
+    sources.reduce<Record<string, string>>(
+      (acc: Record<string, string>, source) => {
+        getSrcArr(source).forEach(([key, value]) => {
+          acc[key] = typeof value === 'function' ? value() : value;
+        });
 
         return acc;
-      }, acc);
-
-      return acc;
-    }, {}),
+      },
+      {},
+    ),
   );
 
 /** Serialize the body to JSON */

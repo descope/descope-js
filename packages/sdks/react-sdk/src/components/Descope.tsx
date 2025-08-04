@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, {
   lazy,
   Suspense,
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useState,
 } from 'react';
 import { baseHeaders } from '../constants';
@@ -14,13 +16,23 @@ import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
+  const baseDynamicHeaders = { ...baseHeaders };
+
+  const updateDynamicHeader = (key: string, value: string) => {
+    if (value) {
+      baseDynamicHeaders[key] = value;
+    } else {
+      delete baseDynamicHeaders[key];
+    }
+  };
+
   const WebComponent: any =
     customElements?.get('descope-wc') ||
     (await import('@descope/web-component').then((module) => module.default));
 
   WebComponent.sdkConfigOverrides = {
     // Overrides the web-component's base headers to indicate usage via the React SDK
-    baseHeaders,
+    baseHeaders: baseDynamicHeaders,
     // Disables token persistence within the web-component to delegate token management
     // to the global SDK hooks. This ensures token handling aligns with the SDK's configuration,
     // and web-component requests leverage the global SDK's beforeRequest hooks for consistency
@@ -41,9 +53,16 @@ const DescopeWC = lazy(async () => {
 
   return {
     default: withPropsMapping(
-      React.forwardRef<HTMLElement>((props, ref) => (
-	<descope-wc ref={ref} {...props} />
-      )),
+      React.forwardRef<HTMLElement>(
+        ({ 'external-request-id': externalRequestId, ...props }: any, ref) => {
+          // update the dynamic headers with the external request ID if provided
+          useMemo(() => {
+            updateDynamicHeader('x-external-rid', externalRequestId);
+          }, [externalRequestId]);
+
+          return <descope-wc ref={ref} {...props} />;
+        },
+      ),
     ),
   };
 });
@@ -75,6 +94,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       outboundAppId,
       outboundAppScopes,
       children,
+      externalRequestId,
     },
     ref,
   ) => {
@@ -177,6 +197,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               keepLastAuthenticatedUserAfterLogout
             }
             tenant={tenant}
+            externalRequestId={externalRequestId}
             {...{
               // attributes
               'theme.attr': theme,
