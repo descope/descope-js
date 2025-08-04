@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.2.0...tenant-profile-widget-0.2.1) (2025-07-31)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.44.3`
+## [0.2.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.1.1...tenant-profile-widget-0.2.0) (2025-07-31)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.44.2`
+
+### Features
+
+* Support exclusion from sso by login ids ([#1171](https://github.com/descope/descope-js/issues/1171)) ([1cac82c](https://github.com/descope/descope-js/commit/1cac82ccb17d387586076c31128db1a609d0ffac))
+
 ## [0.1.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.1.0...tenant-profile-widget-0.1.1) (2025-07-27)
 
 ### Dependency Updates
