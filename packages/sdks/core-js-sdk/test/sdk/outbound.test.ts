@@ -53,7 +53,7 @@ describe('outbound', () => {
         {
           appId: 'google',
           options: {
-            redirectURL: 'http://new.com/',
+            redirectUrl: 'http://new.com/',
             scopes: '["s1", "s2"]',
           },
         },
