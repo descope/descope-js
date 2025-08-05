@@ -45,7 +45,7 @@ describe('outbound', () => {
     it('should send the redirect url, scopes and token when provided', () => {
       sdk.outbound.connect(
         'google',
-        { redirectURL: 'http://new.com/', scopes: '["s1", "s2"]' },
+        { redirectUrl: 'http://new.com/', scopes: '["s1", "s2"]' },
         'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -53,7 +53,7 @@ describe('outbound', () => {
         {
           appId: 'google',
           options: {
-            redirectURL: 'http://new.com/',
+            redirectUrl: 'http://new.com/',
             scopes: '["s1", "s2"]',
           },
         },
