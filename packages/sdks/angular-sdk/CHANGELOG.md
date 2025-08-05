@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.18.0](https://github.com/descope/descope-js/compare/angular-sdk-0.17.4...angular-sdk-0.18.0) (2025-08-05)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.1`
+* `audit-management-widget` updated to version `0.5.1`
+* `role-management-widget` updated to version `0.4.1`
+* `user-management-widget` updated to version `0.8.1`
+* `user-profile-widget` updated to version `0.6.5`
+* `tenant-profile-widget` updated to version `0.2.2`
+* `applications-portal-widget` updated to version `0.4.1`
+* `web-component` updated to version `3.44.4`
+* `web-js-sdk` updated to version `1.33.6`
+* `core-js-sdk` updated to version `2.44.5`
+
+### Features
+
+* Outbound Apps widget ([#1156](https://github.com/descope/descope-js/issues/1156)) ([173239d](https://github.com/descope/descope-js/commit/173239d5e11803a07b691297474084e10b7eeece))
+
 ## [0.17.4](https://github.com/descope/descope-js/compare/angular-sdk-0.17.3...angular-sdk-0.17.4) (2025-07-31)
 
 ### Dependency Updates
