@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { componentsPort, widgetPort } from '../playwright.config';
 import { mockTenant, mockTenantAdminLinkSSO } from '../test/mocks/mockTenant';
 import mockTheme from '../test/mocks/mockTheme';
 import { mockUser } from '../test/mocks/mockUser';
@@ -16,10 +17,10 @@ const STATE_TIMEOUT = 2000;
 
 test.describe('tenant profile widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
+    await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
-        'http://localhost:8770/umd/index.js',
+        `http://localhost:${port}/umd/index.js`,
       );
 
       window.customElements.define(
@@ -33,7 +34,7 @@ test.describe('tenant profile widget', () => {
           }
         },
       );
-    });
+    }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
       route.fulfill({ json: configContent }),
@@ -73,7 +74,7 @@ test.describe('tenant profile widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5559');
+    await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 

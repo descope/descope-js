@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { componentsPort, widgetPort } from '../playwright.config';
 import {
   mockUsers,
   mockNewUser,
@@ -70,11 +71,13 @@ const getTableHeadCellContentLocatorByIndex = async (
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() =>
-      window.localStorage.setItem(
-        'base.ui.components.url',
-        'http://localhost:8765/umd/index.js',
-      ),
+    await page.addInitScript(
+      (port) =>
+        window.localStorage.setItem(
+          'base.ui.components.url',
+          `http://localhost:${port}/umd/index.js`,
+        ),
+      componentsPort,
     );
 
     await page.route('*/**/config.json', async (route) =>
@@ -162,7 +165,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5555');
+    await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 
