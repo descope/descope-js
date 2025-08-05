@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import rootMock from '../test/mocks/rootMock';
@@ -16,15 +17,20 @@ const apiPath = (prop: 'ssoApps', path: string) =>
   `**/*${apiPaths[prop][path]}`;
 
 const samlApps = mockSsoApps.filter((app) => app.appType === SSOAppType.saml);
+const oidcWithUrlApps = mockSsoApps.filter(
+  (app) =>
+    app.appType === SSOAppType.oidc &&
+    app.oidcSettings?.customIdpInitiatedLoginPageUrl,
+);
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() =>
+    await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
-        'http://localhost:8769/umd/index.js',
-      ),
-    );
+        `http://localhost:${port}/umd/index.js`,
+      );
+    }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
       route.fulfill({ json: configContent }),
@@ -59,11 +65,16 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5560');
+    await page.goto(`http://localhost:${widgetPort}`);
   });
 
   test('saml apps are in the list', async ({ page }) => {
     for (const app of samlApps) {
+      await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
+    }
+  });
+  test('oidc apps with custom URL are in the list', async ({ page }) => {
+    for (const app of oidcWithUrlApps) {
       await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
     }
   });

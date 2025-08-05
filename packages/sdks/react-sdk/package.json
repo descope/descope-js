@@ -1,6 +1,6 @@
 {
   "name": "@descope/react-sdk",
-  "version": "2.14.26",
+  "version": "2.16.4",
   "description": "Descope React SDK",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
@@ -69,7 +69,8 @@
     "@descope/applications-portal-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
-    "@descope/core-js-sdk": "workspace:*"
+    "@descope/core-js-sdk": "workspace:*",
+    "@descope/tenant-profile-widget": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",

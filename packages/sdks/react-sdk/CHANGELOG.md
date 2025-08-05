@@ -2,6 +2,65 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.16.4](https://github.com/descope/descope-js/compare/react-sdk-2.16.3...react-sdk-2.16.4) (2025-07-31)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.6.4`
+* `web-component` updated to version `3.44.3`
+* `tenant-profile-widget` updated to version `0.2.1`
+## [2.16.3](https://github.com/descope/descope-js/compare/react-sdk-2.16.2...react-sdk-2.16.3) (2025-07-31)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.6.3`
+* `web-component` updated to version `3.44.2`
+* `tenant-profile-widget` updated to version `0.2.0`
+## [2.16.2](https://github.com/descope/descope-js/compare/react-sdk-2.16.1...react-sdk-2.16.2) (2025-07-29)
+
+### Dependency Updates
+
+* `applications-portal-widget` updated to version `0.4.0`
+## [2.16.1](https://github.com/descope/descope-js/compare/react-sdk-2.16.0...react-sdk-2.16.1) (2025-07-27)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.6.2`
+* `web-component` updated to version `3.44.1`
+* `tenant-profile-widget` updated to version `0.1.1`
+## [2.16.0](https://github.com/descope/descope-js/compare/react-sdk-2.15.0...react-sdk-2.16.0) (2025-07-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.0`
+* `audit-management-widget` updated to version `0.5.0`
+* `role-management-widget` updated to version `0.4.0`
+* `user-management-widget` updated to version `0.8.0`
+* `user-profile-widget` updated to version `0.6.1`
+* `applications-portal-widget` updated to version `0.3.33`
+* `web-component` updated to version `3.44.0`
+* `tenant-profile-widget` updated to version `0.1.0`
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
+## [2.15.0](https://github.com/descope/descope-js/compare/react-sdk-2.14.26...react-sdk-2.15.0) (2025-07-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.4.32`
+* `audit-management-widget` updated to version `0.4.32`
+* `role-management-widget` updated to version `0.3.33`
+* `user-management-widget` updated to version `0.7.32`
+* `user-profile-widget` updated to version `0.6.0`
+* `applications-portal-widget` updated to version `0.3.32`
+* `web-component` updated to version `3.43.20`
+
+### Features
+
+* add auto refresh config to web-framework sdks ([#1149](https://github.com/descope/descope-js/issues/1149)) ([1ebd85b](https://github.com/descope/descope-js/commit/1ebd85ba14f7558e32876d7f2964bf08ee8c93aa))
+
 ## [2.14.26](https://github.com/descope/descope-js/compare/react-sdk-2.14.25...react-sdk-2.14.26) (2025-07-10)
 
 ### Dependency Updates

@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.44.3](https://github.com/descope/descope-js/compare/web-component-3.44.2...web-component-3.44.3) (2025-07-31)
+
+
+### Bug Fixes
+
+* add logs to redirect in popup ([#1174](https://github.com/descope/descope-js/issues/1174)) ([f8b8eb1](https://github.com/descope/descope-js/commit/f8b8eb1b8ebb4ba56b53dd3e3fbf9505994776dd))
+
+## [3.44.2](https://github.com/descope/descope-js/compare/web-component-3.44.1...web-component-3.44.2) (2025-07-31)
+
+
+### Bug Fixes
+
+* trying to fix issue 11567 RELEASE ([#1173](https://github.com/descope/descope-js/issues/1173)) ([6515f53](https://github.com/descope/descope-js/commit/6515f53abf5a5d51cb7607bda136cdbb19dc349e))
+
+## [3.44.1](https://github.com/descope/descope-js/compare/web-component-3.44.0...web-component-3.44.1) (2025-07-27)
+
+
+### Bug Fixes
+
+* restore components state when page is shown from cache RELEASE ([#1168](https://github.com/descope/descope-js/issues/1168)) ([1d49e62](https://github.com/descope/descope-js/commit/1d49e629e23b274ea47f6192c64a19fc47f960de))
+
+## [3.44.0](https://github.com/descope/descope-js/compare/web-component-3.43.20...web-component-3.44.0) (2025-07-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.8`
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
+## [3.43.20](https://github.com/descope/descope-js/compare/web-component-3.43.19...web-component-3.43.20) (2025-07-21)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.7`
+
+### Bug Fixes
+
+* disable components on submit ([#1160](https://github.com/descope/descope-js/issues/1160)) ([15b95e8](https://github.com/descope/descope-js/commit/15b95e8013b06af5b0526c7577b0f7765ea58078))
+* issue 11209 - stop polling on specific errors ([#1152](https://github.com/descope/descope-js/issues/1152)) ([c701149](https://github.com/descope/descope-js/commit/c701149386bff8c185f6235df16ec57356b8d566))
+
 ## [3.43.19](https://github.com/descope/descope-js/compare/web-component-3.43.18...web-component-3.43.19) (2025-07-10)
 
 ### Dependency Updates

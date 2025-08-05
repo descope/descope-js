@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.6.3...user-profile-widget-0.6.4) (2025-07-31)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.44.3`
+## [0.6.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.6.2...user-profile-widget-0.6.3) (2025-07-31)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.44.2`
+
+### Bug Fixes
+
+* trying to fix issue 11567 RELEASE ([#1173](https://github.com/descope/descope-js/issues/1173)) ([6515f53](https://github.com/descope/descope-js/commit/6515f53abf5a5d51cb7607bda136cdbb19dc349e))
+
+## [0.6.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.6.1...user-profile-widget-0.6.2) (2025-07-27)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.44.1`
+## [0.6.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.6.0...user-profile-widget-0.6.1) (2025-07-22)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.44.0`
+* `sdk-mixins` updated to version `0.13.8`
+* `sdk-component-drivers` updated to version `0.4.0`
+## [0.6.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.3...user-profile-widget-0.6.0) (2025-07-21)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.43.20`
+* `sdk-mixins` updated to version `0.13.7`
+* `sdk-component-drivers` updated to version `0.3.0`
+
+### Features
+
+* support passkey removal ([#1165](https://github.com/descope/descope-js/issues/1165)) ([80f5a70](https://github.com/descope/descope-js/commit/80f5a70ac39889ca9ad7d91a0c68afec0c8320a6))
+
 ## [0.5.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.5.2...user-profile-widget-0.5.3) (2025-07-10)
 
 ### Dependency Updates
