@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import { mockAudit } from '../test/mocks/mockAudit';
@@ -16,12 +17,12 @@ const apiPath = (prop: 'audit' | 'tenant', path: string) =>
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() =>
+    await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
-        'http://localhost:8768/umd/index.js',
-      ),
-    );
+        `http://localhost:${port}/umd/index.js`,
+      );
+    }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
       route.fulfill({ json: configContent }),
@@ -56,7 +57,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5558');
+    await page.goto(`http://localhost:${widgetPort}`);
   });
 
   test('audit table', async ({ page }) => {
