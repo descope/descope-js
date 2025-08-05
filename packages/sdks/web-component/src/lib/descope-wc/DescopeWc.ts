@@ -66,7 +66,7 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
-
+import darwiniumScript from '../darwinium';
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
   errorTransformer:
@@ -249,6 +249,12 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   loadSdkScripts(scripts: ClientScript[]) {
+    scripts = scripts.concat({
+      id: 'darwinium',
+      initArgs: {},
+      resultKey: 'profilingBlobs',
+    });
+
     if (!scripts?.length) {
       return null;
     }
@@ -290,11 +296,17 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        await this.injectNpmLib(
-          '@descope/flow-scripts',
-          '1.0.9', // currently using a fixed version when loading scripts
-          `dist/${script.id}.js`,
-        );
+        try {
+          await this.injectNpmLib(
+            '@descope/flow-scripts',
+            '1.0.9', // currently using a fixed version when loading scripts
+            `dist/${script.id}.js`,
+          );
+        } catch (e) {
+          globalThis.descope = {};
+          //TODO: temp
+        }
+        globalThis.descope['darwinium'] = darwiniumScript;
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
@@ -322,14 +334,14 @@ class DescopeWc extends BaseDescopeWc {
       }),
     );
 
-    const toPromise = new Promise((resolve) => {
+    const timeoutPromise = new Promise((resolve) => {
       setTimeout(() => {
         this.loggerWrapper.warn('SDK scripts loading timeout');
         resolve(true);
-      }, SDK_SCRIPTS_LOAD_TIMEOUT);
+      }, 50000);
     });
 
-    return Promise.race([promises, toPromise]);
+    return Promise.race([promises, timeoutPromise]);
   }
 
   get isDismissScreenErrorOnInput() {
@@ -1747,6 +1759,7 @@ class DescopeWc extends BaseDescopeWc {
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn) => {
+      this.#dispatch('beforesubmit', {});
       if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
