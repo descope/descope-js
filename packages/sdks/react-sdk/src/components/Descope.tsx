@@ -16,13 +16,12 @@ import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
-  const baseDynamicHeaders = { ...baseHeaders };
 
   const updateDynamicHeader = (key: string, value: string) => {
     if (value) {
-      baseDynamicHeaders[key] = value;
+      baseHeaders[key] = value;
     } else {
-      delete baseDynamicHeaders[key];
+      delete baseHeaders[key];
     }
   };
 
@@ -32,7 +31,7 @@ const DescopeWC = lazy(async () => {
 
   WebComponent.sdkConfigOverrides = {
     // Overrides the web-component's base headers to indicate usage via the React SDK
-    baseHeaders: baseDynamicHeaders,
+    baseHeaders,
     // Disables token persistence within the web-component to delegate token management
     // to the global SDK hooks. This ensures token handling aligns with the SDK's configuration,
     // and web-component requests leverage the global SDK's beforeRequest hooks for consistency
