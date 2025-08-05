@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.44.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.4...core-js-sdk-2.44.5) (2025-08-05)
+
+
+### Bug Fixes
+
+* rename outbound connect redirect url param RELEASE ([#1178](https://github.com/descope/descope-js/issues/1178)) ([5141a6b](https://github.com/descope/descope-js/commit/5141a6b76f5e528a3932afa35ec1e8b29a923ed1))
+
 ## [2.44.4](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.3...core-js-sdk-2.44.4) (2025-07-10)
 
 
