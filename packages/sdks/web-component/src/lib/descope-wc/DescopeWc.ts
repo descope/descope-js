@@ -839,8 +839,26 @@ class DescopeWc extends BaseDescopeWc {
       if (redirectIsPopup) {
         // this width is below the breakpoint of most providers
         this.loggerWrapper.debug('Opening redirect in popup');
-        openCenteredPopup(redirectTo, '?', 598, 700);
-        this.loggerWrapper.debug('Opened redirect in popup, creating channel');
+        const popup = openCenteredPopup(redirectTo, '?', 598, 700);
+
+        this.loggerWrapper.debug('Starting popup closed detection');
+        // detect when the popup is closed
+        const intervalId = setInterval(() => {
+          if (popup.closed) {
+            this.loggerWrapper.debug(
+              'Popup closed, dispatching popupclosed event and clearing interval',
+            );
+            clearInterval(intervalId);
+
+            // we are dispatching a popupclosed event so we can handle it on other parts of the code (loading state management)
+            this.#dispatch('popupclosed', {});
+
+            this.loggerWrapper.debug('Closing channel');
+            channel.close();
+          }
+        }, 1000);
+
+        this.loggerWrapper.debug('Creating broadcast channel');
         const channel = new BroadcastChannel(executionId);
 
         this.loggerWrapper.debug('Listening for postMessage on channel');
@@ -867,8 +885,6 @@ class DescopeWc extends BaseDescopeWc {
             `PostMessage action: ${action}, data: ${JSON.stringify(data)}`,
           );
           if (action === 'code') {
-            this.loggerWrapper.debug('Closing channel');
-            channel.close();
             this.loggerWrapper.debug(
               'Updating flow state with code and exchangeError',
             );
@@ -1620,6 +1636,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
+
   #handleComponentsLoadingState(submitter: HTMLElement) {
     const enabledElements = Array.from(
       this.contentRootElement.querySelectorAll(
@@ -1627,14 +1644,16 @@ class DescopeWc extends BaseDescopeWc {
       ),
     ).filter((ele) => ele !== submitter);
 
-    const handleScreenIdUpdates = () => {
-      const restoreComponentsState = () => {
-        submitter.removeAttribute('loading');
-        enabledElements.forEach((ele) => {
-          ele.removeAttribute('disabled');
-        });
-      };
+    const restoreComponentsState = () => {
+      this.loggerWrapper.debug('Restoring components state');
+      this.removeEventListener('popupclosed', restoreComponentsState);
+      submitter.removeAttribute('loading');
+      enabledElements.forEach((ele) => {
+        ele.removeAttribute('disabled');
+      });
+    };
 
+    const handleScreenIdUpdates = () => {
       // we want to remove the previous pageshow listener to avoid multiple listeners
       window.removeEventListener('pageshow', this.#prevPageShowListener);
 
@@ -1659,6 +1678,7 @@ class DescopeWc extends BaseDescopeWc {
           if (screenId === prevScreenId) {
             restoreComponentsState();
           }
+          this.removeEventListener('popupclosed', restoreComponentsState);
           this.stepState.unsubscribe(unsubscribeScreenIdUpdates);
         },
         (state) => state.screenId,
@@ -1670,6 +1690,9 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          this.addEventListener('popupclosed', restoreComponentsState, {
+            once: true,
+          });
           // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
           submitter.setAttribute('loading', 'true');
           enabledElements.forEach((ele) =>
