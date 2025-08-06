@@ -152,6 +152,7 @@ export type DescopeProps = {
     ref: HTMLElement,
   ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
+  externalRequestId?: string;
 };
 
 export type UserManagementProps = WidgetProps;

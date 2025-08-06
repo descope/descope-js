@@ -18,7 +18,10 @@ const jsonHeaders = {
  * @param projectId The project id to use in the header
  * @param token Token to be concatenated. Defaults to empty.
  */
-const createAuthorizationHeader = (projectId: string, token = '') => {
+const createAuthorizationHeader = (
+  projectId: string,
+  token = '',
+): Record<string, string> => {
   let bearer = projectId;
   if (token) {
     bearer = bearer + ':' + token;
