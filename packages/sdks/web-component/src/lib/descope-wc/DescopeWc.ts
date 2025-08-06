@@ -841,6 +841,9 @@ class DescopeWc extends BaseDescopeWc {
         this.loggerWrapper.debug('Opening redirect in popup');
         const popup = openCenteredPopup(redirectTo, '?', 598, 700);
 
+        this.loggerWrapper.debug('Creating broadcast channel');
+        const channel = new BroadcastChannel(executionId);
+
         this.loggerWrapper.debug('Starting popup closed detection');
         // detect when the popup is closed
         const intervalId = setInterval(() => {
@@ -857,9 +860,6 @@ class DescopeWc extends BaseDescopeWc {
             channel.close();
           }
         }, 1000);
-
-        this.loggerWrapper.debug('Creating broadcast channel');
-        const channel = new BroadcastChannel(executionId);
 
         this.loggerWrapper.debug('Listening for postMessage on channel');
         const onPostMessage = (event: MessageEvent) => {
