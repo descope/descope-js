@@ -20,12 +20,14 @@ export default [
         sourcemap: true,
         format: 'esm',
         preserveModules: true,
+        preserveModulesRoot: 'src',
       },
       {
         dir: './dist/cjs',
         sourcemap: true,
         format: 'cjs',
         preserveModules: true,
+        preserveModulesRoot: 'src',
         exports: 'named',
         interop: 'auto',
       },
@@ -37,7 +39,11 @@ export default [
           BUILD_VERSION: JSON.stringify(packageJson.version),
         },
       }),
-      typescript(),
+      typescript({
+        compilerOptions: {
+          rootDir: './src',
+        },
+      }),
       autoExternal(),
       terser(),
     ],
@@ -62,7 +68,11 @@ export default [
           BUILD_VERSION: JSON.stringify(packageJson.version),
         },
       }),
-      typescript(),
+      typescript({
+        compilerOptions: {
+          rootDir: './src',
+        },
+      }),
       commonjs(),
       nodeResolve(),
       terser(),
