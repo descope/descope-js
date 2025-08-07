@@ -3008,8 +3008,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
-        specifier: latest
-        version: 1.115.0
+        specifier: ^1.115.0
+        version: 1.116.0
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -5991,6 +5991,52 @@ packages:
 
   /@descope/web-components-ui@1.115.0:
     resolution: {integrity: sha512-Eq5SrOxONj1RoOyLtAQ2LOff+XumWiQMj/beoe93fCFD0dluoB0OJ7fiVPSkF2RucdQMdxp/AwcZGtXQvkopVg==}
+    dependencies:
+      '@descope-ui/common': 0.0.18
+      '@descope-ui/descope-address-field': 0.0.22
+      '@descope-ui/descope-apps-list': 0.0.1
+      '@descope-ui/descope-autocomplete-field': 0.0.23
+      '@descope-ui/descope-avatar': 0.0.19
+      '@descope-ui/descope-button': 0.0.19
+      '@descope-ui/descope-collapsible-container': 0.0.18
+      '@descope-ui/descope-combo-box': 0.1.10
+      '@descope-ui/descope-enriched-text': 0.0.3
+      '@descope-ui/descope-icon': 0.0.17
+      '@descope-ui/descope-image': 0.0.10
+      '@descope-ui/descope-link': 0.0.3
+      '@descope-ui/descope-list': 0.0.1
+      '@descope-ui/descope-list-item': 0.0.1
+      '@descope-ui/descope-outbound-apps': 0.0.4
+      '@descope-ui/descope-password-strength': 0.0.13
+      '@descope-ui/descope-recovery-codes': 0.0.6
+      '@descope-ui/descope-text': 0.0.19
+      '@descope-ui/descope-timer': 0.0.17
+      '@descope-ui/descope-timer-button': 0.0.20
+      '@vaadin/checkbox': 24.3.4
+      '@vaadin/custom-field': 24.3.4
+      '@vaadin/dialog': 24.3.4
+      '@vaadin/email-field': 24.3.4
+      '@vaadin/grid': 24.3.4
+      '@vaadin/icon': 24.3.4
+      '@vaadin/icons': 24.3.4
+      '@vaadin/multi-select-combo-box': 24.3.4
+      '@vaadin/notification': 24.3.4
+      '@vaadin/number-field': 24.3.4
+      '@vaadin/password-field': 24.3.4
+      '@vaadin/popover': 24.5.3
+      '@vaadin/radio-group': 24.3.4
+      '@vaadin/text-area': 24.3.4
+      '@vaadin/text-field': 24.3.4
+      color: 4.2.3
+      element-internals-polyfill: 1.3.13
+      highlight.js: 11.11.1
+      libphonenumber-js: 1.11.17
+      lodash.debounce: 4.0.8
+      lodash.merge: 4.6.2
+    dev: true
+
+  /@descope/web-components-ui@1.116.0:
+    resolution: {integrity: sha512-40Cg3c530ACmJLQ5AKTQY3nJoYFaCbgwTORZ16YkT9TvnI1mp9dM1Ga1pFjZ52qavqLnfuRla+ts4NB/3uiQxw==}
     dependencies:
       '@descope-ui/common': 0.0.18
       '@descope-ui/descope-address-field': 0.0.22
@@ -11865,7 +11911,7 @@ packages:
     resolution: {integrity: sha512-HK4c1Kq1tHabgGO6o/qLePi67lYBqkn7XD0M92fc6cwFSi8IerxEuKNaF71ZF8+32PXqhwT1IKgka2S9iUea8w==}
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/icon': 24.3.4
+      '@vaadin/icon': 24.3.22
     dev: true
 
   /@vaadin/input-container@24.3.22:
