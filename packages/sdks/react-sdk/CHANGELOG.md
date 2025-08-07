@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.0](https://github.com/descope/descope-js/compare/react-sdk-2.16.5...react-sdk-2.17.0) (2025-08-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.2`
+* `audit-management-widget` updated to version `0.5.2`
+* `role-management-widget` updated to version `0.4.2`
+* `user-management-widget` updated to version `0.8.2`
+* `user-profile-widget` updated to version `0.6.6`
+* `applications-portal-widget` updated to version `0.4.2`
+* `web-component` updated to version `3.45.0`
+* `web-js-sdk` updated to version `1.33.7`
+* `core-js-sdk` updated to version `2.45.0`
+* `tenant-profile-widget` updated to version `0.2.3`
+
+### Features
+
+* added the option to add external request id to requests - React SDK only ([#1177](https://github.com/descope/descope-js/issues/1177)) ([b1d353b](https://github.com/descope/descope-js/commit/b1d353b8a9855498286eec96b6213bb68620e5ef))
+
 ## [2.16.5](https://github.com/descope/descope-js/compare/react-sdk-2.16.4...react-sdk-2.16.5) (2025-08-05)
 
 ### Dependency Updates
