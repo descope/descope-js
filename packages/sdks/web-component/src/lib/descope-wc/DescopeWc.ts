@@ -322,14 +322,14 @@ class DescopeWc extends BaseDescopeWc {
       }),
     );
 
-    const timeoutPromise = new Promise((resolve) => {
+    const toPromise = new Promise((resolve) => {
       setTimeout(() => {
         this.loggerWrapper.warn('SDK scripts loading timeout');
         resolve(true);
       }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
-    return Promise.race([promises, timeoutPromise]);
+    return Promise.race([promises, toPromise]);
   }
 
   get isDismissScreenErrorOnInput() {
