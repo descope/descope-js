@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.45.0](https://github.com/descope/descope-js/compare/web-component-3.44.4...web-component-3.45.0) (2025-08-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.7`
+
+### Features
+
+* Darwinium ([#1180](https://github.com/descope/descope-js/issues/1180)) RELEASE ([cc79883](https://github.com/descope/descope-js/commit/cc79883bb7c23a29640868e74216cc46c27fcb9b))
+
+
+### Bug Fixes
+
+* remove loading state when closing oauth popup manually ([#1179](https://github.com/descope/descope-js/issues/1179)) ([d3602c3](https://github.com/descope/descope-js/commit/d3602c3330b47ad841de8530c51f97d3bd0efa49))
+
 ## [3.44.4](https://github.com/descope/descope-js/compare/web-component-3.44.3...web-component-3.44.4) (2025-08-05)
 
 ### Dependency Updates
