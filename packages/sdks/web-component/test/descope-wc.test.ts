@@ -385,18 +385,14 @@ describe('web-component', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByShadowText('Another Button')).not.toHaveAttribute(
-          'disabled',
-        );
+        expect(screen.getByShadowText('Another Button')).toBeEnabled();
       },
       { timeout: WAIT_TIMEOUT },
     );
 
     await waitFor(
       () => {
-        expect(screen.getByShadowPlaceholderText('Input')).not.toHaveAttribute(
-          'disabled',
-        );
+        expect(screen.getByShadowPlaceholderText('Input')).toBeEnabled();
       },
       { timeout: WAIT_TIMEOUT },
     );
@@ -456,14 +452,14 @@ describe('web-component', () => {
 
     await waitFor(
       () => {
-        expect(anotherButton).not.toHaveAttribute('disabled');
+        expect(anotherButton).toBeEnabled();
       },
       { timeout: WAIT_TIMEOUT },
     );
 
     await waitFor(
       () => {
-        expect(inputField).not.toHaveAttribute('disabled');
+        expect(inputField).toBeEnabled();
       },
       { timeout: WAIT_TIMEOUT },
     );

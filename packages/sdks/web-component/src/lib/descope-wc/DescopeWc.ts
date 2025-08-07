@@ -292,7 +292,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.9', // currently using a fixed version when loading scripts
+          '1.0.11', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
@@ -300,7 +300,7 @@ class DescopeWc extends BaseDescopeWc {
           try {
             const moduleRes = module(
               script.initArgs as any,
-              { baseUrl: this.baseUrl },
+              { baseUrl: this.baseUrl, ref: this },
               createScriptCallback(script, resolve),
             );
             if (moduleRes) {
@@ -1610,12 +1610,16 @@ class DescopeWc extends BaseDescopeWc {
     return isValid;
   }
 
-  async #getFormData() {
-    const inputs = Array.from(
+  getInputs() {
+    return Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
+        `*:not(slot)[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
       ),
     ) as HTMLInputElement[];
+  }
+
+  async #getFormData() {
+    const inputs = this.getInputs();
 
     // wait for all inputs
     const values = await Promise.all(
