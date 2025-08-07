@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  CUSTOM_ELEMENTS_SCHEMA
+} from '@angular/core';
 import { ILogger } from '@descope/web-component';
 import { DescopeComponent } from '../descope/descope.component';
 import { DescopeAuthConfig } from '../../types/types';
@@ -7,6 +13,7 @@ import { DescopeAuthConfig } from '../../types/types';
   selector: 'descope-sign-up-or-in-flow',
   standalone: true,
   imports: [DescopeComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './sign-up-or-in-flow.component.html'
 })
 export class SignUpOrInFlowComponent {

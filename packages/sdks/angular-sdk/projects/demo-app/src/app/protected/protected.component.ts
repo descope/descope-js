@@ -1,12 +1,17 @@
 /* eslint-disable no-console */
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { CommonModule } from '@angular/common';
+import { DescopeAuthModule } from '../../../../angular-sdk/src/lib/descope-auth.module';
 
 @Component({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-protected',
   templateUrl: './protected.component.html',
-  styleUrls: ['./protected.component.scss']
+  styleUrls: ['./protected.component.scss'],
+  standalone: true,
+  imports: [CommonModule, DescopeAuthModule]
 })
 export class ProtectedComponent {
   flowId = environment.descopeStepUpFlowId ?? 'sign-up-or-in';

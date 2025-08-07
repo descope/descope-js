@@ -6,6 +6,14 @@ import { DescopeAuthConfig } from '../../../../angular-sdk/src/lib/types/types';
 import mocked = jest.mocked;
 
 jest.mock('@descope/web-js-sdk');
+jest.mock('@descope/role-management-widget', () => {
+  return jest.fn().mockImplementation(() => {
+    const element = document.createElement('div');
+    element.setAttribute = jest.fn();
+    element.addEventListener = jest.fn();
+    return element;
+  });
+});
 
 describe('ManageRolesComponent', () => {
   let component: ManageRolesComponent;
