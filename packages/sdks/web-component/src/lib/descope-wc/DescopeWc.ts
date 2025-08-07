@@ -66,7 +66,7 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
-import darwiniumScript from '../darwinium';
+
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
   errorTransformer:
@@ -249,12 +249,6 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   loadSdkScripts(scripts: ClientScript[]) {
-    scripts = scripts.concat({
-      id: 'darwinium',
-      initArgs: {},
-      resultKey: 'profilingBlobs',
-    });
-
     if (!scripts?.length) {
       return null;
     }
@@ -296,23 +290,17 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        try {
-          await this.injectNpmLib(
-            '@descope/flow-scripts',
-            '1.0.9', // currently using a fixed version when loading scripts
-            `dist/${script.id}.js`,
-          );
-        } catch (e) {
-          globalThis.descope = {};
-          //TODO: temp
-        }
-        globalThis.descope['darwinium'] = darwiniumScript;
+        await this.injectNpmLib(
+          '@descope/flow-scripts',
+          '1.0.11', // currently using a fixed version when loading scripts
+          `dist/${script.id}.js`,
+        );
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
             const moduleRes = module(
               script.initArgs as any,
-              { baseUrl: this.baseUrl },
+              { baseUrl: this.baseUrl, ref: this },
               createScriptCallback(script, resolve),
             );
             if (moduleRes) {
@@ -338,7 +326,7 @@ class DescopeWc extends BaseDescopeWc {
       setTimeout(() => {
         this.loggerWrapper.warn('SDK scripts loading timeout');
         resolve(true);
-      }, 50000);
+      }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
     return Promise.race([promises, timeoutPromise]);
@@ -1606,12 +1594,16 @@ class DescopeWc extends BaseDescopeWc {
     return isValid;
   }
 
-  async #getFormData() {
-    const inputs = Array.from(
+  getInputs() {
+    return Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
+        `*:not(slot)[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
       ),
     ) as HTMLInputElement[];
+  }
+
+  async #getFormData() {
+    const inputs = this.getInputs();
 
     // wait for all inputs
     const values = await Promise.all(
@@ -1759,7 +1751,6 @@ class DescopeWc extends BaseDescopeWc {
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn) => {
-      this.#dispatch('beforesubmit', {});
       if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
