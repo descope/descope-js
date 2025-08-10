@@ -30,6 +30,7 @@ import {
   OIDC_PROMPT_PARAM_NAME,
   SDK_SCRIPT_RESULTS_KEY,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
+  OIDC_RESOURCE_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
   SDK_SCRIPTS_LOAD_TIMEOUT,
@@ -68,6 +69,7 @@ const defaultOptionsValues = {
   samlIdpStateId: null,
   samlIdpUsername: null,
   oidcErrorRedirectUri: null,
+  oidcResource: null,
   descopeIdpInitiated: false,
   ssoAppId: null,
   client: {},
@@ -3916,6 +3918,76 @@ describe('web-component', () => {
     const encodedOidcErrorRedirectUri =
       encodeURIComponent(oidcErrorRedirectUri);
     window.location.search = `?${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodedOidcErrorRedirectUri}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled());
+  });
+
+  it('should call start with oidc idp with oidcResource flag and clear it from url', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    pageContent = '<span>It works!</span>';
+
+    const oidcStateId = 'abcdefgh';
+    const encodedOidcStateId = encodeURIComponent(oidcStateId);
+    const oidcResource = 'https://api.example.com';
+    const encodedOidcResource = encodeURIComponent(oidcResource);
+    window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=${encodedOidcStateId}&${OIDC_RESOURCE_PARAM_NAME}=${encodedOidcResource}`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(startMock).toHaveBeenCalledWith(
+          'sign-in',
+          {
+            ...defaultOptionsValues,
+            oidcIdpStateId: 'abcdefgh',
+            oidcResource: 'https://api.example.com',
+          },
+          undefined,
+          '',
+          '1.2.3',
+          {
+            otpSignInEmail: 1,
+            'versioned-flow': 1,
+          },
+          {},
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => expect(window.location.search).toBe(''));
+  });
+
+  it('should call start with oidc idp with oidcResource when there is a start screen is configured', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    configContent = {
+      ...configContent,
+      flows: {
+        ...configContent.flows,
+        'sign-in': { startScreenId: 'screen-0' },
+      },
+    };
+
+    pageContent =
+      '<descope-button>click</descope-button><span>It works!</span>';
+
+    const oidcResource = 'https://api.example.com';
+    const encodedOidcResource = encodeURIComponent(oidcResource);
+    window.location.search = `?${OIDC_RESOURCE_PARAM_NAME}=${encodedOidcResource}`;
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
     await waitFor(() => expect(startMock).toHaveBeenCalled(), {
