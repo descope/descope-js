@@ -33,6 +33,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       #modal: ModalDriver;
       #flow: FlowDriver;
       #flowButtons: GenericFlowButtonDriver[] = [];
+      #modalCallback: (() => void) | null = null;
 
       #initComponents(ele: Element) {
         const button = new GenericFlowButtonDriver(ele, {
@@ -64,11 +65,32 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
 
       #initModal() {
         this.#modal = this.createModal({ 'data-id': 'generic-flow-modal' });
+        this.#modal.afterClose = () => {
+          if (this.#modalCallback) {
+            const sdk = this.#modal.ele?.querySelector('descope-wc');
+            sdk?.removeEventListener('page-updated', this.#modalCallback);
+            this.#modalCallback = null;
+          }
+        };
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
         this.syncFlowTheme(this.#flow);
+      }
+
+      // eslint-disable-next-line class-methods-use-this
+      #onModalNeeded(modal: ModalDriver, sdk: any, callback: () => void) {
+        modal.open();
+        sdk.removeEventListener('page-updated', callback);
+      }
+
+      #openModalIfNeeded(modal: ModalDriver, cbRef: () => void | null) {
+        const sdk = modal.ele?.querySelector('descope-wc');
+        const cb = () => this.#onModalNeeded(modal, sdk, cb);
+        // eslint-disable-next-line no-param-reassign
+        cbRef = cb;
+        sdk?.addEventListener('page-updated', cbRef);
       }
 
       #initModalContent(
@@ -91,8 +113,10 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             }),
           }),
         );
+        this.#openModalIfNeeded(this.#modal, this.#modalCallback);
         this.#flow.onSuccess(() => {
           this.#modal.close();
+          this.actions.searchUsers();
         });
       }
 
