@@ -42,8 +42,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         button.disable();
         button.onClick(() => {
           this.#initModalContent(button.flowId, button.enableMode);
-          // wait here for the flow to be ready
-          this.#modal.open();
         });
         this.#onIsUserSelectedUpdate(
           button,
