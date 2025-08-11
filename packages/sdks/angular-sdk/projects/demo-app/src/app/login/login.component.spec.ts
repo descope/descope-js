@@ -18,6 +18,11 @@ describe('LoginComponent', () => {
   const onUserChangeSpy = jest.fn();
 
   beforeEach(async () => {
+    // Mock CSSStyleSheet.replaceSync for testing environment
+    if (!CSSStyleSheet.prototype.replaceSync) {
+      CSSStyleSheet.prototype.replaceSync = jest.fn();
+    }
+
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
