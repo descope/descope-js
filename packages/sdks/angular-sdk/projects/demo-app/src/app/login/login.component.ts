@@ -1,11 +1,16 @@
 /* eslint-disable no-console */
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { DescopeAuthModule } from '../../../../angular-sdk/src/lib/descope-auth.module';
 
 @Component({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-login',
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  standalone: true,
+  imports: [CommonModule, DescopeAuthModule]
 })
 export class LoginComponent {
   flowId = environment.descopeFlowId ?? 'sign-up-or-in';
