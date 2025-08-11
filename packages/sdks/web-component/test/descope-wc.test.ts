@@ -3975,9 +3975,7 @@ describe('web-component', () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
     configContent = {
-      ...configContent,
       flows: {
-        ...configContent.flows,
         'sign-in': { startScreenId: 'screen-0' },
       },
     };
