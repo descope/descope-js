@@ -10,8 +10,9 @@ import { ManageAccessKeysComponent } from './manage-access-keys/manage-access-ke
 import { ManageAuditComponent } from './manage-audit/manage-audit.component';
 import { MyUserProfileComponent } from './my-user-profile/my-user-profile.component';
 import { MyApplicationsPortalComponent } from './my-applications-portal/my-applications-portal.component';
+import { ByosDemoComponent } from './byos-demo/byos-demo.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'step-up',
     component: ProtectedComponent,
@@ -19,6 +20,7 @@ const routes: Routes = [
     data: { descopeFallbackUrl: '/' }
   },
   { path: 'login', component: LoginComponent },
+  { path: 'byos-demo', component: ByosDemoComponent },
   { path: 'manage-users', component: ManageUsersComponent },
   { path: 'manage-roles', component: ManageRolesComponent },
   { path: 'manage-access-keys', component: ManageAccessKeysComponent },
