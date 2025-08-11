@@ -54,7 +54,7 @@ export const createStateManagementMixin = <
               serializableCheck: false,
             }),
           // change to true if we want to debug redux
-          devTools: true,
+          devTools: false,
         });
 
         const wrapAction = <F extends (...args: any[]) => any>(action: F) =>

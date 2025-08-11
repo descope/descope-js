@@ -25,6 +25,7 @@
   },
   "private": true,
   "dependencies": {
+    "@descope/web-component": "^3.45.1",
     "tslib": "2.8.1"
   },
   "devDependencies": {
