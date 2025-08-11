@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.45.1](https://github.com/descope/descope-js/compare/web-component-3.45.0...web-component-3.45.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* reload sdk scripts when restoring components state RELEASE ([#1183](https://github.com/descope/descope-js/issues/1183)) ([5d568c5](https://github.com/descope/descope-js/commit/5d568c579425da67bb68104c9bfea5f7e91f3747))
+
 ## [3.45.0](https://github.com/descope/descope-js/compare/web-component-3.44.4...web-component-3.45.0) (2025-08-07)
 
 ### Dependency Updates

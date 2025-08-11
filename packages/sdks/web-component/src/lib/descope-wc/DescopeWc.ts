@@ -276,6 +276,7 @@ class DescopeWc extends BaseDescopeWc {
         );
         resolve(script.id);
       };
+
     this.loggerWrapper.debug(
       `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
@@ -1648,13 +1649,20 @@ class DescopeWc extends BaseDescopeWc {
       ),
     ).filter((ele) => ele !== submitter);
 
-    const restoreComponentsState = () => {
+    const restoreComponentsState = async () => {
       this.loggerWrapper.debug('Restoring components state');
       this.removeEventListener('popupclosed', restoreComponentsState);
       submitter.removeAttribute('loading');
       enabledElements.forEach((ele) => {
         ele.removeAttribute('disabled');
       });
+      // if there are client scripts, we want to reload them
+      const flowConfig = await this.getFlowConfig();
+      const clientScripts = [
+        ...(flowConfig.clientScripts || []),
+        ...(flowConfig.sdkScripts || []),
+      ];
+      this.loadSdkScripts(clientScripts);
     };
 
     const handleScreenIdUpdates = () => {
