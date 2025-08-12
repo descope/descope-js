@@ -179,6 +179,35 @@ describe('user-management-widget', () => {
         ),
       );
     });
+
+    it('update user', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
+      const loginId = mockUsers[0]['loginIds'][0];
+      const updateData = {
+        loginId: loginId,
+        displayName: 'Updated Name',
+        email: 'updated@example.com',
+        customAttributes: { role: 'admin' },
+      };
+
+      await sdk.user.update(updateData);
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.user.update,
+          updateData,
+          {
+            queryParams: {
+              tenant: mockTenant,
+            },
+          },
+        ),
+      );
+    });
   });
 
   describe('utils', () => {
