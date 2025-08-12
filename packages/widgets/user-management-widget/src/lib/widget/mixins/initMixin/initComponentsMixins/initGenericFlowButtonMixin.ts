@@ -31,8 +31,11 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       initWidgetRootMixin,
     )(superclass) {
       #modal: ModalDriver;
+
       #flow: FlowDriver;
+
       #flowButtons: GenericFlowButtonDriver[] = [];
+
       #modalCallback: (() => void) | null = null;
 
       #initComponents(ele: Element) {

@@ -1,5 +1,6 @@
 import { compose } from '@descope/sdk-helpers';
 import { initMixin } from './mixins/initMixin/initMixin';
+
 declare const BUILD_VERSION: string;
 
 const rootMixin = (superclass: CustomElementConstructor) =>

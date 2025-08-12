@@ -71,14 +71,23 @@ const getTableHeadCellContentLocatorByIndex = async (
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(
-      (port) =>
-        window.localStorage.setItem(
-          'base.ui.components.url',
-          `http://localhost:${port}/umd/index.js`,
-        ),
-      componentsPort,
-    );
+    await page.addInitScript((port) => {
+      window.localStorage.setItem(
+        'base.ui.components.url',
+        `http://localhost:${port}/umd/index.js`,
+      );
+      window.customElements.define(
+        'descope-wc',
+        class extends HTMLElement {
+          connectedCallback() {
+            this.innerHTML = '<button>Finish Flow</button>';
+            this.querySelector('button').onclick = () => {
+              this.dispatchEvent(new CustomEvent('success'));
+            };
+          }
+        },
+      );
+    }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
       route.fulfill({ json: configContent }),
@@ -733,5 +742,86 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockUsers.length} users deleted successfully`),
     ).toBeHidden();
+  });
+
+  test('generic flow buttons', async ({ page }) => {
+    const genericFlowButtonOneOrMore = page
+      .locator('data-generic-flow-button-id')
+      .filter({ hasText: /enable-mode.*oneOrMore/ })
+      .first();
+
+    const genericFlowButtonOnlyOne = page
+      .locator('data-generic-flow-button-id')
+      .filter({ hasText: /enable-mode.*onlyOne/ })
+      .first();
+
+    const genericFlowButtonAlways = page
+      .locator('data-generic-flow-button-id')
+      .filter({ hasText: /enable-mode.*always/ })
+      .first();
+
+    // Test initial state - no users selected
+    if ((await genericFlowButtonOneOrMore.count()) > 0) {
+      expect(genericFlowButtonOneOrMore).toBeDisabled();
+    }
+    if ((await genericFlowButtonOnlyOne.count()) > 0) {
+      expect(genericFlowButtonOnlyOne).toBeDisabled();
+    }
+    if ((await genericFlowButtonAlways.count()) > 0) {
+      expect(genericFlowButtonAlways).toBeEnabled();
+    }
+
+    const firstUserCheckbox = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await firstUserCheckbox.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Test state with one user selected
+    if ((await genericFlowButtonOneOrMore.count()) > 0) {
+      expect(genericFlowButtonOneOrMore).toBeEnabled();
+    }
+    if ((await genericFlowButtonOnlyOne.count()) > 0) {
+      expect(genericFlowButtonOnlyOne).toBeEnabled();
+    }
+    if ((await genericFlowButtonAlways.count()) > 0) {
+      expect(genericFlowButtonAlways).toBeEnabled();
+    }
+
+    const secondUserCheckbox = await getTableBodyCellContentLocatorByIndex(
+      page,
+      1,
+      0,
+    );
+    await secondUserCheckbox.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Test state with multiple users selected
+    if ((await genericFlowButtonOneOrMore.count()) > 0) {
+      expect(genericFlowButtonOneOrMore).toBeEnabled();
+    }
+    if ((await genericFlowButtonOnlyOne.count()) > 0) {
+      expect(genericFlowButtonOnlyOne).toBeDisabled();
+    }
+    if ((await genericFlowButtonAlways.count()) > 0) {
+      expect(genericFlowButtonAlways).toBeEnabled();
+    }
+
+    if ((await genericFlowButtonOneOrMore.count()) > 0) {
+      await genericFlowButtonOneOrMore.click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      const modal = page.locator('[data-id="generic-flow-modal"]');
+      await expect(modal).toBeVisible();
+
+      const flowComponent = modal.locator('descope-wc');
+      await expect(flowComponent).toBeVisible();
+
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(MODAL_TIMEOUT);
+      await expect(modal).toBeHidden();
+    }
   });
 });

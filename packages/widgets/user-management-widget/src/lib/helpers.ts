@@ -1,9 +1,9 @@
+import { createTemplate, kebabCase } from '@descope/sdk-helpers';
 import {
   CustomAttributeType,
   CustomAttributeTypeMap,
   User,
 } from './widget/api/types';
-import { createTemplate, kebabCase } from '@descope/sdk-helpers';
 
 type FlowConfig = {
   projectId: string;
