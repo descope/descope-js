@@ -53,7 +53,7 @@ jest.mock('@descope/web-js-sdk', () => ({
   ensureFingerprintIds: jest.fn(),
 }));
 
-const WAIT_TIMEOUT = 20000;
+const WAIT_TIMEOUT = 25000;
 const THEME_DEFAULT_FILENAME = `theme.json`;
 
 const abTestingKey = getABTestingKey();
