@@ -27,6 +27,7 @@ export const THIRD_PARTY_APP_ID_PARAM_NAME = 'third_party_app_id';
 export const THIRD_PARTY_APP_STATE_ID_PARAM_NAME = 'third_party_app_state_id';
 export const OIDC_LOGIN_HINT_PARAM_NAME = 'oidc_login_hint';
 export const OIDC_PROMPT_PARAM_NAME = 'oidc_prompt';
+export const OIDC_RESOURCE_PARAM_NAME = 'oidc_resource';
 export const OIDC_ERROR_REDIRECT_URI_PARAM_NAME = 'oidc_error_redirect_uri';
 export const APPLICATION_SCOPES_PARAM_NAME = 'application_scopes';
 

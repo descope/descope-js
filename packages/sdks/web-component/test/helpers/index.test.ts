@@ -1,5 +1,8 @@
 import { waitFor } from '@testing-library/dom';
-import { URL_RUN_IDS_PARAM_NAME } from '../../src/lib/constants';
+import {
+  URL_RUN_IDS_PARAM_NAME,
+  OIDC_RESOURCE_PARAM_NAME,
+} from '../../src/lib/constants';
 import { dragElement } from '../../src/lib/helpers';
 import {
   clearRunIdsFromUrl,
@@ -10,6 +13,8 @@ import {
   isChromium,
   setRunIdsOnUrl,
   withMemCache,
+  getOIDCResourceParamFromUrl,
+  clearOIDCResourceParamFromUrl,
 } from '../../src/lib/helpers/helpers';
 
 const mockFetch = jest.fn();
@@ -117,6 +122,39 @@ describe('helpers', () => {
     window.history.replaceState = replaceState;
     clearRunIdsFromUrl();
     expect(replaceState).toHaveBeenCalledWith({}, '', `http://localhost/`);
+  });
+
+  describe('oidcResource URL params', () => {
+    it('getOIDCResourceParamFromUrl should return oidcResource param from URL', () => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: new URL(
+          `http://localhost/?${OIDC_RESOURCE_PARAM_NAME}=https%3A%2F%2Fapi.example.com`,
+        ),
+      });
+      expect(getOIDCResourceParamFromUrl()).toBe('https://api.example.com');
+    });
+
+    it('getOIDCResourceParamFromUrl should return null when param is not present', () => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: new URL('http://localhost/'),
+      });
+      expect(getOIDCResourceParamFromUrl()).toBe(null);
+    });
+
+    it('clearOIDCResourceParamFromUrl should remove oidcResource param from URL', () => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: new URL(
+          `http://localhost/?${OIDC_RESOURCE_PARAM_NAME}=https%3A%2F%2Fapi.example.com`,
+        ),
+      });
+      const replaceState = jest.fn();
+      window.history.replaceState = replaceState;
+      clearOIDCResourceParamFromUrl();
+      expect(replaceState).toHaveBeenCalledWith({}, '', `http://localhost/`);
+    });
   });
 
   describe('isChromium', () => {
