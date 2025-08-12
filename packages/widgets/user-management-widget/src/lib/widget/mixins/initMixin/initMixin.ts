@@ -14,12 +14,12 @@ import { initGenericFlowButtonMixin } from './initComponentsMixins/initGenericFl
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
 
 export const initMixin = createSingletonMixin(
-  <T extends CustomElementConstructor>(superclass: T) => {
-    // Compose only up to 13 mixins, so we split into two compose calls
-    const BaseClass = compose(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    /* @ts-ignore */
+    class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
-      flowRedirectUrlMixin, // This mixin must be before all other mixins that loads flows
+      flowRedirectUrlMixin,
       initUsersTableMixin,
       initCreateUserButtonMixin,
       initDeleteUsersButtonMixin,
@@ -29,17 +29,11 @@ export const initMixin = createSingletonMixin(
       initResetPasswordButtonMixin,
       initRemovePasskeyButtonMixin,
       initFilterUsersInputMixin,
-    )(superclass);
-
-    const FinalClass = compose(
       initNotificationsMixin,
       initGenericFlowButtonMixin,
-    )(BaseClass);
-
-    return class InitMixinClass extends FinalClass {
+    )(superclass) {
       async init() {
         await super.init?.();
       }
-    };
-  },
+    },
 );
