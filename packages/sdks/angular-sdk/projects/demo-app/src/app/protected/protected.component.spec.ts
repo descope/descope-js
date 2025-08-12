@@ -18,11 +18,21 @@ describe('ProtectedComponent', () => {
   const onUserChangeSpy = jest.fn();
 
   beforeEach(async () => {
+    // Mock CSSStyleSheet.replaceSync for testing environment
+    if (!CSSStyleSheet.prototype.replaceSync) {
+      CSSStyleSheet.prototype.replaceSync = jest.fn();
+    }
+
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
       onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
-      onUserChange: onUserChangeSpy
+      onUserChange: onUserChangeSpy,
+      getSessionToken: jest.fn().mockReturnValue('mock-token'),
+      getRefreshToken: jest.fn().mockReturnValue('mock-refresh-token'),
+      isJwtExpired: jest.fn().mockReturnValue(false),
+      getJwtPermissions: jest.fn().mockReturnValue([]),
+      getJwtRoles: jest.fn().mockReturnValue([])
     });
 
     await TestBed.configureTestingModule({

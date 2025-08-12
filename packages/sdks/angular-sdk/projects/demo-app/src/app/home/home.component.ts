@@ -4,11 +4,14 @@ import { DescopeAuthService } from '../../../../angular-sdk/src/lib/services/des
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class HomeComponent implements OnInit {
   projectId: string = environment.descopeProjectId;
@@ -38,15 +41,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  login() {
-    this.router.navigate(['/login']).catch((err) => console.error(err));
+  login(): void {
+    this.router.navigate(['/login']);
   }
 
-  logout() {
+  tryByosDemo(): void {
+    this.router.navigate(['/byos-demo']);
+  }
+
+  logout(): void {
     this.authService.descopeSdk.logout();
   }
 
-  fetchData() {
+  fetchData(): void {
     if (this.backendUrl) {
       this.httpClient
         .get(this.backendUrl, { responseType: 'text' })

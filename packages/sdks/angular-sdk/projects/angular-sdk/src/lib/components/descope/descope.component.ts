@@ -5,7 +5,10 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output
+  Output,
+  ViewChild,
+  AfterViewInit,
+  CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import DescopeWebComponent from '@descope/web-component';
 import DescopeWc, { ILogger } from '@descope/web-component';
@@ -17,15 +20,68 @@ import { DescopeAuthConfig } from '../../types/types';
 @Component({
   selector: 'descope[flowId]',
   standalone: true,
-  template: ''
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  template: `
+    <descope-wc
+      #descopeWc
+      [attr.project-id]="projectId"
+      [attr.flow-id]="flowId"
+      [attr.base-url]="baseUrl"
+      [attr.base-static-url]="baseStaticUrl"
+      [attr.base-cdn-url]="baseCdnUrl"
+      [attr.store-last-authenticated-user]="storeLastAuthenticatedUser"
+      [attr.theme]="theme"
+      [attr.locale]="locale"
+      [attr.tenant]="tenant"
+      [attr.telemetry-key]="telemetryKey"
+      [attr.redirect-url]="redirectUrl"
+      [attr.auto-focus]="autoFocus"
+      [attr.validate-on-blur]="validateOnBlur"
+      [attr.restart-on-error]="restartOnError"
+      [attr.debug]="debug"
+      [attr.style-id]="styleId"
+      [attr.client]="clientString"
+      [attr.nonce]="nonceString"
+      [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
+      [attr.form]="formString"
+    >
+      <ng-content></ng-content>
+    </descope-wc>
+  `
 })
-export class DescopeComponent implements OnInit, OnChanges {
-  projectId: string;
+export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
+  @ViewChild('descopeWc')
+  private readonly descopeWc!: ElementRef<DescopeWebComponent>;
+
+  get clientString(): string | undefined {
+    if (!this.client) return undefined;
+    try {
+      return JSON.stringify(this.client);
+    } catch {
+      return undefined;
+    }
+  }
+
+  get nonceString(): string | undefined {
+    if (!this.nonce) return undefined;
+    return typeof this.nonce === 'string' ? this.nonce : undefined;
+  }
+
+  get formString(): string | undefined {
+    if (!this.form) return undefined;
+    try {
+      return JSON.stringify(this.form);
+    } catch {
+      return undefined;
+    }
+  }
+
+  projectId!: string;
   baseUrl?: string;
   baseStaticUrl?: string;
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
-  @Input() flowId: string;
+  @Input() flowId!: string;
 
   @Input() locale: string;
   @Input() theme: 'light' | 'dark' | 'os';
@@ -59,8 +115,7 @@ export class DescopeComponent implements OnInit, OnChanges {
   @Output() error: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private readonly webComponent: DescopeWebComponent =
-    new DescopeWebComponent();
+  private webComponent?: DescopeWebComponent;
 
   constructor(
     private elementRef: ElementRef,
@@ -74,11 +129,10 @@ export class DescopeComponent implements OnInit, OnChanges {
     this.storeLastAuthenticatedUser = descopeConfig.storeLastAuthenticatedUser;
   }
 
-  ngOnInit() {
-    const sdk = this.authService.descopeSdk; // Capture the class context in a variable
-    const WebComponent: any = customElements?.get('descope-wc') || DescopeWc;
+  ngOnInit(): void {
+    const sdk = this.authService.descopeSdk;
 
-    WebComponent.sdkConfigOverrides = {
+    DescopeWc.sdkConfigOverrides = {
       // Overrides the web-component's base headers to indicate usage via the React SDK
       baseHeaders,
       // Disables token persistence within the web-component to delegate token management
@@ -98,70 +152,26 @@ export class DescopeComponent implements OnInit, OnChanges {
         }
       }
     };
-    this.setupWebComponent();
-    this.elementRef.nativeElement.appendChild(this.webComponent);
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.descopeWc?.nativeElement) return;
+
+    this.webComponent = this.descopeWc.nativeElement;
+    this.setupNonAttributeProperties();
+    this.setupEventListeners();
   }
 
   ngOnChanges(): void {
-    this.setupWebComponent();
+    if (this.webComponent) {
+      this.setupNonAttributeProperties();
+    }
   }
 
-  private setupWebComponent() {
-    this.webComponent.setAttribute('project-id', this.projectId);
-    this.webComponent.setAttribute('flow-id', this.flowId);
+  private setupNonAttributeProperties(): void {
+    if (!this.webComponent) return;
 
-    if (this.baseUrl) {
-      this.webComponent.setAttribute('base-url', this.baseUrl);
-    }
-    if (this.baseStaticUrl) {
-      this.webComponent.setAttribute('base-static-url', this.baseStaticUrl);
-    }
-    if (this.baseCdnUrl) {
-      this.webComponent.setAttribute('base-cdn-url', this.baseCdnUrl);
-    }
-    if (this.storeLastAuthenticatedUser) {
-      this.webComponent.setAttribute(
-        'store-last-authenticated-user',
-        this.storeLastAuthenticatedUser.toString()
-      );
-    }
-    if (this.locale) {
-      this.webComponent.setAttribute('locale', this.locale);
-    }
-    if (this.theme) {
-      this.webComponent.setAttribute('theme', this.theme);
-    }
-    if (this.tenant) {
-      this.webComponent.setAttribute('tenant', this.tenant);
-    }
-    if (this.telemetryKey) {
-      this.webComponent.setAttribute('telemetryKey', this.telemetryKey);
-    }
-    if (this.redirectUrl) {
-      this.webComponent.setAttribute('redirect-url', this.redirectUrl);
-    }
-    if (this.autoFocus) {
-      this.webComponent.setAttribute('auto-focus', this.autoFocus.toString());
-    }
-    if (this.validateOnBlur) {
-      this.webComponent.setAttribute(
-        'validate-on-blur',
-        this.validateOnBlur.toString()
-      );
-    }
-    if (this.restartOnError) {
-      this.webComponent.setAttribute(
-        'restart-on-error',
-        this.restartOnError.toString()
-      );
-    }
-    if (this.debug) {
-      this.webComponent.setAttribute('debug', this.debug.toString());
-    }
-    if (this.styleId) {
-      this.webComponent.setAttribute('style-id', this.styleId);
-    }
-
+    // Handle non-attribute properties
     if (this.errorTransformer) {
       this.webComponent.errorTransformer = this.errorTransformer;
     }
@@ -170,28 +180,13 @@ export class DescopeComponent implements OnInit, OnChanges {
       this.webComponent.onScreenUpdate = this.onScreenUpdate;
     }
 
-    if (this.client) {
-      this.webComponent.setAttribute('client', JSON.stringify(this.client));
-    }
-
-    if (this.nonce) {
-      this.webComponent.setAttribute('nonce', JSON.stringify(this.nonce));
-    }
-
-    if (this.dismissScreenErrorOnInput) {
-      this.webComponent.setAttribute(
-        'dismiss-screen-error-on-input',
-        JSON.stringify(this.dismissScreenErrorOnInput)
-      );
-    }
-
-    if (this.form) {
-      this.webComponent.setAttribute('form', JSON.stringify(this.form));
-    }
-
     if (this.logger) {
       this.webComponent.logger = this.logger;
     }
+  }
+
+  private setupEventListeners(): void {
+    if (!this.webComponent) return;
 
     this.webComponent.addEventListener('success', (e: Event) => {
       from(
