@@ -1,4 +1,11 @@
-import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  CUSTOM_ELEMENTS_SCHEMA
+} from '@angular/core';
 import DescopeAccessKeyManagementWidget from '@descope/access-key-management-widget';
 import { ILogger } from '@descope/web-component';
 import { DescopeAuthConfig } from '../../types/types';
@@ -6,6 +13,7 @@ import { DescopeAuthConfig } from '../../types/types';
 @Component({
   selector: 'access-key-management[tenant]',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: ''
 })
 export class AccessKeyManagementComponent implements OnInit, OnChanges {
