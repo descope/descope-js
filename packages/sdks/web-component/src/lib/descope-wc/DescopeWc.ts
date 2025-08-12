@@ -997,8 +997,13 @@ class DescopeWc extends BaseDescopeWc {
       readyScreenId,
     );
 
-    const { oidcLoginHint, oidcPrompt, oidcErrorRedirectUri, samlIdpUsername } =
-      ssoQueryParams;
+    const {
+      oidcLoginHint,
+      oidcPrompt,
+      oidcErrorRedirectUri,
+      oidcResource,
+      samlIdpUsername,
+    } = ssoQueryParams;
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
@@ -1027,6 +1032,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      oidcResource,
       action,
     };
 
