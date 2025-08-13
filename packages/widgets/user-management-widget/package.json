@@ -82,6 +82,7 @@
   },
   "dependencies": {
     "@descope/web-js-sdk": "workspace:*",
+    "@descope/web-component": "workspace:*",
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
     "@descope/sdk-component-drivers": "workspace:*",
