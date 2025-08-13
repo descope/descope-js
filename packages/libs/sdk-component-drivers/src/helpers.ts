@@ -1,12 +1,10 @@
-import { RefOrRefFn } from './types';
-
-export const waitForElement = async (ele: RefOrRefFn, timeout: number) =>
+export const waitFor = async (fn: () => any, timeout: number) =>
   new Promise<Element | null>((resolve) => {
     const interval = setInterval(() => {
-      const element = typeof ele === 'function' ? ele() : ele;
-      if (element) {
+      const value = fn();
+      if (value) {
         clearInterval(interval);
-        resolve(element);
+        resolve(value);
       }
     }, 100);
     setTimeout(() => {

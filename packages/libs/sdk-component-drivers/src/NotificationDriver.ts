@@ -12,6 +12,8 @@ export class NotificationDriver extends BaseDriver {
   }
 
   setContent(template: HTMLTemplateElement) {
+    if (!this.ele) return;
+
     this.ele.innerHTML = '';
     this.ele.appendChild(template.content.cloneNode(true));
   }
