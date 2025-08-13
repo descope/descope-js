@@ -14,9 +14,8 @@ import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { createFlowTemplate } from '../../../../helpers';
 import {
-  getEnableOneOrMore,
-  getEnableOnlyOne,
-  getSelectedUsersMap,
+  getSelectedUsersAllIds,
+  getSelectedUsersLoginIds,
   getSelectedUsersUserIds,
 } from '../../../state/selectors';
 
@@ -38,18 +37,18 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
 
       #modalCallback: (() => void) | null = null;
 
+      #removePageUpdatedCallback: (() => void) | null = null;
+
       #initComponents(ele: Element) {
         const button = new GenericFlowButtonDriver(ele, {
           logger: this.logger,
         });
-        button.disable();
         button.onClick(() => {
           this.#initModalContent(button.flowId, button.enableMode);
         });
-        this.#onIsUserSelectedUpdate(
-          button,
-          getEnableOneOrMore(this.state),
-          getEnableOnlyOne(this.state),
+        this.subscribe(
+          this.#onIsUserSelectedUpdate.bind(this),
+          getSelectedUsersLoginIds,
         );
         this.#flowButtons.push(button);
       }
@@ -58,7 +57,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         const eles = this.shadowRoot?.querySelectorAll(
           '[data-generic-flow-button-id]',
         );
-
         Array.from(eles).forEach((ele) => {
           this.#initComponents(ele);
         });
@@ -69,7 +67,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         this.#modal.afterClose = () => {
           if (this.#modalCallback) {
             const sdk = this.#modal.ele?.querySelector('descope-wc');
-            sdk?.removeEventListener('page-updated', this.#modalCallback);
+            this.#removePageUpdatedCallback?.();
             this.#modalCallback = null;
           }
         };
@@ -81,17 +79,17 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       }
 
       // eslint-disable-next-line class-methods-use-this
-      #onModalNeeded(modal: ModalDriver, sdk: any, callback: () => void) {
-        modal.open();
-        sdk.removeEventListener('page-updated', callback);
+      #onModalNeeded() {
+        this.#modal.open();
+        this.#removePageUpdatedCallback?.();
       }
 
       #openModalIfNeeded(modal: ModalDriver, cbRef: () => void | null) {
         const sdk = modal.ele?.querySelector('descope-wc');
-        const cb = () => this.#onModalNeeded(modal, sdk, cb);
+        const cb = () => this.#onModalNeeded();
         // eslint-disable-next-line no-param-reassign
         cbRef = cb;
-        sdk?.addEventListener('page-updated', cbRef);
+        this.#removePageUpdatedCallback = this.#flow.onPageUpdated(cbRef);
       }
 
       #initModalContent(
@@ -110,7 +108,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             enableMode,
             client: JSON.stringify({
               userIds: getSelectedUsersUserIds(this.state),
-              loginIds: getSelectedUsersMap(this.state),
+              loginIds: getSelectedUsersAllIds(this.state),
             }),
           }),
         );
@@ -122,52 +120,27 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       }
 
       #onIsUserSelectedUpdate = withMemCache(
-        (
-          button: GenericFlowButtonDriver,
-          isEnableOneOrMore: ReturnType<typeof getEnableOneOrMore>,
-          isEnableOnlyOne: ReturnType<typeof getEnableOnlyOne>,
-        ) => {
-          switch (button.enableMode) {
-            case 'oneOrMore':
-              if (isEnableOneOrMore) {
-                button.enable();
-              } else {
-                button.disable();
-              }
-              break;
-            case 'onlyOne':
-              if (isEnableOnlyOne) {
-                button.enable();
-              } else {
-                button.disable();
-              }
-              break;
-            case 'always':
+        (selectedUsers: ReturnType<typeof getSelectedUsersLoginIds>) => {
+          console.log('selectedUsers', selectedUsers);
+          this.#flowButtons.forEach((button) => {
+            if (
+              (button.enableMode === 'onlyOne' && selectedUsers.length === 1) ||
+              (button.enableMode === 'oneOrMore' && selectedUsers.length > 0) ||
+              button.enableMode === 'always'
+            ) {
               button.enable();
-              break;
-            default:
+            } else {
               button.disable();
-              break;
-          }
+            }
+          });
         },
       );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
-
         this.#initModal();
         this.#initFlowButtons();
-        this.#flowButtons.forEach((button) => {
-          this.subscribe(
-            () =>
-              this.#onIsUserSelectedUpdate(
-                button,
-                getEnableOneOrMore(this.state),
-                getEnableOnlyOne(this.state),
-              ),
-            (state) => [getEnableOneOrMore(state), getEnableOnlyOne(state)],
-          );
-        });
+        this.#onIsUserSelectedUpdate(getSelectedUsersLoginIds(this.state));
       }
     },
 );

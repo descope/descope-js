@@ -57,11 +57,13 @@ export const getSelectedUsersUserIds = createSelector(
   getSelectedUsers,
   (users) => users.map((user) => user.userId),
 );
-export const getSelectedUsersMap = createSelector(getSelectedUsers, (users) =>
-  users.map((user) => ({
-    userId: user.userId,
-    loginIds: [...user.loginIds],
-  })),
+export const getSelectedUsersAllIds = createSelector(
+  getSelectedUsers,
+  (users) =>
+    users.map(({ userId, loginIds }) => ({
+      userId,
+      loginIds,
+    })),
 );
 
 export const getSelectedUsersStatus = createSelector(
