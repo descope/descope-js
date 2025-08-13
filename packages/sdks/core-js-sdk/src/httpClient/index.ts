@@ -1,9 +1,13 @@
+import { DEFAULT_BASE_API_URL } from '../constants';
 import { getClientSessionId, transformSetCookie } from './helpers';
 import createFetchLogger from './helpers/createFetchLogger';
 import {
+  AfterRequest,
+  BeforeRequest,
   CreateHttpClientConfig,
   HttpClient,
   HTTPMethods,
+  MultipleHooks,
   RequestConfig,
 } from './types';
 import { urlBuilder } from './urlBuilder';
@@ -63,13 +67,52 @@ const isJson = (value?: string) => {
   return typeof value === 'object' && value !== null;
 };
 
+/** Add the ability to pass multiple hooks instead of one when creating an http client */
+const withMultipleHooks =
+  <T extends object>(createHttpClient: (config: CreateHttpClientConfig) => T) =>
+  (
+    config: Omit<CreateHttpClientConfig, 'hooks'> & { hooks?: MultipleHooks },
+  ) => {
+    const beforeRequest: BeforeRequest = (conf) => {
+      // get the before hooks from the config while function is running
+      // because the hooks might change after sdk creation
+      const beforeRequestHooks = [].concat(config.hooks?.beforeRequest || []);
+      return beforeRequestHooks?.reduce((acc, fn) => fn(acc), conf);
+    };
+
+    const afterRequest: AfterRequest = async (req, res) => {
+      // get the after hooks from the config while function is running
+      // because the hooks might change after sdk creation
+      const afterRequestHooks = [].concat(config.hooks?.afterRequest || []);
+      // do not remove this check - on old versions of react-native it is required
+      if (afterRequestHooks.length == 0) return;
+      const results = await Promise.allSettled(
+        afterRequestHooks?.map((fn) => fn(req, res?.clone())),
+      );
+      // eslint-disable-next-line no-console
+      results.forEach(
+        (result) =>
+          result.status === 'rejected' && config.logger?.error(result.reason),
+      );
+    };
+
+    return createHttpClient({
+      ...config,
+      hooks: {
+        beforeRequest,
+        afterRequest,
+        transformResponse: config.hooks?.transformResponse,
+      },
+    });
+  };
+
 /**
  * Create the HTTP client used to send HTTP requests to the Descope API
  *
  * @param CreateHttpClientConfig Configuration for the client
  */
 const createHttpClient = ({
-  baseUrl,
+  baseUrl = DEFAULT_BASE_API_URL,
   projectId,
   baseConfig,
   refreshCookieName,
@@ -185,5 +228,5 @@ const createHttpClient = ({
   };
 };
 
-export default createHttpClient;
+export default withMultipleHooks((config) => createHttpClient(config));
 export type { HttpClient };

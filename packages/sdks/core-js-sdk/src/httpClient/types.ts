@@ -45,7 +45,7 @@ export type Fetch = typeof fetch;
 
 /** Parameters for the HTTP client. Defaults should work for most cases. */
 export type CreateHttpClientConfig = {
-  baseUrl: string;
+  baseUrl?: string;
   projectId: string;
   baseConfig?: { baseHeaders: HeadersInit };
   logger?: Logger;
@@ -76,6 +76,14 @@ export type AfterRequest = (
 export type Hooks = {
   beforeRequest?: BeforeRequest;
   afterRequest?: AfterRequest;
+  transformResponse?: (
+    mutableResponse: ExtendedResponse,
+  ) => Promise<ExtendedResponse>;
+};
+
+export type MultipleHooks = {
+  beforeRequest?: BeforeRequest | BeforeRequest[];
+  afterRequest?: AfterRequest | AfterRequest[];
   transformResponse?: (
     mutableResponse: ExtendedResponse,
   ) => Promise<ExtendedResponse>;
