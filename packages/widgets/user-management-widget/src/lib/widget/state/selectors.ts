@@ -57,6 +57,14 @@ export const getSelectedUsersUserIds = createSelector(
   getSelectedUsers,
   (users) => users.map((user) => user.userId),
 );
+export const getSelectedUsersAllIds = createSelector(
+  getSelectedUsers,
+  (users) =>
+    users.map(({ userId, loginIds }) => ({
+      userId,
+      loginIds,
+    })),
+);
 
 export const getSelectedUsersStatus = createSelector(
   getSelectedUsers,
@@ -146,3 +154,6 @@ export const getCanResetPassword = createSelector(
 );
 
 export const getCanDelete = getIsUsersSelected;
+
+export const getEnableOneOrMore = getIsUsersSelected;
+export const getEnableOnlyOne = getIsSingleUsersSelected;

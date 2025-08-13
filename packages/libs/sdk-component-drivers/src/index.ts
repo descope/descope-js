@@ -2,6 +2,7 @@ export * from './AppsListDriver';
 export * from './AvatarDriver';
 export * from './ButtonDriver';
 export * from './FlowDriver';
+export * from './GenericFlowButtonDriver';
 export * from './gridDrivers/GridDriver';
 export * from './LinkDriver';
 export * from './ModalDriver';
