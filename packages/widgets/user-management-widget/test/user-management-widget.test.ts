@@ -184,7 +184,7 @@ describe('user-management-widget', () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
       const loginId = mockUsers[0]['loginIds'][0];
       const updateData = {
-        loginId: loginId,
+        loginId,
         displayName: 'Updated Name',
         email: 'updated@example.com',
         customAttributes: { role: 'admin' },

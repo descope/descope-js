@@ -66,7 +66,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         this.#modal = this.createModal({ 'data-id': 'generic-flow-modal' });
         this.#modal.afterClose = () => {
           if (this.#modalCallback) {
-            const sdk = this.#modal.ele?.querySelector('descope-wc');
             this.#removePageUpdatedCallback?.();
             this.#modalCallback = null;
           }
@@ -85,7 +84,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       }
 
       #openModalIfNeeded(modal: ModalDriver, cbRef: () => void | null) {
-        const sdk = modal.ele?.querySelector('descope-wc');
         const cb = () => this.#onModalNeeded();
         // eslint-disable-next-line no-param-reassign
         cbRef = cb;
