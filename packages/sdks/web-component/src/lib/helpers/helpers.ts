@@ -18,6 +18,7 @@ import {
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OVERRIDE_CONTENT_URL,
   OIDC_PROMPT_PARAM_NAME,
+  OIDC_RESOURCE_PARAM_NAME,
   OIDC_ERROR_REDIRECT_URI_PARAM_NAME,
   THIRD_PARTY_APP_ID_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
@@ -292,6 +293,14 @@ export function clearOIDCErrorRedirectUriParamFromUrl() {
   resetUrlParam(OIDC_ERROR_REDIRECT_URI_PARAM_NAME);
 }
 
+export function getOIDCResourceParamFromUrl() {
+  return getUrlParam(OIDC_RESOURCE_PARAM_NAME);
+}
+
+export function clearOIDCResourceParamFromUrl() {
+  resetUrlParam(OIDC_RESOURCE_PARAM_NAME);
+}
+
 export const camelCase = (s: string) =>
   s.replace(/-./g, (x) => x[1].toUpperCase());
 
@@ -418,6 +427,11 @@ export const handleUrlParams = (
     clearOIDCErrorRedirectUriParamFromUrl();
   }
 
+  const oidcResource = getOIDCResourceParamFromUrl();
+  if (oidcResource) {
+    clearOIDCResourceParamFromUrl();
+  }
+
   const idpInitiatedVal = descopeIdpInitiated === 'true';
 
   return {
@@ -440,6 +454,7 @@ export const handleUrlParams = (
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      oidcResource,
       thirdPartyAppId,
       thirdPartyAppStateId,
       applicationScopes,
@@ -616,6 +631,7 @@ export const showFirstScreenOnExecutionInit = (
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
+    oidcResource,
     thirdPartyAppId,
     thirdPartyAppStateId,
     applicationScopes,
@@ -629,6 +645,7 @@ export const showFirstScreenOnExecutionInit = (
   !oidcLoginHint &&
   !oidcPrompt &&
   !oidcErrorRedirectUri &&
+  !oidcResource &&
   !thirdPartyAppId &&
   !thirdPartyAppStateId &&
   !applicationScopes;
