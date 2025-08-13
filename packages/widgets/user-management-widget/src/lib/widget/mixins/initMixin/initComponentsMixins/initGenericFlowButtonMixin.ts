@@ -119,7 +119,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
 
       #onIsUserSelectedUpdate = withMemCache(
         (selectedUsers: ReturnType<typeof getSelectedUsersLoginIds>) => {
-          console.log('selectedUsers', selectedUsers);
           this.#flowButtons.forEach((button) => {
             if (
               (button.enableMode === 'onlyOne' && selectedUsers.length === 1) ||
