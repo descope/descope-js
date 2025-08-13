@@ -44,7 +44,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           logger: this.logger,
         });
         button.onClick(() => {
-          this.#initModalContent(button.flowId, button.enableMode);
+          this.#initModalContent(button.flowId);
         });
         this.subscribe(
           this.#onIsUserSelectedUpdate.bind(this),
@@ -90,10 +90,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         this.#removePageUpdatedCallback = this.#flow.onPageUpdated(cbRef);
       }
 
-      #initModalContent(
-        flowId: string,
-        enableMode: 'oneOrMore' | 'onlyOne' | 'always',
-      ) {
+      #initModalContent(flowId: string) {
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
