@@ -80,6 +80,7 @@ export type OIDCOptions = {
   oidcLoginHint?: string;
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
+  oidcResource?: string;
 };
 
 export type Locale = {
