@@ -103,7 +103,6 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
-            enableMode,
             client: JSON.stringify({
               userIds: getSelectedUsersUserIds(this.state),
               loginIds: getSelectedUsersAllIds(this.state),

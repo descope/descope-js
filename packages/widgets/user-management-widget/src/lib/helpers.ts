@@ -14,7 +14,6 @@ type FlowConfig = {
   refreshCookieName?: string;
   theme?: string;
   client?: string;
-  enableMode?: 'oneOrMore' | 'onlyOne' | 'always';
 };
 
 export const unflatten = (formData: Partial<User>, keyPrefix: string) =>
