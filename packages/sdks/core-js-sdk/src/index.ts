@@ -1,8 +1,10 @@
 import createSdk from './createSdk';
 import {
+  CreateHttpClientConfig,
+  ExtendedResponse,
+  HttpClient,
   HTTPMethods,
   RequestConfig,
-  ExtendedResponse,
 } from './httpClient/types';
 import { OAuthProviders } from './sdk/oauth/types';
 import { DeliveryMethods } from './sdk/types';
@@ -25,28 +27,35 @@ import { DeliveryMethods } from './sdk/types';
  */
 export default Object.assign(createSdk, { DeliveryMethods });
 
+export { default as HttpStatusCodes } from './constants/httpStatusCodes';
+export { default as createHttpClient } from './httpClient';
 export { transformResponse } from './sdk/helpers';
 export type {
+  AccessKeyLoginOptions,
   EnchantedLinkResponse,
   ExchangeAccessKeyResponse,
   FlowAction,
   FlowResponse,
   FlowStatus,
   JWTResponse,
+  LoginOptions,
+  PasskeyOptions,
   ResponseData,
   SdkResponse,
   TOTPResponse,
   URLResponse,
-  UserResponse,
   UserHistoryResponse,
-  LoginOptions,
-  AccessKeyLoginOptions,
-  PasskeyOptions,
+  UserResponse,
 } from './sdk/types';
 export * from './utils';
-export { default as HttpStatusCodes } from './constants/httpStatusCodes';
 export type { SdkFnWrapper } from './utils';
-export type { HTTPMethods, RequestConfig, ExtendedResponse };
+export type {
+  CreateHttpClientConfig,
+  ExtendedResponse,
+  HttpClient,
+  HTTPMethods,
+  RequestConfig,
+};
 
 /** Type to restrict to valid delivery methods */
 export type DeliveryMethod = keyof typeof DeliveryMethods;
