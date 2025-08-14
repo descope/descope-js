@@ -8,6 +8,43 @@ type Logger = {
   debug(...data: any[]): void;
 };
 
+const singleMultiValue = (arr: any[]) => (arr.length === 1 ? arr[0] : arr);
+
+const createProxy = (elements: Element[]): ElementsProxy => {
+  return new Proxy(
+    {},
+    {
+      get(_, prop, receiver) {
+        if (prop === Symbol.iterator) {
+          // Allow: for (const el of $items) { ... }
+          return function* () {
+            yield* elements;
+          };
+        }
+        if (prop === '__list') return elements;
+
+        if (elements.every((el) => typeof el[prop] === 'function')) {
+          return (...args) =>
+            singleMultiValue(elements.map((el) => el[prop].apply(el, args)));
+        }
+
+        return singleMultiValue(elements.map((el) => el[prop]));
+      },
+
+      set(_, prop, val) {
+        elements.forEach((el) => {
+          el[prop] = val;
+        });
+        return true;
+      },
+
+      has(_, prop) {
+        return elements.every((e) => prop in e);
+      },
+    },
+  ) as ElementsProxy;
+};
+
 export class BaseDriver<
   T extends DriverElement | DriverElements = DriverElement,
 > {
@@ -27,107 +64,79 @@ export class BaseDriver<
     return waitFor(() => this.ele, 1000);
   }
 
-  #handleSingleElement(ele: Element | Empty) {
-    if (!ele) {
-      this.logger?.debug(
-        `Driver element is not available for ${this.nodeName}`,
-        new Error(),
-      );
+  get ele(): T extends DriverElement ? Element : ElementsProxy {
+    const ele = typeof this.#ele === 'function' ? this.#ele() : this.#ele;
 
-      return null;
-    }
+    const elements =
+      ele instanceof Element
+        ? [ele]
+        : ele instanceof NodeList
+          ? Array.from(ele)
+          : [];
 
-    if (ele?.localName !== this.nodeName) {
-      this.logger?.debug(
-        `node name do not match, expected "${this.nodeName}", received "${ele.localName}" `,
-        Error(),
-      );
-
-      return null;
-    }
-
-    return ele;
-  }
-
-  handleMultiElements(ele: NodeListOf<Element> | Empty): ElementsProxy | null {
-    if (!ele || ele.length === 0) {
+    if (elements.length === 0) {
       this.logger?.debug(
         `Driver elements are not available for ${this.nodeName}`,
         new Error(),
       );
-      return null;
     }
 
-    const eles = Array.from(ele);
-
-    if (eles.some((e) => e.localName !== this.nodeName)) {
+    const filteredEles = elements.filter((e) => e.localName === this.nodeName);
+    if (filteredEles.length !== elements.length) {
       this.logger?.debug(
-        `node name do not match, expected "${this.nodeName}", received "${eles
-          .map((e) => e.localName)
-          .join(', ')}" `,
+        `node name do not match, expected "${
+          this.nodeName
+        }", received "${elements.map((e) => e.localName).join(', ')}" `,
         Error(),
       );
-
-      return null;
     }
 
-    const createProxy = (elements: Element[]): ElementsProxy => {
-      return new Proxy(
-        {},
-        {
-          get(_, prop, receiver) {
-            if (prop === Symbol.iterator) {
-              // Allow: for (const el of $items) { ... }
-              return function* () {
-                yield* elements;
-              };
-            }
-            if (prop === 'length') return elements.length;
-
-            if (prop === 'filter') {
-              return (cb: (el: Element) => boolean) => {
-                const filteredEles = elements.filter(cb);
-                return createProxy(filteredEles);
-              };
-            }
-
-            if (elements.every((el) => typeof el[prop] === 'function')) {
-              return (...args) =>
-                elements.map((el) => el[prop].apply(el, args));
-            }
-
-            return elements.map((el) => el[prop]);
-          },
-
-          set(_, prop, val) {
-            elements.forEach((el) => {
-              el[prop] = val;
-            });
-            return true;
-          },
-
-          has(_, prop) {
-            return elements.every((e) => prop in e);
-          },
-        },
-      ) as ElementsProxy;
-    };
-
-    return createProxy(eles);
+    return createProxy(filteredEles) as T extends DriverElement
+      ? Element
+      : ElementsProxy;
   }
 
-  get ele(): T extends DriverElement ? Element | null : ElementsProxy | null {
-    const ele = typeof this.#ele === 'function' ? this.#ele() : this.#ele;
+  _filter(cb: (el: Element, index?: number) => boolean): this {
+    return new (this.constructor as any)(
+      () => (this.ele as ElementsProxy).__list.filter(cb),
+      { logger: this.logger },
+    );
+  }
 
-    if (ele instanceof Element) {
-      return this.#handleSingleElement(ele) as T extends DriverElement
-        ? Element | null
-        : ElementsProxy | null;
-    } else if (ele instanceof NodeList) {
-      return this.handleMultiElements(ele) as T extends DriverElement
-        ? Element | null
-        : ElementsProxy | null;
-    }
-    return null;
+  _find(cb: (el: Element, index?: number) => boolean): this {
+    return new (this.constructor as any)(
+      () => (this.ele as ElementsProxy).__list.find(cb) || [],
+      { logger: this.logger },
+    );
+  }
+
+  _length() {
+    return (this.ele as ElementsProxy).__list.length;
+  }
+
+  _addEventListener(
+    type: string,
+    cb: (e: Event, targetDriver: this) => void,
+    options?: boolean | AddEventListenerOptions,
+  ): () => void {
+    const ele = this.ele;
+    const onEvent = (e) => {
+      cb(
+        e,
+        this._find((el) => el === e.target),
+      );
+    };
+    ele?.addEventListener(type, onEvent, options);
+
+    return () => ele?.removeEventListener(type, onEvent, options);
+  }
+
+  _getAttribute(
+    name: string,
+  ): T extends DriverElement ? string | null : (string | null)[] {
+    const result = this.ele.getAttribute(name);
+    return result as T extends DriverElement
+      ? string | null
+      : (string | null)[];
   }
 }

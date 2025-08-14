@@ -13,7 +13,7 @@ export type DriverElements = DriverEles | DriverElesGetter;
 export type ElementsProxy = {
   readonly length: number;
   [Symbol.iterator](): IterableIterator<Element>;
-  filter(callback: (element: Element) => boolean): ElementsProxy;
+  __list: Element[];
 } & {
   // All properties that exist on Element, but as arrays of those properties
   [K in keyof Element]: Element[K] extends (...args: any[]) => any

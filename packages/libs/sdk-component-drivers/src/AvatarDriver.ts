@@ -1,23 +1,24 @@
 import { BaseDriver } from './BaseDriver';
+import { DriverElement, DriverElements } from './types';
 
-export class AvatarDriver extends BaseDriver {
+export class AvatarDriver<
+  T extends DriverElement | DriverElements = DriverElement,
+> extends BaseDriver<T> {
   nodeName = 'descope-avatar';
 
   set displayName(name: string) {
-    this.ele?.setAttribute('display-name', name);
+    this.ele.setAttribute('display-name', name);
   }
 
   set image(imgUrl: string) {
-    this.ele?.setAttribute('img', imgUrl);
+    this.ele.setAttribute('img', imgUrl);
   }
 
   get flowId() {
-    return this.ele?.getAttribute('flow-id');
+    return this._getAttribute('flow-id');
   }
 
   onClick(cb: (e: Event) => void) {
-    this.ele?.addEventListener('click', cb);
-
-    return () => this.ele?.removeEventListener('click', cb);
+    return this._addEventListener('click', cb);
   }
 }

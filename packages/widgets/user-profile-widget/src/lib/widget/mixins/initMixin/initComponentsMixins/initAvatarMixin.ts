@@ -31,7 +31,10 @@ export const initAvatarMixin = createSingletonMixin(
       initWidgetRootMixin,
       modalMixin,
     )(superclass) {
-      avatar: AvatarDriver;
+      avatar = new AvatarDriver(
+        () => this.shadowRoot?.querySelector('descope-avatar'),
+        { logger: this.logger },
+      );
 
       #modal: ModalDriver;
 
@@ -69,11 +72,6 @@ export const initAvatarMixin = createSingletonMixin(
       }
 
       #initAvatar() {
-        this.avatar = new AvatarDriver(
-          () => this.shadowRoot?.querySelector('descope-avatar'),
-          { logger: this.logger },
-        );
-
         this.avatar.onClick(() => {
           this.#modal?.open();
         });
