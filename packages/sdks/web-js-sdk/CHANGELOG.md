@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.34.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.7...web-js-sdk-1.34.0) (2025-08-14)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.46.0`
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
 ## [1.33.7](https://github.com/descope/descope-js/compare/web-js-sdk-1.33.6...web-js-sdk-1.33.7) (2025-08-07)
 
 ### Dependency Updates
