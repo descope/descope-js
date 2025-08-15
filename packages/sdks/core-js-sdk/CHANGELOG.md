@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.46.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.45.0...core-js-sdk-2.46.0) (2025-08-14)
+
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
+## [2.45.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.5...core-js-sdk-2.45.0) (2025-08-07)
+
+
+### Features
+
+* added the option to add external request id to requests - React SDK only ([#1177](https://github.com/descope/descope-js/issues/1177)) ([b1d353b](https://github.com/descope/descope-js/commit/b1d353b8a9855498286eec96b6213bb68620e5ef))
+
 ## [2.44.5](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.4...core-js-sdk-2.44.5) (2025-08-05)
 
 

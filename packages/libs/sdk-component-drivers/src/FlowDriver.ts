@@ -28,4 +28,9 @@ export class FlowDriver extends BaseDriver {
 
     return () => this.ele?.removeEventListener('success', cb);
   }
+  onPageUpdated(cb: () => void) {
+    this.ele?.addEventListener('page-updated', cb);
+
+    return () => this.ele?.removeEventListener('page-updated', cb);
+  }
 }

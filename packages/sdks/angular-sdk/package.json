@@ -1,6 +1,6 @@
 {
   "name": "@descope/angular-sdk",
-  "version": "0.18.0",
+  "version": "0.18.3",
   "peerDependencies": {
     "@angular/common": ">=16.0.0",
     "@angular/core": ">=16.0.0"

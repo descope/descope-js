@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.2...outbound-applications-widget-0.1.3) (2025-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.0`
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `sdk-component-drivers` updated to version `0.6.0`
+* `web-component` updated to version `3.46.0`
+## [0.1.2](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.1...outbound-applications-widget-0.1.2) (2025-08-10)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.45.1`
+## [0.1.1](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.0...outbound-applications-widget-0.1.1) (2025-08-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.7`
+* `web-component` updated to version `3.45.0`
 ## 0.1.0 (2025-08-05)
 
 ### Dependency Updates

@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.46.0](https://github.com/descope/descope-js/compare/web-component-3.45.1...web-component-3.46.0) (2025-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `web-js-sdk` updated to version `1.34.0`
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
+## [3.45.1](https://github.com/descope/descope-js/compare/web-component-3.45.0...web-component-3.45.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* reload sdk scripts when restoring components state RELEASE ([#1183](https://github.com/descope/descope-js/issues/1183)) ([5d568c5](https://github.com/descope/descope-js/commit/5d568c579425da67bb68104c9bfea5f7e91f3747))
+
+## [3.45.0](https://github.com/descope/descope-js/compare/web-component-3.44.4...web-component-3.45.0) (2025-08-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.7`
+
+### Features
+
+* Darwinium ([#1180](https://github.com/descope/descope-js/issues/1180)) RELEASE ([cc79883](https://github.com/descope/descope-js/commit/cc79883bb7c23a29640868e74216cc46c27fcb9b))
+
+
+### Bug Fixes
+
+* remove loading state when closing oauth popup manually ([#1179](https://github.com/descope/descope-js/issues/1179)) ([d3602c3](https://github.com/descope/descope-js/commit/d3602c3330b47ad841de8530c51f97d3bd0efa49))
+
 ## [3.44.4](https://github.com/descope/descope-js/compare/web-component-3.44.3...web-component-3.44.4) (2025-08-05)
 
 ### Dependency Updates

@@ -276,6 +276,7 @@ class DescopeWc extends BaseDescopeWc {
         );
         resolve(script.id);
       };
+
     this.loggerWrapper.debug(
       `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
@@ -292,7 +293,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.9', // currently using a fixed version when loading scripts
+          '1.0.11', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
@@ -300,7 +301,7 @@ class DescopeWc extends BaseDescopeWc {
           try {
             const moduleRes = module(
               script.initArgs as any,
-              { baseUrl: this.baseUrl },
+              { baseUrl: this.baseUrl, ref: this },
               createScriptCallback(script, resolve),
             );
             if (moduleRes) {
@@ -839,9 +840,27 @@ class DescopeWc extends BaseDescopeWc {
       if (redirectIsPopup) {
         // this width is below the breakpoint of most providers
         this.loggerWrapper.debug('Opening redirect in popup');
-        openCenteredPopup(redirectTo, '?', 598, 700);
-        this.loggerWrapper.debug('Opened redirect in popup, creating channel');
+        const popup = openCenteredPopup(redirectTo, '?', 598, 700);
+
+        this.loggerWrapper.debug('Creating broadcast channel');
         const channel = new BroadcastChannel(executionId);
+
+        this.loggerWrapper.debug('Starting popup closed detection');
+        // detect when the popup is closed
+        const intervalId = setInterval(() => {
+          if (popup.closed) {
+            this.loggerWrapper.debug(
+              'Popup closed, dispatching popupclosed event and clearing interval',
+            );
+            clearInterval(intervalId);
+
+            // we are dispatching a popupclosed event so we can handle it on other parts of the code (loading state management)
+            this.#dispatch('popupclosed', {});
+
+            this.loggerWrapper.debug('Closing channel');
+            channel.close();
+          }
+        }, 1000);
 
         this.loggerWrapper.debug('Listening for postMessage on channel');
         const onPostMessage = (event: MessageEvent) => {
@@ -867,8 +886,6 @@ class DescopeWc extends BaseDescopeWc {
             `PostMessage action: ${action}, data: ${JSON.stringify(data)}`,
           );
           if (action === 'code') {
-            this.loggerWrapper.debug('Closing channel');
-            channel.close();
             this.loggerWrapper.debug(
               'Updating flow state with code and exchangeError',
             );
@@ -980,8 +997,13 @@ class DescopeWc extends BaseDescopeWc {
       readyScreenId,
     );
 
-    const { oidcLoginHint, oidcPrompt, oidcErrorRedirectUri, samlIdpUsername } =
-      ssoQueryParams;
+    const {
+      oidcLoginHint,
+      oidcPrompt,
+      oidcErrorRedirectUri,
+      oidcResource,
+      samlIdpUsername,
+    } = ssoQueryParams;
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
@@ -1010,6 +1032,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      oidcResource,
       action,
     };
 
@@ -1594,12 +1617,16 @@ class DescopeWc extends BaseDescopeWc {
     return isValid;
   }
 
-  async #getFormData() {
-    const inputs = Array.from(
+  getInputs() {
+    return Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
+        `*:not(slot)[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
       ),
     ) as HTMLInputElement[];
+  }
+
+  async #getFormData() {
+    const inputs = this.getInputs();
 
     // wait for all inputs
     const values = await Promise.all(
@@ -1620,6 +1647,7 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
+
   #handleComponentsLoadingState(submitter: HTMLElement) {
     const enabledElements = Array.from(
       this.contentRootElement.querySelectorAll(
@@ -1627,14 +1655,23 @@ class DescopeWc extends BaseDescopeWc {
       ),
     ).filter((ele) => ele !== submitter);
 
-    const handleScreenIdUpdates = () => {
-      const restoreComponentsState = () => {
-        submitter.removeAttribute('loading');
-        enabledElements.forEach((ele) => {
-          ele.removeAttribute('disabled');
-        });
-      };
+    const restoreComponentsState = async () => {
+      this.loggerWrapper.debug('Restoring components state');
+      this.removeEventListener('popupclosed', restoreComponentsState);
+      submitter.removeAttribute('loading');
+      enabledElements.forEach((ele) => {
+        ele.removeAttribute('disabled');
+      });
+      // if there are client scripts, we want to reload them
+      const flowConfig = await this.getFlowConfig();
+      const clientScripts = [
+        ...(flowConfig.clientScripts || []),
+        ...(flowConfig.sdkScripts || []),
+      ];
+      this.loadSdkScripts(clientScripts);
+    };
 
+    const handleScreenIdUpdates = () => {
       // we want to remove the previous pageshow listener to avoid multiple listeners
       window.removeEventListener('pageshow', this.#prevPageShowListener);
 
@@ -1659,6 +1696,7 @@ class DescopeWc extends BaseDescopeWc {
           if (screenId === prevScreenId) {
             restoreComponentsState();
           }
+          this.removeEventListener('popupclosed', restoreComponentsState);
           this.stepState.unsubscribe(unsubscribeScreenIdUpdates);
         },
         (state) => state.screenId,
@@ -1670,6 +1708,9 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          this.addEventListener('popupclosed', restoreComponentsState, {
+            once: true,
+          });
           // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
           submitter.setAttribute('loading', 'true');
           enabledElements.forEach((ele) =>

@@ -66,6 +66,25 @@ describe('sdk', () => {
     });
   });
 
+  it('should send oidcResource in start option if provided', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(flowResponse));
+    global.fetch = mockFetch;
+    const sdk = createSdk({ projectId: 'pid' });
+    await sdk.flow.start('id', { oidcResource: 'https://api.example.com' });
+    expect(mockFetch).toBeCalledWith(
+      'https://api.descope.com/v1/flow/start',
+      expect.any(Object),
+    );
+    expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
+      options: {
+        oidcResource: 'https://api.example.com',
+        startOptionsVersion: 1,
+      },
+    });
+  });
+
   it('should set dcs and dcr query params to false on refresh when the refresh and session token do not exist', async () => {
     localStorage.removeItem('DS'); // no session token
     localStorage.removeItem('DSR'); // no refresh token
