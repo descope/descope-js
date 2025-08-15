@@ -29,7 +29,7 @@ export type UserData = Exclude<
 >;
 
 type Session = {
-  fetchSession: () => Promise<void>;
+  fetchSession: (tryRefresh?: boolean) => Promise<void>;
   isLoading: Ref<boolean | null>;
   session: Ref<string>;
   isAuthenticated: Ref<boolean>;

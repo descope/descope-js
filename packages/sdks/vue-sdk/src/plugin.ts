@@ -47,9 +47,9 @@ export default {
       user.value = u;
     });
 
-    const fetchSession = async () => {
+    const fetchSession = async (tryRefresh?: boolean) => {
       isSessionLoading.value = true;
-      await sdk.refresh();
+      await sdk.refresh(undefined, tryRefresh);
       isSessionLoading.value = false;
     };
 
