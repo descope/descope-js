@@ -10,6 +10,8 @@ import { initNotificationsMixin } from './initComponentsMixins/initNotifications
 import { initRemovePasskeyButtonMixin } from './initComponentsMixins/initRemovePasskeyButtonMixin';
 import { initUsersTableMixin } from './initComponentsMixins/initUsersTableMixin';
 import { initResetPasswordButtonMixin } from './initComponentsMixins/initResetPasswordButtonMixin';
+import { initGenericFlowButtonMixin } from './initComponentsMixins/initGenericFlowButtonMixin';
+import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -17,6 +19,7 @@ export const initMixin = createSingletonMixin(
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
+      flowRedirectUrlMixin,
       initUsersTableMixin,
       initCreateUserButtonMixin,
       initDeleteUsersButtonMixin,
@@ -27,6 +30,7 @@ export const initMixin = createSingletonMixin(
       initRemovePasskeyButtonMixin,
       initFilterUsersInputMixin,
       initNotificationsMixin,
+      initGenericFlowButtonMixin,
     )(superclass) {
       async init() {
         await super.init?.();

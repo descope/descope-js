@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.3.0...sdk-helpers-0.4.0) (2025-08-14)
+
+
+### Features
+
+* Generic flow button ([#1172](https://github.com/descope/descope-js/issues/1172)) ([9ac9e8c](https://github.com/descope/descope-js/commit/9ac9e8c7fe34fce0d8bd26ec7a824d902a8208ec))
+
 ## [0.3.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.2.0...sdk-helpers-0.3.0) (2025-03-11)
 
 

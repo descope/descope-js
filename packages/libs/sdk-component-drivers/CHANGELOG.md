@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.5.0...sdk-component-drivers-0.6.0) (2025-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.4.0`
+
+### Features
+
+* Generic flow button ([#1172](https://github.com/descope/descope-js/issues/1172)) ([9ac9e8c](https://github.com/descope/descope-js/commit/9ac9e8c7fe34fce0d8bd26ec7a824d902a8208ec))
+
 ## [0.5.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.4.0...sdk-component-drivers-0.5.0) (2025-08-05)
 
 
