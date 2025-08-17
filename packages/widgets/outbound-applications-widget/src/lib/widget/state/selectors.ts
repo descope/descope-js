@@ -17,7 +17,7 @@ export const getAppsList = createSelector(
     obApps
       .filter((app) => allowedIds === undefined || allowedIds.includes(app.id))
       .map((app) => {
-        const isConnected = connectedIds.includes(app.id);
+        const isConnected = connectedIds?.includes(app.id) || false;
         return {
           ...app,
           appId: app.id,
