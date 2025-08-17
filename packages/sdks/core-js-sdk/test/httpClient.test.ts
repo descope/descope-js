@@ -56,6 +56,122 @@ describe('httpClient', () => {
   beforeEach(() => {
     mockFetch.mockReturnValue({ text: () => JSON.stringify({}) });
   });
+
+  it('should support multiple beforeRequest hooks (array) and apply in order', () => {
+    const firstHook = jest.fn((config) => {
+      config.queryParams = { ...config.queryParams, a: '1' };
+      return config;
+    });
+    const secondHook = jest.fn((config) => {
+      config.queryParams = { ...config.queryParams, b: '2' };
+      return config;
+    });
+
+    const clientWithMultipleBefore = createHttpClient({
+      baseUrl: 'http://descope.com',
+      projectId,
+      baseConfig: { baseHeaders: { test: '123' } },
+      hooks: { beforeRequest: [firstHook, secondHook] },
+    });
+
+    clientWithMultipleBefore.get('path', { queryParams: { c: '3' } });
+
+    expect(firstHook).toHaveBeenCalledTimes(1);
+    expect(secondHook).toHaveBeenCalledTimes(1);
+    const calledUrl = mockFetch.mock.calls[0][0];
+    const url = new URL(calledUrl);
+    expect(url.origin + url.pathname).toBe('http://descope.com/path');
+    expect(url.searchParams.get('a')).toBe('1');
+    expect(url.searchParams.get('b')).toBe('2');
+    expect(url.searchParams.get('c')).toBe('3');
+    expect(mockFetch.mock.calls[0][1]).toEqual(
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('should support multiple afterRequest hooks (array) and log errors without failing others', async () => {
+    const logger = {
+      log: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+      warn: jest.fn(),
+    };
+    const goodAfter = jest.fn();
+    const failingAfter = jest.fn(() =>
+      Promise.reject(new Error('after failed')),
+    );
+
+    const clientWithMultipleAfter = createHttpClient({
+      baseUrl: 'http://descope.com',
+      projectId,
+      logger,
+      hooks: { afterRequest: [failingAfter, goodAfter] },
+    });
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      text: () => '{}',
+      url: 'http://descope.com/path',
+      headers: new Headers({}),
+      status: 200,
+      statusText: 'OK',
+    });
+
+    await clientWithMultipleAfter.get('path');
+
+    expect(failingAfter).toHaveBeenCalledTimes(1);
+    expect(goodAfter).toHaveBeenCalledTimes(1);
+    expect(logger.error).toHaveBeenCalled();
+  });
+
+  it('should pick up hooks added after client creation', async () => {
+    const cfg: any = {
+      baseUrl: 'http://descope.com',
+      projectId,
+      baseConfig: { baseHeaders: { test: '123' } },
+      hooks: {},
+    };
+
+    const client = createHttpClient(cfg);
+
+    const beforeRequestHook = jest.fn((config) => config);
+    const afterRequestHook = jest.fn();
+
+    // mutate hooks after client creation
+    cfg.hooks = {
+      beforeRequest: [beforeRequestHook],
+      afterRequest: [afterRequestHook],
+    };
+
+    await client.get('path');
+
+    expect(beforeRequestHook).toHaveBeenCalledTimes(1);
+    expect(afterRequestHook).toHaveBeenCalledTimes(1);
+  });
+
+  it('should use DEFAULT_BASE_API_URL when baseUrl is omitted', () => {
+    const client = createHttpClient({
+      projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+    client.get('one/two/three', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.descope.com/one/two/three',
+      expect.anything(),
+    );
+  });
+
+  it('should use DEFAULT_BASE_API_URL with region extraction when baseUrl is omitted', () => {
+    const client = createHttpClient({
+      projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+    client.get('one/two/three', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.use1.descope.com/one/two/three',
+      expect.anything(),
+    );
+  });
   it('should call fetch with the correct params when calling "get"', () => {
     httpClient.get('1/2/3', {
       headers: { test2: '123' },
