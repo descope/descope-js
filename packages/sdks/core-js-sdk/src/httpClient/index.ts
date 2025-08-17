@@ -228,5 +228,5 @@ const createHttpClient = ({
   };
 };
 
-export default withMultipleHooks((config) => createHttpClient(config));
+export default withMultipleHooks(createHttpClient);
 export type { HttpClient };
