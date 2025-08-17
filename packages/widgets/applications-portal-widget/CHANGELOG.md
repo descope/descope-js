@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.3](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.2...applications-portal-widget-0.4.3) (2025-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.0`
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `sdk-component-drivers` updated to version `0.6.0`
 ## [0.4.2](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.1...applications-portal-widget-0.4.2) (2025-08-07)
 
 ### Dependency Updates

@@ -16,7 +16,6 @@ import withPropsMapping from './withPropsMapping';
 
 // web-component code uses browser API, but can be used in SSR apps, hence the lazy loading
 const DescopeWC = lazy(async () => {
-
   const updateDynamicHeader = (key: string, value: string) => {
     if (value) {
       baseHeaders[key] = value;

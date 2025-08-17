@@ -1,6 +1,6 @@
 {
   "name": "@descope/user-management-widget",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -82,6 +82,7 @@
   },
   "dependencies": {
     "@descope/web-js-sdk": "workspace:*",
+    "@descope/web-component": "workspace:*",
     "@descope/sdk-helpers": "workspace:*",
     "@descope/sdk-mixins": "workspace:*",
     "@descope/sdk-component-drivers": "workspace:*",

@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.18.0](https://github.com/descope/descope-js/compare/react-sdk-2.17.1...react-sdk-2.18.0) (2025-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.4.0`
+* `access-key-management-widget` updated to version `0.5.3`
+* `audit-management-widget` updated to version `0.5.3`
+* `role-management-widget` updated to version `0.4.3`
+* `user-management-widget` updated to version `0.9.0`
+* `user-profile-widget` updated to version `0.6.8`
+* `applications-portal-widget` updated to version `0.4.3`
+* `web-component` updated to version `3.46.0`
+* `web-js-sdk` updated to version `1.34.0`
+* `core-js-sdk` updated to version `2.46.0`
+* `tenant-profile-widget` updated to version `0.2.5`
+
+### Features
+
+* Generic flow button ([#1172](https://github.com/descope/descope-js/issues/1172)) ([9ac9e8c](https://github.com/descope/descope-js/commit/9ac9e8c7fe34fce0d8bd26ec7a824d902a8208ec))
+
 ## [2.17.1](https://github.com/descope/descope-js/compare/react-sdk-2.17.0...react-sdk-2.17.1) (2025-08-10)
 
 ### Dependency Updates

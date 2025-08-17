@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.46.0](https://github.com/descope/descope-js/compare/web-component-3.45.1...web-component-3.46.0) (2025-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `web-js-sdk` updated to version `1.34.0`
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
 ## [3.45.1](https://github.com/descope/descope-js/compare/web-component-3.45.0...web-component-3.45.1) (2025-08-10)
 
 
