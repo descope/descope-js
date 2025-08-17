@@ -90,9 +90,16 @@ describe('httpClient', () => {
   });
 
   it('should support multiple afterRequest hooks (array) and log errors without failing others', async () => {
-    const logger = { log: jest.fn(), error: jest.fn(), debug: jest.fn(), warn: jest.fn() };
+    const logger = {
+      log: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+      warn: jest.fn(),
+    };
     const goodAfter = jest.fn();
-    const failingAfter = jest.fn(() => Promise.reject(new Error('after failed')));
+    const failingAfter = jest.fn(() =>
+      Promise.reject(new Error('after failed')),
+    );
 
     const clientWithMultipleAfter = createHttpClient({
       baseUrl: 'http://descope.com',
@@ -110,11 +117,11 @@ describe('httpClient', () => {
       statusText: 'OK',
     });
 
-  await clientWithMultipleAfter.get('path');
+    await clientWithMultipleAfter.get('path');
 
     expect(failingAfter).toHaveBeenCalledTimes(1);
     expect(goodAfter).toHaveBeenCalledTimes(1);
-  expect(logger.error).toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalled();
   });
 
   it('should pick up hooks added after client creation', async () => {
@@ -131,7 +138,10 @@ describe('httpClient', () => {
     const afterRequestHook = jest.fn();
 
     // mutate hooks after client creation
-    cfg.hooks = { beforeRequest: [beforeRequestHook], afterRequest: [afterRequestHook] };
+    cfg.hooks = {
+      beforeRequest: [beforeRequestHook],
+      afterRequest: [afterRequestHook],
+    };
 
     await client.get('path');
 
@@ -140,7 +150,9 @@ describe('httpClient', () => {
   });
 
   it('should use DEFAULT_BASE_API_URL when baseUrl is omitted', () => {
-    const client = createHttpClient({ projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z' });
+    const client = createHttpClient({
+      projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
     client.get('one/two/three', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
@@ -150,7 +162,9 @@ describe('httpClient', () => {
   });
 
   it('should use DEFAULT_BASE_API_URL with region extraction when baseUrl is omitted', () => {
-    const client = createHttpClient({ projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z' });
+    const client = createHttpClient({
+      projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
     client.get('one/two/three', { token: null });
 
     expect(mockFetch).toHaveBeenCalledWith(
