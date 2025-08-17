@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.46.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.46.0...core-js-sdk-2.46.1) (2025-08-17)
+
 ## [2.46.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.45.0...core-js-sdk-2.46.0) (2025-08-14)
 
 
