@@ -36,18 +36,22 @@ type MiddlewareOptions = {
 	logLevel?: LogLevel;
 };
 
-const getSessionJwt = (req: NextRequest): string | undefined => {
+export type MiddlewareFunction = (
+	req: NextRequest
+  ) => Promise<NextResponse> | NextResponse;
+  
+  const getSessionJwt = (req: NextRequest): string | undefined => {
 	let jwt = req.headers?.get('Authorization')?.split(' ')[1];
 	if (jwt) {
-		return jwt;
+	  return jwt;
 	}
-
+  
 	jwt = req.cookies?.get(descopeSdk.SessionTokenCookieName)?.value;
 	if (jwt) {
-		return jwt;
+	  return jwt;
 	}
 	return undefined;
-};
+  };
 
 const matchWildcardRoute = (route: string, path: string) => {
 	let regexPattern = route.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
@@ -106,18 +110,42 @@ const addSessionToHeadersIfExists = (
 	return headers;
 };
 
+export const chainMiddleware = (
+	...middlewares: ((req: NextRequest, next?: MiddlewareFunction) => Promise<NextResponse> | NextResponse)[]
+  ) => {
+	return async (req: NextRequest) => {
+	  const runner = async (index: number, request: NextRequest): Promise<NextResponse> => {
+		// If we've run through all middlewares, just return next()
+		if (index >= middlewares.length) {
+		  return NextResponse.next();
+		}
+  
+		// Get the current middleware
+		const middleware = middlewares[index];
+  
+		// The next function for this middleware calls the next middleware in the chain
+		const nextMiddleware = (nextReq: NextRequest) => runner(index + 1, nextReq);
+  
+		// Run the current middleware with the request and the next middleware
+		return middleware(request, nextMiddleware);
+	  };
+  
+	  return runner(0, req);
+	};
+  };
+
 // returns a Middleware that checks if the user is authenticated
 // if the user is not authenticated, it redirects to the redirectUrl
 // if the user is authenticated, it adds the session to the headers
 const createAuthMiddleware =
-	(options: MiddlewareOptions = {}) =>
-	async (req: NextRequest) => {
+  (options: MiddlewareOptions = {}) =>
+  async (req: NextRequest, next?: MiddlewareFunction) => {
 		setLogger(options.logLevel);
 		logger.debug('Auth middleware starts');
 
 		const jwt = getSessionJwt(req);
 
-		// check if the user is authenticated
+		// Check if the user is authenticated
 		let session: AuthenticationInfo | undefined;
 		try {
 			session = await getGlobalSdk({
@@ -148,10 +176,18 @@ const createAuthMiddleware =
 		logger.debug('Auth middleware finishes');
 		// add the session to the request, if it exists
 		const headers = addSessionToHeadersIfExists(req.headers, session);
+		const reqWithSession = new NextRequest(req.url, {
+			headers
+		});
+
+		// If next middleware is provided, call it with the enhanced request
+		if (next) {
+			const response = await next(reqWithSession);
+			return response;
+		}
+	  
 		return NextResponse.next({
-			request: {
-				headers
-			}
+			request: { headers }
 		});
 	};
 
