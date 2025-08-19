@@ -12,6 +12,17 @@ import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
 import useSdk from './useSdk';
 
+type UseSdkParams = Parameters<typeof useSdk>[0];
+
+// we take this and not UseSdkParams['logger'] because the type there is cumbersome
+type Logger = {
+  debug: (...args: any[]) => void;
+  warn: (...args: any[]) => void;
+  error: (...args: any[]) => void;
+  info: (...args: any[]) => void;
+  log: (...args: any[]) => void;
+};
+
 interface IAuthProviderProps {
   projectId: string;
   baseUrl?: string;
@@ -40,6 +51,8 @@ interface IAuthProviderProps {
   refreshCookieName?: string;
   // Function to get external token, for seamless migration from external system
   getExternalToken?: () => Promise<string>;
+  logger?: Logger;
+  hooks?: UseSdkParams['hooks'];
   children?: React.ReactNode;
 }
 
@@ -56,6 +69,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
   getExternalToken = undefined,
+  logger = undefined,
+  hooks = undefined,
+  // eslint-disable-next-line react/no-unused-prop-types
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -80,6 +96,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     keepLastAuthenticatedUserAfterLogout,
     refreshCookieName,
     getExternalToken,
+    logger,
+    hooks,
   });
 
   useEffect(() => {
