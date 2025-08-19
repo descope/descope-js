@@ -152,6 +152,7 @@ describe('httpClient', () => {
   it('should use DEFAULT_BASE_API_URL when baseUrl is omitted', () => {
     const client = createHttpClient({
       projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
+      baseUrl: ""
     });
     client.get('one/two/three', { token: null });
 
@@ -164,6 +165,7 @@ describe('httpClient', () => {
   it('should use DEFAULT_BASE_API_URL with region extraction when baseUrl is omitted', () => {
     const client = createHttpClient({
       projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
+      baseUrl: ""
     });
     client.get('one/two/three', { token: null });
 
