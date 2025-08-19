@@ -112,7 +112,7 @@ const withMultipleHooks =
  * @param CreateHttpClientConfig Configuration for the client
  */
 const createHttpClient = ({
-  baseUrl = DEFAULT_BASE_API_URL,
+  baseUrl: recBaseUrl,
   projectId,
   baseConfig,
   refreshCookieName,
@@ -121,6 +121,7 @@ const createHttpClient = ({
   cookiePolicy,
   fetch,
 }: CreateHttpClientConfig): HttpClient => {
+  const baseUrl = recBaseUrl || DEFAULT_BASE_API_URL;
   const fetchWithLogger = createFetchLogger(logger, fetch);
 
   const sendRequest = async (config: RequestConfig) => {
