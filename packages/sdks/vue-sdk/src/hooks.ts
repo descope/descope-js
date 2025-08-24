@@ -21,7 +21,7 @@ export const useSession = () => {
   const { session } = injectDescope();
 
   if (session.isFetchSessionWasNeverCalled.value) {
-    session.fetchSession();
+    session.fetchSession(true);
   }
 
   return {
