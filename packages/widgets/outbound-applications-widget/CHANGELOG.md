@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.6](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.5...outbound-applications-widget-0.1.6) (2025-08-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.2`
+* `web-component` updated to version `3.46.2`
+## [0.1.5](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.4...outbound-applications-widget-0.1.5) (2025-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.1`
+* `web-component` updated to version `3.46.1`
+## [0.1.4](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.3...outbound-applications-widget-0.1.4) (2025-08-17)
+
+
+### Bug Fixes
+
+* Safe set of OB widget isConnected state RELEASE ([#1188](https://github.com/descope/descope-js/issues/1188)) ([30e1669](https://github.com/descope/descope-js/commit/30e16692965ba5e6c2a2384e49f0a56373759402))
+
 ## [0.1.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.1.2...outbound-applications-widget-0.1.3) (2025-08-14)
 
 ### Dependency Updates
