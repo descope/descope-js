@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.47.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.46.2...core-js-sdk-2.47.0) (2025-08-25)
+
+
+### Features
+
+* Add tenant options to outbound connect. RELEASE ([#1190](https://github.com/descope/descope-js/issues/1190)) ([863be93](https://github.com/descope/descope-js/commit/863be931feedf8775841a0f461c6322eed36cc3b))
+
 ## [2.46.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.46.1...core-js-sdk-2.46.2) (2025-08-19)
 
 
