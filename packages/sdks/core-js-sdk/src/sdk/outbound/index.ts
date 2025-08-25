@@ -12,11 +12,17 @@ const withOutbound = (httpClient: HttpClient) => ({
       options?: ConnectOptions,
       token?: string,
     ): Promise<SdkResponse<URLResponse>> => {
+      const tenantId = options?.tenantId;
+      const tenantLevel = options?.tenantLevel;
+      delete options?.tenantId;
+      delete options?.tenantLevel;
       return transformResponse(
         httpClient.post(
           apiPaths.outbound.connect,
           {
             appId,
+            tenantId,
+            tenantLevel,
             options,
           },
           {
