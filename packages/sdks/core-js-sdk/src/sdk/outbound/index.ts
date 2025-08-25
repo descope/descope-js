@@ -14,8 +14,8 @@ const withOutbound = (httpClient: HttpClient) => ({
     ): Promise<SdkResponse<URLResponse>> => {
       const tenantId = options?.tenantId;
       const tenantLevel = options?.tenantLevel;
-      delete options.tenantId;
-      delete options.tenantLevel;
+      delete options?.tenantId;
+      delete options?.tenantLevel;
       return transformResponse(
         httpClient.post(
           apiPaths.outbound.connect,

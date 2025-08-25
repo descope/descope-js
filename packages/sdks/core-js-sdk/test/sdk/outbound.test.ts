@@ -22,15 +22,14 @@ describe('outbound', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValueOnce(httpResponse);
-      const resp = await sdk.outbound.connect('google', {}, '');
+      const resp = await sdk.outbound.connect('google');
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.outbound.connect,
         {
           appId: 'google',
-          options: {},
         },
         {
-          token: '',
+          token: undefined,
         },
       );
 
