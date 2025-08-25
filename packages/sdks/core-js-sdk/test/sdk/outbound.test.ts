@@ -42,10 +42,15 @@ describe('outbound', () => {
       });
     });
 
-    it('should send the redirect url, scopes and token when provided', () => {
+    it('should send the options and token when provided', () => {
       sdk.outbound.connect(
         'google',
-        { redirectUrl: 'http://new.com/', scopes: '["s1", "s2"]' },
+        {
+          redirectUrl: 'http://new.com/',
+          scopes: '["s1", "s2"]',
+          tenantId: 't1',
+          tenantLevel: true,
+        },
         'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -56,6 +61,8 @@ describe('outbound', () => {
             redirectUrl: 'http://new.com/',
             scopes: '["s1", "s2"]',
           },
+          tenantId: 't1',
+          tenantLevel: true,
         },
         {
           token: 'token',
