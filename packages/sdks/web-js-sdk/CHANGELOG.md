@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.35.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.34.3...web-js-sdk-1.35.0) (2025-08-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.48.0`
+
+### Features
+
+* try refresh API on init ([#1182](https://github.com/descope/descope-js/issues/1182)) RELEASE ([efd89fa](https://github.com/descope/descope-js/commit/efd89fa5c09f3b2b0299a7a8779c601fd3fa96d6)), closes [/#diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R64-R65](https://github.com/descope///issues/diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R64-R65) [/#diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R74-R82](https://github.com/descope///issues/diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R74-R82) [/#diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fL21-R24](https://github.com/descope///issues/diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fL21-R24) [/#diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fR61](https://github.com/descope///issues/diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fR61)
+
 ## [1.34.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.34.2...web-js-sdk-1.34.3) (2025-08-25)
 
 ### Dependency Updates
