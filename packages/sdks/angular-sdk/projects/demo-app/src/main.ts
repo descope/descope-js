@@ -13,7 +13,8 @@ import { importProvidersFrom } from '@angular/core';
 import { DescopeAuthModule } from 'projects/angular-sdk/src/lib/descope-auth.module';
 
 export function initializeApp(authService: DescopeAuthService) {
-  return () => zip([authService.refreshSession(), authService.refreshUser()]);
+  return () =>
+    zip([authService.refreshSession(true), authService.refreshUser()]);
 }
 
 bootstrapApplication(AppComponent, {
