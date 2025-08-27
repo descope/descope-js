@@ -4,8 +4,8 @@ const elseInteractionId = 'ELSE';
 
 const conditionsMap: ConditionsMap = {
   'lastAuth.loginId': {
-    'not-empty': (ctx) => !!ctx.loginId,
-    empty: (ctx) => !ctx.loginId,
+    'not-empty': (ctx) => !!ctx.loginId || !!ctx.lastAuth?.loginId,
+    empty: (ctx) => !ctx.loginId && !ctx.lastAuth?.loginId,
   },
   idpInitiated: {
     'is-true': (ctx) => !!ctx.code,
