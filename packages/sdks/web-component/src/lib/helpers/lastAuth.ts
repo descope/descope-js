@@ -14,6 +14,12 @@ export function getLastAuth(loginId: string) {
   } catch (e) {
     /* empty */
   }
+  console.log('!!!!!!! getLastAuth loginId', loginId);
+  console.log(
+    '!!!!!!! getLastAuth lastAuth.loginId',
+    (lastAuth as any)?.loginId,
+  );
+
   if (!(lastAuth as any)?.loginId && !loginId) {
     return {};
   }
@@ -25,6 +31,7 @@ export function setLastAuth(
   lastAuth: NextFnReturnPromiseValue['data']['lastAuth'],
   forceLoginId?: boolean,
 ) {
+  console.log('!!!!!!! setLastAuth', lastAuth);
   if (!lastAuth?.authMethod) {
     return;
   }

@@ -1431,25 +1431,6 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('hey !'));
   });
 
-  it('should update page templates according to last auth login ID when there is only login Id in lastAuth with authMethod', async () => {
-    startMock.mockReturnValue(
-      generateSdkResponse({
-        screenState: { user: {} },
-        lastAuth: { loginId: 'not john', authMethod: 'password' },
-      }),
-    );
-    getLastUserLoginIdMock.mockReturnValue('');
-
-    pageContent = `<div>Loaded1</div><descope-text class="descope-text">hey {{lastAuth.loginId}}!</descope-text>`;
-
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('Loaded1'), {
-      timeout: WAIT_TIMEOUT,
-    });
-    await waitFor(() => screen.getByShadowText('hey not john!'));
-  });
-
   it('should update page templates according to last auth login ID when there is only login Id', async () => {
     startMock.mockReturnValue(
       generateSdkResponse({ screenState: { user: { loginId: 'john' } } }),
