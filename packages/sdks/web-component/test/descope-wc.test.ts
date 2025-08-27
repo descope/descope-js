@@ -4515,8 +4515,6 @@ describe('web-component', () => {
       <descope-wc flow-id="otpSignInEmail" project-id=1>
     </descope-wc>`;
 
-    const wcEle = document.querySelector('descope-wc');
-
     await waitFor(() => screen.getByShadowText('hey'), {
       timeout: WAIT_TIMEOUT,
     });
@@ -4542,8 +4540,6 @@ describe('web-component', () => {
     document.body.innerHTML = `<h1>Custom element test</h1>
       <descope-wc flow-id="otpSignInEmail" project-id=1>
     </descope-wc>`;
-
-    const wcEle = document.querySelector('descope-wc');
 
     await waitFor(() => screen.getByShadowText('hey'), {
       timeout: WAIT_TIMEOUT,
