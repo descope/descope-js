@@ -18,7 +18,10 @@ const createSdk = (config: WebSdkConfig) => {
 
   return {
     ...coreSdk,
-    refresh: async (token?: string): ReturnType<CoreSdk['refresh']> => {
+    refresh: async (
+      token?: string,
+      tryRefresh?: boolean,
+    ): ReturnType<CoreSdk['refresh']> => {
       if (config.oidcConfig) {
         try {
           await oidc.refreshToken(token);
@@ -55,6 +58,7 @@ const createSdk = (config: WebSdkConfig) => {
           dcr: currentRefreshToken ? 't' : 'f',
         },
         externalToken,
+        tryRefresh,
       );
     },
     // Call the logout function according to the oidcConfig
