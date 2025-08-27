@@ -1044,7 +1044,6 @@ class DescopeWc extends BaseDescopeWc {
     };
 
     const lastAuth = getLastAuth(loginId);
-    console.log('### lastAuth', lastAuth);
 
     // If there is a start screen id, next action should start the flow
     // But if any of the sso params are not empty, this optimization doesn't happen
@@ -1106,7 +1105,6 @@ class DescopeWc extends BaseDescopeWc {
       };
     }
 
-    console.log('$$$ stepStateUpdate', stepStateUpdate);
     this.loggerWrapper.debug('Got a screen with id', stepStateUpdate.screenId);
 
     await this.#handleCustomScreen(stepStateUpdate);
