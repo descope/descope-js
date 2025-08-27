@@ -2,7 +2,7 @@ import {
   DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
   IS_LOCAL_STORAGE,
 } from '../constants';
-import { LastAuthState, NextFnReturnPromiseValue } from '../types';
+import { NextFnReturnPromiseValue } from '../types';
 
 export function getLastAuth(loginId: string) {
   const lastAuth = {};
