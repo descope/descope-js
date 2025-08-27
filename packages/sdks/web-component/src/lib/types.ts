@@ -242,6 +242,7 @@ export interface Context {
   code?: string;
   token?: string;
   abTestingKey?: number;
+  lastAuth?: LastAuthState;
 }
 
 export type DescopeUI = Record<string, () => Promise<void>> & {
