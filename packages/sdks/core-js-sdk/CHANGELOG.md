@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.49.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.48.0...core-js-sdk-2.49.0) (2025-08-28)
+
+
+### Features
+
+* Add loginHint and forceAuthn to saml start RELEASE ([#1192](https://github.com/descope/descope-js/issues/1192)) ([5314bf3](https://github.com/descope/descope-js/commit/5314bf32f7f95676763064c63488a5b1aeae44ad))
+
 ## [2.48.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.47.0...core-js-sdk-2.48.0) (2025-08-26)
 
 
