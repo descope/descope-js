@@ -25,7 +25,7 @@ const withSaml = (httpClient: HttpClient) => ({
             ...(redirectUrl && { redirectURL: redirectUrl }),
             ...(ssoId && { ssoId }),
             ...(forceAuthn && { forceAuthn: 'true' }),
-            ...(loginHint && { loginHint: loginHint }),
+            ...(loginHint && { loginHint }),
           },
           ...(token && { token }),
         }),
