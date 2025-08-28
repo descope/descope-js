@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/descope/descope-js/compare/role-management-widget-0.4.7...role-management-widget-0.5.0) (2025-08-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.1`
+
+### Features
+
+* Add loginHint and forceAuthn to saml start RELEASE ([#1192](https://github.com/descope/descope-js/issues/1192)) ([5314bf3](https://github.com/descope/descope-js/commit/5314bf32f7f95676763064c63488a5b1aeae44ad))
+
 ## [0.4.7](https://github.com/descope/descope-js/compare/role-management-widget-0.4.6...role-management-widget-0.4.7) (2025-08-26)
 
 ### Dependency Updates
