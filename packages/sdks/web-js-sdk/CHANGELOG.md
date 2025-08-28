@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.35.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.35.0...web-js-sdk-1.35.1) (2025-08-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.49.0`
 ## [1.35.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.34.3...web-js-sdk-1.35.0) (2025-08-26)
 
 ### Dependency Updates
