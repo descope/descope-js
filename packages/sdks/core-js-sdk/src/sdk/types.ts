@@ -347,6 +347,7 @@ export type Options = {
   locale?: string;
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
+  oidcResource?: string;
   nativeOptions?: NativeOptions;
   thirdPartyAppStateId?: string;
   applicationScopes?: string; // Relevant for sso application and third party application

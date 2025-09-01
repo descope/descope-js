@@ -1,17 +1,18 @@
+import AccessKeyManagementWidget from '@descope/access-key-management-widget';
+import ApplicationsPortalWidget from '@descope/applications-portal-widget';
+import AuditManagementWidget from '@descope/audit-management-widget';
+import RoleManagementWidget from '@descope/role-management-widget';
+import TenantProfileWidget from '@descope/tenant-profile-widget';
+import UserManagementWidget from '@descope/user-management-widget';
+import UserProfileWidget from '@descope/user-profile-widget';
 import type {
   AutoFocusOptions,
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
 import DescopeWc from '@descope/web-component';
-import UserManagementWidget from '@descope/user-management-widget';
 import type { UserResponse } from '@descope/web-js-sdk';
 import React, { DOMAttributes } from 'react';
-import RoleManagementWidget from '@descope/role-management-widget';
-import AccessKeyManagementWidget from '@descope/access-key-management-widget';
-import AuditManagementWidget from '@descope/audit-management-widget';
-import UserProfileWidget from '@descope/user-profile-widget';
-import ApplicationsPortalWidget from '@descope/applications-portal-widget';
 import createSdk from './sdk';
 
 declare global {
@@ -24,6 +25,7 @@ declare global {
       ['descope-audit-management-widget']: AuditManagementCustomElement;
       ['descope-user-profile-widget']: UserProfileCustomElement;
       ['descope-applications-portal-widget']: ApplicationsPortalCustomElement;
+      ['descope-tenant-profile-widget']: TenantProfileCustomElement;
     }
   }
 }
@@ -82,6 +84,10 @@ export type UserProfileCustomElement = CustomElement<
 
 export type ApplicationsPortalCustomElement = CustomElement<
   typeof ApplicationsPortalWidget & ApplicationsPortalProps
+>;
+
+export type TenantProfileCustomElement = CustomElement<
+  typeof TenantProfileWidget & TenantProfileProps
 >;
 
 export interface IContext {
@@ -146,6 +152,7 @@ export type DescopeProps = {
     ref: HTMLElement,
   ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
+  externalRequestId?: string;
 };
 
 export type UserManagementProps = WidgetProps;
@@ -163,6 +170,8 @@ export type UserProfileProps = Omit<WidgetProps, 'tenant'> & {
 export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
   onLogout?: (e: CustomEvent) => void;
 };
+
+export type TenantProfileProps = WidgetProps;
 
 export type { ILogger };
 export type DefaultFlowProps = Omit<DescopeProps, 'flowId'>;

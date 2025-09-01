@@ -31,4 +31,16 @@ export const mockSsoApps = [
       idpInitiatedUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
     },
   },
+  {
+    id: 'ssoapp4',
+    name: 'OIDC App 2',
+    description: 'This is the second OIDC app',
+    enabled: true,
+    appType: SSOAppType.oidc,
+    logo: 'logo2',
+    oidcSettings: {
+      customIdpInitiatedLoginPageUrl:
+        'http://www.testingmcafeesites.com/testcat_ac.html',
+    },
+  },
 ];

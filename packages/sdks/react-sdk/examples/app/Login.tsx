@@ -66,6 +66,7 @@ const Login = () => {
           telemetryKey={process.env.DESCOPE_TELEMETRY_KEY}
           errorTransformer={errorTransformer}
           logger={console}
+          externalRequestId={Date.now().toString()} // Example of passing an external request ID
         />
       )}
       {errorMessage && (

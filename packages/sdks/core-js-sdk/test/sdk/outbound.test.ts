@@ -22,15 +22,14 @@ describe('outbound', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValueOnce(httpResponse);
-      const resp = await sdk.outbound.connect('google', {}, '');
+      const resp = await sdk.outbound.connect('google');
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.outbound.connect,
         {
           appId: 'google',
-          options: {},
         },
         {
-          token: '',
+          token: undefined,
         },
       );
 
@@ -42,10 +41,15 @@ describe('outbound', () => {
       });
     });
 
-    it('should send the redirect url, scopes and token when provided', () => {
+    it('should send the options and token when provided', () => {
       sdk.outbound.connect(
         'google',
-        { redirectURL: 'http://new.com/', scopes: '["s1", "s2"]' },
+        {
+          redirectUrl: 'http://new.com/',
+          scopes: '["s1", "s2"]',
+          tenantId: 't1',
+          tenantLevel: true,
+        },
         'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -53,9 +57,11 @@ describe('outbound', () => {
         {
           appId: 'google',
           options: {
-            redirectURL: 'http://new.com/',
+            redirectUrl: 'http://new.com/',
             scopes: '["s1", "s2"]',
           },
+          tenantId: 't1',
+          tenantLevel: true,
         },
         {
           token: 'token',

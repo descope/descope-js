@@ -2,6 +2,123 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.0](https://github.com/descope/descope-js/compare/web-component-3.46.4...web-component-3.47.0) (2025-08-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.1`
+
+### Features
+
+* better storage of last auth ([#1191](https://github.com/descope/descope-js/issues/1191)) ([23afff4](https://github.com/descope/descope-js/commit/23afff4099390b34000d5bfd6d539c1296bea6bf))
+
+## [3.46.4](https://github.com/descope/descope-js/compare/web-component-3.46.3...web-component-3.46.4) (2025-08-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.0`
+## [3.46.3](https://github.com/descope/descope-js/compare/web-component-3.46.2...web-component-3.46.3) (2025-08-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.3`
+## [3.46.2](https://github.com/descope/descope-js/compare/web-component-3.46.1...web-component-3.46.2) (2025-08-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.2`
+## [3.46.1](https://github.com/descope/descope-js/compare/web-component-3.46.0...web-component-3.46.1) (2025-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.1`
+## [3.46.0](https://github.com/descope/descope-js/compare/web-component-3.45.1...web-component-3.46.0) (2025-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `web-js-sdk` updated to version `1.34.0`
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
+## [3.45.1](https://github.com/descope/descope-js/compare/web-component-3.45.0...web-component-3.45.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* reload sdk scripts when restoring components state RELEASE ([#1183](https://github.com/descope/descope-js/issues/1183)) ([5d568c5](https://github.com/descope/descope-js/commit/5d568c579425da67bb68104c9bfea5f7e91f3747))
+
+## [3.45.0](https://github.com/descope/descope-js/compare/web-component-3.44.4...web-component-3.45.0) (2025-08-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.7`
+
+### Features
+
+* Darwinium ([#1180](https://github.com/descope/descope-js/issues/1180)) RELEASE ([cc79883](https://github.com/descope/descope-js/commit/cc79883bb7c23a29640868e74216cc46c27fcb9b))
+
+
+### Bug Fixes
+
+* remove loading state when closing oauth popup manually ([#1179](https://github.com/descope/descope-js/issues/1179)) ([d3602c3](https://github.com/descope/descope-js/commit/d3602c3330b47ad841de8530c51f97d3bd0efa49))
+
+## [3.44.4](https://github.com/descope/descope-js/compare/web-component-3.44.3...web-component-3.44.4) (2025-08-05)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.9`
+* `web-js-sdk` updated to version `1.33.6`
+## [3.44.3](https://github.com/descope/descope-js/compare/web-component-3.44.2...web-component-3.44.3) (2025-07-31)
+
+
+### Bug Fixes
+
+* add logs to redirect in popup ([#1174](https://github.com/descope/descope-js/issues/1174)) ([f8b8eb1](https://github.com/descope/descope-js/commit/f8b8eb1b8ebb4ba56b53dd3e3fbf9505994776dd))
+
+## [3.44.2](https://github.com/descope/descope-js/compare/web-component-3.44.1...web-component-3.44.2) (2025-07-31)
+
+
+### Bug Fixes
+
+* trying to fix issue 11567 RELEASE ([#1173](https://github.com/descope/descope-js/issues/1173)) ([6515f53](https://github.com/descope/descope-js/commit/6515f53abf5a5d51cb7607bda136cdbb19dc349e))
+
+## [3.44.1](https://github.com/descope/descope-js/compare/web-component-3.44.0...web-component-3.44.1) (2025-07-27)
+
+
+### Bug Fixes
+
+* restore components state when page is shown from cache RELEASE ([#1168](https://github.com/descope/descope-js/issues/1168)) ([1d49e62](https://github.com/descope/descope-js/commit/1d49e629e23b274ea47f6192c64a19fc47f960de))
+
+## [3.44.0](https://github.com/descope/descope-js/compare/web-component-3.43.20...web-component-3.44.0) (2025-07-22)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.8`
+
+### Features
+
+* Tenant admin widget ([#1158](https://github.com/descope/descope-js/issues/1158)) ([d379047](https://github.com/descope/descope-js/commit/d379047832a94287c4bbfb6d096c27a3e1051a1a))
+
+## [3.43.20](https://github.com/descope/descope-js/compare/web-component-3.43.19...web-component-3.43.20) (2025-07-21)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.7`
+
+### Bug Fixes
+
+* disable components on submit ([#1160](https://github.com/descope/descope-js/issues/1160)) ([15b95e8](https://github.com/descope/descope-js/commit/15b95e8013b06af5b0526c7577b0f7765ea58078))
+* issue 11209 - stop polling on specific errors ([#1152](https://github.com/descope/descope-js/issues/1152)) ([c701149](https://github.com/descope/descope-js/commit/c701149386bff8c185f6235df16ec57356b8d566))
+
+## [3.43.19](https://github.com/descope/descope-js/compare/web-component-3.43.18...web-component-3.43.19) (2025-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.5`
 ## [3.43.18](https://github.com/descope/descope-js/compare/web-component-3.43.17...web-component-3.43.18) (2025-07-02)
 
 ## [3.43.17](https://github.com/descope/descope-js/compare/web-component-3.43.16...web-component-3.43.17) (2025-06-13)
