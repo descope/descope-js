@@ -410,6 +410,53 @@ Descope SDK is automatically refreshes the session token when it is about to exp
 If the Descope project settings are configured to manage tokens in cookies.
 you must also configure a custom domain, and set it as the `baseUrl` in `DescopeAuthModule`.
 
+### Auto refresh session token
+
+Descope SDK automatically refreshes the session token when it is about to expire. This is done in the background using the refresh token, without any additional configuration.
+If you want to disable this behavior, you can pass `autoRefresh: false` to the `DescopeAuthModule` module. This will prevent the SDK from automatically refreshing the session token.
+
+#### NgModule Example:
+
+```ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { DescopeAuthModule } from '@descope/angular-sdk';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    DescopeAuthModule.forRoot({
+      projectId: '<your_project_id>',
+      autoRefresh: false
+    })
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+#### Standalone Mode Example:
+
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { DescopeAuthConfig } from '@descope/angular-sdk';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    {
+      provide: DescopeAuthConfig,
+      useValue: {
+        projectId: '<your_project_id>',
+        autoRefresh: false
+      }
+    }
+  ]
+}).catch((err) => console.error(err));
+```
+
 ### Descope Guard
 
 `angular-sdk` provides a convenient route guard that prevents from accessing given route for users that are not authenticated:

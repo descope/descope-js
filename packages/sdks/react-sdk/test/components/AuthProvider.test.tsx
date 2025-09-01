@@ -23,11 +23,12 @@ describe('AuthProvider', () => {
         expect.objectContaining({
           projectId: 'pr1',
           persistTokens: true,
+          autoRefresh: true,
         }),
       );
     });
   });
-  it('Should init sdk config with customized options', async () => {
+  it('Should init sdk config with customized persist tokens option', async () => {
     render(
       <AuthProvider
         projectId="pr1"
@@ -43,7 +44,30 @@ describe('AuthProvider', () => {
         expect.objectContaining({
           projectId: 'pr1',
           persistTokens: false,
+          autoRefresh: true,
           storeLastAuthenticatedUser: false,
+        }),
+      );
+    });
+  });
+
+   it('Should init sdk config with customized auto refresh option', async () => {
+    render(
+      <AuthProvider
+        projectId="pr1"
+        autoRefresh={false}
+      >
+        <div>hello</div>
+      </AuthProvider>,
+    );
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledWith(
+        expect.objectContaining({
+          projectId: 'pr1',
+          persistTokens: true,
+          autoRefresh: false,
+          storeLastAuthenticatedUser: true,
         }),
       );
     });

@@ -72,6 +72,7 @@ describe('hooks', () => {
       useSession();
 
       expect(fetchSession).toHaveBeenCalled();
+      expect(fetchSession).toHaveBeenCalledWith(true);
     });
     it('should throw error when no context', () => {
       injectMock.mockReturnValueOnce(undefined);

@@ -9,6 +9,9 @@ import {
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
+  FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE,
+  FLOW_TIMED_OUT_ERROR_CODE,
+  POLLING_STATUS_NOT_FOUND_ERROR_CODE,
   RESPONSE_ACTIONS,
   SDK_SCRIPTS_LOAD_TIMEOUT,
   URL_CODE_PARAM_NAME,
@@ -273,6 +276,7 @@ class DescopeWc extends BaseDescopeWc {
         );
         resolve(script.id);
       };
+
     this.loggerWrapper.debug(
       `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
@@ -289,7 +293,7 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.9', // currently using a fixed version when loading scripts
+          '1.0.11', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
@@ -297,7 +301,7 @@ class DescopeWc extends BaseDescopeWc {
           try {
             const moduleRes = module(
               script.initArgs as any,
-              { baseUrl: this.baseUrl },
+              { baseUrl: this.baseUrl, ref: this },
               createScriptCallback(script, resolve),
             );
             if (moduleRes) {
@@ -666,7 +670,13 @@ class DescopeWc extends BaseDescopeWc {
           clientScripts: conditionScripts,
           componentsConfig: conditionComponentsConfig,
         } = calculateConditions(
-          { loginId, code, token, abTestingKey },
+          {
+            loginId,
+            code,
+            token,
+            abTestingKey,
+            lastAuth: getLastAuth(loginId),
+          },
           flowConfig.conditions,
         ));
         clientScripts.push(...(conditionScripts || []));
@@ -678,6 +688,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
+            lastAuth: getLastAuth(loginId),
           },
         ));
       } else {
@@ -732,11 +743,34 @@ class DescopeWc extends BaseDescopeWc {
       }
     }
 
-    if (isChanged('code') && code && isChanged('isPopup') && isPopup) {
-      window.opener.postMessage(
-        { action: 'code', data: { code } },
-        window.location.origin,
+    this.loggerWrapper.debug(
+      'Before popup postmessage send',
+      JSON.stringify({
+        isPopup,
+        code,
+        exchangeError,
+        isCodeChanged: isChanged('code'),
+        isExchangeErrorChanged: isChanged('exchangeError'),
+      }),
+    );
+    if (
+      isPopup &&
+      ((isChanged('code') && code) ||
+        (isChanged('exchangeError') && exchangeError))
+    ) {
+      this.loggerWrapper.debug('Creating popup channel', executionId);
+      const channel = new BroadcastChannel(executionId);
+      this.loggerWrapper.debug(
+        'Posting message to popup channel',
+        JSON.stringify({ code, exchangeError }),
       );
+      channel.postMessage({
+        data: { code, exchangeError },
+        action: 'code',
+      });
+      this.loggerWrapper.debug('Popup channel message posted, closing channel');
+      channel.close();
+      this.loggerWrapper.debug('Popup channel closed, closing window');
       window.close();
       return;
     }
@@ -808,25 +842,68 @@ class DescopeWc extends BaseDescopeWc {
         });
         return;
       }
+
+      this.loggerWrapper.debug(`Redirect is popup ${redirectIsPopup}`);
       if (redirectIsPopup) {
         // this width is below the breakpoint of most providers
-        openCenteredPopup(redirectTo, '?', 598, 700);
+        this.loggerWrapper.debug('Opening redirect in popup');
+        const popup = openCenteredPopup(redirectTo, '?', 598, 700);
 
+        this.loggerWrapper.debug('Creating broadcast channel');
+        const channel = new BroadcastChannel(executionId);
+
+        this.loggerWrapper.debug('Starting popup closed detection');
+        // detect when the popup is closed
+        const intervalId = setInterval(() => {
+          if (popup.closed) {
+            this.loggerWrapper.debug(
+              'Popup closed, dispatching popupclosed event and clearing interval',
+            );
+            clearInterval(intervalId);
+
+            // we are dispatching a popupclosed event so we can handle it on other parts of the code (loading state management)
+            this.#dispatch('popupclosed', {});
+
+            this.loggerWrapper.debug('Closing channel');
+            channel.close();
+          }
+        }, 1000);
+
+        this.loggerWrapper.debug('Listening for postMessage on channel');
         const onPostMessage = (event: MessageEvent) => {
+          this.loggerWrapper.debug(
+            'Received postMessage on channel',
+            JSON.stringify(event),
+          );
+          this.loggerWrapper.debug(
+            'Comparing origins',
+            JSON.stringify({
+              eventOrigin: event.origin,
+              windowLocationOrigin: window.location.origin,
+            }),
+          );
           if (event.origin !== window.location.origin) return;
 
+          this.loggerWrapper.debug(
+            'PostMessage origin matches, processing message',
+          );
           // eslint-disable-next-line @typescript-eslint/no-shadow
           const { action, data } = event.data;
+          this.loggerWrapper.debug(
+            `PostMessage action: ${action}, data: ${JSON.stringify(data)}`,
+          );
           if (action === 'code') {
-            window.removeEventListener('message', onPostMessage);
-
+            this.loggerWrapper.debug(
+              'Updating flow state with code and exchangeError',
+            );
             this.flowState.update({
               code: data.code,
+              exchangeError: data.exchangeError,
             });
           }
         };
 
-        window.addEventListener('message', onPostMessage);
+        channel.onmessage = onPostMessage;
       } else {
         this.handleRedirect(redirectTo);
       }
@@ -927,8 +1004,13 @@ class DescopeWc extends BaseDescopeWc {
       readyScreenId,
     );
 
-    const { oidcLoginHint, oidcPrompt, oidcErrorRedirectUri, samlIdpUsername } =
-      ssoQueryParams;
+    const {
+      oidcLoginHint,
+      oidcPrompt,
+      oidcErrorRedirectUri,
+      oidcResource,
+      samlIdpUsername,
+    } = ssoQueryParams;
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
@@ -957,6 +1039,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      oidcResource,
       action,
     };
 
@@ -1080,6 +1163,11 @@ class DescopeWc extends BaseDescopeWc {
     const pollingThrottleDelay = 500;
     const pollingThrottleThreshold = 500;
     const pollingThrottleTimeout = 1000;
+    const stopOnErrors = [
+      FLOW_TIMED_OUT_ERROR_CODE,
+      POLLING_STATUS_NOT_FOUND_ERROR_CODE,
+    ];
+
     if (this.flowState.current.action === RESPONSE_ACTIONS.poll) {
       // schedule next polling request for 2 seconds from now
       this.logger.debug('polling - Scheduling polling request');
@@ -1152,14 +1240,22 @@ class DescopeWc extends BaseDescopeWc {
           );
         }
 
-        // will poll again if needed
-        // handleSdkResponse will clear the timeout if the response action is not polling response
-        this.#handlePollingResponse(
-          executionId,
-          stepId,
-          flowVersion,
-          componentsVersion,
-        );
+        // we want to stop polling for some errors
+        if (
+          !sdkResp?.error?.errorCode ||
+          !stopOnErrors.includes(sdkResp.error.errorCode)
+        ) {
+          // will poll again if needed
+          // handleSdkResponse will clear the timeout if the response action is not polling response
+          this.#handlePollingResponse(
+            executionId,
+            stepId,
+            flowVersion,
+            componentsVersion,
+          );
+        } else {
+          this.logger.debug('polling - Stopping polling due to error');
+        }
 
         this.#handleSdkResponse(sdkResp);
       }, delay);
@@ -1190,11 +1286,10 @@ class DescopeWc extends BaseDescopeWc {
         sdkResp?.error?.errorMessage || defaultDescription,
       );
 
-      // E102004 = Flow requested is in old version
-      // E103205 = Flow timed out
       const errorCode = sdkResp?.error?.errorCode;
       if (
-        (errorCode === 'E102004' || errorCode === 'E103205') &&
+        (errorCode === FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE ||
+          errorCode === FLOW_TIMED_OUT_ERROR_CODE) &&
         this.isRestartOnError
       ) {
         this.#handleFlowRestart();
@@ -1233,6 +1328,10 @@ class DescopeWc extends BaseDescopeWc {
       }
       this.#dispatch('success', authInfo);
       return;
+    } else {
+      if (this.storeLastAuthenticatedUser) {
+        setLastAuth(lastAuth, true);
+      }
     }
 
     if (openInNewTabUrl) {
@@ -1529,12 +1628,16 @@ class DescopeWc extends BaseDescopeWc {
     return isValid;
   }
 
-  async #getFormData() {
-    const inputs = Array.from(
+  getInputs() {
+    return Array.from(
       this.shadowRoot.querySelectorAll(
-        `*[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
+        `*:not(slot)[name]:not([${DESCOPE_ATTRIBUTE_EXCLUDE_FIELD}])`,
       ),
     ) as HTMLInputElement[];
+  }
+
+  async #getFormData() {
+    const inputs = this.getInputs();
 
     // wait for all inputs
     const values = await Promise.all(
@@ -1554,14 +1657,80 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  #handleSubmitButtonLoader(submitter: HTMLElement) {
+  #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
+
+  #handleComponentsLoadingState(submitter: HTMLElement) {
+    const enabledElements = Array.from(
+      this.contentRootElement.querySelectorAll(
+        ':not([disabled]), [disabled="false"]',
+      ),
+    ).filter((ele) => ele !== submitter);
+
+    const restoreComponentsState = async () => {
+      this.loggerWrapper.debug('Restoring components state');
+      this.removeEventListener('popupclosed', restoreComponentsState);
+      submitter.removeAttribute('loading');
+      enabledElements.forEach((ele) => {
+        ele.removeAttribute('disabled');
+      });
+      // if there are client scripts, we want to reload them
+      const flowConfig = await this.getFlowConfig();
+      const clientScripts = [
+        ...(flowConfig.clientScripts || []),
+        ...(flowConfig.sdkScripts || []),
+      ];
+      this.loadSdkScripts(clientScripts);
+    };
+
+    const handleScreenIdUpdates = () => {
+      // we want to remove the previous pageshow listener to avoid multiple listeners
+      window.removeEventListener('pageshow', this.#prevPageShowListener);
+
+      this.#prevPageShowListener = (e) => {
+        if (e.persisted) {
+          this.logger.debug(
+            'Page was loaded from cache, restoring components state',
+          );
+          restoreComponentsState();
+        }
+      };
+      // we want to restore the components state when the page is shown from cache
+      window.addEventListener('pageshow', this.#prevPageShowListener, {
+        once: true,
+      });
+
+      // we want to restore the components state when the screenId is updated
+      const unsubscribeScreenIdUpdates = this.stepState?.subscribe(
+        (screenId, prevScreenId) => {
+          // we want to restore components state only if we stay on the same screen
+          // if we are rendering a new screen, the components state (disabled/loading) will remain until the new screen is rendered
+          if (screenId === prevScreenId) {
+            restoreComponentsState();
+          }
+          this.removeEventListener('popupclosed', restoreComponentsState);
+          this.stepState.unsubscribe(unsubscribeScreenIdUpdates);
+        },
+        (state) => state.screenId,
+        { forceUpdate: true },
+      );
+    };
+
+    // we are listening to the next request status
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          this.addEventListener('popupclosed', restoreComponentsState, {
+            once: true,
+          });
+          // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
           submitter.setAttribute('loading', 'true');
+          enabledElements.forEach((ele) =>
+            ele.setAttribute('disabled', 'true'),
+          );
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
-          submitter.removeAttribute('loading');
+          // when next request is done, we want to listen to screenId updates
+          handleScreenIdUpdates();
         }
       },
     );
@@ -1635,7 +1804,7 @@ class DescopeWc extends BaseDescopeWc {
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
-        this.#handleSubmitButtonLoader(submitter);
+        this.#handleComponentsLoadingState(submitter);
 
         const formData = await this.#getFormData();
         const eleDescopeAttrs = getElementDescopeAttributes(submitter);

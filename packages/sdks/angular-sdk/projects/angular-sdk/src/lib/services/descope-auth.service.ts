@@ -39,9 +39,9 @@ export class DescopeAuthService {
     this.descopeSdk = observabilify<DescopeSDK>(
       createSdk({
         persistTokens: isBrowser() as true,
-        ...config,
         storeLastAuthenticatedUser: isBrowser() as true,
         autoRefresh: isBrowser() as true,
+        ...config,
         baseHeaders
       })
     );
@@ -61,13 +61,13 @@ export class DescopeAuthService {
     this.descopeSdk.onUserChange(this.setUser.bind(this));
   }
 
-  refreshSession() {
+  refreshSession(tryRefresh?: boolean) {
     const beforeRefreshSession = this.sessionSubject.value;
     this.sessionSubject.next({
       ...beforeRefreshSession,
       isSessionLoading: true
     });
-    return this.descopeSdk.refresh().pipe(
+    return this.descopeSdk.refresh(undefined, tryRefresh).pipe(
       finalize(() => {
         const afterRefreshSession = this.sessionSubject.value;
         this.sessionSubject.next({

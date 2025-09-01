@@ -1,4 +1,6 @@
 export type ConnectOptions = {
-  redirectURL?: string;
+  redirectUrl?: string;
   scopes?: string[];
+  tenantId?: string;
+  tenantLevel?: boolean;
 };

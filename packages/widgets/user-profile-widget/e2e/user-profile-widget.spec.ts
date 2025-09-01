@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { componentsPort, widgetPort } from '../playwright.config';
 import { mockUser } from '../test/mocks/mockUser';
 import mockTheme from '../test/mocks/mockTheme';
 import rootMock from '../test/mocks/rootMock';
@@ -15,10 +16,10 @@ const STATE_TIMEOUT = 2000;
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
+    await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
-        'http://localhost:8770/umd/index.js',
+        `http://localhost:${port}/umd/index.js`,
       );
 
       window.customElements.define(
@@ -32,7 +33,7 @@ test.describe('widget', () => {
           }
         },
       );
-    });
+    }, componentsPort);
 
     await page.route('*/**/config.json', async (route) =>
       route.fulfill({ json: configContent }),
@@ -58,7 +59,7 @@ test.describe('widget', () => {
       }),
     );
 
-    await page.goto('http://localhost:5559');
+    await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForTimeout(STATE_TIMEOUT);
   });
 
@@ -156,7 +157,12 @@ test.describe('widget', () => {
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
-      { name: 'passkey', flagPath: 'webauthn', fulfilled: 'true' },
+      {
+        name: 'passkey',
+        action: 'add',
+        flagPath: 'webauthn',
+        fulfilled: 'true',
+      },
       { name: 'password', flagPath: 'password', fulfilled: null },
       { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
     ]) {
@@ -173,15 +179,21 @@ test.describe('widget', () => {
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
-        const finishFlowBtn = page
-          .locator(`descope-modal[data-id="${attr.name}"]`)
-          .locator('button', { hasText: 'Finish Flow' });
-
         await page.route('**/auth/me', async (route) =>
           route.fulfill({
             json: { ...mockUser, [attr.flagPath]: true },
           }),
         );
+
+        const finishFlowBtn = page
+          .locator(
+            `descope-modal[data-id="${attr.action ? attr.action + '-' : ''}${
+              attr.name
+            }"]`,
+          )
+          .locator('button', { hasText: 'Finish Flow' });
+
+        await finishFlowBtn.waitFor({ state: 'visible' });
 
         finishFlowBtn.click();
 

@@ -80,6 +80,7 @@ export type OIDCOptions = {
   oidcLoginHint?: string;
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
+  oidcResource?: string;
 };
 
 export type Locale = {
@@ -241,6 +242,7 @@ export interface Context {
   code?: string;
   token?: string;
   abTestingKey?: number;
+  lastAuth?: LastAuthState;
 }
 
 export type DescopeUI = Record<string, () => Promise<void>> & {

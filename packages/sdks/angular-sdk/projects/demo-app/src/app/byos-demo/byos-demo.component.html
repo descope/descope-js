@@ -1,0 +1,23 @@
+<div class="byos-container">
+  <h2>Custom Authentication Example</h2>
+  <p>
+    This example demonstrates how to use custom screens with Descope
+    authentication
+  </p>
+
+  <div class="auth-container">
+    <descope
+      [flowId]="flowId"
+      [onScreenUpdate]="onScreenUpdate"
+      (success)="onSuccess($event)"
+      (error)="onError($event)"
+    >
+      <app-custom-welcome-screen
+        *ngIf="state.screenName === 'Welcome Screen'"
+        [errorText]="state.error?.text || ''"
+        (formUpdate)="updateForm($event)"
+        (buttonClick)="continueFlow()"
+      ></app-custom-welcome-screen>
+    </descope>
+  </div>
+</div>

@@ -19,6 +19,7 @@ type Options = Pick<
   | 'locale'
   | 'oidcPrompt'
   | 'oidcErrorRedirectUri'
+  | 'oidcResource'
   | 'nativeOptions'
   | 'thirdPartyAppStateId'
   | 'applicationScopes'

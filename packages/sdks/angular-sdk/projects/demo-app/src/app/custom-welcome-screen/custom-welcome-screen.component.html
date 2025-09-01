@@ -1,0 +1,34 @@
+<div class="custom-welcome">
+  <form (submit)="onSubmit($event)">
+    <h3>Welcome to Our Application</h3>
+    <p>This is a custom welcome screen built with Angular!</p>
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input
+        type="text"
+        id="name"
+        [(ngModel)]="form.name"
+        name="name"
+        (input)="updateForm()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="form.email"
+        name="email"
+        (input)="updateForm()"
+      />
+    </div>
+
+    <div *ngIf="errorText" class="error-message">
+      {{ errorText }}
+    </div>
+
+    <button type="submit">Continue</button>
+  </form>
+</div>

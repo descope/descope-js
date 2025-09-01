@@ -5,10 +5,12 @@ export class DescopeAuthConfig {
   baseUrl?: string;
   baseStaticUrl?: string;
   baseCdnUrl?: string;
-  // If true, tokens will be stored on local storage
+  // Default is true. If true, tokens will be stored on local storage.
   persistTokens?: boolean;
+  // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire
+  autoRefresh?: boolean;
   sessionTokenViaCookie?: CookieConfig;
-  // If true, last authenticated user will be stored on local storage and can accessed with getUser function
+  // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   pathsToIntercept?: string[];
 }

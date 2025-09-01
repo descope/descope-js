@@ -61,6 +61,8 @@ export default (httpClient: HttpClient) => ({
    * Should be called when a session has expired (failed validation) to renew it
    * @param token A valid refresh token
    * @param queryParams Additional query parameters to send with the request.
+   * @param externalToken An external token to exchange for a new session token
+   * @param tryRefresh If true, will use the tryRefresh endpoint, which will not fail if token is missing, invalid or expired.
    *    NOTE - queryParams is used internally and should NOT be used by other consumers, this is subject to change and may be removed in the near future.
    * @returns The updated authentication info (JWTs)
    */
@@ -69,13 +71,15 @@ export default (httpClient: HttpClient) => ({
       token?: string,
       queryParams?: { [key: string]: string },
       externalToken?: string,
+      tryRefresh?: boolean,
     ) => {
       const body = {};
       if (externalToken) {
         body['externalToken'] = externalToken;
       }
+      const path = tryRefresh ? apiPaths.tryRefresh : apiPaths.refresh;
       return transformResponse<JWTResponse>(
-        httpClient.post(apiPaths.refresh, body, { token, queryParams }),
+        httpClient.post(path, body, { token, queryParams }),
       );
     },
   ),

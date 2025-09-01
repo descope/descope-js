@@ -97,7 +97,15 @@ describe('saml', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValueOnce(httpResponse);
-      const resp = await sdk.saml.start('tenant-ID', 'aaa', null, 'ccc', 'ddd');
+      const resp = await sdk.saml.start(
+        'tenant-ID',
+        'aaa',
+        null,
+        'ccc',
+        'ddd',
+        true,
+        'lulu',
+      );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.saml.start,
         {},
@@ -106,6 +114,8 @@ describe('saml', () => {
             tenant: 'tenant-ID',
             redirectURL: 'aaa',
             ssoId: 'ddd',
+            forceAuthn: 'true',
+            loginHint: 'lulu',
           },
           token: 'ccc',
         },

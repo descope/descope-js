@@ -2,6 +2,124 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.15](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.14...nextjs-sdk-0.14.15) (2025-08-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.1`
+* `react-sdk` updated to version `2.19.1`
+* `core-js-sdk` updated to version `2.49.0`
+* `web-component` updated to version `3.47.0`
+## [0.14.14](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.13...nextjs-sdk-0.14.14) (2025-08-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.0`
+* `react-sdk` updated to version `2.19.0`
+* `core-js-sdk` updated to version `2.48.0`
+* `web-component` updated to version `3.46.4`
+## [0.14.13](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.12...nextjs-sdk-0.14.13) (2025-08-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.3`
+* `react-sdk` updated to version `2.18.3`
+* `core-js-sdk` updated to version `2.47.0`
+* `web-component` updated to version `3.46.3`
+## [0.14.12](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.11...nextjs-sdk-0.14.12) (2025-08-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.2`
+* `react-sdk` updated to version `2.18.2`
+* `core-js-sdk` updated to version `2.46.2`
+* `web-component` updated to version `3.46.2`
+## [0.14.11](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.10...nextjs-sdk-0.14.11) (2025-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.1`
+* `react-sdk` updated to version `2.18.1`
+* `core-js-sdk` updated to version `2.46.1`
+* `web-component` updated to version `3.46.1`
+## [0.14.10](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.9...nextjs-sdk-0.14.10) (2025-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.0`
+* `react-sdk` updated to version `2.18.0`
+* `core-js-sdk` updated to version `2.46.0`
+* `web-component` updated to version `3.46.0`
+## [0.14.9](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.8...nextjs-sdk-0.14.9) (2025-08-10)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.17.1`
+* `web-component` updated to version `3.45.1`
+## [0.14.8](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.7...nextjs-sdk-0.14.8) (2025-08-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.7`
+* `react-sdk` updated to version `2.17.0`
+* `core-js-sdk` updated to version `2.45.0`
+* `web-component` updated to version `3.45.0`
+## [0.14.7](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.6...nextjs-sdk-0.14.7) (2025-08-05)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.6`
+* `react-sdk` updated to version `2.16.5`
+* `core-js-sdk` updated to version `2.44.5`
+* `web-component` updated to version `3.44.4`
+## [0.14.6](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.5...nextjs-sdk-0.14.6) (2025-07-31)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.16.4`
+* `web-component` updated to version `3.44.3`
+## [0.14.5](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.4...nextjs-sdk-0.14.5) (2025-07-31)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.16.3`
+* `web-component` updated to version `3.44.2`
+## [0.14.4](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.3...nextjs-sdk-0.14.4) (2025-07-29)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.16.2`
+## [0.14.3](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.2...nextjs-sdk-0.14.3) (2025-07-27)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.16.1`
+* `web-component` updated to version `3.44.1`
+## [0.14.2](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.1...nextjs-sdk-0.14.2) (2025-07-22)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.16.0`
+* `web-component` updated to version `3.44.0`
+## [0.14.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.0...nextjs-sdk-0.14.1) (2025-07-21)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.15.0`
+* `web-component` updated to version `3.43.20`
+## [0.14.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.20...nextjs-sdk-0.14.0) (2025-07-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.33.5`
+* `react-sdk` updated to version `2.14.26`
+* `core-js-sdk` updated to version `2.44.4`
+* `web-component` updated to version `3.43.19`
+
+### Features
+
+* Support multiple global sdks in next sdk ([#1154](https://github.com/descope/descope-js/issues/1154)) RELEASE ([b91186d](https://github.com/descope/descope-js/commit/b91186de2d4122018dfb892bb8b31c5aa4a9ffc8))
+
 ## [0.13.20](https://github.com/descope/descope-js/compare/nextjs-sdk-0.13.19...nextjs-sdk-0.13.20) (2025-07-02)
 
 ### Dependency Updates
