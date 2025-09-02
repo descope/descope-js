@@ -236,6 +236,99 @@ describe('web-component', () => {
     pageContent = '';
   });
 
+  describe('SAML', () => {
+    it('should validate handling of saml idp response', async () => {
+      const samlUrl = 'http://acs.dummy.com';
+
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          ok: true,
+          executionId: 'e1',
+          action: RESPONSE_ACTIONS.loadForm,
+          samlIdpResponseUrl: samlUrl,
+          samlIdpResponseSamlResponse: 'saml-response-dummy-value',
+          samlIdpResponseRelayState: 'saml-relay-state-dummy-value',
+        }),
+      );
+
+      const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
+      mockSubmitForm.mockImplementation(() => {});
+
+      document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+      const form = (await waitFor(
+        () => {
+          const samlForm = document.querySelector(`form[action="${samlUrl}"]`);
+
+          if (!samlForm) {
+            throw Error();
+          }
+          return samlForm;
+        },
+        {
+          timeout: 8000,
+        },
+      )) as HTMLFormElement;
+
+      expect(form).toBeInTheDocument();
+
+      // validate inputs exist
+      const inputSamlResponse = document.querySelector(
+        `form[action="${samlUrl}"] input[role="saml-response"]`,
+      );
+      expect(inputSamlResponse).toBeInTheDocument();
+      expect(inputSamlResponse).not.toBeVisible();
+      expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
+
+      // validate inputs are hidden
+      const inputSamlRelayState = document.querySelector(
+        `form[action="${samlUrl}"] input[role="saml-relay-state"]`,
+      );
+      expect(inputSamlRelayState).toBeInTheDocument();
+      expect(inputSamlRelayState).not.toBeVisible();
+      expect(inputSamlRelayState).toHaveValue('saml-relay-state-dummy-value');
+
+      await waitFor(
+        () => {
+          expect(mockSubmitForm).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 6000 },
+      );
+    });
+
+    it('should automatic fill saml idp username in form element', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          ok: true,
+          executionId: 'e1',
+        }),
+      );
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      const samlIdpEmailAddress = 'dummy@email.com';
+      const encodedSamlIdpEmailAddress =
+        encodeURIComponent(samlIdpEmailAddress);
+      window.location.search = `?${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpEmailAddress}`;
+
+      pageContent = `<div>Loaded</div><input class="descope-input" id="loginId" name="loginId" value="{{loginId}}">{{loginId}}</input><input class="descope-input" id="email" name="email">{{email}}</input>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const inputs = await waitFor(
+        () => screen.findAllByShadowDisplayValue(samlIdpEmailAddress),
+        {
+          timeout: 6000,
+        },
+      );
+
+      expect(inputs.length).toBe(2);
+    });
+  });
+
   it('When has polling element, and next poll returns error response', async () => {
     jest.useRealTimers();
 
@@ -1396,9 +1489,44 @@ describe('web-component', () => {
     await waitFor(() => screen.getByShadowText('hey john!'));
   });
 
+  it('should update page templates according to last auth login ID when there is no login Id', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({ screenState: { user: {} } }),
+    );
+    getLastUserLoginIdMock.mockReturnValue('');
+
+    pageContent = `<div>Loaded1</div><descope-text class="descope-text">hey {{lastAuth.loginId}}!</descope-text>`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => screen.getByShadowText('hey !'));
+  });
+
+  it('should update page templates according to last auth login ID when there is only login Id in lastAuth with no authMethod', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenState: { user: {} },
+        lastAuth: { loginId: 'not john' },
+      }),
+    );
+    getLastUserLoginIdMock.mockReturnValue('');
+
+    pageContent = `<div>Loaded1</div><descope-text class="descope-text">hey {{lastAuth.loginId}}!</descope-text>`;
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Loaded1'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    await waitFor(() => screen.getByShadowText('hey !'));
+  });
+
   it('should update page templates according to last auth login ID when there is only login Id', async () => {
     startMock.mockReturnValue(
-      generateSdkResponse({ screenState: { user: { name: 'john' } } }),
+      generateSdkResponse({ screenState: { user: { loginId: 'john' } } }),
     );
     getLastUserLoginIdMock.mockReturnValue('not john');
 
@@ -1684,7 +1812,7 @@ describe('web-component', () => {
     );
   });
 
-  it.skip('Submitter button should have a loading class when next is pending', async () => {
+  it('Submitter button should have a loading class when next is pending', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
     let resolve: Function;
     nextMock.mockImplementationOnce(
@@ -4372,6 +4500,130 @@ describe('web-component', () => {
     ).toBeNull();
   });
 
+  it('should not store last auth when use last authenticated user is true', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+        lastAuth: { authMethod: 'otp' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1 store-last-authenticated-user="true">
+    </descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ detail: 'auth info' }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    expect(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)).toEqual(
+      `{"authMethod":"otp"}`,
+    );
+  });
+
+  it('should store last auth when use last authenticated', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+        lastAuth: { authMethod: 'otp', loginId: 'moshe' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1>
+    </descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ detail: 'auth info' }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    expect(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)).toEqual(
+      `{"authMethod":"otp","loginId":"moshe"}`,
+    );
+  });
+
+  it('should store last auth when use last authenticated not completed status with login id', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
+    pageContent = '<div>hey</div>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'waiting',
+        lastAuth: { authMethod: 'otp', loginId: 'moshe' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1>
+    </descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    expect(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)).toEqual(
+      `{"authMethod":"otp","loginId":"moshe"}`,
+    );
+  });
+
+  it('should store last auth when use last authenticated not completed status and no login id', async () => {
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+
+    pageContent = '<div>hey</div>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'waiting',
+        lastAuth: { authMethod: 'otp' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1>
+    </descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('hey'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    expect(
+      localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY),
+    ).toBeNull();
+  });
+
   it('should update dynamic attribute values', async () => {
     pageContent = `<input ${HAS_DYNAMIC_VALUES_ATTR_NAME}="" testAttr="{{form.varName}}" id="email" name="email" placeholder="email"></input>`;
 
@@ -4810,99 +5062,6 @@ describe('web-component', () => {
         value: '',
         writable: true,
       });
-    });
-  });
-
-  describe('SAML', () => {
-    it('should validate handling of saml idp response', async () => {
-      const samlUrl = 'http://acs.dummy.com';
-
-      startMock.mockReturnValue(
-        generateSdkResponse({
-          ok: true,
-          executionId: 'e1',
-          action: RESPONSE_ACTIONS.loadForm,
-          samlIdpResponseUrl: samlUrl,
-          samlIdpResponseSamlResponse: 'saml-response-dummy-value',
-          samlIdpResponseRelayState: 'saml-relay-state-dummy-value',
-        }),
-      );
-
-      const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
-      mockSubmitForm.mockImplementation(() => {});
-
-      document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
-
-      const form = (await waitFor(
-        () => {
-          const samlForm = document.querySelector(`form[action="${samlUrl}"]`);
-
-          if (!samlForm) {
-            throw Error();
-          }
-          return samlForm;
-        },
-        {
-          timeout: 8000,
-        },
-      )) as HTMLFormElement;
-
-      expect(form).toBeInTheDocument();
-
-      // validate inputs exist
-      const inputSamlResponse = document.querySelector(
-        `form[action="${samlUrl}"] input[role="saml-response"]`,
-      );
-      expect(inputSamlResponse).toBeInTheDocument();
-      expect(inputSamlResponse).not.toBeVisible();
-      expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
-
-      // validate inputs are hidden
-      const inputSamlRelayState = document.querySelector(
-        `form[action="${samlUrl}"] input[role="saml-relay-state"]`,
-      );
-      expect(inputSamlRelayState).toBeInTheDocument();
-      expect(inputSamlRelayState).not.toBeVisible();
-      expect(inputSamlRelayState).toHaveValue('saml-relay-state-dummy-value');
-
-      await waitFor(
-        () => {
-          expect(mockSubmitForm).toHaveBeenCalledTimes(1);
-        },
-        { timeout: 6000 },
-      );
-    });
-
-    it('should automatic fill saml idp username in form element', async () => {
-      startMock.mockReturnValue(
-        generateSdkResponse({
-          ok: true,
-          executionId: 'e1',
-        }),
-      );
-      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
-
-      const samlIdpEmailAddress = 'dummy@email.com';
-      const encodedSamlIdpEmailAddress =
-        encodeURIComponent(samlIdpEmailAddress);
-      window.location.search = `?${SAML_IDP_USERNAME_PARAM_NAME}=${encodedSamlIdpEmailAddress}`;
-
-      pageContent = `<div>Loaded</div><input class="descope-input" id="loginId" name="loginId" value="{{loginId}}">{{loginId}}</input><input class="descope-input" id="email" name="email">{{email}}</input>`;
-
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
-
-      await waitFor(() => screen.getByShadowText('Loaded'), {
-        timeout: WAIT_TIMEOUT,
-      });
-
-      const inputs = await waitFor(
-        () => screen.findAllByShadowDisplayValue(samlIdpEmailAddress),
-        {
-          timeout: 6000,
-        },
-      );
-
-      expect(inputs.length).toBe(2);
     });
   });
 

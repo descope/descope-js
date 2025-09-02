@@ -670,7 +670,13 @@ class DescopeWc extends BaseDescopeWc {
           clientScripts: conditionScripts,
           componentsConfig: conditionComponentsConfig,
         } = calculateConditions(
-          { loginId, code, token, abTestingKey },
+          {
+            loginId,
+            code,
+            token,
+            abTestingKey,
+            lastAuth: getLastAuth(loginId),
+          },
           flowConfig.conditions,
         ));
         clientScripts.push(...(conditionScripts || []));
@@ -682,6 +688,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
+            lastAuth: getLastAuth(loginId),
           },
         ));
       } else {
@@ -1321,6 +1328,10 @@ class DescopeWc extends BaseDescopeWc {
       }
       this.#dispatch('success', authInfo);
       return;
+    } else {
+      if (this.storeLastAuthenticatedUser) {
+        setLastAuth(lastAuth, true);
+      }
     }
 
     if (openInNewTabUrl) {

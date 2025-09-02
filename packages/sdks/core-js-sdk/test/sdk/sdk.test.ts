@@ -68,6 +68,28 @@ describe('sdk', () => {
         },
       );
     });
+
+    it('should try-refresh', () => {
+      const httpRespJson = { key: 'val' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      sdk.refresh('token', undefined, undefined, true);
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.tryRefresh,
+        {},
+        {
+          token: 'token',
+        },
+      );
+    });
   });
 
   describe('selectTenant', () => {
