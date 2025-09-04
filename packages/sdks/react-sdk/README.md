@@ -293,8 +293,8 @@ useEffect(() => {
 }, [refresh]);
 ```
 
-
 ### Auto refresh session token
+
 Descope SDK automatically refreshes the session token when it is about to expire. This is done in the background using the refresh token, without any additional configuration.
 If you want to disable this behavior, you can pass `autoRefresh={false}` to the `AuthProvider` component. This will prevent the SDK from automatically refreshing the session token.
 
@@ -652,7 +652,7 @@ export DESCOPE_PROJECT_ID=<Project-ID>
 ```
 
 Alternatively, put the environment variable in `.env` file in the project root directory.
-See bellow for an `.env` file template with more information.
+See the `.env.example` file for a reference.
 
 ### Run Example
 
@@ -683,33 +683,6 @@ See the following table for customization environment variables for the example 
 |                             |                                                                                                               |                                  |
 | DESCOPE_OIDC_ENABLED        | **"true"** - Use OIDC login                                                                                   | None                             |
 | DESCOPE_OIDC_APPLICATION_ID | Descope OIDC Application ID, In case OIDC login is used                                                       | None                             |
-
-Example for `.env` file template:
-
-```
-# Your project ID
-DESCOPE_PROJECT_ID="<Project-ID>"
-# Login flow ID
-DESCOPE_FLOW_ID=""
-# Descope base URL
-DESCOPE_BASE_URL=""
-# Descope base static URL
-DESCOPE_BASE_STATIC_URL=""
-# Set flow theme to dark
-DESCOPE_THEME=dark
-# Set flow locale, default is browser's locale
-DESCOPE_LOCALE=""
-# Flow Redirect URL
-DESCOPE_REDIRECT_URL=""
-# Tenant ID
-DESCOPE_TENANT_ID=""
-# Enable debugger
-DESCOPE_DEBUG_MODE=true
-# Show step-up flow for logged in user
-DESCOPE_STEP_UP_FLOW_ID=step-up
-# Telemetry key
-DESCOPE_TELEMETRY_KEY=""
-```
 
 ## Performance / Bundle Size
 
