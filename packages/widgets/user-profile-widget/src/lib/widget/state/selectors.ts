@@ -2,6 +2,19 @@ import { createSelector } from 'reselect';
 import { State } from './types';
 
 export const getMe = (state: State) => state.me.data;
+export const getDeviceList = (state: State) => state.devices.data;
+
+export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
+  devices.map(({ id, name, deviceType, lastLoginTime, isCurrentDevice }) => ({
+    id,
+    name,
+    deviceType,
+    lastLoginDate: parseInt(lastLoginTime, 10),
+    isCurrent: isCurrentDevice,
+  })),
+);
+
+export const getUserId = createSelector(getMe, (me) => me.userId);
 
 export const getPicture = createSelector(getMe, (me) => me.picture);
 export const getEmail = createSelector(getMe, (me) => me.email);

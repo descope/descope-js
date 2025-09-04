@@ -1,11 +1,24 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { Sdk } from '../api/sdk';
 
+type Device = {
+  id: string;
+  name: string;
+  deviceType: 'desktop' | 'mobile' | 'tablet' | 'unknown';
+  isCurrentDevice: boolean;
+  lastLoginTime: string;
+};
+
 export type State = {
   me: {
     loading: boolean;
     error: unknown;
     data: Record<string, any>;
+  };
+  devices: {
+    loading: boolean;
+    error: unknown;
+    data: Device[];
   };
 };
 
