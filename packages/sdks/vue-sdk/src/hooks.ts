@@ -30,6 +30,7 @@ export const useSession = () => {
         session.isLoading.value || session.isFetchSessionWasNeverCalled.value,
     ),
     sessionToken: session.session,
+    claims: session.claims,
     isAuthenticated: session.isAuthenticated,
   };
 };
