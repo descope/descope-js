@@ -7,8 +7,8 @@ const getUserDisplayName = (user?: UserResponse) =>
   user?.name || user?.loginIds?.[0] || '';
 
 const Home = () => {
-  // useSession retrieves authentication state, session loading status, and session token
-  const { sessionToken } = useSession();
+  // useSession retrieves authentication state, session loading status, useful claims, and the session token
+  const { sessionToken, claims } = useSession();
   // useUser retrieves the logged in user information
   const { user } = useUser();
   // useDescope retrieves Descope SDK for further operations related to authentication
@@ -91,6 +91,18 @@ const Home = () => {
       <p>
         Roles: <span style={{ fontWeight: 'bold' }}>{roles || 'No Roles'}</span>
       </p>
+      <p>Claims:</p>
+      {!claims ? (
+        <p>&lt;none&gt;</p>
+      ) : (
+        <ul>
+          {Object.entries(claims).map(([k, v]) => (
+            <li>
+              {k}: {JSON.stringify(v)}
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 };
