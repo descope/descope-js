@@ -18,7 +18,7 @@ import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { getTrustedDevices } from '../../../state/selectors';
+import { getTrustedDevices, getUserId } from '../../../state/selectors';
 
 export const initTrustedDevicesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -45,12 +45,11 @@ export const initTrustedDevicesMixin = createSingletonMixin(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#modal.afterClose = this.#initModalContent.bind(this);
-        this.#initModalContent();
+        this.#modal.afterClose = () => this.#initModalContent('');
         this.syncFlowTheme(this.#flow);
       }
 
-      #initModalContent() {
+      #initModalContent(deviceId: string) {
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -60,11 +59,14 @@ export const initTrustedDevicesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            form: JSON.stringify({ deviceId: deviceId || '' }),
           }),
         );
         this.#flow.onSuccess(() => {
           this.#modal.close();
-          this.actions.getMe();
+          this.actions.listDevices({
+            userId: getUserId(this.state),
+          });
         });
       }
 
@@ -74,14 +76,15 @@ export const initTrustedDevicesMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.deviceList.onClick(() => {
+        this.deviceList.onRemoveDeviceClick(({ id }) => {
+          this.#initModalContent(id);
           this.#modal?.open();
         });
 
         this.deviceList.data = deviceList;
       }
 
-      onValueUpdate = withMemCache((data) => {
+      updateDeviceList = withMemCache((data) => {
         this.deviceList.data = data;
       });
 
@@ -91,9 +94,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
         this.#initDeviceList(getTrustedDevices(this.state));
         this.#initModal();
 
-        // this.#onDeviceRemove(getPicture(this.state));
-
-        this.subscribe(this.onValueUpdate.bind(this), getTrustedDevices);
+        this.subscribe(this.updateDeviceList.bind(this), getTrustedDevices);
       }
     },
 );

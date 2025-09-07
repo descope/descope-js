@@ -9,7 +9,7 @@ export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
     id,
     name,
     deviceType,
-    lastLoginDate: parseInt(lastLoginTime, 10),
+    lastLoginDate: parseInt(lastLoginTime, 10) * 1000,
     isCurrent: isCurrentDevice,
   })),
 );
