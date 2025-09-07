@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.2](https://github.com/descope/descope-js/compare/react-sdk-2.19.1...react-sdk-2.19.2) (2025-09-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.9`
+* `audit-management-widget` updated to version `0.5.9`
+* `role-management-widget` updated to version `0.5.1`
+* `user-management-widget` updated to version `0.9.6`
+* `user-profile-widget` updated to version `0.6.14`
+* `applications-portal-widget` updated to version `0.4.9`
+* `web-component` updated to version `3.47.1`
+* `tenant-profile-widget` updated to version `0.2.11`
+
+### Bug Fixes
+
+* **react-sdk:** Move envvars to .env.example ([#1198](https://github.com/descope/descope-js/issues/1198)) ([06e5a32](https://github.com/descope/descope-js/commit/06e5a32e9c59bc815fee32c846b9e5327a7edcc5))
+
 ## [2.19.1](https://github.com/descope/descope-js/compare/react-sdk-2.19.0...react-sdk-2.19.1) (2025-08-28)
 
 ### Dependency Updates
