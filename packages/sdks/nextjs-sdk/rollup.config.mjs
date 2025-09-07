@@ -6,7 +6,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 import noEmit from 'rollup-plugin-no-emit';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 const nextSubPackages = [
 	'next/server',
