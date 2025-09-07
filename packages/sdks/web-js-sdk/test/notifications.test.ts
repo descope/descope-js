@@ -6,7 +6,7 @@ const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
 describe('notifications', () => {
-  it('should subscribe to onSessionTokenChange, onIsAuthenticatedChange and onUserChange', async () => {
+  it('should subscribe to onSessionTokenChange, onIsAuthenticatedChange, onUserChange and onClaimsChange', async () => {
     const mockFetch = jest
       .fn()
       .mockReturnValue(createMockReturnValue(authInfo));
@@ -19,6 +19,9 @@ describe('notifications', () => {
     const userHandler = jest.fn();
     sdk.onUserChange(userHandler);
 
+    const claimsHandler = jest.fn();
+    sdk.onClaimsChange(claimsHandler);
+
     const isAuthenticatedHandler = jest.fn();
     sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
 
@@ -28,6 +31,7 @@ describe('notifications', () => {
       setTimeout(() => {
         expect(sessionTokenHandler).toHaveBeenCalledWith(authInfo.sessionJwt);
         expect(userHandler).toHaveBeenCalledWith(authInfo.user);
+        expect(claimsHandler).toHaveBeenCalledWith(authInfo.claims);
         expect(isAuthenticatedHandler).toHaveBeenCalledWith(true);
         resolve();
       }, 0),
@@ -77,6 +81,9 @@ describe('notifications', () => {
     const userHandler = jest.fn();
     sdk.onUserChange(userHandler);
 
+    const claimsHandler = jest.fn();
+    sdk.onClaimsChange(claimsHandler);
+
     const isAuthenticatedHandler = jest.fn();
     sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
 
@@ -90,9 +97,11 @@ describe('notifications', () => {
 
     expect(sessionTokenHandler).toHaveBeenCalledTimes(2);
     expect(userHandler).toHaveBeenCalledTimes(2);
+    expect(claimsHandler).toHaveBeenCalledTimes(2);
     expect(isAuthenticatedHandler).toHaveBeenCalledTimes(2);
     expect(sessionTokenHandler).toHaveBeenNthCalledWith(2, null);
     expect(userHandler).toHaveBeenNthCalledWith(2, null);
+    expect(claimsHandler).toHaveBeenNthCalledWith(2, null);
     expect(isAuthenticatedHandler).toHaveBeenNthCalledWith(2, false);
   });
 

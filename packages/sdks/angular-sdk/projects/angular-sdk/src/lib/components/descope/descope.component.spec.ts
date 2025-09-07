@@ -22,6 +22,7 @@ describe('DescopeComponent', () => {
   const onSessionTokenChangeSpy = jest.fn();
   const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
+  const onClaimsChangeSpy = jest.fn();
   const afterRequestHooksSpy = jest.fn();
   const mockConfig: DescopeAuthConfig = {
     projectId: 'someProject'
@@ -34,6 +35,7 @@ describe('DescopeComponent', () => {
       onSessionTokenChange: onSessionTokenChangeSpy,
       onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onUserChange: onUserChangeSpy,
+      onClaimsChange: onClaimsChangeSpy,
       httpClient: {
         hooks: {
           afterRequest: afterRequestHooksSpy

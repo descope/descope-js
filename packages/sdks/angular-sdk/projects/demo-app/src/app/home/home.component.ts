@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule]
 })
 export class HomeComponent implements OnInit {
   projectId: string = environment.descopeProjectId;
