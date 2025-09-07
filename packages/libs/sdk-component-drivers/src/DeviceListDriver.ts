@@ -7,6 +7,8 @@ type Data = {
   isCurrent: boolean;
 }[];
 
+type Detail = { id: string; action: string };
+
 export class DeviceListDriver extends BaseDriver {
   nodeName = 'descope-trusted-devices';
 
@@ -32,9 +34,11 @@ export class DeviceListDriver extends BaseDriver {
     return this.ele?.getAttribute('flow-id');
   }
 
-  onClick(cb: (e: Event) => void) {
-    this.ele?.addEventListener('remove-device-clicked', cb);
+  onRemoveDeviceClick(cb: (detail: Detail) => void) {
+    const handler = (e: CustomEvent<Detail>) => cb(e.detail);
+    this.ele?.addEventListener('remove-device-clicked', handler);
 
-    return () => this.ele?.removeEventListener('remove-device-clicked', cb);
+    return () =>
+      this.ele?.removeEventListener('remove-device-clicked', handler);
   }
 }
