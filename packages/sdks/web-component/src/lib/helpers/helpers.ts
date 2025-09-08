@@ -772,10 +772,8 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
-function closePopup(popup) {
-  if (!popup.document.body.textContent?.trim()) {
-    popup.close();
-  }
+function isWindowEmpty(w: Window) {
+  return !w.document.body.textContent?.trim();
 }
 
 export const openCenteredPopup = (
@@ -824,9 +822,13 @@ export const openCenteredPopup = (
     popup.focus();
 
     // Handle the "Cancel" scenario for macOS native auth dialog.
-    // The native dialog doesn't emit JavaScript events when cancelled, leaving the popup blank.
-    // If the popup remains empty after 1 second, assume the user cancelled and close it automatically.
-    setTimeout(() => closePopup(popup), 1000);
+    // When users cancel the native dialog, no JavaScript events are emitted and the popup remains blank.
+    // If the popup is still empty after 1 second, assume cancellation and close it automatically.
+    setTimeout(() => {
+      if (isWindowEmpty(popup)) {
+        popup.close();
+      }
+    }, 1000);
   }
 
   return popup;
