@@ -772,6 +772,10 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
+function isWindowEmpty(w: Window) {
+  return !w.document.body.textContent?.trim();
+}
+
 export const openCenteredPopup = (
   url: string,
   title: string,
@@ -815,6 +819,28 @@ export const openCenteredPopup = (
 
   if (popup) {
     popup.location.href = url;
+    popup.focus();
+
+    // Poll to check if the popup document is empty and the popup is focused
+    const pollInterval = setInterval(() => {
+      try {
+        if (popup.closed) {
+          clearInterval(pollInterval);
+          return;
+        }
+        if (
+          popup.document.hasFocus &&
+          popup.document.hasFocus() &&
+          isWindowEmpty(popup)
+        ) {
+          popup.close();
+          clearInterval(pollInterval);
+        }
+      } catch (e) {
+        clearInterval(pollInterval);
+      }
+    }, 1000);
+
     popup.focus();
   }
 
