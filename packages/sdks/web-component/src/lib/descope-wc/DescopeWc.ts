@@ -870,7 +870,6 @@ class DescopeWc extends BaseDescopeWc {
         }, 1000);
 
         this.loggerWrapper.debug('Listening for postMessage on channel');
-
         const onPostMessage = (event: MessageEvent) => {
           this.loggerWrapper.debug(
             'Received postMessage on channel',
