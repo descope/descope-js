@@ -808,6 +808,12 @@ export const openCenteredPopup = (
   if (popup) {
     popup.location.href = url;
     popup.focus();
+
+    setTimeout(() => {
+      if (!popup.document.body.textContent) {
+        popup.close();
+      }
+    }, 1000);
   }
 
   return popup;
