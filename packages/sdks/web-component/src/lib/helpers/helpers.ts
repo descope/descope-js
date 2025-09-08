@@ -773,7 +773,7 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
 }
 
 function closePopup(popup) {
-  if (!popup.document.body.textContent) {
+  if (!popup.document.body.textContent?.trim()) {
     popup.close();
   }
 }
