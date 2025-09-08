@@ -772,6 +772,12 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
+function closePopup(popup) {
+  if (!popup.document.body.textContent) {
+    popup.close();
+  }
+}
+
 export const openCenteredPopup = (
   url: string,
   title: string,
@@ -799,6 +805,14 @@ export const openCenteredPopup = (
   const left = (width - w) / 2 + dualScreenLeft;
   const top = (height - h) / 2 + dualScreenTop;
 
+  // Safari on Mac may detect authentication URLs and replace the popup with a native macOS auth dialog.
+  // When this happens, JavaScript execution is suspended in the popup window, breaking BroadcastChannel communication.
+  // Additionally, we cannot detect the outcome (success/cancel) of the native dialog through normal web APIs.
+  //
+  // Solution: Open a blank popup first, then navigate to the auth URL. This ensures:
+  // 1. The popup window maintains JavaScript execution context for BroadcastChannel communication
+  // 2. We can detect when the native auth dialog appears and disappears
+  // 3. We retain control over the popup lifecycle even when macOS takes over authentication
   const popup = window.open(
     'about:blank',
     title,
@@ -809,11 +823,10 @@ export const openCenteredPopup = (
     popup.location.href = url;
     popup.focus();
 
-    setTimeout(() => {
-      if (!popup.document.body.textContent) {
-        popup.close();
-      }
-    }, 1000);
+    // Handle the "Cancel" scenario for macOS native auth dialog.
+    // The native dialog doesn't emit JavaScript events when cancelled, leaving the popup blank.
+    // If the popup remains empty after 1 second, assume the user cancelled and close it automatically.
+    setTimeout(() => closePopup(popup), 1000);
   }
 
   return popup;
