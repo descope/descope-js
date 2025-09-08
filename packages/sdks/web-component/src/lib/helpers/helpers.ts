@@ -800,10 +800,12 @@ export const openCenteredPopup = (
   const top = (height - h) / 2 + dualScreenTop;
 
   const popup = window.open(
-    url,
+    'about:blank',
     title,
     `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`,
   );
+
+  popup.location.href = url;
 
   popup.focus();
 
