@@ -772,14 +772,6 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
-function isPopupEmpty(popup: Window) {
-  return !popup.document.body.textContent?.trim();
-}
-
-function isPopupFocused(popup: Window) {
-  return popup.document.hasFocus?.();
-}
-
 export const openCenteredPopup = (
   url: string,
   title: string,
@@ -830,12 +822,15 @@ export const openCenteredPopup = (
     // Poll to check if the popup document is empty and the popup is focused
     const closePopupInterval = setInterval(() => {
       try {
-        if (!isPopupEmpty(popup)) {
+        const isFocused = popup.document.hasFocus?.();
+        const isEmpty = !popup.document.body.textContent?.trim();
+
+        if (!isEmpty) {
           logger.debug('Popup: Has content, clearing interval');
           clearInterval(closePopupInterval);
           return;
         }
-        if (isPopupEmpty(popup) && isPopupFocused(popup)) {
+        if (isEmpty && isFocused) {
           logger.debug('Popup: Empty, closing and clearing interval');
           popup.close();
           clearInterval(closePopupInterval);
