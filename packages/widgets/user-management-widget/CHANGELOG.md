@@ -2,6 +2,57 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.6](https://github.com/descope/descope-js/compare/user-management-widget-0.9.5...user-management-widget-0.9.6) (2025-09-07)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.47.1`
+* `sdk-mixins` updated to version `0.13.11`
+* `sdk-component-drivers` updated to version `0.6.1`
+## [0.9.5](https://github.com/descope/descope-js/compare/user-management-widget-0.9.4...user-management-widget-0.9.5) (2025-08-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.1`
+* `web-component` updated to version `3.47.0`
+## [0.9.4](https://github.com/descope/descope-js/compare/user-management-widget-0.9.3...user-management-widget-0.9.4) (2025-08-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.0`
+* `web-component` updated to version `3.46.4`
+## [0.9.3](https://github.com/descope/descope-js/compare/user-management-widget-0.9.2...user-management-widget-0.9.3) (2025-08-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.3`
+* `web-component` updated to version `3.46.3`
+## [0.9.2](https://github.com/descope/descope-js/compare/user-management-widget-0.9.1...user-management-widget-0.9.2) (2025-08-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.2`
+* `web-component` updated to version `3.46.2`
+## [0.9.1](https://github.com/descope/descope-js/compare/user-management-widget-0.9.0...user-management-widget-0.9.1) (2025-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.1`
+* `web-component` updated to version `3.46.1`
+## [0.9.0](https://github.com/descope/descope-js/compare/user-management-widget-0.8.2...user-management-widget-0.9.0) (2025-08-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.0`
+* `web-component` updated to version `3.46.0`
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `sdk-component-drivers` updated to version `0.6.0`
+
+### Features
+
+* Generic flow button ([#1172](https://github.com/descope/descope-js/issues/1172)) ([9ac9e8c](https://github.com/descope/descope-js/commit/9ac9e8c7fe34fce0d8bd26ec7a824d902a8208ec))
+
 ## [0.8.2](https://github.com/descope/descope-js/compare/user-management-widget-0.8.1...user-management-widget-0.8.2) (2025-08-07)
 
 ### Dependency Updates

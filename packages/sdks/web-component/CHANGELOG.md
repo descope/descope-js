@@ -2,6 +2,53 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.1](https://github.com/descope/descope-js/compare/web-component-3.47.0...web-component-3.47.1) (2025-09-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.11`
+## [3.47.0](https://github.com/descope/descope-js/compare/web-component-3.46.4...web-component-3.47.0) (2025-08-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.1`
+
+### Features
+
+* better storage of last auth ([#1191](https://github.com/descope/descope-js/issues/1191)) ([23afff4](https://github.com/descope/descope-js/commit/23afff4099390b34000d5bfd6d539c1296bea6bf))
+
+## [3.46.4](https://github.com/descope/descope-js/compare/web-component-3.46.3...web-component-3.46.4) (2025-08-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.35.0`
+## [3.46.3](https://github.com/descope/descope-js/compare/web-component-3.46.2...web-component-3.46.3) (2025-08-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.3`
+## [3.46.2](https://github.com/descope/descope-js/compare/web-component-3.46.1...web-component-3.46.2) (2025-08-19)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.2`
+## [3.46.1](https://github.com/descope/descope-js/compare/web-component-3.46.0...web-component-3.46.1) (2025-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.34.1`
+## [3.46.0](https://github.com/descope/descope-js/compare/web-component-3.45.1...web-component-3.46.0) (2025-08-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.4.0`
+* `sdk-mixins` updated to version `0.13.10`
+* `web-js-sdk` updated to version `1.34.0`
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
 ## [3.45.1](https://github.com/descope/descope-js/compare/web-component-3.45.0...web-component-3.45.1) (2025-08-10)
 
 

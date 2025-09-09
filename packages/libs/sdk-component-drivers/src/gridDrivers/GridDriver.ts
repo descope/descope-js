@@ -59,6 +59,7 @@ export class GridDriver<T extends any> extends BaseDriver {
 
   filterColumns(filterFn: (col: Column) => boolean) {
     const filteredColumns = this.ele.columns?.filter(filterFn);
+    if (!filteredColumns || !this.ele.columns) return;
     if (!compareArrays(filteredColumns, this.ele.columns)) {
       this.ele.columns = filteredColumns;
       this.#onColumnsChangeCb?.(filteredColumns);

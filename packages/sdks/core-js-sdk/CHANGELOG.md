@@ -2,6 +2,43 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.49.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.48.0...core-js-sdk-2.49.0) (2025-08-28)
+
+
+### Features
+
+* Add loginHint and forceAuthn to saml start RELEASE ([#1192](https://github.com/descope/descope-js/issues/1192)) ([5314bf3](https://github.com/descope/descope-js/commit/5314bf32f7f95676763064c63488a5b1aeae44ad))
+
+## [2.48.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.47.0...core-js-sdk-2.48.0) (2025-08-26)
+
+
+### Features
+
+* try refresh API on init ([#1182](https://github.com/descope/descope-js/issues/1182)) RELEASE ([efd89fa](https://github.com/descope/descope-js/commit/efd89fa5c09f3b2b0299a7a8779c601fd3fa96d6)), closes [/#diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R64-R65](https://github.com/descope///issues/diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R64-R65) [/#diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R74-R82](https://github.com/descope///issues/diff-b54ba820e510c7d454f01a60518f72e5733d0b0080845ca8876fec6f13747c41R74-R82) [/#diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fL21-R24](https://github.com/descope///issues/diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fL21-R24) [/#diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fR61](https://github.com/descope///issues/diff-ae711197d7d2a9a89b857b679df66e4ac741a0f52dac4da7e49240f7fc40d03fR61)
+
+## [2.47.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.46.2...core-js-sdk-2.47.0) (2025-08-25)
+
+
+### Features
+
+* Add tenant options to outbound connect. RELEASE ([#1190](https://github.com/descope/descope-js/issues/1190)) ([863be93](https://github.com/descope/descope-js/commit/863be931feedf8775841a0f461c6322eed36cc3b))
+
+## [2.46.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.46.1...core-js-sdk-2.46.2) (2025-08-19)
+
+
+### Bug Fixes
+
+* issue 11792 RELEASE ([#1189](https://github.com/descope/descope-js/issues/1189)) ([7251130](https://github.com/descope/descope-js/commit/7251130167f4662aa6ecba842aeb1fc2e6830ec4))
+
+## [2.46.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.46.0...core-js-sdk-2.46.1) (2025-08-17)
+
+## [2.46.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.45.0...core-js-sdk-2.46.0) (2025-08-14)
+
+
+### Features
+
+* add oidcResource parameter to SDK start options ([#1184](https://github.com/descope/descope-js/issues/1184)) ([4ef0fda](https://github.com/descope/descope-js/commit/4ef0fda693ea86b235d843dee6a261127d768c6f))
+
 ## [2.45.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.44.5...core-js-sdk-2.45.0) (2025-08-07)
 
 

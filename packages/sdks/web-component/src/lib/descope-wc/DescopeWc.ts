@@ -670,7 +670,13 @@ class DescopeWc extends BaseDescopeWc {
           clientScripts: conditionScripts,
           componentsConfig: conditionComponentsConfig,
         } = calculateConditions(
-          { loginId, code, token, abTestingKey },
+          {
+            loginId,
+            code,
+            token,
+            abTestingKey,
+            lastAuth: getLastAuth(loginId),
+          },
           flowConfig.conditions,
         ));
         clientScripts.push(...(conditionScripts || []));
@@ -682,6 +688,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
+            lastAuth: getLastAuth(loginId),
           },
         ));
       } else {
@@ -1001,8 +1008,13 @@ class DescopeWc extends BaseDescopeWc {
       readyScreenId,
     );
 
-    const { oidcLoginHint, oidcPrompt, oidcErrorRedirectUri, samlIdpUsername } =
-      ssoQueryParams;
+    const {
+      oidcLoginHint,
+      oidcPrompt,
+      oidcErrorRedirectUri,
+      oidcResource,
+      samlIdpUsername,
+    } = ssoQueryParams;
 
     // generate step state update data
     const stepStateUpdate: Partial<StepState> = {
@@ -1031,6 +1043,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
+      oidcResource,
       action,
     };
 
@@ -1319,6 +1332,10 @@ class DescopeWc extends BaseDescopeWc {
       }
       this.#dispatch('success', authInfo);
       return;
+    } else {
+      if (this.storeLastAuthenticatedUser) {
+        setLastAuth(lastAuth, true);
+      }
     }
 
     if (openInNewTabUrl) {

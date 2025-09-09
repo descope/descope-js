@@ -1,7 +1,6 @@
 import createSdk from '../src/index';
 import sdk from '../src/sdk';
 import httpClient from '../src/httpClient';
-import { DEFAULT_BASE_API_URL } from '../src/constants';
 
 jest.mock('../src/sdk', () => jest.fn());
 jest.mock('../src/httpClient', () => jest.fn());
@@ -25,17 +24,20 @@ describe('sdk', () => {
     expect(createSdk({ projectId: '123' })).toBe('sdk');
     expect(sdk).toHaveBeenCalledWith('httpClient');
     expect(httpClient).toHaveBeenCalledWith({
-      baseUrl: DEFAULT_BASE_API_URL,
+      baseUrl: undefined,
       logger: undefined,
       projectId: '123',
       cookiePolicy: undefined,
       hooks: {
-        afterRequest: expect.any(Function),
-        beforeRequest: expect.any(Function),
+        afterRequest: undefined,
+        beforeRequest: undefined,
+        transformResponse: undefined,
       },
+      fetch: undefined,
       baseConfig: {
         baseHeaders: {},
       },
+      refreshCookieName: undefined,
     });
   });
 

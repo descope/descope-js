@@ -7,22 +7,19 @@ const getAllOutboundApps: () => Promise<{
     resolve({
       apps: [
         {
-          id: 'outboundApp1',
-          name: 'Github',
-          description: 'Connect with Github',
-          logo: 'logo1',
+          id: 'appId1',
+          name: 'Application 1',
+          description: 'Description',
         },
         {
-          id: 'outboundApp2',
-          name: 'Facebook',
-          description: 'Facebook Auth',
-          logo: 'logo2',
+          id: 'appId2',
+          name: 'Application 2',
+          description: 'Description',
         },
         {
-          id: 'outboundApp3',
-          name: 'Custom',
-          description: 'Custom authentication',
-          logo: 'logo3',
+          id: 'appId3',
+          name: 'Application 3',
+          description: 'Description',
         },
       ],
     });

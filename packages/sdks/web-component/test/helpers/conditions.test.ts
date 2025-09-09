@@ -34,6 +34,32 @@ describe('conditions', () => {
       ).toEqual(expect.objectContaining({ startScreenId: 'screen1' }));
     });
 
+    it('should handle lastAuth.loginId with not-empty operator from lastAuth context', () => {
+      const condition = {
+        key: 'lastAuth.loginId',
+        operator: 'not-empty',
+        met: { screenId: 'screen1' },
+        unmet: { screenId: 'screen2' },
+      } as ClientCondition;
+      expect(
+        calculateCondition(condition, {
+          lastAuth: { loginId: mockContext.loginId },
+        }),
+      ).toEqual(expect.objectContaining({ startScreenId: 'screen1' }));
+    });
+
+    it('should handle lastAuth.loginId with empty operator from lastAuth context', () => {
+      const condition = {
+        key: 'lastAuth.loginId',
+        operator: 'empty',
+        met: { screenId: 'screen1' },
+        unmet: { screenId: 'screen2' },
+      } as ClientCondition;
+      expect(
+        calculateCondition(condition, { lastAuth: { loginId: '' } }),
+      ).toEqual(expect.objectContaining({ startScreenId: 'screen1' }));
+    });
+
     it('should handle idpInitiated with is-true operator', () => {
       const condition = {
         key: 'idpInitiated',
