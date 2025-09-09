@@ -777,7 +777,7 @@ function isPopupEmpty(popup: Window) {
 }
 
 function isPopupFocused(popup: Window) {
-  return popup.document.hasFocus && popup.document.hasFocus?.();
+  return popup.document.hasFocus?.();
 }
 
 export const openCenteredPopup = (
