@@ -785,7 +785,7 @@ export const openCenteredPopup = (
   title: string,
   w: number,
   h: number,
-  intervalId: number,
+  intervalMs: number,
   logger: { debug: (...data: any[]) => void },
 ) => {
   const dualScreenLeft =
@@ -850,7 +850,7 @@ export const openCenteredPopup = (
         logger.debug('Popup: Polling error - clearing interval', e);
         clearInterval(closePopupInterval);
       }
-    }, intervalId);
+    }, intervalMs);
 
     popup.onclose = () => {
       logger.debug('Popup: Closing and clearing interval');
