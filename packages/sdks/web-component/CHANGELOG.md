@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.2](https://github.com/descope/descope-js/compare/web-component-3.47.1...web-component-3.47.2) (2025-09-09)
+
+
+### Bug Fixes
+
+* Ensure popup for Apple OAuth on Mac Safari RELEASE ([#1201](https://github.com/descope/descope-js/issues/1201)) ([aaa151a](https://github.com/descope/descope-js/commit/aaa151a595db246467ca39d333ddc637852f98e2))
+
 ## [3.47.1](https://github.com/descope/descope-js/compare/web-component-3.47.0...web-component-3.47.1) (2025-09-07)
 
 ### Dependency Updates
