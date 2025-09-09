@@ -34,8 +34,7 @@ export class HomeComponent implements OnInit {
       if (session.sessionToken) {
         this.roles = this.authService.getJwtRoles(session.sessionToken);
       }
-    });
-    this.authService.session$.subscribe((session) => {
+
       this.claimsJson = JSON.stringify(session.claims).slice(0, 300);
     });
     this.authService.user$.subscribe((descopeUser) => {

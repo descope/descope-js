@@ -97,7 +97,7 @@ const Home = () => {
       ) : (
         <ul>
           {Object.entries(claims).map(([k, v]) => (
-            <li>
+            <li key={k}>
               {k}: {JSON.stringify(v)}
             </li>
           ))}
