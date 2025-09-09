@@ -842,7 +842,7 @@ export const openCenteredPopup = (
           return;
         }
       } catch (e) {
-        logger.debug('Popup: Polling error - clearing interval', e);
+        logger.debug('Popup: Polling error, clearing interval', e);
         clearInterval(closePopupInterval);
       }
     }, intervalMs);
