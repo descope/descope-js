@@ -808,10 +808,8 @@ export const openCenteredPopup = (
     `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`,
   );
 
-  if (popup) {
-    popup.location.href = url;
-    popup.focus();
-  }
+  popup.location.href = url;
+  popup.focus();
 
   return popup;
 };
