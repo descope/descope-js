@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.3](https://github.com/descope/descope-js/compare/react-sdk-2.19.2...react-sdk-2.19.3) (2025-09-09)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.7`
+* `user-profile-widget` updated to version `0.6.15`
+* `web-component` updated to version `3.47.2`
+* `tenant-profile-widget` updated to version `0.2.12`
 ## [2.19.2](https://github.com/descope/descope-js/compare/react-sdk-2.19.1...react-sdk-2.19.2) (2025-09-07)
 
 ### Dependency Updates
