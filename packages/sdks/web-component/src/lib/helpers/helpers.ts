@@ -802,15 +802,10 @@ export const openCenteredPopup = (
   const top = (height - h) / 2 + dualScreenTop;
 
   // Safari on Mac may detect authentication URLs and replace the popup with a native macOS auth dialog.
-  // When this happens, JavaScript execution is suspended in the popup window, breaking BroadcastChannel communication.
-  // Additionally, we cannot detect the outcome (success/cancel) of the native dialog through normal web APIs.
-  //
-  // Solution: Open a blank popup first, then navigate to the auth URL. This ensures:
-  // 1. The popup window maintains JavaScript execution context for BroadcastChannel communication
-  // 2. We can detect when the native auth dialog appears and disappears
-  // 3. We retain control over the popup lifecycle even when macOS takes over authentication
+  // To avoid that, we open the popup with empty string as URL and then populate it with the needed URL.
+  // This avoids the native dialog, and uses the web interface for authentication.
   const popup = window.open(
-    'about:blank',
+    '',
     title,
     `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`,
   );
@@ -818,39 +813,6 @@ export const openCenteredPopup = (
   if (popup) {
     popup.location.href = url;
     popup.focus();
-
-    // Poll to check if the popup document is empty and the popup is focused
-    const closePopupInterval = setInterval(() => {
-      try {
-        const isFocused = popup.document.hasFocus?.();
-        const isEmpty = !popup.document.body.textContent?.trim();
-
-        if (!isEmpty) {
-          logger.debug('Popup: Has content, clearing interval');
-          clearInterval(closePopupInterval);
-          return;
-        }
-        if (isEmpty && isFocused) {
-          logger.debug('Popup: Empty, closing and clearing interval');
-          popup.close();
-          clearInterval(closePopupInterval);
-          return;
-        }
-        if (popup.closed) {
-          logger.debug('Popup: Already closed, clearing interval');
-          clearInterval(closePopupInterval);
-          return;
-        }
-      } catch (e) {
-        logger.debug('Popup: Polling error, clearing interval', e);
-        clearInterval(closePopupInterval);
-      }
-    }, intervalMs);
-
-    popup.onclose = () => {
-      logger.debug('Popup: Closing and clearing interval');
-      clearInterval(closePopupInterval);
-    };
   }
 
   return popup;
