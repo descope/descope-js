@@ -847,7 +847,14 @@ class DescopeWc extends BaseDescopeWc {
       if (redirectIsPopup) {
         // this width is below the breakpoint of most providers
         this.loggerWrapper.debug('Opening redirect in popup');
-        const popup = openCenteredPopup(redirectTo, '?', 598, 700);
+        const popup = openCenteredPopup(
+          redirectTo,
+          '?',
+          598,
+          700,
+          2000,
+          this.loggerWrapper,
+        );
 
         this.loggerWrapper.debug('Creating broadcast channel');
         const channel = new BroadcastChannel(executionId);

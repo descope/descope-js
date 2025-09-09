@@ -772,8 +772,12 @@ export function getScriptResultPath(scriptId: string, resultKey?: string) {
   return `${SDK_SCRIPT_RESULTS_KEY}.${path}`;
 }
 
-function isWindowEmpty(w: Window) {
-  return !w.document.body.textContent?.trim();
+function isPopupEmpty(popup: Window) {
+  return !popup.document.body.textContent?.trim();
+}
+
+function isPopupFocused(popup: Window) {
+  return popup.document.hasFocus && popup.document.hasFocus();
 }
 
 export const openCenteredPopup = (
@@ -781,6 +785,8 @@ export const openCenteredPopup = (
   title: string,
   w: number,
   h: number,
+  intervalId: number,
+  logger: { debug: (...data: any[]) => void },
 ) => {
   const dualScreenLeft =
     window.screenLeft !== undefined
@@ -822,26 +828,33 @@ export const openCenteredPopup = (
     popup.focus();
 
     // Poll to check if the popup document is empty and the popup is focused
-    const pollInterval = setInterval(() => {
+    const closePopupInterval = setInterval(() => {
       try {
-        if (popup.closed) {
-          clearInterval(pollInterval);
+        if (!isPopupEmpty(popup)) {
+          logger.debug('Popup: Has content, clearing interval');
+          clearInterval(closePopupInterval);
           return;
         }
-        if (
-          popup.document.hasFocus &&
-          popup.document.hasFocus() &&
-          isWindowEmpty(popup)
-        ) {
+        if (isPopupEmpty(popup) && isPopupFocused(popup)) {
+          logger.debug('Popup: Empty, closing and clearing interval');
           popup.close();
-          clearInterval(pollInterval);
+          clearInterval(closePopupInterval);
+        }
+        if (popup.closed) {
+          logger.debug('Popup: Already closed, clearing interval');
+          clearInterval(closePopupInterval);
+          return;
         }
       } catch (e) {
-        clearInterval(pollInterval);
+        logger.debug('Popup: Polling error - clearing interval', e);
+        clearInterval(closePopupInterval);
       }
-    }, 1000);
+    }, intervalId);
 
-    popup.focus();
+    popup.onclose = () => {
+      logger.debug('Popup: Closing and clearing interval');
+      clearInterval(closePopupInterval);
+    };
   }
 
   return popup;
