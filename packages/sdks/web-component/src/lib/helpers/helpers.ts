@@ -799,12 +799,16 @@ export const openCenteredPopup = (
   const left = (width - w) / 2 + dualScreenLeft;
   const top = (height - h) / 2 + dualScreenTop;
 
+  // Safari on Mac may detect authentication URLs and replace the popup with a native macOS auth dialog.
+  // To avoid that, we open the popup with empty string as URL and then populate it with the needed URL.
+  // This avoids the native dialog, and uses the web interface for authentication.
   const popup = window.open(
-    url,
+    '',
     title,
     `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`,
   );
 
+  popup.location.href = url;
   popup.focus();
 
   return popup;
