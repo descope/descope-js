@@ -839,6 +839,7 @@ export const openCenteredPopup = (
           logger.debug('Popup: Empty, closing and clearing interval');
           popup.close();
           clearInterval(closePopupInterval);
+          return;
         }
         if (popup.closed) {
           logger.debug('Popup: Already closed, clearing interval');
