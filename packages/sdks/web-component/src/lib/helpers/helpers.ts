@@ -777,8 +777,6 @@ export const openCenteredPopup = (
   title: string,
   w: number,
   h: number,
-  intervalMs: number,
-  logger: { debug: (...data: any[]) => void },
 ) => {
   const dualScreenLeft =
     window.screenLeft !== undefined
