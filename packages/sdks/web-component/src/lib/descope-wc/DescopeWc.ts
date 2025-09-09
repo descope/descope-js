@@ -899,6 +899,10 @@ class DescopeWc extends BaseDescopeWc {
         channel.onmessage = onPostMessage;
       } else {
         this.handleRedirect(redirectTo);
+        // on web we should not get here
+        // but on mobile, there is no actual redirect, instead we are opening the url in a new browser tab
+        // so we need to reset the loading state of the components, otherwise, they are staying in loading state
+        this.#dispatch('popupclosed', {});
       }
       return;
     }
