@@ -11,6 +11,8 @@ import { initPhoneUserAttrMixin } from './initComponentsMixins/initPhoneUserAttr
 import { initTotpUserAuthMethodMixin } from './initComponentsMixins/initTotpUserAuthMethodMixin';
 import { initUserBuiltinAttributesMixin } from './initComponentsMixins/initUserBuiltinAttributesMixin';
 import { initUserCustomAttributesMixin } from './initComponentsMixins/initUserCustomAttributesMixin';
+import { initTrustedDevicesMixin } from './initComponentsMixins/initTrustedDevicesMixin';
+import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -29,6 +31,8 @@ export const initMixin = createSingletonMixin(
       initTotpUserAuthMethodMixin,
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
+      initTrustedDevicesMixin,
+      initNotificationsMixin,
     )(superclass) {
       async init() {
         await super.init?.();
