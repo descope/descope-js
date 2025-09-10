@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.3](https://github.com/descope/descope-js/compare/web-component-3.47.2...web-component-3.47.3) (2025-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.36.0`
+## [3.47.2](https://github.com/descope/descope-js/compare/web-component-3.47.1...web-component-3.47.2) (2025-09-09)
+
+
+### Bug Fixes
+
+* Ensure popup for Apple OAuth on Mac Safari RELEASE ([#1201](https://github.com/descope/descope-js/issues/1201)) ([aaa151a](https://github.com/descope/descope-js/commit/aaa151a595db246467ca39d333ddc637852f98e2))
+
+## [3.47.1](https://github.com/descope/descope-js/compare/web-component-3.47.0...web-component-3.47.1) (2025-09-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.11`
 ## [3.47.0](https://github.com/descope/descope-js/compare/web-component-3.46.4...web-component-3.47.0) (2025-08-28)
 
 ### Dependency Updates

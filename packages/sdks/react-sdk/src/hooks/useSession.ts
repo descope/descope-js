@@ -4,6 +4,7 @@ import useContext from './useContext';
 const useSession = () => {
   const {
     session,
+    claims,
     isSessionLoading,
     isOidcLoading,
     fetchSession,
@@ -39,6 +40,7 @@ const useSession = () => {
   return {
     isSessionLoading: isLoading.current,
     sessionToken: session,
+    claims,
     isAuthenticated,
   };
 };

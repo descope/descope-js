@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.12.0](https://github.com/descope/descope-js/compare/vue-sdk-2.11.3...vue-sdk-2.12.0) (2025-09-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.10`
+* `audit-management-widget` updated to version `0.5.10`
+* `role-management-widget` updated to version `0.5.2`
+* `user-management-widget` updated to version `0.9.8`
+* `user-profile-widget` updated to version `0.6.16`
+* `applications-portal-widget` updated to version `0.4.10`
+* `web-component` updated to version `3.47.3`
+* `web-js-sdk` updated to version `1.36.0`
+* `core-js-sdk` updated to version `2.50.0`
+
+### Features
+
+* Add JWTResponse#Claims globally ([#1199](https://github.com/descope/descope-js/issues/1199)) ([52c0dfd](https://github.com/descope/descope-js/commit/52c0dfdcc5bba2521bc8117c17b6983d46ba1843))
+
+## [2.11.3](https://github.com/descope/descope-js/compare/vue-sdk-2.11.2...vue-sdk-2.11.3) (2025-09-09)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.7`
+* `user-profile-widget` updated to version `0.6.15`
+* `web-component` updated to version `3.47.2`
+## [2.11.2](https://github.com/descope/descope-js/compare/vue-sdk-2.11.1...vue-sdk-2.11.2) (2025-09-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.9`
+* `audit-management-widget` updated to version `0.5.9`
+* `role-management-widget` updated to version `0.5.1`
+* `user-management-widget` updated to version `0.9.6`
+* `user-profile-widget` updated to version `0.6.14`
+* `applications-portal-widget` updated to version `0.4.9`
+* `web-component` updated to version `3.47.1`
 ## [2.11.1](https://github.com/descope/descope-js/compare/vue-sdk-2.11.0...vue-sdk-2.11.1) (2025-08-28)
 
 ### Dependency Updates

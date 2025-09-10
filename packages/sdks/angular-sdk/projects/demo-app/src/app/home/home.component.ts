@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   projectId: string = environment.descopeProjectId;
   isAuthenticated: boolean = false;
   roles: string[] = [];
+  claimsJson: string;
   userName: string = '';
   stepUpConfigured = (environment.descopeStepUpFlowId ?? '').length > 0;
   backendUrl = environment.backendUrl ?? '';
@@ -33,6 +34,8 @@ export class HomeComponent implements OnInit {
       if (session.sessionToken) {
         this.roles = this.authService.getJwtRoles(session.sessionToken);
       }
+
+      this.claimsJson = JSON.stringify(session.claims).slice(0, 300);
     });
     this.authService.user$.subscribe((descopeUser) => {
       if (descopeUser.user) {
