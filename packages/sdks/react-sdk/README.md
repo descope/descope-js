@@ -254,9 +254,9 @@ import { useCallback } from 'react';
 const App = () => {
   // NOTE - `useDescope`, `useSession`, `useUser` should be used inside `AuthProvider` context,
   // and will throw an exception if this requirement is not met
-  // useSession retrieves authentication state, session loading status, and session token
+  // useSession retrieves authentication state, session loading status, useful claims, and the session token
   // If the session token is managed in cookies in project settings, sessionToken will be empty.
-  const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
+  const { isAuthenticated, isSessionLoading, sessionToken, claims } = useSession();
   // useUser retrieves the logged in user information
   const { user, isUserLoading } = useUser();
   // useDescope retrieves Descope SDK for further operations related to authentication
@@ -388,6 +388,9 @@ If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'La
 #### 3. Configure Descope project to manage session token in cookies
 
 If project settings are configured to manage session token in cookies, Descope services will automatically set the session token in the `DS` cookie as a `Secure` and `HttpOnly` cookie. In this case, the session token will not be stored in the browser's and will not be accessible to the client-side code using `useSession` or `getSessionToken`.
+
+However, `useSession`'s returned `claims` field will always be available to retrieve custom claims & common Descope claims
+from the token.
 
 ````js
 ### Helper Functions

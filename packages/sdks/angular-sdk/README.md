@@ -274,12 +274,14 @@ import { DescopeAuthService } from '@descope/angular-sdk';
 export class AppComponent implements OnInit {
   isAuthenticated: boolean = false;
   userName: string = '';
+  claims?: Claims;
 
   constructor(private authService: DescopeAuthService) {}
 
   ngOnInit() {
     this.authService.session$.subscribe((session) => {
       this.isAuthenticated = session.isAuthenticated;
+      this.claims = session.claims;
     });
     this.authService.user$.subscribe((descopeUser) => {
       if (descopeUser.user) {

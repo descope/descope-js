@@ -4,6 +4,7 @@ jest.mock('@descope/web-js-sdk');
 
 const mockCreateSdk = createSdk as jest.Mock;
 const mockSdk = {
+  onClaimsChange: jest.fn(),
   onSessionTokenChange: jest.fn(),
   onIsAuthenticatedChange: jest.fn(),
   onUserChange: jest.fn(),
