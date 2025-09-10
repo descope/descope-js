@@ -12,6 +12,7 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  notificationsMixin,
   themeMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -30,6 +31,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       cookieConfigMixin,
       initWidgetRootMixin,
       modalMixin,
+      notificationsMixin,
     )(superclass) {
       deviceList: DeviceListDriver;
 
@@ -49,7 +51,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
         this.syncFlowTheme(this.#flow);
       }
 
-      #initModalContent(deviceId: string) {
+      #initModalContent(deviceId: string = '') {
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -59,7 +61,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
-            form: JSON.stringify({ deviceId: deviceId || '' }),
+            form: JSON.stringify({ deviceId }),
           }),
         );
         this.#flow.onSuccess(() => {
@@ -67,6 +69,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
           this.actions.listDevices({
             userId: getUserId(this.state),
           });
+          this.actions.removeDevice({ success: true });
         });
       }
 

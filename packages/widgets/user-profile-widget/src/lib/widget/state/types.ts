@@ -20,6 +20,7 @@ export type State = {
     error: unknown;
     data: Device[];
   };
+  notifications: Notification[];
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;
@@ -33,3 +34,8 @@ export type ThunkConfigExtraApi = { extra: { api: Sdk } };
 export type RemoveVoid<T> = T extends void ? never : T;
 
 export type Builder = ActionReducerMapBuilder<State>;
+
+type Notification = {
+  type: 'success' | 'error';
+  msg: string;
+};
