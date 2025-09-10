@@ -27,6 +27,7 @@ describe('ManageAccessKeysComponent', () => {
       onSessionTokenChange: jest.fn(),
       onIsAuthenticatedChange: jest.fn(),
       onUserChange: jest.fn(),
+      onClaimsChange: jest.fn(),
       getSessionToken: jest.fn().mockReturnValue('mock-token'),
       getRefreshToken: jest.fn().mockReturnValue('mock-refresh-token'),
       isJwtExpired: jest.fn().mockReturnValue(false),

@@ -8,6 +8,9 @@ export const authInfo = {
   cookieExpiration: 1665576720,
   user: { name: 'john', loginIds: ['js@hotmail.com'] },
   sessionExpiration: 1663190468,
+  claims: {
+    amr: ['email'],
+  },
 };
 
 export const flowResponse = {

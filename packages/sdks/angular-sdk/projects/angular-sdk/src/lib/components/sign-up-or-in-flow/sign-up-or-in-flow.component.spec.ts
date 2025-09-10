@@ -24,7 +24,8 @@ describe('SignUpOrInFlowComponent', () => {
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: jest.fn(),
       onIsAuthenticatedChange: jest.fn(),
-      onUserChange: jest.fn()
+      onUserChange: jest.fn(),
+      onClaimsChange: jest.fn()
     });
 
     TestBed.configureTestingModule({

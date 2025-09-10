@@ -9,6 +9,13 @@
     </ng-container>
     <ng-template #noRoles>N/A</ng-template>
   </div>
+  <div>
+    Claims:
+    <ng-container *ngIf="claimsJson; else noClaims">
+      <code>{{ claimsJson }}</code>
+    </ng-container>
+    <ng-template #noClaims>N/A</ng-template>
+  </div>
   <button
     *ngIf="backendUrl.length > 0"
     class="action-button"

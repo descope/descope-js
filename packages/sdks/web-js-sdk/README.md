@@ -74,6 +74,11 @@ sdk.onUserChange((newUser, oldUser) => {
   // handle user change...
 });
 
+sdk.onClaimsChange((newClaims) => {
+  // handle Claims change...
+});
+
+
 /* For a case that the browser has a valid refresh token on storage/cookie,
 the user should get a valid session token (e.i. user should be logged-in).
 For that purpose, it is common to call the refresh function after sdk initialization.
