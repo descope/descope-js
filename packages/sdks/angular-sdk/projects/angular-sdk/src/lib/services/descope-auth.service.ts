@@ -18,6 +18,7 @@ export interface DescopeSession {
   isAuthenticated: boolean;
   isSessionLoading: boolean;
   sessionToken: string | null;
+  claims?: Record<string, any>;
 }
 
 export type DescopeUser = {
@@ -49,7 +50,8 @@ export class DescopeAuthService {
     this.sessionSubject = new BehaviorSubject<DescopeSession>({
       isAuthenticated: false,
       isSessionLoading: false,
-      sessionToken: ''
+      sessionToken: '',
+      claims: undefined
     });
     this.session$ = this.sessionSubject.asObservable();
     this.userSubject = new BehaviorSubject<DescopeUser>({
@@ -59,6 +61,7 @@ export class DescopeAuthService {
     this.descopeSdk.onSessionTokenChange(this.setSession.bind(this));
     this.descopeSdk.onIsAuthenticatedChange(this.setIsAuthenticated.bind(this));
     this.descopeSdk.onUserChange(this.setUser.bind(this));
+    this.descopeSdk.onClaimsChange(this.setClaims.bind(this));
   }
 
   refreshSession(tryRefresh?: boolean) {
@@ -192,6 +195,14 @@ export class DescopeAuthService {
     this.userSubject.next({
       isUserLoading: currentUser.isUserLoading,
       user
+    });
+  }
+
+  setClaims(claims?: DescopeSession['claims']) {
+    const currentSession = this.sessionSubject.value;
+    this.sessionSubject.next({
+      ...currentSession,
+      claims
     });
   }
 }
