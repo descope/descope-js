@@ -2,17 +2,6 @@ import { createSelector } from 'reselect';
 import { State } from './types';
 
 export const getMe = (state: State) => state.me.data;
-export const getDeviceList = (state: State) => state.devices.data;
-
-export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
-  devices.map(({ id, name, deviceType, lastLoginTime, isCurrentDevice }) => ({
-    id,
-    name,
-    deviceType,
-    lastLoginDate: parseInt(lastLoginTime, 10) * 1000,
-    isCurrent: isCurrentDevice,
-  })),
-);
 
 export const getUserId = createSelector(getMe, (me) => me.userId);
 
@@ -42,3 +31,17 @@ export const getUserBuiltinAttrs = createSelector(getMe, (me) => ({
   middleName: me.middleName,
   familyName: me.familyName,
 }));
+
+export const getDeviceList = (state: State) => state.devices.data;
+
+export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
+  devices.map(({ id, name, deviceType, lastLoginTime, isCurrentDevice }) => ({
+    id,
+    name,
+    deviceType,
+    lastLoginDate: parseInt(lastLoginTime, 10) * 1000,
+    isCurrent: isCurrentDevice,
+  })),
+);
+
+export const getNotifications = (state: State) => state.notifications;

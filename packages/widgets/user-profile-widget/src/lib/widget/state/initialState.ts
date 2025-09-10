@@ -11,4 +11,5 @@ export const initialState: State = {
     error: null,
     data: [],
   },
+  notifications: [],
 };
