@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.50.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.49.0...core-js-sdk-2.50.0) (2025-09-10)
+
+
+### Features
+
+* Add JWTResponse#Claims globally ([#1199](https://github.com/descope/descope-js/issues/1199)) ([52c0dfd](https://github.com/descope/descope-js/commit/52c0dfdcc5bba2521bc8117c17b6983d46ba1843))
+
 ## [2.49.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.48.0...core-js-sdk-2.49.0) (2025-08-28)
 
 

@@ -37,6 +37,7 @@ export type {
   FlowAction,
   FlowResponse,
   FlowStatus,
+  Claims,
   JWTResponse,
   LoginOptions,
   PasskeyOptions,

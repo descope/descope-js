@@ -2,7 +2,7 @@
 
 import { App, Ref, computed, readonly, ref, unref, watch } from 'vue';
 import { DESCOPE_INJECTION_KEY, baseHeaders } from './constants';
-import { UserData, type Options, type Sdk } from './types';
+import { type JWTResponse, UserData, type Options, type Sdk } from './types';
 import createSdk from './sdk';
 import type * as _2 from 'oidc-client-ts'; // eslint-disable-line
 
@@ -30,6 +30,7 @@ export default {
 
     const isSessionLoading = ref<boolean | null>(null);
     const sessionToken = ref('');
+    const claims = ref<JWTResponse['claims']>();
     const isAuthenticated = ref(false);
 
     const isUserLoading = ref<boolean | null>(null);
@@ -37,6 +38,10 @@ export default {
 
     sdk.onSessionTokenChange((s) => {
       sessionToken.value = s;
+    });
+
+    sdk.onClaimsChange((c) => {
+      claims.value = c;
     });
 
     sdk.onIsAuthenticatedChange((a) => {
@@ -94,6 +99,7 @@ export default {
         fetchSession,
         isLoading: readonly(isSessionLoading),
         session: readonly(sessionToken),
+        claims: readonly(claims),
         isAuthenticated: readonly(isAuthenticated),
         isFetchSessionWasNeverCalled,
       },

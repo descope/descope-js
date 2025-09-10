@@ -123,6 +123,8 @@ export type SignUpOptions = {
   templateOptions?: TemplateOptions;
 };
 
+export type Claims = Record<string, any>;
+
 /** Authentication info result from the various JWT validations  */
 export type JWTResponse = {
   sessionJwt: string;
@@ -134,6 +136,7 @@ export type JWTResponse = {
   user?: UserResponse;
   firstSeen?: boolean;
   sessionExpiration: number;
+  claims: Claims;
 };
 
 /** Authentication info result from exchanging access keys for a session */
