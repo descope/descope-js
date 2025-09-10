@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -11,7 +12,7 @@ env:
 jobs:
   release:
     name: Release
-    if: contains(github.event.head_commit.message, 'RELEASE')
+    if: (github.event_name == 'workflow_dispatch') || contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     steps:
       - name: Get token
