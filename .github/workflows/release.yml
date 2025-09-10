@@ -12,7 +12,7 @@ env:
 jobs:
   release:
     name: Release
-    if: (github.event_name == 'workflow_dispatch') || contains(github.event.head_commit.message, 'RELEASE')
+    if: (github.event_name == 'workflow_dispatch') || contains(github.event.head_commit.message || '', 'RELEASE')
     runs-on: ubuntu-latest
     steps:
       - name: Get token
