@@ -4,15 +4,13 @@ import useContext from './useContext';
 const useUser = () => {
   const { user, fetchUser, isUserLoading, isAuthenticated, isUserFetched } =
     useContext();
-  const [isInit, setIsInit] = useState(false); // we want to get the user only in the first time we got a session
-
-  // when session should be received, we want the return value of "isUserLoading" to be true starting from the first call
+  // we want the return value of "isUserLoading" to be true starting from the first call
   // (and not only when receiving an update from the context)
   const isLoading = useRef(isUserLoading);
 
   const shouldFetchUser = useMemo(
-    () => !user && !isUserLoading && isAuthenticated && !isInit,
-    [fetchUser, isAuthenticated, isInit],
+    () => !user && !isUserLoading && isAuthenticated,
+    [fetchUser, isAuthenticated],
   );
 
   // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
@@ -29,7 +27,6 @@ const useUser = () => {
 
   useEffect(() => {
     if (shouldFetchUser) {
-      setIsInit(true);
       fetchUser();
     }
   }, [shouldFetchUser]);
