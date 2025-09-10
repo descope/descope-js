@@ -15,7 +15,7 @@ export const cspNonceMixin = createSingletonMixin(
       }
 
       #setNonce() {
-        (window as any).DESCOPE_NONCE = this.nonce;
+        if (this.nonce) (window as any).DESCOPE_NONCE = this.nonce;
       }
 
       async init() {
