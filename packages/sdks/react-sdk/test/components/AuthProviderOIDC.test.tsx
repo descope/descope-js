@@ -10,6 +10,7 @@ jest.mock('@descope/web-js-sdk', () => ({
     oidc: { finishLoginIfNeed: () => mockFinishLogin() },
     onSessionTokenChange: jest.fn(() => jest.fn()),
     onUserChange: jest.fn(() => jest.fn()),
+    onClaimsChange: jest.fn(() => jest.fn()),
     onIsAuthenticatedChange: jest.fn(() => jest.fn()),
     refresh: jest.fn(() => Promise.resolve()),
     me: jest.fn(() => Promise.resolve()),

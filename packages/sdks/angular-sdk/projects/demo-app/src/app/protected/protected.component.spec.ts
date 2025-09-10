@@ -16,6 +16,7 @@ describe('ProtectedComponent', () => {
   const onSessionTokenChangeSpy = jest.fn();
   const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
+  const onClaimsChangeSpy = jest.fn();
 
   beforeEach(async () => {
     // Mock CSSStyleSheet.replaceSync for testing environment
@@ -28,6 +29,7 @@ describe('ProtectedComponent', () => {
       onSessionTokenChange: onSessionTokenChangeSpy,
       onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onUserChange: onUserChangeSpy,
+      onClaimsChange: onClaimsChangeSpy,
       getSessionToken: jest.fn().mockReturnValue('mock-token'),
       getRefreshToken: jest.fn().mockReturnValue('mock-refresh-token'),
       isJwtExpired: jest.fn().mockReturnValue(false),
