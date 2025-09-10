@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.20.0](https://github.com/descope/descope-js/compare/react-sdk-2.19.3...react-sdk-2.20.0) (2025-09-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.10`
+* `audit-management-widget` updated to version `0.5.10`
+* `role-management-widget` updated to version `0.5.2`
+* `user-management-widget` updated to version `0.9.8`
+* `user-profile-widget` updated to version `0.6.16`
+* `applications-portal-widget` updated to version `0.4.10`
+* `web-component` updated to version `3.47.3`
+* `web-js-sdk` updated to version `1.36.0`
+* `core-js-sdk` updated to version `2.50.0`
+* `tenant-profile-widget` updated to version `0.2.13`
+
+### Features
+
+* Add JWTResponse#Claims globally ([#1199](https://github.com/descope/descope-js/issues/1199)) ([52c0dfd](https://github.com/descope/descope-js/commit/52c0dfdcc5bba2521bc8117c17b6983d46ba1843))
+
 ## [2.19.3](https://github.com/descope/descope-js/compare/react-sdk-2.19.2...react-sdk-2.19.3) (2025-09-09)
 
 ### Dependency Updates
