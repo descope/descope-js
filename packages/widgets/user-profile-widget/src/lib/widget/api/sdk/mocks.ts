@@ -29,13 +29,27 @@ const me: () => Promise<User> = async () =>
     });
   });
 
-const devices = () => {
-  [
+const devices = () => ({
+  devices: [
     {
-      id: 'device-id-5',
-      name: 'Device 5',
+      id: 'device-id-1',
+      name: 'Device 1',
       deviceType: 'desktop',
-      lastLoginDate: 1746720000000,
+      lastLoginDate: 1735977600000,
+      isCurrent: false,
+    },
+    {
+      id: 'device-id-2',
+      name: 'Device 2',
+      deviceType: 'mobile',
+      lastLoginDate: 1738750500000,
+      isCurrentDevice: true,
+    },
+    {
+      id: 'device-id-3',
+      name: 'Device 3',
+      deviceType: 'tablet',
+      lastLoginDate: 1741264200000,
       isCurrent: false,
     },
     {
@@ -46,28 +60,14 @@ const devices = () => {
       isCurrent: false,
     },
     {
-      id: 'device-id-3',
-      name: 'Device 3',
-      deviceType: 'tablet',
-      lastLoginDate: 1741264200000,
-      isCurrent: false,
-    },
-    {
-      id: 'device-id-2',
-      name: 'Device 2',
-      deviceType: 'mobile',
-      lastLoginDate: 1738750500000,
-      isCurrent: true,
-    },
-    {
-      id: 'device-id-1',
-      name: 'Device 1',
+      id: 'device-id-5',
+      name: 'Device 5',
       deviceType: 'desktop',
-      lastLoginDate: 1735977600000,
+      lastLoginDate: 1746720000000,
       isCurrent: false,
     },
-  ];
-};
+  ],
+});
 
 const user = {
   me,
