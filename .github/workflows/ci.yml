@@ -38,14 +38,13 @@ jobs:
         with:
           node-version-file: package.json
           # cache: 'pnpm'
-          package-manager-cache: false
 
       - name: Setup Node.js (v${{ matrix.node-version }})
         if: matrix.node-version != 'default'
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
-          package-manager-cache: false # Cache would conflict with the node-version='default' cache
+          # cache: 'pnpm'
       # - name: Restore cached npm dependencies
       #   uses: actions/cache/restore@v4
       #   with:
