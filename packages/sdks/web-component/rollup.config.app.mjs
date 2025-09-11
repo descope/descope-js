@@ -7,7 +7,7 @@ import replace from '@rollup/plugin-replace';
 import dotenv from 'dotenv';
 import define from 'rollup-plugin-define';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 dotenv.config();
 
