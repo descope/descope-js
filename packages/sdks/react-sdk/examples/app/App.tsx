@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { useSession } from '../../src';
+import { useSession, useUser } from '../../src';
 import Home from './Home';
 import Login from './Login';
 import ManageAccessKeys from './ManageAccessKeys';
@@ -55,78 +55,102 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
-const App = () => (
-  <Routes>
-    <Route element={<Layout />}>
-      <Route
-        index
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user-management"
-        element={
-          <ProtectedRoute>
-            <ManageUsers />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/role-management"
-        element={
-          <ProtectedRoute>
-            <ManageRoles />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/access-key-management"
-        element={
-          <ProtectedRoute>
-            <ManageAccessKeys />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/audit-management"
-        element={
-          <ProtectedRoute>
-            <ManageAudit />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user-profile"
-        element={
-          <ProtectedRoute>
-            <MyUserProfile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/applications-portal"
-        element={
-          <ProtectedRoute>
-            <MyApplicationsPortal />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tenant-profile"
-        element={
-          <ProtectedRoute>
-            <MyTenantProfile />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/login" element={<Login />} />
-      <Route path="/oidc-login" element={<OidcLogin />} />
-      <Route path="/step-up" element={<StepUp />} />
-    </Route>
-  </Routes>
-);
+import {
+  useWhatChanged,
+  setUseWhatChange,
+} from '@simbathesailor/use-what-changed';
+
+setUseWhatChange(true);
+
+const App = () => {
+  // useSession retrieves authentication state, session loading status, and session token
+  const { sessionToken, isAuthenticated, isSessionLoading } = useSession();
+  // useUser retrieves the logged in user information
+  const { user, isUserLoading } = useUser();
+
+  useWhatChanged(
+    [user, isUserLoading, sessionToken, isAuthenticated, isSessionLoading],
+    [
+      'user',
+      'isUserLoading',
+      'sessionToken',
+      'isAuthenticated',
+      'isSessionLoading',
+    ].join(','),
+  );
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route
+          index
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user-management"
+          element={
+            <ProtectedRoute>
+              <ManageUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/role-management"
+          element={
+            <ProtectedRoute>
+              <ManageRoles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/access-key-management"
+          element={
+            <ProtectedRoute>
+              <ManageAccessKeys />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/audit-management"
+          element={
+            <ProtectedRoute>
+              <ManageAudit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user-profile"
+          element={
+            <ProtectedRoute>
+              <MyUserProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/applications-portal"
+          element={
+            <ProtectedRoute>
+              <MyApplicationsPortal />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tenant-profile"
+          element={
+            <ProtectedRoute>
+              <MyTenantProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/oidc-login" element={<OidcLogin />} />
+        <Route path="/step-up" element={<StepUp />} />
+      </Route>
+    </Routes>
+  );
+};
 
 export default App;

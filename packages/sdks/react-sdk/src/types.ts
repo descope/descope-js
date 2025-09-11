@@ -94,13 +94,10 @@ export interface IContext {
   fetchUser: () => void;
   user: User;
   isUserLoading: boolean;
-  isUserFetched: boolean;
   fetchSession: () => void;
   session: string;
   isAuthenticated: boolean;
   isSessionLoading: boolean;
-  isOidcLoading: boolean;
-  isSessionFetched: boolean;
   projectId: string;
   baseUrl?: string;
   styleId?: string;

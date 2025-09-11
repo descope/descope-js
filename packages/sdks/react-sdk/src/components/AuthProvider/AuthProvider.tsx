@@ -64,12 +64,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [claims, setClaims] = useState<Claims>();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [isUserLoading, setIsUserLoading] = useState(false);
-  const [isSessionLoading, setIsSessionLoading] = useState(false);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
 
-  // if oidc config is enabled, we attempt to finish the login, so we start as loading
-  const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
-  const isOidcFinishedLogin = useRef(false);
+  const oidcFinishLoginOnce = useRef(false);
 
   const sdk = useSdk({
     projectId,
@@ -102,39 +100,36 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     return undefined;
   }, [sdk]);
 
-  const isSessionFetched = useRef(false);
-  const isUserFetched = useRef(false);
+  const sessionFetchedOnce = useRef(false);
+  const userFetchedOnce = useRef(false);
 
   // if oidc config is enabled, and we have oidc params in the url
   // we will finish the login (this should run only once)
   useEffect(() => {
-    if (sdk && oidcConfig && !isOidcFinishedLogin.current) {
-      isOidcFinishedLogin.current = true;
+    if (sdk && oidcConfig && !oidcFinishLoginOnce.current) {
+      oidcFinishLoginOnce.current = true;
       sdk.oidc.finishLoginIfNeed().finally(() => {
-        setIsOidcLoading(false);
+        setIsSessionLoading(false);
         // We want that the session will fetched only once
-        isSessionFetched.current = true;
+        sessionFetchedOnce.current = true;
       });
     }
   }, []);
 
-  const fetchSession = useCallback(() => {
-    // We want that the session will fetched only once
-    if (isSessionFetched.current) return;
-    isSessionFetched.current = true;
+  // Fetch the {user,session} once and prevent subsequent calls to the underlying API.
+  const fetchSession = useCallback(async () => {
+    if (sessionFetchedOnce.current) return;
+    sessionFetchedOnce.current = true;
 
-    setIsSessionLoading(true);
-    withValidation(sdk?.refresh)(undefined, true).then(() => {
-      setIsSessionLoading(false);
-    });
+    await withValidation(sdk?.refresh)(undefined, true);
+    setIsSessionLoading(false);
   }, [sdk]);
 
-  const fetchUser = useCallback(() => {
-    // We want that the user will fetched only once
-    if (isUserFetched.current) return;
-    isUserFetched.current = true;
+  const fetchUser = useCallback(async () => {
+    if (userFetchedOnce.current) return;
+    userFetchedOnce.current = true;
+    await fetchSession();
 
-    setIsUserLoading(true);
     withValidation(sdk.me)().then(() => {
       setIsUserLoading(false);
     });
@@ -145,13 +140,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
-      isUserFetched: isUserFetched.current,
       fetchSession,
       session,
       isAuthenticated,
       isSessionLoading,
-      isOidcLoading,
-      isSessionFetched: isSessionFetched.current,
       projectId,
       baseUrl,
       baseStaticUrl,
@@ -169,13 +161,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
-      isUserFetched.current,
       fetchSession,
       session,
       isAuthenticated,
       isSessionLoading,
-      isOidcLoading,
-      isSessionFetched.current,
       projectId,
       baseUrl,
       baseStaticUrl,
