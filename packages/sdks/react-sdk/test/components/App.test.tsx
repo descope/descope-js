@@ -22,6 +22,7 @@ jest.mock('@descope/web-js-sdk', () => {
     onSessionTokenChange: jest.fn().mockName('onSessionTokenChange'),
     onIsAuthenticatedChange: jest.fn().mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn().mockName('onUserChange'),
+    onClaimsChange: jest.fn().mockName('onClaimsChange'),
     getSessionToken: jest.fn().mockName('getSessionToken'),
     getJwtRoles: jest.fn().mockName('getJwtRoles'),
     refresh: jest.fn(() => Promise.resolve()),
@@ -43,6 +44,7 @@ const {
   onSessionTokenChange,
   onIsAuthenticatedChange,
   onUserChange,
+  onClaimsChange,
   refresh,
   me,
 } = createSdk({
@@ -55,6 +57,7 @@ describe('App', () => {
     (onSessionTokenChange as jest.Mock).mockImplementation(() => () => {});
     (onIsAuthenticatedChange as jest.Mock).mockImplementation(() => () => {});
     (onUserChange as jest.Mock).mockImplementation(() => () => {});
+    (onClaimsChange as jest.Mock).mockImplementation(() => () => {});
   });
 
   it('should subscribe to user and session token', async () => {
@@ -183,9 +186,7 @@ describe('App', () => {
 
     // ensure refresh called only once
     expect(refresh).toHaveBeenCalledTimes(1);
-    expect(refresh).toHaveBeenCalledWith(undefined, true); // the second argument (tryRefresh) should be true 
-
-    
+    expect(refresh).toHaveBeenCalledWith(undefined, true); // the second argument (tryRefresh) should be true
 
     const loginButton = await screen.findByText('Login');
     fireEvent.click(loginButton);

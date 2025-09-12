@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
+import { Claims } from '@descope/core-js-sdk';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
@@ -60,6 +61,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 }) => {
   const [user, setUser] = useState<User>();
   const [session, setSession] = useState<string>();
+  const [claims, setClaims] = useState<Claims>();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [isUserLoading, setIsUserLoading] = useState(false);
@@ -88,11 +90,13 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       const unsubscribeUser = sdk.onUserChange(setUser);
       const unsubscribeIsAuthenticated =
         sdk.onIsAuthenticatedChange(setIsAuthenticated);
+      const unsubscribeClaims = sdk.onClaimsChange(setClaims);
 
       return () => {
         unsubscribeSessionToken();
         unsubscribeUser();
         unsubscribeIsAuthenticated();
+        unsubscribeClaims();
       };
     }
     return undefined;
@@ -158,6 +162,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       setUser,
       setSession,
       setIsAuthenticated,
+      claims,
       sdk,
     }),
     [
@@ -180,6 +185,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       setUser,
       setSession,
       setIsAuthenticated,
+      claims,
       sdk,
     ],
   );

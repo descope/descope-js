@@ -15,6 +15,7 @@ describe('DescopeAuthService', () => {
   const onSessionTokenChangeSpy = jest.fn();
   const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
+  const onClaimsChangeSpy = jest.fn();
   const getSessionTokenSpy = jest.fn();
   const getRefreshTokenSpy = jest.fn();
   const isJwtExpiredSpy = jest.fn();
@@ -34,6 +35,7 @@ describe('DescopeAuthService', () => {
       onSessionTokenChange: onSessionTokenChangeSpy,
       onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
       onUserChange: onUserChangeSpy,
+      onClaimsChange: onClaimsChangeSpy,
       getSessionToken: getSessionTokenSpy,
       getRefreshToken: getRefreshTokenSpy,
       isJwtExpired: isJwtExpiredSpy,
@@ -46,6 +48,7 @@ describe('DescopeAuthService', () => {
     onSessionTokenChangeSpy.mockImplementation((fn) => fn());
     onIsAuthenticatedChangeSpy.mockImplementation((fn) => fn());
     onUserChangeSpy.mockImplementation((fn) => fn());
+    onClaimsChangeSpy.mockImplementation((fn) => fn());
 
     TestBed.configureTestingModule({
       providers: [
@@ -72,6 +75,7 @@ describe('DescopeAuthService', () => {
     expect(onSessionTokenChangeSpy).toHaveBeenCalled();
     expect(onIsAuthenticatedChangeSpy).toHaveBeenCalled();
     expect(onUserChangeSpy).toHaveBeenCalled();
+    expect(onClaimsChangeSpy).toHaveBeenCalled();
   });
 
   it('should be created with default autoRefresh option', () => {
@@ -85,6 +89,7 @@ describe('DescopeAuthService', () => {
     expect(onSessionTokenChangeSpy).toHaveBeenCalled();
     expect(onIsAuthenticatedChangeSpy).toHaveBeenCalled();
     expect(onUserChangeSpy).toHaveBeenCalled();
+    expect(onClaimsChangeSpy).toHaveBeenCalled();
   });
 
   it('should be created with custom autoRefresh option', () => {
