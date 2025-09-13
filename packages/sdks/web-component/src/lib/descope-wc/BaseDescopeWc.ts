@@ -301,7 +301,7 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #createSdk(projectId: string, baseUrl: string) {
-    if (typeof createSdk !== 'function') {
+    if (!createSdk || typeof createSdk !== 'function') {
       this.logger.error(
         'SDK was not loaded properly',
         createSdk,
