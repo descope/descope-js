@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.12.3](https://github.com/descope/descope-js/compare/vue-sdk-2.12.2...vue-sdk-2.12.3) (2025-09-13)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.11`
+* `user-profile-widget` updated to version `0.6.19`
+* `web-component` updated to version `3.47.6`
 ## [2.12.2](https://github.com/descope/descope-js/compare/vue-sdk-2.12.1...vue-sdk-2.12.2) (2025-09-10)
 
 ### Dependency Updates

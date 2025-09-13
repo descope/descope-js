@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.6](https://github.com/descope/descope-js/compare/web-component-3.47.5...web-component-3.47.6) (2025-09-13)
+
+
+### Bug Fixes
+
+* reset loading state after redirect ([#1202](https://github.com/descope/descope-js/issues/1202)) RELEASE ([449c15c](https://github.com/descope/descope-js/commit/449c15cc76889cacd2296bfaa85600c70f5eed37))
+
 ## [3.47.5](https://github.com/descope/descope-js/compare/web-component-3.47.4...web-component-3.47.5) (2025-09-10)
 
 ### Dependency Updates
