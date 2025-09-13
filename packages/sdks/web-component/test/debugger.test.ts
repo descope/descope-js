@@ -56,7 +56,7 @@ jest.mock('@descope/web-js-sdk', () => {
   };
   return {
     __esModule: true,
-    default: () => sdk,
+    createSdk: () => sdk,
     clearFingerprintData: jest.fn(),
   };
 });

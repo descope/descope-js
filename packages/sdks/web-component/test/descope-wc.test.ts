@@ -48,7 +48,7 @@ global.CSSStyleSheet.prototype.replaceSync = jest.fn();
 
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
-  default: jest.fn(),
+  createSdk: jest.fn(),
   clearFingerprintData: jest.fn(),
   ensureFingerprintIds: jest.fn(),
 }));
