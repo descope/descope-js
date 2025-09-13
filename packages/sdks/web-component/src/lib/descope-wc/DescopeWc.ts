@@ -835,6 +835,11 @@ class DescopeWc extends BaseDescopeWc {
         this.loggerWrapper.error('Did not get redirect url');
         return;
       }
+      if (redirectTo === 'no-op') {
+        // this is part of the state update mechanism that allows multiple clicks
+        // on the same button on mobile devices
+        return;
+      }
       if (redirectAuthInitiator === 'android' && document.hidden) {
         // on android native flows, defer redirects until in foreground
         this.flowState.update({
@@ -906,6 +911,14 @@ class DescopeWc extends BaseDescopeWc {
         channel.onmessage = onPostMessage;
       } else {
         this.handleRedirect(redirectTo);
+        // on web we should not get here as when a redirect is performed the contents of the page immediately change,
+        // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
+        // while the flow continues to run inside a webview.
+        // so we need to reset the loading state of the components, otherwise, they'll be stuck in loading state
+        // and become unclickable, and we need to reset the flow state to allow the user to click the button more than once
+        // otherwise consecutive next response will not cause any change to the state and thus will not be handled
+        this.flowState.update({ redirectTo: 'no-op' });
+        this.#dispatch('popupclosed', {});
       }
       return;
     }
