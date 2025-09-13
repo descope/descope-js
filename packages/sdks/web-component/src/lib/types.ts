@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 
 export type SdkConfig = Parameters<typeof createSdk>[0];
 export type Sdk = ReturnType<typeof createSdk>;
