@@ -1328,10 +1328,10 @@ class DescopeWc extends BaseDescopeWc {
       }
       this.#dispatch('success', authInfo);
       return;
-    } else {
-      if (this.storeLastAuthenticatedUser) {
-        setLastAuth(lastAuth, true);
-      }
+    }
+
+    if (this.storeLastAuthenticatedUser) {
+      setLastAuth(lastAuth, true);
     }
 
     if (openInNewTabUrl) {

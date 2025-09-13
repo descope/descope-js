@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 // @ts-nocheck
-import createSdk, { ensureFingerprintIds } from '@descope/web-js-sdk';
+import { createSdk, ensureFingerprintIds } from '@descope/web-js-sdk';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import { screen } from 'shadow-dom-testing-library';
