@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import createSdk from '@descope/web-js-sdk';
+import {createSdk} from '@descope/web-js-sdk';
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import AuthProvider from '../../src/components/AuthProvider';
 
-jest.mock('@descope/web-js-sdk', () => jest.fn(() => {}));
+jest.mock('@descope/web-js-sdk', () => ({ createSdk: jest.fn(() => {}) }));
 
 describe('AuthProvider', () => {
   beforeEach(() => {

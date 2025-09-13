@@ -3,16 +3,17 @@ import { renderHook } from '@testing-library/react-hooks';
 import { useSession } from '../../src';
 import Context from '../../src/hooks/Context';
 import { IContext } from '../../src/types';
+import { create } from 'domain';
 
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
-  default: jest.fn(),
+  createSdk: jest.fn(),
 }));
 
 const renderWithContext = (contextValue: IContext) =>
   renderHook(() => useSession(), {
     // Wrap the hook with the custom context provider
-    wrapper: ({ children }) => (
+    wrapper: ({ children }: { children?: React.ReactNode }) => (
       <Context.Provider value={contextValue}>{children}</Context.Provider>
     ),
   });
