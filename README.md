@@ -56,4 +56,3 @@ If you need help you can email [Descope Support](mailto:support@descope.com)
 ## License
 
 The Descope JS is licensed for use under the terms and conditions of the [MIT license Agreement](./LICENSE).
-

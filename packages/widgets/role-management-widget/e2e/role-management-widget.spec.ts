@@ -252,6 +252,7 @@ test.describe('widget', () => {
   test('search roles', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
+    // Set up route handler first
     await page.route(apiPath('role', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -272,8 +273,11 @@ test.describe('widget', () => {
     // focus search input
     await searchInput.focus();
 
-    // enter search string
+    // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
+
+    // Wait for the search request and response
+    await page.waitForResponse(apiPath('role', 'search'));
 
     // only search results shown in grid
     await expect(

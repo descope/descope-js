@@ -5,7 +5,7 @@ import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin
 import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
@@ -301,6 +301,13 @@ class BaseDescopeWc extends BaseClass {
   }
 
   #createSdk(projectId: string, baseUrl: string) {
+    if (!createSdk || typeof createSdk !== 'function') {
+      this.logger.error(
+        'SDK was not loaded properly',
+        createSdk,
+        JSON.stringify(createSdk),
+      );
+    }
     this.sdk = createSdk({
       // Use persist tokens options in order to add existing tokens in outgoing requests (if they exists)
       persistTokens: true,
