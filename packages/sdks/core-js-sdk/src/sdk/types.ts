@@ -120,6 +120,7 @@ export type AccessKeyLoginOptions = {
 export type SignUpOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
+  locale?: string;
   templateOptions?: TemplateOptions;
 };
 
