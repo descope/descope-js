@@ -12,13 +12,15 @@ describe('AppComponent', () => {
   const onSessionTokenChangeSpy = jest.fn();
   const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
+  const onClaimsChangeSpy = jest.fn();
 
   beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: onSessionTokenChangeSpy,
       onIsAuthenticatedChange: onIsAuthenticatedChangeSpy,
-      onUserChange: onUserChangeSpy
+      onUserChange: onUserChangeSpy,
+      onClaimsChange: onClaimsChangeSpy
     });
 
     await TestBed.configureTestingModule({

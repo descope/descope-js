@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.7](https://github.com/descope/descope-js/compare/web-component-3.47.6...web-component-3.47.7) (2025-09-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.36.1`
+
+### Bug Fixes
+
+* export createSdk also as a named export RELEASE ([#1210](https://github.com/descope/descope-js/issues/1210)) ([1c8d7c6](https://github.com/descope/descope-js/commit/1c8d7c69e1984cfcce6a1e13b9a10ae936bb397b))
+
+## [3.47.6](https://github.com/descope/descope-js/compare/web-component-3.47.5...web-component-3.47.6) (2025-09-13)
+
+
+### Bug Fixes
+
+* reset loading state after redirect ([#1202](https://github.com/descope/descope-js/issues/1202)) RELEASE ([449c15c](https://github.com/descope/descope-js/commit/449c15cc76889cacd2296bfaa85600c70f5eed37))
+
+## [3.47.5](https://github.com/descope/descope-js/compare/web-component-3.47.4...web-component-3.47.5) (2025-09-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.12`
+## [3.47.4](https://github.com/descope/descope-js/compare/web-component-3.47.3...web-component-3.47.4) (2025-09-10)
+
+
+### Bug Fixes
+
+* Support popup for Apple OAuth on iPhone Safari RELEASE ([#1204](https://github.com/descope/descope-js/issues/1204)) ([1bc507e](https://github.com/descope/descope-js/commit/1bc507efc54657a19c6d54449b2c2d775c7d1c52))
+
+## [3.47.3](https://github.com/descope/descope-js/compare/web-component-3.47.2...web-component-3.47.3) (2025-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.36.0`
 ## [3.47.2](https://github.com/descope/descope-js/compare/web-component-3.47.1...web-component-3.47.2) (2025-09-09)
 
 

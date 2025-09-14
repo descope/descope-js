@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 // eslint-disable-next-line import/no-named-default
@@ -27,6 +27,7 @@ jest.mock('@descope/web-js-sdk', () => {
       .fn(() => () => {})
       .mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn(() => () => {}).mockName('onUserChange'),
+    onClaimsChange: jest.fn(() => () => {}).mockName('onClaimsChange'),
     refresh: jest.fn(),
     httpClient: {
       hooks: {
@@ -35,7 +36,7 @@ jest.mock('@descope/web-js-sdk', () => {
       },
     },
   };
-  return jest.fn(() => sdk);
+  return { createSdk: jest.fn(() => sdk) };
 });
 
 const renderWithProvider = (

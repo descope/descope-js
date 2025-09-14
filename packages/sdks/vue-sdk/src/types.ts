@@ -32,6 +32,7 @@ type Session = {
   fetchSession: (tryRefresh?: boolean) => Promise<void>;
   isLoading: Ref<boolean | null>;
   session: Ref<string>;
+  claims: Ref<JWTResponse['claims']>;
   isAuthenticated: Ref<boolean>;
   isFetchSessionWasNeverCalled: Ref<boolean>;
 };

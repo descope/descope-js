@@ -18,6 +18,7 @@ jest.mock('@descope/web-js-sdk', () => {
       .fn(() => () => {})
       .mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn(() => () => {}).mockName('onUserChange'),
+    onClaimsChange: jest.fn(() => () => {}).mockName('onClaimsChange'),
     refresh: jest.fn(),
     httpClient: {
       hooks: {
@@ -25,7 +26,7 @@ jest.mock('@descope/web-js-sdk', () => {
       },
     },
   };
-  return () => sdk;
+  return { createSdk: () => sdk };
 });
 
 const renderWithProvider = (ui: React.ReactElement, projectId: string) =>

@@ -143,7 +143,7 @@ This can be helpful to implement application-specific logic. Examples:
 <script setup>
 import { useDescope, useSession, useUser } from '@descope/vue-sdk';
 
-const { isAuthenticated, isLoading: isSessionLoading } = useSession();
+const { isAuthenticated, isLoading: isSessionLoading, claims } = useSession();
 const { user, isLoading: isUserLoading } = useUser();
 const { logout } = useDescope();
 </script>

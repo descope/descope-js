@@ -1,7 +1,7 @@
 import React from 'react';
 /* eslint-disable testing-library/no-node-access */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { AuthProvider, useSession } from '../../src';
@@ -27,6 +27,7 @@ jest.mock('@descope/web-js-sdk', () => {
       .fn(() => () => {})
       .mockName('onIsAuthenticatedChange'),
     onUserChange: jest.fn(() => () => {}).mockName('onUserChange'),
+    onClaimsChange: jest.fn(() => () => {}).mockName('onClaimsChange'),
     refresh: jest.fn(() => Promise.resolve()),
     httpClient: {
       hooks: {
@@ -35,7 +36,7 @@ jest.mock('@descope/web-js-sdk', () => {
     },
     dummyKey: 123,
   };
-  return () => sdk;
+  return { createSdk: () => sdk };
 });
 
 // mock console.error to avoid those errors in tests

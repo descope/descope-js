@@ -6,10 +6,11 @@ const mockFinishLogin = jest.fn(() => Promise.resolve());
 const mockHasOidcParamsInUrl = jest.fn(() => false);
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
+  createSdk: jest.fn(() => ({
     oidc: { finishLoginIfNeed: () => mockFinishLogin() },
     onSessionTokenChange: jest.fn(() => jest.fn()),
     onUserChange: jest.fn(() => jest.fn()),
+    onClaimsChange: jest.fn(() => jest.fn()),
     onIsAuthenticatedChange: jest.fn(() => jest.fn()),
     refresh: jest.fn(() => Promise.resolve()),
     me: jest.fn(() => Promise.resolve()),
@@ -31,7 +32,7 @@ describe('AuthProvider', () => {
     );
 
     await waitFor(() => {
-      expect(require('@descope/web-js-sdk').default).toHaveBeenCalledWith(
+      expect(require('@descope/web-js-sdk').createSdk).toHaveBeenCalledWith(
         expect.objectContaining({
           projectId: 'pr1',
           oidcConfig: true,
@@ -53,7 +54,7 @@ describe('AuthProvider', () => {
     );
 
     await waitFor(() => {
-      expect(require('@descope/web-js-sdk').default).toHaveBeenCalledWith(
+      expect(require('@descope/web-js-sdk').createSdk).toHaveBeenCalledWith(
         expect.objectContaining({
           projectId: 'pr1',
           oidcConfig: false,

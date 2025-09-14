@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.36.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.36.0...web-js-sdk-1.36.1) (2025-09-14)
+
+
+### Bug Fixes
+
+* export createSdk also as a named export RELEASE ([#1210](https://github.com/descope/descope-js/issues/1210)) ([1c8d7c6](https://github.com/descope/descope-js/commit/1c8d7c69e1984cfcce6a1e13b9a10ae936bb397b))
+
+## [1.36.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.35.1...web-js-sdk-1.36.0) (2025-09-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.50.0`
+
+### Features
+
+* Add JWTResponse#Claims globally ([#1199](https://github.com/descope/descope-js/issues/1199)) ([52c0dfd](https://github.com/descope/descope-js/commit/52c0dfdcc5bba2521bc8117c17b6983d46ba1843))
+
 ## [1.35.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.35.0...web-js-sdk-1.35.1) (2025-08-28)
 
 ### Dependency Updates
