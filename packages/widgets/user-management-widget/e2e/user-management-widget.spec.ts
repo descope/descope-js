@@ -467,7 +467,7 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     // disable user button is enabled on selection
-    expect(disableUserTrigger).toBeEnabled();
+    await expect(disableUserTrigger).toBeEnabled();
 
     // disable user
     await disableUserTrigger.click();
@@ -517,7 +517,7 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     // enable user button is enabled on selection
-    expect(enableUserTrigger).toBeEnabled();
+    await expect(enableUserTrigger).toBeEnabled();
 
     // enable user
     await enableUserTrigger.click();
@@ -569,7 +569,7 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // enable user button is enabled on selection
-    expect(removePasskeyTrigger).toBeEnabled();
+    await expect(removePasskeyTrigger).toBeEnabled();
 
     // enable user
     await removePasskeyTrigger.click();
@@ -622,7 +622,7 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     // enable user button is enabled on selection
-    expect(resetPasswordTrigger).toBeEnabled();
+    await expect(resetPasswordTrigger).toBeEnabled();
 
     // enable user
     await resetPasswordTrigger.click();
@@ -675,6 +675,7 @@ test.describe('widget', () => {
     test.setTimeout(60_000);
     await page.waitForLoadState('networkidle');
 
+    // Set up route handler first
     await page.route(apiPath('user', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -692,11 +693,19 @@ test.describe('widget', () => {
       .locator('input')
       .first();
 
+    await searchInput.waitFor({ state: 'visible' });
+
     // focus search input
     await searchInput.focus();
 
-    // enter search string
+    // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
+
+    // Trigger search with Enter key to ensure it fires
+    await searchInput.press('Enter');
+
+    // Wait for the search request and response
+    await page.waitForResponse(apiPath('user', 'search'));
 
     // only search results shown in grid
     await expect(

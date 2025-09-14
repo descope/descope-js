@@ -47,7 +47,7 @@ jest.mock('@descope/web-js-sdk', () => {
       },
     },
   };
-  return jest.fn(() => sdk);
+  return { createSdk: jest.fn(() => sdk) };
 });
 
 const renderWithProvider = (

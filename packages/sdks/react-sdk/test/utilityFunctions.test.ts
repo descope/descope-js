@@ -9,14 +9,16 @@ import createSdk, {
   getCurrentTenant,
 } from '../src/sdk';
 
-jest.mock('@descope/web-js-sdk', () => () => ({
-  getSessionToken: jest.fn(),
-  getRefreshToken: jest.fn(),
-  isJwtExpired: jest.fn(),
-  getJwtPermissions: jest.fn(),
-  getJwtRoles: jest.fn(),
-  getCurrentTenant: jest.fn(),
-  refresh: jest.fn(),
+jest.mock('@descope/web-js-sdk', () => ({
+  createSdk: () => ({
+    getSessionToken: jest.fn(),
+    getRefreshToken: jest.fn(),
+    isJwtExpired: jest.fn(),
+    getJwtPermissions: jest.fn(),
+    getJwtRoles: jest.fn(),
+    getCurrentTenant: jest.fn(),
+    refresh: jest.fn(),
+  }),
 }));
 
 const sdk = createSdk({ projectId: 'test' });
