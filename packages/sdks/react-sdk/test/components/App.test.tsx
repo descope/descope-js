@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {createSdk} from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';

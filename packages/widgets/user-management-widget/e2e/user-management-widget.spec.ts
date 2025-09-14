@@ -675,6 +675,7 @@ test.describe('widget', () => {
     test.setTimeout(60_000);
     await page.waitForLoadState('networkidle');
 
+    // Set up route handler first
     await page.route(apiPath('user', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -692,11 +693,16 @@ test.describe('widget', () => {
       .locator('input')
       .first();
 
+    await searchInput.waitFor({ state: 'visible' });
+
     // focus search input
     await searchInput.focus();
 
-    // enter search string
+    // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
+
+    // Wait for the search request and response
+    await page.waitForResponse(apiPath('user', 'search'));
 
     // only search results shown in grid
     await expect(

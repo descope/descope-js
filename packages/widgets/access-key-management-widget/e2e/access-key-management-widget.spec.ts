@@ -308,12 +308,15 @@ test.describe('widget', () => {
   test('activate access keys', async ({ page }) => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
-    const activateAccessKeyTrigger = await page
+    const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
       .first();
-    const activateAccessKeyModalButton = await page
+    const activateAccessKeyModalButton = page
       .getByTestId('activate-access-keys-modal-submit')
       .first();
+
+    // wait for elements to be visible first
+    await activateAccessKeyTrigger.waitFor({ state: 'visible' });
 
     // activate button initial state is disabled
     await expect(activateAccessKeyTrigger).toBeDisabled();
@@ -355,13 +358,14 @@ test.describe('widget', () => {
   test('search access keys', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
+    // Set up route handler first
     await page.route(apiPath('accesskey', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ keys: [mockAccessKeys[1]] }),
+        body: JSON.stringify({ keys: [mockAccessKeys.keys[1]] }),
       });
     });
 
@@ -375,20 +379,20 @@ test.describe('widget', () => {
     // focus search input
     await searchInput.focus();
 
-    // enter search string
+    // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
-    // wait for debounce to trigger the search
-    await page.waitForTimeout(600);
+    // Wait for the search request and response
+    await page.waitForResponse(apiPath('accesskey', 'search'));
 
-    // only search results shown in grid
+    // only search results shown in grid - wait longer for UI to update
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].name}`).first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 10000 });
 
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 10000 });
   });
 
   test('close notification', async ({ page }) => {
@@ -447,12 +451,15 @@ test.describe('widget', () => {
 
     await page.waitForTimeout(STATE_TIMEOUT);
 
-    const deactivateAccessKeyTrigger = await page
+    const deactivateAccessKeyTrigger = page
       .getByTestId('deactivate-access-keys-trigger')
       .first();
 
+    // wait for element to be visible first
+    await deactivateAccessKeyTrigger.waitFor({ state: 'visible' });
+
     // deactivate button initial state is disabled
-    expect(deactivateAccessKeyTrigger).toBeDisabled();
+    await expect(deactivateAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
@@ -460,7 +467,7 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // deactivate button is disabled on selection
-    expect(deactivateAccessKeyTrigger).toBeDisabled();
+    await expect(deactivateAccessKeyTrigger).toBeDisabled();
   });
 
   test('activate access keys for non editable key', async ({ page }) => {
@@ -477,12 +484,15 @@ test.describe('widget', () => {
 
     await page.waitForTimeout(STATE_TIMEOUT);
 
-    const activateAccessKeyTrigger = await page
+    const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
       .first();
 
+    // wait for element to be visible first
+    await activateAccessKeyTrigger.waitFor({ state: 'visible' });
+
     // activate button initial state is disabled
-    expect(activateAccessKeyTrigger).toBeDisabled();
+    await expect(activateAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
@@ -490,6 +500,6 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // activate button is disabled on selection
-    expect(activateAccessKeyTrigger).toBeDisabled();
+    await expect(activateAccessKeyTrigger).toBeDisabled();
   });
 });

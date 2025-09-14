@@ -18,7 +18,7 @@ jest.mock('@descope/web-js-sdk', () => ({
     getJwtRoles: jest.fn(),
     getCurrentTenant: jest.fn(),
     refresh: jest.fn(),
-  })
+  }),
 }));
 
 const sdk = createSdk({ projectId: 'test' });
@@ -120,7 +120,7 @@ describe('utility functions', () => {
   });
 
   it('should log error when calling getJwtRoles when the function throws error', () => {
-    jest.spyOn(console, 'error').mockImplementation(() => { });
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(sdk, 'getJwtRoles').mockImplementation(() => {
       throw new Error('session token');
     });

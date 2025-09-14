@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {createSdk} from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import AuthProvider from '../../src/components/AuthProvider';
@@ -51,12 +51,9 @@ describe('AuthProvider', () => {
     });
   });
 
-   it('Should init sdk config with customized auto refresh option', async () => {
+  it('Should init sdk config with customized auto refresh option', async () => {
     render(
-      <AuthProvider
-        projectId="pr1"
-        autoRefresh={false}
-      >
+      <AuthProvider projectId="pr1" autoRefresh={false}>
         <div>hello</div>
       </AuthProvider>,
     );
