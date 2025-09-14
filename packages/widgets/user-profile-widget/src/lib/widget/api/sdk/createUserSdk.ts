@@ -1,5 +1,5 @@
 import { apiPaths } from '../apiPaths';
-import { HttpClient } from '../types';
+import { HttpClient, User } from '../types';
 import { withErrorHandler } from './helpers';
 import { user } from './mocks';
 
@@ -21,7 +21,21 @@ export const createUserSdk = ({
     return res.json();
   };
 
+  const devices = async ({ userId }: { userId: string }) => {
+    if (mock) {
+      return user.devices();
+    }
+    const res = await httpClient.post(apiPaths.user.devices, {
+      loginIds: [userId],
+    });
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
   return {
     me,
+    devices,
   };
 };
