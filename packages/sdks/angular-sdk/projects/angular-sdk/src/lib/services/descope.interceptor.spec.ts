@@ -28,7 +28,8 @@ describe('DescopeInterceptor', () => {
     mockedCreateSdk.mockReturnValue({
       onSessionTokenChange: jest.fn(),
       onIsAuthenticatedChange: jest.fn(),
-      onUserChange: jest.fn()
+      onUserChange: jest.fn(),
+      onClaimsChange: jest.fn()
     });
 
     TestBed.configureTestingModule({
@@ -76,7 +77,11 @@ describe('DescopeInterceptor', () => {
       .mockReturnValue(
         of({
           ok: true,
-          data: { sessionJwt: 'newToken', sessionExpiration: 1663190468 }
+          data: {
+            sessionJwt: 'newToken',
+            sessionExpiration: 1663190468,
+            claims: {}
+          }
         })
       );
 
