@@ -87,7 +87,9 @@ export const persistTokens = (
       // 2. sessionTokenViaCookie is an object without the property
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
-      setJwtTokenCookie(SESSION_TOKEN_KEY, sessionJwt, {
+      const cookieName =
+        sessionTokenViaCookie['cookieName'] || SESSION_TOKEN_KEY;
+      setJwtTokenCookie(cookieName, sessionJwt, {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,

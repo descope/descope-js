@@ -226,6 +226,35 @@ describe('persistTokens', () => {
         secure: true,
       });
     });
+
+    it('should set cookie with custom cookieName when configured', async () => {
+      window.location = { hostname: authInfo.cookieDomain } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const setMock = jest.spyOn(Cookies, 'set');
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { cookieName: 'CUSTOM_DS' },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setMock).toHaveBeenCalledWith('CUSTOM_DS', authInfo.sessionJwt, {
+        path: authInfo.cookiePath,
+        domain: authInfo.cookieDomain,
+        expires: new Date(authInfo.cookieExpiration * 1000),
+        sameSite: 'Strict',
+        secure: true,
+      });
+      expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    });
   });
 
   it('should not set refresh if persistTokens is configured to false', async () => {
