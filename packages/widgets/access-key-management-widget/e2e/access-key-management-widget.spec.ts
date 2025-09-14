@@ -378,6 +378,9 @@ test.describe('widget', () => {
     // enter search string
     await searchInput.fill('mockSearchString');
 
+    // wait for debounce to trigger the search
+    await page.waitForTimeout(600);
+
     // only search results shown in grid
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].name}`).first(),
