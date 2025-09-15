@@ -5,7 +5,7 @@ import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin
 import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
-import { createSdk } from '@descope/web-js-sdk';
+import createSdk from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
