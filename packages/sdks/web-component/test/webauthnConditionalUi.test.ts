@@ -1,4 +1,4 @@
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import '@testing-library/jest-dom';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { screen } from 'shadow-dom-testing-library';
