@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 // @ts-nocheck
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import { waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import { screen } from 'shadow-dom-testing-library';
@@ -93,7 +93,7 @@ class DescopeButton extends HTMLElement {
 
 customElements.define('descope-button', DescopeButton);
 const origAppend = document.body.append;
-const orginalCreateElement = document.createElement;
+const originalCreateElement = document.createElement;
 
 describe('web-component', () => {
   beforeEach(() => {
@@ -137,7 +137,7 @@ describe('web-component', () => {
       if (element.toLowerCase() === 'script') {
         return scriptMock;
       }
-      return orginalCreateElement.apply(document, [element]);
+      return originalCreateElement.apply(document, [element]);
     });
   });
 

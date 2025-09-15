@@ -1,7 +1,6 @@
 /* eslint-disable max-classes-per-file */
 // @ts-nocheck
 import { createSdk } from '@descope/web-js-sdk';
-import { waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import DescopeWc from '../src/lib/descope-wc';
 import { invokeScriptOnload } from './testUtils';
@@ -14,12 +13,6 @@ jest.mock('@descope/web-js-sdk', () => ({
   clearFingerprintData: jest.fn(),
   ensureFingerprintIds: jest.fn(),
 }));
-
-jest.mock('@descope/escape-markdown', () => ({
-  escapeMarkdown: jest.fn((text) => text),
-}));
-
-const WAIT_TIMEOUT = 25000;
 
 const sdk = {
   flow: {
@@ -89,7 +82,7 @@ customElements.define('descope-button', DescopeButton);
 const origAppend = document.body.append;
 const originalCreateElement = document.createElement;
 
-describe('web-component validation', () => {
+describe('web-component project-id validation', () => {
   beforeEach(() => {
     configContent = {
       flows: {
@@ -136,6 +129,8 @@ describe('web-component validation', () => {
   });
 
   afterEach(() => {
+    // document.getElementsByTagName('html')[0].innerHTML = '';
+
     document.getElementsByTagName('head')[0].innerHTML = '';
     document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
@@ -169,69 +164,6 @@ describe('web-component validation', () => {
 
     await expect(descope.init.bind(descope)).rejects.toThrow(
       'project-id cannot be empty',
-    );
-  });
-
-  it('should throw an error when flow-id is missing', async () => {
-    class Test extends DescopeWc {
-      constructor() {
-        super();
-        Object.defineProperty(this, 'shadowRoot', {
-          value: { isConnected: true, appendChild: () => {} },
-        });
-      }
-
-      // eslint-disable-next-line class-methods-use-this
-      public get projectId() {
-        return '1';
-      }
-    }
-    customElements.define('test-flow', Test as any);
-    const descope: any = new Test();
-    Object.defineProperty(descope.shadowRoot, 'host', {
-      value: { closest: jest.fn() },
-      writable: true,
-    });
-
-    await expect(descope.init.bind(descope)).rejects.toThrow(
-      'flow-id cannot be empty',
-    );
-  });
-
-  it('should throw an error when theme has a wrong value', async () => {
-    const errorSpy = jest.spyOn(console, 'error');
-    class Test extends DescopeWc {
-      constructor() {
-        super();
-        Object.defineProperty(this, 'shadowRoot', {
-          value: {
-            isConnected: true,
-            appendChild: () => {},
-            host: { closest: () => true },
-          },
-        });
-      }
-
-      // eslint-disable-next-line class-methods-use-this
-      public get projectId() {
-        return '1';
-      }
-
-      // eslint-disable-next-line class-methods-use-this
-      public get flowId() {
-        return '1';
-      }
-    }
-
-    customElements.define('test-theme', Test as any);
-    document.body.innerHTML = `<h1>Custom element test</h1> <test-theme flow-id="otpSignInEmail" project-id="1" theme="lol"></descope-wc>`;
-
-    await waitFor(
-      () =>
-        expect(errorSpy).toHaveBeenCalledWith(
-          'Supported theme values are "light", "dark", or leave empty for using the OS theme',
-        ),
-      { timeout: WAIT_TIMEOUT },
     );
   });
 });
