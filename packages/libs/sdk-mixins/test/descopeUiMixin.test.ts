@@ -28,7 +28,7 @@ const createMixin = (config: Record<string, any>) => {
 
   return mixin;
 };
-const orginalCreateElement = document.createElement;
+const originalCreateElement = document.createElement;
 const scriptMock = Object.assign(document.createElement('script'), {
   setAttribute: jest.fn(),
   addEventListener: jest.fn(),
@@ -40,7 +40,7 @@ jest.spyOn(document, 'createElement').mockImplementation((element) => {
   if (element.toLowerCase() === 'script') {
     return scriptMock;
   }
-  return orginalCreateElement.apply(document, [element]);
+  return originalCreateElement.apply(document, [element]);
 });
 
 describe('descopeUiMixin', () => {
