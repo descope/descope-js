@@ -340,7 +340,7 @@ describe('persistTokens', () => {
       expect(getMock).toHaveBeenCalledWith('DS');
     });
 
-    it('should get session with custom cookie namefrom from cookie', async () => {
+    it('should get session with custom cookie name from from cookie', async () => {
       const getMock = Cookies.get as jest.Mock;
       getMock.mockReturnValue('session-1');
       expect(getSessionToken('test', { cookieName: 'example' })).toEqual(
