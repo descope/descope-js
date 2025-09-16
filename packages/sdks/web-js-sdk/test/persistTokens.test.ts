@@ -337,7 +337,16 @@ describe('persistTokens', () => {
       const getMock = Cookies.get as jest.Mock;
       getMock.mockReturnValue('session-1');
       expect(getSessionToken('test')).toEqual('session-1');
-      expect(getMock).toHaveBeenCalled();
+      expect(getMock).toHaveBeenCalledWith('DS');
+    });
+
+    it('should get session with custom cookie namefrom from cookie', async () => {
+      const getMock = Cookies.get as jest.Mock;
+      getMock.mockReturnValue('session-1');
+      expect(getSessionToken('test', { cookieName: 'example' })).toEqual(
+        'session-1',
+      );
+      expect(getMock).toHaveBeenCalledWith('example');
     });
 
     it('should get session from from local storage', async () => {

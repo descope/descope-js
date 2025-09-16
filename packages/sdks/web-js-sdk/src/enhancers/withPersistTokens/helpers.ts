@@ -69,6 +69,10 @@ function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
   return currentDomainSuffix === cookieDomain;
 }
 
+const getSessionCookieName = (sessionTokenViaCookie?: CookieConfig) => {
+  return sessionTokenViaCookie?.['cookieName'] || SESSION_TOKEN_KEY;
+};
+
 export const persistTokens = (
   authInfo = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
@@ -87,8 +91,7 @@ export const persistTokens = (
       // 2. sessionTokenViaCookie is an object without the property
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
-      const cookieName =
-        sessionTokenViaCookie['cookieName'] || SESSION_TOKEN_KEY;
+      const cookieName = getSessionCookieName(sessionTokenViaCookie);
       setJwtTokenCookie(cookieName, sessionJwt, {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
@@ -113,9 +116,12 @@ export function getRefreshToken(prefix: string = '') {
  * Return the session token. first try to get from cookie, and fallback to local storage
  * See sessionTokenViaCookie option for more details about session token location
  */
-export function getSessionToken(prefix: string = ''): string {
+export function getSessionToken(
+  prefix: string = '',
+  sessionTokenViaCookie?: CookieConfig,
+): string {
   return (
-    Cookies.get(SESSION_TOKEN_KEY) ||
+    Cookies.get(getSessionCookieName(sessionTokenViaCookie)) ||
     getLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`) ||
     ''
   );
@@ -126,11 +132,15 @@ export function getIdToken(prefix: string = ''): string {
 }
 
 /** Remove both the localStorage refresh JWT and the session cookie */
-export function clearTokens(prefix: string = '') {
+export function clearTokens(
+  prefix: string = '',
+  sessionTokenViaCookie?: CookieConfig,
+) {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
-  Cookies.remove(SESSION_TOKEN_KEY);
+  const cookieName = getSessionCookieName(sessionTokenViaCookie);
+  Cookies.remove(cookieName);
 }
 
 export const beforeRequest =
