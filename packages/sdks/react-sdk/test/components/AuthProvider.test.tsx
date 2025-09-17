@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createSdk } from '@descope/web-js-sdk';
 import { render, waitFor } from '@testing-library/react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import AuthProvider from '../../src/components/AuthProvider';
 
 jest.mock('@descope/web-js-sdk', () => ({ createSdk: jest.fn(() => {}) }));
@@ -116,6 +116,40 @@ describe('AuthProvider', () => {
 
     await waitFor(() => {
       expect(createSdk).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('Should init sdk config twice when getExternalToken redeclared (wrong usage)', async () => {
+    const TestComponent = () => {
+      const getExternalToken = async () => 'meow';
+      return (
+        <AuthProvider projectId="pr1" getExternalToken={getExternalToken} />
+      );
+    };
+
+    const { rerender } = render(<TestComponent />);
+
+    rerender(<TestComponent />);
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('Should init sdk config once when getExternalToken wrapped in useCallback', async () => {
+    const TestComponent = () => {
+      const getExternalToken = useCallback(async () => 'meow', []);
+      return (
+        <AuthProvider projectId="pr1" getExternalToken={getExternalToken} />
+      );
+    };
+
+    const { rerender } = render(<TestComponent />);
+
+    rerender(<TestComponent />);
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledTimes(1);
     });
   });
 });
