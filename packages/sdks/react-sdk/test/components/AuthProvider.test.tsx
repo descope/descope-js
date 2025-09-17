@@ -69,4 +69,21 @@ describe('AuthProvider', () => {
       );
     });
   });
+
+  it('Should init sdk config with customized storage prefix option', async () => {
+    render(
+      <AuthProvider projectId="pr1" storagePrefix="APP_">
+        <div>hello</div>
+      </AuthProvider>,
+    );
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledWith(
+        expect.objectContaining({
+          projectId: 'pr1',
+          storagePrefix: 'APP_',
+        }),
+      );
+    });
+  });
 });
