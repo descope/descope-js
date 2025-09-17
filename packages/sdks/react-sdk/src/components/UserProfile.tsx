@@ -24,7 +24,7 @@ const UserProfileWC = lazy(async () => {
 });
 
 const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
-  ({ logger, theme, debug, widgetId, onLogout, styleId }, ref) => {
+  ({ logger, theme, debug, widgetId, onLogout, styleId, onReady }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -60,6 +60,15 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
       }
       return undefined;
     }, [innerRef, handleLogout]);
+
+    useEffect(() => {
+      const ele = innerRef;
+      if (onReady) ele?.addEventListener('ready', onReady);
+
+      return () => {
+        if (onReady) ele?.removeEventListener('ready', onReady);
+      };
+    }, [innerRef, onReady]);
 
     return (
 	<Suspense fallback={null}>

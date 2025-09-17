@@ -38,6 +38,7 @@ type WidgetProps = {
   theme?: ThemeOptions;
   debug?: boolean;
   styleId?: string;
+  onReady?: CustomEventCb<{}>;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
