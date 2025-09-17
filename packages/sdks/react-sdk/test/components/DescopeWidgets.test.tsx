@@ -236,7 +236,11 @@ describe('Descope Widgets', () => {
   it('should call onReady callback when ready event is dispatched - UserManagement', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(
-      <UserManagement tenant="tenant1" widgetId="widget1" onReady={onReadyMock} />,
+      <UserManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
     );
 
     await waitFor(() =>
@@ -253,7 +257,11 @@ describe('Descope Widgets', () => {
   it('should call onReady callback when ready event is dispatched - RoleManagement', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(
-      <RoleManagement tenant="tenant1" widgetId="widget1" onReady={onReadyMock} />,
+      <RoleManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
     );
 
     await waitFor(() =>
@@ -270,7 +278,11 @@ describe('Descope Widgets', () => {
   it('should call onReady callback when ready event is dispatched - AccessKeyManagement', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(
-      <AccessKeyManagement tenant="tenant1" widgetId="widget1" onReady={onReadyMock} />,
+      <AccessKeyManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
     );
 
     await waitFor(() =>
@@ -279,7 +291,9 @@ describe('Descope Widgets', () => {
       ).toBeInTheDocument(),
     );
 
-    const widget = document.querySelector('descope-access-key-management-widget')!;
+    const widget = document.querySelector(
+      'descope-access-key-management-widget',
+    )!;
     widget.dispatchEvent(new CustomEvent('ready'));
     expect(onReadyMock).toHaveBeenCalledTimes(1);
   });
@@ -287,7 +301,11 @@ describe('Descope Widgets', () => {
   it('should call onReady callback when ready event is dispatched - AuditManagement', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(
-      <AuditManagement tenant="tenant1" widgetId="widget1" onReady={onReadyMock} />,
+      <AuditManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
     );
 
     await waitFor(() =>
@@ -304,7 +322,11 @@ describe('Descope Widgets', () => {
   it('should call onReady callback when ready event is dispatched - TenantProfile', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(
-      <TenantProfile widgetId="widget1" tenant="tenant1" onReady={onReadyMock} />,
+      <TenantProfile
+        widgetId="widget1"
+        tenant="tenant1"
+        onReady={onReadyMock}
+      />,
     );
 
     await waitFor(() =>
@@ -347,7 +369,9 @@ describe('Descope Widgets', () => {
       ).toBeInTheDocument(),
     );
 
-    const widget = document.querySelector('descope-applications-portal-widget')!;
+    const widget = document.querySelector(
+      'descope-applications-portal-widget',
+    )!;
     widget.dispatchEvent(new CustomEvent('ready'));
     expect(onReadyMock).toHaveBeenCalledTimes(1);
   });
