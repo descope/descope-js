@@ -36,6 +36,7 @@ describe('RoleManagement.vue', () => {
     expect(descopeWc.attributes('theme')).toBe('test-theme');
     expect(descopeWc.attributes('tenant')).toBe('test-tenant');
     expect(descopeWc.attributes('widget-id')).toBe('widget1');
+    expect(descopeWc.attributes('debug')).toBe('true');
   });
 
   it('emits ready event when widget dispatches ready event', async () => {
