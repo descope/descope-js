@@ -26,7 +26,7 @@ jest.mock('@descope/web-js-sdk', () => {
       },
     },
   };
-  return () => sdk;
+  return { createSdk: () => sdk };
 });
 
 const renderWithProvider = (ui: React.ReactElement, projectId: string) =>

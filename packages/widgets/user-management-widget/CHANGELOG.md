@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.12](https://github.com/descope/descope-js/compare/user-management-widget-0.9.11...user-management-widget-0.9.12) (2025-09-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.36.1`
+* `web-component` updated to version `3.47.7`
+
+### Bug Fixes
+
+* export createSdk also as a named export RELEASE ([#1210](https://github.com/descope/descope-js/issues/1210)) ([1c8d7c6](https://github.com/descope/descope-js/commit/1c8d7c69e1984cfcce6a1e13b9a10ae936bb397b))
+
+## [0.9.11](https://github.com/descope/descope-js/compare/user-management-widget-0.9.10...user-management-widget-0.9.11) (2025-09-13)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.47.6`
+## [0.9.10](https://github.com/descope/descope-js/compare/user-management-widget-0.9.9...user-management-widget-0.9.10) (2025-09-10)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.47.5`
+* `sdk-mixins` updated to version `0.13.12`
+## [0.9.9](https://github.com/descope/descope-js/compare/user-management-widget-0.9.8...user-management-widget-0.9.9) (2025-09-10)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.47.4`
 ## [0.9.8](https://github.com/descope/descope-js/compare/user-management-widget-0.9.7...user-management-widget-0.9.8) (2025-09-10)
 
 ### Dependency Updates

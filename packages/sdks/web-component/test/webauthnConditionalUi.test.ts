@@ -1,4 +1,4 @@
-import createSdk from '@descope/web-js-sdk';
+import { createSdk } from '@descope/web-js-sdk';
 import '@testing-library/jest-dom';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { screen } from 'shadow-dom-testing-library';
@@ -28,7 +28,7 @@ jest.mock('@descope/web-js-sdk', () => {
   };
   return {
     __esModule: true,
-    default: () => sdk,
+    createSdk: () => sdk,
     clearFingerprintData: jest.fn(),
   };
 });
