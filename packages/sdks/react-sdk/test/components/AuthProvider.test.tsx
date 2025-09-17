@@ -69,4 +69,53 @@ describe('AuthProvider', () => {
       );
     });
   });
+
+  it('Should init sdk config only once with identical seperate instances of object props', async () => {
+    const opts = JSON.stringify(`{"secure":"false"}`);
+
+    const { rerender } = render(
+      <AuthProvider projectId="pr1" sessionTokenViaCookie={JSON.parse(opts)} />,
+    );
+
+    rerender(
+      <AuthProvider projectId="pr1" sessionTokenViaCookie={JSON.parse(opts)} />,
+    );
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('Should init sdk config twice with different prop objects', async () => {
+    const { rerender } = render(
+      <AuthProvider
+        projectId="pr1"
+        sessionTokenViaCookie={{ secure: false }}
+      />,
+    );
+
+    rerender(
+      <AuthProvider projectId="pr1" sessionTokenViaCookie={{ secure: true }} />,
+    );
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('Should init sdk config twice with mutated prop object', async () => {
+    const opt = { secure: false };
+
+    const { rerender } = render(
+      <AuthProvider projectId="pr1" sessionTokenViaCookie={opt} />,
+    );
+
+    opt.secure = true;
+
+    rerender(<AuthProvider projectId="pr1" sessionTokenViaCookie={opt} />);
+
+    await waitFor(() => {
+      expect(createSdk).toHaveBeenCalledTimes(2);
+    });
+  });
 });
