@@ -48,4 +48,10 @@ export default ({
       getExternalToken,
       storagePrefix,
     });
-  }, [projectId, baseUrl, sessionTokenViaCookie, getExternalToken]);
+  }, [
+    projectId,
+    baseUrl,
+    sessionTokenViaCookie,
+    getExternalToken,
+    storagePrefix,
+  ]);
