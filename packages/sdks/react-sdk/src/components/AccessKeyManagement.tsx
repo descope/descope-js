@@ -19,7 +19,7 @@ const AccessKeyManagementWC = lazy(async () => {
 const AccessKeyManagement = React.forwardRef<
   HTMLElement,
   AccessKeyManagementProps
->(({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
+>(({ logger, tenant, theme, debug, widgetId, styleId, storagePrefix }, ref) => {
   const [innerRef, setInnerRef] = useState(null);
 
   useImperativeHandle(ref, () => innerRef);
@@ -37,6 +37,7 @@ const AccessKeyManagement = React.forwardRef<
         baseStaticUrl={baseStaticUrl}
         baseCdnUrl={baseCdnUrl}
         innerRef={setInnerRef}
+        storagePrefix={storagePrefix}
         {...{
           // attributes
           'theme.attr': theme,

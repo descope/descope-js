@@ -24,7 +24,10 @@ const UserProfileWC = lazy(async () => {
 });
 
 const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
-  ({ logger, theme, debug, widgetId, onLogout, styleId }, ref) => {
+  (
+    { logger, theme, debug, widgetId, onLogout, styleId, storagePrefix },
+    ref,
+  ) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -71,6 +74,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
           baseCdnUrl={baseCdnUrl}
           styleId={styleId}
           ref={setInnerRef}
+          storagePrefix={storagePrefix}
           {...{
             // attributes
             'theme.attr': theme,

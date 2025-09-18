@@ -14,6 +14,7 @@ type Config = Pick<
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
   | 'getExternalToken'
+  | 'storagePrefix'
 >;
 
 export default ({
@@ -27,6 +28,7 @@ export default ({
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
   getExternalToken,
+  storagePrefix,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
     if (!projectId) {
@@ -44,6 +46,7 @@ export default ({
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       getExternalToken,
+      storagePrefix,
     });
   }, [
     projectId,
@@ -56,4 +59,5 @@ export default ({
     // See: https://github.com/descope/etc/issues/11965
     JSON.stringify(sessionTokenViaCookie),
     getExternalToken,
+    storagePrefix,
   ]);

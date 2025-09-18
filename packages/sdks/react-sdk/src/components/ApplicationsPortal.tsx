@@ -19,7 +19,7 @@ const ApplicationsPortalWC = lazy(async () => {
 const ApplicationsPortal = React.forwardRef<
   HTMLElement,
   ApplicationsPortalProps
->(({ logger, theme, debug, widgetId, styleId }, ref) => {
+>(({ logger, theme, debug, widgetId, styleId, storagePrefix }, ref) => {
   const [innerRef, setInnerRef] = useState(null);
 
   useImperativeHandle(ref, () => innerRef);
@@ -36,6 +36,7 @@ const ApplicationsPortal = React.forwardRef<
         baseStaticUrl={baseStaticUrl}
         baseCdnUrl={baseCdnUrl}
         innerRef={setInnerRef}
+        storagePrefix={storagePrefix}
         {...{
           // attributes
           'theme.attr': theme,
