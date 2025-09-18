@@ -44,7 +44,7 @@ export const withPersistTokens =
 
       if (res?.status === 401) {
         if (!isManagementApi) {
-          clearTokens(storagePrefix);
+          clearTokens(storagePrefix, sessionTokenViaCookie);
         }
       } else {
         persistTokens(
@@ -65,7 +65,7 @@ export const withPersistTokens =
     const wrappedSdk = wrapWith(
       sdk,
       ['logout', 'logoutAll', 'oidc.logout'],
-      wrapper(storagePrefix),
+      wrapper(storagePrefix, sessionTokenViaCookie),
     );
 
     const refreshToken = () => getRefreshToken(storagePrefix);
@@ -80,12 +80,12 @@ export const withPersistTokens =
   };
 
 const wrapper =
-  (prefix?: string): SdkFnWrapper<{}> =>
+  (prefix?: string, sessionTokenViaCookie?: CookieConfig): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
 
-    clearTokens(prefix);
+    clearTokens(prefix, sessionTokenViaCookie);
 
     return resp;
   };

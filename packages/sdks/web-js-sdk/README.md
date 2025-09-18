@@ -25,12 +25,16 @@ const sdk = descopeSdk({
   make `sdk.getSessionToken()` available, see usage bellow bellow */
   persistTokens: true,
   /* Pass `sessionTokenViaCookie: true` to store the session token in a cookie when using `persistTokens`. By default, the sdk will set the session token in the browser storage.
+  You can also pass an object to customize cookie options, e.g. `sessionTokenViaCookie: { sameSite: 'Lax', secure: false, cookieName: 'MY_COOKIE' }`.
+    - `sameSite` (default: `Strict`) – Controls the SameSite attribute of the session cookie.
+    - `secure` (default: `true`) – If true, sets the cookie as Secure (sent only over HTTPS).
+    - `cookieName` (default: `DS`) – The name of the session token cookie. Useful for avoiding conflicts when running multiple Descope projects on the same domain.
   Notes:
     - This option is relevant only when `persistTokens` is true.
     - The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5) cookie. It will be sent only over HTTPS connections.
-In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
+    In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
     - The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
-  If you need to customize this, you can set `sessionTokenViaCookie: {sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
+  If you need to customize this, you can set `sessionTokenViaCookie: {sameSite: 'Lax', secure: false, cookieName: 'MY_COOKIE'}` (if you pass only `sameSite`, `secure` will be set to `true` by default, and `cookieName` will default to `DS`).
     - If the cookie domain set on Descope configuration doesn't match, or is not a parent domain of the current domain, The cookie will be stored on the current domain that runs the code. Examples:
      - Project cookie domain is acme.com, current domain is app.acme.com - the domain will be set to app.acme.com
      - Project cookie domain is acme.com, current domain is my-app.com - the domain will be set to my-app.com

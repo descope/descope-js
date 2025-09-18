@@ -383,7 +383,11 @@ The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc
 In addition, some browsers (e.g. Safari) may not store `Secure` cookie if the hosted page is running on an HTTP protocol.
 
 The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
-If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
+If you need to customize this, you can set `sessionTokenViaCookie={{sameSite: 'Lax', secure: false, cookieName: 'MY_COOKIE'}}`.
+
+- `sameSite` (default: `Strict`) – Controls the SameSite attribute of the session cookie.
+- `secure` (default: `true`) – If true, sets the cookie as Secure (sent only over HTTPS).
+- `cookieName` (default: `DS`) – The name of the session token cookie. Useful for avoiding conflicts when running multiple Descope projects on the same domain.
 
 #### 3. Configure Descope project to manage session token in cookies
 
@@ -460,13 +464,15 @@ If you are migrating from an external authentication provider to Descope, you ca
 import { AuthProvider } from '@descope/react-sdk';
 
 const AppRoot = () => {
+  const externalToken = useCallback(async () => {
+    // Bring token from external provider (e.g. get access token from another auth provider)
+    return 'my-external-token';
+  }, []);
+
   return (
     <AuthProvider
       projectId="my-project-id"
-      getExternalToken={async () => {
-        // Bring token from external provider (e.g. get access token from another auth provider)
-        return 'my-external-token';
-      }}
+      getExternalToken={externalToken}
     >
       <App />
     </AuthProvider>
