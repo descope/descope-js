@@ -40,7 +40,7 @@ const handleSuccess = (e) => {
   router.push({ path: '/' });
 };
 
-const customStorage = localStorage
+const customStorage = localStorage;
 
 const errorTransformer = (error) => {
   const translationMap = {
