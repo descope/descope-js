@@ -48,7 +48,7 @@ export default ({
   }, [
     projectId,
     baseUrl,
-    // HACK: Avoid creating another instance of the SDK if the consumer of this
+    // NOTE: Avoid creating another instance of the SDK if the consumer of this
     // component forgot to `useMemo` the object.
     // This is also necessary for a workaround with Next.js SSR when including AuthProvider
     // in RootLayout with another component that forces rerenders.
