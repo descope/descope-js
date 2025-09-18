@@ -10,7 +10,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 // this is a singleton
 // but in order to keep the code clean
 // it was implemented in this way
-let customStorage: CustomStorage;
+let customStorage: CustomStorage | undefined;
 
 export const setCustomStorage = (storage: CustomStorage) => {
   customStorage = storage;
