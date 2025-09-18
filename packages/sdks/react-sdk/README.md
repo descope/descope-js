@@ -464,13 +464,15 @@ If you are migrating from an external authentication provider to Descope, you ca
 import { AuthProvider } from '@descope/react-sdk';
 
 const AppRoot = () => {
+  const externalToken = useCallback(async () => {
+    // Bring token from external provider (e.g. get access token from another auth provider)
+    return 'my-external-token';
+  }, []);
+
   return (
     <AuthProvider
       projectId="my-project-id"
-      getExternalToken={async () => {
-        // Bring token from external provider (e.g. get access token from another auth provider)
-        return 'my-external-token';
-      }}
+      getExternalToken={externalToken}
     >
       <App />
     </AuthProvider>
