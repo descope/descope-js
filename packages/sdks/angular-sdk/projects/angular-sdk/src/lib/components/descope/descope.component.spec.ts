@@ -146,4 +146,70 @@ describe('DescopeComponent', () => {
 
     expect(spy).toHaveBeenCalled();
   });
+
+  describe('customStorage', () => {
+    const mockCustomStorage = {
+      getItem: jest.fn((key: string) => `mocked_${key}`),
+      setItem: jest.fn(),
+      removeItem: jest.fn()
+    };
+
+    beforeEach(() => {
+      component.flowId = 'test-flow';
+    });
+
+    it('should pass customStorage to web-component', () => {
+      component.customStorage = mockCustomStorage;
+      fixture.detectChanges();
+
+      const webComponent = fixture.nativeElement.querySelector(
+        'descope-wc'
+      ) as any;
+      expect(webComponent.customStorage).toBe(mockCustomStorage);
+    });
+
+    it('should handle customStorage with async methods', () => {
+      const asyncCustomStorage = {
+        getItem: jest.fn((key: string) => `async_${key}`),
+        setItem: jest.fn(),
+        removeItem: jest.fn()
+      };
+
+      component.customStorage = asyncCustomStorage;
+      fixture.detectChanges();
+
+      const webComponent = fixture.nativeElement.querySelector(
+        'descope-wc'
+      ) as any;
+      expect(webComponent.customStorage).toBe(asyncCustomStorage);
+    });
+
+    it('should work without customStorage', () => {
+      fixture.detectChanges();
+
+      const webComponent = fixture.nativeElement.querySelector(
+        'descope-wc'
+      ) as any;
+      expect(webComponent.customStorage).toBeUndefined();
+    });
+
+    it('should update customStorage when input changes', () => {
+      component.customStorage = mockCustomStorage;
+      fixture.detectChanges();
+
+      const newCustomStorage = {
+        getItem: jest.fn((key: string) => `new_${key}`),
+        setItem: jest.fn(),
+        removeItem: jest.fn()
+      };
+
+      component.customStorage = newCustomStorage;
+      fixture.detectChanges();
+
+      const webComponent = fixture.nativeElement.querySelector(
+        'descope-wc'
+      ) as any;
+      expect(webComponent.customStorage).toBe(newCustomStorage);
+    });
+  });
 });

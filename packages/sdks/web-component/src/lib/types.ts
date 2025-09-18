@@ -294,3 +294,9 @@ export interface ProjectConfiguration {
 }
 
 export type FlowStatus = 'loading' | 'error' | 'success' | 'ready' | 'initial';
+
+export type CustomStorage = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+};

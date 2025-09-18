@@ -44,6 +44,7 @@ import { DescopeAuthConfig } from '../../types/types';
       [attr.nonce]="nonceString"
       [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
       [attr.form]="formString"
+      [customStorage]="customStorage"
     >
       <ng-content></ng-content>
     </descope-wc>
@@ -81,6 +82,11 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   baseStaticUrl?: string;
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
+  customStorage?: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
   @Input() flowId!: string;
 
   @Input() locale: string;
@@ -127,6 +133,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
     this.storeLastAuthenticatedUser = descopeConfig.storeLastAuthenticatedUser;
+    this.customStorage = descopeConfig.customStorage;
   }
 
   ngOnInit(): void {

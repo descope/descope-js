@@ -18,6 +18,7 @@
       :validate-on-blur="validateOnBlur"
       :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
+      :customStorage.prop="customStorage"
       :errorTransformer.prop="errorTransformer"
       :onScreenUpdate.prop="onScreenUpdate"
       :form.attr="formStr"
@@ -131,6 +132,7 @@ const {
   baseStaticUrl,
   storeLastAuthenticatedUser,
   baseCdnUrl,
+  customStorage,
 } = useOptions();
 const sdk = useDescope();
 
