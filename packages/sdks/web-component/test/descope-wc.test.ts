@@ -239,8 +239,8 @@ describe('web-component', () => {
   describe('customStorage', () => {
     const mockCustomStorage = {
       getItem: jest.fn((key: string) => `mocked_${key}`),
-      setItem: jest.fn((key: string, value: string) => {}),
-      removeItem: jest.fn((key: string) => {}),
+      setItem: jest.fn(() => {}),
+      removeItem: jest.fn(() => {}),
     };
 
     beforeEach(() => {
@@ -286,10 +286,8 @@ describe('web-component', () => {
         getItem: jest.fn(async (key: string) =>
           Promise.resolve(`async_${key}`),
         ),
-        setItem: jest.fn(async (key: string, value: string) =>
-          Promise.resolve(),
-        ),
-        removeItem: jest.fn(async (key: string) => Promise.resolve()),
+        setItem: jest.fn(async () => Promise.resolve()),
+        removeItem: jest.fn(async () => Promise.resolve()),
       };
 
       // Create element and set customStorage before adding to DOM

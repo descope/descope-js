@@ -12,10 +12,6 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 // it was implemented in this way
 let customStorage: CustomStorage | undefined;
 
-export const setCustomStorage = (storage: CustomStorage) => {
-  customStorage = storage;
-};
-
 const getExpirationFromToken = (token: string) => {
   try {
     const claims = jwtDecode<JwtPayload>(token);
@@ -139,3 +135,7 @@ export const getLocalStorage = (key: string) =>
   (customStorage || localStorage)?.getItem?.(key);
 export const removeLocalStorage = (key: string) =>
   (customStorage || localStorage)?.removeItem?.(key);
+
+export const setCustomStorage = (storage: CustomStorage) => {
+  customStorage = storage;
+};
