@@ -1,6 +1,20 @@
 import { JWTResponse, UserResponse } from '@descope/core-js-sdk';
-import { CoreSdkConfig, WebJWTResponse, WebSigninResponse } from '../../types';
+import {
+  CoreSdkConfig,
+  CustomStorage,
+  WebJWTResponse,
+  WebSigninResponse,
+} from '../../types';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
+
+// this is a singleton
+// but in order to keep the code clean
+// it was implemented in this way
+let customStorage: CustomStorage;
+
+export const setCustomStorage = (storage: CustomStorage) => {
+  customStorage = storage;
+};
 
 const getExpirationFromToken = (token: string) => {
   try {
@@ -116,11 +130,12 @@ export const getUserFromResponse = async (
 export const isDescopeBridge = () =>
   typeof window !== 'undefined' && !!window['descopeBridge'];
 
-export const isLocalStorage = typeof localStorage !== 'undefined';
+export const isLocalStorage =
+  typeof customStorage !== 'undefined' || typeof localStorage !== 'undefined';
 
 export const setLocalStorage = (key: string, value: string) =>
-  isLocalStorage && localStorage?.setItem(key, value);
+  (customStorage || localStorage)?.setItem?.(key, value);
 export const getLocalStorage = (key: string) =>
-  isLocalStorage && localStorage?.getItem(key);
+  (customStorage || localStorage)?.getItem?.(key);
 export const removeLocalStorage = (key: string) =>
-  isLocalStorage && localStorage?.removeItem(key);
+  (customStorage || localStorage)?.removeItem?.(key);

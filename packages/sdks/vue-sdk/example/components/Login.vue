@@ -14,6 +14,7 @@
       :onScreenUpdate="onScreenUpdate"
       :form="form"
       :client="client"
+      :customStorage="customStorage"
     >
     </Descope>
   </div>
@@ -38,6 +39,8 @@ const handleSuccess = (e) => {
   console.log('Logged in', e);
   router.push({ path: '/' });
 };
+
+const customStorage = localStorage
 
 const errorTransformer = (error) => {
   const translationMap = {

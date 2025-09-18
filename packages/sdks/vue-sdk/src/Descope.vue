@@ -18,6 +18,7 @@
       :validate-on-blur="validateOnBlur"
       :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
+      :customStorage.prop="customStorage"
       :errorTransformer.prop="errorTransformer"
       :onScreenUpdate.prop="onScreenUpdate"
       :form.attr="formStr"
@@ -117,6 +118,9 @@ const props = defineProps({
   },
   dismissScreenErrorOnInput: {
     type: Boolean,
+  },
+  customStorage: {
+    type: Object,
   },
 });
 // const emit = defineEmits(['success', 'error', 'ready']);

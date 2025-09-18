@@ -29,6 +29,7 @@ import { IsChanged } from '../helpers/state';
 import { formMountMixin } from '../mixins';
 import {
   AutoFocusOptions,
+  CustomStorage,
   DebuggerMessage,
   DebugState,
   DescopeUI,
@@ -81,6 +82,8 @@ class BaseDescopeWc extends BaseClass {
   };
 
   #init = false;
+
+  #customStorage: CustomStorage | undefined;
 
   flowStatus: FlowStatus = 'initial';
 
@@ -268,6 +271,23 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
+  get customStorage(): CustomStorage | undefined {
+    return this.#customStorage;
+  }
+
+  set customStorage(storage: CustomStorage | undefined) {
+    if (storage && typeof storage.getItem !== 'function') {
+      throw new Error('Custom storage must have a getItem method');
+    }
+    if (storage && typeof storage.setItem !== 'function') {
+      throw new Error('Custom storage must have a setItem method');
+    }
+    if (storage && typeof storage.removeItem !== 'function') {
+      throw new Error('Custom storage must have a removeItem method');
+    }
+    this.#customStorage = storage;
+  }
+
   #validateAttrs() {
     const optionalAttributes = [
       'base-url',
@@ -308,7 +328,7 @@ class BaseDescopeWc extends BaseClass {
         JSON.stringify(createSdk),
       );
     }
-    this.sdk = createSdk({
+    const config: any = {
       // Use persist tokens options in order to add existing tokens in outgoing requests (if they exists)
       persistTokens: true,
       preview: this.preview,
@@ -320,7 +340,12 @@ class BaseDescopeWc extends BaseClass {
       ...BaseDescopeWc.sdkConfigOverrides,
       projectId,
       baseUrl,
-    });
+    };
+    if (this.#customStorage) {
+      config.customStorage = this.#customStorage;
+    }
+
+    this.sdk = createSdk(config);
 
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {

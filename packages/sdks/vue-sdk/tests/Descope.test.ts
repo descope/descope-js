@@ -124,4 +124,73 @@ describe('Descope.vue', () => {
 
     expect(wrapper.emitted('ready')).toBeTruthy();
   });
+
+  describe('customStorage', () => {
+    const mockCustomStorage = {
+      getItem: jest.fn((key: string) => `mocked_${key}`),
+      setItem: jest.fn(),
+      removeItem: jest.fn(),
+    };
+
+    it('should pass customStorage prop to web-component', () => {
+      const wrapper = mount(Descope, {
+        props: {
+          flowId: 'test-flow-id',
+          customStorage: mockCustomStorage,
+        },
+      });
+
+      const descopeWc = wrapper.find('descope-wc');
+      expect(descopeWc.exists()).toBe(true);
+    });
+
+    it('should handle customStorage with async methods', () => {
+      const asyncCustomStorage = {
+        getItem: jest.fn(async (key: string) =>
+          Promise.resolve(`async_${key}`),
+        ),
+        setItem: jest.fn(async () => Promise.resolve()),
+        removeItem: jest.fn(async () => Promise.resolve()),
+      };
+
+      const wrapper = mount(Descope, {
+        props: {
+          flowId: 'test-flow-id',
+          customStorage: asyncCustomStorage,
+        },
+      });
+
+      const descopeWc = wrapper.find('descope-wc');
+      expect(descopeWc.exists()).toBe(true);
+    });
+
+    it('should work without customStorage prop', () => {
+      const wrapper = mount(Descope, {
+        props: { flowId: 'test-flow-id' },
+      });
+
+      const descopeWc = wrapper.find('descope-wc');
+      expect(descopeWc.exists()).toBe(true);
+    });
+
+    it('should update customStorage when prop changes', async () => {
+      const wrapper = mount(Descope, {
+        props: {
+          flowId: 'test-flow-id',
+          customStorage: mockCustomStorage,
+        },
+      });
+
+      const newCustomStorage = {
+        getItem: jest.fn((key: string) => `new_${key}`),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+      };
+
+      await wrapper.setProps({ customStorage: newCustomStorage });
+
+      const descopeWc = wrapper.find('descope-wc');
+      expect(descopeWc.exists()).toBe(true);
+    });
+  });
 });

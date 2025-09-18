@@ -143,6 +143,11 @@ export type DescopeProps = {
   client?: Record<string, any>;
   styleId?: string;
   dismissScreenErrorOnInput?: boolean;
+  customStorage?: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
   onScreenUpdate?: (
     screenName: string,
     context: Record<string, any>,

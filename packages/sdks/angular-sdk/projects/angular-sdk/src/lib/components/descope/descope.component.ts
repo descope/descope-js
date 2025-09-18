@@ -44,6 +44,7 @@ import { DescopeAuthConfig } from '../../types/types';
       [attr.nonce]="nonceString"
       [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
       [attr.form]="formString"
+      [customStorage]="customStorage"
     >
       <ng-content></ng-content>
     </descope-wc>
@@ -109,6 +110,11 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;
+  @Input() customStorage: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();

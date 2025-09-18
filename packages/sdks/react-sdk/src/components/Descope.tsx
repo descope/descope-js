@@ -91,6 +91,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       dismissScreenErrorOnInput,
       outboundAppId,
       outboundAppScopes,
+      customStorage,
       children,
       externalRequestId,
     },
@@ -196,6 +197,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             }
             tenant={tenant}
             externalRequestId={externalRequestId}
+            customStorage={customStorage}
             {...{
               // attributes
               'theme.attr': theme,
@@ -213,6 +215,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'errorTransformer.prop': errorTransformer,
               'logger.prop': logger,
               'onScreenUpdate.prop': onScreenUpdate,
+              'customStorage.prop': customStorage,
             }}
           >
 				{children}
