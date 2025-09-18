@@ -17,7 +17,7 @@ const UserManagementWC = lazy(async () => {
 });
 
 const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
+  ({ logger, tenant, theme, debug, widgetId, styleId, storagePrefix }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -34,6 +34,7 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
           baseUrl={baseUrl}
           baseStaticUrl={baseStaticUrl}
           baseCdnUrl={baseCdnUrl}
+          storagePrefix={storagePrefix}
           ref={setInnerRef}
           {...{
             // attributes

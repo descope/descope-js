@@ -5,6 +5,7 @@ import {
   loggerMixin,
   observeAttributesMixin,
   projectIdMixin,
+  storagePrefixMixin,
 } from '@descope/sdk-mixins';
 import { Sdk, createSdk } from '../api/sdk';
 
@@ -16,6 +17,7 @@ export const apiMixin = createSingletonMixin(
       loggerMixin,
       cookieConfigMixin,
       baseUrlMixin,
+      storagePrefixMixin,
     )(superclass);
 
     return class ApiMixinClass extends BaseClass {
@@ -28,6 +30,7 @@ export const apiMixin = createSingletonMixin(
             projectId: this.projectId,
             baseUrl: this.baseUrl,
             refreshCookieName: this.refreshCookieName,
+            storagePrefix: this.storagePrefix,
           },
           this.mock === 'true',
           this.widgetId,

@@ -17,7 +17,7 @@ const RoleManagementWC = lazy(async () => {
 });
 
 const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
+  ({ logger, tenant, theme, debug, widgetId, styleId, storagePrefix }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -35,6 +35,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
           baseStaticUrl={baseStaticUrl}
           baseCdnUrl={baseCdnUrl}
           innerRef={setInnerRef}
+          storagePrefix={storagePrefix}
           {...{
             // attributes
             'theme.attr': theme,
