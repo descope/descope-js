@@ -14,6 +14,7 @@ type Config = Pick<
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
   | 'getExternalToken'
+  | 'customStorage'
 >;
 
 export default ({
@@ -27,6 +28,7 @@ export default ({
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
   getExternalToken,
+  customStorage,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
     if (!projectId) {
@@ -44,5 +46,12 @@ export default ({
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       getExternalToken,
+      customStorage,
     });
-  }, [projectId, baseUrl, sessionTokenViaCookie, getExternalToken]);
+  }, [
+    projectId,
+    baseUrl,
+    sessionTokenViaCookie,
+    getExternalToken,
+    customStorage,
+  ]);

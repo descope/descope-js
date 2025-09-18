@@ -119,9 +119,6 @@ const props = defineProps({
   dismissScreenErrorOnInput: {
     type: Boolean,
   },
-  customStorage: {
-    type: Object,
-  },
 });
 // const emit = defineEmits(['success', 'error', 'ready']);
 const emit = defineEmits<{
@@ -135,6 +132,7 @@ const {
   baseStaticUrl,
   storeLastAuthenticatedUser,
   baseCdnUrl,
+  customStorage,
 } = useOptions();
 const sdk = useDescope();
 

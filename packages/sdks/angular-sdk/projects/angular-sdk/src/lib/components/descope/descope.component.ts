@@ -82,6 +82,11 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   baseStaticUrl?: string;
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
+  customStorage?: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
   @Input() flowId!: string;
 
   @Input() locale: string;
@@ -110,11 +115,6 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;
-  @Input() customStorage: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();
@@ -133,6 +133,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
     this.storeLastAuthenticatedUser = descopeConfig.storeLastAuthenticatedUser;
+    this.customStorage = descopeConfig.customStorage;
   }
 
   ngOnInit(): void {

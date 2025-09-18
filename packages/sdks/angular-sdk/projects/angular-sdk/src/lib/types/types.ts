@@ -13,6 +13,12 @@ export class DescopeAuthConfig {
   // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   pathsToIntercept?: string[];
+  // Custom storage configuration for tokens and user data
+  customStorage?: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
 }
 
 export type { ILogger };

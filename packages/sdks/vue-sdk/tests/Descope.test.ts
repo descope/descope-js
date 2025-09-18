@@ -2,8 +2,10 @@ import { shallowMount, mount } from '@vue/test-utils';
 import Descope from '../src/Descope.vue';
 import { default as DescopeWC } from '@descope/web-component';
 
+import { useOptions } from '../src/hooks';
+
 jest.mock('../src/hooks', () => ({
-  useOptions: () => ({ projectId: 'project1', baseUrl: 'baseUrl' }),
+  useOptions: jest.fn(() => ({ projectId: 'project1', baseUrl: 'baseUrl' })),
   useDescope: () => ({ httpClient: { hooks: { afterRequest: jest.fn() } } }),
   useUser: () => ({}),
   useSession: () => ({}),
@@ -132,11 +134,18 @@ describe('Descope.vue', () => {
       removeItem: jest.fn(),
     };
 
-    it('should pass customStorage prop to web-component', () => {
+    beforeEach(() => {
+      (useOptions as jest.Mock).mockReturnValue({
+        projectId: 'project1',
+        baseUrl: 'baseUrl',
+        customStorage: mockCustomStorage,
+      });
+    });
+
+    it('should pass customStorage from options to web-component', () => {
       const wrapper = mount(Descope, {
         props: {
           flowId: 'test-flow-id',
-          customStorage: mockCustomStorage,
         },
       });
 
@@ -153,10 +162,15 @@ describe('Descope.vue', () => {
         removeItem: jest.fn(async () => Promise.resolve()),
       };
 
+      (useOptions as jest.Mock).mockReturnValue({
+        projectId: 'project1',
+        baseUrl: 'baseUrl',
+        customStorage: asyncCustomStorage,
+      });
+
       const wrapper = mount(Descope, {
         props: {
           flowId: 'test-flow-id',
-          customStorage: asyncCustomStorage,
         },
       });
 
@@ -164,7 +178,12 @@ describe('Descope.vue', () => {
       expect(descopeWc.exists()).toBe(true);
     });
 
-    it('should work without customStorage prop', () => {
+    it('should work without customStorage in options', () => {
+      (useOptions as jest.Mock).mockReturnValue({
+        projectId: 'project1',
+        baseUrl: 'baseUrl',
+      });
+
       const wrapper = mount(Descope, {
         props: { flowId: 'test-flow-id' },
       });
@@ -173,21 +192,12 @@ describe('Descope.vue', () => {
       expect(descopeWc.exists()).toBe(true);
     });
 
-    it('should update customStorage when prop changes', async () => {
+    it('should use customStorage from options', () => {
       const wrapper = mount(Descope, {
         props: {
           flowId: 'test-flow-id',
-          customStorage: mockCustomStorage,
         },
       });
-
-      const newCustomStorage = {
-        getItem: jest.fn((key: string) => `new_${key}`),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
-      };
-
-      await wrapper.setProps({ customStorage: newCustomStorage });
 
       const descopeWc = wrapper.find('descope-wc');
       expect(descopeWc.exists()).toBe(true);

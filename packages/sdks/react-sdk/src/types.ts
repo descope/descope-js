@@ -109,6 +109,11 @@ export interface IContext {
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
   refreshCookieName?: string;
+  customStorage?: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
   claims?: JWTResponse['claims'];
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;
@@ -143,11 +148,6 @@ export type DescopeProps = {
   client?: Record<string, any>;
   styleId?: string;
   dismissScreenErrorOnInput?: boolean;
-  customStorage?: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
   onScreenUpdate?: (
     screenName: string,
     context: Record<string, any>,

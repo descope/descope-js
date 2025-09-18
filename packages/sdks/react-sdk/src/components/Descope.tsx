@@ -91,7 +91,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       dismissScreenErrorOnInput,
       outboundAppId,
       outboundAppScopes,
-      customStorage,
       children,
       externalRequestId,
     },
@@ -109,6 +108,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
+      customStorage,
       sdk,
     } = React.useContext(Context);
 

@@ -13,6 +13,12 @@ export type Options = {
   sessionTokenViaCookie?: CookieConfig;
   // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
+  // Custom storage configuration for tokens and user data
+  customStorage?: {
+    getItem: (key: string) => string | null;
+    setItem: (key: string, value: string) => void;
+    removeItem: (key: string) => void;
+  };
 };
 
 export type Sdk = ReturnType<typeof createSdk>;

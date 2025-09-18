@@ -45,12 +45,14 @@ const renderWithProvider = (
   projectId: string = 'project1',
   baseUrl?: string,
   refreshCookieName?: string,
+  customStorage?: any,
 ) =>
   render(
     <AuthProvider
       projectId={projectId}
       baseUrl={baseUrl}
       refreshCookieName={refreshCookieName}
+      customStorage={customStorage}
     >
       {ui}
     </AuthProvider>,
@@ -313,11 +315,13 @@ describe('Descope', () => {
       removeItem: jest.fn((key: string) => {}),
     };
 
-    it('should pass customStorage prop to web-component', async () => {
+    it('should pass customStorage from AuthProvider to web-component', async () => {
       renderWithProvider(
-        <Descope flowId="flow1" customStorage={mockCustomStorage} />,
+        <Descope flowId="flow1" />,
         'proj1',
         'url1',
+        undefined,
+        mockCustomStorage,
       );
 
       await waitFor(() => {
@@ -330,15 +334,17 @@ describe('Descope', () => {
 
     it('should handle customStorage with async methods', async () => {
       const asyncCustomStorage = {
-        get: jest.fn(async (key: string) => Promise.resolve(`async_${key}`)),
-        set: jest.fn(async (key: string, value: string) => Promise.resolve()),
-        remove: jest.fn(async (key: string) => Promise.resolve()),
+        getItem: jest.fn(async (key: string) => Promise.resolve(`async_${key}`)),
+        setItem: jest.fn(async (key: string, value: string) => Promise.resolve()),
+        removeItem: jest.fn(async (key: string) => Promise.resolve()),
       };
 
       renderWithProvider(
-        <Descope flowId="flow1" customStorage={asyncCustomStorage} />,
+        <Descope flowId="flow1" />,
         'proj1',
         'url1',
+        undefined,
+        asyncCustomStorage,
       );
 
       await waitFor(() => {
@@ -349,7 +355,7 @@ describe('Descope', () => {
       expect(wc.customStorage).toBe(asyncCustomStorage);
     });
 
-    it('should work without customStorage prop', async () => {
+    it('should work without customStorage in AuthProvider', async () => {
       renderWithProvider(<Descope flowId="flow1" />, 'proj1', 'url1');
 
       await waitFor(() => {
@@ -360,11 +366,13 @@ describe('Descope', () => {
       expect(wc.customStorage).toBeUndefined();
     });
 
-    it('should update customStorage when prop changes', async () => {
+    it('should use customStorage from AuthProvider', async () => {
       const { rerender } = renderWithProvider(
-        <Descope flowId="flow1" customStorage={mockCustomStorage} />,
+        <Descope flowId="flow1" />,
         'proj1',
         'url1',
+        undefined,
+        mockCustomStorage,
       );
 
       await waitFor(() => {
@@ -372,14 +380,14 @@ describe('Descope', () => {
       });
 
       const newCustomStorage = {
-        get: jest.fn((key: string) => `new_${key}`),
-        set: jest.fn(),
-        remove: jest.fn(),
+        getItem: jest.fn((key: string) => `new_${key}`),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
       };
 
       rerender(
-        <AuthProvider projectId="proj1" baseUrl="url1">
-          <Descope flowId="flow1" customStorage={newCustomStorage} />
+        <AuthProvider projectId="proj1" baseUrl="url1" customStorage={newCustomStorage}>
+          <Descope flowId="flow1" />
         </AuthProvider>,
       );
 
