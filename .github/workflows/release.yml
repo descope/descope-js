@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -10,8 +11,8 @@ env:
 
 jobs:
   release:
-    name: Release
-    if: contains(github.event.head_commit.message, 'RELEASE')
+    name: Release (debug)
+#    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     steps:
       - name: Get token
@@ -40,20 +41,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'pnpm'
-          node-version-file: package.json
+          node-version: 18
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Build
         run: npm run version:ci
-        env:
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
-      - name: Run pnpm publish
-        run: pnpm -r publish --access=public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
-      - name: Push versions, changelog and tags
-        run: git push --atomic origin main $(git tag -l)
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
