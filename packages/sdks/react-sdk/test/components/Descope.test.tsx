@@ -334,8 +334,12 @@ describe('Descope', () => {
 
     it('should handle customStorage with async methods', async () => {
       const asyncCustomStorage = {
-        getItem: jest.fn(async (key: string) => Promise.resolve(`async_${key}`)),
-        setItem: jest.fn(async (key: string, value: string) => Promise.resolve()),
+        getItem: jest.fn(async (key: string) =>
+          Promise.resolve(`async_${key}`),
+        ),
+        setItem: jest.fn(async (key: string, value: string) =>
+          Promise.resolve(),
+        ),
         removeItem: jest.fn(async (key: string) => Promise.resolve()),
       };
 
@@ -386,7 +390,11 @@ describe('Descope', () => {
       };
 
       rerender(
-        <AuthProvider projectId="proj1" baseUrl="url1" customStorage={newCustomStorage}>
+        <AuthProvider
+          projectId="proj1"
+          baseUrl="url1"
+          customStorage={newCustomStorage}
+        >
           <Descope flowId="flow1" />
         </AuthProvider>,
       );
