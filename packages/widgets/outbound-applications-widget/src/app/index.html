@@ -85,6 +85,10 @@
           widgetEle.setAttribute('mock', 'true');
         }
 
+        widgetEle.addEventListener('ready', () => {
+          console.log('Widget is ready');
+        });
+
         if (shouldLogin) {
           const flowEle = document.createElement('descope-wc');
           flowEle.setAttribute('project-id', DESCOPE_PROJECT_ID);

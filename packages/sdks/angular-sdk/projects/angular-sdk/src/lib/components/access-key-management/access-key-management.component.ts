@@ -4,6 +4,9 @@ import {
   Input,
   OnChanges,
   OnInit,
+  Output,
+  EventEmitter,
+  AfterViewInit,
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import DescopeAccessKeyManagementWidget from '@descope/access-key-management-widget';
@@ -16,7 +19,9 @@ import { DescopeAuthConfig } from '../../types/types';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: ''
 })
-export class AccessKeyManagementComponent implements OnInit, OnChanges {
+export class AccessKeyManagementComponent
+  implements OnInit, OnChanges, AfterViewInit
+{
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -28,6 +33,8 @@ export class AccessKeyManagementComponent implements OnInit, OnChanges {
   @Input() debug: boolean;
   @Input() logger: ILogger;
   @Input() styleId: string;
+
+  @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
   private readonly webComponent = new DescopeAccessKeyManagementWidget();
 
@@ -48,6 +55,10 @@ export class AccessKeyManagementComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.setupWebComponent();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupEventListeners();
   }
 
   private setupWebComponent() {
@@ -72,6 +83,14 @@ export class AccessKeyManagementComponent implements OnInit, OnChanges {
 
     if (this.logger) {
       (this.webComponent as any).logger = this.logger;
+    }
+  }
+
+  private setupEventListeners(): void {
+    if (this.ready) {
+      this.webComponent.addEventListener('ready', () => {
+        this.ready?.emit();
+      });
     }
   }
 }

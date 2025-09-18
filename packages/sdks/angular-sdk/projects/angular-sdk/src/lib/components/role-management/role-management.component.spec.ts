@@ -81,4 +81,20 @@ describe('DescopeRoleManagementComponent', () => {
     expect(webComponentHtml.getAttribute('logger')).toBeDefined();
     expect(webComponentHtml.getAttribute('style-id')).toStrictEqual('style-1');
   });
+
+  it('should emit ready event when web component dispatches ready', () => {
+    const readySpy = jest.fn();
+    component.ready.subscribe(readySpy);
+
+    const html: HTMLElement = fixture.nativeElement;
+    const webComponentHtml = html.querySelector(
+      'descope-role-management-widget'
+    )!;
+
+    // Dispatch ready event on the web component
+    webComponentHtml.dispatchEvent(new CustomEvent('ready'));
+
+    // Check that the component emits the ready event
+    expect(readySpy).toHaveBeenCalledTimes(1);
+  });
 });

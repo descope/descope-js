@@ -1,4 +1,10 @@
-import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from 'react';
 import Context from '../hooks/Context';
 import { UserManagementProps } from '../types';
 import withPropsMapping from './withPropsMapping';
@@ -17,13 +23,22 @@ const UserManagementWC = lazy(async () => {
 });
 
 const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId, styleId }, ref) => {
+  ({ logger, tenant, theme, debug, widgetId, styleId, onReady }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
 
     const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
+
+    useEffect(() => {
+      const ele = innerRef;
+      if (onReady) ele?.addEventListener('ready', onReady);
+
+      return () => {
+        if (onReady) ele?.removeEventListener('ready', onReady);
+      };
+    }, [innerRef, onReady]);
 
     return (
 	<Suspense fallback={null}>

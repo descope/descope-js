@@ -10,6 +10,7 @@
       :debug.attr="debug"
       :widget-id="widgetId"
       :style-id="styleId"
+      @ready="onReady"
     />
   </div>
 </template>
@@ -34,5 +35,11 @@ defineProps({
   },
 });
 
+const emit = defineEmits<{
+  (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
+}>();
+
 const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = useOptions();
+
+const onReady = (e: CustomEvent<Record<string, never>>) => emit('ready', e);
 </script>
