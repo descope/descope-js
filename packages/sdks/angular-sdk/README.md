@@ -505,7 +505,10 @@ Notes:
 - You must configure the refresh token to be stored in an `httpOnly` cookie in the Descope console. Otherwise, the refresh token will not be stored, and when the page is refreshed, the user will be logged out.
 - You can still retrieve the session token using the `session` observable of `DescopeAuthService`.
 - The session token cookie is set to [`SameSite=Strict; Secure;`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) by default.
-  If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false}` (if you pass only `sameSite`, `secure` will be set to `true` by default).
+  If you need to customize this, you can set `sessionTokenViaCookie={sameSite: 'Lax', secure: false, cookieName: 'MY_COOKIE'}`.
+  - `sameSite` (default: `Strict`) – Controls the SameSite attribute of the session cookie.
+  - `secure` (default: `true`) – If true, sets the cookie as Secure (sent only over HTTPS).
+  - `cookieName` (default: `DS`) – The name of the session token cookie. Useful for avoiding conflicts when running multiple Descope projects on the same domain.
 
 ### Last User Persistence
 
