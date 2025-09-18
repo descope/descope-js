@@ -275,7 +275,6 @@ class DescopeWc extends BaseDescopeWc {
             composed: true,
           }),
         );
-        console.log(`>> resolve ${script.id}`);
         resolve(script.id);
       };
 
@@ -287,7 +286,6 @@ class DescopeWc extends BaseDescopeWc {
         const scriptElement = this.shadowRoot.querySelector(
           `[data-script-id="${script.id}"]`,
         ) as ScriptElement;
-        console.log({ scriptElement }, script.id);
         if (scriptElement) {
           this.loggerWrapper.debug('Script already loaded', script.id);
           const { moduleRes } = scriptElement;
@@ -318,7 +316,6 @@ class DescopeWc extends BaseDescopeWc {
                 this.loggerWrapper.debug('Unloading script', script.id);
                 moduleRes.stop?.();
               });
-              console.log('appended script tag');
             }
           } catch (e) {
             reject(e);
@@ -1096,7 +1093,6 @@ class DescopeWc extends BaseDescopeWc {
           },
         );
 
-        console.log('>>>>> res', res);
         this.#handleSdkResponse(res);
 
         return res;
@@ -1286,7 +1282,6 @@ class DescopeWc extends BaseDescopeWc {
   };
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
-    console.log('handleSdkResponse', sdkResp);
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -1325,7 +1320,6 @@ class DescopeWc extends BaseDescopeWc {
       }
     });
     const errorText = sdkResp.data?.screen?.state?.errorText;
-    console.log('screen state', sdkResp.data?.screen?.state);
     if (sdkResp.data?.error) {
       this.loggerWrapper.error(
         `[${sdkResp.data.error.code}]: ${sdkResp.data.error.description}`,
