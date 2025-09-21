@@ -45,4 +45,15 @@ export default ({
       keepLastAuthenticatedUserAfterLogout,
       getExternalToken,
     });
-  }, [projectId, baseUrl, sessionTokenViaCookie, getExternalToken]);
+  }, [
+    projectId,
+    baseUrl,
+    // NOTE: Avoid creating another instance of the SDK if the consumer of this
+    // component forgot to `useMemo` the object.
+    // This is also necessary for a workaround with Next.js SSR when including AuthProvider
+    // in RootLayout with another component that forces rerenders.
+    //
+    // See: https://github.com/descope/etc/issues/11965
+    JSON.stringify(sessionTokenViaCookie),
+    getExternalToken,
+  ]);
