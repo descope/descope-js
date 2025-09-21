@@ -29,6 +29,7 @@ export type CoreSdkConfig = Head<Parameters<CreateCoreSdk>>;
 export type WebSdkConfig = CoreSdkConfig & {
   oidcConfig?: OidcConfig;
   getExternalToken?: () => Promise<string>;
+  customStorage?: CustomStorage;
 };
 
 /* JWT response with idToken */
@@ -50,3 +51,9 @@ export type AfterRequestHook = Extract<
 >;
 
 export type { UserResponse, PasskeyOptions } from '@descope/core-js-sdk';
+
+export type CustomStorage = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+};

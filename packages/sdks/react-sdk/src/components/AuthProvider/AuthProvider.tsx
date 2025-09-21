@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
 import { Claims } from '@descope/core-js-sdk';
+import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
@@ -41,6 +42,8 @@ interface IAuthProviderProps {
   refreshCookieName?: string;
   // Function to get external token, for seamless migration from external system
   getExternalToken?: () => Promise<string>;
+  // Custom storage object for authentication related data
+  customStorage?: CustomStorage;
   children?: React.ReactNode;
 }
 
@@ -57,6 +60,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   keepLastAuthenticatedUserAfterLogout = false,
   refreshCookieName = '',
   getExternalToken = undefined,
+  customStorage = undefined,
   children = undefined,
 }) => {
   const [user, setUser] = useState<User>();
@@ -82,6 +86,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     keepLastAuthenticatedUserAfterLogout,
     refreshCookieName,
     getExternalToken,
+    customStorage,
   });
 
   useEffect(() => {
@@ -159,6 +164,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
+      customStorage,
       setUser,
       setSession,
       setIsAuthenticated,
@@ -182,6 +188,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       baseCdnUrl,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
+      customStorage,
       setUser,
       setSession,
       setIsAuthenticated,

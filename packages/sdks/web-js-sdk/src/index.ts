@@ -1,6 +1,7 @@
 import { compose } from './enhancers/helpers';
 import { withAnalytics } from './enhancers/withAnalytics';
 import { withAutoRefresh } from './enhancers/withAutoRefresh';
+import { withCustomStorage } from './enhancers/withCustomStorage';
 import { withFingerprint } from './enhancers/withFingerprint';
 import { withFlowNonce } from './enhancers/withFlowNonce';
 import { withLastLoggedInUser } from './enhancers/withLastLoggedInUser';
@@ -9,6 +10,7 @@ import withPersistTokens from './enhancers/withPersistTokens';
 import createSdk from './sdk';
 
 const decoratedCreateSdk = compose(
+  withCustomStorage, // must be first
   withFingerprint,
   withAutoRefresh,
   withAnalytics,
@@ -18,7 +20,7 @@ const decoratedCreateSdk = compose(
   withPersistTokens, // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
 )(createSdk);
 
-export type { UserResponse, OidcConfig } from './types';
+export type { UserResponse, OidcConfig, CustomStorage } from './types';
 
 // Note: make sure to update ./test/umd.test.ts when adding new constants
 export {

@@ -42,6 +42,7 @@ import * as helpers from '../src/lib/helpers/helpers';
 // eslint-disable-next-line import/no-namespace
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
+import { resetCustomStorage } from '../src/lib/helpers/storage';
 import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
@@ -189,6 +190,12 @@ describe('web-component', () => {
     };
     jest.useFakeTimers();
 
+    // Mock Math.random for consistent abTestingKey
+    jest.spyOn(Math, 'random').mockReturnValue(0.215);
+
+    // Update defaultOptionsValues with mocked abTestingKey
+    defaultOptionsValues.abTestingKey = getABTestingKey();
+
     globalThis.DescopeUI = {};
 
     fetchMock.mockImplementation((url: string) => {
@@ -234,6 +241,105 @@ describe('web-component', () => {
     window.location.search = '';
     themeContent = {};
     pageContent = '';
+    localStorage.removeItem('dls_ab_testing_id');
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+    resetCustomStorage();
+  });
+
+  describe('customStorage', () => {
+    const mockCustomStorage = {
+      getItem: jest.fn((key: string) => `mocked_${key}`),
+      setItem: jest.fn(() => {}),
+      removeItem: jest.fn(() => {}),
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      startMock.mockReturnValue(generateSdkResponse({}));
+      pageContent = '<button id="email">Button</button><span>It works!</span>';
+
+      const DescopeUI = {
+        componentsThemeManager: { currentThemeName: undefined },
+      };
+      globalThis.DescopeUI = DescopeUI;
+    });
+
+    it('should accept customStorage property and pass it to SDK config', async () => {
+      // Create element and set customStorage before adding to DOM
+      const wc = document.createElement('descope-wc') as any;
+      wc.setAttribute('flow-id', 'otpSignInEmail');
+      wc.setAttribute('project-id', '1');
+      wc.customStorage = mockCustomStorage;
+
+      document.body.innerHTML = `<h1>Custom element test</h1>`;
+      document.body.appendChild(wc);
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Wait for the SDK to be created with the custom storage
+      await waitFor(
+        () => {
+          expect(createSdk).toHaveBeenCalledWith(
+            expect.objectContaining({
+              customStorage: mockCustomStorage,
+            }),
+          );
+        },
+        { timeout: 2000 },
+      );
+    });
+
+    it('should handle customStorage with async methods', async () => {
+      const asyncCustomStorage = {
+        getItem: jest.fn(async (key: string) =>
+          Promise.resolve(`async_${key}`),
+        ),
+        setItem: jest.fn(async () => Promise.resolve()),
+        removeItem: jest.fn(async () => Promise.resolve()),
+      };
+
+      // Create element and set customStorage before adding to DOM
+      const wc = document.createElement('descope-wc') as any;
+      wc.setAttribute('flow-id', 'otpSignInEmail');
+      wc.setAttribute('project-id', '1');
+      wc.customStorage = asyncCustomStorage;
+
+      document.body.innerHTML = `<h1>Custom element test</h1>`;
+      document.body.appendChild(wc);
+
+      await waitFor(
+        () => {
+          expect(createSdk).toHaveBeenCalledWith(
+            expect.objectContaining({
+              customStorage: asyncCustomStorage,
+            }),
+          );
+        },
+        { timeout: 2000 },
+      );
+    });
+
+    it('should validate customStorage interface', async () => {
+      const invalidStorage = {
+        getItem: jest.fn(),
+        // Missing set and remove methods
+      };
+
+      // Create element and set customStorage before adding to DOM
+      const wc = document.createElement('descope-wc') as any;
+      wc.setAttribute('flow-id', 'otpSignInEmail');
+      wc.setAttribute('project-id', '1');
+
+      document.body.innerHTML = `<h1>Custom element test</h1>`;
+      document.body.appendChild(wc);
+
+      // Should throw when setting invalid storage
+      expect(() => {
+        wc.customStorage = invalidStorage;
+      }).toThrow('Custom storage must have a setItem method');
+    });
   });
 
   describe('SAML', () => {
@@ -4341,7 +4447,7 @@ describe('web-component', () => {
                 screenId: 'met',
               },
               operator: 'greater-than',
-              predicate: abTestingKey - 1,
+              predicate: 21,
               unmet: {
                 interactionId: 'ELSE',
                 screenId: 'unmet',

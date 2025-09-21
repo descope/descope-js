@@ -7,3 +7,4 @@ export {
 } from './templates';
 export * from './webauthn';
 export * from './positionHelpers';
+export * from './storage';

@@ -1,5 +1,6 @@
 import { ILogger } from '@descope/web-component';
 import { CookieConfig } from '@descope/web-js-sdk';
+import type { CustomStorage } from '@descope/web-component';
 export class DescopeAuthConfig {
   projectId = '';
   baseUrl?: string;
@@ -13,6 +14,8 @@ export class DescopeAuthConfig {
   // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   pathsToIntercept?: string[];
+  // Custom storage configuration for tokens and user data
+  customStorage?: CustomStorage;
 }
 
 export type { ILogger };

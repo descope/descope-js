@@ -1,3 +1,3 @@
 export const environment = {
-  buildVersion: '0.19.1'
+  buildVersion: '0.20.4'
 };
