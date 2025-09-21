@@ -135,6 +135,10 @@ export const getLocalStorage = (key: string) =>
   (customStorage || localStorage)?.getItem?.(key);
 export const removeLocalStorage = (key: string) =>
   (customStorage || localStorage)?.removeItem?.(key);
+export const getLocalStorageLength = (): number =>
+  (customStorage as any)?.length ?? localStorage?.length ?? 0;
+export const getLocalStorageKey = (index: number): string | null =>
+  (customStorage as any)?.key?.(index) ?? localStorage?.key?.(index) ?? null;
 
 export const setCustomStorage = (storage: CustomStorage) => {
   customStorage = storage;

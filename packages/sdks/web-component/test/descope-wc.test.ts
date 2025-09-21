@@ -42,6 +42,7 @@ import * as helpers from '../src/lib/helpers/helpers';
 // eslint-disable-next-line import/no-namespace
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
+import { resetCustomStorage } from '../src/lib/helpers/storage';
 import BaseDescopeWc from '../src/lib/descope-wc/BaseDescopeWc';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
@@ -189,6 +190,12 @@ describe('web-component', () => {
     };
     jest.useFakeTimers();
 
+    // Mock Math.random for consistent abTestingKey
+    jest.spyOn(Math, 'random').mockReturnValue(0.215);
+
+    // Update defaultOptionsValues with mocked abTestingKey
+    defaultOptionsValues.abTestingKey = getABTestingKey();
+
     globalThis.DescopeUI = {};
 
     fetchMock.mockImplementation((url: string) => {
@@ -234,6 +241,9 @@ describe('web-component', () => {
     window.location.search = '';
     themeContent = {};
     pageContent = '';
+    localStorage.removeItem('dls_ab_testing_id');
+    localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+    resetCustomStorage();
   });
 
   describe('customStorage', () => {
@@ -4437,7 +4447,7 @@ describe('web-component', () => {
                 screenId: 'met',
               },
               operator: 'greater-than',
-              predicate: abTestingKey - 1,
+              predicate: 21,
               unmet: {
                 interactionId: 'ELSE',
                 screenId: 'unmet',

@@ -1,6 +1,8 @@
 import { RequestConfig } from '@descope/core-js-sdk';
 import {
   getLocalStorage,
+  getLocalStorageKey,
+  getLocalStorageLength,
   isLocalStorage,
   removeLocalStorage,
   setLocalStorage,
@@ -138,8 +140,8 @@ const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
     if (!isLocalStorage) {
       return;
     }
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+    for (let i = 0; i < getLocalStorageLength(); i++) {
+      const key = getLocalStorageKey(i);
 
       if (key && key.startsWith(prefix)) {
         const itemStr = getLocalStorage(key);

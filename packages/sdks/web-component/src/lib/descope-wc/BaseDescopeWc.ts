@@ -25,6 +25,7 @@ import {
   extractNestedAttribute,
   transformFlowInputFormData,
 } from '../helpers/flowInputs';
+import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
 import { formMountMixin } from '../mixins';
 import {
@@ -286,6 +287,7 @@ class BaseDescopeWc extends BaseClass {
       throw new Error('Custom storage must have a removeItem method');
     }
     this.#customStorage = storage;
+    setCustomStorage(storage);
   }
 
   #validateAttrs() {
