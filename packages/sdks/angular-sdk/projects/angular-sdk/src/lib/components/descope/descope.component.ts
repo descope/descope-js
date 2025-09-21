@@ -11,7 +11,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import DescopeWebComponent from '@descope/web-component';
-import DescopeWc, { ILogger } from '@descope/web-component';
+import DescopeWc, { ILogger, type CustomStorage } from '@descope/web-component';
 import { DescopeAuthService } from '../../services/descope-auth.service';
 import { from } from 'rxjs';
 import { baseHeaders } from '../../utils/constants';
@@ -82,11 +82,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   baseStaticUrl?: string;
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
-  customStorage?: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
+  customStorage?: CustomStorage;
   @Input() flowId!: string;
 
   @Input() locale: string;

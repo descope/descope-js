@@ -7,6 +7,7 @@ import UserManagementWidget from '@descope/user-management-widget';
 import UserProfileWidget from '@descope/user-profile-widget';
 import type {
   AutoFocusOptions,
+  CustomStorage,
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
@@ -109,11 +110,7 @@ export interface IContext {
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
   refreshCookieName?: string;
-  customStorage?: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
+  customStorage?: CustomStorage;
   claims?: JWTResponse['claims'];
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;

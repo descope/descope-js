@@ -1,5 +1,6 @@
 import { ILogger } from '@descope/web-component';
 import { CookieConfig } from '@descope/web-js-sdk';
+import type { CustomStorage } from '@descope/web-component';
 export class DescopeAuthConfig {
   projectId = '';
   baseUrl?: string;
@@ -14,11 +15,7 @@ export class DescopeAuthConfig {
   storeLastAuthenticatedUser?: boolean;
   pathsToIntercept?: string[];
   // Custom storage configuration for tokens and user data
-  customStorage?: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
+  customStorage?: CustomStorage;
 }
 
 export type { ILogger };

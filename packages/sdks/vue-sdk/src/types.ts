@@ -1,4 +1,5 @@
 import createSdk, { CookieConfig } from '@descope/web-js-sdk';
+import type { CustomStorage } from '@descope/web-component';
 import type { Ref } from 'vue';
 
 export type Options = {
@@ -14,11 +15,7 @@ export type Options = {
   // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
   // Custom storage configuration for tokens and user data
-  customStorage?: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
+  customStorage?: CustomStorage;
 };
 
 export type Sdk = ReturnType<typeof createSdk>;

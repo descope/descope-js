@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
 import { Claims } from '@descope/core-js-sdk';
+import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
@@ -42,11 +43,7 @@ interface IAuthProviderProps {
   // Function to get external token, for seamless migration from external system
   getExternalToken?: () => Promise<string>;
   // Custom storage configuration for tokens and user data
-  customStorage?: {
-    getItem: (key: string) => string | null;
-    setItem: (key: string, value: string) => void;
-    removeItem: (key: string) => void;
-  };
+  customStorage?: CustomStorage;
   children?: React.ReactNode;
 }
 
