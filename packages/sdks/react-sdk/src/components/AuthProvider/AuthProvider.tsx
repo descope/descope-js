@@ -42,7 +42,7 @@ interface IAuthProviderProps {
   refreshCookieName?: string;
   // Function to get external token, for seamless migration from external system
   getExternalToken?: () => Promise<string>;
-  // Custom storage configuration for tokens and user data
+  // Custom storage object for authentication related data
   customStorage?: CustomStorage;
   children?: React.ReactNode;
 }
