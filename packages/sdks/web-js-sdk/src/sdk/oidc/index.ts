@@ -12,6 +12,11 @@ import {
   OIDC_CLIENT_TS_JSDELIVR_CDN_URL,
 } from '../../constants';
 import { getIdToken } from '../../enhancers/withPersistTokens/helpers';
+import {
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '../../enhancers/helpers';
 import { CoreSdk, OidcConfig, OidcConfigOptions } from '../../types';
 import { hasOidcParamsInUrl, removeOidcParamFromUrl } from './helpers';
 
@@ -96,7 +101,7 @@ function oidcSignInResToStorage(
 const getUserFromStorage = (
   stateUserKey: string,
 ): SignInResponseStorage | null => {
-  const user = window.localStorage.getItem(stateUserKey);
+  const user = getLocalStorage(stateUserKey);
   return user ? JSON.parse(user) : null;
 };
 
@@ -203,10 +208,7 @@ const createOidc = (
       new Response(JSON.stringify(res)),
     );
 
-    window.localStorage.setItem(
-      stateUserKey,
-      JSON.stringify(oidcSignInResToStorage(res)),
-    );
+    setLocalStorage(stateUserKey, JSON.stringify(oidcSignInResToStorage(res)));
     // remove the code from the URL
     removeOidcParamFromUrl();
 
@@ -240,7 +242,7 @@ const createOidc = (
 
     const res = await client.createSignoutRequest(arg);
     const { url } = res;
-    window.localStorage.removeItem(stateUserKey);
+    removeLocalStorage(stateUserKey);
     if (!disableNavigation) {
       window.location.replace(url);
     }

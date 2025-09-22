@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createSdk } from '@descope/web-js-sdk';
 import { fireEvent, render, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React from 'react';
 // eslint-disable-next-line import/no-named-default
 import { default as DescopeWC } from '@descope/web-component';
@@ -44,12 +45,14 @@ const renderWithProvider = (
   projectId: string = 'project1',
   baseUrl?: string,
   refreshCookieName?: string,
+  customStorage?: any,
 ) =>
   render(
     <AuthProvider
       projectId={projectId}
       baseUrl={baseUrl}
       refreshCookieName={refreshCookieName}
+      customStorage={customStorage}
     >
       {ui}
     </AuthProvider>,
@@ -302,6 +305,104 @@ describe('Descope', () => {
         'store-last-authenticated-user',
         'true',
       );
+    });
+  });
+
+  describe('customStorage', () => {
+    const mockCustomStorage = {
+      getItem: jest.fn((key: string) => `mocked_${key}`),
+      setItem: jest.fn((key: string, value: string) => {}),
+      removeItem: jest.fn((key: string) => {}),
+    };
+
+    it('should pass customStorage from AuthProvider to web-component', async () => {
+      renderWithProvider(
+        <Descope flowId="flow1" />,
+        'proj1',
+        'url1',
+        undefined,
+        mockCustomStorage,
+      );
+
+      await waitFor(() => {
+        expect(document.querySelector('descope-wc')).toBeInTheDocument();
+      });
+
+      const wc = document.querySelector('descope-wc') as any;
+      expect(wc.customStorage).toBe(mockCustomStorage);
+    });
+
+    it('should handle customStorage with async methods', async () => {
+      const asyncCustomStorage = {
+        getItem: jest.fn(async (key: string) =>
+          Promise.resolve(`async_${key}`),
+        ),
+        setItem: jest.fn(async (key: string, value: string) =>
+          Promise.resolve(),
+        ),
+        removeItem: jest.fn(async (key: string) => Promise.resolve()),
+      };
+
+      renderWithProvider(
+        <Descope flowId="flow1" />,
+        'proj1',
+        'url1',
+        undefined,
+        asyncCustomStorage,
+      );
+
+      await waitFor(() => {
+        expect(document.querySelector('descope-wc')).toBeInTheDocument();
+      });
+
+      const wc = document.querySelector('descope-wc') as any;
+      expect(wc.customStorage).toBe(asyncCustomStorage);
+    });
+
+    it('should work without customStorage in AuthProvider', async () => {
+      renderWithProvider(<Descope flowId="flow1" />, 'proj1', 'url1');
+
+      await waitFor(() => {
+        expect(document.querySelector('descope-wc')).toBeInTheDocument();
+      });
+
+      const wc = document.querySelector('descope-wc') as any;
+      expect(wc.customStorage).toBeUndefined();
+    });
+
+    it('should use customStorage from AuthProvider', async () => {
+      const { rerender } = renderWithProvider(
+        <Descope flowId="flow1" />,
+        'proj1',
+        'url1',
+        undefined,
+        mockCustomStorage,
+      );
+
+      await waitFor(() => {
+        expect(document.querySelector('descope-wc')).toBeInTheDocument();
+      });
+
+      const newCustomStorage = {
+        getItem: jest.fn((key: string) => `new_${key}`),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+      };
+
+      rerender(
+        <AuthProvider
+          projectId="proj1"
+          baseUrl="url1"
+          customStorage={newCustomStorage}
+        >
+          <Descope flowId="flow1" />
+        </AuthProvider>,
+      );
+
+      await waitFor(() => {
+        const wc = document.querySelector('descope-wc') as any;
+        expect(wc.customStorage).toBe(newCustomStorage);
+      });
     });
   });
 });

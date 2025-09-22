@@ -13,6 +13,11 @@ import {
   VISITOR_SESSION_ID_PARAM,
 } from './constants';
 import { FingerprintObject } from './types';
+import {
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '../helpers';
 
 const createFingerprintObject = (
   sessionId: string,
@@ -43,12 +48,12 @@ const setFPToStorage = (value: FingerprintObject) => {
     value,
     expiry: now.getTime() + STORAGE_TTL_MS,
   };
-  localStorage.setItem(FP_STORAGE_KEY, JSON.stringify(item));
+  setLocalStorage(FP_STORAGE_KEY, JSON.stringify(item));
 };
 
 // Get Fingerprint from storage, will return null if not exists, or if expired
 const getFPFromStorage = (returnExpired = false): FingerprintObject => {
-  const itemStr = localStorage.getItem(FP_STORAGE_KEY);
+  const itemStr = getLocalStorage(FP_STORAGE_KEY);
   // if the item doesn't exist, return null
   if (!itemStr) {
     return null;
@@ -124,5 +129,5 @@ export const getFingerprintData = (): FingerprintObject | null => {
 
 /** Clear Fingerprint data from storage */
 export const clearFingerprintData = () => {
-  localStorage.removeItem(FP_STORAGE_KEY);
+  removeLocalStorage(FP_STORAGE_KEY);
 };
