@@ -90,7 +90,8 @@ export const initWidgetRootMixin = createSingletonMixin(
         // so we won't show the apps-list empty state until the data is loaded
         this.#renderTemplate(template);
 
-        this.onWidgetRootReady();
+        await this.onWidgetRootReady();
+        this.dispatchEvent(new CustomEvent('ready'));
       }
     },
 );

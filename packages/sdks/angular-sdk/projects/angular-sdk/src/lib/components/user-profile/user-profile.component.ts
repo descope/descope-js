@@ -5,7 +5,8 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output
+  Output,
+  AfterViewInit
 } from '@angular/core';
 import DescopeUserProfileWidget from '@descope/user-profile-widget';
 import { ILogger } from '@descope/web-component';
@@ -17,7 +18,7 @@ import { DescopeAuthService } from '../../services/descope-auth.service';
   standalone: true,
   template: ''
 })
-export class UserProfileComponent implements OnInit, OnChanges {
+export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -30,6 +31,8 @@ export class UserProfileComponent implements OnInit, OnChanges {
   @Input() styleId: string;
 
   @Output() logout: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
+
+  @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
   private readonly webComponent = new DescopeUserProfileWidget();
 
@@ -51,6 +54,10 @@ export class UserProfileComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.setupWebComponent();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupEventListeners();
   }
 
   private setupWebComponent() {
@@ -78,12 +85,19 @@ export class UserProfileComponent implements OnInit, OnChanges {
     if (this.logger) {
       (this.webComponent as any).logger = this.logger;
     }
+  }
 
+  private setupEventListeners(): void {
     this.webComponent.addEventListener('logout', (e: Event) => {
       this.logout?.emit(e as CustomEvent);
       this.descopeAuthService.setSession('');
       this.descopeAuthService.setIsAuthenticated(false);
       this.descopeAuthService.setUser(null);
     });
+    if (this.ready) {
+      this.webComponent.addEventListener('ready', () => {
+        this.ready?.emit();
+      });
+    }
   }
 }

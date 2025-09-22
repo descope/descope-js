@@ -37,4 +37,20 @@ describe('UserProfile.vue', () => {
     expect(descopeWc.attributes('widget-id')).toBe('widget1');
     expect(descopeWc.attributes('debug')).toBe('true');
   });
+
+  it('emits ready event when web component dispatches ready', () => {
+    const wrapper = mount(UserProfile, {
+      props: { widgetId: 'widget1' },
+    });
+
+    const descopeWc = wrapper.find('descope-user-profile-widget');
+    expect(descopeWc.exists()).toBe(true);
+
+    // Dispatch ready event on the web component
+    descopeWc.element.dispatchEvent(new CustomEvent('ready'));
+
+    // Check that the component emits the ready event
+    expect(wrapper.emitted('ready')).toBeTruthy();
+    expect(wrapper.emitted('ready')).toHaveLength(1);
+  });
 });

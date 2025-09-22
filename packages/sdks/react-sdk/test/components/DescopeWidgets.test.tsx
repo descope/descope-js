@@ -232,4 +232,147 @@ describe('Descope Widgets', () => {
     expect(widget).toHaveAttribute('widget-id', 'widget1');
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
   });
+
+  it('should call onReady callback when ready event is dispatched - UserManagement', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <UserManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-management-widget')!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onReady callback when ready event is dispatched - RoleManagement', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <RoleManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-role-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-role-management-widget')!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onReady callback when ready event is dispatched - AccessKeyManagement', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <AccessKeyManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-access-key-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector(
+      'descope-access-key-management-widget',
+    )!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onReady callback when ready event is dispatched - AuditManagement', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <AuditManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onReady={onReadyMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-audit-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-audit-management-widget')!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onReady callback when ready event is dispatched - TenantProfile', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <TenantProfile
+        widgetId="widget1"
+        tenant="tenant1"
+        onReady={onReadyMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-tenant-profile-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-tenant-profile-widget')!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onReady callback when ready event is dispatched - UserProfile', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <UserProfile widgetId="widget1" onReady={onReadyMock} />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-profile-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-profile-widget')!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onReady callback when ready event is dispatched - ApplicationsPortal', async () => {
+    const onReadyMock = jest.fn();
+    renderWithProvider(
+      <ApplicationsPortal widgetId="widget1" onReady={onReadyMock} />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-applications-portal-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector(
+      'descope-applications-portal-widget',
+    )!;
+    widget.dispatchEvent(new CustomEvent('ready'));
+    expect(onReadyMock).toHaveBeenCalledTimes(1);
+  });
 });

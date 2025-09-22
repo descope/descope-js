@@ -5,7 +5,8 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output
+  Output,
+  AfterViewInit
 } from '@angular/core';
 import DescopeApplicationsPortalWidget from '@descope/applications-portal-widget';
 import { ILogger } from '@descope/web-component';
@@ -16,7 +17,9 @@ import { DescopeAuthConfig } from '../../types/types';
   standalone: true,
   template: ''
 })
-export class ApplicationsPortalComponent implements OnInit, OnChanges {
+export class ApplicationsPortalComponent
+  implements OnInit, OnChanges, AfterViewInit
+{
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -29,6 +32,8 @@ export class ApplicationsPortalComponent implements OnInit, OnChanges {
   @Input() styleId: string;
 
   @Output() logout: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
+
+  @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
   private readonly webComponent = new DescopeApplicationsPortalWidget();
 
@@ -49,6 +54,10 @@ export class ApplicationsPortalComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.setupWebComponent();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupEventListeners();
   }
 
   private setupWebComponent() {
@@ -76,10 +85,17 @@ export class ApplicationsPortalComponent implements OnInit, OnChanges {
     if (this.styleId) {
       this.webComponent.setAttribute('style-id', this.styleId);
     }
+  }
 
+  private setupEventListeners(): void {
     if (this.logout) {
       this.webComponent.addEventListener('logout', (e: Event) => {
         this.logout?.emit(e as CustomEvent);
+      });
+    }
+    if (this.ready) {
+      this.webComponent.addEventListener('ready', () => {
+        this.ready?.emit();
       });
     }
   }
