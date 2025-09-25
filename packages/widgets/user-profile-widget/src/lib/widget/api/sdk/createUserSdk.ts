@@ -26,7 +26,7 @@ export const createUserSdk = ({
       return user.devices();
     }
     const res = await httpClient.post(apiPaths.user.devices, {
-      loginIds: [userId],
+      identifiers: [userId],
     });
 
     await withErrorHandler(res);
