@@ -10112,8 +10112,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.2.6:
-    resolution: {integrity: sha512-/2GogDQlohXPZe6D6NOgQvXLPSYBqIWMnZ8zzOhn09REE4eyAzb+Hed3jhoM9OkuaJ8P6ZGTTVWQKAi8ieIzfQ==}
+  dompurify@3.2.7:
+    resolution: {integrity: sha512-WhL/YuveyGXJaerVlMYGWhvQswa7myDG17P7Vu65EWC05o8vfeNbvNf4d/BOvH99+ZW+LlQsc1GDKMa1vNK6dw==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -17892,13 +17892,13 @@ snapshots:
       '@descope-ui/descope-image': 0.0.11
       '@descope-ui/theme-globals': 0.0.20
       '@vaadin/icon': 24.3.4
-      dompurify: 3.2.6
+      dompurify: 3.2.7
 
   '@descope-ui/descope-image@0.0.11':
     dependencies:
       '@descope-ui/common': 0.1.0
       '@descope-ui/theme-globals': 0.0.20
-      dompurify: 3.2.6
+      dompurify: 3.2.7
 
   '@descope-ui/descope-link@0.1.0':
     dependencies:
@@ -19788,6 +19788,21 @@ snapshots:
       - typescript
       - verdaccio
 
+  '@nrwl/js@19.8.4(@babel/traverse@7.28.4)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)':
+    dependencies:
+      '@nx/js': 19.8.4(@babel/traverse@7.28.4)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
+    transitivePeerDependencies:
+      - '@babel/traverse'
+      - '@swc-node/register'
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
+      - debug
+      - nx
+      - supports-color
+      - typescript
+      - verdaccio
+
   '@nrwl/js@19.8.4(@babel/traverse@7.28.4)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
     dependencies:
       '@nx/js': 19.8.4(@babel/traverse@7.28.4)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
@@ -19978,7 +19993,7 @@ snapshots:
       '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@babel/runtime': 7.25.6
-      '@nrwl/js': 19.8.4(@babel/traverse@7.28.4)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nrwl/js': 19.8.4(@babel/traverse@7.28.4)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       '@nx/workspace': 19.8.4(@swc/core@1.7.1(@swc/helpers@0.5.15))
       babel-plugin-const-enum: 1.2.0(@babel/core@7.26.0)
@@ -24950,7 +24965,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.2.6:
+  dompurify@3.2.7:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 

@@ -8,7 +8,7 @@ import del from 'rollup-plugin-delete';
 import dotenv from 'rollup-plugin-dotenv';
 import autoExternal from 'rollup-plugin-auto-external';
 
-import packageJson from './package.json' with { type: 'json' };
+import packageJson from './package.json' assert { type: 'json' };
 
 export default {
   preserveSymlinks: true,

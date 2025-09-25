@@ -6,7 +6,7 @@ import define from 'rollup-plugin-define';
 import del from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
 
-import packageJson from './package.json' with { type: 'json' };
+import packageJson from './package.json' assert { type: 'json' };
 
 export default [
   {

@@ -8,7 +8,7 @@ import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 import noEmit from 'rollup-plugin-no-emit';
 
-import packageJson from './package.json' with { type: 'json' };
+import packageJson from './package.json' assert { type: 'json' };
 
 const input = [
   './src/index.ts',
