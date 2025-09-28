@@ -23,14 +23,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          fetch-depth: 0
-          fetch-tags: true
+          fetch-depth: 0 # full history so previous tags are reachable
+          fetch-tags: true # ensure all tags are fetched
           # persist-credentials: false
           token: ${{ steps.get_token.outputs.token }}
           ref: ${{ github.ref }}
+      - name: Ensure all tags (redundant safety)
+        run: |
+          git fetch --tags --force --prune
+          echo "Fetched tags: $(git tag | wc -l)"
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+      - name: Debug tag base selection
+        run: |
+          echo "Last 10 tags:"; git tag --sort=creatordate | tail -n 10
+          BASE=$(sh ./tools/scripts/latestTag.sh)
+          echo "latestTag.sh returned: $BASE"
+          if git rev-parse "$BASE" >/dev/null 2>&1; then
+            echo "Base ref is present locally";
+          else
+            echo "WARNING: Base ref $BASE not present locally";
+          fi
       - name: Use Latest Corepack
         run: |
           echo "Before: corepack version => $(corepack --version || echo 'not installed')"
@@ -55,6 +69,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_REGISTRY }}
       - name: Push versions, changelog and tags
-        run: git push --atomic origin main $(git tag -l)
+        run: git push --atomic origin ${GITHUB_REF_NAME} $(git tag -l)
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
