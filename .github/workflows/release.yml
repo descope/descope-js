@@ -60,6 +60,18 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: List sdk-helpers tags & reachability
+        run: |
+          echo "All sdk-helpers tags (alphabetical):"; git tag -l 'sdk-helpers-*' | sort || true
+          echo "Latest 5 by create date:"; git tag --sort=creatordate -l 'sdk-helpers-*' | tail -n 5 || true
+          echo "Reachability (is tag commit ancestor of HEAD?):"; \
+            for t in $(git tag -l 'sdk-helpers-*'); do \
+              if git merge-base --is-ancestor "$t" HEAD; then echo "YES  $t"; else echo "NO   $t"; fi; \
+            done
+          echo "Tag objects with commits:"; \
+            for t in $(git tag -l 'sdk-helpers-*' | tail -n 10); do \
+              printf "%s -> %s\n" "$t" "$(git rev-list -n1 $t)"; \
+            done
       - name: Build
         run: npm run version:ci
         env:
