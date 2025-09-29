@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.25](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.24...nextjs-sdk-0.14.25) (2025-09-29)
+
+
+### Bug Fixes
+
+* add custom cookie name for next functions ([#1228](https://github.com/descope/descope-js/issues/1228)) RELEASE ([160f9e9](https://github.com/descope/descope-js/commit/160f9e91e30fc68f698bb22cfa2e8684cb402801))
+
 ## [0.14.24](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.23...nextjs-sdk-0.14.24) (2025-09-29)
 
 ### Dependency Updates
