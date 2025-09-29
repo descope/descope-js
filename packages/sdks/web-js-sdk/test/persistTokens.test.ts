@@ -257,7 +257,7 @@ describe('persistTokens', () => {
     });
 
     it('should set cookie with custom domain when configured', async () => {
-      window.location = { hostname: authInfo.cookieDomain } as any;
+      window.location = { hostname: 'app.custom.example.com' } as any;
 
       const mockFetch = jest
         .fn()
