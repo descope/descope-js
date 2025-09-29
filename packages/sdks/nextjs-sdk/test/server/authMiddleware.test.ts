@@ -263,4 +263,34 @@ describe('authMiddleware', () => {
 			search: `redirect=${encodeURIComponent('/another-path')}`
 		});
 	});
+
+	it('uses custom sessionCookieName when provided', async () => {
+		const authInfo = {
+			jwt: 'validJwt',
+			token: { iss: 'project-1', sub: 'user-123' }
+		};
+		mockValidateJwt.mockImplementation(() => authInfo);
+
+		const customCookieName = 'CUSTOM_SESSION';
+		const middleware = authMiddleware({
+			sessionCookieName: customCookieName
+		});
+
+		const mockReq = createMockNextRequest({
+			pathname: '/private',
+			cookies: { [customCookieName]: 'validJwt' }
+		});
+
+		await middleware(mockReq);
+
+		// Expect no redirect and that the session header is set
+		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		expect(NextResponse.next).toHaveBeenCalled();
+
+		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
+			.request.headers;
+		expect(headersArg.get('x-descope-session')).toEqual(
+			Buffer.from(JSON.stringify(authInfo)).toString('base64')
+		);
+	});
 });
