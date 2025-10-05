@@ -66,6 +66,7 @@ import {
   StepState,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+import { isIphoneSafari } from './helpers';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -849,10 +850,10 @@ class DescopeWc extends BaseDescopeWc {
       }
 
       this.loggerWrapper.debug(`Redirect is popup ${redirectIsPopup}`);
-      if (redirectIsPopup) {
+      if (redirectIsPopup && !isIphoneSafari()) {
         // this width is below the breakpoint of most providers
         this.loggerWrapper.debug('Opening redirect in popup');
-        const popup = openCenteredPopup(redirectTo, '?', 598, 700);
+        const popup = openCenteredPopup(redirectTo, '', 598, 700);
 
         this.loggerWrapper.debug('Creating broadcast channel');
         const channel = new BroadcastChannel(executionId);
