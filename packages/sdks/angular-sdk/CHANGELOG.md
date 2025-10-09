@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.0](https://github.com/descope/descope-js/compare/angular-sdk-0.20.5...angular-sdk-0.21.0) (2025-09-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.14`
+* `audit-management-widget` updated to version `0.5.14`
+* `role-management-widget` updated to version `0.5.6`
+* `user-management-widget` updated to version `0.9.14`
+* `user-profile-widget` updated to version `0.6.22`
+* `tenant-profile-widget` updated to version `0.2.19`
+* `applications-portal-widget` updated to version `0.4.14`
+* `web-component` updated to version `3.47.9`
+* `web-js-sdk` updated to version `1.37.0`
+
+### Features
+
+* add custom cookie domain ([#1223](https://github.com/descope/descope-js/issues/1223)) RELEASE ([a3fd659](https://github.com/descope/descope-js/commit/a3fd6595c71ada954cce785962d814dde5cc4450))
+
 ## [0.20.5](https://github.com/descope/descope-js/compare/angular-sdk-0.20.4...angular-sdk-0.20.5) (2025-09-28)
 
 ### Dependency Updates

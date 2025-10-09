@@ -34,15 +34,25 @@ type MiddlewareOptions = {
 	// The log level to use for the middleware
 	// Defaults to 'info'
 	logLevel?: LogLevel;
+
+	// The name of the session cookie to look for the JWT
+	// Defaults to 'DS'
+	// Note: The middleware will also look for the JWT in the Authorization header
+	sessionCookieName?: string;
 };
 
-const getSessionJwt = (req: NextRequest): string | undefined => {
+const getSessionJwt = (
+	req: NextRequest,
+	options: MiddlewareOptions
+): string | undefined => {
 	let jwt = req.headers?.get('Authorization')?.split(' ')[1];
 	if (jwt) {
 		return jwt;
 	}
 
-	jwt = req.cookies?.get(descopeSdk.SessionTokenCookieName)?.value;
+	jwt = req.cookies?.get(
+		options?.sessionCookieName || descopeSdk.SessionTokenCookieName
+	)?.value;
 	if (jwt) {
 		return jwt;
 	}
@@ -115,7 +125,7 @@ const createAuthMiddleware =
 		setLogger(options.logLevel);
 		logger.debug('Auth middleware starts');
 
-		const jwt = getSessionJwt(req);
+		const jwt = getSessionJwt(req, options);
 
 		// check if the user is authenticated
 		let session: AuthenticationInfo | undefined;

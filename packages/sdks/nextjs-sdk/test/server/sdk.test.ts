@@ -6,8 +6,7 @@ jest.mock('@descope/node-sdk', () =>
 	jest.fn().mockImplementation((...args) => {
 		// we want to use the original implementation of descopeSdk
 		// but we need to mock it to ensure it is called with the correct parameters
-		const mockOriginalDescopeSdk =
-			jest.requireActual('@descope/node-sdk').default;
+		const mockOriginalDescopeSdk = jest.requireActual('@descope/node-sdk');
 		return mockOriginalDescopeSdk(...args);
 	})
 );
