@@ -40,9 +40,8 @@ const commonPlugins = (outputDir) => [
 		})
 	}),
 	autoExternal()
-	// terser()
-];
-
+		// terser()
+	];
 // Configurations for server, client and main entry
 const configurations = ['server', 'client', ''].flatMap((entry) => {
 	const inputPath = entry ? `src/${entry}/index.ts` : 'src/index.ts';
@@ -51,13 +50,16 @@ const configurations = ['server', 'client', ''].flatMap((entry) => {
 
 	const baseConf = {
 		input: inputPath,
-		external: ['react', ...nextSubPackages.map((alias) => `${alias}.js`)],
+		external: [
+			'react',
+			'react/jsx-runtime',
+			'@descope/react-sdk',
+			'@descope/web-component',
+			...nextSubPackages.flatMap((alias) => [alias, `${alias}.js`])
+		],
 		onwarn(warning, warn) {
-			if (
-				warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
-				warning.message.includes(`'use client'`)
-			) {
-				return;
+			if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && /use client/.test(warning.message)) {
+				return; // silence Next.js client directive noise
 			}
 			warn(warning);
 		}
@@ -93,6 +95,26 @@ export default [
 	{
 		input: 'src/index.ts',
 		output: [{ dir: './dist', format: 'esm' }],
+		external: [
+			'react',
+			'react/jsx-runtime',
+			'@descope/react-sdk',
+			'@descope/web-component',
+			...nextSubPackages.flatMap((alias) => [alias, `${alias}.js`])
+		],
+		onwarn(warning, warn) {
+			// Silence repeated 'use client' directive noise & externalized dependency notices
+			if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && /use client/.test(warning.message)) {
+				return;
+			}
+			if (
+				warning.code === 'UNRESOLVED_IMPORT' &&
+				['react', '@descope/react-sdk', 'next/'].some((p) => warning.source.startsWith(p))
+			) {
+				return; // already treated as external intentionally
+			}
+			warn(warning);
+		},
 		plugins: [
 			typescript({
 				tsconfig: './tsconfig.json',
