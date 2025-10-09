@@ -10,6 +10,11 @@ type SessionConfig = CreateSdkParams & {
 	// The log level to use for the middleware
 	// Defaults to 'info'
 	logLevel?: LogLevel;
+
+	// The name of the session cookie to look for the JWT
+	// Defaults to 'DS'
+	// Note: The middleware will also look for the JWT in the Authorization header
+	sessionCookieName?: string;
 };
 
 const extractSession = (
@@ -29,12 +34,12 @@ const extractSession = (
 };
 
 const getSessionFromCookie = async (
-	config?: CreateSdkParams
+	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
 	logger.debug('attempting to get session from cookie');
 	try {
 		const sessionCookie = (await cookies()).get(
-			descopeSdk.SessionTokenCookieName
+			config?.sessionCookieName || descopeSdk.SessionTokenCookieName
 		);
 		if (!sessionCookie?.value) {
 			logger.debug('Session cookie not found');

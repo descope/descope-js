@@ -29,6 +29,7 @@ const sdk = descopeSdk({
     - `sameSite` (default: `Strict`) – Controls the SameSite attribute of the session cookie.
     - `secure` (default: `true`) – If true, sets the cookie as Secure (sent only over HTTPS).
     - `cookieName` (default: `DS`) – The name of the session token cookie. Useful for avoiding conflicts when running multiple Descope projects on the same domain.
+    - `domain` (default: auto-detected) – The domain for the session token cookie. If not specified, uses the domain from Descope project settings or current domain.
   Notes:
     - This option is relevant only when `persistTokens` is true.
     - The session token cookie is set as a [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5) cookie. It will be sent only over HTTPS connections.
