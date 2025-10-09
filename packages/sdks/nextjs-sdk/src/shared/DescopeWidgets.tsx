@@ -1,33 +1,53 @@
 'use client';
 
-// eslint-disable-next-line
-import type * as _1 from '@descope/react-sdk/node_modules/@types/react';
+/* eslint-disable import/exports-last, prefer-arrow/prefer-arrow-functions */
 
-import { ComponentType } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
-import {
+import type {
 	UserManagement as UserManagementWC,
 	RoleManagement as RoleManagementWC,
 	AccessKeyManagement as AccessKeyManagementWC,
 	AuditManagement as AuditManagementWC,
-	UserProfile as UserProfileWc,
-	ApplicationsPortal as ApplicationsPortalWc
+	UserProfile as UserProfileWC,
+	ApplicationsPortal as ApplicationsPortalWC
 } from '@descope/react-sdk';
 
-// a helper function to dynamically load the components
-// This function prevents Next.js from trying to server-side render these components
-// Update the helper function to use generics for preserving component prop types
-const dynamicWidgetComponent = <P extends {}>(Component: ComponentType<P>) =>
-	dynamic<P>(() => Promise.resolve(Component), {
-		ssr: false // Disable server-side rendering for this component
-	});
+export type UserManagementProps = React.ComponentProps<typeof UserManagementWC>;
+export type RoleManagementProps = React.ComponentProps<typeof RoleManagementWC>;
+export type AccessKeyManagementProps = React.ComponentProps<
+	typeof AccessKeyManagementWC
+>;
+export type AuditManagementProps = React.ComponentProps<
+	typeof AuditManagementWC
+>;
+export type UserProfileProps = React.ComponentProps<typeof UserProfileWC>;
+export type ApplicationsPortalProps = React.ComponentProps<
+	typeof ApplicationsPortalWC
+>;
 
-// Use the helper function to create dynamically loaded components
-export const UserManagement = dynamicWidgetComponent(UserManagementWC);
-export const RoleManagement = dynamicWidgetComponent(RoleManagementWC);
-export const AccessKeyManagement = dynamicWidgetComponent(
-	AccessKeyManagementWC
-);
-export const AuditManagement = dynamicWidgetComponent(AuditManagementWC);
-export const UserProfile = dynamicWidgetComponent(UserProfileWc);
-export const ApplicationsPortal = dynamicWidgetComponent(ApplicationsPortalWc);
+function makeWidget<T extends Record<string, any>>(name: string) {
+	return dynamic<T>(
+		() =>
+			import('@descope/react-sdk').then((mod: any) => {
+				const Inner = mod[name] as React.ComponentType<any>;
+				const Wrapped = (props: T) => React.createElement(Inner, props);
+				(Wrapped as any).displayName = `Descope${name}`;
+				return { default: Wrapped };
+			}),
+		{ ssr: false }
+	);
+}
+
+export const UserManagement: React.ComponentType<UserManagementProps> =
+	makeWidget<UserManagementProps>('UserManagement');
+export const RoleManagement: React.ComponentType<RoleManagementProps> =
+	makeWidget<RoleManagementProps>('RoleManagement');
+export const AccessKeyManagement: React.ComponentType<AccessKeyManagementProps> =
+	makeWidget<AccessKeyManagementProps>('AccessKeyManagement');
+export const AuditManagement: React.ComponentType<AuditManagementProps> =
+	makeWidget<AuditManagementProps>('AuditManagement');
+export const UserProfile: React.ComponentType<UserProfileProps> =
+	makeWidget<UserProfileProps>('UserProfile');
+export const ApplicationsPortal: React.ComponentType<ApplicationsPortalProps> =
+	makeWidget<ApplicationsPortalProps>('ApplicationsPortal');
