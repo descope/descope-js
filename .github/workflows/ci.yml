@@ -1,4 +1,6 @@
 name: CI
+permissions:
+  contents: read
 on:
   pull_request:
   push:
@@ -8,8 +10,11 @@ env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 jobs:
   pr:
-    name: 👷 Build / Lint / Test
+    name: 👷 Build / Lint / Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['default', '18']
     container:
       # the container version should be the same as the version of the Playwright package
       image: mcr.microsoft.com/playwright:v1.47.0-jammy
@@ -29,11 +34,19 @@ jobs:
           corepack enable
           pnpm --version
 
-      - name: Setup Node.js
+      - name: Setup Node.js (default from package.json)
+        if: matrix.node-version == 'default'
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           node-version-file: package.json
-          cache: 'pnpm'
+          # cache: 'pnpm'
+
+      - name: Setup Node.js (v${{ matrix.node-version }})
+        if: matrix.node-version != 'default'
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          # cache: 'pnpm'
       # - name: Restore cached npm dependencies
       #   uses: actions/cache/restore@v4
       #   with:
@@ -91,5 +104,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
-          name: e2e-report
+          name: e2e-report-${{ matrix.node-version }}
           path: packages/**/playwright-report
