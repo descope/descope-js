@@ -388,6 +388,35 @@ test.describe('widget', () => {
     await expect(page.locator('text=User updated successfully')).toBeVisible();
   });
 
+  test('edit user with partial phone number', async ({ page }) => {
+    const openEditUserModalButton = page
+      .getByTestId('edit-user-trigger')
+      .first();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // select user
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      1,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await openEditUserModalButton.click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await page.evaluate(() => {
+      const phoneField = document.querySelector(
+        'descope-phone-field',
+      ) as HTMLInputElement;
+      if (phoneField) {
+        expect(phoneField.value).toEqual('+(972)5485454');
+      }
+    });
+  });
+
   test('delete users', async ({ page }) => {
     const deleteUserTrigger = page.getByTestId('delete-users-trigger').first();
     const deleteUserModalButton = page
