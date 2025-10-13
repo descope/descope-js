@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.21.1](https://github.com/descope/descope-js/compare/react-sdk-2.21.0...react-sdk-2.21.1) (2025-10-13)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.15`
 ## [2.21.0](https://github.com/descope/descope-js/compare/react-sdk-2.20.5...react-sdk-2.21.0) (2025-09-29)
 
 ### Dependency Updates
