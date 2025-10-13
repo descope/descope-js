@@ -34,7 +34,7 @@ const formatPhoneNumber = (phoneNumber: string) => {
     `(\\+?${parsedPhone?.countryCallingCode})(.*)`,
   );
 
-  return parsedPhone?.number.replace(splitCodeRegex, '$1-$2') || '';
+  return parsedPhone?.number.replace(splitCodeRegex, '$1-$2') || phoneNumber;
 };
 
 export const initEditUserModalMixin = createSingletonMixin(
