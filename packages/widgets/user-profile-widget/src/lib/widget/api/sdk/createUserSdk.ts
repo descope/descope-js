@@ -1,5 +1,5 @@
 import { apiPaths } from '../apiPaths';
-import { HttpClient, User } from '../types';
+import { HttpClient } from '../types';
 import { withErrorHandler } from './helpers';
 import { user } from './mocks';
 
