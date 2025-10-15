@@ -23,12 +23,18 @@ import { flatten, unflatten } from '../../../../helpers';
 const formatPhoneNumber = (phoneNumber: string) => {
   if (!phoneNumber) return phoneNumber;
 
-  const parsedPhone = parsePhone(phoneNumber);
+  const ensurePlusPrefix = phoneNumber.startsWith('+')
+    ? phoneNumber
+    : `+${phoneNumber}`;
+  const parsedPhone = parsePhone(ensurePlusPrefix);
+
+  if (!parsedPhone) return phoneNumber;
+
   const splitCodeRegex = new RegExp(
     `(\\+?${parsedPhone?.countryCallingCode})(.*)`,
   );
 
-  return parsedPhone.number.replace(splitCodeRegex, '$1-$2');
+  return parsedPhone?.number.replace(splitCodeRegex, '$1-$2') || phoneNumber;
 };
 
 export const initEditUserModalMixin = createSingletonMixin(

@@ -32,7 +32,7 @@ export const mockUsers = [
     userId: 'U2b2JrD8oh48LiA9XF23bryn7d74',
     name: '',
     email: 'email2@email2.com',
-    phone: '',
+    phone: '(972)5485454',
     verifiedEmail: true,
     verifiedPhone: false,
     roleNames: ['Tenant Admin', 'Role 1'],

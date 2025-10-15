@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.15](https://github.com/descope/descope-js/compare/user-management-widget-0.9.14...user-management-widget-0.9.15) (2025-10-13)
+
+
+### Bug Fixes
+
+* Safe phone number parsing for UserMgmt widget RELEASE ([#1232](https://github.com/descope/descope-js/issues/1232)) ([739c6ea](https://github.com/descope/descope-js/commit/739c6eae994d13066f6992de50c92423f661cf72))
+
 ## [0.9.14](https://github.com/descope/descope-js/compare/user-management-widget-0.9.13...user-management-widget-0.9.14) (2025-09-29)
 
 ### Dependency Updates
