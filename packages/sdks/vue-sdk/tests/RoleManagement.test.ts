@@ -38,4 +38,22 @@ describe('RoleManagement.vue', () => {
     expect(descopeWc.attributes('widget-id')).toBe('widget1');
     expect(descopeWc.attributes('debug')).toBe('true');
   });
+
+  it('emits ready event when widget dispatches ready event', async () => {
+    const wrapper = mount(RoleManagement, {
+      props: { tenant: 'test-tenant', widgetId: 'widget1' },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    const descopeWc = wrapper.find('descope-role-management-widget');
+    expect(descopeWc.exists()).toBe(true);
+
+    // Dispatch ready event on the web component
+    descopeWc.element.dispatchEvent(new CustomEvent('ready'));
+
+    // Check that the component emits the ready event
+    expect(wrapper.emitted('ready')).toBeTruthy();
+    expect(wrapper.emitted('ready')).toHaveLength(1);
+  });
 });

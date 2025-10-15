@@ -47,7 +47,8 @@ export const initWidgetRootMixin = createSingletonMixin(
           this.#initWidgetRoot(),
         ]);
 
-        this.onWidgetRootReady();
+        await this.onWidgetRootReady();
+        this.dispatchEvent(new CustomEvent('ready'));
       }
     },
 );

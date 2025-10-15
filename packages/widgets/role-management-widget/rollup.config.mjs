@@ -8,7 +8,7 @@ import dts from 'rollup-plugin-dts';
 import svg from 'rollup-plugin-svg-import';
 import { terser } from 'rollup-plugin-terser';
 
-import packageJson from './package.json' with { type: 'json' };
+import packageJson from './package.json' assert { type: 'json' };
 
 const input = './src/lib/index.ts';
 const external = (id) =>

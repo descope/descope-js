@@ -91,11 +91,14 @@ export const persistTokens = (
       // 2. sessionTokenViaCookie is an object without the property
       const cookieSameSite = sessionTokenViaCookie['sameSite'] || 'Strict';
       const cookieSecure = sessionTokenViaCookie['secure'] ?? true;
+      const cookieDomain =
+        sessionTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getSessionCookieName(sessionTokenViaCookie);
       setJwtTokenCookie(cookieName, sessionJwt, {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,
+        cookieDomain,
       });
     } else {
       setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);

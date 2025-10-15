@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.6](https://github.com/descope/descope-js/compare/role-management-widget-0.5.5...role-management-widget-0.5.6) (2025-09-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.0`
+## [0.5.5](https://github.com/descope/descope-js/compare/role-management-widget-0.5.4...role-management-widget-0.5.5) (2025-09-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.36.2`
+* `sdk-helpers` updated to version `0.4.1`
+* `sdk-mixins` updated to version `0.13.13`
+* `sdk-component-drivers` updated to version `0.6.2`
 ## [0.5.4](https://github.com/descope/descope-js/compare/role-management-widget-0.5.3...role-management-widget-0.5.4) (2025-09-14)
 
 ### Dependency Updates

@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.37.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.36.2...web-js-sdk-1.37.0) (2025-09-29)
+
+
+### Features
+
+* add custom cookie domain ([#1223](https://github.com/descope/descope-js/issues/1223)) RELEASE ([a3fd659](https://github.com/descope/descope-js/commit/a3fd6595c71ada954cce785962d814dde5cc4450))
+
+## [1.36.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.36.1...web-js-sdk-1.36.2) (2025-09-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.50.1`
 ## [1.36.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.36.0...web-js-sdk-1.36.1) (2025-09-14)
 
 

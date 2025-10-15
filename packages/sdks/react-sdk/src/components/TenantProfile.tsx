@@ -1,4 +1,10 @@
-import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from 'react';
 import Context from '../hooks/Context';
 import { TenantProfileProps } from '../types';
 import withPropsMapping from './withPropsMapping';
@@ -16,13 +22,22 @@ const TenantProfileWC = lazy(async () => {
 });
 
 const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
-  ({ logger, theme, debug, widgetId, styleId, tenant }, ref) => {
+  ({ logger, theme, debug, widgetId, styleId, tenant, onReady }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
 
     const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
+
+    useEffect(() => {
+      const ele = innerRef;
+      if (onReady) ele?.addEventListener('ready', onReady);
+
+      return () => {
+        if (onReady) ele?.removeEventListener('ready', onReady);
+      };
+    }, [innerRef, onReady]);
 
     return (
 	<Suspense fallback={null}>

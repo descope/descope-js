@@ -7,6 +7,7 @@ import UserManagementWidget from '@descope/user-management-widget';
 import UserProfileWidget from '@descope/user-profile-widget';
 import type {
   AutoFocusOptions,
+  CustomStorage,
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
@@ -38,6 +39,7 @@ type WidgetProps = {
   theme?: ThemeOptions;
   debug?: boolean;
   styleId?: string;
+  onReady?: CustomEventCb<{}>;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
@@ -109,6 +111,7 @@ export interface IContext {
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
   refreshCookieName?: string;
+  customStorage?: CustomStorage;
   claims?: JWTResponse['claims'];
   sdk?: Sdk;
   setUser: React.Dispatch<React.SetStateAction<User>>;

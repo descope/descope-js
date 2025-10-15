@@ -43,7 +43,8 @@ export const initWidgetRootMixin = createSingletonMixin(
           this.actions.getTenantRoles(),
         ]);
 
-        this.onWidgetRootReady();
+        await this.onWidgetRootReady();
+        this.dispatchEvent(new CustomEvent('ready'));
       }
     },
 );

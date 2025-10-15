@@ -1,4 +1,10 @@
-import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from 'react';
 import Context from '../hooks/Context';
 import { ApplicationsPortalProps } from '../types';
 import withPropsMapping from './withPropsMapping';
@@ -19,7 +25,7 @@ const ApplicationsPortalWC = lazy(async () => {
 const ApplicationsPortal = React.forwardRef<
   HTMLElement,
   ApplicationsPortalProps
->(({ logger, theme, debug, widgetId, styleId }, ref) => {
+>(({ logger, theme, debug, widgetId, styleId, onReady }, ref) => {
   const [innerRef, setInnerRef] = useState(null);
 
   useImperativeHandle(ref, () => innerRef);
@@ -27,15 +33,24 @@ const ApplicationsPortal = React.forwardRef<
   const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
     React.useContext(Context);
 
+  useEffect(() => {
+    const ele = innerRef;
+    if (onReady) ele?.addEventListener('ready', onReady);
+
+    return () => {
+      if (onReady) ele?.removeEventListener('ready', onReady);
+    };
+  }, [innerRef, onReady]);
+
   return (
 	<Suspense fallback={null}>
 		<ApplicationsPortalWC
+        ref={setInnerRef}
         projectId={projectId}
         widgetId={widgetId}
         baseUrl={baseUrl}
         baseStaticUrl={baseStaticUrl}
         baseCdnUrl={baseCdnUrl}
-        innerRef={setInnerRef}
         {...{
           // attributes
           'theme.attr': theme,

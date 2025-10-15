@@ -11,7 +11,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import DescopeWebComponent from '@descope/web-component';
-import DescopeWc, { ILogger } from '@descope/web-component';
+import DescopeWc, { ILogger, type CustomStorage } from '@descope/web-component';
 import { DescopeAuthService } from '../../services/descope-auth.service';
 import { from } from 'rxjs';
 import { baseHeaders } from '../../utils/constants';
@@ -44,6 +44,7 @@ import { DescopeAuthConfig } from '../../types/types';
       [attr.nonce]="nonceString"
       [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
       [attr.form]="formString"
+      [customStorage]="customStorage"
     >
       <ng-content></ng-content>
     </descope-wc>
@@ -81,6 +82,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   baseStaticUrl?: string;
   baseCdnUrl?: string;
   storeLastAuthenticatedUser?: boolean;
+  customStorage?: CustomStorage;
   @Input() flowId!: string;
 
   @Input() locale: string;
@@ -127,6 +129,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
     this.storeLastAuthenticatedUser = descopeConfig.storeLastAuthenticatedUser;
+    this.customStorage = descopeConfig.customStorage;
   }
 
   ngOnInit(): void {
