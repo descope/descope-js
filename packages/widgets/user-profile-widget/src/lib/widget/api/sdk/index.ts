@@ -1,6 +1,7 @@
 import '@descope/core-js-sdk';
 import createWebSdk from '@descope/web-js-sdk';
 import { createUserSdk } from './createUserSdk';
+import { createDeviceSdk } from './createDeviceSdk';
 
 declare const BUILD_VERSION: string;
 
@@ -25,6 +26,9 @@ export const createSdk = (
       logout: !mock
         ? webSdk.logout
         : <typeof webSdk.logout>(<unknown>(async () => {})),
+    },
+    device: {
+      ...createDeviceSdk({ httpClient: webSdk.httpClient, mock }),
     },
   };
 };

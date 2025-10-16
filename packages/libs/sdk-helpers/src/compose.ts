@@ -192,9 +192,44 @@ export function compose<
   fn14: (input: A13) => A14,
 ): (input: Input) => A14;
 
+export function compose<
+  Input,
+  A1,
+  A2,
+  A3,
+  A4,
+  A5,
+  A6,
+  A7,
+  A8,
+  A9,
+  A10,
+  A11,
+  A12,
+  A13,
+  A14,
+  A15,
+>(
+  fn1: (input: Input) => A1,
+  fn2: (input: A1) => A2,
+  fn3: (input: A2) => A3,
+  fn4: (input: A3) => A4,
+  fn5: (input: A4) => A5,
+  fn6: (input: A5) => A6,
+  fn7: (input: A6) => A7,
+  fn8: (input: A7) => A8,
+  fn9: (input: A8) => A9,
+  fn10: (input: A9) => A10,
+  fn11: (input: A10) => A11,
+  fn12: (input: A11) => A12,
+  fn13: (input: A12) => A13,
+  fn14: (input: A13) => A14,
+  fn15: (input: A14) => A15,
+): (input: Input) => A15;
+
 /**
  * Currently there is no way to create a compose function in Typescript without using overloading
- * This function currently support up to 10 wrappers
+ * This function currently support up to 15 wrappers
  * If needed you can add more by duplicating the type and add more parameters
  */
 
