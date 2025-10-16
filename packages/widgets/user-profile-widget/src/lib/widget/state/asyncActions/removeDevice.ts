@@ -6,7 +6,9 @@ import { buildAsyncReducer, withNotifications } from './helpers';
 const action = createAsyncThunk<any, { success: boolean }>(
   'users/removeDevice',
   (arg) => {
-    // Mock success/failure only; no real API call or state mutation here.
+    // Since we don't get a response for remove device action, we need to
+    // mock success/failure operation. No real API call or state mutation here,
+    // just a resolve/reject for triggering a notification.
     if (arg.success) return Promise.resolve();
     return Promise.reject(new Error('Failed to remove device'));
   },

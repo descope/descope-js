@@ -3,18 +3,20 @@ import { HttpClient } from '../types';
 import { withErrorHandler } from './helpers';
 import { user } from './mocks';
 
-export const createUserSdk = ({
+export const createDeviceSdk = ({
   httpClient,
   mock,
 }: {
   httpClient: HttpClient;
   mock: boolean;
 }) => {
-  const me = async () => {
+  const devices = async ({ userId }: { userId: string }) => {
     if (mock) {
-      return user.me();
+      return user.devices();
     }
-    const res = await httpClient.get(apiPaths.user.me);
+    const res = await httpClient.post(apiPaths.user.devices, {
+      identifiers: [userId],
+    });
 
     await withErrorHandler(res);
 
@@ -22,6 +24,6 @@ export const createUserSdk = ({
   };
 
   return {
-    me,
+    devices,
   };
 };
