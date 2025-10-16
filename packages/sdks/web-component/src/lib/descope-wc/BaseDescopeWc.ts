@@ -276,6 +276,10 @@ class BaseDescopeWc extends BaseClass {
     return this.#customStorage;
   }
 
+  get popupOrigin(): string | null {
+    return this.getAttribute('popup-origin');
+  }
+
   set customStorage(storage: CustomStorage | undefined) {
     if (storage && typeof storage.getItem !== 'function') {
       throw new Error('Custom storage must have a getItem method');
