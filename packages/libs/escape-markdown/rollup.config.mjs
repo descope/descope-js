@@ -4,7 +4,7 @@ import del from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
 import terser from '@rollup/plugin-terser';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 const plugins = [
   typescript({
