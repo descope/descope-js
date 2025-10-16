@@ -104,6 +104,28 @@ export const getAuthInfoFromResponse = async (
   return normalizeWebJWTResponseToJWTResponse(authInfo);
 };
 
+export const getUserAndLastAuthFromResponse = async (
+  res: Response,
+): Promise<{ userInfo: UserResponse | undefined; lastAuth: any }> => {
+  if (!res?.ok) {
+    return { userInfo: undefined, lastAuth: undefined };
+  }
+  const body = await res?.clone().json();
+  const authInfo: Partial<WebJWTResponse> =
+    normalizeWebJWTResponseToJWTResponse(
+      body?.authInfo || body || ({} as Partial<WebJWTResponse>),
+    );
+  const userInfo =
+    authInfo?.user ||
+    (authInfo?.hasOwnProperty('userId')
+      ? (authInfo as UserResponse)
+      : undefined);
+  return {
+    userInfo,
+    lastAuth: body.lastAuth,
+  };
+};
+
 /**
  * Extract user from fetch response
  * User my exist under "user" attribute (auth methods response)

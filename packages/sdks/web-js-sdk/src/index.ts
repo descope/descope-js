@@ -33,15 +33,6 @@ export {
   clearFingerprintData,
 } from './enhancers/withFingerprint/helpers';
 
-export {
-  setLastUserLoginId,
-  getLastUserLoginId,
-  removeLastUserLoginId,
-  setLastUserDisplayName,
-  getLastUserDisplayName,
-  removeLastUserDisplayName,
-} from './enhancers/withLastLoggedInUser/helpers';
-
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
 export type { OneTapConfig } from './sdk/fedcm';
