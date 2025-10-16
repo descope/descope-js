@@ -1,5 +1,4 @@
 import { createTemplate, isPlainObject, kebabCase } from '@descope/sdk-helpers';
-import { isPlain } from '@reduxjs/toolkit';
 
 type FlowConfig = {
   projectId: string;
