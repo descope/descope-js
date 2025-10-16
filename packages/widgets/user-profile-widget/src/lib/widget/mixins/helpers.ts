@@ -1,4 +1,5 @@
-import { createTemplate, kebabCase } from '@descope/sdk-helpers';
+import { createTemplate, isPlainObject, kebabCase } from '@descope/sdk-helpers';
+import { isPlain } from '@reduxjs/toolkit';
 
 type FlowConfig = {
   projectId: string;
@@ -8,7 +9,13 @@ type FlowConfig = {
   baseCdnUrl?: string;
   refreshCookieName?: string;
   theme?: string;
-  form?: string;
+  form?: Record<string, string>;
+};
+
+const stringifyValue = (value: unknown) => {
+  if (typeof value === 'string') return value;
+  if (isPlainObject(value)) return JSON.stringify(value);
+  return '';
 };
 
 export const createFlowTemplate = (
@@ -19,7 +26,7 @@ export const createFlowTemplate = (
   Object.entries(flowConfig).forEach(([key, value]) => {
     template.content
       .querySelector('descope-wc')
-      .setAttribute(kebabCase(key), value);
+      .setAttribute(kebabCase(key), stringifyValue(value));
   });
 
   return template;

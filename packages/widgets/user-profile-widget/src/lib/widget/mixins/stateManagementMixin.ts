@@ -5,12 +5,7 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import {
-  getMe,
-  listDevices,
-  logout,
-  removeDevice,
-} from '../state/asyncActions';
+import { getMe, listDevices, logout } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
 
@@ -28,13 +23,11 @@ export const stateManagementMixin = createSingletonMixin(
         extraReducers: (builder) => {
           getMe.reducer(builder);
           listDevices.reducer(builder);
-          removeDevice.reducer(builder);
           logout.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
           listDevices: listDevices.action,
-          removeDevice: removeDevice.action,
           logout: logout.action,
         },
       }),
