@@ -451,7 +451,7 @@ class DescopeWc extends BaseDescopeWc {
 
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();
-
+    this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
 
