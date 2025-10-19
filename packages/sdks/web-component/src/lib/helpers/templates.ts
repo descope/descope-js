@@ -156,7 +156,6 @@ export const setCssVars = (
   }
 
   Object.keys(cssVars).forEach((componentName) => {
-    debugger;
     if (!nextPageTemplate.querySelector(componentName)) {
       logger.debug(
         `Skipping css vars for component "${componentName}"`,
