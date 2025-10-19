@@ -6,4 +6,10 @@ export const initialState: State = {
     error: null,
     data: {},
   },
+  devices: {
+    loading: false,
+    error: null,
+    data: [],
+  },
+  notifications: [],
 };

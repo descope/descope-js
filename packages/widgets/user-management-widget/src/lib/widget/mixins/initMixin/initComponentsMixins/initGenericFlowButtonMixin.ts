@@ -104,6 +104,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
               userIds: getSelectedUsersUserIds(this.state),
               loginIds: getSelectedUsersAllIds(this.state),
             }),
+            tenant: this.tenantId,
           }),
         );
         this.#openModalIfNeeded(this.#modal, this.#modalCallback);

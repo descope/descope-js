@@ -44,3 +44,8 @@ export const debounce = (fn: Function, ms = 500) => {
     timeoutId = setTimeout(() => fn.apply(this, args), ms);
   };
 };
+
+export const isPlainObject = (obj: unknown) =>
+  obj !== null &&
+  typeof obj === 'object' &&
+  Object.getPrototypeOf(obj) === Object.prototype;
