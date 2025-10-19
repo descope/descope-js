@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.6.22...user-profile-widget-0.7.0) (2025-10-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.1`
+* `web-component` updated to version `3.47.10`
+* `sdk-helpers` updated to version `0.5.0`
+* `sdk-mixins` updated to version `0.13.14`
+* `sdk-component-drivers` updated to version `0.7.0`
+
+### Features
+
+* User Profile Widget Trusted Devices ([#1197](https://github.com/descope/descope-js/issues/1197)) ([c04c839](https://github.com/descope/descope-js/commit/c04c8391a4725c63e351e77161853f33ca339699))
+
 ## [0.6.22](https://github.com/descope/descope-js/compare/user-profile-widget-0.6.21...user-profile-widget-0.6.22) (2025-09-29)
 
 ### Dependency Updates

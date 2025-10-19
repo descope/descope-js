@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.16](https://github.com/descope/descope-js/compare/user-management-widget-0.9.15...user-management-widget-0.9.16) (2025-10-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.1`
+* `web-component` updated to version `3.47.10`
+* `sdk-helpers` updated to version `0.5.0`
+* `sdk-mixins` updated to version `0.13.14`
+* `sdk-component-drivers` updated to version `0.7.0`
+
+### Bug Fixes
+
+*  send tenant on gerneic button's flow ([#1233](https://github.com/descope/descope-js/issues/1233)) ([e375af2](https://github.com/descope/descope-js/commit/e375af25666f028e15fc103d8cb07f5620134d9a))
+
+## [0.9.15](https://github.com/descope/descope-js/compare/user-management-widget-0.9.14...user-management-widget-0.9.15) (2025-10-13)
+
+
+### Bug Fixes
+
+* Safe phone number parsing for UserMgmt widget RELEASE ([#1232](https://github.com/descope/descope-js/issues/1232)) ([739c6ea](https://github.com/descope/descope-js/commit/739c6eae994d13066f6992de50c92423f661cf72))
+
 ## [0.9.14](https://github.com/descope/descope-js/compare/user-management-widget-0.9.13...user-management-widget-0.9.14) (2025-09-29)
 
 ### Dependency Updates
