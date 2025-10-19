@@ -272,12 +272,13 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  get customStorage(): CustomStorage | undefined {
-    return this.#customStorage;
-  }
-
   get popupOrigin(): string | null {
     return this.getAttribute('popup-origin');
+  }
+
+  // grouped getter/setter for customStorage
+  get customStorage(): CustomStorage | undefined {
+    return this.#customStorage;
   }
 
   set customStorage(storage: CustomStorage | undefined) {

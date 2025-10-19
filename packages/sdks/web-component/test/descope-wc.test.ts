@@ -356,23 +356,28 @@ describe('web-component', () => {
           this.name = name;
           this.messages = [];
           this.closed = false;
-          this._onmessage = null;
+          this.onMessageInternal = null;
           broadcastInstances.push(this);
         }
+
         postMessage(msg) {
           this.messages.push(msg);
         }
+
         close() {
           this.closed = true;
         }
+
         set onmessage(fn) {
-          this._onmessage = fn;
+          this.onMessageInternal = fn;
         }
+
         get onmessage() {
-          return this._onmessage;
+          return this.onMessageInternal;
         }
+
         emit(event) {
-          if (this._onmessage) this._onmessage(event);
+          if (this.onMessageInternal) this.onMessageInternal(event);
         }
       }
       // @ts-ignore
@@ -559,7 +564,7 @@ describe('web-component', () => {
       };
       jest.spyOn(helpers, 'openCenteredPopup').mockReturnValue(popupObj);
       pageContent = '';
-      document.body.innerHTML = `<descope-wc flow-id=\"otpSignInEmail\" project-id=\"1\"></descope-wc>`;
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
       const wc: any = document.querySelector('descope-wc');
       const onClosed = jest.fn();
       wc.addEventListener('popupclosed', onClosed);

@@ -868,8 +868,8 @@ class DescopeWc extends BaseDescopeWc {
             return;
           }
 
-          const { action, data } = event.data || {};
-          if (action === 'code') {
+          const { action: popupAction, data } = event.data || {};
+          if (popupAction === 'code') {
             this.flowState.update({
               code: data.code,
               exchangeError: data.exchangeError,
