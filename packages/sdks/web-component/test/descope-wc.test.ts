@@ -492,15 +492,13 @@ describe('web-component', () => {
     pageContent = '<div data-type="polling">...</div><span>It works!</span>';
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-    const onError = jest.fn();
-
     const wcEle = document.getElementsByTagName('descope-wc')[0];
 
     await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
       timeout: 20000,
     });
     nextMock.mockClear();
-    document.removeChild(wcEle);
+    document.body.removeChild(wcEle);
 
     // wait for the next mock to be called
     await waitFor(() => expect(nextMock).not.toHaveBeenCalled(), {
