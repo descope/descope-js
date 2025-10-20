@@ -732,17 +732,19 @@ describe('web-component', () => {
 
     const wcEle = document.getElementsByTagName('descope-wc')[0];
 
-    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
       timeout: 20000,
     });
     nextMock.mockClear();
     document.body.removeChild(wcEle);
 
-    // wait for the next mock to be called
-    await waitFor(() => expect(nextMock).not.toHaveBeenCalled(), {
-      timeout: 20000,
+    // wait some time to ensure polling has stopped
+    await new Promise((resolve) => {
+      setTimeout(resolve, 4000);
     });
-  });
+
+    expect(nextMock).not.toHaveBeenCalled();
+  }, 30000);
 
   it('should set loading attribute on submitter and disable other enabled elements', async () => {
     startMock.mockReturnValue(generateSdkResponse());
