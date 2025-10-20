@@ -158,19 +158,22 @@ export const setCssVars = (
   Object.keys(cssVars).forEach((componentName) => {
     if (!nextPageTemplate.querySelector(componentName)) {
       logger.debug(
-        `Skipping css vars for component "${componentName}}"`,
+        `Skipping css vars for component "${componentName}"`,
         `Got css vars for component ${componentName} but Could not find it on next page`,
       );
+
+      return;
     }
     const componentClass:
       | (CustomElementConstructor & { cssVarList: CssVars })
       | undefined = customElements.get(componentName) as any;
 
     if (!componentClass) {
-      logger.info(
+      logger.debug(
         `Could not find component class for ${componentName}`,
         'Check if the component is registered',
       );
+
       return;
     }
 
