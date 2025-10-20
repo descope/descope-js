@@ -716,6 +716,34 @@ describe('web-component', () => {
     wcEle.removeEventListener('error', onError);
   }, 20000);
 
+  it('When has polling element, stop on unmounted element', async () => {
+    jest.useRealTimers();
+
+    startMock.mockReturnValueOnce(generateSdkResponse());
+
+    nextMock.mockReturnValue(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.poll,
+      }),
+    );
+
+    pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+      timeout: 20000,
+    });
+    nextMock.mockClear();
+    document.body.removeChild(wcEle);
+
+    // wait for the next mock to be called
+    await waitFor(() => expect(nextMock).not.toHaveBeenCalled(), {
+      timeout: 20000,
+    });
+  });
+
   it('should set loading attribute on submitter and disable other enabled elements', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
