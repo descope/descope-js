@@ -62,7 +62,7 @@ const withOtp = (httpClient: HttpClient) => ({
             providerId,
             ...loginOptions
           }: LoginOptions & { providerId?: string } = {},
-          token: string,
+          token?: string,
         ) =>
           transformResponse(
             httpClient.post(
