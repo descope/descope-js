@@ -37,6 +37,7 @@ describe('Enchanted Link', () => {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
+          loginOptions: {},
         },
       );
     });
