@@ -25,6 +25,7 @@
       :client.attr="clientStr"
       :nonce.attr="nonce"
       :dismiss-screen-error-on-input.attr="dismissScreenErrorOnInput"
+      :popup-origin.attr="popupOrigin"
       @success="onSuccess"
       @error="onError"
       @ready="onReady"
@@ -118,6 +119,9 @@ const props = defineProps({
   },
   dismissScreenErrorOnInput: {
     type: Boolean,
+  },
+  popupOrigin: {
+    type: String,
   },
 });
 // const emit = defineEmits(['success', 'error', 'ready']);

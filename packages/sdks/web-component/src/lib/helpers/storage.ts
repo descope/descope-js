@@ -27,6 +27,7 @@ export const getStorageItem = (key: string): string | null => {
   if (customStorage) {
     return customStorage.getItem(key);
   }
+
   if (typeof window?.localStorage !== 'undefined') {
     return window.localStorage.getItem(key);
   }
