@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.21.3](https://github.com/descope/descope-js/compare/react-sdk-2.21.2...react-sdk-2.21.3) (2025-10-21)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.17`
+* `user-profile-widget` updated to version `0.7.1`
+* `web-component` updated to version `3.47.11`
+* `tenant-profile-widget` updated to version `0.2.21`
+
+### Bug Fixes
+
+* oauth popup cross origin support RELEASE ([#1236](https://github.com/descope/descope-js/issues/1236)) ([5e5db40](https://github.com/descope/descope-js/commit/5e5db40aba342ca85937c6bab2d612d592036b26))
+
 ## [2.21.2](https://github.com/descope/descope-js/compare/react-sdk-2.21.1...react-sdk-2.21.2) (2025-10-16)
 
 ### Dependency Updates
