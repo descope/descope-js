@@ -81,7 +81,7 @@
     "@testing-library/dom": "^10.0.0",
     "@types/jest": "^29.0.0",
     "@types/js-cookie": "^3.0.2",
-    "@types/node": "20.17.13",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-typescript": "18.0.0",

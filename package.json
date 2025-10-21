@@ -38,7 +38,7 @@
     "@nrwl/linter": "19.8.4",
     "@nrwl/workspace": "19.8.4",
     "@types/jest": "29.5.14",
-    "@types/node": "20.17.13",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "~9.18.0",
@@ -66,6 +66,6 @@
   },
   "packageManager": "pnpm@10.0.0",
   "engines": {
-    "node": "^18.19.0"
+    "node": "^22.0.0"
   }
 }
