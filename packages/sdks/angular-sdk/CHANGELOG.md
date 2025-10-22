@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.3](https://github.com/descope/descope-js/compare/angular-sdk-0.21.2...angular-sdk-0.21.3) (2025-10-21)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.17`
+* `user-profile-widget` updated to version `0.7.1`
+* `tenant-profile-widget` updated to version `0.2.21`
+* `web-component` updated to version `3.47.11`
+
+### Bug Fixes
+
+* oauth popup cross origin support RELEASE ([#1236](https://github.com/descope/descope-js/issues/1236)) ([5e5db40](https://github.com/descope/descope-js/commit/5e5db40aba342ca85937c6bab2d612d592036b26))
+
 ## [0.21.2](https://github.com/descope/descope-js/compare/angular-sdk-0.21.1...angular-sdk-0.21.2) (2025-10-16)
 
 ### Dependency Updates

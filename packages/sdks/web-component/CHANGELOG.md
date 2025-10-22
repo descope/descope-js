@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.47.11](https://github.com/descope/descope-js/compare/web-component-3.47.10...web-component-3.47.11) (2025-10-21)
+
+
+### Bug Fixes
+
+* better css vars logs ([#1238](https://github.com/descope/descope-js/issues/1238)) ([06528eb](https://github.com/descope/descope-js/commit/06528eb89fd5b72e7aa56fd492639c59d7993547))
+* clean up polling when umounting ([#1237](https://github.com/descope/descope-js/issues/1237)) ([15a42e4](https://github.com/descope/descope-js/commit/15a42e4e0f6dfaaf22df4f49d4e03f029c15600a))
+* oauth popup cross origin support RELEASE ([#1236](https://github.com/descope/descope-js/issues/1236)) ([5e5db40](https://github.com/descope/descope-js/commit/5e5db40aba342ca85937c6bab2d612d592036b26))
+
 ## [3.47.10](https://github.com/descope/descope-js/compare/web-component-3.47.9...web-component-3.47.10) (2025-10-16)
 
 ### Dependency Updates

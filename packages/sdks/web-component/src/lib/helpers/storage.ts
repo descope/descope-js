@@ -26,7 +26,9 @@ export const setStorageItem = (key: string, value: string): void => {
 export const getStorageItem = (key: string): string | null => {
   if (customStorage) {
     return customStorage.getItem(key);
-  } else if (typeof window?.localStorage !== 'undefined') {
+  }
+
+  if (typeof window?.localStorage !== 'undefined') {
     return window.localStorage.getItem(key);
   }
   return null;

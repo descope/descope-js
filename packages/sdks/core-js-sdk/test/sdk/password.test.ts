@@ -55,6 +55,7 @@ describe('password', () => {
           customClaims: {
             claim1: 'yes',
           },
+          providerId: 'some-provider',
         },
       );
 
@@ -64,6 +65,7 @@ describe('password', () => {
           loginId: 'loginId',
           password: 'abcd1234',
           user: { name: 'John Doe' },
+          providerId: 'some-provider',
           loginOptions: {
             customClaims: {
               claim1: 'yes',
@@ -120,6 +122,7 @@ describe('password', () => {
         customClaims: {
           claim1: 'yes',
         },
+        providerId: 'some-provider',
       });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -127,6 +130,7 @@ describe('password', () => {
         {
           loginId: 'loginId',
           password: 'abcd1234',
+          providerId: 'some-provider',
           loginOptions: {
             customClaims: {
               claim1: 'yes',
