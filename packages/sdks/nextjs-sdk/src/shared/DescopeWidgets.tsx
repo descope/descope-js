@@ -11,7 +11,8 @@ import {
 	AccessKeyManagement as AccessKeyManagementWC,
 	AuditManagement as AuditManagementWC,
 	UserProfile as UserProfileWc,
-	ApplicationsPortal as ApplicationsPortalWc
+	ApplicationsPortal as ApplicationsPortalWc,
+	TenantProfile as TenantProfileWC
 } from '@descope/react-sdk';
 
 // a helper function to dynamically load the components
@@ -31,3 +32,4 @@ export const AccessKeyManagement = dynamicWidgetComponent(
 export const AuditManagement = dynamicWidgetComponent(AuditManagementWC);
 export const UserProfile = dynamicWidgetComponent(UserProfileWc);
 export const ApplicationsPortal = dynamicWidgetComponent(ApplicationsPortalWc);
+export const TenantProfile = dynamicWidgetComponent(TenantProfileWc);
