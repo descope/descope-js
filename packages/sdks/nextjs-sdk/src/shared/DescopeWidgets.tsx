@@ -11,8 +11,12 @@ import type {
 	AuditManagement as AuditManagementWC,
 	UserProfile as UserProfileWC,
 	ApplicationsPortal as ApplicationsPortalWC,
+<<<<<<< HEAD
 	TenantProfile as TenantProfileWC,
 	OutboundApplications as OutboundApplicationsWC
+=======
+	TenantProfile as TenantProfileWC
+>>>>>>> 1e46aa8b (added changes)
 } from '@descope/react-sdk';
 
 export type UserManagementProps = React.ComponentProps<typeof UserManagementWC>;
@@ -28,9 +32,12 @@ export type ApplicationsPortalProps = React.ComponentProps<
 	typeof ApplicationsPortalWC
 >;
 export type TenantProfileProps = React.ComponentProps<typeof TenantProfileWC>;
+<<<<<<< HEAD
 export type OutboundApplicationsProps = React.ComponentProps<
 	typeof OutboundApplicationsWC
 >;
+=======
+>>>>>>> 1e46aa8b (added changes)
 
 function makeWidget<T extends Record<string, any>>(name: string) {
 	return dynamic<T>(
@@ -59,5 +66,8 @@ export const ApplicationsPortal: React.ComponentType<ApplicationsPortalProps> =
 	makeWidget<ApplicationsPortalProps>('ApplicationsPortal');
 export const TenantProfile: React.ComponentType<TenantProfileProps> =
 	makeWidget<TenantProfileProps>('TenantProfile');
+<<<<<<< HEAD
 export const OutboundApplications: React.ComponentType<OutboundApplicationsProps> =
 	makeWidget<OutboundApplicationsProps>('OutboundApplications');
+=======
+>>>>>>> 1e46aa8b (added changes)
