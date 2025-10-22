@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.51.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.50.1...core-js-sdk-2.51.0) (2025-10-22)
+
+
+### Features
+
+* **core-js-sdk:** pass providerId on *.sign{up,in} ([#1239](https://github.com/descope/descope-js/issues/1239)) ([afcb639](https://github.com/descope/descope-js/commit/afcb6394d56135b6a79d5c784887bdd0891eac9d))
+
 ## [2.50.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.50.0...core-js-sdk-2.50.1) (2025-09-28)
 
 ## [2.50.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.49.0...core-js-sdk-2.50.0) (2025-09-10)
