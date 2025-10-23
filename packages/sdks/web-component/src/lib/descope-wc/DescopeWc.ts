@@ -1338,7 +1338,12 @@ class DescopeWc extends BaseDescopeWc {
       if (this.storeLastAuthenticatedUser) {
         setLastAuth(lastAuth);
       }
-      this.#dispatch('success', authInfo);
+      const payload = { ...authInfo };
+      // add output to context if exists
+      if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
+        payload.context = { output: sdkResp.data.output };
+      }
+      this.#dispatch('success', payload);
       return;
     }
 

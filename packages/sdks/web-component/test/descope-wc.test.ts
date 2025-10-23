@@ -3124,7 +3124,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -3258,7 +3258,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -3348,7 +3348,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -3432,7 +3432,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -4811,7 +4811,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4845,7 +4845,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4881,7 +4881,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4917,7 +4917,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4977,6 +4977,41 @@ describe('web-component', () => {
     expect(
       localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY),
     ).toBeNull();
+  });
+
+  it('should pass output into the on success', async () => {
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+        output: { customKey: 'customValue' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1>
+    </descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            detail: {
+              refreshJwt: 'refreshJwt',
+              context: { output: { customKey: 'customValue' } },
+            },
+          }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should update dynamic attribute values', async () => {

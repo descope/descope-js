@@ -137,6 +137,8 @@ export type JWTResponse = {
   firstSeen?: boolean;
   sessionExpiration: number;
   claims: Claims;
+  // additional context that may be added to the JWT response
+  context?: Record<string, any>;
 };
 
 /** Authentication info result from exchanging access keys for a session */
@@ -327,6 +329,8 @@ export type FlowResponse = {
     log: string;
     level?: 'info' | 'debug' | 'warn' | 'error';
   }[];
+  // general output configured inside the flow's end step
+  output?: Record<string, any>;
 };
 
 export type Options = {
