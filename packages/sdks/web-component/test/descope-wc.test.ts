@@ -4979,7 +4979,7 @@ describe('web-component', () => {
     ).toBeNull();
   });
 
-  it('should pass output into the on success', async () => {
+  it('should pass flow output into the on success event', async () => {
     pageContent = '<input id="email" name="email"></input>';
 
     startMock.mockReturnValue(
@@ -5006,7 +5006,7 @@ describe('web-component', () => {
           expect.objectContaining({
             detail: {
               refreshJwt: 'refreshJwt',
-              context: { output: { customKey: 'customValue' } },
+              flowOutput: { customKey: 'customValue' },
             },
           }),
         ),

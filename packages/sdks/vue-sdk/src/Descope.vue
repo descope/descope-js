@@ -43,6 +43,7 @@ import { RequestConfig } from '@descope/core-js-sdk';
 import { computed } from 'vue';
 import { getGlobalSdk } from './sdk';
 import type { JWTResponse, ErrorResponse } from './types';
+import type { FlowJWTResponse } from '@descope/web-component';
 
 const WebComponent: any = customElements?.get('descope-wc') || DescopeWcClass;
 
@@ -126,7 +127,7 @@ const props = defineProps({
 });
 // const emit = defineEmits(['success', 'error', 'ready']);
 const emit = defineEmits<{
-  (e: 'success', payload: CustomEvent<JWTResponse>): void;
+  (e: 'success', payload: CustomEvent<FlowJWTResponse>): void;
   (e: 'error', payload: CustomEvent<ErrorResponse>): void;
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
 }>();
@@ -144,7 +145,7 @@ const formStr = computed(() => (props.form ? JSON.stringify(props.form) : ''));
 const clientStr = computed(() =>
   props.client ? JSON.stringify(props.client) : '',
 );
-const onSuccess = async (e: CustomEvent<JWTResponse>) => {
+const onSuccess = async (e: CustomEvent<FlowJWTResponse>) => {
   await sdk.httpClient.hooks?.afterRequest?.(
     {} as RequestConfig,
     new Response(JSON.stringify(e.detail)),

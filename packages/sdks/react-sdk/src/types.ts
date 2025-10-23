@@ -8,6 +8,7 @@ import UserProfileWidget from '@descope/user-profile-widget';
 import type {
   AutoFocusOptions,
   CustomStorage,
+  FlowJWTResponse,
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
@@ -121,7 +122,7 @@ export interface IContext {
 
 export type DescopeProps = {
   flowId: string;
-  onSuccess?: CustomEventCb<JWTResponse>;
+  onSuccess?: CustomEventCb<FlowJWTResponse>;
   onError?: CustomEventCb<ErrorResponse>;
   onReady?: CustomEventCb<{}>;
   logger?: ILogger;

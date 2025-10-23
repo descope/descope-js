@@ -137,8 +137,6 @@ export type JWTResponse = {
   firstSeen?: boolean;
   sessionExpiration: number;
   claims: Claims;
-  // additional context that may be added to the JWT response
-  context?: Record<string, any>;
 };
 
 /** Authentication info result from exchanging access keys for a session */

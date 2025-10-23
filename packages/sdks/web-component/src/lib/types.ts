@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import type { JWTResponse } from '@descope/web-js-sdk';
 import { createSdk } from '@descope/web-js-sdk';
 
 export type SdkConfig = Parameters<typeof createSdk>[0];
@@ -299,4 +300,8 @@ export type CustomStorage = {
   getItem: (key: string) => string | null;
   setItem: (key: string, value: string) => void;
   removeItem: (key: string) => void;
+};
+
+export type FlowJWTResponse = JWTResponse & {
+  flowOutput?: Record<string, any>;
 };
