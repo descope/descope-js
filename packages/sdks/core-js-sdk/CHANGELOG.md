@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.52.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.51.0...core-js-sdk-2.52.0) (2025-10-23)
+
+
+### Features
+
+* Add output to success event ([#1244](https://github.com/descope/descope-js/issues/1244)) RELEASE ([eae6357](https://github.com/descope/descope-js/commit/eae63570a342dc0919d5196fb79b4ffc035a2524))
+
 ## [2.51.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.50.1...core-js-sdk-2.51.0) (2025-10-22)
 
 
