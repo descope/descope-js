@@ -64,6 +64,7 @@ import {
   ScriptModule,
   SdkConfig,
   StepState,
+  FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
@@ -1338,7 +1339,13 @@ class DescopeWc extends BaseDescopeWc {
       if (this.storeLastAuthenticatedUser) {
         setLastAuth(lastAuth);
       }
-      this.#dispatch('success', authInfo);
+      const payload: FlowJWTResponse = { ...authInfo };
+      // add flow output onto the jwt response itself, as opposed to changed the response object,
+      // to avoid breaking existing functionality
+      if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
+        payload.flowOutput = sdkResp.data.output;
+      }
+      this.#dispatch('success', payload);
       return;
     }
 
