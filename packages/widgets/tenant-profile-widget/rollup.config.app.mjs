@@ -8,7 +8,7 @@ import define from 'rollup-plugin-define';
 import del from 'rollup-plugin-delete';
 import svg from 'rollup-plugin-svg-import';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 dotenv.config();
 

@@ -7,7 +7,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import define from 'rollup-plugin-define';
 import replace from '@rollup/plugin-replace';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 const input = './src/lib/descope-wc/index.ts';
 const external = (id) =>
