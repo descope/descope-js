@@ -1570,6 +1570,14 @@ class DescopeWc extends BaseDescopeWc {
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
 
+      // update screen component version
+      const descopeUi = await this.descopeUi;
+      const screenComponentVersion = clone
+        .querySelector('[data-descope-screen-component-version]')
+        .getAttribute('data-descope-screen-component-version');
+      descopeUi.componentsThemeManager.screenComponentVersion =
+        screenComponentVersion;
+
       // put the totp and notp variable on the root element, which is the top level 'div' inside the shadowRoot
       const rootElement = this.contentRootElement;
       setTOTPVariable(rootElement, screenState?.totp?.image);
