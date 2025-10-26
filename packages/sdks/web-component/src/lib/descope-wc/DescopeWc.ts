@@ -1844,18 +1844,23 @@ class DescopeWc extends BaseDescopeWc {
         const sdkScriptsModules = this.loadSdkScriptsModules();
 
         if (sdkScriptsModules.length > 0) {
-          // Only attempt to refresh modules that actually have a refresh function
-          const refreshPromises = sdkScriptsModules
-            .filter((module) => typeof module.refresh === 'function')
-            .map((module) => module.refresh!());
+          let promises: Promise<void>[] = [];
+          let timeout = SDK_SCRIPTS_LOAD_TIMEOUT;
 
-          if (refreshPromises.length > 0) {
+          for (const module of sdkScriptsModules) {
+            // Only attempt to refresh modules that actually have a refresh function
+            if (typeof module.refresh === 'function') {
+              promises.push(module.refresh!());
+            }
+            // Optionally allow a longer timeout if a module requires it
+            if (typeof module.timeout === 'function') {
+              timeout = Math.max(timeout, module.timeout());
+            }
+          }
+
+          if (promises.length > 0) {
             // Use timeout to prevent hanging if refresh takes too long
-            await timeoutPromise(
-              SDK_SCRIPTS_LOAD_TIMEOUT,
-              Promise.all(refreshPromises),
-              null,
-            );
+            await timeoutPromise(timeout, Promise.all(promises), null);
           }
         }
 

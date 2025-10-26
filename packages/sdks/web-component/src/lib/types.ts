@@ -168,6 +168,11 @@ export type ScriptModule = {
    * Currently implemented for reCAPTCHA to ensure we have a fresh token
    */
   refresh?: () => Promise<void>;
+  /**
+   * An optional timeout in milliseconds to limit the time it takes the refresh
+   * operation to complete
+   */
+  timeout?: () => number;
 };
 
 export type ClientScript = {
