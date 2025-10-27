@@ -1847,8 +1847,8 @@ class DescopeWc extends BaseDescopeWc {
           let promises: Promise<void>[] = [];
           let timeout = SDK_SCRIPTS_LOAD_TIMEOUT;
 
+          // eslint-disable-next-line no-restricted-syntax
           for (const module of sdkScriptsModules) {
-            // eslint-disable-line no-restricted-syntax
             // Only attempt to refresh modules that actually have a refresh function
             if (typeof module.refresh === 'function') {
               promises.push(module.refresh());
