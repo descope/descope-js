@@ -64,6 +64,7 @@ import {
   ScriptModule,
   SdkConfig,
   StepState,
+  FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
@@ -451,7 +452,7 @@ class DescopeWc extends BaseDescopeWc {
 
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();
-
+    this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
 
@@ -758,20 +759,8 @@ class DescopeWc extends BaseDescopeWc {
       ((isChanged('code') && code) ||
         (isChanged('exchangeError') && exchangeError))
     ) {
-      this.loggerWrapper.debug('Creating popup channel', executionId);
-      const channel = new BroadcastChannel(executionId);
-      this.loggerWrapper.debug(
-        'Posting message to popup channel',
-        JSON.stringify({ code, exchangeError }),
-      );
-      channel.postMessage({
-        data: { code, exchangeError },
-        action: 'code',
-      });
-      this.loggerWrapper.debug('Popup channel message posted, closing channel');
-      channel.close();
-      this.loggerWrapper.debug('Popup channel closed, closing window');
-      window.close();
+      // Sending data back from popup to opener (code / exchangeError)
+      this.#notifyOpener(executionId, code, exchangeError);
       return;
     }
 
@@ -853,54 +842,35 @@ class DescopeWc extends BaseDescopeWc {
         // this width is below the breakpoint of most providers
         this.loggerWrapper.debug('Opening redirect in popup');
         const popup = openCenteredPopup(redirectTo, '?', 598, 700);
+        const usePostMessageFallback = this.shouldUsePopupPostMessage();
+        // mark popup so sending side knows to use postMessage and what origin to send to
+        if (usePostMessageFallback) {
+          popup.name = `descope-wc|${window.location.origin}`;
+        }
+        this.loggerWrapper.debug(
+          `Popup communication method: ${
+            usePostMessageFallback ? 'postMessage' : 'BroadcastChannel'
+          }`,
+        );
 
-        this.loggerWrapper.debug('Creating broadcast channel');
-        const channel = new BroadcastChannel(executionId);
-
-        this.loggerWrapper.debug('Starting popup closed detection');
-        // detect when the popup is closed
-        const intervalId = setInterval(() => {
-          if (popup.closed) {
-            this.loggerWrapper.debug(
-              'Popup closed, dispatching popupclosed event and clearing interval',
-            );
-            clearInterval(intervalId);
-
-            // we are dispatching a popupclosed event so we can handle it on other parts of the code (loading state management)
-            this.#dispatch('popupclosed', {});
-
-            this.loggerWrapper.debug('Closing channel');
-            channel.close();
-          }
-        }, 1000);
-
-        this.loggerWrapper.debug('Listening for postMessage on channel');
         const onPostMessage = (event: MessageEvent) => {
           this.loggerWrapper.debug(
-            'Received postMessage on channel',
-            JSON.stringify(event),
+            'Received popup message',
+            JSON.stringify(event.data),
           );
-          this.loggerWrapper.debug(
-            'Comparing origins',
-            JSON.stringify({
-              eventOrigin: event.origin,
-              windowLocationOrigin: window.location.origin,
-            }),
-          );
-          if (event.origin !== window.location.origin) return;
+          const expectedOrigin = usePostMessageFallback
+            ? this.popupOrigin
+            : window.location.origin;
 
-          this.loggerWrapper.debug(
-            'PostMessage origin matches, processing message',
-          );
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          const { action, data } = event.data;
-          this.loggerWrapper.debug(
-            `PostMessage action: ${action}, data: ${JSON.stringify(data)}`,
-          );
-          if (action === 'code') {
+          if (event.origin !== expectedOrigin) {
             this.loggerWrapper.debug(
-              'Updating flow state with code and exchangeError',
+              `Ignoring message from unexpected origin. received: "${event.origin}", expected: "${expectedOrigin}"`,
             );
+            return;
+          }
+
+          const { action: popupAction, data } = event.data || {};
+          if (popupAction === 'code') {
             this.flowState.update({
               code: data.code,
               exchangeError: data.exchangeError,
@@ -908,7 +878,37 @@ class DescopeWc extends BaseDescopeWc {
           }
         };
 
-        channel.onmessage = onPostMessage;
+        let cleanup: () => void;
+
+        this.loggerWrapper.debug('Starting popup closed detection');
+        const intervalId = setInterval(() => {
+          if (popup.closed) {
+            this.loggerWrapper.debug(
+              'Popup closed, dispatching popupclosed event',
+            );
+            clearInterval(intervalId);
+            this.#dispatch('popupclosed', {});
+
+            this.loggerWrapper.debug('Cleaning up popup listeners');
+            cleanup?.();
+          }
+        }, 1000);
+
+        if (usePostMessageFallback) {
+          window.addEventListener('message', onPostMessage);
+          cleanup = () => {
+            this.loggerWrapper.debug('Cleaning up popup postMessage listener');
+            window.removeEventListener('message', onPostMessage);
+          };
+        } else {
+          this.loggerWrapper.debug('Creating broadcast channel');
+          const channel = new BroadcastChannel(executionId);
+          channel.onmessage = onPostMessage;
+          cleanup = () => {
+            this.loggerWrapper.debug('Closing channel');
+            channel.close();
+          };
+        }
       } else {
         this.handleRedirect(redirectTo);
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
@@ -1339,7 +1339,13 @@ class DescopeWc extends BaseDescopeWc {
       if (this.storeLastAuthenticatedUser) {
         setLastAuth(lastAuth);
       }
-      this.#dispatch('success', authInfo);
+      const payload: FlowJWTResponse = { ...authInfo };
+      // add flow output onto the jwt response itself, as opposed to changed the response object,
+      // to avoid breaking existing functionality
+      if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
+        payload.flowOutput = sdkResp.data.output;
+      }
+      this.#dispatch('success', payload);
       return;
     }
 
@@ -1933,6 +1939,57 @@ class DescopeWc extends BaseDescopeWc {
 
   #dispatch(eventName: string, detail: any) {
     this.dispatchEvent(new CustomEvent(eventName, { detail }));
+  }
+
+  // Determine if we should use postMessage fallback (popup-origin attribute exists & differs from current origin)
+  protected shouldUsePopupPostMessage(): boolean {
+    if (!this.popupOrigin) return false;
+    if (this.popupOrigin === window.location.origin) return false; // same origin -> keep BroadcastChannel
+    try {
+      // validate origin format
+      // eslint-disable-next-line no-new
+      new URL(this.popupOrigin);
+    } catch {
+      return false; // malformed origin -> ignore
+    }
+    return true;
+  }
+
+  // Notify opener with code/exchangeError using either BroadcastChannel or postMessage fallback
+  #notifyOpener(executionId: string, code: string, exchangeError: string) {
+    const [prefix, openerOrigin] = window.name?.split('|') || [];
+    const usePostMessageFallback = prefix === 'descope-wc' && openerOrigin;
+
+    const message = { data: { code, exchangeError }, action: 'code' };
+
+    // PostMessage fallback path (for cross-origin popups)
+    if (usePostMessageFallback) {
+      this.loggerWrapper.debug(
+        'Using postMessage fallback to notify opener in origin',
+        openerOrigin,
+      );
+      try {
+        window.opener.postMessage(message, openerOrigin);
+      } catch (err) {
+        this.loggerWrapper.error(
+          'Failed to send postMessage fallback (likely COOP isolation)',
+          (err as any)?.message,
+        );
+        // If blocked by COOP, we cannot communicate cross-origin; log & abort silently
+      }
+    } else {
+      // BroadcastChannel path (original behavior)
+      this.loggerWrapper.debug('Creating popup channel', executionId);
+      const channel = new BroadcastChannel(executionId);
+      channel.postMessage(message);
+      channel.close();
+    }
+
+    try {
+      window.close();
+    } catch (_) {
+      /* ignore */
+    }
   }
 }
 

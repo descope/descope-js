@@ -8,6 +8,7 @@ import UserProfileWidget from '@descope/user-profile-widget';
 import type {
   AutoFocusOptions,
   CustomStorage,
+  FlowJWTResponse,
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
@@ -121,7 +122,7 @@ export interface IContext {
 
 export type DescopeProps = {
   flowId: string;
-  onSuccess?: CustomEventCb<JWTResponse>;
+  onSuccess?: CustomEventCb<FlowJWTResponse>;
   onError?: CustomEventCb<ErrorResponse>;
   onReady?: CustomEventCb<{}>;
   logger?: ILogger;
@@ -139,6 +140,7 @@ export type DescopeProps = {
   redirectUrl?: string;
   outboundAppId?: string;
   outboundAppScopes?: string[];
+  popupOrigin?: string;
   errorTransformer?: (error: { text: string; type: string }) => string;
   // use to override screen's form inputs in flow execution
   form?: Record<string, any>;

@@ -43,6 +43,7 @@ import { DescopeAuthConfig } from '../../types/types';
       [attr.client]="clientString"
       [attr.nonce]="nonceString"
       [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
+      [attr.popup-origin]="popupOrigin"
       [attr.form]="formString"
       [customStorage]="customStorage"
     >
@@ -111,6 +112,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;
+  @Input() popupOrigin: string;
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();
