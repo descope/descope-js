@@ -172,7 +172,7 @@ export type ScriptModule = {
    * An optional timeout in milliseconds to limit the time it takes the refresh
    * operation to complete
    */
-  timeout?: () => number;
+  refreshTimeout?: () => number;
 };
 
 export type ClientScript = {
