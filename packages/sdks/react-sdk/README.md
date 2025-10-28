@@ -30,6 +30,11 @@ const AppRoot = () => {
       // must be configured (e.g., https://auth.app.example.com)
       // and should be set as the baseUrl property.
       // baseUrl = "https://auth.app.example.com"
+
+      // Optional: Logger object
+      // Note: passing logger will enable logging the requests and  responses to/from Descope service, use only for debugging purposes
+      // use cautiously
+      // logger={console}
     >
       <App />
     </AuthProvider>
