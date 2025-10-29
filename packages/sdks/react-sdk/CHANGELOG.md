@@ -2,6 +2,66 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.22.0](https://github.com/descope/descope-js/compare/react-sdk-2.21.4...react-sdk-2.22.0) (2025-10-23)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.17`
+* `audit-management-widget` updated to version `0.5.17`
+* `role-management-widget` updated to version `0.5.9`
+* `user-management-widget` updated to version `0.9.19`
+* `user-profile-widget` updated to version `0.7.3`
+* `applications-portal-widget` updated to version `0.4.17`
+* `web-component` updated to version `3.48.0`
+* `web-js-sdk` updated to version `1.38.0`
+* `core-js-sdk` updated to version `2.52.0`
+* `tenant-profile-widget` updated to version `0.2.23`
+
+### Features
+
+* Add output to success event ([#1244](https://github.com/descope/descope-js/issues/1244)) RELEASE ([eae6357](https://github.com/descope/descope-js/commit/eae63570a342dc0919d5196fb79b4ffc035a2524))
+
+## [2.21.4](https://github.com/descope/descope-js/compare/react-sdk-2.21.3...react-sdk-2.21.4) (2025-10-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.16`
+* `audit-management-widget` updated to version `0.5.16`
+* `role-management-widget` updated to version `0.5.8`
+* `user-management-widget` updated to version `0.9.18`
+* `user-profile-widget` updated to version `0.7.2`
+* `applications-portal-widget` updated to version `0.4.16`
+* `web-component` updated to version `3.47.12`
+* `web-js-sdk` updated to version `1.37.2`
+* `core-js-sdk` updated to version `2.51.0`
+* `tenant-profile-widget` updated to version `0.2.22`
+## [2.21.3](https://github.com/descope/descope-js/compare/react-sdk-2.21.2...react-sdk-2.21.3) (2025-10-21)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.9.17`
+* `user-profile-widget` updated to version `0.7.1`
+* `web-component` updated to version `3.47.11`
+* `tenant-profile-widget` updated to version `0.2.21`
+
+### Bug Fixes
+
+* oauth popup cross origin support RELEASE ([#1236](https://github.com/descope/descope-js/issues/1236)) ([5e5db40](https://github.com/descope/descope-js/commit/5e5db40aba342ca85937c6bab2d612d592036b26))
+
+## [2.21.2](https://github.com/descope/descope-js/compare/react-sdk-2.21.1...react-sdk-2.21.2) (2025-10-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.5.0`
+* `access-key-management-widget` updated to version `0.5.15`
+* `audit-management-widget` updated to version `0.5.15`
+* `role-management-widget` updated to version `0.5.7`
+* `user-management-widget` updated to version `0.9.16`
+* `user-profile-widget` updated to version `0.7.0`
+* `applications-portal-widget` updated to version `0.4.15`
+* `web-component` updated to version `3.47.10`
+* `web-js-sdk` updated to version `1.37.1`
+* `tenant-profile-widget` updated to version `0.2.20`
 ## [2.21.1](https://github.com/descope/descope-js/compare/react-sdk-2.21.0...react-sdk-2.21.1) (2025-10-13)
 
 ### Dependency Updates

@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.19](https://github.com/descope/descope-js/compare/user-management-widget-0.9.18...user-management-widget-0.9.19) (2025-10-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.0`
+* `web-component` updated to version `3.48.0`
+## [0.9.18](https://github.com/descope/descope-js/compare/user-management-widget-0.9.17...user-management-widget-0.9.18) (2025-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.2`
+* `web-component` updated to version `3.47.12`
+## [0.9.17](https://github.com/descope/descope-js/compare/user-management-widget-0.9.16...user-management-widget-0.9.17) (2025-10-21)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.47.11`
+## [0.9.16](https://github.com/descope/descope-js/compare/user-management-widget-0.9.15...user-management-widget-0.9.16) (2025-10-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.1`
+* `web-component` updated to version `3.47.10`
+* `sdk-helpers` updated to version `0.5.0`
+* `sdk-mixins` updated to version `0.13.14`
+* `sdk-component-drivers` updated to version `0.7.0`
+
+### Bug Fixes
+
+*  send tenant on gerneic button's flow ([#1233](https://github.com/descope/descope-js/issues/1233)) ([e375af2](https://github.com/descope/descope-js/commit/e375af25666f028e15fc103d8cb07f5620134d9a))
+
 ## [0.9.15](https://github.com/descope/descope-js/compare/user-management-widget-0.9.14...user-management-widget-0.9.15) (2025-10-13)
 
 
