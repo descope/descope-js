@@ -10,7 +10,7 @@ type Config = Pick<
   | 'autoRefresh'
   | 'sessionTokenViaCookie'
   | 'storeLastAuthenticatedUser'
-  | 'logger'
+  | 'hooks'
   | 'oidcConfig'
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
@@ -29,7 +29,7 @@ export default ({
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
   getExternalToken,
-  logger,
+  hooks,
   customStorage,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
@@ -47,7 +47,7 @@ export default ({
       oidcConfig,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
-      logger,
+      hooks,
       getExternalToken,
       customStorage,
     });

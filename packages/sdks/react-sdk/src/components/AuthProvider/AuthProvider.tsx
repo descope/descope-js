@@ -14,7 +14,7 @@ import { IContext, User } from '../../types';
 import { withValidation } from '../../utils';
 import useSdk from './useSdk';
 
-type Logger = Parameters<typeof useSdk>[0]['logger'];
+type Hooks = Parameters<typeof useSdk>[0]['hooks'];
 
 interface IAuthProviderProps {
   projectId: string;
@@ -32,7 +32,7 @@ interface IAuthProviderProps {
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: CookieConfig;
-  logger?: Logger;
+  hooks?: Hooks;
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
   oidcConfig?: OidcConfig;
@@ -56,7 +56,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   baseCdnUrl = '',
   sessionTokenViaCookie = false,
-  logger = undefined,
+  hooks = undefined,
   persistTokens = true,
   autoRefresh = true,
   oidcConfig = undefined,
@@ -85,7 +85,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     persistTokens,
     autoRefresh,
     sessionTokenViaCookie,
-    logger,
+    hooks,
     oidcConfig,
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,

@@ -31,10 +31,25 @@ const AppRoot = () => {
       // and should be set as the baseUrl property.
       // baseUrl = "https://auth.app.example.com"
 
-      // Optional: Logger object
-      // Note: passing logger will enable logging the requests and  responses to/from Descope service, use only for debugging purposes
-      // use cautiously
-      // logger={console}
+      // Optional: Hooks object for SDK lifecycle events
+      // hooks={{
+      //   beforeRequest: (req) => {
+      //     console.log('Before request', {
+      //       method: req.method,
+      //       path: req.path,
+      //       queryParams: req.queryParams,
+      //     });
+      //     // Modify the request as needed
+      //     return req;
+      //   },
+      //   afterRequest: async (req, res) => {
+      //     console.log('After request', {
+      //       reqMethod: req.method,
+      //       reqPath: req.path,
+      //       resStatus: res.status,
+      //     });
+      //   },
+      // }}
     >
       <App />
     </AuthProvider>
