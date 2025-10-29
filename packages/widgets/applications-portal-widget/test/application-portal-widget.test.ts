@@ -99,6 +99,7 @@ describe('application-portal-widget', () => {
 
       expect(result.apps[0].id).toEqual(mockSsoApps[0].id);
       expect(result.apps[1].id).toEqual(mockSsoApps[1].id);
+      expect(result.apps[2].id).toEqual(mockSsoApps[2].id);
     });
   });
 });
