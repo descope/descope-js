@@ -43,4 +43,15 @@ export const mockSsoApps = [
         'http://www.testingmcafeesites.com/testcat_ac.html',
     },
   },
+  {
+    id: 'ssoapp5',
+    name: 'Custom App 1',
+    description: 'This is the first custom app',
+    enabled: true,
+    appType: SSOAppType.custom,
+    logo: 'logo2',
+    customSettings: {
+      loginPageUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
+    },
+  },
 ];
