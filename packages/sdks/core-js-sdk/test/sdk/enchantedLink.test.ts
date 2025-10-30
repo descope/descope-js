@@ -37,6 +37,7 @@ describe('Enchanted Link', () => {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
+          loginOptions: {},
         },
       );
     });
@@ -50,6 +51,7 @@ describe('Enchanted Link', () => {
         },
         {
           templateId: 'bar',
+          providerId: 'some-provider',
           templateOptions: {
             ble: 'blue',
           },
@@ -61,6 +63,7 @@ describe('Enchanted Link', () => {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
+          providerId: 'some-provider',
           loginOptions: {
             templateId: 'bar',
             templateOptions: {
@@ -118,7 +121,7 @@ describe('Enchanted Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
-          loginOptions: undefined,
+          loginOptions: {},
         },
         { token: undefined },
       );
@@ -131,6 +134,7 @@ describe('Enchanted Link', () => {
         {
           stepup: true,
           customClaims: { k1: 'v1' },
+          providerId: 'some-provider',
         },
         'token',
       );
@@ -139,6 +143,7 @@ describe('Enchanted Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
+          providerId: 'some-provider',
           loginOptions: {
             stepup: true,
             customClaims: { k1: 'v1' },
@@ -192,6 +197,7 @@ describe('Enchanted Link', () => {
         apiPaths.enchantedLink.signUpOrIn + '/email',
         {
           loginId: 'loginId',
+          loginOptions: {},
           URI: 'http://some.thing.com',
         },
       );
@@ -202,12 +208,14 @@ describe('Enchanted Link', () => {
         templateOptions: {
           ble: 'blue',
         },
+        providerId: 'some-provider',
       });
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.enchantedLink.signUpOrIn + '/email',
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
+          providerId: 'some-provider',
           loginOptions: {
             templateOptions: {
               ble: 'blue',
@@ -456,6 +464,7 @@ describe('Enchanted Link', () => {
           'http://some.thing.com',
           'token',
           {
+            providerId: 'some-provider',
             templateOptions: {
               ble: 'blue',
             },
@@ -467,6 +476,7 @@ describe('Enchanted Link', () => {
             email: 'new@email.com',
             loginId: 'loginId',
             URI: 'http://some.thing.com',
+            providerId: 'some-provider',
             templateOptions: {
               ble: 'blue',
             },

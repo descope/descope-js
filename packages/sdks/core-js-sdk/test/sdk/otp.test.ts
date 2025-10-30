@@ -27,6 +27,8 @@ describe('otp', () => {
         apiPaths.otp.signUp + '/email',
         {
           loginId: 'loginId',
+          loginOptions: {},
+          providerId: undefined,
           user: { name: 'John Doe' },
         },
       );
@@ -40,6 +42,7 @@ describe('otp', () => {
           templateOptions: {
             ble: 'blue',
           },
+          providerId: 'some-provider',
         },
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -47,6 +50,7 @@ describe('otp', () => {
         {
           loginId: 'loginId',
           user: { name: 'John Doe' },
+          providerId: 'some-provider',
           loginOptions: {
             templateOptions: {
               ble: 'blue',
@@ -95,7 +99,7 @@ describe('otp', () => {
         apiPaths.otp.signIn + '/email',
         {
           loginId: 'loginId',
-          loginOptions: undefined,
+          loginOptions: {},
         },
         { token: undefined },
       );
@@ -104,7 +108,11 @@ describe('otp', () => {
     it('should send the correct request with login options', () => {
       sdk.otp.signIn.email(
         'loginId',
-        { stepup: true, customClaims: { k1: 'v1' } },
+        {
+          stepup: true,
+          customClaims: { k1: 'v1' },
+          providerId: 'some-provider',
+        },
         'token',
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -112,6 +120,7 @@ describe('otp', () => {
         {
           loginId: 'loginId',
           loginOptions: { stepup: true, customClaims: { k1: 'v1' } },
+          providerId: 'some-provider',
         },
         { token: 'token' },
       );
@@ -156,6 +165,8 @@ describe('otp', () => {
         apiPaths.otp.signUpOrIn + '/email',
         {
           loginId: 'loginId',
+          loginOptions: {},
+          providerId: undefined,
         },
       );
     });
@@ -164,6 +175,7 @@ describe('otp', () => {
       sdk.otp.signUpOrIn.email('loginId', {
         templateId: 'foo',
         revokeOtherSessions: true,
+        providerId: 'some-provider',
         templateOptions: {
           ble: 'blue',
         },
@@ -172,6 +184,7 @@ describe('otp', () => {
         apiPaths.otp.signUpOrIn + '/email',
         {
           loginId: 'loginId',
+          providerId: 'some-provider',
           loginOptions: {
             templateId: 'foo',
             revokeOtherSessions: true,
@@ -300,12 +313,15 @@ describe('otp', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        sdk.otp.update.email('loginId', 'new@email.com', 'token');
+        sdk.otp.update.email('loginId', 'new@email.com', 'token', {
+          providerId: 'some-provider',
+        });
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.otp.update.email,
           {
             email: 'new@email.com',
             loginId: 'loginId',
+            providerId: 'some-provider',
           },
           { token: 'token' },
         );
@@ -402,6 +418,9 @@ describe('otp', () => {
           'loginId',
           '+9720000000',
           'token',
+          {
+            providerId: 'some-provider',
+          },
         );
         expect(resp.data.maskedPhone).toEqual('**99');
         expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -409,6 +428,7 @@ describe('otp', () => {
           {
             phone: '+9720000000',
             loginId: 'loginId',
+            providerId: 'some-provider',
           },
           { token: 'token' },
         );
@@ -476,6 +496,9 @@ describe('otp', () => {
           'loginId',
           '+9720000000',
           'token',
+          {
+            providerId: 'some-provider',
+          },
         );
         expect(resp.data.maskedPhone).toEqual('**99');
         expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -483,6 +506,7 @@ describe('otp', () => {
           {
             phone: '+9720000000',
             loginId: 'loginId',
+            providerId: 'some-provider',
           },
           { token: 'token' },
         );

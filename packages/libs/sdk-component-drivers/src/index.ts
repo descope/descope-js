@@ -14,3 +14,4 @@ export * from './TextDriver';
 export * from './TextFieldDriver';
 export * from './UserAttributeDriver';
 export * from './UserAuthMethodDriver';
+export * from './DeviceListDriver';

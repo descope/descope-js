@@ -36,7 +36,10 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
     (
       loginId: string,
       URI?: string,
-      loginOptions?: LoginOptions,
+      {
+        providerId,
+        ...loginOptions
+      }: LoginOptions & { providerId?: string } = {},
       token?: string,
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
       transformResponse(
@@ -46,6 +49,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             loginId,
             URI,
             loginOptions,
+            providerId,
           },
           { token },
         ),
@@ -56,7 +60,10 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
     (
       loginId: string,
       URI?: string,
-      signUpOptions?: SignUpOptions,
+      {
+        providerId,
+        ...signUpOptions
+      }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
       transformResponse(
         httpClient.post(
@@ -65,6 +72,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             loginId,
             URI,
             loginOptions: signUpOptions,
+            providerId,
           },
         ),
       ),
@@ -75,7 +83,10 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       loginId: string,
       URI?: string,
       user?: User,
-      signUpOptions?: SignUpOptions,
+      {
+        providerId,
+        ...signUpOptions
+      }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
       transformResponse(
         httpClient.post(
@@ -85,6 +96,7 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             URI,
             user,
             loginOptions: signUpOptions,
+            providerId,
           },
         ),
       ),
