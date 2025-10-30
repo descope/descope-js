@@ -9,7 +9,6 @@ import {
   loggerMixin,
   modalMixin,
 } from '@descope/sdk-mixins';
-import { getTenantName } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
