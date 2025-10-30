@@ -1,14 +1,9 @@
 import {
-  FlowButtonDriver,
   FlowDriver,
   ModalDriver,
-  UserAttributeDriver,
+  UserAuthMethodDriver,
 } from '@descope/sdk-component-drivers';
-import {
-  compose,
-  createSingletonMixin,
-  withMemCache,
-} from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   cookieConfigMixin,
   loggerMixin,
@@ -20,9 +15,9 @@ import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
-export const initTenantPasswordPolicyMixin = createSingletonMixin(
+export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class TenantPasswordPolicyMixinClass extends compose(
+    class TenantPasswordPolicyUserAuthMethodMixinClass extends compose(
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -30,17 +25,17 @@ export const initTenantPasswordPolicyMixin = createSingletonMixin(
       cookieConfigMixin,
       modalMixin,
     )(superclass) {
-      tenantPasswordPolicyDriver: FlowButtonDriver;
+      TenantPasswordPolicyUserAuthMethodDriver: UserAuthMethodDriver;
 
       #modal: ModalDriver;
 
       #flow: FlowDriver;
 
       #initModal() {
-        if (!this.tenantPasswordPolicyDriver.flowId) return;
+        if (!this.TenantPasswordPolicyUserAuthMethodDriver.flowId) return;
 
         this.#modal = this.createModal({
-          'data-id': 'tenant-profile-set-password-policy',
+          'data-id': 'password-policy',
         });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
@@ -55,7 +50,7 @@ export const initTenantPasswordPolicyMixin = createSingletonMixin(
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.tenantPasswordPolicyDriver.flowId,
+            flowId: this.TenantPasswordPolicyUserAuthMethodDriver.flowId,
             tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
@@ -71,17 +66,20 @@ export const initTenantPasswordPolicyMixin = createSingletonMixin(
       }
 
       #initPasswordPolicy() {
-        this.tenantPasswordPolicyDriver = new FlowButtonDriver(
-          () =>
-            this.shadowRoot?.querySelector(
-              'descope-user-attribute[data-id="edit-tenant-password-policy-button"]',
-            ),
-          { logger: this.logger },
-        );
+        this.TenantPasswordPolicyUserAuthMethodDriver =
+          new UserAuthMethodDriver(
+            () =>
+              this.shadowRoot?.querySelector(
+                'descope-user-auth-method[data-id="password-policy"]',
+              ),
+            { logger: this.logger },
+          );
 
-        this.tenantPasswordPolicyDriver.onClick(() => {
-          this.#modal?.open();
-        });
+        this.TenantPasswordPolicyUserAuthMethodDriver.onUnfulfilledButtonClick(
+          () => {
+            this.#modal?.open();
+          },
+        );
       }
 
       async onWidgetRootReady() {
