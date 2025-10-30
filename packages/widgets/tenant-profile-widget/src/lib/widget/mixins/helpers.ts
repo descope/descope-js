@@ -9,6 +9,7 @@ type FlowConfig = {
   baseCdnUrl?: string;
   refreshCookieName?: string;
   theme?: string;
+  styleId?: string;
   form?: string;
 };
 

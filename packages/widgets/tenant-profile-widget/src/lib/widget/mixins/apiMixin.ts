@@ -43,6 +43,10 @@ export const apiMixin = createSingletonMixin(
         return this.getAttribute('tenant');
       }
 
+      get styleId() {
+        return this.getAttribute('style-id');
+      }
+
       get mock() {
         return this.getAttribute('mock');
       }

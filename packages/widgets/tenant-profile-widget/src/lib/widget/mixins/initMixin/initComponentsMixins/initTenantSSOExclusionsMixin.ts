@@ -65,6 +65,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            styleId: this.styleId,
             form: JSON.stringify({
               enforceSSOExclusions: getTenantSSOExclusions(this.state),
             }),
@@ -102,6 +103,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            styleId: this.styleId,
           }),
         );
         this.#deleteFlow.onSuccess(() => {
