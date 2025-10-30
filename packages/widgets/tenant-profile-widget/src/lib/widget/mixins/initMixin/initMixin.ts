@@ -8,6 +8,7 @@ import { initTenantSSOExclusionsMixin } from './initComponentsMixins/initTenantS
 import { initTenantEnforceSSOMixin } from './initComponentsMixins/initTenantEnforceSSOMixin';
 import { initTenantNameMixin } from './initComponentsMixins/initTenantNameMixin';
 import { initWidgetRootMixin } from './initComponentsMixins/initWidgetRootMixin';
+import { initTenantPasswordPolicyMixin } from './initComponentsMixins/initTenantPasswordPolicyMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -23,6 +24,7 @@ export const initMixin = createSingletonMixin(
       initTenantEnforceSSOMixin,
       initTenantCustomAttributesMixin,
       initTenantAdminLinkSSOMixin,
+      initTenantPasswordPolicyMixin,
     )(superclass) {
       async init() {
         await super.init?.();
