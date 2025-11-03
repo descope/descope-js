@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.6](https://github.com/descope/descope-js/compare/angular-sdk-0.21.5...angular-sdk-0.21.6) (2025-11-03)
+
+### Dependency Updates
+
+* `applications-portal-widget` updated to version `0.5.0`
 ## [0.21.5](https://github.com/descope/descope-js/compare/angular-sdk-0.21.4...angular-sdk-0.21.5) (2025-10-23)
 
 ### Dependency Updates
