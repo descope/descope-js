@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.1](https://github.com/descope/descope-js/compare/vue-sdk-2.14.0...vue-sdk-2.14.1) (2025-11-03)
+
+### Dependency Updates
+
+* `applications-portal-widget` updated to version `0.5.0`
 ## [2.14.0](https://github.com/descope/descope-js/compare/vue-sdk-2.13.4...vue-sdk-2.14.0) (2025-10-23)
 
 ### Dependency Updates
