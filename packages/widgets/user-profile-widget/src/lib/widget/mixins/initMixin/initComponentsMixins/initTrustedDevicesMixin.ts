@@ -62,6 +62,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
             form: { deviceId },
           }),
         );
+
         this.#flow.onSuccess(() => {
           this.#modal.close();
           this.actions.listDevices({
@@ -71,11 +72,6 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       }
 
       #initDeviceList(deviceList: ReturnType<typeof getTrustedDevices>) {
-        this.deviceList = new DeviceListDriver(
-          () => this.shadowRoot?.querySelector('descope-trusted-devices'),
-          { logger: this.logger },
-        );
-
         this.deviceList.onRemoveDeviceClick(({ id }) => {
           this.#initModalContent(id);
           this.#modal?.open();
@@ -84,12 +80,27 @@ export const initTrustedDevicesMixin = createSingletonMixin(
         this.deviceList.data = deviceList;
       }
 
+      async #fetchTrustedDevices() {
+        await this.actions.listDevices({
+          userId: getUserId(this.state),
+        });
+      }
+
       updateDeviceList = withMemCache((data) => {
         this.deviceList.data = data;
       });
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
+
+        this.deviceList = new DeviceListDriver(
+          () => this.shadowRoot?.querySelector('descope-trusted-devices'),
+          { logger: this.logger },
+        );
+
+        if (this.deviceList.ele) {
+          await this.#fetchTrustedDevices();
+        }
 
         this.#initDeviceList(getTrustedDevices(this.state));
         this.#initModal();
