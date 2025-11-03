@@ -100,12 +100,10 @@ export const initTrustedDevicesMixin = createSingletonMixin(
 
         if (this.deviceList.ele) {
           await this.#fetchTrustedDevices();
+          this.#initDeviceList(getTrustedDevices(this.state));
+          this.#initModal();
+          this.subscribe(this.updateDeviceList.bind(this), getTrustedDevices);
         }
-
-        this.#initDeviceList(getTrustedDevices(this.state));
-        this.#initModal();
-
-        this.subscribe(this.updateDeviceList.bind(this), getTrustedDevices);
       }
     },
 );
