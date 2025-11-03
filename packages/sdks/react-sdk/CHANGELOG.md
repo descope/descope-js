@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.0](https://github.com/descope/descope-js/compare/react-sdk-2.22.0...react-sdk-2.23.0) (2025-11-03)
+
+### Dependency Updates
+
+* `applications-portal-widget` updated to version `0.5.0`
+
+### Features
+
+* add hooks to react sdk AuthProvider ([#1247](https://github.com/descope/descope-js/issues/1247)) RELEASE ([86d0aa6](https://github.com/descope/descope-js/commit/86d0aa6b64eeaac12aadfd4769b3494659a5bc28))
+
 ## [2.22.0](https://github.com/descope/descope-js/compare/react-sdk-2.21.4...react-sdk-2.22.0) (2025-10-23)
 
 ### Dependency Updates
