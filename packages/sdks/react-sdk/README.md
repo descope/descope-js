@@ -30,6 +30,26 @@ const AppRoot = () => {
       // must be configured (e.g., https://auth.app.example.com)
       // and should be set as the baseUrl property.
       // baseUrl = "https://auth.app.example.com"
+
+      // Optional: Hooks object for SDK lifecycle events
+      // hooks={{
+      //   beforeRequest: (req) => {
+      //     console.log('Before request', {
+      //       method: req.method,
+      //       path: req.path,
+      //       queryParams: req.queryParams,
+      //     });
+      //     // Modify the request as needed
+      //     return req;
+      //   },
+      //   afterRequest: async (req, res) => {
+      //     console.log('After request', {
+      //       reqMethod: req.method,
+      //       reqPath: req.path,
+      //       resStatus: res.status,
+      //     });
+      //   },
+      // }}
     >
       <App />
     </AuthProvider>
