@@ -47,6 +47,10 @@ export const apiMixin = createSingletonMixin(
         return this.getAttribute('mock');
       }
 
+      get styleId() {
+        return this.getAttribute('style-id');
+      }
+
       get api() {
         if (!this.#api) {
           this.#createSdk();
