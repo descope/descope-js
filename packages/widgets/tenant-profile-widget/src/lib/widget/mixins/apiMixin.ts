@@ -48,7 +48,7 @@ export const apiMixin = createSingletonMixin(
       }
 
       get styleId() {
-        return this.getAttribute('style-id');
+        return this.getAttribute('style-id') || 'theme';
       }
 
       get api() {
