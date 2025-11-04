@@ -18,6 +18,7 @@ export type Tenant = AssociatedTenant & {
   createdTime: number;
   disabled: boolean;
   enforceSSO: boolean;
+  enforceSSOExclusions?: string[];
 };
 
 export type TenantAdminLinkSSOResponse = {

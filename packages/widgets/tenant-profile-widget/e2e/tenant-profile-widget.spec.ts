@@ -83,12 +83,14 @@ test.describe('tenant profile widget', () => {
     name: 'New Name',
     selfProvisioningDomains: ['newDomain.com', 'example2.com'],
     enforceSSO: false,
+    enforceSSOExclusions: ['newuser@example.com', 'admin@example.com'],
   };
 
   const mockTenantAfterDelete = {
     ...mockTenant,
     selfProvisioningDomains: [],
     enforceSSO: false,
+    enforceSSOExclusions: [],
   };
 
   test.describe('tenant attributes', () => {
@@ -123,6 +125,18 @@ test.describe('tenant profile widget', () => {
         action: 'delete',
         newValue: 'false',
         modalName: 'delete-tenant-enforce-sso',
+      },
+      {
+        name: 'tenant-force-sso-exclusions-edit',
+        action: 'edit',
+        newValue: ['newuser@example.com', 'admin@example.com'],
+        modalName: 'edit-tenant-sso-exclusions',
+      },
+      {
+        name: 'tenant-force-sso-exclusions-edit',
+        action: 'delete',
+        newValue: '',
+        modalName: 'delete-tenant-sso-exclusions',
       },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
