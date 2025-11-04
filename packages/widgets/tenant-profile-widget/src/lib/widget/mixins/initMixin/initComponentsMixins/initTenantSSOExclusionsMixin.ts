@@ -49,6 +49,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
+        this.#editModal.beforeOpen = this.#initEditModalContent.bind(this);
         this.#editModal.afterClose = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
         this.syncFlowTheme(this.#editFlow);
