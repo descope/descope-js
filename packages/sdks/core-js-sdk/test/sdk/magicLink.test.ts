@@ -32,6 +32,7 @@ describe('Magic Link', () => {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
+          loginOptions: {},
         },
       );
     });
@@ -47,6 +48,7 @@ describe('Magic Link', () => {
           templateOptions: {
             ble: 'blue',
           },
+          providerId: 'some-provider',
         },
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -55,6 +57,7 @@ describe('Magic Link', () => {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
           user: { name: 'John Doe' },
+          providerId: 'some-provider',
           loginOptions: {
             templateOptions: {
               ble: 'blue',
@@ -78,7 +81,7 @@ describe('Magic Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
-          loginOptions: undefined,
+          loginOptions: {},
         },
         { token: undefined },
       );
@@ -91,6 +94,7 @@ describe('Magic Link', () => {
         {
           stepup: true,
           customClaims: { k1: 'v1' },
+          providerId: 'some-provider',
         },
         'token',
       );
@@ -99,6 +103,7 @@ describe('Magic Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
+          providerId: 'some-provider',
           loginOptions: {
             stepup: true,
             customClaims: { k1: 'v1' },
@@ -175,6 +180,7 @@ describe('Magic Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
+          loginOptions: {},
         },
       );
     });
@@ -184,12 +190,14 @@ describe('Magic Link', () => {
         templateOptions: {
           ble: 'blue',
         },
+        providerId: 'some-provider',
       });
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.magicLink.signUpOrIn + '/email',
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
+          providerId: 'some-provider',
           loginOptions: {
             templateOptions: {
               ble: 'blue',
@@ -264,7 +272,11 @@ describe('Magic Link', () => {
           'new@email.com',
           'new@email.com',
           'token',
-          { addToLoginIDs: true, onMergeUseExisting: true },
+          {
+            addToLoginIDs: true,
+            onMergeUseExisting: true,
+            providerId: 'some-provider',
+          },
         );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.magicLink.update.email,
@@ -274,6 +286,7 @@ describe('Magic Link', () => {
             URI: 'new@email.com',
             addToLoginIDs: true,
             onMergeUseExisting: true,
+            providerId: 'some-provider',
           },
           { token: 'token' },
         );

@@ -187,6 +187,9 @@ export class AppComponent {
     Set a CSP nonce that will be used for style and script tags.
     nonce="rAnd0m"
 
+    Sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows.
+    popupOrigin="https://auth.example.com"
+
     Clear screen error message on user input.
     dismissScreenErrorOnInput=true
 

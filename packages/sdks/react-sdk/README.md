@@ -30,6 +30,26 @@ const AppRoot = () => {
       // must be configured (e.g., https://auth.app.example.com)
       // and should be set as the baseUrl property.
       // baseUrl = "https://auth.app.example.com"
+
+      // Optional: Hooks object for SDK lifecycle events
+      // hooks={{
+      //   beforeRequest: (req) => {
+      //     console.log('Before request', {
+      //       method: req.method,
+      //       path: req.path,
+      //       queryParams: req.queryParams,
+      //     });
+      //     // Modify the request as needed
+      //     return req;
+      //   },
+      //   afterRequest: async (req, res) => {
+      //     console.log('After request', {
+      //       reqMethod: req.method,
+      //       reqPath: req.path,
+      //       resStatus: res.status,
+      //     });
+      //   },
+      // }}
     >
       <App />
     </AuthProvider>
@@ -162,6 +182,9 @@ const App = () => {
             // styleId="my-awesome-style"
             // Set a CSP nonce that will be used for style and script tags
             //nonce="rAnd0m"
+
+            // popupOrigin: sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows
+            //popupOrigin="https://auth.example.com"
 
             // Clear screen error message on user input
             //dismissScreenErrorOnInput={true}

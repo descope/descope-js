@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.48.0](https://github.com/descope/descope-js/compare/web-component-3.47.12...web-component-3.48.0) (2025-10-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.0`
+
+### Features
+
+* Add output to success event ([#1244](https://github.com/descope/descope-js/issues/1244)) RELEASE ([eae6357](https://github.com/descope/descope-js/commit/eae63570a342dc0919d5196fb79b4ffc035a2524))
+
+## [3.47.12](https://github.com/descope/descope-js/compare/web-component-3.47.11...web-component-3.47.12) (2025-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.2`
+## [3.47.11](https://github.com/descope/descope-js/compare/web-component-3.47.10...web-component-3.47.11) (2025-10-21)
+
+
+### Bug Fixes
+
+* better css vars logs ([#1238](https://github.com/descope/descope-js/issues/1238)) ([06528eb](https://github.com/descope/descope-js/commit/06528eb89fd5b72e7aa56fd492639c59d7993547))
+* clean up polling when umounting ([#1237](https://github.com/descope/descope-js/issues/1237)) ([15a42e4](https://github.com/descope/descope-js/commit/15a42e4e0f6dfaaf22df4f49d4e03f029c15600a))
+* oauth popup cross origin support RELEASE ([#1236](https://github.com/descope/descope-js/issues/1236)) ([5e5db40](https://github.com/descope/descope-js/commit/5e5db40aba342ca85937c6bab2d612d592036b26))
+
+## [3.47.10](https://github.com/descope/descope-js/compare/web-component-3.47.9...web-component-3.47.10) (2025-10-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.5.0`
+* `sdk-mixins` updated to version `0.13.14`
+* `web-js-sdk` updated to version `1.37.1`
 ## [3.47.9](https://github.com/descope/descope-js/compare/web-component-3.47.8...web-component-3.47.9) (2025-09-29)
 
 ### Dependency Updates
