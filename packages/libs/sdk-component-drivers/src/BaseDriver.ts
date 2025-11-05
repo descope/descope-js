@@ -47,4 +47,8 @@ export class BaseDriver {
 
     return ele;
   }
+
+  get isExists() {
+    return !!this.ele;
+  }
 }
