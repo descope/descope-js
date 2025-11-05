@@ -98,7 +98,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        if (this.deviceList.ele) {
+        if (this.deviceList.isExists) {
           await this.#fetchTrustedDevices();
           this.#initDeviceList(getTrustedDevices(this.state));
           this.#initModal();
