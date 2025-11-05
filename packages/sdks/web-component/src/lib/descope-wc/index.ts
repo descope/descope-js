@@ -10,4 +10,9 @@ export default DescopeWc;
 
 export type ILogger = Partial<DescopeWc['logger']>;
 
-export type { AutoFocusOptions, ThemeOptions, CustomStorage } from '../types';
+export type {
+  AutoFocusOptions,
+  ThemeOptions,
+  CustomStorage,
+  FlowJWTResponse,
+} from '../types';

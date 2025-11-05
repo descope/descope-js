@@ -1,7 +1,7 @@
 import { SdkFnWrapper, wrapWith } from '@descope/core-js-sdk';
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook, CoreSdk } from '../../types';
-import { addHooks, getUserFromResponse } from '../helpers';
+import { addHooks, getUserAndLastAuthFromResponse } from '../helpers';
 import {
   getLastUserLoginId,
   removeLastUserLoginId,
@@ -35,12 +35,14 @@ export const withLastLoggedInUser =
       }) as any;
     }
     const afterRequest: AfterRequestHook = async (_req, res) => {
-      const userDetails = await getUserFromResponse(res);
-      const loginId = userDetails?.loginIds?.[0];
-      const displayName = userDetails?.name;
+      const { userInfo, lastAuth } = await getUserAndLastAuthFromResponse(res);
+      const loginId = userInfo?.loginIds?.[0];
+      const displayName = userInfo?.name;
       if (loginId) {
         setLastUserLoginId(loginId);
         setLastUserDisplayName(displayName);
+      } else if (lastAuth?.loginId) {
+        setLastUserLoginId(lastAuth.loginId);
       }
     };
 

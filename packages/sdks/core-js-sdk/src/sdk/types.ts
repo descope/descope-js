@@ -327,6 +327,8 @@ export type FlowResponse = {
     log: string;
     level?: 'info' | 'debug' | 'warn' | 'error';
   }[];
+  // general output configured inside the flow's end step
+  output?: Record<string, any>;
 };
 
 export type Options = {

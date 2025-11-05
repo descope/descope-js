@@ -22,6 +22,7 @@ describe('NOTP', () => {
       expect(mockHttpClient.post).toHaveBeenCalledWith(apiPaths.notp.signUp, {
         loginId: 'loginId',
         user: { name: 'John Doe' },
+        loginOptions: {},
       });
     });
 
@@ -35,11 +36,13 @@ describe('NOTP', () => {
           templateOptions: {
             ble: 'blue',
           },
+          providerId: 'some-provider',
         },
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(apiPaths.notp.signUp, {
         loginId: '',
         user: { name: 'John Doe' },
+        providerId: 'some-provider',
         loginOptions: {
           templateOptions: {
             ble: 'blue',
@@ -78,7 +81,7 @@ describe('NOTP', () => {
         apiPaths.notp.signIn,
         {
           loginId: 'loginId',
-          loginOptions: undefined,
+          loginOptions: {},
         },
         { token: undefined },
       );
@@ -90,6 +93,7 @@ describe('NOTP', () => {
         {
           stepup: true,
           customClaims: { k1: 'v1' },
+          providerId: 'some-provider',
         },
         'token',
       );
@@ -97,6 +101,7 @@ describe('NOTP', () => {
         apiPaths.notp.signIn,
         {
           loginId: '',
+          providerId: 'some-provider',
           loginOptions: {
             stepup: true,
             customClaims: { k1: 'v1' },
@@ -135,6 +140,7 @@ describe('NOTP', () => {
         apiPaths.notp.signUpOrIn,
         {
           loginId: 'loginId',
+          loginOptions: {},
         },
       );
     });
@@ -144,11 +150,13 @@ describe('NOTP', () => {
         templateOptions: {
           ble: 'blue',
         },
+        providerId: 'some-provider',
       });
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.notp.signUpOrIn,
         {
           loginId: '',
+          providerId: 'some-provider',
           loginOptions: {
             templateOptions: {
               ble: 'blue',

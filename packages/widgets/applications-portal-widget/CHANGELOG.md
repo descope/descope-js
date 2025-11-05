@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.17...applications-portal-widget-0.5.0) (2025-11-03)
+
+
+### Features
+
+* Add custom app to AppsListPortal widget ([#1248](https://github.com/descope/descope-js/issues/1248)) ([ff53ce4](https://github.com/descope/descope-js/commit/ff53ce401f50cdf3f77618f11e65f38cc9528b7e))
+
+## [0.4.17](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.16...applications-portal-widget-0.4.17) (2025-10-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.0`
+## [0.4.16](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.15...applications-portal-widget-0.4.16) (2025-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.2`
+## [0.4.15](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.14...applications-portal-widget-0.4.15) (2025-10-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.1`
+* `sdk-helpers` updated to version `0.5.0`
+* `sdk-mixins` updated to version `0.13.14`
+* `sdk-component-drivers` updated to version `0.7.0`
 ## [0.4.14](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.13...applications-portal-widget-0.4.14) (2025-09-29)
 
 ### Dependency Updates

@@ -35,6 +35,7 @@ export {
 
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
+export type { JWTResponse } from '@descope/core-js-sdk';
 export type { OneTapConfig } from './sdk/fedcm';
 export type { CookieConfig } from './enhancers/withPersistTokens/types';
 export type { FlowNonceOptions } from './enhancers/withFlowNonce/types';

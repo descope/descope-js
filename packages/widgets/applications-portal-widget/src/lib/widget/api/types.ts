@@ -7,6 +7,7 @@ export type HttpClient = Sdk['httpClient'];
 export enum SSOAppType {
   oidc = 'oidc',
   saml = 'saml',
+  custom = 'custom',
 }
 
 interface App {
@@ -31,4 +32,14 @@ export interface OidcApplication extends App {
   };
 }
 
-export type SSOApplication = SamlApplication | OidcApplication;
+export interface CustomApplication extends App {
+  appType: SSOAppType.custom;
+  customSettings?: {
+    loginPageUrl: string;
+  };
+}
+
+export type SSOApplication =
+  | SamlApplication
+  | OidcApplication
+  | CustomApplication;

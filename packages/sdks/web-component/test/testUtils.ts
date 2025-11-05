@@ -23,6 +23,7 @@ export const generateSdkResponse = ({
   openInNewTabUrl = '',
   nativeResponseType = '',
   nativeResponsePayload = {},
+  output = {},
 } = {}) => ({
   ok,
   data: {
@@ -33,7 +34,7 @@ export const generateSdkResponse = ({
     redirect: { url: redirectUrl },
     executionId,
     status,
-    authInfo: 'auth info',
+    authInfo: { refreshJwt: 'refreshJwt' },
     webauthn: {
       options: webAuthnOptions,
       transactionId: webAuthnTransactionId,
@@ -49,6 +50,7 @@ export const generateSdkResponse = ({
       type: nativeResponseType,
       payload: nativeResponsePayload,
     },
+    output,
   },
   error: {
     errorMessage: requestErrorMessage,

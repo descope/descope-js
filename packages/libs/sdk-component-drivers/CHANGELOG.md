@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.6.2...sdk-component-drivers-0.7.0) (2025-10-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.5.0`
+
+### Features
+
+* User Profile Widget Trusted Devices ([#1197](https://github.com/descope/descope-js/issues/1197)) ([c04c839](https://github.com/descope/descope-js/commit/c04c8391a4725c63e351e77161853f33ca339699))
+
 ## [0.6.2](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.6.1...sdk-component-drivers-0.6.2) (2025-09-28)
 
 ### Dependency Updates
