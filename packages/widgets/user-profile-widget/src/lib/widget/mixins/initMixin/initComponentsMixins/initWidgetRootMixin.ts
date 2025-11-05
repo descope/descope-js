@@ -11,7 +11,6 @@ import {
 } from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { getUserId } from '../../../state/selectors';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
