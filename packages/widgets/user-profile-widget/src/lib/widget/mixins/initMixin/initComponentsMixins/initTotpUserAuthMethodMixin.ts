@@ -31,25 +31,29 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
     )(superclass) {
       totpUserAuthMethod: UserAuthMethodDriver;
 
-      #modal: ModalDriver;
+      #addModal: ModalDriver;
 
-      #flow: FlowDriver;
+      #addFlow: FlowDriver;
 
-      #initModal() {
+      #removeTotpModal: ModalDriver;
+
+      #removeTotpFlow: FlowDriver;
+
+      #initAddModal() {
         if (!this.totpUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'totp' });
-        this.#flow = new FlowDriver(
-          () => this.#modal.ele?.querySelector('descope-wc'),
+        this.#addModal = this.createModal({ 'data-id': 'totp' });
+        this.#addFlow = new FlowDriver(
+          () => this.#addModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#modal.afterClose = this.#initModalContent.bind(this);
-        this.#initModalContent();
-        this.syncFlowTheme(this.#flow);
+        this.#addModal.afterClose = this.#initAddModalContent.bind(this);
+        this.#initAddModalContent();
+        this.syncFlowTheme(this.#addFlow);
       }
 
-      #initModalContent() {
-        this.#modal.setContent(
+      #initAddModalContent() {
+        this.#addModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
             flowId: this.totpUserAuthMethod.flowId,
@@ -60,8 +64,38 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
             theme: this.theme,
           }),
         );
-        this.#flow.onSuccess(() => {
-          this.#modal.close();
+        this.#addFlow.onSuccess(() => {
+          this.#addModal.close();
+          this.actions.getMe();
+        });
+      }
+
+      #initRemoveTotpModal() {
+        this.#removeTotpModal = this.createModal({ 'data-id': 'remove-totp' });
+        this.#removeTotpFlow = new FlowDriver(
+          () => this.#removeTotpModal.ele?.querySelector('descope-wc'),
+          { logger: this.logger },
+        );
+        this.#removeTotpModal.afterClose =
+          this.#initRemoveTotpModalContent.bind(this);
+        this.#initRemoveTotpModalContent();
+        this.syncFlowTheme(this.#removeTotpFlow);
+      }
+
+      #initRemoveTotpModalContent() {
+        this.#removeTotpModal.setContent(
+          createFlowTemplate({
+            projectId: this.projectId,
+            flowId: this.totpUserAuthMethod.fulfilledFlowId,
+            baseUrl: this.baseUrl,
+            baseStaticUrl: this.baseStaticUrl,
+            baseCdnUrl: this.baseCdnUrl,
+            refreshCookieName: this.refreshCookieName,
+            theme: this.theme,
+          }),
+        );
+        this.#removeTotpFlow.onSuccess(() => {
+          this.#removeTotpModal.close();
           this.actions.getMe();
         });
       }
@@ -76,7 +110,11 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
         );
 
         this.totpUserAuthMethod.onUnfulfilledButtonClick(() => {
-          this.#modal?.open();
+          this.#addModal?.open();
+        });
+
+        this.totpUserAuthMethod.onFulfilledButtonClick(() => {
+          this.#removeTotpModal?.open();
         });
       }
 
@@ -90,7 +128,8 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initTotpAuthMethod();
-        this.#initModal();
+        this.#initAddModal();
+        this.#initRemoveTotpModal();
 
         this.#onFulfilledUpdate(getHasTotp(this.state));
 
