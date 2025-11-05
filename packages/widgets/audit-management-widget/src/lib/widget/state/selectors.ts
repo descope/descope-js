@@ -6,6 +6,10 @@ export const getRawAuditList = (state: State) => state.auditList.data;
 export const getSelectedAuditId = (state: State) => state.selectedAuditId;
 export const getSearchParams = (state: State) => state.searchParams;
 
+const filterEmptyFields = (audit: Record<string, any>) =>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Object.fromEntries(Object.entries(audit).filter(([_, v]) => !!v));
+
 export const getAuditList = createSelector(getRawAuditList, (audits) =>
   audits.map((audit) => {
     const {
@@ -37,7 +41,7 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
       ...auditRest
     } = audit || {};
 
-    return {
+    const ret = {
       ...auditRest,
       data,
       ...conditionalObj('type', capitalize(type)),
@@ -60,6 +64,8 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         ? 'N/A'
         : new Date(Number(occurred) || 0).toLocaleString(),
     };
+
+    return filterEmptyFields(ret);
   }),
 );
 

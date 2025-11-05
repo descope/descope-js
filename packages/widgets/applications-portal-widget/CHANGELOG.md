@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.17...applications-portal-widget-0.5.0) (2025-11-03)
+
+
+### Features
+
+* Add custom app to AppsListPortal widget ([#1248](https://github.com/descope/descope-js/issues/1248)) ([ff53ce4](https://github.com/descope/descope-js/commit/ff53ce401f50cdf3f77618f11e65f38cc9528b7e))
+
 ## [0.4.17](https://github.com/descope/descope-js/compare/applications-portal-widget-0.4.16...applications-portal-widget-0.4.17) (2025-10-23)
 
 ### Dependency Updates
