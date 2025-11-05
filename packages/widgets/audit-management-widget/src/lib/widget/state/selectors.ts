@@ -7,6 +7,7 @@ export const getSelectedAuditId = (state: State) => state.selectedAuditId;
 export const getSearchParams = (state: State) => state.searchParams;
 
 const filterEmptyFields = (audit: Record<string, any>) =>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Object.fromEntries(Object.entries(audit).filter(([_, v]) => !!v));
 
 export const getAuditList = createSelector(getRawAuditList, (audits) =>
