@@ -71,6 +71,8 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       }
 
       #initRemoveTotpModal() {
+        if (!this.totpUserAuthMethod.fulfilledFlowId) return;
+
         this.#removeTotpModal = this.createModal({ 'data-id': 'remove-totp' });
         this.#removeTotpFlow = new FlowDriver(
           () => this.#removeTotpModal.ele?.querySelector('descope-wc'),
