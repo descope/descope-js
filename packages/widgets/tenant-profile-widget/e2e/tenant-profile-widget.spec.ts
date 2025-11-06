@@ -284,7 +284,7 @@ test.describe('tenant profile widget', () => {
         const formAttr = await descopeWc.getAttribute('form');
 
         // Parse the form JSON and verify it contains the updated value
-        const formData = JSON.parse(formAttr || '{}');
+        const formData = JSON.parse(formAttr);
         expect(formData[attr.formField]).toEqual(attr.expectedFormValue);
       });
     }
