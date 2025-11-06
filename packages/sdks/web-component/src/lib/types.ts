@@ -161,18 +161,34 @@ export interface ScriptElement extends HTMLDivElement {
 }
 
 export type ScriptModule = {
-  stop: () => void;
-  start: () => void;
   /**
-   * Refreshes any tokens or state that might be needed before form submission
-   * Currently implemented for reCAPTCHA to ensure we have a fresh token
+   * Unique identifier of the module.
+   */
+  id: string;
+  /**
+   * Notifies the module that it should start any profiling or monitoring.
+   */
+  start?: () => void;
+  /**
+   * Notifies the module that it should stop any profiling or monitoring.
+   */
+  stop?: () => void;
+  /**
+   * Presents the user with any required interaction to get a refreshed token or state,
+   * e.g., a challenge or captcha.
+   *
+   * Modules should return a value of true if the presentation completed successfully,
+   * false if it was cancelled by the user, and throw an error in case of failure.
+   *
+   * This is called before form submission (via a next call) after a button click.
+   */
+  present?: () => Promise<boolean>;
+  /**
+   * Refreshes any tokens or state that might be needed before form submission.
+   *
+   * Modules should throw an error in case of failure.
    */
   refresh?: () => Promise<void>;
-  /**
-   * An optional timeout in milliseconds to limit the time it takes the refresh
-   * operation to complete
-   */
-  refreshTimeout?: () => number;
 };
 
 export type ClientScript = {
