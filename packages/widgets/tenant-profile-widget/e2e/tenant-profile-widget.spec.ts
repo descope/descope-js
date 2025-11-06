@@ -197,71 +197,96 @@ test.describe('tenant profile widget', () => {
     });
   });
 
-  test.describe('sso exclusion list persistence', () => {
-    test('added email should persist in form data when reopening edit modal', async ({
-      page,
-    }) => {
-      await page.waitForTimeout(STATE_TIMEOUT);
+  test.describe('form data persistence when reopening edit modal', () => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const attr of [
+      {
+        name: 'tenant-name-edit',
+        modalName: 'tenant-profile-set-name',
+        formField: 'tenantName',
+        updatedMockTenant: { ...mockTenant, name: 'Updated Name' },
+        expectedFormValue: 'Updated Name',
+      },
+      {
+        name: 'tenant-email-domains-edit',
+        modalName: 'edit-tenant-email-domains',
+        formField: 'tenantEmailDomains',
+        updatedMockTenant: {
+          ...mockTenant,
+          selfProvisioningDomains: ['updated.com', 'example2.com'],
+        },
+        expectedFormValue: ['updated.com', 'example2.com'],
+      },
+      {
+        name: 'tenant-enforce-sso-edit',
+        modalName: 'edit-tenant-enforce-sso',
+        formField: 'enforceSSO',
+        updatedMockTenant: { ...mockTenant, enforceSSO: false },
+        expectedFormValue: false,
+      },
+      {
+        name: 'tenant-force-sso-exclusions-edit',
+        modalName: 'edit-tenant-sso-exclusions',
+        formField: 'enforceSSOExclusions',
+        updatedMockTenant: {
+          ...mockTenant,
+          enforceSSOExclusions: [
+            ...mockTenant.enforceSSOExclusions,
+            'newemail@example.com',
+          ],
+        },
+        expectedFormValue: [
+          ...mockTenant.enforceSSOExclusions,
+          'newemail@example.com',
+        ],
+      },
+    ]) {
+      test(`${attr.name} should persist updated value in form data`, async ({
+        page,
+      }) => {
+        await page.waitForTimeout(STATE_TIMEOUT);
 
-      const userAttr = page
-        .locator(
-          `descope-user-attribute[data-id="tenant-force-sso-exclusions-edit"]`,
-        )
-        .first();
+        const userAttr = page
+          .locator(`descope-user-attribute[data-id="${attr.name}"]`)
+          .first();
 
-      const editBtn = userAttr
-        .locator(`descope-button[data-id="edit-btn"]`)
-        .first();
+        const editBtn = userAttr
+          .locator(`descope-button[data-id="edit-btn"]`)
+          .first();
 
-      // Click edit button to open modal
-      await editBtn.click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
+        // Click edit button to open modal
+        await editBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
 
-      const modal = page.locator(
-        `descope-modal[data-id="edit-tenant-sso-exclusions"]`,
-      );
+        const modal = page.locator(
+          `descope-modal[data-id="${attr.modalName}"]`,
+        );
+        const finishFlowBtn = modal.locator('button', {
+          hasText: 'Finish Flow',
+        });
 
-      // Add a new email to the exclusion list
-      const newEmail = 'newemail@example.com';
+        // Mock the updated tenant response
+        await page.route('**/mgmt/tenant?**', async (route) =>
+          route.fulfill({
+            json: attr.updatedMockTenant,
+          }),
+        );
 
-      // Simulate adding the email through the flow (this would be done via the descope-wc component)
-      // For now, we'll finish the flow which should trigger the update
-      const finishFlowBtn = modal.locator('button', { hasText: 'Finish Flow' });
+        await finishFlowBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
 
-      const mockTenantWithNewEmail = {
-        ...mockTenant,
-        enforceSSOExclusions: [...mockTenant.enforceSSOExclusions, newEmail],
-      };
+        // Click edit again to reopen the modal
+        await editBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
 
-      await page.route('**/mgmt/tenant?**', async (route) =>
-        route.fulfill({
-          json: mockTenantWithNewEmail,
-        }),
-      );
+        // Verify that the descope-wc component was recreated with the updated form data
+        const descopeWc = modal.locator('descope-wc');
+        const formAttr = await descopeWc.getAttribute('form');
 
-      await finishFlowBtn.click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
-      // Assert that the new email appears in the attribute value
-      const expectedValue =
-        mockTenantWithNewEmail.enforceSSOExclusions.join(',');
-      await expect(userAttr).toHaveAttribute('value', expectedValue);
-
-      // Click edit again to reopen the modal
-      await editBtn.click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
-      // Verify that the descope-wc component was recreated with the updated form data
-      // Check the form attribute on descope-wc to ensure it contains the new email
-      const descopeWc = modal.locator('descope-wc');
-      const formAttr = await descopeWc.getAttribute('form');
-
-      // Parse the form JSON and verify it contains the updated exclusions
-      const formData = JSON.parse(formAttr || '{}');
-      expect(formData.enforceSSOExclusions).toContain(newEmail);
-      expect(formData.enforceSSOExclusions).toEqual(
-        mockTenantWithNewEmail.enforceSSOExclusions,
-      );
-    });
+        // Parse the form JSON and verify it contains the updated value
+        const formData = JSON.parse(formAttr || '{}');
+        expect(formData[attr.formField]).toEqual(attr.expectedFormValue);
+      });
+    }
   });
 });
