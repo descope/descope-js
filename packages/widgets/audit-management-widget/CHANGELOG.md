@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.18](https://github.com/descope/descope-js/compare/audit-management-widget-0.5.17...audit-management-widget-0.5.18) (2025-11-05)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.15`
+* `sdk-component-drivers` updated to version `0.7.1`
+
+### Bug Fixes
+
+* Hide empty audit widget fields ([#1249](https://github.com/descope/descope-js/issues/1249)) ([62035ef](https://github.com/descope/descope-js/commit/62035ef0883357d185d7042d3eb73fd8015f799e))
+
 ## [0.5.17](https://github.com/descope/descope-js/compare/audit-management-widget-0.5.16...audit-management-widget-0.5.17) (2025-10-23)
 
 ### Dependency Updates
