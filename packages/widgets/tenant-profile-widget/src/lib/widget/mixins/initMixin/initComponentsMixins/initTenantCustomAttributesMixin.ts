@@ -157,7 +157,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
             { logger: this.logger },
           );
-          this.#editModals[editFlowId].afterClose =
+          this.#editModals[editFlowId].beforeOpen =
             this.#initEditModalContent.bind(this, editFlowId);
 
           compInstance.onEditClick(() => {
@@ -187,7 +187,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               ),
             { logger: this.logger },
           );
-          this.#deleteModals[deleteFlowId].afterClose =
+          this.#deleteModals[deleteFlowId].beforeOpen =
             this.#initDeleteModalContent.bind(this, deleteFlowId);
 
           compInstance.onDeleteClick(() => {
