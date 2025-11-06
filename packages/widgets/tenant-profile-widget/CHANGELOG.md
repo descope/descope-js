@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.3.0...tenant-profile-widget-0.3.1) (2025-11-06)
+
+
+### Bug Fixes
+
+* sso exclusion list doesn't update modal's input box RELEASE ([#1255](https://github.com/descope/descope-js/issues/1255)) ([e9b6940](https://github.com/descope/descope-js/commit/e9b6940408d7199ff550817e6f5625cdee3fd07a))
+
+## [0.3.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.2.24...tenant-profile-widget-0.3.0) (2025-11-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.1`
+* `web-js-sdk` updated to version `1.38.1`
+* `web-component` updated to version `3.48.2`
+* `sdk-mixins` updated to version `0.13.16`
+* `sdk-component-drivers` updated to version `0.8.0`
+
+### Features
+
+* Add set password policy  to tenant profile widget ([#1251](https://github.com/descope/descope-js/issues/1251)) ([8ce3d85](https://github.com/descope/descope-js/commit/8ce3d85c31c766d3868e3b0f4ba4c72edb94643e))
+
 ## [0.2.24](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.2.23...tenant-profile-widget-0.2.24) (2025-11-05)
 
 ### Dependency Updates

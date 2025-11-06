@@ -72,6 +72,7 @@ export type UserResponse = User & {
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
   status: string;
+  test: boolean;
 };
 
 export type Tenant = {

@@ -15,6 +15,7 @@ export const mockTenant: Tenant = {
   createdTime: Date.now(),
   disabled: false,
   enforceSSO: true,
+  enforceSSOExclusions: ['user1@example.com', 'user2@example.com'],
 };
 
 export const mockTenantAdminLinkSSO: TenantAdminLinkSSOResponse = {
