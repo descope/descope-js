@@ -409,14 +409,14 @@ describe('web-component', () => {
       expect(wc.shouldUsePopupPostMessage()).toBe(false);
     });
 
-    it('shouldUsePopupPostMessage returns false for same-origin attribute', async () => {
+    it('shouldUsePopupPostMessage returns true when popup-origin value has the same window origin', async () => {
       pageContent = '<div>Loaded popup test</div>';
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-origin="${window.location.origin}"></descope-wc>`;
       const wc: any = document.querySelector('descope-wc');
       await waitFor(() => screen.getByShadowText('Loaded popup test'), {
         timeout: WAIT_TIMEOUT,
       });
-      expect(wc.shouldUsePopupPostMessage()).toBe(false);
+      expect(wc.shouldUsePopupPostMessage()).toBe(true);
     });
 
     it('shouldUsePopupPostMessage returns false for invalid origin attribute', async () => {
