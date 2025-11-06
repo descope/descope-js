@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.48.2](https://github.com/descope/descope-js/compare/web-component-3.48.1...web-component-3.48.2) (2025-11-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.16`
+* `web-js-sdk` updated to version `1.38.1`
+## [3.48.1](https://github.com/descope/descope-js/compare/web-component-3.48.0...web-component-3.48.1) (2025-11-05)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.15`
+
+### Bug Fixes
+
+* enforce using post message when valid popup origin provided RELEASE ([#1256](https://github.com/descope/descope-js/issues/1256)) ([e322b44](https://github.com/descope/descope-js/commit/e322b445995cfb85b4148af61abb06ab4398f3c8))
+
 ## [3.48.0](https://github.com/descope/descope-js/compare/web-component-3.47.12...web-component-3.48.0) (2025-10-23)
 
 ### Dependency Updates
