@@ -1896,7 +1896,7 @@ class DescopeWc extends BaseDescopeWc {
       // only attempt to present modules that actually have a present function
       try {
         if (typeof module.present === 'function') {
-          const completed = await module.present(); // esline-disable-line no-await-in-loop
+          const completed = await module.present(); // eslint-disable-line no-await-in-loop
           if (!completed) {
             this.loggerWrapper.debug(
               `Sdk script ${module.id} cancelled the submission`,
