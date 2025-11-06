@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.5...user-profile-widget-0.7.6) (2025-11-06)
+
+## [0.7.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.4...user-profile-widget-0.7.5) (2025-11-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.1`
+* `web-js-sdk` updated to version `1.38.1`
+* `web-component` updated to version `3.48.2`
+* `sdk-mixins` updated to version `0.13.16`
+* `sdk-component-drivers` updated to version `0.8.0`
+## [0.7.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.3...user-profile-widget-0.7.4) (2025-11-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.48.1`
+* `sdk-mixins` updated to version `0.13.15`
+* `sdk-component-drivers` updated to version `0.7.1`
+
+### Bug Fixes
+
+* Fetch trusted devices if needed ([#1252](https://github.com/descope/descope-js/issues/1252)) ([63feefd](https://github.com/descope/descope-js/commit/63feefd793d376c75bd6be3b4e85e1a101d9d59b))
+
 ## [0.7.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.2...user-profile-widget-0.7.3) (2025-10-23)
 
 ### Dependency Updates

@@ -1993,10 +1993,9 @@ class DescopeWc extends BaseDescopeWc {
     this.dispatchEvent(new CustomEvent(eventName, { detail }));
   }
 
-  // Determine if we should use postMessage fallback (popup-origin attribute exists & differs from current origin)
+  // Determine if we should use postMessage fallback (popup-origin attribute exists)
   protected shouldUsePopupPostMessage(): boolean {
     if (!this.popupOrigin) return false;
-    if (this.popupOrigin === window.location.origin) return false; // same origin -> keep BroadcastChannel
     try {
       // validate origin format
       // eslint-disable-next-line no-new
