@@ -1891,12 +1891,12 @@ class DescopeWc extends BaseDescopeWc {
     for (const module of sdkScriptsModules) {
       // only present modules that are part of the current screen
       if (!screenScriptIds.includes(module.id)) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
       // only attempt to present modules that actually have a present function
       try {
         if (typeof module.present === 'function') {
-          const completed = await module.present();
+          const completed = await module.present(); // esline-disable-line no-await-in-loop
           if (!completed) {
             this.loggerWrapper.debug(
               `Sdk script ${module.id} cancelled the submission`,
