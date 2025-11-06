@@ -50,7 +50,6 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#editModal.beforeOpen = this.#initEditModalContent.bind(this);
-        this.#editModal.afterClose = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
         this.syncFlowTheme(this.#editFlow);
       }
@@ -87,7 +86,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
+        this.#deleteModal.beforeOpen = this.#initDeleteModalContent.bind(this);
         this.#initDeleteModalContent();
         this.syncFlowTheme(this.#deleteFlow);
       }

@@ -45,7 +45,7 @@ export const initTenantNameMixin = createSingletonMixin(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#editModal.afterClose = this.#initEditModalContent.bind(this);
+        this.#editModal.beforeOpen = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
         this.syncFlowTheme(this.#editFlow);
       }
