@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.7.1...sdk-component-drivers-0.8.0) (2025-11-06)
+
+
+### Features
+
+* Add set password policy  to tenant profile widget ([#1251](https://github.com/descope/descope-js/issues/1251)) ([8ce3d85](https://github.com/descope/descope-js/commit/8ce3d85c31c766d3868e3b0f4ba4c72edb94643e))
+
 ## [0.7.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.7.0...sdk-component-drivers-0.7.1) (2025-11-05)
 
 
