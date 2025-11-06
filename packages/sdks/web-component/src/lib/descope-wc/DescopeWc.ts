@@ -1915,7 +1915,6 @@ class DescopeWc extends BaseDescopeWc {
 
     // Run all module refresh calls concurrently
     let promises: Promise<void>[] = [];
-    let timeout = SDK_SCRIPTS_LOAD_TIMEOUT;
 
     // eslint-disable-next-line no-restricted-syntax
     for (const module of sdkScriptsModules) {
@@ -1928,13 +1927,14 @@ class DescopeWc extends BaseDescopeWc {
     if (promises.length > 0) {
       try {
         // use timeout to prevent hanging if refresh takes too long
-        await timeoutPromise(timeout, Promise.all(promises), null);
+        await timeoutPromise(
+          SDK_SCRIPTS_LOAD_TIMEOUT,
+          Promise.all(promises),
+          null,
+        );
       } catch (e) {
         // ignore error and let the backend handle the lack of token
-        this.loggerWrapper.error(
-          `Failed to refresh ${module.id} script module`,
-          e.message,
-        );
+        this.loggerWrapper.error('Failed to refresh script module', e.message);
       }
     }
 
