@@ -8,6 +8,7 @@ type FlowConfig = {
   baseCdnUrl?: string;
   refreshCookieName?: string;
   theme?: string;
+  'style-id'?: string;
   form?: string;
   outboundAppId?: string;
 };

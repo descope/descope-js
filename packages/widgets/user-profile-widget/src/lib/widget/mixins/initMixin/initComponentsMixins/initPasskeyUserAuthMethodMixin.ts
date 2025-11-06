@@ -62,6 +62,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#addFlow.onSuccess(() => {
@@ -93,6 +94,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#removeFlow.onSuccess(() => {

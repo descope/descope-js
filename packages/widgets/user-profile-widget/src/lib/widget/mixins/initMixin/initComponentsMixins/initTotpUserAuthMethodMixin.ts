@@ -62,6 +62,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#addFlow.onSuccess(() => {
