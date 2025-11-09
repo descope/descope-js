@@ -2618,6 +2618,7 @@ describe('web-component', () => {
           baseUrl: 'http://base.url',
         }),
         expect.any(Function),
+        expect.any(Object),
       ),
     );
 
@@ -6144,6 +6145,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
@@ -6216,6 +6218,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
@@ -6255,6 +6258,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
@@ -6295,6 +6299,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
 
