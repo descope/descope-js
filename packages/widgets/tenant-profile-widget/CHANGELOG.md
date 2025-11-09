@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.3.1...tenant-profile-widget-0.4.0) (2025-11-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.2`
+* `web-js-sdk` updated to version `1.38.2`
+* `web-component` updated to version `3.48.3`
+* `sdk-helpers` updated to version `0.5.1`
+* `sdk-mixins` updated to version `0.14.0`
+* `sdk-component-drivers` updated to version `0.8.1`
+
+### Features
+
+* Add style id attribute to all widgets RELEASE ([#1253](https://github.com/descope/descope-js/issues/1253)) ([9f73cbc](https://github.com/descope/descope-js/commit/9f73cbc9f469d6c707f7ebc24796c74f6a87fba8))
+
 ## [0.3.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.3.0...tenant-profile-widget-0.3.1) (2025-11-06)
 
 

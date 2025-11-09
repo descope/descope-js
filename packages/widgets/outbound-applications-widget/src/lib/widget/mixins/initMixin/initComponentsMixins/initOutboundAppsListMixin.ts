@@ -112,6 +112,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             outboundAppId: appId,
           }),
         );
@@ -136,6 +137,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             outboundAppId: appId,
           }),
         );
