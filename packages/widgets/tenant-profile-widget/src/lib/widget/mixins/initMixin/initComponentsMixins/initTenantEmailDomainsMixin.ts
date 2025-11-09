@@ -65,6 +65,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             form: JSON.stringify({
               tenantEmailDomains: getTenantEmailDomains(this.state),
             }),
@@ -102,6 +103,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

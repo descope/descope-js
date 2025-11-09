@@ -13,6 +13,7 @@ type FlowConfig = {
   baseCdnUrl?: string;
   refreshCookieName?: string;
   theme?: string;
+  'style-id'?: string;
   client?: string;
   tenant?: string;
 };
