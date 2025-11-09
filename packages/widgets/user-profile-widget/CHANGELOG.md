@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.6...user-profile-widget-0.8.0) (2025-11-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.2`
+* `web-js-sdk` updated to version `1.38.2`
+* `web-component` updated to version `3.48.3`
+* `sdk-helpers` updated to version `0.5.1`
+* `sdk-mixins` updated to version `0.14.0`
+* `sdk-component-drivers` updated to version `0.8.1`
+
+### Features
+
+* Add style id attribute to all widgets RELEASE ([#1253](https://github.com/descope/descope-js/issues/1253)) ([9f73cbc](https://github.com/descope/descope-js/commit/9f73cbc9f469d6c707f7ebc24796c74f6a87fba8))
+
 ## [0.7.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.5...user-profile-widget-0.7.6) (2025-11-06)
 
 ## [0.7.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.7.4...user-profile-widget-0.7.5) (2025-11-06)
