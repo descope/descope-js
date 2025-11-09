@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.6](https://github.com/descope/descope-js/compare/escape-markdown-0.1.5...escape-markdown-0.1.6) (2025-11-09)
+
 ## [0.1.5](https://github.com/descope/descope-js/compare/escape-markdown-0.1.4...escape-markdown-0.1.5) (2025-02-11)
 
 ## [0.1.4](https://github.com/descope/descope-js/compare/escape-markdown-0.1.3...escape-markdown-0.1.4) (2025-02-01)
