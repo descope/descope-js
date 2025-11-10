@@ -67,6 +67,7 @@
     "@descope/user-management-widget": "workspace:*",
     "@descope/user-profile-widget": "workspace:*",
     "@descope/applications-portal-widget": "workspace:*",
+    "@descope/outbound-applications-widget": "workspace:*",
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
     "@descope/core-js-sdk": "workspace:*",

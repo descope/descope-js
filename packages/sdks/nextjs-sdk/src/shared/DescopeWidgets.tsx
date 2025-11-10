@@ -11,8 +11,8 @@ import type {
 	AuditManagement as AuditManagementWC,
 	UserProfile as UserProfileWC,
 	ApplicationsPortal as ApplicationsPortalWC,
-	TenantProfile as TenantProfileWC
-  OutboundApplications as OutboundApplicationsWC
+	TenantProfile as TenantProfileWC,
+	OutboundApplications as OutboundApplicationsWC
 } from '@descope/react-sdk';
 
 export type UserManagementProps = React.ComponentProps<typeof UserManagementWC>;
@@ -28,7 +28,9 @@ export type ApplicationsPortalProps = React.ComponentProps<
 	typeof ApplicationsPortalWC
 >;
 export type TenantProfileProps = React.ComponentProps<typeof TenantProfileWC>;
-export type OutboundApplicationsProps = React.ComponentProps<typeof OutboundApplicationsWC>;
+export type OutboundApplicationsProps = React.ComponentProps<
+	typeof OutboundApplicationsWC
+>;
 
 function makeWidget<T extends Record<string, any>>(name: string) {
 	return dynamic<T>(
