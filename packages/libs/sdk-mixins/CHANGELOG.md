@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.16...sdk-mixins-0.14.0) (2025-11-09)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.8.1`
+* `sdk-helpers` updated to version `0.5.1`
+
+### Features
+
+* Add style id attribute to all widgets RELEASE ([#1253](https://github.com/descope/descope-js/issues/1253)) ([9f73cbc](https://github.com/descope/descope-js/commit/9f73cbc9f469d6c707f7ebc24796c74f6a87fba8))
+
 ## [0.13.16](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.15...sdk-mixins-0.13.16) (2025-11-06)
 
 ### Dependency Updates

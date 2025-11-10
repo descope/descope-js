@@ -60,6 +60,7 @@ export const initAvatarMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#flow.onSuccess(() => {
