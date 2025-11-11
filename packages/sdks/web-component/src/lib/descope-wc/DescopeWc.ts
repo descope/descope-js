@@ -1066,6 +1066,9 @@ class DescopeWc extends BaseDescopeWc {
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
       stepStateUpdate.next = async (interactionId, inputs) => {
+        const activeScripts = flowConfig?.clientScripts || [];
+        await this.#runSdkScriptsModules(activeScripts);
+
         const res = await this.sdk.flow.start(
           flowId,
           {
@@ -1088,6 +1091,7 @@ class DescopeWc extends BaseDescopeWc {
           flowVersions,
           {
             ...this.formConfigValues,
+            ...this.getComponentsContext(),
             ...transformScreenInputs(inputs),
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
@@ -1106,13 +1110,19 @@ class DescopeWc extends BaseDescopeWc {
       isChanged('stepId')
     ) {
       stepStateUpdate.next = async (interactionId, input) => {
+        const activeScripts = screenState?.clientScripts || [];
+        await this.#runSdkScriptsModules(activeScripts);
+
         const res = await this.sdk.flow.next(
           executionId,
           stepId,
           interactionId,
           flowConfig.version,
           projectConfig.componentsVersion,
-          transformScreenInputs(input),
+          {
+            ...this.getComponentsContext(),
+            ...transformScreenInputs(input),
+          },
         );
 
         this.#handleSdkResponse(res);
@@ -1125,7 +1135,6 @@ class DescopeWc extends BaseDescopeWc {
 
     await this.#handleCustomScreen(stepStateUpdate);
 
-    // update step state
     this.stepState.update(stepStateUpdate);
   }
 
@@ -1833,19 +1842,7 @@ class DescopeWc extends BaseDescopeWc {
 
         this.nextRequestStatus.update({ isLoading: true });
 
-        const completed = await this.#runSdkScriptsModules();
-        if (!completed) {
-          this.nextRequestStatus.update({ isLoading: false });
-          // simulate the same step state update that we get when next is called, and since
-          // the screen id will be the same, the event will revert the loading state back
-          this.stepState.update(this.stepState.current);
-          return;
-        }
-
-        const contextArgs = this.getComponentsContext();
-
         const actionArgs = {
-          ...contextArgs,
           ...eleDescopeAttrs,
           ...formData,
           // 'origin' is required to start webauthn. For now we'll add it to every request.
@@ -1864,7 +1861,7 @@ class DescopeWc extends BaseDescopeWc {
     },
   );
 
-  async #runSdkScriptsModules(): Promise<boolean> {
+  async #runSdkScriptsModules(activeScripts: ClientScript[]) {
     // ensure scripts are already loaded and if not, wait on the promise to get notified once loading completes
     if (this.#sdkScriptsLoading) {
       this.loggerWrapper.debug('Waiting for sdk scripts to load');
@@ -1878,14 +1875,9 @@ class DescopeWc extends BaseDescopeWc {
 
     // get all script modules and refresh them before form submission
     const sdkScriptsModules = this.loadSdkScriptsModules();
-    if (!sdkScriptsModules.length) {
-      return true;
-    }
 
     // check which scripts are active on the current screen
-    const screenScripts =
-      this.stepState?.current?.screenState?.clientScripts || [];
-    const screenScriptIds = screenScripts.map((s) => s.id);
+    const screenScriptIds = activeScripts.map((s) => s.id);
 
     // eslint-disable-next-line no-restricted-syntax
     for (const module of sdkScriptsModules) {
@@ -1901,7 +1893,6 @@ class DescopeWc extends BaseDescopeWc {
             this.loggerWrapper.debug(
               `Sdk script ${module.id} cancelled the submission`,
             );
-            return false;
           }
         }
       } catch (e) {
@@ -1937,8 +1928,6 @@ class DescopeWc extends BaseDescopeWc {
         this.loggerWrapper.error('Failed to refresh script module', e.message);
       }
     }
-
-    return true;
   }
 
   #addPasscodeAutoSubmitListeners(next: NextFn) {
