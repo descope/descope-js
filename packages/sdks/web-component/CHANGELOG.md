@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.49.0](https://github.com/descope/descope-js/compare/web-component-3.48.3...web-component-3.49.0) (2025-11-11)
+
+
+### Features
+
+* Support fraud and bot detection integrations in custom screens RELEASE ([#1262](https://github.com/descope/descope-js/issues/1262)) ([022025b](https://github.com/descope/descope-js/commit/022025bf3be97b484c2c2b5af57ee5a09fca2796))
+
 ## [3.48.3](https://github.com/descope/descope-js/compare/web-component-3.48.2...web-component-3.48.3) (2025-11-09)
 
 ### Dependency Updates
