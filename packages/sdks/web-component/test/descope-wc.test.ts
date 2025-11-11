@@ -242,7 +242,16 @@ describe('web-component', () => {
     document.getElementsByTagName('head')[0].innerHTML = '';
     document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
+    // We need a full reset to isolate tests, BUT one mock (mockClientScript) must keep a stable implementation.
+    // So we reset everything and then immediately restore the implementation for mockClientScript.
     jest.resetAllMocks();
+    mockClientScript.mockImplementation(() => ({
+      id: 'grecaptcha',
+      start: mockStartScript,
+      stop: mockStopScript,
+      refresh: mockRefreshScript,
+      present: mockPresentScript,
+    }));
     window.location.search = '';
     themeContent = {};
     pageContent = '';
