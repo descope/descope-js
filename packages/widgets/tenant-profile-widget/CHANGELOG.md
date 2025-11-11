@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.4.0...tenant-profile-widget-0.5.0) (2025-11-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.49.0`
+
+### Features
+
+* Add edit session settings for tenant profile widget ([#1259](https://github.com/descope/descope-js/issues/1259)) ([f91f660](https://github.com/descope/descope-js/commit/f91f660943c2ba9b25707d15ccbd619f5d519726))
+
 ## [0.4.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.3.1...tenant-profile-widget-0.4.0) (2025-11-09)
 
 ### Dependency Updates
