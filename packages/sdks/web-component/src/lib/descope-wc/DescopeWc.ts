@@ -294,17 +294,20 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.11', // currently using a fixed version when loading scripts
+          '1.0.13', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
+            // call the module loading function
             const moduleRes = module(
               script.initArgs as any,
               { baseUrl: this.baseUrl, ref: this },
               createScriptCallback(script, resolve),
+              this.loggerWrapper,
             );
+            // some modules do not return a ScriptModule object
             if (moduleRes) {
               const newScriptElement = document.createElement(
                 'div',
@@ -1830,33 +1833,13 @@ class DescopeWc extends BaseDescopeWc {
 
         this.nextRequestStatus.update({ isLoading: true });
 
-        if (this.#sdkScriptsLoading) {
-          this.loggerWrapper.debug('Waiting for sdk scripts to load');
-          const now = Date.now();
-          await this.#sdkScriptsLoading;
-          this.loggerWrapper.debug(
-            'Sdk scripts loaded for',
-            (Date.now() - now).toString(),
-          );
-        }
-
-        // Get all script modules and refresh them before form submission
-        const sdkScriptsModules = this.loadSdkScriptsModules();
-
-        if (sdkScriptsModules.length > 0) {
-          // Only attempt to refresh modules that actually have a refresh function
-          const refreshPromises = sdkScriptsModules
-            .filter((module) => typeof module.refresh === 'function')
-            .map((module) => module.refresh!());
-
-          if (refreshPromises.length > 0) {
-            // Use timeout to prevent hanging if refresh takes too long
-            await timeoutPromise(
-              SDK_SCRIPTS_LOAD_TIMEOUT,
-              Promise.all(refreshPromises),
-              null,
-            );
-          }
+        const completed = await this.#runSdkScriptsModules();
+        if (!completed) {
+          this.nextRequestStatus.update({ isLoading: false });
+          // simulate the same step state update that we get when next is called, and since
+          // the screen id will be the same, the event will revert the loading state back
+          this.stepState.update(this.stepState.current);
+          return;
         }
 
         const contextArgs = this.getComponentsContext();
@@ -1880,6 +1863,83 @@ class DescopeWc extends BaseDescopeWc {
       }
     },
   );
+
+  async #runSdkScriptsModules(): Promise<boolean> {
+    // ensure scripts are already loaded and if not, wait on the promise to get notified once loading completes
+    if (this.#sdkScriptsLoading) {
+      this.loggerWrapper.debug('Waiting for sdk scripts to load');
+      const now = Date.now();
+      await this.#sdkScriptsLoading;
+      this.loggerWrapper.debug(
+        'Sdk scripts loaded for',
+        (Date.now() - now).toString(),
+      );
+    }
+
+    // get all script modules and refresh them before form submission
+    const sdkScriptsModules = this.loadSdkScriptsModules();
+    if (!sdkScriptsModules.length) {
+      return true;
+    }
+
+    // check which scripts are active on the current screen
+    const screenScripts =
+      this.stepState?.current?.screenState?.clientScripts || [];
+    const screenScriptIds = screenScripts.map((s) => s.id);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const module of sdkScriptsModules) {
+      // only present modules that are part of the current screen
+      if (!screenScriptIds.includes(module.id)) {
+        continue; // eslint-disable-line no-continue
+      }
+      // only attempt to present modules that actually have a present function
+      try {
+        if (typeof module.present === 'function') {
+          const completed = await module.present(); // eslint-disable-line no-await-in-loop
+          if (!completed) {
+            this.loggerWrapper.debug(
+              `Sdk script ${module.id} cancelled the submission`,
+            );
+            return false;
+          }
+        }
+      } catch (e) {
+        // Ignore error and let the backend handle the lack of token
+        this.loggerWrapper.error(
+          `Failed to present ${module.id} script module`,
+          e.message,
+        );
+      }
+    }
+
+    // Run all module refresh calls concurrently
+    let promises: Promise<void>[] = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const module of sdkScriptsModules) {
+      // only attempt to refresh modules that actually have a refresh function
+      if (typeof module.refresh === 'function') {
+        promises.push(module.refresh());
+      }
+    }
+
+    if (promises.length > 0) {
+      try {
+        // use timeout to prevent hanging if refresh takes too long
+        await timeoutPromise(
+          SDK_SCRIPTS_LOAD_TIMEOUT,
+          Promise.all(promises),
+          null,
+        );
+      } catch (e) {
+        // ignore error and let the backend handle the lack of token
+        this.loggerWrapper.error('Failed to refresh script module', e.message);
+      }
+    }
+
+    return true;
+  }
 
   #addPasscodeAutoSubmitListeners(next: NextFn) {
     this.contentRootElement

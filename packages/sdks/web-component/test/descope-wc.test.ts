@@ -174,9 +174,14 @@ const orginalCreateElement = document.createElement;
 
 const mockStartScript = jest.fn();
 const mockStopScript = jest.fn();
+const mockRefreshScript = jest.fn();
+const mockPresentScript = jest.fn();
 const mockClientScript = jest.fn(() => ({
+  id: 'grecaptcha',
   start: mockStartScript,
   stop: mockStopScript,
+  refresh: mockRefreshScript,
+  present: mockPresentScript,
 }));
 
 describe('web-component', () => {
@@ -237,7 +242,16 @@ describe('web-component', () => {
     document.getElementsByTagName('head')[0].innerHTML = '';
     document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
+    // We need a full reset to isolate tests, BUT one mock (mockClientScript) must keep a stable implementation.
+    // So we reset everything and then immediately restore the implementation for mockClientScript.
     jest.resetAllMocks();
+    mockClientScript.mockImplementation(() => ({
+      id: 'grecaptcha',
+      start: mockStartScript,
+      stop: mockStopScript,
+      refresh: mockRefreshScript,
+      present: mockPresentScript,
+    }));
     window.location.search = '';
     themeContent = {};
     pageContent = '';
@@ -2618,6 +2632,7 @@ describe('web-component', () => {
           baseUrl: 'http://base.url',
         }),
         expect.any(Function),
+        expect.any(Object),
       ),
     );
 
@@ -6144,6 +6159,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
@@ -6216,47 +6232,89 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
-    it('should run client script from sdk response', async () => {
-      startMock.mockReturnValueOnce(
-        generateSdkResponse({
-          screenState: {
-            clientScripts: [
-              {
-                id: 'grecaptcha',
-                initArgs: {
-                  enterprise: true,
-                  siteKey: 'SITE_KEY',
+    describe('should run client script from sdk response', () => {
+      beforeEach(async () => {
+        mockPresentScript.mockClear();
+        mockRefreshScript.mockClear();
+
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: {
+              clientScripts: [
+                {
+                  id: 'grecaptcha',
+                  initArgs: {
+                    enterprise: true,
+                    siteKey: 'SITE_KEY',
+                  },
+                  resultKey: 'riskToken',
                 },
-                resultKey: 'riskToken',
-              },
-            ],
-          },
-        }),
-      );
+              ],
+            },
+          }),
+        );
+        nextMock.mockReturnValueOnce(generateSdkResponse());
 
-      pageContent =
-        '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
+        pageContent =
+          '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
 
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.findByShadowText('hey'), {
-        timeout: WAIT_TIMEOUT,
+        await waitFor(() => screen.findByShadowText('hey'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        scriptMock.onload();
+        await waitFor(() =>
+          expect(mockClientScript).toHaveBeenCalledWith(
+            {
+              enterprise: true,
+              siteKey: 'SITE_KEY',
+            },
+            expect.any(Object),
+            expect.any(Function),
+            expect.any(Object),
+          ),
+        );
       });
+      it('should run client script perform and refresh', async () => {
+        mockPresentScript.mockResolvedValueOnce(true);
 
-      scriptMock.onload();
-      await waitFor(() =>
-        expect(mockClientScript).toHaveBeenCalledWith(
-          {
-            enterprise: true,
-            siteKey: 'SITE_KEY',
-          },
-          expect.any(Object),
-          expect.any(Function),
-        ),
-      );
+        fireEvent.click(screen.getByShadowText('click'));
+
+        await waitFor(() => expect(mockPresentScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(mockRefreshScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+      });
+      it('should run client script perform and cancel the next call', async () => {
+        mockPresentScript.mockResolvedValueOnce(false);
+
+        fireEvent.click(screen.getByShadowText('click'));
+
+        await waitFor(() => expect(mockPresentScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(mockRefreshScript).not.toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(nextMock).not.toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+      });
     });
     it('should send the next request if timeout is reached', async () => {
       configContent = {
@@ -6295,6 +6353,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
 
