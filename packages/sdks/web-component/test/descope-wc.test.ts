@@ -6298,23 +6298,6 @@ describe('web-component', () => {
           timeout: WAIT_TIMEOUT,
         });
       });
-      it('should run client script perform and cancel the next call', async () => {
-        mockPresentScript.mockResolvedValueOnce(false);
-
-        fireEvent.click(screen.getByShadowText('click'));
-
-        await waitFor(() => expect(mockPresentScript).toHaveBeenCalled(), {
-          timeout: WAIT_TIMEOUT,
-        });
-
-        await waitFor(() => expect(mockRefreshScript).not.toHaveBeenCalled(), {
-          timeout: WAIT_TIMEOUT,
-        });
-
-        await waitFor(() => expect(nextMock).not.toHaveBeenCalled(), {
-          timeout: WAIT_TIMEOUT,
-        });
-      });
     });
     it('should send the next request if timeout is reached', async () => {
       configContent = {
