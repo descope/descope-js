@@ -94,6 +94,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       popupOrigin,
       children,
       externalRequestId,
+      formProps = {},
     },
     ref,
   ) => {
@@ -178,7 +179,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-	<form>
+	<form {...formProps}>
 		<Suspense fallback={null}>
 			<DescopeWC
             projectId={projectId}
