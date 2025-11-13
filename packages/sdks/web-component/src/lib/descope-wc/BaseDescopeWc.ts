@@ -495,7 +495,8 @@ class BaseDescopeWc extends BaseClass {
     );
   }
 
-  #handleKeyPress() {
+  handleKeyPress() {
+    this.logger.debug('Enable key press handler');
     // we want to simulate submit when the user presses Enter
     this.rootElement.onkeydown = (e) => {
       // we do not want to submit the form if the focus is on a link element
@@ -553,6 +554,11 @@ class BaseDescopeWc extends BaseClass {
     };
   }
 
+  disableKeyPressHandler() {
+    this.logger.debug('Disable key press handler');
+    this.rootElement.onkeydown = null;
+  }
+
   async getComponentsVersion() {
     const config = await this.getConfig();
     const version =
@@ -599,8 +605,6 @@ class BaseDescopeWc extends BaseClass {
 
       return;
     }
-
-    this.#handleKeyPress();
 
     const {
       executionId,
