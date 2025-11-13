@@ -69,6 +69,14 @@ export default `
       edit-flow-id="edit-tenant-sso-exclusions"
       delete-flow-id="delete-tenant-sso-exclusions"
     ></descope-user-attribute>
+    <descope-user-attribute
+      data-id="customAttributes.department"
+      label="Department"
+      full-width="true"
+      required="false"
+      edit-flow-id="edit-department"
+      delete-flow-id=""
+    ></descope-user-attribute>
     <descope-divider id="2mXCne0kTY" italic="false" mode="primary" variant="body1" vertical="false"></descope-divider>
     <descope-container
       data-editor-type="container"

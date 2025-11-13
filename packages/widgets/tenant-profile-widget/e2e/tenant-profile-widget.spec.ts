@@ -240,6 +240,16 @@ test.describe('tenant profile widget', () => {
           'newemail@example.com',
         ],
       },
+      {
+        name: 'customAttributes.department',
+        modalName: 'edit-department',
+        formField: 'customAttributes',
+        updatedMockTenant: {
+          ...mockTenant,
+          customAttributes: { department: 'Engineering' },
+        },
+        expectedFormValue: { department: 'Engineering' },
+      },
     ]) {
       test(`${attr.name} should persist updated value in form data`, async ({
         page,
