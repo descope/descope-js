@@ -170,8 +170,6 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
 
             this.syncFlowTheme(this.#editFlows[editFlowId]);
           }
-
-          this.#initEditModalContent(editFlowId, type, attName, val);
         }
       }
 
@@ -204,8 +202,6 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
 
             this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
           }
-
-          this.#initDeleteModalContent(deleteFlowId);
         }
       }
 
