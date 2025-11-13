@@ -131,7 +131,6 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               compInstance,
               type,
               customAttrName,
-              val,
             );
             this.#initDeleteFlow(nodeEle, customAttrName, compInstance);
           });
@@ -144,7 +143,6 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         compInstance: UserAttributeDriver,
         type: string,
         attName: string,
-        val: string,
       ) {
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (editFlowId) {
