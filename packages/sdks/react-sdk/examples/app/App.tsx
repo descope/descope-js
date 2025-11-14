@@ -8,6 +8,7 @@ import ManageAudit from './ManageAudit';
 import ManageRoles from './ManageRoles';
 import ManageUsers from './ManageUsers';
 import MyApplicationsPortal from './MyApplicationsPortal';
+import OutboundApplications from './MyOutboundApplications';
 import MyTenantProfile from './MyTenantProfile';
 import MyUserProfile from './MyUserProfile';
 import OidcLogin from './OidcLogin';
@@ -103,6 +104,14 @@ const App = () => (
         element={
           <ProtectedRoute>
             <MyUserProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/outbound-applications"
+        element={
+          <ProtectedRoute>
+            <OutboundApplications />
           </ProtectedRoute>
         }
       />

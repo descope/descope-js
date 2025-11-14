@@ -5,6 +5,7 @@ import RoleManagementWidget from '@descope/role-management-widget';
 import TenantProfileWidget from '@descope/tenant-profile-widget';
 import UserManagementWidget from '@descope/user-management-widget';
 import UserProfileWidget from '@descope/user-profile-widget';
+import OutboundApplicationsWidget from '@descope/outbound-applications-widget';
 import type {
   AutoFocusOptions,
   CustomStorage,
@@ -28,6 +29,7 @@ declare global {
       ['descope-user-profile-widget']: UserProfileCustomElement;
       ['descope-applications-portal-widget']: ApplicationsPortalCustomElement;
       ['descope-tenant-profile-widget']: TenantProfileCustomElement;
+      ['descope-outbound-applications-widget']: OutboundApplicationsCustomElement;
     }
   }
 }
@@ -91,6 +93,10 @@ export type ApplicationsPortalCustomElement = CustomElement<
 
 export type TenantProfileCustomElement = CustomElement<
   typeof TenantProfileWidget & TenantProfileProps
+>;
+
+export type OutboundApplicationsCustomElement = CustomElement<
+  typeof OutboundApplicationsWidget & OutboundApplicationsProps
 >;
 
 export interface IContext {
@@ -178,6 +184,8 @@ export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
 };
 
 export type TenantProfileProps = WidgetProps;
+
+export type OutboundApplicationsProps = WidgetProps;
 
 export type { ILogger };
 export type DefaultFlowProps = Omit<DescopeProps, 'flowId'>;
