@@ -2,6 +2,7 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   baseUrlMixin,
   cookieConfigMixin,
+  DEFAULT_STYLE_ID,
   loggerMixin,
   observeAttributesMixin,
   projectIdMixin,
@@ -45,6 +46,10 @@ export const apiMixin = createSingletonMixin(
 
       get mock() {
         return this.getAttribute('mock');
+      }
+
+      get styleId() {
+        return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
       }
 
       get api() {

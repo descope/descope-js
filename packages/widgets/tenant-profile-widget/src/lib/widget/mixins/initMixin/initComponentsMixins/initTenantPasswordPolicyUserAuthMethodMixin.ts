@@ -9,14 +9,14 @@ import {
   loggerMixin,
   modalMixin,
 } from '@descope/sdk-mixins';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
-export const initPasswordUserAuthMethodMixin = createSingletonMixin(
+export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class PasswordUserAuthMethodMixinClass extends compose(
+    class TenantPasswordPolicyUserAuthMethodMixinClass extends compose(
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -24,16 +24,18 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       cookieConfigMixin,
       modalMixin,
     )(superclass) {
-      passwordUserAuthMethod: UserAuthMethodDriver;
+      TenantPasswordPolicyUserAuthMethodDriver: UserAuthMethodDriver;
 
       #modal: ModalDriver;
 
       #flow: FlowDriver;
 
       #initModal() {
-        if (!this.passwordUserAuthMethod.flowId) return;
+        if (!this.TenantPasswordPolicyUserAuthMethodDriver.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'password' });
+        this.#modal = this.createModal({
+          'data-id': 'password-policy',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -47,38 +49,42 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.passwordUserAuthMethod.flowId,
+            flowId: this.TenantPasswordPolicyUserAuthMethodDriver.flowId,
+            tenant: this.tenantId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#flow.onSuccess(() => {
           this.#modal.close();
+          this.actions.getTenant();
         });
       }
 
-      initPasswordAuthMethod() {
-        this.passwordUserAuthMethod = new UserAuthMethodDriver(
-          () =>
-            this.shadowRoot?.querySelector(
-              'descope-user-auth-method[data-id="password"]',
-            ),
-          { logger: this.logger },
-        );
+      #initPasswordPolicy() {
+        this.TenantPasswordPolicyUserAuthMethodDriver =
+          new UserAuthMethodDriver(
+            () =>
+              this.shadowRoot?.querySelector(
+                'descope-user-auth-method[data-id="password-policy"]',
+              ),
+            { logger: this.logger },
+          );
 
-        this.passwordUserAuthMethod.onUnfulfilledButtonClick(() => {
-          this.#modal?.open();
-        });
+        this.TenantPasswordPolicyUserAuthMethodDriver.onUnfulfilledButtonClick(
+          () => {
+            this.#modal?.open();
+          },
+        );
       }
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.initPasswordAuthMethod();
+        this.#initPasswordPolicy();
         this.#initModal();
       }
     },

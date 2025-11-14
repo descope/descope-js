@@ -59,9 +59,11 @@ export const initTrustedDevicesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             form: { deviceId },
           }),
         );
+
         this.#flow.onSuccess(() => {
           this.#modal.close();
           this.actions.listDevices({
@@ -71,17 +73,18 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       }
 
       #initDeviceList(deviceList: ReturnType<typeof getTrustedDevices>) {
-        this.deviceList = new DeviceListDriver(
-          () => this.shadowRoot?.querySelector('descope-trusted-devices'),
-          { logger: this.logger },
-        );
-
         this.deviceList.onRemoveDeviceClick(({ id }) => {
           this.#initModalContent(id);
           this.#modal?.open();
         });
 
         this.deviceList.data = deviceList;
+      }
+
+      async #fetchTrustedDevices() {
+        await this.actions.listDevices({
+          userId: getUserId(this.state),
+        });
       }
 
       updateDeviceList = withMemCache((data) => {
@@ -91,10 +94,17 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initDeviceList(getTrustedDevices(this.state));
-        this.#initModal();
+        this.deviceList = new DeviceListDriver(
+          () => this.shadowRoot?.querySelector('descope-trusted-devices'),
+          { logger: this.logger },
+        );
 
-        this.subscribe(this.updateDeviceList.bind(this), getTrustedDevices);
+        if (this.deviceList.isExists) {
+          await this.#fetchTrustedDevices();
+          this.#initDeviceList(getTrustedDevices(this.state));
+          this.#initModal();
+          this.subscribe(this.updateDeviceList.bind(this), getTrustedDevices);
+        }
       }
     },
 );

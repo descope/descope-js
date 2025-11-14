@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.49.1](https://github.com/descope/descope-js/compare/web-component-3.49.0...web-component-3.49.1) (2025-11-13)
+
+
+### Bug Fixes
+
+* Issue12749 RELEASE ([#1265](https://github.com/descope/descope-js/issues/1265)) ([2481513](https://github.com/descope/descope-js/commit/24815132ea94fca3a596bc8f67c0bdacee9dedc5))
+
+## [3.49.0](https://github.com/descope/descope-js/compare/web-component-3.48.3...web-component-3.49.0) (2025-11-11)
+
+
+### Features
+
+* Support fraud and bot detection integrations in custom screens RELEASE ([#1262](https://github.com/descope/descope-js/issues/1262)) ([022025b](https://github.com/descope/descope-js/commit/022025bf3be97b484c2c2b5af57ee5a09fca2796))
+
+## [3.48.3](https://github.com/descope/descope-js/compare/web-component-3.48.2...web-component-3.48.3) (2025-11-09)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.5.1`
+* `sdk-mixins` updated to version `0.14.0`
+* `web-js-sdk` updated to version `1.38.2`
+* `escape-markdown` updated to version `0.1.6`
+## [3.48.2](https://github.com/descope/descope-js/compare/web-component-3.48.1...web-component-3.48.2) (2025-11-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.16`
+* `web-js-sdk` updated to version `1.38.1`
+## [3.48.1](https://github.com/descope/descope-js/compare/web-component-3.48.0...web-component-3.48.1) (2025-11-05)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.15`
+
+### Bug Fixes
+
+* enforce using post message when valid popup origin provided RELEASE ([#1256](https://github.com/descope/descope-js/issues/1256)) ([e322b44](https://github.com/descope/descope-js/commit/e322b445995cfb85b4148af61abb06ab4398f3c8))
+
 ## [3.48.0](https://github.com/descope/descope-js/compare/web-component-3.47.12...web-component-3.48.0) (2025-10-23)
 
 ### Dependency Updates

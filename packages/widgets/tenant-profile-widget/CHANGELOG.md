@@ -2,6 +2,64 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.0...tenant-profile-widget-0.5.1) (2025-11-13)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.49.1`
+## [0.5.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.4.0...tenant-profile-widget-0.5.0) (2025-11-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.49.0`
+
+### Features
+
+* Add edit session settings for tenant profile widget ([#1259](https://github.com/descope/descope-js/issues/1259)) ([f91f660](https://github.com/descope/descope-js/commit/f91f660943c2ba9b25707d15ccbd619f5d519726))
+
+## [0.4.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.3.1...tenant-profile-widget-0.4.0) (2025-11-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.2`
+* `web-js-sdk` updated to version `1.38.2`
+* `web-component` updated to version `3.48.3`
+* `sdk-helpers` updated to version `0.5.1`
+* `sdk-mixins` updated to version `0.14.0`
+* `sdk-component-drivers` updated to version `0.8.1`
+
+### Features
+
+* Add style id attribute to all widgets RELEASE ([#1253](https://github.com/descope/descope-js/issues/1253)) ([9f73cbc](https://github.com/descope/descope-js/commit/9f73cbc9f469d6c707f7ebc24796c74f6a87fba8))
+
+## [0.3.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.3.0...tenant-profile-widget-0.3.1) (2025-11-06)
+
+
+### Bug Fixes
+
+* sso exclusion list doesn't update modal's input box RELEASE ([#1255](https://github.com/descope/descope-js/issues/1255)) ([e9b6940](https://github.com/descope/descope-js/commit/e9b6940408d7199ff550817e6f5625cdee3fd07a))
+
+## [0.3.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.2.24...tenant-profile-widget-0.3.0) (2025-11-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.1`
+* `web-js-sdk` updated to version `1.38.1`
+* `web-component` updated to version `3.48.2`
+* `sdk-mixins` updated to version `0.13.16`
+* `sdk-component-drivers` updated to version `0.8.0`
+
+### Features
+
+* Add set password policy  to tenant profile widget ([#1251](https://github.com/descope/descope-js/issues/1251)) ([8ce3d85](https://github.com/descope/descope-js/commit/8ce3d85c31c766d3868e3b0f4ba4c72edb94643e))
+
+## [0.2.24](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.2.23...tenant-profile-widget-0.2.24) (2025-11-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.48.1`
+* `sdk-mixins` updated to version `0.13.15`
+* `sdk-component-drivers` updated to version `0.7.1`
 ## [0.2.23](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.2.22...tenant-profile-widget-0.2.23) (2025-10-23)
 
 ### Dependency Updates

@@ -62,6 +62,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -93,6 +94,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

@@ -60,6 +60,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
@@ -79,6 +80,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {

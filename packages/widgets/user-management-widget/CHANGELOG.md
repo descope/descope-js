@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.2](https://github.com/descope/descope-js/compare/user-management-widget-0.10.1...user-management-widget-0.10.2) (2025-11-13)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.49.1`
+## [0.10.1](https://github.com/descope/descope-js/compare/user-management-widget-0.10.0...user-management-widget-0.10.1) (2025-11-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.49.0`
+## [0.10.0](https://github.com/descope/descope-js/compare/user-management-widget-0.9.21...user-management-widget-0.10.0) (2025-11-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.2`
+* `web-component` updated to version `3.48.3`
+* `sdk-helpers` updated to version `0.5.1`
+* `sdk-mixins` updated to version `0.14.0`
+* `sdk-component-drivers` updated to version `0.8.1`
+
+### Features
+
+* Add style id attribute to all widgets RELEASE ([#1253](https://github.com/descope/descope-js/issues/1253)) ([9f73cbc](https://github.com/descope/descope-js/commit/9f73cbc9f469d6c707f7ebc24796c74f6a87fba8))
+* Add usersAndRoles to flow data from user mgmt widget ([#1261](https://github.com/descope/descope-js/issues/1261)) ([567648f](https://github.com/descope/descope-js/commit/567648f587ac55c7d94fe5d8b6dc930e4cabae82))
+
+## [0.9.21](https://github.com/descope/descope-js/compare/user-management-widget-0.9.20...user-management-widget-0.9.21) (2025-11-06)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.1`
+* `web-component` updated to version `3.48.2`
+* `sdk-mixins` updated to version `0.13.16`
+* `sdk-component-drivers` updated to version `0.8.0`
+## [0.9.20](https://github.com/descope/descope-js/compare/user-management-widget-0.9.19...user-management-widget-0.9.20) (2025-11-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.48.1`
+* `sdk-mixins` updated to version `0.13.15`
+* `sdk-component-drivers` updated to version `0.7.1`
 ## [0.9.19](https://github.com/descope/descope-js/compare/user-management-widget-0.9.18...user-management-widget-0.9.19) (2025-10-23)
 
 ### Dependency Updates

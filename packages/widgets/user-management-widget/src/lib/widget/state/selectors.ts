@@ -65,6 +65,14 @@ export const getSelectedUsersAllIds = createSelector(
       loginIds,
     })),
 );
+export const getSelectedUsersRolesList = createSelector(
+  getSelectedUsers,
+  (users) =>
+    users.map((user) => ({
+      userId: user.userId,
+      roles: user.roles,
+    })),
+);
 
 export const getSelectedUsersStatus = createSelector(
   getSelectedUsers,

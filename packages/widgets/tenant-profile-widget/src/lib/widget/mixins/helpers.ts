@@ -10,6 +10,7 @@ type FlowConfig = {
   refreshCookieName?: string;
   theme?: string;
   form?: string;
+  'style-id'?: string;
 };
 
 export const createFlowTemplate = (

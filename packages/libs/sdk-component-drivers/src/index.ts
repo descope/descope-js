@@ -15,3 +15,4 @@ export * from './TextFieldDriver';
 export * from './UserAttributeDriver';
 export * from './UserAuthMethodDriver';
 export * from './DeviceListDriver';
+export * from './FlowButtonDriver';

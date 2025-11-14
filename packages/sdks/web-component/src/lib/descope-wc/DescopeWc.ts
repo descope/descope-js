@@ -294,17 +294,20 @@ class DescopeWc extends BaseDescopeWc {
         }
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.11', // currently using a fixed version when loading scripts
+          '1.0.13', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
+            // call the module loading function
             const moduleRes = module(
               script.initArgs as any,
               { baseUrl: this.baseUrl, ref: this },
               createScriptCallback(script, resolve),
+              this.loggerWrapper,
             );
+            // some modules do not return a ScriptModule object
             if (moduleRes) {
               const newScriptElement = document.createElement(
                 'div',
@@ -576,6 +579,12 @@ class DescopeWc extends BaseDescopeWc {
         isCustomScreen,
         stepName: stepStateUpdate.stepName,
       });
+
+      // disable key press handler
+      this.disableKeyPressHandler();
+    } else {
+      // enable key press handler
+      this.handleKeyPress();
     }
 
     this.stepState.forceUpdate = isCustomScreen;
@@ -1063,6 +1072,9 @@ class DescopeWc extends BaseDescopeWc {
     // because Descope may decide not to show the first screen (in cases like a user is already logged in) - this is more relevant for SSO scenarios
     if (showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
       stepStateUpdate.next = async (interactionId, inputs) => {
+        const screenScripts = flowConfig?.clientScripts || [];
+        await this.#runSdkScriptsModules(screenScripts);
+
         const res = await this.sdk.flow.start(
           flowId,
           {
@@ -1085,6 +1097,7 @@ class DescopeWc extends BaseDescopeWc {
           flowVersions,
           {
             ...this.formConfigValues,
+            ...this.getComponentsContext(),
             ...transformScreenInputs(inputs),
             ...(code && { exchangeCode: code, idpInitiated: true }),
             ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
@@ -1103,13 +1116,19 @@ class DescopeWc extends BaseDescopeWc {
       isChanged('stepId')
     ) {
       stepStateUpdate.next = async (interactionId, input) => {
+        const screenScripts = screenState?.clientScripts || [];
+        await this.#runSdkScriptsModules(screenScripts);
+
         const res = await this.sdk.flow.next(
           executionId,
           stepId,
           interactionId,
           flowConfig.version,
           projectConfig.componentsVersion,
-          transformScreenInputs(input),
+          {
+            ...this.getComponentsContext(),
+            ...transformScreenInputs(input),
+          },
         );
 
         this.#handleSdkResponse(res);
@@ -1122,7 +1141,6 @@ class DescopeWc extends BaseDescopeWc {
 
     await this.#handleCustomScreen(stepStateUpdate);
 
-    // update step state
     this.stepState.update(stepStateUpdate);
   }
 
@@ -1830,39 +1848,7 @@ class DescopeWc extends BaseDescopeWc {
 
         this.nextRequestStatus.update({ isLoading: true });
 
-        if (this.#sdkScriptsLoading) {
-          this.loggerWrapper.debug('Waiting for sdk scripts to load');
-          const now = Date.now();
-          await this.#sdkScriptsLoading;
-          this.loggerWrapper.debug(
-            'Sdk scripts loaded for',
-            (Date.now() - now).toString(),
-          );
-        }
-
-        // Get all script modules and refresh them before form submission
-        const sdkScriptsModules = this.loadSdkScriptsModules();
-
-        if (sdkScriptsModules.length > 0) {
-          // Only attempt to refresh modules that actually have a refresh function
-          const refreshPromises = sdkScriptsModules
-            .filter((module) => typeof module.refresh === 'function')
-            .map((module) => module.refresh!());
-
-          if (refreshPromises.length > 0) {
-            // Use timeout to prevent hanging if refresh takes too long
-            await timeoutPromise(
-              SDK_SCRIPTS_LOAD_TIMEOUT,
-              Promise.all(refreshPromises),
-              null,
-            );
-          }
-        }
-
-        const contextArgs = this.getComponentsContext();
-
         const actionArgs = {
-          ...contextArgs,
           ...eleDescopeAttrs,
           ...formData,
           // 'origin' is required to start webauthn. For now we'll add it to every request.
@@ -1880,6 +1866,74 @@ class DescopeWc extends BaseDescopeWc {
       }
     },
   );
+
+  async #runSdkScriptsModules(screenScripts: ClientScript[]) {
+    // ensure scripts are already loaded and if not, wait on the promise to get notified once loading completes
+    if (this.#sdkScriptsLoading) {
+      this.loggerWrapper.debug('Waiting for sdk scripts to load');
+      const now = Date.now();
+      await this.#sdkScriptsLoading;
+      this.loggerWrapper.debug(
+        'Sdk scripts loaded for',
+        (Date.now() - now).toString(),
+      );
+    }
+
+    // get all script modules and refresh them before form submission
+    const sdkScriptsModules = this.loadSdkScriptsModules();
+
+    // check which scripts are active on the current screen, this only affects the modules
+    // for which present is implemented
+    const screenScriptIds = screenScripts.map((s) => s.id);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const module of sdkScriptsModules) {
+      // only present modules that are part of the current screen
+      if (!screenScriptIds.includes(module.id)) {
+        continue; // eslint-disable-line no-continue
+      }
+      // only attempt to present modules that actually have a present function
+      try {
+        if (typeof module.present === 'function') {
+          const completed = await module.present(); // eslint-disable-line no-await-in-loop
+          if (!completed) {
+            this.loggerWrapper.debug(`Sdk script ${module.id} was cancelled`);
+          }
+        }
+      } catch (e) {
+        // Ignore error and let the backend handle the lack of token
+        this.loggerWrapper.error(
+          `Failed to present ${module.id} script module`,
+          e.message,
+        );
+      }
+    }
+
+    // Run all module refresh calls concurrently
+    let promises: Promise<void>[] = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const module of sdkScriptsModules) {
+      // only attempt to refresh modules that actually have a refresh function
+      if (typeof module.refresh === 'function') {
+        promises.push(module.refresh());
+      }
+    }
+
+    if (promises.length > 0) {
+      try {
+        // use timeout to prevent hanging if refresh takes too long
+        await timeoutPromise(
+          SDK_SCRIPTS_LOAD_TIMEOUT,
+          Promise.all(promises),
+          null,
+        );
+      } catch (e) {
+        // ignore error and let the backend handle the lack of token
+        this.loggerWrapper.error('Failed to refresh script module', e.message);
+      }
+    }
+  }
 
   #addPasscodeAutoSubmitListeners(next: NextFn) {
     this.contentRootElement
@@ -1933,10 +1987,9 @@ class DescopeWc extends BaseDescopeWc {
     this.dispatchEvent(new CustomEvent(eventName, { detail }));
   }
 
-  // Determine if we should use postMessage fallback (popup-origin attribute exists & differs from current origin)
+  // Determine if we should use postMessage fallback (popup-origin attribute exists)
   protected shouldUsePopupPostMessage(): boolean {
     if (!this.popupOrigin) return false;
-    if (this.popupOrigin === window.location.origin) return false; // same origin -> keep BroadcastChannel
     try {
       // validate origin format
       // eslint-disable-next-line no-new

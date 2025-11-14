@@ -68,6 +68,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             form: JSON.stringify({
               customAttributes: {
                 [attName]: customAttributeValue,
@@ -93,6 +94,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {
@@ -155,7 +157,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
             { logger: this.logger },
           );
-          this.#editModals[editFlowId].afterClose =
+          this.#editModals[editFlowId].beforeOpen =
             this.#initEditModalContent.bind(this, editFlowId);
 
           compInstance.onEditClick(() => {
@@ -185,7 +187,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               ),
             { logger: this.logger },
           );
-          this.#deleteModals[deleteFlowId].afterClose =
+          this.#deleteModals[deleteFlowId].beforeOpen =
             this.#initDeleteModalContent.bind(this, deleteFlowId);
 
           compInstance.onDeleteClick(() => {
