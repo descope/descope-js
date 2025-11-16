@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.13](https://github.com/descope/descope-js/compare/angular-sdk-0.21.12...angular-sdk-0.21.13) (2025-11-16)
+
+### Dependency Updates
+
+* `tenant-profile-widget` updated to version `0.5.2`
 ## [0.21.12](https://github.com/descope/descope-js/compare/angular-sdk-0.21.11...angular-sdk-0.21.12) (2025-11-13)
 
 ### Dependency Updates
