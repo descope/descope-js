@@ -49,12 +49,8 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
 
       #deleteFlows: Record<string, FlowDriver> = {};
 
-      #initEditModalContent(
-        flowId: string,
-        type: string,
-        attName: string,
-        value: any,
-      ) {
+      #initEditModalContent(flowId: string, type: string, attName: string) {
+        const value = getTenantCustomAttributes(this.state)[attName];
         const customAttributeValue =
           type === AttributeTypeName.ARRAY ? (value || []).join(',') : value;
 
@@ -157,10 +153,8 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
                 this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
               { logger: this.logger },
             );
-            this.#editModals[editFlowId].beforeOpen = () => {
-              const currentVal = getTenantCustomAttributes(this.state)[attName];
-              this.#initEditModalContent(editFlowId, type, attName, currentVal);
-            };
+            this.#editModals[editFlowId].beforeOpen =
+              this.#initEditModalContent.bind(this, editFlowId, type, attName);
 
             compInstance.onEditClick(() => {
               this.#editModals?.[editFlowId]?.open();
