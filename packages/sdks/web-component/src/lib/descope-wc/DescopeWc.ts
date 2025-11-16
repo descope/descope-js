@@ -579,6 +579,12 @@ class DescopeWc extends BaseDescopeWc {
         isCustomScreen,
         stepName: stepStateUpdate.stepName,
       });
+
+      // disable key press handler
+      this.disableKeyPressHandler();
+    } else {
+      // enable key press handler
+      this.handleKeyPress();
     }
 
     this.stepState.forceUpdate = isCustomScreen;
