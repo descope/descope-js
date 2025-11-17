@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.2](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.1...tenant-profile-widget-0.5.2) (2025-11-16)
+
+
+### Bug Fixes
+
+* Tenant widget updates custom attributes modal's input box after edit RELEASE ([#1264](https://github.com/descope/descope-js/issues/1264)) ([fca825f](https://github.com/descope/descope-js/commit/fca825fa3047292909675be93a92d963dc1495e1))
+
 ## [0.5.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.0...tenant-profile-widget-0.5.1) (2025-11-13)
 
 ### Dependency Updates

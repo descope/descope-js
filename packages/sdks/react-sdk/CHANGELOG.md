@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.7](https://github.com/descope/descope-js/compare/react-sdk-2.23.6...react-sdk-2.23.7) (2025-11-16)
+
+### Dependency Updates
+
+* `tenant-profile-widget` updated to version `0.5.2`
 ## [2.23.6](https://github.com/descope/descope-js/compare/react-sdk-2.23.5...react-sdk-2.23.6) (2025-11-13)
 
 ### Dependency Updates

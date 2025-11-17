@@ -49,12 +49,8 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
 
       #deleteFlows: Record<string, FlowDriver> = {};
 
-      #initEditModalContent(
-        flowId: string,
-        type: string,
-        attName: string,
-        value: any,
-      ) {
+      #initEditModalContent(flowId: string, type: string, attName: string) {
+        const value = getTenantCustomAttributes(this.state)[attName];
         const customAttributeValue =
           type === AttributeTypeName.ARRAY ? (value || []).join(',') : value;
 
@@ -131,7 +127,6 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
               compInstance,
               type,
               customAttrName,
-              val,
             );
             this.#initDeleteFlow(nodeEle, customAttrName, compInstance);
           });
@@ -144,28 +139,29 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         compInstance: UserAttributeDriver,
         type: string,
         attName: string,
-        val: string,
       ) {
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (editFlowId) {
-          this.#editModals[editFlowId] = this.createModal({
-            'data-id': `edit-${customAttrName}`,
-          });
+          // Only create modal and flow if they don't exist yet
+          if (!this.#editModals[editFlowId]) {
+            this.#editModals[editFlowId] = this.createModal({
+              'data-id': `edit-${customAttrName}`,
+            });
 
-          this.#editFlows[editFlowId] = new FlowDriver(
-            () =>
-              this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
-            { logger: this.logger },
-          );
-          this.#editModals[editFlowId].beforeOpen =
-            this.#initEditModalContent.bind(this, editFlowId);
+            this.#editFlows[editFlowId] = new FlowDriver(
+              () =>
+                this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
+              { logger: this.logger },
+            );
+            this.#editModals[editFlowId].beforeOpen =
+              this.#initEditModalContent.bind(this, editFlowId, type, attName);
 
-          compInstance.onEditClick(() => {
-            this.#editModals?.[editFlowId]?.open();
-          });
+            compInstance.onEditClick(() => {
+              this.#editModals?.[editFlowId]?.open();
+            });
 
-          this.#initEditModalContent(editFlowId, type, attName, val);
-          this.syncFlowTheme(this.#editFlows[editFlowId]);
+            this.syncFlowTheme(this.#editFlows[editFlowId]);
+          }
         }
       }
 
@@ -176,26 +172,28 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       ) {
         const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
         if (deleteFlowId) {
-          this.#deleteModals[deleteFlowId] = this.createModal({
-            'data-id': `delete-${customAttrName}`,
-          });
+          // Only create modal and flow if they don't exist yet
+          if (!this.#deleteModals[deleteFlowId]) {
+            this.#deleteModals[deleteFlowId] = this.createModal({
+              'data-id': `delete-${customAttrName}`,
+            });
 
-          this.#deleteFlows[deleteFlowId] = new FlowDriver(
-            () =>
-              this.#deleteModals[deleteFlowId]?.ele?.querySelector(
-                'descope-wc',
-              ),
-            { logger: this.logger },
-          );
-          this.#deleteModals[deleteFlowId].beforeOpen =
-            this.#initDeleteModalContent.bind(this, deleteFlowId);
+            this.#deleteFlows[deleteFlowId] = new FlowDriver(
+              () =>
+                this.#deleteModals[deleteFlowId]?.ele?.querySelector(
+                  'descope-wc',
+                ),
+              { logger: this.logger },
+            );
+            this.#deleteModals[deleteFlowId].beforeOpen =
+              this.#initDeleteModalContent.bind(this, deleteFlowId);
 
-          compInstance.onDeleteClick(() => {
-            this.#deleteModals?.[deleteFlowId]?.open();
-          });
+            compInstance.onDeleteClick(() => {
+              this.#deleteModals?.[deleteFlowId]?.open();
+            });
 
-          this.#initDeleteModalContent(deleteFlowId);
-          this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
+            this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
+          }
         }
       }
 
