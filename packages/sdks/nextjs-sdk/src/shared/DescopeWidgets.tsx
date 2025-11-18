@@ -12,7 +12,7 @@ import type {
 	UserProfile as UserProfileWC,
 	ApplicationsPortal as ApplicationsPortalWC,
 	TenantProfile as TenantProfileWC,
-	OutboundApplications as OutboundApplicationsWC
+	OutboundApplications as OutboundApplicationsWC,
 	TenantProfile as TenantProfileWC
 } from '@descope/react-sdk';
 
