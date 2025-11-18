@@ -494,10 +494,7 @@ const AppRoot = () => {
   }, []);
 
   return (
-    <AuthProvider
-      projectId="my-project-id"
-      getExternalToken={externalToken}
-    >
+    <AuthProvider projectId="my-project-id" getExternalToken={externalToken}>
       <App />
     </AuthProvider>
   );
@@ -778,6 +775,32 @@ const AppRoot = () => {
   );
 };
 ```
+
+#### Using Inbound Apps as OIDC Provider
+
+To use an inbound app as an OIDC provider, you must provide both the `issuer` and `clientId` configuration options. The `issuer` is the OIDC authority URL, and the `clientId` is the client ID for your inbound app.
+
+> **Note:** When configuring an inbound app as an OIDC provider, you must obtain the issuer URL directly from the inbound app settings page in the Descope console. The issuer URL is specific to your inbound app configuration and cannot be constructed manually. In addition, you'll need to provide the client ID from the same inbound app settings.
+
+```js
+<AuthProvider
+  projectId="my-project-id"
+  oidcConfig={{
+    // Required: Get this from your inbound app settings page
+    issuer: 'https://api.descope.com/v1/apps/<Project ID>',
+    // Required: Client ID from your inbound app settings
+    clientId: 'your-inbound-app-client-id',
+    // Optional: Custom redirect URI (defaults to current URL)
+    redirectUri: 'https://my-app.com/redirect',
+    // Optional: Custom scope (defaults to 'openid' when issuer is provided)
+    scope: 'openid profile email',
+  }}
+>
+  <App />
+</AuthProvider>
+```
+
+When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
 
 ### Login
 
