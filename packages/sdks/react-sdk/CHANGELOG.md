@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.8](https://github.com/descope/descope-js/compare/react-sdk-2.23.7...react-sdk-2.23.8) (2025-11-18)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.21`
+* `audit-management-widget` updated to version `0.5.21`
+* `role-management-widget` updated to version `0.5.13`
+* `user-management-widget` updated to version `0.10.3`
+* `user-profile-widget` updated to version `0.8.3`
+* `applications-portal-widget` updated to version `0.5.4`
+* `outbound-applications-widget` updated to version `0.2.3`
+* `web-component` updated to version `3.49.2`
+* `web-js-sdk` updated to version `1.38.3`
+* `tenant-profile-widget` updated to version `0.5.3`
+
+### Features
+
+* Added inbound app client SDK functionality ([#1266](https://github.com/descope/descope-js/issues/1266)) RELEASE ([6565751](https://github.com/descope/descope-js/commit/65657510719903c6618b9cadd1ec60133c7fbaf6))
+
 ## [2.23.7](https://github.com/descope/descope-js/compare/react-sdk-2.23.6...react-sdk-2.23.7) (2025-11-16)
 
 ### Dependency Updates
