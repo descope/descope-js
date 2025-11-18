@@ -304,6 +304,133 @@ describe('OIDC', () => {
       expect(OidcClient).toHaveBeenCalledWith(
         expect.objectContaining({
           authority: 'http://example.com/app123',
+          client_id: 'projectID',
+          scope: 'openid email roles descope.custom_claims offline_access',
+        }),
+      );
+    });
+
+    it('should initialize with custom issuer and clientId', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+        clientId: 'custom-client-id',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'https://custom-issuer.com',
+          client_id: 'custom-client-id',
+          scope: 'openid',
+        }),
+      );
+    });
+
+    it('should throw error when issuer is provided without clientId', async () => {
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+      });
+
+      await expect(oidc.loginWithRedirect({}, true)).rejects.toThrow(
+        'clientId is required when providing a custom issuer/authority',
+      );
+    });
+
+    it('should use custom scope when issuer and clientId are provided', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+        clientId: 'custom-client-id',
+        scope: 'openid profile email',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'https://custom-issuer.com',
+          client_id: 'custom-client-id',
+          scope: 'openid profile email',
+        }),
+      );
+    });
+
+    it('should initialize with inbound apps issuer and clientId', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      // Mock buildUrl to return base URL for inbound apps
+      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValue(
+        'http://example.com',
+      );
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'http://example.com/v1/apps/projectID',
+        clientId: 'inbound-client-id',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com/v1/apps/projectID',
+          client_id: 'inbound-client-id',
+          scope: 'openid',
+        }),
+      );
+    });
+
+    it('should use default scope when no issuer is provided', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com',
+          client_id: 'projectID',
+          scope: 'openid email roles descope.custom_claims offline_access',
+        }),
+      );
+    });
+
+    it('should use custom scope when overriding default behavior', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        scope: 'openid profile',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scope: 'openid profile',
         }),
       );
     });
