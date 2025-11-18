@@ -1,6 +1,7 @@
 import { JWTResponse, SdkResponse, ResponseData } from '@descope/core-js-sdk';
 import { IS_BROWSER } from '../constants';
 import { CoreSdk, PasskeyOptions } from '../types';
+import { isDescopeBridge } from '../enhancers/helpers';
 
 type CreateWebauthn = typeof createWebAuthn;
 
@@ -171,6 +172,14 @@ export async function isSupported(
 ): Promise<boolean> {
   if (!IS_BROWSER) {
     return Promise.resolve(false);
+  }
+  // when running in a native bridge we defer the support decision to the native side,
+  // but only if the mobile SDK version is recent enough to support this flag in hostInfo
+  if (isDescopeBridge()) {
+    const supported = (window as any).descopeBridge?.hostInfo?.webauthn;
+    if (typeof supported === 'boolean') {
+      return supported;
+    }
   }
   const supported = !!(
     window.PublicKeyCredential &&
