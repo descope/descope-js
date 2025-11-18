@@ -134,6 +134,31 @@ const sdk = descopeSdk({
 });
 ```
 
+#### Using Inbound Apps as OIDC Provider
+
+To use an inbound app as an OIDC provider, you must provide both the `issuer` and `clientId` configuration options. The `issuer` is the OIDC authority URL, and the `clientId` is the client ID for your inbound app.
+
+> **Note:** When configuring an inbound app as an OIDC provider, you must obtain the issuer URL directly from the inbound app settings page in the Descope console. The issuer URL is specific to your inbound app configuration and cannot be constructed manually. In addition, you'll need to provide the client ID from the same inbound app settings.
+
+```js
+// Initialize the SDK with inbound app OIDC configuration
+const sdk = descopeSdk({
+  projectId: 'xxx',
+  oidcConfig: {
+    // Required: Get this from your inbound app settings page
+    issuer: 'https://api.descope.com/v1/apps/P1234567890',
+    // Required: Client ID from your inbound app settings
+    clientId: 'your-inbound-app-client-id',
+    // Optional: Custom redirect URI (defaults to current URL)
+    redirectUri: 'https://my-app.com/redirect',
+    // Optional: Custom scope (defaults to 'openid' when issuer is provided)
+    scope: 'openid profile email',
+  },
+});
+```
+
+When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
+
 #### Start OIDC login
 
 Login with OIDC is done by calling the `loginWithRedirect` method. This method will redirect the user to the Descope OIDC login page. After the user logs in, they will be redirected back to the application to finish the login process.
