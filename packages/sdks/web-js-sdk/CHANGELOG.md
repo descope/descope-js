@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.39.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.3...web-js-sdk-1.39.0) (2025-11-18)
+
+
+### Features
+
+* Check with native bridge to decide if WebAuthn is supported RELEASE ([#1267](https://github.com/descope/descope-js/issues/1267)) ([7c229b7](https://github.com/descope/descope-js/commit/7c229b751f73ede77688dd9e6e7b6481fa06e4cd))
+
 ## [1.38.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.2...web-js-sdk-1.38.3) (2025-11-18)
 
 
