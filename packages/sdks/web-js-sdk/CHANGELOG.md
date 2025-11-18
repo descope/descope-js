@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.38.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.2...web-js-sdk-1.38.3) (2025-11-18)
+
+
+### Features
+
+* Added inbound app client SDK functionality ([#1266](https://github.com/descope/descope-js/issues/1266)) RELEASE ([6565751](https://github.com/descope/descope-js/commit/65657510719903c6618b9cadd1ec60133c7fbaf6))
+
 ## [1.38.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.1...web-js-sdk-1.38.2) (2025-11-09)
 
 ### Dependency Updates
