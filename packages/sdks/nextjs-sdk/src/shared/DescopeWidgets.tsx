@@ -12,8 +12,7 @@ import type {
 	UserProfile as UserProfileWC,
 	ApplicationsPortal as ApplicationsPortalWC,
 	TenantProfile as TenantProfileWC,
-	OutboundApplications as OutboundApplicationsWC,
-	TenantProfile as TenantProfileWC
+	OutboundApplications as OutboundApplicationsWC
 } from '@descope/react-sdk';
 
 export type UserManagementProps = React.ComponentProps<typeof UserManagementWC>;
