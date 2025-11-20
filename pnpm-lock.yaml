@@ -88,6 +88,8 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)
 
+  packages/core-js-sdk/dist/cjs: {}
+
   packages/libs/e2e-helpers:
     dependencies:
       '@playwright/test':
@@ -381,6 +383,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-component-drivers/dist/cjs: {}
+
   packages/libs/sdk-helpers:
     dependencies:
       tslib:
@@ -510,6 +514,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -667,6 +673,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-mixins/dist/cjs: {}
 
   packages/sdks/angular-sdk:
     dependencies:
@@ -934,8 +942,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@descope/node-sdk':
-        specifier: 1.7.16
-        version: 1.7.16(encoding@0.1.13)
+        specifier: 1.7.19
+        version: 1.7.19(encoding@0.1.13)
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
@@ -1857,6 +1865,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/web-js-sdk/dist/cjs: {}
 
   packages/widgets/access-key-management-widget:
     dependencies:
@@ -4589,11 +4599,11 @@ packages:
   '@descope/core-js-sdk@2.40.0':
     resolution: {integrity: sha512-hFr/SzQO0QbyDaI1LlN//HKi3hXNJAnU0lFUpsqwo92YmCvYzhSZ7r6aBvT0DU2jaXmvt/0Y9TyNQuEKsGpT/A==}
 
-  '@descope/core-js-sdk@2.50.1':
-    resolution: {integrity: sha512-YCawM8R6waGZGZpVQSIKYxG4ixxvFR2wVy1s+1azun0hJthnsIGIxH2FhEuE6xpfIu5GZaOb1i9kFwzKPZT1Lw==}
+  '@descope/core-js-sdk@2.52.2':
+    resolution: {integrity: sha512-M+lt02G5gCnZh00CwkMcO8eq1T+LPKmgRf92cmU0lqLvUiMar4heOoNtSGIzvTYsqZg4ezFkNPLATyGIWp6baA==}
 
-  '@descope/node-sdk@1.7.16':
-    resolution: {integrity: sha512-vFX3YyI6kMgHPwr39b8E8ExYw+/8FJLDWvgllOZWXSKDKuiaOlKpdi0T8IONw7xzH444pyJmAYCf6MpVFRbiFg==}
+  '@descope/node-sdk@1.7.19':
+    resolution: {integrity: sha512-oZxMFEcfFFngEgXrzXfgjk0m+70ufdXaOStDCYRFCX8zwNw7GfkzUOBf+ZpiT6JMd7lcYZeQ/2abCEQLjL/y9g==}
     engines: {node: '>= 12.0.0'}
 
   '@descope/web-components-ui@2.2.10':
@@ -17974,13 +17984,13 @@ snapshots:
       jwt-decode: 4.0.0
     optional: true
 
-  '@descope/core-js-sdk@2.50.1':
+  '@descope/core-js-sdk@2.52.2':
     dependencies:
       jwt-decode: 4.0.0
 
-  '@descope/node-sdk@1.7.16(encoding@0.1.13)':
+  '@descope/node-sdk@1.7.19(encoding@0.1.13)':
     dependencies:
-      '@descope/core-js-sdk': 2.50.1
+      '@descope/core-js-sdk': 2.52.2
       cross-fetch: 4.0.0(encoding@0.1.13)
       jose: 5.2.2
       tslib: 2.8.1
