@@ -1485,6 +1485,7 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
         },
+        false,
       ),
     );
   });
@@ -1516,6 +1517,7 @@ describe('web-component', () => {
             t1: '123',
             origin: 'http://localhost',
           },
+          false,
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -1561,6 +1563,7 @@ describe('web-component', () => {
           origin: 'http://localhost',
           token,
         },
+        false,
       ),
     );
   });
@@ -1634,6 +1637,7 @@ describe('web-component', () => {
         1,
         '1.2.3',
         expect.any(Object),
+        false,
       ),
     );
   });
@@ -1665,6 +1669,7 @@ describe('web-component', () => {
         1,
         '1.2.3',
         expect.any(Object),
+        false,
       ),
     );
   });
@@ -1854,10 +1859,18 @@ describe('web-component', () => {
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', null, 1, '1.2.3', {
-          image: '',
-          origin: 'http://localhost',
-        }),
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          null,
+          1,
+          '1.2.3',
+          {
+            image: '',
+            origin: 'http://localhost',
+          },
+          false,
+        ),
       { timeout: WAIT_TIMEOUT },
     );
   });
@@ -2192,11 +2205,19 @@ describe('web-component', () => {
     fireEvent.click(screen.getByShadowText('Click'));
 
     await waitFor(() =>
-      expect(nextMock).toBeCalledWith('0', '0', '123', 1, '1.2.3', {
-        attr1: 'attr1',
-        attr2: 'attr2',
-        origin: 'http://localhost',
-      }),
+      expect(nextMock).toBeCalledWith(
+        '0',
+        '0',
+        '123',
+        1,
+        '1.2.3',
+        {
+          attr1: 'attr1',
+          attr2: 'attr2',
+          origin: 'http://localhost',
+        },
+        false,
+      ),
     );
   });
 
@@ -2956,6 +2977,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           expect.any(Object),
+          false,
         ),
       );
 
@@ -3605,6 +3627,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           expect.any(Object),
+          false,
         ),
       );
 
@@ -3803,6 +3826,7 @@ describe('web-component', () => {
             'sign-in': 1,
           },
           { origin: 'http://localhost' },
+          false,
         ),
       );
     });
@@ -5882,6 +5906,7 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
         },
+        false,
       ),
     );
   });
@@ -6603,6 +6628,7 @@ describe('web-component', () => {
             expect.anything(),
             expect.anything(),
             expect.objectContaining({ thirdPartyAppApproveScopes: '1' }),
+            false,
           ),
         { timeout: 30000 },
       );

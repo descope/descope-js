@@ -552,7 +552,9 @@ class DescopeWc extends BaseDescopeWc {
     this.#toggleScreenVisibility(isCustomScreen);
 
     // Store the current custom screen state
-    next.isCustomScreen = isCustomScreen;
+    if (next) {
+      next.isCustomScreen = isCustomScreen;
+    }
 
     // if we switched from a custom screen to a regular screen or the other way around
     if (this.#isPrevCustomScreen !== isCustomScreen) {
