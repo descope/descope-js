@@ -71,7 +71,8 @@
     "@descope/web-component": "workspace:*",
     "@descope/web-js-sdk": "workspace:*",
     "@descope/core-js-sdk": "workspace:*",
-    "@descope/tenant-profile-widget": "workspace:*"
+    "@descope/tenant-profile-widget": "workspace:*",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",

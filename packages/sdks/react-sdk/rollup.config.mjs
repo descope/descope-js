@@ -14,6 +14,7 @@ import packageJson from './package.json' with { type: 'json' };
 export default [
   {
     input: ['src/index.ts', 'src/flows.ts'],
+    external: ['react', 'react/jsx-runtime'],
     output: [
       {
         dir: './dist/esm',
