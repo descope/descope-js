@@ -185,7 +185,9 @@ export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
 
 export type TenantProfileProps = WidgetProps;
 
-export type OutboundApplicationsProps = WidgetProps;
+export type OutboundApplicationsProps = Omit<WidgetProps, 'tenant'> & {
+  onLogout?: (e: CustomEvent) => void;
+};
 
 export type { ILogger };
 export type DefaultFlowProps = Omit<DescopeProps, 'flowId'>;
