@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.10](https://github.com/descope/descope-js/compare/react-sdk-2.23.9...react-sdk-2.23.10) (2025-11-24)
+
+
+### Bug Fixes
+
+* trying to fix React tslib error RELEASE ([#1273](https://github.com/descope/descope-js/issues/1273)) ([a1a8edb](https://github.com/descope/descope-js/commit/a1a8edb5124b3cb4c5511d807ef73fb65ec3f132))
+
 ## [2.23.9](https://github.com/descope/descope-js/compare/react-sdk-2.23.8...react-sdk-2.23.9) (2025-11-18)
 
 ### Dependency Updates

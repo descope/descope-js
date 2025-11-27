@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.44](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.43...nextjs-sdk-0.14.44) (2025-11-24)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.23.10`
+## [0.14.43](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.42...nextjs-sdk-0.14.43) (2025-11-23)
+
+
+### Bug Fixes
+
+* issue 12932 RELEASE ([#1271](https://github.com/descope/descope-js/issues/1271)) ([b2ed233](https://github.com/descope/descope-js/commit/b2ed23394afeb1774dde729e00c613fcee7bfc0f))
+
 ## [0.14.42](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.41...nextjs-sdk-0.14.42) (2025-11-20)
 
 ## [0.14.41](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.40...nextjs-sdk-0.14.41) (2025-11-18)
