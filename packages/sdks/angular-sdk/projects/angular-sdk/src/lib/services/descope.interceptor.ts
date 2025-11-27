@@ -9,6 +9,7 @@ import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { DescopeAuthService } from './descope-auth.service';
 import { DescopeAuthConfig } from '../types/types';
+import { isDescopeBridge } from '../utils/constants';
 
 export const descopeInterceptor: HttpInterceptorFn = (request, next) => {
   const config = inject(DescopeAuthConfig);
@@ -19,6 +20,13 @@ export const descopeInterceptor: HttpInterceptorFn = (request, next) => {
     next: HttpHandlerFn,
     error?: HttpErrorResponse
   ) {
+    // Skip session refresh in native flows
+    if (isDescopeBridge()) {
+      return throwError(
+        () => error ?? new Error('Session refresh disabled in native flows')
+      );
+    }
+
     return authService.refreshSession().pipe(
       switchMap((refreshed) => {
         if (refreshed.ok && refreshed.data) {

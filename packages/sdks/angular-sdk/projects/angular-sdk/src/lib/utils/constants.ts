@@ -6,6 +6,7 @@ export const baseHeaders = {
 };
 
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
-export const isDescopeBridge = () => !!(window as any)?.descopeBridge;
+export const isDescopeBridge = () =>
+  typeof window !== 'undefined' && !!(window as any)?.descopeBridge;
 
 export const isBrowser = () => typeof window !== 'undefined';
