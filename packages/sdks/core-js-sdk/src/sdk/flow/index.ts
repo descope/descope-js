@@ -22,6 +22,7 @@ const withFlow = (httpClient: HttpClient) => ({
       componentsVersion?: string,
       flowVersions?: Record<string, number>,
       input?: FlowInput,
+      isCustomScreen = false,
     ): Promise<SdkResponse<FlowResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.flow.start, {
@@ -32,6 +33,7 @@ const withFlow = (httpClient: HttpClient) => ({
           componentsVersion,
           flowVersions,
           input,
+          isCustomScreen,
         }),
       ),
   ),
@@ -43,6 +45,7 @@ const withFlow = (httpClient: HttpClient) => ({
       version?: number,
       componentsVersion?: string,
       input?: FlowInput,
+      isCustomScreen = false,
     ): Promise<SdkResponse<FlowResponse>> => {
       return transformResponse(
         httpClient.post(apiPaths.flow.next, {
@@ -52,6 +55,7 @@ const withFlow = (httpClient: HttpClient) => ({
           version,
           componentsVersion,
           input,
+          isCustomScreen,
         }),
       );
     },

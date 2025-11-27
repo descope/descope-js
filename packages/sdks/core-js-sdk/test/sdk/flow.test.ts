@@ -22,6 +22,7 @@ describe('Flows', () => {
       await sdk.flow.start('flow1');
       expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/start', {
         flowId: 'flow1',
+        isCustomScreen: false,
       });
     });
 
@@ -95,6 +96,7 @@ describe('Flows', () => {
         executionId: 'e1',
         stepId: 's1',
         interactionId: 'a1',
+        isCustomScreen: false,
       });
     });
 
@@ -108,6 +110,7 @@ describe('Flows', () => {
         input,
         version: 'v1',
         componentsVersion: 'cv1',
+        isCustomScreen: false,
       });
     });
 
