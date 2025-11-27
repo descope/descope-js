@@ -276,16 +276,16 @@ const setImageVariable = (
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
-  componentsConfig?: ComponentsConfig,
   flowInputs?: Record<string, string>,
   logger?: { error: (message: string, description: string) => void },
 ) => {
   replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
-  setElementConfig(baseEle, componentsConfig, logger);
+  setElementConfig(baseEle, screenState?.componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
+  applyComponentsState(baseEle, screenState?.componentsState);
 };
 
 /**
@@ -335,3 +335,25 @@ export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
     new Set(),
   ),
 ];
+
+const applyComponentsState = (
+  baseEle: DocumentFragment,
+  componentsState: Record<string, string> = {},
+) => {
+  Object.entries(componentsState).forEach(([componentId, state]) => {
+    const componentEls = baseEle.querySelectorAll(`[id="${componentId}"]`);
+    componentEls.forEach((compEl) => {
+      switch (state) {
+        case 'disable':
+          compEl.setAttribute('disabled', 'true');
+          break;
+        case 'hide':
+          compEl.classList.add('hidden');
+          break;
+        default:
+          // no state change
+          break;
+      }
+    });
+  });
+};

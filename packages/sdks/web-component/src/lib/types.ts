@@ -64,6 +64,7 @@ export interface ScreenState {
   linkId?: unknown;
   sentTo?: unknown;
   clientScripts?: ClientScript[];
+  componentsState?: Record<string, string>;
 }
 
 export type SSOQueryParams = {
