@@ -6841,6 +6841,143 @@ describe('web-component', () => {
         onScreenUpdate.mock.calls[1][1],
       );
     });
+    it('should hide components when componentsState contains hide state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-button': 'hide',
+              'test-input': 'hide',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="test-button">Click me</descope-button>
+        <input id="test-input" />
+        <descope-text id="visible-text">Visible</descope-text>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Visible'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify hidden components have the 'hidden' class
+      const hiddenButton = descopeWc.shadowRoot.querySelector('#test-button');
+      const hiddenInput = descopeWc.shadowRoot.querySelector('#test-input');
+      const visibleText = descopeWc.shadowRoot.querySelector('#visible-text');
+
+      expect(hiddenButton).toHaveClass('hidden');
+      expect(hiddenInput).toHaveClass('hidden');
+      expect(visibleText).not.toHaveClass('hidden');
+    });
+
+    it('should disable components when componentsState contains disable state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-submit-button': 'disable',
+              'test-email-input': 'disable',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="test-submit-button">Submit</descope-button>
+        <input id="test-email-input" />
+        <descope-button id="enabled-button">Enabled</descope-button>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify disabled components have the 'disabled' attribute
+      const disabledButton = descopeWc.shadowRoot.querySelector(
+        '#test-submit-button',
+      );
+      const disabledInput =
+        descopeWc.shadowRoot.querySelector('#test-email-input');
+      const enabledButton =
+        descopeWc.shadowRoot.querySelector('#enabled-button');
+
+      expect(disabledButton).toHaveAttribute('disabled', 'true');
+      expect(disabledInput).toHaveAttribute('disabled', 'true');
+      expect(enabledButton).not.toHaveAttribute('disabled');
+    });
+    it('should handle empty componentsState gracefully', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {},
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="btn-1">Button</descope-button>
+        <input id="input-1" />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const btn = descopeWc.shadowRoot.querySelector('#btn-1');
+      const input = descopeWc.shadowRoot.querySelector('#input-1');
+
+      // Components should remain in their default state
+      expect(btn).not.toHaveClass('hidden');
+      expect(btn).not.toHaveAttribute('disabled');
+      expect(input).not.toHaveClass('hidden');
+      expect(input).not.toHaveAttribute('disabled');
+    });
+
+    it('should handle undefined componentsState gracefully', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {},
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="btn-1">Button</descope-button>
+        <input id="input-1" />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const btn = descopeWc.shadowRoot.querySelector('#btn-1');
+      const input = descopeWc.shadowRoot.querySelector('#input-1');
+
+      // Components should remain in their default state
+      expect(btn).not.toHaveClass('hidden');
+      expect(btn).not.toHaveAttribute('disabled');
+      expect(input).not.toHaveClass('hidden');
+      expect(input).not.toHaveAttribute('disabled');
+    });
+
     it('should allow lazy render when window attribute is set (for mobile)', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
