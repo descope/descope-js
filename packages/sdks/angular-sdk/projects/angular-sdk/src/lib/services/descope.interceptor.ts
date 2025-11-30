@@ -9,6 +9,7 @@ import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { DescopeAuthService } from './descope-auth.service';
 import { DescopeAuthConfig } from '../types/types';
+import { isDescopeBridge } from '../utils/constants';
 
 export const descopeInterceptor: HttpInterceptorFn = (request, next) => {
   const config = inject(DescopeAuthConfig);
@@ -37,6 +38,9 @@ export const descopeInterceptor: HttpInterceptorFn = (request, next) => {
   }
 
   function shouldIntercept(request: HttpRequest<unknown>): boolean {
+    if (isDescopeBridge()) {
+      return false;
+    }
     return (
       (config.pathsToIntercept?.length === 0 ||
         config.pathsToIntercept?.some((path) => request.url.includes(path))) ??
