@@ -35,6 +35,8 @@ export {
 
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
+export { isDescopeBridge } from './enhancers/helpers';
+
 export type { JWTResponse } from '@descope/core-js-sdk';
 export type { OneTapConfig } from './sdk/fedcm';
 export type { CookieConfig } from './enhancers/withPersistTokens/types';

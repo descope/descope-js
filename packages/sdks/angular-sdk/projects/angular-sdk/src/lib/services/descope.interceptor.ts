@@ -9,7 +9,7 @@ import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { DescopeAuthService } from './descope-auth.service';
 import { DescopeAuthConfig } from '../types/types';
-import { isDescopeBridge } from '../utils/constants';
+import { isDescopeBridge } from '@descope/web-js-sdk';
 
 export const descopeInterceptor: HttpInterceptorFn = (request, next) => {
   const config = inject(DescopeAuthConfig);
