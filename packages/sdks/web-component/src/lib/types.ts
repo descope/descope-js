@@ -64,6 +64,7 @@ export interface ScreenState {
   linkId?: unknown;
   sentTo?: unknown;
   clientScripts?: ClientScript[];
+  // map of component IDs to their state
   componentsState?: Record<string, string>;
 }
 

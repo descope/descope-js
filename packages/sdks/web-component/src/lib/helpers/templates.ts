@@ -271,6 +271,7 @@ const setImageVariable = (
 const applyComponentsState = (
   baseEle: DocumentFragment,
   componentsState: Record<string, string> = {},
+  logger?: { error: (message: string, description: string) => void },
 ) => {
   Object.entries(componentsState).forEach(([componentId, state]) => {
     const componentEls = baseEle.querySelectorAll(`[id="${componentId}"]`);
@@ -283,7 +284,10 @@ const applyComponentsState = (
           compEl.classList.add('hidden');
           break;
         default:
-          // no state change
+          logger?.error(
+            `Unknown component state "${state}" for component with id "${componentId}"`,
+            'Valid states are "disable" and "hide"',
+          );
           break;
       }
     });
@@ -307,7 +311,7 @@ export const updateTemplateFromScreenState = (
   setElementConfig(baseEle, screenState?.componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
-  applyComponentsState(baseEle, screenState?.componentsState);
+  applyComponentsState(baseEle, screenState?.componentsState, logger);
 };
 
 /**
