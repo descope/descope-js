@@ -6914,7 +6914,7 @@ describe('web-component', () => {
 
       expect(disabledButton).toHaveAttribute('disabled', 'true');
       expect(disabledInput).toHaveAttribute('disabled', 'true');
-      expect(enabledButton).not.toHaveAttribute('disabled');
+      expect(enabledButton).toBeEnabled();
     });
     it('should handle empty componentsState gracefully', async () => {
       startMock.mockReturnValue(
@@ -6943,9 +6943,9 @@ describe('web-component', () => {
 
       // Components should remain in their default state
       expect(btn).not.toHaveClass('hidden');
-      expect(btn).not.toHaveAttribute('disabled');
+      expect(btn).toBeEnabled();
       expect(input).not.toHaveClass('hidden');
-      expect(input).not.toHaveAttribute('disabled');
+      expect(input).toBeEnabled();
     });
 
     it('should handle undefined componentsState gracefully', async () => {
@@ -6973,9 +6973,9 @@ describe('web-component', () => {
 
       // Components should remain in their default state
       expect(btn).not.toHaveClass('hidden');
-      expect(btn).not.toHaveAttribute('disabled');
+      expect(btn).toBeEnabled();
       expect(input).not.toHaveClass('hidden');
-      expect(input).not.toHaveAttribute('disabled');
+      expect(input).toBeEnabled();
     });
 
     it('should allow lazy render when window attribute is set (for mobile)', async () => {

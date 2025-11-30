@@ -268,6 +268,28 @@ const setImageVariable = (
   }
 };
 
+const applyComponentsState = (
+  baseEle: DocumentFragment,
+  componentsState: Record<string, string> = {},
+) => {
+  Object.entries(componentsState).forEach(([componentId, state]) => {
+    const componentEls = baseEle.querySelectorAll(`[id="${componentId}"]`);
+    componentEls.forEach((compEl) => {
+      switch (state) {
+        case 'disable':
+          compEl.setAttribute('disabled', 'true');
+          break;
+        case 'hide':
+          compEl.classList.add('hidden');
+          break;
+        default:
+          // no state change
+          break;
+      }
+    });
+  });
+};
+
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
@@ -335,25 +357,3 @@ export const getDescopeUiComponentsList = (clone: DocumentFragment) => [
     new Set(),
   ),
 ];
-
-const applyComponentsState = (
-  baseEle: DocumentFragment,
-  componentsState: Record<string, string> = {},
-) => {
-  Object.entries(componentsState).forEach(([componentId, state]) => {
-    const componentEls = baseEle.querySelectorAll(`[id="${componentId}"]`);
-    componentEls.forEach((compEl) => {
-      switch (state) {
-        case 'disable':
-          compEl.setAttribute('disabled', 'true');
-          break;
-        case 'hide':
-          compEl.classList.add('hidden');
-          break;
-        default:
-          // no state change
-          break;
-      }
-    });
-  });
-};
