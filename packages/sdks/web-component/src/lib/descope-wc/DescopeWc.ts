@@ -1582,7 +1582,6 @@ class DescopeWc extends BaseDescopeWc {
     updateTemplateFromScreenState(
       clone,
       screenState,
-      screenState.componentsConfig,
       this.formConfig,
       this.loggerWrapper,
     );
