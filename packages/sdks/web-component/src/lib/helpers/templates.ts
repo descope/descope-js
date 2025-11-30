@@ -274,7 +274,7 @@ const applyComponentsState = (
   logger?: { error: (message: string, description: string) => void },
 ) => {
   Object.entries(componentsState).forEach(([componentId, state]) => {
-    const componentEls = baseEle.querySelectorAll(`[id="${componentId}"]`);
+    const componentEls = baseEle.querySelectorAll(`[id="${CSS.escape(componentId)}"]`);
     componentEls.forEach((compEl) => {
       switch (state) {
         case 'disable':
