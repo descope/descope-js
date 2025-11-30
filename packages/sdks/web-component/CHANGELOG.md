@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.50.0](https://github.com/descope/descope-js/compare/web-component-3.49.3...web-component-3.50.0) (2025-11-30)
+
+
+### Features
+
+* Conditional components RELEASE ([#1277](https://github.com/descope/descope-js/issues/1277)) ([bf8d1e8](https://github.com/descope/descope-js/commit/bf8d1e869a93300daff55caba55c90b298395665))
+
 ## [3.49.3](https://github.com/descope/descope-js/compare/web-component-3.49.2...web-component-3.49.3) (2025-11-18)
 
 ### Dependency Updates
