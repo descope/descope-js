@@ -5,6 +5,7 @@ import { DESCOPE_INJECTION_KEY, baseHeaders } from './constants';
 import { type JWTResponse, UserData, type Options, type Sdk } from './types';
 import createSdk from './sdk';
 import type * as _2 from 'oidc-client-ts'; // eslint-disable-line
+import { isDescopeBridge } from './utils';
 
 const routeGuardInternal = ref<(() => Promise<boolean>) | null>(null);
 export const routeGuard = () => unref(routeGuardInternal)?.();
@@ -53,6 +54,7 @@ export default {
     });
 
     const fetchSession = async (tryRefresh?: boolean) => {
+      if (isDescopeBridge()) return;
       isSessionLoading.value = true;
       await sdk.refresh(undefined, tryRefresh);
       isSessionLoading.value = false;
