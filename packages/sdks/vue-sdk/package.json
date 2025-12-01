@@ -1,6 +1,6 @@
 {
   "name": "@descope/vue-sdk",
-  "version": "2.14.10",
+  "version": "2.14.11",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "type": "module",

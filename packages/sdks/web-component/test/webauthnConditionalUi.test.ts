@@ -269,10 +269,18 @@ describe('webauthnConditionalUi', () => {
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', 'id', 0, '1.2.3', {
-          response: 'response',
-          transactionId: 'transactionId',
-        }),
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          'id',
+          0,
+          '1.2.3',
+          {
+            response: 'response',
+            transactionId: 'transactionId',
+          },
+          false,
+        ),
       { timeout: 10000 },
     );
   });

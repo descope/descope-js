@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.53.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.2...core-js-sdk-2.53.0) (2025-12-01)
+
+
+### Features
+
+* add custom screen indication to the flow REST calls RELEASE ([#1269](https://github.com/descope/descope-js/issues/1269)) ([d1b21d1](https://github.com/descope/descope-js/commit/d1b21d19746c715c872f21ab6df8946c572e9294))
+
 ## [2.52.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.1...core-js-sdk-2.52.2) (2025-11-09)
 
 ## [2.52.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.0...core-js-sdk-2.52.1) (2025-11-06)
