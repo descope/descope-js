@@ -38,9 +38,7 @@ export const descopeInterceptor: HttpInterceptorFn = (request, next) => {
   }
 
   function shouldIntercept(request: HttpRequest<unknown>): boolean {
-    if (isDescopeBridge()) {
-      return false;
-    }
+    if (isDescopeBridge()) return false;
     return (
       (config.pathsToIntercept?.length === 0 ||
         config.pathsToIntercept?.some((path) => request.url.includes(path))) ??

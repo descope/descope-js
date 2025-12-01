@@ -1917,7 +1917,7 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     // Run all module refresh calls concurrently
-    let promises: Promise<void>[] = [];
+    const promises: Promise<void>[] = [];
 
     // eslint-disable-next-line no-restricted-syntax
     for (const module of sdkScriptsModules) {
