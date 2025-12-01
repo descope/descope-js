@@ -5,7 +5,7 @@ import { DESCOPE_INJECTION_KEY, baseHeaders } from './constants';
 import { type JWTResponse, UserData, type Options, type Sdk } from './types';
 import createSdk from './sdk';
 import type * as _2 from 'oidc-client-ts'; // eslint-disable-line
-import { isDescopeBridge } from '@descope/web-js-sdk';
+import { isDescopeBridge } from './utils';
 
 const routeGuardInternal = ref<(() => Promise<boolean>) | null>(null);
 export const routeGuard = () => unref(routeGuardInternal)?.();

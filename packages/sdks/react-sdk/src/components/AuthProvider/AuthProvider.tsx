@@ -6,12 +6,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { CookieConfig, OidcConfig, isDescopeBridge } from '@descope/web-js-sdk';
+import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
 import { Claims } from '@descope/core-js-sdk';
 import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
-import { withValidation } from '../../utils';
+import { isDescopeBridge, withValidation } from '../../utils';
 import useSdk from './useSdk';
 
 type Hooks = Parameters<typeof useSdk>[0]['hooks'];

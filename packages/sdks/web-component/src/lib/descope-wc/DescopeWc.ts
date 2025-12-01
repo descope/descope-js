@@ -1,7 +1,6 @@
 import {
   clearFingerprintData,
   ensureFingerprintIds,
-  isDescopeBridge,
 } from '@descope/web-js-sdk';
 import {
   CUSTOM_INTERACTIONS,
@@ -377,7 +376,7 @@ class DescopeWc extends BaseDescopeWc {
     // when running in a webview (mobile SDK) we want to lazy init the component
     // so the mobile SDK will be able to register all the necessary callbacks
     // before the component will start loading the flow
-    if (!isDescopeBridge()) {
+    if (!(window as any).descopeBridge) {
       // eslint-disable-next-line no-underscore-dangle
       return this._init();
     }
