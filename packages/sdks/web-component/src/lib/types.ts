@@ -199,7 +199,9 @@ export type ClientScript = {
   resultKey?: string;
 };
 
-export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]>;
+export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]> & {
+  isCustomScreen?: boolean;
+};
 export type NextFnReturnPromiseValue = Awaited<ReturnType<NextFn>>;
 
 export type DebuggerMessage = {
