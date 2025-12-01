@@ -1485,6 +1485,7 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
         },
+        false,
       ),
     );
   });
@@ -1516,6 +1517,7 @@ describe('web-component', () => {
             t1: '123',
             origin: 'http://localhost',
           },
+          false,
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -1561,6 +1563,7 @@ describe('web-component', () => {
           origin: 'http://localhost',
           token,
         },
+        false,
       ),
     );
   });
@@ -1634,6 +1637,7 @@ describe('web-component', () => {
         1,
         '1.2.3',
         expect.any(Object),
+        false,
       ),
     );
   });
@@ -1665,6 +1669,7 @@ describe('web-component', () => {
         1,
         '1.2.3',
         expect.any(Object),
+        false,
       ),
     );
   });
@@ -1854,10 +1859,18 @@ describe('web-component', () => {
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', null, 1, '1.2.3', {
-          image: '',
-          origin: 'http://localhost',
-        }),
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          null,
+          1,
+          '1.2.3',
+          {
+            image: '',
+            origin: 'http://localhost',
+          },
+          false,
+        ),
       { timeout: WAIT_TIMEOUT },
     );
   });
@@ -2192,11 +2205,19 @@ describe('web-component', () => {
     fireEvent.click(screen.getByShadowText('Click'));
 
     await waitFor(() =>
-      expect(nextMock).toBeCalledWith('0', '0', '123', 1, '1.2.3', {
-        attr1: 'attr1',
-        attr2: 'attr2',
-        origin: 'http://localhost',
-      }),
+      expect(nextMock).toBeCalledWith(
+        '0',
+        '0',
+        '123',
+        1,
+        '1.2.3',
+        {
+          attr1: 'attr1',
+          attr2: 'attr2',
+          origin: 'http://localhost',
+        },
+        false,
+      ),
     );
   });
 
@@ -2956,6 +2977,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           expect.any(Object),
+          false,
         ),
       );
 
@@ -3605,6 +3627,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           expect.any(Object),
+          false,
         ),
       );
 
@@ -3803,6 +3826,7 @@ describe('web-component', () => {
             'sign-in': 1,
           },
           { origin: 'http://localhost' },
+          false,
         ),
       );
     });
@@ -5882,6 +5906,7 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
         },
+        false,
       ),
     );
   });
@@ -6603,6 +6628,7 @@ describe('web-component', () => {
             expect.anything(),
             expect.anything(),
             expect.objectContaining({ thirdPartyAppApproveScopes: '1' }),
+            false,
           ),
         { timeout: 30000 },
       );
@@ -6841,6 +6867,143 @@ describe('web-component', () => {
         onScreenUpdate.mock.calls[1][1],
       );
     });
+    it('should hide components when componentsState contains hide state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-button': 'hide',
+              'test-input': 'hide',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="test-button">Click me</descope-button>
+        <input id="test-input" />
+        <descope-text id="visible-text">Visible</descope-text>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Visible'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify hidden components have the 'hidden' class
+      const hiddenButton = descopeWc.shadowRoot.querySelector('#test-button');
+      const hiddenInput = descopeWc.shadowRoot.querySelector('#test-input');
+      const visibleText = descopeWc.shadowRoot.querySelector('#visible-text');
+
+      expect(hiddenButton).toHaveClass('hidden');
+      expect(hiddenInput).toHaveClass('hidden');
+      expect(visibleText).not.toHaveClass('hidden');
+    });
+
+    it('should disable components when componentsState contains disable state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-submit-button': 'disable',
+              'test-email-input': 'disable',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="test-submit-button">Submit</descope-button>
+        <input id="test-email-input" />
+        <descope-button id="enabled-button">Enabled</descope-button>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify disabled components have the 'disabled' attribute
+      const disabledButton = descopeWc.shadowRoot.querySelector(
+        '#test-submit-button',
+      );
+      const disabledInput =
+        descopeWc.shadowRoot.querySelector('#test-email-input');
+      const enabledButton =
+        descopeWc.shadowRoot.querySelector('#enabled-button');
+
+      expect(disabledButton).toHaveAttribute('disabled', 'true');
+      expect(disabledInput).toHaveAttribute('disabled', 'true');
+      expect(enabledButton).toBeEnabled();
+    });
+    it('should handle empty componentsState gracefully', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {},
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="btn-1">Button</descope-button>
+        <input id="input-1" />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const btn = descopeWc.shadowRoot.querySelector('#btn-1');
+      const input = descopeWc.shadowRoot.querySelector('#input-1');
+
+      // Components should remain in their default state
+      expect(btn).not.toHaveClass('hidden');
+      expect(btn).toBeEnabled();
+      expect(input).not.toHaveClass('hidden');
+      expect(input).toBeEnabled();
+    });
+
+    it('should handle undefined componentsState gracefully', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {},
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="btn-1">Button</descope-button>
+        <input id="input-1" />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const btn = descopeWc.shadowRoot.querySelector('#btn-1');
+      const input = descopeWc.shadowRoot.querySelector('#input-1');
+
+      // Components should remain in their default state
+      expect(btn).not.toHaveClass('hidden');
+      expect(btn).toBeEnabled();
+      expect(input).not.toHaveClass('hidden');
+      expect(input).toBeEnabled();
+    });
+
     it('should allow lazy render when window attribute is set (for mobile)', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 

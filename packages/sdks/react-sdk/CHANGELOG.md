@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.12](https://github.com/descope/descope-js/compare/react-sdk-2.23.11...react-sdk-2.23.12) (2025-12-01)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.23`
+* `audit-management-widget` updated to version `0.5.23`
+* `role-management-widget` updated to version `0.5.15`
+* `user-management-widget` updated to version `0.10.6`
+* `user-profile-widget` updated to version `0.8.6`
+* `applications-portal-widget` updated to version `0.5.6`
+* `outbound-applications-widget` updated to version `0.2.6`
+* `web-component` updated to version `3.51.0`
+* `web-js-sdk` updated to version `1.39.1`
+* `core-js-sdk` updated to version `2.53.0`
+* `tenant-profile-widget` updated to version `0.5.6`
+## [2.23.11](https://github.com/descope/descope-js/compare/react-sdk-2.23.10...react-sdk-2.23.11) (2025-11-30)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.10.5`
+* `user-profile-widget` updated to version `0.8.5`
+* `outbound-applications-widget` updated to version `0.2.5`
+* `web-component` updated to version `3.50.0`
+* `tenant-profile-widget` updated to version `0.5.5`
+## [2.23.10](https://github.com/descope/descope-js/compare/react-sdk-2.23.9...react-sdk-2.23.10) (2025-11-24)
+
+
+### Bug Fixes
+
+* trying to fix React tslib error RELEASE ([#1273](https://github.com/descope/descope-js/issues/1273)) ([a1a8edb](https://github.com/descope/descope-js/commit/a1a8edb5124b3cb4c5511d807ef73fb65ec3f132))
+
 ## [2.23.9](https://github.com/descope/descope-js/compare/react-sdk-2.23.8...react-sdk-2.23.9) (2025-11-18)
 
 ### Dependency Updates

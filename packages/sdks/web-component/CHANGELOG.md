@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.51.0](https://github.com/descope/descope-js/compare/web-component-3.50.0...web-component-3.51.0) (2025-12-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.39.1`
+
+### Features
+
+* add custom screen indication to the flow REST calls RELEASE ([#1269](https://github.com/descope/descope-js/issues/1269)) ([d1b21d1](https://github.com/descope/descope-js/commit/d1b21d19746c715c872f21ab6df8946c572e9294))
+
+## [3.50.0](https://github.com/descope/descope-js/compare/web-component-3.49.3...web-component-3.50.0) (2025-11-30)
+
+
+### Features
+
+* Conditional components RELEASE ([#1277](https://github.com/descope/descope-js/issues/1277)) ([bf8d1e8](https://github.com/descope/descope-js/commit/bf8d1e869a93300daff55caba55c90b298395665))
+
 ## [3.49.3](https://github.com/descope/descope-js/compare/web-component-3.49.2...web-component-3.49.3) (2025-11-18)
 
 ### Dependency Updates
