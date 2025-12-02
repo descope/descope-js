@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.22.0](https://github.com/descope/descope-js/compare/angular-sdk-0.21.17...angular-sdk-0.22.0) (2025-12-02)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.24`
+* `audit-management-widget` updated to version `0.5.24`
+* `role-management-widget` updated to version `0.5.16`
+* `user-management-widget` updated to version `0.10.7`
+* `user-profile-widget` updated to version `0.8.7`
+* `tenant-profile-widget` updated to version `0.5.7`
+* `applications-portal-widget` updated to version `0.5.7`
+* `web-component` updated to version `3.52.0`
+* `web-js-sdk` updated to version `1.40.0`
+
+### Features
+
+* Skip session handling when running in native flows RELEASE ([#1274](https://github.com/descope/descope-js/issues/1274)) ([53fe652](https://github.com/descope/descope-js/commit/53fe6521bfc57424b6017278b4111621f0f2467d))
+
 ## [0.21.17](https://github.com/descope/descope-js/compare/angular-sdk-0.21.16...angular-sdk-0.21.17) (2025-12-01)
 
 ### Dependency Updates
