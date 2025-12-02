@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.52.0](https://github.com/descope/descope-js/compare/web-component-3.51.0...web-component-3.52.0) (2025-12-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.0`
+
+### Features
+
+* Skip session handling when running in native flows RELEASE ([#1274](https://github.com/descope/descope-js/issues/1274)) ([53fe652](https://github.com/descope/descope-js/commit/53fe6521bfc57424b6017278b4111621f0f2467d))
+
 ## [3.51.0](https://github.com/descope/descope-js/compare/web-component-3.50.0...web-component-3.51.0) (2025-12-01)
 
 ### Dependency Updates
