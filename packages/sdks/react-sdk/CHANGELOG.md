@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.24.1](https://github.com/descope/descope-js/compare/react-sdk-2.24.0...react-sdk-2.24.1) (2025-12-02)
+
+
+### Bug Fixes
+
+* Add bridge refresh unit test RELEASE ([#1279](https://github.com/descope/descope-js/issues/1279)) ([317073e](https://github.com/descope/descope-js/commit/317073e514280fc9a132da46d4db7ff4cb3e1557))
+
 ## [2.24.0](https://github.com/descope/descope-js/compare/react-sdk-2.23.12...react-sdk-2.24.0) (2025-12-02)
 
 ### Dependency Updates
