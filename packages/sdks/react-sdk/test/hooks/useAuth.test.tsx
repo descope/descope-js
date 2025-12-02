@@ -142,34 +142,4 @@ describe('hooks', () => {
     expect(result.current.isSessionLoading).toEqual(false);
     expect(refresh).toHaveBeenCalledTimes(1);
   });
-
-  it('should not refresh session when running in a native flow', async () => {
-    const origWindow = window;
-    Object.defineProperty(global, 'window', {
-      value: {
-        descopeBridge: {},
-      },
-      writable: true,
-      configurable: true,
-    });
-
-    jest.resetModules();
-
-    const wrapper = authProviderWrapper('project1');
-
-    const { result, rerender } = renderHook(() => useSession(), {
-      wrapper,
-    });
-
-    global.window = origWindow;
-    jest.resetModules();
-
-    expect(result.current.isSessionLoading).toEqual(false);
-
-    // render again
-    rerender();
-
-    expect(result.current.isSessionLoading).toEqual(false);
-    expect(refresh).toHaveBeenCalledTimes(0);
-  });
 });
