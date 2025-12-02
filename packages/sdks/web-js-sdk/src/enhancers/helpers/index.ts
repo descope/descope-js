@@ -145,7 +145,8 @@ export const getUserFromResponse = async (
 };
 
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
-export const isDescopeBridge = () => !!(window as any)?.descopeBridge;
+export const isDescopeBridge = () =>
+  typeof window !== 'undefined' && !!window['descopeBridge'];
 
 export const isLocalStorage =
   typeof customStorage !== 'undefined' || typeof localStorage !== 'undefined';
