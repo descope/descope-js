@@ -11,7 +11,7 @@ import { Claims } from '@descope/core-js-sdk';
 import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
-import { withValidation } from '../../utils';
+import { isDescopeBridge, withValidation } from '../../utils';
 import useSdk from './useSdk';
 
 type Hooks = Parameters<typeof useSdk>[0]['hooks'];
@@ -129,6 +129,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   }, []);
 
   const fetchSession = useCallback(() => {
+    // Don't load the session in native flows
+    if (isDescopeBridge()) return;
+
     // We want that the session will fetched only once
     if (isSessionFetched.current) return;
     isSessionFetched.current = true;
