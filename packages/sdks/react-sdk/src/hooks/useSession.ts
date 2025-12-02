@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import useContext from './useContext';
+import { isDescopeBridge } from '../utils';
 
 const useSession = () => {
   const {
@@ -21,7 +22,8 @@ const useSession = () => {
     isLoading.current = isSessionLoading || isOidcLoading;
   }, [isSessionLoading, isOidcLoading]);
 
-  const shouldFetchSession = !isAuthenticated && !isSessionLoading;
+  // In case we're in a native flow, we won't refresh the session anyway, so no point in marking the state as loading
+  const shouldFetchSession = !isAuthenticated && !isSessionLoading && !isDescopeBridge();
 
   // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
   useMemo(() => {
