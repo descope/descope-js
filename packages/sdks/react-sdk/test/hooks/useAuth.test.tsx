@@ -142,4 +142,19 @@ describe('hooks', () => {
     expect(result.current.isSessionLoading).toEqual(false);
     expect(refresh).toHaveBeenCalledTimes(1);
   });
+
+  it('should not refresh session when running in a native flow', async () => {
+    (window as any).descopeBridge = {};
+
+    const wrapper = authProviderWrapper('project1');
+
+    const { result } = renderHook(() => useSession(), {
+      wrapper,
+    });
+
+    delete((window as any).descopeBridge);
+
+    expect(result.current.isSessionLoading).toEqual(false);
+    expect(refresh).toHaveBeenCalledTimes(0);
+  });
 });

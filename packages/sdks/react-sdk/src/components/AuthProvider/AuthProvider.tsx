@@ -129,7 +129,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   }, []);
 
   const fetchSession = useCallback(() => {
-    // Don't load the session in native flows
+    // Don't load the session in native flows, though we'd usually not get here at all from useSession in this case
     if (isDescopeBridge()) return;
 
     // We want that the session will fetched only once
