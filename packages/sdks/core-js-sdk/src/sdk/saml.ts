@@ -17,7 +17,7 @@ const withSaml = (httpClient: HttpClient) => ({
       ssoId?: string,
       forceAuthn?: boolean,
       loginHint?: string,
-      initiatedEmail?: string,
+      enforceInitiatedEmail?: boolean,
     ): Promise<SdkResponse<URLResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.saml.start, loginOptions || {}, {
@@ -27,7 +27,7 @@ const withSaml = (httpClient: HttpClient) => ({
             ...(ssoId && { ssoId }),
             ...(forceAuthn && { forceAuthn: 'true' }),
             ...(loginHint && { loginHint }),
-            ...(initiatedEmail && { initiatedEmail }),
+            ...(enforceInitiatedEmail && { initiatedEmail: tenantIdOrEmail }),
           },
           ...(token && { token }),
         }),
