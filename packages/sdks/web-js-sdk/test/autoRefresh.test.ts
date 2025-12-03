@@ -337,7 +337,10 @@ describe('autoRefresh', () => {
     );
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const sdk = createSdk({
+      projectId: 'pid',
+      autoRefresh: { ignoreVisibility: true },
+    });
     const refreshSpy = jest
       .spyOn(sdk, 'refresh')
       .mockReturnValue(new Promise(() => {}));
@@ -351,7 +354,7 @@ describe('autoRefresh', () => {
     expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     expect(loggerDebugMock).toHaveBeenCalledWith(
-      'Expiration time passed, refreshing session',
+      'Expiration time passed or refresh needed, refreshing session',
     );
     loggerDebugMock.mockClear();
   });

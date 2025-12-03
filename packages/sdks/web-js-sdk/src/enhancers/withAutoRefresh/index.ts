@@ -22,6 +22,11 @@ export const withAutoRefresh =
     // Never auto refresh in native flows
     if (!autoRefresh || isDescopeBridge()) return createSdk(config);
 
+    const ignoreVisibility =
+      typeof autoRefresh === 'object'
+        ? autoRefresh.ignoreVisibility === true
+        : false;
+
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
     const { clearAllTimers, setTimer } = createTimerFunctions();
@@ -30,19 +35,46 @@ export const withAutoRefresh =
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpirationDate: Date;
     let refreshToken: string;
+    let refreshNeeded = false;
+
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
         // tab becomes visible and the session is expired, do a refresh
-        if (
-          document.visibilityState === 'visible' &&
-          sessionExpirationDate &&
-          new Date() > sessionExpirationDate
-        ) {
-          logger.debug('Expiration time passed, refreshing session');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshToken);
+        if (document.visibilityState === 'visible') {
+          if (sessionExpirationDate) {
+            const now = new Date();
+            if (now > sessionExpirationDate || refreshNeeded) {
+              logger.debug(
+                'Expiration time passed or refresh needed, refreshing session',
+              );
+              refreshNeeded = false;
+              // We prefer the persisted refresh token over the one from the response
+              // for a case that the token was refreshed from another tab, this mostly relevant
+              // when the project uses token rotation
+              sdk.refresh(getRefreshToken() || refreshToken);
+            } else if (!ignoreVisibility) {
+              // Session not expired yet, recalculate and set a new timer
+              const timeout = getAutoRefreshTimeout(sessionExpirationDate);
+              if (timeout > REFRESH_THRESHOLD) {
+                clearAllTimers();
+                const refreshTimeStr = new Date(
+                  Date.now() + timeout,
+                ).toLocaleTimeString('en-US', { hour12: false });
+                logger.debug(
+                  `Tab became visible, setting new refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
+                );
+                setTimer(() => {
+                  if (document.visibilityState === 'visible') {
+                    logger.debug('Refreshing session due to timer');
+                    sdk.refresh(getRefreshToken() || refreshToken);
+                  } else {
+                    logger.debug('Document hidden, marking refresh as needed');
+                    refreshNeeded = true;
+                  }
+                }, timeout);
+              }
+            }
+          }
         }
       });
     }
@@ -55,6 +87,7 @@ export const withAutoRefresh =
       if (res?.status === 401) {
         logger.debug('Received 401, canceling all timers');
         clearAllTimers();
+        refreshNeeded = false;
       } else if (sessionJwt || sessionExpiration) {
         sessionExpirationDate = getTokenExpiration(
           sessionJwt,
@@ -65,6 +98,7 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
+        refreshNeeded = false;
         const timeout = getAutoRefreshTimeout(sessionExpirationDate);
         clearAllTimers();
 
@@ -88,11 +122,16 @@ export const withAutoRefresh =
         );
 
         setTimer(() => {
-          logger.debug('Refreshing session due to timer');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshJwt);
+          if (!ignoreVisibility && document.visibilityState === 'hidden') {
+            logger.debug('Document hidden, marking refresh as needed');
+            refreshNeeded = true;
+          } else {
+            logger.debug('Refreshing session due to timer');
+            // We prefer the persisted refresh token over the one from the response
+            // for a case that the token was refreshed from another tab, this mostly relevant
+            // when the project uses token rotation
+            sdk.refresh(getRefreshToken() || refreshJwt);
+          }
         }, timeout);
       }
     };
@@ -105,6 +144,7 @@ export const withAutoRefresh =
         const resp = await fn(...args);
         logger.debug('Clearing all timers');
         clearAllTimers();
+        refreshNeeded = false;
 
         return resp;
       };
