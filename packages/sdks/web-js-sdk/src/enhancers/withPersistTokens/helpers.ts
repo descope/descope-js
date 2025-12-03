@@ -60,11 +60,11 @@ function setJwtTokenCookie(
 function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
   const currentDomain = window.location.hostname;
   const currentDomainParts = currentDomain.split('.');
-  const cookieDomainParts = cookieDomain.split('.');
+  const cookieDomainParts = cookieDomain?.split('.');
 
   // check if the cookie domain items are the last items in the current domain
   const currentDomainSuffix = currentDomainParts
-    .slice(-cookieDomainParts.length)
+    .slice(-cookieDomainParts?.length)
     .join('.');
   return currentDomainSuffix === cookieDomain;
 }
