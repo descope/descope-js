@@ -39,19 +39,27 @@ export const withPersistTokens =
       return createSdk(config) as any;
     }
 
+    // Cache to store the cookie options that were used when setting the cookie
+    // This allows us to use the exact same options when removing the cookie
+    let lastCookieOptions: { domain?: string; path?: string } | undefined;
+
     const afterRequest: AfterRequestHook = async (req, res) => {
       const isManagementApi = /^\/v\d+\/mgmt\//.test(req.path);
 
       if (res?.status === 401) {
         if (!isManagementApi) {
-          clearTokens(storagePrefix, sessionTokenViaCookie);
+          clearTokens(storagePrefix, sessionTokenViaCookie, lastCookieOptions);
         }
       } else {
-        persistTokens(
+        const newCookieOptions = persistTokens(
           await getAuthInfoFromResponse(res),
           sessionTokenViaCookie,
           storagePrefix,
         );
+        // Only update lastCookieOptions if we actually set a cookie
+        if (newCookieOptions) {
+          lastCookieOptions = newCookieOptions;
+        }
       }
     };
 
@@ -65,7 +73,7 @@ export const withPersistTokens =
     const wrappedSdk = wrapWith(
       sdk,
       ['logout', 'logoutAll', 'oidc.logout'],
-      wrapper(storagePrefix, sessionTokenViaCookie),
+      wrapper(storagePrefix, sessionTokenViaCookie, () => lastCookieOptions),
     );
 
     const refreshToken = () => getRefreshToken(storagePrefix);
@@ -80,12 +88,16 @@ export const withPersistTokens =
   };
 
 const wrapper =
-  (prefix?: string, sessionTokenViaCookie?: CookieConfig): SdkFnWrapper<{}> =>
+  (
+    prefix?: string,
+    sessionTokenViaCookie?: CookieConfig,
+    getCookieOptions?: () => { domain?: string; path?: string } | undefined,
+  ): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
 
-    clearTokens(prefix, sessionTokenViaCookie);
+    clearTokens(prefix, sessionTokenViaCookie, getCookieOptions?.());
 
     return resp;
   };

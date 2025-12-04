@@ -60,11 +60,11 @@ function setJwtTokenCookie(
 function isCurrentDomainOrParentDomain(cookieDomain: string): boolean {
   const currentDomain = window.location.hostname;
   const currentDomainParts = currentDomain.split('.');
-  const cookieDomainParts = cookieDomain.split('.');
+  const cookieDomainParts = cookieDomain?.split('.');
 
   // check if the cookie domain items are the last items in the current domain
   const currentDomainSuffix = currentDomainParts
-    .slice(-cookieDomainParts.length)
+    .slice(-cookieDomainParts?.length)
     .join('.');
   return currentDomainSuffix === cookieDomain;
 }
@@ -77,11 +77,13 @@ export const persistTokens = (
   authInfo = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
-) => {
+): { domain?: string; path?: string } | undefined => {
   // persist refresh token
   const { sessionJwt, refreshJwt } = authInfo;
   refreshJwt &&
     setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
+
+  let cookieOptions: { domain?: string; path?: string } | undefined;
 
   // persist session token
   if (sessionJwt) {
@@ -94,12 +96,20 @@ export const persistTokens = (
       const cookieDomain =
         sessionTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getSessionCookieName(sessionTokenViaCookie);
-      setJwtTokenCookie(cookieName, sessionJwt, {
+      const authInfoWithCookie = {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,
         cookieDomain,
-      });
+      };
+      setJwtTokenCookie(cookieName, sessionJwt, authInfoWithCookie);
+
+      // Cache the cookie options that were actually used
+      const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
+      cookieOptions = {
+        path: authInfoWithCookie.cookiePath,
+        domain: domainMatches ? cookieDomain : undefined,
+      };
     } else {
       setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
     }
@@ -108,6 +118,8 @@ export const persistTokens = (
   if (authInfo.idToken) {
     setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, authInfo.idToken);
   }
+
+  return cookieOptions;
 };
 
 /** Return the refresh token from the localStorage. Not for production usage because refresh token will not be saved in localStorage. */
@@ -138,12 +150,15 @@ export function getIdToken(prefix: string = ''): string {
 export function clearTokens(
   prefix: string = '',
   sessionTokenViaCookie?: CookieConfig,
+  cookieOptions?: { domain?: string; path?: string },
 ) {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
   const cookieName = getSessionCookieName(sessionTokenViaCookie);
-  Cookies.remove(cookieName);
+
+  // Use the cached cookie options if available
+  Cookies.remove(cookieName, cookieOptions);
 }
 
 export const beforeRequest =
