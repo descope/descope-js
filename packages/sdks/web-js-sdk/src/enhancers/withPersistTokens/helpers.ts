@@ -157,8 +157,8 @@ export function clearTokens(
   removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
   const cookieName = getSessionCookieName(sessionTokenViaCookie);
 
-  // Use the cached cookie options if available, otherwise use default path
-  Cookies.remove(cookieName, cookieOptions || { path: '/' });
+  // Use the cached cookie options if available
+  Cookies.remove(cookieName, cookieOptions);
 }
 
 export const beforeRequest =
