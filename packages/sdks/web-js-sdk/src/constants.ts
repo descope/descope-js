@@ -15,3 +15,5 @@ export const OIDC_CLIENT_TS_JSDELIVR_CDN_URL = `https://cdn.jsdelivr.net/npm/oid
 
 export const OIDC_LOGOUT_ERROR_CODE = 'J161000';
 export const OIDC_REFRESH_ERROR_CODE = 'J161001';
+
+export const REFRESH_DISABLED = 'J171000';
