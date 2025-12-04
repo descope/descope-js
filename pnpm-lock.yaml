@@ -88,8 +88,6 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)
 
-  packages/core-js-sdk/dist/cjs: {}
-
   packages/libs/e2e-helpers:
     dependencies:
       '@playwright/test':
@@ -152,7 +150,7 @@ importers:
         version: 5.0.10
       ts-jest:
         specifier: ^29.0.0
-        version: 29.2.5(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.7.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.7.3)
       typescript:
         specifier: ^5.0.2
         version: 5.7.3
@@ -375,15 +373,13 @@ importers:
         version: 2.0.5
       ts-jest:
         specifier: ^29.0.0
-        version: 29.1.2(@babel/core@7.26.10)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(esbuild@0.25.3)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.26.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.3)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
-
-  packages/libs/sdk-component-drivers/dist/cjs: {}
 
   packages/libs/sdk-helpers:
     dependencies:
@@ -514,8 +510,6 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
-
-  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -674,8 +668,6 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
-  packages/libs/sdk-mixins/dist/cjs: {}
-
   packages/sdks/angular-sdk:
     dependencies:
       '@descope/access-key-management-widget':
@@ -714,7 +706,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^19.0.0
-        version: 19.1.6(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(chokidar@4.0.3)(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(jiti@1.21.0)(ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3))(typescript@5.7.3)(vite@6.0.11(@types/node@22.13.17)(jiti@1.21.0)(less@4.2.1)(sass@1.83.1)(terser@5.37.0)(yaml@2.4.5))(yaml@2.4.5)
+        version: 19.1.6(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(chokidar@4.0.3)(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)))(jiti@1.21.0)(ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3))(typescript@5.7.3)(vite@6.0.11(@types/node@22.13.17)(jiti@1.21.0)(less@4.2.1)(sass@1.83.1)(terser@5.37.0)(yaml@2.4.5))(yaml@2.4.5)
       '@angular-eslint/builder':
         specifier: 19.0.2
         version: 19.0.2(chokidar@4.0.3)(eslint@8.57.0)(typescript@5.7.3)
@@ -737,8 +729,8 @@ importers:
         specifier: ^19.0.0
         version: 19.1.6(@types/node@22.13.17)(chokidar@4.0.3)
       '@angular/common':
-        specifier: ^19.0.0
-        version: 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+        specifier: ^19.2.16
+        version: 19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/compiler':
         specifier: ^19.0.0
         version: 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
@@ -750,16 +742,16 @@ importers:
         version: 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
       '@angular/forms':
         specifier: ^19.0.0
-        version: 19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
+        version: 19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
       '@angular/platform-browser':
         specifier: ^19.0.0
-        version: 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
+        version: 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
       '@angular/platform-browser-dynamic':
         specifier: ^19.0.0
-        version: 19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))
+        version: 19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))
       '@angular/router':
         specifier: ^19.0.0
-        version: 19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
+        version: 19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
       '@types/jest':
         specifier: ^29.5.5
         version: 29.5.12
@@ -777,16 +769,16 @@ importers:
         version: 4.2.1(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@8.57.0)(prettier@2.8.8)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+        version: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-preset-angular:
         specifier: ^13.1.2
-        version: 13.1.6(623ca71f3c627d14feb749afbcc881bf)
+        version: 13.1.6(9459572c348788e068a680e10c2664e0)
       lint-staged:
         specifier: ^15.2.0
         version: 15.2.7
       ng-mocks:
         specifier: ^14.11.0
-        version: 14.13.0(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/forms@19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))
+        version: 14.13.0(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/forms@19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))
       ng-packagr:
         specifier: ^16.2.3
         version: 16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3)
@@ -928,7 +920,7 @@ importers:
         version: 2.0.5
       ts-jest:
         specifier: ^29.0.0
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.0)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
+        version: 29.2.5(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(esbuild@0.25.0)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)
@@ -1466,7 +1458,7 @@ importers:
         version: 5.0.8(@swc/core@1.7.1(@swc/helpers@0.5.15))(@vue/cli-service@5.0.8(@swc/core@1.7.1(@swc/helpers@0.5.15))(@vue/compiler-sfc@3.5.13)(ejs@3.1.10)(encoding@0.1.13)(handlebars@4.7.7)(lodash@4.17.21)(prettier@2.8.8)(vue@3.4.31(typescript@5.4.5))(webpack-sources@3.2.3))(encoding@0.1.13)(eslint@7.32.0)(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))
       '@vue/cli-plugin-unit-jest':
         specifier: ~5.0.0
-        version: 5.0.8(80bb081d5f38bad581e11b2a468adc7f)
+        version: 5.0.8(a037b8ec13d57032862b845ec5fd93dc)
       '@vue/cli-service':
         specifier: ~5.0.0
         version: 5.0.8(@swc/core@1.7.1(@swc/helpers@0.5.15))(@vue/compiler-sfc@3.5.13)(ejs@3.1.10)(encoding@0.1.13)(handlebars@4.7.7)(lodash@4.17.21)(prettier@2.8.8)(vue@3.4.31(typescript@5.4.5))(webpack-sources@3.2.3)
@@ -1478,7 +1470,7 @@ importers:
         version: 2.4.6
       '@vue/vue3-jest':
         specifier: ^27.0.0-alpha.1
-        version: 27.0.0(@babel/core@7.26.0)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5))(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))
+        version: 27.0.0(@babel/core@7.26.0)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5))(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))
       babel-jest:
         specifier: ^27.0.6
         version: 27.5.1(@babel/core@7.26.0)
@@ -1496,7 +1488,7 @@ importers:
         version: 8.7.1(eslint@7.32.0)
       jest:
         specifier: ^29.0.0
-        version: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+        version: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
       jest-environment-jsdom:
         specifier: ^29.0.0
         version: 29.7.0
@@ -1544,7 +1536,7 @@ importers:
         version: 6.0.0(@vue/compiler-sfc@3.5.13)
       ts-jest:
         specifier: ^27.0.4
-        version: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5)
+        version: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
       tslib:
         specifier: ^2.3.1
         version: 2.6.3
@@ -1581,7 +1573,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -1866,8 +1858,6 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
-  packages/web-js-sdk/dist/cjs: {}
-
   packages/widgets/access-key-management-widget:
     dependencies:
       '@descope/sdk-component-drivers':
@@ -1906,7 +1896,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2087,7 +2077,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2268,7 +2258,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2452,7 +2442,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2633,7 +2623,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2817,7 +2807,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3008,7 +2998,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3192,7 +3182,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.10
+        version: 2.2.11
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3508,11 +3498,11 @@ packages:
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     hasBin: true
 
-  '@angular/common@19.1.4':
-    resolution: {integrity: sha512-E4MCl13VIotOxmzKQ/UGciPeaRXQgH7ymesEjYVGcT8jmC+qz5dEcoN7L5Jvq9aUsmLBt9MFp/B5QqKCIXMqYA==}
+  '@angular/common@19.2.16':
+    resolution: {integrity: sha512-sugztO7XIiLRoVjn0WJK9ooBm9zejsqlE5k4ZGvy1zFafM8LMjFHwD4KymN8JB3AOb7Ad4lJHVq1IvwWnpqeWw==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0}
     peerDependencies:
-      '@angular/core': 19.1.4
+      '@angular/core': 19.2.16
       rxjs: ^6.5.3 || ^7.4.0
 
   '@angular/compiler-cli@19.1.4':
@@ -4521,80 +4511,80 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@descope-ui/common@2.2.10':
-    resolution: {integrity: sha512-1ICvAoC8SmYoyE4ISP04dB9c+IhPDyfjSW8Nh03o8LUqlbtyqVi+c9zVPy5pqS2NnI1YULIN2RG8rHtEoajmqQ==}
+  '@descope-ui/common@2.2.11':
+    resolution: {integrity: sha512-4CQ4mnYs/Vu8PYTs4JFqI1gVET9lJvCa1oDWixkSPwpPVamK37G+xNbk46hdO25BVWKffCodNKUYAY6PZ9Knqw==}
 
-  '@descope-ui/descope-address-field@2.2.10':
-    resolution: {integrity: sha512-YRLc15aKMqIk8K0C3grS+2x0XUGdStSrv+2bCsFeuW7ecb9mshKbcwboHgnofUzjzz5hcQYbAH9Y/ZebgQfuaA==}
+  '@descope-ui/descope-address-field@2.2.11':
+    resolution: {integrity: sha512-I3oxe7GpMNa5qdPbHkHSUO1xSg0xIypZXqBoymfgEpuNMiL25Qdm7rijJwZnZ7lEGBUpc/ep8/ecaQvYOwJe0g==}
 
-  '@descope-ui/descope-apps-list@2.2.10':
-    resolution: {integrity: sha512-siTZVuSEux5VdyjFlKoWs5GbxP10nHk3WbpdxpqXMcSV4f1DOMHAO2KF4yK3Q5CN7f+jCyGZD6oPyWYXvuuRJA==}
+  '@descope-ui/descope-apps-list@2.2.11':
+    resolution: {integrity: sha512-ZhDT3cHYizG6G689+RjC70pVgLqRB4tfq8Lf8JpIP8ev0qsiWiYISoMYDs1z+816ijmTUXrQu9V+AuAWrMPVSg==}
 
-  '@descope-ui/descope-autocomplete-field@2.2.10':
-    resolution: {integrity: sha512-Mv7Uxo4thB+vOQ4H8pl21Q0deywcjBUTjpGNznymMjbY2wqmMl18DwILS/IAw/Bi/1FVl8Dg5z6lOTYkSUNl5w==}
+  '@descope-ui/descope-autocomplete-field@2.2.11':
+    resolution: {integrity: sha512-eR43KxGpIkbIxY145ADHhhQLeJtFNxFT2A8ylDcX/9KOZX63+It6GetGunrmURgGoUQjqBTMgk4COHnvYa5jqA==}
 
-  '@descope-ui/descope-avatar@2.2.10':
-    resolution: {integrity: sha512-FiHsrwengMWFTw2Ln9UjHMTfgPq2WxVhVNm/kB0KzyWF2GCSBRClByYUGWyqFaeLJsEAULtXRtRgqh55Zj3Zmw==}
+  '@descope-ui/descope-avatar@2.2.11':
+    resolution: {integrity: sha512-jbBRzH13V23yxllhz2RehlKN3ywKBkwyYwxqt8HHoDMV3cn/ZG2Txnnm1nStKwHDtE9zuzSOjN4KrGkK/njeDw==}
 
-  '@descope-ui/descope-badge@2.2.10':
-    resolution: {integrity: sha512-90Gc5CfHvy066YHb5RjhCAHL9BGme/s3c7qOVnJpmiw6Z7i6087OmEPhnrdHrNMfNQZdy4cR+dbAfbXPmrVSbg==}
+  '@descope-ui/descope-badge@2.2.11':
+    resolution: {integrity: sha512-cFqH+M3yQSBQKNv7yhP5dGnD2w99k7dusiqzgluHoKZ7+57GO8nssGCgbBpTBdoQo+tBnxrgdnXE3s81PSF4OQ==}
 
-  '@descope-ui/descope-button@2.2.10':
-    resolution: {integrity: sha512-kfBHuJx8xjgelnedM1paDuQYyK2lzBZu+/tzgNgJ9W+WXwxkp/2vXuxq0V7QJG6354XKpDU2jRUbE7u3iEPSFw==}
+  '@descope-ui/descope-button@2.2.11':
+    resolution: {integrity: sha512-qCn9oe108UTfRPJHCPm7ZUjt451db76iS0jtVxoFFFQMXfaSfHjz9H7ldq5oe//kVLLYTdOI4wXdz2GeaBFh+w==}
 
-  '@descope-ui/descope-collapsible-container@2.2.10':
-    resolution: {integrity: sha512-1Za06wYCPiMzrqQxdk/NbBvED5pdsg/ea6pxe50ONmsUoY1/kbKXTXIDvXXKkg4xavy74FBlA1i/mKUybSLpIA==}
+  '@descope-ui/descope-collapsible-container@2.2.11':
+    resolution: {integrity: sha512-y5L2VymazUl7OkpUjGG1TXUzW3wYFTOkXavuRqIx0WLNWPpsfGUCPOhm37BhKvtCMPgR4/WLIZ5nrQiANYhPlg==}
 
-  '@descope-ui/descope-combo-box@2.2.10':
-    resolution: {integrity: sha512-wnNpDYemDNmNagcIFtwWIJSkB+KNF/08zRZIiypo4Sm946yyZJVQI+FTsThVxF6iRZqgiQigHfSRCeSS6ZjHeQ==}
+  '@descope-ui/descope-combo-box@2.2.11':
+    resolution: {integrity: sha512-yu2KW6SprCojFu1vBfJZcqR4/6OyaMi9uBoi+jM6RW5jiZcYNi4IX+pg0+n4julxgb3PUwEXYc6fUGIY+xthxg==}
 
-  '@descope-ui/descope-enriched-text@2.2.10':
-    resolution: {integrity: sha512-UXVkYnoDARKMMvbi5eF3ROtczhb8QHtihgbJhRd2g07jTtQMx/PPpZUG21XIC6JBfXeT3+n6X/DU09m0PqfzGA==}
+  '@descope-ui/descope-enriched-text@2.2.11':
+    resolution: {integrity: sha512-xIIIQQfKgq3vr/QJbqGUfqa0GYiYk14HDYuCtBOx7fdex9SGIqewlc30OYVb848QOT68FLnpVx3JPbmhLLf0eA==}
 
-  '@descope-ui/descope-icon@2.2.10':
-    resolution: {integrity: sha512-59wcdOZ0lHLmmaIxckzXQdrfx4zOXivdZvkP/58TTXm8ANTwdXLhulbBS1TS8Ip3DOTYUrVuefWeYcx0BLS6Dg==}
+  '@descope-ui/descope-icon@2.2.11':
+    resolution: {integrity: sha512-gLo6XmoAm5fa8lVSRwUcQp1PAt5ypHxs1poy1R7foXuamj2Suu+uyKt6i33hLfOOecYvgXRB/YMyZbqcns15+g==}
 
-  '@descope-ui/descope-image@2.2.10':
-    resolution: {integrity: sha512-ZD7a99U21J+zhvwtjkJTKeqk6g5EOnySI9luPghg23Y9jh8c9V7W074oOfOXTBqobLhEBK29xxuP9jrw/riSUg==}
+  '@descope-ui/descope-image@2.2.11':
+    resolution: {integrity: sha512-biCVTOKDo59JONnDE+Z+ZqfdJGquJKqXuFHSVTkBbed8mnhzeXYdbpf6tttUpDFSMKnAZX7RCF7JNIAuTGQxCw==}
 
-  '@descope-ui/descope-link@2.2.10':
-    resolution: {integrity: sha512-oQU4tZIaOCyoEtLQbBQ8PMEWdO36JHsLDLh/Gm9zPmqrhXT63yjiYXZLLz4Onwj3/Q+mEWkX+2q5Vz45HMploQ==}
+  '@descope-ui/descope-link@2.2.11':
+    resolution: {integrity: sha512-O2p/TJaaOeuhg5c9MgAJCQVxUchnvgjRpl3daLOzSUAqmvlTWN8QdI211UlGf4U6myH46Md7auBarm8PTmzhgQ==}
 
-  '@descope-ui/descope-list-item@2.2.10':
-    resolution: {integrity: sha512-2p5HXCWXHGBTg5vRMCsWKt/33DfnVh3L1g+6APyEKpGWff0zMUoi7HMdCKpVO43LBSZXvLgiN1Sdzkf2EABTDA==}
+  '@descope-ui/descope-list-item@2.2.11':
+    resolution: {integrity: sha512-eT1InfiQm8IOAKjl0viyBzdhVZ7ylsfjFmE+8wvDslJ2Y16+S3rFP8yJ7XQLIKKA+/KCiuacCFXv0+PG1I7OCA==}
 
-  '@descope-ui/descope-list@2.2.10':
-    resolution: {integrity: sha512-RVnACqzMikebQQ3uRAPjfdgJoq0DmQAaocI0fcFUskLjvqwLuGl6MBhnaBWgLylWLI3gqGkVUqnN0sarpkxtoQ==}
+  '@descope-ui/descope-list@2.2.11':
+    resolution: {integrity: sha512-X+w2LmmPcXoWEBdarekKwDGDfiI6z1owRtkGVt50t9QUuLMTshDObvKvPnkGkHIiOystO+LCs0RWifMEoFPP2w==}
 
-  '@descope-ui/descope-outbound-app-button@2.2.10':
-    resolution: {integrity: sha512-2wN4iA3QAdHdia3vue4u05rna0SpiF9J7tHpZNX7v8ZWleH/GG0bq04HmfU39UL8O9ojrJx5F08WKUSHpuUgXg==}
+  '@descope-ui/descope-outbound-app-button@2.2.11':
+    resolution: {integrity: sha512-haZPcv8RlZswNnoAiRYedPa3IXqjObdI7vGi7nLgbHiAXSBIX5NY2CLUnSDp6awJTlgN8D5BsPpNZNOGSb5wDw==}
 
-  '@descope-ui/descope-outbound-apps@2.2.10':
-    resolution: {integrity: sha512-nK4pBEfhxf1rz7gry6pEoOOhTAM7uluWrPpSSA/qY5pgF7OmuHEcbk3Q4mvpCG/DeoTK17U++SciDTJkTdx9yQ==}
+  '@descope-ui/descope-outbound-apps@2.2.11':
+    resolution: {integrity: sha512-owFtHiKhZS9q9v2mjaZOQyEHHA3bovQFbPOjtYLqfcB31VB32revxg3HkVLym5p/c7aUQHJWC6xhHvtUJIIxTw==}
 
-  '@descope-ui/descope-password-strength@2.2.10':
-    resolution: {integrity: sha512-C4DsjEKzL9S5hmGK9IpFdNf8sTIdiasG+W0hey9/XN0B8oupwwKEs4UADbyAVpzi846uGcqKbv/iSb2fLaHzvA==}
+  '@descope-ui/descope-password-strength@2.2.11':
+    resolution: {integrity: sha512-e4UwlaVBDl2L/mvNc1aifob6ztf3AYwhVydUXNOEc0iuZqnbtO1rT02b37gdaporqO0cZ322iEk1cJIrZ4b3dg==}
 
-  '@descope-ui/descope-recovery-codes@2.2.10':
-    resolution: {integrity: sha512-el5UOGxfjXWH+4yJ2B0BUjTNOU6jtxSD/9fOlw8vQUh8A3JPClbRVSs4WQJllNNEogvmft9/4zvaPyzUqMuOGQ==}
+  '@descope-ui/descope-recovery-codes@2.2.11':
+    resolution: {integrity: sha512-Q1wklawV3C0B6XaIZL5GGaxoQ5u3dtcAW+nvygAr8qIshNtzYa/GnfXpeGawzOPZ/S33njNRxilByc1WA1zmcA==}
 
-  '@descope-ui/descope-text@2.2.10':
-    resolution: {integrity: sha512-Dr1SwZ1uLjzLmJJlwOZriWHXrmf+zK1u4zqqhIiZk1YFfJ19E6rTIsDrSuauKPbCe8oMo/XPbt9P4hUpL4ETPg==}
+  '@descope-ui/descope-text@2.2.11':
+    resolution: {integrity: sha512-avrGgDg6tWJBQQl6OtBS29SRsWt1SwfKaaVA8CrjmGual2Z+qUu4MYUXbIC75MUkOBLhF/QUNFVLAamxo03XFw==}
 
-  '@descope-ui/descope-timer-button@2.2.10':
-    resolution: {integrity: sha512-RSEqMZy58FtkCgXu1PMzx6ETk/G+FWBhWaTKtR1p7q3rqVp85uMuvT/RERDJnK4icPuB8rOB6AT0Qd04rGNpRg==}
+  '@descope-ui/descope-timer-button@2.2.11':
+    resolution: {integrity: sha512-eK66EohBs2IIwCbp53h3CJCwEz2TeNC3wTTS+vTUxdek2qmf31z83p+NdIzCNY+8XIlhlNzxeKWKbzAeTzNz6w==}
 
-  '@descope-ui/descope-timer@2.2.10':
-    resolution: {integrity: sha512-SqGh+jaKBRzBuMeO0k4Vye7Lu2wrDUYOUsr7wUvaZbnsi596OjV8jk8RLAHK2hYkAIRh3BQ0DhKxnMc1J1GG2A==}
+  '@descope-ui/descope-timer@2.2.11':
+    resolution: {integrity: sha512-U3pwZAYOSF4jRUwPze2S7t7R71mF90qMJLcQZdkRMPofPQuVUhie228XQRuM4DVrs1xL1zHmWU87hSU7Fiq0lA==}
 
-  '@descope-ui/descope-trusted-devices@2.2.10':
-    resolution: {integrity: sha512-eKGIbYHXSbjkrkRk29BLFb4aQPxxJrUXGObEtjzR6bXtcCANONssjNrBc4GAyRPfMLDKNIwpXQ8hKxzr6mviFQ==}
+  '@descope-ui/descope-trusted-devices@2.2.11':
+    resolution: {integrity: sha512-8XyqT17fSmg79thbPRTiNJ7kb3WFuk1fjz1oj1KtZqydyjGebtrPpkScKyRDVjl7gEYIwrxu6YfGhkx6nXGlhQ==}
 
-  '@descope-ui/theme-globals@2.2.10':
-    resolution: {integrity: sha512-11yFqfVSJiCddYJXeRxfmp5pnrJXO38ZZk+/Fo0ZWn0PT4j6SS+3qrd2U9Z74n0K0HnibEWXe5tucrbyyKePfQ==}
+  '@descope-ui/theme-globals@2.2.11':
+    resolution: {integrity: sha512-H7QOe6FfANpLqIAYN5CZ4TJbHl6oxUUblnFlur8CK2jSf3GNfGqvJb7YK1MtULe2/n3a6eKOFGgZUtcy6YjuyQ==}
 
-  '@descope-ui/theme-input-wrapper@2.2.10':
-    resolution: {integrity: sha512-2vWdQICHCE2HEQ0scvhM0+zgWOay1U1i2H4v7G8p79/UNIVi68I6+SJ2o4ayZRZBeepM7AL2J+GRN7wyCJZlKw==}
+  '@descope-ui/theme-input-wrapper@2.2.11':
+    resolution: {integrity: sha512-PlXkxYo2IHPkkSUN6i+OM1Pf/WKNau1BbDu1MHRYsYKaK6e7w2U1PzpsUgrTgt7ZDrAdMieDsgniJ+YW5g9RUg==}
 
   '@descope/core-js-sdk@2.40.0':
     resolution: {integrity: sha512-hFr/SzQO0QbyDaI1LlN//HKi3hXNJAnU0lFUpsqwo92YmCvYzhSZ7r6aBvT0DU2jaXmvt/0Y9TyNQuEKsGpT/A==}
@@ -4606,8 +4596,8 @@ packages:
     resolution: {integrity: sha512-oZxMFEcfFFngEgXrzXfgjk0m+70ufdXaOStDCYRFCX8zwNw7GfkzUOBf+ZpiT6JMd7lcYZeQ/2abCEQLjL/y9g==}
     engines: {node: '>= 12.0.0'}
 
-  '@descope/web-components-ui@2.2.10':
-    resolution: {integrity: sha512-eUgnoNjt8aPuax8Pdy+129TqjXfIZ3x8RKEegIWFFHs1eo1U6dcKVdK5e+GOLsPvQdI82ZSY4O85MfOJgL8M+A==}
+  '@descope/web-components-ui@2.2.11':
+    resolution: {integrity: sha512-W4EdiJJKGHetn730bFK9A+r4AtuoJnZYZecUHqNErqHj42jvXmuP0eQjYvePd6tM3x3085xlHYlRu2bk3qniMw==}
 
   '@descope/web-js-sdk@1.29.1':
     resolution: {integrity: sha512-YUMJQ9TrEhp8SDtOcERF4tr7IguBt5//0sm8k8/tFc/9qb1uZ9Hz1z2+1NX8cnni+tMpOUH7tRFEoprpKayPEw==}
@@ -12967,6 +12957,7 @@ packages:
   next@15.2.4:
     resolution: {integrity: sha512-VwL+LAaPSxEkd3lU2xWbgEOtrM8oedmyhBqaVNmgKB+GvZlCy9rgaEc+y2on0wv+l0oSFqLtYD6dcC1eAedUaQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -16133,7 +16124,7 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular-devkit/build-angular@19.1.6(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(chokidar@4.0.3)(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(jiti@1.21.0)(ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3))(typescript@5.7.3)(vite@6.0.11(@types/node@22.13.17)(jiti@1.21.0)(less@4.2.1)(sass@1.83.1)(terser@5.37.0)(yaml@2.4.5))(yaml@2.4.5)':
+  '@angular-devkit/build-angular@19.1.6(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(chokidar@4.0.3)(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)))(jiti@1.21.0)(ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3))(typescript@5.7.3)(vite@6.0.11(@types/node@22.13.17)(jiti@1.21.0)(less@4.2.1)(sass@1.83.1)(terser@5.37.0)(yaml@2.4.5))(yaml@2.4.5)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.1901.6(chokidar@4.0.3)
@@ -16191,10 +16182,10 @@ snapshots:
       webpack-dev-middleware: 7.4.2(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2))
       webpack-dev-server: 5.2.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2))
       webpack-merge: 6.0.1
-      webpack-subresource-integrity: 5.1.0(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))))(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2))
+      webpack-subresource-integrity: 5.1.0(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)))(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2))
     optionalDependencies:
       esbuild: 0.24.2
-      jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-environment-jsdom: 29.7.0
       ng-packagr: 16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3)
     transitivePeerDependencies:
@@ -16389,7 +16380,7 @@ snapshots:
       - chokidar
       - supports-color
 
-  '@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)':
+  '@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)':
     dependencies:
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
       rxjs: 7.8.1
@@ -16422,35 +16413,35 @@ snapshots:
       tslib: 2.8.1
       zone.js: 0.15.0
 
-  '@angular/forms@19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)':
+  '@angular/forms@19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)':
     dependencies:
-      '@angular/common': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/common': 19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
-      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
+      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
       rxjs: 7.8.1
       tslib: 2.8.1
 
-  '@angular/platform-browser-dynamic@19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))':
+  '@angular/platform-browser-dynamic@19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))':
     dependencies:
-      '@angular/common': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/common': 19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/compiler': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
-      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
+      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
       tslib: 2.8.1
 
-  '@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))':
+  '@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))':
     dependencies:
-      '@angular/common': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/common': 19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
       tslib: 2.8.1
     optionalDependencies:
       '@angular/animations': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
 
-  '@angular/router@19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)':
+  '@angular/router@19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)':
     dependencies:
-      '@angular/common': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/common': 19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
-      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
+      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
       rxjs: 7.8.1
       tslib: 2.8.1
 
@@ -17803,181 +17794,181 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@descope-ui/common@2.2.10':
+  '@descope-ui/common@2.2.11':
     dependencies:
       color: 4.2.3
       element-internals-polyfill: 1.3.11
       lodash.debounce: 4.0.8
       lodash.merge: 4.6.2
 
-  '@descope-ui/descope-address-field@2.2.10':
+  '@descope-ui/descope-address-field@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-autocomplete-field': 2.2.10
-      '@descope-ui/theme-input-wrapper': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-autocomplete-field': 2.2.11
+      '@descope-ui/theme-input-wrapper': 2.2.11
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-apps-list@2.2.10':
+  '@descope-ui/descope-apps-list@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-avatar': 2.2.10
-      '@descope-ui/descope-list': 2.2.10
-      '@descope-ui/descope-list-item': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-avatar': 2.2.11
+      '@descope-ui/descope-list': 2.2.11
+      '@descope-ui/descope-list-item': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-autocomplete-field@2.2.10':
+  '@descope-ui/descope-autocomplete-field@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-combo-box': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
-      '@descope-ui/theme-input-wrapper': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-combo-box': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
+      '@descope-ui/theme-input-wrapper': 2.2.11
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-avatar@2.2.10':
+  '@descope-ui/descope-avatar@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
       '@vaadin/avatar': 24.3.4
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-badge@2.2.10':
+  '@descope-ui/descope-badge@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-button@2.2.10':
+  '@descope-ui/descope-button@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
       '@vaadin/button': 24.3.4
 
-  '@descope-ui/descope-collapsible-container@2.2.10':
+  '@descope-ui/descope-collapsible-container@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-combo-box@2.2.10':
+  '@descope-ui/descope-combo-box@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
-      '@descope-ui/theme-input-wrapper': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
+      '@descope-ui/theme-input-wrapper': 2.2.11
       '@vaadin/combo-box': 24.3.4
 
-  '@descope-ui/descope-enriched-text@2.2.10':
+  '@descope-ui/descope-enriched-text@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-link': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-link': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
       markdown-it: 14.1.0
 
-  '@descope-ui/descope-icon@2.2.10':
+  '@descope-ui/descope-icon@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-image': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-image': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
       '@vaadin/icon': 24.3.4
       dompurify: 3.3.0
 
-  '@descope-ui/descope-image@2.2.10':
+  '@descope-ui/descope-image@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
       dompurify: 3.3.0
 
-  '@descope-ui/descope-link@2.2.10':
+  '@descope-ui/descope-link@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-list-item@2.2.10':
+  '@descope-ui/descope-list-item@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-list@2.2.10':
+  '@descope-ui/descope-list@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-list-item': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-list-item': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-outbound-app-button@2.2.10':
+  '@descope-ui/descope-outbound-app-button@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-button': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-button': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-outbound-apps@2.2.10':
+  '@descope-ui/descope-outbound-apps@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-avatar': 2.2.10
-      '@descope-ui/descope-button': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/descope-list': 2.2.10
-      '@descope-ui/descope-list-item': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-avatar': 2.2.11
+      '@descope-ui/descope-button': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/descope-list': 2.2.11
+      '@descope-ui/descope-list-item': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-password-strength@2.2.10':
+  '@descope-ui/descope-password-strength@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
-      '@descope-ui/theme-input-wrapper': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
+      '@descope-ui/theme-input-wrapper': 2.2.11
       '@zxcvbn-ts/core': 3.0.4
       '@zxcvbn-ts/language-common': 3.0.4
       '@zxcvbn-ts/language-en': 3.0.2
 
-  '@descope-ui/descope-recovery-codes@2.2.10':
+  '@descope-ui/descope-recovery-codes@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-text@2.2.10':
+  '@descope-ui/descope-text@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-timer-button@2.2.10':
+  '@descope-ui/descope-timer-button@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-button': 2.2.10
-      '@descope-ui/descope-timer': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-button': 2.2.11
+      '@descope-ui/descope-timer': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-timer@2.2.10':
+  '@descope-ui/descope-timer@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/descope-trusted-devices@2.2.10':
+  '@descope-ui/descope-trusted-devices@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-badge': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/descope-link': 2.2.10
-      '@descope-ui/descope-list': 2.2.10
-      '@descope-ui/descope-list-item': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-badge': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/descope-link': 2.2.11
+      '@descope-ui/descope-list': 2.2.11
+      '@descope-ui/descope-list-item': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
-  '@descope-ui/theme-globals@2.2.10':
+  '@descope-ui/theme-globals@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
+      '@descope-ui/common': 2.2.11
 
-  '@descope-ui/theme-input-wrapper@2.2.10':
+  '@descope-ui/theme-input-wrapper@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/theme-globals': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/theme-globals': 2.2.11
 
   '@descope/core-js-sdk@2.40.0':
     dependencies:
@@ -17997,31 +17988,31 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@descope/web-components-ui@2.2.10':
+  '@descope/web-components-ui@2.2.11':
     dependencies:
-      '@descope-ui/common': 2.2.10
-      '@descope-ui/descope-address-field': 2.2.10
-      '@descope-ui/descope-apps-list': 2.2.10
-      '@descope-ui/descope-autocomplete-field': 2.2.10
-      '@descope-ui/descope-avatar': 2.2.10
-      '@descope-ui/descope-badge': 2.2.10
-      '@descope-ui/descope-button': 2.2.10
-      '@descope-ui/descope-collapsible-container': 2.2.10
-      '@descope-ui/descope-combo-box': 2.2.10
-      '@descope-ui/descope-enriched-text': 2.2.10
-      '@descope-ui/descope-icon': 2.2.10
-      '@descope-ui/descope-image': 2.2.10
-      '@descope-ui/descope-link': 2.2.10
-      '@descope-ui/descope-list': 2.2.10
-      '@descope-ui/descope-list-item': 2.2.10
-      '@descope-ui/descope-outbound-app-button': 2.2.10
-      '@descope-ui/descope-outbound-apps': 2.2.10
-      '@descope-ui/descope-password-strength': 2.2.10
-      '@descope-ui/descope-recovery-codes': 2.2.10
-      '@descope-ui/descope-text': 2.2.10
-      '@descope-ui/descope-timer': 2.2.10
-      '@descope-ui/descope-timer-button': 2.2.10
-      '@descope-ui/descope-trusted-devices': 2.2.10
+      '@descope-ui/common': 2.2.11
+      '@descope-ui/descope-address-field': 2.2.11
+      '@descope-ui/descope-apps-list': 2.2.11
+      '@descope-ui/descope-autocomplete-field': 2.2.11
+      '@descope-ui/descope-avatar': 2.2.11
+      '@descope-ui/descope-badge': 2.2.11
+      '@descope-ui/descope-button': 2.2.11
+      '@descope-ui/descope-collapsible-container': 2.2.11
+      '@descope-ui/descope-combo-box': 2.2.11
+      '@descope-ui/descope-enriched-text': 2.2.11
+      '@descope-ui/descope-icon': 2.2.11
+      '@descope-ui/descope-image': 2.2.11
+      '@descope-ui/descope-link': 2.2.11
+      '@descope-ui/descope-list': 2.2.11
+      '@descope-ui/descope-list-item': 2.2.11
+      '@descope-ui/descope-outbound-app-button': 2.2.11
+      '@descope-ui/descope-outbound-apps': 2.2.11
+      '@descope-ui/descope-password-strength': 2.2.11
+      '@descope-ui/descope-recovery-codes': 2.2.11
+      '@descope-ui/descope-text': 2.2.11
+      '@descope-ui/descope-timer': 2.2.11
+      '@descope-ui/descope-timer-button': 2.2.11
+      '@descope-ui/descope-trusted-devices': 2.2.11
       '@vaadin/checkbox': 24.3.4
       '@vaadin/custom-field': 24.3.4
       '@vaadin/dialog': 24.3.4
@@ -19065,6 +19056,41 @@ snapshots:
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
       jest-config: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.6.3))
+      jest-haste-map: 29.7.0
+      jest-message-util: 29.7.0
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-resolve-dependencies: 29.7.0
+      jest-runner: 29.7.0
+      jest-runtime: 29.7.0
+      jest-snapshot: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      jest-watcher: 29.7.0
+      micromatch: 4.0.8
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-ansi: 6.0.1
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  '@jest/core@29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))':
+    dependencies:
+      '@jest/console': 29.7.0
+      '@jest/reporters': 29.7.0
+      '@jest/test-result': 29.7.0
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      '@types/node': 20.17.13
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
+      ci-info: 3.8.0
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-changed-files: 29.7.0
+      jest-config: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -22552,7 +22578,7 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@vue/cli-plugin-unit-jest@5.0.8(80bb081d5f38bad581e11b2a468adc7f)':
+  '@vue/cli-plugin-unit-jest@5.0.8(a037b8ec13d57032862b845ec5fd93dc)':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-modules-commonjs': 7.24.8(@babel/core@7.26.0)
@@ -22561,13 +22587,13 @@ snapshots:
       '@vue/cli-shared-utils': 5.0.8(encoding@0.1.13)
       babel-jest: 27.5.1(@babel/core@7.26.0)
       deepmerge: 4.3.1
-      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
       jest-serializer-vue: 2.0.2
       jest-transform-stub: 2.0.0
-      jest-watch-typeahead: 1.1.0(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))
+      jest-watch-typeahead: 1.1.0(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))
     optionalDependencies:
-      '@vue/vue3-jest': 27.0.0(@babel/core@7.26.0)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5))(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))
-      ts-jest: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5)
+      '@vue/vue3-jest': 27.0.0(@babel/core@7.26.0)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5))(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))
+      ts-jest: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -22894,7 +22920,7 @@ snapshots:
       js-beautify: 1.15.1
       vue-component-type-helpers: 2.0.26
 
-  '@vue/vue3-jest@27.0.0(@babel/core@7.26.0)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5))(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))':
+  '@vue/vue3-jest@27.0.0(@babel/core@7.26.0)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5))(typescript@5.4.5)(vue@3.4.31(typescript@5.4.5))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-modules-commonjs': 7.24.8(@babel/core@7.26.0)
@@ -22902,12 +22928,12 @@ snapshots:
       chalk: 2.4.2
       convert-source-map: 1.9.0
       css-tree: 2.3.1
-      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
       source-map: 0.5.6
       tsconfig: 7.0.0
       vue: 3.4.31(typescript@5.4.5)
     optionalDependencies:
-      ts-jest: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5)
+      ts-jest: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5)
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
@@ -24407,21 +24433,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  create-jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)):
-    dependencies:
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
-      jest-util: 29.7.0
-      prompts: 2.4.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   create-jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.4.5)):
     dependencies:
       '@jest/types': 29.6.3
@@ -24444,6 +24455,21 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-config: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.6.3))
+      jest-util: 29.7.0
+      prompts: 2.4.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  create-jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)):
+    dependencies:
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-config: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -25466,7 +25492,7 @@ snapshots:
       '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.4.5)
       eslint: 8.57.1
       eslint-config-airbnb-base: 15.0.0(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.1)
 
   eslint-config-airbnb-typescript@18.0.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1)(typescript@5.4.5))(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-plugin-import@2.31.0)(eslint@8.57.1):
     dependencies:
@@ -25517,7 +25543,7 @@ snapshots:
     dependencies:
       eslint: 8.57.1
       eslint-config-airbnb-base: 15.0.0(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.4(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -25543,7 +25569,7 @@ snapshots:
   eslint-config-standard@17.1.0(eslint-plugin-import@2.31.0)(eslint-plugin-n@15.7.0(eslint@8.57.1))(eslint-plugin-promise@6.6.0(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       eslint: 8.57.1
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.1)
       eslint-plugin-n: 15.7.0(eslint@8.57.1)
       eslint-plugin-promise: 6.6.0(eslint@8.57.1)
 
@@ -27144,7 +27170,7 @@ snapshots:
     optionalDependencies:
       webpack: 5.93.0(@swc/core@1.7.1(@swc/helpers@0.5.15))
 
-  html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))):
+  html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)):
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
@@ -27889,25 +27915,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-cli@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)):
-    dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
-      '@jest/test-result': 29.7.0
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
-      exit: 0.1.2
-      import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   jest-cli@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.4.5)):
     dependencies:
       '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.4.5))
@@ -27937,6 +27944,25 @@ snapshots:
       exit: 0.1.2
       import-local: 3.1.0
       jest-config: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.6.3))
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  jest-cli@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)):
+    dependencies:
+      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
+      '@jest/test-result': 29.7.0
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      create-jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
+      exit: 0.1.2
+      import-local: 3.1.0
+      jest-config: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -28163,7 +28189,7 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-config@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)):
+  jest-config@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)):
     dependencies:
       '@babel/core': 7.26.0
       '@jest/test-sequencer': 29.7.0
@@ -28188,8 +28214,8 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      '@types/node': 22.13.17
-      ts-node: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)
+      '@types/node': 20.17.13
+      ts-node: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -28252,6 +28278,37 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.13.17
       ts-node: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.6.3)
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+
+  jest-config@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)):
+    dependencies:
+      '@babel/core': 7.26.0
+      '@jest/test-sequencer': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.26.0)
+      chalk: 4.1.2
+      ci-info: 3.8.0
+      deepmerge: 4.3.1
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-circus: 29.7.0
+      jest-environment-node: 29.7.0
+      jest-get-type: 29.6.3
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-runner: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      micromatch: 4.0.8
+      parse-json: 5.2.0
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 22.13.17
+      ts-node: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -28410,19 +28467,19 @@ snapshots:
     optionalDependencies:
       jest-resolve: 29.7.0
 
-  jest-preset-angular@13.1.6(623ca71f3c627d14feb749afbcc881bf):
+  jest-preset-angular@13.1.6(9459572c348788e068a680e10c2664e0):
     dependencies:
-      '@angular-devkit/build-angular': 19.1.6(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(chokidar@4.0.3)(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(jiti@1.21.0)(ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3))(typescript@5.7.3)(vite@6.0.11(@types/node@22.13.17)(jiti@1.21.0)(less@4.2.1)(sass@1.83.1)(terser@5.37.0)(yaml@2.4.5))(yaml@2.4.5)
+      '@angular-devkit/build-angular': 19.1.6(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(chokidar@4.0.3)(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)))(jiti@1.21.0)(ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3))(typescript@5.7.3)(vite@6.0.11(@types/node@22.13.17)(jiti@1.21.0)(less@4.2.1)(sass@1.83.1)(terser@5.37.0)(yaml@2.4.5))(yaml@2.4.5)
       '@angular/compiler-cli': 19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3)
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
-      '@angular/platform-browser-dynamic': 19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))
+      '@angular/platform-browser-dynamic': 19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))
       bs-logger: 0.2.6
       esbuild-wasm: 0.23.0
-      jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-environment-jsdom: 29.7.0
       jest-util: 29.7.0
       pretty-format: 29.7.0
-      ts-jest: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.2)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.7.3)
+      ts-jest: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.2)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)))(typescript@5.7.3)
       typescript: 5.7.3
     optionalDependencies:
       esbuild: 0.25.2
@@ -28586,11 +28643,11 @@ snapshots:
       leven: 3.1.0
       pretty-format: 29.7.0
 
-  jest-watch-typeahead@1.1.0(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))):
+  jest-watch-typeahead@1.1.0(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))):
     dependencies:
       ansi-escapes: 4.3.2
       chalk: 4.1.2
-      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
       jest-regex-util: 28.0.2
       jest-watcher: 28.1.3
       slash: 4.0.0
@@ -28692,18 +28749,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)):
-    dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
-      '@jest/types': 29.6.3
-      import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.4.5)):
     dependencies:
       '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.4.5))
@@ -28722,6 +28767,18 @@ snapshots:
       '@jest/types': 29.6.3
       import-local: 3.1.0
       jest-cli: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.6.3))
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)):
+    dependencies:
+      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
+      '@jest/types': 29.6.3
+      import-local: 3.1.0
+      jest-cli: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -29639,12 +29696,12 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  ng-mocks@14.13.0(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/forms@19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))):
+  ng-mocks@14.13.0(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/forms@19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))):
     dependencies:
-      '@angular/common': 19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/common': 19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/core': 19.1.4(rxjs@7.8.1)(zone.js@0.15.0)
-      '@angular/forms': 19.1.4(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
-      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
+      '@angular/forms': 19.1.4(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
+      '@angular/platform-browser': 19.1.4(@angular/animations@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.2.16(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0))
 
   ng-packagr@16.2.3(@angular/compiler-cli@19.1.4(@angular/compiler@19.1.4(@angular/core@19.1.4(rxjs@7.8.1)(zone.js@0.15.0)))(typescript@5.7.3))(tslib@2.6.3)(typescript@5.7.3):
     dependencies:
@@ -32548,11 +32605,11 @@ snapshots:
     dependencies:
       typescript: 5.7.3
 
-  ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.4.5):
+  ts-jest@27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
       jest-util: 27.5.1
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -32564,6 +32621,24 @@ snapshots:
       '@babel/core': 7.26.0
       '@types/jest': 27.5.2
       babel-jest: 27.5.1(@babel/core@7.26.0)
+
+  ts-jest@29.1.2(@babel/core@7.26.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.3)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5):
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.5.4
+      typescript: 5.4.5
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.26.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.26.0)
+      esbuild: 0.25.3
 
   ts-jest@29.1.2(@babel/core@7.26.10)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(esbuild@0.25.3)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5):
     dependencies:
@@ -32656,32 +32731,12 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.26.10)
 
-  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.0)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5):
+  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.2)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3)))(typescript@5.7.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
-      jest-util: 29.7.0
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.7.0
-      typescript: 5.4.5
-      yargs-parser: 21.1.1
-    optionalDependencies:
-      '@babel/core': 7.26.0
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.26.0)
-      esbuild: 0.25.0
-
-  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.25.2)(jest@29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.7.3):
-    dependencies:
-      bs-logger: 0.2.6
-      ejs: 3.1.10
-      fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@22.13.17)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3))
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -32714,6 +32769,26 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.26.0)
+
+  ts-jest@29.2.5(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(esbuild@0.25.0)(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5)))(typescript@5.4.5):
+    dependencies:
+      bs-logger: 0.2.6
+      ejs: 3.1.10
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.4.5))
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.0
+      typescript: 5.4.5
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.26.10
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.26.10)
+      esbuild: 0.25.0
 
   ts-jest@29.2.5(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@20.17.13)(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)))(typescript@5.7.3):
     dependencies:
@@ -32903,6 +32978,27 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.7.1(@swc/helpers@0.5.15)
+
+  ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@22.13.17)(typescript@5.7.3):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 22.13.17
+      acorn: 8.12.1
+      acorn-walk: 8.2.0
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.7.3
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optionalDependencies:
+      '@swc/core': 1.7.1(@swc/helpers@0.5.15)
+    optional: true
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -33481,12 +33577,12 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-  webpack-subresource-integrity@5.1.0(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))))(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)):
+  webpack-subresource-integrity@5.1.0(html-webpack-plugin@5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)))(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)):
     dependencies:
       typed-assert: 1.0.9
       webpack: 5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2)
     optionalDependencies:
-      html-webpack-plugin: 5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15)))
+      html-webpack-plugin: 5.6.0(webpack@5.97.1(@swc/core@1.7.1(@swc/helpers@0.5.15))(esbuild@0.24.2))
 
   webpack-virtual-modules@0.4.6: {}
 
