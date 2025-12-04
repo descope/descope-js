@@ -325,7 +325,6 @@ describe('autoRefresh', () => {
   });
 
   it('should refresh token when visibilitychange event and session expired', async () => {
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
 
     const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
@@ -351,7 +350,6 @@ describe('autoRefresh', () => {
     // trigger visibilitychange event and ensure refresh called
     const event = new Event('visibilitychange');
     document.dispatchEvent(event);
-    expect(clearTimeoutSpy).toHaveBeenCalled();
     expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     expect(loggerDebugMock).toHaveBeenCalledWith(
