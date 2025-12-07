@@ -1,0 +1,54 @@
+{
+  "name": "@descope/debug-logs",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Descope Team <info@descope.com>",
+  "description": "CloudWatch RUM-based telemetry collector for Descope SDK",
+  "main": "dist/cjs/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "require": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/cjs/index.cjs.js"
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && rollup -c",
+    "dev": "rollup -c rollup.config.dev.mjs --watch",
+    "test": "jest",
+    "lint": "eslint '+(src|test)/**/*.ts'"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "descope",
+    "telemetry",
+    "cloudwatch",
+    "rum"
+  ],
+  "dependencies": {
+    "aws-rum-web": "^1.25.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "28.0.2",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/jest": "^29.0.0",
+    "@types/node": "20.17.13",
+    "jest": "^29.0.0",
+    "rimraf": "^6.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-serve": "^2.0.3",
+    "typescript": "^5.0.0"
+  }
+}
