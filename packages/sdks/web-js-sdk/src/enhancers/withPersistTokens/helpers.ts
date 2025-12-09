@@ -87,6 +87,8 @@ export const persistTokens = (
   const { sessionJwt, refreshJwt } = authInfo;
   if (refreshJwt) {
     if (refreshTokenViaCookie) {
+      // clear local storage refresh token if exists
+      removeLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`);
       // Cookie configs will fallback to default values in both cases
       // 1. refreshTokenViaCookie is a boolean
       // 2. refreshTokenViaCookie is an object without the property
@@ -102,6 +104,10 @@ export const persistTokens = (
         cookieDomain,
       });
     } else {
+      // remove refresh token from cookie if exists
+      const refreshCookieName = getRefreshCookieName(refreshTokenViaCookie);
+      Cookies.remove(refreshCookieName);
+      // persist in local storage
       setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
     }
   }
