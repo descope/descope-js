@@ -5,6 +5,8 @@ import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin
 import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
+// eslint-disable-next-line import/no-duplicates
+import { telemetryMixin } from '@descope/sdk-mixins/telemetry-mixin';
 import { createSdk } from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
@@ -50,6 +52,7 @@ const BaseClass = compose(
   staticResourcesMixin,
   formMountMixin,
   injectStyleMixin,
+  telemetryMixin,
 )(HTMLElement);
 
 // this base class is responsible for WC initialization
@@ -73,6 +76,8 @@ class BaseDescopeWc extends BaseClass {
       'style-id',
     ];
   }
+
+  sdkVersion = BUILD_VERSION;
 
   // this is a way for extending the sdk config from outside
   static sdkConfigOverrides: Partial<SdkConfig> = {
@@ -179,10 +184,6 @@ class BaseDescopeWc extends BaseClass {
     this.slotElement = document.createElement('slot');
     this.slotElement.classList.add('hidden');
     this.rootElement.appendChild(this.slotElement);
-  }
-
-  get flowId() {
-    return this.getAttribute('flow-id');
   }
 
   get client() {

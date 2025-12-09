@@ -4,7 +4,12 @@ export type ConsoleLevel = 'log' | 'info' | 'warn' | 'error' | 'debug';
 
 export interface ConsolePluginConfig {
   levels?: ConsoleLevel[];
+  maxMessageLength?: number;
 }
+
+// AWS RUM has a 256KB limit for the entire event payload
+// We'll limit individual console messages to 10KB to be safe
+const DEFAULT_MAX_MESSAGE_LENGTH = 10240; // 10KB
 
 /**
  * Console Plugin for AWS RUM
@@ -15,6 +20,7 @@ export class ConsolePlugin implements Plugin {
   private enabled = false;
   private readonly id = 'console-plugin';
   private readonly levels: Set<ConsoleLevel>;
+  private readonly maxMessageLength: number;
 
   private originalMethods = {
     log: console.log,
@@ -29,6 +35,8 @@ export class ConsolePlugin implements Plugin {
     this.levels = new Set(
       config.levels || ['log', 'info', 'warn', 'error', 'debug'],
     );
+    this.maxMessageLength =
+      config.maxMessageLength ?? DEFAULT_MAX_MESSAGE_LENGTH;
   }
 
   load(context: PluginContext): void {
@@ -49,14 +57,27 @@ export class ConsolePlugin implements Plugin {
           // Call original method first
           this.originalMethods[level](...args);
 
+          // Don't record if plugin is disabled
+          if (!this.enabled) return;
+
+          // Build message and truncate if needed
+          let message = args
+            .map((arg) =>
+              typeof arg === 'object' ? JSON.stringify(arg) : String(arg),
+            )
+            .join(' ');
+
+          // Truncate message if it exceeds max length
+          if (message.length > this.maxMessageLength) {
+            message =
+              message.substring(0, this.maxMessageLength - 20) +
+              '... [truncated]';
+          }
+
           // Record to RUM as custom event
           this.context.record('console_log', {
             level,
-            message: args
-              .map((arg) =>
-                typeof arg === 'object' ? JSON.stringify(arg) : String(arg),
-              )
-              .join(' '),
+            message,
             timestamp: Date.now(),
           });
         } catch (error) {

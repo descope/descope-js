@@ -3,7 +3,12 @@ import type { Plugin, PluginContext } from 'aws-rum-web';
 export interface DomMutationPluginConfig {
   rootElement?: string | HTMLElement;
   throttleMs?: number;
+  maxHtmlLength?: number;
 }
+
+// AWS RUM has a 256KB limit for the entire event payload
+// We'll limit the HTML snapshot to 50KB to leave room for other data
+const DEFAULT_MAX_HTML_LENGTH = 51200; // 50KB
 
 /**
  * DOM Mutation Plugin for AWS RUM
@@ -18,12 +23,14 @@ export class DomMutationPlugin implements Plugin {
   private pendingMutations: MutationRecord[] = [];
   private flushTimeout: ReturnType<typeof setTimeout> | null = null;
   private throttleMs: number;
+  private maxHtmlLength: number;
   private config: DomMutationPluginConfig;
   private rootElement: HTMLElement = document.body;
 
   constructor(config: DomMutationPluginConfig = {}) {
     this.config = config;
     this.throttleMs = config.throttleMs || 100;
+    this.maxHtmlLength = config.maxHtmlLength ?? DEFAULT_MAX_HTML_LENGTH;
   }
 
   load(context: PluginContext): void {
@@ -57,6 +64,9 @@ export class DomMutationPlugin implements Plugin {
 
     try {
       this.observer = new MutationObserver((mutations) => {
+        // Check enabled flag FIRST - this prevents processing of browser-queued
+        // callbacks that fire after disable() has been called
+        if (!this.enabled) return;
         this.scheduleMutationFlush(mutations);
       });
 
@@ -76,20 +86,30 @@ export class DomMutationPlugin implements Plugin {
 
   disable(): void {
     if (!this.enabled) return;
+
+    // Set enabled = false FIRST so that any browser-queued MutationObserver
+    // callbacks that fire after this point will be rejected by the check
+    // in the MutationObserver callback
     this.enabled = false;
 
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
-    }
-
+    // Clear any scheduled flush timeout to prevent it from recording later
     if (this.flushTimeout) {
       clearTimeout(this.flushTimeout);
       this.flushTimeout = null;
     }
 
-    // Flush any pending mutations
-    this.flushMutations();
+    // Flush any pending mutations that were already queued, then clear the array
+    // to prevent any residual timeout from processing them
+    const mutationsToFlush = [...this.pendingMutations];
+    this.pendingMutations = [];
+
+    this.recordPendingMutations(mutationsToFlush);
+
+    // Disconnect observer to stop observing new mutations
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
   }
 
   getPluginId(): string {
@@ -97,6 +117,9 @@ export class DomMutationPlugin implements Plugin {
   }
 
   private scheduleMutationFlush(mutations: MutationRecord[]): void {
+    // Don't schedule if plugin is disabled - check FIRST before pushing
+    if (!this.enabled) return;
+
     this.pendingMutations.push(...mutations);
 
     if (this.flushTimeout) {
@@ -104,32 +127,56 @@ export class DomMutationPlugin implements Plugin {
     }
 
     this.flushTimeout = setTimeout(() => {
+      // Double-check in case plugin was disabled while timeout was pending
+      if (!this.enabled) return;
       this.flushMutations();
     }, this.throttleMs);
   }
-
   private flushMutations(): void {
-    if (this.pendingMutations.length === 0) return;
+    // Don't flush if plugin is disabled OR if observer has been disconnected
+    if (!this.enabled || !this.observer) return;
+
+    this.recordPendingMutations();
+    this.flushTimeout = null;
+  }
+
+  /**
+   * Records mutations.
+   * @param mutations - Mutations to record. If not provided, uses this.pendingMutations
+   */
+  private recordPendingMutations(mutations?: MutationRecord[]): void {
+    // If mutations are explicitly provided (e.g., during disable), record them
+    // even if plugin is disabled. Otherwise, check enabled status.
+    if (!mutations && !this.enabled) return;
+
+    const mutationsToRecord = mutations || this.pendingMutations;
+    if (mutationsToRecord.length === 0) return;
 
     try {
+      // Get HTML and truncate if needed
+      let html = this.rootElement.innerHTML;
+      if (html.length > this.maxHtmlLength) {
+        html = html.substring(0, this.maxHtmlLength - 20) + '... [truncated]';
+      }
+
       // Aggregate mutation data
       const summary = {
-        addedNodes: this.pendingMutations.reduce(
+        addedNodes: mutationsToRecord.reduce(
           (sum, m) => sum + m.addedNodes.length,
           0,
         ),
-        removedNodes: this.pendingMutations.reduce(
+        removedNodes: mutationsToRecord.reduce(
           (sum, m) => sum + m.removedNodes.length,
           0,
         ),
-        attributeChanges: this.pendingMutations.filter(
+        attributeChanges: mutationsToRecord.filter(
           (m) => m.type === 'attributes',
         ).length,
-        characterDataChanges: this.pendingMutations.filter(
+        characterDataChanges: mutationsToRecord.filter(
           (m) => m.type === 'characterData',
         ).length,
         timestamp: Date.now(),
-        rootElementHTML: this.rootElement.outerHTML,
+        rootElementHTML: html,
       };
 
       this.context.record('dom_mutation', summary);
@@ -137,7 +184,9 @@ export class DomMutationPlugin implements Plugin {
       // Fail silently
     }
 
-    this.pendingMutations = [];
-    this.flushTimeout = null;
+    // Only clear the instance array if we didn't use an explicit parameter
+    if (!mutations) {
+      this.pendingMutations = [];
+    }
   }
 }

@@ -89,4 +89,26 @@ export type Config = {
   executionContext: {
     geo: string;
   };
+  telemetry?: {
+    enabled: boolean;
+    version?: string;
+    rumConfig: {
+      sessionSampleRate: number;
+      applicationId: string;
+      identityPoolId: string;
+      guestRoleArn?: string;
+      region: string;
+      endpoint?: string;
+    };
+    capture?: {
+      console?:
+        | boolean
+        | { levels?: ('log' | 'info' | 'warn' | 'error' | 'debug')[] };
+      network?: boolean | { urlFilter?: RegExp | RegExp[] };
+      navigation?: boolean;
+      dom?:
+        | boolean
+        | { rootElement?: string | HTMLElement; throttleMs?: number };
+    };
+  };
 };

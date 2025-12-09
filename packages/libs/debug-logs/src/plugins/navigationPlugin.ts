@@ -63,9 +63,11 @@ export class NavigationPlugin implements Plugin {
 
   disable(): void {
     if (!this.enabled) return;
+
+    // Set enabled = false FIRST - prevents recording from interceptors
     this.enabled = false;
 
-    // Restore original methods
+    // Restore original methods - this prevents new calls from using interceptors
     history.pushState = this.originalPushState;
     history.replaceState = this.originalReplaceState;
 
@@ -81,6 +83,9 @@ export class NavigationPlugin implements Plugin {
   }
 
   private recordNavigation(from: string, to: string, type: string): void {
+    // Don't record if plugin is disabled
+    if (!this.enabled) return;
+
     try {
       this.context.record('navigation', {
         type,

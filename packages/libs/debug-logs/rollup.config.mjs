@@ -2,6 +2,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
+import autoExternal from 'rollup-plugin-auto-external';
 
 import packageJson from './package.json' with { type: 'json' };
 
@@ -12,12 +13,14 @@ const plugins = [
     declarationDir: './dist/types',
   }),
   commonjs(),
-  resolve(),
+  resolve({
+    browser: true, // Use browser-specific versions of packages
+    preferBuiltins: false, // Don't prefer Node.js built-ins
+  }),
   terser(),
 ];
 
 const input = './src/index.ts';
-const external = ['aws-rum-web'];
 
 export default [
   {
@@ -29,8 +32,7 @@ export default [
       exports: 'named',
       interop: 'compat',
     },
-    plugins,
-    external,
+    plugins: [autoExternal(), ...plugins], // Auto-externalize dependencies
   },
   {
     input,
@@ -39,7 +41,19 @@ export default [
       format: 'esm',
       sourcemap: true,
     },
-    plugins,
-    external,
+    plugins: [autoExternal(), ...plugins], // Auto-externalize dependencies
+  },
+  {
+    input,
+    output: {
+      file: 'dist/index.js',
+      format: 'umd',
+      name: 'DescopeDebugLogs',
+      sourcemap: true,
+      exports: 'default', // Since we now have a default export
+    },
+    plugins, // Bundle everything for UMD (browser) - no autoExternal
+    external: [], // Explicitly bundle everything
+    context: 'window', // Set 'this' to 'window' in UMD for browser compatibility
   },
 ];
