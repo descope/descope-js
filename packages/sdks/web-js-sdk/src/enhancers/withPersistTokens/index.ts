@@ -22,6 +22,7 @@ export const withPersistTokens =
   <A extends CookieConfig>({
     persistTokens: isPersistTokens,
     sessionTokenViaCookie,
+    refreshTokenViaCookie,
     storagePrefix,
     ...config
   }: Parameters<T>[0] & PersistTokensOptions<A>): A extends false
@@ -44,20 +45,25 @@ export const withPersistTokens =
 
       if (res?.status === 401) {
         if (!isManagementApi) {
-          clearTokens(storagePrefix, sessionTokenViaCookie);
+          clearTokens(
+            storagePrefix,
+            sessionTokenViaCookie,
+            refreshTokenViaCookie,
+          );
         }
       } else {
         persistTokens(
           await getAuthInfoFromResponse(res),
           sessionTokenViaCookie,
           storagePrefix,
+          refreshTokenViaCookie,
         );
       }
     };
 
     const sdk = createSdk(
       addHooks(config, {
-        beforeRequest: beforeRequest(storagePrefix),
+        beforeRequest: beforeRequest(storagePrefix, refreshTokenViaCookie),
         afterRequest,
       }),
     );
@@ -65,11 +71,17 @@ export const withPersistTokens =
     const wrappedSdk = wrapWith(
       sdk,
       ['logout', 'logoutAll', 'oidc.logout'],
-      wrapper(storagePrefix, sessionTokenViaCookie),
+      logoutWrapper(
+        storagePrefix,
+        sessionTokenViaCookie,
+        refreshTokenViaCookie,
+      ),
     );
 
-    const refreshToken = () => getRefreshToken(storagePrefix);
-    const sessionToken = () => getSessionToken(storagePrefix);
+    const refreshToken = () =>
+      getRefreshToken(storagePrefix, refreshTokenViaCookie);
+    const sessionToken = () =>
+      getSessionToken(storagePrefix, sessionTokenViaCookie);
     const idToken = () => getIdToken(storagePrefix);
 
     return Object.assign(wrappedSdk, {
@@ -79,13 +91,17 @@ export const withPersistTokens =
     }) as any;
   };
 
-const wrapper =
-  (prefix?: string, sessionTokenViaCookie?: CookieConfig): SdkFnWrapper<{}> =>
+const logoutWrapper =
+  (
+    prefix?: string,
+    sessionTokenViaCookie?: CookieConfig,
+    refreshTokenViaCookie?: CookieConfig,
+  ): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
 
-    clearTokens(prefix, sessionTokenViaCookie);
+    clearTokens(prefix, sessionTokenViaCookie, refreshTokenViaCookie);
 
     return resp;
   };

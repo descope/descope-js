@@ -15,6 +15,10 @@ type SessionConfig = CreateSdkParams & {
 	// Defaults to 'DS'
 	// Note: The middleware will also look for the JWT in the Authorization header
 	sessionCookieName?: string;
+
+	// The name of the refresh token cookie
+	// Defaults to 'DSR'
+	refreshTokenCookieName?: string;
 };
 
 const extractSession = (

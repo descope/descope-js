@@ -73,15 +73,38 @@ const getSessionCookieName = (sessionTokenViaCookie?: CookieConfig) => {
   return sessionTokenViaCookie?.['cookieName'] || SESSION_TOKEN_KEY;
 };
 
+const getRefreshCookieName = (refreshTokenViaCookie?: CookieConfig) => {
+  return refreshTokenViaCookie?.['cookieName'] || REFRESH_TOKEN_KEY;
+};
+
 export const persistTokens = (
   authInfo = {} as Partial<WebJWTResponse>,
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
+  refreshTokenViaCookie: boolean | CookieConfig = false,
 ) => {
   // persist refresh token
   const { sessionJwt, refreshJwt } = authInfo;
-  refreshJwt &&
-    setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
+  if (refreshJwt) {
+    if (refreshTokenViaCookie) {
+      // Cookie configs will fallback to default values in both cases
+      // 1. refreshTokenViaCookie is a boolean
+      // 2. refreshTokenViaCookie is an object without the property
+      const cookieSameSite = refreshTokenViaCookie['sameSite'] || 'Strict';
+      const cookieSecure = refreshTokenViaCookie['secure'] ?? true;
+      const cookieDomain =
+        refreshTokenViaCookie['domain'] ?? authInfo.cookieDomain;
+      const cookieName = getRefreshCookieName(refreshTokenViaCookie);
+      setJwtTokenCookie(cookieName, refreshJwt, {
+        ...(authInfo as Partial<JWTResponse>),
+        cookieSameSite,
+        cookieSecure,
+        cookieDomain,
+      });
+    } else {
+      setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
+    }
+  }
 
   // persist session token
   if (sessionJwt) {
@@ -110,9 +133,16 @@ export const persistTokens = (
   }
 };
 
-/** Return the refresh token from the localStorage. Not for production usage because refresh token will not be saved in localStorage. */
-export function getRefreshToken(prefix: string = '') {
-  return getLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`) || '';
+/** Return the refresh token from cookie or localStorage */
+export function getRefreshToken(
+  prefix: string = '',
+  refreshTokenViaCookie?: CookieConfig,
+) {
+  return (
+    Cookies.get(getRefreshCookieName(refreshTokenViaCookie)) ||
+    getLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`) ||
+    ''
+  );
 }
 
 /**
@@ -138,18 +168,21 @@ export function getIdToken(prefix: string = ''): string {
 export function clearTokens(
   prefix: string = '',
   sessionTokenViaCookie?: CookieConfig,
+  refreshTokenViaCookie?: CookieConfig,
 ) {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
-  const cookieName = getSessionCookieName(sessionTokenViaCookie);
-  Cookies.remove(cookieName);
+  const sessionCookieName = getSessionCookieName(sessionTokenViaCookie);
+  Cookies.remove(sessionCookieName);
+  const refreshCookieName = getRefreshCookieName(refreshTokenViaCookie);
+  Cookies.remove(refreshCookieName);
 }
 
 export const beforeRequest =
-  (prefix?: string): BeforeRequestHook =>
+  (prefix?: string, refreshTokenViaCookie?: CookieConfig): BeforeRequestHook =>
   (config) => {
     return Object.assign(config, {
-      token: config.token || getRefreshToken(prefix),
+      token: config.token || getRefreshToken(prefix, refreshTokenViaCookie),
     });
   };

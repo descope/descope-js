@@ -39,6 +39,11 @@ type MiddlewareOptions = {
 	// Defaults to 'DS'
 	// Note: The middleware will also look for the JWT in the Authorization header
 	sessionCookieName?: string;
+
+	// The name of the refresh token cookie
+	// Defaults to 'DSR'
+	// Used to refresh the session when the JWT expires
+	refreshTokenCookieName?: string;
 };
 
 const getSessionJwt = (
@@ -57,6 +62,16 @@ const getSessionJwt = (
 		return jwt;
 	}
 	return undefined;
+};
+
+const getRefreshToken = (
+	req: NextRequest,
+	options: MiddlewareOptions
+): string | undefined => {
+	const refreshToken = req.cookies?.get(
+		options?.refreshTokenCookieName || 'DSR'
+	)?.value;
+	return refreshToken;
 };
 
 const matchWildcardRoute = (route: string, path: string) => {
@@ -129,14 +144,40 @@ const createAuthMiddleware =
 
 		// check if the user is authenticated
 		let session: AuthenticationInfo | undefined;
+		let validToken = false;
 		try {
 			session = await getGlobalSdk({
 				projectId: options.projectId,
 				baseUrl: options.baseUrl
 			}).validateJwt(jwt);
+			validToken = true;
+			logger.debug('Auth middleware, Session JWT is valid');
 		} catch (err) {
-			logger.debug('Auth middleware, Failed to validate JWT', err);
-			if (!isPublicRoute(req, options)) {
+			logger.debug('Auth middleware, Failed to validate session JWT', err);
+
+			// Try to validate the refresh token instead
+			const refreshToken = getRefreshToken(req, options);
+			if (refreshToken) {
+				logger.debug('Auth middleware, Attempting to validate refresh token');
+				try {
+					await getGlobalSdk({
+						projectId: options.projectId,
+						baseUrl: options.baseUrl
+					}).validateJwt(refreshToken);
+
+					logger.debug('Auth middleware, Refresh token is valid');
+					validToken = true;
+				} catch (refreshErr) {
+					logger.debug(
+						'Auth middleware, Refresh token validation failed',
+						refreshErr
+					);
+					// Refresh token validation failed, continue to redirect logic below
+				}
+			}
+
+			// If we don't have a valid session or refresh token and this is a private route, redirect
+			if (!validToken && !isPublicRoute(req, options)) {
 				const redirectUrl = options.redirectUrl || DEFAULT_PUBLIC_ROUTES.signIn;
 				const url = req.nextUrl.clone();
 				// Create a URL object for redirectUrl. 'http://example.com' is just a placeholder.
@@ -156,7 +197,8 @@ const createAuthMiddleware =
 		}
 
 		logger.debug('Auth middleware finishes');
-		// add the session to the request, if it exists
+
+		// Add the session to the request headers and continue
 		const headers = addSessionToHeadersIfExists(req.headers, session);
 		return NextResponse.next({
 			request: {
