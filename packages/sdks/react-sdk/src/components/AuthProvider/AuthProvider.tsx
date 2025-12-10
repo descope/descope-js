@@ -32,6 +32,11 @@ interface IAuthProviderProps {
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: CookieConfig;
+  // If true, refresh token will be stored on cookie. Otherwise, the refresh token will be
+  // stored on local storage and can be accessed with getRefreshToken function
+  // Use this option if you need server-side access to the refresh token (e.g., in Next.js middleware)
+  // to enable refreshing sessions on the server before they expire
+  refreshTokenViaCookie?: CookieConfig;
   hooks?: Hooks;
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
@@ -56,6 +61,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   baseCdnUrl = '',
   sessionTokenViaCookie = false,
+  refreshTokenViaCookie = false,
   hooks = undefined,
   persistTokens = true,
   autoRefresh = true,
@@ -85,6 +91,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     persistTokens,
     autoRefresh,
     sessionTokenViaCookie,
+    refreshTokenViaCookie,
     hooks,
     oidcConfig,
     storeLastAuthenticatedUser,

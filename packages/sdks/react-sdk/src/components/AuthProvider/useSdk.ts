@@ -9,6 +9,7 @@ type Config = Pick<
   | 'persistTokens'
   | 'autoRefresh'
   | 'sessionTokenViaCookie'
+  | 'refreshTokenViaCookie'
   | 'storeLastAuthenticatedUser'
   | 'hooks'
   | 'oidcConfig'
@@ -24,6 +25,7 @@ export default ({
   persistTokens,
   autoRefresh,
   sessionTokenViaCookie,
+  refreshTokenViaCookie,
   refreshCookieName,
   oidcConfig,
   storeLastAuthenticatedUser,
@@ -40,6 +42,7 @@ export default ({
       projectId,
       baseUrl,
       sessionTokenViaCookie,
+      refreshTokenViaCookie,
       baseHeaders,
       persistTokens,
       autoRefresh,
@@ -61,6 +64,7 @@ export default ({
     //
     // See: https://github.com/descope/etc/issues/11965
     JSON.stringify(sessionTokenViaCookie),
+    JSON.stringify(refreshTokenViaCookie),
     getExternalToken,
     customStorage,
   ]);
