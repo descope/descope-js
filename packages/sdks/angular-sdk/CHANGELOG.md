@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.22.2](https://github.com/descope/descope-js/compare/angular-sdk-0.22.1...angular-sdk-0.22.2) (2025-12-04)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.26`
+* `audit-management-widget` updated to version `0.5.26`
+* `role-management-widget` updated to version `0.5.18`
+* `user-management-widget` updated to version `0.10.9`
+* `user-profile-widget` updated to version `0.8.9`
+* `tenant-profile-widget` updated to version `0.5.9`
+* `applications-portal-widget` updated to version `0.5.9`
+* `web-component` updated to version `3.52.2`
+* `web-js-sdk` updated to version `1.40.2`
+## [0.22.1](https://github.com/descope/descope-js/compare/angular-sdk-0.22.0...angular-sdk-0.22.1) (2025-12-03)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.25`
+* `audit-management-widget` updated to version `0.5.25`
+* `role-management-widget` updated to version `0.5.17`
+* `user-management-widget` updated to version `0.10.8`
+* `user-profile-widget` updated to version `0.8.8`
+* `tenant-profile-widget` updated to version `0.5.8`
+* `applications-portal-widget` updated to version `0.5.8`
+* `web-component` updated to version `3.52.1`
+* `web-js-sdk` updated to version `1.40.1`
+* `core-js-sdk` updated to version `2.53.1`
 ## [0.22.0](https://github.com/descope/descope-js/compare/angular-sdk-0.21.17...angular-sdk-0.22.0) (2025-12-02)
 
 ### Dependency Updates

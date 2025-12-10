@@ -757,7 +757,36 @@ describe('persistTokens', () => {
       expect(localStorage.getItem('DSR')).toBeFalsy();
       expect(localStorage.getItem('DSI')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toHaveBeenCalledWith('DS');
+      expect(removeMock).toHaveBeenCalledWith('DS', undefined);
+    });
+
+    it('should clear tokens on logout with custom domain when configured', async () => {
+      window.location = { hostname: 'app.custom.example.com' } as any;
+      const mockFetch = jest
+        .fn()
+        .mockReturnValueOnce(createMockReturnValue(authInfo))
+        .mockReturnValue(createMockReturnValue({}));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        persistTokens: true,
+        sessionTokenViaCookie: { domain: 'custom.example.com' },
+      });
+
+      // Call something to simulate auth info
+      await sdk.httpClient.get('1/2/3');
+
+      await sdk.logout(authInfo.refreshJwt);
+
+      expect(localStorage.getItem('DSR')).toBeFalsy();
+      expect(localStorage.getItem('DSI')).toBeFalsy();
+      const removeMock = Cookies.remove as jest.Mock;
+      // Should be called with the exact same options that were used to set the cookie
+      expect(removeMock).toHaveBeenCalledWith('DS', {
+        path: authInfo.cookiePath,
+        domain: 'custom.example.com',
+      });
     });
 
     it('should clear tokens on logout even when not passing refresh token', async () => {
@@ -770,7 +799,7 @@ describe('persistTokens', () => {
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toHaveBeenCalledWith('DS');
+      expect(removeMock).toHaveBeenCalledWith('DS', undefined);
     });
 
     it('should clear tokens on logoutAll even when not passing refresh token', async () => {
@@ -783,7 +812,7 @@ describe('persistTokens', () => {
 
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
-      expect(removeMock).toHaveBeenCalledWith('DS');
+      expect(removeMock).toHaveBeenCalledWith('DS', undefined);
     });
 
     it('should clear refresh token cookie on logout', async () => {
