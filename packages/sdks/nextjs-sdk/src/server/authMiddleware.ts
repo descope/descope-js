@@ -64,14 +64,14 @@ const getSessionJwt = (
 	return undefined;
 };
 
-const getRefreshToken = (
+const getRefreshJwt = (
 	req: NextRequest,
 	options: MiddlewareOptions
 ): string | undefined => {
-	const refreshToken = req.cookies?.get(
+	const refreshJwt = req.cookies?.get(
 		options?.refreshTokenCookieName || 'DSR'
 	)?.value;
-	return refreshToken;
+	return refreshJwt;
 };
 
 const matchWildcardRoute = (route: string, path: string) => {
@@ -138,9 +138,9 @@ const createAuthMiddleware =
 	(options: MiddlewareOptions = {}) =>
 	async (req: NextRequest) => {
 		setLogger(options.logLevel);
-		logger.debug('Auth middleware starts');
+		logger.debug('[Auth middleware] Starts');
 
-		const jwt = getSessionJwt(req, options);
+		const sessionJwt = getSessionJwt(req, options);
 
 		// check if the user is authenticated
 		let session: AuthenticationInfo | undefined;
@@ -149,27 +149,27 @@ const createAuthMiddleware =
 			session = await getGlobalSdk({
 				projectId: options.projectId,
 				baseUrl: options.baseUrl
-			}).validateJwt(jwt);
+			}).validateJwt(sessionJwt);
 			validToken = true;
-			logger.debug('Auth middleware, Session JWT is valid');
+			logger.debug('[Auth middleware] Session JWT is valid');
 		} catch (err) {
-			logger.debug('Auth middleware, Failed to validate session JWT', err);
+			logger.debug('[Auth middleware] Failed to validate session JWT', err);
 
 			// Try to validate the refresh token instead
-			const refreshToken = getRefreshToken(req, options);
-			if (refreshToken) {
-				logger.debug('Auth middleware, Attempting to validate refresh token');
+			const refreshJwt = getRefreshJwt(req, options);
+			if (refreshJwt) {
+				logger.debug('[Auth middleware] Attempting to validate refresh token');
 				try {
 					await getGlobalSdk({
 						projectId: options.projectId,
 						baseUrl: options.baseUrl
-					}).validateJwt(refreshToken);
+					}).validateJwt(refreshJwt);
 
-					logger.debug('Auth middleware, Refresh token is valid');
+					logger.debug('[Auth middleware] Refresh token is valid');
 					validToken = true;
 				} catch (refreshErr) {
 					logger.debug(
-						'Auth middleware, Refresh token validation failed',
+						'[Auth middleware] Refresh token validation failed',
 						refreshErr
 					);
 					// Refresh token validation failed, continue to redirect logic below
@@ -191,12 +191,12 @@ const createAuthMiddleware =
 				if (searchParams) {
 					url.search = searchParams;
 				}
-				logger.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
+				logger.debug(`[Auth middleware] Redirecting to ${redirectUrl}`);
 				return NextResponse.redirect(url);
 			}
 		}
 
-		logger.debug('Auth middleware finishes');
+		logger.debug('[Auth middleware] finishes');
 
 		// Add the session to the request headers and continue
 		const headers = addSessionToHeadersIfExists(req.headers, session);
