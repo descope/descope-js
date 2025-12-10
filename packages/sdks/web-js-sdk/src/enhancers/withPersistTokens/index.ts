@@ -12,7 +12,7 @@ import {
   persistTokens,
   getIdToken,
 } from './helpers';
-import { CookieConfig, PersistTokensOptions } from './types';
+import { CookieConfig, LastCookieOptions, PersistTokensOptions } from './types';
 
 /**
  * Persist authentication tokens in cookie/storage
@@ -42,7 +42,7 @@ export const withPersistTokens =
 
     // Cache to store the cookie options that were used when setting the cookie
     // This allows us to use the exact same options when removing the cookie
-    let lastCookieOptions: { domain?: string; path?: string } | undefined;
+    let lastCookieOptions: LastCookieOptions | undefined;
 
     const afterRequest: AfterRequestHook = async (req, res) => {
       const isManagementApi = /^\/v\d+\/mgmt\//.test(req.path);
@@ -106,7 +106,7 @@ const logoutWrapper =
     prefix?: string,
     sessionTokenViaCookie?: CookieConfig,
     refreshTokenViaCookie?: CookieConfig,
-    getCookieOptions?: () => { domain?: string; path?: string } | undefined,
+    getCookieOptions?: () => LastCookieOptions | undefined,
   ): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {

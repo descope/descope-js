@@ -27,3 +27,9 @@ export type PersistTokensOptions<A extends CookieConfig> = {
   // to enable refreshing sessions on the server before they expire
   refreshTokenViaCookie?: A extends false ? never : true | CookieConfig;
 };
+
+// Internal type to store the last used cookie options
+export type LastCookieOptions = {
+  session?: { domain?: string; path?: string };
+  refresh?: { domain?: string; path?: string };
+};

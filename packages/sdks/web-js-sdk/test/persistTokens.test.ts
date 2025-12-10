@@ -758,6 +758,7 @@ describe('persistTokens', () => {
       expect(localStorage.getItem('DSI')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
       expect(removeMock).toHaveBeenCalledWith('DS', undefined);
+      expect(removeMock).toHaveBeenCalledWith('DSR', undefined);
     });
 
     it('should clear tokens on logout with custom domain when configured', async () => {
@@ -800,6 +801,7 @@ describe('persistTokens', () => {
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
       expect(removeMock).toHaveBeenCalledWith('DS', undefined);
+      expect(removeMock).toHaveBeenCalledWith('DSR', undefined);
     });
 
     it('should clear tokens on logoutAll even when not passing refresh token', async () => {
@@ -813,6 +815,7 @@ describe('persistTokens', () => {
       expect(localStorage.getItem('DSR')).toBeFalsy();
       const removeMock = Cookies.remove as jest.Mock;
       expect(removeMock).toHaveBeenCalledWith('DS', undefined);
+      expect(removeMock).toHaveBeenCalledWith('DSR', undefined);
     });
 
     it('should clear refresh token cookie on logout', async () => {
@@ -837,7 +840,10 @@ describe('persistTokens', () => {
 
       await sdk.logout();
 
-      expect(removeMock).toHaveBeenCalledWith('DSR');
+      expect(removeMock).toHaveBeenCalledWith('DSR', {
+        domain: undefined,
+        path: authInfo.cookiePath,
+      });
     });
 
     it('should clear custom refresh token cookie on logout', async () => {
@@ -862,7 +868,10 @@ describe('persistTokens', () => {
 
       await sdk.logout();
 
-      expect(removeMock).toHaveBeenCalledWith('CUSTOM_REFRESH');
+      expect(removeMock).toHaveBeenCalledWith('CUSTOM_REFRESH', {
+        domain: undefined,
+        path: authInfo.cookiePath,
+      });
     });
 
     it('should not log a warning when not running in the browser', () => {

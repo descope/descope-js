@@ -11,7 +11,7 @@ import {
   removeLocalStorage,
   setLocalStorage,
 } from '../helpers';
-import { CookieConfig, SameSite } from './types';
+import { CookieConfig, LastCookieOptions, SameSite } from './types';
 
 /**
  * Store the session JWT as a cookie on the given domain and path with the given expiration.
@@ -82,9 +82,11 @@ export const persistTokens = (
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
   refreshTokenViaCookie: boolean | CookieConfig = false,
-): { domain?: string; path?: string } | undefined => {
+): LastCookieOptions | undefined => {
   // persist refresh token
   const { sessionJwt, refreshJwt } = authInfo;
+  let cookieOptions: LastCookieOptions | undefined;
+
   if (refreshJwt) {
     if (refreshTokenViaCookie) {
       // clear local storage refresh token if exists
@@ -97,12 +99,23 @@ export const persistTokens = (
       const cookieDomain =
         refreshTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getRefreshCookieName(refreshTokenViaCookie);
-      setJwtTokenCookie(cookieName, refreshJwt, {
+      const authInfoWithCookie = {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
         cookieSecure,
         cookieDomain,
-      });
+      };
+      setJwtTokenCookie(cookieName, refreshJwt, authInfoWithCookie);
+
+      // Cache the cookie options that were actually used
+      const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
+      cookieOptions = {
+        ...cookieOptions,
+        refresh: {
+          path: authInfoWithCookie.cookiePath,
+          domain: domainMatches ? cookieDomain : undefined,
+        },
+      };
     } else {
       // remove refresh token from cookie if exists
       const refreshCookieName = getRefreshCookieName(refreshTokenViaCookie);
@@ -111,8 +124,6 @@ export const persistTokens = (
       setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
     }
   }
-
-  let cookieOptions: { domain?: string; path?: string } | undefined;
 
   // persist session token
   if (sessionJwt) {
@@ -136,8 +147,11 @@ export const persistTokens = (
       // Cache the cookie options that were actually used
       const domainMatches = isCurrentDomainOrParentDomain(cookieDomain);
       cookieOptions = {
-        path: authInfoWithCookie.cookiePath,
-        domain: domainMatches ? cookieDomain : undefined,
+        ...cookieOptions,
+        session: {
+          path: authInfoWithCookie.cookiePath,
+          domain: domainMatches ? cookieDomain : undefined,
+        },
       };
     } else {
       setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
@@ -187,16 +201,16 @@ export function clearTokens(
   prefix: string = '',
   sessionTokenViaCookie?: CookieConfig,
   refreshTokenViaCookie?: CookieConfig,
-  cookieOptions?: { domain?: string; path?: string },
+  cookieOptions?: LastCookieOptions,
 ) {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
   const sessionCookieName = getSessionCookieName(sessionTokenViaCookie);
-  Cookies.remove(sessionCookieName, cookieOptions);
+  Cookies.remove(sessionCookieName, cookieOptions?.session);
 
   const refreshCookieName = getRefreshCookieName(refreshTokenViaCookie);
-  Cookies.remove(refreshCookieName);
+  Cookies.remove(refreshCookieName, cookieOptions?.refresh);
 }
 
 export const beforeRequest =
