@@ -39,6 +39,11 @@ type MiddlewareOptions = {
 	// Defaults to 'DS'
 	// Note: The middleware will also look for the JWT in the Authorization header
 	sessionCookieName?: string;
+
+	// The name of the refresh token cookie
+	// Defaults to 'DSR'
+	// Used to refresh the session when the JWT expires
+	refreshTokenCookieName?: string;
 };
 
 const getSessionJwt = (
@@ -57,6 +62,16 @@ const getSessionJwt = (
 		return jwt;
 	}
 	return undefined;
+};
+
+const getRefreshJwt = (
+	req: NextRequest,
+	options: MiddlewareOptions
+): string | undefined => {
+	const refreshJwt = req.cookies?.get(
+		options?.refreshTokenCookieName || 'DSR'
+	)?.value;
+	return refreshJwt;
 };
 
 const matchWildcardRoute = (route: string, path: string) => {
@@ -123,20 +138,46 @@ const createAuthMiddleware =
 	(options: MiddlewareOptions = {}) =>
 	async (req: NextRequest) => {
 		setLogger(options.logLevel);
-		logger.debug('Auth middleware starts');
+		logger.debug('[Auth middleware] Starts');
 
-		const jwt = getSessionJwt(req, options);
+		const sessionJwt = getSessionJwt(req, options);
 
 		// check if the user is authenticated
 		let session: AuthenticationInfo | undefined;
+		let validToken = false;
 		try {
 			session = await getGlobalSdk({
 				projectId: options.projectId,
 				baseUrl: options.baseUrl
-			}).validateJwt(jwt);
+			}).validateJwt(sessionJwt);
+			validToken = true;
+			logger.debug('[Auth middleware] Session JWT is valid');
 		} catch (err) {
-			logger.debug('Auth middleware, Failed to validate JWT', err);
-			if (!isPublicRoute(req, options)) {
+			logger.debug('[Auth middleware] Failed to validate session JWT', err);
+
+			// Try to validate the refresh token instead
+			const refreshJwt = getRefreshJwt(req, options);
+			if (refreshJwt) {
+				logger.debug('[Auth middleware] Attempting to validate refresh token');
+				try {
+					await getGlobalSdk({
+						projectId: options.projectId,
+						baseUrl: options.baseUrl
+					}).validateJwt(refreshJwt);
+
+					logger.debug('[Auth middleware] Refresh token is valid');
+					validToken = true;
+				} catch (refreshErr) {
+					logger.debug(
+						'[Auth middleware] Refresh token validation failed',
+						refreshErr
+					);
+					// Refresh token validation failed, continue to redirect logic below
+				}
+			}
+
+			// If we don't have a valid session or refresh token and this is a private route, redirect
+			if (!validToken && !isPublicRoute(req, options)) {
 				const redirectUrl = options.redirectUrl || DEFAULT_PUBLIC_ROUTES.signIn;
 				const url = req.nextUrl.clone();
 				// Create a URL object for redirectUrl. 'http://example.com' is just a placeholder.
@@ -150,13 +191,14 @@ const createAuthMiddleware =
 				if (searchParams) {
 					url.search = searchParams;
 				}
-				logger.debug(`Auth middleware, Redirecting to ${redirectUrl}`);
+				logger.debug(`[Auth middleware] Redirecting to ${redirectUrl}`);
 				return NextResponse.redirect(url);
 			}
 		}
 
-		logger.debug('Auth middleware finishes');
-		// add the session to the request, if it exists
+		logger.debug('[Auth middleware] finishes');
+
+		// Add the session to the request headers and continue
 		const headers = addSessionToHeadersIfExists(req.headers, session);
 		return NextResponse.next({
 			request: {

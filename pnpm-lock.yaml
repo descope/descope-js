@@ -245,6 +245,8 @@ importers:
         specifier: ^5.0.2
         version: 5.6.3
 
+  packages/libs/escape-markdown/dist/cjs: {}
+
   packages/libs/sdk-component-drivers:
     dependencies:
       '@descope/sdk-helpers':
@@ -381,6 +383,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-component-drivers/dist/cjs: {}
+
   packages/libs/sdk-helpers:
     dependencies:
       tslib:
@@ -510,6 +514,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -667,6 +673,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-mixins/dist/cjs: {}
 
   packages/sdks/angular-sdk:
     dependencies:
@@ -927,6 +935,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/core-js-sdk/dist/cjs: {}
 
   packages/sdks/nextjs-sdk:
     dependencies:
@@ -1399,6 +1409,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/sdks/react-sdk/dist/cjs: {}
+
   packages/sdks/vue-sdk:
     dependencies:
       '@descope/access-key-management-widget':
@@ -1857,6 +1869,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/web-js-sdk/dist/cjs: {}
 
   packages/widgets/access-key-management-widget:
     dependencies:

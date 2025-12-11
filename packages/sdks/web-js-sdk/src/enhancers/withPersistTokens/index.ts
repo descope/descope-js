@@ -12,7 +12,7 @@ import {
   persistTokens,
   getIdToken,
 } from './helpers';
-import { CookieConfig, PersistTokensOptions } from './types';
+import { CookieConfig, LastCookieOptions, PersistTokensOptions } from './types';
 
 /**
  * Persist authentication tokens in cookie/storage
@@ -22,6 +22,7 @@ export const withPersistTokens =
   <A extends CookieConfig>({
     persistTokens: isPersistTokens,
     sessionTokenViaCookie,
+    refreshTokenViaCookie,
     storagePrefix,
     ...config
   }: Parameters<T>[0] & PersistTokensOptions<A>): A extends false
@@ -41,20 +42,26 @@ export const withPersistTokens =
 
     // Cache to store the cookie options that were used when setting the cookie
     // This allows us to use the exact same options when removing the cookie
-    let lastCookieOptions: { domain?: string; path?: string } | undefined;
+    let lastCookieOptions: LastCookieOptions | undefined;
 
     const afterRequest: AfterRequestHook = async (req, res) => {
       const isManagementApi = /^\/v\d+\/mgmt\//.test(req.path);
 
       if (res?.status === 401) {
         if (!isManagementApi) {
-          clearTokens(storagePrefix, sessionTokenViaCookie, lastCookieOptions);
+          clearTokens(
+            storagePrefix,
+            sessionTokenViaCookie,
+            refreshTokenViaCookie,
+            lastCookieOptions,
+          );
         }
       } else {
         const newCookieOptions = persistTokens(
           await getAuthInfoFromResponse(res),
           sessionTokenViaCookie,
           storagePrefix,
+          refreshTokenViaCookie,
         );
         // Only update lastCookieOptions if we actually set a cookie
         if (newCookieOptions) {
@@ -65,7 +72,7 @@ export const withPersistTokens =
 
     const sdk = createSdk(
       addHooks(config, {
-        beforeRequest: beforeRequest(storagePrefix),
+        beforeRequest: beforeRequest(storagePrefix, refreshTokenViaCookie),
         afterRequest,
       }),
     );
@@ -73,11 +80,18 @@ export const withPersistTokens =
     const wrappedSdk = wrapWith(
       sdk,
       ['logout', 'logoutAll', 'oidc.logout'],
-      wrapper(storagePrefix, sessionTokenViaCookie, () => lastCookieOptions),
+      logoutWrapper(
+        storagePrefix,
+        sessionTokenViaCookie,
+        refreshTokenViaCookie,
+        () => lastCookieOptions,
+      ),
     );
 
-    const refreshToken = () => getRefreshToken(storagePrefix);
-    const sessionToken = () => getSessionToken(storagePrefix);
+    const refreshToken = () =>
+      getRefreshToken(storagePrefix, refreshTokenViaCookie);
+    const sessionToken = () =>
+      getSessionToken(storagePrefix, sessionTokenViaCookie);
     const idToken = () => getIdToken(storagePrefix);
 
     return Object.assign(wrappedSdk, {
@@ -87,17 +101,23 @@ export const withPersistTokens =
     }) as any;
   };
 
-const wrapper =
+const logoutWrapper =
   (
     prefix?: string,
     sessionTokenViaCookie?: CookieConfig,
-    getCookieOptions?: () => { domain?: string; path?: string } | undefined,
+    refreshTokenViaCookie?: CookieConfig,
+    getCookieOptions?: () => LastCookieOptions | undefined,
   ): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
 
-    clearTokens(prefix, sessionTokenViaCookie, getCookieOptions?.());
+    clearTokens(
+      prefix,
+      sessionTokenViaCookie,
+      refreshTokenViaCookie,
+      getCookieOptions?.(),
+    );
 
     return resp;
   };
