@@ -51,8 +51,7 @@ export const staticResourcesMixin = createSingletonMixin(
     return class StaticResourcesMixinClass extends BaseClass {
       #lastBaseUrl?: string;
       #workingBaseUrl?: string;
-      #failedBaseUrl = false;
-      #failedContentUrl = false;
+      #failedUrls = new Set<string>();
 
       #getResourceUrls(filename: string): CustomUrl[] | CustomUrl {
         const overrideUrl = OVERRIDE_CONTENT_URL || this.baseStaticUrl;
@@ -66,8 +65,7 @@ export const staticResourcesMixin = createSingletonMixin(
         if (this.#lastBaseUrl !== this.baseUrl) {
           this.#lastBaseUrl = this.baseUrl;
           this.#workingBaseUrl = undefined;
-          this.#failedBaseUrl = false;
-          this.#failedContentUrl = false;
+          this.#failedUrls.clear();
         }
 
         // Build URL list based on cached state or fallback chain
@@ -84,12 +82,11 @@ export const staticResourcesMixin = createSingletonMixin(
           }
         } else {
           // Build fallback chain: try URLs that haven't failed yet
-          if (this.baseUrl && !this.#failedBaseUrl) {
-            urls.push(
-              this.#createResourceUrl(filename, this.baseUrl + '/pages'),
-            );
+          const baseUrlWithPages = this.baseUrl + '/pages';
+          if (this.baseUrl && !this.#failedUrls.has(baseUrlWithPages)) {
+            urls.push(this.#createResourceUrl(filename, baseUrlWithPages));
           }
-          if (!this.#failedContentUrl) {
+          if (!this.#failedUrls.has(BASE_CONTENT_URL)) {
             urls.push(this.#createResourceUrl(filename, BASE_CONTENT_URL));
           }
           urls.push(
@@ -127,11 +124,7 @@ export const staticResourcesMixin = createSingletonMixin(
               // Mark all URLs before this one as failed
               for (let i = 0; i < index; i++) {
                 const failedUrl = resourceUrls[i].baseUrl;
-                if (failedUrl === this.baseUrl + '/pages') {
-                  this.#failedBaseUrl = true;
-                } else if (failedUrl === BASE_CONTENT_URL) {
-                  this.#failedContentUrl = true;
-                }
+                this.#failedUrls.add(failedUrl);
               }
             };
 
