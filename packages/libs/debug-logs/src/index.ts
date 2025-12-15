@@ -4,5 +4,9 @@ export default TelemetryManager;
 
 // Re-export types for TypeScript consumers
 export type { Logger } from './telemetryManager';
-export type { TelemetryConfig, TelemetryContext } from './types';
+export type {
+  TelemetryConfig,
+  TelemetryContext,
+  NetworkCaptureConfig,
+} from './types';
 export type { ConsoleLevel } from './plugins/consolePlugin';

@@ -93,22 +93,26 @@ export class DomMutationPlugin implements Plugin {
     this.enabled = false;
 
     // Clear any scheduled flush timeout to prevent it from recording later
+    // This must happen BEFORE we capture pending mutations to avoid race
     if (this.flushTimeout) {
       clearTimeout(this.flushTimeout);
       this.flushTimeout = null;
     }
 
-    // Flush any pending mutations that were already queued, then clear the array
-    // to prevent any residual timeout from processing them
-    const mutationsToFlush = [...this.pendingMutations];
-    this.pendingMutations = [];
-
-    this.recordPendingMutations(mutationsToFlush);
-
-    // Disconnect observer to stop observing new mutations
+    // Disconnect observer BEFORE flushing to stop new mutations from being added
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
+    }
+
+    // Now safely flush any pending mutations that were already queued
+    // Make a copy and clear the array atomically to prevent concurrent access
+    const mutationsToFlush = [...this.pendingMutations];
+    this.pendingMutations = [];
+
+    // Record mutations if there are any (pass explicitly so it bypasses enabled check)
+    if (mutationsToFlush.length > 0) {
+      this.recordPendingMutations(mutationsToFlush);
     }
   }
 

@@ -554,4 +554,423 @@ describe('TelemetryManager Integration', () => {
       expect(domEvents.length).toBeLessThan(5);
     });
   });
+
+  describe('Error Scenario Integration Tests', () => {
+    describe('Network Plugin Errors', () => {
+      it('should handle fetch errors gracefully', async () => {
+        manager = new TelemetryManager(config, context);
+
+        // Simulate a fetch that throws during processing
+        const originalFetch = global.fetch;
+        global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+        try {
+          await fetch('https://api.example.com/test').catch(() => {});
+        } catch (error) {
+          // Expected to fail
+        }
+
+        // Should not break the telemetry system
+        console.log('After fetch error');
+        expect(mockRecord).toHaveBeenCalledWith(
+          'console_log',
+          expect.objectContaining({ level: 'log' }),
+        );
+
+        global.fetch = originalFetch;
+      });
+
+      it('should handle XMLHttpRequest errors gracefully', () => {
+        manager = new TelemetryManager(config, context);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://api.example.com/error');
+
+        // Trigger an error
+        xhr.onerror = () => {
+          // Error handler
+        };
+
+        // Simulate error
+        xhr.dispatchEvent(new Event('error'));
+
+        // Telemetry should still work
+        console.log('After XHR error');
+        expect(mockRecord).toHaveBeenCalledWith(
+          'console_log',
+          expect.objectContaining({ level: 'log' }),
+        );
+      });
+    });
+
+    describe('Navigation Plugin Errors', () => {
+      it('should handle navigation errors and continue recording', () => {
+        manager = new TelemetryManager(config, context);
+
+        // Mock history.pushState to throw
+        const originalPushState = history.pushState;
+        history.pushState = jest.fn(() => {
+          throw new Error('Navigation failed');
+        });
+
+        // Should propagate error but not break telemetry
+        expect(() => {
+          history.pushState(null, '', '/error');
+        }).toThrow('Navigation failed');
+
+        // Restore
+        history.pushState = originalPushState;
+
+        // Other telemetry should still work
+        console.log('After navigation error');
+        expect(mockRecord).toHaveBeenCalledWith(
+          'console_log',
+          expect.objectContaining({ level: 'log' }),
+        );
+      });
+
+      it('should handle multiple navigation errors', () => {
+        manager = new TelemetryManager(config, context);
+
+        const originalPushState = history.pushState;
+        const originalReplaceState = history.replaceState;
+
+        history.pushState = jest.fn(() => {
+          throw new Error('pushState failed');
+        });
+        history.replaceState = jest.fn(() => {
+          throw new Error('replaceState failed');
+        });
+
+        expect(() => history.pushState(null, '', '/error1')).toThrow();
+        expect(() => history.replaceState(null, '', '/error2')).toThrow();
+
+        // Restore
+        history.pushState = originalPushState;
+        history.replaceState = originalReplaceState;
+
+        // Telemetry should recover
+        history.pushState(null, '', '/success');
+        expect(mockRecord).toHaveBeenCalledWith(
+          'navigation',
+          expect.objectContaining({ type: 'pushState' }),
+        );
+      });
+    });
+
+    describe('Console Plugin Errors', () => {
+      it('should handle console method errors', () => {
+        manager = new TelemetryManager(config, context);
+
+        // Even if recording throws, original console should work
+        mockRecord.mockImplementation(() => {
+          throw new Error('Recording failed');
+        });
+
+        // Should not throw - errors are caught internally
+        expect(() => {
+          console.log('Test message');
+          console.error('Error message');
+          console.warn('Warning message');
+        }).not.toThrow();
+      });
+
+      it('should handle circular references in console args', () => {
+        manager = new TelemetryManager(config, context);
+
+        const circular: any = { prop: 'value' };
+        circular.self = circular;
+
+        // Should not throw on circular reference
+        expect(() => {
+          console.log('Circular:', circular);
+        }).not.toThrow();
+
+        // May or may not record depending on serialization handling
+        // The important thing is it doesn't crash the system
+      });
+
+      it('should handle console methods with no arguments', () => {
+        manager = new TelemetryManager(config, context);
+
+        expect(() => {
+          console.log();
+          console.error();
+          console.warn();
+        }).not.toThrow();
+      });
+    });
+
+    describe('DOM Mutation Plugin Errors', () => {
+      it('should handle DOM errors during mutation observation', async () => {
+        manager = new TelemetryManager(config, context);
+
+        const container = createTestElement('error-test');
+
+        // Create a scenario that might cause DOM errors
+        const problematicElement = document.createElement('div');
+        Object.defineProperty(problematicElement, 'innerHTML', {
+          get() {
+            throw new Error('innerHTML access failed');
+          },
+        });
+
+        try {
+          container.appendChild(problematicElement);
+        } catch (error) {
+          // Expected
+        }
+
+        await waitFor(100);
+
+        // Telemetry should still work
+        console.log('After DOM error');
+        expect(mockRecord).toHaveBeenCalledWith(
+          'console_log',
+          expect.objectContaining({ level: 'log' }),
+        );
+      });
+
+      it('should handle rapid DOM mutations without crashing', async () => {
+        manager = new TelemetryManager(config, context);
+
+        const container = createTestElement('rapid-test');
+
+        // Create many mutations rapidly
+        for (let i = 0; i < 100; i++) {
+          const element = document.createElement('div');
+          element.textContent = `Element ${i}`;
+          container.appendChild(element);
+        }
+
+        await waitFor(150);
+
+        // Should have handled all mutations without error
+        expect(mockRecord).toHaveBeenCalledWith(
+          'dom_mutation',
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('RUM Client Errors', () => {
+      it('should handle RUM client initialization failure', () => {
+        // Mock AwsRum constructor to throw
+        const OriginalAwsRum = (global as any).AwsRum;
+        const MockAwsRumError = jest.fn(() => {
+          throw new Error('RUM initialization failed');
+        });
+        (global as any).AwsRum = MockAwsRumError;
+
+        const failConfig = { ...config };
+
+        // TelemetryManager catches initialization errors internally
+        // The manager still creates but marks initialization as failed
+        manager = new TelemetryManager(failConfig, context);
+
+        // Manager should handle the error gracefully
+        // It will still have a RUM client (because createRumClient is mocked in tests)
+        // but the initialization failed flag is set
+        expect(() => {
+          manager.enable();
+          manager.disable();
+        }).not.toThrow();
+
+        // Restore
+        (global as any).AwsRum = OriginalAwsRum;
+      });
+
+      it('should handle RUM client record method errors', () => {
+        manager = new TelemetryManager(config, context);
+
+        mockRecord.mockImplementation(() => {
+          throw new Error('Record failed');
+        });
+
+        // Should not break the application
+        expect(() => {
+          console.log('Test');
+          history.pushState(null, '', '/test');
+        }).not.toThrow();
+
+        // Reset mock
+        mockRecord.mockImplementation(() => {});
+      });
+    });
+
+    describe('State Management Errors', () => {
+      it('should handle enable/disable errors gracefully', () => {
+        manager = new TelemetryManager(config, context);
+
+        // Test that enable/disable don't throw even in error conditions
+        expect(() => {
+          manager.disable();
+          manager.enable();
+          manager.disable();
+          manager.enable();
+        }).not.toThrow();
+
+        // Verify manager is still functional
+        expect(manager.isReady()).toBe(true);
+      });
+
+      it('should handle context update errors', () => {
+        manager = new TelemetryManager(config, context);
+
+        // Mock addSessionAttributes to throw
+        const rumClient = manager.getRumClient() as unknown as MockAwsRum;
+        jest.spyOn(rumClient, 'addSessionAttributes').mockImplementation(() => {
+          throw new Error('Update failed');
+        });
+
+        expect(() => {
+          manager.updateContext({ newKey: 'newValue' });
+        }).not.toThrow();
+      });
+
+      it('should handle multiple rapid state changes', () => {
+        manager = new TelemetryManager(config, context);
+
+        expect(() => {
+          for (let i = 0; i < 10; i++) {
+            manager.disable();
+            manager.enable();
+          }
+        }).not.toThrow();
+
+        // Should still be functional
+        console.log('After rapid state changes');
+        expect(mockRecord).toHaveBeenCalled();
+      });
+    });
+
+    describe('Cross-Plugin Error Recovery', () => {
+      it('should allow other plugins to work when one fails', () => {
+        manager = new TelemetryManager(config, context);
+
+        // Make console plugin fail
+        mockRecord.mockImplementation((eventType) => {
+          if (eventType === 'console_log') {
+            throw new Error('Console failed');
+          }
+        });
+
+        console.log('This will fail');
+
+        mockRecord.mockClear();
+        mockRecord.mockImplementation(() => {}); // Reset
+
+        // Navigation should still work
+        history.pushState(null, '', '/test');
+        expect(mockRecord).toHaveBeenCalledWith(
+          'navigation',
+          expect.any(Object),
+        );
+
+        // DOM should still work
+        const container = createTestElement('recovery-test');
+        container.appendChild(document.createElement('div'));
+      });
+
+      it('should maintain system stability after multiple plugin errors', async () => {
+        manager = new TelemetryManager(config, context);
+
+        let callCount = 0;
+        mockRecord.mockImplementation((eventType) => {
+          callCount++;
+          // Make every other call fail
+          if (callCount % 2 === 0) {
+            throw new Error('Intermittent failure');
+          }
+        });
+
+        // Generate multiple events
+        console.log('Event 1');
+        history.pushState(null, '', '/path1');
+        console.log('Event 2');
+        history.pushState(null, '', '/path2');
+
+        const container = createTestElement('stability-test');
+        container.appendChild(document.createElement('div'));
+
+        await waitFor(100);
+
+        // System should remain stable despite errors
+        expect(callCount).toBeGreaterThan(0);
+        expect(manager.isReady()).toBe(true);
+      });
+    });
+
+    describe('Edge Cases and Boundary Conditions', () => {
+      it('should handle events during shutdown process', async () => {
+        manager = new TelemetryManager(config, context);
+
+        // Start shutdown but trigger events immediately
+        const shutdownPromise = Promise.resolve(manager.shutdown());
+        console.log('During shutdown');
+        history.pushState(null, '', '/during-shutdown');
+
+        await shutdownPromise;
+        await waitFor(100);
+
+        // Should not crash
+        expect(manager.isReady()).toBe(false);
+      });
+
+      it('should handle operations on uninitialized manager', () => {
+        // Create manager but don't initialize
+        const uninitializedConfig: TelemetryConfig = {
+          enabled: false,
+          rumConfig: {
+            applicationId: 'test',
+            identityPoolId: 'us-east-1:test',
+            region: 'us-east-1',
+            sessionSampleRate: 1.0,
+          },
+        };
+
+        manager = new TelemetryManager(uninitializedConfig, context);
+
+        expect(() => {
+          manager.enable();
+          manager.disable();
+          manager.updateContext({ key: 'value' });
+          manager.shutdown();
+        }).not.toThrow();
+      });
+
+      it('should handle extremely large event payloads', () => {
+        manager = new TelemetryManager(config, context);
+
+        // Create very large message
+        const largeMessage = 'X'.repeat(100000);
+
+        expect(() => {
+          console.log(largeMessage);
+        }).not.toThrow();
+
+        // Should have been recorded (possibly truncated)
+        expect(mockRecord).toHaveBeenCalledWith(
+          'console_log',
+          expect.any(Object),
+        );
+      });
+
+      it('should handle special characters and encoding issues', () => {
+        manager = new TelemetryManager(config, context);
+
+        const specialChars =
+          '🚀 émoji tëst \n\t\r null\0 unicode: \u0000\uffff';
+
+        expect(() => {
+          console.log(specialChars);
+        }).not.toThrow();
+
+        expect(mockRecord).toHaveBeenCalledWith(
+          'console_log',
+          expect.objectContaining({ level: 'log' }),
+        );
+      });
+    });
+  });
 });

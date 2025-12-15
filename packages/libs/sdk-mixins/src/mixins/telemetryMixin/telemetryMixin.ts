@@ -35,6 +35,7 @@ export const telemetryMixin = createSingletonMixin(
     return class TelemetryMixinClass extends BaseClass {
       #telemetryManager: any = null;
       #telemetryInitialized = false;
+      #expirationTimeoutId: NodeJS.Timeout | null = null;
 
       /**
        * Initialize telemetry if enabled in config
@@ -59,6 +60,19 @@ export const telemetryMixin = createSingletonMixin(
         if (this.#telemetryInitialized) {
           this.logger.debug('Telemetry already initialized');
           return;
+        }
+
+        // Check if telemetry has expired
+        if (config.expiration) {
+          const now = Date.now();
+          if (now >= config.expiration) {
+            this.logger.info(
+              `Telemetry expiration time has passed (${new Date(
+                config.expiration,
+              ).toISOString()}), skipping initialization`,
+            );
+            return;
+          }
         }
 
         try {
@@ -110,6 +124,11 @@ export const telemetryMixin = createSingletonMixin(
           this.#telemetryInitialized = true;
 
           this.logger.info('Telemetry initialized successfully');
+
+          // Schedule automatic shutdown if expiration is set
+          if (config.expiration) {
+            this.#scheduleExpirationShutdown(config.expiration);
+          }
         } catch (error) {
           // Fail silently - telemetry should never break the application
           this.logger.error('Failed to initialize telemetry:', error);
@@ -118,9 +137,54 @@ export const telemetryMixin = createSingletonMixin(
       }
 
       /**
+       * Schedule automatic telemetry shutdown at expiration time
+       * @param expirationMs - Unix timestamp in milliseconds when telemetry should expire
+       */
+      #scheduleExpirationShutdown(expirationMs: number) {
+        const now = Date.now();
+        const timeUntilExpiration = expirationMs - now;
+
+        if (timeUntilExpiration <= 0) {
+          // Already expired, shutdown immediately
+          this.logger.info('Telemetry expiration time reached, shutting down');
+          this.#shutdownTelemetry();
+          return;
+        }
+
+        // Limit timeout to 1 day (86400000 milliseconds)
+        const MAX_TIMEOUT = 86400000;
+        const delay = Math.min(timeUntilExpiration, MAX_TIMEOUT);
+
+        if (timeUntilExpiration > MAX_TIMEOUT) {
+          this.logger.warn(
+            `Telemetry expiration is beyond maximum timeout (${Math.floor(
+              timeUntilExpiration / 86400000,
+            )} days). Setting to maximum.`,
+          );
+        }
+
+        this.logger.info(
+          `Telemetry will expire at ${new Date(
+            expirationMs,
+          ).toISOString()} (in ${Math.floor(delay / 1000)} seconds)`,
+        );
+
+        this.#expirationTimeoutId = setTimeout(() => {
+          this.logger.info('Telemetry expiration time reached, shutting down');
+          this.#shutdownTelemetry();
+        }, delay);
+      }
+
+      /**
        * Shutdown telemetry and clean up resources
        */
       #shutdownTelemetry() {
+        // Clear expiration timeout if exists
+        if (this.#expirationTimeoutId) {
+          clearTimeout(this.#expirationTimeoutId);
+          this.#expirationTimeoutId = null;
+        }
+
         if (this.#telemetryManager) {
           try {
             this.logger.debug('Shutting down telemetry...');
@@ -146,6 +210,7 @@ export const telemetryMixin = createSingletonMixin(
 
         return {
           enabled: true,
+          expiration: Date.now() + 5 * 60 * 1000, // 5 minutes from now
           rumConfig: {
             applicationId: '29ffa5ff-1d8b-4cc6-b464-9003ab8c52ba',
             identityPoolId: 'eu-west-1:9830bbf8-cb94-47d0-a7ef-48e5cde4a1c3',
@@ -170,8 +235,8 @@ export const telemetryMixin = createSingletonMixin(
         if (this.#telemetryManager) {
           try {
             this.#telemetryManager.updateContext(context);
-            this.logger.debug('Telemetry context updated:', context);
           } catch (error) {
+            // Fail silently - telemetry errors should never break the web-component
             this.logger.error('Error updating telemetry context:', error);
           }
         }

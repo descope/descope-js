@@ -383,5 +383,39 @@ describe('NavigationPlugin', () => {
 
       expect(mockRecord).toHaveBeenCalled();
     });
+
+    it('should propagate pushState errors and update URL', () => {
+      // Mock the original pushState to throw after plugin is loaded
+      const error = new Error('pushState error');
+      jest.spyOn(plugin, 'originalPushState' as any).mockImplementation(() => {
+        throw error;
+      });
+
+      // Should throw the error from original pushState
+      expect(() => {
+        history.pushState(null, '', '/error');
+      }).toThrow('pushState error');
+
+      // Current URL should still be updated in the error path
+      expect((plugin as any).currentUrl).toBe(window.location.href);
+    });
+
+    it('should propagate replaceState errors and update URL', () => {
+      // Mock the original replaceState to throw after plugin is loaded
+      const error = new Error('replaceState error');
+      jest
+        .spyOn(plugin, 'originalReplaceState' as any)
+        .mockImplementation(() => {
+          throw error;
+        });
+
+      // Should throw the error from original replaceState
+      expect(() => {
+        history.replaceState(null, '', '/error');
+      }).toThrow('replaceState error');
+
+      // Current URL should still be updated in the error path
+      expect((plugin as any).currentUrl).toBe(window.location.href);
+    });
   });
 });

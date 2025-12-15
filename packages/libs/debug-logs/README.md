@@ -67,14 +67,14 @@ manager.shutdown(); // tear down permanently
 ## Configuration Reference
 
 | Key                           | Description                                            |
-| ----------------------------- | ------------------------------------------------------ | ------------ |
+| ----------------------------- | ------------------------------------------------------ |
 | `enabled`                     | Gatekeeper. If `false`, nothing initializes.           |
 | `rumConfig.applicationId`     | CloudWatch RUM application ID.                         |
 | `rumConfig.identityPoolId`    | Cognito identity pool used by RUM.                     |
 | `rumConfig.sessionSampleRate` | 0-1 float controlling sampling.                        |
 | `rumConfig.endpoint`          | Optional custom ingestion endpoint.                    |
 | `capture.console`             | `false`, `true`, or `{ levels: ConsoleLevel[] }`.      |
-| `capture.network`             | `false`, `true`, or `{ urlFilter: RegExp               | RegExp[] }`. |
+| `capture.network`             | `false`, `true`, or `{ urlFilter, maxHeaderLength }`.  |
 | `capture.navigation`          | Toggle SPA navigation plugin.                          |
 | `capture.dom`                 | `false`, `true`, or `{ rootElement, throttleMs }`.     |
 | `context.projectId`           | Injected into session attributes.                      |
@@ -105,10 +105,31 @@ manager.shutdown(); // tear down permanently
 - Captures truncated HTML snapshots so investigators can see the exact DOM
   fragment involved.
 
-### Network telemetry
+### Network plugin
 
-- Delegated to AWS RUM's built-in HTTP plugin. You can restrict capture to a set
-  of regexes to avoid leaking sensitive endpoints.
+- AWS RUM's built-in HTTP telemetry (latency/error/X-Ray) remains enabled.
+- A custom network plugin intercepts `fetch` and `XMLHttpRequest` to record
+  request/response metadata, including all headers.
+- `capture.network.urlFilter` acts as a whitelist so only approved hosts have
+  headers captured.
+- `capture.network.maxHeaderLength` (default 2KB per header value) prevents
+  oversized payloads.
+
+#### Network Plugin Architecture
+
+The network plugin is organized into modular files for better maintainability:
+
+- **`types.ts`**: Core type definitions (`HeadersMap`, `XhrMetadata`, `XhrWithMeta`) and constants (`XHR_METADATA` symbol)
+- **`helpers.ts`**: 15+ pure utility functions for URL normalization, header extraction, filtering, and data transformation
+- **`NetworkPlugin.ts`**: Main plugin class that patches browser APIs and orchestrates request/response capture
+- **`index.ts`**: Public exports for plugin and helper functions
+
+**Key optimizations:**
+
+- Unified recording methods reduce code duplication between fetch and XHR paths
+- Truncation function is created once and reused, not recreated per request
+- Helper functions are extracted for independent testing and reusability
+- Strong TypeScript types throughout with minimal use of `any`
 
 ## Lifecycle Helpers
 

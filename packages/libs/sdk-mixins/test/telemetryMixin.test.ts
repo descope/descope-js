@@ -62,13 +62,15 @@ const createTelemetryHost = () => {
   instance.injectNpmLib = jest.fn().mockResolvedValue(undefined);
   (instance as any).onReset = jest.fn().mockReturnValue(() => {});
 
+  let configValue: any = {
+    telemetry: {
+      enabled: true,
+    },
+  };
+
   Object.defineProperty(instance, 'config', {
-    get: () =>
-      Promise.resolve({
-        telemetry: {
-          enabled: true,
-        },
-      }),
+    get: () => Promise.resolve(configValue),
+    configurable: true, // Allow reconfiguration in tests
   });
 
   Object.defineProperty(instance, 'projectId', {
@@ -82,7 +84,7 @@ const createTelemetryHost = () => {
   (instance as any).sdkVersion = '9.9.9';
   instance.shadowRoot = document.createElement('div');
 
-  return { instance, logger, wrappedLogger };
+  return { instance, logger, wrappedLogger, configValue };
 };
 
 describe('telemetryMixin', () => {
@@ -189,5 +191,141 @@ describe('telemetryMixin', () => {
     expect(telemetryManagerMock.shutdown).toHaveBeenCalledTimes(1);
     expect(instance.telemetryManager).toBeNull();
     expect(logger.info).toHaveBeenCalledWith('Telemetry shutdown complete');
+  });
+
+  describe('Telemetry Expiration', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should skip initialization if expiration has passed', async () => {
+      const { instance, logger, configValue } = createTelemetryHost();
+
+      // Set expiration to 1 hour ago
+      const pastExpiration = Date.now() - 60 * 60 * 1000;
+      configValue.telemetry = {
+        enabled: true,
+        expiration: pastExpiration,
+      };
+
+      await instance.init();
+
+      expect(instance.injectNpmLib).not.toHaveBeenCalled();
+      expect(TelemetryManagerCtor).not.toHaveBeenCalled();
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.stringContaining('Telemetry expiration time has passed'),
+      );
+    });
+
+    it('should initialize and schedule shutdown if expiration is in future', async () => {
+      const { instance, logger, configValue } = createTelemetryHost();
+
+      // Set expiration to 30 minutes from now
+      const futureExpiration = Date.now() + 30 * 60 * 1000;
+      configValue.telemetry = {
+        enabled: true,
+        expiration: futureExpiration,
+      };
+
+      await instance.init();
+
+      expect(TelemetryManagerCtor).toHaveBeenCalled();
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.stringContaining('Telemetry will expire at'),
+      );
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.stringContaining('in 30 minutes'),
+      );
+    });
+
+    it('should automatically shutdown when expiration time is reached', async () => {
+      const { instance, logger, configValue } = createTelemetryHost();
+
+      // Set expiration to 5 minutes from now
+      const futureExpiration = Date.now() + 5 * 60 * 1000;
+      configValue.telemetry = {
+        enabled: true,
+        expiration: futureExpiration,
+      };
+
+      await instance.init();
+
+      expect(instance.telemetryManager).toBe(telemetryManagerMock);
+
+      // Fast-forward time to expiration
+      jest.advanceTimersByTime(5 * 60 * 1000);
+
+      expect(telemetryManagerMock.shutdown).toHaveBeenCalled();
+      expect(logger.info).toHaveBeenCalledWith(
+        'Telemetry expiration time reached, shutting down',
+      );
+    });
+
+    it('should handle expiration beyond max timeout (1 day)', async () => {
+      const { instance, logger, configValue } = createTelemetryHost();
+
+      // Set expiration to 2 days from now
+      const futureExpiration = Date.now() + 2 * 24 * 60 * 60 * 1000;
+      configValue.telemetry = {
+        enabled: true,
+        expiration: futureExpiration,
+      };
+
+      await instance.init();
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Telemetry expiration is beyond maximum timeout',
+        ),
+      );
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('2 days'),
+      );
+    });
+
+    it('should clear expiration timeout on disconnectedCallback', async () => {
+      const { instance, configValue } = createTelemetryHost();
+
+      // Set expiration to 30 minutes from now
+      const futureExpiration = Date.now() + 30 * 60 * 1000;
+      configValue.telemetry = {
+        enabled: true,
+        expiration: futureExpiration,
+      };
+
+      await instance.init();
+
+      // Disconnect before expiration
+      instance.disconnectedCallback();
+
+      // Fast-forward past expiration
+      jest.advanceTimersByTime(30 * 60 * 1000);
+
+      // Shutdown should only be called once (from disconnectedCallback, not from timeout)
+      expect(telemetryManagerMock.shutdown).toHaveBeenCalledTimes(1);
+    });
+
+    it('should work without expiration field (indefinite)', async () => {
+      const { instance, logger, configValue } = createTelemetryHost();
+
+      configValue.telemetry = {
+        enabled: true,
+        // No expiration field
+      };
+
+      await instance.init();
+
+      expect(TelemetryManagerCtor).toHaveBeenCalled();
+      expect(logger.info).toHaveBeenCalledWith(
+        'Telemetry initialized successfully',
+      );
+      expect(logger.info).not.toHaveBeenCalledWith(
+        expect.stringContaining('Telemetry will expire at'),
+      );
+    });
   });
 });

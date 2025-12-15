@@ -1,5 +1,10 @@
 import type { ConsoleLevel } from './plugins/consolePlugin';
 
+export interface NetworkCaptureConfig {
+  urlFilter?: RegExp | RegExp[];
+  maxHeaderLength?: number;
+}
+
 export interface TelemetryConfig {
   enabled: boolean;
   rumConfig: {
@@ -12,7 +17,7 @@ export interface TelemetryConfig {
   };
   capture?: {
     console?: boolean | { levels?: ConsoleLevel[] };
-    network?: boolean | { urlFilter?: RegExp | RegExp[] };
+    network?: boolean | NetworkCaptureConfig;
     navigation?: boolean;
     dom?: boolean | { rootElement?: string | HTMLElement; throttleMs?: number };
   };

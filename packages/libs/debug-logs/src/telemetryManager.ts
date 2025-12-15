@@ -4,6 +4,8 @@ import type { TelemetryConfig, TelemetryContext } from './types';
 import { ConsolePlugin } from './plugins/consolePlugin';
 import { NavigationPlugin } from './plugins/navigationPlugin';
 import { DomMutationPlugin } from './plugins/domMutationPlugin';
+import { NetworkPlugin } from './plugins/networkPlugin';
+import type { NetworkCaptureConfig } from './types';
 
 export interface Logger {
   debug: (...args: any[]) => void;
@@ -40,6 +42,7 @@ export class TelemetryManager {
   private context: TelemetryContext;
   private logger: Logger;
   private isShutdown = false;
+  private initializationFailed = false;
 
   constructor(
     config: TelemetryConfig,
@@ -52,7 +55,13 @@ export class TelemetryManager {
 
     // Initialize immediately if enabled
     if (config.enabled) {
-      this.initializeRumClient();
+      try {
+        this.initializeRumClient();
+      } catch (error) {
+        this.initializationFailed = true;
+        this.logger.error('Telemetry initialization failed:', error);
+        // Don't re-throw - telemetry should never break the application
+      }
     } else {
       this.logger.debug('Telemetry is disabled');
     }
@@ -85,6 +94,7 @@ export class TelemetryManager {
       this.logger.debug('✅ Telemetry initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize telemetry:', error);
+      // Re-throw to be caught by constructor - this marks initialization as failed
       throw error;
     }
   }
@@ -97,21 +107,15 @@ export class TelemetryManager {
       return [];
     }
 
-    const networkConfig =
-      typeof this.config.capture?.network === 'object'
-        ? this.config.capture.network
-        : {};
-
     const httpConfig: any = {
       recordAllRequests: true,
       addXRayTraceIdHeader: false,
       stackTraceLength: 200,
     };
 
-    if (networkConfig.urlFilter) {
-      const filters = Array.isArray(networkConfig.urlFilter)
-        ? networkConfig.urlFilter
-        : [networkConfig.urlFilter];
+    const urlFilter = (<any>this.config.capture?.network)?.urlFilter;
+    if (urlFilter) {
+      const filters = Array.isArray(urlFilter) ? urlFilter : [urlFilter];
 
       httpConfig.recordResourceUrl = (url: string) => {
         return filters.some((filter) => filter.test(url));
@@ -136,6 +140,11 @@ export class TelemetryManager {
       plugins.push(new NavigationPlugin());
     }
 
+    if (this.config.capture?.network !== false) {
+      const config = normalizeConfig(this.config.capture?.network);
+      plugins.push(new NetworkPlugin(config));
+    }
+
     if (this.config.capture?.dom !== false) {
       const config = normalizeConfig(this.config.capture?.dom);
       plugins.push(new DomMutationPlugin(config));
@@ -154,22 +163,31 @@ export class TelemetryManager {
     telemetries: any[],
     eventPluginsToLoad: Plugin[],
   ): AwsRum {
+    const rumConfig = {
+      sessionSampleRate: this.config.rumConfig.sessionSampleRate,
+      identityPoolId: this.config.rumConfig.identityPoolId,
+      ...(this.config.rumConfig.guestRoleArn && {
+        guestRoleArn: this.config.rumConfig.guestRoleArn,
+      }),
+      endpoint: this.config.rumConfig.endpoint,
+      telemetries,
+      eventPluginsToLoad,
+      allowCookies: true,
+      enableXRay: false,
+      // Increase limits to prevent hitting session/batch caps
+      sessionEventLimit: 10000, // Max events per session (default: 200)
+      batchLimit: 500, // Max events per batch/request (default: 100)
+      eventCacheSize: 2000, // Max events in cache before dropping (default: 200)
+      dispatchInterval: 5000, // Dispatch every 5 seconds (default: 10s)
+    };
+
+    this.logger.debug('Creating RUM client with config:', rumConfig);
+
     return new AwsRum(
       this.config.rumConfig.applicationId,
       this.context.version || '1.0.0',
       this.config.rumConfig.region,
-      {
-        sessionSampleRate: this.config.rumConfig.sessionSampleRate,
-        identityPoolId: this.config.rumConfig.identityPoolId,
-        ...(this.config.rumConfig.guestRoleArn && {
-          guestRoleArn: this.config.rumConfig.guestRoleArn,
-        }),
-        endpoint: this.config.rumConfig.endpoint,
-        telemetries,
-        eventPluginsToLoad,
-        allowCookies: true,
-        enableXRay: false,
-      },
+      rumConfig,
     );
   }
 
@@ -206,6 +224,11 @@ export class TelemetryManager {
    * Enable telemetry collection (re-enable plugins)
    */
   enable(): void {
+    if (this.initializationFailed) {
+      this.logger.error('Cannot enable: Telemetry initialization failed');
+      return;
+    }
+
     if (this.isShutdown) {
       this.logger.error(
         'Cannot enable: Telemetry has been shutdown. Create a new instance.',
@@ -228,6 +251,11 @@ export class TelemetryManager {
    * Disable telemetry collection (disable plugins)
    */
   disable(): void {
+    if (this.initializationFailed) {
+      this.logger.error('Cannot disable: Telemetry initialization failed');
+      return;
+    }
+
     if (this.isShutdown) {
       this.logger.error(
         'Cannot disable: Telemetry has been shutdown. Create a new instance.',
@@ -247,10 +275,57 @@ export class TelemetryManager {
   }
 
   /**
+   * Update the telemetry context with new values.
+   * This adds or overwrites session attributes that will be included in all subsequent events.
+   *
+   * @param context - Partial context to update (e.g., { screenId: 'login', executionId: '123' })
+   */
+  updateContext(
+    context: Partial<Record<string, string | number | boolean>>,
+  ): void {
+    if (this.initializationFailed) {
+      this.logger.error(
+        'Cannot update context: Telemetry initialization failed.',
+      );
+      return;
+    }
+
+    if (this.isShutdown) {
+      this.logger.error('Cannot update context: Telemetry has been shutdown.');
+      return;
+    }
+
+    if (!this.rumClient) {
+      this.logger.error('Cannot update context: Telemetry not initialized');
+      return;
+    }
+
+    try {
+      // Filter out undefined values to satisfy AWS RUM type requirements
+      const filteredContext = Object.fromEntries(
+        Object.entries(context).filter(([, value]) => value !== undefined),
+      ) as { [key: string]: string | number | boolean };
+
+      // Update internal context reference
+      this.context = { ...this.context, ...filteredContext };
+
+      // Update RUM session attributes - these will be included in all subsequent events
+      this.rumClient.addSessionAttributes(filteredContext);
+
+      this.logger.debug('Telemetry context updated:', filteredContext);
+    } catch (error) {
+      // Fail silently - telemetry should never break the application
+      this.logger.error('Failed to update telemetry context:', error);
+    }
+  }
+
+  /**
    * Check if telemetry is active and ready
    */
   isReady(): boolean {
-    return !this.isShutdown && this.rumClient !== null;
+    return (
+      !this.isShutdown && !this.initializationFailed && this.rumClient !== null
+    );
   }
 
   /**

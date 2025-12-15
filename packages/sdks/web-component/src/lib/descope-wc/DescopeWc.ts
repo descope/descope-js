@@ -67,6 +67,7 @@ import {
   FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+import { exec } from 'child_process';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -410,6 +411,19 @@ class DescopeWc extends BaseDescopeWc {
         errorType: state?.screenState?.errorType,
       }),
       { forceUpdate: true },
+    );
+
+    // Track screenId & executionId changes for telemetry
+    this.flowState?.subscribe(
+      ({ screenId, executionId }) => {
+        try {
+          this.updateTelemetryContext({ screenId, executionId });
+        } catch (error) {
+          // Fail silently - telemetry errors should never break the web-component
+          this.logger?.error('Error updating telemetry screenId:', error);
+        }
+      },
+      (state) => ({ screenId: state.screenId, executionId: state.executionId }),
     );
   }
 

@@ -27,9 +27,16 @@ export class NavigationPlugin implements Plugin {
     // Intercept pushState
     history.pushState = (...args: Parameters<typeof history.pushState>) => {
       const previousUrl = this.currentUrl;
-      this.originalPushState.apply(history, args);
-      this.currentUrl = window.location.href;
-      this.recordNavigation(previousUrl, this.currentUrl, 'pushState');
+      try {
+        this.originalPushState.apply(history, args);
+        this.currentUrl = window.location.href;
+        this.recordNavigation(previousUrl, this.currentUrl, 'pushState');
+      } catch (error) {
+        // If original pushState throws, update current URL and re-throw
+        // Don't let recording errors prevent the error from propagating
+        this.currentUrl = window.location.href;
+        throw error;
+      }
     };
 
     // Intercept replaceState
@@ -37,9 +44,15 @@ export class NavigationPlugin implements Plugin {
       ...args: Parameters<typeof history.replaceState>
     ) => {
       const previousUrl = this.currentUrl;
-      this.originalReplaceState.apply(history, args);
-      this.currentUrl = window.location.href;
-      this.recordNavigation(previousUrl, this.currentUrl, 'replaceState');
+      try {
+        this.originalReplaceState.apply(history, args);
+        this.currentUrl = window.location.href;
+        this.recordNavigation(previousUrl, this.currentUrl, 'replaceState');
+      } catch (error) {
+        // If original replaceState throws, update current URL and re-throw
+        this.currentUrl = window.location.href;
+        throw error;
+      }
     };
 
     // Listen to popstate (back/forward)

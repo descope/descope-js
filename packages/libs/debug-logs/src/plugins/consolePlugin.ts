@@ -53,13 +53,14 @@ export class ConsolePlugin implements Plugin {
       if (!this.levels.has(level)) return;
 
       console[level] = (...args: any[]) => {
+        // ALWAYS call original method first - never skip this
+        this.originalMethods[level](...args);
+
+        // Don't record if plugin is disabled
+        if (!this.enabled) return;
+
+        // Record to RUM - wrapped in try-catch to never break console output
         try {
-          // Call original method first
-          this.originalMethods[level](...args);
-
-          // Don't record if plugin is disabled
-          if (!this.enabled) return;
-
           // Build message and truncate if needed
           let message = args
             .map((arg) =>
@@ -81,8 +82,7 @@ export class ConsolePlugin implements Plugin {
             timestamp: Date.now(),
           });
         } catch (error) {
-          // Fail silently - just use original if recording fails
-          this.originalMethods[level](...args);
+          // Fail silently - recording should never affect console behavior
         }
       };
     });

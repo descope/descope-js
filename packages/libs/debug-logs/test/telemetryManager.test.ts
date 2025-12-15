@@ -75,13 +75,61 @@ describe('TelemetryManager', () => {
         rumConfig: { ...validConfig.rumConfig, region: undefined as any },
       };
 
-      // Constructor throws on initialization failure
+      // Constructor should not throw, but should set initializationFailed flag
       expect(() => {
         manager = new TelemetryManager(invalidConfig, validContext, mockLogger);
-      }).toThrow();
+      }).not.toThrow();
 
-      // Should have logged error before throwing
+      // Should have logged error
       expect(mockLogger.error).toHaveBeenCalled();
+
+      // isReady should return false
+      expect(manager.isReady()).toBe(false);
+    });
+
+    it('should not enable when initialization failed', () => {
+      const invalidConfig = {
+        ...validConfig,
+        rumConfig: { ...validConfig.rumConfig, region: undefined as any },
+      };
+      manager = new TelemetryManager(invalidConfig, validContext, mockLogger);
+      mockLogger.error.mockClear();
+
+      manager.enable();
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Cannot enable: Telemetry initialization failed',
+      );
+    });
+
+    it('should not disable when initialization failed', () => {
+      const invalidConfig = {
+        ...validConfig,
+        rumConfig: { ...validConfig.rumConfig, region: undefined as any },
+      };
+      manager = new TelemetryManager(invalidConfig, validContext, mockLogger);
+      mockLogger.error.mockClear();
+
+      manager.disable();
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Cannot disable: Telemetry initialization failed',
+      );
+    });
+
+    it('should not update context when initialization failed', () => {
+      const invalidConfig = {
+        ...validConfig,
+        rumConfig: { ...validConfig.rumConfig, region: undefined as any },
+      };
+      manager = new TelemetryManager(invalidConfig, validContext, mockLogger);
+      mockLogger.error.mockClear();
+
+      manager.updateContext({ screenId: 'test' });
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Cannot update context: Telemetry initialization failed.',
+      );
     });
 
     it('should add session attributes on initialization', () => {
@@ -303,10 +351,11 @@ describe('TelemetryManager', () => {
       const rumClient = manager.getRumClient() as unknown as MockAwsRum;
       const plugins = rumClient.config.eventPluginsToLoad;
 
-      expect(plugins).toHaveLength(3);
+      expect(plugins).toHaveLength(4);
       expect(plugins[0].getPluginId()).toBe('console-plugin');
       expect(plugins[1].getPluginId()).toBe('navigation-plugin');
-      expect(plugins[2].getPluginId()).toBe('dom-mutation-plugin');
+      expect(plugins[2].getPluginId()).toBe('network-plugin');
+      expect(plugins[3].getPluginId()).toBe('dom-mutation-plugin');
     });
 
     it('should not load console plugin when disabled', () => {
@@ -606,7 +655,7 @@ describe('TelemetryManager', () => {
       );
 
       const rumClient = manager.getRumClient() as unknown as MockAwsRum;
-      expect(rumClient.config.eventPluginsToLoad).toHaveLength(3);
+      expect(rumClient.config.eventPluginsToLoad).toHaveLength(4);
     });
 
     it('should handle object configs with specific settings', () => {
@@ -643,6 +692,93 @@ describe('TelemetryManager', () => {
 
       // Should still initialize, just with defaults
       expect(manager.isReady()).toBe(true);
+    });
+  });
+
+  describe('updateContext()', () => {
+    beforeEach(() => {
+      manager = new TelemetryManager(validConfig, validContext, mockLogger);
+      mockAddSessionAttributes.mockClear();
+    });
+
+    it('should update context with new values', () => {
+      manager.updateContext({ screenId: 'login-screen' });
+
+      expect(mockAddSessionAttributes).toHaveBeenCalledWith({
+        screenId: 'login-screen',
+      });
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'Telemetry context updated:',
+        { screenId: 'login-screen' },
+      );
+    });
+
+    it('should update context with multiple values', () => {
+      manager.updateContext({
+        screenId: 'login-screen',
+        executionId: 'exec-123',
+      });
+
+      expect(mockAddSessionAttributes).toHaveBeenCalledWith({
+        screenId: 'login-screen',
+        executionId: 'exec-123',
+      });
+    });
+
+    it('should filter out undefined values', () => {
+      manager.updateContext({
+        screenId: 'login-screen',
+        executionId: undefined,
+      });
+
+      expect(mockAddSessionAttributes).toHaveBeenCalledWith({
+        screenId: 'login-screen',
+      });
+    });
+
+    it('should accept string, number, and boolean values', () => {
+      manager.updateContext({
+        screenId: 'login-screen',
+        count: 42,
+        isActive: true,
+      });
+
+      expect(mockAddSessionAttributes).toHaveBeenCalledWith({
+        screenId: 'login-screen',
+        count: 42,
+        isActive: true,
+      });
+    });
+
+    it('should not update if telemetry is shutdown', () => {
+      manager.shutdown();
+      manager.updateContext({ screenId: 'login-screen' });
+
+      expect(mockAddSessionAttributes).not.toHaveBeenCalled();
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Cannot update context: Telemetry has been shutdown.',
+      );
+    });
+
+    it('should handle errors gracefully', () => {
+      mockAddSessionAttributes.mockImplementationOnce(() => {
+        throw new Error('RUM error');
+      });
+
+      manager.updateContext({ screenId: 'login-screen' });
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Failed to update telemetry context:',
+        expect.any(Error),
+      );
+    });
+
+    it('should update internal context reference', () => {
+      manager.updateContext({ screenId: 'screen1' });
+      manager.updateContext({ executionId: 'exec1' });
+
+      // Both values should be in the context
+      expect(mockAddSessionAttributes).toHaveBeenCalledTimes(2);
     });
   });
 });

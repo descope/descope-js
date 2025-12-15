@@ -353,16 +353,10 @@
       <button onclick="clearLocalLog()">Clear Log</button>
     </div>
 
-    <script>
-      // The UMD build exposes TelemetryManager as DescopeDebugLogs on window
-      // We need to load it via script tag, not as a module
-    </script>
-    <script src="./dist/index.js"></script>
-    <script>
-      let telemetryManager = null;
+    <script type="module">
+      import TelemetryManager from './dist/index.esm.js';
 
-      // DescopeDebugLogs is now available from the UMD build
-      const TelemetryManager = window.DescopeDebugLogs;
+      let telemetryManager = null;
 
       window.initializeTelemetry = function () {
         const appId = document.getElementById('appId').value;

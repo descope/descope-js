@@ -92,6 +92,7 @@ export type Config = {
   telemetry?: {
     enabled: boolean;
     version?: string;
+    expiration?: number; // Unix timestamp in milliseconds
     rumConfig: {
       sessionSampleRate: number;
       applicationId: string;
