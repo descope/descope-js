@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.41.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.2...web-js-sdk-1.41.0) (2025-12-16)
+
+
+### Features
+
+* Disable explicit refresh calls when running in native flows ([#1284](https://github.com/descope/descope-js/issues/1284)) ([7043ce7](https://github.com/descope/descope-js/commit/7043ce717b21afc155610dfe42702f1614b61610))
+* pass refresh to the middleware in next ([#1286](https://github.com/descope/descope-js/issues/1286)) RELEASE ([e0b89bc](https://github.com/descope/descope-js/commit/e0b89bc27407a5c25b5186f185893eb7779bc2b9))
+
 ## [1.40.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.1...web-js-sdk-1.40.2) (2025-12-04)
 
 
