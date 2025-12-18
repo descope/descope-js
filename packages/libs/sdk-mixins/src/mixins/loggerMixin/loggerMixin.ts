@@ -5,10 +5,17 @@ const logLevels = ['error', 'warn', 'info', 'debug'] as const;
 
 export type LogLevel = (typeof logLevels)[number];
 
+const defaultLogger: Logger = {
+  error: console.error.bind(console, '[Descope]'),
+  warn: console.warn.bind(console, '[Descope]'),
+  info: console.info.bind(console, '[Descope]'),
+  debug: console.debug.bind(console, '[Descope]'),
+};
+
 export const loggerMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class LoggerMixinClass extends superclass {
-      #logger: Logger = this.#wrapLogger(console);
+      #logger: Logger = this.#wrapLogger(defaultLogger);
 
       #wrapLogger(logger: Partial<Logger>) {
         return logLevels.reduce((acc, logLevel) => {
@@ -22,7 +29,7 @@ export const loggerMixin = createSingletonMixin(
       }
 
       set logger(logger: Partial<Logger> | undefined) {
-        this.#logger = this.#wrapLogger(logger || console);
+        this.#logger = this.#wrapLogger(logger || defaultLogger);
       }
 
       get logger(): Logger {
