@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last, no-console */
 import { createSingletonMixin } from '@descope/sdk-helpers';
 import { Logger } from './types';
 
