@@ -244,7 +244,7 @@ export const beforeRequest =
     const dtd = getTrustedDeviceToken(prefix);
     if (dtd) {
       updatedConfig.headers = {
-        ...updatedConfig.headers,
+        ...(updatedConfig.headers || {}),
         'x-descope-trusted-device-token': dtd,
       };
     }
