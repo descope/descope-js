@@ -32,6 +32,18 @@ export { default as createHttpClient } from './httpClient';
 export { transformResponse } from './sdk/helpers';
 export type {
   AccessKeyLoginOptions,
+  Descoper,
+  DescoperAttributes,
+  DescoperCreate,
+  DescoperCreateResponse,
+  DescoperGetResponse,
+  DescoperListResponse,
+  DescoperLoadOptions,
+  DescoperProjectRole,
+  DescoperRBAC,
+  DescoperRole,
+  DescoperTagRole,
+  DescoperUpdateResponse,
   EnchantedLinkResponse,
   ExchangeAccessKeyResponse,
   FlowAction,

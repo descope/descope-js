@@ -1,6 +1,7 @@
 import { apiPaths } from '../constants';
 import { HttpClient } from '../httpClient';
 import withAccessKeys from './accesskey';
+import withDescoper from './descoper';
 import withEnchantedLink from './enchantedLink';
 import withFlow from './flow';
 import {
@@ -45,6 +46,7 @@ const withOptionalTokenValidations = withValidations(
 /** Returns Descope SDK with all available operations */
 export default (httpClient: HttpClient) => ({
   accessKey: withAccessKeys(httpClient),
+  descoper: withDescoper(httpClient),
   otp: withOtp(httpClient),
   magicLink: withMagicLink(httpClient),
   enchantedLink: withEnchantedLink(httpClient),

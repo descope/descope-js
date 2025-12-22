@@ -99,4 +99,11 @@ export default {
     start: '/v1/flow/start',
     next: '/v1/flow/next',
   },
+  descoper: {
+    create: '/v1/mgmt/descoper',
+    update: '/v1/mgmt/descoper',
+    get: '/v1/mgmt/descoper',
+    delete: '/v1/mgmt/descoper',
+    list: '/v1/mgmt/descoper/list',
+  },
 };

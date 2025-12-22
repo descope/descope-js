@@ -406,3 +406,62 @@ export type UpdateOptions<T extends boolean> = {
   templateId?: string;
   providerId?: string;
 };
+
+export type DescoperRole = 'admin' | 'developer' | 'support' | 'auditor';
+
+export type DescoperAttributes = {
+  displayName?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type DescoperTagRole = {
+  tags?: string[];
+  role?: DescoperRole;
+};
+
+export type DescoperProjectRole = {
+  projectIds?: string[];
+  role?: DescoperRole;
+};
+
+export type DescoperRBAC = {
+  isCompanyAdmin?: boolean;
+  tags?: DescoperTagRole[];
+  projects?: DescoperProjectRole[];
+};
+
+export type Descoper = {
+  id?: string;
+  loginIds?: string[];
+  attributes?: DescoperAttributes;
+  rbac?: DescoperRBAC;
+  status?: string;
+};
+
+export type DescoperCreate = {
+  loginId?: string;
+  attributes?: DescoperAttributes;
+  sendInvite?: boolean;
+  rbac?: DescoperRBAC;
+};
+
+export type DescoperLoadOptions = Record<string, never>;
+
+export type DescoperCreateResponse = {
+  descopers?: Descoper[];
+  total?: number;
+};
+
+export type DescoperGetResponse = {
+  descoper?: Descoper;
+};
+
+export type DescoperUpdateResponse = {
+  descoper?: Descoper;
+};
+
+export type DescoperListResponse = {
+  descopers?: Descoper[];
+  total?: number;
+};
