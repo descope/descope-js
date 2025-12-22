@@ -30,6 +30,26 @@ const AppRoot = () => {
       // must be configured (e.g., https://auth.app.example.com)
       // and should be set as the baseUrl property.
       // baseUrl = "https://auth.app.example.com"
+
+      // Optional: Hooks object for SDK lifecycle events
+      // hooks={{
+      //   beforeRequest: (req) => {
+      //     console.log('Before request', {
+      //       method: req.method,
+      //       path: req.path,
+      //       queryParams: req.queryParams,
+      //     });
+      //     // Modify the request as needed
+      //     return req;
+      //   },
+      //   afterRequest: async (req, res) => {
+      //     console.log('After request', {
+      //       reqMethod: req.method,
+      //       reqPath: req.path,
+      //       resStatus: res.status,
+      //     });
+      //   },
+      // }}
     >
       <App />
     </AuthProvider>
@@ -162,6 +182,9 @@ const App = () => {
             // styleId="my-awesome-style"
             // Set a CSP nonce that will be used for style and script tags
             //nonce="rAnd0m"
+
+            // popupOrigin: sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows
+            //popupOrigin="https://auth.example.com"
 
             // Clear screen error message on user input
             //dismissScreenErrorOnInput={true}
@@ -471,10 +494,7 @@ const AppRoot = () => {
   }, []);
 
   return (
-    <AuthProvider
-      projectId="my-project-id"
-      getExternalToken={externalToken}
-    >
+    <AuthProvider projectId="my-project-id" getExternalToken={externalToken}>
       <App />
     </AuthProvider>
   );
@@ -755,6 +775,32 @@ const AppRoot = () => {
   );
 };
 ```
+
+#### Using Inbound Apps as OIDC Provider
+
+To use an inbound app as an OIDC provider, you must provide both the `issuer` and `clientId` configuration options. The `issuer` is the OIDC authority URL, and the `clientId` is the client ID for your inbound app.
+
+> **Note:** When configuring an inbound app as an OIDC provider, you must obtain the issuer URL directly from the inbound app settings page in the Descope console. The issuer URL is specific to your inbound app configuration and cannot be constructed manually. In addition, you'll need to provide the client ID from the same inbound app settings.
+
+```js
+<AuthProvider
+  projectId="my-project-id"
+  oidcConfig={{
+    // Required: Get this from your inbound app settings page
+    issuer: 'https://api.descope.com/v1/apps/<Project ID>',
+    // Required: Client ID from your inbound app settings
+    clientId: 'your-inbound-app-client-id',
+    // Optional: Custom redirect URI (defaults to current URL)
+    redirectUri: 'https://my-app.com/redirect',
+    // Optional: Custom scope (defaults to 'openid' when issuer is provided)
+    scope: 'openid profile email',
+  }}
+>
+  <App />
+</AuthProvider>
+```
+
+When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
 
 ### Login
 

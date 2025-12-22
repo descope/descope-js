@@ -11,7 +11,6 @@ import {
 } from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { getUserId } from '../../../state/selectors';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -28,6 +27,7 @@ export const initWidgetRootMixin = createSingletonMixin(
           // await import('../../../../../../test/mocks/rootMock').then(module => module.default)
           await this.fetchWidgetPage('root.html'),
         );
+
         await this.loadDescopeUiComponents(template);
         this.contentRootElement.append(template.content.cloneNode(true));
       }
@@ -37,16 +37,8 @@ export const initWidgetRootMixin = createSingletonMixin(
 
       async init() {
         await super.init?.();
-
         await this.actions.getMe();
-
-        await Promise.all([
-          this.actions.listDevices({
-            userId: getUserId(this.state),
-          }),
-          this.#initWidgetRoot(),
-        ]);
-
+        await this.#initWidgetRoot();
         await this.onWidgetRootReady();
         this.dispatchEvent(new CustomEvent('ready'));
       }

@@ -72,6 +72,7 @@ export type UserResponse = User & {
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
   status: string;
+  test: boolean;
 };
 
 export type Tenant = {
@@ -137,6 +138,7 @@ export type JWTResponse = {
   firstSeen?: boolean;
   sessionExpiration: number;
   claims: Claims;
+  trustedDeviceJwt?: string;
 };
 
 /** Authentication info result from exchanging access keys for a session */
@@ -327,6 +329,8 @@ export type FlowResponse = {
     log: string;
     level?: 'info' | 'debug' | 'warn' | 'error';
   }[];
+  // general output configured inside the flow's end step
+  output?: Record<string, any>;
 };
 
 export type Options = {

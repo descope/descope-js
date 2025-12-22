@@ -24,7 +24,10 @@ const withPassword = (httpClient: HttpClient) => ({
       loginId: string,
       password: string,
       user?: User,
-      signUpOptions?: SignUpOptions,
+      {
+        providerId,
+        ...signUpOptions
+      }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.signUp, {
@@ -32,6 +35,7 @@ const withPassword = (httpClient: HttpClient) => ({
           password,
           user,
           loginOptions: signUpOptions,
+          providerId,
         }),
       ),
   ),
@@ -40,13 +44,17 @@ const withPassword = (httpClient: HttpClient) => ({
     (
       loginId: string,
       password: string,
-      loginOptions?: LoginOptions,
+      {
+        providerId,
+        ...loginOptions
+      }: LoginOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<JWTResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.password.signIn, {
           loginId,
           password,
           loginOptions,
+          providerId,
         }),
       ),
   ),

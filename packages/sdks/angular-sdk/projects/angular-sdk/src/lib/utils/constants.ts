@@ -5,4 +5,8 @@ export const baseHeaders = {
   'x-descope-sdk-version': environment.buildVersion
 };
 
+// Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
+export const isDescopeBridge = () =>
+  typeof window !== 'undefined' && !!(window as any)['descopeBridge'];
+
 export const isBrowser = () => typeof window !== 'undefined';

@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import type { JWTResponse } from '@descope/web-js-sdk';
 import { createSdk } from '@descope/web-js-sdk';
 
 export type SdkConfig = Parameters<typeof createSdk>[0];
@@ -63,6 +64,8 @@ export interface ScreenState {
   linkId?: unknown;
   sentTo?: unknown;
   clientScripts?: ClientScript[];
+  // map of component IDs to their state
+  componentsState?: Record<string, string>;
 }
 
 export type SSOQueryParams = {
@@ -160,11 +163,32 @@ export interface ScriptElement extends HTMLDivElement {
 }
 
 export type ScriptModule = {
-  stop: () => void;
-  start: () => void;
   /**
-   * Refreshes any tokens or state that might be needed before form submission
-   * Currently implemented for reCAPTCHA to ensure we have a fresh token
+   * Unique identifier of the module.
+   */
+  id: string;
+  /**
+   * Notifies the module that it should start any profiling or monitoring.
+   */
+  start?: () => void;
+  /**
+   * Notifies the module that it should stop any profiling or monitoring.
+   */
+  stop?: () => void;
+  /**
+   * Presents the user with any required interaction to get a refreshed token or state,
+   * e.g., a challenge or captcha.
+   *
+   * Modules should return a value of true if the presentation completed successfully,
+   * false if it was cancelled by the user, and throw an error in case of failure.
+   *
+   * This is called before form submission (via a next call) after a button click.
+   */
+  present?: () => Promise<boolean>;
+  /**
+   * Refreshes any tokens or state that might be needed before form submission.
+   *
+   * Modules should throw an error in case of failure.
    */
   refresh?: () => Promise<void>;
 };
@@ -175,7 +199,9 @@ export type ClientScript = {
   resultKey?: string;
 };
 
-export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]>;
+export type NextFn = KeepArgsByIndex<SdkFlowNext, [2, 5]> & {
+  isCustomScreen?: boolean;
+};
 export type NextFnReturnPromiseValue = Awaited<ReturnType<NextFn>>;
 
 export type DebuggerMessage = {
@@ -299,4 +325,8 @@ export type CustomStorage = {
   getItem: (key: string) => string | null;
   setItem: (key: string, value: string) => void;
   removeItem: (key: string) => void;
+};
+
+export type FlowJWTResponse = JWTResponse & {
+  flowOutput?: Record<string, any>;
 };

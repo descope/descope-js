@@ -8,8 +8,13 @@ import {
 } from '../enhancers/withPersistTokens/helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
-import { OIDC_LOGOUT_ERROR_CODE, OIDC_REFRESH_ERROR_CODE } from '../constants';
+import {
+  OIDC_LOGOUT_ERROR_CODE,
+  OIDC_REFRESH_ERROR_CODE,
+  REFRESH_DISABLED,
+} from '../constants';
 import logger from '../enhancers/helpers/logger';
+import { isDescopeBridge } from '../enhancers/helpers';
 
 const createSdk = (config: WebSdkConfig) => {
   const coreSdk = createCoreSdk(config);
@@ -22,6 +27,18 @@ const createSdk = (config: WebSdkConfig) => {
       token?: string,
       tryRefresh?: boolean,
     ): ReturnType<CoreSdk['refresh']> => {
+      if (isDescopeBridge()) {
+        logger.debug(`Refresh called in native flow: ${new Error().stack}`);
+        return Promise.resolve({
+          ok: false,
+          error: {
+            errorCode: REFRESH_DISABLED,
+            errorDescription:
+              'Refresh is not supported in native flows via the web SDK',
+          },
+        });
+      }
+
       if (config.oidcConfig) {
         try {
           await oidc.refreshToken(token);

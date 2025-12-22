@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.53.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.0...core-js-sdk-2.53.1) (2025-12-03)
+
+## [2.53.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.2...core-js-sdk-2.53.0) (2025-12-01)
+
+
+### Features
+
+* add custom screen indication to the flow REST calls RELEASE ([#1269](https://github.com/descope/descope-js/issues/1269)) ([d1b21d1](https://github.com/descope/descope-js/commit/d1b21d19746c715c872f21ab6df8946c572e9294))
+
+## [2.52.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.1...core-js-sdk-2.52.2) (2025-11-09)
+
+## [2.52.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.0...core-js-sdk-2.52.1) (2025-11-06)
+
+## [2.52.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.51.0...core-js-sdk-2.52.0) (2025-10-23)
+
+
+### Features
+
+* Add output to success event ([#1244](https://github.com/descope/descope-js/issues/1244)) RELEASE ([eae6357](https://github.com/descope/descope-js/commit/eae63570a342dc0919d5196fb79b4ffc035a2524))
+
+## [2.51.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.50.1...core-js-sdk-2.51.0) (2025-10-22)
+
+
+### Features
+
+* **core-js-sdk:** pass providerId on *.sign{up,in} ([#1239](https://github.com/descope/descope-js/issues/1239)) ([afcb639](https://github.com/descope/descope-js/commit/afcb6394d56135b6a79d5c784887bdd0891eac9d))
+
 ## [2.50.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.50.0...core-js-sdk-2.50.1) (2025-09-28)
 
 ## [2.50.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.49.0...core-js-sdk-2.50.0) (2025-09-10)

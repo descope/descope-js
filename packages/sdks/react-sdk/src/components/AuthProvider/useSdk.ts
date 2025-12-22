@@ -9,7 +9,9 @@ type Config = Pick<
   | 'persistTokens'
   | 'autoRefresh'
   | 'sessionTokenViaCookie'
+  | 'refreshTokenViaCookie'
   | 'storeLastAuthenticatedUser'
+  | 'hooks'
   | 'oidcConfig'
   | 'keepLastAuthenticatedUserAfterLogout'
   | 'refreshCookieName'
@@ -23,11 +25,13 @@ export default ({
   persistTokens,
   autoRefresh,
   sessionTokenViaCookie,
+  refreshTokenViaCookie,
   refreshCookieName,
   oidcConfig,
   storeLastAuthenticatedUser,
   keepLastAuthenticatedUserAfterLogout,
   getExternalToken,
+  hooks,
   customStorage,
 }: Config): ReturnType<typeof createSdk> =>
   useMemo(() => {
@@ -38,6 +42,7 @@ export default ({
       projectId,
       baseUrl,
       sessionTokenViaCookie,
+      refreshTokenViaCookie,
       baseHeaders,
       persistTokens,
       autoRefresh,
@@ -45,6 +50,7 @@ export default ({
       oidcConfig,
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
+      hooks,
       getExternalToken,
       customStorage,
     });
@@ -58,6 +64,7 @@ export default ({
     //
     // See: https://github.com/descope/etc/issues/11965
     JSON.stringify(sessionTokenViaCookie),
+    JSON.stringify(refreshTokenViaCookie),
     getExternalToken,
     customStorage,
   ]);

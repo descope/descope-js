@@ -49,7 +49,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#editModal.afterClose = this.#initEditModalContent.bind(this);
+        this.#editModal.beforeOpen = this.#initEditModalContent.bind(this);
         this.#initEditModalContent();
         this.syncFlowTheme(this.#editFlow);
       }
@@ -65,6 +65,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             form: JSON.stringify({
               tenantEmailDomains: getTenantEmailDomains(this.state),
             }),
@@ -86,7 +87,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
+        this.#deleteModal.beforeOpen = this.#initDeleteModalContent.bind(this);
         this.#initDeleteModalContent();
         this.syncFlowTheme(this.#deleteFlow);
       }
@@ -102,6 +103,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

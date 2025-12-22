@@ -174,9 +174,14 @@ const orginalCreateElement = document.createElement;
 
 const mockStartScript = jest.fn();
 const mockStopScript = jest.fn();
+const mockRefreshScript = jest.fn();
+const mockPresentScript = jest.fn();
 const mockClientScript = jest.fn(() => ({
+  id: 'grecaptcha',
   start: mockStartScript,
   stop: mockStopScript,
+  refresh: mockRefreshScript,
+  present: mockPresentScript,
 }));
 
 describe('web-component', () => {
@@ -237,7 +242,16 @@ describe('web-component', () => {
     document.getElementsByTagName('head')[0].innerHTML = '';
     document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
+    // We need a full reset to isolate tests, BUT one mock (mockClientScript) must keep a stable implementation.
+    // So we reset everything and then immediately restore the implementation for mockClientScript.
     jest.resetAllMocks();
+    mockClientScript.mockImplementation(() => ({
+      id: 'grecaptcha',
+      start: mockStartScript,
+      stop: mockStopScript,
+      refresh: mockRefreshScript,
+      present: mockPresentScript,
+    }));
     window.location.search = '';
     themeContent = {};
     pageContent = '';
@@ -339,6 +353,244 @@ describe('web-component', () => {
       expect(() => {
         wc.customStorage = invalidStorage;
       }).toThrow('Custom storage must have a setItem method');
+    });
+  });
+
+  describe('popup postMessage / BroadcastChannel logic', () => {
+    let originalBroadcastChannel;
+    let broadcastInstances;
+    let originalWindowName;
+    let originalOpener;
+
+    beforeEach(() => {
+      originalBroadcastChannel = global.BroadcastChannel;
+      broadcastInstances = [];
+      class MockBroadcastChannel {
+        constructor(name) {
+          this.name = name;
+          this.messages = [];
+          this.closed = false;
+          this.onMessageInternal = null;
+          broadcastInstances.push(this);
+        }
+
+        postMessage(msg) {
+          this.messages.push(msg);
+        }
+
+        close() {
+          this.closed = true;
+        }
+
+        set onmessage(fn) {
+          this.onMessageInternal = fn;
+        }
+
+        get onmessage() {
+          return this.onMessageInternal;
+        }
+
+        emit(event) {
+          if (this.onMessageInternal) this.onMessageInternal(event);
+        }
+      }
+      // @ts-ignore
+      global.BroadcastChannel = jest.fn(
+        (name) => new MockBroadcastChannel(name),
+      );
+
+      originalWindowName = window.name;
+      originalOpener = window.opener;
+      window.opener = { postMessage: jest.fn() } as any;
+      window.close = jest.fn();
+
+      startMock.mockReturnValue(generateSdkResponse({}));
+    });
+
+    afterEach(() => {
+      global.BroadcastChannel = originalBroadcastChannel;
+      window.name = originalWindowName;
+      window.opener = originalOpener;
+    });
+
+    it('shouldUsePopupPostMessage returns false when popup-origin not set', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(wc.shouldUsePopupPostMessage()).toBe(false);
+    });
+
+    it('shouldUsePopupPostMessage returns true when popup-origin value has the same window origin', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-origin="${window.location.origin}"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(wc.shouldUsePopupPostMessage()).toBe(true);
+    });
+
+    it('shouldUsePopupPostMessage returns false for invalid origin attribute', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-origin="not-a-valid-url"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(wc.shouldUsePopupPostMessage()).toBe(false);
+    });
+
+    it('shouldUsePopupPostMessage returns true for valid different origin', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-origin="https://example.com"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(wc.shouldUsePopupPostMessage()).toBe(true);
+    });
+
+    it('notifyOpener uses BroadcastChannel when window.name not set', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Simulate popup flow state changes
+      wc.flowState.update({
+        executionId: 'exec-1',
+        isPopup: true,
+        code: undefined,
+        exchangeError: undefined,
+      });
+      wc.flowState.update({
+        executionId: 'exec-1',
+        isPopup: true,
+        code: 'abc123',
+        exchangeError: undefined,
+      });
+      await waitFor(
+        () => expect(global.BroadcastChannel).toHaveBeenCalledWith('exec-1'),
+        { timeout: 2000 },
+      );
+      const instance = broadcastInstances.find((b) => b.name === 'exec-1');
+      expect(instance).toBeTruthy();
+      expect(instance.messages).toContainEqual({
+        action: 'code',
+        data: { code: 'abc123', exchangeError: undefined },
+      });
+      expect(instance.closed).toBe(true);
+    });
+
+    it('notifyOpener uses postMessage fallback with window.name prefix', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Set window.name pattern to trigger postMessage fallback
+      const crossOrigin = 'https://cross-origin.example';
+      window.name = `descope-wc|${crossOrigin}`;
+
+      wc.flowState.update({
+        executionId: 'exec-2',
+        isPopup: true,
+        code: undefined,
+        exchangeError: 'errX',
+      });
+      wc.flowState.update({
+        executionId: 'exec-2',
+        isPopup: true,
+        code: 'codeXYZ',
+        exchangeError: 'errX',
+      });
+      await waitFor(
+        () => expect(window.opener.postMessage).toHaveBeenCalled(),
+        { timeout: 2000 },
+      );
+      expect(window.opener.postMessage).toHaveBeenCalledWith(
+        { action: 'code', data: { code: 'codeXYZ', exchangeError: 'errX' } },
+        crossOrigin,
+      );
+      expect(global.BroadcastChannel).not.toHaveBeenCalledWith('exec-2');
+    });
+
+    it('notifyOpener handles postMessage errors gracefully', async () => {
+      pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const crossOrigin = 'https://other.example';
+      window.name = `descope-wc|${crossOrigin}`;
+      (window.opener.postMessage as jest.Mock).mockImplementation(() => {
+        throw new Error('COOP blocked');
+      });
+
+      wc.flowState.update({
+        executionId: 'exec-3',
+        isPopup: true,
+        code: 'x',
+        exchangeError: 'y',
+      });
+      await waitFor(
+        () => expect(window.opener.postMessage).toHaveBeenCalled(),
+        { timeout: 2000 },
+      );
+      expect(global.BroadcastChannel).not.toHaveBeenCalledWith('exec-3');
+    });
+
+    // Removed deprecated commented redirect tests; active versions added later with cleanup coverage
+
+    it('should detect popup close and dispatch event', async () => {
+      startMock.mockReturnValue({
+        ok: true,
+        data: {
+          stepId: 's3',
+          stepName: 'Step 3',
+          action: RESPONSE_ACTIONS.redirect,
+          screen: { id: '0', state: {} },
+          redirect: { url: 'https://auth.example', isPopup: true },
+          executionId: 'exec-redirect-close',
+          status: 'running',
+          authInfo: 'auth info',
+          webauthn: { options: '', transactionId: '' },
+          samlIdpResponse: { url: '', samlResponse: '', relayState: '' },
+          lastAuth: {},
+          nativeResponse: { type: '', payload: {} },
+        },
+        error: {},
+      });
+      const popupObj: any = {
+        closed: false,
+        name: '',
+        location: { href: '' },
+        focus: jest.fn(),
+      };
+      jest.spyOn(helpers, 'openCenteredPopup').mockReturnValue(popupObj);
+      pageContent = '';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      const onClosed = jest.fn();
+      wc.addEventListener('popupclosed', onClosed);
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: 2000,
+      });
+      // Advance time to trigger interval check
+      popupObj.closed = true;
+      jest.advanceTimersByTime(1100);
+      await waitFor(() => expect(onClosed).toHaveBeenCalled(), {
+        timeout: 2000,
+      });
     });
   });
 
@@ -494,17 +746,19 @@ describe('web-component', () => {
 
     const wcEle = document.getElementsByTagName('descope-wc')[0];
 
-    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
       timeout: 20000,
     });
     nextMock.mockClear();
     document.body.removeChild(wcEle);
 
-    // wait for the next mock to be called
-    await waitFor(() => expect(nextMock).not.toHaveBeenCalled(), {
-      timeout: 20000,
+    // wait some time to ensure polling has stopped
+    await new Promise((resolve) => {
+      setTimeout(resolve, 4000);
     });
-  });
+
+    expect(nextMock).not.toHaveBeenCalled();
+  }, 30000);
 
   it('should set loading attribute on submitter and disable other enabled elements', async () => {
     startMock.mockReturnValue(generateSdkResponse());
@@ -1231,6 +1485,7 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
         },
+        false,
       ),
     );
   });
@@ -1262,6 +1517,7 @@ describe('web-component', () => {
             t1: '123',
             origin: 'http://localhost',
           },
+          false,
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -1307,6 +1563,7 @@ describe('web-component', () => {
           origin: 'http://localhost',
           token,
         },
+        false,
       ),
     );
   });
@@ -1380,6 +1637,7 @@ describe('web-component', () => {
         1,
         '1.2.3',
         expect.any(Object),
+        false,
       ),
     );
   });
@@ -1411,6 +1669,7 @@ describe('web-component', () => {
         1,
         '1.2.3',
         expect.any(Object),
+        false,
       ),
     );
   });
@@ -1600,10 +1859,18 @@ describe('web-component', () => {
 
     await waitFor(
       () =>
-        expect(nextMock).toHaveBeenCalledWith('0', '0', null, 1, '1.2.3', {
-          image: '',
-          origin: 'http://localhost',
-        }),
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          null,
+          1,
+          '1.2.3',
+          {
+            image: '',
+            origin: 'http://localhost',
+          },
+          false,
+        ),
       { timeout: WAIT_TIMEOUT },
     );
   });
@@ -1938,11 +2205,19 @@ describe('web-component', () => {
     fireEvent.click(screen.getByShadowText('Click'));
 
     await waitFor(() =>
-      expect(nextMock).toBeCalledWith('0', '0', '123', 1, '1.2.3', {
-        attr1: 'attr1',
-        attr2: 'attr2',
-        origin: 'http://localhost',
-      }),
+      expect(nextMock).toBeCalledWith(
+        '0',
+        '0',
+        '123',
+        1,
+        '1.2.3',
+        {
+          attr1: 'attr1',
+          attr2: 'attr2',
+          origin: 'http://localhost',
+        },
+        false,
+      ),
     );
   });
 
@@ -1982,28 +2257,6 @@ describe('web-component', () => {
   });
 
   it('When action type is "redirect" it navigates to the "redirectUrl" that is received from the server', async () => {
-    nextMock.mockReturnValueOnce(
-      generateSdkResponse({
-        action: RESPONSE_ACTIONS.redirect,
-        redirectUrl: 'https://myurl.com',
-      }),
-    );
-
-    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
-    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
-
-    await waitFor(
-      () =>
-        expect(window.location.assign).toHaveBeenCalledWith(
-          'https://myurl.com',
-        ),
-      {
-        timeout: WAIT_TIMEOUT,
-      },
-    );
-  });
-
-  it('When action type is "redirect" it calls location.assign one time only', async () => {
     nextMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
@@ -2400,6 +2653,7 @@ describe('web-component', () => {
           baseUrl: 'http://base.url',
         }),
         expect.any(Function),
+        expect.any(Object),
       ),
     );
 
@@ -2723,6 +2977,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           expect.any(Object),
+          false,
         ),
       );
 
@@ -2869,9 +3124,12 @@ describe('web-component', () => {
     });
 
     it('When has polling element, and next poll returns completed response', async () => {
-      jest.spyOn(global, 'setTimeout');
-
+      // Ensure previous tests' stubs do not interfere
+      startMock.mockReset();
+      nextMock.mockReset();
       startMock.mockReturnValueOnce(generateSdkResponse());
+
+      jest.spyOn(global, 'setTimeout');
 
       nextMock
         .mockReturnValueOnce(
@@ -2903,7 +3161,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -2956,6 +3214,193 @@ describe('web-component', () => {
     },
     WAIT_TIMEOUT * 5,
   );
+
+  describe('key press handler management', () => {
+    it('should disable key press handler when rendering custom screen', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-button id="submit">Submit</descope-button>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc') as any;
+
+      // Set up onScreenUpdate to return true for custom screen
+      const onScreenUpdate = jest.fn(() => true);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      // Spy on the key press handler methods before initialization
+      const disableKeyPressHandlerSpy = jest.spyOn(
+        descopeWc,
+        'disableKeyPressHandler',
+      );
+      const handleKeyPressSpy = jest.spyOn(descopeWc, 'handleKeyPress');
+
+      // Wait for onScreenUpdate to be called
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify key press handler is disabled for custom screens
+      await waitFor(
+        () => expect(disableKeyPressHandlerSpy).toHaveBeenCalled(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // Verify key press handler is not enabled
+      expect(handleKeyPressSpy).not.toHaveBeenCalled();
+
+      // Test that Enter key doesn't trigger form submission when custom screen is rendered
+      const rootEle = descopeWc.shadowRoot.querySelector('#root');
+      expect(rootEle.onkeydown).toBeNull();
+    });
+
+    it('should enable key press handler when rendering regular flow screen', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-button id="submit">Submit</descope-button>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc') as any;
+
+      // Set up onScreenUpdate to return false for regular screen
+      const onScreenUpdate = jest.fn(() => false);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      // Spy on the key press handler methods before initialization
+      const handleKeyPressSpy = jest.spyOn(descopeWc, 'handleKeyPress');
+      const disableKeyPressHandlerSpy = jest.spyOn(
+        descopeWc,
+        'disableKeyPressHandler',
+      );
+
+      // Wait for onScreenUpdate to be called
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Wait for the content to be rendered (means regular screen is shown)
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify key press handler is enabled for regular screens
+      await waitFor(() => expect(handleKeyPressSpy).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify key press handler is not disabled
+      expect(disableKeyPressHandlerSpy).not.toHaveBeenCalled();
+
+      // Test that Enter key handler is properly set
+      const rootEle = descopeWc.shadowRoot.querySelector('#root');
+      expect(rootEle.onkeydown).toEqual(expect.any(Function));
+    });
+
+    it('should enable key press handler when onScreenUpdate is not set', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      pageContent = `<div>Loaded123</div><descope-button id="submit">Submit</descope-button>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc') as any;
+      // No onScreenUpdate set - should render regular screen
+
+      // Spy on the key press handler methods
+      const handleKeyPressSpy = jest.spyOn(descopeWc, 'handleKeyPress');
+      const disableKeyPressHandlerSpy = jest.spyOn(
+        descopeWc,
+        'disableKeyPressHandler',
+      );
+
+      // Wait for the content to be rendered
+      await waitFor(() => screen.getByShadowText('Loaded123'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify key press handler is enabled for regular screens
+      await waitFor(() => expect(handleKeyPressSpy).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify key press handler is not disabled
+      expect(disableKeyPressHandlerSpy).not.toHaveBeenCalled();
+
+      // Test that Enter key handler is properly set
+      const rootEle = descopeWc.shadowRoot.querySelector('#root');
+      expect(rootEle.onkeydown).toEqual(expect.any(Function));
+    });
+
+    it('should toggle key press handler when switching between custom and regular screens', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+
+      pageContent = `<div>Loaded123</div><descope-button id="submit">Submit</descope-button>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc') as any;
+
+      // Start with custom screen
+      let shouldShowCustomScreen = true;
+      const onScreenUpdate = jest.fn(() => shouldShowCustomScreen);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      // Spy on the key press handler methods
+      const handleKeyPressSpy = jest.spyOn(descopeWc, 'handleKeyPress');
+      const disableKeyPressHandlerSpy = jest.spyOn(
+        descopeWc,
+        'disableKeyPressHandler',
+      );
+
+      // Wait for first onScreenUpdate call (custom screen)
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // First call should disable key press handler (custom screen)
+      await waitFor(
+        () => expect(disableKeyPressHandlerSpy).toHaveBeenCalledTimes(1),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // Switch to regular screen
+      shouldShowCustomScreen = false;
+
+      // Get the next function from the onScreenUpdate call
+      const next = onScreenUpdate.mock.calls[0][2];
+
+      // Clear spies to track next calls
+      handleKeyPressSpy.mockClear();
+      disableKeyPressHandlerSpy.mockClear();
+
+      // Trigger transition to regular screen
+      next('next', {});
+
+      // Wait for second onScreenUpdate call
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Should now enable key press handler (regular screen)
+      await waitFor(() => expect(handleKeyPressSpy).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Should not disable again
+      expect(disableKeyPressHandlerSpy).not.toHaveBeenCalled();
+
+      // Test that Enter key handler is properly set
+      const rootEle = descopeWc.shadowRoot.querySelector('#root');
+      expect(rootEle.onkeydown).toEqual(expect.any(Function));
+    });
+  });
 
   describe('native', () => {
     it('Should prepare a callback for a native bridge response and broadcast an event when receiving a nativeBridge action', async () => {
@@ -3037,7 +3482,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -3127,7 +3572,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -3182,6 +3627,7 @@ describe('web-component', () => {
           1,
           '1.2.3',
           expect.any(Object),
+          false,
         ),
       );
 
@@ -3211,7 +3657,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(onSuccess).toHaveBeenCalledWith(
-            expect.objectContaining({ detail: 'auth info' }),
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
           ),
         {
           timeout: WAIT_TIMEOUT,
@@ -3380,6 +3826,7 @@ describe('web-component', () => {
             'sign-in': 1,
           },
           { origin: 'http://localhost' },
+          false,
         ),
       );
     });
@@ -4590,7 +5037,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4624,7 +5071,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4660,7 +5107,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4696,7 +5143,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ detail: 'auth info' }),
+          expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -4756,6 +5203,41 @@ describe('web-component', () => {
     expect(
       localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY),
     ).toBeNull();
+  });
+
+  it('should pass flow output into the on success event', async () => {
+    pageContent = '<input id="email" name="email"></input>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        ok: true,
+        status: 'completed',
+        output: { customKey: 'customValue' },
+      }),
+    );
+
+    document.body.innerHTML = `<h1>Custom element test</h1>
+      <descope-wc flow-id="otpSignInEmail" project-id=1>
+    </descope-wc>`;
+
+    const wcEle = document.querySelector('descope-wc');
+
+    const onSuccess = jest.fn();
+
+    wcEle.addEventListener('success', onSuccess);
+
+    await waitFor(
+      () =>
+        expect(onSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            detail: {
+              refreshJwt: 'refreshJwt',
+              flowOutput: { customKey: 'customValue' },
+            },
+          }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should update dynamic attribute values', async () => {
@@ -5424,6 +5906,7 @@ describe('web-component', () => {
           email: '',
           origin: 'http://localhost',
         },
+        false,
       ),
     );
   });
@@ -5888,6 +6371,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
@@ -5960,47 +6444,72 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
     });
-    it('should run client script from sdk response', async () => {
-      startMock.mockReturnValueOnce(
-        generateSdkResponse({
-          screenState: {
-            clientScripts: [
-              {
-                id: 'grecaptcha',
-                initArgs: {
-                  enterprise: true,
-                  siteKey: 'SITE_KEY',
+    describe('should run client script from sdk response', () => {
+      beforeEach(async () => {
+        mockPresentScript.mockClear();
+        mockRefreshScript.mockClear();
+
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: {
+              clientScripts: [
+                {
+                  id: 'grecaptcha',
+                  initArgs: {
+                    enterprise: true,
+                    siteKey: 'SITE_KEY',
+                  },
+                  resultKey: 'riskToken',
                 },
-                resultKey: 'riskToken',
-              },
-            ],
-          },
-        }),
-      );
+              ],
+            },
+          }),
+        );
+        nextMock.mockReturnValueOnce(generateSdkResponse());
 
-      pageContent =
-        '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
+        pageContent =
+          '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
 
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
-      await waitFor(() => screen.findByShadowText('hey'), {
-        timeout: WAIT_TIMEOUT,
+        await waitFor(() => screen.findByShadowText('hey'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        scriptMock.onload();
+        await waitFor(() =>
+          expect(mockClientScript).toHaveBeenCalledWith(
+            {
+              enterprise: true,
+              siteKey: 'SITE_KEY',
+            },
+            expect.any(Object),
+            expect.any(Function),
+            expect.any(Object),
+          ),
+        );
       });
+      it('should run client script perform and refresh', async () => {
+        mockPresentScript.mockResolvedValueOnce(true);
 
-      scriptMock.onload();
-      await waitFor(() =>
-        expect(mockClientScript).toHaveBeenCalledWith(
-          {
-            enterprise: true,
-            siteKey: 'SITE_KEY',
-          },
-          expect.any(Object),
-          expect.any(Function),
-        ),
-      );
+        fireEvent.click(screen.getByShadowText('click'));
+
+        await waitFor(() => expect(mockPresentScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(mockRefreshScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+      });
     });
     it('should send the next request if timeout is reached', async () => {
       configContent = {
@@ -6039,6 +6548,7 @@ describe('web-component', () => {
           },
           expect.any(Object),
           expect.any(Function),
+          expect.any(Object),
         ),
       );
 
@@ -6118,6 +6628,7 @@ describe('web-component', () => {
             expect.anything(),
             expect.anything(),
             expect.objectContaining({ thirdPartyAppApproveScopes: '1' }),
+            false,
           ),
         { timeout: 30000 },
       );
@@ -6356,6 +6867,143 @@ describe('web-component', () => {
         onScreenUpdate.mock.calls[1][1],
       );
     });
+    it('should hide components when componentsState contains hide state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-button': 'hide',
+              'test-input': 'hide',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="test-button">Click me</descope-button>
+        <input id="test-input" />
+        <descope-text id="visible-text">Visible</descope-text>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Visible'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify hidden components have the 'hidden' class
+      const hiddenButton = descopeWc.shadowRoot.querySelector('#test-button');
+      const hiddenInput = descopeWc.shadowRoot.querySelector('#test-input');
+      const visibleText = descopeWc.shadowRoot.querySelector('#visible-text');
+
+      expect(hiddenButton).toHaveClass('hidden');
+      expect(hiddenInput).toHaveClass('hidden');
+      expect(visibleText).not.toHaveClass('hidden');
+    });
+
+    it('should disable components when componentsState contains disable state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-submit-button': 'disable',
+              'test-email-input': 'disable',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="test-submit-button">Submit</descope-button>
+        <input id="test-email-input" />
+        <descope-button id="enabled-button">Enabled</descope-button>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Verify disabled components have the 'disabled' attribute
+      const disabledButton = descopeWc.shadowRoot.querySelector(
+        '#test-submit-button',
+      );
+      const disabledInput =
+        descopeWc.shadowRoot.querySelector('#test-email-input');
+      const enabledButton =
+        descopeWc.shadowRoot.querySelector('#enabled-button');
+
+      expect(disabledButton).toHaveAttribute('disabled', 'true');
+      expect(disabledInput).toHaveAttribute('disabled', 'true');
+      expect(enabledButton).toBeEnabled();
+    });
+    it('should handle empty componentsState gracefully', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {},
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="btn-1">Button</descope-button>
+        <input id="input-1" />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const btn = descopeWc.shadowRoot.querySelector('#btn-1');
+      const input = descopeWc.shadowRoot.querySelector('#input-1');
+
+      // Components should remain in their default state
+      expect(btn).not.toHaveClass('hidden');
+      expect(btn).toBeEnabled();
+      expect(input).not.toHaveClass('hidden');
+      expect(input).toBeEnabled();
+    });
+
+    it('should handle undefined componentsState gracefully', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {},
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="btn-1">Button</descope-button>
+        <input id="input-1" />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Button'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const btn = descopeWc.shadowRoot.querySelector('#btn-1');
+      const input = descopeWc.shadowRoot.querySelector('#input-1');
+
+      // Components should remain in their default state
+      expect(btn).not.toHaveClass('hidden');
+      expect(btn).toBeEnabled();
+      expect(input).not.toHaveClass('hidden');
+      expect(input).toBeEnabled();
+    });
+
     it('should allow lazy render when window attribute is set (for mobile)', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 

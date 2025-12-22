@@ -121,28 +121,51 @@ const getOidcClient = async (
     );
   }
 
-  const clientId = projectId;
   const redirectUri = oidcConfig?.redirectUri || window.location.href;
-  const scope =
-    oidcConfig?.scope ||
-    'openid email roles descope.custom_claims offline_access';
-  const stateUserKey = `${clientId}_user`;
 
-  let authority = sdk.httpClient.buildUrl(projectId);
-  if (oidcConfig?.applicationId) {
-    // append the applicationId to the authority
+  let authority: string;
+  let oidcClientId: string;
+  let stateUserKey: string;
+  let defaultScope: string;
+
+  // Handle custom issuer (requires clientId)
+  if (oidcConfig?.issuer) {
+    if (!oidcConfig.clientId) {
+      throw new Error(
+        'clientId is required when providing a custom issuer/authority',
+      );
+    }
+    authority = oidcConfig.issuer;
+    oidcClientId = oidcConfig.clientId;
+    stateUserKey = `${oidcClientId}_user`;
+    // For custom issuer with clientId, default scope is just 'openid'
+    defaultScope = 'openid';
+  } else if (oidcConfig?.applicationId) {
+    // Handle federated apps with applicationId (existing behavior)
+    authority = sdk.httpClient.buildUrl(projectId);
     authority = `${authority}/${oidcConfig.applicationId}`;
+    oidcClientId = projectId;
+    stateUserKey = `${oidcClientId}_user`;
+    defaultScope = 'openid email roles descope.custom_claims offline_access';
+  } else {
+    // Default behavior (existing)
+    authority = sdk.httpClient.buildUrl(projectId);
+    oidcClientId = projectId;
+    stateUserKey = `${oidcClientId}_user`;
+    defaultScope = 'openid email roles descope.custom_claims offline_access';
   }
+
+  const scope = oidcConfig?.scope || defaultScope;
 
   const settings: OidcClientSettings = {
     authority,
-    client_id: projectId,
+    client_id: oidcClientId,
     redirect_uri: redirectUri,
     response_type: 'code',
     scope,
     stateStore: new WebStorageStateStore({
       store: window.localStorage,
-      prefix: clientId,
+      prefix: oidcClientId,
     }),
     loadUserInfo: true,
     fetchRequestCredentials: 'same-origin',
@@ -150,9 +173,6 @@ const getOidcClient = async (
 
   if (oidcConfig?.redirectUri) {
     settings.redirect_uri = oidcConfig.redirectUri;
-  }
-  if (oidcConfig?.scope) {
-    settings.scope = oidcConfig.scope;
   }
   return {
     client: new OidcClient(settings),

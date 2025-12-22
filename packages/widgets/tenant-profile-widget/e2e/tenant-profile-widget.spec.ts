@@ -83,12 +83,14 @@ test.describe('tenant profile widget', () => {
     name: 'New Name',
     selfProvisioningDomains: ['newDomain.com', 'example2.com'],
     enforceSSO: false,
+    enforceSSOExclusions: ['newuser@example.com', 'admin@example.com'],
   };
 
   const mockTenantAfterDelete = {
     ...mockTenant,
     selfProvisioningDomains: [],
     enforceSSO: false,
+    enforceSSOExclusions: [],
   };
 
   test.describe('tenant attributes', () => {
@@ -123,6 +125,18 @@ test.describe('tenant profile widget', () => {
         action: 'delete',
         newValue: 'false',
         modalName: 'delete-tenant-enforce-sso',
+      },
+      {
+        name: 'tenant-force-sso-exclusions-edit',
+        action: 'edit',
+        newValue: ['newuser@example.com', 'admin@example.com'],
+        modalName: 'edit-tenant-sso-exclusions',
+      },
+      {
+        name: 'tenant-force-sso-exclusions-edit',
+        action: 'delete',
+        newValue: '',
+        modalName: 'delete-tenant-sso-exclusions',
       },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
@@ -181,5 +195,108 @@ test.describe('tenant profile widget', () => {
         mockTenantAdminLinkSSO.adminSSOConfigurationLink,
       );
     });
+  });
+
+  test.describe('form data persistence when reopening edit modal', () => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const attr of [
+      {
+        name: 'tenant-name-edit',
+        modalName: 'tenant-profile-set-name',
+        formField: 'tenantName',
+        updatedMockTenant: { ...mockTenant, name: 'Updated Name' },
+        expectedFormValue: 'Updated Name',
+      },
+      {
+        name: 'tenant-email-domains-edit',
+        modalName: 'edit-tenant-email-domains',
+        formField: 'tenantEmailDomains',
+        updatedMockTenant: {
+          ...mockTenant,
+          selfProvisioningDomains: ['updated.com', 'example2.com'],
+        },
+        expectedFormValue: ['updated.com', 'example2.com'],
+      },
+      {
+        name: 'tenant-enforce-sso-edit',
+        modalName: 'edit-tenant-enforce-sso',
+        formField: 'enforceSSO',
+        updatedMockTenant: { ...mockTenant, enforceSSO: false },
+        expectedFormValue: false,
+      },
+      {
+        name: 'tenant-force-sso-exclusions-edit',
+        modalName: 'edit-tenant-sso-exclusions',
+        formField: 'enforceSSOExclusions',
+        updatedMockTenant: {
+          ...mockTenant,
+          enforceSSOExclusions: [
+            ...mockTenant.enforceSSOExclusions,
+            'newemail@example.com',
+          ],
+        },
+        expectedFormValue: [
+          ...mockTenant.enforceSSOExclusions,
+          'newemail@example.com',
+        ],
+      },
+      {
+        name: 'customAttributes.department',
+        modalName: 'edit-department',
+        formField: 'customAttributes',
+        updatedMockTenant: {
+          ...mockTenant,
+          customAttributes: { department: 'Engineering' },
+        },
+        expectedFormValue: { department: 'Engineering' },
+      },
+    ]) {
+      test(`${attr.name} should persist updated value in form data`, async ({
+        page,
+      }) => {
+        await page.waitForTimeout(STATE_TIMEOUT);
+
+        const userAttr = page
+          .locator(`descope-user-attribute[data-id="${attr.name}"]`)
+          .first();
+
+        const editBtn = userAttr
+          .locator(`descope-button[data-id="edit-btn"]`)
+          .first();
+
+        // Click edit button to open modal
+        await editBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
+
+        const modal = page.locator(
+          `descope-modal[data-id="${attr.modalName}"]`,
+        );
+        const finishFlowBtn = modal.locator('button', {
+          hasText: 'Finish Flow',
+        });
+
+        // Mock the updated tenant response
+        await page.route('**/mgmt/tenant?**', async (route) =>
+          route.fulfill({
+            json: attr.updatedMockTenant,
+          }),
+        );
+
+        await finishFlowBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
+
+        // Click edit again to reopen the modal
+        await editBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
+
+        // Verify that the descope-wc component was recreated with the updated form data
+        const descopeWc = modal.locator('descope-wc');
+        const formAttr = await descopeWc.getAttribute('form');
+
+        // Parse the form JSON and verify it contains the updated value
+        const formData = JSON.parse(formAttr);
+        expect(formData[attr.formField]).toEqual(attr.expectedFormValue);
+      });
+    }
   });
 });

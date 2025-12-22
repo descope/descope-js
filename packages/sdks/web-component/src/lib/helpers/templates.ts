@@ -158,19 +158,22 @@ export const setCssVars = (
   Object.keys(cssVars).forEach((componentName) => {
     if (!nextPageTemplate.querySelector(componentName)) {
       logger.debug(
-        `Skipping css vars for component "${componentName}}"`,
+        `Skipping css vars for component "${componentName}"`,
         `Got css vars for component ${componentName} but Could not find it on next page`,
       );
+
+      return;
     }
     const componentClass:
       | (CustomElementConstructor & { cssVarList: CssVars })
       | undefined = customElements.get(componentName) as any;
 
     if (!componentClass) {
-      logger.info(
+      logger.debug(
         `Could not find component class for ${componentName}`,
         'Check if the component is registered',
       );
+
       return;
     }
 
@@ -265,6 +268,32 @@ const setImageVariable = (
   }
 };
 
+const applyComponentsState = (
+  baseEle: DocumentFragment,
+  componentsState: Record<string, string> = {},
+  logger?: { error: (message: string, description: string) => void },
+) => {
+  Object.entries(componentsState).forEach(([componentId, state]) => {
+    const componentEls = baseEle.querySelectorAll(`[id="${CSS.escape(componentId)}"]`);
+    componentEls.forEach((compEl) => {
+      switch (state) {
+        case 'disable':
+          compEl.setAttribute('disabled', 'true');
+          break;
+        case 'hide':
+          compEl.classList.add('hidden');
+          break;
+        default:
+          logger?.error(
+            `Unknown component state "${state}" for component with id "${componentId}"`,
+            'Valid states are "disable" and "hide"',
+          );
+          break;
+      }
+    });
+  });
+};
+
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
@@ -273,16 +302,16 @@ const setImageVariable = (
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
   screenState?: ScreenState,
-  componentsConfig?: ComponentsConfig,
   flowInputs?: Record<string, string>,
   logger?: { error: (message: string, description: string) => void },
 ) => {
   replaceHrefByDataType(baseEle, 'totp-link', screenState?.totp?.provisionUrl);
   replaceHrefByDataType(baseEle, 'notp-link', screenState?.notp?.redirectUrl);
   replaceElementTemplates(baseEle, screenState);
-  setElementConfig(baseEle, componentsConfig, logger);
+  setElementConfig(baseEle, screenState?.componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
+  applyComponentsState(baseEle, screenState?.componentsState, logger);
 };
 
 /**

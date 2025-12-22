@@ -5,9 +5,16 @@ type Head<T extends ReadonlyArray<any>> = T extends readonly [] ? never : T[0];
 
 export type OidcConfigOptions = {
   applicationId?: string;
+  // Client ID for OIDC. Required if issuer is provided.
+  // For inbound apps, provide issuer with this clientId (e.g., issuer: 'https://api.descope.com/v1/apps/{projectId}')
+  clientId?: string;
+  // Custom issuer/authority URL. If provided, clientId is required.
+  // For inbound apps, construct the issuer URL manually: `${baseUrl}/v1/apps/${projectId}`
+  issuer?: string;
   // default is current URL
   redirectUri?: string;
   // default is openid email roles descope.custom_claims offline_access
+  // default is 'openid' if issuer (and clientId) is provided
   scope?: string;
 };
 

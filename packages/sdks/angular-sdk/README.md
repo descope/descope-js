@@ -187,6 +187,9 @@ export class AppComponent {
     Set a CSP nonce that will be used for style and script tags.
     nonce="rAnd0m"
 
+    Sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows.
+    popupOrigin="https://auth.example.com"
+
     Clear screen error message on user input.
     dismissScreenErrorOnInput=true
 
@@ -649,6 +652,144 @@ The `ApplicationsPortal` lets you embed an applications portal component in your
 
 Example:
 [My User Profile](./projects/demo-app/src/app/my-applications-portal/my-applications-portal.component.html)
+
+## OIDC Login
+
+Descope also supports OIDC login. To enable OIDC login, pass `oidcConfig` to the `DescopeAuthConfig` configuration.
+
+### Configuration with OIDC
+
+#### NgModule
+
+```ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { DescopeAuthModule } from '@descope/angular-sdk';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    DescopeAuthModule.forRoot({
+      projectId: '<your_project_id>',
+      oidcConfig: true // Enable OIDC with default settings
+    })
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+#### Standalone Mode
+
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { DescopeAuthConfig } from '@descope/angular-sdk';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    {
+      provide: DescopeAuthConfig,
+      useValue: {
+        projectId: '<your_project_id>',
+        oidcConfig: true // Enable OIDC with default settings
+      }
+    }
+  ]
+}).catch((err) => console.error(err));
+```
+
+#### Custom OIDC Configuration
+
+```ts
+{
+  provide: DescopeAuthConfig,
+  useValue: {
+    projectId: '<your_project_id>',
+    oidcConfig: {
+      applicationId: 'my-application-id', // optional, if not provided, the default OIDC application will be used
+      redirectUri: 'https://my-app.com/redirect', // optional, if not provided, the default redirect URI will be used
+      scope: 'openid profile email', // optional, if not provided, default is openid email offline_access roles descope.custom_claims
+    }
+  }
+}
+```
+
+#### Using Inbound Apps as OIDC Provider
+
+To use an inbound app as an OIDC provider, you must provide both the `issuer` and `clientId` configuration options. The `issuer` is the OIDC authority URL, and the `clientId` is the client ID for your inbound app.
+
+> **Note:** When configuring an inbound app as an OIDC provider, you must obtain the issuer URL directly from the inbound app settings page in the Descope console. The issuer URL is specific to your inbound app configuration and cannot be constructed manually. In addition, you'll need to provide the client ID from the same inbound app settings.
+
+```ts
+{
+  provide: DescopeAuthConfig,
+  useValue: {
+    projectId: '<your_project_id>',
+    oidcConfig: {
+      // Required: Get this from your inbound app settings page
+      issuer: 'https://api.descope.com/v1/apps/P1234567890',
+      // Required: Client ID from your inbound app settings
+      clientId: 'your-inbound-app-client-id',
+      // Optional: Custom redirect URI (defaults to current URL)
+      redirectUri: 'https://my-app.com/redirect',
+      // Optional: Custom scope (defaults to 'openid' when issuer is provided)
+      scope: 'openid profile email',
+    }
+  }
+}
+```
+
+When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
+
+### Using OIDC Login
+
+After configuring OIDC, you can use the `oidc.loginWithRedirect` method from the `DescopeAuthService`:
+
+```ts
+import { Component } from '@angular/core';
+import { DescopeAuthService } from '@descope/angular-sdk';
+
+@Component({
+  selector: 'app-login',
+  template: '<button (click)="login()">Login with OIDC</button>'
+})
+export class LoginComponent {
+  constructor(private descopeAuthService: DescopeAuthService) {}
+
+  login() {
+    this.descopeAuthService.descopeSdk.oidc.loginWithRedirect({
+      // By default, the login will redirect the user to the current URL
+      // If you want to redirect the user to a different URL, you can specify it here
+      redirect_uri: window.location.origin
+    });
+  }
+}
+```
+
+### Finishing OIDC Login
+
+After the user is redirected back to your application with OIDC code and state query parameters, call `finishLoginIfNeed()` to complete the login:
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { DescopeAuthService } from '@descope/angular-sdk';
+
+@Component({
+  selector: 'app-callback',
+  template: '<div>Processing login...</div>'
+})
+export class CallbackComponent implements OnInit {
+  constructor(private descopeAuthService: DescopeAuthService) {}
+
+  async ngOnInit() {
+    // This will automatically finish the login if OIDC parameters are present
+    await this.descopeAuthService.descopeSdk.oidc.finishLoginIfNeed();
+  }
+}
+```
 
 ## Code Example
 

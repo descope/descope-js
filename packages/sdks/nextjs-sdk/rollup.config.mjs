@@ -6,7 +6,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 import noEmit from 'rollup-plugin-no-emit';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 const nextSubPackages = [
 	'next/server',
@@ -55,7 +55,7 @@ const configurations = ['server', 'client', ''].flatMap((entry) => {
 			'react/jsx-runtime',
 			'@descope/react-sdk',
 			'@descope/web-component',
-			...nextSubPackages.flatMap((alias) => [alias, `${alias}.js`])
+			...nextSubPackages.map((alias) => `${alias}.js`)
 		],
 		onwarn(warning, warn) {
 			if (
@@ -103,7 +103,7 @@ export default [
 			'react/jsx-runtime',
 			'@descope/react-sdk',
 			'@descope/web-component',
-			...nextSubPackages.flatMap((alias) => [alias, `${alias}.js`])
+			...nextSubPackages.map((alias) => `${alias}.js`)
 		],
 		onwarn(warning, warn) {
 			// Silence repeated 'use client' directive noise & externalized dependency notices
@@ -115,6 +115,7 @@ export default [
 			}
 			if (
 				warning.code === 'UNRESOLVED_IMPORT' &&
+				warning.source &&
 				['react', '@descope/react-sdk', 'next/'].some((p) =>
 					warning.source.startsWith(p)
 				)

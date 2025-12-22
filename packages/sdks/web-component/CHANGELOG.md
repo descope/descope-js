@@ -2,6 +2,120 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.52.3](https://github.com/descope/descope-js/compare/web-component-3.52.2...web-component-3.52.3) (2025-12-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.41.0`
+## [3.52.2](https://github.com/descope/descope-js/compare/web-component-3.52.1...web-component-3.52.2) (2025-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.2`
+## [3.52.1](https://github.com/descope/descope-js/compare/web-component-3.52.0...web-component-3.52.1) (2025-12-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.1`
+## [3.52.0](https://github.com/descope/descope-js/compare/web-component-3.51.0...web-component-3.52.0) (2025-12-02)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.0`
+
+### Features
+
+* Skip session handling when running in native flows RELEASE ([#1274](https://github.com/descope/descope-js/issues/1274)) ([53fe652](https://github.com/descope/descope-js/commit/53fe6521bfc57424b6017278b4111621f0f2467d))
+
+## [3.51.0](https://github.com/descope/descope-js/compare/web-component-3.50.0...web-component-3.51.0) (2025-12-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.39.1`
+
+### Features
+
+* add custom screen indication to the flow REST calls RELEASE ([#1269](https://github.com/descope/descope-js/issues/1269)) ([d1b21d1](https://github.com/descope/descope-js/commit/d1b21d19746c715c872f21ab6df8946c572e9294))
+
+## [3.50.0](https://github.com/descope/descope-js/compare/web-component-3.49.3...web-component-3.50.0) (2025-11-30)
+
+
+### Features
+
+* Conditional components RELEASE ([#1277](https://github.com/descope/descope-js/issues/1277)) ([bf8d1e8](https://github.com/descope/descope-js/commit/bf8d1e869a93300daff55caba55c90b298395665))
+
+## [3.49.3](https://github.com/descope/descope-js/compare/web-component-3.49.2...web-component-3.49.3) (2025-11-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.39.0`
+## [3.49.2](https://github.com/descope/descope-js/compare/web-component-3.49.1...web-component-3.49.2) (2025-11-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.3`
+## [3.49.1](https://github.com/descope/descope-js/compare/web-component-3.49.0...web-component-3.49.1) (2025-11-13)
+
+
+### Bug Fixes
+
+* Issue12749 RELEASE ([#1265](https://github.com/descope/descope-js/issues/1265)) ([2481513](https://github.com/descope/descope-js/commit/24815132ea94fca3a596bc8f67c0bdacee9dedc5))
+
+## [3.49.0](https://github.com/descope/descope-js/compare/web-component-3.48.3...web-component-3.49.0) (2025-11-11)
+
+
+### Features
+
+* Support fraud and bot detection integrations in custom screens RELEASE ([#1262](https://github.com/descope/descope-js/issues/1262)) ([022025b](https://github.com/descope/descope-js/commit/022025bf3be97b484c2c2b5af57ee5a09fca2796))
+
+## [3.48.3](https://github.com/descope/descope-js/compare/web-component-3.48.2...web-component-3.48.3) (2025-11-09)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.5.1`
+* `sdk-mixins` updated to version `0.14.0`
+* `web-js-sdk` updated to version `1.38.2`
+* `escape-markdown` updated to version `0.1.6`
+## [3.48.2](https://github.com/descope/descope-js/compare/web-component-3.48.1...web-component-3.48.2) (2025-11-06)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.16`
+* `web-js-sdk` updated to version `1.38.1`
+## [3.48.1](https://github.com/descope/descope-js/compare/web-component-3.48.0...web-component-3.48.1) (2025-11-05)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.13.15`
+
+### Bug Fixes
+
+* enforce using post message when valid popup origin provided RELEASE ([#1256](https://github.com/descope/descope-js/issues/1256)) ([e322b44](https://github.com/descope/descope-js/commit/e322b445995cfb85b4148af61abb06ab4398f3c8))
+
+## [3.48.0](https://github.com/descope/descope-js/compare/web-component-3.47.12...web-component-3.48.0) (2025-10-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.38.0`
+
+### Features
+
+* Add output to success event ([#1244](https://github.com/descope/descope-js/issues/1244)) RELEASE ([eae6357](https://github.com/descope/descope-js/commit/eae63570a342dc0919d5196fb79b4ffc035a2524))
+
+## [3.47.12](https://github.com/descope/descope-js/compare/web-component-3.47.11...web-component-3.47.12) (2025-10-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.37.2`
+## [3.47.11](https://github.com/descope/descope-js/compare/web-component-3.47.10...web-component-3.47.11) (2025-10-21)
+
+
+### Bug Fixes
+
+* better css vars logs ([#1238](https://github.com/descope/descope-js/issues/1238)) ([06528eb](https://github.com/descope/descope-js/commit/06528eb89fd5b72e7aa56fd492639c59d7993547))
+* clean up polling when umounting ([#1237](https://github.com/descope/descope-js/issues/1237)) ([15a42e4](https://github.com/descope/descope-js/commit/15a42e4e0f6dfaaf22df4f49d4e03f029c15600a))
+* oauth popup cross origin support RELEASE ([#1236](https://github.com/descope/descope-js/issues/1236)) ([5e5db40](https://github.com/descope/descope-js/commit/5e5db40aba342ca85937c6bab2d612d592036b26))
+
 ## [3.47.10](https://github.com/descope/descope-js/compare/web-component-3.47.9...web-component-3.47.10) (2025-10-16)
 
 ### Dependency Updates

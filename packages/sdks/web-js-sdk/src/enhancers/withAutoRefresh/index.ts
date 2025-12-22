@@ -19,6 +19,7 @@ import { getRefreshToken } from '../withPersistTokens/helpers';
 export const withAutoRefresh =
   <T extends CreateWebSdk>(createSdk: T) =>
   ({ autoRefresh, ...config }: Parameters<T>[0] & AutoRefreshOptions) => {
+    // Never auto refresh in native flows
     if (!autoRefresh || isDescopeBridge()) return createSdk(config);
 
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh

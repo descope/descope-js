@@ -2,6 +2,77 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.41.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.2...web-js-sdk-1.41.0) (2025-12-16)
+
+
+### Features
+
+* Disable explicit refresh calls when running in native flows ([#1284](https://github.com/descope/descope-js/issues/1284)) ([7043ce7](https://github.com/descope/descope-js/commit/7043ce717b21afc155610dfe42702f1614b61610))
+* pass refresh to the middleware in next ([#1286](https://github.com/descope/descope-js/issues/1286)) RELEASE ([e0b89bc](https://github.com/descope/descope-js/commit/e0b89bc27407a5c25b5186f185893eb7779bc2b9))
+
+## [1.40.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.1...web-js-sdk-1.40.2) (2025-12-04)
+
+
+### Bug Fixes
+
+* remove last cookie domain ([#1282](https://github.com/descope/descope-js/issues/1282)) RELEASE ([f53c121](https://github.com/descope/descope-js/commit/f53c121f2e8a425b6a42be9d3cd281847661c5a9))
+
+## [1.40.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.0...web-js-sdk-1.40.1) (2025-12-03)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.53.1`
+## [1.40.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.39.1...web-js-sdk-1.40.0) (2025-12-02)
+
+
+### Features
+
+* Skip session handling when running in native flows RELEASE ([#1274](https://github.com/descope/descope-js/issues/1274)) ([53fe652](https://github.com/descope/descope-js/commit/53fe6521bfc57424b6017278b4111621f0f2467d))
+
+## [1.39.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.39.0...web-js-sdk-1.39.1) (2025-12-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.53.0`
+## [1.39.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.3...web-js-sdk-1.39.0) (2025-11-18)
+
+
+### Features
+
+* Check with native bridge to decide if WebAuthn is supported RELEASE ([#1267](https://github.com/descope/descope-js/issues/1267)) ([7c229b7](https://github.com/descope/descope-js/commit/7c229b751f73ede77688dd9e6e7b6481fa06e4cd))
+
+## [1.38.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.2...web-js-sdk-1.38.3) (2025-11-18)
+
+
+### Features
+
+* Added inbound app client SDK functionality ([#1266](https://github.com/descope/descope-js/issues/1266)) RELEASE ([6565751](https://github.com/descope/descope-js/commit/65657510719903c6618b9cadd1ec60133c7fbaf6))
+
+## [1.38.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.1...web-js-sdk-1.38.2) (2025-11-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.2`
+## [1.38.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.38.0...web-js-sdk-1.38.1) (2025-11-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.1`
+## [1.38.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.37.2...web-js-sdk-1.38.0) (2025-10-23)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.52.0`
+
+### Features
+
+* Add output to success event ([#1244](https://github.com/descope/descope-js/issues/1244)) RELEASE ([eae6357](https://github.com/descope/descope-js/commit/eae63570a342dc0919d5196fb79b4ffc035a2524))
+
+## [1.37.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.37.1...web-js-sdk-1.37.2) (2025-10-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.51.0`
 ## [1.37.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.37.0...web-js-sdk-1.37.1) (2025-10-16)
 
 ## [1.37.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.36.2...web-js-sdk-1.37.0) (2025-09-29)

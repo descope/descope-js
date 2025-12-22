@@ -37,13 +37,16 @@ const withMagicLink = (httpClient: HttpClient) => ({
         (
           loginId: string,
           URI?: string,
-          loginOptions?: LoginOptions,
+          {
+            providerId,
+            ...loginOptions
+          }: LoginOptions & { providerId?: string } = {},
           token?: string,
         ) =>
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.magicLink.signIn, delivery),
-              { loginId, URI, loginOptions },
+              { loginId, URI, loginOptions, providerId },
               { token },
             ),
           ),
@@ -60,7 +63,10 @@ const withMagicLink = (httpClient: HttpClient) => ({
           loginId: string,
           URI?: string,
           user?: User,
-          signUpOptions?: SignUpOptions,
+          {
+            providerId,
+            ...signUpOptions
+          }: SignUpOptions & { providerId?: string } = {},
         ) =>
           transformResponse(
             httpClient.post(pathJoin(apiPaths.magicLink.signUp, delivery), {
@@ -68,6 +74,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
               URI,
               user,
               loginOptions: signUpOptions,
+              providerId,
             }),
           ),
       ),
@@ -79,12 +86,20 @@ const withMagicLink = (httpClient: HttpClient) => ({
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (loginId: string, URI?: string, signUpOptions?: SignUpOptions) =>
+        (
+          loginId: string,
+          URI?: string,
+          {
+            providerId,
+            ...signUpOptions
+          }: SignUpOptions & { providerId?: string } = {},
+        ) =>
           transformResponse(
             httpClient.post(pathJoin(apiPaths.magicLink.signUpOrIn, delivery), {
               loginId,
               URI,
               loginOptions: signUpOptions,
+              providerId,
             }),
           ),
       ),

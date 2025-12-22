@@ -56,11 +56,18 @@ const withOtp = (httpClient: HttpClient) => ({
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (loginId: string, loginOptions?: LoginOptions, token?: string) =>
+        (
+          loginId: string,
+          {
+            providerId,
+            ...loginOptions
+          }: LoginOptions & { providerId?: string } = {},
+          token?: string,
+        ) =>
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.otp.signIn, delivery),
-              { loginId, loginOptions },
+              { loginId, loginOptions, providerId },
               { token },
             ),
           ),
@@ -73,12 +80,20 @@ const withOtp = (httpClient: HttpClient) => ({
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (loginId: string, user?: User, signUpOptions?: SignUpOptions) =>
+        (
+          loginId: string,
+          user?: User,
+          {
+            providerId,
+            ...signUpOptions
+          }: SignUpOptions & { providerId?: string } = {},
+        ) =>
           transformResponse(
             httpClient.post(pathJoin(apiPaths.otp.signUp, delivery), {
               loginId,
               user,
               loginOptions: signUpOptions,
+              providerId,
             }),
           ),
       ),
@@ -90,11 +105,18 @@ const withOtp = (httpClient: HttpClient) => ({
     (acc, delivery) => ({
       ...acc,
       [delivery]: withSignValidations(
-        (loginId: string, signUpOptions?: SignUpOptions) =>
+        (
+          loginId: string,
+          {
+            providerId,
+            ...signUpOptions
+          }: SignUpOptions & { providerId?: string } = {},
+        ) =>
           transformResponse(
             httpClient.post(pathJoin(apiPaths.otp.signUpOrIn, delivery), {
               loginId,
               loginOptions: signUpOptions,
+              providerId,
             }),
           ),
       ),

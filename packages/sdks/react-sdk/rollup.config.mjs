@@ -9,11 +9,12 @@ import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import noEmit from 'rollup-plugin-no-emit';
 
-import packageJson from './package.json' assert { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 export default [
   {
     input: ['src/index.ts', 'src/flows.ts'],
+    external: ['tslib'],
     output: [
       {
         dir: './dist/esm',

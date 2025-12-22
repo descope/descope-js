@@ -16,6 +16,7 @@ import { createFlowTemplate } from '../../../../helpers';
 import {
   getSelectedUsersAllIds,
   getSelectedUsersLoginIds,
+  getSelectedUsersRolesList,
   getSelectedUsersUserIds,
 } from '../../../state/selectors';
 
@@ -100,9 +101,11 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             baseCdnUrl: this.baseCdnUrl,
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
+            'style-id': this.styleId,
             client: JSON.stringify({
               userIds: getSelectedUsersUserIds(this.state),
               loginIds: getSelectedUsersAllIds(this.state),
+              usersAndRoles: getSelectedUsersRolesList(this.state),
             }),
             tenant: this.tenantId,
           }),

@@ -11,8 +11,10 @@ import { Claims } from '@descope/core-js-sdk';
 import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
 import { IContext, User } from '../../types';
-import { withValidation } from '../../utils';
+import { isDescopeBridge, withValidation } from '../../utils';
 import useSdk from './useSdk';
+
+type Hooks = Parameters<typeof useSdk>[0]['hooks'];
 
 interface IAuthProviderProps {
   projectId: string;
@@ -30,6 +32,12 @@ interface IAuthProviderProps {
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: CookieConfig;
+  // If true, refresh token will be stored on cookie. Otherwise, the refresh token will be
+  // stored on local storage and can be accessed with getRefreshToken function
+  // Use this option if you need server-side access to the refresh token (e.g., in Next.js middleware)
+  // to enable refreshing sessions on the server before they expire
+  refreshTokenViaCookie?: CookieConfig;
+  hooks?: Hooks;
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
   oidcConfig?: OidcConfig;
@@ -53,6 +61,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   baseCdnUrl = '',
   sessionTokenViaCookie = false,
+  refreshTokenViaCookie = false,
+  hooks = undefined,
   persistTokens = true,
   autoRefresh = true,
   oidcConfig = undefined,
@@ -81,6 +91,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     persistTokens,
     autoRefresh,
     sessionTokenViaCookie,
+    refreshTokenViaCookie,
+    hooks,
     oidcConfig,
     storeLastAuthenticatedUser,
     keepLastAuthenticatedUserAfterLogout,
@@ -124,6 +136,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   }, []);
 
   const fetchSession = useCallback(() => {
+    // Don't load the session in native flows, though we'd usually not get here at all from useSession in this case
+    if (isDescopeBridge()) return;
+
     // We want that the session will fetched only once
     if (isSessionFetched.current) return;
     isSessionFetched.current = true;

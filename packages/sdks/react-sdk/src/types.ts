@@ -5,9 +5,11 @@ import RoleManagementWidget from '@descope/role-management-widget';
 import TenantProfileWidget from '@descope/tenant-profile-widget';
 import UserManagementWidget from '@descope/user-management-widget';
 import UserProfileWidget from '@descope/user-profile-widget';
+import OutboundApplicationsWidget from '@descope/outbound-applications-widget';
 import type {
   AutoFocusOptions,
   CustomStorage,
+  FlowJWTResponse,
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
@@ -27,6 +29,7 @@ declare global {
       ['descope-user-profile-widget']: UserProfileCustomElement;
       ['descope-applications-portal-widget']: ApplicationsPortalCustomElement;
       ['descope-tenant-profile-widget']: TenantProfileCustomElement;
+      ['descope-outbound-applications-widget']: OutboundApplicationsCustomElement;
     }
   }
 }
@@ -92,6 +95,10 @@ export type TenantProfileCustomElement = CustomElement<
   typeof TenantProfileWidget & TenantProfileProps
 >;
 
+export type OutboundApplicationsCustomElement = CustomElement<
+  typeof OutboundApplicationsWidget & OutboundApplicationsProps
+>;
+
 export interface IContext {
   fetchUser: () => void;
   user: User;
@@ -121,7 +128,7 @@ export interface IContext {
 
 export type DescopeProps = {
   flowId: string;
-  onSuccess?: CustomEventCb<JWTResponse>;
+  onSuccess?: CustomEventCb<FlowJWTResponse>;
   onError?: CustomEventCb<ErrorResponse>;
   onReady?: CustomEventCb<{}>;
   logger?: ILogger;
@@ -139,6 +146,7 @@ export type DescopeProps = {
   redirectUrl?: string;
   outboundAppId?: string;
   outboundAppScopes?: string[];
+  popupOrigin?: string;
   errorTransformer?: (error: { text: string; type: string }) => string;
   // use to override screen's form inputs in flow execution
   form?: Record<string, any>;
@@ -176,6 +184,8 @@ export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
 };
 
 export type TenantProfileProps = WidgetProps;
+
+export type OutboundApplicationsProps = WidgetProps;
 
 export type { ILogger };
 export type DefaultFlowProps = Omit<DescopeProps, 'flowId'>;

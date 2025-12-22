@@ -105,6 +105,7 @@ describe('saml', () => {
         'ddd',
         true,
         'lulu',
+        true,
       );
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.saml.start,
@@ -116,6 +117,7 @@ describe('saml', () => {
             ssoId: 'ddd',
             forceAuthn: 'true',
             loginHint: 'lulu',
+            initiatedEmail: 'tenant-ID',
           },
           token: 'ccc',
         },
