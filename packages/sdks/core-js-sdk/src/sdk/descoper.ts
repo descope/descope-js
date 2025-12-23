@@ -7,7 +7,7 @@ import {
   DescoperCreateResponse,
   DescoperGetResponse,
   DescoperListResponse,
-  DescoperLoadOptions,
+  DescoperListOptions,
   DescoperRBAC,
   DescoperUpdateResponse,
   SdkResponse,
@@ -56,7 +56,7 @@ const withDescoper = (httpClient: HttpClient) => ({
   ),
 
   list: (
-    options?: DescoperLoadOptions,
+    options?: DescoperListOptions,
   ): Promise<SdkResponse<DescoperListResponse>> =>
     transformResponse(httpClient.post(apiPaths.descoper.list, { options })),
 });

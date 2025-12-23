@@ -38,7 +38,7 @@ export type {
   DescoperCreateResponse,
   DescoperGetResponse,
   DescoperListResponse,
-  DescoperLoadOptions,
+  DescoperListOptions,
   DescoperProjectRole,
   DescoperRBAC,
   DescoperRole,

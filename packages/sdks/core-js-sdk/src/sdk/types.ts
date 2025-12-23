@@ -450,7 +450,7 @@ export type DescoperCreate = {
   rbac?: DescoperRBAC;
 };
 
-export type DescoperLoadOptions = Record<string, never>;
+export type DescoperListOptions = {}; // no options supported
 
 export type DescoperCreateResponse = {
   descopers?: Descoper[];
