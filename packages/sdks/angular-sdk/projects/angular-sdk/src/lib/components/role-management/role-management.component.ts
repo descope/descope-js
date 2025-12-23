@@ -7,11 +7,12 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
-  CUSTOM_ELEMENTS_SCHEMA
+  CUSTOM_ELEMENTS_SCHEMA,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import DescopeRoleManagementWidget from '@descope/role-management-widget';
-import { ILogger } from '@descope/web-component';
-import { DescopeAuthConfig } from '../../types/types';
+import { isPlatformBrowser } from '@angular/common';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
 
 @Component({
   selector: 'role-management[tenant]',
@@ -36,11 +37,13 @@ export class RoleManagementComponent
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private readonly webComponent = new DescopeRoleManagementWidget();
+  private webComponent?: HTMLElement;
+  private isWidgetLoaded = false;
 
   constructor(
     private elementRef: ElementRef,
-    descopeConfig: DescopeAuthConfig
+    descopeConfig: DescopeAuthConfig,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -48,13 +51,39 @@ export class RoleManagementComponent
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Only load widget in browser environment
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    await this.loadWidget();
     this.setupWebComponent();
-    this.elementRef.nativeElement.appendChild(this.webComponent);
+    if (this.webComponent) {
+      this.elementRef.nativeElement.appendChild(this.webComponent);
+    }
+  }
+
+  private async loadWidget(): Promise<void> {
+    if (this.isWidgetLoaded) {
+      return;
+    }
+
+    try {
+      const WidgetModule = await import('@descope/role-management-widget');
+      const DescopeRoleManagementWidget = WidgetModule.default;
+      this.webComponent =
+        new DescopeRoleManagementWidget() as unknown as HTMLElement;
+      this.isWidgetLoaded = true;
+    } catch (error) {
+      console.error('Failed to load Role Management widget:', error);
+    }
   }
 
   ngOnChanges(): void {
-    this.setupWebComponent();
+    if (this.webComponent) {
+      this.setupWebComponent();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -62,6 +91,8 @@ export class RoleManagementComponent
   }
 
   private setupWebComponent() {
+    if (!this.webComponent) return;
+
     this.webComponent.setAttribute('project-id', this.projectId);
     this.webComponent.setAttribute('tenant', this.tenant);
     this.webComponent.setAttribute('widget-id', this.widgetId);
@@ -90,6 +121,8 @@ export class RoleManagementComponent
   }
 
   private setupEventListeners(): void {
+    if (!this.webComponent) return;
+
     if (this.ready) {
       this.webComponent.addEventListener('ready', () => {
         this.ready?.emit();

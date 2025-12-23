@@ -6,11 +6,12 @@ import {
   OnChanges,
   OnInit,
   Output,
-  AfterViewInit
+  AfterViewInit,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import DescopeApplicationsPortalWidget from '@descope/applications-portal-widget';
-import { ILogger } from '@descope/web-component';
-import { DescopeAuthConfig } from '../../types/types';
+import { isPlatformBrowser } from '@angular/common';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
 
 @Component({
   selector: 'applications-portal',
@@ -35,11 +36,13 @@ export class ApplicationsPortalComponent
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private readonly webComponent = new DescopeApplicationsPortalWidget();
+  private webComponent?: HTMLElement;
+  private isWidgetLoaded = false;
 
   constructor(
     private elementRef: ElementRef,
-    descopeConfig: DescopeAuthConfig
+    descopeConfig: DescopeAuthConfig,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -47,13 +50,39 @@ export class ApplicationsPortalComponent
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Only load widget in browser environment
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    await this.loadWidget();
     this.setupWebComponent();
-    this.elementRef.nativeElement.appendChild(this.webComponent);
+    if (this.webComponent) {
+      this.elementRef.nativeElement.appendChild(this.webComponent);
+    }
+  }
+
+  private async loadWidget(): Promise<void> {
+    if (this.isWidgetLoaded) {
+      return;
+    }
+
+    try {
+      const WidgetModule = await import('@descope/applications-portal-widget');
+      const DescopeApplicationsPortalWidget = WidgetModule.default;
+      this.webComponent =
+        new DescopeApplicationsPortalWidget() as unknown as HTMLElement;
+      this.isWidgetLoaded = true;
+    } catch (error) {
+      console.error('Failed to load Applications Portal widget:', error);
+    }
   }
 
   ngOnChanges(): void {
-    this.setupWebComponent();
+    if (this.webComponent) {
+      this.setupWebComponent();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -61,6 +90,8 @@ export class ApplicationsPortalComponent
   }
 
   private setupWebComponent() {
+    if (!this.webComponent) return;
+
     this.webComponent.setAttribute('project-id', this.projectId);
     this.webComponent.setAttribute('widget-id', this.widgetId);
     if (this.baseUrl) {
@@ -88,6 +119,8 @@ export class ApplicationsPortalComponent
   }
 
   private setupEventListeners(): void {
+    if (!this.webComponent) return;
+
     if (this.logout) {
       this.webComponent.addEventListener('logout', (e: Event) => {
         this.logout?.emit(e as CustomEvent);

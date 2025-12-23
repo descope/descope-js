@@ -8,14 +8,20 @@ import {
   Output,
   ViewChild,
   AfterViewInit,
-  CUSTOM_ELEMENTS_SCHEMA
+  CUSTOM_ELEMENTS_SCHEMA,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import DescopeWebComponent from '@descope/web-component';
-import DescopeWc, { ILogger, type CustomStorage } from '@descope/web-component';
+import { isPlatformBrowser } from '@angular/common';
 import { DescopeAuthService } from '../../services/descope-auth.service';
 import { from } from 'rxjs';
 import { baseHeaders } from '../../utils/constants';
-import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
+
+// Use "import type" to import only the TypeScript type information.
+// This is safe for SSR because it's completely erased at compile time and generates no runtime import.
+import type DescopeWebComponent from '@descope/web-component';
+import type { CustomStorage } from '@descope/web-component';
 
 @Component({
   selector: 'descope[flowId]',
@@ -120,11 +126,13 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
   private webComponent?: DescopeWebComponent;
+  private isWebComponentLoaded = false;
 
   constructor(
     private elementRef: ElementRef,
     private authService: DescopeAuthService,
-    descopeConfig: DescopeAuthConfig
+    descopeConfig: DescopeAuthConfig,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -134,29 +142,51 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     this.customStorage = descopeConfig.customStorage;
   }
 
-  ngOnInit(): void {
-    const sdk = this.authService.descopeSdk;
+  async ngOnInit(): Promise<void> {
+    // Only load web component in browser environment
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
-    DescopeWc.sdkConfigOverrides = {
-      // Overrides the web-component's base headers to indicate usage via the React SDK
-      baseHeaders,
-      // Disables token persistence within the web-component to delegate token management
-      // to the global SDK hooks. This ensures token handling aligns with the SDK's configuration,
-      // and web-component requests leverage the global SDK's beforeRequest hooks for consistency
-      persistTokens: false,
-      hooks: {
-        get beforeRequest() {
-          // Retrieves the beforeRequest hook from the global SDK, which is initialized
-          // within the AuthProvider using the desired configuration. This approach ensures
-          // the web-component utilizes the same beforeRequest hooks as the global SDK
-          return sdk.httpClient.hooks?.beforeRequest;
-        },
-        set beforeRequest(_) {
-          // The empty setter prevents runtime errors when attempts are made to assign a value to 'beforeRequest'.
-          // JavaScript objects default to having both getters and setters
+    await this.loadWebComponent();
+  }
+
+  private async loadWebComponent(): Promise<void> {
+    if (this.isWebComponentLoaded) {
+      return;
+    }
+
+    try {
+      // Dynamically import the web component only in browser context
+      const DescopeWcModule = await import('@descope/web-component');
+      const DescopeWc = DescopeWcModule.default;
+      const sdk = this.authService.descopeSdk;
+
+      DescopeWc.sdkConfigOverrides = {
+        // Overrides the web-component's base headers to indicate usage via the Angular SDK
+        baseHeaders,
+        // Disables token persistence within the web-component to delegate token management
+        // to the global SDK hooks. This ensures token handling aligns with the SDK's configuration,
+        // and web-component requests leverage the global SDK's beforeRequest hooks for consistency
+        persistTokens: false,
+        hooks: {
+          get beforeRequest() {
+            // Retrieves the beforeRequest hook from the global SDK, which is initialized
+            // within the AuthProvider using the desired configuration. This approach ensures
+            // the web-component utilizes the same beforeRequest hooks as the global SDK
+            return sdk.httpClient.hooks?.beforeRequest;
+          },
+          set beforeRequest(_) {
+            // The empty setter prevents runtime errors when attempts are made to assign a value to 'beforeRequest'.
+            // JavaScript objects default to having both getters and setters
+          }
         }
-      }
-    };
+      };
+
+      this.isWebComponentLoaded = true;
+    } catch (error) {
+      console.error('Failed to load Descope web component:', error);
+    }
   }
 
   ngAfterViewInit(): void {
