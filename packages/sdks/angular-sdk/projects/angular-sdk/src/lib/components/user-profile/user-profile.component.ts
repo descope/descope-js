@@ -3,23 +3,20 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
-  OnInit,
   Output,
-  AfterViewInit,
   Inject,
   PLATFORM_ID
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { DescopeAuthConfig, ILogger } from '../../types/types';
 import { DescopeAuthService } from '../../services/descope-auth.service';
+import { BaseLazyWidgetComponent } from '../../base/base-lazy-widget.component';
 
 @Component({
   selector: 'user-profile',
   standalone: true,
   template: ''
 })
-export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
+export class UserProfileComponent extends BaseLazyWidgetComponent {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -35,61 +32,31 @@ export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private webComponent?: HTMLElement;
-  private isWidgetLoaded = false;
-
   constructor(
-    private elementRef: ElementRef,
+    elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
     private descopeAuthService: DescopeAuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
+    super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
-  async ngOnInit() {
-    // Only load widget in browser environment
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    await this.loadWidget();
-    this.setupWebComponent();
-    if (this.webComponent) {
-      this.elementRef.nativeElement.appendChild(this.webComponent);
-    }
-  }
-
-  private async loadWidget(): Promise<void> {
-    if (this.isWidgetLoaded) {
-      return;
-    }
-
+  protected async loadWidget(): Promise<HTMLElement | null> {
     try {
       const WidgetModule = await import('@descope/user-profile-widget');
       const DescopeUserProfileWidget = WidgetModule.default;
-      this.webComponent =
-        new DescopeUserProfileWidget() as unknown as HTMLElement;
-      this.isWidgetLoaded = true;
+      return new DescopeUserProfileWidget() as unknown as HTMLElement;
     } catch (error) {
       console.error('Failed to load User Profile widget:', error);
+      return null;
     }
   }
 
-  ngOnChanges(): void {
-    if (this.webComponent) {
-      this.setupWebComponent();
-    }
-  }
-
-  ngAfterViewInit(): void {
-    this.setupEventListeners();
-  }
-
-  private setupWebComponent() {
+  protected setupWebComponent() {
     if (!this.webComponent) return;
 
     this.webComponent.setAttribute('project-id', this.projectId);
@@ -118,7 +85,7 @@ export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  private setupEventListeners(): void {
+  protected setupEventListeners(): void {
     if (!this.webComponent) return;
 
     this.webComponent.addEventListener('logout', (e: Event) => {
