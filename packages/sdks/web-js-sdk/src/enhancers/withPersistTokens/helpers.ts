@@ -5,6 +5,7 @@ import {
   ID_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
+  TRUSTED_DEVICE_TOKEN_KEY,
 } from './constants';
 import {
   getLocalStorage,
@@ -84,7 +85,7 @@ export const persistTokens = (
   refreshTokenViaCookie: boolean | CookieConfig = false,
 ): LastCookieOptions | undefined => {
   // persist refresh token
-  const { sessionJwt, refreshJwt } = authInfo;
+  const { sessionJwt, refreshJwt, trustedDeviceJwt } = authInfo;
   let cookieOptions: LastCookieOptions | undefined;
 
   if (refreshJwt) {
@@ -162,6 +163,15 @@ export const persistTokens = (
     setLocalStorage(`${storagePrefix}${ID_TOKEN_KEY}`, authInfo.idToken);
   }
 
+  // persist trusted device token (DTD) in local storage if returned in response body
+  // In cookie mode, backend sets DTD as HttpOnly cookie (inaccessible to JS)
+  if (trustedDeviceJwt) {
+    setLocalStorage(
+      `${storagePrefix}${TRUSTED_DEVICE_TOKEN_KEY}`,
+      trustedDeviceJwt,
+    );
+  }
+
   return cookieOptions;
 };
 
@@ -196,7 +206,16 @@ export function getIdToken(prefix: string = ''): string {
   return getLocalStorage(`${prefix}${ID_TOKEN_KEY}`) || '';
 }
 
-/** Remove both the localStorage refresh JWT and the session cookie */
+/**
+ * Return the trusted device token (DTD) from localStorage.
+ */
+export function getTrustedDeviceToken(prefix: string = ''): string {
+  return getLocalStorage(`${prefix}${TRUSTED_DEVICE_TOKEN_KEY}`) || '';
+}
+
+/** Remove both the localStorage refresh JWT and the session cookie.
+ * Note: DTD (Trusted Device Token) is NOT removed as it should stay after logging out and outlive these tokens
+ */
 export function clearTokens(
   prefix: string = '',
   sessionTokenViaCookie?: CookieConfig,
@@ -216,7 +235,19 @@ export function clearTokens(
 export const beforeRequest =
   (prefix?: string, refreshTokenViaCookie?: CookieConfig): BeforeRequestHook =>
   (config) => {
-    return Object.assign(config, {
+    const updatedConfig = Object.assign(config, {
       token: config.token || getRefreshToken(prefix, refreshTokenViaCookie),
     });
+
+    // Always send DTD via header if available in localStorage
+    // This ensures DTD is sent in both cookie and localStorage modes
+    const dtd = getTrustedDeviceToken(prefix);
+    if (dtd) {
+      updatedConfig.headers = {
+        ...(updatedConfig.headers || {}),
+        'x-descope-trusted-device-token': dtd,
+      };
+    }
+
+    return updatedConfig;
   };

@@ -3,23 +3,19 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
-  OnInit,
   Output,
-  AfterViewInit
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import DescopeApplicationsPortalWidget from '@descope/applications-portal-widget';
-import { ILogger } from '@descope/web-component';
-import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
+import { BaseLazyWidgetComponent } from '../../base/base-lazy-widget.component';
 
 @Component({
   selector: 'applications-portal',
   standalone: true,
   template: ''
 })
-export class ApplicationsPortalComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export class ApplicationsPortalComponent extends BaseLazyWidgetComponent {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -35,32 +31,33 @@ export class ApplicationsPortalComponent
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private readonly webComponent = new DescopeApplicationsPortalWidget();
-
   constructor(
-    private elementRef: ElementRef,
-    descopeConfig: DescopeAuthConfig
+    elementRef: ElementRef,
+    descopeConfig: DescopeAuthConfig,
+    @Inject(PLATFORM_ID) platformId: object
   ) {
+    super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
-  ngOnInit() {
-    this.setupWebComponent();
-    this.elementRef.nativeElement.appendChild(this.webComponent);
+  protected async loadWidget(): Promise<HTMLElement | null> {
+    try {
+      const WidgetModule = await import('@descope/applications-portal-widget');
+      const DescopeApplicationsPortalWidget = WidgetModule.default;
+      return new DescopeApplicationsPortalWidget() as unknown as HTMLElement;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load Applications Portal widget:', error);
+      return null;
+    }
   }
 
-  ngOnChanges(): void {
-    this.setupWebComponent();
-  }
+  protected setupWebComponent() {
+    if (!this.webComponent) return;
 
-  ngAfterViewInit(): void {
-    this.setupEventListeners();
-  }
-
-  private setupWebComponent() {
     this.webComponent.setAttribute('project-id', this.projectId);
     this.webComponent.setAttribute('widget-id', this.widgetId);
     if (this.baseUrl) {
@@ -87,7 +84,9 @@ export class ApplicationsPortalComponent
     }
   }
 
-  private setupEventListeners(): void {
+  protected setupEventListeners(): void {
+    if (!this.webComponent) return;
+
     if (this.logout) {
       this.webComponent.addEventListener('logout', (e: Event) => {
         this.logout?.emit(e as CustomEvent);

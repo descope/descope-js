@@ -2,6 +2,38 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.23.0](https://github.com/descope/descope-js/compare/angular-sdk-0.22.3...angular-sdk-0.23.0) (2025-12-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.28`
+* `audit-management-widget` updated to version `0.5.28`
+* `role-management-widget` updated to version `0.5.20`
+* `user-management-widget` updated to version `0.10.11`
+* `user-profile-widget` updated to version `0.8.11`
+* `tenant-profile-widget` updated to version `0.5.11`
+* `applications-portal-widget` updated to version `0.5.11`
+* `web-component` updated to version `3.52.4`
+* `web-js-sdk` updated to version `1.42.0`
+* `core-js-sdk` updated to version `2.54.0`
+
+### Features
+
+* Angular SSR ([#1293](https://github.com/descope/descope-js/issues/1293)) RELEASE ([44a1856](https://github.com/descope/descope-js/commit/44a18560100a3c9fa494ea4c32e9fc8e4c6e67c0))
+
+## [0.22.3](https://github.com/descope/descope-js/compare/angular-sdk-0.22.2...angular-sdk-0.22.3) (2025-12-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.27`
+* `audit-management-widget` updated to version `0.5.27`
+* `role-management-widget` updated to version `0.5.19`
+* `user-management-widget` updated to version `0.10.10`
+* `user-profile-widget` updated to version `0.8.10`
+* `tenant-profile-widget` updated to version `0.5.10`
+* `applications-portal-widget` updated to version `0.5.10`
+* `web-component` updated to version `3.52.3`
+* `web-js-sdk` updated to version `1.41.0`
 ## [0.22.2](https://github.com/descope/descope-js/compare/angular-sdk-0.22.1...angular-sdk-0.22.2) (2025-12-04)
 
 ### Dependency Updates

@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.1](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.0...nextjs-sdk-0.15.1) (2025-12-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.0`
+* `react-sdk` updated to version `2.25.1`
+* `core-js-sdk` updated to version `2.54.0`
+* `web-component` updated to version `3.52.4`
+## [0.15.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.50...nextjs-sdk-0.15.0) (2025-12-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.41.0`
+* `react-sdk` updated to version `2.25.0`
+* `web-component` updated to version `3.52.3`
+
+### Features
+
+* pass refresh to the middleware in next ([#1286](https://github.com/descope/descope-js/issues/1286)) RELEASE ([e0b89bc](https://github.com/descope/descope-js/commit/e0b89bc27407a5c25b5186f185893eb7779bc2b9))
+
 ## [0.14.50](https://github.com/descope/descope-js/compare/nextjs-sdk-0.14.49...nextjs-sdk-0.14.50) (2025-12-04)
 
 ### Dependency Updates
