@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.12](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.11...outbound-applications-widget-0.2.12) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+* `web-component` updated to version `3.53.0`
+
+### Bug Fixes
+
+* Add tenantId to OutboundAppsWidget fetch of apps with tokens ([#1294](https://github.com/descope/descope-js/issues/1294)) ([c520033](https://github.com/descope/descope-js/commit/c520033fa3383ab1c5fc9b2d50503949b0bd7ea6))
+
 ## [0.2.11](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.10...outbound-applications-widget-0.2.11) (2025-12-24)
 
 ### Dependency Updates
