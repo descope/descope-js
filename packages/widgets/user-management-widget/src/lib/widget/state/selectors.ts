@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { flatten, formatCustomAttrValue } from '../../helpers';
 import { State } from './types';
-import { userStatusMappings } from './constants';
+import { userProvisionMappings, userStatusMappings } from './constants';
 
 export const getRawUsersList = (state: State) => state.usersList.data;
 export const getTenantRoles = (state: State) => state.tenantRoles.data;
@@ -44,6 +44,11 @@ export const getUsersList = createSelector(getFormattedUserList, (users) =>
     ).toLocaleString(),
     status: userStatusMappings[user.status] || user.status,
     roles: user.roleNames,
+    scim: user.SCIM ? 'true' : '',
+    sso:
+      user.OIDC || user.SAML
+        ? userProvisionMappings[user.OIDC ? 'oidc' : 'saml']
+        : '',
   })),
 );
 
