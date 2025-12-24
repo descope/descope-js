@@ -81,6 +81,7 @@ export const initWidgetRootMixin = createSingletonMixin(
           this.actions.getOutboundApps(),
           this.actions.getConnectedOutboundApps({
             userId: getUserId(this.state),
+            tenantId: this.tenantId,
           }),
         ]);
 
