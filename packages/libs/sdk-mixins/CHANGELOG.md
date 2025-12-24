@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.14.0...sdk-mixins-0.14.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* update static resource mixin fallback urls logic ([#1287](https://github.com/descope/descope-js/issues/1287)) ([696328b](https://github.com/descope/descope-js/commit/696328baacce97b9e82976dfc6e3e64972218199))
+
 ## [0.14.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.16...sdk-mixins-0.14.0) (2025-11-09)
 
 ### Dependency Updates

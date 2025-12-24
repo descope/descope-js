@@ -1,6 +1,5 @@
 import { IS_BROWSER } from '../../constants';
 
-const FINGERPRINT_PUBLIC_KEY = 'fingerprint.public.key';
 const FINGERPRINT_ENDPOINT_URL = 'fingerprint.endpoint.url';
 
 /** Fingerprint.js cloudflare integration */

@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.42.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.41.0...web-js-sdk-1.42.0) (2025-12-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.54.0`
+
+### Features
+
+* Angular SSR ([#1293](https://github.com/descope/descope-js/issues/1293)) RELEASE ([44a1856](https://github.com/descope/descope-js/commit/44a18560100a3c9fa494ea4c32e9fc8e4c6e67c0))
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
+## [1.41.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.2...web-js-sdk-1.41.0) (2025-12-16)
+
+
+### Features
+
+* Disable explicit refresh calls when running in native flows ([#1284](https://github.com/descope/descope-js/issues/1284)) ([7043ce7](https://github.com/descope/descope-js/commit/7043ce717b21afc155610dfe42702f1614b61610))
+* pass refresh to the middleware in next ([#1286](https://github.com/descope/descope-js/issues/1286)) RELEASE ([e0b89bc](https://github.com/descope/descope-js/commit/e0b89bc27407a5c25b5186f185893eb7779bc2b9))
+
 ## [1.40.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.1...web-js-sdk-1.40.2) (2025-12-04)
 
 

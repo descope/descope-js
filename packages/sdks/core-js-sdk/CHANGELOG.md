@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.54.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.1...core-js-sdk-2.54.0) (2025-12-24)
+
+
+### Features
+
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
 ## [2.53.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.0...core-js-sdk-2.53.1) (2025-12-03)
 
 ## [2.53.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.2...core-js-sdk-2.53.0) (2025-12-01)
