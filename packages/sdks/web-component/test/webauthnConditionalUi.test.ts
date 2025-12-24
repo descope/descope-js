@@ -248,7 +248,12 @@ describe('webauthnConditionalUi', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
     await waitFor(
-      () => expect(warnSpi).toHaveBeenCalledWith('Webauthn start failed', ''),
+      () =>
+        expect(warnSpi).toHaveBeenCalledWith(
+          '[Descope]',
+          'Webauthn start failed',
+          '',
+        ),
       { timeout: 3000 },
     );
   });

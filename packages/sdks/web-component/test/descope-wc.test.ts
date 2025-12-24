@@ -2064,7 +2064,11 @@ describe('web-component', () => {
 
     await waitFor(
       () =>
-        expect(logSpy).toHaveBeenCalledWith('No screen was found to show', ''),
+        expect(logSpy).toHaveBeenCalledWith(
+          '[Descope]',
+          'No screen was found to show',
+          '',
+        ),
       { timeout: WAIT_TIMEOUT },
     );
   });
@@ -2088,6 +2092,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
           'Cannot get config file',
           'Make sure that your projectId & flowId are correct',
           expect.any(Error),
@@ -2289,6 +2294,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
           'Did not get redirect url',
           '',
           expect.any(Error),
@@ -2417,6 +2423,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
           'Did not get webauthn transaction id or options',
           '',
           expect.any(Error),
@@ -2745,6 +2752,7 @@ describe('web-component', () => {
     await waitFor(
       () =>
         expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
           'Supported theme values are "light", "dark", or leave empty for using the OS theme',
         ),
       { timeout: WAIT_TIMEOUT },
@@ -5716,6 +5724,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(errorSpy).toHaveBeenCalledWith(
+            '[Descope]',
             expect.stringContaining('Cannot load script from URL'),
           ),
         { timeout: WAIT_TIMEOUT },
@@ -5755,6 +5764,7 @@ describe('web-component', () => {
       await waitFor(
         () =>
           expect(errorSpy).toHaveBeenCalledWith(
+            '[Descope]',
             'Cannot load UI component "descope-button1"',
             expect.any(String),
           ),
