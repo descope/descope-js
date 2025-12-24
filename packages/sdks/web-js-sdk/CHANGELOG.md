@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.42.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.41.0...web-js-sdk-1.42.0) (2025-12-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.54.0`
+
+### Features
+
+* Angular SSR ([#1293](https://github.com/descope/descope-js/issues/1293)) RELEASE ([44a1856](https://github.com/descope/descope-js/commit/44a18560100a3c9fa494ea4c32e9fc8e4c6e67c0))
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
 ## [1.41.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.2...web-js-sdk-1.41.0) (2025-12-16)
 
 
