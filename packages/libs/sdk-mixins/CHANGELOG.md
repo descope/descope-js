@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.14.1...sdk-mixins-0.15.0) (2025-12-24)
+
+
+### Features
+
+* Add Descope prefix to default logger ([#1291](https://github.com/descope/descope-js/issues/1291)) ([b40c871](https://github.com/descope/descope-js/commit/b40c87159f31bd6bd2e84839f219deacb5b12a35))
+
 ## [0.14.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.14.0...sdk-mixins-0.14.1) (2025-12-24)
 
 
