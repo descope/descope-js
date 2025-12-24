@@ -3,6 +3,7 @@ import { IS_LOCAL_STORAGE } from '../../constants';
 const BASE_CONTENT_URL_KEY = 'base.content.url';
 
 export const BASE_CONTENT_URL = 'https://static.descope.com/pages';
+export const BASE_CONTENT_URL_FALLBACK = 'https://static2.descope.com/pages';
 
 export const OVERRIDE_CONTENT_URL =
   (IS_LOCAL_STORAGE && localStorage.getItem(BASE_CONTENT_URL_KEY)) || '';
