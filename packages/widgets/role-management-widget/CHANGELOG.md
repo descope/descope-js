@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.21](https://github.com/descope/descope-js/compare/role-management-widget-0.5.20...role-management-widget-0.5.21) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
 ## [0.5.20](https://github.com/descope/descope-js/compare/role-management-widget-0.5.19...role-management-widget-0.5.20) (2025-12-24)
 
 ### Dependency Updates
