@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.53.0](https://github.com/descope/descope-js/compare/web-component-3.52.4...web-component-3.53.0) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+
+### Features
+
+* Add Descope prefix to default logger ([#1291](https://github.com/descope/descope-js/issues/1291)) ([b40c871](https://github.com/descope/descope-js/commit/b40c87159f31bd6bd2e84839f219deacb5b12a35))
+
 ## [3.52.4](https://github.com/descope/descope-js/compare/web-component-3.52.3...web-component-3.52.4) (2025-12-24)
 
 ### Dependency Updates
