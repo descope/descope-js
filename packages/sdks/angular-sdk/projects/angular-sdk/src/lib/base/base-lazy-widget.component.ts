@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Directive,
   ElementRef,
   Inject,
@@ -23,14 +22,12 @@ import { isPlatformBrowser } from '@angular/common';
  * - setupEventListeners(): Attach event listeners to the widget
  */
 @Directive()
-export abstract class BaseLazyWidgetComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export abstract class BaseLazyWidgetComponent implements OnInit, OnChanges {
   protected webComponent?: HTMLElement;
 
   constructor(
     protected elementRef: ElementRef,
-    @Inject(PLATFORM_ID) protected platformId: Object
+    @Inject(PLATFORM_ID) protected platformId: object
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -53,10 +50,6 @@ export abstract class BaseLazyWidgetComponent
     if (this.webComponent) {
       this.setupWebComponent();
     }
-  }
-
-  ngAfterViewInit(): void {
-    // Event listeners are now set up in ngOnInit after widget loading
   }
 
   /**

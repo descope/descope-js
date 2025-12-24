@@ -35,7 +35,7 @@ export class RoleManagementComponent extends BaseLazyWidgetComponent {
   constructor(
     elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: object
   ) {
     super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
@@ -50,6 +50,7 @@ export class RoleManagementComponent extends BaseLazyWidgetComponent {
       const DescopeRoleManagementWidget = WidgetModule.default;
       return new DescopeRoleManagementWidget() as unknown as HTMLElement;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to load Role Management widget:', error);
       return null;
     }

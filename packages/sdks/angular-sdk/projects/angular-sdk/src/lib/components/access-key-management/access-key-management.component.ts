@@ -35,7 +35,7 @@ export class AccessKeyManagementComponent extends BaseLazyWidgetComponent {
   constructor(
     elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: object
   ) {
     super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
@@ -52,6 +52,7 @@ export class AccessKeyManagementComponent extends BaseLazyWidgetComponent {
       const DescopeAccessKeyManagementWidget = WidgetModule.default;
       return new DescopeAccessKeyManagementWidget() as unknown as HTMLElement;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to load Access Key Management widget:', error);
       return null;
     }

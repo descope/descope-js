@@ -35,7 +35,7 @@ export class UserManagementComponent extends BaseLazyWidgetComponent {
   constructor(
     elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: object
   ) {
     super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
@@ -50,6 +50,7 @@ export class UserManagementComponent extends BaseLazyWidgetComponent {
       const DescopeUserManagementWidget = WidgetModule.default;
       return new DescopeUserManagementWidget() as unknown as HTMLElement;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to load User Management widget:', error);
       return null;
     }

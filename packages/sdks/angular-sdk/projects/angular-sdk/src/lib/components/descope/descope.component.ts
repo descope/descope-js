@@ -132,7 +132,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     private elementRef: ElementRef,
     private authService: DescopeAuthService,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -185,6 +185,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
 
       this.isWebComponentLoaded = true;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to load Descope web component:', error);
     }
   }

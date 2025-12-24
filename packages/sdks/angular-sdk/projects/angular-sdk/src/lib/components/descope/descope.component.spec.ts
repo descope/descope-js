@@ -235,9 +235,6 @@ describe('DescopeComponent', () => {
       ssrComponent.projectId = '123';
       ssrComponent.flowId = 'sign-in';
 
-      // Spy on the dynamic import to ensure it's not called
-      const importSpy = jest.spyOn(ssrComponent as any, 'loadWebComponent');
-
       ssrFixture.detectChanges();
 
       // The web component should be rendered in template (for hydration),

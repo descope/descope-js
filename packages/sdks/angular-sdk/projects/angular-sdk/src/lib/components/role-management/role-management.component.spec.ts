@@ -2,11 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RoleManagementComponent } from './role-management.component';
 import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  EventEmitter,
-  PLATFORM_ID
-} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, PLATFORM_ID } from '@angular/core';
 import mocked = jest.mocked;
 
 jest.mock('@descope/web-js-sdk');

@@ -34,7 +34,7 @@ export class ApplicationsPortalComponent extends BaseLazyWidgetComponent {
   constructor(
     elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: object
   ) {
     super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
@@ -49,6 +49,7 @@ export class ApplicationsPortalComponent extends BaseLazyWidgetComponent {
       const DescopeApplicationsPortalWidget = WidgetModule.default;
       return new DescopeApplicationsPortalWidget() as unknown as HTMLElement;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to load Applications Portal widget:', error);
       return null;
     }
