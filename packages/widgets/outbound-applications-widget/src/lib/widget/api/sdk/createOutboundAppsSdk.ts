@@ -30,7 +30,7 @@ export const createOutboundAppsSdk = ({
     const res = await httpClient.get(
       apiPaths.outboundApps.connectedOutboundApps,
       {
-        queryParams: { userId, tenantId },
+        queryParams: tenantId ? { userId, tenant: tenantId } : { userId },
       },
     );
 
