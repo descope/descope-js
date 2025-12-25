@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.15.6](https://github.com/descope/descope-js/compare/vue-sdk-2.15.5...vue-sdk-2.15.6) (2025-12-25)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.0`
 ## [2.15.5](https://github.com/descope/descope-js/compare/vue-sdk-2.15.4...vue-sdk-2.15.5) (2025-12-24)
 
 ### Dependency Updates
