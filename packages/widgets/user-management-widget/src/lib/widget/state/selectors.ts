@@ -44,11 +44,9 @@ export const getUsersList = createSelector(getFormattedUserList, (users) =>
     ).toLocaleString(),
     status: userStatusMappings[user.status] || user.status,
     roles: user.roleNames,
-    scim: user.SCIM ? 'true' : '',
-    sso:
-      user.OIDC || user.SAML
-        ? userProvisionMappings[user.OIDC ? 'oidc' : 'saml']
-        : '',
+    OIDC: user.OIDC ?? '',
+    SAML: user.SAML ?? '',
+    SCIM: user.SCIM ?? '',
   })),
 );
 

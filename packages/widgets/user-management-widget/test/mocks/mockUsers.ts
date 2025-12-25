@@ -19,7 +19,7 @@ export const mockUsers = [
     createdTime: 1705407428,
     TOTP: false,
     SAML: false,
-    SCIM: true,
+    SCIM: false,
     OIDC: false,
     OAuth: {},
     webauthn: false,
