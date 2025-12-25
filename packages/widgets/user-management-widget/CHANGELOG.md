@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.0](https://github.com/descope/descope-js/compare/user-management-widget-0.10.12...user-management-widget-0.11.0) (2025-12-25)
+
+
+### Features
+
+* UserManagementWidget provision columns RELEASE ([#1296](https://github.com/descope/descope-js/issues/1296)) ([dd5e198](https://github.com/descope/descope-js/commit/dd5e1983da445705e2765e74c75f3d737ec7d63a))
+
 ## [0.10.12](https://github.com/descope/descope-js/compare/user-management-widget-0.10.11...user-management-widget-0.10.12) (2025-12-24)
 
 ### Dependency Updates
