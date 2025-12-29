@@ -6950,6 +6950,7 @@ describe('web-component', () => {
       });
 
       expect(hiddenInput.checkValidity).not.toHaveBeenCalled();
+      expect(hiddenInput.reportValidity).not.toHaveBeenCalled();
     });
 
     it('should disable components when componentsState contains disable state', async () => {
