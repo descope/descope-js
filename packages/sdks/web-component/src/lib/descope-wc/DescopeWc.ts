@@ -1659,7 +1659,8 @@ class DescopeWc extends BaseDescopeWc {
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
-        if (input.localName === 'slot') {
+        // We are hiding conditional components so we don't want to validate them
+        if (input.localName === 'slot' || input.classList.contains('hidden')) {
           return;
         }
         input.reportValidity?.();

@@ -6913,6 +6913,46 @@ describe('web-component', () => {
       expect(visibleText).not.toHaveClass('hidden');
     });
 
+    it('should not validate hidden components', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-input': 'hide',
+            },
+          },
+        }),
+      );
+
+      pageContent = `<div>
+        <descope-button id="submit-button">Submit</descope-button>
+        <input id="test-input" name="test-input" required />
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const hiddenInput = descopeWc.shadowRoot.querySelector('#test-input');
+      // Mock checkValidity to return false (invalid)
+      hiddenInput.checkValidity = jest.fn().mockReturnValue(false);
+      hiddenInput.reportValidity = jest.fn();
+
+      const submitButton = descopeWc.shadowRoot.querySelector('#submit-button');
+      submitButton.click();
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      expect(hiddenInput.checkValidity).not.toHaveBeenCalled();
+      expect(hiddenInput.reportValidity).not.toHaveBeenCalled();
+    });
+
     it('should disable components when componentsState contains disable state', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({
