@@ -225,6 +225,7 @@ export enum DeliveryPhone {
   sms = 'sms',
   voice = 'voice',
   whatsapp = 'whatsapp',
+  im = 'im',
 }
 
 export enum DeliveryEmail {
