@@ -1005,6 +1005,12 @@ class DescopeWc extends BaseDescopeWc {
       // the response will be in the form of calling the 'nativeCallbacks.complete' callback via
       // the 'nativeResume' function.
       this.#nativeNotifyBridge(nativeResponseType, nativePayload);
+      // since the native bridge takes over and will display cancelable modal UI
+      // we want to reset the loading state of button components to prevent
+      // endless loading state in case the user cancels the native UI
+      setTimeout(() => {
+        this.dispatchEvent(new Event('popupclosed'));
+      }, 500);
       return;
     }
 
