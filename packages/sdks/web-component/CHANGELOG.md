@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.53.1](https://github.com/descope/descope-js/compare/web-component-3.53.0...web-component-3.53.1) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+
+### Bug Fixes
+
+* issue 13444 - hidden conditional components should not be validated ([#1297](https://github.com/descope/descope-js/issues/1297)) ([7b309cd](https://github.com/descope/descope-js/commit/7b309cd587f0e911e6a7760eb779b98942590850))
+
 ## [3.53.0](https://github.com/descope/descope-js/compare/web-component-3.52.4...web-component-3.53.0) (2025-12-24)
 
 ### Dependency Updates
