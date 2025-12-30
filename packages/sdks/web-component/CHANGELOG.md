@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.53.2](https://github.com/descope/descope-js/compare/web-component-3.53.1...web-component-3.53.2) (2025-12-30)
+
+
+### Bug Fixes
+
+* Bridge actions (native) now trigger component state reset ([#1299](https://github.com/descope/descope-js/issues/1299)) RELEASE ([949d4ea](https://github.com/descope/descope-js/commit/949d4ea9ed3efceca84a8ecf6f3dfd18da82f460))
+
 ## [3.53.1](https://github.com/descope/descope-js/compare/web-component-3.53.0...web-component-3.53.1) (2025-12-30)
 
 ### Dependency Updates
