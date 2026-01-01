@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <link rel="icon" href="data:," />
     <script src="/../dist/index.umd.js"></script>
-    <script src="/../examples/env.js"></script>
+    <script src="/../examples/loadEnv.js"></script>
   </head>
   <body>
     <div>
@@ -23,7 +23,7 @@
       let email;
       let projectId;
 
-      // Check if project ID is pre-configured in env.js
+      // Check if project ID is pre-configured in .env
       const envProjectId = window.ENV?.DESCOPE_PROJECT_ID;
       const envBaseUrl = window.ENV?.DESCOPE_BASE_URL;
 

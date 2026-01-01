@@ -23,12 +23,11 @@
   "type": "module",
   "description": "Descope JavaScript web SDK",
   "scripts": {
-    "start": "npm run generateCerts && npm run generateEnv && npx nx run web-js-sdk:build && npm run build && http-server -p 8081 -S -o ./examples",
+    "start": "npm run generateCerts && npx nx run web-js-sdk:build && npm run build && http-server -p 8081 -S -o ./examples",
     "build": "rimraf dist && rollup -c",
     "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'",
-    "generateCerts": "test -f ./key.pem && test -f ./cert.pem || openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/C=US/ST=California/L=San Francisco/O=Descope/CN=localhost' -keyout ./key.pem -out ./cert.pem",
-    "generateEnv": "node scripts/generateEnv.cjs"
+    "generateCerts": "test -f ./key.pem && test -f ./cert.pem || openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/C=US/ST=California/L=San Francisco/O=Descope/CN=localhost' -keyout ./key.pem -out ./cert.pem"
   },
   "license": "MIT",
   "repository": {
