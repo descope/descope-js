@@ -552,4 +552,52 @@ describe('autoRefresh', () => {
       expect.stringMatching(/^Timeout is too large/),
     );
   });
+
+  it('should not refresh when timer fires and document is hidden', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+    // Mock document.visibilityState to be hidden
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'hidden',
+      writable: true,
+      configurable: true,
+    });
+
+    // Trigger the timeout callback
+    timeoutFn();
+
+    // Ensure refresh was NOT called because document is hidden
+    expect(refreshSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Skipping refresh due to timer - document is hidden',
+    );
+
+    // Restore visibilityState
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'visible',
+      writable: true,
+      configurable: true,
+    });
+  });
 });

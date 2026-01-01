@@ -91,6 +91,11 @@ export const withAutoRefresh =
         );
 
         setTimer(() => {
+          // Skip refresh if document is hidden - the visibilitychange handler will refresh when user returns
+          if (IS_BROWSER && document.visibilityState === 'hidden') {
+            logger.debug('Skipping refresh due to timer - document is hidden');
+            return;
+          }
           logger.debug('Refreshing session due to timer');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
