@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.56.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.55.0...core-js-sdk-2.56.0) (2026-01-01)
+
+
+### Features
+
+* session inactivity improvement  ([#1300](https://github.com/descope/descope-js/issues/1300)) RELEASE ([eeeaec0](https://github.com/descope/descope-js/commit/eeeaec072d1a9dffcd9c87332e97b02ad1d4ca85))
+
 ## [2.55.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.54.0...core-js-sdk-2.55.0) (2025-12-30)
 
 
