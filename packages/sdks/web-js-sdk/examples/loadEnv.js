@@ -14,6 +14,8 @@
         if (key && valueParts.length)
           window.ENV[key.trim()] = valueParts.join('=').trim();
       });
+    } else {
+      console.warn('failed to load .env file', xhr.status);
     }
   } catch (e) {
     console.warn('Could not load .env:', e.message);
