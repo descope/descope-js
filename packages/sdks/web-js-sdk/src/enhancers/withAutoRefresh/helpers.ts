@@ -47,8 +47,21 @@ export const createTimerFunctions = () => {
   return { clearAllTimers, setTimer };
 };
 
-export const getAutoRefreshTimeout = (sessionExpiration: Date) => {
-  let timeout = millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
+export const getAutoRefreshTimeout = (
+  sessionExpiration: Date,
+  nextRefreshSeconds?: number,
+) => {
+  let timeout: number;
+
+  // If server provided nextRefreshSeconds, use it (converted to ms)
+  // This helps balance refresh frequency for session inactivity tracking
+  if (nextRefreshSeconds > 0) {
+    timeout = nextRefreshSeconds * 1000;
+    logger.debug(`Using provided nextRefreshSeconds: ${nextRefreshSeconds}s`);
+  } else {
+    // Refresh slightly before session expires
+    timeout = millisecondsUntilDate(sessionExpiration) - REFRESH_THRESHOLD;
+  }
 
   if (timeout > MAX_TIMEOUT) {
     logger.debug(

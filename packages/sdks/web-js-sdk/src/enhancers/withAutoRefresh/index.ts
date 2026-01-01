@@ -48,7 +48,7 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
-      const { sessionJwt, refreshJwt, sessionExpiration } =
+      const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
         await getAuthInfoFromResponse(res);
 
       // if we got 401 we want to cancel all timers
@@ -65,7 +65,10 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
-        const timeout = getAutoRefreshTimeout(sessionExpirationDate);
+        const timeout = getAutoRefreshTimeout(
+          sessionExpirationDate,
+          nextRefreshSeconds,
+        );
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {
@@ -88,6 +91,11 @@ export const withAutoRefresh =
         );
 
         setTimer(() => {
+          // Skip refresh if document is hidden - the visibilitychange handler will refresh when user returns
+          if (IS_BROWSER && document.visibilityState === 'hidden') {
+            logger.debug('Skipping refresh due to timer - document is hidden');
+            return;
+          }
           logger.debug('Refreshing session due to timer');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
