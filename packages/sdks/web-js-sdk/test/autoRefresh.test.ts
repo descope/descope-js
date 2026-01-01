@@ -448,4 +448,108 @@ describe('autoRefresh', () => {
     );
     loggerDebugMock.mockClear();
   });
+
+  it('should use nextRefreshSeconds from server response when provided', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const nextRefreshSeconds = 120; // Server says refresh in 2 minutes
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        nextRefreshSeconds,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // Should use nextRefreshSeconds (120s = 120000ms) instead of session expiration
+    expect(timeoutTimer).toBe(nextRefreshSeconds * 1000);
+
+    // Ensure logger indicates server-provided value was used
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      `Using provided nextRefreshSeconds: ${nextRefreshSeconds}s`,
+    );
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Setting refresh timer for/),
+    );
+  });
+
+  it('should fallback to session expiration when nextRefreshSeconds is not provided', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        // nextRefreshSeconds not provided
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // Should use session expiration minus threshold (20 seconds)
+    const expectedTimer =
+      (sessionExpiration - 20) * 1000 - new Date().getTime();
+    expect(timeoutTimer).toBeGreaterThan(expectedTimer - 1000);
+    expect(timeoutTimer).toBeLessThan(expectedTimer + 1000);
+
+    // Ensure logger does not mention server-provided value
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^Using provided nextRefreshSeconds/),
+    );
+  });
+
+  it('should cap nextRefreshSeconds to MAX_TIMEOUT if too large', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const nextRefreshSeconds = 30 * 24 * 60 * 60; // 30 days in seconds (way too large)
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        nextRefreshSeconds,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // Should be capped to MAX_TIMEOUT
+    expect(timeoutTimer).toBe(MAX_TIMEOUT);
+
+    // Ensure logger indicates timeout was capped
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Timeout is too large/),
+    );
+  });
 });

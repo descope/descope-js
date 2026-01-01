@@ -139,6 +139,7 @@ export type JWTResponse = {
   sessionExpiration: number;
   claims: Claims;
   trustedDeviceJwt?: string;
+  nextRefreshSeconds?: number;
 };
 
 /** Authentication info result from exchanging access keys for a session */

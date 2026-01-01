@@ -46,6 +46,8 @@ Thumbs.db
 
 .env
 .env.local
+# generated file from .env
+packages/**/examples/env.js
 .nx/*
 .next
 

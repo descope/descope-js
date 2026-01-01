@@ -48,7 +48,7 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (_req, res) => {
-      const { sessionJwt, refreshJwt, sessionExpiration } =
+      const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
         await getAuthInfoFromResponse(res);
 
       // if we got 401 we want to cancel all timers
@@ -65,7 +65,10 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
-        const timeout = getAutoRefreshTimeout(sessionExpirationDate);
+        const timeout = getAutoRefreshTimeout(
+          sessionExpirationDate,
+          nextRefreshSeconds,
+        );
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {

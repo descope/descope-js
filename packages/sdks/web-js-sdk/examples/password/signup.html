@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
+    <script src="/../dist/index.umd.js"></script>
+    <script src="/../examples/env.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1>What's your project ID?</h1>
+      <p id="projectInfo" style="display: none; color: gray"></p>
+      <form>
+        <input name="input" type="text" />
+        <input name="input2" type="password" style="display: none" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <script>
+      let sdk;
+      let step = 0;
+      let email;
+      let projectId;
+
+      // Check if project ID is pre-configured in env.js
+      const envProjectId = window.ENV?.DESCOPE_PROJECT_ID;
+      const envBaseUrl = window.ENV?.DESCOPE_BASE_URL;
+
+      const initSdk = (pid) => {
+        projectId = pid;
+        const config = { projectId };
+        if (envBaseUrl) {
+          config.baseUrl = envBaseUrl;
+        }
+        sdk = Descope(config);
+      };
+
+      const fns = [
+        (inputProjectId) => {
+          initSdk(inputProjectId);
+        },
+        (inputEmail) => {
+          email = inputEmail;
+        },
+        (password) => {
+          return sdk.password.signUp(email, password);
+        },
+      ];
+      const texts = ["What's your email?", 'Choose a password', 'Success!'];
+
+      const formEle = document.getElementsByTagName('form')[0];
+      const h1Ele = document.getElementsByTagName('h1')[0];
+      const inputEle = document.getElementsByTagName('input')[0];
+      const input2Ele = document.getElementsByTagName('input')[1];
+      const projectInfoEle = document.getElementById('projectInfo');
+
+      // If project ID is pre-configured, skip step 0
+      if (envProjectId) {
+        initSdk(envProjectId);
+        step = 1;
+        h1Ele.innerText = texts[0];
+        projectInfoEle.innerText = `Project ID: ${envProjectId}`;
+        projectInfoEle.style.display = 'block';
+      }
+
+      formEle.onsubmit = async function (e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const input = formData.get('input');
+        const input2 = formData.get('input2');
+
+        let resp;
+        try {
+          if (step === 2) {
+            resp = await fns[step](input2);
+          } else {
+            resp = await fns[step](input);
+          }
+          if (resp?.ok === false) alert(JSON.stringify(resp, null, 4));
+        } catch (e) {
+          alert(e.message);
+          return;
+        }
+
+        h1Ele.innerText = texts[step];
+        inputEle.value = '';
+        input2Ele.value = '';
+        step++;
+
+        // Show project ID info after first step
+        if (step === 1) {
+          projectInfoEle.innerText = `Project ID: ${projectId}`;
+          projectInfoEle.style.display = 'block';
+        }
+
+        if (step === 2) {
+          inputEle.style.display = 'none';
+          input2Ele.style.display = '';
+        }
+
+        if (!texts[step]) {
+          formEle.remove();
+          alert(JSON.stringify(resp, null, 4));
+        }
+      };
+    </script>
+  </body>
+</html>
