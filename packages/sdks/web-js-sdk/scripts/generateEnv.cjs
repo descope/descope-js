@@ -10,6 +10,10 @@ if (fs.existsSync(envPath)) {
   fs.readFileSync(envPath, 'utf8')
     .split('\n')
     .forEach((line) => {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('#') || trimmedLine === '') {
+        return; // Skip comments and empty lines
+      }
       const [key, ...valueParts] = line.split('=');
       const value = valueParts.join('='); // Handle values with '=' in them
       if (key && value) {
