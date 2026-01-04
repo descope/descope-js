@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.16](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.15...user-profile-widget-0.8.16) (2026-01-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.1`
+* `web-js-sdk` updated to version `1.43.1`
+* `web-component` updated to version `3.53.4`
 ## [0.8.15](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.14...user-profile-widget-0.8.15) (2026-01-01)
 
 ### Dependency Updates
