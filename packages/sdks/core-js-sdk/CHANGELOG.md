@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.56.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.0...core-js-sdk-2.56.1) (2026-01-04)
+
+
+### Bug Fixes
+
+* Fix `im` delivery method ([#1301](https://github.com/descope/descope-js/issues/1301)) RELEASE ([256e7a6](https://github.com/descope/descope-js/commit/256e7a61af3c873b278ee252938f2589335d8366))
+
 ## [2.56.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.55.0...core-js-sdk-2.56.0) (2026-01-01)
 
 
