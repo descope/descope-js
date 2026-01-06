@@ -152,6 +152,7 @@ export const isDescopeBridge = () => IS_BROWSER && !!window['descopeBridge'];
 // Other routes (like OTP verify) may fail for invalid input, not session expiration
 const SESSION_VALIDATION_ROUTES = [
   '/v1/auth/refresh',
+  '/v1/auth/try-refresh',
   '/v1/auth/me',
   '/v1/auth/me/tenants',
   '/v1/auth/me/history',
