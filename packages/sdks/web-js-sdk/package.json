@@ -24,6 +24,7 @@
   "description": "Descope JavaScript web SDK",
   "scripts": {
     "start": "npm run generateCerts && npx nx run web-js-sdk:build && npm run build && http-server -p 8081 -S -o ./examples",
+    "dev": "npm run generateCerts && npx nx run web-js-sdk:build && rollup -c rollup.config.serve.mjs -w",
     "build": "rimraf dist && rollup -c",
     "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'",
