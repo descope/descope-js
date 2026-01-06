@@ -38,20 +38,9 @@ export default {
       server: {
         baseDir: '.',
         directory: true,
-        middleware: [
-          // Serve .env file (dotfiles are blocked by default)
-          function (req, res, next) {
-            if (req.url === '/.env') {
-              const envPath = path.join(process.cwd(), '.env');
-              if (fs.existsSync(envPath)) {
-                res.setHeader('Content-Type', 'text/plain');
-                res.end(fs.readFileSync(envPath, 'utf8'));
-                return;
-              }
-            }
-            next();
-          },
-        ],
+        serveStaticOptions: {
+          dotfiles: 'allow',
+        },
       },
       files: ['dist/**/*.js', 'examples/**/*.html', 'examples/**/*.js'],
       port: 8081,
