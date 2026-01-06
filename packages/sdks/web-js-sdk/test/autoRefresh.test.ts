@@ -240,12 +240,92 @@ describe('autoRefresh', () => {
     global.fetch = mockFetch;
 
     const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
-    await sdk.httpClient.get('1/2/3');
+    // Use an auth route that should trigger unauthenticated behavior
+    await sdk.httpClient.get('/v1/auth/refresh');
 
     expect(setTimeoutSpy).not.toHaveBeenCalled();
     // ensure logger
     expect(loggerDebugMock).toHaveBeenCalledWith(
-      expect.stringMatching('Received 401, canceling all timers'),
+      expect.stringMatching('Session invalidated, canceling all timers'),
+    );
+  });
+
+  it('should clear timer when /refresh call fails', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const failedMock = {
+      clone: () => failedMock,
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({ ...authInfo, sessionExpiration }),
+      )
+      .mockReturnValueOnce(failedMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    loggerDebugMock.mockClear();
+
+    // Failed /refresh call should clear timers
+    await sdk.httpClient.get('/v1/auth/refresh');
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Session invalidated, canceling all timers',
+    );
+  });
+
+  it('should NOT clear timer when other routes fail (e.g., OTP verify)', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const failedOtpMock = {
+      clone: () => failedOtpMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({ error: 'Invalid OTP' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({ ...authInfo, sessionExpiration }),
+      )
+      .mockReturnValueOnce(failedOtpMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    clearTimeoutSpy.mockClear();
+    loggerDebugMock.mockClear();
+
+    // Failed OTP verify call should NOT clear timers
+    await sdk.httpClient.get('/v1/auth/otp/verify');
+
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      'Session invalidated, canceling all timers',
     );
   });
 

@@ -148,6 +148,29 @@ export const getUserFromResponse = async (
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
 export const isDescopeBridge = () => IS_BROWSER && !!window['descopeBridge'];
 
+// Routes where a failed response indicates an invalid/expired session
+// Other routes (like OTP verify) may fail for invalid input, not session expiration
+const SESSION_VALIDATION_ROUTES = [
+  '/v1/auth/refresh',
+  '/v1/auth/me',
+  '/v1/auth/me/tenants',
+  '/v1/auth/me/history',
+];
+
+/**
+ * Check if a failed response indicates an invalid/expired session
+ * Only specific routes should trigger logout/clear tokens behavior on failure
+ * Other routes (like OTP verify) may fail for invalid input
+ */
+export const isInvalidSessionResponse = (
+  req: { path?: string },
+  res: Response | undefined,
+): boolean => {
+  if (res?.ok) return false;
+  const path = req?.path || '';
+  return SESSION_VALIDATION_ROUTES.some((route) => path.endsWith(route));
+};
+
 export const isLocalStorage =
   typeof customStorage !== 'undefined' ||
   (IS_BROWSER && typeof window.localStorage !== 'undefined');
