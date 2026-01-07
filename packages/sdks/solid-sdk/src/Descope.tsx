@@ -31,7 +31,7 @@ export function Descope(props: DescopeProps): JSX.Element {
 
     const handleSuccess = async (e: Event) => {
       const customEvent = e as CustomEvent;
-      if (context.sdk) {
+      if (context.sdk?.httpClient?.hooks?.afterRequest) {
         await context.sdk.httpClient.hooks.afterRequest(
           {} as any,
           new Response(JSON.stringify(customEvent.detail)),

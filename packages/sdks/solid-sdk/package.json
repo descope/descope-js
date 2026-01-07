@@ -17,7 +17,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "solid": "./dist/esm/index.jsx",
+      "solid": "./dist/source/index.jsx",
       "import": {
         "types": "./dist/index.d.ts",
         "default": "./dist/esm/index.js"

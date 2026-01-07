@@ -4,10 +4,10 @@ import {
   onMount,
   onCleanup,
   type ParentComponent,
-  createEffect,
 } from 'solid-js';
 import { isServer } from 'solid-js/web';
-import type { DescopeProviderProps, AuthContextValue } from './types';
+import type { UserResponse, Claims } from '@descope/core-js-sdk';
+import type { DescopeProviderProps, AuthContextValue, User } from './types';
 import createSdkInstance, { setGlobalSdk } from './sdk';
 import { isDescopeBridge } from './utils';
 
@@ -16,9 +16,9 @@ export const DescopeContext = createContext<AuthContextValue>();
 export const DescopeProvider: ParentComponent<DescopeProviderProps> = (
   props,
 ) => {
-  const [user, setUser] = createSignal();
-  const [session, setSession] = createSignal<string>();
-  const [claims, setClaims] = createSignal();
+  const [user, setUser] = createSignal<User | undefined>();
+  const [session, setSession] = createSignal<string | undefined>();
+  const [claims, setClaims] = createSignal<Claims | undefined>();
   const [isAuthenticated, setIsAuthenticated] = createSignal(false);
   const [isSessionLoading, setIsSessionLoading] = createSignal(false);
   const [isUserLoading, setIsUserLoading] = createSignal(false);
