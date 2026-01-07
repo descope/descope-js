@@ -1,0 +1,96 @@
+{
+  "name": "@descope/solid-sdk",
+  "version": "1.0.0",
+  "description": "Descope SDK for SolidJS",
+  "author": "Descope Team <info@descope.com>",
+  "homepage": "https://github.com/descope/descope-js",
+  "bugs": {
+    "url": "https://github.com/descope/descope-js/issues",
+    "email": "help@descope.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/descope/descope-js.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "solid": "./dist/esm/index.jsx",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "format": "prettier . -w --ignore-path .gitignore",
+    "format-check": "prettier . --check --ignore-path .gitignore",
+    "format-lint": "pretty-quick --staged --ignore-path .gitignore && lint-staged",
+    "leaks": "bash ./scripts/gitleaks/gitleaks.sh",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "prepublishOnly": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts,jsx,tsx}": [
+      "npm run lint"
+    ]
+  },
+  "dependencies": {
+    "@descope/web-js-sdk": "workspace:*",
+    "@descope/web-component": "workspace:*",
+    "@descope/core-js-sdk": "workspace:*",
+    "@descope/access-key-management-widget": "workspace:*",
+    "@descope/audit-management-widget": "workspace:*",
+    "@descope/role-management-widget": "workspace:*",
+    "@descope/user-management-widget": "workspace:*",
+    "@descope/user-profile-widget": "workspace:*",
+    "@descope/applications-portal-widget": "workspace:*",
+    "@descope/outbound-applications-widget": "workspace:*",
+    "@descope/tenant-profile-widget": "workspace:*"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/node": "^20.0.0",
+    "eslint": "8.57.1",
+    "eslint-config-prettier": "8.10.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "jsdom": "^25.0.0",
+    "lint-staged": "^13.0.3",
+    "oidc-client-ts": "3.2.0",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.3",
+    "rollup": "^4.0.0",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-define": "^1.0.1",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-preset-solid": "^2.0.0",
+    "solid-js": "^1.9.0",
+    "tslib": "^2.3.1",
+    "typescript": "^5.0.2",
+    "vite": "^5.0.0",
+    "vite-plugin-solid": "^2.10.0",
+    "vitest": "^2.0.0"
+  },
+  "peerDependencies": {
+    "solid-js": ">=1.8.0"
+  }
+}

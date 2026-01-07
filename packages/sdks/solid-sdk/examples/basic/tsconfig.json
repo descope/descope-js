@@ -1,0 +1,9 @@
+{
+  "extends": "@solidjs/start/config/tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  }
+}
