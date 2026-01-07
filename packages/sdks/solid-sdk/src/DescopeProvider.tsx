@@ -6,7 +6,7 @@ import {
   type ParentComponent,
 } from 'solid-js';
 import { isServer } from 'solid-js/web';
-import type { UserResponse, Claims } from '@descope/core-js-sdk';
+import type { Claims } from '@descope/core-js-sdk';
 import type { DescopeProviderProps, AuthContextValue, User } from './types';
 import createSdkInstance, { setGlobalSdk } from './sdk';
 import { isDescopeBridge } from './utils';

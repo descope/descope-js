@@ -7,7 +7,7 @@ import { getGlobalSdk } from './sdk';
 
 export function Descope(props: DescopeProps): JSX.Element {
   let ref: HTMLElement | undefined;
-  const [isLoaded, setIsLoaded] = createSignal(false);
+  const [, setIsLoaded] = createSignal(false);
   const context = useDescopeContext();
 
   onMount(async () => {

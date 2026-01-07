@@ -70,7 +70,7 @@ export interface DescopeProps {
   flowId: string;
   onSuccess?: (e: CustomEvent<FlowJWTResponse>) => void;
   onError?: (e: CustomEvent<any>) => void;
-  onReady?: (e: CustomEvent<{}>) => void;
+  onReady?: (e: CustomEvent<Record<string, never>>) => void;
   logger?: ILogger;
   tenant?: string;
   theme?: ThemeOptions;
@@ -110,7 +110,7 @@ export interface WidgetProps {
   theme?: ThemeOptions;
   debug?: boolean;
   styleId?: string;
-  onReady?: (e: CustomEvent<{}>) => void;
+  onReady?: (e: CustomEvent<Record<string, never>>) => void;
 }
 
 export interface UserProfileProps extends Omit<WidgetProps, 'tenant'> {
