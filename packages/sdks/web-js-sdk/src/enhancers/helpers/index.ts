@@ -170,7 +170,7 @@ export const isInvalidSessionResponse = (
   const is4xx = res?.status >= 400 && res?.status < 500;
   if (!is4xx) return false;
   const path = req?.path || '';
-  return SESSION_VALIDATION_ROUTES.some((route) => path.includes(route));
+  return SESSION_VALIDATION_ROUTES.includes(path);
 };
 
 export const isLocalStorage =
