@@ -8,6 +8,16 @@ import {
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { IS_BROWSER } from '../../constants';
 
+// Routes where a failed response indicates an invalid/expired session
+// Other routes (like OTP verify) may fail for invalid input, not session expiration
+const SESSION_VALIDATION_ROUTES = [
+  '/v1/auth/refresh',
+  '/v1/auth/try-refresh',
+  '/v1/auth/me',
+  '/v1/auth/me/tenants',
+  '/v1/auth/me/history',
+];
+
 // this is a singleton
 // but in order to keep the code clean
 // it was implemented in this way
@@ -147,16 +157,6 @@ export const getUserFromResponse = async (
 
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
 export const isDescopeBridge = () => IS_BROWSER && !!window['descopeBridge'];
-
-// Routes where a failed response indicates an invalid/expired session
-// Other routes (like OTP verify) may fail for invalid input, not session expiration
-const SESSION_VALIDATION_ROUTES = [
-  '/v1/auth/refresh',
-  '/v1/auth/try-refresh',
-  '/v1/auth/me',
-  '/v1/auth/me/tenants',
-  '/v1/auth/me/history',
-];
 
 /**
  * Check if a failed response indicates an invalid/expired session
