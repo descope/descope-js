@@ -329,6 +329,47 @@ describe('autoRefresh', () => {
     );
   });
 
+  it('should NOT clear timer when 5xx server error occurs on session validation route', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const serverErrorMock = {
+      clone: () => serverErrorMock,
+      ok: false,
+      status: 500,
+      text: () =>
+        Promise.resolve(JSON.stringify({ error: 'Internal Server Error' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({ ...authInfo, sessionExpiration }),
+      )
+      .mockReturnValueOnce(serverErrorMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    clearTimeoutSpy.mockClear();
+    loggerDebugMock.mockClear();
+
+    // 500 error on /refresh should NOT clear timers (only 4xx should)
+    await sdk.httpClient.get('/v1/auth/refresh');
+
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      'Session invalidated, canceling all timers',
+    );
+  });
+
   it('should not auto refresh when disabled (default value)', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;

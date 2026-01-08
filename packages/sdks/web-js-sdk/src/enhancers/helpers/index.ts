@@ -167,9 +167,10 @@ export const isInvalidSessionResponse = (
   req: { path?: string },
   res: Response | undefined,
 ): boolean => {
-  if (res?.ok) return false;
+  const is4xx = res?.status >= 400 && res?.status < 500;
+  if (!is4xx) return false;
   const path = req?.path || '';
-  return SESSION_VALIDATION_ROUTES.some((route) => path.endsWith(route));
+  return SESSION_VALIDATION_ROUTES.some((route) => path.includes(route));
 };
 
 export const isLocalStorage =

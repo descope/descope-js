@@ -189,6 +189,48 @@ describe('notifications', () => {
     expect(isAuthenticatedHandler).not.toHaveBeenCalledWith(false);
   });
 
+  it('should NOT clear auth state when 5xx server error occurs on session validation route', async () => {
+    const serverErrorMock = {
+      clone: () => serverErrorMock,
+      ok: false,
+      status: 500,
+      text: () =>
+        Promise.resolve(JSON.stringify({ error: 'Internal Server Error' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(Promise.resolve(createMockReturnValue(authInfo)))
+      .mockReturnValueOnce(Promise.resolve(serverErrorMock));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+
+    const sessionTokenHandler = jest.fn();
+    sdk.onSessionTokenChange(sessionTokenHandler);
+
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
+    // First call returns auth info
+    await sdk.httpClient.get('/v1/auth/me');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).toHaveBeenCalledTimes(1);
+    expect(isAuthenticatedHandler).toHaveBeenCalledWith(true);
+
+    sessionTokenHandler.mockClear();
+    isAuthenticatedHandler.mockClear();
+
+    // 500 error on /refresh should NOT clear auth state (only 4xx should)
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).not.toHaveBeenCalledWith(null);
+    expect(isAuthenticatedHandler).not.toHaveBeenCalledWith(false);
+  });
+
   it('should not update state when response does not contain jwt response', async () => {
     const mockFetch = jest
       .fn()
