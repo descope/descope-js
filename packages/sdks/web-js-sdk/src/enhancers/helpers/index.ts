@@ -8,6 +8,16 @@ import {
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { IS_BROWSER } from '../../constants';
 
+// Routes where a failed response indicates an invalid/expired session
+// Other routes (like OTP verify) may fail for invalid input, not session expiration
+const SESSION_VALIDATION_ROUTES = [
+  '/v1/auth/refresh',
+  '/v1/auth/try-refresh',
+  '/v1/auth/me',
+  '/v1/auth/me/tenants',
+  '/v1/auth/me/history',
+];
+
 // this is a singleton
 // but in order to keep the code clean
 // it was implemented in this way
@@ -147,6 +157,21 @@ export const getUserFromResponse = async (
 
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
 export const isDescopeBridge = () => IS_BROWSER && !!window['descopeBridge'];
+
+/**
+ * Check if a failed response indicates an invalid/expired session
+ * Only specific routes should trigger logout/clear tokens behavior on failure
+ * Other routes (like OTP verify) may fail for invalid input
+ */
+export const isInvalidSessionResponse = (
+  req: { path?: string },
+  res: Response | undefined,
+): boolean => {
+  const is4xx = res?.status >= 400 && res?.status < 500;
+  if (!is4xx) return false;
+  const path = req?.path || '';
+  return SESSION_VALIDATION_ROUTES.includes(path);
+};
 
 export const isLocalStorage =
   typeof customStorage !== 'undefined' ||

@@ -1,7 +1,12 @@
 import { SdkFnWrapper, wrapWith } from '@descope/core-js-sdk';
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook } from '../../types';
-import { addHooks, getAuthInfoFromResponse, isDescopeBridge } from '../helpers';
+import {
+  addHooks,
+  getAuthInfoFromResponse,
+  isDescopeBridge,
+  isInvalidSessionResponse,
+} from '../helpers';
 import {
   createTimerFunctions,
   getTokenExpiration,
@@ -47,13 +52,13 @@ export const withAutoRefresh =
       });
     }
 
-    const afterRequest: AfterRequestHook = async (_req, res) => {
+    const afterRequest: AfterRequestHook = async (req, res) => {
       const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
         await getAuthInfoFromResponse(res);
 
-      // if we got 401 we want to cancel all timers
-      if (res?.status === 401) {
-        logger.debug('Received 401, canceling all timers');
+      // if we got a failed response on a session validation route we want to cancel all timers
+      if (isInvalidSessionResponse(req, res)) {
+        logger.debug('Session invalidated, canceling all timers');
         clearAllTimers();
       } else if (sessionJwt || sessionExpiration) {
         sessionExpirationDate = getTokenExpiration(

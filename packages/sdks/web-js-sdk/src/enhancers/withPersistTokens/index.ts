@@ -3,7 +3,11 @@ import { SdkFnWrapper, wrapWith } from '@descope/core-js-sdk';
 import { IS_BROWSER } from '../../constants';
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook } from '../../types';
-import { addHooks, getAuthInfoFromResponse } from '../helpers';
+import {
+  addHooks,
+  getAuthInfoFromResponse,
+  isInvalidSessionResponse,
+} from '../helpers';
 import {
   beforeRequest,
   clearTokens,
@@ -13,6 +17,7 @@ import {
   getIdToken,
 } from './helpers';
 import { CookieConfig, LastCookieOptions, PersistTokensOptions } from './types';
+import logger from '../helpers/logger';
 
 /**
  * Persist authentication tokens in cookie/storage
@@ -45,17 +50,14 @@ export const withPersistTokens =
     let lastCookieOptions: LastCookieOptions | undefined;
 
     const afterRequest: AfterRequestHook = async (req, res) => {
-      const isManagementApi = /^\/v\d+\/mgmt\//.test(req.path);
-
-      if (res?.status === 401) {
-        if (!isManagementApi) {
-          clearTokens(
-            storagePrefix,
-            sessionTokenViaCookie,
-            refreshTokenViaCookie,
-            lastCookieOptions,
-          );
-        }
+      if (isInvalidSessionResponse(req, res)) {
+        logger.debug('Session invalidated, clearing persisted tokens');
+        clearTokens(
+          storagePrefix,
+          sessionTokenViaCookie,
+          refreshTokenViaCookie,
+          lastCookieOptions,
+        );
       } else {
         const newCookieOptions = persistTokens(
           await getAuthInfoFromResponse(res),

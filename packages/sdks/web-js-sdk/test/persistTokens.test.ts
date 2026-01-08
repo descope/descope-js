@@ -695,6 +695,114 @@ describe('persistTokens', () => {
     expect(localStorage.getItem('DSI')).toEqual(oidcAuthInfo.id_token);
   });
 
+  it('should clear tokens when /refresh call fails', async () => {
+    const failedMock = {
+      clone: () => failedMock,
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(createMockReturnValue(authInfo))
+      .mockReturnValueOnce(failedMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+
+    // First call sets tokens
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+
+    // Failed /refresh call should clear tokens
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toBeFalsy();
+    expect(localStorage.getItem('DS')).toBeFalsy();
+  });
+
+  it('should NOT clear tokens when other routes fail (e.g., OTP verify)', async () => {
+    const failedOtpMock = {
+      clone: () => failedOtpMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({ error: 'Invalid OTP' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(createMockReturnValue(authInfo))
+      .mockReturnValueOnce(failedOtpMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+
+    // First call sets tokens
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+
+    // Failed OTP verify call should NOT clear tokens
+    await sdk.httpClient.get('/v1/auth/otp/verify');
+    await new Promise(process.nextTick);
+
+    // Tokens should still be present
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+  });
+
+  it('should NOT clear tokens when 5xx server error occurs on session validation route', async () => {
+    const serverErrorMock = {
+      clone: () => serverErrorMock,
+      ok: false,
+      status: 500,
+      text: () =>
+        Promise.resolve(JSON.stringify({ error: 'Internal Server Error' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(createMockReturnValue(authInfo))
+      .mockReturnValueOnce(serverErrorMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+
+    // First call sets tokens
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+
+    // 500 error on /refresh should NOT clear tokens (only 4xx should)
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    // Tokens should still be present
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+  });
+
   describe('getSessionToken', () => {
     it('should get session from from cookie', async () => {
       const getMock = Cookies.get as jest.Mock;
