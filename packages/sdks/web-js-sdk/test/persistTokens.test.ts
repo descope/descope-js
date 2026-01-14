@@ -56,6 +56,90 @@ describe('persistTokens', () => {
     beforeEach(() => {
       delete window.location;
     });
+
+    it('should warn when session cookie secure=true but protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Session token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass sessionTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when session cookie secure=true and protocol is HTTPS', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'https:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when session cookie secure=false and protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
     it('should set cookie domain when it is the same as current domain', async () => {
       window.location = { hostname: authInfo.cookieDomain } as any;
 
@@ -290,6 +374,89 @@ describe('persistTokens', () => {
   describe('set refresh token via cookie', () => {
     beforeEach(() => {
       delete window.location;
+    });
+
+    it('should warn when refresh cookie secure=true but protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        refreshTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Refresh token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass refreshTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when refresh cookie secure=true and protocol is HTTPS', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'https:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        refreshTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when refresh cookie secure=false and protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        refreshTokenViaCookie: { secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
     });
 
     it('should set refresh token cookie when refreshTokenViaCookie is true', async () => {

@@ -13,6 +13,7 @@ import {
   setLocalStorage,
 } from '../helpers';
 import { CookieConfig, LastCookieOptions, SameSite } from './types';
+import logger from '../helpers/logger';
 
 /**
  * Store the session JWT as a cookie on the given domain and path with the given expiration.
@@ -100,6 +101,11 @@ export const persistTokens = (
       const cookieDomain =
         refreshTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getRefreshCookieName(refreshTokenViaCookie);
+      if (cookieSecure && window.location.protocol !== 'https:') {
+        logger.warn(
+          "Refresh token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass refreshTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
+        );
+      }
       const authInfoWithCookie = {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
@@ -137,6 +143,11 @@ export const persistTokens = (
       const cookieDomain =
         sessionTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getSessionCookieName(sessionTokenViaCookie);
+      if (cookieSecure && window.location.protocol !== 'https:') {
+        logger.warn(
+          "Session token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass sessionTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
+        );
+      }
       const authInfoWithCookie = {
         ...(authInfo as Partial<JWTResponse>),
         cookieSameSite,
