@@ -80,7 +80,7 @@ describe('persistTokens', () => {
       await new Promise(process.nextTick);
 
       expect(warnSpy).toHaveBeenCalledWith(
-        "Session token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass sessionTokenViaCookie: { secure: process.env.NODE_ENV !== 'development' }",
+        "Session token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass sessionTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
       );
 
       warnSpy.mockRestore();
@@ -399,7 +399,7 @@ describe('persistTokens', () => {
       await new Promise(process.nextTick);
 
       expect(warnSpy).toHaveBeenCalledWith(
-        "Refresh token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass refreshTokenViaCookie: { secure: process.env.NODE_ENV !== 'development' }",
+        "Refresh token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass refreshTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
       );
 
       warnSpy.mockRestore();
