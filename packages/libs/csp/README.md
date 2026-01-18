@@ -91,9 +91,26 @@ Common third-party CSP configurations.
 ```typescript
 import { presets } from '@descope/csp';
 
-presets.googleFonts;
-presets.segment;
+presets.googleFonts; // Google Fonts (fonts.googleapis.com, fonts.gstatic.com)
+presets.segment; // Segment analytics
+presets.featureOS; // Feature OS widgets
+presets.devRev; // DevRev platform
+presets.jsdelivr; // jsDelivr CDN
+presets.npmRegistry; // NPM registry (@descope/flow-components)
+presets.descopeInternal; // Descope internal tools (dev-panel, static assets)
 ```
+
+**Available Presets:**
+
+| Preset            | Description              | Directives Added                                                |
+| ----------------- | ------------------------ | --------------------------------------------------------------- |
+| `googleFonts`     | Google Fonts integration | `style-src`, `font-src`                                         |
+| `segment`         | Segment analytics        | `script-src`, `connect-src`                                     |
+| `featureOS`       | Feature OS widgets       | `script-src`, `frame-src`                                       |
+| `devRev`          | DevRev platform          | `script-src`, `connect-src`, `frame-src`                        |
+| `jsdelivr`        | jsDelivr CDN fallback    | `script-src`, `connect-src`                                     |
+| `npmRegistry`     | NPM registry access      | `connect-src`                                                   |
+| `descopeInternal` | Descope internal tools   | `script-src`, `style-src`, `img-src`, `font-src`, `connect-src` |
 
 ## Usage Examples
 
@@ -180,6 +197,24 @@ const csp = createDescopeCSP({
 });
 
 console.log(csp.toString());
+```
+
+### Console-App Integration
+
+For applications like console-app that need all integrations:
+
+```typescript
+import { createDescopeCSP, generateNonce, presets } from '@descope/csp';
+
+const nonce = generateNonce();
+
+const csp = createDescopeCSP({
+  nonce,
+  presets: [presets.googleFonts, presets.segment, presets.featureOS, presets.devRev, presets.jsdelivr, presets.npmRegistry, presets.descopeInternal],
+  extend: {
+    'connect-src': ['https://*.descope.org'], // Vercel preview
+  },
+});
 ```
 
 ## Framework Integration Examples
