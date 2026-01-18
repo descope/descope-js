@@ -5,6 +5,7 @@ const DEFAULT_DESCOPE_URLS: Required<DescopeURLs> = {
   cdn: 'descopecdn.com',
   static: 'static.descope.com',
   images: 'imgs.descope.com',
+  content: 'content.app.descope.com',
 };
 
 export const getDescopeDefaults = (
@@ -16,6 +17,7 @@ export const getDescopeDefaults = (
     cdn: urls?.cdn ?? DEFAULT_DESCOPE_URLS.cdn,
     static: urls?.static ?? DEFAULT_DESCOPE_URLS.static,
     images: urls?.images ?? DEFAULT_DESCOPE_URLS.images,
+    content: urls?.content ?? DEFAULT_DESCOPE_URLS.content,
   };
 
   const ensureHttps = (domain: string): string => {
@@ -26,35 +28,29 @@ export const getDescopeDefaults = (
   };
 
   const directives: CSPDirectives = {
-    'default-src': ["'self'"],
     'script-src': [
       "'self'",
       ensureHttps(resolvedUrls.static),
       ensureHttps(resolvedUrls.cdn),
     ],
-    'style-src': ["'self'", ensureHttps(resolvedUrls.static)],
     'img-src': [
-      "'self'",
       ensureHttps(resolvedUrls.static),
+      ensureHttps(resolvedUrls.content),
       ensureHttps(resolvedUrls.images),
       'data:',
     ],
-    'font-src': ["'self'", ensureHttps(resolvedUrls.cdn)],
     'connect-src': [
       "'self'",
       ensureHttps(resolvedUrls.static),
       ensureHttps(resolvedUrls.api),
     ],
-    'media-src': ["'self'"],
-    'object-src': ["'none'"],
-    'frame-src': ["'self'"],
-    'worker-src': ["'self'"],
-    'manifest-src': ["'self'"],
-    'form-action': ["'self'"],
   };
 
   if (nonce) {
     directives['script-src']!.push(`'nonce-${nonce}'`);
+    if (!directives['style-src']) {
+      directives['style-src'] = [];
+    }
     directives['style-src']!.push(`'nonce-${nonce}'`);
   }
 

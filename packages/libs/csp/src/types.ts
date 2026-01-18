@@ -86,6 +86,13 @@ export interface DescopeURLs {
    * @example "imgs.staging.descope.com"
    */
   images?: string;
+
+  /**
+   * Descope content domain.
+   * @default "content.app.descope.com"
+   * @example "content.app.staging.descope.com"
+   */
+  content?: string;
 }
 
 /**
