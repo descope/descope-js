@@ -1,0 +1,63 @@
+{
+  "name": "@descope/csp",
+  "version": "0.1.0",
+  "author": "Descope Team <info@descope.com>",
+  "homepage": "https://github.com/descope/descope-js/tree/main/packages/libs/csp",
+  "bugs": {
+    "url": "https://github.com/descope/descope-js/issues",
+    "email": "help@descope.com"
+  },
+  "main": "dist/cjs/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "require": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/cjs/index.cjs.js"
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "type": "module",
+  "description": "Content Security Policy (CSP) builder for Descope integrations",
+  "scripts": {
+    "build": "rimraf dist && rollup -c",
+    "test": "jest",
+    "lint": "eslint 'src/**/*.ts'"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/descope/descope-js.git",
+    "directory": "packages/libs/csp"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "descope",
+    "csp",
+    "content-security-policy",
+    "security",
+    "nonce"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "28.0.2",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/node": "20.17.13",
+    "eslint": "~9.18.0",
+    "jest": "^29.0.0",
+    "rimraf": "^5.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.0.0",
+    "rollup-plugin-esbuild": "^6.0.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "tslib": "2.8.1"
+  }
+}
