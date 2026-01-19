@@ -4,7 +4,7 @@
   window.ENV = {};
   try {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/../.env', false);
+    xhr.open('GET', '/.env', false);
     xhr.send();
     if (xhr.status === 200) {
       xhr.responseText.split('\n').forEach((line) => {
