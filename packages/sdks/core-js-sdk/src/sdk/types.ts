@@ -361,6 +361,7 @@ export type Options = {
   applicationScopes?: string; // Relevant for sso application and third party application
   outboundAppId?: string;
   outboundAppScopes?: string[];
+  outboundExternalIdentifier?: string;
 };
 
 export type ResponseData = Record<string, any>;

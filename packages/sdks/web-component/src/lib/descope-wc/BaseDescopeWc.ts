@@ -272,6 +272,10 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
+  get outboundExternalIdentifier() {
+    return this.getAttribute('outbound-external-identifier');
+  }
+
   get popupOrigin(): string | null {
     return this.getAttribute('popup-origin');
   }

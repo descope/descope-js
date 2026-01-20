@@ -146,6 +146,7 @@ export type DescopeProps = {
   redirectUrl?: string;
   outboundAppId?: string;
   outboundAppScopes?: string[];
+  outboundExternalIdentifier?: string;
   popupOrigin?: string;
   errorTransformer?: (error: { text: string; type: string }) => string;
   // use to override screen's form inputs in flow execution

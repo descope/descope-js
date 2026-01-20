@@ -25,6 +25,7 @@ type Options = Pick<
   | 'applicationScopes'
   | 'outboundAppId'
   | 'outboundAppScopes'
+  | 'outboundExternalIdentifier'
 > & {
   lastAuth?: Omit<CoreSdkFlowStartArgs[1]['lastAuth'], 'loginId' | 'name'>;
 };

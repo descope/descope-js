@@ -187,6 +187,15 @@ const App = () => {
             //popupOrigin="https://auth.example.com"
 
             // Clear screen error message on user input
+
+            // outboundAppId: Outbound application ID to use for connecting to external services
+            // outboundAppId="my-outbound-app-id"
+
+            // outboundAppScopes: Array of scopes to request from the outbound application
+            // outboundAppScopes={["email", "profile"]}
+
+            // outboundExternalIdentifier: External identifier to map the outbound connection to an external user
+            // outboundExternalIdentifier="external-user-id-123"
             //dismissScreenErrorOnInput={true}
         />
     )

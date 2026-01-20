@@ -638,6 +638,7 @@ class DescopeWc extends BaseDescopeWc {
     const abTestingKey = getABTestingKey();
     const { outboundAppId } = this;
     const { outboundAppScopes } = this;
+    const { outboundExternalIdentifier } = this;
     const loginId = this.sdk.getLastUserLoginId();
     const flowConfig = await this.getFlowConfig();
     const projectConfig = await this.getProjectConfig();
@@ -734,6 +735,7 @@ class DescopeWc extends BaseDescopeWc {
             nativeOptions,
             outboundAppId,
             outboundAppScopes,
+            outboundExternalIdentifier,
           },
           conditionInteractionId,
           '',
@@ -1101,6 +1103,7 @@ class DescopeWc extends BaseDescopeWc {
             nativeOptions,
             outboundAppId,
             outboundAppScopes,
+            outboundExternalIdentifier,
           },
           conditionInteractionId,
           interactionId,
