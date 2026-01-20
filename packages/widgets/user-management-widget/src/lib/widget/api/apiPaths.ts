@@ -3,7 +3,7 @@ export const apiPaths = {
     search: '/v1/mgmt/user/search',
     deleteBatch: '/v1/mgmt/user/delete/batch',
     create: '/v1/mgmt/user/create',
-    update: '/v1/mgmt/user/update',
+    update: '/v1/mgmt/user/patch',
     status: '/v1/mgmt/user/update/status',
     setTempPassword: '/v1/mgmt/user/password/set/temporary',
     removePasskey: '/v1/mgmt/user/passkeys/delete',
