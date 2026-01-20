@@ -189,7 +189,7 @@ export const createUserSdk = ({
         additionalLoginIds,
       });
     }
-    const res = await httpClient.patch(
+    const res = await httpClient.post(
       apiPaths.user.update,
       {
         loginId,
