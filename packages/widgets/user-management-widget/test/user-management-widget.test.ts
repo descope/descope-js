@@ -19,8 +19,9 @@ export const mockHttpClient = {
   post: jest.fn(),
   put: jest.fn(),
   delete: jest.fn(),
+  patch: jest.fn(),
   reset: () =>
-    ['post'].forEach((key) =>
+    ['post', 'patch'].forEach((key) =>
       mockHttpClient[key].mockResolvedValue({
         ok: true,
         status: 200,
@@ -193,11 +194,11 @@ describe('user-management-widget', () => {
       await sdk.user.update(updateData);
 
       await waitFor(
-        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        () => expect(mockHttpClient.patch).toHaveBeenCalledTimes(1),
         { timeout: 5000 },
       );
       await waitFor(() =>
-        expect(mockHttpClient.post).toHaveBeenCalledWith(
+        expect(mockHttpClient.patch).toHaveBeenCalledWith(
           apiPaths.user.update,
           updateData,
           {
