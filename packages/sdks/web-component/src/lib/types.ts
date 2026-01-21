@@ -117,6 +117,7 @@ export type FlowState = {
   redirectAuthBackupCallbackUri: string;
   redirectAuthInitiator: string;
   deferredRedirect: boolean;
+  deferredPolling: boolean;
   locale: string;
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
