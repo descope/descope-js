@@ -11,5 +11,10 @@ export const initialState: State = {
     error: null,
     data: [],
   },
+  tenant: {
+    loading: false,
+    error: null,
+    currentTenantId: null,
+  },
   notifications: [],
 };

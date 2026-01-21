@@ -20,6 +20,11 @@ export type State = {
     error: unknown;
     data: Device[];
   };
+  tenant: {
+    loading: boolean;
+    error: unknown;
+    currentTenantId: string | null;
+  };
   notifications: Notification[];
 };
 
