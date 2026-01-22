@@ -1,4 +1,4 @@
-import { Tenant, User, UserTenant } from '../types';
+import { Tenant, User } from '../types';
 
 const mockTenants: Tenant[] = [
   {
