@@ -53,8 +53,3 @@ export const getUserTenants = createSelector(
 
 export const getCurrentTenantId = (state: State) =>
   state.tenant.currentTenantId;
-
-export const getCurrentTenantId2 = createSelector(
-  getUserTenants,
-  (state) => state.tenant.currentTenantId,
-);
