@@ -31,7 +31,6 @@ export const stateManagementMixin = createSingletonMixin(
           listDevices.reducer(builder);
           logout.reducer(builder);
           parseSessionToken.reducer(builder);
-          setCurrentTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
