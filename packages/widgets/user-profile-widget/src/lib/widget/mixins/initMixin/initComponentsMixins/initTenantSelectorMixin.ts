@@ -31,13 +31,15 @@ export const initTenantSelectorMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.tenantSelector.ele.addEventListener('change', (e: InputEvent) => {
-          const tenantId = (e.target as HTMLInputElement)?.value;
-          if (tenantId) {
-            this.actions.selectTenant(tenantId);
-          }
-        });
+        this.tenantSelector.onInput(this.#onInput);
       }
+
+      #onInput = (e) => {
+        const tenantId = e.target.value;
+        if (tenantId) {
+          this.actions.selectTenant(tenantId);
+        }
+      };
 
       async #updateTenantSelector(
         userTenants: ReturnType<typeof getUserTenants>,
