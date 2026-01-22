@@ -2,13 +2,13 @@ import { Tenant, User, UserTenant } from '../types';
 
 const mockTenants: Tenant[] = [
   {
-    tenantName: 't1',
-    tenantId: 't1',
+    tenantName: 'Tenant 1',
+    tenantId: 'tn1',
     roleNames: ['Role'],
   },
   {
-    tenantName: 't2',
-    tenantId: 't2',
+    tenantName: 'Tenant 2',
+    tenantId: 'tn2',
     roleNames: ['Role'],
   },
 ];
@@ -39,6 +39,7 @@ const me: () => Promise<User> = async () =>
       test: false,
       TOTP: false,
       webauthn: true,
+      dct: 'tn2',
     });
   });
 

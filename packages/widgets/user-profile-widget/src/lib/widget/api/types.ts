@@ -45,6 +45,7 @@ export type User = {
   givenName: string;
   middleName: string;
   familyName: string;
+  dct: string;
 };
 
 export type Role = {
