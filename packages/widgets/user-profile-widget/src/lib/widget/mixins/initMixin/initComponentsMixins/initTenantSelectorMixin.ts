@@ -1,9 +1,5 @@
 import { SingleSelectDriver } from '@descope/sdk-component-drivers';
-import {
-  compose,
-  createSingletonMixin,
-  withMemCache,
-} from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { getUserTenants, getCurrentTenantId } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -54,20 +50,36 @@ export const initTenantSelectorMixin = createSingletonMixin(
         await this.tenantSelector.setData(options);
       }
 
-      async #updateComboBox() {
-        await this.#updateTenantSelector(getUserTenants(this.state));
-        await this.#updateSelectedTenant(getCurrentTenantId(this.state));
+      #updateComboBox() {
+        this.#updateTenantSelector(getUserTenants(this.state));
+        this.#updateSelectedTenant(getCurrentTenantId(this.state));
       }
 
-      async #updateSelectedTenant(tenantId: string | null) {
+      #updateSelectedTenant(tenantId: string | null) {
         this.tenantSelector.value = tenantId || '';
+      }
+
+      // We need to work around the combo box's internal state to set the initial value which
+      // has a slight delay when setting value directly
+      #updateInitialValue() {
+        this.tenantSelector.ele.setAttribute('allow-custom-value', 'true');
+        setTimeout(() => {
+          this.#updateSelectedTenant(getCurrentTenantId(this.state));
+          this.tenantSelector.ele.removeAttribute('allow-custom-value');
+          this.#updateTenantSelector(getUserTenants(this.state));
+        });
       }
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
         this.#initTenantSelector();
-        await this.#updateComboBox();
+
+        if (!this.tenantSelector) {
+          return;
+        }
+
+        this.#updateInitialValue();
 
         this.subscribe(this.#updateComboBox.bind(this), getUserTenants);
       }
