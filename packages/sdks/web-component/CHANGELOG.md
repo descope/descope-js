@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.54.0](https://github.com/descope/descope-js/compare/web-component-3.53.4...web-component-3.54.0) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+
+### Features
+
+* Mobile only - defer polling when in background until in foreground ([#1319](https://github.com/descope/descope-js/issues/1319)) RELEASE ([995966b](https://github.com/descope/descope-js/commit/995966bf1e125663657d7313e1f7d9e4ead5cac6))
+
 ## [3.53.4](https://github.com/descope/descope-js/compare/web-component-3.53.3...web-component-3.53.4) (2026-01-04)
 
 ### Dependency Updates

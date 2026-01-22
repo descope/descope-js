@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.44.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.1...web-js-sdk-1.44.0) (2026-01-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.2`
+
+### Features
+
+* add logs when wrong refresh/session token via cookie conf ([#1311](https://github.com/descope/descope-js/issues/1311)) ([e120c18](https://github.com/descope/descope-js/commit/e120c18497520bd53de59613bebfc1ac2e031e0f))
+
+
+### Bug Fixes
+
+* improve session invalidation ([#1303](https://github.com/descope/descope-js/issues/1303)) ([5d4cd88](https://github.com/descope/descope-js/commit/5d4cd88c9a437651059f37add673827843b5ea42))
+
 ## [1.43.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.0...web-js-sdk-1.43.1) (2026-01-04)
 
 ### Dependency Updates
