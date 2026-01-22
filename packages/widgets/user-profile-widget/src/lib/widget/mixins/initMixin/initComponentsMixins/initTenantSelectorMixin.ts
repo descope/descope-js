@@ -14,15 +14,9 @@ export const initTenantSelectorMixin = createSingletonMixin(
     )(superclass) {
       tenantSelector: SingleSelectDriver;
 
+      #init = true;
+
       #initTenantSelector() {
-        const ele = this.shadowRoot?.querySelector(
-          'descope-combo-box[name="currentTenantSelector"]',
-        );
-
-        if (!ele) {
-          return;
-        }
-
         this.tenantSelector = new SingleSelectDriver(
           () =>
             this.shadowRoot?.querySelector(
@@ -31,19 +25,26 @@ export const initTenantSelectorMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.tenantSelector.onInput(this.#onInput);
+        this.tenantSelector.onInput((e) => {
+          if (this.#init) {
+            this.#init = false;
+            return;
+          }
+
+          this.#onInput(e);
+        });
       }
 
       #onInput = (e) => {
-        const tenantId = e.target.value;
-        if (tenantId) {
-          this.actions.selectTenant(tenantId);
+        const nextTenantId = e.target.value;
+        const prevTenantId = getCurrentTenantId(this.state);
+
+        if (nextTenantId && nextTenantId !== prevTenantId) {
+          this.actions.setCurrentTenant(nextTenantId);
         }
       };
 
-      async #updateTenantSelector(
-        userTenants: ReturnType<typeof getUserTenants>,
-      ) {
+      async #updateOptions(userTenants: ReturnType<typeof getUserTenants>) {
         const options = userTenants.map((tenant) => ({
           label: tenant.tenantName || tenant.tenantId,
           value: tenant.tenantId,
@@ -52,23 +53,17 @@ export const initTenantSelectorMixin = createSingletonMixin(
         await this.tenantSelector.setData(options);
       }
 
-      #updateComboBox() {
-        this.#updateTenantSelector(getUserTenants(this.state));
-        this.#updateSelectedTenant(getCurrentTenantId(this.state));
-      }
-
-      #updateSelectedTenant(tenantId: string | null) {
-        this.tenantSelector.value = tenantId || '';
+      #setSelectedItem(tenantId: string | null) {
+        this.tenantSelector.value = tenantId; // || getCurrentTenantId(this.state);
       }
 
       // We need to work around the combo box's internal state to set the initial value which
       // has a slight delay when setting value directly
       #updateInitialValue() {
-        this.tenantSelector.ele.setAttribute('allow-custom-value', 'true');
+        this.tenantSelector.setAllowCustomValue(true);
         setTimeout(() => {
-          this.#updateSelectedTenant(getCurrentTenantId(this.state));
-          this.tenantSelector.ele.removeAttribute('allow-custom-value');
-          this.#updateTenantSelector(getUserTenants(this.state));
+          this.#setSelectedItem(getCurrentTenantId(this.state));
+          this.tenantSelector.setAllowCustomValue(false);
         });
       }
 
@@ -76,14 +71,10 @@ export const initTenantSelectorMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initTenantSelector();
-
-        if (!this.tenantSelector) {
-          return;
-        }
-
         this.#updateInitialValue();
+        this.#updateOptions(getUserTenants(this.state));
 
-        this.subscribe(this.#updateComboBox.bind(this), getUserTenants);
+        this.subscribe(this.#setSelectedItem.bind(this), getCurrentTenantId);
       }
     },
 );

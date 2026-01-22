@@ -9,7 +9,8 @@ import {
   getMe,
   listDevices,
   logout,
-  selectTenant,
+  parseSessionToken,
+  setCurrentTenant,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -29,13 +30,15 @@ export const stateManagementMixin = createSingletonMixin(
           getMe.reducer(builder);
           listDevices.reducer(builder);
           logout.reducer(builder);
-          selectTenant.reducer(builder);
+          parseSessionToken.reducer(builder);
+          setCurrentTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
           listDevices: listDevices.action,
           logout: logout.action,
-          selectTenant: selectTenant.action,
+          parseSessionToken: parseSessionToken.action,
+          setCurrentTenant: setCurrentTenant.action,
         },
       }),
       initLifecycleMixin,
