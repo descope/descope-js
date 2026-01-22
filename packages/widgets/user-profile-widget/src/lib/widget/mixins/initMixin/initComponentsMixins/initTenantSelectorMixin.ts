@@ -54,12 +54,12 @@ export const initTenantSelectorMixin = createSingletonMixin(
       }
 
       #setSelectedItem(tenantId: string | null) {
-        this.tenantSelector.value = tenantId; // || getCurrentTenantId(this.state);
+        this.tenantSelector.value = tenantId;
       }
 
       // We need to work around the combo box's internal state to set the initial value which
-      // has a slight delay when setting value directly
-      #updateInitialValue() {
+      // has a slight delay when setting it directly
+      #setInitialValue() {
         this.tenantSelector.setAllowCustomValue(true);
         setTimeout(() => {
           this.#setSelectedItem(getCurrentTenantId(this.state));
@@ -71,7 +71,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initTenantSelector();
-        this.#updateInitialValue();
+        this.#setInitialValue();
         this.#updateOptions(getUserTenants(this.state));
 
         this.subscribe(this.#setSelectedItem.bind(this), getCurrentTenantId);

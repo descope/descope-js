@@ -16,8 +16,6 @@ const action = createAsyncThunk<
 
   // After switching tenants, parse the JWT to extract the new dct claim
   await dispatch(parseSessionToken.action());
-
-  return {};
 });
 
 const reducer = buildAsyncReducer(action)({});

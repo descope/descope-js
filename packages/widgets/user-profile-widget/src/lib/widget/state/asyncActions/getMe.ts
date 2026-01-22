@@ -5,16 +5,11 @@ import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
 import { buildAsyncReducer, withRequestStatus } from './helpers';
 
-// Fetch user data from the /me endpoint
-// Note: This does NOT parse the session token - that's handled by parseSessionToken action
 const action = createAsyncThunk<
   any,
   FirstParameter<Sdk['user']['me']>,
   ThunkConfigExtraApi
->('users/me', async (arg, { extra: { api } }) => {
-  const userData = await api.user.me();
-  return userData;
-});
+>('users/me', (arg, { extra: { api } }) => api.user.me());
 
 const reducer = buildAsyncReducer(action)(
   {
