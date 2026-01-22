@@ -10,14 +10,6 @@ export const createTenantSdk = ({
   mock: boolean;
 }) => {
   const selectTenant = async (tenantId: string) => {
-    if (mock) {
-      // Mock implementation - return sample JWT response
-      return {
-        sessionJwt: 'mock-session-jwt',
-        refreshJwt: 'mock-refresh-jwt',
-      };
-    }
-
     const res = await httpClient.post(apiPaths.user.selectTenant, {
       tenant: tenantId,
     });

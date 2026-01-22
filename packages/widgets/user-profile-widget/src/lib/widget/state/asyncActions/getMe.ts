@@ -4,23 +4,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
 import { buildAsyncReducer, withRequestStatus } from './helpers';
-
-// Helper function to decode JWT and extract claims
-const decodeJWT = (token: string) => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join(''),
-    );
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    return null;
-  }
-};
+import { decodeJWT } from '../../helpers';
 
 const action = createAsyncThunk<
   any,
