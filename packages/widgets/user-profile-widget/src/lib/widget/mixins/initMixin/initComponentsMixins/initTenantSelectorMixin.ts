@@ -38,7 +38,9 @@ export const initTenantSelectorMixin = createSingletonMixin(
         });
       }
 
-      #onTenantChange(tenantId: string) {
+      #onTenantChange() {
+        const tenantId = getCurrentTenantId(this.state);
+
         switch (this.tenantSelector.onSuccessAction) {
           case 'reload':
             window.location.reload();
@@ -57,13 +59,8 @@ export const initTenantSelectorMixin = createSingletonMixin(
       }
 
       #onInput = async (e) => {
-        const nextTenantId = e.target.value;
-        const prevTenantId = getCurrentTenantId(this.state);
-
-        if (nextTenantId && nextTenantId !== prevTenantId) {
-          await this.actions.setCurrentTenant(nextTenantId);
-          this.#onTenantChange(nextTenantId);
-        }
+        await this.actions.setCurrentTenant(e.target.value);
+        this.#onTenantChange();
       };
 
       async #updateOptions(userTenants: ReturnType<typeof getUserTenants>) {

@@ -31,9 +31,9 @@ jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
   default: jest.fn(() => ({
     httpClient: mockHttpClient,
-    getSessionToken: jest.fn(() => 'mock-session-token'),
     logout: jest.fn(() => Promise.resolve()),
   })),
+  getSessionToken: jest.fn(() => 'mock-session-token'),
 }));
 
 jest.mock('../src/lib/widget/api/sdk/createUserSdk', () => {

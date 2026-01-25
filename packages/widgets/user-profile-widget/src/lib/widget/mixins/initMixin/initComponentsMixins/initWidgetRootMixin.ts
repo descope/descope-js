@@ -2,6 +2,7 @@ import {
   compose,
   createSingletonMixin,
   createTemplate,
+  decodeJWT,
 } from '@descope/sdk-helpers';
 import {
   descopeUiMixin,
@@ -9,6 +10,7 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
+import { getSessionToken } from '@descope/web-js-sdk';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 
@@ -32,13 +34,21 @@ export const initWidgetRootMixin = createSingletonMixin(
         this.contentRootElement.append(template.content.cloneNode(true));
       }
 
+      #parseCurrentTenantFromSessionToken() {
+        const sessionToken = getSessionToken();
+        const claims = sessionToken ? decodeJWT(sessionToken) : null;
+        return claims?.dct || null;
+      }
+
       // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
       async onWidgetRootReady() {}
 
       async init() {
         await super.init?.();
         await this.actions.getMe();
-        await this.actions.parseSessionToken();
+        this.actions.setCurrentTenantId(
+          this.#parseCurrentTenantFromSessionToken(),
+        );
         await this.#initWidgetRoot();
         await this.onWidgetRootReady();
         this.dispatchEvent(new CustomEvent('ready'));

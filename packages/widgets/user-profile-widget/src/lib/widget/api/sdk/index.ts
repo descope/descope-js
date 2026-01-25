@@ -30,7 +30,6 @@ export const createSdk = (
     device: {
       ...createDeviceSdk({ httpClient: webSdk.httpClient, mock }),
     },
-    getSessionToken: webSdk.getSessionToken.bind(webSdk),
   };
 };
 

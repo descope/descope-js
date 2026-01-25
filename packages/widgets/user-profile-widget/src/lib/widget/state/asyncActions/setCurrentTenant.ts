@@ -2,19 +2,31 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
-import { FirstParameter, ThunkConfigExtraApi } from '../types';
-import { parseSessionToken } from './parseSessionToken';
+import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
+import { buildAsyncReducer } from './helpers';
 
 const action = createAsyncThunk<
-  any,
+  string | null,
   FirstParameter<Sdk['user']['setCurrentTenant']>,
   ThunkConfigExtraApi
->('user/setCurrentTenant', async (tenantId, { extra: { api }, dispatch }) => {
+>('user/setCurrentTenant', async (tenantId, { extra: { api }, getState }) => {
+  const state = getState() as State;
+  const prevTenantId = state.tenant.currentTenantId;
+
+  if (!tenantId || tenantId === prevTenantId) {
+    return prevTenantId;
+  }
+
   // Update dct in session token
   await api.user.setCurrentTenant(tenantId);
 
-  // Update state
-  await dispatch(parseSessionToken.action());
+  return tenantId;
 });
 
-export const setCurrentTenant = { action };
+const reducer = buildAsyncReducer(action)({
+  onFulfilled: (state, action) => {
+    state.tenant.currentTenantId = action.payload;
+  },
+});
+
+export const setCurrentTenant = { action, reducer };
