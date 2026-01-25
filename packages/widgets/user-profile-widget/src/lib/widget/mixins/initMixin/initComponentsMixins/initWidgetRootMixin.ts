@@ -34,6 +34,7 @@ export const initWidgetRootMixin = createSingletonMixin(
         this.contentRootElement.append(template.content.cloneNode(true));
       }
 
+      // eslint-disable-next-line class-methods-use-this
       #parseCurrentTenantFromSessionToken() {
         const sessionToken = getSessionToken();
         const claims = sessionToken ? decodeJWT(sessionToken) : null;

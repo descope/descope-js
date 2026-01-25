@@ -1,7 +1,4 @@
-import {
-  SingleSelectDriver,
-  TenantSelectorDriver,
-} from '@descope/sdk-component-drivers';
+import { TenantSelectorDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { getUserTenants, getCurrentTenantId } from '../../../state/selectors';
@@ -44,6 +41,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
         switch (this.tenantSelector.onSuccessAction) {
           case 'reload':
             window.location.reload();
+            break;
           case 'dispatch':
             this.dispatchEvent(
               new CustomEvent('tenant-change', {
