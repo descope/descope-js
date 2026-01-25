@@ -1,4 +1,7 @@
-import { SingleSelectDriver } from '@descope/sdk-component-drivers';
+import {
+  SingleSelectDriver,
+  TenantSelectorDriver,
+} from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { getUserTenants, getCurrentTenantId } from '../../../state/selectors';
@@ -12,12 +15,12 @@ export const initTenantSelectorMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
     )(superclass) {
-      tenantSelector: SingleSelectDriver;
+      tenantSelector: TenantSelectorDriver;
 
       #init = true;
 
       #initTenantSelector() {
-        this.tenantSelector = new SingleSelectDriver(
+        this.tenantSelector = new TenantSelectorDriver(
           () =>
             this.shadowRoot?.querySelector(
               'descope-combo-box[name="currentTenantSelector"]',
@@ -35,12 +38,31 @@ export const initTenantSelectorMixin = createSingletonMixin(
         });
       }
 
-      #onInput = (e) => {
+      #onTenantChange(tenantId: string) {
+        switch (this.tenantSelector.onSuccessAction) {
+          case 'reload':
+            window.location.reload();
+          case 'dispatch':
+            this.dispatchEvent(
+              new CustomEvent('tenant-change', {
+                bubbles: true,
+                composed: true,
+                detail: { tenantId },
+              }),
+            );
+            break;
+          default:
+            break;
+        }
+      }
+
+      #onInput = async (e) => {
         const nextTenantId = e.target.value;
         const prevTenantId = getCurrentTenantId(this.state);
 
         if (nextTenantId && nextTenantId !== prevTenantId) {
-          this.actions.setCurrentTenant(nextTenantId);
+          await this.actions.setCurrentTenant(nextTenantId);
+          this.#onTenantChange(nextTenantId);
         }
       };
 
