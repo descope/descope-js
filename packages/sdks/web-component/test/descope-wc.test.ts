@@ -62,6 +62,7 @@ const abTestingKey = getABTestingKey();
 const defaultOptionsValues = {
   baseUrl: '',
   deferredRedirect: false,
+  deferredPolling: false,
   abTestingKey,
   lastAuth: {},
   oidcIdpStateId: null,
@@ -3257,6 +3258,203 @@ describe('web-component', () => {
     },
     WAIT_TIMEOUT * 5,
   );
+
+  describe('foreground-aware polling on mobile devices', () => {
+    const originalUserAgent = navigator.userAgent;
+
+    afterEach(() => {
+      // Reset document.hidden to default
+      Object.defineProperty(document, 'hidden', {
+        configurable: true,
+        get() {
+          return false;
+        },
+      });
+      // Reset userAgent
+      Object.defineProperty(navigator, 'userAgent', {
+        configurable: true,
+        get() {
+          return originalUserAgent;
+        },
+      });
+      // Reset descopeBridge
+      delete (window as any).descopeBridge;
+    });
+
+    it('When polling on mobile device in background, should defer polling until foreground', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+        }),
+      );
+
+      // Simulate mobile device
+      Object.defineProperty(navigator, 'userAgent', {
+        configurable: true,
+        get() {
+          return 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)';
+        },
+      });
+
+      // Start hidden (in background)
+      let isHidden = true;
+      Object.defineProperty(document, 'hidden', {
+        configurable: true,
+        get() {
+          return isHidden;
+        },
+      });
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      // Wait for the component to initialize
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Polling should not have been called yet since we're in background
+      expect(nextMock).not.toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        CUSTOM_INTERACTIONS.polling,
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+      );
+
+      // Bring to foreground
+      isHidden = false;
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      // Now polling should resume
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
+            {},
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+    });
+
+    it('When polling with descopeBridge (native flow) in background, should defer polling until foreground', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+        }),
+      );
+
+      // Simulate native flow webview
+      (window as any).descopeBridge = {};
+
+      // Start hidden (in background)
+      let isHidden = true;
+      Object.defineProperty(document, 'hidden', {
+        configurable: true,
+        get() {
+          return isHidden;
+        },
+      });
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      // Trigger lazy init for native flow
+      const descopeWc = document.querySelector('descope-wc') as any;
+      descopeWc.lazyInit?.();
+
+      // Wait for the component to initialize
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Polling should not have been called yet since we're in background
+      expect(nextMock).not.toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        CUSTOM_INTERACTIONS.polling,
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+      );
+
+      // Bring to foreground
+      isHidden = false;
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      // Now polling should resume
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
+            {},
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+    });
+
+    it('When polling on desktop in background, should continue polling normally', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.poll,
+        }),
+      );
+
+      // Desktop userAgent (default)
+      Object.defineProperty(navigator, 'userAgent', {
+        configurable: true,
+        get() {
+          return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36';
+        },
+      });
+
+      // Start hidden (in background)
+      Object.defineProperty(document, 'hidden', {
+        configurable: true,
+        get() {
+          return true;
+        },
+      });
+
+      pageContent = '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      // On desktop, polling should work even when hidden
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.polling,
+            1,
+            '1.2.3',
+            {},
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+    });
+  });
 
   describe('key press handler management', () => {
     it('should disable key press handler when rendering custom screen', async () => {

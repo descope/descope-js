@@ -115,6 +115,7 @@ export type LoginOptions = {
 /** Access key login options to be added to the different authentication methods */
 export type AccessKeyLoginOptions = {
   customClaims?: Record<string, any>;
+  selectedTenant?: string;
 };
 
 /** Sign Up options to be added to the different authentication methods */
