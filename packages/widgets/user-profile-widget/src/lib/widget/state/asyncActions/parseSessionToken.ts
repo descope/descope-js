@@ -3,7 +3,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ThunkConfigExtraApi } from '../types';
 import { buildAsyncReducer } from './helpers';
-import { decodeJWT } from '../../helpers';
+import { decodeJWT } from '@descope/sdk-helpers';
 
 const action = createAsyncThunk<
   { dct: string | null },
