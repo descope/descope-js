@@ -18,10 +18,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
 
       #initTenantSelector() {
         this.tenantSelector = new TenantSelectorDriver(
-          () =>
-            this.shadowRoot?.querySelector(
-              'descope-combo-box[name="currentTenantSelector"]',
-            ),
+          () => this.shadowRoot?.querySelector('descope-tenant-selector'),
           { logger: this.logger },
         );
 
