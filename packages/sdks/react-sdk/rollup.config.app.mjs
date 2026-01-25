@@ -10,6 +10,25 @@ import autoExternal from 'rollup-plugin-auto-external';
 
 import packageJson from './package.json' with { type: 'json' };
 
+const envKeys = [
+  'DESCOPE_PROJECT_ID',
+  'DESCOPE_BASE_URL',
+  'DESCOPE_BASE_STATIC_URL',
+  'DESCOPE_BASE_CDN_URL',
+  'DESCOPE_FLOW_ID',
+  'DESCOPE_STEP_UP_FLOW_ID',
+  'DESCOPE_THEME',
+  'DESCOPE_STYLE_ID',
+  'DESCOPE_LOCALE',
+  'DESCOPE_REDIRECT_URL',
+  'DESCOPE_DEBUG_MODE',
+  'DESCOPE_TELEMETRY_KEY',
+  'DESCOPE_TENANT_ID',
+  'DESCOPE_REFRESH_COOKIE_NAME',
+  'DESCOPE_OIDC_ENABLED',
+  'DESCOPE_OIDC_APPLICATION_ID',
+];
+
 export default {
   preserveSymlinks: true,
   preserveEntrySignatures: false,
@@ -29,7 +48,12 @@ export default {
       BUILD_VERSION: JSON.stringify(packageJson.version),
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify('development'),
-      'process.env': JSON.stringify(process.env),
+      ...envKeys.reduce((acc, key) => {
+        Object.assign(acc, {
+          [`process.env.${key}`]: JSON.stringify(process.env[key] || ''),
+        });
+        return acc;
+      }, {}),
       delimiters: ['', ''],
     }),
     html(),
