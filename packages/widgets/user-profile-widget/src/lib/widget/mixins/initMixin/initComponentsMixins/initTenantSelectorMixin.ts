@@ -35,7 +35,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
       #onTenantChange() {
         const tenantId = getCurrentTenantId(this.state);
 
-        switch (this.tenantSelector.onSuccessAction) {
+        switch (this.tenantSelector.action) {
           case 'reload':
             window.location.reload();
             break;
