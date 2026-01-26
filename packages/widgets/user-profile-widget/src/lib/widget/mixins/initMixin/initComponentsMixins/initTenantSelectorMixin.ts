@@ -35,26 +35,28 @@ export const initTenantSelectorMixin = createSingletonMixin(
       #onTenantChange() {
         const tenantId = getCurrentTenantId(this.state);
 
-        switch (this.tenantSelector.action) {
-          case 'reload':
-            window.location.reload();
-            break;
-          case 'dispatch':
-            this.dispatchEvent(
-              new CustomEvent('tenant-change', {
-                bubbles: true,
-                composed: true,
-                detail: { tenantId },
-              }),
-            );
-            break;
-          default:
-            break;
+        this.dispatchEvent(
+          new CustomEvent('tenant-changed', {
+            bubbles: true,
+            composed: true,
+            detail: { tenantId },
+          }),
+        );
+
+        if (this.tenantSelector.shouldReload) {
+          this.#reloadPage();
         }
       }
 
+      #reloadPage() {
+        setTimeout(
+          () => window.location.reload(),
+          this.tenantSelector.refreshTimeout,
+        );
+      }
+
       #onInput = async (e) => {
-        await this.actions.setCurrentTenant(e.target.value);
+        this.actions.setCurrentTenant(e.target.value);
         this.#onTenantChange();
       };
 
