@@ -91,7 +91,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       dismissScreenErrorOnInput,
       outboundAppId,
       outboundAppScopes,
-      outboundExternalIdentifier,
       popupOrigin,
       children,
       externalRequestId,
@@ -179,9 +178,9 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-      <form>
-        <Suspense fallback={null}>
-          <DescopeWC
+	<form>
+		<Suspense fallback={null}>
+			<DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
@@ -210,7 +209,6 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'debug.attr': debug,
               'outbound-app-id.attr': outboundAppId,
               'outbound-app-scopes.attr': outboundAppScopes,
-              'outbound-external-identifier.attr': outboundExternalIdentifier,
               'popup-origin.attr': popupOrigin,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
               'refreshCookieName.attr': refreshCookieName,
@@ -222,10 +220,10 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'customStorage.prop': customStorage,
             }}
           >
-            {children}
-          </DescopeWC>
-        </Suspense>
-      </form>
+				{children}
+			</DescopeWC>
+		</Suspense>
+	</form>
     );
   },
 );

@@ -194,9 +194,6 @@ const App = () => {
 
             // Array of scopes to request from the outbound application
             // outboundAppScopes={["email", "profile"]}
-
-            // External identifier to map the outbound connection to an external user
-            // outboundExternalIdentifier="external-user-id-123"
         />
     )
 }
