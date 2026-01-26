@@ -89,7 +89,6 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | dismiss-screen-error-on-input             | **"true"** - Clear screen error message on user input </br> **"false"** - Do not clear screen error message on user input                                                                                                                  | **"false"**   |
 | outbound-app-id                           | **"String"** - Outbound application ID to use for connecting to external services                                                                                                                                                          | **""**        |
 | outbound-app-scopes                       | **"String[]"** - JSON array of scopes to request from the outbound application (e.g., '["email", "profile"]')                                                                                                                              | **null**      |
-| outbound-external-identifier              | **"String"** - External identifier to map the outbound connection to an external user                                                                                                                                                      | **""**        |
 
 ## Optional Properties
 
