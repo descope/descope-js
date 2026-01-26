@@ -47,7 +47,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
         await this.actions.getMe();
-        this.actions.setCurrentTenantId(
+        this.actions.syncCurrentTenantFromToken(
           this.#parseCurrentTenantFromSessionToken(),
         );
         await this.#initWidgetRoot();

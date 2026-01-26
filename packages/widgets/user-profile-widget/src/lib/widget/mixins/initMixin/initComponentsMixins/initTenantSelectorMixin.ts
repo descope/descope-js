@@ -18,7 +18,10 @@ export const initTenantSelectorMixin = createSingletonMixin(
 
       #initTenantSelector() {
         this.tenantSelector = new TenantSelectorDriver(
-          () => this.shadowRoot?.querySelector('descope-tenant-selector'),
+          () =>
+            this.shadowRoot?.querySelector(
+              'descope-combo-box[name="tenantSelector"]',
+            ),
           { logger: this.logger },
         );
 
@@ -56,7 +59,9 @@ export const initTenantSelectorMixin = createSingletonMixin(
       }
 
       #onInput = async (e) => {
-        this.actions.setCurrentTenant(e.target.value);
+        const nextTenantId = e.target.value;
+        await this.actions.setCurrentTenant(nextTenantId);
+        this.actions.syncCurrentTenantFromToken(nextTenantId);
         this.#onTenantChange();
       };
 

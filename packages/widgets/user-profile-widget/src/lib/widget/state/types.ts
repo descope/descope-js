@@ -21,8 +21,6 @@ export type State = {
     data: Device[];
   };
   tenant: {
-    loading: boolean;
-    error: unknown;
     currentTenantId: string | null;
   };
   notifications: Notification[];

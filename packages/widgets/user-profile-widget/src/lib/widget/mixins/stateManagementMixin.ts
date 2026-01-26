@@ -24,7 +24,7 @@ export const stateManagementMixin = createSingletonMixin(
           clearNotifications: (state) => {
             state.notifications = [];
           },
-          setCurrentTenantId: (
+          syncCurrentTenantFromToken: (
             state,
             { payload }: { payload: string | null },
           ) => {
@@ -35,7 +35,6 @@ export const stateManagementMixin = createSingletonMixin(
           getMe.reducer(builder);
           listDevices.reducer(builder);
           logout.reducer(builder);
-          setCurrentTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,

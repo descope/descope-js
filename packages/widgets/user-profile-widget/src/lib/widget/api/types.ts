@@ -45,7 +45,6 @@ export type User = {
   givenName: string;
   middleName: string;
   familyName: string;
-  dct: string;
 };
 
 export type Role = {
@@ -117,9 +116,4 @@ export type UserTenant = {
   tenantId: string;
   tenantName: string;
   roleNames?: string[];
-};
-
-export type TenantSelectResponse = {
-  sessionJwt: string;
-  refreshJwt: string;
 };

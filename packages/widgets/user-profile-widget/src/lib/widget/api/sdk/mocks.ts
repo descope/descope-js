@@ -39,7 +39,6 @@ const me: () => Promise<User> = async () =>
       test: false,
       TOTP: false,
       webauthn: true,
-      dct: 'tn2',
     });
   });
 
