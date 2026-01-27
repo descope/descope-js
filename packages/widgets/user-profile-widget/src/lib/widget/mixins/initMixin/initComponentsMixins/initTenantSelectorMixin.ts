@@ -50,20 +50,15 @@ export const initTenantSelectorMixin = createSingletonMixin(
 
       // State change handler that tracks the selectTenant operation lifecycle.
       // Reverts the UI selection if the operation fails, or dispatches tenant-changed event on success.
-      #onSelectTenantStateChange = createOperationStateHandler(
-        () => this.#isSelecting,
-        (active) => {
+      #onSelectTenantStateChange = createOperationStateHandler({
+        isActive: () => this.#isSelecting,
+        setActive: (active) => {
           this.#isSelecting = active;
         },
-        (state) => state.selectTenant,
-        (error) => {
-          if (error) {
-            this.#revertSelection();
-          } else {
-            this.#onTenantChange();
-          }
-        },
-      );
+        getOperationState: (state) => state.selectTenant,
+        onSuccess: () => this.#onTenantChange(),
+        onError: () => this.#revertSelection(),
+      });
 
       // Revert the combobox value to the previous tenant
       #revertSelection() {

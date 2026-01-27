@@ -455,20 +455,23 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.operation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
+    const onError = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+      onError,
+    });
 
     // Call handler when operation is not active - should not react
     handler({ operation: { loading: false, error: null } });
 
     expect(getOperationState).not.toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(onError).not.toHaveBeenCalled();
     expect(setActive).not.toHaveBeenCalled();
   });
 
@@ -478,37 +481,42 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.operation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
+    const onError = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+      onError,
+    });
 
     // Operation is still loading
     handler({ operation: { loading: true, error: null } });
 
     expect(getOperationState).toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(onError).not.toHaveBeenCalled();
     expect(setActive).not.toHaveBeenCalled();
   });
 
-  it('should call onComplete with no error on success', () => {
+  it('should call onSuccess on successful completion', () => {
     let isActive = true;
     const setActive = jest.fn((value) => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.operation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
+    const onError = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+      onError,
+    });
 
     // Operation completed successfully
     handler({ operation: { loading: false, error: null } });
@@ -517,24 +525,27 @@ describe('createOperationStateHandler', () => {
       operation: { loading: false, error: null },
     });
     expect(setActive).toHaveBeenCalledWith(false);
-    expect(onComplete).toHaveBeenCalledWith(null);
+    expect(onSuccess).toHaveBeenCalled();
+    expect(onError).not.toHaveBeenCalled();
   });
 
-  it('should call onComplete with error on failure', () => {
+  it('should call onError with error on failure', () => {
     let isActive = true;
     const setActive = jest.fn((value) => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.operation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
+    const onError = jest.fn();
     const error = new Error('Operation failed');
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+      onError,
+    });
 
     // Operation completed with error
     handler({ operation: { loading: false, error } });
@@ -543,7 +554,8 @@ describe('createOperationStateHandler', () => {
       operation: { loading: false, error },
     });
     expect(setActive).toHaveBeenCalledWith(false);
-    expect(onComplete).toHaveBeenCalledWith(error);
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledWith(error);
   });
 
   it('should reset active flag after completion', () => {
@@ -552,14 +564,14 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.operation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+    });
 
     // Complete the operation
     handler({ operation: { loading: false, error: null } });
@@ -571,7 +583,7 @@ describe('createOperationStateHandler', () => {
     handler({ operation: { loading: false, error: null } });
 
     // Should only have been called once from the first completion
-    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 
   it('should ignore unrelated state changes while active', () => {
@@ -580,14 +592,14 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.myOperation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+    });
 
     // Other operations complete while this one is active
     handler({
@@ -596,7 +608,7 @@ describe('createOperationStateHandler', () => {
     });
 
     expect(getOperationState).toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
 
     // My operation completes
     handler({
@@ -604,7 +616,7 @@ describe('createOperationStateHandler', () => {
       otherOperation: { loading: false, error: null },
     });
 
-    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 
   it('should handle undefined error', () => {
@@ -613,19 +625,22 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     });
     const getOperationState = jest.fn((state) => state.operation);
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
+    const onError = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+      onError,
+    });
 
     // Operation completed with undefined error
     handler({ operation: { loading: false, error: undefined } });
 
-    expect(onComplete).toHaveBeenCalledWith(undefined);
+    expect(onSuccess).toHaveBeenCalled();
+    expect(onError).not.toHaveBeenCalled();
   });
 
   it('should work with State class subscription', () => {
@@ -638,14 +653,14 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     };
     const getOperationState = (s: any) => s.selectTenant;
-    const onComplete = jest.fn();
+    const onSuccess = jest.fn();
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onSuccess,
+    });
 
     state.subscribe(handler);
 
@@ -654,13 +669,13 @@ describe('createOperationStateHandler', () => {
     state.update({ selectTenant: { loading: true, error: null } });
     jest.runAllTimers();
 
-    expect(onComplete).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
 
     // Complete operation
     state.update({ selectTenant: { loading: false, error: null } });
     jest.runAllTimers();
 
-    expect(onComplete).toHaveBeenCalledWith(null);
+    expect(onSuccess).toHaveBeenCalled();
     expect(isActive).toBe(false);
   });
 
@@ -674,15 +689,15 @@ describe('createOperationStateHandler', () => {
       isActive = value;
     };
     const getOperationState = (s: any) => s.selectTenant;
-    const onComplete = jest.fn();
+    const onError = jest.fn();
     const error = new Error('API error');
 
-    const handler = createOperationStateHandler(
-      () => isActive,
+    const handler = createOperationStateHandler({
+      isActive: () => isActive,
       setActive,
       getOperationState,
-      onComplete,
-    );
+      onError,
+    });
 
     state.subscribe(handler);
 
@@ -695,7 +710,7 @@ describe('createOperationStateHandler', () => {
     state.update({ selectTenant: { loading: false, error } });
     jest.runAllTimers();
 
-    expect(onComplete).toHaveBeenCalledWith(error);
+    expect(onError).toHaveBeenCalledWith(error);
     expect(isActive).toBe(false);
   });
 });

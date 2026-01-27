@@ -113,39 +113,44 @@ export class State<T extends StateObject> {
 /**
  * Creates a state change handler that only reacts during an active operation.
  * This prevents the handler from incorrectly responding to unrelated state changes
- * that occur while the operation is in progress.
+ * (e.g., getMe completing, notifications being added/cleared) that occur while
+ * the operation is in progress.
  *
- * @param isActive - Function that returns whether the operation is currently active
- * @param setActive - Function to set the active state (for cleanup)
- * @param getOperationState - Function that extracts the relevant operation state (loading, error)
- * @param onComplete - Callback invoked when operation completes (receives error if any)
+ * @param config - Configuration object
  * @returns A state change handler function
  *
  * @example
  * ```typescript
- * const handler = createOperationStateHandler(
- *   () => this.#isLoading,
- *   (active) => { this.#isLoading = active; },
- *   (state) => state.myOperation,
- *   (error) => {
- *     if (error) {
- *       this.handleError(error);
- *     } else {
- *       this.handleSuccess();
- *     }
- *   }
- * );
+ * const handler = createOperationStateHandler({
+ *   isActive: () => this.#isLoading,
+ *   setActive: (active) => { this.#isLoading = active; },
+ *   getOperationState: (state) => state.myOperation,
+ *   onSuccess: () => this.handleSuccess(),
+ *   onError: (error) => this.handleError(error)
+ * });
  *
  * this.subscribe(handler);
  * ```
  */
-export const createOperationStateHandler = (
-  isActive: () => boolean,
-  setActive: (active: boolean) => void,
-  getOperationState: (state: any) => { loading: boolean; error?: any },
-  onComplete: (error?: any) => void,
-) => {
-  return (state: any) => {
+export const createOperationStateHandler = <TState = any>({
+  isActive,
+  setActive,
+  getOperationState,
+  onSuccess,
+  onError,
+}: {
+  /** Returns whether the operation is currently active */
+  isActive: () => boolean;
+  /** Sets the active state (for cleanup) */
+  setActive: (active: boolean) => void;
+  /** Extracts the relevant operation state (loading, error) from global state */
+  getOperationState: (state: TState) => { loading: boolean; error?: any };
+  /** Callback invoked when operation succeeds */
+  onSuccess?: () => void;
+  /** Callback invoked when operation fails (receives error) */
+  onError?: (error: any) => void;
+}) => {
+  return (state: TState) => {
     // Only react if we're currently executing the operation
     if (!isActive()) {
       return;
@@ -161,7 +166,11 @@ export const createOperationStateHandler = (
     // Reset the active flag
     setActive(false);
 
-    // Operation complete - invoke callback
-    onComplete(error);
+    // Operation complete - invoke appropriate callback
+    if (error) {
+      onError?.(error);
+    } else {
+      onSuccess?.();
+    }
   };
 };
