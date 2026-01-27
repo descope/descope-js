@@ -5,9 +5,8 @@ import {
   createOperationStateHandler,
 } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { getSessionToken } from '@descope/web-js-sdk';
 import { getUserTenants, getCurrentTenantId } from '../../../state/selectors';
-import { extractDctFromToken } from '../../../state/helpers';
+import { getCurrentTenantFromSession } from '../../../state/helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -59,10 +58,8 @@ export const initTenantSelectorMixin = createSingletonMixin(
         (state) => state.selectTenant,
         (error) => {
           if (error) {
-            // Revert the UI to the previous tenant on error
             this.#revertSelection();
           } else {
-            // Success - dispatch tenant-changed event
             this.#onTenantChange();
           }
         },
@@ -86,6 +83,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
           }),
         );
 
+        debugger;
         if (this.tenantSelector.shouldReload) {
           this.#reloadPage();
         }
@@ -111,14 +109,8 @@ export const initTenantSelectorMixin = createSingletonMixin(
         this.tenantSelector.value = tenantId;
       }
 
-      // Parse DCT from session token
-      #parseCurrentTenantFromSessionToken(): string | null {
-        const sessionToken = getSessionToken();
-        return extractDctFromToken(sessionToken);
-      }
-
       // We need to work around the combo box's internal state to set the initial value which
-      // has a slight delay when setting it directly
+      // has a slight delay when setting it directly, because the combobox data is not yet ready.
       #setInitialValue() {
         this.tenantSelector.setAllowCustomValue(true);
         setTimeout(() => {
@@ -130,10 +122,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        // Read DCT from JWT and update state
-        this.actions.setCurrentTenantId(
-          this.#parseCurrentTenantFromSessionToken(),
-        );
+        this.actions.setCurrentTenantId(getCurrentTenantFromSession());
 
         this.#initTenantSelector();
         this.#setInitialValue();
