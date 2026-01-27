@@ -109,3 +109,59 @@ export class State<T extends StateObject> {
     return true;
   }
 }
+
+/**
+ * Creates a state change handler that only reacts during an active operation.
+ * This prevents the handler from incorrectly responding to unrelated state changes
+ * that occur while the operation is in progress.
+ *
+ * @param isActive - Function that returns whether the operation is currently active
+ * @param setActive - Function to set the active state (for cleanup)
+ * @param getOperationState - Function that extracts the relevant operation state (loading, error)
+ * @param onComplete - Callback invoked when operation completes (receives error if any)
+ * @returns A state change handler function
+ *
+ * @example
+ * ```typescript
+ * const handler = createOperationStateHandler(
+ *   () => this.#isLoading,
+ *   (active) => { this.#isLoading = active; },
+ *   (state) => state.myOperation,
+ *   (error) => {
+ *     if (error) {
+ *       this.handleError(error);
+ *     } else {
+ *       this.handleSuccess();
+ *     }
+ *   }
+ * );
+ *
+ * this.subscribe(handler);
+ * ```
+ */
+export const createOperationStateHandler = (
+  isActive: () => boolean,
+  setActive: (active: boolean) => void,
+  getOperationState: (state: any) => { loading: boolean; error?: any },
+  onComplete: (error?: any) => void,
+) => {
+  return (state: any) => {
+    // Only react if we're currently executing the operation
+    if (!isActive()) {
+      return;
+    }
+
+    const { loading, error } = getOperationState(state);
+
+    // Wait until loading is complete
+    if (loading) {
+      return;
+    }
+
+    // Reset the active flag
+    setActive(false);
+
+    // Operation complete - invoke callback
+    onComplete(error);
+  };
+};

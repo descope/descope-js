@@ -1,4 +1,4 @@
 export * from './getMe';
 export * from './listDevices';
 export * from './logout';
-export * from './setCurrentTenant';
+export * from './selectTenant';

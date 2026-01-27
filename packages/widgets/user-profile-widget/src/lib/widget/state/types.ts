@@ -23,6 +23,10 @@ export type State = {
   tenant: {
     currentTenantId: string | null;
   };
+  selectTenant: {
+    loading: boolean;
+    error: unknown;
+  };
   notifications: Notification[];
 };
 

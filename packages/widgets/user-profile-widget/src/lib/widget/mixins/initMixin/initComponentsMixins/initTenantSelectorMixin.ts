@@ -1,7 +1,13 @@
 import { TenantSelectorDriver } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  compose,
+  createSingletonMixin,
+  createOperationStateHandler,
+} from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
+import { getSessionToken } from '@descope/web-js-sdk';
 import { getUserTenants, getCurrentTenantId } from '../../../state/selectors';
+import { extractDctFromToken } from '../../../state/helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -14,7 +20,9 @@ export const initTenantSelectorMixin = createSingletonMixin(
     )(superclass) {
       tenantSelector: TenantSelectorDriver;
 
-      #init = true;
+      // Store previous tenant ID for error recovery
+      #previousTenantId: string | null = null;
+      #isSelecting: boolean = false;
 
       #initTenantSelector() {
         this.tenantSelector = new TenantSelectorDriver(
@@ -25,14 +33,46 @@ export const initTenantSelectorMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.tenantSelector.onInput((e) => {
-          if (this.#init) {
-            this.#init = false;
-            return;
-          }
+        this.tenantSelector.onInput(this.#onInput);
+      }
 
-          this.#onInput(e);
-        });
+      #onInput = async (e: InputEvent) => {
+        const nextTenantId = (e.target as HTMLInputElement).value;
+
+        // Store the current tenant ID before attempting to switch
+        this.#previousTenantId = getCurrentTenantId(this.state);
+
+        // Mark that we're selecting to track state changes
+        this.#isSelecting = true;
+
+        // Call the selectTenant action
+        await this.actions.selectTenant(nextTenantId);
+      };
+
+      // State change handler that tracks the selectTenant operation lifecycle.
+      // Reverts the UI selection if the operation fails, or dispatches tenant-changed event on success.
+      #onSelectTenantStateChange = createOperationStateHandler(
+        () => this.#isSelecting,
+        (active) => {
+          this.#isSelecting = active;
+        },
+        (state) => state.selectTenant,
+        (error) => {
+          if (error) {
+            // Revert the UI to the previous tenant on error
+            this.#revertSelection();
+          } else {
+            // Success - dispatch tenant-changed event
+            this.#onTenantChange();
+          }
+        },
+      );
+
+      // Revert the combobox value to the previous tenant
+      #revertSelection() {
+        if (this.#previousTenantId !== null) {
+          this.tenantSelector.value = this.#previousTenantId;
+        }
       }
 
       #onTenantChange() {
@@ -58,13 +98,6 @@ export const initTenantSelectorMixin = createSingletonMixin(
         );
       }
 
-      #onInput = async (e) => {
-        const nextTenantId = e.target.value;
-        await this.actions.setCurrentTenant(nextTenantId);
-        this.actions.syncCurrentTenantFromToken(nextTenantId);
-        this.#onTenantChange();
-      };
-
       async #updateOptions(userTenants: ReturnType<typeof getUserTenants>) {
         const options = userTenants.map((tenant) => ({
           label: tenant.tenantName || tenant.tenantId,
@@ -76,6 +109,12 @@ export const initTenantSelectorMixin = createSingletonMixin(
 
       #setSelectedItem(tenantId: string | null) {
         this.tenantSelector.value = tenantId;
+      }
+
+      // Parse DCT from session token
+      #parseCurrentTenantFromSessionToken(): string | null {
+        const sessionToken = getSessionToken();
+        return extractDctFromToken(sessionToken);
       }
 
       // We need to work around the combo box's internal state to set the initial value which
@@ -91,11 +130,16 @@ export const initTenantSelectorMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
+        // Read DCT from JWT and update state
+        this.actions.setCurrentTenantId(
+          this.#parseCurrentTenantFromSessionToken(),
+        );
+
         this.#initTenantSelector();
         this.#setInitialValue();
         this.#updateOptions(getUserTenants(this.state));
 
-        this.subscribe(this.#setSelectedItem.bind(this), getCurrentTenantId);
+        this.subscribe(this.#onSelectTenantStateChange.bind(this));
       }
     },
 );

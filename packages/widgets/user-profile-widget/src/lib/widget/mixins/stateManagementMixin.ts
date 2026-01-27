@@ -9,7 +9,7 @@ import {
   getMe,
   listDevices,
   logout,
-  setCurrentTenant,
+  selectTenant,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
@@ -24,7 +24,7 @@ export const stateManagementMixin = createSingletonMixin(
           clearNotifications: (state) => {
             state.notifications = [];
           },
-          syncCurrentTenantFromToken: (
+          setCurrentTenantId: (
             state,
             { payload }: { payload: string | null },
           ) => {
@@ -35,12 +35,13 @@ export const stateManagementMixin = createSingletonMixin(
           getMe.reducer(builder);
           listDevices.reducer(builder);
           logout.reducer(builder);
+          selectTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
           listDevices: listDevices.action,
           logout: logout.action,
-          setCurrentTenant: setCurrentTenant.action,
+          selectTenant: selectTenant.action,
         },
       }),
       initLifecycleMixin,

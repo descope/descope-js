@@ -14,5 +14,9 @@ export const initialState: State = {
   tenant: {
     currentTenantId: null,
   },
+  selectTenant: {
+    loading: false,
+    error: null,
+  },
   notifications: [],
 };
