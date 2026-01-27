@@ -69,6 +69,36 @@ describe('outbound', () => {
       );
     });
 
+    it('should send externalIdentifier in options when provided', () => {
+      sdk.outbound.connect(
+        'google',
+        {
+          redirectUrl: 'http://new.com/',
+          scopes: '["s1", "s2"]',
+          externalIdentifier: 'ext-id-123',
+          tenantId: 't1',
+          tenantLevel: true,
+        },
+        'token',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.outbound.connect,
+        {
+          appId: 'google',
+          options: {
+            redirectUrl: 'http://new.com/',
+            scopes: '["s1", "s2"]',
+            externalIdentifier: 'ext-id-123',
+          },
+          tenantId: 't1',
+          tenantLevel: true,
+        },
+        {
+          token: 'token',
+        },
+      );
+    });
+
     it('should fail connect without appId', () => {
       expect(() => sdk.outbound.connect('', {})).toThrow(
         '"appId" must not be empty',
