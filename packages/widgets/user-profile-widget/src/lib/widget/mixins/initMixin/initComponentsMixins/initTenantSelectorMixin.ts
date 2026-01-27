@@ -83,8 +83,11 @@ export const initTenantSelectorMixin = createSingletonMixin(
           }),
         );
 
-        debugger;
-        if (this.tenantSelector.shouldReload) {
+        // Only reload if the tenant actually changed (not on init or same tenant)
+        if (
+          this.tenantSelector.shouldReload &&
+          tenantId !== this.#previousTenantId
+        ) {
           this.#reloadPage();
         }
       }
