@@ -188,6 +188,12 @@ const App = () => {
 
             // Clear screen error message on user input
             //dismissScreenErrorOnInput={true}
+
+            // Outbound application ID to use for connecting to external services
+            // outboundAppId="my-outbound-app-id"
+
+            // Array of scopes to request from the outbound application
+            // outboundAppScopes={["email", "profile"]}
         />
     )
 }
