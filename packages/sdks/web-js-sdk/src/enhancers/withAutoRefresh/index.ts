@@ -11,6 +11,8 @@ import {
   createTimerFunctions,
   getTokenExpiration,
   getAutoRefreshTimeout,
+  isActivityRefreshEnabled,
+  createActivityTracker,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
@@ -31,23 +33,37 @@ export const withAutoRefresh =
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
     const { clearAllTimers, setTimer } = createTimerFunctions();
 
+    // Activity tracking state (opt-in via localStorage)
+    const activityTrackingEnabled = isActivityRefreshEnabled();
+    let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
+
+    if (activityTrackingEnabled) {
+      logger.debug('Activity-based refresh enabled');
+      activityTracker = createActivityTracker(logger);
+      activityTracker.attachListeners();
+    }
+
     // we need to hold the expiration time and the refresh token in order to refresh the session
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpirationDate: Date;
     let refreshToken: string;
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
-        // tab becomes visible and the session is expired, do a refresh
-        if (
-          document.visibilityState === 'visible' &&
-          sessionExpirationDate &&
-          new Date() > sessionExpirationDate
-        ) {
-          logger.debug('Expiration time passed, refreshing session');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshToken);
+        // tab becomes visible
+        if (document.visibilityState === 'visible') {
+          // Mark as active when tab becomes visible (user is switching to this tab)
+          if (activityTracker) {
+            activityTracker.markActive();
+          }
+
+          // session is expired, do a refresh
+          if (sessionExpirationDate && new Date() > sessionExpirationDate) {
+            logger.debug('Expiration time passed, refreshing session');
+            // We prefer the persisted refresh token over the one from the response
+            // for a case that the token was refreshed from another tab, this mostly relevant
+            // when the project uses token rotation
+            sdk.refresh(getRefreshToken() || refreshToken);
+          }
         }
       });
     }
@@ -95,12 +111,24 @@ export const withAutoRefresh =
           `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
         );
 
+        // Reset activity tracking after receiving new session (refresh succeeded)
+        if (activityTracker) {
+          activityTracker.resetActivity();
+        }
+
         setTimer(() => {
           // Skip refresh if document is hidden - the visibilitychange handler will refresh when user returns
           if (IS_BROWSER && document.visibilityState === 'hidden') {
             logger.debug('Skipping refresh due to timer - document is hidden');
             return;
           }
+
+          // Check activity if tracking is enabled
+          if (activityTracker && !activityTracker.hadActivity()) {
+            logger.debug('Skipping refresh due to timer - user is idle');
+            return; // Don't reschedule - wait for activity or visibility change
+          }
+
           logger.debug('Refreshing session due to timer');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
@@ -118,6 +146,10 @@ export const withAutoRefresh =
         const resp = await fn(...args);
         logger.debug('Clearing all timers');
         clearAllTimers();
+        // Cleanup activity listeners on logout
+        if (activityTracker) {
+          activityTracker.detachListeners();
+        }
 
         return resp;
       };
