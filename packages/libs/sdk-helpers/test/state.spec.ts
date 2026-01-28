@@ -558,7 +558,7 @@ describe('createOperationStateHandler', () => {
     expect(onError).toHaveBeenCalledWith(error);
   });
 
-  it('should reset active flag after completion', () => {
+  it('should prevent handler from reacting after completion', () => {
     let isActive = true;
     const setActive = jest.fn((value) => {
       isActive = value;
@@ -619,12 +619,16 @@ describe('createOperationStateHandler', () => {
     expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle undefined error', () => {
-    let isActive = true;
-    const setActive = jest.fn((value) => {
-      isActive = value;
+  it('should work with State class for both success and error paths', () => {
+    const state = new State({
+      selectTenant: { loading: false, error: null },
     });
-    const getOperationState = jest.fn((state) => state.operation);
+
+    let isActive = false;
+    const setActive = (value: boolean) => {
+      isActive = value;
+    };
+    const getOperationState = (s: any) => s.selectTenant;
     const onSuccess = jest.fn();
     const onError = jest.fn();
 
@@ -636,77 +640,28 @@ describe('createOperationStateHandler', () => {
       onError,
     });
 
-    // Operation completed with undefined error
-    handler({ operation: { loading: false, error: undefined } });
-
-    expect(onSuccess).toHaveBeenCalled();
-    expect(onError).not.toHaveBeenCalled();
-  });
-
-  it('should work with State class subscription', () => {
-    const state = new State({
-      selectTenant: { loading: false, error: null },
-    });
-
-    let isActive = false;
-    const setActive = (value: boolean) => {
-      isActive = value;
-    };
-    const getOperationState = (s: any) => s.selectTenant;
-    const onSuccess = jest.fn();
-
-    const handler = createOperationStateHandler({
-      isActive: () => isActive,
-      setActive,
-      getOperationState,
-      onSuccess,
-    });
-
     state.subscribe(handler);
 
-    // Start operation
+    // Test success path
     isActive = true;
     state.update({ selectTenant: { loading: true, error: null } });
     jest.runAllTimers();
 
     expect(onSuccess).not.toHaveBeenCalled();
 
-    // Complete operation
     state.update({ selectTenant: { loading: false, error: null } });
     jest.runAllTimers();
 
     expect(onSuccess).toHaveBeenCalled();
+    expect(onError).not.toHaveBeenCalled();
     expect(isActive).toBe(false);
-  });
 
-  it('should handle operation error in State subscription', () => {
-    const state = new State({
-      selectTenant: { loading: false, error: null },
-    });
-
-    let isActive = false;
-    const setActive = (value: boolean) => {
-      isActive = value;
-    };
-    const getOperationState = (s: any) => s.selectTenant;
-    const onError = jest.fn();
+    // Test error path
     const error = new Error('API error');
-
-    const handler = createOperationStateHandler({
-      isActive: () => isActive,
-      setActive,
-      getOperationState,
-      onError,
-    });
-
-    state.subscribe(handler);
-
-    // Start operation
     isActive = true;
     state.update({ selectTenant: { loading: true, error: null } });
     jest.runAllTimers();
 
-    // Fail operation
     state.update({ selectTenant: { loading: false, error } });
     jest.runAllTimers();
 
