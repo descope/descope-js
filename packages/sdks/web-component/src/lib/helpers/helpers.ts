@@ -69,7 +69,7 @@ function resetUrlParam(paramName: string) {
 }
 
 const getFlowIdFromExecId = (executionId: string) => {
-  const regex = /(.*)\|#\|.*/;
+  const regex = /(.*)---.*/;
   return regex.exec(executionId)?.[1] || '';
 };
 

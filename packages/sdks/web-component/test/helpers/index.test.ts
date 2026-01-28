@@ -64,10 +64,10 @@ describe('helpers', () => {
       writable: true,
       value: new URL('http://localhost'),
     });
-    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8|#|a_9`;
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8---a_9`;
     expect(getRunIdsFromUrl('8')).toEqual({
       executionFlowId: '8',
-      executionId: '8|#|a',
+      executionId: '8---a',
       stepId: '9',
     });
   });
@@ -77,7 +77,7 @@ describe('helpers', () => {
       writable: true,
       value: new URL('http://localhost'),
     });
-    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8|#|a_9`;
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=8---a_9`;
     expect(getRunIdsFromUrl('')).toEqual({
       executionFlowId: '8',
       executionId: '',
