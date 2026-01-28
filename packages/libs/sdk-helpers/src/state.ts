@@ -113,24 +113,7 @@ export class State<T extends StateObject> {
 /**
  * Creates a state change handler that only reacts during an active operation.
  * This prevents the handler from incorrectly responding to unrelated state changes
- * (e.g., getMe completing, notifications being added/cleared) that occur while
- * the operation is in progress.
- *
- * @param config - Configuration object
- * @returns A state change handler function
- *
- * @example
- * ```typescript
- * const handler = createOperationStateHandler({
- *   isActive: () => this.#isLoading,
- *   setActive: (active) => { this.#isLoading = active; },
- *   getOperationState: (state) => state.myOperation,
- *   onSuccess: () => this.handleSuccess(),
- *   onError: (error) => this.handleError(error)
- * });
- *
- * this.subscribe(handler);
- * ```
+ * that occur while the operation is in progress.
  */
 export const createOperationStateHandler = <TState = any>({
   isActive,
