@@ -195,6 +195,25 @@ await sdk.oidc.finishLogin();
 
 The SDK will automatically manage the OIDC session for you, according to `persistTokens` and `autoRefresh` options. The SDK will automatically refresh the OIDC session when it expires, and will store the session token in the browser storage or cookies, according to the `persistTokens` option.
 
+### Activity-Based Session Refresh
+
+When `autoRefresh: true`, the SDK can optionally skip refresh calls for idle users. This reduces unnecessary API calls and enables accurate session inactivity tracking on the server.
+
+**Enable via localStorage:**
+
+```js
+localStorage.setItem('__descope_activity_refresh', 'true');
+```
+
+**Behavior:**
+
+- Tracks user activity (mouse, keyboard, touch, scroll, click)
+- When refresh timer fires: skips refresh if no activity since last refresh
+- When user becomes active after a skipped refresh: triggers refresh immediately
+- Tab visibility changes mark the user as active
+
+This is useful when Descope's session inactivity feature is enabled, ensuring refreshes only occur for genuinely active users.
+
 ### Run Example
 
 To run the example:
