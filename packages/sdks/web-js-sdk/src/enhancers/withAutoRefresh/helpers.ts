@@ -27,20 +27,36 @@ export const isActivityRefreshEnabled = (): boolean => {
 };
 
 // Factory to create activity tracking functions
-export const createActivityTracker = (loggerInstance: {
-  debug: (msg: string) => void;
-}) => {
+export const createActivityTracker = (
+  loggerInstance: { debug: (msg: string) => void },
+  onActivityAfterSkip?: () => void,
+) => {
   let hadActivitySinceLastRefresh = true; // Start as true (assume active on init)
+  let refreshWasSkipped = false; // Track if refresh was skipped due to inactivity
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let listenersAttached = false;
 
   const onActivity = () => {
     if (debounceTimer) return; // Debounce rapid events
     debounceTimer = setTimeout(() => {
-      if (!hadActivitySinceLastRefresh) {
+      const wasIdle = !hadActivitySinceLastRefresh;
+      const shouldTriggerRefresh = refreshWasSkipped;
+
+      hadActivitySinceLastRefresh = true;
+
+      if (wasIdle) {
         loggerInstance.debug('User activity detected, marking as active');
       }
-      hadActivitySinceLastRefresh = true;
+
+      // If refresh was previously skipped due to inactivity, trigger refresh now
+      if (shouldTriggerRefresh && onActivityAfterSkip) {
+        loggerInstance.debug(
+          'User became active after skipped refresh, triggering refresh',
+        );
+        refreshWasSkipped = false;
+        onActivityAfterSkip();
+      }
+
       debounceTimer = null;
     }, ACTIVITY_DEBOUNCE_MS);
   };
@@ -71,6 +87,10 @@ export const createActivityTracker = (loggerInstance: {
     hadActivity: () => hadActivitySinceLastRefresh,
     resetActivity: () => {
       hadActivitySinceLastRefresh = false;
+      refreshWasSkipped = false;
+    },
+    markRefreshSkipped: () => {
+      refreshWasSkipped = true;
     },
     markActive: () => {
       if (!hadActivitySinceLastRefresh) {

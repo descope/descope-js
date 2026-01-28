@@ -33,20 +33,27 @@ export const withAutoRefresh =
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
     const { clearAllTimers, setTimer } = createTimerFunctions();
 
-    // Activity tracking state (opt-in via localStorage)
-    const activityTrackingEnabled = isActivityRefreshEnabled();
-    let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
-
-    if (activityTrackingEnabled) {
-      logger.debug('Activity-based refresh enabled');
-      activityTracker = createActivityTracker(logger);
-      activityTracker.attachListeners();
-    }
-
     // we need to hold the expiration time and the refresh token in order to refresh the session
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpirationDate: Date;
     let refreshToken: string;
+
+    // Activity tracking state (opt-in via localStorage)
+    const activityTrackingEnabled = isActivityRefreshEnabled();
+    let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
+
+    // Callback for when user becomes active after refresh was skipped
+    const onActivityAfterSkip = () => {
+      logger.debug('Refreshing session due to user activity after idle skip');
+      clearAllTimers(); // Prevent race condition with pending timer
+      sdk.refresh(getRefreshToken() || refreshToken);
+    };
+
+    if (activityTrackingEnabled) {
+      logger.debug('Activity-based refresh enabled');
+      activityTracker = createActivityTracker(logger, onActivityAfterSkip);
+      activityTracker.attachListeners();
+    }
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
         // tab becomes visible
@@ -126,6 +133,7 @@ export const withAutoRefresh =
           // Check activity if tracking is enabled
           if (activityTracker && !activityTracker.hadActivity()) {
             logger.debug('Skipping refresh due to timer - user is idle');
+            activityTracker.markRefreshSkipped();
             return; // Don't reschedule - wait for activity or visibility change
           }
 
