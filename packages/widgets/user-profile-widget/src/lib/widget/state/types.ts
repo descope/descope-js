@@ -22,6 +22,7 @@ export type State = {
   };
   tenant: {
     currentTenantId: string | null;
+    previousTenantId: string | null;
   };
   selectTenant: {
     loading: boolean;

@@ -1,14 +1,11 @@
 import { TenantSelectorDriver } from '@descope/sdk-component-drivers';
-import {
-  compose,
-  createSingletonMixin,
-  createOperationStateHandler,
-} from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { getUserTenants, getCurrentTenantId } from '../../../state/selectors';
 import { getCurrentTenantFromSession } from '../../../state/helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { State } from '../../../state/types';
 
 export const initTenantSelectorMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -18,10 +15,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
       initWidgetRootMixin,
     )(superclass) {
       tenantSelector: TenantSelectorDriver;
-
-      // Store previous tenant ID for error recovery
-      #previousTenantId: string | null = null;
-      #isSelecting: boolean = false;
+      #lastProcessedTenantId: string | null = null;
 
       #initTenantSelector() {
         this.tenantSelector = new TenantSelectorDriver(
@@ -38,34 +32,30 @@ export const initTenantSelectorMixin = createSingletonMixin(
       #onInput = async (e: InputEvent) => {
         const nextTenantId = (e.target as HTMLInputElement).value;
 
-        // Store the current tenant ID before attempting to switch
-        this.#previousTenantId = getCurrentTenantId(this.state);
-
-        // Mark that we're selecting to track state changes
-        this.#isSelecting = true;
-
-        // Call the selectTenant action
+        // Call the selectTenant action (value already set by user interaction)
         await this.actions.selectTenant(nextTenantId);
       };
 
-      // State change handler that tracks the selectTenant operation lifecycle.
-      // Reverts the UI selection if the operation fails, or dispatches tenant-changed event on success.
-      #onSelectTenantStateChange = createOperationStateHandler({
-        isActive: () => this.#isSelecting,
-        setActive: (active) => {
-          this.#isSelecting = active;
-        },
-        getOperationState: (state) => state.selectTenant,
-        onSuccess: () => this.#onTenantChange(),
-        onError: () => this.#revertSelection(),
-      });
+      // State change handler that syncs Redux state to UI
+      #onTenantStateChange = (state: State) => {
+        const currentTenantId = getCurrentTenantId(state);
 
-      // Revert the combobox value to the previous tenant
-      #revertSelection() {
-        if (this.#previousTenantId !== null) {
-          this.tenantSelector.value = this.#previousTenantId;
+        // Sync Redux state to combobox (handles both success and revert)
+        if (this.tenantSelector.value !== currentTenantId) {
+          this.#setSelectedItem(currentTenantId);
         }
-      }
+
+        // Only dispatch event on successful completion (no error, not loading, previous cleared)
+        // AND the tenant has actually changed from what we last processed
+        const { loading, error } = state.selectTenant;
+        const hasPreviousTenant = state.tenant.previousTenantId !== null;
+        const tenantChanged = currentTenantId !== this.#lastProcessedTenantId;
+
+        if (!loading && !error && !hasPreviousTenant && tenantChanged) {
+          this.#lastProcessedTenantId = currentTenantId;
+          this.#onTenantChange();
+        }
+      };
 
       #onTenantChange() {
         const tenantId = getCurrentTenantId(this.state);
@@ -78,11 +68,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
           }),
         );
 
-        // Only reload if the tenant actually changed (not on init or same tenant)
-        if (
-          this.tenantSelector.shouldReload &&
-          tenantId !== this.#previousTenantId
-        ) {
+        if (this.tenantSelector.shouldReload) {
           this.#reloadPage();
         }
       }
@@ -104,6 +90,10 @@ export const initTenantSelectorMixin = createSingletonMixin(
       }
 
       #setSelectedItem(tenantId: string | null) {
+        if (!tenantId) {
+          return;
+        }
+
         this.tenantSelector.value = tenantId;
       }
 
@@ -126,7 +116,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
         this.#setInitialValue();
         this.#updateOptions(getUserTenants(this.state));
 
-        this.subscribe(this.#onSelectTenantStateChange.bind(this));
+        this.subscribe(this.#onTenantStateChange.bind(this));
       }
     },
 );

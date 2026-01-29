@@ -13,6 +13,7 @@ export const initialState: State = {
   },
   tenant: {
     currentTenantId: null,
+    previousTenantId: null,
   },
   selectTenant: {
     loading: false,
