@@ -32,6 +32,7 @@ const action = createAsyncThunk<
     const dct = extractDctFromToken(sessionToken);
     return { tenantId: dct };
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to switch tenant:', error);
     return null;
   }

@@ -2,7 +2,6 @@ import {
   compose,
   createSingletonMixin,
   createTemplate,
-  decodeJWT,
 } from '@descope/sdk-helpers';
 import {
   descopeUiMixin,
@@ -10,7 +9,6 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import { getSessionToken } from '@descope/web-js-sdk';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 
