@@ -1,6 +1,6 @@
 {
 	"name": "@descope/nextjs-sdk",
-	"version": "0.15.8",
+	"version": "0.15.9",
 	"description": "Descope NextJS SDK",
 	"author": "Descope Team <info@descope.com>",
 	"homepage": "https://github.com/descope/descope-js",
