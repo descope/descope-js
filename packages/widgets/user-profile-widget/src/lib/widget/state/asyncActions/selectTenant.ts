@@ -19,15 +19,20 @@ const action = createAsyncThunk<
 
   // Parse the JWT from the response to extract the DCT
   const sessionToken = response.sessionJwt || response.sessionToken;
-  const dct = extractDctFromToken(sessionToken);
 
-  return { tenantId: dct };
+  try {
+    const dct = extractDctFromToken(sessionToken);
+    return { tenantId: dct };
+  } catch (error) {
+    console.error('Failed to switch tenant:', error);
+    return null;
+  }
 });
 
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.tenant.currentTenantId = action.payload.tenantId;
+      state.tenant.currentTenantId = action.payload?.tenantId;
     },
   },
   withRequestStatus((state: State) => state.selectTenant),

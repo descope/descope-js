@@ -34,13 +34,6 @@ export const initWidgetRootMixin = createSingletonMixin(
         this.contentRootElement.append(template.content.cloneNode(true));
       }
 
-      // eslint-disable-next-line class-methods-use-this
-      #parseCurrentTenantFromSessionToken() {
-        const sessionToken = getSessionToken();
-        const claims = sessionToken ? decodeJWT(sessionToken) : null;
-        return claims?.dct || null;
-      }
-
       // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
       async onWidgetRootReady() {}
 
