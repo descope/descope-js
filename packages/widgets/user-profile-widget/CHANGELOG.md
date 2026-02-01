@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.0...user-profile-widget-0.9.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Validate tenant exists on initial set, to prevent dispatching when tenantId is null RELEASE ([#1326](https://github.com/descope/descope-js/issues/1326)) ([0530274](https://github.com/descope/descope-js/commit/05302741c018dec99db587fb45299f8216b0cd8c))
+
 ## [0.9.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.17...user-profile-widget-0.9.0) (2026-01-29)
 
 ### Dependency Updates
