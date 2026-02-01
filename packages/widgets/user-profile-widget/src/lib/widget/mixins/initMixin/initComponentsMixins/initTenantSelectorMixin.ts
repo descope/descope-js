@@ -51,7 +51,13 @@ export const initTenantSelectorMixin = createSingletonMixin(
         const hasPreviousTenant = state.tenant.previousTenantId !== null;
         const tenantChanged = currentTenantId !== this.#lastProcessedTenantId;
 
-        if (!loading && !error && !hasPreviousTenant && tenantChanged) {
+        if (
+          currentTenantId &&
+          !loading &&
+          !error &&
+          !hasPreviousTenant &&
+          tenantChanged
+        ) {
           this.#lastProcessedTenantId = currentTenantId;
           this.#onTenantChange();
         }
