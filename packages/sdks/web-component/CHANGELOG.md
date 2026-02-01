@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.55.1](https://github.com/descope/descope-js/compare/web-component-3.55.0...web-component-3.55.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Prevent auto-focus in hidden inputs RELEASE ([#1325](https://github.com/descope/descope-js/issues/1325)) ([46a029b](https://github.com/descope/descope-js/commit/46a029bcd010b14133f2ff7804e4e4f927ea719e))
+
 ## [3.55.0](https://github.com/descope/descope-js/compare/web-component-3.54.0...web-component-3.55.0) (2026-01-29)
 
 ### Dependency Updates
