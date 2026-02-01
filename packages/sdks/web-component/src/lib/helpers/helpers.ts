@@ -507,6 +507,9 @@ export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
   );
 };
 
+export const FOCUSABLE_INPUTS_SELECTOR =
+  '*[name]:not([auto-focus="false"]):not([type="hidden"]):not([aria-hidden="true"])';
+
 export const handleAutoFocus = (
   ele: HTMLElement,
   autoFocus: AutoFocusOptions,
@@ -518,7 +521,7 @@ export const handleAutoFocus = (
   ) {
     // focus the first visible input
     const firstVisibleInput: HTMLInputElement = ele.querySelector(
-      '*[name]:not([auto-focus="false"]):not([type="hidden"]):not([aria-hidden="true"])',
+      FOCUSABLE_INPUTS_SELECTOR,
     );
     setTimeout(() => {
       firstVisibleInput?.focus();
