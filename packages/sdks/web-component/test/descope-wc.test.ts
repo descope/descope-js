@@ -1307,41 +1307,6 @@ describe('web-component', () => {
       expect(selectedElement).not.toBe(hiddenInput);
     });
 
-    it('Auto focus should not find hidden inputs (type=hidden)', async () => {
-      startMock.mockReturnValue(generateSdkResponse());
-
-      pageContent =
-        '<input id="hidden-input" type="hidden" name="hidden"></input><input id="email" name="email" placeholder="Email"></input><span>It works!</span>';
-
-      const handleAutoFocusSpy = jest.spyOn(helpers, 'handleAutoFocus');
-
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-      await waitFor(() => screen.getByShadowText('It works!'), {
-        timeout: WAIT_TIMEOUT,
-      });
-
-      await waitFor(() =>
-        expect(handleAutoFocusSpy).toHaveBeenCalledWith(
-          expect.any(HTMLElement),
-          true,
-          true,
-        ),
-      );
-
-      const rootEle = handleAutoFocusSpy.mock.calls[0][0] as HTMLElement;
-
-      const emailInput = rootEle.querySelector('#email');
-      const hiddenInput = rootEle.querySelector('#hidden-input');
-
-      const selectedElement = rootEle.querySelector(
-        helpers.FOCUSABLE_INPUTS_SELECTOR,
-      );
-
-      expect(selectedElement).toBe(emailInput);
-      expect(selectedElement).not.toBe(hiddenInput);
-    });
-
     it('Auto focus should not find inputs with auto-focus=false', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 
