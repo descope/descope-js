@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.1...user-profile-widget-0.9.2) (2026-02-01)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.1`
+## [0.9.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.0...user-profile-widget-0.9.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Validate tenant exists on initial set, to prevent dispatching when tenantId is null RELEASE ([#1326](https://github.com/descope/descope-js/issues/1326)) ([0530274](https://github.com/descope/descope-js/commit/05302741c018dec99db587fb45299f8216b0cd8c))
+
+## [0.9.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.17...user-profile-widget-0.9.0) (2026-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.57.0`
+* `web-js-sdk` updated to version `1.45.0`
+* `web-component` updated to version `3.55.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
 ## [0.8.17](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.16...user-profile-widget-0.8.17) (2026-01-21)
 
 ### Dependency Updates

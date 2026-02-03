@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.57.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.2...core-js-sdk-2.57.0) (2026-01-29)
+
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
 ## [2.56.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.1...core-js-sdk-2.56.2) (2026-01-21)
 
 

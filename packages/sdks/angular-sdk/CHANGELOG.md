@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.23.10](https://github.com/descope/descope-js/compare/angular-sdk-0.23.9...angular-sdk-0.23.10) (2026-02-01)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.7`
+* `user-profile-widget` updated to version `0.9.2`
+* `tenant-profile-widget` updated to version `0.5.19`
+* `web-component` updated to version `3.55.1`
+## [0.23.9](https://github.com/descope/descope-js/compare/angular-sdk-0.23.8...angular-sdk-0.23.9) (2026-02-01)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.9.1`
+## [0.23.8](https://github.com/descope/descope-js/compare/angular-sdk-0.23.7...angular-sdk-0.23.8) (2026-01-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.34`
+* `audit-management-widget` updated to version `0.5.34`
+* `role-management-widget` updated to version `0.5.26`
+* `user-management-widget` updated to version `0.11.6`
+* `user-profile-widget` updated to version `0.9.0`
+* `tenant-profile-widget` updated to version `0.5.18`
+* `applications-portal-widget` updated to version `0.5.17`
+* `web-component` updated to version `3.55.0`
+* `web-js-sdk` updated to version `1.45.0`
+* `core-js-sdk` updated to version `2.57.0`
 ## [0.23.7](https://github.com/descope/descope-js/compare/angular-sdk-0.23.6...angular-sdk-0.23.7) (2026-01-21)
 
 ### Dependency Updates

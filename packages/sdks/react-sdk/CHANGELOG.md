@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.26.2](https://github.com/descope/descope-js/compare/react-sdk-2.26.1...react-sdk-2.26.2) (2026-02-01)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.7`
+* `user-profile-widget` updated to version `0.9.2`
+* `outbound-applications-widget` updated to version `0.2.19`
+* `web-component` updated to version `3.55.1`
+* `tenant-profile-widget` updated to version `0.5.19`
+## [2.26.1](https://github.com/descope/descope-js/compare/react-sdk-2.26.0...react-sdk-2.26.1) (2026-02-01)
+
+### Dependency Updates
+
+* `user-profile-widget` updated to version `0.9.1`
+## [2.26.0](https://github.com/descope/descope-js/compare/react-sdk-2.25.8...react-sdk-2.26.0) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.6.0`
+* `access-key-management-widget` updated to version `0.5.34`
+* `audit-management-widget` updated to version `0.5.34`
+* `role-management-widget` updated to version `0.5.26`
+* `user-management-widget` updated to version `0.11.6`
+* `user-profile-widget` updated to version `0.9.0`
+* `applications-portal-widget` updated to version `0.5.17`
+* `outbound-applications-widget` updated to version `0.2.18`
+* `web-component` updated to version `3.55.0`
+* `web-js-sdk` updated to version `1.45.0`
+* `core-js-sdk` updated to version `2.57.0`
+* `tenant-profile-widget` updated to version `0.5.18`
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
+
+### Bug Fixes
+
+* react sample app build errors ([#1322](https://github.com/descope/descope-js/issues/1322)) ([089eb2a](https://github.com/descope/descope-js/commit/089eb2a7689f3b54f2f87f3c1cc4ecec6466beb5))
+
 ## [2.25.8](https://github.com/descope/descope-js/compare/react-sdk-2.25.7...react-sdk-2.25.8) (2026-01-21)
 
 ### Dependency Updates

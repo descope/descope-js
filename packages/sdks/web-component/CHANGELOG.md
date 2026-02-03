@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.55.1](https://github.com/descope/descope-js/compare/web-component-3.55.0...web-component-3.55.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Prevent auto-focus in hidden inputs RELEASE ([#1325](https://github.com/descope/descope-js/issues/1325)) ([46a029b](https://github.com/descope/descope-js/commit/46a029bcd010b14133f2ff7804e4e4f927ea719e))
+
+## [3.55.0](https://github.com/descope/descope-js/compare/web-component-3.54.0...web-component-3.55.0) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `web-js-sdk` updated to version `1.45.0`
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
 ## [3.54.0](https://github.com/descope/descope-js/compare/web-component-3.53.4...web-component-3.54.0) (2026-01-21)
 
 ### Dependency Updates
