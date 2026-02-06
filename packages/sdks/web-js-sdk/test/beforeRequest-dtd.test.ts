@@ -20,7 +20,7 @@ describe('beforeRequest hook - DTD header', () => {
       localStorage.setItem(TRUSTED_DEVICE_TOKEN_KEY, 'my-dtd-token');
 
       const config = {
-        path: '/v1/flow/start',
+        path: '/v2/flow/start',
         method: 'POST' as HTTPMethods,
         body: { flowId: 'test-flow' },
       };
@@ -41,7 +41,7 @@ describe('beforeRequest hook - DTD header', () => {
       );
 
       const config = {
-        path: '/v1/flow/start',
+        path: '/v2/flow/start',
         method: 'POST' as HTTPMethods,
         body: { flowId: 'test-flow' },
       };
@@ -56,7 +56,7 @@ describe('beforeRequest hook - DTD header', () => {
 
     it('should not add x-descope-trusted-device-token header when DTD does not exist', () => {
       const config = {
-        path: '/v1/flow/start',
+        path: '/v2/flow/start',
         method: 'POST' as HTTPMethods,
         body: { flowId: 'test-flow' },
       };
@@ -71,7 +71,7 @@ describe('beforeRequest hook - DTD header', () => {
       localStorage.setItem(TRUSTED_DEVICE_TOKEN_KEY, 'my-dtd-token');
 
       const config = {
-        path: '/v1/flow/start',
+        path: '/v2/flow/start',
         method: 'POST' as HTTPMethods,
         body: { flowId: 'test-flow' },
         headers: {
@@ -102,7 +102,7 @@ describe('beforeRequest hook - DTD header', () => {
       localStorage.setItem('DSR', 'refresh-token');
 
       const config = {
-        path: '/v1/flow/start',
+        path: '/v2/flow/start',
         method: 'POST' as HTTPMethods,
         body: { flowId: 'test-flow' },
       };
