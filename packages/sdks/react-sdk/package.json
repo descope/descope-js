@@ -136,7 +136,7 @@
     "typescript": "^5.0.2",
     "object-assign": "^4.1.1",
     "scheduler": "^0.25.0",
-    "@remix-run/router": "1.21.0",
+    "@remix-run/router": "1.23.2",
     "jest-environment-jsdom": "^29.0.0",
     "core-js": "3.40.0",
     "rollup-plugin-no-emit": "1.2.1"
