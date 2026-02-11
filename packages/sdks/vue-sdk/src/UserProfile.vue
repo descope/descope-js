@@ -9,6 +9,7 @@
       :theme.attr="theme"
       :debug.attr="debug"
       :widget-id="widgetId"
+      :style-id="styleId"
       @logout="onLogout"
       @ready="onReady"
     />
@@ -39,6 +40,9 @@ defineProps({
     required: true,
   },
   theme: {
+    type: String,
+  },
+  styleId: {
     type: String,
   },
   debug: {
