@@ -87,6 +87,8 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | nonce                                     | **"String"** - Set a CSP nonce that will be used for style and script tags                                                                                                                                                                 | **""**        |
 | popup-origin                              | **"String"** - Sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows                                                      | **""**        |
 | dismiss-screen-error-on-input             | **"true"** - Clear screen error message on user input </br> **"false"** - Do not clear screen error message on user input                                                                                                                  | **"false"**   |
+| outbound-app-id                           | **"String"** - Outbound application ID to use for connecting to external services                                                                                                                                                          | **""**        |
+| outbound-app-scopes                       | **"String[]"** - JSON array of scopes to request from the outbound application (e.g., '["email", "profile"]')                                                                                                                              | **null**      |
 
 ## Optional Properties
 

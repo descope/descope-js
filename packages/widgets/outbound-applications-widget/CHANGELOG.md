@@ -2,6 +2,67 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.19](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.18...outbound-applications-widget-0.2.19) (2026-02-01)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.1`
+## [0.2.18](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.17...outbound-applications-widget-0.2.18) (2026-01-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.45.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+* `web-component` updated to version `3.55.0`
+## [0.2.17](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.16...outbound-applications-widget-0.2.17) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+* `web-component` updated to version `3.54.0`
+## [0.2.16](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.15...outbound-applications-widget-0.2.16) (2026-01-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.1`
+* `web-component` updated to version `3.53.4`
+## [0.2.15](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.14...outbound-applications-widget-0.2.15) (2026-01-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.0`
+* `web-component` updated to version `3.53.3`
+## [0.2.14](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.13...outbound-applications-widget-0.2.14) (2025-12-30)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.53.2`
+## [0.2.13](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.12...outbound-applications-widget-0.2.13) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+* `web-component` updated to version `3.53.1`
+## [0.2.12](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.11...outbound-applications-widget-0.2.12) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+* `web-component` updated to version `3.53.0`
+
+### Bug Fixes
+
+* Add tenantId to OutboundAppsWidget fetch of apps with tokens ([#1294](https://github.com/descope/descope-js/issues/1294)) ([c520033](https://github.com/descope/descope-js/commit/c520033fa3383ab1c5fc9b2d50503949b0bd7ea6))
+
+## [0.2.11](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.10...outbound-applications-widget-0.2.11) (2025-12-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.0`
+* `sdk-mixins` updated to version `0.14.1`
+* `web-component` updated to version `3.52.4`
 ## [0.2.10](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.9...outbound-applications-widget-0.2.10) (2025-12-16)
 
 ### Dependency Updates

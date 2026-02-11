@@ -7,6 +7,20 @@ import {
   User,
 } from '../types';
 
+const compareValues = (a: any, b: any, desc: boolean) => {
+  // Handle boolean values by converting to numeric for proper comparison
+  if (typeof a === 'boolean' && typeof b === 'boolean') {
+    const aNum = a ? 1 : 0;
+    const bNum = b ? 1 : 0;
+    // reverse `desc` to prefer true over false when ascending
+    return !desc ? bNum - aNum : aNum - bNum;
+  }
+
+  const aStr = a?.toString() || '';
+  const bStr = b?.toString() || '';
+  return desc ? bStr.localeCompare(aStr) : aStr.localeCompare(bStr);
+};
+
 const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
   text,
   sort,
@@ -36,18 +50,16 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
         middleName: '',
         picture: '',
         password: true,
-        SAML: false,
+        SAML: i % 3 === 0,
+        OIDC: i % 3 === 1,
+        SCIM: i % 3 === 2,
         test: false,
         TOTP: false,
         webauthn: false,
       });
     }
     sort.forEach((s) => {
-      users.sort((a, b) =>
-        !s.desc
-          ? (a[s.field] as string)?.localeCompare(b[s.field] as string)
-          : (b[s.field] as string)?.localeCompare(a[s.field] as string),
-      );
+      users.sort((a, b) => compareValues(a[s.field], b[s.field], s.desc));
     });
     resolve(
       users.filter(
@@ -99,6 +111,8 @@ const create: (config: CreateUserConfig) => Promise<User> = async ({
       editable: true,
       password: true,
       SAML: false,
+      SCIM: false,
+      OIDC: false,
       status: 'enabled',
       test: false,
       TOTP: false,
@@ -141,6 +155,8 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
       editable: true,
       password: true,
       SAML: false,
+      SCIM: false,
+      OIDC: false,
       status: 'enabled',
       test: false,
       TOTP: false,

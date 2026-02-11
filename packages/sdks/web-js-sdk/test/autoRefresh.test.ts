@@ -240,12 +240,133 @@ describe('autoRefresh', () => {
     global.fetch = mockFetch;
 
     const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
-    await sdk.httpClient.get('1/2/3');
+    // Use an auth route that should trigger unauthenticated behavior
+    await sdk.httpClient.get('/v1/auth/refresh');
 
     expect(setTimeoutSpy).not.toHaveBeenCalled();
     // ensure logger
     expect(loggerDebugMock).toHaveBeenCalledWith(
-      expect.stringMatching('Received 401, canceling all timers'),
+      expect.stringMatching('Session invalidated, canceling all timers'),
+    );
+  });
+
+  it('should clear timer when /refresh call fails', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const failedMock = {
+      clone: () => failedMock,
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({ ...authInfo, sessionExpiration }),
+      )
+      .mockReturnValueOnce(failedMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    loggerDebugMock.mockClear();
+
+    // Failed /refresh call should clear timers
+    await sdk.httpClient.get('/v1/auth/refresh');
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Session invalidated, canceling all timers',
+    );
+  });
+
+  it('should NOT clear timer when other routes fail (e.g., OTP verify)', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const failedOtpMock = {
+      clone: () => failedOtpMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({ error: 'Invalid OTP' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({ ...authInfo, sessionExpiration }),
+      )
+      .mockReturnValueOnce(failedOtpMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    clearTimeoutSpy.mockClear();
+    loggerDebugMock.mockClear();
+
+    // Failed OTP verify call should NOT clear timers
+    await sdk.httpClient.get('/v1/auth/otp/verify');
+
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      'Session invalidated, canceling all timers',
+    );
+  });
+
+  it('should NOT clear timer when 5xx server error occurs on session validation route', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const serverErrorMock = {
+      clone: () => serverErrorMock,
+      ok: false,
+      status: 500,
+      text: () =>
+        Promise.resolve(JSON.stringify({ error: 'Internal Server Error' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({ ...authInfo, sessionExpiration }),
+      )
+      .mockReturnValueOnce(serverErrorMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    clearTimeoutSpy.mockClear();
+    loggerDebugMock.mockClear();
+
+    // 500 error on /refresh should NOT clear timers (only 4xx should)
+    await sdk.httpClient.get('/v1/auth/refresh');
+
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      'Session invalidated, canceling all timers',
     );
   });
 
@@ -447,5 +568,157 @@ describe('autoRefresh', () => {
       expect.stringMatching(/^Setting refresh timer for/),
     );
     loggerDebugMock.mockClear();
+  });
+
+  it('should use nextRefreshSeconds from server response when provided', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const nextRefreshSeconds = 120; // Server says refresh in 2 minutes
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        nextRefreshSeconds,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // Should use nextRefreshSeconds (120s = 120000ms) instead of session expiration
+    expect(timeoutTimer).toBe(nextRefreshSeconds * 1000);
+
+    // Ensure logger indicates server-provided value was used
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      `Using provided nextRefreshSeconds: ${nextRefreshSeconds}s`,
+    );
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Setting refresh timer for/),
+    );
+  });
+
+  it('should fallback to session expiration when nextRefreshSeconds is not provided', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        // nextRefreshSeconds not provided
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // Should use session expiration minus threshold (20 seconds)
+    const expectedTimer =
+      (sessionExpiration - 20) * 1000 - new Date().getTime();
+    expect(timeoutTimer).toBeGreaterThan(expectedTimer - 1000);
+    expect(timeoutTimer).toBeLessThan(expectedTimer + 1000);
+
+    // Ensure logger does not mention server-provided value
+    expect(loggerDebugMock).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^Using provided nextRefreshSeconds/),
+    );
+  });
+
+  it('should cap nextRefreshSeconds to MAX_TIMEOUT if too large', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const nextRefreshSeconds = 30 * 24 * 60 * 60; // 30 days in seconds (way too large)
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        nextRefreshSeconds,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutTimer = setTimeoutSpy.mock.calls[0][1];
+
+    // Should be capped to MAX_TIMEOUT
+    expect(timeoutTimer).toBe(MAX_TIMEOUT);
+
+    // Ensure logger indicates timeout was capped
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^Timeout is too large/),
+    );
+  });
+
+  it('should not refresh when timer fires and document is hidden', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+    // Mock document.visibilityState to be hidden
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'hidden',
+      writable: true,
+      configurable: true,
+    });
+
+    // Trigger the timeout callback
+    timeoutFn();
+
+    // Ensure refresh was NOT called because document is hidden
+    expect(refreshSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Skipping refresh due to timer - document is hidden',
+    );
+
+    // Restore visibilityState
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'visible',
+      writable: true,
+      configurable: true,
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { JWTResponse, UserResponse } from '@descope/core-js-sdk';
+import { UserResponse } from '@descope/core-js-sdk';
 import {
   CoreSdkConfig,
   CustomStorage,
@@ -6,6 +6,17 @@ import {
   WebSigninResponse,
 } from '../../types';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { IS_BROWSER } from '../../constants';
+
+// Routes where a failed response indicates an invalid/expired session
+// Other routes (like OTP verify) may fail for invalid input, not session expiration
+const SESSION_VALIDATION_ROUTES = [
+  '/v1/auth/refresh',
+  '/v1/auth/try-refresh',
+  '/v1/auth/me',
+  '/v1/auth/me/tenants',
+  '/v1/auth/me/history',
+];
 
 // this is a singleton
 // but in order to keep the code clean
@@ -145,22 +156,41 @@ export const getUserFromResponse = async (
 };
 
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
-export const isDescopeBridge = () =>
-  typeof window !== 'undefined' && !!window['descopeBridge'];
+export const isDescopeBridge = () => IS_BROWSER && !!window['descopeBridge'];
+
+/**
+ * Check if a failed response indicates an invalid/expired session
+ * Only specific routes should trigger logout/clear tokens behavior on failure
+ * Other routes (like OTP verify) may fail for invalid input
+ */
+export const isInvalidSessionResponse = (
+  req: { path?: string },
+  res: Response | undefined,
+): boolean => {
+  const is4xx = res?.status >= 400 && res?.status < 500;
+  if (!is4xx) return false;
+  const path = req?.path || '';
+  return SESSION_VALIDATION_ROUTES.includes(path);
+};
 
 export const isLocalStorage =
-  typeof customStorage !== 'undefined' || typeof localStorage !== 'undefined';
+  typeof customStorage !== 'undefined' ||
+  (IS_BROWSER && typeof window.localStorage !== 'undefined');
 
 export const setLocalStorage = (key: string, value: string) =>
-  (customStorage || localStorage)?.setItem?.(key, value);
+  (customStorage || (IS_BROWSER && window.localStorage))?.setItem?.(key, value);
 export const getLocalStorage = (key: string) =>
-  (customStorage || localStorage)?.getItem?.(key);
+  (customStorage || (IS_BROWSER && window.localStorage))?.getItem?.(key);
 export const removeLocalStorage = (key: string) =>
-  (customStorage || localStorage)?.removeItem?.(key);
+  (customStorage || (IS_BROWSER && window.localStorage))?.removeItem?.(key);
 export const getLocalStorageLength = (): number =>
-  (customStorage as any)?.length ?? localStorage?.length ?? 0;
+  (customStorage as any)?.length ??
+  (IS_BROWSER && window.localStorage?.length) ??
+  0;
 export const getLocalStorageKey = (index: number): string | null =>
-  (customStorage as any)?.key?.(index) ?? localStorage?.key?.(index) ?? null;
+  (customStorage as any)?.key?.(index) ??
+  (IS_BROWSER && window.localStorage?.key?.(index)) ??
+  null;
 
 export const setCustomStorage = (storage: CustomStorage) => {
   customStorage = storage;

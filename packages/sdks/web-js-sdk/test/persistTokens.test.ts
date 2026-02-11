@@ -56,6 +56,90 @@ describe('persistTokens', () => {
     beforeEach(() => {
       delete window.location;
     });
+
+    it('should warn when session cookie secure=true but protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Session token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass sessionTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when session cookie secure=true and protocol is HTTPS', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'https:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when session cookie secure=false and protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        sessionTokenViaCookie: { secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
     it('should set cookie domain when it is the same as current domain', async () => {
       window.location = { hostname: authInfo.cookieDomain } as any;
 
@@ -290,6 +374,89 @@ describe('persistTokens', () => {
   describe('set refresh token via cookie', () => {
     beforeEach(() => {
       delete window.location;
+    });
+
+    it('should warn when refresh cookie secure=true but protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        refreshTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Refresh token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass refreshTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when refresh cookie secure=true and protocol is HTTPS', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'https:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        refreshTokenViaCookie: true,
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when refresh cookie secure=false and protocol is HTTP', async () => {
+      window.location = {
+        hostname: authInfo.cookieDomain,
+        protocol: 'http:',
+      } as any;
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        refreshTokenViaCookie: { secure: false },
+        persistTokens: true,
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
     });
 
     it('should set refresh token cookie when refreshTokenViaCookie is true', async () => {
@@ -693,6 +860,114 @@ describe('persistTokens', () => {
     await new Promise(process.nextTick);
 
     expect(localStorage.getItem('DSI')).toEqual(oidcAuthInfo.id_token);
+  });
+
+  it('should clear tokens when /refresh call fails', async () => {
+    const failedMock = {
+      clone: () => failedMock,
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(createMockReturnValue(authInfo))
+      .mockReturnValueOnce(failedMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+
+    // First call sets tokens
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+
+    // Failed /refresh call should clear tokens
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toBeFalsy();
+    expect(localStorage.getItem('DS')).toBeFalsy();
+  });
+
+  it('should NOT clear tokens when other routes fail (e.g., OTP verify)', async () => {
+    const failedOtpMock = {
+      clone: () => failedOtpMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({ error: 'Invalid OTP' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(createMockReturnValue(authInfo))
+      .mockReturnValueOnce(failedOtpMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+
+    // First call sets tokens
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+
+    // Failed OTP verify call should NOT clear tokens
+    await sdk.httpClient.get('/v1/auth/otp/verify');
+    await new Promise(process.nextTick);
+
+    // Tokens should still be present
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+  });
+
+  it('should NOT clear tokens when 5xx server error occurs on session validation route', async () => {
+    const serverErrorMock = {
+      clone: () => serverErrorMock,
+      ok: false,
+      status: 500,
+      text: () =>
+        Promise.resolve(JSON.stringify({ error: 'Internal Server Error' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(createMockReturnValue(authInfo))
+      .mockReturnValueOnce(serverErrorMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+    });
+
+    // First call sets tokens
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
+
+    // 500 error on /refresh should NOT clear tokens (only 4xx should)
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    // Tokens should still be present
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    expect(localStorage.getItem('DS')).toEqual(authInfo.sessionJwt);
   });
 
   describe('getSessionToken', () => {

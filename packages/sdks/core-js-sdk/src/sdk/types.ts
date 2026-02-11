@@ -115,6 +115,7 @@ export type LoginOptions = {
 /** Access key login options to be added to the different authentication methods */
 export type AccessKeyLoginOptions = {
   customClaims?: Record<string, any>;
+  selectedTenant?: string;
 };
 
 /** Sign Up options to be added to the different authentication methods */
@@ -139,6 +140,7 @@ export type JWTResponse = {
   sessionExpiration: number;
   claims: Claims;
   trustedDeviceJwt?: string;
+  nextRefreshSeconds?: number;
 };
 
 /** Authentication info result from exchanging access keys for a session */
@@ -225,6 +227,7 @@ export enum DeliveryPhone {
   sms = 'sms',
   voice = 'voice',
   whatsapp = 'whatsapp',
+  im = 'im',
 }
 
 export enum DeliveryEmail {

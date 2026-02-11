@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.57.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.2...core-js-sdk-2.57.0) (2026-01-29)
+
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
+## [2.56.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.1...core-js-sdk-2.56.2) (2026-01-21)
+
+
+### Bug Fixes
+
+* improve session invalidation ([#1303](https://github.com/descope/descope-js/issues/1303)) ([5d4cd88](https://github.com/descope/descope-js/commit/5d4cd88c9a437651059f37add673827843b5ea42))
+
+## [2.56.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.0...core-js-sdk-2.56.1) (2026-01-04)
+
+
+### Bug Fixes
+
+* Fix `im` delivery method ([#1301](https://github.com/descope/descope-js/issues/1301)) RELEASE ([256e7a6](https://github.com/descope/descope-js/commit/256e7a61af3c873b278ee252938f2589335d8366))
+
+## [2.56.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.55.0...core-js-sdk-2.56.0) (2026-01-01)
+
+
+### Features
+
+* session inactivity improvement  ([#1300](https://github.com/descope/descope-js/issues/1300)) RELEASE ([eeeaec0](https://github.com/descope/descope-js/commit/eeeaec072d1a9dffcd9c87332e97b02ad1d4ca85))
+
+## [2.55.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.54.0...core-js-sdk-2.55.0) (2025-12-30)
+
+
+### Features
+
+* Add `im` to delivery methods ([#1298](https://github.com/descope/descope-js/issues/1298)) RELEASE ([f0d5910](https://github.com/descope/descope-js/commit/f0d5910d8b07c5093afaeee5509e1b82802fa912))
+
+## [2.54.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.1...core-js-sdk-2.54.0) (2025-12-24)
+
+
+### Features
+
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
 ## [2.53.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.0...core-js-sdk-2.53.1) (2025-12-03)
 
 ## [2.53.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.2...core-js-sdk-2.53.0) (2025-12-01)

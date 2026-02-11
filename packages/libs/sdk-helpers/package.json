@@ -1,6 +1,6 @@
 {
   "name": "@descope/sdk-helpers",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/sdk-helpers",
   "bugs": {
@@ -24,7 +24,7 @@
   "description": "Descope JavaScript SDK helpers",
   "scripts": {
     "build": "rimraf dist && rollup -c",
-    "test": "echo no tests yet",
+    "test": "jest",
     "lint": "eslint '+(src|test|examples)/**/*.ts'"
   },
   "license": "MIT",

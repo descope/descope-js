@@ -8,7 +8,7 @@ type CustomAttributes = Record<string, CustomAttributeType>;
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
-type Tenant = AssociatedTenant & {
+export type Tenant = AssociatedTenant & {
   tenantName: string;
 };
 
@@ -111,3 +111,9 @@ export enum AttributeTypeName {
   ARRAY = 'array',
   DATE = 'date',
 }
+
+export type UserTenant = {
+  tenantId: string;
+  tenantName: string;
+  roleNames?: string[];
+};

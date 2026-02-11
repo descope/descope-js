@@ -844,7 +844,7 @@ export const environment: Env = {
   descopeProjectId: '<your_project_id>',
   descopeBaseUrl: '<your_base_url>',
   descopeBaseStaticUrl: '<your_base_static_url>',
-  descopeFlowId: 'sign-in',
+  descopeFlowId: 'sign-up-or-in',
   descopeDebugMode: false,
   descopeTheme: 'os',
   descopeLocale: 'en_US',

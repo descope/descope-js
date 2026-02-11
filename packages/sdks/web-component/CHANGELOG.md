@@ -2,6 +2,78 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.55.1](https://github.com/descope/descope-js/compare/web-component-3.55.0...web-component-3.55.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Prevent auto-focus in hidden inputs RELEASE ([#1325](https://github.com/descope/descope-js/issues/1325)) ([46a029b](https://github.com/descope/descope-js/commit/46a029bcd010b14133f2ff7804e4e4f927ea719e))
+
+## [3.55.0](https://github.com/descope/descope-js/compare/web-component-3.54.0...web-component-3.55.0) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `web-js-sdk` updated to version `1.45.0`
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
+## [3.54.0](https://github.com/descope/descope-js/compare/web-component-3.53.4...web-component-3.54.0) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+
+### Features
+
+* Mobile only - defer polling when in background until in foreground ([#1319](https://github.com/descope/descope-js/issues/1319)) RELEASE ([995966b](https://github.com/descope/descope-js/commit/995966bf1e125663657d7313e1f7d9e4ead5cac6))
+
+## [3.53.4](https://github.com/descope/descope-js/compare/web-component-3.53.3...web-component-3.53.4) (2026-01-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.1`
+## [3.53.3](https://github.com/descope/descope-js/compare/web-component-3.53.2...web-component-3.53.3) (2026-01-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.0`
+## [3.53.2](https://github.com/descope/descope-js/compare/web-component-3.53.1...web-component-3.53.2) (2025-12-30)
+
+
+### Bug Fixes
+
+* Bridge actions (native) now trigger component state reset ([#1299](https://github.com/descope/descope-js/issues/1299)) RELEASE ([949d4ea](https://github.com/descope/descope-js/commit/949d4ea9ed3efceca84a8ecf6f3dfd18da82f460))
+
+## [3.53.1](https://github.com/descope/descope-js/compare/web-component-3.53.0...web-component-3.53.1) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+
+### Bug Fixes
+
+* issue 13444 - hidden conditional components should not be validated ([#1297](https://github.com/descope/descope-js/issues/1297)) ([7b309cd](https://github.com/descope/descope-js/commit/7b309cd587f0e911e6a7760eb779b98942590850))
+
+## [3.53.0](https://github.com/descope/descope-js/compare/web-component-3.52.4...web-component-3.53.0) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+
+### Features
+
+* Add Descope prefix to default logger ([#1291](https://github.com/descope/descope-js/issues/1291)) ([b40c871](https://github.com/descope/descope-js/commit/b40c87159f31bd6bd2e84839f219deacb5b12a35))
+
+## [3.52.4](https://github.com/descope/descope-js/compare/web-component-3.52.3...web-component-3.52.4) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.14.1`
+* `web-js-sdk` updated to version `1.42.0`
 ## [3.52.3](https://github.com/descope/descope-js/compare/web-component-3.52.2...web-component-3.52.3) (2025-12-16)
 
 ### Dependency Updates

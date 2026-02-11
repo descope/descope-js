@@ -12,7 +12,7 @@
   <div>
     Claims:
     <ng-container *ngIf="claimsJson; else noClaims">
-      <code>{{ claimsJson }}</code>
+      <pre><code>{{ claimsJson }}</code></pre>
     </ng-container>
     <ng-template #noClaims>N/A</ng-template>
   </div>

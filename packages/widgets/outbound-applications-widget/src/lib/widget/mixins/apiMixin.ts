@@ -35,6 +35,10 @@ export const apiMixin = createSingletonMixin(
         );
       }
 
+      get tenantId() {
+        return this.getAttribute('tenant');
+      }
+
       get widgetId() {
         return this.getAttribute('widget-id');
       }

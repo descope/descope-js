@@ -48,6 +48,8 @@ export type User = {
   createdTimeFormatted?: string;
   TOTP: boolean;
   SAML: boolean;
+  OIDC: boolean;
+  SCIM: boolean;
   // OAuth: {},
   webauthn: boolean;
   password: boolean;

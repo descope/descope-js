@@ -2,6 +2,62 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.45.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.44.0...web-js-sdk-1.45.0) (2026-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.57.0`
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
+## [1.44.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.1...web-js-sdk-1.44.0) (2026-01-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.2`
+
+### Features
+
+* add logs when wrong refresh/session token via cookie conf ([#1311](https://github.com/descope/descope-js/issues/1311)) ([e120c18](https://github.com/descope/descope-js/commit/e120c18497520bd53de59613bebfc1ac2e031e0f))
+
+
+### Bug Fixes
+
+* improve session invalidation ([#1303](https://github.com/descope/descope-js/issues/1303)) ([5d4cd88](https://github.com/descope/descope-js/commit/5d4cd88c9a437651059f37add673827843b5ea42))
+
+## [1.43.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.0...web-js-sdk-1.43.1) (2026-01-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.1`
+## [1.43.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.42.1...web-js-sdk-1.43.0) (2026-01-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.0`
+
+### Features
+
+* session inactivity improvement  ([#1300](https://github.com/descope/descope-js/issues/1300)) RELEASE ([eeeaec0](https://github.com/descope/descope-js/commit/eeeaec072d1a9dffcd9c87332e97b02ad1d4ca85))
+
+## [1.42.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.42.0...web-js-sdk-1.42.1) (2025-12-30)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.55.0`
+## [1.42.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.41.0...web-js-sdk-1.42.0) (2025-12-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.54.0`
+
+### Features
+
+* Angular SSR ([#1293](https://github.com/descope/descope-js/issues/1293)) RELEASE ([44a1856](https://github.com/descope/descope-js/commit/44a18560100a3c9fa494ea4c32e9fc8e4c6e67c0))
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
 ## [1.41.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.2...web-js-sdk-1.41.0) (2025-12-16)
 
 

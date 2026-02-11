@@ -229,5 +229,41 @@ test.describe('widget', () => {
         expect(disconnectBtn).toBeVisible();
       });
     });
+
+    test('handle tenant id', async ({ page }) => {
+      await page.evaluate(() => {
+        const widget = document.querySelector(
+          'descope-outbound-applications-widget',
+        );
+        widget?.setAttribute('tenant', 'mocktenantid');
+      });
+
+      await page.route(
+        apiPath('outboundApps', 'connectedOutboundApps') +
+          `?userId=${mockUser.userId}&tenant=mocktenantid`,
+        async (route) =>
+          route.fulfill({
+            json: { appIds: ['obapp1', 'obapp2'] },
+          }),
+      );
+
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const connectBtn = page
+        .locator('descope-list-item')
+        .nth(1)
+        .getByText('Connect');
+
+      expect(connectBtn).toBeVisible();
+
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const disconnectBtn = page
+        .locator('descope-list-item')
+        .nth(1)
+        .getByText('Disconnect');
+
+      expect(disconnectBtn).toBeVisible();
+    });
   });
 });

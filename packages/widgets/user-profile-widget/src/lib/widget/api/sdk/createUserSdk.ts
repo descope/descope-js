@@ -21,7 +21,18 @@ export const createUserSdk = ({
     return res.json();
   };
 
+  const setCurrentTenant = async (tenantId: string) => {
+    const res = await httpClient.post(apiPaths.user.selectTenant, {
+      tenant: tenantId,
+    });
+
+    await withErrorHandler(res);
+
+    return res.json();
+  };
+
   return {
     me,
+    setCurrentTenant,
   };
 };

@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.26](https://github.com/descope/descope-js/compare/role-management-widget-0.5.25...role-management-widget-0.5.26) (2026-01-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.45.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+## [0.5.25](https://github.com/descope/descope-js/compare/role-management-widget-0.5.24...role-management-widget-0.5.25) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+## [0.5.24](https://github.com/descope/descope-js/compare/role-management-widget-0.5.23...role-management-widget-0.5.24) (2026-01-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.1`
+## [0.5.23](https://github.com/descope/descope-js/compare/role-management-widget-0.5.22...role-management-widget-0.5.23) (2026-01-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.0`
+## [0.5.22](https://github.com/descope/descope-js/compare/role-management-widget-0.5.21...role-management-widget-0.5.22) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+## [0.5.21](https://github.com/descope/descope-js/compare/role-management-widget-0.5.20...role-management-widget-0.5.21) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+## [0.5.20](https://github.com/descope/descope-js/compare/role-management-widget-0.5.19...role-management-widget-0.5.20) (2025-12-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.0`
+* `sdk-mixins` updated to version `0.14.1`
 ## [0.5.19](https://github.com/descope/descope-js/compare/role-management-widget-0.5.18...role-management-widget-0.5.19) (2025-12-16)
 
 ### Dependency Updates

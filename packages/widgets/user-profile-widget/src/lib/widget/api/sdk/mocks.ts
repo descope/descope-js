@@ -1,4 +1,17 @@
-import { User } from '../types';
+import { Tenant, User } from '../types';
+
+const mockTenants: Tenant[] = [
+  {
+    tenantName: 'Tenant 1',
+    tenantId: 'tn1',
+    roleNames: ['Role'],
+  },
+  {
+    tenantName: 'Tenant 2',
+    tenantId: 'tn2',
+    roleNames: ['Role'],
+  },
+];
 
 const me: () => Promise<User> = async () =>
   new Promise((resolve) => {
@@ -12,7 +25,7 @@ const me: () => Promise<User> = async () =>
       phone: `+1-202-555-010`,
       verifiedEmail: true,
       verifiedPhone: true,
-      userTenants: [],
+      userTenants: mockTenants,
       status: 'enabled',
       editable: true,
       createdTime: new Date().getTime(),

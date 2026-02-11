@@ -21,6 +21,12 @@ describe('otp', () => {
       );
     });
 
+    it('should throw an error when loginId is empty for im as well', () => {
+      expect(() => sdk.otp.signUp.im('')).toThrow(
+        '"loginId" must not be empty',
+      );
+    });
+
     it('should send the correct request', () => {
       sdk.otp.signUp.email('loginId', { name: 'John Doe' });
       expect(mockHttpClient.post).toHaveBeenCalledWith(

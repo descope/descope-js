@@ -102,6 +102,7 @@ class DescopeWc extends BaseDescopeWc {
   constructor() {
     const flowState = new State<FlowState>({
       deferredRedirect: false,
+      deferredPolling: false,
     } as FlowState);
 
     super(flowState.update.bind(flowState));
@@ -117,8 +118,11 @@ class DescopeWc extends BaseDescopeWc {
     if (!document.hidden) {
       // Defer the update a bit, it won't work otherwise
       setTimeout(() => {
-        // Trigger state update that will redirect and pending deferred redirection
-        this.flowState.update({ deferredRedirect: false });
+        // Trigger state update that will redirect/resume polling and pending deferred actions
+        this.flowState.update({
+          deferredRedirect: false,
+          deferredPolling: false,
+        });
       }, 300);
     }
   }
@@ -1005,10 +1009,16 @@ class DescopeWc extends BaseDescopeWc {
       // the response will be in the form of calling the 'nativeCallbacks.complete' callback via
       // the 'nativeResume' function.
       this.#nativeNotifyBridge(nativeResponseType, nativePayload);
+      // since the native bridge takes over and will display cancelable modal UI
+      // we want to reset the loading state of button components to prevent
+      // endless loading state in case the user cancels the native UI
+      setTimeout(() => {
+        this.dispatchEvent(new Event('popupclosed'));
+      }, 500);
       return;
     }
 
-    if (isChanged('action')) {
+    if (isChanged('action') || isChanged('deferredPolling')) {
       this.#handlePollingResponse(
         executionId,
         stepId,
@@ -1207,6 +1217,15 @@ class DescopeWc extends BaseDescopeWc {
     ];
 
     if (this.flowState.current.action === RESPONSE_ACTIONS.poll) {
+      // on mobile/tablet devices, defer polling until in foreground to avoid throttling issues
+      if (this.#isMobileOrTablet() && document.hidden) {
+        this.logger.debug('polling - Deferring polling until in foreground');
+        this.flowState.update({
+          deferredPolling: true,
+        });
+        return;
+      }
+
       // schedule next polling request for 2 seconds from now
       this.logger.debug('polling - Scheduling polling request');
       const scheduledAt = Date.now();
@@ -1304,6 +1323,14 @@ class DescopeWc extends BaseDescopeWc {
     clearTimeout(this.#pollingTimeout);
     this.#pollingTimeout = null;
   };
+
+  // Detect if running on a mobile device/tablet or in a native flow webview (mobile SDK)
+  // eslint-disable-next-line class-methods-use-this
+  #isMobileOrTablet = () =>
+    !!(window as any).descopeBridge ||
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
@@ -1659,7 +1686,8 @@ class DescopeWc extends BaseDescopeWc {
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
-        if (input.localName === 'slot') {
+        // We are hiding conditional components so we don't want to validate them
+        if (input.localName === 'slot' || input.classList.contains('hidden')) {
           return;
         }
         input.reportValidity?.();

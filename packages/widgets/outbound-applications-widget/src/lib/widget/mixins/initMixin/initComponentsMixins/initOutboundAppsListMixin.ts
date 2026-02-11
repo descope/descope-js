@@ -123,6 +123,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           this.#connectModal.close();
           this.actions.getConnectedOutboundApps({
             userId: getUserId(this.state),
+            tenantId: this.tenantId,
           });
         });
       }

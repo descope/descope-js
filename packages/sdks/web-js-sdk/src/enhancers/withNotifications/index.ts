@@ -10,8 +10,10 @@ import {
   addHooks,
   getAuthInfoFromResponse,
   getUserFromResponse,
+  isInvalidSessionResponse,
 } from '../helpers';
 import { createPubSub } from './helpers';
+import logger from '../helpers/logger';
 
 /**
  * Adds 4 event functions to the sdk,
@@ -28,8 +30,11 @@ export const withNotifications =
     const userPS = createPubSub<UserResponse | null>();
     const claimsPS = createPubSub<Claims | null>();
 
-    const afterRequest: AfterRequestHook = async (_req, res) => {
-      if (res?.status === 401) {
+    const afterRequest: AfterRequestHook = async (req, res) => {
+      if (isInvalidSessionResponse(req, res)) {
+        logger.debug(
+          'Session invalidated, notifying subscribers with empty values',
+        );
         sessionPS.pub(null);
         userPS.pub(null);
         sessionExpirationPS.pub(null);
