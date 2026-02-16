@@ -69,6 +69,56 @@ DESCOPE_LOCALE=<locale>
 
 NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` / `pnpm run start-web-sample` (this is a temporary solution until we improve the process to fit to monorepo).
 
+## Security Features
+
+### Subresource Integrity (SRI)
+
+The web component automatically applies [Subresource Integrity (SRI)](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) checks to the web-components-ui loader when the SRI hash is available in the project configuration. This provides cryptographic verification that the loaded script has not been tampered with.
+
+**How it works:**
+
+1. The Descope orchestration service generates SRI hashes for each version of the web-components-ui library
+2. The hash is included in the `config.json` as `componentsVersionSRI`
+3. The web component automatically adds `integrity` and `crossorigin` attributes to the script tag
+4. The browser verifies the script integrity before executing it
+
+**Example generated script tag:**
+
+```html
+<script
+  src="https://descopecdn.com/npm/@descope/web-components-ui@1.0.0/dist/umd/index.js"
+  integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K..."
+  crossorigin="anonymous"
+></script>
+```
+
+**Content Security Policy (CSP) compatibility:**
+
+SRI works seamlessly with CSP. For strict CSP configurations, combine SRI with the `nonce` attribute:
+
+```html
+<descope-wc
+  project-id="myProjectId"
+  flow-id="sign-up-or-in"
+  nonce="random-nonce-value"
+></descope-wc>
+```
+
+**CSP header example:**
+
+```
+Content-Security-Policy:
+  script-src 'self'
+    https://descopecdn.com
+    https://static.descope.com
+    https://cdn.jsdelivr.net
+    'nonce-random-nonce-value';
+```
+
+**Backward compatibility:**
+
+If the SRI hash is not available in the configuration (older projects), the component will load normally without integrity checks. No breaking changes required.
+
 ## Optional Attributes
 
 | Attribute                                 | Available options                                                                                                                                                                                                                          | Default value |
@@ -84,7 +134,7 @@ NOTE: This package is a part of a monorepo. so if you make changes in a dependen
 | store-last-authenticated-user             | **"true"** - Stores last-authenticated user details in local storage when flow is completed</br>**"false"** - Do not store last-auth user details. Disabling this flag may cause last-authenticated user features to not function properly | **"true"**    |
 | keep-last-authenticated-user-after-logout | **"true"** - Do not clear the last authenticated user details from the browser storage after logout</br>**"false"** - Clear the last authenticated user details from the browser storage after logout                                      | **"false"**   |
 | style-id                                  | **"String"** - Set a specific style to load rather then the default style                                                                                                                                                                  | **""**        |
-| nonce                                     | **"String"** - Set a CSP nonce that will be used for style and script tags                                                                                                                                                                 | **""**        |
+| nonce                                     | **"String"** - Set a CSP nonce that will be used for style and script tags. Works with SRI for enhanced security                                                                                                                           | **""**        |
 | popup-origin                              | **"String"** - Sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows                                                      | **""**        |
 | dismiss-screen-error-on-input             | **"true"** - Clear screen error message on user input </br> **"false"** - Do not clear screen error message on user input                                                                                                                  | **"false"**   |
 | outbound-app-id                           | **"String"** - Outbound application ID to use for connecting to external services                                                                                                                                                          | **""**        |

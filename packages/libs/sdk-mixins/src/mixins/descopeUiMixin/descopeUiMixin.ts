@@ -32,6 +32,19 @@ export const descopeUiMixin = createSingletonMixin(
         return componentsVersion;
       }
 
+      // eslint-disable-next-line class-methods-use-this
+      async #getComponentsVersionSRI() {
+        const config = await this.config;
+        const componentsVersionSRI =
+          config?.projectConfig?.componentsVersionSRI;
+
+        if (componentsVersionSRI) {
+          this.logger.debug('SRI hash available for components');
+        }
+
+        return componentsVersionSRI;
+      }
+
       #descopeUi: Promise<any>;
 
       get descopeUi() {
@@ -90,11 +103,15 @@ export const descopeUiMixin = createSingletonMixin(
         }
 
         try {
+          const componentsVersion = await this.#getComponentsVersion();
+          const componentsVersionSRI = await this.#getComponentsVersionSRI();
+
           await this.injectNpmLib(
             WEB_COMPONENTS_UI_LIB_NAME,
-            await this.#getComponentsVersion(),
+            componentsVersion,
             JS_FILE_PATH,
             [LOCAL_STORAGE_OVERRIDE],
+            componentsVersionSRI,
           );
           this.logger.debug('DescopeUI was loaded');
           return globalThis.DescopeUI;

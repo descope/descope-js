@@ -77,6 +77,7 @@ export type FlowConfig = {
 
 export type ProjectConfiguration = {
   componentsVersion: string;
+  componentsVersionSRI?: string;
   cssTemplate: Style;
   flows: {
     [key: string]: FlowConfig; // dynamic key names for flows

@@ -23,9 +23,15 @@ const hashUrl = (url: URL) => {
   return `${Math.abs(hash).toString()}`;
 };
 
-const setupScript = (id: string) => {
+const setupScript = (id: string, integrity?: string) => {
   const scriptEle = document.createElement('script');
   scriptEle.id = id;
+
+  // Add SRI attributes if integrity hash is provided
+  if (integrity) {
+    scriptEle.integrity = integrity;
+    scriptEle.crossOrigin = 'anonymous';
+  }
 
   return scriptEle;
 };
@@ -33,11 +39,12 @@ const setupScript = (id: string) => {
 type ScriptData = {
   id: string;
   url: URL;
+  integrity?: string;
 };
 
-const injectScript = (scriptId: string, url: URL) => {
+const injectScript = (scriptId: string, url: URL, integrity?: string) => {
   return new Promise((res, rej) => {
-    const scriptEle = setupScript(scriptId);
+    const scriptEle = setupScript(scriptId, integrity);
 
     scriptEle.onerror = (error) => {
       scriptEle.setAttribute('status', 'error');
@@ -79,7 +86,7 @@ export const injectScriptWithFallbacks = async (
   onError: (scriptData: ScriptData, existingScript: boolean) => void,
 ) => {
   for (const scriptData of scriptsData) {
-    const { id, url } = scriptData;
+    const { id, url, integrity } = scriptData;
     const existingScript = getExistingScript(id);
     if (existingScript) {
       try {
@@ -90,7 +97,7 @@ export const injectScriptWithFallbacks = async (
       }
     } else {
       try {
-        await injectScript(id, url);
+        await injectScript(id, url, integrity);
         return scriptData;
       } catch (e) {
         onError(scriptData, false);
@@ -105,6 +112,7 @@ export const generateLibUrls = (
   libName: string,
   version: string,
   path = '',
+  integrity?: string,
 ) =>
   baseUrls.reduce((prev, curr) => {
     const baseUrl = curr;
@@ -132,6 +140,7 @@ export const generateLibUrls = (
         id: `npmlib-${libName
           .replaceAll('@', '')
           .replaceAll('/', '_')}-${hashUrl(url)}`,
+        integrity,
       },
     ];
   }, []);
