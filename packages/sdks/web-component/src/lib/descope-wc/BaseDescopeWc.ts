@@ -363,6 +363,7 @@ class BaseDescopeWc extends BaseClass {
           const resp = await origFn(...args);
           return resp;
         } catch (e) {
+          this.logger.error(`Error in sdk flow ${key} function`, e);
           // return a generic error object in case of an error
           return {
             error: {
