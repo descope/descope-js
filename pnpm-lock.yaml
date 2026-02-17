@@ -26,16 +26,16 @@ importers:
         version: 19.1.0(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       '@nrwl/eslint-plugin-nx':
         specifier: 19.8.4
-        version: 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+        version: 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@nrwl/jest':
         specifier: 19.8.4
-        version: 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)
+        version: 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)
       '@nrwl/js':
         specifier: 19.8.4
-        version: 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+        version: 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@nrwl/linter':
         specifier: 19.8.4
-        version: 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
+        version: 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       '@nrwl/workspace':
         specifier: 19.8.4
         version: 19.8.4(@swc/core@1.7.1(@swc/helpers@0.5.15))
@@ -1585,7 +1585,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -1910,7 +1910,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2091,7 +2091,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2272,7 +2272,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2456,7 +2456,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2637,7 +2637,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2821,7 +2821,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3012,7 +3012,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3196,7 +3196,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 2.2.16
+        version: 2.2.35
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3591,16 +3591,16 @@ packages:
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/code-frame@7.27.1':
-    resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
+  '@babel/code-frame@7.28.6':
+    resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
     engines: {node: '>=6.9.0'}
 
   '@babel/compat-data@7.26.5':
     resolution: {integrity: sha512-XvcZi1KWf88RVbF9wn8MN6tYFloU5qX8KjuF3E1PVBmJ9eypXfs4GRiJwLuTZL0iSnJUKn1BFPa5BPZZJyFzPg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/compat-data@7.28.5':
-    resolution: {integrity: sha512-6uFXyCayocRbqhZOB+6XcuZbkMNimwfVGFji8CTZnCzOHVGvDqzvitu1re2AU5LROliz7eQPhB8CpAMvnx9EjA==}
+  '@babel/compat-data@7.28.6':
+    resolution: {integrity: sha512-2lfu57JtzctfIrcGMz992hyLlByuzgIk58+hhGCxjKZ3rWI82NnVLjXcaTqkI2NvlcvOskZaiZ5kjUALo3Lpxg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/core@7.26.0':
@@ -3623,8 +3623,8 @@ packages:
     resolution: {integrity: sha512-VybsKvpiN1gU1sdMZIp7FcqphVVKEwcuj02x73uvcHE0PTihx1nlBcowYWhDwjpoAXRv43+gDzyggGnn1XZhVw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/generator@7.28.5':
-    resolution: {integrity: sha512-3EwLFhZ38J4VyIP6WNtt2kUdW9dokXA9Cr4IVIFHuCpZ3H8/YFOl5JjZHisrn1fATPBmKKqXzDFvh9fUwHz6CQ==}
+  '@babel/generator@7.28.6':
+    resolution: {integrity: sha512-lOoVRwADj8hjf7al89tvQ2a1lf53Z+7tiXMgpZJL3maQPDxh0DgLMN62B2MKUOFcoodBHLMbDM6WAbKgNy5Suw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-annotate-as-pure@7.25.9':
@@ -3639,8 +3639,8 @@ packages:
     resolution: {integrity: sha512-IXuyn5EkouFJscIDuFF5EsiSolseme1s0CZB+QxVugqJLYmKdxI1VfIBOst0SUu4rnk2Z7kqTwmoO1lp3HIfnA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-compilation-targets@7.27.2':
-    resolution: {integrity: sha512-2+1thGUUWWjLTYTHZWK1n8Yga0ijBz1XAhUXcKy81rd5g6yh7hGqMp45v7cadSbEHc9G3OTv45SyneRN3ps4DQ==}
+  '@babel/helper-compilation-targets@7.28.6':
+    resolution: {integrity: sha512-JYtls3hqi15fcx5GaSNL7SCTJ2MNmjrkHXg4FSpOA/grxK8KwyZ5bubHsCq8FXCkua6xhuaaBit+3b7+VZRfcA==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-create-class-features-plugin@7.24.8':
@@ -3708,8 +3708,8 @@ packages:
     resolution: {integrity: sha512-tnUA4RsrmflIM6W6RFTLFSXITtl0wKjgpnLgXyowocVPrbYrLUXSBXDgTs8BlbmIzIdlBySRQjINYs2BAkiLtw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-module-imports@7.27.1':
-    resolution: {integrity: sha512-0gSFWUPNXNopqtIPQvlD5WgXYI5GY2kP2cCvoT8kczjbfcfuIljTbcWrulD1CIPIX2gt1wghbDy08yE1p+/r3w==}
+  '@babel/helper-module-imports@7.28.6':
+    resolution: {integrity: sha512-l5XkZK7r7wa9LucGw9LwZyyCUscb4x37JWTPz7swwFE/0FMQAGpiWUZn8u9DzkSBWEcK25jmvubfpw2dnAMdbw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-module-transforms@7.26.0':
@@ -3718,8 +3718,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
 
-  '@babel/helper-module-transforms@7.28.3':
-    resolution: {integrity: sha512-gytXUbs8k2sXS9PnQptz5o0QnpLL51SwASIORY6XaBKF88nsOT0Zw9szLqlSGQDP/4TljBAD5y98p2U1fqkdsw==}
+  '@babel/helper-module-transforms@7.28.6':
+    resolution: {integrity: sha512-67oXFAYr2cDLDVGLXTEABjdBJZ6drElUSI7WKp70NrpyISso3plG9SAGEF6y7zbha/wOzUByWWTJvEDVNIUGcA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -3814,8 +3814,8 @@ packages:
     resolution: {integrity: sha512-8NHiL98vsi0mbPQmYAGWwfcFaOy4j2HY49fXJCfuDcdE7fMIsH9a7GdaeXpIBsbT7307WU8KCMp5pUVDNL4f9A==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helpers@7.28.4':
-    resolution: {integrity: sha512-HFN59MmQXGHVyYadKLVumYsA9dBFun/ldYxipEjzA4196jpLZd8UjEEBLkbEkvfYreDqJhZxYAWFPtrfhNpj4w==}
+  '@babel/helpers@7.28.6':
+    resolution: {integrity: sha512-xOBvwq86HHdB7WUDTfKfT/Vuxh7gElQ+Sfti2Cy6yIWNW05P8iUslOVcZ4/sKbE+/jQaukQAdz/gf3724kYdqw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/highlight@7.23.4':
@@ -3841,8 +3841,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/parser@7.28.5':
-    resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
+  '@babel/parser@7.28.6':
+    resolution: {integrity: sha512-TeR9zWR18BvbfPmGbLampPMW+uW1NZnJlRuuHso8i87QZNq2JRF9i6RgxRqtEq+wQGsS19NNTWr2duhnE49mfQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4403,8 +4403,8 @@ packages:
     resolution: {integrity: sha512-9DGttpmPvIxBb/2uwpVo3dqJ+O6RooAFOS+lB+xDqoE2PVCE8nfoHMdZLpfCQRLwvohzXISPZcgxt80xLfsuwg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/template@7.27.2':
-    resolution: {integrity: sha512-LPDZ85aEJyYSd18/DkjNh4/y1ntkE5KwUHWTiqgRxruuZL2F1yuHligVHLvcHY2vMHXttKFpJn6LwfI7cw7ODw==}
+  '@babel/template@7.28.6':
+    resolution: {integrity: sha512-YA6Ma2KsCdGb+WC6UpBVFJGXL58MDA6oyONbjyF/+5sBgxY/dwkhLogbMT2GXXyU84/IhRw/2D1Os1B/giz+BQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/traverse@7.24.8':
@@ -4415,8 +4415,8 @@ packages:
     resolution: {integrity: sha512-1x1sgeyRLC3r5fQOM0/xtQKsYjyxmFjaOrLJNtZ81inNjyJHGIolTULPiSc/2qe1/qfpFLisLQYFnnZl7QoedA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/traverse@7.28.5':
-    resolution: {integrity: sha512-TCCj4t55U90khlYkVV/0TfkJkAkUg3jZFA3Neb7unZT8CPok7iiRfaX0F+WnqWqt7OxhOn0uBKXCw4lbL8W0aQ==}
+  '@babel/traverse@7.28.6':
+    resolution: {integrity: sha512-fgWX62k02qtjqdSNTAGxmKYY/7FSL9WAS1o2Hu5+I5m9T0yxZzr4cnrfXQ/MX0rIifthCSs6FKTlzYbJcPtMNg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.24.8':
@@ -4431,8 +4431,8 @@ packages:
     resolution: {integrity: sha512-H45s8fVLYjbhFH62dIJ3WtmJ6RSPt/3DRO0ZcT2SUiYiQyz3BLVb9ADEnLl91m74aQPS3AzzeajZHYOalWe3bg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/types@7.28.5':
-    resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
+  '@babel/types@7.28.6':
+    resolution: {integrity: sha512-0ZrskXVEHSWIqZM/sQZ4EV3jZJXRkio/WCxaqKZP1g//CEWEPSfeZFcms4XeKBCHU0ZKnIkdJeU/kF+eRp5lBg==}
     engines: {node: '>=6.9.0'}
 
   '@bcoe/v8-coverage@0.2.3':
@@ -4520,83 +4520,86 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@descope-ui/common@2.2.16':
-    resolution: {integrity: sha512-qfBtDssGrvPWvDhZvSBVXrob+tud+ENiz2agSpyVeFrUYLOV0XQuziYTHx4OoOzMCmX7P0dNvrSgBXudF+iqQQ==}
+  '@descope-ui/common@2.2.35':
+    resolution: {integrity: sha512-VufI/srE8VPlUYznc+A+njJs18LEvWufUERT327Aih6I8AS73dmWoXH5EyY5ZC6Bnr3bbhKCwMsF+NW0Gfu+ng==}
 
-  '@descope-ui/descope-address-field@2.2.16':
-    resolution: {integrity: sha512-zKLc4wIsvTZm4NvzFYqgaP71CSXcY7BvWFFU+Jn69EltaPQqtYrCaQaKnbeIw7MDoPVb4X6h1I/Xg33FjOLJ6A==}
+  '@descope-ui/descope-address-field@2.2.35':
+    resolution: {integrity: sha512-dB0lfs+WOS4O38gUJIHpIvxv49QHIV24mFLhzeORm6oa2nI0O2EwyNtPHfrKb8PF+8jj+UQto3MGqPDIplKFHw==}
 
-  '@descope-ui/descope-apps-list@2.2.16':
-    resolution: {integrity: sha512-BiaKPnt1V1iiTRNyubRmu+135eTEF0YsEHzyd83gkdLe04sW4co0fe9qdOlg1YVqjn7OIaHOiD7xXZlpAk8RQw==}
+  '@descope-ui/descope-apps-list@2.2.35':
+    resolution: {integrity: sha512-MM97+gxlKM7F0KkqpBCUtzVLIvgwev6pp6QJyWjeNQgQ0LmAbksKJJ29Pc0HZisaYl8jPIKNownp/Om69kxouA==}
 
-  '@descope-ui/descope-autocomplete-field@2.2.16':
-    resolution: {integrity: sha512-CagQJkXuUCwvR1gJH0MIUG6quowtogu2ieDagahfkk+aZxTJkX2QML2vfhu91IUoXGl6w8/qfFel+YgKv4Symw==}
+  '@descope-ui/descope-autocomplete-field@2.2.35':
+    resolution: {integrity: sha512-Wm5X/4EHb797MQZ3KsFgeM06k+aeVDglDz59rrlyh2GHBqYrx8/ilx+/94/q/wzfPSfDZF0Aqg7OlK4i6i3F+Q==}
 
-  '@descope-ui/descope-avatar@2.2.16':
-    resolution: {integrity: sha512-PpP3UhPlxJ+eKc8a3PHygQ6OIr4SVPmCVbBtRDwauI2WG3VX3wHjO3gSSmd3x4dQtGEg+deTpQ8wQyPwgHOPvA==}
+  '@descope-ui/descope-avatar@2.2.35':
+    resolution: {integrity: sha512-1FIbqqZ8GNAyR5gdg95vlHCdMkA0oJ0BASxsdqOX9/wF5WJZrkqKiU4o/mTPpgX3ZXjl3VRJaIy7AhOAZuR6/g==}
 
-  '@descope-ui/descope-badge@2.2.16':
-    resolution: {integrity: sha512-tpdaHYjfDwPUma119P7wbb+6KRgnMNt2tFMoWSFYZO79g1ViO5yGYqsjPYujaCyucBMIo/dBJjaGH/jSH7wy/w==}
+  '@descope-ui/descope-badge@2.2.35':
+    resolution: {integrity: sha512-QXmxOKAr6a88MPrzYr1Xj0bG6GZeA3tvoSh/elp5UrEkx+FZWSFzDhvp4fQvA3IbtmfKltfozDEI30QEvlzhgw==}
 
-  '@descope-ui/descope-button@2.2.16':
-    resolution: {integrity: sha512-8N1thBwDv5wqVgSFxV9mvETk684V3MSLXEbl/wcdvJmz5Wo3ZStgnk32mRUuy7v4PEzF91wAV0HAa+z5LmxVbQ==}
+  '@descope-ui/descope-button@2.2.35':
+    resolution: {integrity: sha512-O0sQ4lqXzrOgAq/qwTLIrj9eypltVzieufer5UVu72Xf0VraBdOmb2px86jBnwJxr6veMCQ480SL9upJXGa1Rw==}
 
-  '@descope-ui/descope-collapsible-container@2.2.16':
-    resolution: {integrity: sha512-IClQnN4IquiZHTmrNYXaVeDoaZMCw8F8/Cg+6Rc1wUCeYtdZqwn+TJXqh9kWWapF/7WfoLiFS65ZS9+33M5ulg==}
+  '@descope-ui/descope-collapsible-container@2.2.35':
+    resolution: {integrity: sha512-+0T4YzYecZDI+0FpbZCkca+iU3Fp/zeK8b86Do1T7yLp/BaZuL0IY/Gd+fyoLn3YqM4+jSlwDJg8dY3jmWlT2Q==}
 
-  '@descope-ui/descope-combo-box@2.2.16':
-    resolution: {integrity: sha512-QNZik4qEf2/APKPHH1tvhKUnMdR96DREqv254Rd+jF3Cp7hN5FDnDLltZkb5h0DwhHppZwgodd6j/k7hJ9/lHw==}
+  '@descope-ui/descope-combo-box@2.2.35':
+    resolution: {integrity: sha512-L/Y6smCtX3D939jGBKWDuL0IQbTTLH0Wp9RDzwJo7PDFgh7UYN5/XKQq9bVkqw8JVzsV352+gahAZOt4rPbIyw==}
 
-  '@descope-ui/descope-enriched-text@2.2.16':
-    resolution: {integrity: sha512-VUJiwOLvaihFHfrQVLzbsLvi6obKReQvgFnM9rzfOPlMlVdcmZ1X+buFOwylp6zD85bghBvVtfhSGIQnhkmdGg==}
+  '@descope-ui/descope-enriched-text@2.2.35':
+    resolution: {integrity: sha512-3XXy4PWjuF7o3gsq9un3B1n/Fns9TCd29N3CkrlUl//5Ldg57AysQ2xhSxdo+7lrFOzAOEfLx+PvlYEJFw8OAA==}
 
-  '@descope-ui/descope-icon@2.2.16':
-    resolution: {integrity: sha512-r5dmWs2+8RRpkW4LgyLqy7YtLFV0oVWjcNQzBBz1UhIBrOUzdiqg80DVpW3GNGcwK/Yrpvy3Kp91EDvwVurvsA==}
+  '@descope-ui/descope-honeypot@2.2.35':
+    resolution: {integrity: sha512-evYeTO0uvXzrfy96Pl1Wj3C5Coqv3NrAJJpB8C/3sPwcnvmdeWyvyxYRsoa1roPNjLZRndlqM4N7iT5PmnWyuA==}
 
-  '@descope-ui/descope-image@2.2.16':
-    resolution: {integrity: sha512-vXr1dreQcO2q7q6JF5X4qMsddavUDks3hVcFrIDgyjTmePo8ZDLgLcUZnD113JralsmqnfyuENOg2gc63l1SBg==}
+  '@descope-ui/descope-icon@2.2.35':
+    resolution: {integrity: sha512-yOv+Cw+J/o6iBhziWzXw+32a3Xu5VDHEombBgwvRkp7Cwf9B8Yfy2V1OBJG1yzX8w2o+D8JmsS2PtcKHXcle1Q==}
 
-  '@descope-ui/descope-link@2.2.16':
-    resolution: {integrity: sha512-uDRaj0JsHjM8wm6QwYMeubmDAZ4m7kfbmj5y7WLBNwNgCIeWdd9syoqHAEcnTlHK20WI4Mp4hQ4doAYTa7YYDg==}
+  '@descope-ui/descope-image@2.2.35':
+    resolution: {integrity: sha512-QQOxS/ccHTfZDPK8ZCfdbwLs6TGWVZxeVGiUzO52u9G+C68nA62p0R/JBWiVjyld5WEEtdodtcGxfSS47nCtIA==}
 
-  '@descope-ui/descope-list-item@2.2.16':
-    resolution: {integrity: sha512-ZRA8tQZ0JYDCeF9yINYN6VJ/0czrfXuAtPaCAsUd+/qfhIpOHb1XYR8MNbyLhQXPo2Nd1PK2tx33cDTnKlnIzw==}
+  '@descope-ui/descope-link@2.2.35':
+    resolution: {integrity: sha512-DMiW0R9lQUjxOWt7abu2Vn6CL0S+yq6kYuQqLTYqLZY49BR7oLh2TPSv1N72VqUYnHqqsRGeJK6vSHVgGa/o8A==}
 
-  '@descope-ui/descope-list@2.2.16':
-    resolution: {integrity: sha512-WEVKp7qqQo2v4/oM9mwmJBR1AyU/3kmkg4Muz2jKylc+T81sh935zP64+PE/XlrYm4fqMQD07ojQNpF6/4ay7w==}
+  '@descope-ui/descope-list-item@2.2.35':
+    resolution: {integrity: sha512-5XADsfp18QKb0eQgsDLysieGYieueDwPvxUonGHhU73gvP+U6J67V5BLUESOVq6TkJHyxTN3kuSNMKGsMHVC9g==}
 
-  '@descope-ui/descope-outbound-app-button@2.2.16':
-    resolution: {integrity: sha512-cCReaLbHQmH0LvFLXCRfeVRNqkX0AG9GqdJMZ4AVWw/833V4+9JwG+mBISLtELyPzYyU/jbkvueZatMhafyiuw==}
+  '@descope-ui/descope-list@2.2.35':
+    resolution: {integrity: sha512-smFoU0fJ3zblQXCBZ8rR3WEzI/0K72p1DCdW0q54vyIM7KB9FCpzgYCNG8W5Yixbkj38iy2K55NgU1HUWU7vFg==}
 
-  '@descope-ui/descope-outbound-apps@2.2.16':
-    resolution: {integrity: sha512-wgPfzfcOHYMnwHWnooONTFpn4yhVrNYZPKB0MMKwbig1rxiHDn+zyRgbwDTZhzSVsWIKZa2mWM0MB/x6d+p1fg==}
+  '@descope-ui/descope-outbound-app-button@2.2.35':
+    resolution: {integrity: sha512-bCw0vxb/iuGfhLZ0aIxrFGLMUd+ljQ2L9zxTK0isi0dIi1dT0hXRGf48YKLukezh97qgTQ1sD3n5bpITpgp2Cw==}
 
-  '@descope-ui/descope-password-strength@2.2.16':
-    resolution: {integrity: sha512-JVywmNgdF0XlCeDx4waC4YWp+Psi9MyKwQipdhnyQcZ9TURFksH93IHzdGPsTK/nKSQMIjuuRznrzFbTbQq80Q==}
+  '@descope-ui/descope-outbound-apps@2.2.35':
+    resolution: {integrity: sha512-1ZtCyu6SrISKS0zjmp5L5U9vX8L2axnEd5nd7YAneTd4HsZSq47/shQZHzVaZe6i9uw+NraPhb0g8tSwk3PB1A==}
 
-  '@descope-ui/descope-recovery-codes@2.2.16':
-    resolution: {integrity: sha512-bVCXo+3VpKo4ob9E+YRCH5lk9er1DBYaTAO84OsbKHf6llaIUG358Bvwh9emlpD9CCbH64489koeRuLEYO665w==}
+  '@descope-ui/descope-password-strength@2.2.35':
+    resolution: {integrity: sha512-9enlVFSc0TWFPjXLvWKW1N7Ol5wbBAixfgify4ymJQv52cY1gTozuLkAGq19b8184n34OR/BxA9ujR0Zd8NtHQ==}
 
-  '@descope-ui/descope-text@2.2.16':
-    resolution: {integrity: sha512-u945Syjr+GGjMBcina23K50Sg836w0I21ae588wlqnDxNfRGrZ/ermBhwERDhgfCNTJVUtzrag6vafTswJfsOQ==}
+  '@descope-ui/descope-recovery-codes@2.2.35':
+    resolution: {integrity: sha512-0hQ2nATmvaxw/1xaXH/yKV7rrFCTvw5EjzuCi3vZaEmnHM6SugthgJykjkyusLdZiyyLChJ+zLaNP4lLV7nSOw==}
 
-  '@descope-ui/descope-timer-button@2.2.16':
-    resolution: {integrity: sha512-QJ3uXjxxuj4FbYWLUTGs2rsBygcVBapx4KN6A7aTIfmuJkvjqeB5Idd6ij/aWGBvxRjmw7qQYh8BExciiED+dg==}
+  '@descope-ui/descope-text@2.2.35':
+    resolution: {integrity: sha512-ezFTl6ho0ABM8lZwAPn8nGo7gevs9V26RbayI/24k2no2uaejYSEU3762uYDqDEcYutDHcobxCaaMnGGgZ/fbA==}
 
-  '@descope-ui/descope-timer@2.2.16':
-    resolution: {integrity: sha512-dgDoRtYLM6vTxPF1pZNqicsDn6R7+KLlzOCdvsNDlUm62H/K4Y09V0y25yXoV2L15c+tBY28XQEM6RBA0TemIw==}
+  '@descope-ui/descope-timer-button@2.2.35':
+    resolution: {integrity: sha512-X2Y5J4YxibPo09knZ9t6ACmfyViixmZ73WJy0ZqmIBtXvuqK84ytu/Hwy77EtLvcre7xwcz46n8imFJidMNVNA==}
 
-  '@descope-ui/descope-tooltip@2.2.16':
-    resolution: {integrity: sha512-5ag0qGBrye+2IvJaKzEKHzy37xM738HkPyt0VokL97pHGLDTL2RDs7QWXgvCxZIIEHLbQkIFfX3+S+aG15Fwdw==}
+  '@descope-ui/descope-timer@2.2.35':
+    resolution: {integrity: sha512-zef7+86fznbDNZw6yxPFlStDJeYeLqL1vW4XDbRe55YPVlqwO5Yd/RbsS+kwS0W4AL9MrYGqhOboQ+ldoEXU1Q==}
 
-  '@descope-ui/descope-trusted-devices@2.2.16':
-    resolution: {integrity: sha512-E8XRtpoUHdxrvQsqclS5FPKkCyRnDABb9R6APYW3x58tO75BaOzWvcxcpySjam0artA0KVwrQMPbu2BL6QPj4A==}
+  '@descope-ui/descope-tooltip@2.2.35':
+    resolution: {integrity: sha512-NHYsPFNJ2glqeRy4WyQiBUVi06xcHD+O3SudV/uM5XE0S5YCTkMHz9YKo7iQub17dkh3dcuZlpyd1lMjGxxvFA==}
 
-  '@descope-ui/theme-globals@2.2.16':
-    resolution: {integrity: sha512-q9IYKo007/N8s1hgJdMuzTYTIPCX3S5NSpIgJEQoVJX0zo3yBP60uPIguuo8mYLR4sJwXlFvcddvMwSjqziEyQ==}
+  '@descope-ui/descope-trusted-devices@2.2.35':
+    resolution: {integrity: sha512-g+8xsV9IsrtLc1ocsj8vHqQZxvtTdmm08JBIFUJl0iM975nqJCkbb6DllJsNIYqc6GzeUmTMWJAZ8/vurAqfzw==}
 
-  '@descope-ui/theme-input-wrapper@2.2.16':
-    resolution: {integrity: sha512-tE5Ddo7wLOTd1UrdEKgMBBpVOVZwW3mIHdBh/Fa8w4OPfoxugWzRabQ2NJWk7e5HUGEIIq98pFgQidQvIEf9+w==}
+  '@descope-ui/theme-globals@2.2.35':
+    resolution: {integrity: sha512-WSLvlVG+vzrVlDExERerT5FbLadhQzQFeyEpB/fqYDvsr7BeplvZ0BBX1XViW6BiPVzSBiKlM+QfH4bSgzuVCA==}
+
+  '@descope-ui/theme-input-wrapper@2.2.35':
+    resolution: {integrity: sha512-eCLp2H+hWSzmIkLX3+rufcexy7k6iOlyCA7L9oPp5ylDgg7vP4ro8tlQq8UxkbzF3bkFh73d9lcSoNcuZORUgg==}
 
   '@descope/core-js-sdk@2.40.0':
     resolution: {integrity: sha512-hFr/SzQO0QbyDaI1LlN//HKi3hXNJAnU0lFUpsqwo92YmCvYzhSZ7r6aBvT0DU2jaXmvt/0Y9TyNQuEKsGpT/A==}
@@ -4608,8 +4611,8 @@ packages:
     resolution: {integrity: sha512-oZxMFEcfFFngEgXrzXfgjk0m+70ufdXaOStDCYRFCX8zwNw7GfkzUOBf+ZpiT6JMd7lcYZeQ/2abCEQLjL/y9g==}
     engines: {node: '>= 12.0.0'}
 
-  '@descope/web-components-ui@2.2.16':
-    resolution: {integrity: sha512-pYRxvu1JY5rm/pAhSgCcUfFf6mgbarxRuBqUYq+CgxtpKWdq7GjvG39XnFkpPChLFFDINbjfkv5+OMR9qV8e9g==}
+  '@descope/web-components-ui@2.2.35':
+    resolution: {integrity: sha512-SN4P9IyRqubfiftXWzzlRj/KKNcgoHHqd7aQfdmLwQqWUS2bAqfIt4VIyY78O/ujzY3IEZ9ZLM91AmT6FoaPJg==}
 
   '@descope/web-js-sdk@1.29.1':
     resolution: {integrity: sha512-YUMJQ9TrEhp8SDtOcERF4tr7IguBt5//0sm8k8/tFc/9qb1uZ9Hz1z2+1NX8cnni+tMpOUH7tRFEoprpKayPEw==}
@@ -5939,8 +5942,8 @@ packages:
   '@lit-labs/ssr-dom-shim@1.4.0':
     resolution: {integrity: sha512-ficsEARKnmmW5njugNYKipTm4SFnbik7CXtoencDZzmzo/dQ+2Q0bgkzJuoJP20Aj0F+izzJjOqsnkd6F/o1bw==}
 
-  '@lit-labs/ssr-dom-shim@1.5.0':
-    resolution: {integrity: sha512-HLomZXMmrCFHSRKESF5vklAKsDY7/fsT/ZhqCu3V0UoW/Qbv8wxmO4W9bx4KnCCF2Zak4yuk+AGraK/bPmI4kA==}
+  '@lit-labs/ssr-dom-shim@1.5.1':
+    resolution: {integrity: sha512-Aou5UdlSpr5whQe8AA/bZG0jMj96CoJIWbGfZ91qieWu5AWUMKw8VR/pAkQkJYvBNhmCcWnZlyyk5oze8JIqYA==}
 
   '@lit/reactive-element@2.1.1':
     resolution: {integrity: sha512-N+dm5PAYdQ8e6UlywyyrgI2t++wFGXfHx+dSJ1oBrg6FAxUj40jId++EaRm80MKX5JnlH1sBsyZ5h0bcZKemCg==}
@@ -16494,7 +16497,7 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
-  '@babel/code-frame@7.27.1':
+  '@babel/code-frame@7.28.6':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
       js-tokens: 4.0.0
@@ -16503,7 +16506,7 @@ snapshots:
 
   '@babel/compat-data@7.26.5': {}
 
-  '@babel/compat-data@7.28.5':
+  '@babel/compat-data@7.28.6':
     optional: true
 
   '@babel/core@7.26.0':
@@ -16529,15 +16532,15 @@ snapshots:
   '@babel/core@7.26.10':
     dependencies:
       '@ampproject/remapping': 2.3.0
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.5
-      '@babel/helper-compilation-targets': 7.27.2
-      '@babel/helper-module-transforms': 7.28.3(@babel/core@7.26.10)
-      '@babel/helpers': 7.28.4
-      '@babel/parser': 7.28.5
-      '@babel/template': 7.27.2
-      '@babel/traverse': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/code-frame': 7.28.6
+      '@babel/generator': 7.28.6
+      '@babel/helper-compilation-targets': 7.28.6
+      '@babel/helper-module-transforms': 7.28.6(@babel/core@7.26.10)
+      '@babel/helpers': 7.28.6
+      '@babel/parser': 7.28.6
+      '@babel/template': 7.28.6
+      '@babel/traverse': 7.28.6
+      '@babel/types': 7.28.6
       convert-source-map: 2.0.0
       debug: 4.4.3
       gensync: 1.0.0-beta.2
@@ -16571,10 +16574,10 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 3.1.0
 
-  '@babel/generator@7.28.5':
+  '@babel/generator@7.28.6':
     dependencies:
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/parser': 7.28.6
+      '@babel/types': 7.28.6
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -16600,9 +16603,9 @@ snapshots:
       lru-cache: 5.1.1
       semver: 6.3.1
 
-  '@babel/helper-compilation-targets@7.27.2':
+  '@babel/helper-compilation-targets@7.28.6':
     dependencies:
-      '@babel/compat-data': 7.28.5
+      '@babel/compat-data': 7.28.6
       '@babel/helper-validator-option': 7.27.1
       browserslist: 4.24.4
       lru-cache: 5.1.1
@@ -16710,10 +16713,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-module-imports@7.27.1':
+  '@babel/helper-module-imports@7.28.6':
     dependencies:
-      '@babel/traverse': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/traverse': 7.28.6
+      '@babel/types': 7.28.6
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -16727,12 +16730,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-module-transforms@7.28.3(@babel/core@7.26.10)':
+  '@babel/helper-module-transforms@7.28.6(@babel/core@7.26.10)':
     dependencies:
       '@babel/core': 7.26.10
-      '@babel/helper-module-imports': 7.27.1
+      '@babel/helper-module-imports': 7.28.6
       '@babel/helper-validator-identifier': 7.28.5
-      '@babel/traverse': 7.28.5
+      '@babel/traverse': 7.28.6
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -16831,10 +16834,10 @@ snapshots:
       '@babel/template': 7.25.9
       '@babel/types': 7.27.0
 
-  '@babel/helpers@7.28.4':
+  '@babel/helpers@7.28.6':
     dependencies:
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
+      '@babel/template': 7.28.6
+      '@babel/types': 7.28.6
     optional: true
 
   '@babel/highlight@7.23.4':
@@ -16862,9 +16865,9 @@ snapshots:
     dependencies:
       '@babel/types': 7.27.0
 
-  '@babel/parser@7.28.5':
+  '@babel/parser@7.28.6':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.28.6
 
   '@babel/plugin-bugfix-firefox-class-in-computed-class-key@7.25.9(@babel/core@7.26.0)':
     dependencies:
@@ -17625,11 +17628,11 @@ snapshots:
       '@babel/parser': 7.27.0
       '@babel/types': 7.27.0
 
-  '@babel/template@7.27.2':
+  '@babel/template@7.28.6':
     dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/code-frame': 7.28.6
+      '@babel/parser': 7.28.6
+      '@babel/types': 7.28.6
     optional: true
 
   '@babel/traverse@7.24.8':
@@ -17659,14 +17662,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/traverse@7.28.5':
+  '@babel/traverse@7.28.6':
     dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.5
+      '@babel/code-frame': 7.28.6
+      '@babel/generator': 7.28.6
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.5
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
+      '@babel/parser': 7.28.6
+      '@babel/template': 7.28.6
+      '@babel/types': 7.28.6
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
@@ -17688,7 +17691,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@babel/types@7.28.5':
+  '@babel/types@7.28.6':
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
@@ -17823,188 +17826,193 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@descope-ui/common@2.2.16':
+  '@descope-ui/common@2.2.35':
     dependencies:
       color: 4.2.3
       element-internals-polyfill: 1.3.11
       lodash.debounce: 4.0.8
       lodash.merge: 4.6.2
 
-  '@descope-ui/descope-address-field@2.2.16':
+  '@descope-ui/descope-address-field@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-autocomplete-field': 2.2.16
-      '@descope-ui/theme-input-wrapper': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-autocomplete-field': 2.2.35
+      '@descope-ui/theme-input-wrapper': 2.2.35
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-apps-list@2.2.16':
+  '@descope-ui/descope-apps-list@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-avatar': 2.2.16
-      '@descope-ui/descope-list': 2.2.16
-      '@descope-ui/descope-list-item': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-avatar': 2.2.35
+      '@descope-ui/descope-list': 2.2.35
+      '@descope-ui/descope-list-item': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-autocomplete-field@2.2.16':
+  '@descope-ui/descope-autocomplete-field@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-combo-box': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
-      '@descope-ui/theme-input-wrapper': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-combo-box': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
+      '@descope-ui/theme-input-wrapper': 2.2.35
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-avatar@2.2.16':
+  '@descope-ui/descope-avatar@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       '@vaadin/avatar': 24.3.4
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-badge@2.2.16':
+  '@descope-ui/descope-badge@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-button@2.2.16':
+  '@descope-ui/descope-button@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       '@vaadin/button': 24.3.4
 
-  '@descope-ui/descope-collapsible-container@2.2.16':
+  '@descope-ui/descope-collapsible-container@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-combo-box@2.2.16':
+  '@descope-ui/descope-combo-box@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
-      '@descope-ui/theme-input-wrapper': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
+      '@descope-ui/theme-input-wrapper': 2.2.35
       '@vaadin/combo-box': 24.3.4
 
-  '@descope-ui/descope-enriched-text@2.2.16':
+  '@descope-ui/descope-enriched-text@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-link': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-link': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       markdown-it: 14.1.0
 
-  '@descope-ui/descope-icon@2.2.16':
+  '@descope-ui/descope-honeypot@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-image': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
+
+  '@descope-ui/descope-icon@2.2.35':
+    dependencies:
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-image': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       '@vaadin/icon': 24.3.4
       dompurify: 3.3.1
 
-  '@descope-ui/descope-image@2.2.16':
+  '@descope-ui/descope-image@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       dompurify: 3.3.1
 
-  '@descope-ui/descope-link@2.2.16':
+  '@descope-ui/descope-link@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-list-item@2.2.16':
+  '@descope-ui/descope-list-item@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-list@2.2.16':
+  '@descope-ui/descope-list@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-list-item': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-list-item': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-outbound-app-button@2.2.16':
+  '@descope-ui/descope-outbound-app-button@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-button': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-button': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-outbound-apps@2.2.16':
+  '@descope-ui/descope-outbound-apps@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-avatar': 2.2.16
-      '@descope-ui/descope-button': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/descope-list': 2.2.16
-      '@descope-ui/descope-list-item': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-avatar': 2.2.35
+      '@descope-ui/descope-button': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/descope-list': 2.2.35
+      '@descope-ui/descope-list-item': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-password-strength@2.2.16':
+  '@descope-ui/descope-password-strength@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
-      '@descope-ui/theme-input-wrapper': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
+      '@descope-ui/theme-input-wrapper': 2.2.35
       '@zxcvbn-ts/core': 3.0.4
       '@zxcvbn-ts/language-common': 3.0.4
       '@zxcvbn-ts/language-en': 3.0.2
 
-  '@descope-ui/descope-recovery-codes@2.2.16':
+  '@descope-ui/descope-recovery-codes@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-text@2.2.16':
+  '@descope-ui/descope-text@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-timer-button@2.2.16':
+  '@descope-ui/descope-timer-button@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-button': 2.2.16
-      '@descope-ui/descope-timer': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-button': 2.2.35
+      '@descope-ui/descope-timer': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-timer@2.2.16':
+  '@descope-ui/descope-timer@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/descope-tooltip@2.2.16':
+  '@descope-ui/descope-tooltip@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-enriched-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-enriched-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
       '@vaadin/tooltip': 24.3.4
 
-  '@descope-ui/descope-trusted-devices@2.2.16':
+  '@descope-ui/descope-trusted-devices@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-badge': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/descope-link': 2.2.16
-      '@descope-ui/descope-list': 2.2.16
-      '@descope-ui/descope-list-item': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-badge': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/descope-link': 2.2.35
+      '@descope-ui/descope-list': 2.2.35
+      '@descope-ui/descope-list-item': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
-  '@descope-ui/theme-globals@2.2.16':
+  '@descope-ui/theme-globals@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
+      '@descope-ui/common': 2.2.35
 
-  '@descope-ui/theme-input-wrapper@2.2.16':
+  '@descope-ui/theme-input-wrapper@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/theme-globals': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/theme-globals': 2.2.35
 
   '@descope/core-js-sdk@2.40.0':
     dependencies:
@@ -18024,32 +18032,33 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@descope/web-components-ui@2.2.16':
+  '@descope/web-components-ui@2.2.35':
     dependencies:
-      '@descope-ui/common': 2.2.16
-      '@descope-ui/descope-address-field': 2.2.16
-      '@descope-ui/descope-apps-list': 2.2.16
-      '@descope-ui/descope-autocomplete-field': 2.2.16
-      '@descope-ui/descope-avatar': 2.2.16
-      '@descope-ui/descope-badge': 2.2.16
-      '@descope-ui/descope-button': 2.2.16
-      '@descope-ui/descope-collapsible-container': 2.2.16
-      '@descope-ui/descope-combo-box': 2.2.16
-      '@descope-ui/descope-enriched-text': 2.2.16
-      '@descope-ui/descope-icon': 2.2.16
-      '@descope-ui/descope-image': 2.2.16
-      '@descope-ui/descope-link': 2.2.16
-      '@descope-ui/descope-list': 2.2.16
-      '@descope-ui/descope-list-item': 2.2.16
-      '@descope-ui/descope-outbound-app-button': 2.2.16
-      '@descope-ui/descope-outbound-apps': 2.2.16
-      '@descope-ui/descope-password-strength': 2.2.16
-      '@descope-ui/descope-recovery-codes': 2.2.16
-      '@descope-ui/descope-text': 2.2.16
-      '@descope-ui/descope-timer': 2.2.16
-      '@descope-ui/descope-timer-button': 2.2.16
-      '@descope-ui/descope-tooltip': 2.2.16
-      '@descope-ui/descope-trusted-devices': 2.2.16
+      '@descope-ui/common': 2.2.35
+      '@descope-ui/descope-address-field': 2.2.35
+      '@descope-ui/descope-apps-list': 2.2.35
+      '@descope-ui/descope-autocomplete-field': 2.2.35
+      '@descope-ui/descope-avatar': 2.2.35
+      '@descope-ui/descope-badge': 2.2.35
+      '@descope-ui/descope-button': 2.2.35
+      '@descope-ui/descope-collapsible-container': 2.2.35
+      '@descope-ui/descope-combo-box': 2.2.35
+      '@descope-ui/descope-enriched-text': 2.2.35
+      '@descope-ui/descope-honeypot': 2.2.35
+      '@descope-ui/descope-icon': 2.2.35
+      '@descope-ui/descope-image': 2.2.35
+      '@descope-ui/descope-link': 2.2.35
+      '@descope-ui/descope-list': 2.2.35
+      '@descope-ui/descope-list-item': 2.2.35
+      '@descope-ui/descope-outbound-app-button': 2.2.35
+      '@descope-ui/descope-outbound-apps': 2.2.35
+      '@descope-ui/descope-password-strength': 2.2.35
+      '@descope-ui/descope-recovery-codes': 2.2.35
+      '@descope-ui/descope-text': 2.2.35
+      '@descope-ui/descope-timer': 2.2.35
+      '@descope-ui/descope-timer-button': 2.2.35
+      '@descope-ui/descope-tooltip': 2.2.35
+      '@descope-ui/descope-trusted-devices': 2.2.35
       '@vaadin/checkbox': 24.3.4
       '@vaadin/custom-field': 24.3.4
       '@vaadin/dialog': 24.3.4
@@ -19377,7 +19386,7 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.4.0': {}
 
-  '@lit-labs/ssr-dom-shim@1.5.0': {}
+  '@lit-labs/ssr-dom-shim@1.5.1': {}
 
   '@lit/reactive-element@2.1.1':
     dependencies:
@@ -19385,7 +19394,7 @@ snapshots:
 
   '@lit/reactive-element@2.1.2':
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.5.0
+      '@lit-labs/ssr-dom-shim': 1.5.1
 
   '@lmdb/lmdb-darwin-arm64@3.2.2':
     optional: true
@@ -19748,9 +19757,9 @@ snapshots:
     transitivePeerDependencies:
       - nx
 
-  '@nrwl/eslint-plugin-nx@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
+  '@nrwl/eslint-plugin-nx@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
     dependencies:
-      '@nx/eslint-plugin': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nx/eslint-plugin': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -19766,9 +19775,9 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nrwl/jest@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)':
+  '@nrwl/jest@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)':
     dependencies:
-      '@nx/jest': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)
+      '@nx/jest': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -19784,9 +19793,9 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nrwl/js@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)':
+  '@nrwl/js@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)':
     dependencies:
-      '@nx/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
+      '@nx/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -19799,9 +19808,9 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nrwl/js@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
+  '@nrwl/js@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
     dependencies:
-      '@nx/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nx/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -19814,9 +19823,9 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nrwl/linter@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))':
+  '@nrwl/linter@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))':
     dependencies:
-      '@nx/eslint': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
+      '@nx/eslint': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -19895,12 +19904,12 @@ snapshots:
       tslib: 2.8.1
       yargs-parser: 21.1.1
 
-  '@nx/eslint-plugin@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
+  '@nx/eslint-plugin@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
     dependencies:
       '@eslint/compat': 1.2.6(eslint@9.18.0(jiti@1.21.0))
-      '@nrwl/eslint-plugin-nx': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nrwl/eslint-plugin-nx': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@typescript-eslint/parser@7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3))(eslint-config-prettier@9.1.0(eslint@9.18.0(jiti@1.21.0)))(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
-      '@nx/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nx/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@typescript-eslint/parser': 7.2.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3)
       '@typescript-eslint/type-utils': 8.23.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3)
       '@typescript-eslint/utils': 8.23.0(eslint@9.18.0(jiti@1.21.0))(typescript@5.7.3)
@@ -19925,11 +19934,11 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nx/eslint@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))':
+  '@nx/eslint@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))':
     dependencies:
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
-      '@nx/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
-      '@nx/linter': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
+      '@nx/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
+      '@nx/linter': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       eslint: 9.18.0(jiti@1.21.0)
       semver: 7.7.1
       tslib: 2.8.1
@@ -19947,13 +19956,13 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/jest@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)':
+  '@nx/jest@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)':
     dependencies:
       '@jest/reporters': 29.7.0
       '@jest/test-result': 29.7.0
-      '@nrwl/jest': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)
+      '@nrwl/jest': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(ts-node@10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3))(typescript@5.7.3)
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
-      '@nx/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nx/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@phenomnomnominal/tsquery': 5.0.1(typescript@5.7.3)
       chalk: 4.1.2
       identity-obj-proxy: 3.0.0
@@ -19980,7 +19989,7 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nx/js@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)':
+  '@nx/js@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-proposal-decorators': 7.23.5(@babel/core@7.26.0)
@@ -19989,12 +19998,12 @@ snapshots:
       '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@babel/runtime': 7.25.6
-      '@nrwl/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
+      '@nrwl/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       '@nx/workspace': 19.8.4(@swc/core@1.7.1(@swc/helpers@0.5.15))
       babel-plugin-const-enum: 1.2.0(@babel/core@7.26.0)
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2(@babel/core@7.26.0)(@babel/traverse@7.28.5)
+      babel-plugin-transform-typescript-metadata: 0.3.2(@babel/core@7.26.0)(@babel/traverse@7.28.6)
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -20023,7 +20032,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@nx/js@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
+  '@nx/js@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-proposal-decorators': 7.23.5(@babel/core@7.26.0)
@@ -20032,12 +20041,12 @@ snapshots:
       '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@babel/runtime': 7.25.6
-      '@nrwl/js': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
+      '@nrwl/js': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       '@nx/workspace': 19.8.4(@swc/core@1.7.1(@swc/helpers@0.5.15))
       babel-plugin-const-enum: 1.2.0(@babel/core@7.26.0)
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2(@babel/core@7.26.0)(@babel/traverse@7.28.5)
+      babel-plugin-transform-typescript-metadata: 0.3.2(@babel/core@7.26.0)(@babel/traverse@7.28.6)
       chalk: 4.1.2
       columnify: 1.6.0
       detect-port: 1.5.1
@@ -20066,9 +20075,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@nx/linter@19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))':
+  '@nx/linter@19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))':
     dependencies:
-      '@nx/eslint': 19.8.4(@babel/traverse@7.28.5)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
+      '@nx/eslint': 19.8.4(@babel/traverse@7.28.6)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(@zkochan/js-yaml@0.0.7)(eslint@9.18.0(jiti@1.21.0))(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -22777,7 +22786,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.28.6
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -22807,7 +22816,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.13':
     dependencies:
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.28.6
       '@vue/compiler-core': 3.5.13
       '@vue/compiler-dom': 3.5.13
       '@vue/compiler-ssr': 3.5.13
@@ -23597,12 +23606,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-plugin-transform-typescript-metadata@0.3.2(@babel/core@7.26.0)(@babel/traverse@7.28.5):
+  babel-plugin-transform-typescript-metadata@0.3.2(@babel/core@7.26.0)(@babel/traverse@7.28.6):
     dependencies:
       '@babel/core': 7.26.0
       '@babel/helper-plugin-utils': 7.26.5
     optionalDependencies:
-      '@babel/traverse': 7.28.5
+      '@babel/traverse': 7.28.6
 
   babel-preset-current-node-syntax@1.0.1(@babel/core@7.26.0):
     dependencies:
@@ -29102,7 +29111,7 @@ snapshots:
 
   lit-element@4.2.2:
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.5.0
+      '@lit-labs/ssr-dom-shim': 1.5.1
       '@lit/reactive-element': 2.1.2
       lit-html: 3.3.2
 

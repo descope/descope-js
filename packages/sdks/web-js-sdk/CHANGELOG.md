@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.45.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.44.0...web-js-sdk-1.45.0) (2026-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.57.0`
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
 ## [1.44.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.1...web-js-sdk-1.44.0) (2026-01-21)
 
 ### Dependency Updates

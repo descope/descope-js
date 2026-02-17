@@ -33,6 +33,8 @@ export {
   clearFingerprintData,
 } from './enhancers/withFingerprint/helpers';
 
+export { getSessionToken } from './enhancers/withPersistTokens/helpers';
+
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
 export type { JWTResponse } from '@descope/core-js-sdk';

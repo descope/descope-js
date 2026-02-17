@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.8.1...sdk-component-drivers-0.9.0) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.6.0`
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
 ## [0.8.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.8.0...sdk-component-drivers-0.8.1) (2025-11-09)
 
 ### Dependency Updates

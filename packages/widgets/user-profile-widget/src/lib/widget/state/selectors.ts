@@ -45,3 +45,11 @@ export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
 );
 
 export const getNotifications = (state: State) => state.notifications;
+
+export const getUserTenants = createSelector(
+  getMe,
+  (me) => me.userTenants || [],
+);
+
+export const getCurrentTenantId = (state: State) =>
+  state.tenant.currentTenantId;
