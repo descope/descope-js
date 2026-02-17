@@ -27,10 +27,13 @@ const setupScript = (id: string, integrity?: string) => {
   const scriptEle = document.createElement('script');
   scriptEle.id = id;
 
-  // Add SRI attributes if integrity hash is provided
   if (integrity) {
     scriptEle.integrity = integrity;
     scriptEle.crossOrigin = 'anonymous';
+  }
+
+  if ((window as any).DESCOPE_NONCE) {
+    scriptEle.setAttribute('nonce', (window as any).DESCOPE_NONCE);
   }
 
   return scriptEle;
@@ -61,7 +64,21 @@ const injectScript = (scriptId: string, url: URL, integrity?: string) => {
   });
 };
 
-const handleExistingScript = (existingScript: HTMLScriptElement) => {
+const handleExistingScript = (
+  existingScript: HTMLScriptElement,
+  expectedIntegrity?: string,
+) => {
+  if (expectedIntegrity) {
+    const actualIntegrity = existingScript.integrity;
+    if (actualIntegrity !== expectedIntegrity) {
+      return Promise.reject(
+        new Error(
+          `Integrity mismatch: expected ${expectedIntegrity}, found ${actualIntegrity}`,
+        ),
+      );
+    }
+  }
+
   if (isScriptLoaded(existingScript)) {
     return Promise.resolve(existingScript);
   }
@@ -90,7 +107,7 @@ export const injectScriptWithFallbacks = async (
     const existingScript = getExistingScript(id);
     if (existingScript) {
       try {
-        await handleExistingScript(existingScript);
+        await handleExistingScript(existingScript, integrity);
         return scriptData;
       } catch (e) {
         onError(scriptData, true);
@@ -133,14 +150,16 @@ export const generateLibUrls = (
       url.pathname = `/npm/${libName}@${version}/${path}`;
     }
 
-    return [
-      ...prev,
-      {
-        url: url,
-        id: `npmlib-${libName
-          .replaceAll('@', '')
-          .replaceAll('/', '_')}-${hashUrl(url)}`,
-        integrity,
-      },
-    ];
+    const scriptData: ScriptData = {
+      url: url,
+      id: `npmlib-${libName
+        .replaceAll('@', '')
+        .replaceAll('/', '_')}-${hashUrl(url)}`,
+    };
+
+    if (integrity) {
+      scriptData.integrity = integrity;
+    }
+
+    return [...prev, scriptData];
   }, []);

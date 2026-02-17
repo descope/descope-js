@@ -1,27 +1,35 @@
-import { screen, waitFor } from '@testing-library/dom';
+/* eslint-disable import/order */
+// @ts-nocheck
+
 import {
-  clearDocument,
-  createDescopeWc,
-  mockProjectApiCall,
-  waitForReady,
-} from './testUtils';
+  setupWebComponentTestEnv,
+  teardownWebComponentTestEnv,
+  fixtures,
+  WAIT_TIMEOUT,
+} from './descope-wc.test-harness';
+
+import '@testing-library/jest-dom';
+import { waitFor } from '@testing-library/dom';
+
+import '../src/lib/descope-wc';
 
 const projectId = 'P123';
 const flowId = 'test-flow';
 const version = '1.0.0';
-const sriHash = 'sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC';
+const sriHash =
+  'sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC';
 
 describe('descope-wc SRI (Subresource Integrity)', () => {
   beforeEach(() => {
-    clearDocument();
+    setupWebComponentTestEnv();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    teardownWebComponentTestEnv();
   });
 
   it('should load components UI without SRI when hash is not provided in config', async () => {
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
         flows: {
@@ -30,27 +38,27 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    await waitForReady(descopeWcEle);
+    await waitFor(
+      () => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const componentScript = scripts.find((script) =>
+          script.src.includes('@descope/web-components-ui'),
+        );
 
-    await waitFor(() => {
-      const scripts = Array.from(document.querySelectorAll('script'));
-      const componentScript = scripts.find((script) =>
-        script.src.includes('@descope/web-components-ui'),
-      );
-
-      expect(componentScript).toBeDefined();
-      expect(componentScript?.integrity).toBe('');
-      expect(componentScript?.crossOrigin).toBe('');
-    });
+        expect(componentScript).toBeDefined();
+        expect(componentScript?.integrity).toBe('');
+        expect(componentScript?.crossOrigin).toBe('');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should add integrity and crossOrigin attributes when SRI hash is provided', async () => {
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
         componentsVersionSRI: sriHash,
@@ -60,29 +68,29 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    await waitForReady(descopeWcEle);
+    await waitFor(
+      () => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const componentScript = scripts.find((script) =>
+          script.src.includes('@descope/web-components-ui'),
+        );
 
-    await waitFor(() => {
-      const scripts = Array.from(document.querySelectorAll('script'));
-      const componentScript = scripts.find((script) =>
-        script.src.includes('@descope/web-components-ui'),
-      );
-
-      expect(componentScript).toBeDefined();
-      expect(componentScript?.integrity).toBe(sriHash);
-      expect(componentScript?.crossOrigin).toBe('anonymous');
-    });
+        expect(componentScript).toBeDefined();
+        expect(componentScript?.integrity).toBe(sriHash);
+        expect(componentScript?.crossOrigin).toBe('anonymous');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should log when SRI hash is available', async () => {
     const logSpy = jest.spyOn(console, 'debug').mockImplementation();
 
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
         componentsVersionSRI: sriHash,
@@ -92,21 +100,21 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    await waitForReady(descopeWcEle);
-
-    await waitFor(() => {
-      expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining('SRI hash available for components'),
-      );
-      expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining('with SRI integrity check'),
-      );
-    });
+    await waitFor(
+      () => {
+        expect(logSpy).toHaveBeenCalledWith(
+          expect.stringContaining('SRI hash available for components'),
+        );
+        expect(logSpy).toHaveBeenCalledWith(
+          expect.stringContaining('with SRI integrity check'),
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
 
     logSpy.mockRestore();
   });
@@ -115,8 +123,7 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
     const sha256Hash = 'sha256-abc123';
     const sha512Hash = 'sha512-xyz789';
 
-    // Test SHA-256
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
         componentsVersionSRI: sha256Hash,
@@ -126,25 +133,25 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle1 = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle1);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    await waitForReady(descopeWcEle1);
+    await waitFor(
+      () => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const componentScript = scripts.find((script) =>
+          script.src.includes('@descope/web-components-ui'),
+        );
+        expect(componentScript?.integrity).toBe(sha256Hash);
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
 
-    await waitFor(() => {
-      const scripts = Array.from(document.querySelectorAll('script'));
-      const componentScript = scripts.find((script) =>
-        script.src.includes('@descope/web-components-ui'),
-      );
-      expect(componentScript?.integrity).toBe(sha256Hash);
-    });
+    teardownWebComponentTestEnv();
+    setupWebComponentTestEnv();
 
-    clearDocument();
-
-    // Test SHA-512
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
         componentsVersionSRI: sha512Hash,
@@ -154,55 +161,52 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle2 = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle2);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    await waitForReady(descopeWcEle2);
-
-    await waitFor(() => {
-      const scripts = Array.from(document.querySelectorAll('script'));
-      const componentScript = scripts.find((script) =>
-        script.src.includes('@descope/web-components-ui'),
-      );
-      expect(componentScript?.integrity).toBe(sha512Hash);
-    });
+    await waitFor(
+      () => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const componentScript = scripts.find((script) =>
+          script.src.includes('@descope/web-components-ui'),
+        );
+        expect(componentScript?.integrity).toBe(sha512Hash);
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should gracefully handle missing SRI hash for backward compatibility', async () => {
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
-        // componentsVersionSRI is intentionally omitted
         flows: {
           [flowId]: {
             version: 1,
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    // Should not throw error and flow should load normally
-    await expect(waitForReady(descopeWcEle)).resolves.not.toThrow();
+    await waitFor(
+      () => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const componentScript = scripts.find((script) =>
+          script.src.includes('@descope/web-components-ui'),
+        );
 
-    await waitFor(() => {
-      const scripts = Array.from(document.querySelectorAll('script'));
-      const componentScript = scripts.find((script) =>
-        script.src.includes('@descope/web-components-ui'),
-      );
-
-      expect(componentScript).toBeDefined();
-      // No integrity attribute when not provided
-      expect(componentScript?.hasAttribute('integrity')).toBe(false);
-    });
+        expect(componentScript).toBeDefined();
+        expect(componentScript?.hasAttribute('integrity')).toBe(false);
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should apply SRI to all CDN fallbacks', async () => {
-    mockProjectApiCall({
+    fixtures.configContent = {
       projectConfig: {
         componentsVersion: version,
         componentsVersionSRI: sriHash,
@@ -212,22 +216,21 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
           },
         },
       },
-    });
+    };
 
-    const descopeWcEle = createDescopeWc({ projectId, flowId });
-    document.body.appendChild(descopeWcEle);
+    document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
 
-    await waitForReady(descopeWcEle);
+    await waitFor(
+      () => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const componentScript = scripts.find((script) =>
+          script.src.includes('@descope/web-components-ui'),
+        );
 
-    // Verify that the integrity is applied regardless of which CDN is used
-    await waitFor(() => {
-      const scripts = Array.from(document.querySelectorAll('script'));
-      const componentScript = scripts.find((script) =>
-        script.src.includes('@descope/web-components-ui'),
-      );
-
-      expect(componentScript?.integrity).toBe(sriHash);
-      expect(componentScript?.crossOrigin).toBe('anonymous');
-    });
+        expect(componentScript?.integrity).toBe(sriHash);
+        expect(componentScript?.crossOrigin).toBe('anonymous');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 });

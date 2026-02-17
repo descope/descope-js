@@ -32,7 +32,6 @@ export const descopeUiMixin = createSingletonMixin(
         return componentsVersion;
       }
 
-      // eslint-disable-next-line class-methods-use-this
       async #getComponentsVersionSRI() {
         const config = await this.config;
         const componentsVersionSRI =

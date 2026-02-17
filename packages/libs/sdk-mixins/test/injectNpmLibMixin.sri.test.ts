@@ -32,12 +32,12 @@ describe('injectNpmLibMixin - SRI support', () => {
       });
     });
 
-    it('should include integrity as undefined when empty string is provided', () => {
+    it('should not include integrity when empty string is provided', () => {
       const result = generateLibUrls(baseUrls, libName, version, path, '');
 
       expect(result).toHaveLength(2);
       result.forEach((scriptData) => {
-        expect(scriptData.integrity).toBe('');
+        expect(scriptData.integrity).toBeUndefined();
         expect(scriptData.url).toBeDefined();
         expect(scriptData.id).toBeDefined();
       });
@@ -67,7 +67,13 @@ describe('injectNpmLibMixin - SRI support', () => {
 
     it('should generate correct URLs with integrity', () => {
       const sriHash = 'sha256-abc123';
-      const result = generateLibUrls([baseUrls[0]], libName, version, path, sriHash);
+      const result = generateLibUrls(
+        [baseUrls[0]],
+        libName,
+        version,
+        path,
+        sriHash,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0].url.toString()).toContain(libName);
