@@ -274,7 +274,9 @@ const applyComponentsState = (
   logger?: { error: (message: string, description: string) => void },
 ) => {
   Object.entries(componentsState).forEach(([componentId, state]) => {
-    const componentEls = baseEle.querySelectorAll(`[id="${CSS.escape(componentId)}"]`);
+    const componentEls = baseEle.querySelectorAll(
+      `[id="${CSS.escape(componentId)}"]`,
+    );
     componentEls.forEach((compEl) => {
       switch (state) {
         case 'disable':
@@ -324,7 +326,7 @@ export const updateScreenFromScreenState = (
 ) => {
   const screenInputs = {
     ...screenState?.inputs,
-    'totp.key': screenState?.totp?.key,
+    ...(screenState?.totp?.key ? { 'totp.key': screenState.totp.key } : {}),
   };
   replaceElementInputs(baseEle, screenInputs);
   replaceElementInputs(baseEle, screenState?.form);
