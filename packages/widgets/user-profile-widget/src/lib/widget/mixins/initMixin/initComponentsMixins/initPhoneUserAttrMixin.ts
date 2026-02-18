@@ -126,8 +126,12 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       });
 
       #onValueBadgeLabelUpdate = withMemCache(
-        (isPhoneVerified: ReturnType<typeof getIsPhoneVerified>) => {
-          this.phoneUserAttr.badgeLabel = isPhoneVerified ? '' : 'Unverified';
+        (
+          isPhoneVerified: ReturnType<typeof getIsPhoneVerified>,
+          phone: ReturnType<typeof getPhone>,
+        ) => {
+          this.phoneUserAttr.badgeLabel =
+            phone && !isPhoneVerified ? 'Unverified' : '';
         },
       );
 
@@ -139,13 +143,21 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         this.#initDeleteModal();
 
         this.#onValueUpdate(getPhone(this.state));
-        this.#onValueBadgeLabelUpdate(getIsPhoneVerified(this.state));
+        this.#onValueBadgeLabelUpdate(
+          getIsPhoneVerified(this.state),
+          getPhone(this.state),
+        );
 
         this.subscribe(this.#onValueUpdate.bind(this), getPhone);
 
         this.subscribe(
-          this.#onValueBadgeLabelUpdate.bind(this),
+          (state) =>
+            this.#onValueBadgeLabelUpdate(
+              getIsPhoneVerified(state),
+              getPhone(state),
+            ),
           getIsPhoneVerified,
+          getPhone,
         );
       }
     },

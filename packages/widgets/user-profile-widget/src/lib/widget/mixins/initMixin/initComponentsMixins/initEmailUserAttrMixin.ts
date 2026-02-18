@@ -126,8 +126,12 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       });
 
       #onValueBadgeLabelUpdate = withMemCache(
-        (isEmailVerified: ReturnType<typeof getIsEmailVerified>) => {
-          this.emailUserAttr.badgeLabel = isEmailVerified ? '' : 'Unverified';
+        (
+          isEmailVerified: ReturnType<typeof getIsEmailVerified>,
+          email: ReturnType<typeof getEmail>,
+        ) => {
+          this.emailUserAttr.badgeLabel =
+            email && !isEmailVerified ? 'Unverified' : '';
         },
       );
 
@@ -139,13 +143,21 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         this.#initDeleteModal();
 
         this.#onValueUpdate(getEmail(this.state));
-        this.#onValueBadgeLabelUpdate(getIsEmailVerified(this.state));
+        this.#onValueBadgeLabelUpdate(
+          getIsEmailVerified(this.state),
+          getEmail(this.state),
+        );
 
         this.subscribe(this.#onValueUpdate.bind(this), getEmail);
 
         this.subscribe(
-          this.#onValueBadgeLabelUpdate.bind(this),
+          (state) =>
+            this.#onValueBadgeLabelUpdate(
+              getIsEmailVerified(state),
+              getEmail(state),
+            ),
           getIsEmailVerified,
+          getEmail,
         );
       }
     },
