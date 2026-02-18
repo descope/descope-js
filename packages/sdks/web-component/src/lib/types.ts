@@ -53,7 +53,7 @@ export interface ScreenState {
   inputs?: Record<string, string>; // Backward compatibility
   lastAuth?: LastAuthState;
   project?: Project;
-  totp?: { image?: string; provisionUrl?: string };
+  totp?: { image?: string; provisionUrl?: string; key?: string };
   notp?: { image?: string; redirectUrl?: string };
   selfProvisionDomains?: unknown;
   user?: unknown;
