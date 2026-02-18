@@ -131,7 +131,9 @@ export const initEmailUserAttrMixin = createSingletonMixin(
           email: ReturnType<typeof getEmail>,
         ) => {
           this.emailUserAttr.badgeLabel =
-            email && !isEmailVerified ? 'Unverified' : '';
+            email && email.trim() !== '' && !isEmailVerified
+              ? 'Unverified'
+              : '';
         },
       );
 
@@ -150,14 +152,12 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
         this.subscribe(this.#onValueUpdate.bind(this), getEmail);
 
-        this.subscribe(
-          (state) =>
-            this.#onValueBadgeLabelUpdate(
-              getIsEmailVerified(state),
-              getEmail(state),
-            ),
-          getIsEmailVerified,
-          getEmail,
+        // Subscribe to changes in either email value or verification status
+        this.subscribe((state) =>
+          this.#onValueBadgeLabelUpdate(
+            getIsEmailVerified(state),
+            getEmail(state),
+          ),
         );
       }
     },

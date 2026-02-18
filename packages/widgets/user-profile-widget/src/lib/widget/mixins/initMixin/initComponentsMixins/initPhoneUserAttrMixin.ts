@@ -131,7 +131,9 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
           phone: ReturnType<typeof getPhone>,
         ) => {
           this.phoneUserAttr.badgeLabel =
-            phone && !isPhoneVerified ? 'Unverified' : '';
+            phone && phone.trim() !== '' && !isPhoneVerified
+              ? 'Unverified'
+              : '';
         },
       );
 
@@ -150,14 +152,12 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
         this.subscribe(this.#onValueUpdate.bind(this), getPhone);
 
-        this.subscribe(
-          (state) =>
-            this.#onValueBadgeLabelUpdate(
-              getIsPhoneVerified(state),
-              getPhone(state),
-            ),
-          getIsPhoneVerified,
-          getPhone,
+        // Subscribe to changes in either phone value or verification status
+        this.subscribe((state) =>
+          this.#onValueBadgeLabelUpdate(
+            getIsPhoneVerified(state),
+            getPhone(state),
+          ),
         );
       }
     },
