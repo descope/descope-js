@@ -214,18 +214,21 @@ test.describe('widget', () => {
     }) => {
       await page.route('**/auth/me', async (route) =>
         route.fulfill({
-          json: { ...mockUser, email: 'test@example.com', verifiedEmail: false },
+          json: {
+            ...mockUser,
+            email: 'test@example.com',
+            verifiedEmail: false,
+          },
         }),
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
-      const emailAttr = page
+      const badge = page
         .locator('descope-user-attribute[data-id="email"]')
-        .first();
-
-      await expect(emailAttr).toHaveAttribute('badge-label', 'Unverified');
+        .locator('descope-badge');
+      await expect(badge).toBeVisible();
     });
 
     test('should not show "Unverified" badge when email is empty', async ({
@@ -240,11 +243,10 @@ test.describe('widget', () => {
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
-      const emailAttr = page
+      const badge = page
         .locator('descope-user-attribute[data-id="email"]')
-        .first();
-
-      await expect(emailAttr).toHaveAttribute('badge-label', '');
+        .locator('descope-badge');
+      await expect(badge).toBeHidden();
     });
 
     test('should not show "Unverified" badge when email is verified', async ({
@@ -259,11 +261,10 @@ test.describe('widget', () => {
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
-      const emailAttr = page
+      const badge = page
         .locator('descope-user-attribute[data-id="email"]')
-        .first();
-
-      await expect(emailAttr).toHaveAttribute('badge-label', '');
+        .locator('descope-badge');
+      await expect(badge).toBeHidden();
     });
 
     test('should show "Unverified" badge when phone exists and is not verified', async ({
@@ -278,11 +279,10 @@ test.describe('widget', () => {
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
-      const phoneAttr = page
+      const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
-        .first();
-
-      await expect(phoneAttr).toHaveAttribute('badge-label', 'Unverified');
+        .locator('descope-badge');
+      await expect(badge).toBeVisible();
     });
 
     test('should not show "Unverified" badge when phone is empty', async ({
@@ -297,11 +297,10 @@ test.describe('widget', () => {
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
-      const phoneAttr = page
+      const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
-        .first();
-
-      await expect(phoneAttr).toHaveAttribute('badge-label', '');
+        .locator('descope-badge');
+      await expect(badge).toBeHidden();
     });
 
     test('should not show "Unverified" badge when phone is verified', async ({
@@ -316,11 +315,10 @@ test.describe('widget', () => {
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
-      const phoneAttr = page
+      const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
-        .first();
-
-      await expect(phoneAttr).toHaveAttribute('badge-label', '');
+        .locator('descope-badge');
+      await expect(badge).toBeHidden();
     });
   });
 });
