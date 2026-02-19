@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.10](https://github.com/descope/descope-js/compare/user-management-widget-0.11.9...user-management-widget-0.11.10) (2026-02-19)
+
+
+### Bug Fixes
+
+* use patch api to update user in management widget ([#1316](https://github.com/descope/descope-js/issues/1316)) ([5b39750](https://github.com/descope/descope-js/commit/5b39750ad6c7bdcfa9e0f0893fe6509ac36e5e63))
+
 ## [0.11.9](https://github.com/descope/descope-js/compare/user-management-widget-0.11.8...user-management-widget-0.11.9) (2026-02-17)
 
 ### Dependency Updates
