@@ -15,12 +15,178 @@ import {
   withMemCache,
   getOIDCResourceParamFromUrl,
   clearOIDCResourceParamFromUrl,
+  withRetry,
 } from '../../src/lib/helpers/helpers';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
 describe('helpers', () => {
+  describe('withRetry', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should return the result on first successful attempt', async () => {
+      const mockFn = jest.fn().mockResolvedValue('success');
+      const wrappedFn = withRetry(mockFn, 1000, 3);
+
+      const resultPromise = wrappedFn('arg1', 'arg2');
+      await jest.runAllTimersAsync();
+      const result = await resultPromise;
+
+      expect(result).toBe('success');
+      expect(mockFn).toHaveBeenCalledTimes(1);
+      expect(mockFn).toHaveBeenCalledWith('arg1', 'arg2');
+    });
+
+    it('should retry on failure and succeed on second attempt', async () => {
+      const mockFn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('first fail'))
+        .mockResolvedValueOnce('success');
+      const wrappedFn = withRetry(mockFn, 1000, 3);
+
+      const resultPromise = wrappedFn('test');
+      await jest.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      expect(result).toBe('success');
+      expect(mockFn).toHaveBeenCalledTimes(2);
+    });
+
+    it('should retry the specified number of times', async () => {
+      const mockFn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('fail 1'))
+        .mockRejectedValueOnce(new Error('fail 2'))
+        .mockResolvedValueOnce('success');
+      const wrappedFn = withRetry(mockFn, 500, 3);
+
+      const resultPromise = wrappedFn();
+      await jest.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      expect(result).toBe('success');
+      expect(mockFn).toHaveBeenCalledTimes(3);
+    });
+
+    it('should wait the specified timeout between retries', async () => {
+      const mockFn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('fail 1'))
+        .mockResolvedValueOnce('success');
+      const wrappedFn = withRetry(mockFn, 2000, 3);
+
+      const resultPromise = wrappedFn();
+
+      // First attempt fails immediately
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockFn).toHaveBeenCalledTimes(1);
+
+      // Wait for timeout
+      await jest.advanceTimersByTimeAsync(2000);
+      expect(mockFn).toHaveBeenCalledTimes(2);
+
+      const result = await resultPromise;
+      expect(result).toBe('success');
+    });
+
+    it('should throw the last error after all retries are exhausted', async () => {
+      const error4 = new Error('fail 4');
+
+      const mockFn = jest.fn().mockRejectedValue(error4);
+
+      const wrappedFn = withRetry(mockFn, 100, 3);
+
+      const resultPromise = wrappedFn().catch((e) => e); // Catch immediately to prevent unhandled rejection warnings
+      await jest.advanceTimersByTimeAsync(300);
+
+      const result = await resultPromise;
+      expect(result).toBe(error4);
+      expect(mockFn).toHaveBeenCalledTimes(4); // 1 initial + 3 retries
+    });
+
+    it('should not wait after the last failed attempt', async () => {
+      const testError = new Error('fail');
+      const mockFn = jest.fn().mockRejectedValue(testError);
+      const wrappedFn = withRetry(mockFn, 1000, 2);
+
+      const resultPromise = wrappedFn().catch((e) => e); // Catch immediately to prevent unhandled rejection warnings
+      await jest.advanceTimersByTimeAsync(2000);
+
+      const result = await resultPromise;
+      expect(result).toBe(testError);
+      expect(mockFn).toHaveBeenCalledTimes(3); // 1 initial + 2 retries
+    });
+
+    it('should preserve function arguments across retries', async () => {
+      const mockFn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('fail'))
+        .mockResolvedValueOnce('success');
+      const wrappedFn = withRetry(mockFn, 100, 2);
+
+      const resultPromise = wrappedFn('arg1', 42, { key: 'value' });
+      await jest.advanceTimersByTimeAsync(100);
+      const result = await resultPromise;
+
+      expect(result).toBe('success');
+      expect(mockFn).toHaveBeenNthCalledWith(1, 'arg1', 42, { key: 'value' });
+      expect(mockFn).toHaveBeenNthCalledWith(2, 'arg1', 42, { key: 'value' });
+    });
+
+    it('should handle async functions that return complex objects', async () => {
+      const complexResult = {
+        data: [1, 2, 3],
+        status: 'ok',
+        nested: { value: true },
+      };
+      const mockFn = jest.fn().mockResolvedValue(complexResult);
+      const wrappedFn = withRetry(mockFn, 1000, 3);
+
+      const resultPromise = wrappedFn();
+      await jest.runAllTimersAsync();
+      const result = await resultPromise;
+
+      expect(result).toEqual(complexResult);
+      expect(mockFn).toHaveBeenCalledTimes(1);
+    });
+
+    it('should work with zero retries (no retry)', async () => {
+      const mockFn = jest.fn().mockRejectedValue(new Error('fail'));
+      const wrappedFn = withRetry(mockFn, 1000, 0);
+
+      await expect(wrappedFn()).rejects.toThrow('fail');
+      expect(mockFn).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle multiple concurrent calls independently', async () => {
+      const mockFn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('fail 1'))
+        .mockRejectedValueOnce(new Error('fail 2'))
+        .mockResolvedValueOnce('success 1')
+        .mockResolvedValueOnce('success 2');
+
+      const wrappedFn = withRetry(mockFn, 100, 3);
+
+      const promise1 = wrappedFn('call1');
+      const promise2 = wrappedFn('call2');
+
+      await jest.advanceTimersByTimeAsync(200);
+
+      const results = await Promise.all([promise1, promise2]);
+
+      expect(results).toEqual(['success 1', 'success 2']);
+      expect(mockFn).toHaveBeenCalledTimes(4);
+    });
+  });
+
   describe('fetchContent', () => {
     it('should throw an error when got error response code', () => {
       mockFetch.mockReturnValueOnce(
