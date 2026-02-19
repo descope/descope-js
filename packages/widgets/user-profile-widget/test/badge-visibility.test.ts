@@ -177,7 +177,7 @@ describe('Badge Visibility Logic', () => {
         [true, true, '', 'Has value, verified -> no badge'],
       ] as const;
 
-      testCases.forEach(([hasValue, isVerified, expected, description]) => {
+      testCases.forEach(([hasValue, isVerified, expected]) => {
         const value = hasValue ? 'test@example.com' : '';
         const state = {
           me: {
