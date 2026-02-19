@@ -8,16 +8,44 @@ import {
 import { State } from '../src/lib/widget/state/types';
 
 describe('Badge Visibility Logic', () => {
+  // Helper to create minimal valid state
+  const createBaseState = (): State => ({
+    me: {
+      loading: false,
+      error: null,
+      data: {},
+    },
+    devices: {
+      loading: false,
+      error: null,
+      data: [],
+    },
+    tenant: {
+      currentTenantId: null,
+      previousTenantId: null,
+    },
+    selectTenant: {
+      loading: false,
+      error: null,
+    },
+    notifications: [],
+  });
+
   describe('Email Badge', () => {
-    const createStateWithEmail = (email: string, verifiedEmail: boolean): State =>
-      ({
-        me: {
-          data: {
-            email,
-            verifiedEmail,
-          },
+    const createStateWithEmail = (
+      email: string,
+      verifiedEmail: boolean,
+    ): State => ({
+      ...createBaseState(),
+      me: {
+        loading: false,
+        error: null,
+        data: {
+          email,
+          verifiedEmail,
         },
-      }) as State;
+      },
+    });
 
     it('should show "Unverified" badge when email exists and is not verified', () => {
       const state = createStateWithEmail('test@example.com', false);
@@ -88,15 +116,20 @@ describe('Badge Visibility Logic', () => {
   });
 
   describe('Phone Badge', () => {
-    const createStateWithPhone = (phone: string, verifiedPhone: boolean): State =>
-      ({
-        me: {
-          data: {
-            phone,
-            verifiedPhone,
-          },
+    const createStateWithPhone = (
+      phone: string,
+      verifiedPhone: boolean,
+    ): State => ({
+      ...createBaseState(),
+      me: {
+        loading: false,
+        error: null,
+        data: {
+          phone,
+          verifiedPhone,
         },
-      }) as State;
+      },
+    });
 
     it('should show "Unverified" badge when phone exists and is not verified', () => {
       const state = createStateWithPhone('+1234567890', false);
@@ -179,14 +212,17 @@ describe('Badge Visibility Logic', () => {
 
       testCases.forEach(([hasValue, isVerified, expected]) => {
         const value = hasValue ? 'test@example.com' : '';
-        const state = {
+        const state: State = {
+          ...createBaseState(),
           me: {
+            loading: false,
+            error: null,
             data: {
               email: value,
               verifiedEmail: isVerified,
             },
           },
-        } as State;
+        };
 
         const email = getEmail(state);
         const isEmailVerified = getIsEmailVerified(state);
