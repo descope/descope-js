@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom';
 import {
-  getEmail,
-  getIsEmailVerified,
-  getPhone,
-  getIsPhoneVerified,
+  getEmailBadgeLabel,
+  getPhoneBadgeLabel,
 } from '../src/lib/widget/state/selectors';
 import { State } from '../src/lib/widget/state/types';
 
@@ -49,67 +47,42 @@ describe('Badge Visibility Logic', () => {
 
     it('should show "Unverified" badge when email exists and is not verified', () => {
       const state = createStateWithEmail('test@example.com', false);
-      const email = getEmail(state);
-      const isEmailVerified = getIsEmailVerified(state);
-
-      // Simulate badge label logic from initEmailUserAttrMixin.ts
-      const badgeLabel =
-        email && email.trim() !== '' && !isEmailVerified ? 'Unverified' : '';
+      const badgeLabel = getEmailBadgeLabel(state);
 
       expect(badgeLabel).toBe('Unverified');
     });
 
     it('should NOT show badge when email is empty', () => {
       const state = createStateWithEmail('', false);
-      const email = getEmail(state);
-      const isEmailVerified = getIsEmailVerified(state);
-
-      const badgeLabel =
-        email && email.trim() !== '' && !isEmailVerified ? 'Unverified' : '';
+      const badgeLabel = getEmailBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should NOT show badge when email is only whitespace', () => {
       const state = createStateWithEmail('   ', false);
-      const email = getEmail(state);
-      const isEmailVerified = getIsEmailVerified(state);
-
-      const badgeLabel =
-        email && email.trim() !== '' && !isEmailVerified ? 'Unverified' : '';
+      const badgeLabel = getEmailBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should NOT show badge when email is verified', () => {
       const state = createStateWithEmail('test@example.com', true);
-      const email = getEmail(state);
-      const isEmailVerified = getIsEmailVerified(state);
-
-      const badgeLabel =
-        email && email.trim() !== '' && !isEmailVerified ? 'Unverified' : '';
+      const badgeLabel = getEmailBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should NOT show badge when email is undefined', () => {
       const state = createStateWithEmail(undefined as any, false);
-      const email = getEmail(state);
-      const isEmailVerified = getIsEmailVerified(state);
-
-      const badgeLabel =
-        email && email.trim() !== '' && !isEmailVerified ? 'Unverified' : '';
+      const badgeLabel = getEmailBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should show "Unverified" badge when email has leading/trailing whitespace but content', () => {
       const state = createStateWithEmail('  test@example.com  ', false);
-      const email = getEmail(state);
-      const isEmailVerified = getIsEmailVerified(state);
-
-      const badgeLabel =
-        email && email.trim() !== '' && !isEmailVerified ? 'Unverified' : '';
+      const badgeLabel = getEmailBadgeLabel(state);
 
       expect(badgeLabel).toBe('Unverified');
     });
@@ -133,67 +106,42 @@ describe('Badge Visibility Logic', () => {
 
     it('should show "Unverified" badge when phone exists and is not verified', () => {
       const state = createStateWithPhone('+1234567890', false);
-      const phone = getPhone(state);
-      const isPhoneVerified = getIsPhoneVerified(state);
-
-      // Simulate badge label logic from initPhoneUserAttrMixin.ts
-      const badgeLabel =
-        phone && phone.trim() !== '' && !isPhoneVerified ? 'Unverified' : '';
+      const badgeLabel = getPhoneBadgeLabel(state);
 
       expect(badgeLabel).toBe('Unverified');
     });
 
     it('should NOT show badge when phone is empty', () => {
       const state = createStateWithPhone('', false);
-      const phone = getPhone(state);
-      const isPhoneVerified = getIsPhoneVerified(state);
-
-      const badgeLabel =
-        phone && phone.trim() !== '' && !isPhoneVerified ? 'Unverified' : '';
+      const badgeLabel = getPhoneBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should NOT show badge when phone is only whitespace', () => {
       const state = createStateWithPhone('   ', false);
-      const phone = getPhone(state);
-      const isPhoneVerified = getIsPhoneVerified(state);
-
-      const badgeLabel =
-        phone && phone.trim() !== '' && !isPhoneVerified ? 'Unverified' : '';
+      const badgeLabel = getPhoneBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should NOT show badge when phone is verified', () => {
       const state = createStateWithPhone('+1234567890', true);
-      const phone = getPhone(state);
-      const isPhoneVerified = getIsPhoneVerified(state);
-
-      const badgeLabel =
-        phone && phone.trim() !== '' && !isPhoneVerified ? 'Unverified' : '';
+      const badgeLabel = getPhoneBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should NOT show badge when phone is undefined', () => {
       const state = createStateWithPhone(undefined as any, false);
-      const phone = getPhone(state);
-      const isPhoneVerified = getIsPhoneVerified(state);
-
-      const badgeLabel =
-        phone && phone.trim() !== '' && !isPhoneVerified ? 'Unverified' : '';
+      const badgeLabel = getPhoneBadgeLabel(state);
 
       expect(badgeLabel).toBe('');
     });
 
     it('should show "Unverified" badge when phone has leading/trailing whitespace but content', () => {
       const state = createStateWithPhone('  +1234567890  ', false);
-      const phone = getPhone(state);
-      const isPhoneVerified = getIsPhoneVerified(state);
-
-      const badgeLabel =
-        phone && phone.trim() !== '' && !isPhoneVerified ? 'Unverified' : '';
+      const badgeLabel = getPhoneBadgeLabel(state);
 
       expect(badgeLabel).toBe('Unverified');
     });
@@ -224,12 +172,7 @@ describe('Badge Visibility Logic', () => {
           },
         };
 
-        const email = getEmail(state);
-        const isEmailVerified = getIsEmailVerified(state);
-        const badgeLabel =
-          email && email.trim() !== '' && !isEmailVerified
-            ? 'Unverified'
-            : '';
+        const badgeLabel = getEmailBadgeLabel(state);
 
         expect(badgeLabel).toBe(expected);
       });
