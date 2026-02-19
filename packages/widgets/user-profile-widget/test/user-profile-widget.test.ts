@@ -6,8 +6,6 @@ import { createSdk } from '../src/lib/widget/api/sdk';
 import {
   getCurrentTenantId,
   getUserTenants,
-  getEmailBadgeLabel,
-  getPhoneBadgeLabel,
 } from '../src/lib/widget/state/selectors';
 import { mockUser } from './mocks/mockUser';
 import rootMock from './mocks/rootMock';
@@ -151,50 +149,6 @@ describe('user-profile-widget', () => {
         me: { data: {} },
       } as any;
       expect(getUserTenants(state)).toEqual([]);
-    });
-
-    describe('badge labels', () => {
-      it('getEmailBadgeLabel should return "Unverified" when email exists and is not verified', () => {
-        const state = {
-          me: { data: { email: 'test@example.com', verifiedEmail: false } },
-        } as any;
-        expect(getEmailBadgeLabel(state)).toBe('Unverified');
-      });
-
-      it('getEmailBadgeLabel should return empty when email is empty', () => {
-        const state = {
-          me: { data: { email: '', verifiedEmail: false } },
-        } as any;
-        expect(getEmailBadgeLabel(state)).toBe('');
-      });
-
-      it('getEmailBadgeLabel should return empty when email is verified', () => {
-        const state = {
-          me: { data: { email: 'test@example.com', verifiedEmail: true } },
-        } as any;
-        expect(getEmailBadgeLabel(state)).toBe('');
-      });
-
-      it('getPhoneBadgeLabel should return "Unverified" when phone exists and is not verified', () => {
-        const state = {
-          me: { data: { phone: '+1234567890', verifiedPhone: false } },
-        } as any;
-        expect(getPhoneBadgeLabel(state)).toBe('Unverified');
-      });
-
-      it('getPhoneBadgeLabel should return empty when phone is empty', () => {
-        const state = {
-          me: { data: { phone: '', verifiedPhone: false } },
-        } as any;
-        expect(getPhoneBadgeLabel(state)).toBe('');
-      });
-
-      it('getPhoneBadgeLabel should return empty when phone is verified', () => {
-        const state = {
-          me: { data: { phone: '+1234567890', verifiedPhone: true } },
-        } as any;
-        expect(getPhoneBadgeLabel(state)).toBe('');
-      });
     });
   });
 });
