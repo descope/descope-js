@@ -10,6 +10,7 @@
       :tenant.attr="tenant"
       :debug.attr="debug"
       :widget-id="widgetId"
+      :style-id="styleId"
       @ready="onReady"
     />
   </div>
@@ -29,6 +30,9 @@ defineProps({
     required: true,
   },
   theme: {
+    type: String,
+  },
+  styleId: {
     type: String,
   },
   debug: {

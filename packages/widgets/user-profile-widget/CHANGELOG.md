@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.4...user-profile-widget-0.9.5) (2026-02-19)
+
+
+### Bug Fixes
+
+* **user-profile-widget:** hide unverified badge when email or phone field RELEASE ([#1337](https://github.com/descope/descope-js/issues/1337)) ([5bf3a8e](https://github.com/descope/descope-js/commit/5bf3a8e6dd97fcd35c12271302d4c76a4fda0563))
+
+## [0.9.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.3...user-profile-widget-0.9.4) (2026-02-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.3`
+## [0.9.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.2...user-profile-widget-0.9.3) (2026-02-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.2`
 ## [0.9.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.1...user-profile-widget-0.9.2) (2026-02-01)
 
 ### Dependency Updates
