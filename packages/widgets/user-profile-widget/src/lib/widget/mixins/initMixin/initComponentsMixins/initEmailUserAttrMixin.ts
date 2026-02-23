@@ -13,7 +13,10 @@ import {
   loggerMixin,
   modalMixin,
 } from '@descope/sdk-mixins';
-import { getEmail, getIsEmailVerified } from '../../../state/selectors';
+import {
+  getEmail,
+  getEmailBadgeLabel,
+} from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -125,9 +128,9 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         this.emailUserAttr.value = email;
       });
 
-      #onValueBadgeLabelUpdate = withMemCache(
-        (isEmailVerified: ReturnType<typeof getIsEmailVerified>) => {
-          this.emailUserAttr.badgeLabel = isEmailVerified ? '' : 'Unverified';
+      #onBadgeLabelUpdate = withMemCache(
+        (badgeLabel: ReturnType<typeof getEmailBadgeLabel>) => {
+          this.emailUserAttr.badgeLabel = badgeLabel;
         },
       );
 
@@ -139,14 +142,10 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         this.#initDeleteModal();
 
         this.#onValueUpdate(getEmail(this.state));
-        this.#onValueBadgeLabelUpdate(getIsEmailVerified(this.state));
+        this.#onBadgeLabelUpdate(getEmailBadgeLabel(this.state));
 
         this.subscribe(this.#onValueUpdate.bind(this), getEmail);
-
-        this.subscribe(
-          this.#onValueBadgeLabelUpdate.bind(this),
-          getIsEmailVerified,
-        );
+        this.subscribe(this.#onBadgeLabelUpdate.bind(this), getEmailBadgeLabel);
       }
     },
 );
