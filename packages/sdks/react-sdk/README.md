@@ -334,8 +334,8 @@ Pass `autoRefresh={{ whenActive: true }}` to skip refresh calls for idle users. 
 **Step 1:** Enable it in `AuthProvider`:
 
 ```jsx
-<AuthProvider
-  projectId="my-project-id"
+<AuthProvider 
+  projectId="my-project-id" 
   autoRefresh={{ whenActive: true }}
 >
   <App />
@@ -354,8 +354,8 @@ function ActivityTracker() {
   useEffect(() => {
     const markActive = () => sdk.markActive();
 
-    document.addEventListener('click',      markActive, { passive: true, capture: true });
-    document.addEventListener('keydown',    markActive, { passive: true, capture: true });
+    document.addEventListener('click', markActive, { passive: true, capture: true });
+    document.addEventListener('keydown', markActive, { passive: true, capture: true });
     document.addEventListener('touchstart', markActive, { passive: true, capture: true });
 
     // Mark active when the user switches back to this tab
@@ -365,9 +365,9 @@ function ActivityTracker() {
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      document.removeEventListener('click',            markActive, { capture: true });
-      document.removeEventListener('keydown',          markActive, { capture: true });
-      document.removeEventListener('touchstart',       markActive, { capture: true });
+      document.removeEventListener('click', markActive, { capture: true });
+      document.removeEventListener('keydown', markActive, { capture: true });
+      document.removeEventListener('touchstart', markActive, { capture: true });
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [sdk]);

@@ -17,7 +17,7 @@ root.render(
           applicationId: process.env.DESCOPE_OIDC_APPLICATION_ID,
         }
       }
-      autoRefresh={{ whenActive: true }} // enable activity-based refresh
+      // autoRefresh={{ whenActive: true }} // enable activity-based refresh
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
       baseCdnUrl={process.env.DESCOPE_BASE_CDN_URL}
