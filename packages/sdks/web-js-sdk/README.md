@@ -197,20 +197,26 @@ The SDK will automatically manage the OIDC session for you, according to `persis
 
 ### Activity-Based Session Refresh
 
-When `autoRefresh: true`, the SDK can optionally skip refresh calls for idle users. This reduces unnecessary API calls and enables accurate session inactivity tracking on the server.
-
-**Enable via localStorage:**
+When `autoRefresh: { whenActive: true }`, the SDK skips refresh calls for idle users. This reduces unnecessary API calls and enables accurate session inactivity tracking on the server. The developer is responsible for calling `sdk.markActive()` to signal user activity.
 
 ```js
-localStorage.setItem('__descope_activity_refresh', 'true');
+const sdk = descopeSdk({
+  projectId: 'xxx',
+  autoRefresh: { whenActive: true },
+});
+
+// Call this whenever the user interacts with your app
+document.addEventListener('click', () => sdk.markActive());
+document.addEventListener('keydown', () => sdk.markActive());
 ```
 
 **Behavior:**
 
-- Tracks user activity (mouse, keyboard, touch, scroll, click)
-- When refresh timer fires: skips refresh if no activity since last refresh
-- When user becomes active after a skipped refresh: triggers refresh immediately
-- Tab visibility changes mark the user as active
+- When refresh timer fires and `markActive()` has not been called since the last refresh: skips refresh, marks as skipped
+- When `markActive()` is called after a skipped refresh: triggers refresh immediately
+- When refresh timer fires and `markActive()` was called: refreshes normally
+- After a successful refresh: activity flag is reset (next refresh period starts fresh)
+- `sdk.markActive()` is always available — it is a no-op when `whenActive` is not set
 
 This is useful when Descope's session inactivity feature is enabled, ensuring refreshes only occur for genuinely active users.
 

@@ -14,6 +14,25 @@ import MyUserProfile from './MyUserProfile';
 import OidcLogin from './OidcLogin';
 import StepUp from './StepUp';
 
+// const ActivityTracker = () => {
+//   const sdk = useDescope();
+
+//   useEffect(() => {
+//     // @ts-ignore
+//     const markActive = () => sdk.markActive();
+
+//     document.addEventListener('click', markActive, { passive: true, capture: true });
+//     document.addEventListener('keydown', markActive, { passive: true, capture: true });
+
+//     return () => {
+//       document.removeEventListener('click', markActive, { capture: true });
+//       document.removeEventListener('keydown', markActive, { capture: true });
+//     };
+//   }, [sdk]);
+
+//   return null;
+// };
+
 const Layout = () => (
   <div
     style={{
@@ -24,6 +43,7 @@ const Layout = () => (
       alignItems: 'center',
     }}
   >
+    {/* <ActivityTracker /> */}
     <div
       style={{
         borderRadius: 10,
@@ -43,7 +63,6 @@ const Layout = () => (
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isSessionLoading } = useSession();
-
   if (isSessionLoading) {
     return <div>Loading...</div>;
   }

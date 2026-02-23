@@ -11,7 +11,6 @@ import {
   createTimerFunctions,
   getTokenExpiration,
   getAutoRefreshTimeout,
-  isActivityRefreshEnabled,
   createActivityTracker,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
@@ -25,9 +24,22 @@ import { getRefreshToken } from '../withPersistTokens/helpers';
  */
 export const withAutoRefresh =
   <T extends CreateWebSdk>(createSdk: T) =>
-  ({ autoRefresh, ...config }: Parameters<T>[0] & AutoRefreshOptions) => {
+  ({
+    autoRefresh,
+    ...config
+  }: Parameters<T>[0] & AutoRefreshOptions): ReturnType<T> & {
+    markActive: () => void;
+  } => {
+    const autoRefreshEnabled = !!autoRefresh;
+    const whenActive =
+      typeof autoRefresh === 'object' && autoRefresh?.whenActive;
+
     // Never auto refresh in native flows
-    if (!autoRefresh || isDescopeBridge()) return createSdk(config);
+    if (!autoRefreshEnabled || isDescopeBridge()) {
+      return Object.assign(createSdk(config), {
+        markActive: () => {},
+      }) as ReturnType<T> & { markActive: () => void };
+    }
 
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
@@ -38,31 +50,23 @@ export const withAutoRefresh =
     let sessionExpirationDate: Date;
     let refreshToken: string;
 
-    // Activity tracking state (opt-in via localStorage)
-    const activityTrackingEnabled = isActivityRefreshEnabled();
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
 
-    // Callback for when user becomes active after refresh was skipped
-    const onActivityAfterSkip = () => {
-      logger.debug('Refreshing session due to user activity after idle skip');
-      clearAllTimers(); // Prevent race condition with pending timer
-      sdk.refresh(getRefreshToken() || refreshToken);
-    };
-
-    if (activityTrackingEnabled) {
+    if (whenActive) {
       logger.debug('Activity-based refresh enabled');
+      // Callback for when user becomes active after refresh was skipped
+      const onActivityAfterSkip = () => {
+        logger.debug('Refreshing session due to user activity after idle skip');
+        clearAllTimers(); // Prevent race condition with pending timer
+        sdk.refresh(getRefreshToken() || refreshToken);
+      };
       activityTracker = createActivityTracker(logger, onActivityAfterSkip);
-      activityTracker.attachListeners();
     }
+
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
         // tab becomes visible
         if (document.visibilityState === 'visible') {
-          // Mark as active when tab becomes visible (user is switching to this tab)
-          if (activityTracker) {
-            activityTracker.markActive();
-          }
-
           // session is expired, do a refresh
           if (sessionExpirationDate && new Date() > sessionExpirationDate) {
             logger.debug('Expiration time passed, refreshing session');
@@ -134,7 +138,7 @@ export const withAutoRefresh =
           if (activityTracker && !activityTracker.hadActivity()) {
             logger.debug('Skipping refresh due to timer - user is idle');
             activityTracker.markRefreshSkipped();
-            return; // Don't reschedule - wait for activity or visibility change
+            return; // Don't reschedule - wait for markActive() call
           }
 
           logger.debug('Refreshing session due to timer');
@@ -154,13 +158,12 @@ export const withAutoRefresh =
         const resp = await fn(...args);
         logger.debug('Clearing all timers');
         clearAllTimers();
-        // Cleanup activity listeners on logout
-        if (activityTracker) {
-          activityTracker.detachListeners();
-        }
 
         return resp;
       };
 
-    return wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper);
+    return Object.assign(
+      wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper),
+      { markActive: activityTracker ? activityTracker.markActive : () => {} },
+    ) as ReturnType<T> & { markActive: () => void };
   };
