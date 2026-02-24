@@ -334,10 +334,7 @@ Pass `autoRefresh={{ whenActive: true }}` to skip refresh calls for idle users. 
 **Step 1:** Enable it in `AuthProvider`:
 
 ```jsx
-<AuthProvider 
-  projectId="my-project-id" 
-  autoRefresh={{ whenActive: true }}
->
+<AuthProvider projectId="my-project-id" autoRefresh={{ whenActive: true }}>
   <App />
 </AuthProvider>
 ```
