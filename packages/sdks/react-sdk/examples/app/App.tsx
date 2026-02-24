@@ -18,7 +18,6 @@ import StepUp from './StepUp';
 //   const sdk = useDescope();
 
 //   useEffect(() => {
-//     // @ts-ignore
 //     const markActive = () => sdk.markActive();
 
 //     document.addEventListener('click', markActive, { passive: true, capture: true });

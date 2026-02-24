@@ -60,7 +60,7 @@ export const withAutoRefresh =
         clearAllTimers(); // Prevent race condition with pending timer
         sdk.refresh(getRefreshToken() || refreshToken);
       };
-      activityTracker = createActivityTracker(logger, onActivityAfterSkip);
+      activityTracker = createActivityTracker(onActivityAfterSkip);
     }
 
     if (IS_BROWSER) {

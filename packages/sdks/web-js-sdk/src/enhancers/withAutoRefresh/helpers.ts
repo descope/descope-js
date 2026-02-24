@@ -18,10 +18,7 @@ import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
  *   invoke `onActivityAfterSkip` to trigger a catch-up refresh.
  * - On successful refresh: call `resetActivity()` to start the next period fresh.
  */
-export const createActivityTracker = (
-  loggerInstance: { debug: (msg: string) => void },
-  onActivityAfterSkip?: () => void,
-) => {
+export const createActivityTracker = (onActivityAfterSkip?: () => void) => {
   let hadActivitySinceLastRefresh = true; // Start as true (assume active on init)
   let refreshWasSkipped = false;
 
@@ -38,7 +35,7 @@ export const createActivityTracker = (
       const shouldTriggerRefresh = refreshWasSkipped;
       hadActivitySinceLastRefresh = true;
       if (shouldTriggerRefresh && onActivityAfterSkip) {
-        loggerInstance.debug(
+        logger.debug(
           'User became active after skipped refresh, triggering refresh',
         );
         refreshWasSkipped = false;
