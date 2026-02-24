@@ -1,89 +1,31 @@
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import logger from '../helpers/logger';
-import { MAX_TIMEOUT, REFRESH_THRESHOLD, IS_BROWSER } from '../../constants';
-import { getLocalStorage } from '../helpers';
+import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
-// localStorage key for opt-in activity-based refresh
-export const ACTIVITY_REFRESH_KEY = '__descope_activity_refresh';
-const ACTIVITY_DEBOUNCE_MS = 1000;
-
-const ACTIVITY_EVENTS = [
-  'mousemove',
-  'keydown',
-  'touchstart',
-  'scroll',
-  'click',
-  'pointerdown',
-] as const;
-
-// Check if localStorage opt-in flag is set
-export const isActivityRefreshEnabled = (): boolean => {
-  if (!IS_BROWSER) return false;
-  try {
-    return getLocalStorage(ACTIVITY_REFRESH_KEY) === 'true';
-  } catch {
-    return false;
-  }
-};
-
-// Factory to create activity tracking functions
+/**
+ * Creates a pure state tracker for activity-based session refresh.
+ *
+ * State:
+ * - `hadActivitySinceLastRefresh`: true if `markActive()` was called since the last refresh.
+ *   Starts as true so the first scheduled refresh always proceeds.
+ *   Reset to false by `resetActivity()` after each successful refresh.
+ * - `refreshWasSkipped`: true if the refresh timer fired but was skipped because the user
+ *   was idle. Cleared when `markActive()` is called or after `resetActivity()`.
+ *
+ * Flow:
+ * - On timer fire: check `hadActivity()`. If false → call `markRefreshSkipped()` and skip.
+ * - On `markActive()`: set active flag. If a refresh was previously skipped, immediately
+ *   invoke `onActivityAfterSkip` to trigger a catch-up refresh.
+ * - On successful refresh: call `resetActivity()` to start the next period fresh.
+ */
 export const createActivityTracker = (
   loggerInstance: { debug: (msg: string) => void },
   onActivityAfterSkip?: () => void,
 ) => {
   let hadActivitySinceLastRefresh = true; // Start as true (assume active on init)
-  let refreshWasSkipped = false; // Track if refresh was skipped due to inactivity
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let listenersAttached = false;
-
-  const onActivity = () => {
-    if (debounceTimer) return; // Debounce rapid events
-    debounceTimer = setTimeout(() => {
-      const wasIdle = !hadActivitySinceLastRefresh;
-      const shouldTriggerRefresh = refreshWasSkipped;
-
-      hadActivitySinceLastRefresh = true;
-
-      if (wasIdle) {
-        loggerInstance.debug('User activity detected, marking as active');
-      }
-
-      // If refresh was previously skipped due to inactivity, trigger refresh now
-      if (shouldTriggerRefresh && onActivityAfterSkip) {
-        loggerInstance.debug(
-          'User became active after skipped refresh, triggering refresh',
-        );
-        refreshWasSkipped = false;
-        onActivityAfterSkip();
-      }
-
-      debounceTimer = null;
-    }, ACTIVITY_DEBOUNCE_MS);
-  };
-
-  const attachListeners = () => {
-    if (!IS_BROWSER || listenersAttached) return;
-    ACTIVITY_EVENTS.forEach((event) => {
-      document.addEventListener(event, onActivity, {
-        passive: true,
-        capture: true,
-      });
-    });
-    listenersAttached = true;
-  };
-
-  const detachListeners = () => {
-    if (!IS_BROWSER || !listenersAttached) return;
-    ACTIVITY_EVENTS.forEach((event) => {
-      document.removeEventListener(event, onActivity, { capture: true });
-    });
-    if (debounceTimer) clearTimeout(debounceTimer);
-    listenersAttached = false;
-  };
+  let refreshWasSkipped = false;
 
   return {
-    attachListeners,
-    detachListeners,
     hadActivity: () => hadActivitySinceLastRefresh,
     resetActivity: () => {
       hadActivitySinceLastRefresh = false;
@@ -93,10 +35,15 @@ export const createActivityTracker = (
       refreshWasSkipped = true;
     },
     markActive: () => {
-      if (!hadActivitySinceLastRefresh) {
-        loggerInstance.debug('Marking user as active (visibility change)');
-      }
+      const shouldTriggerRefresh = refreshWasSkipped;
       hadActivitySinceLastRefresh = true;
+      if (shouldTriggerRefresh && onActivityAfterSkip) {
+        loggerInstance.debug(
+          'User became active after skipped refresh, triggering refresh',
+        );
+        refreshWasSkipped = false;
+        onActivityAfterSkip();
+      }
     },
   };
 };
