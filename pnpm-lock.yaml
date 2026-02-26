@@ -88,6 +88,8 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)
 
+  packages/libs/csp/dist/cjs: {}
+
   packages/libs/e2e-helpers:
     dependencies:
       '@playwright/test':
@@ -245,6 +247,8 @@ importers:
         specifier: ^5.0.2
         version: 5.6.3
 
+  packages/libs/escape-markdown/dist/cjs: {}
+
   packages/libs/sdk-component-drivers:
     dependencies:
       '@descope/sdk-helpers':
@@ -381,6 +385,7 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-component-drivers/dist/cjs: {}
 
   packages/libs/sdk-helpers:
     dependencies:
@@ -512,6 +517,7 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -670,6 +676,7 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-mixins/dist/cjs: {}
 
   packages/sdks/angular-sdk:
     dependencies:
@@ -930,6 +937,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/core-js-sdk/dist/cjs: {}
 
   packages/sdks/nextjs-sdk:
     dependencies:
@@ -1402,6 +1411,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/sdks/solid-sdk/dist/cjs: {}
+
   packages/sdks/vue-sdk:
     dependencies:
       '@descope/access-key-management-widget':
@@ -1861,6 +1872,7 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/sdks/web-js-sdk/dist/cjs: {}
 
   packages/widgets/access-key-management-widget:
     dependencies:
@@ -11174,11 +11186,12 @@ packages:
   glob@10.4.2:
     resolution: {integrity: sha512-GwMlUF6PkPo3Gk21UxkCohOv0PLcIXVtKyLlpEI28R/cO/4eNOdmLk3CMW1wROV/WR/EsZOWAfBbBOqYvs88/w==}
     engines: {node: '>=16 || 14 >=14.18'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-directory@4.0.1:
     resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
@@ -15110,10 +15123,12 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   terser-webpack-plugin@5.3.10:
     resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
@@ -15907,6 +15922,7 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-fetch@3.6.2:
     resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
