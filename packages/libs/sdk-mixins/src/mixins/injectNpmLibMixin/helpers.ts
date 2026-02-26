@@ -39,12 +39,6 @@ const setupScript = (id: string, integrity?: string) => {
   return scriptEle;
 };
 
-export type ScriptData = {
-  id: string;
-  url: URL;
-  integrity?: string;
-};
-
 const injectScript = (scriptId: string, url: URL, integrity?: string) => {
   return new Promise((res, rej) => {
     const scriptEle = setupScript(scriptId, integrity);
@@ -96,6 +90,12 @@ const handleExistingScript = (
       rej(error);
     });
   });
+};
+
+export type ScriptData = {
+  id: string;
+  url: URL;
+  integrity?: string;
 };
 
 export const injectScriptWithFallbacks = async (

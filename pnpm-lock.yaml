@@ -676,6 +676,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-mixins/dist/cjs: {}
+
   packages/sdks/angular-sdk:
     dependencies:
       '@descope/access-key-management-widget':
@@ -944,8 +946,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@descope/node-sdk':
-        specifier: 1.7.19
-        version: 1.7.19(encoding@0.1.13)
+        specifier: 1.10.0
+        version: 1.10.0(encoding@0.1.13)
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
@@ -4604,12 +4606,12 @@ packages:
   '@descope/core-js-sdk@2.40.0':
     resolution: {integrity: sha512-hFr/SzQO0QbyDaI1LlN//HKi3hXNJAnU0lFUpsqwo92YmCvYzhSZ7r6aBvT0DU2jaXmvt/0Y9TyNQuEKsGpT/A==}
 
-  '@descope/core-js-sdk@2.52.2':
-    resolution: {integrity: sha512-M+lt02G5gCnZh00CwkMcO8eq1T+LPKmgRf92cmU0lqLvUiMar4heOoNtSGIzvTYsqZg4ezFkNPLATyGIWp6baA==}
+  '@descope/core-js-sdk@2.57.0':
+    resolution: {integrity: sha512-dNvmlyz81VNqmZ699GdhucXQD15kaX3by9086bGR6zWHHVlsenHxW9kDpLoKPoWsKkXxvUq0Ysh9bi+6+A4LyQ==}
 
-  '@descope/node-sdk@1.7.19':
-    resolution: {integrity: sha512-oZxMFEcfFFngEgXrzXfgjk0m+70ufdXaOStDCYRFCX8zwNw7GfkzUOBf+ZpiT6JMd7lcYZeQ/2abCEQLjL/y9g==}
-    engines: {node: '>= 12.0.0'}
+  '@descope/node-sdk@1.10.0':
+    resolution: {integrity: sha512-v4kII4vcCdQO/ootlGpB97ovjTwE3Z2S0MmIF5j7kgXQIPTUM01fOsbAaPPUn5lXX7muD2VcsDs6Ic1k2yQjrA==}
+    engines: {node: '>= 16.0.0'}
 
   '@descope/web-components-ui@2.2.58':
     resolution: {integrity: sha512-egGzzLTLw9VLWIumXhgWc5aGDSzBfujCmdb55ulYjgDJ+rHCGT5esXFbVedgN01o7tGgf9lTVKZrizn9RH/HIw==}
@@ -8901,6 +8903,11 @@ packages:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
     engines: {node: ^4.5.0 || >= 5.9}
 
+  baseline-browser-mapping@2.10.0:
+    resolution: {integrity: sha512-lIyg0szRfYbiy67j9KN8IyeD7q7hcmqnJ1ddWmNt19ItGpNN64mnllmxUNFIOdOm6by97jlL6wfpTTJrmnjWAA==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
   basic-auth@2.0.1:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
@@ -8972,6 +8979,11 @@ packages:
 
   browserslist@4.24.4:
     resolution: {integrity: sha512-KDi1Ny1gSePi1vm0q4oxSF8b4DR44GF4BbmS2YdhPLOEqd8pDviZOGH/GsmRwoWJ2+5Lr085X7naowMwKHDG1A==}
+    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
+
+  browserslist@4.28.1:
+    resolution: {integrity: sha512-ZC5Bd0LgJXgwGqUknZY/vkUQ04r8NXnJZ3yYi4vDmSiZmC/pdSN0NbNRPxZpbtO4uAfDUAFffO8IZoM3Gj8IkA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -9068,6 +9080,9 @@ packages:
 
   caniuse-lite@1.0.30001696:
     resolution: {integrity: sha512-pDCPkvzfa39ehJtJ+OwGT/2yvT2SbjfHhiIW2LWOAcMQ7BzwxT/XuyUp4OTOd0XFWA6BKw0JalnBHgSi5DGJBQ==}
+
+  caniuse-lite@1.0.30001774:
+    resolution: {integrity: sha512-DDdwPGz99nmIEv216hKSgLD+D4ikHQHjBC/seF98N9CPqRX4M5mSxT9eTV6oyisnJcuzxtZy4n17yKKQYmYQOA==}
 
   case-sensitive-paths-webpack-plugin@2.4.0:
     resolution: {integrity: sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==}
@@ -9687,8 +9702,8 @@ packages:
   cross-fetch@3.1.8:
     resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
 
-  cross-fetch@4.0.0:
-    resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
+  cross-fetch@4.1.0:
+    resolution: {integrity: sha512-uKm5PU+MHTootlWEY+mZ4vvXoCn4fLQxT9dSc1sXVMSFkINTJVN8cAQROpwcKm8bJ/c7rgZVIBWzH5T78sNZZw==}
 
   cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
@@ -10192,6 +10207,9 @@ packages:
 
   electron-to-chromium@1.4.825:
     resolution: {integrity: sha512-OCcF+LwdgFGcsYPYC5keEEFC2XT0gBhrYbeGzHCx7i9qRFbzO/AqTmc/C/1xNhJj+JA7rzlN7mpBuStshh96Cg==}
+
+  electron-to-chromium@1.5.302:
+    resolution: {integrity: sha512-sM6HAN2LyK82IyPBpznDRqlTQAtuSaO+ShzFiWTvoMJLHyZ+Y39r8VMfHzwbU8MVBzQ4Wdn85+wlZl2TLGIlwg==}
 
   electron-to-chromium@1.5.90:
     resolution: {integrity: sha512-C3PN4aydfW91Natdyd449Kw+BzhLmof6tzy5W1pFC5SpQxVXT+oyiyOG9AgYYSN9OdA/ik3YkCrpwqI8ug5Tug==}
@@ -13096,6 +13114,9 @@ packages:
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
+  node-releases@2.0.27:
+    resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
+
   nopt@7.2.1:
     resolution: {integrity: sha512-taM24ViiimT/XntxbPyJQzCG+p4EKOpgD3mxFwW38mGjVUrfERQOeY4EDHjdnptttfHuHQXFx+lTP08Q+mLa/w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -15598,6 +15619,12 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
+  update-browserslist-db@1.2.3:
+    resolution: {integrity: sha512-Js0m9cx+qOgDxo0eMiFGEueWztz+d4+M3rGlmKPT+T4IS/jP4ylw3Nwpu6cpTTP8R1MAC1kF4VbdLt3ARf209w==}
+    hasBin: true
+    peerDependencies:
+      browserslist: '>= 4.21.0'
+
   update-check@1.5.4:
     resolution: {integrity: sha512-5YHsflzHP4t1G+8WGPlvKbJEbAJGCgw+Em+dGR1KmBUbr1J36SJBqlHLjR7oob7sco5hWHGQVcr9B2poIVDDTQ==}
 
@@ -16611,7 +16638,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.29.0
       '@babel/helper-validator-option': 7.27.1
-      browserslist: 4.24.4
+      browserslist: 4.28.1
       lru-cache: 5.1.1
       semver: 6.3.1
     optional: true
@@ -18023,14 +18050,14 @@ snapshots:
       jwt-decode: 4.0.0
     optional: true
 
-  '@descope/core-js-sdk@2.52.2':
+  '@descope/core-js-sdk@2.57.0':
     dependencies:
       jwt-decode: 4.0.0
 
-  '@descope/node-sdk@1.7.19(encoding@0.1.13)':
+  '@descope/node-sdk@1.10.0(encoding@0.1.13)':
     dependencies:
-      '@descope/core-js-sdk': 2.52.2
-      cross-fetch: 4.0.0(encoding@0.1.13)
+      '@descope/core-js-sdk': 2.57.0
+      cross-fetch: 4.1.0(encoding@0.1.13)
       jose: 5.2.2
       tslib: 2.8.1
     transitivePeerDependencies:
@@ -19365,21 +19392,21 @@ snapshots:
       inquirer: 8.2.6
       rxjs: 7.8.1
 
-  '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
+  '@jsonjoy.com/base64@1.1.2(tslib@2.6.3)':
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.6.3
 
-  '@jsonjoy.com/json-pack@1.1.1(tslib@2.8.1)':
+  '@jsonjoy.com/json-pack@1.1.1(tslib@2.6.3)':
     dependencies:
-      '@jsonjoy.com/base64': 1.1.2(tslib@2.8.1)
-      '@jsonjoy.com/util': 1.5.0(tslib@2.8.1)
+      '@jsonjoy.com/base64': 1.1.2(tslib@2.6.3)
+      '@jsonjoy.com/util': 1.5.0(tslib@2.6.3)
       hyperdyperid: 1.2.0
-      thingies: 1.21.0(tslib@2.8.1)
-      tslib: 2.8.1
+      thingies: 1.21.0(tslib@2.6.3)
+      tslib: 2.6.3
 
-  '@jsonjoy.com/util@1.5.0(tslib@2.8.1)':
+  '@jsonjoy.com/util@1.5.0(tslib@2.6.3)':
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.6.3
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
@@ -23677,6 +23704,9 @@ snapshots:
 
   base64id@2.0.0: {}
 
+  baseline-browser-mapping@2.10.0:
+    optional: true
+
   basic-auth@2.0.1:
     dependencies:
       safe-buffer: 5.1.2
@@ -23831,6 +23861,15 @@ snapshots:
       node-releases: 2.0.19
       update-browserslist-db: 1.1.1(browserslist@4.24.4)
 
+  browserslist@4.28.1:
+    dependencies:
+      baseline-browser-mapping: 2.10.0
+      caniuse-lite: 1.0.30001774
+      electron-to-chromium: 1.5.302
+      node-releases: 2.0.27
+      update-browserslist-db: 1.2.3(browserslist@4.28.1)
+    optional: true
+
   bs-logger@0.2.6:
     dependencies:
       fast-json-stable-stringify: 2.1.0
@@ -23948,6 +23987,9 @@ snapshots:
       lodash.uniq: 4.5.0
 
   caniuse-lite@1.0.30001696: {}
+
+  caniuse-lite@1.0.30001774:
+    optional: true
 
   case-sensitive-paths-webpack-plugin@2.4.0: {}
 
@@ -24518,7 +24560,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  cross-fetch@4.0.0(encoding@0.1.13):
+  cross-fetch@4.1.0(encoding@0.1.13):
     dependencies:
       node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
@@ -25056,6 +25098,9 @@ snapshots:
       jake: 10.8.5
 
   electron-to-chromium@1.4.825: {}
+
+  electron-to-chromium@1.5.302:
+    optional: true
 
   electron-to-chromium@1.5.90: {}
 
@@ -27441,7 +27486,7 @@ snapshots:
 
   injection-js@2.4.0:
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.6.3
 
   inquirer@8.2.6:
     dependencies:
@@ -28965,7 +29010,7 @@ snapshots:
     dependencies:
       copy-anything: 2.0.6
       parse-node-version: 1.0.1
-      tslib: 2.8.1
+      tslib: 2.6.3
     optionalDependencies:
       errno: 0.1.8
       graceful-fs: 4.2.11
@@ -29382,10 +29427,10 @@ snapshots:
 
   memfs@4.17.0:
     dependencies:
-      '@jsonjoy.com/json-pack': 1.1.1(tslib@2.8.1)
-      '@jsonjoy.com/util': 1.5.0(tslib@2.8.1)
-      tree-dump: 1.0.2(tslib@2.8.1)
-      tslib: 2.8.1
+      '@jsonjoy.com/json-pack': 1.1.1(tslib@2.6.3)
+      '@jsonjoy.com/util': 1.5.0(tslib@2.6.3)
+      tree-dump: 1.0.2(tslib@2.6.3)
+      tslib: 2.6.3
 
   meow@12.1.1: {}
 
@@ -29817,6 +29862,9 @@ snapshots:
   node-releases@2.0.14: {}
 
   node-releases@2.0.19: {}
+
+  node-releases@2.0.27:
+    optional: true
 
   nopt@7.2.1:
     dependencies:
@@ -32525,9 +32573,9 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
-  thingies@1.21.0(tslib@2.8.1):
+  thingies@1.21.0(tslib@2.6.3):
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.6.3
 
   thread-loader@3.0.4(webpack@5.93.0(@swc/core@1.7.1(@swc/helpers@0.5.15))):
     dependencies:
@@ -32584,9 +32632,9 @@ snapshots:
     dependencies:
       punycode: 2.3.0
 
-  tree-dump@1.0.2(tslib@2.8.1):
+  tree-dump@1.0.2(tslib@2.6.3):
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.6.3
 
   tree-kill@1.2.2: {}
 
@@ -33206,6 +33254,13 @@ snapshots:
       browserslist: 4.24.4
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  update-browserslist-db@1.2.3(browserslist@4.28.1):
+    dependencies:
+      browserslist: 4.28.1
+      escalade: 3.2.0
+      picocolors: 1.1.1
+    optional: true
 
   update-check@1.5.4:
     dependencies:

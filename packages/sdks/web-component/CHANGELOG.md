@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.55.4](https://github.com/descope/descope-js/compare/web-component-3.55.3...web-component-3.55.4) (2026-02-26)
+
+
+### Bug Fixes
+
+* retry on flow sdk calls ([#1338](https://github.com/descope/descope-js/issues/1338)) ([e966efa](https://github.com/descope/descope-js/commit/e966efae1f9eb2aaa7539dc2e71392570e5008ab))
+
 ## [3.55.3](https://github.com/descope/descope-js/compare/web-component-3.55.2...web-component-3.55.3) (2026-02-17)
 
 ## [3.55.2](https://github.com/descope/descope-js/compare/web-component-3.55.1...web-component-3.55.2) (2026-02-11)
