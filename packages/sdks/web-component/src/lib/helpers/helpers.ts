@@ -66,7 +66,7 @@ export function withRetry<TArgs extends any[], TReturn>(
         if (attempt < maxRetries) {
           // eslint-disable-next-line no-await-in-loop
           await new Promise((resolve) => {
-            setTimeout(resolve, timeoutMs);
+            setTimeout(resolve, timeoutMs * Math.pow(2, attempt + 1));
           });
         }
       }

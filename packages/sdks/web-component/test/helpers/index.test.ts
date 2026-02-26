@@ -52,7 +52,7 @@ describe('helpers', () => {
       const wrappedFn = withRetry(mockFn, 1000, 3);
 
       const resultPromise = wrappedFn('test');
-      await jest.advanceTimersByTimeAsync(1000);
+      await jest.advanceTimersByTimeAsync(2000);
       const result = await resultPromise;
 
       expect(result).toBe('success');
@@ -68,14 +68,14 @@ describe('helpers', () => {
       const wrappedFn = withRetry(mockFn, 500, 3);
 
       const resultPromise = wrappedFn();
-      await jest.advanceTimersByTimeAsync(1000);
+      await jest.advanceTimersByTimeAsync(3000);
       const result = await resultPromise;
 
       expect(result).toBe('success');
       expect(mockFn).toHaveBeenCalledTimes(3);
     });
 
-    it('should wait the specified timeout between retries', async () => {
+    it('should wait with exponential backoff between retries', async () => {
       const mockFn = jest
         .fn()
         .mockRejectedValueOnce(new Error('fail 1'))
@@ -88,8 +88,8 @@ describe('helpers', () => {
       await jest.advanceTimersByTimeAsync(0);
       expect(mockFn).toHaveBeenCalledTimes(1);
 
-      // Wait for timeout
-      await jest.advanceTimersByTimeAsync(2000);
+      // Wait for exponential backoff (2000 * 2^1 = 4000ms)
+      await jest.advanceTimersByTimeAsync(4000);
       expect(mockFn).toHaveBeenCalledTimes(2);
 
       const result = await resultPromise;
@@ -104,7 +104,7 @@ describe('helpers', () => {
       const wrappedFn = withRetry(mockFn, 100, 3);
 
       const resultPromise = wrappedFn().catch((e) => e); // Catch immediately to prevent unhandled rejection warnings
-      await jest.advanceTimersByTimeAsync(300);
+      await jest.advanceTimersByTimeAsync(1400); // 100*2 + 100*4 + 100*8 = 1400ms
 
       const result = await resultPromise;
       expect(result).toBe(error4);
@@ -117,7 +117,7 @@ describe('helpers', () => {
       const wrappedFn = withRetry(mockFn, 1000, 2);
 
       const resultPromise = wrappedFn().catch((e) => e); // Catch immediately to prevent unhandled rejection warnings
-      await jest.advanceTimersByTimeAsync(2000);
+      await jest.advanceTimersByTimeAsync(6000); // 1000*2 + 1000*4 = 6000ms
 
       const result = await resultPromise;
       expect(result).toBe(testError);
@@ -132,7 +132,7 @@ describe('helpers', () => {
       const wrappedFn = withRetry(mockFn, 100, 2);
 
       const resultPromise = wrappedFn('arg1', 42, { key: 'value' });
-      await jest.advanceTimersByTimeAsync(100);
+      await jest.advanceTimersByTimeAsync(200); // 100 * 2^1 = 200ms
       const result = await resultPromise;
 
       expect(result).toBe('success');

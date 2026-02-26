@@ -55,12 +55,12 @@ describe('web-component retry logic', () => {
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-      // Advance timers to allow retry
+      // Advance timers to allow retry (1000ms * 2^1 = 2000ms)
       const loadedPromise = waitFor(() => screen.getByShadowText('Loaded'), {
         timeout: WAIT_TIMEOUT,
       });
 
-      await jest.advanceTimersByTimeAsync(1000);
+      await jest.advanceTimersByTimeAsync(2000);
       await loadedPromise;
 
       expect(startMock).toBeCalledTimes(2);
@@ -82,8 +82,8 @@ describe('web-component retry logic', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      // Advance timers for retries (1000ms * 2 retries)
-      await jest.advanceTimersByTimeAsync(2000);
+      // Advance timers for retries (1000ms*2^1 + 1000ms*2^2 = 2000 + 4000 = 6000ms)
+      await jest.advanceTimersByTimeAsync(6000);
       await loadedPromise;
 
       expect(startMock).toBeCalledTimes(3);
@@ -102,8 +102,8 @@ describe('web-component retry logic', () => {
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-      // Advance timers for all retries (1000ms * 3 retries)
-      await jest.advanceTimersByTimeAsync(3000);
+      // Advance timers for all retries (2000 + 4000 + 8000 = 14000ms)
+      await jest.advanceTimersByTimeAsync(14000);
 
       // The component should handle the error gracefully
       // startMock should have been called 4 times (1 initial + 3 retries)
@@ -159,8 +159,8 @@ describe('web-component retry logic', () => {
       const button = screen.getByShadowText('Submit');
       button.click();
 
-      // Advance timers to allow retry
-      await jest.advanceTimersByTimeAsync(1000);
+      // Advance timers to allow retry (1000ms * 2^1 = 2000ms)
+      await jest.advanceTimersByTimeAsync(2000);
 
       await waitFor(() => screen.getByShadowText('Second Screen'), {
         timeout: WAIT_TIMEOUT,
@@ -191,8 +191,8 @@ describe('web-component retry logic', () => {
       const button = screen.getByShadowText('Submit');
       button.click();
 
-      // Advance timers for all retries (1000ms * 3 retries)
-      await jest.advanceTimersByTimeAsync(3000);
+      // Advance timers for all retries (2000 + 4000 + 8000 = 14000ms)
+      await jest.advanceTimersByTimeAsync(14000);
 
       await waitFor(() => screen.getByShadowText('Second Screen'), {
         timeout: WAIT_TIMEOUT,
@@ -222,8 +222,8 @@ describe('web-component retry logic', () => {
       const button = screen.getByShadowText('Submit');
       button.click();
 
-      // Advance timers for all retries (1000ms * 3 retries)
-      await jest.advanceTimersByTimeAsync(3000);
+      // Advance timers for all retries (2000 + 4000 + 8000 = 14000ms)
+      await jest.advanceTimersByTimeAsync(14000);
 
       // nextMock should have been called 4 times (1 initial + 3 retries)
       await waitFor(() => expect(nextMock).toBeCalledTimes(4), {
@@ -237,10 +237,7 @@ describe('web-component retry logic', () => {
   });
 
   describe('Retry timing', () => {
-    it('should wait 1000ms between retry attempts', async () => {
-      jest.useRealTimers();
-      const startTime = Date.now();
-
+    it('should use exponential backoff between retry attempts', async () => {
       startMock
         .mockRejectedValueOnce(new Error('Fail 1'))
         .mockRejectedValueOnce(new Error('Fail 2'))
@@ -250,17 +247,20 @@ describe('web-component retry logic', () => {
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
+      // Should NOT have retried before first backoff (1000ms * 2^1 = 2000ms)
+      // Note: waitFor must be created AFTER this check because @testing-library/dom v10
+      // internally calls jest.advanceTimersByTime(interval) when polling with fake timers,
+      // which would advance past the 2000ms backoff boundary before this assertion runs.
+      await jest.advanceTimersByTimeAsync(1999);
+      expect(startMock).toBeCalledTimes(1);
+
+      // Advance past both backoffs (2000 + 4000 = 6000ms total)
+      await jest.advanceTimersByTimeAsync(4001);
+
       await waitFor(() => screen.getByShadowText('Loaded'), {
         timeout: WAIT_TIMEOUT,
       });
 
-      const endTime = Date.now();
-      const elapsed = endTime - startTime;
-
-      // Should take at least 2000ms (2 retries with 1000ms each)
-      // but less than 3000ms (with some buffer for execution time)
-      expect(elapsed).toBeGreaterThanOrEqual(2000);
-      expect(elapsed).toBeLessThan(3000);
       expect(startMock).toBeCalledTimes(3);
     });
   });
@@ -282,8 +282,8 @@ describe('web-component retry logic', () => {
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
-      // Wait for start to retry and succeed
-      await jest.advanceTimersByTimeAsync(1000);
+      // Wait for start to retry and succeed (1000ms * 2^1 = 2000ms)
+      await jest.advanceTimersByTimeAsync(2000);
       await waitFor(() => screen.getByShadowText('First Screen'), {
         timeout: WAIT_TIMEOUT,
       });
@@ -295,8 +295,8 @@ describe('web-component retry logic', () => {
       const button = screen.getByShadowText('Submit');
       button.click();
 
-      // Wait for next to retry and succeed
-      await jest.advanceTimersByTimeAsync(1000);
+      // Wait for next to retry and succeed (1000ms * 2^1 = 2000ms)
+      await jest.advanceTimersByTimeAsync(2000);
       await waitFor(() => screen.getByShadowText('Second Screen'), {
         timeout: WAIT_TIMEOUT,
       });
