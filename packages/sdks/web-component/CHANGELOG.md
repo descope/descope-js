@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.56.0](https://github.com/descope/descope-js/compare/web-component-3.55.4...web-component-3.56.0) (2026-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.0`
+
+### Features
+
+* **web-component:** add SRI support for web-component-ui loader RELEASE ([#1333](https://github.com/descope/descope-js/issues/1333)) ([ac04331](https://github.com/descope/descope-js/commit/ac04331642c4a88964eff4399334c36468cb47b4))
+
 ## [3.55.4](https://github.com/descope/descope-js/compare/web-component-3.55.3...web-component-3.55.4) (2026-02-26)
 
 
