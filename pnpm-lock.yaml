@@ -88,8 +88,6 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(typescript@5.7.3)
 
-  packages/core-js-sdk/dist/cjs: {}
-
   packages/libs/e2e-helpers:
     dependencies:
       '@playwright/test':
@@ -1866,7 +1864,6 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
-  packages/web-js-sdk/dist/cjs: {}
 
   packages/widgets/access-key-management-widget:
     dependencies:
