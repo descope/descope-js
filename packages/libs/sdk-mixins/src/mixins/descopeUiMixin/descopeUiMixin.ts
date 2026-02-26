@@ -32,16 +32,16 @@ export const descopeUiMixin = createSingletonMixin(
         return componentsVersion;
       }
 
-      async #getComponentsVersionSRI() {
+      async #getComponentsVersionSri() {
         const config = await this.config;
-        const componentsVersionSRI =
-          config?.projectConfig?.componentsVersionSRI;
+        const componentsVersionSri =
+          config?.projectConfig?.componentsVersionSri;
 
-        if (componentsVersionSRI) {
+        if (componentsVersionSri) {
           this.logger.debug('SRI hash available for components');
         }
 
-        return componentsVersionSRI;
+        return componentsVersionSri;
       }
 
       #descopeUi: Promise<any>;
@@ -103,14 +103,14 @@ export const descopeUiMixin = createSingletonMixin(
 
         try {
           const componentsVersion = await this.#getComponentsVersion();
-          const componentsVersionSRI = await this.#getComponentsVersionSRI();
+          const componentsVersionSri = await this.#getComponentsVersionSri();
 
           await this.injectNpmLib(
             WEB_COMPONENTS_UI_LIB_NAME,
             componentsVersion,
             JS_FILE_PATH,
             [LOCAL_STORAGE_OVERRIDE],
-            componentsVersionSRI,
+            componentsVersionSri,
           );
           this.logger.debug('DescopeUI was loaded');
           return globalThis.DescopeUI;

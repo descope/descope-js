@@ -39,7 +39,7 @@ const setupScript = (id: string, integrity?: string) => {
   return scriptEle;
 };
 
-type ScriptData = {
+export type ScriptData = {
   id: string;
   url: URL;
   integrity?: string;
@@ -152,9 +152,9 @@ export const generateLibUrls = (
 
     const scriptData: ScriptData = {
       url: url,
-      id: `npmlib-${libName
-        .replaceAll('@', '')
-        .replaceAll('/', '_')}-${hashUrl(url)}`,
+      id: `npmlib-${libName.replaceAll('@', '').replaceAll('/', '_')}-${hashUrl(
+        url,
+      )}`,
     };
 
     if (integrity) {

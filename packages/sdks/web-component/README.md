@@ -78,18 +78,14 @@ The web component automatically applies [Subresource Integrity (SRI)](https://de
 **How it works:**
 
 1. The Descope orchestration service generates SRI hashes for each version of the web-components-ui library
-2. The hash is included in the `config.json` as `componentsVersionSRI`
+2. The hash is included in the `config.json` as `componentsVersionSri`
 3. The web component automatically adds `integrity` and `crossorigin` attributes to the script tag
 4. The browser verifies the script integrity before executing it
 
 **Example generated script tag:**
 
 ```html
-<script
-  src="https://descopecdn.com/npm/@descope/web-components-ui@1.0.0/dist/umd/index.js"
-  integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K..."
-  crossorigin="anonymous"
-></script>
+<script src="https://descopecdn.com/npm/@descope/web-components-ui@1.0.0/dist/umd/index.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K..." crossorigin="anonymous"></script>
 ```
 
 **Content Security Policy (CSP) compatibility:**
@@ -97,11 +93,7 @@ The web component automatically applies [Subresource Integrity (SRI)](https://de
 SRI works seamlessly with CSP. For strict CSP configurations, combine SRI with the `nonce` attribute:
 
 ```html
-<descope-wc
-  project-id="myProjectId"
-  flow-id="sign-up-or-in"
-  nonce="random-nonce-value"
-></descope-wc>
+<descope-wc project-id="myProjectId" flow-id="sign-up-or-in" nonce="random-nonce-value"></descope-wc>
 ```
 
 **CSP header example:**

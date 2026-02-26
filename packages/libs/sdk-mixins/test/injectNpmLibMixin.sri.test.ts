@@ -1,4 +1,7 @@
-import { generateLibUrls } from '../src/mixins/injectNpmLibMixin/helpers';
+import {
+  generateLibUrls,
+  type ScriptData,
+} from '../src/mixins/injectNpmLibMixin/helpers';
 
 describe('injectNpmLibMixin - SRI support', () => {
   const baseUrls = ['https://cdn1.example.com', 'https://cdn2.example.com'];
@@ -91,7 +94,7 @@ describe('injectNpmLibMixin - SRI support', () => {
         integrity: 'sha384-test',
       };
 
-      const scriptDataWithoutIntegrity = {
+      const scriptDataWithoutIntegrity: ScriptData = {
         id: 'test-script',
         url: new URL('https://example.com/script.js'),
       };

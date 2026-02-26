@@ -5,6 +5,7 @@ import {
   setupWebComponentTestEnv,
   teardownWebComponentTestEnv,
   fixtures,
+  scriptMock,
   WAIT_TIMEOUT,
 } from './descope-wc.test-harness';
 
@@ -22,6 +23,11 @@ const sriHash =
 describe('descope-wc SRI (Subresource Integrity)', () => {
   beforeEach(() => {
     setupWebComponentTestEnv();
+    // Force script injection by clearing the pre-set DescopeUI singleton
+    globalThis.DescopeUI = undefined;
+    // Reset integrity state from previous tests (scriptMock is shared)
+    scriptMock.removeAttribute('integrity');
+    scriptMock.removeAttribute('crossorigin');
   });
 
   afterEach(() => {
@@ -30,12 +36,10 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
 
   it('should load components UI without SRI when hash is not provided in config', async () => {
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
@@ -50,7 +54,7 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
         );
 
         expect(componentScript).toBeDefined();
-        expect(componentScript?.integrity).toBe('');
+        expect(componentScript?.hasAttribute('integrity')).toBe(false);
         expect(componentScript?.crossOrigin).toBe('');
       },
       { timeout: WAIT_TIMEOUT },
@@ -59,13 +63,11 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
 
   it('should add integrity and crossOrigin attributes when SRI hash is provided', async () => {
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        componentsVersionSRI: sriHash,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      componentsVersionSri: sriHash,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
@@ -91,13 +93,11 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
     const logSpy = jest.spyOn(console, 'debug').mockImplementation();
 
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        componentsVersionSRI: sriHash,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      componentsVersionSri: sriHash,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
@@ -107,9 +107,11 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
     await waitFor(
       () => {
         expect(logSpy).toHaveBeenCalledWith(
+          '[Descope]',
           expect.stringContaining('SRI hash available for components'),
         );
         expect(logSpy).toHaveBeenCalledWith(
+          '[Descope]',
           expect.stringContaining('with SRI integrity check'),
         );
       },
@@ -124,13 +126,11 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
     const sha512Hash = 'sha512-xyz789';
 
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        componentsVersionSRI: sha256Hash,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      componentsVersionSri: sha256Hash,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
@@ -150,15 +150,16 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
 
     teardownWebComponentTestEnv();
     setupWebComponentTestEnv();
+    globalThis.DescopeUI = undefined;
+    scriptMock.removeAttribute('integrity');
+    scriptMock.removeAttribute('crossorigin');
 
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        componentsVersionSRI: sha512Hash,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      componentsVersionSri: sha512Hash,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
@@ -179,12 +180,10 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
 
   it('should gracefully handle missing SRI hash for backward compatibility', async () => {
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
@@ -207,13 +206,11 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
 
   it('should apply SRI to all CDN fallbacks', async () => {
     fixtures.configContent = {
-      projectConfig: {
-        componentsVersion: version,
-        componentsVersionSRI: sriHash,
-        flows: {
-          [flowId]: {
-            version: 1,
-          },
+      componentsVersion: version,
+      componentsVersionSri: sriHash,
+      flows: {
+        [flowId]: {
+          version: 1,
         },
       },
     };
