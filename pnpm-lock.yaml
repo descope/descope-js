@@ -381,7 +381,6 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
-  packages/libs/sdk-component-drivers/dist/cjs: {}
 
   packages/libs/sdk-helpers:
     dependencies:
@@ -513,7 +512,6 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
-  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -672,7 +670,6 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
-  packages/libs/sdk-mixins/dist/cjs: {}
 
   packages/sdks/angular-sdk:
     dependencies:
