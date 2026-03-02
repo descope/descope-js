@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { useSession } from '../../src';
+import { useDescope, useSession } from '../../src';
 import Home from './Home';
 import Login from './Login';
 import ManageAccessKeys from './ManageAccessKeys';
@@ -14,23 +14,29 @@ import MyUserProfile from './MyUserProfile';
 import OidcLogin from './OidcLogin';
 import StepUp from './StepUp';
 
-// const ActivityTracker = () => {
-//   const sdk = useDescope();
+const ActivityTracker = () => {
+  const sdk = useDescope();
 
-//   useEffect(() => {
-//     const markActive = () => sdk.markActive();
+  useEffect(() => {
+    const markActive = sdk.markActive;
 
-//     document.addEventListener('click', markActive, { passive: true, capture: true });
-//     document.addEventListener('keydown', markActive, { passive: true, capture: true });
+    document.addEventListener('click', markActive, {
+      passive: true,
+      capture: true,
+    });
+    document.addEventListener('keydown', markActive, {
+      passive: true,
+      capture: true,
+    });
 
-//     return () => {
-//       document.removeEventListener('click', markActive, { capture: true });
-//       document.removeEventListener('keydown', markActive, { capture: true });
-//     };
-//   }, [sdk]);
+    return () => {
+      document.removeEventListener('click', markActive, { capture: true });
+      document.removeEventListener('keydown', markActive, { capture: true });
+    };
+  }, [sdk]);
 
-//   return null;
-// };
+  return null;
+};
 
 const Layout = () => (
   <div
@@ -42,7 +48,7 @@ const Layout = () => (
       alignItems: 'center',
     }}
   >
-    {/* <ActivityTracker /> */}
+    {process.env.DESCOPE_ACTIVITY_TRACKING === 'true' && <ActivityTracker />}
     <div
       style={{
         borderRadius: 10,
