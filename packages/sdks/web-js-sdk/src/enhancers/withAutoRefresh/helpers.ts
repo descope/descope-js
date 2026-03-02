@@ -3,6 +3,49 @@ import logger from '../helpers/logger';
 import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
 /**
+ * Creates a pure state tracker for activity-based session refresh.
+ *
+ * State:
+ * - `hadActivitySinceLastRefresh`: true if `markActive()` was called since the last refresh.
+ *   Starts as true so the first scheduled refresh always proceeds.
+ *   Reset to false by `resetActivity()` after each successful refresh.
+ * - `refreshWasSkipped`: true if the refresh timer fired but was skipped because the user
+ *   was idle. Cleared when `markActive()` is called or after `resetActivity()`.
+ *
+ * Flow:
+ * - On timer fire: check `hadActivity()`. If false → call `markRefreshSkipped()` and skip.
+ * - On `markActive()`: set active flag. If a refresh was previously skipped, immediately
+ *   invoke `onActivityAfterSkip` to trigger a catch-up refresh.
+ * - On successful refresh: call `resetActivity()` to start the next period fresh.
+ */
+export const createActivityTracker = (onActivityAfterSkip?: () => void) => {
+  let hadActivitySinceLastRefresh = true; // Start as true (assume active on init)
+  let refreshWasSkipped = false;
+
+  return {
+    hadActivity: () => hadActivitySinceLastRefresh,
+    resetActivity: () => {
+      hadActivitySinceLastRefresh = false;
+      refreshWasSkipped = false;
+    },
+    markRefreshSkipped: () => {
+      refreshWasSkipped = true;
+    },
+    markActive: () => {
+      const shouldTriggerRefresh = refreshWasSkipped;
+      hadActivitySinceLastRefresh = true;
+      if (shouldTriggerRefresh && onActivityAfterSkip) {
+        logger.debug(
+          'User became active after skipped refresh, triggering refresh',
+        );
+        refreshWasSkipped = false;
+        onActivityAfterSkip();
+      }
+    },
+  };
+};
+
+/**
  * Get the JWT expiration WITHOUT VALIDATING the JWT
  * @param token The JWT to extract expiration from
  * @returns The Date for when the JWT expires or null if there is an issue
