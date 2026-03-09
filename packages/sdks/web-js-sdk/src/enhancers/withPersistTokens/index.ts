@@ -8,6 +8,7 @@ import {
   getAuthInfoFromResponse,
   isInvalidSessionResponse,
   setLocalStorage,
+  removeLocalStorage,
 } from '../helpers';
 import {
   beforeRequest,
@@ -64,11 +65,17 @@ export const withPersistTokens =
       } else {
         const authInfo = await getAuthInfoFromResponse(res);
 
-        // Persist server-returned refresh cookie name if present
+        // Persist or clear server-returned refresh cookie name based on auth response
         if (authInfo.cookieName) {
           setLocalStorage(
             `${storagePrefix || ''}${REFRESH_COOKIE_NAME_KEY}`,
             authInfo.cookieName,
+          );
+        } else if (authInfo.refreshJwt) {
+          // Auth response issued a new refresh token but no custom cookie name —
+          // clear any stale value so we don't keep sending an outdated name
+          removeLocalStorage(
+            `${storagePrefix || ''}${REFRESH_COOKIE_NAME_KEY}`,
           );
         }
 

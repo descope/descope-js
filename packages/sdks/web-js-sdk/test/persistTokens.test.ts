@@ -1222,14 +1222,12 @@ describe('persistTokens', () => {
     });
 
     it('should persist cookieName from authInfo to localStorage', async () => {
-      const mockFetch = jest
-        .fn()
-        .mockReturnValue(
-          createMockReturnValue({
-            ...authInfo,
-            cookieName: 'MY_SERVER_COOKIE',
-          }),
-        );
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          cookieName: 'MY_SERVER_COOKIE',
+        }),
+      );
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid', persistTokens: true });
@@ -1369,6 +1367,48 @@ describe('persistTokens', () => {
       await sdk.logout();
 
       expect(localStorage.getItem('DSRCN')).toBeNull();
+    });
+
+    it('should clear DSRCN when a subsequent auth response has no cookieName', async () => {
+      const mockFetch = jest
+        .fn()
+        .mockReturnValueOnce(
+          createMockReturnValue({
+            ...authInfo,
+            cookieName: 'MY_SERVER_COOKIE',
+          }),
+        )
+        .mockReturnValueOnce(
+          createMockReturnValue(authInfo), // no cookieName
+        );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+
+      // First call: sets DSRCN
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+      expect(localStorage.getItem('DSRCN')).toEqual('MY_SERVER_COOKIE');
+
+      // Second call: auth response without cookieName → should clear DSRCN
+      await sdk.httpClient.get('4/5/6');
+      await new Promise(process.nextTick);
+      expect(localStorage.getItem('DSRCN')).toBeNull();
+    });
+
+    it('should NOT clear DSRCN for non-auth responses (no refreshJwt)', async () => {
+      localStorage.setItem('DSRCN', 'MY_SERVER_COOKIE');
+
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue({ someField: 'value' })); // no JWT fields
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem('DSRCN')).toEqual('MY_SERVER_COOKIE');
     });
 
     it('should clear DSRCN when session is invalidated (e.g. /refresh returns 4xx)', async () => {
