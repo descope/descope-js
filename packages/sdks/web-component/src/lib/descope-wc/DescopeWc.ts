@@ -6,6 +6,7 @@ import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
+  DESCOPE_LAST_AUTH_BADGE_COMPONENT,
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
@@ -89,6 +90,10 @@ class DescopeWc extends BaseDescopeWc {
   #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
+
+  #clickedInteractionIds = new Set<string>();
+
+  #lastUsedPerScreen: Record<string, string> = {};
 
   onScreenUpdate?: (
     screenName: string,
@@ -675,6 +680,8 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
+      this.#clickedInteractionIds = new Set();
+      this.#lastUsedPerScreen = {};
       const clientScripts = [
         ...(flowConfig.clientScripts || []),
         ...(flowConfig.sdkScripts || []),
@@ -1389,7 +1396,14 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
-        setLastAuth(lastAuth);
+        setLastAuth(
+          {
+            ...lastAuth,
+            interactionIds: Array.from(this.#clickedInteractionIds),
+            lastUsedPerScreen: this.#lastUsedPerScreen,
+          },
+          false,
+        );
       }
       const payload: FlowJWTResponse = { ...authInfo };
       // add flow output onto the jwt response itself, as opposed to changed the response object,
@@ -1579,8 +1593,14 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlFilename, htmlLocaleFilename, direction, next, screenState } =
-      currentState;
+    const {
+      htmlFilename,
+      htmlLocaleFilename,
+      direction,
+      next,
+      screenState,
+      screenId,
+    } = currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
@@ -1659,9 +1679,11 @@ class DescopeWc extends BaseDescopeWc {
         });
 
         handleAutoFocus(rootElement, this.autoFocus, isFirstScreen);
+
+        this.#applyLastAuthBadge(screenId);
       });
 
-      this.#hydrate(next);
+      this.#hydrate(next, screenId);
 
       const loader = rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
@@ -1869,12 +1891,20 @@ class DescopeWc extends BaseDescopeWc {
   // in this case, the button will be clicked, but because we have the auto-submit mechanism
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
-    async (submitter: HTMLElement, next: NextFn) => {
+    async (submitter: HTMLElement, next: NextFn, screenId: string) => {
       if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
+
+        if (submitterId) {
+          this.#clickedInteractionIds.add(submitterId);
+          if (screenId) {
+            this.#lastUsedPerScreen[screenId] = submitterId;
+          }
+        }
+
         this.#handleComponentsLoadingState(submitter);
 
         const formData = await this.#getFormData();
@@ -1969,20 +1999,42 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  #addPasscodeAutoSubmitListeners(next: NextFn) {
+  #addPasscodeAutoSubmitListeners(next: NextFn, screenId: string) {
     this.contentRootElement
       .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
       .forEach((passcode: HTMLInputElement) => {
         passcode.addEventListener('input', () => {
           const isValid = passcode.checkValidity?.();
           if (isValid) {
-            this.#handleSubmit(passcode, next);
+            this.#handleSubmit(passcode, next, screenId);
           }
         });
       });
   }
 
-  #hydrate(next: NextFn) {
+  #applyLastAuthBadge(screenId: string) {
+    const loginId = this.sdk.getLastUserLoginId();
+    const lastAuth = getLastAuth(loginId);
+    const lastUsedPerScreen = (lastAuth as any)?.lastUsedPerScreen as
+      | Record<string, string>
+      | undefined;
+    if (!lastUsedPerScreen) return;
+
+    const componentId = lastUsedPerScreen[screenId];
+    if (!componentId) return;
+
+    const badgeEl = this.contentRootElement.querySelector(
+      DESCOPE_LAST_AUTH_BADGE_COMPONENT,
+    ) as any;
+    if (!badgeEl) return;
+
+    const targetEl = this.contentRootElement.querySelector(`#${componentId}`);
+    if (!targetEl) return;
+
+    badgeEl.anchor = targetEl;
+  }
+
+  #hydrate(next: NextFn, screenId: string) {
     // hydrating the page
     // Adding event listeners to all buttons without the exclude attribute
     this.contentRootElement
@@ -1992,11 +2044,11 @@ class DescopeWc extends BaseDescopeWc {
       .forEach((button: HTMLButtonElement) => {
         // eslint-disable-next-line no-param-reassign
         button.onclick = () => {
-          this.#handleSubmit(button, next);
+          this.#handleSubmit(button, next, screenId);
         };
       });
 
-    this.#addPasscodeAutoSubmitListeners(next);
+    this.#addPasscodeAutoSubmitListeners(next, screenId);
 
     if (this.isDismissScreenErrorOnInput) {
       // listen to all input events in order to clear the global error state
