@@ -230,7 +230,8 @@ export function getStoredRefreshCookieName(prefix: string = ''): string | null {
   return getLocalStorage(`${prefix}${REFRESH_COOKIE_NAME_KEY}`);
 }
 
-/** Remove both the localStorage refresh JWT and the session cookie.
+/** Remove auth tokens from localStorage (refresh JWT, session JWT, ID token, server-returned refresh cookie name)
+ * and clear the corresponding cookies if configured.
  * Note: DTD (Trusted Device Token) is NOT removed as it should stay after logging out and outlive these tokens
  */
 export function clearTokens(
