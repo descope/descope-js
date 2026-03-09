@@ -135,6 +135,7 @@ export type JWTResponse = {
   cookiePath?: string;
   cookieMaxAge?: number;
   cookieExpiration?: number;
+  cookieName?: string;
   user?: UserResponse;
   firstSeen?: boolean;
   sessionExpiration: number;
