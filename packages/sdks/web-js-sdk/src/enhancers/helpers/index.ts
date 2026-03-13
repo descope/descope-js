@@ -178,18 +178,18 @@ export const isLocalStorage =
   (IS_BROWSER && typeof window.localStorage !== 'undefined');
 
 export const setLocalStorage = (key: string, value: string) =>
-  (customStorage || (IS_BROWSER && window.localStorage))?.setItem?.(key, value);
+  (customStorage || (IS_BROWSER && window.sessionStorage))?.setItem?.(key, value);
 export const getLocalStorage = (key: string) =>
-  (customStorage || (IS_BROWSER && window.localStorage))?.getItem?.(key);
+  (customStorage || (IS_BROWSER && window.sessionStorage))?.getItem?.(key);
 export const removeLocalStorage = (key: string) =>
-  (customStorage || (IS_BROWSER && window.localStorage))?.removeItem?.(key);
+  (customStorage || (IS_BROWSER && window.sessionStorage))?.removeItem?.(key);
 export const getLocalStorageLength = (): number =>
   (customStorage as any)?.length ??
-  (IS_BROWSER && window.localStorage?.length) ??
+  (IS_BROWSER && window.sessionStorage?.length) ??
   0;
 export const getLocalStorageKey = (index: number): string | null =>
   (customStorage as any)?.key?.(index) ??
-  (IS_BROWSER && window.localStorage?.key?.(index)) ??
+  (IS_BROWSER && window.sessionStorage?.key?.(index)) ??
   null;
 
 export const setCustomStorage = (storage: CustomStorage) => {

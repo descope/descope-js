@@ -164,7 +164,7 @@ const getOidcClient = async (
     response_type: 'code',
     scope,
     stateStore: new WebStorageStateStore({
-      store: window.localStorage,
+      store: window.sessionStorage,
       prefix: oidcClientId,
     }),
     loadUserInfo: true,
