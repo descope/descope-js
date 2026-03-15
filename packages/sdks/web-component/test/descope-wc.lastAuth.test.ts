@@ -162,7 +162,7 @@ describe('web-component lastAuth', () => {
 
       fixtures.pageContent = `
         <descope-last-auth-badge id="badge"></descope-last-auth-badge>
-        <descope-button id="my-button">click</descope-button>
+        <descope-button id="my-button" opt-in-last-used="true">click</descope-button>
         <span>Loaded</span>
       `;
 
@@ -178,6 +178,43 @@ describe('web-component lastAuth', () => {
           const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
           const buttonEl = shadowRoot.querySelector('#my-button');
           expect(badgeEl.anchor).toBe(buttonEl);
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should not set the badge anchor when the target component is missing opt-in-last-used', async () => {
+      const loginId = 'user@example.com';
+      getLastUserLoginIdMock.mockReturnValue(loginId);
+
+      localStorage.setItem(
+        DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          authMethod: 'otp',
+          loginId,
+          lastUsedPerScreen: { '0': 'my-button' },
+        }),
+      );
+
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      fixtures.pageContent = `
+        <descope-last-auth-badge id="badge"></descope-last-auth-badge>
+        <descope-button id="my-button">click</descope-button>
+        <span>Loaded</span>
+      `;
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () => {
+          const shadowRoot = document.querySelector('descope-wc').shadowRoot;
+          const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
+          expect(badgeEl.anchor).toBeUndefined();
         },
         { timeout: WAIT_TIMEOUT },
       );

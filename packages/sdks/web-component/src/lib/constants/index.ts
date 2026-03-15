@@ -59,3 +59,12 @@ export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
 export const SDK_SCRIPTS_LOAD_TIMEOUT = 5000;
 
 export const DESCOPE_LAST_AUTH_BADGE_COMPONENT = 'descope-last-auth-badge';
+
+export const DESCOPE_LAST_USED_PER_SCREEN_SESSION_STORAGE_KEY =
+  'dls_last_used_per_screen';
+
+export const DESCOPE_CLICKED_INTERACTION_IDS_SESSION_STORAGE_KEY =
+  'dls_clicked_interaction_ids';
+
+export const DESCOPE_PENDING_FLOW_STATE_LOCAL_STORAGE_KEY =
+  'dls_pending_flow_state';

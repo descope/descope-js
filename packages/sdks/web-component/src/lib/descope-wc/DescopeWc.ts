@@ -6,7 +6,10 @@ import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
+  DESCOPE_CLICKED_INTERACTION_IDS_SESSION_STORAGE_KEY,
   DESCOPE_LAST_AUTH_BADGE_COMPONENT,
+  DESCOPE_LAST_USED_PER_SCREEN_SESSION_STORAGE_KEY,
+  DESCOPE_PENDING_FLOW_STATE_LOCAL_STORAGE_KEY,
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
@@ -678,10 +681,46 @@ class DescopeWc extends BaseDescopeWc {
       : undefined;
     let conditionComponentsConfig: ComponentsConfig = {};
 
+    // Restore state persisted before a full-page redirect (e.g., OAuth) or mid-flow navigation
+    // (e.g., magic link). In-memory state is lost on page reload but was saved beforehand.
+    if (executionId) {
+      try {
+        // sessionStorage: set just before OAuth redirect (same-tab restore)
+        const storedPerScreen = sessionStorage.getItem(
+          DESCOPE_LAST_USED_PER_SCREEN_SESSION_STORAGE_KEY,
+        );
+        const storedIds = sessionStorage.getItem(
+          DESCOPE_CLICKED_INTERACTION_IDS_SESSION_STORAGE_KEY,
+        );
+        if (storedPerScreen && Object.keys(this.#lastUsedPerScreen).length === 0) {
+          this.#lastUsedPerScreen = JSON.parse(storedPerScreen);
+        }
+        if (storedIds && this.#clickedInteractionIds.size === 0) {
+          this.#clickedInteractionIds = new Set(JSON.parse(storedIds));
+        }
+
+        // localStorage: updated after every screen transition (covers magic link and cross-tab)
+        if (Object.keys(this.#lastUsedPerScreen).length === 0 && this.#clickedInteractionIds.size === 0) {
+          const pending = JSON.parse(
+            localStorage.getItem(DESCOPE_PENDING_FLOW_STATE_LOCAL_STORAGE_KEY) || 'null',
+          );
+          if (pending?.executionId === executionId) {
+            this.#lastUsedPerScreen = pending.lastUsedPerScreen ?? {};
+            this.#clickedInteractionIds = new Set(pending.clickedInteractionIds ?? []);
+          }
+        }
+      } catch (e) {
+        /* empty */
+      }
+    }
+
     // if there is no execution id we should start a new flow
     if (!executionId) {
       this.#clickedInteractionIds = new Set();
       this.#lastUsedPerScreen = {};
+      sessionStorage.removeItem(DESCOPE_LAST_USED_PER_SCREEN_SESSION_STORAGE_KEY);
+      sessionStorage.removeItem(DESCOPE_CLICKED_INTERACTION_IDS_SESSION_STORAGE_KEY);
+      localStorage.removeItem(DESCOPE_PENDING_FLOW_STATE_LOCAL_STORAGE_KEY);
       const clientScripts = [
         ...(flowConfig.clientScripts || []),
         ...(flowConfig.sdkScripts || []),
@@ -935,6 +974,20 @@ class DescopeWc extends BaseDescopeWc {
           };
         }
       } else {
+        // Persist state to sessionStorage before the page navigates away,
+        // so it can be restored when the flow resumes after the redirect (e.g., OAuth).
+        try {
+          sessionStorage.setItem(
+            DESCOPE_LAST_USED_PER_SCREEN_SESSION_STORAGE_KEY,
+            JSON.stringify(this.#lastUsedPerScreen),
+          );
+          sessionStorage.setItem(
+            DESCOPE_CLICKED_INTERACTION_IDS_SESSION_STORAGE_KEY,
+            JSON.stringify(Array.from(this.#clickedInteractionIds)),
+          );
+        } catch (e) {
+          /* empty */
+        }
         this.handleRedirect(redirectTo);
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
@@ -1395,6 +1448,9 @@ class DescopeWc extends BaseDescopeWc {
     }
 
     if (status === 'completed') {
+      sessionStorage.removeItem(DESCOPE_LAST_USED_PER_SCREEN_SESSION_STORAGE_KEY);
+      sessionStorage.removeItem(DESCOPE_CLICKED_INTERACTION_IDS_SESSION_STORAGE_KEY);
+      localStorage.removeItem(DESCOPE_PENDING_FLOW_STATE_LOCAL_STORAGE_KEY);
       if (this.storeLastAuthenticatedUser) {
         setLastAuth(
           {
@@ -1484,6 +1540,21 @@ class DescopeWc extends BaseDescopeWc {
       nativePayload: nativeResponse?.payload,
       reqTimestamp,
     });
+
+    // Persist interaction state after every screen so it survives mid-flow page reloads
+    // (e.g., magic link opens a new page, cross-tab OAuth return).
+    try {
+      localStorage.setItem(
+        DESCOPE_PENDING_FLOW_STATE_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          executionId,
+          lastUsedPerScreen: this.#lastUsedPerScreen,
+          clickedInteractionIds: Array.from(this.#clickedInteractionIds),
+        }),
+      );
+    } catch (e) {
+      /* empty */
+    }
   };
 
   // we want to get the start params only if we don't have it already
@@ -2030,6 +2101,8 @@ class DescopeWc extends BaseDescopeWc {
 
     const targetEl = this.contentRootElement.querySelector(`#${componentId}`);
     if (!targetEl) return;
+
+    if (targetEl.getAttribute('opt-in-last-used') !== 'true') return;
 
     badgeEl.anchor = targetEl;
   }
