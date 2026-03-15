@@ -18,7 +18,10 @@ import { screen } from 'shadow-dom-testing-library';
 
 import '../src/lib/descope-wc';
 
-import { DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY } from '../src/lib/constants';
+import {
+  DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+  DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY,
+} from '../src/lib/constants';
 
 class DescopeLastAuthBadge extends HTMLElement {}
 if (!customElements.get('descope-last-auth-badge')) {
@@ -47,7 +50,7 @@ describe('web-component lastAuth', () => {
       );
 
       fixtures.pageContent =
-        '<descope-button id="my-button">click</descope-button><span>Loaded</span>';
+        '<descope-button id="my-button" opt-in-last-used="true">click</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -63,6 +66,96 @@ describe('web-component lastAuth', () => {
             localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY) || '{}',
           );
           expect(lastAuth.lastUsedPerScreen?.['screen-1']).toBe('my-button');
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should not track a button without opt-in-last-used attr', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({ screenId: 'screen-1' }),
+      );
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({
+          status: 'completed',
+          lastAuth: { authMethod: 'otp', loginId: 'user@example.com' },
+        }),
+      );
+
+      fixtures.pageContent =
+        '<descope-button id="my-button">click</descope-button><span>Loaded</span>';
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () => {
+          const lastAuth = JSON.parse(
+            localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY) || '{}',
+          );
+          expect(lastAuth.lastUsedPerScreen?.['screen-1']).toBeUndefined();
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should write to in-flight storage on click, not directly to dls_last_auth', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({ screenId: 'screen-1' }),
+      );
+      // no nextMock — flow does not complete
+
+      fixtures.pageContent =
+        '<descope-button id="my-button" opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () => {
+          const inFlight = JSON.parse(
+            localStorage.getItem(
+              DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY,
+            ) || '{}',
+          );
+          expect(inFlight['screen-1']).toBe('my-button');
+          // dls_last_auth must NOT be updated before completion
+          expect(
+            localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY),
+          ).toBeNull();
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should clear in-flight storage when a new flow starts', async () => {
+      localStorage.setItem(
+        DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY,
+        JSON.stringify({ 'screen-1': 'old-button' }),
+      );
+
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({ screenId: 'screen-1' }),
+      );
+
+      // no executionId in URL → fresh flow start
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(
+        () => {
+          expect(
+            localStorage.getItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY),
+          ).toBeNull();
         },
         { timeout: WAIT_TIMEOUT },
       );
@@ -115,7 +208,7 @@ describe('web-component lastAuth', () => {
         );
 
       fixtures.pageContent =
-        '<descope-button id="button-a">click a</descope-button><descope-button id="button-b">click b</descope-button><span>Loaded</span>';
+        '<descope-button id="button-a" opt-in-last-used="true">click a</descope-button><descope-button id="button-b" opt-in-last-used="true">click b</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -178,43 +271,6 @@ describe('web-component lastAuth', () => {
           const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
           const buttonEl = shadowRoot.querySelector('#my-button');
           expect(badgeEl.anchor).toBe(buttonEl);
-        },
-        { timeout: WAIT_TIMEOUT },
-      );
-    });
-
-    it('should not set the badge anchor when the target component is missing opt-in-last-used', async () => {
-      const loginId = 'user@example.com';
-      getLastUserLoginIdMock.mockReturnValue(loginId);
-
-      localStorage.setItem(
-        DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          authMethod: 'otp',
-          loginId,
-          lastUsedPerScreen: { '0': 'my-button' },
-        }),
-      );
-
-      startMock.mockReturnValueOnce(generateSdkResponse());
-
-      fixtures.pageContent = `
-        <descope-last-auth-badge id="badge"></descope-last-auth-badge>
-        <descope-button id="my-button">click</descope-button>
-        <span>Loaded</span>
-      `;
-
-      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-      await waitFor(() => screen.getByShadowText('Loaded'), {
-        timeout: WAIT_TIMEOUT,
-      });
-
-      await waitFor(
-        () => {
-          const shadowRoot = document.querySelector('descope-wc').shadowRoot;
-          const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
-          expect(badgeEl.anchor).toBeUndefined();
         },
         { timeout: WAIT_TIMEOUT },
       );
