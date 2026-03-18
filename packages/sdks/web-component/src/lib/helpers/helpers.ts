@@ -38,6 +38,45 @@ import {
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
+/**
+ * Wraps an async function with retry logic
+ * @param fn - The async function to wrap
+ * @param timeoutMs - Time to wait between retries in milliseconds
+ * @param maxRetries - Maximum number of retry attempts
+ * @returns A new function with retry logic
+ */
+export function withRetry<TArgs extends any[], TReturn>(
+  fn: (...args: TArgs) => Promise<TReturn>,
+  timeoutMs: number,
+  maxRetries: number,
+): (...args: TArgs) => Promise<TReturn> {
+  return async (...args: TArgs): Promise<TReturn> => {
+    let lastError: any;
+    const totalAttempts = maxRetries + 1; // initial attempt + retries
+
+    // eslint-disable-next-line no-plusplus
+    for (let attempt = 0; attempt < totalAttempts; attempt++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        return await fn(...args);
+      } catch (error) {
+        lastError = error;
+
+        // Don't wait after the last attempt
+        if (attempt < maxRetries) {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => {
+            setTimeout(resolve, timeoutMs * Math.pow(2, attempt + 1));
+          });
+        }
+      }
+    }
+
+    // All attempts failed, throw the last error
+    throw lastError;
+  };
+}
+
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -507,6 +546,9 @@ export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
   );
 };
 
+export const FOCUSABLE_INPUTS_SELECTOR =
+  '*[name]:not([auto-focus="false"]):not([aria-hidden="true"])';
+
 export const handleAutoFocus = (
   ele: HTMLElement,
   autoFocus: AutoFocusOptions,
@@ -517,7 +559,9 @@ export const handleAutoFocus = (
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
     // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector('*[name]');
+    const firstVisibleInput: HTMLInputElement = ele.querySelector(
+      FOCUSABLE_INPUTS_SELECTOR,
+    );
     setTimeout(() => {
       firstVisibleInput?.focus();
     });

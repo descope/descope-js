@@ -20,6 +20,7 @@ import {
   getRunIdsFromUrl,
   handleUrlParams,
   State,
+  withRetry,
 } from '../helpers';
 import {
   extractNestedAttribute,
@@ -357,12 +358,14 @@ class BaseDescopeWc extends BaseClass {
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
       const origFn = this.sdk.flow[key];
+      const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
         try {
-          const resp = await origFn(...args);
+          const resp = await fnWithRetry(...args);
           return resp;
         } catch (e) {
+          this.logger.error(`Error in sdk flow ${key} function`, e);
           // return a generic error object in case of an error
           return {
             error: {

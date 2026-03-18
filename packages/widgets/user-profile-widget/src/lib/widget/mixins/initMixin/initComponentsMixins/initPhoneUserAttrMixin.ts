@@ -13,7 +13,10 @@ import {
   modalMixin,
   cookieConfigMixin,
 } from '@descope/sdk-mixins';
-import { getIsPhoneVerified, getPhone } from '../../../state/selectors';
+import {
+  getPhone,
+  getPhoneBadgeLabel,
+} from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -125,9 +128,9 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         this.phoneUserAttr.value = phone;
       });
 
-      #onValueBadgeLabelUpdate = withMemCache(
-        (isPhoneVerified: ReturnType<typeof getIsPhoneVerified>) => {
-          this.phoneUserAttr.badgeLabel = isPhoneVerified ? '' : 'Unverified';
+      #onBadgeLabelUpdate = withMemCache(
+        (badgeLabel: ReturnType<typeof getPhoneBadgeLabel>) => {
+          this.phoneUserAttr.badgeLabel = badgeLabel;
         },
       );
 
@@ -139,14 +142,10 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         this.#initDeleteModal();
 
         this.#onValueUpdate(getPhone(this.state));
-        this.#onValueBadgeLabelUpdate(getIsPhoneVerified(this.state));
+        this.#onBadgeLabelUpdate(getPhoneBadgeLabel(this.state));
 
         this.subscribe(this.#onValueUpdate.bind(this), getPhone);
-
-        this.subscribe(
-          this.#onValueBadgeLabelUpdate.bind(this),
-          getIsPhoneVerified,
-        );
+        this.subscribe(this.#onBadgeLabelUpdate.bind(this), getPhoneBadgeLabel);
       }
     },
 );

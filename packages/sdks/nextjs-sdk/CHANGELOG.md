@@ -2,6 +2,54 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.16](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.15...nextjs-sdk-0.15.16) (2026-02-26)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.7`
+* `web-component` updated to version `3.56.0`
+## [0.15.15](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.14...nextjs-sdk-0.15.15) (2026-02-26)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.6`
+* `web-component` updated to version `3.55.4`
+## [0.15.14](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.13...nextjs-sdk-0.15.14) (2026-02-19)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.5`
+## [0.15.13](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.12...nextjs-sdk-0.15.13) (2026-02-17)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.4`
+* `web-component` updated to version `3.55.3`
+## [0.15.12](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.11...nextjs-sdk-0.15.12) (2026-02-11)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.3`
+* `web-component` updated to version `3.55.2`
+## [0.15.11](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.10...nextjs-sdk-0.15.11) (2026-02-01)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.2`
+* `web-component` updated to version `3.55.1`
+## [0.15.10](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.9...nextjs-sdk-0.15.10) (2026-02-01)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.26.1`
+## [0.15.9](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.8...nextjs-sdk-0.15.9) (2026-01-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.45.0`
+* `react-sdk` updated to version `2.26.0`
+* `core-js-sdk` updated to version `2.57.0`
+* `web-component` updated to version `3.55.0`
 ## [0.15.8](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.7...nextjs-sdk-0.15.8) (2026-01-21)
 
 ### Dependency Updates

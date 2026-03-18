@@ -2,6 +2,61 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.7](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.6...user-profile-widget-0.9.7) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.56.0`
+* `sdk-mixins` updated to version `0.16.0`
+## [0.9.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.5...user-profile-widget-0.9.6) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.4`
+## [0.9.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.4...user-profile-widget-0.9.5) (2026-02-19)
+
+
+### Bug Fixes
+
+* **user-profile-widget:** hide unverified badge when email or phone field RELEASE ([#1337](https://github.com/descope/descope-js/issues/1337)) ([5bf3a8e](https://github.com/descope/descope-js/commit/5bf3a8e6dd97fcd35c12271302d4c76a4fda0563))
+
+## [0.9.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.3...user-profile-widget-0.9.4) (2026-02-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.3`
+## [0.9.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.2...user-profile-widget-0.9.3) (2026-02-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.2`
+## [0.9.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.1...user-profile-widget-0.9.2) (2026-02-01)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.1`
+## [0.9.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.0...user-profile-widget-0.9.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Validate tenant exists on initial set, to prevent dispatching when tenantId is null RELEASE ([#1326](https://github.com/descope/descope-js/issues/1326)) ([0530274](https://github.com/descope/descope-js/commit/05302741c018dec99db587fb45299f8216b0cd8c))
+
+## [0.9.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.17...user-profile-widget-0.9.0) (2026-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.57.0`
+* `web-js-sdk` updated to version `1.45.0`
+* `web-component` updated to version `3.55.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
 ## [0.8.17](https://github.com/descope/descope-js/compare/user-profile-widget-0.8.16...user-profile-widget-0.8.17) (2026-01-21)
 
 ### Dependency Updates

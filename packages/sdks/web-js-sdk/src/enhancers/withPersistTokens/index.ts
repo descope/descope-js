@@ -7,6 +7,8 @@ import {
   addHooks,
   getAuthInfoFromResponse,
   isInvalidSessionResponse,
+  setLocalStorage,
+  removeLocalStorage,
 } from '../helpers';
 import {
   beforeRequest,
@@ -16,6 +18,7 @@ import {
   persistTokens,
   getIdToken,
 } from './helpers';
+import { REFRESH_COOKIE_NAME_KEY } from './constants';
 import { CookieConfig, LastCookieOptions, PersistTokensOptions } from './types';
 import logger from '../helpers/logger';
 
@@ -29,6 +32,7 @@ export const withPersistTokens =
     sessionTokenViaCookie,
     refreshTokenViaCookie,
     storagePrefix,
+    refreshCookieName,
     ...config
   }: Parameters<T>[0] & PersistTokensOptions<A>): A extends false
     ? ReturnType<T>
@@ -42,7 +46,7 @@ export const withPersistTokens =
         // Storing auth tokens in local storage and cookies are a client side only capabilities
         // and will not be done when running in the server
       }
-      return createSdk(config) as any;
+      return createSdk({ refreshCookieName, ...config }) as any;
     }
 
     // Cache to store the cookie options that were used when setting the cookie
@@ -59,8 +63,24 @@ export const withPersistTokens =
           lastCookieOptions,
         );
       } else {
+        const authInfo = await getAuthInfoFromResponse(res);
+
+        // Persist or clear server-returned refresh cookie name based on auth response
+        if (authInfo.cookieName) {
+          setLocalStorage(
+            `${storagePrefix || ''}${REFRESH_COOKIE_NAME_KEY}`,
+            authInfo.cookieName,
+          );
+        } else if (authInfo.refreshJwt) {
+          // Auth response issued a new refresh token but no custom cookie name —
+          // clear any stale value so we don't keep sending an outdated name
+          removeLocalStorage(
+            `${storagePrefix || ''}${REFRESH_COOKIE_NAME_KEY}`,
+          );
+        }
+
         const newCookieOptions = persistTokens(
-          await getAuthInfoFromResponse(res),
+          authInfo,
           sessionTokenViaCookie,
           storagePrefix,
           refreshTokenViaCookie,
@@ -73,10 +93,17 @@ export const withPersistTokens =
     };
 
     const sdk = createSdk(
-      addHooks(config, {
-        beforeRequest: beforeRequest(storagePrefix, refreshTokenViaCookie),
-        afterRequest,
-      }),
+      addHooks(
+        { refreshCookieName, ...config },
+        {
+          beforeRequest: beforeRequest(
+            storagePrefix,
+            refreshTokenViaCookie,
+            refreshCookieName,
+          ),
+          afterRequest,
+        },
+      ),
     );
 
     const wrappedSdk = wrapWith(

@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.12](https://github.com/descope/descope-js/compare/user-management-widget-0.11.11...user-management-widget-0.11.12) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.56.0`
+* `sdk-mixins` updated to version `0.16.0`
+## [0.11.11](https://github.com/descope/descope-js/compare/user-management-widget-0.11.10...user-management-widget-0.11.11) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.4`
+## [0.11.10](https://github.com/descope/descope-js/compare/user-management-widget-0.11.9...user-management-widget-0.11.10) (2026-02-19)
+
+
+### Bug Fixes
+
+* use patch api to update user in management widget ([#1316](https://github.com/descope/descope-js/issues/1316)) ([5b39750](https://github.com/descope/descope-js/commit/5b39750ad6c7bdcfa9e0f0893fe6509ac36e5e63))
+
+## [0.11.9](https://github.com/descope/descope-js/compare/user-management-widget-0.11.8...user-management-widget-0.11.9) (2026-02-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.3`
+## [0.11.8](https://github.com/descope/descope-js/compare/user-management-widget-0.11.7...user-management-widget-0.11.8) (2026-02-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.2`
+## [0.11.7](https://github.com/descope/descope-js/compare/user-management-widget-0.11.6...user-management-widget-0.11.7) (2026-02-01)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.1`
+## [0.11.6](https://github.com/descope/descope-js/compare/user-management-widget-0.11.5...user-management-widget-0.11.6) (2026-01-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.45.0`
+* `web-component` updated to version `3.55.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
 ## [0.11.5](https://github.com/descope/descope-js/compare/user-management-widget-0.11.4...user-management-widget-0.11.5) (2026-01-21)
 
 ### Dependency Updates

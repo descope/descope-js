@@ -95,11 +95,19 @@ export const withNotifications = ({
   ) => string;
 }): AsyncReducerConfig<any> => ({
   onFulfilled: (state, action) => {
-    if (getSuccessMsg)
-      state.notifications.push({ type: 'success', msg: getSuccessMsg(action) });
+    if (getSuccessMsg) {
+      const msg = getSuccessMsg(action);
+      if (msg) {
+        state.notifications.push({ type: 'success', msg });
+      }
+    }
   },
   onRejected: (state, action) => {
-    if (getErrorMsg)
-      state.notifications.push({ type: 'error', msg: getErrorMsg(action) });
+    if (getErrorMsg) {
+      const msg = getErrorMsg(action);
+      if (msg) {
+        state.notifications.push({ type: 'error', msg });
+      }
+    }
   },
 });

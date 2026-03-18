@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.56.0](https://github.com/descope/descope-js/compare/web-component-3.55.4...web-component-3.56.0) (2026-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.0`
+
+### Features
+
+* **web-component:** add SRI support for web-component-ui loader RELEASE ([#1333](https://github.com/descope/descope-js/issues/1333)) ([ac04331](https://github.com/descope/descope-js/commit/ac04331642c4a88964eff4399334c36468cb47b4))
+
+## [3.55.4](https://github.com/descope/descope-js/compare/web-component-3.55.3...web-component-3.55.4) (2026-02-26)
+
+
+### Bug Fixes
+
+* retry on flow sdk calls ([#1338](https://github.com/descope/descope-js/issues/1338)) ([e966efa](https://github.com/descope/descope-js/commit/e966efae1f9eb2aaa7539dc2e71392570e5008ab))
+
+## [3.55.3](https://github.com/descope/descope-js/compare/web-component-3.55.2...web-component-3.55.3) (2026-02-17)
+
+## [3.55.2](https://github.com/descope/descope-js/compare/web-component-3.55.1...web-component-3.55.2) (2026-02-11)
+
+## [3.55.1](https://github.com/descope/descope-js/compare/web-component-3.55.0...web-component-3.55.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Prevent auto-focus in hidden inputs RELEASE ([#1325](https://github.com/descope/descope-js/issues/1325)) ([46a029b](https://github.com/descope/descope-js/commit/46a029bcd010b14133f2ff7804e4e4f927ea719e))
+
+## [3.55.0](https://github.com/descope/descope-js/compare/web-component-3.54.0...web-component-3.55.0) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `web-js-sdk` updated to version `1.45.0`
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
 ## [3.54.0](https://github.com/descope/descope-js/compare/web-component-3.53.4...web-component-3.54.0) (2026-01-21)
 
 ### Dependency Updates

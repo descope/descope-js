@@ -17,6 +17,21 @@ export const getIsPhoneVerified = createSelector(
   getMe,
   (me) => me.verifiedPhone,
 );
+
+// Badge label selectors - returns 'Unverified' or empty string
+export const getEmailBadgeLabel = createSelector(
+  getEmail,
+  getIsEmailVerified,
+  (email, isVerified) =>
+    email && email.trim() !== '' && !isVerified ? 'Unverified' : '',
+);
+
+export const getPhoneBadgeLabel = createSelector(
+  getPhone,
+  getIsPhoneVerified,
+  (phone, isVerified) =>
+    phone && phone.trim() !== '' && !isVerified ? 'Unverified' : '',
+);
 export const getHasPasskey = createSelector(getMe, (me) => me.webauthn);
 export const getHasPassword = createSelector(getMe, (me) => me.password);
 export const getHasTotp = createSelector(getMe, (me) => me.TOTP);
@@ -45,3 +60,11 @@ export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
 );
 
 export const getNotifications = (state: State) => state.notifications;
+
+export const getUserTenants = createSelector(
+  getMe,
+  (me) => me.userTenants || [],
+);
+
+export const getCurrentTenantId = (state: State) =>
+  state.tenant.currentTenantId;
