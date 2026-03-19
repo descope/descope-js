@@ -24,10 +24,8 @@ const ActivityTracker = () => {
     document.addEventListener('keydown', markUserActive);
 
     return () => {
-      document.removeEventListener('click', markUserActive, { capture: true });
-      document.removeEventListener('keydown', markUserActive, {
-        capture: true,
-      });
+      document.removeEventListener('click', markUserActive);
+      document.removeEventListener('keydown', markUserActive);
     };
   }, [sdk]);
 

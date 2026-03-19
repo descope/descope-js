@@ -351,9 +351,9 @@ function ActivityTracker() {
   useEffect(() => {
     const markUserActive = () => sdk.markUserActive();
 
-    document.addEventListener('click', markUserActive, { passive: true, capture: true });
-    document.addEventListener('keydown', markUserActive, { passive: true, capture: true });
-    document.addEventListener('touchstart', markUserActive, { passive: true, capture: true });
+    document.addEventListener('click', markUserActive);
+    document.addEventListener('keydown', markUserActive);
+    document.addEventListener('touchstart', markUserActive);
 
     // Mark active when the user switches back to this tab
     const onVisibility = () => {
@@ -362,9 +362,9 @@ function ActivityTracker() {
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      document.removeEventListener('click', markUserActive, { capture: true });
-      document.removeEventListener('keydown', markUserActive, { capture: true });
-      document.removeEventListener('touchstart', markUserActive, { capture: true });
+      document.removeEventListener('click', markUserActive);
+      document.removeEventListener('keydown', markUserActive);
+      document.removeEventListener('touchstart', markUserActive);
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [sdk]);

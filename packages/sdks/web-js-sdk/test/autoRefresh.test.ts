@@ -924,6 +924,7 @@ describe('autoRefresh', () => {
       // markUserActive called when server did not return nextRefreshSeconds
       (sdk as any).markUserActive();
 
+      expect(loggerDebugMock).toHaveBeenCalledWith('markUserActive() called');
       expect(loggerDebugMock).toHaveBeenCalledWith(
         'markUserActive() called but server does not have inactivity timeout configured (no nextRefreshSeconds)',
       );

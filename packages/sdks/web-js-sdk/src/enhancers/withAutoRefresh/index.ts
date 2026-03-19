@@ -177,6 +177,7 @@ export const withAutoRefresh =
       {
         markUserActive: activityTracker
           ? () => {
+              logger.debug('markUserActive() called');
               if (!hasInactivityTimeout) {
                 logger.debug(
                   'markUserActive() called but server does not have inactivity timeout configured (no nextRefreshSeconds)',
