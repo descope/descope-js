@@ -6,7 +6,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
+import {
+  CookieConfig,
+  OidcConfig,
+  AutoRefreshConfig,
+} from '@descope/web-js-sdk';
 import { Claims } from '@descope/core-js-sdk';
 import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
@@ -25,8 +29,9 @@ interface IAuthProviderProps {
   baseCdnUrl?: string;
   // Default is true. If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
-  // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire
-  autoRefresh?: boolean;
+  // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire.
+  // Pass `{ customActiveMode: true }` to skip refresh for idle users — you must call `sdk.markUserActive()` to signal activity.
+  autoRefresh?: AutoRefreshConfig;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
   // stored on local storage and can accessed with getSessionToken function
   // Use this option if session token will stay small (less than 1k)

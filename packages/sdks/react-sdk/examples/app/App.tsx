@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { useSession } from '../../src';
+import { useDescope, useSession } from '../../src';
 import Home from './Home';
 import Login from './Login';
 import ManageAccessKeys from './ManageAccessKeys';
@@ -14,6 +14,24 @@ import MyUserProfile from './MyUserProfile';
 import OidcLogin from './OidcLogin';
 import StepUp from './StepUp';
 
+const ActivityTracker = () => {
+  const sdk = useDescope();
+
+  useEffect(() => {
+    const markUserActive = sdk.markUserActive;
+
+    document.addEventListener('click', markUserActive);
+    document.addEventListener('keydown', markUserActive);
+
+    return () => {
+      document.removeEventListener('click', markUserActive);
+      document.removeEventListener('keydown', markUserActive);
+    };
+  }, [sdk]);
+
+  return null;
+};
+
 const Layout = () => (
   <div
     style={{
@@ -24,6 +42,7 @@ const Layout = () => (
       alignItems: 'center',
     }}
   >
+    {process.env.DESCOPE_ACTIVITY_TRACKING === 'true' && <ActivityTracker />}
     <div
       style={{
         borderRadius: 10,
@@ -43,7 +62,6 @@ const Layout = () => (
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isSessionLoading } = useSession();
-
   if (isSessionLoading) {
     return <div>Loading...</div>;
   }

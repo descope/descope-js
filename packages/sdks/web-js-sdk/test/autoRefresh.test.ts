@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
   debug: jest.fn(),
+  warn: jest.fn(),
 }));
 
 jest.mock('jwt-decode', () => {
@@ -224,6 +225,33 @@ describe('autoRefresh', () => {
     expect(authorization).toBe('Bearer pid:refresh-token-1');
   });
 
+  it('should clear all timers when logout is called', async () => {
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    clearTimeoutSpy.mockClear();
+    loggerDebugMock.mockClear();
+
+    await sdk.logout();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith('Clearing all timers');
+  });
+
   it('should clear timer when receive 401', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
@@ -390,6 +418,22 @@ describe('autoRefresh', () => {
     expect(setTimeoutSpy).not.toHaveBeenCalled();
     expect(refreshSpy).not.toHaveBeenCalled();
     expect(loggerDebugMock).not.toHaveBeenCalled();
+  });
+
+  it('markUserActive should log warning when autoRefresh is disabled', async () => {
+    const loggerWarnMock = logger.warn as jest.Mock;
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid' });
+
+    expect(() => (sdk as any).markUserActive()).not.toThrow();
+    expect(loggerWarnMock).toHaveBeenCalledWith(
+      'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+    );
   });
 
   it('should not auto refresh when descopeBridge is set on window', async () => {
@@ -672,6 +716,262 @@ describe('autoRefresh', () => {
     expect(loggerDebugMock).toHaveBeenCalledWith(
       expect.stringMatching(/^Timeout is too large/),
     );
+  });
+
+  describe('customActiveMode mode', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('should log activity-based refresh enabled when customActiveMode is true', () => {
+      const loggerDebugMock = logger.debug as jest.Mock;
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      createSdk({ projectId: 'pid', autoRefresh: { customActiveMode: true } });
+
+      expect(loggerDebugMock).toHaveBeenCalledWith(
+        'Activity-based refresh enabled',
+      );
+    });
+
+    it('should skip refresh when user is idle when timer fires and nextRefreshSeconds is present', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      const loggerDebugMock = logger.debug as jest.Mock;
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const nextRefreshSeconds = 120;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds,
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActiveMode: true },
+      });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+      // Timer fires but user has been idle (activity was reset when session was received)
+      timeoutFn();
+
+      expect(refreshSpy).not.toHaveBeenCalled();
+      expect(loggerDebugMock).toHaveBeenCalledWith(
+        'Skipping refresh due to timer - user is idle',
+      );
+    });
+
+    it('should refresh unconditionally when customActiveMode is set but nextRefreshSeconds is absent', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          // no nextRefreshSeconds
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActiveMode: true },
+      });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+      // Timer fires — activity check is skipped because no nextRefreshSeconds
+      timeoutFn();
+
+      expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+    });
+
+    it('should trigger refresh when markUserActive is called after idle skip', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      const loggerDebugMock = logger.debug as jest.Mock;
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const nextRefreshSeconds = 120;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds,
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActiveMode: true },
+      });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+      // Timer fires - user is idle, refresh skipped
+      timeoutFn();
+      expect(refreshSpy).not.toHaveBeenCalled();
+
+      // User becomes active
+      (sdk as any).markUserActive();
+
+      // Catch-up refresh should be triggered
+      expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+      expect(loggerDebugMock).toHaveBeenCalledWith(
+        'User became active after skipped refresh, triggering refresh',
+      );
+      expect(loggerDebugMock).toHaveBeenCalledWith(
+        'Refreshing session due to user activity after idle skip',
+      );
+    });
+
+    it('should NOT trigger catch-up refresh when markUserActive is called without prior skip', async () => {
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const nextRefreshSeconds = 120;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds,
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActiveMode: true },
+      });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      // Mark active before timer fires (user is active during the session period)
+      (sdk as any).markUserActive();
+
+      // No catch-up refresh should be triggered since no refresh was skipped
+      expect(refreshSpy).not.toHaveBeenCalled();
+    });
+
+    it('should proceed with refresh when timer fires after user marked active', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const nextRefreshSeconds = 120;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds,
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActiveMode: true },
+      });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+      // User marks active before timer fires
+      (sdk as any).markUserActive();
+
+      // Timer fires - user was active, refresh should proceed
+      timeoutFn();
+
+      expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+    });
+
+    it('markUserActive should log warning when customActiveMode is not set', async () => {
+      const loggerWarnMock = logger.warn as jest.Mock;
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      // markUserActive should log a warning and not trigger any refresh
+      expect(() => (sdk as any).markUserActive()).not.toThrow();
+      expect(loggerWarnMock).toHaveBeenCalledWith(
+        'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+      );
+      expect(refreshSpy).not.toHaveBeenCalled();
+    });
+
+    it('markUserActive should log debug when hasInactivityTimeout is false', async () => {
+      const loggerDebugMock = logger.debug as jest.Mock;
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      const mockFetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          // no nextRefreshSeconds — hasInactivityTimeout will be false
+        }),
+      );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActiveMode: true },
+      });
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+      loggerDebugMock.mockClear();
+
+      // markUserActive called when server did not return nextRefreshSeconds
+      (sdk as any).markUserActive();
+
+      expect(loggerDebugMock).toHaveBeenCalledWith('markUserActive() called');
+      expect(loggerDebugMock).toHaveBeenCalledWith(
+        'markUserActive() called but server does not have inactivity timeout configured (no nextRefreshSeconds)',
+      );
+    });
   });
 
   it('should not refresh when timer fires and document is hidden', async () => {
