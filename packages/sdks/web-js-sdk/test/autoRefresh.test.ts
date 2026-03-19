@@ -225,6 +225,33 @@ describe('autoRefresh', () => {
     expect(authorization).toBe('Bearer pid:refresh-token-1');
   });
 
+  it('should clear all timers when logout is called', async () => {
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    clearTimeoutSpy.mockClear();
+    loggerDebugMock.mockClear();
+
+    await sdk.logout();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith('Clearing all timers');
+  });
+
   it('should clear timer when receive 401', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
@@ -391,6 +418,22 @@ describe('autoRefresh', () => {
     expect(setTimeoutSpy).not.toHaveBeenCalled();
     expect(refreshSpy).not.toHaveBeenCalled();
     expect(loggerDebugMock).not.toHaveBeenCalled();
+  });
+
+  it('markUserActive should log warning when autoRefresh is disabled', async () => {
+    const loggerWarnMock = logger.warn as jest.Mock;
+
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(createMockReturnValue(authInfo));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid' });
+
+    expect(() => (sdk as any).markUserActive()).not.toThrow();
+    expect(loggerWarnMock).toHaveBeenCalledWith(
+      'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+    );
   });
 
   it('should not auto refresh when descopeBridge is set on window', async () => {

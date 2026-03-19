@@ -3,7 +3,7 @@ import logger from '../helpers/logger';
 import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
 /**
- * Creates a pure state tracker for activity-based session refresh.
+ * Creates a state tracker for activity-based session refresh.
  *
  * State:
  * - `hadActivitySinceLastRefresh`: true if `markUserActive()` was called since the last refresh.
