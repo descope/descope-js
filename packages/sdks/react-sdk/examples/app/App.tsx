@@ -18,20 +18,16 @@ const ActivityTracker = () => {
   const sdk = useDescope();
 
   useEffect(() => {
-    const markActive = sdk.markActive;
+    const markUserActive = sdk.markUserActive;
 
-    document.addEventListener('click', markActive, {
-      passive: true,
-      capture: true,
-    });
-    document.addEventListener('keydown', markActive, {
-      passive: true,
-      capture: true,
-    });
+    document.addEventListener('click', markUserActive);
+    document.addEventListener('keydown', markUserActive);
 
     return () => {
-      document.removeEventListener('click', markActive, { capture: true });
-      document.removeEventListener('keydown', markActive, { capture: true });
+      document.removeEventListener('click', markUserActive, { capture: true });
+      document.removeEventListener('keydown', markUserActive, {
+        capture: true,
+      });
     };
   }, [sdk]);
 

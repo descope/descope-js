@@ -19,7 +19,7 @@ root.render(
       }
       autoRefresh={
         process.env.DESCOPE_ACTIVITY_TRACKING === 'true'
-          ? { whenActive: true }
+          ? { customActiveMode: true }
           : undefined
       }
       baseUrl={process.env.DESCOPE_BASE_URL}

@@ -329,17 +329,17 @@ If you want to disable this behavior, you can pass `autoRefresh={false}` to the 
 
 ### Activity-Based Session Refresh
 
-Pass `autoRefresh={{ whenActive: true }}` to skip refresh calls for idle users. The SDK will only refresh when `sdk.markActive()` has been called since the last refresh. This reduces unnecessary API calls and enables accurate server-side session inactivity tracking.
+Pass `autoRefresh={{ customActiveMode: true }}` to skip refresh calls for idle users. The SDK will only refresh when `sdk.markUserActive()` has been called since the last refresh. This reduces unnecessary API calls and enables accurate server-side session inactivity tracking.
 
 **Step 1:** Enable it in `AuthProvider`:
 
 ```jsx
-<AuthProvider projectId="my-project-id" autoRefresh={{ whenActive: true }}>
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActiveMode: true }}>
   <App />
 </AuthProvider>
 ```
 
-**Step 2:** Create a component that uses the `useDescope` hook to call `markActive()` on user interactions:
+**Step 2:** Create a component that uses the `useDescope` hook to call `markUserActive()` on user interactions:
 
 ```jsx
 import { useEffect } from 'react';
@@ -349,22 +349,22 @@ function ActivityTracker() {
   const sdk = useDescope();
 
   useEffect(() => {
-    const markActive = () => sdk.markActive();
+    const markUserActive = () => sdk.markUserActive();
 
-    document.addEventListener('click', markActive, { passive: true, capture: true });
-    document.addEventListener('keydown', markActive, { passive: true, capture: true });
-    document.addEventListener('touchstart', markActive, { passive: true, capture: true });
+    document.addEventListener('click', markUserActive, { passive: true, capture: true });
+    document.addEventListener('keydown', markUserActive, { passive: true, capture: true });
+    document.addEventListener('touchstart', markUserActive, { passive: true, capture: true });
 
     // Mark active when the user switches back to this tab
     const onVisibility = () => {
-      if (document.visibilityState === 'visible') markActive();
+      if (document.visibilityState === 'visible') markUserActive();
     };
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      document.removeEventListener('click', markActive, { capture: true });
-      document.removeEventListener('keydown', markActive, { capture: true });
-      document.removeEventListener('touchstart', markActive, { capture: true });
+      document.removeEventListener('click', markUserActive, { capture: true });
+      document.removeEventListener('keydown', markUserActive, { capture: true });
+      document.removeEventListener('touchstart', markUserActive, { capture: true });
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [sdk]);
@@ -376,7 +376,7 @@ function ActivityTracker() {
 Render `<ActivityTracker />` inside `<AuthProvider>` so `useDescope()` has access to the context:
 
 ```jsx
-<AuthProvider projectId="my-project-id" autoRefresh={{ whenActive: true }}>
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActiveMode: true }}>
   <ActivityTracker />
   <App />
 </AuthProvider>

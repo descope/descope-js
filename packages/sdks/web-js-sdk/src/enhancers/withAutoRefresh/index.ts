@@ -28,17 +28,21 @@ export const withAutoRefresh =
     autoRefresh,
     ...config
   }: Parameters<T>[0] & AutoRefreshOptions): ReturnType<T> & {
-    markActive: () => void;
+    markUserActive: () => void;
   } => {
     const autoRefreshEnabled = !!autoRefresh;
-    const whenActive =
-      typeof autoRefresh === 'object' && autoRefresh?.whenActive;
+    const customActiveMode =
+      typeof autoRefresh === 'object' && autoRefresh?.customActiveMode;
 
     // Never auto refresh in native flows
     if (!autoRefreshEnabled || isDescopeBridge()) {
       return Object.assign(createSdk(config), {
-        markActive: () => {},
-      }) as ReturnType<T> & { markActive: () => void };
+        markUserActive: () => {
+          logger.warn(
+            'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+          );
+        },
+      }) as ReturnType<T> & { markUserActive: () => void };
     }
 
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
@@ -51,8 +55,9 @@ export const withAutoRefresh =
     let refreshToken: string;
 
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
+    let hasInactivityTimeout = false;
 
-    if (whenActive) {
+    if (customActiveMode) {
       logger.debug('Activity-based refresh enabled');
       // Callback for when user becomes active after refresh was skipped
       const onActivityAfterSkip = () => {
@@ -97,6 +102,7 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
+        hasInactivityTimeout = nextRefreshSeconds > 0;
         const timeout = getAutoRefreshTimeout(
           sessionExpirationDate,
           nextRefreshSeconds,
@@ -134,11 +140,15 @@ export const withAutoRefresh =
             return;
           }
 
-          // Check activity if tracking is enabled
-          if (activityTracker && !activityTracker.hadActivity()) {
+          // Check activity if tracking is enabled and server signals inactivity timeout
+          if (
+            activityTracker &&
+            hasInactivityTimeout &&
+            !activityTracker.hadActivity()
+          ) {
             logger.debug('Skipping refresh due to timer - user is idle');
             activityTracker.markRefreshSkipped();
-            return; // Don't reschedule - wait for markActive() call
+            return; // Don't reschedule - wait for markUserActive() call
           }
 
           logger.debug('Refreshing session due to timer');
@@ -164,6 +174,21 @@ export const withAutoRefresh =
 
     return Object.assign(
       wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper),
-      { markActive: activityTracker ? activityTracker.markActive : () => {} },
-    ) as ReturnType<T> & { markActive: () => void };
+      {
+        markUserActive: activityTracker
+          ? () => {
+              if (!hasInactivityTimeout) {
+                logger.debug(
+                  'markUserActive() called but server does not have inactivity timeout configured (no nextRefreshSeconds)',
+                );
+              }
+              activityTracker.markUserActive();
+            }
+          : () => {
+              logger.warn(
+                'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+              );
+            },
+      },
+    ) as ReturnType<T> & { markUserActive: () => void };
   };

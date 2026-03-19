@@ -6,15 +6,15 @@ import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
  * Creates a pure state tracker for activity-based session refresh.
  *
  * State:
- * - `hadActivitySinceLastRefresh`: true if `markActive()` was called since the last refresh.
+ * - `hadActivitySinceLastRefresh`: true if `markUserActive()` was called since the last refresh.
  *   Starts as true so the first scheduled refresh always proceeds.
  *   Reset to false by `resetActivity()` after each successful refresh.
  * - `refreshWasSkipped`: true if the refresh timer fired but was skipped because the user
- *   was idle. Cleared when `markActive()` is called or after `resetActivity()`.
+ *   was idle. Cleared when `markUserActive()` is called or after `resetActivity()`.
  *
  * Flow:
  * - On timer fire: check `hadActivity()`. If false → call `markRefreshSkipped()` and skip.
- * - On `markActive()`: set active flag. If a refresh was previously skipped, immediately
+ * - On `markUserActive()`: set active flag. If a refresh was previously skipped, immediately
  *   invoke `onActivityAfterSkip` to trigger a catch-up refresh.
  * - On successful refresh: call `resetActivity()` to start the next period fresh.
  */
@@ -31,7 +31,7 @@ export const createActivityTracker = (onActivityAfterSkip?: () => void) => {
     markRefreshSkipped: () => {
       refreshWasSkipped = true;
     },
-    markActive: () => {
+    markUserActive: () => {
       const shouldTriggerRefresh = refreshWasSkipped;
       hadActivitySinceLastRefresh = true;
       if (shouldTriggerRefresh && onActivityAfterSkip) {
