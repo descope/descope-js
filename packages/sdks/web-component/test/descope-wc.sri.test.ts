@@ -6,6 +6,7 @@ import {
   teardownWebComponentTestEnv,
   fixtures,
   scriptMock,
+  fetchMock,
   WAIT_TIMEOUT,
 } from './descope-wc.test-harness';
 
@@ -232,16 +233,36 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
   });
 
   describe('Flow Scripts SRI', () => {
+    let originalFetchImpl: any;
+
+    beforeEach(() => {
+      // Save original fetch implementation from test harness
+      originalFetchImpl = fetchMock.getMockImplementation();
+    });
+
+    afterEach(() => {
+      // Restore original fetch implementation
+      if (originalFetchImpl) {
+        fetchMock.mockImplementation(originalFetchImpl);
+      }
+    });
+
     it('should load flow-scripts with SRI when checksums.json is available', async () => {
       const flowScriptHash = 'sha384-flowscript123';
       const mockChecksums = {
         'dist/recaptcha.js': flowScriptHash,
       };
 
-      // Mock fetch for checksums.json
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        json: async () => mockChecksums,
+      // Extend the existing fetchMock to handle checksums.json
+      fetchMock.mockImplementation((url: string) => {
+        if (url.includes('checksums.json')) {
+          return Promise.resolve({
+            ok: true,
+            json: async () => mockChecksums,
+          });
+        }
+        // Fall back to original implementation for other URLs
+        return originalFetchImpl(url);
       });
 
       fixtures.configContent = {
@@ -273,18 +294,23 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
             script.src.includes('@descope/flow-scripts'),
           );
 
-          if (flowScript) {
-            expect(flowScript.integrity).toBe(flowScriptHash);
-            expect(flowScript.crossOrigin).toBe('anonymous');
-          }
+          expect(flowScript).toBeDefined();
+          expect(flowScript?.integrity).toBe(flowScriptHash);
+          expect(flowScript?.crossOrigin).toBe('anonymous');
         },
         { timeout: WAIT_TIMEOUT },
       );
     });
 
     it('should load flow-scripts without SRI when checksums.json is not available', async () => {
-      // Mock fetch to fail
-      global.fetch = jest.fn().mockRejectedValue(new Error('Not found'));
+      // Extend the existing fetchMock to fail checksums.json requests
+      fetchMock.mockImplementation((url: string) => {
+        if (url.includes('checksums.json')) {
+          return Promise.reject(new Error('Not found'));
+        }
+        // Fall back to original implementation for other URLs
+        return originalFetchImpl(url);
+      });
 
       fixtures.configContent = {
         componentsVersion: version,
@@ -315,9 +341,8 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
             script.src.includes('@descope/flow-scripts'),
           );
 
-          if (flowScript) {
-            expect(flowScript.hasAttribute('integrity')).toBe(false);
-          }
+          expect(flowScript).toBeDefined();
+          expect(flowScript?.hasAttribute('integrity')).toBe(false);
         },
         { timeout: WAIT_TIMEOUT },
       );

@@ -10,12 +10,19 @@ type ChecksumCache = {
   };
 };
 
+type InFlightCache = {
+  [libName: string]: {
+    [version: string]: Promise<Record<string, string> | null>;
+  };
+};
+
 export const checksumMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(loggerMixin)(superclass);
 
     return class ChecksumMixinClass extends BaseClass {
       #checksumCache: ChecksumCache = {};
+      #inFlightRequests: InFlightCache = {};
 
       get baseCdnUrl() {
         return this.getAttribute('base-cdn-url') || '';
@@ -33,12 +40,37 @@ export const checksumMixin = createSingletonMixin(
       ): Promise<Record<string, string> | null> {
         // Check cache first
         if (this.#checksumCache[libName]?.[version]) {
-          this.logger.debug(
-            `Using cached checksums for ${libName}@${version}`,
-          );
+          this.logger.debug(`Using cached checksums for ${libName}@${version}`);
           return this.#checksumCache[libName][version];
         }
 
+        // Check if there's an in-flight request for this library
+        if (this.#inFlightRequests[libName]?.[version]) {
+          this.logger.debug(
+            `Waiting for in-flight checksums request for ${libName}@${version}`,
+          );
+          return this.#inFlightRequests[libName][version];
+        }
+
+        // Create and cache the in-flight promise
+        const requestPromise = this.#fetchChecksums(libName, version);
+        if (!this.#inFlightRequests[libName]) {
+          this.#inFlightRequests[libName] = {};
+        }
+        this.#inFlightRequests[libName][version] = requestPromise;
+
+        // Clean up in-flight cache when done
+        requestPromise.finally(() => {
+          delete this.#inFlightRequests[libName]?.[version];
+        });
+
+        return requestPromise;
+      }
+
+      async #fetchChecksums(
+        libName: string,
+        version: string,
+      ): Promise<Record<string, string> | null> {
         // Build URLs to try (base CDN + fallbacks)
         const cdnUrls = [this.baseCdnUrl, ...BASE_URLS].filter(Boolean);
 
@@ -55,7 +87,9 @@ export const checksumMixin = createSingletonMixin(
 
             if (!response.ok) {
               this.logger.debug(
-                `Failed to load checksums from ${url.toString()}: ${response.status}`,
+                `Failed to load checksums from ${url.toString()}: ${
+                  response.status
+                }`,
               );
               continue;
             }
@@ -74,8 +108,10 @@ export const checksumMixin = createSingletonMixin(
 
             return checksums;
           } catch (error) {
+            const message =
+              error instanceof Error ? error.message : String(error);
             this.logger.debug(
-              `Error loading checksums from ${baseUrl}: ${error.message}`,
+              `Error loading checksums from ${baseUrl}: ${message}`,
             );
             // Try next URL
           }

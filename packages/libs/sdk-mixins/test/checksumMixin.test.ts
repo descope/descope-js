@@ -1,22 +1,20 @@
 import { checksumMixin } from '../src/mixins/checksumMixin';
 
 describe('checksumMixin', () => {
-  let TestElement: CustomElementConstructor;
   let element: any;
 
   beforeEach(() => {
     // Create a test element class with the mixin
-    TestElement = checksumMixin(
-      class extends HTMLElement {
-        getAttribute(name: string) {
-          if (name === 'base-cdn-url') return '';
-          return super.getAttribute(name);
+    const MixinClass = checksumMixin(
+      class {
+        getAttribute(attr: string) {
+          if (attr === 'base-cdn-url') return '';
+          return '';
         }
-        shadowRoot = document.createElement('div').attachShadow({ mode: 'open' });
-      },
+      } as any,
     );
 
-    element = new TestElement();
+    element = new MixinClass();
 
     // Mock console methods
     jest.spyOn(console, 'debug').mockImplementation();
@@ -97,9 +95,7 @@ describe('checksumMixin', () => {
     });
 
     it('should return null if all CDNs fail', async () => {
-      (global.fetch as jest.Mock).mockRejectedValue(
-        new Error('Network error'),
-      );
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
       const checksums = await element.loadChecksums(
         '@descope/flow-scripts',
@@ -184,9 +180,7 @@ describe('checksumMixin', () => {
     });
 
     it('should return undefined if checksums failed to load', async () => {
-      (global.fetch as jest.Mock).mockRejectedValue(
-        new Error('Network error'),
-      );
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
       const checksum = await element.getChecksum(
         '@descope/flow-scripts',

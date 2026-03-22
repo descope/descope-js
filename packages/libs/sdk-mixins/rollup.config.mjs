@@ -14,6 +14,7 @@ const input = [
   './src/index.ts',
   './src/mixins/themeMixin/index.ts',
   './src/mixins/staticResourcesMixin/index.ts',
+  './src/mixins/checksumMixin/index.ts',
 ];
 const external = (id) =>
   !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
