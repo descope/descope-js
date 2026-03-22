@@ -25,6 +25,7 @@ export * from './mixins/initElementMixin';
 export * from './mixins/initLifecycleMixin';
 export * from './mixins/projectIdMixin';
 export * from './mixins/baseUrlMixin';
+export * from './mixins/checksumMixin';
 export * from './mixins/cookieConfigMixin';
 export * from './mixins/injectNpmLibMixin';
 export * from './mixins/injectStyleMixin';

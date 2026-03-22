@@ -512,12 +512,18 @@ export const handleUrlParams = (
   };
 };
 
-export const loadFont = (url: string) => {
+export const loadFont = (url: string, integrity?: string) => {
   if (!url) return;
 
   const font = document.createElement('link');
   font.href = url;
   font.rel = 'stylesheet';
+
+  if (integrity) {
+    font.integrity = integrity;
+    font.crossOrigin = 'anonymous';
+  }
+
   document.head.appendChild(font);
 };
 

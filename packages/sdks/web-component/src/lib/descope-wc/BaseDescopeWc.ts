@@ -1,5 +1,7 @@
 import { compose } from '@descope/sdk-helpers';
 // eslint-disable-next-line import/no-duplicates
+import { checksumMixin } from '@descope/sdk-mixins/checksum-mixin';
+// eslint-disable-next-line import/no-duplicates
 import { staticResourcesMixin } from '@descope/sdk-mixins/static-resources-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
@@ -47,6 +49,7 @@ import {
 declare const BUILD_VERSION: string;
 
 const BaseClass = compose(
+  checksumMixin,
   themeMixin,
   staticResourcesMixin,
   formMountMixin,

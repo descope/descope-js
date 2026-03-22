@@ -50,6 +50,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/mixins/injectStyleMixin.js"
       }
+    },
+    "./checksum-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/checksumMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/checksumMixin/index.js"
+      }
     }
   },
   "type": "module",

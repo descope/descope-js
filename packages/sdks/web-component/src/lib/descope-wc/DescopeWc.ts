@@ -296,11 +296,13 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        await this.injectNpmLib(
-          '@descope/flow-scripts',
-          '1.0.14', // currently using a fixed version when loading scripts
-          `dist/${script.id}.js`,
-        );
+        // Get the SRI checksum for this specific flow script
+        const libName = '@descope/flow-scripts';
+        const version = '1.0.14'; // currently using a fixed version when loading scripts
+        const filePath = `dist/${script.id}.js`;
+        const integrity = await this.getChecksum(libName, version, filePath);
+
+        await this.injectNpmLib(libName, version, filePath, [], integrity);
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {

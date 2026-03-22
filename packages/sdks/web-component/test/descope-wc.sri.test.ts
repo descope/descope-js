@@ -230,4 +230,97 @@ describe('descope-wc SRI (Subresource Integrity)', () => {
       { timeout: WAIT_TIMEOUT },
     );
   });
+
+  describe('Flow Scripts SRI', () => {
+    it('should load flow-scripts with SRI when checksums.json is available', async () => {
+      const flowScriptHash = 'sha384-flowscript123';
+      const mockChecksums = {
+        'dist/recaptcha.js': flowScriptHash,
+      };
+
+      // Mock fetch for checksums.json
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockChecksums,
+      });
+
+      fixtures.configContent = {
+        componentsVersion: version,
+        flows: {
+          [flowId]: {
+            version: 1,
+            screen: {
+              id: 'screen-1',
+              state: {
+                clientScripts: [
+                  {
+                    id: 'recaptcha',
+                    initArgs: {},
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
+
+      await waitFor(
+        () => {
+          const scripts = Array.from(document.querySelectorAll('script'));
+          const flowScript = scripts.find((script) =>
+            script.src.includes('@descope/flow-scripts'),
+          );
+
+          if (flowScript) {
+            expect(flowScript.integrity).toBe(flowScriptHash);
+            expect(flowScript.crossOrigin).toBe('anonymous');
+          }
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should load flow-scripts without SRI when checksums.json is not available', async () => {
+      // Mock fetch to fail
+      global.fetch = jest.fn().mockRejectedValue(new Error('Not found'));
+
+      fixtures.configContent = {
+        componentsVersion: version,
+        flows: {
+          [flowId]: {
+            version: 1,
+            screen: {
+              id: 'screen-1',
+              state: {
+                clientScripts: [
+                  {
+                    id: 'turnstile',
+                    initArgs: {},
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="${projectId}"></descope-wc>`;
+
+      await waitFor(
+        () => {
+          const scripts = Array.from(document.querySelectorAll('script'));
+          const flowScript = scripts.find((script) =>
+            script.src.includes('@descope/flow-scripts'),
+          );
+
+          if (flowScript) {
+            expect(flowScript.hasAttribute('integrity')).toBe(false);
+          }
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+  });
 });

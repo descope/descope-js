@@ -1,9 +1,15 @@
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 
-export const loadFont = (url: string) => {
+export const loadFont = (url: string, integrity?: string) => {
   const font = document.createElement('link');
   font.href = url;
   font.rel = 'stylesheet';
+
+  if (integrity) {
+    font.integrity = integrity;
+    font.crossOrigin = 'anonymous';
+  }
+
   document.head.appendChild(font);
 };
 
