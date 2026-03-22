@@ -186,7 +186,6 @@ describe('web-component', () => {
             '1.2.3',
             {
               exchangeCode: 'code123',
-              exchangeError: null,
               idpInitiated: true,
             },
           ),

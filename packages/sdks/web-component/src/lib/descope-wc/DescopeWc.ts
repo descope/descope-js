@@ -181,11 +181,11 @@ class DescopeWc extends BaseDescopeWc {
     const response = JSON.parse(payload);
     if (type === 'oauthWeb' || type === 'sso') {
       let { exchangeCode } = response;
-      let exchangeError = null;
+      let exchangeError: string | undefined;
       if (!exchangeCode) {
         const url = new URL(response.url);
         exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
-        exchangeError = url.searchParams?.get(URL_ERR_PARAM_NAME);
+        exchangeError = url.searchParams?.get(URL_ERR_PARAM_NAME) || undefined;
       }
       this.nativeCallbacks.complete?.({
         exchangeCode,
