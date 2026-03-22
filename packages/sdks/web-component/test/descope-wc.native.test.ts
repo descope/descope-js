@@ -184,7 +184,104 @@ describe('web-component', () => {
             CUSTOM_INTERACTIONS.submit,
             1,
             '1.2.3',
-            { exchangeCode: 'code123', idpInitiated: true },
+            {
+              exchangeCode: 'code123',
+              idpInitiated: true,
+            },
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(onSuccess).toHaveBeenCalledWith(
+            expect.objectContaining({ detail: { refreshJwt: 'refreshJwt' } }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      wcEle.removeEventListener('success', onSuccess);
+      wcEle.removeEventListener('bridge', onBridge);
+    });
+
+    it('Should handle a nativeResume oauthWeb response with exchangeError', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          action: RESPONSE_ACTIONS.nativeBridge,
+          nativeResponseType: 'oauthWeb',
+          nativeResponsePayload: { url: 'https://oauthprovider.com' },
+        }),
+      );
+
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({
+          status: 'completed',
+        }),
+      );
+
+      fixtures.pageContent =
+        '<div data-type="polling">...</div><span>It works!</span>';
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const onSuccess = jest.fn();
+      const onBridge = jest.fn();
+
+      const wcEle = document.getElementsByTagName('descope-wc')[0];
+
+      expect(wcEle.nativeCallbacks.complete).not.toBeDefined();
+
+      wcEle.addEventListener('success', onSuccess);
+      wcEle.addEventListener('bridge', onBridge);
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(
+        () => expect(wcEle.nativeCallbacks.complete).toBeDefined(),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      await waitFor(
+        () =>
+          expect(onBridge).toHaveBeenCalledWith(
+            expect.objectContaining({
+              detail: {
+                type: 'oauthWeb',
+                payload: { url: 'https://oauthprovider.com' },
+              },
+            }),
+          ),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      await wcEle.nativeResume(
+        'oauthWeb',
+        JSON.stringify({
+          url: 'https://deeplink.com?err=exchangeError123',
+        }),
+      );
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            CUSTOM_INTERACTIONS.submit,
+            1,
+            '1.2.3',
+            {
+              exchangeCode: null,
+              exchangeError: 'exchangeError123',
+              idpInitiated: true,
+            },
           ),
         {
           timeout: WAIT_TIMEOUT,
