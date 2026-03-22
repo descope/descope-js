@@ -15,6 +15,7 @@ import {
   RESPONSE_ACTIONS,
   SDK_SCRIPTS_LOAD_TIMEOUT,
   URL_CODE_PARAM_NAME,
+  URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
 } from '../constants';
@@ -180,12 +181,15 @@ class DescopeWc extends BaseDescopeWc {
     const response = JSON.parse(payload);
     if (type === 'oauthWeb' || type === 'sso') {
       let { exchangeCode } = response;
+      let exchangeError = null;
       if (!exchangeCode) {
         const url = new URL(response.url);
         exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
+        exchangeError = url.searchParams?.get(URL_ERR_PARAM_NAME);
       }
       this.nativeCallbacks.complete?.({
         exchangeCode,
+        exchangeError,
         idpInitiated: true,
       });
     } else if (type === 'magicLink') {
