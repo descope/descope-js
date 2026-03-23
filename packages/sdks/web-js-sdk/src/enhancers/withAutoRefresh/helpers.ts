@@ -3,48 +3,20 @@ import logger from '../helpers/logger';
 import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
 /**
- * Creates a state tracker for activity-based session refresh.
- *
- * State:
- * - `hadActivitySinceLastRefresh`: true if `markUserActive()` was called since the last refresh.
- *   Starts as true so the first scheduled refresh always proceeds.
- *   Reset to false by `resetActivity()` after each successful refresh.
- * - `refreshWasSkipped`: true if the refresh timer fired but was skipped because the user
- *   was idle. Cleared when `markUserActive()` is called or after `resetActivity()`.
- *
- * Flow:
- * - On timer fire: call `shouldRefresh()`. Returns true if active; if idle, records the skip
- *   and returns false — caller should skip the refresh.
- * - On `markUserActive()`: set active flag. If a refresh was previously skipped, immediately
- *   invoke `onActivityAfterSkip` to trigger a catch-up refresh.
- * - On successful refresh: call `resetActivity()` to start the next period fresh.
+ * Tracks whether the user has been active since the last refresh.
+ * Starts as true so the first scheduled refresh always proceeds.
+ * Call `reset()` after each successful refresh to start the next period fresh.
  */
-export const createActivityTracker = (onActivityAfterSkip?: () => void) => {
-  let hadActivitySinceLastRefresh = true; // Start as true (assume active on init)
-  let refreshWasSkipped = false;
+export const createActivityTracker = () => {
+  let hadActivitySinceLastRefresh = true;
 
   return {
-    shouldRefresh: () => {
-      if (!hadActivitySinceLastRefresh) {
-        refreshWasSkipped = true;
-        return false;
-      }
-      return true;
-    },
-    resetActivity: () => {
+    hadActivity: () => hadActivitySinceLastRefresh,
+    reset: () => {
       hadActivitySinceLastRefresh = false;
-      refreshWasSkipped = false;
     },
-    markUserActive: () => {
-      const shouldTriggerRefresh = refreshWasSkipped;
+    markActive: () => {
       hadActivitySinceLastRefresh = true;
-      if (shouldTriggerRefresh && onActivityAfterSkip) {
-        logger.debug(
-          'User became active after skipped refresh, triggering refresh',
-        );
-        refreshWasSkipped = false;
-        onActivityAfterSkip();
-      }
     },
   };
 };

@@ -55,15 +55,11 @@ export const withAutoRefresh =
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
     let hasInactivityTimeout = false;
 
+    let refreshWasSkipped = false;
+
     if (customActivityTracking) {
       logger.debug('Activity-based refresh enabled');
-      // Callback for when user becomes active after refresh was skipped
-      const onActivityAfterSkip = () => {
-        logger.debug('Refreshing session due to user activity after idle skip');
-        clearAllTimers(); // Prevent race condition with pending timer
-        sdk.refresh(getRefreshToken() || refreshToken);
-      };
-      activityTracker = createActivityTracker(onActivityAfterSkip);
+      activityTracker = createActivityTracker();
     }
 
     if (IS_BROWSER) {
@@ -130,7 +126,8 @@ export const withAutoRefresh =
 
         // Reset activity tracking after receiving new session (refresh succeeded)
         if (activityTracker) {
-          activityTracker.resetActivity();
+          activityTracker.reset();
+          refreshWasSkipped = false;
         }
 
         setTimer(() => {
@@ -144,9 +141,10 @@ export const withAutoRefresh =
           if (
             activityTracker &&
             hasInactivityTimeout &&
-            !activityTracker.shouldRefresh()
+            !activityTracker.hadActivity()
           ) {
             logger.debug('Skipping refresh due to timer - user is idle');
+            refreshWasSkipped = true;
             return; // Don't reschedule - wait for markUserActive() call
           }
 
@@ -182,7 +180,15 @@ export const withAutoRefresh =
                   'markUserActive() called but server does not have inactivity timeout configured (no nextRefreshSeconds)',
                 );
               }
-              activityTracker.markUserActive();
+              activityTracker.markActive();
+              if (refreshWasSkipped) {
+                logger.debug(
+                  'User became active after skipped refresh, triggering refresh',
+                );
+                refreshWasSkipped = false;
+                clearAllTimers(); // Prevent race condition with pending timer
+                sdk.refresh(getRefreshToken() || refreshToken);
+              }
             }
           : () => {
               logger.warn(

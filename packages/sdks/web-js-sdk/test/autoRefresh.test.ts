@@ -851,9 +851,6 @@ describe('autoRefresh', () => {
       expect(loggerDebugMock).toHaveBeenCalledWith(
         'User became active after skipped refresh, triggering refresh',
       );
-      expect(loggerDebugMock).toHaveBeenCalledWith(
-        'Refreshing session due to user activity after idle skip',
-      );
     });
 
     it('should NOT trigger catch-up refresh when markUserActive is called without prior skip', async () => {
