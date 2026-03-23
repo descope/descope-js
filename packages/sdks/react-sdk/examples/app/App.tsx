@@ -14,11 +14,13 @@ import MyUserProfile from './MyUserProfile';
 import OidcLogin from './OidcLogin';
 import StepUp from './StepUp';
 
-const ActivityTracker = () => {
+const useActivityTracking = () => {
   const sdk = useDescope();
 
   useEffect(() => {
-    const markUserActive = sdk.markUserActive;
+    if (process.env.DESCOPE_CUSTOM_ACTIVITY_TRACKING !== 'true') return;
+
+    const { markUserActive } = sdk;
 
     document.addEventListener('click', markUserActive);
     document.addEventListener('keydown', markUserActive);
@@ -28,37 +30,38 @@ const ActivityTracker = () => {
       document.removeEventListener('keydown', markUserActive);
     };
   }, [sdk]);
-
-  return null;
 };
 
-const Layout = () => (
-  <div
-    style={{
-      height: '100vh',
-      position: 'relative',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    {process.env.DESCOPE_ACTIVITY_TRACKING === 'true' && <ActivityTracker />}
+const Layout = () => {
+  useActivityTracking();
+
+  return (
     <div
       style={{
-        borderRadius: 10,
-        margin: 'auto',
-        border: '1px solid lightgray',
-        padding: 20,
-        width: '600px',
-        boxShadow: '13px 13px 20px #cbced1, -13px -13px 20px #fff',
-        background: '#ecf0f3',
+        height: '100vh',
         position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
-      <Outlet />
+      <div
+        style={{
+          borderRadius: 10,
+          margin: 'auto',
+          border: '1px solid lightgray',
+          padding: 20,
+          width: '600px',
+          boxShadow: '13px 13px 20px #cbced1, -13px -13px 20px #fff',
+          background: '#ecf0f3',
+          position: 'relative',
+        }}
+      >
+        <Outlet />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isSessionLoading } = useSession();

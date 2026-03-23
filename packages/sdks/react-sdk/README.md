@@ -329,27 +329,27 @@ If you want to disable this behavior, you can pass `autoRefresh={false}` to the 
 
 ### Activity-Based Session Refresh
 
-Pass `autoRefresh={{ customActiveMode: true }}` to skip refresh calls for idle users. The SDK will only refresh when `sdk.markUserActive()` has been called since the last refresh. This reduces unnecessary API calls and enables accurate server-side session inactivity tracking.
+Pass `autoRefresh={{ customActivityTracking: true }}` to skip refresh calls for idle users. The SDK will only refresh when `sdk.markUserActive()` has been called since the last refresh. This reduces unnecessary API calls and enables accurate server-side session inactivity tracking.
 
 **Step 1:** Enable it in `AuthProvider`:
 
 ```jsx
-<AuthProvider projectId="my-project-id" autoRefresh={{ customActiveMode: true }}>
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <App />
 </AuthProvider>
 ```
 
-**Step 2:** Create a component that uses the `useDescope` hook to call `markUserActive()` on user interactions:
+**Step 2:** Create a `useActivityTracking` hook that calls `markUserActive()` on user interactions:
 
 ```jsx
 import { useEffect } from 'react';
 import { useDescope } from '@descope/react-sdk';
 
-function ActivityTracker() {
+function useActivityTracking() {
   const sdk = useDescope();
 
   useEffect(() => {
-    const markUserActive = () => sdk.markUserActive();
+    const { markUserActive } = sdk;
 
     document.addEventListener('click', markUserActive);
     document.addEventListener('keydown', markUserActive);
@@ -368,17 +368,19 @@ function ActivityTracker() {
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [sdk]);
-
-  return null;
 }
 ```
 
-Render `<ActivityTracker />` inside `<AuthProvider>` so `useDescope()` has access to the context:
+Call `useActivityTracking()` inside a component that is rendered within `<AuthProvider>` so `useDescope()` has access to the context:
 
 ```jsx
-<AuthProvider projectId="my-project-id" autoRefresh={{ customActiveMode: true }}>
-  <ActivityTracker />
-  <App />
+function Layout() {
+  useActivityTracking();
+  return <Outlet />;
+}
+
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
+  <Layout />
 </AuthProvider>
 ```
 

@@ -31,16 +31,14 @@ export const withAutoRefresh =
     markUserActive: () => void;
   } => {
     const autoRefreshEnabled = !!autoRefresh;
-    const customActiveMode =
-      typeof autoRefresh === 'object' && autoRefresh?.customActiveMode;
+    const customActivityTracking =
+      typeof autoRefresh === 'object' && autoRefresh?.customActivityTracking;
 
-    // Never auto refresh in native flows
+    // Never auto refresh when disabled or in native flows
     if (!autoRefreshEnabled || isDescopeBridge()) {
       return Object.assign(createSdk(config), {
         markUserActive: () => {
-          logger.warn(
-            'markUserActive() called but customActiveMode is not enabled — this call has no effect',
-          );
+          logger.warn('markUserActive() called but has no effect');
         },
       }) as ReturnType<T> & { markUserActive: () => void };
     }
@@ -57,7 +55,7 @@ export const withAutoRefresh =
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
     let hasInactivityTimeout = false;
 
-    if (customActiveMode) {
+    if (customActivityTracking) {
       logger.debug('Activity-based refresh enabled');
       // Callback for when user becomes active after refresh was skipped
       const onActivityAfterSkip = () => {
@@ -103,6 +101,7 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
+        // Updated on each server response — may change if server starts/stops returning nextRefreshSeconds
         hasInactivityTimeout = nextRefreshSeconds > 0;
         const timeout = getAutoRefreshTimeout(
           sessionExpirationDate,
@@ -145,10 +144,9 @@ export const withAutoRefresh =
           if (
             activityTracker &&
             hasInactivityTimeout &&
-            !activityTracker.hadActivity()
+            !activityTracker.shouldRefresh()
           ) {
             logger.debug('Skipping refresh due to timer - user is idle');
-            activityTracker.markRefreshSkipped();
             return; // Don't reschedule - wait for markUserActive() call
           }
 
@@ -188,7 +186,7 @@ export const withAutoRefresh =
             }
           : () => {
               logger.warn(
-                'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+                'markUserActive() called but customActivityTracking is not enabled — this call has no effect',
               );
             },
       },

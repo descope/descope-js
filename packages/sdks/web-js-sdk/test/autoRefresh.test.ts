@@ -432,7 +432,7 @@ describe('autoRefresh', () => {
 
     expect(() => (sdk as any).markUserActive()).not.toThrow();
     expect(loggerWarnMock).toHaveBeenCalledWith(
-      'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+      'markUserActive() called but has no effect',
     );
   });
 
@@ -718,19 +718,22 @@ describe('autoRefresh', () => {
     );
   });
 
-  describe('customActiveMode mode', () => {
+  describe('customActivityTracking mode', () => {
     beforeEach(() => {
       localStorage.clear();
     });
 
-    it('should log activity-based refresh enabled when customActiveMode is true', () => {
+    it('should log activity-based refresh enabled when customActivityTracking is true', () => {
       const loggerDebugMock = logger.debug as jest.Mock;
       const mockFetch = jest
         .fn()
         .mockReturnValue(createMockReturnValue(authInfo));
       global.fetch = mockFetch;
 
-      createSdk({ projectId: 'pid', autoRefresh: { customActiveMode: true } });
+      createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActivityTracking: true },
+      });
 
       expect(loggerDebugMock).toHaveBeenCalledWith(
         'Activity-based refresh enabled',
@@ -754,7 +757,7 @@ describe('autoRefresh', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        autoRefresh: { customActiveMode: true },
+        autoRefresh: { customActivityTracking: true },
       });
       const refreshSpy = jest
         .spyOn(sdk, 'refresh')
@@ -775,7 +778,7 @@ describe('autoRefresh', () => {
       );
     });
 
-    it('should refresh unconditionally when customActiveMode is set but nextRefreshSeconds is absent', async () => {
+    it('should refresh unconditionally when customActivityTracking is set but nextRefreshSeconds is absent', async () => {
       const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
       const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
@@ -790,7 +793,7 @@ describe('autoRefresh', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        autoRefresh: { customActiveMode: true },
+        autoRefresh: { customActivityTracking: true },
       });
       const refreshSpy = jest
         .spyOn(sdk, 'refresh')
@@ -825,7 +828,7 @@ describe('autoRefresh', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        autoRefresh: { customActiveMode: true },
+        autoRefresh: { customActivityTracking: true },
       });
       const refreshSpy = jest
         .spyOn(sdk, 'refresh')
@@ -867,7 +870,7 @@ describe('autoRefresh', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        autoRefresh: { customActiveMode: true },
+        autoRefresh: { customActivityTracking: true },
       });
       const refreshSpy = jest
         .spyOn(sdk, 'refresh')
@@ -897,7 +900,7 @@ describe('autoRefresh', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        autoRefresh: { customActiveMode: true },
+        autoRefresh: { customActivityTracking: true },
       });
       const refreshSpy = jest
         .spyOn(sdk, 'refresh')
@@ -917,7 +920,7 @@ describe('autoRefresh', () => {
       expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
     });
 
-    it('markUserActive should log warning when customActiveMode is not set', async () => {
+    it('markUserActive should log warning when customActivityTracking is not set', async () => {
       const loggerWarnMock = logger.warn as jest.Mock;
       const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
       const mockFetch = jest.fn().mockReturnValue(
@@ -937,7 +940,7 @@ describe('autoRefresh', () => {
       // markUserActive should log a warning and not trigger any refresh
       expect(() => (sdk as any).markUserActive()).not.toThrow();
       expect(loggerWarnMock).toHaveBeenCalledWith(
-        'markUserActive() called but customActiveMode is not enabled — this call has no effect',
+        'markUserActive() called but customActivityTracking is not enabled — this call has no effect',
       );
       expect(refreshSpy).not.toHaveBeenCalled();
     });
@@ -957,7 +960,7 @@ describe('autoRefresh', () => {
 
       const sdk = createSdk({
         projectId: 'pid',
-        autoRefresh: { customActiveMode: true },
+        autoRefresh: { customActivityTracking: true },
       });
       await sdk.httpClient.get('1/2/3');
 

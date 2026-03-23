@@ -30,7 +30,7 @@ interface IAuthProviderProps {
   // Default is true. If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
   // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire.
-  // Pass `{ customActiveMode: true }` to skip refresh for idle users — you must call `sdk.markUserActive()` to signal activity.
+  // Pass `{ customActivityTracking: true }` to skip refresh for idle users — you must call `sdk.markUserActive()` to signal activity.
   autoRefresh?: AutoRefreshConfig;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
   // stored on local storage and can accessed with getSessionToken function

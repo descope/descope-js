@@ -18,8 +18,8 @@ root.render(
         }
       }
       autoRefresh={
-        process.env.DESCOPE_ACTIVITY_TRACKING === 'true'
-          ? { customActiveMode: true }
+        process.env.DESCOPE_CUSTOM_ACTIVITY_TRACKING === 'true'
+          ? { customActivityTracking: true }
           : undefined
       }
       baseUrl={process.env.DESCOPE_BASE_URL}

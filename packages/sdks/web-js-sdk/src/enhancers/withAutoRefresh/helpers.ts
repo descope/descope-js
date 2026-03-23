@@ -13,7 +13,8 @@ import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
  *   was idle. Cleared when `markUserActive()` is called or after `resetActivity()`.
  *
  * Flow:
- * - On timer fire: check `hadActivity()`. If false → call `markRefreshSkipped()` and skip.
+ * - On timer fire: call `shouldRefresh()`. Returns true if active; if idle, records the skip
+ *   and returns false — caller should skip the refresh.
  * - On `markUserActive()`: set active flag. If a refresh was previously skipped, immediately
  *   invoke `onActivityAfterSkip` to trigger a catch-up refresh.
  * - On successful refresh: call `resetActivity()` to start the next period fresh.
@@ -23,13 +24,16 @@ export const createActivityTracker = (onActivityAfterSkip?: () => void) => {
   let refreshWasSkipped = false;
 
   return {
-    hadActivity: () => hadActivitySinceLastRefresh,
+    shouldRefresh: () => {
+      if (!hadActivitySinceLastRefresh) {
+        refreshWasSkipped = true;
+        return false;
+      }
+      return true;
+    },
     resetActivity: () => {
       hadActivitySinceLastRefresh = false;
       refreshWasSkipped = false;
-    },
-    markRefreshSkipped: () => {
-      refreshWasSkipped = true;
     },
     markUserActive: () => {
       const shouldTriggerRefresh = refreshWasSkipped;
