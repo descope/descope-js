@@ -696,14 +696,15 @@ test.describe('widget', () => {
     test.setTimeout(60_000);
     await page.waitForLoadState('networkidle');
 
-    // Set up route handler first
+    // Set up route handler - fulfill all search requests; filter on mockSearchString
     await page.route(apiPath('user', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
-      expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ users: [mockUsers[1]] }),
+        body: JSON.stringify({
+          users: text === 'mockSearchString' ? [mockUsers[1]] : mockUsers,
+        }),
       });
     });
 
@@ -725,8 +726,12 @@ test.describe('widget', () => {
     // Trigger search with Enter key to ensure it fires
     await searchInput.press('Enter');
 
-    // Wait for the search request and response
-    await page.waitForResponse(apiPath('user', 'search'));
+    // Wait for the specific search response triggered by our input
+    await page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.user.search) &&
+        response.request().postDataJSON()?.text === 'mockSearchString',
+    );
 
     // only search results shown in grid
     await expect(
