@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.58.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.57.0...core-js-sdk-2.58.0) (2026-03-23)
+
+
+### Features
+
+* Add support for server-configured refresh cookie names for web ([#1343](https://github.com/descope/descope-js/issues/1343)) ([ec33c70](https://github.com/descope/descope-js/commit/ec33c70cd005f64e543db5d7388a3100123adc26))
+* **http:** retry requests on transient error status codes RELEASE ([#1351](https://github.com/descope/descope-js/issues/1351)) ([4e274ac](https://github.com/descope/descope-js/commit/4e274acdab55d1a7b3d1f2e4f903ba2dfaf78cb4))
+
 ## [2.57.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.2...core-js-sdk-2.57.0) (2026-01-29)
 
 

@@ -74,10 +74,19 @@ const buildRequestLog = (args: Parameters<Fetch>) =>
     .body(args[1].body)
     .build();
 
-// we should retry once in case we got these status codes:
+// we should retry on these status codes:
+// 503: Service Unavailable
 // 521: Web Server Is Down (Cloudflare error)
+// 522: Connection Timed Out (Cloudflare error)
 // 524: A Timeout Occurred (Cloudflare error)
-const retryStatusCodes = [521, 524];
+// 530: Cloudflare error
+const retryStatusCodes = [503, 521, 522, 524, 530];
+
+// Retry delays in ms: first retry after 100ms, subsequent retries after 5000ms
+const retryDelaysMs = [100, 5000, 5000];
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /** Log the response object */
 const buildResponseLog = async (resp: Response & { retries?: number }) => {
@@ -98,9 +107,18 @@ const fetchWrapper =
   async (...args: Parameters<Fetch>) => {
     let resp: Response & { retries?: number } = await fetch(...args);
 
-    if (retryStatusCodes.includes(resp.status)) {
+    let retries = 0;
+    while (
+      retryStatusCodes.includes(resp.status) &&
+      retries < retryDelaysMs.length
+    ) {
+      await sleep(retryDelaysMs[retries]);
       resp = await fetch(...args);
-      resp.retries = 1;
+      retries++;
+    }
+
+    if (retries > 0) {
+      resp.retries = retries;
     }
 
     // we found out that cloning the response is problematic when using node fetch

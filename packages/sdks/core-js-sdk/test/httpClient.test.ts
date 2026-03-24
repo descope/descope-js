@@ -152,7 +152,7 @@ describe('httpClient', () => {
   it('should use DEFAULT_BASE_API_URL when baseUrl is omitted', () => {
     const client = createHttpClient({
       projectId: 'P2aAc4T2V93bddihGEx2Ryhc8e5Z',
-      baseUrl: ""
+      baseUrl: '',
     });
     client.get('one/two/three', { token: null });
 
@@ -165,7 +165,7 @@ describe('httpClient', () => {
   it('should use DEFAULT_BASE_API_URL with region extraction when baseUrl is omitted', () => {
     const client = createHttpClient({
       projectId: 'Puse12aAc4T2V93bddihGEx2Ryhc8e5Z',
-      baseUrl: ""
+      baseUrl: '',
     });
     client.get('one/two/three', { token: null });
 
@@ -649,6 +649,7 @@ describe('createFetchLogger', () => {
     let fetchWithLogger: any;
 
     beforeEach(() => {
+      jest.useFakeTimers();
       logger = {
         log: jest.fn(),
         error: jest.fn(),
@@ -659,8 +660,11 @@ describe('createFetchLogger', () => {
       fetchWithLogger = createFetchLogger(logger, fetch);
     });
 
-    it('should retry once when receiving status code 521', async () => {
-      // First response with 521, second response with 200
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should retry when receiving status code 521', async () => {
       fetch
         .mockResolvedValueOnce({
           ok: false,
@@ -679,15 +683,15 @@ describe('createFetchLogger', () => {
           statusText: 'OK',
         });
 
-      const response = await fetchWithLogger('http://descope.com/test', {
+      const promise = fetchWithLogger('http://descope.com/test', {
         method: 'GET',
         headers: new Headers({ test: '123' }),
       });
 
-      // Verify fetch was called twice
-      expect(fetch).toHaveBeenCalledTimes(2);
+      await jest.runAllTimersAsync();
+      const response = await promise;
 
-      // Verify both calls used the same parameters
+      expect(fetch).toHaveBeenCalledTimes(2);
       expect(fetch).toHaveBeenNthCalledWith(1, 'http://descope.com/test', {
         method: 'GET',
         headers: new Headers({ test: '123' }),
@@ -696,14 +700,11 @@ describe('createFetchLogger', () => {
         method: 'GET',
         headers: new Headers({ test: '123' }),
       });
-
-      // Verify final response is from the retry (successful one)
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('Success');
     });
 
-    it('should retry once when receiving status code 524', async () => {
-      // First response with 524, second response with 200
+    it('should retry when receiving status code 524', async () => {
       fetch
         .mockResolvedValueOnce({
           ok: false,
@@ -722,22 +723,212 @@ describe('createFetchLogger', () => {
           statusText: 'OK',
         });
 
-      const response = await fetchWithLogger('http://descope.com/test', {
+      const promise = fetchWithLogger('http://descope.com/test', {
         method: 'POST',
         body: 'test body',
         headers: new Headers({ test: '123' }),
       });
 
-      // Verify fetch was called twice
-      expect(fetch).toHaveBeenCalledTimes(2);
+      await jest.runAllTimersAsync();
+      const response = await promise;
 
-      // Verify final response is successful
+      expect(fetch).toHaveBeenCalledTimes(2);
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('Success');
     });
 
+    it('should retry when receiving status code 503', async () => {
+      fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Service Unavailable',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: () => 'Success',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 200,
+          statusText: 'OK',
+        });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe('Success');
+    });
+
+    it('should retry when receiving status code 522', async () => {
+      fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Connection Timed Out',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 522,
+          statusText: 'Connection Timed Out',
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: () => 'Success',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 200,
+          statusText: 'OK',
+        });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe('Success');
+    });
+
+    it('should retry when receiving status code 530', async () => {
+      fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Cloudflare error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 530,
+          statusText: 'Cloudflare Error',
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: () => 'Success',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 200,
+          statusText: 'OK',
+        });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe('Success');
+    });
+
+    it('should retry up to 3 times when all retries fail', async () => {
+      // All 4 responses (original + 3 retries) fail
+      fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Error 1',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Error 2',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Error 3',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Error 4',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      // Original + 3 retries = 4 total calls
+      expect(fetch).toHaveBeenCalledTimes(4);
+      expect(response.status).toBe(503);
+      expect(await response.text()).toBe('Error 4');
+      expect(response.retries).toBe(3);
+    });
+
+    it('should use correct delays: 100ms for first retry, 5000ms for subsequent retries', async () => {
+      fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Error 1',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Error 2',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: () => 'Success',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 200,
+          statusText: 'OK',
+        });
+
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+
+      await jest.runAllTimersAsync();
+      await promise;
+
+      // Verify delays: first retry 100ms, second retry 5000ms
+      const delays = setTimeoutSpy.mock.calls.map((call) => call[1]);
+      expect(delays).toContain(100);
+      expect(delays).toContain(5000);
+    });
+
     it('should not retry for other error status codes', async () => {
-      const nonRetryStatusCodes = [400, 401, 403, 404, 500, 502, 503];
+      const nonRetryStatusCodes = [400, 401, 403, 404, 500, 502];
 
       for (const statusCode of nonRetryStatusCodes) {
         fetch.mockClear();
@@ -750,19 +941,20 @@ describe('createFetchLogger', () => {
           statusText: 'Error',
         });
 
-        const response = await fetchWithLogger('http://descope.com/test', {
+        const promise = fetchWithLogger('http://descope.com/test', {
           method: 'GET',
           headers: new Headers({ test: '123' }),
         });
 
-        // Verify fetch was called only once (no retry)
+        await jest.runAllTimersAsync();
+        const response = await promise;
+
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(response.status).toBe(statusCode);
       }
     });
 
-    it('should return the second failed response when retry also fails', async () => {
-      // Both responses fail with 521
+    it('should return the last failed response when all retries fail', async () => {
       fetch
         .mockResolvedValueOnce({
           ok: false,
@@ -779,20 +971,36 @@ describe('createFetchLogger', () => {
           headers: new Headers({ header: 'header2' }),
           status: 521,
           statusText: 'Web Server Is Down',
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Third error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header3' }),
+          status: 521,
+          statusText: 'Web Server Is Down',
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Fourth error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header4' }),
+          status: 521,
+          statusText: 'Web Server Is Down',
         });
 
-      const response = await fetchWithLogger('http://descope.com/test', {
+      const promise = fetchWithLogger('http://descope.com/test', {
         method: 'GET',
         headers: new Headers({ test: '123' }),
       });
 
-      // Verify fetch was called twice
-      expect(fetch).toHaveBeenCalledTimes(2);
+      await jest.runAllTimersAsync();
+      const response = await promise;
 
-      // Verify final response is from the second attempt
+      // Original + 3 retries = 4 total calls
+      expect(fetch).toHaveBeenCalledTimes(4);
       expect(response.status).toBe(521);
-      expect(await response.text()).toBe('Second error');
-      expect(response.headers.get('header')).toBe('header2');
+      expect(await response.text()).toBe('Fourth error');
     });
 
     it('should log both the original request and final response after retry', async () => {
@@ -814,26 +1022,21 @@ describe('createFetchLogger', () => {
           statusText: 'OK',
         });
 
-      await fetchWithLogger('http://descope.com/test', {
+      const promise = fetchWithLogger('http://descope.com/test', {
         method: 'GET',
         headers: new Headers({ test: '123' }),
         body: undefined,
       });
 
-      // Verify request was logged once (before any fetch)
-      expect(logger.log).toHaveBeenCalledTimes(2);
+      await jest.runAllTimersAsync();
+      await promise;
 
-      // First log call should be the request
+      expect(logger.log).toHaveBeenCalledTimes(2);
       expect(logger.log).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('Request'),
       );
-
-      // Since retry happens internally, only the final successful response is logged
-      // The failed response is not logged because the retry happens before logging
       expect(logger.error).toHaveBeenCalledTimes(0);
-
-      // Second log call should be for the successful retry response
       expect(logger.log).toHaveBeenNthCalledWith(
         2,
         expect.stringContaining('200 OK'),
@@ -859,12 +1062,14 @@ describe('createFetchLogger', () => {
           statusText: 'OK',
         });
 
-      const response = await fetchWithLogger('http://descope.com/test', {
+      const promise = fetchWithLogger('http://descope.com/test', {
         method: 'GET',
         headers: new Headers({ test: '123' }),
       });
 
-      // Verify response methods work correctly
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
       expect(await response.text()).toBe('{"success": true}');
       expect(await response.json()).toEqual({ success: true });
       expect(response.clone()).toBe(response);
@@ -887,7 +1092,6 @@ describe('createFetchLogger', () => {
         logger,
       });
 
-      // Setup retry scenario
       mockFetch
         .mockResolvedValueOnce({
           ok: false,
@@ -914,7 +1118,9 @@ describe('createFetchLogger', () => {
           },
         });
 
-      await httpClient.post('test', { data: 'test' });
+      const promise = httpClient.post('test', { data: 'test' });
+      await jest.runAllTimersAsync();
+      await promise;
 
       expect(logger.log).toHaveBeenCalledWith(
         expect.stringContaining('Retries: 1'),
@@ -951,7 +1157,9 @@ describe('createFetchLogger', () => {
         },
       });
 
-      await httpClient.post('test', { data: 'test' });
+      const promise = httpClient.post('test', { data: 'test' });
+      await jest.runAllTimersAsync();
+      await promise;
 
       expect(logger.log).toHaveBeenCalledWith(
         expect.not.stringContaining('Retries:'),
@@ -966,6 +1174,7 @@ describe('createFetchLogger', () => {
     let mockFetch: jest.Mock;
 
     beforeEach(() => {
+      jest.useFakeTimers();
       beforeRequestHook = jest.fn((config) => {
         config.queryParams = { ...config.queryParams, hookParam: 'added' };
         return config;
@@ -983,6 +1192,10 @@ describe('createFetchLogger', () => {
       global.fetch = mockFetch;
     });
 
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it('should call beforeRequest hook only once even with retry', async () => {
       const httpClient = createHttpClient({
         baseUrl: 'http://descope.com',
@@ -993,7 +1206,6 @@ describe('createFetchLogger', () => {
         },
       });
 
-      // Setup retry scenario
       mockFetch
         .mockResolvedValueOnce({
           ok: false,
@@ -1020,12 +1232,11 @@ describe('createFetchLogger', () => {
           },
         });
 
-      await httpClient.get('test');
+      const promise = httpClient.get('test');
+      await jest.runAllTimersAsync();
+      await promise;
 
-      // Verify beforeRequest was called only once
       expect(beforeRequestHook).toHaveBeenCalledTimes(1);
-
-      // Verify the hook added the parameter
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('hookParam=added'),
         expect.any(Object),
@@ -1041,7 +1252,6 @@ describe('createFetchLogger', () => {
         },
       });
 
-      // Setup retry scenario
       mockFetch
         .mockResolvedValueOnce({
           ok: false,
@@ -1068,14 +1278,13 @@ describe('createFetchLogger', () => {
           },
         });
 
-      await httpClient.post('test', { data: 'test' });
+      const promise = httpClient.post('test', { data: 'test' });
+      await jest.runAllTimersAsync();
+      await promise;
 
-      // Verify afterRequest was called only once
       expect(afterRequestHook).toHaveBeenCalledTimes(1);
-
-      // Hooks should see the final retry response, not the first response
       const response = afterRequestHook.mock.calls[0][1];
-      expect(response.status).toBe(200); // Final response from retry
+      expect(response.status).toBe(200);
       expect(await response.text()).toBe('{"success": true}');
     });
 
@@ -1088,7 +1297,6 @@ describe('createFetchLogger', () => {
         },
       });
 
-      // Setup retry scenario
       mockFetch
         .mockResolvedValueOnce({
           ok: false,
@@ -1115,16 +1323,14 @@ describe('createFetchLogger', () => {
           },
         });
 
-      const response = await httpClient.get('test');
+      const promise = httpClient.get('test');
+      await jest.runAllTimersAsync();
+      const response = await promise;
 
-      // Verify transformResponse was called only once
       expect(transformResponseHook).toHaveBeenCalledTimes(1);
-
-      // transformResponse should see the final retry response, not the first response
       const transformedResponse = transformResponseHook.mock.calls[0][0];
-      expect(transformedResponse.status).toBe(200); // Final response from retry
+      expect(transformedResponse.status).toBe(200);
 
-      // The transformation is applied to the final response
       const responseData = await response.json();
       expect(responseData).toEqual({ data: 'value', transformed: true });
     });
