@@ -261,8 +261,6 @@ test.describe('widget', () => {
     );
     await editableUserCheckbox.click();
 
-    await expect(editUserTrigger).toBeEnabled();
-
     await expect(createUserTrigger).toBeEnabled();
     await expect(editUserTrigger).toBeEnabled();
     await expect(enableUserTrigger).toBeDisabled();
