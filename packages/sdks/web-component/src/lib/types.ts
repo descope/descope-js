@@ -137,6 +137,7 @@ export type StepState = {
   direction: Direction | undefined;
   samlIdpUsername: string;
   action?: string;
+  locale?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<
