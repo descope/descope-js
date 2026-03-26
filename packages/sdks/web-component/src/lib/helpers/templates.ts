@@ -372,23 +372,6 @@ export const setComponentsAutoDetectByLocale = (
   });
 };
 
-export const setComponentsAutoDetectLanguage = (
-  fragment: DocumentFragment,
-  locale?: string,
-) => {
-  const config = {
-    language: 'autoDetect',
-  };
-
-  Object.entries(config).forEach(([key, value]) => {
-    Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
-      (ele) => {
-        ele.setAttribute(key, locale || value);
-      },
-    );
-  });
-};
-
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {
   const webauthnButtons = fragment.querySelectorAll(
     `descope-button[${ELEMENT_TYPE_ATTRIBUTE}="biometrics"]`,
