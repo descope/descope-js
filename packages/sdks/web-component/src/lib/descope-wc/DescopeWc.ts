@@ -1627,7 +1627,7 @@ class DescopeWc extends BaseDescopeWc {
     );
 
     // set auto-detect attributes (country code from geo, lang from locale)
-    const { geo } = await this.getExecutionContext();
+    const { geo } = (await this.getExecutionContext()) ?? {};
     setComponentsAutoDetectByGeo(clone, geo);
     setComponentsAutoDetectByLocale(clone, currentState.locale);
 
