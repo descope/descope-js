@@ -52,7 +52,8 @@ import {
   replaceElementMessage,
   setCssVars,
   setNOTPVariable,
-  setPhoneAutoDetectDefaultCode,
+  setComponentsAutoDetectByGeo,
+  setComponentsAutoDetectByLocale,
 } from '../helpers/templates';
 import {
   ClientScript,
@@ -1082,6 +1083,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcErrorRedirectUri,
       oidcResource,
       action,
+      locale: getUserLocale(locale).locale,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -1624,9 +1626,10 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
-    // set the default country code based on the locale value we got
-    const { geo } = await this.getExecutionContext();
-    setPhoneAutoDetectDefaultCode(clone, geo);
+    // set auto-detect attributes (country code from geo, lang from locale)
+    const { geo } = (await this.getExecutionContext()) ?? {};
+    setComponentsAutoDetectByGeo(clone, geo);
+    setComponentsAutoDetectByLocale(clone, currentState.locale);
 
     const injectNextPage = async () => {
       await loadDescopeUiComponents;
