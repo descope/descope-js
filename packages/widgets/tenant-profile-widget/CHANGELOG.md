@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.25](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.24...tenant-profile-widget-0.5.25) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+* `web-component` updated to version `3.57.1`
 ## [0.5.24](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.23...tenant-profile-widget-0.5.24) (2026-03-23)
 
 ### Dependency Updates

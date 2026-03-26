@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.47.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.46.0...web-js-sdk-1.47.0) (2026-03-26)
+
+
+### Features
+
+* User activity tracking ([#1339](https://github.com/descope/descope-js/issues/1339)) RELEASE ([f8fff57](https://github.com/descope/descope-js/commit/f8fff57c57ebe3fea1a24e70289da51456acb9e5))
+
 ## [1.46.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.45.0...web-js-sdk-1.46.0) (2026-03-23)
 
 ### Dependency Updates
