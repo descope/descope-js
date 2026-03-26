@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.57.1](https://github.com/descope/descope-js/compare/web-component-3.57.0...web-component-3.57.1) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+
+### Bug Fixes
+
+* Extract exchangeError from URL in nativeResume for oauthWeb/sso ([#1349](https://github.com/descope/descope-js/issues/1349)) ([4e430bb](https://github.com/descope/descope-js/commit/4e430bb3db9b701f87fec3b496f4ba6ca9a12042))
+
 ## [3.57.0](https://github.com/descope/descope-js/compare/web-component-3.56.0...web-component-3.57.0) (2026-03-23)
 
 ### Dependency Updates
