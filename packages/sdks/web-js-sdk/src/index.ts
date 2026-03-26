@@ -12,11 +12,12 @@ import createSdk from './sdk';
 const decoratedCreateSdk = compose(
   withCustomStorage, // must be first
   withFingerprint,
-  withAutoRefresh,
   withAnalytics,
   withNotifications,
   withFlowNonce,
-  withLastLoggedInUser, // must be one before last due to TS types
+  // The following two enhancers must remain immediately before withPersistTokens due to TS type inference limitations
+  withAutoRefresh,
+  withLastLoggedInUser,
   withPersistTokens, // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
 )(createSdk);
 
@@ -41,5 +42,6 @@ export type { JWTResponse } from '@descope/core-js-sdk';
 export type { OneTapConfig } from './sdk/fedcm';
 export type { CookieConfig } from './enhancers/withPersistTokens/types';
 export type { FlowNonceOptions } from './enhancers/withFlowNonce/types';
+export type { AutoRefreshConfig } from './enhancers/withAutoRefresh/types';
 export default decoratedCreateSdk;
 export { decoratedCreateSdk as createSdk };

@@ -17,6 +17,11 @@ root.render(
           applicationId: process.env.DESCOPE_OIDC_APPLICATION_ID,
         }
       }
+      autoRefresh={
+        process.env.DESCOPE_CUSTOM_ACTIVITY_TRACKING === 'true'
+          ? { customActivityTracking: true }
+          : undefined
+      }
       baseUrl={process.env.DESCOPE_BASE_URL}
       baseStaticUrl={process.env.DESCOPE_BASE_STATIC_URL}
       baseCdnUrl={process.env.DESCOPE_BASE_CDN_URL}
