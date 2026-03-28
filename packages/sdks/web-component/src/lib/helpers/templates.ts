@@ -324,7 +324,11 @@ export const updateScreenFromScreenState = (
   baseEle: HTMLElement,
   screenState?: ScreenState,
 ) => {
-  replaceElementInputs(baseEle, screenState?.inputs);
+  const screenInputs = {
+    ...screenState?.inputs,
+    ...(screenState?.totp?.key ? { 'totp.key': screenState.totp.key } : {}),
+  };
+  replaceElementInputs(baseEle, screenInputs);
   replaceElementInputs(baseEle, screenState?.form);
 };
 
