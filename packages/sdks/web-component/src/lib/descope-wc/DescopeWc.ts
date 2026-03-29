@@ -1338,7 +1338,7 @@ class DescopeWc extends BaseDescopeWc {
       navigator.userAgent,
     );
 
-  #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
+  #handleSdkResponse = async (sdkResp: NextFnReturnPromiseValue) => {
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -1403,6 +1403,25 @@ class DescopeWc extends BaseDescopeWc {
       if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
         payload.flowOutput = sdkResp.data.output;
       }
+
+      // Trigger afterRequest hook to notify onSessionTokenChange listeners
+      // This ensures SDK callbacks fire after step-up flows complete
+      if (this.sdk?.httpClient?.hooks?.afterRequest) {
+        try {
+          // Create a Response object with the authInfo data
+          // The hook expects the authInfo to be under an authInfo key (flow response format)
+          const responseData = { authInfo: payload };
+          const mockResponse = new Response(JSON.stringify(responseData), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+          await this.sdk.httpClient.hooks.afterRequest({}, mockResponse);
+        } catch (err) {
+          // Log but don't fail - the success event should still fire
+          this.logger.error('Failed to trigger afterRequest hook', err);
+        }
+      }
+
       this.#dispatch('success', payload);
       return;
     }
