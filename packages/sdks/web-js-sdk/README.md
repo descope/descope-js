@@ -83,6 +83,10 @@ sdk.onClaimsChange((newClaims) => {
   // handle Claims change...
 });
 
+// Important: if you are using `<descope-wc>` (web component) alongside this SDK,
+// `onSessionTokenChange` will NOT fire automatically when the web component completes a flow.
+// See "Using onSessionTokenChange with <descope-wc>" below for the required setup.
+
 
 /* For a case that the browser has a valid refresh token on storage/cookie,
 the user should get a valid session token (e.i. user should be logged-in).
@@ -230,3 +234,27 @@ To run the example:
 The browser open a tab with directory tree of available examples. Click on the desire directory and follow the instruction.
 
 NOTE: This package is a part of a monorepo. so if you make changes in a dependency, you will have to rerun `npm run start` (this is a temporary solution until we improve the process to fit to monorepo).
+
+## Using `onSessionTokenChange` with `<descope-wc>`
+
+When using `<descope-wc>` (the Descope web component) alongside `createSdk`, `onSessionTokenChange` will **not** fire automatically when the web component completes a flow.
+
+Use `DescopeWc.sdkConfigOverrides` to share your SDK's `afterRequest` hook chain with the web component. Set this **before** any `<descope-wc>` element is mounted:
+
+```js
+import DescopeWc from '@descope/web-component';
+import { createSdk } from '@descope/web-js-sdk';
+
+const sdk = createSdk({ projectId: 'YOUR_PROJECT_ID', persistTokens: true });
+
+sdk.onSessionTokenChange((newToken) => {
+  console.log('token changed:', newToken); // now fires after step-up and other flows
+});
+
+// Must be set before any <descope-wc> element is mounted
+DescopeWc.sdkConfigOverrides = {
+  hooks: {
+    afterRequest: sdk.httpClient.hooks.afterRequest,
+  },
+};
+```

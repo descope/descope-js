@@ -259,3 +259,29 @@ descopeWcEle.addEventListener('ready', () => {
   // Remove/hide the loading indication
 });
 ```
+
+## Using `@descope/web-js-sdk` alongside `<descope-wc>`
+
+When using `@descope/web-js-sdk`'s `createSdk` `onSessionTokenChange` will **not** fire automatically after flows complete inside `<descope-wc>`.
+
+Use `DescopeWc.sdkConfigOverrides` to pass your SDK's `afterRequest` hooks to the web component. This makes the web component call your SDK's hook chain when it processes API responses, so `onSessionTokenChange` fires on your instance.
+
+Set this **before** any `<descope-wc>` element is mounted:
+
+```javascript
+import DescopeWc from '@descope/web-component';
+import { createSdk } from '@descope/web-js-sdk';
+
+const sdk = createSdk({ projectId: 'YOUR_PROJECT_ID', persistTokens: true });
+
+sdk.onSessionTokenChange((newToken) => {
+  console.log('token changed:', newToken); // now fires after step-up and other flows
+});
+
+// Share the afterRequest hook chain with the web component
+DescopeWc.sdkConfigOverrides = {
+  hooks: {
+    afterRequest: sdk.httpClient.hooks.afterRequest,
+  },
+};
+```
