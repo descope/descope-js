@@ -253,7 +253,9 @@ sdk.onSessionTokenChange((newToken) => {
 
 // Must be set before any <descope-wc> element is mounted
 DescopeWc.sdkConfigOverrides = {
+  ...(DescopeWc.sdkConfigOverrides || {}),
   hooks: {
+    ...(DescopeWc.sdkConfigOverrides?.hooks || {}),
     afterRequest: sdk.httpClient.hooks.afterRequest,
   },
 };
