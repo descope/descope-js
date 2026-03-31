@@ -21,7 +21,10 @@ export function getLastAuth(loginId: string) {
 
 // save last auth to local storage
 export function setLastAuth(
-  lastAuth: NextFnReturnPromiseValue['data']['lastAuth'],
+  lastAuth: NextFnReturnPromiseValue['data']['lastAuth'] & {
+    interactionIds?: string[];
+    lastUsedPerScreen?: Record<string, string>;
+  },
   forceLoginId?: boolean,
 ) {
   if (!lastAuth?.authMethod) {
