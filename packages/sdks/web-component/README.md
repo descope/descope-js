@@ -280,7 +280,9 @@ sdk.onSessionTokenChange((newToken) => {
 
 // Share the afterRequest hook chain with the web component
 DescopeWc.sdkConfigOverrides = {
+  ...(DescopeWc.sdkConfigOverrides || {}),
   hooks: {
+    ...((DescopeWc.sdkConfigOverrides || {}).hooks || {}),
     afterRequest: sdk.httpClient.hooks.afterRequest,
   },
 };
