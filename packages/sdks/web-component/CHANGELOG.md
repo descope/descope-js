@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.58.0](https://github.com/descope/descope-js/compare/web-component-3.57.1...web-component-3.58.0) (2026-03-31)
+
+
+### Features
+
+* Add support for country-subdivision-city component ([#1354](https://github.com/descope/descope-js/issues/1354)) ([33c53cc](https://github.com/descope/descope-js/commit/33c53cc25ece1429c79bd29071b75a2e45ce3272))
+
 ## [3.57.1](https://github.com/descope/descope-js/compare/web-component-3.57.0...web-component-3.57.1) (2026-03-26)
 
 ### Dependency Updates
