@@ -42,9 +42,9 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         saml_generated_roles: '',
         oidc_response: '',
         oidc_generated_user: '',
-        scim_request: undefined as any,
-        scim_result: undefined as any,
-        Change: undefined as any,
+        scim_request: '',
+        scim_result: '',
+        Change: '',
       },
       ...auditRest
     } = audit || {};
