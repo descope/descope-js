@@ -372,6 +372,7 @@ export const setComponentsAutoDetectByLocale = (
         canonicalLocale = canonical;
       }
     } catch {
+      // locale is not valid, keep original value
     }
   }
 
