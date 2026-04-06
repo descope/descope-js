@@ -365,12 +365,14 @@ export const setComponentsAutoDetectByLocale = (
   };
 
   let canonicalLocale = locale;
-  try {
-    const [canonical] = Intl.getCanonicalLocales(locale);
-    if (canonical) {
-      canonicalLocale = canonical;
+  if (locale) {
+    try {
+      const [canonical] = Intl.getCanonicalLocales(locale);
+      if (canonical) {
+        canonicalLocale = canonical;
+      }
+    } catch {
     }
-  } catch {
   }
 
   Object.entries(config).forEach(([key, value]) => {
