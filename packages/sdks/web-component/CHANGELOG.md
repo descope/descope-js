@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.58.1](https://github.com/descope/descope-js/compare/web-component-3.58.0...web-component-3.58.1) (2026-04-06)
+
+
+### Bug Fixes
+
+* use canonical locale for components RELEASE ([#1360](https://github.com/descope/descope-js/issues/1360)) ([8a0c8f5](https://github.com/descope/descope-js/commit/8a0c8f5e0f2c5629a58553b08a97b3b755f9013c))
+
 ## [3.58.0](https://github.com/descope/descope-js/compare/web-component-3.57.1...web-component-3.58.0) (2026-03-31)
 
 
