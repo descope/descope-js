@@ -363,10 +363,20 @@ export const setComponentsAutoDetectByLocale = (
     // country-subdivision-city
     lang: 'autoDetect',
   };
+
+  let canonicalLocale = locale;
+  try {
+    const [canonical] = Intl.getCanonicalLocales(locale);
+    if (canonical) {
+      canonicalLocale = canonical;
+    }
+  } catch {
+  }
+
   Object.entries(config).forEach(([key, value]) => {
     Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
       (ele) => {
-        ele.setAttribute(key, locale || value);
+        ele.setAttribute(key, canonicalLocale);
       },
     );
   });
