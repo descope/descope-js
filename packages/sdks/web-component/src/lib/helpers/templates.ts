@@ -376,7 +376,7 @@ export const setComponentsAutoDetectByLocale = (
   Object.entries(config).forEach(([key, value]) => {
     Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
       (ele) => {
-        ele.setAttribute(key, canonicalLocale);
+        ele.setAttribute(key, canonicalLocale || value);
       },
     );
   });
