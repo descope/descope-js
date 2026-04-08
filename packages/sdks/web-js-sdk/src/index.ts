@@ -34,6 +34,15 @@ export {
   clearFingerprintData,
 } from './enhancers/withFingerprint/helpers';
 
+export {
+  getLastUserLoginId,
+  getLastUserDisplayName,
+  setLastUserLoginId,
+  setLastUserDisplayName,
+  removeLastUserLoginId,
+  removeLastUserDisplayName,
+} from './enhancers/withLastLoggedInUser/helpers';
+
 export { getSessionToken } from './enhancers/withPersistTokens/helpers';
 
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
