@@ -66,7 +66,7 @@ describe('csv helpers', () => {
       });
 
       it('should prefix values starting with carriage return', () => {
-        expect(escapeCsvValue('\r=evil')).toBe("'\r=evil");
+        expect(escapeCsvValue('\r=evil')).toBe('"\'\r=evil"');
       });
 
       it('should not prefix normal values', () => {
