@@ -197,7 +197,9 @@ test.describe('widget', () => {
     ).toBeVisible({ timeout: 10000 });
 
     // verify export button is visible
-    const exportButton = page.getByTestId('export-button');
+    const exportButton = page.locator(
+      'descope-button[data-testid="export-button"]',
+    );
     await expect(exportButton).toBeVisible();
 
     // set up download listener and click
