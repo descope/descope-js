@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/audit-management-widget-0.5.37...audit-management-widget-0.6.0) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+* `sdk-component-drivers` updated to version `0.9.1`
+
+### Features
+
+* **audit-widget:** add export CSV button ([#1362](https://github.com/descope/descope-js/issues/1362)) ([be22970](https://github.com/descope/descope-js/commit/be22970173d17de38ce7aca1723fead6afd4aec3))
+* **audit-widget:** lift SCIM request, result, and change data to top-level audit fields ([#1361](https://github.com/descope/descope-js/issues/1361)) ([6ea8612](https://github.com/descope/descope-js/commit/6ea861294a4cd0a42ba4dec9ced0873663df2c6e))
+
 ## [0.5.37](https://github.com/descope/descope-js/compare/audit-management-widget-0.5.36...audit-management-widget-0.5.37) (2026-03-26)
 
 ### Dependency Updates
