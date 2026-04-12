@@ -1,15 +1,13 @@
 export { default as createFetchLogger } from './createFetchLogger';
 export { getClientSessionId } from './getClientSessionId';
 
-export function transformSetCookie(setCookieHeader: string) {
-  // Split the header by semicolons to separate different attributes
-  var cookiesString = setCookieHeader.split(';');
+import setCookieParser from 'set-cookie-parser';
 
-  return cookiesString.reduce((acc, cookie) => {
-    const [key, value] = cookie.split('=');
-    return {
-      ...acc,
-      [key.trim()]: value,
-    };
-  }, {});
+export function transformSetCookie(
+  setCookieHeader: string,
+): Record<string, string> {
+  const cookies = setCookieParser.parse(
+    setCookieParser.splitCookiesString(setCookieHeader),
+  );
+  return Object.fromEntries(cookies.map((c) => [c.name, c.value]));
 }
