@@ -91,6 +91,37 @@ export const mockAccessKeysWithNonEditable: Record<string, AccessKey[]> = {
   ],
 };
 
+export const mockAccessKeysWithExpired: Record<string, AccessKey[]> = {
+  keys: [
+    {
+      id: '1',
+      name: 'Access Key 1',
+      clientId: 'Client id 1',
+      createdBy: 'created by 1',
+      roleNames: [],
+      permittedIps: [],
+      createdTime: new Date().getTime(),
+      expireTime: Math.floor(Date.now() / 1000) - 3600,
+      status: 'active',
+      editable: true,
+      boundUserId: 'Bound User 1',
+    },
+    {
+      id: '2',
+      name: 'Access Key 2',
+      clientId: 'Client id 2',
+      createdBy: 'created by 2',
+      roleNames: [],
+      permittedIps: [],
+      createdTime: new Date().getTime(),
+      expireTime: Math.floor(Date.now() / 1000) - 3600,
+      status: 'active',
+      editable: true,
+      boundUserId: 'Bound User 2',
+    },
+  ],
+};
+
 export const mockNewAccessKey: CreateAccessKeyConfig = {
   name: 'Access Key New',
   expiration: '0',

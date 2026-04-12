@@ -4,6 +4,12 @@ import { pluralize } from '@descope/sdk-helpers';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import { mockAccessKeys, mockNewAccessKey } from './mocks/mockAccessKeys';
 import { createSdk } from '../src/lib/widget/api/sdk';
+import {
+  getCanModifyAccessKeys,
+  getCanActivateAccessKeys,
+  getHasSelectedExpiredAccessKeys,
+} from '../src/lib/widget/state/selectors';
+import { State } from '../src/lib/widget/state/types';
 import '../src/lib/index';
 import rootMock from './mocks/rootMock';
 import createAccessKeyModalMock from './mocks/createAccessKeyModalMock';
@@ -251,6 +257,125 @@ describe('access-key-management-widget', () => {
           's',
         ]} deleted successfully`,
       ).toEqual('2 access keys deleted successfully');
+    });
+  });
+
+  describe('selectors', () => {
+    const baseState: State = {
+      accessKeysList: { data: [], loading: false, error: null },
+      createAccessKey: { loading: false, error: null },
+      activateAccessKey: { loading: false, error: null },
+      deactivateAccessKey: { loading: false, error: null },
+      deleteAccessKey: { loading: false, error: null },
+      tenantRoles: { loading: false, error: null, data: [] },
+      searchParams: { text: '', sort: [] },
+      selectedAccessKeysIds: [],
+      notifications: [],
+    };
+
+    const pastTime = Math.floor(Date.now() / 1000) - 3600;
+    const futureTime = Math.floor(Date.now() / 1000) + 3600;
+
+    const makeKey = (overrides: Partial<(typeof mockAccessKeys.keys)[0]>) => ({
+      id: '1',
+      name: 'Key 1',
+      clientId: 'c1',
+      createdBy: 'user',
+      roleNames: [],
+      permittedIps: [],
+      createdTime: pastTime,
+      expireTime: futureTime,
+      status: 'active',
+      editable: true,
+      boundUserId: 'u1',
+      ...overrides,
+    });
+
+    it('getCanActivateAccessKeys should return true for selected editable non-expired keys', () => {
+      const state: State = {
+        ...baseState,
+        accessKeysList: {
+          ...baseState.accessKeysList,
+          data: [makeKey({ id: '1', expireTime: futureTime })],
+        },
+        selectedAccessKeysIds: ['1'],
+      };
+
+      expect(getCanModifyAccessKeys(state)).toBe(true);
+      expect(getHasSelectedExpiredAccessKeys(state)).toBe(false);
+      expect(getCanActivateAccessKeys(state)).toBe(true);
+    });
+
+    it('getCanActivateAccessKeys should return false for expired keys', () => {
+      const state: State = {
+        ...baseState,
+        accessKeysList: {
+          ...baseState.accessKeysList,
+          data: [makeKey({ id: '1', expireTime: pastTime })],
+        },
+        selectedAccessKeysIds: ['1'],
+      };
+
+      expect(getCanModifyAccessKeys(state)).toBe(true);
+      expect(getHasSelectedExpiredAccessKeys(state)).toBe(true);
+      expect(getCanActivateAccessKeys(state)).toBe(false);
+    });
+
+    it('getCanActivateAccessKeys should return false when mix of expired and non-expired keys selected', () => {
+      const state: State = {
+        ...baseState,
+        accessKeysList: {
+          ...baseState.accessKeysList,
+          data: [
+            makeKey({ id: '1', expireTime: futureTime }),
+            makeKey({ id: '2', expireTime: pastTime }),
+          ],
+        },
+        selectedAccessKeysIds: ['1', '2'],
+      };
+
+      expect(getCanModifyAccessKeys(state)).toBe(true);
+      expect(getHasSelectedExpiredAccessKeys(state)).toBe(true);
+      expect(getCanActivateAccessKeys(state)).toBe(false);
+    });
+
+    it('getCanModifyAccessKeys should still return true for expired keys (for delete)', () => {
+      const state: State = {
+        ...baseState,
+        accessKeysList: {
+          ...baseState.accessKeysList,
+          data: [makeKey({ id: '1', expireTime: pastTime })],
+        },
+        selectedAccessKeysIds: ['1'],
+      };
+
+      expect(getCanModifyAccessKeys(state)).toBe(true);
+    });
+
+    it('getCanActivateAccessKeys should return false for non-editable keys', () => {
+      const state: State = {
+        ...baseState,
+        accessKeysList: {
+          ...baseState.accessKeysList,
+          data: [makeKey({ id: '1', editable: false })],
+        },
+        selectedAccessKeysIds: ['1'],
+      };
+
+      expect(getCanActivateAccessKeys(state)).toBe(false);
+    });
+
+    it('getCanActivateAccessKeys should return false when no keys selected', () => {
+      const state: State = {
+        ...baseState,
+        accessKeysList: {
+          ...baseState.accessKeysList,
+          data: [makeKey({ id: '1' })],
+        },
+        selectedAccessKeysIds: [],
+      };
+
+      expect(getCanActivateAccessKeys(state)).toBe(false);
     });
   });
 });
