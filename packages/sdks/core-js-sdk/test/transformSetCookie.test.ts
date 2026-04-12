@@ -50,6 +50,11 @@ describe('transformSetCookie', () => {
     });
   });
 
+  it('should skip malformed entries without a name=value pair', () => {
+    const result = transformSetCookie('noequals, DS=valid_value');
+    expect(result).toEqual({ DS: 'valid_value' });
+  });
+
   it('should return an empty object for an empty string', () => {
     const result = transformSetCookie('');
     expect(result).toEqual({});

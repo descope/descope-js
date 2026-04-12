@@ -48,7 +48,6 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": "20.17.13",
-    "@types/set-cookie-parser": "^2.4.10",
     "@typescript-eslint/parser": "^7.0.0",
     "esbuild": "^0.25.0",
     "eslint": "8.57.1",
@@ -83,8 +82,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "jwt-decode": "4.0.0",
-    "set-cookie-parser": "^3.1.0"
+    "jwt-decode": "4.0.0"
   },
   "overrides": {
     "terser": "^5.14.2"
