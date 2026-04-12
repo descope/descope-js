@@ -57,7 +57,7 @@ export const getHasSelectedExpiredAccessKeys = createSelector(
     selectedAccessKeys.some((accessKey) => accessKey.status === 'expired'),
 );
 
-export const getCanActivateAccessKeys = createSelector(
+export const getCanChangeAccessKeysStatus = createSelector(
   getCanModifyAccessKeys,
   getHasSelectedExpiredAccessKeys,
   (canModify, hasExpired) => canModify && !hasExpired,

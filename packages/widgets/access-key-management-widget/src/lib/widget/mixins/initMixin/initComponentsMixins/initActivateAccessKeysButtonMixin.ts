@@ -5,7 +5,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { getCanActivateAccessKeys } from '../../../state/selectors';
+import { getCanChangeAccessKeysStatus } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initActivateAccessKeysModalMixin } from './initActivateAccessKeysModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -32,7 +32,7 @@ export const initActivateAccessKeysButtonMixin = createSingletonMixin(
       }
 
       #onIsAccessKeySelectedUpdate = withMemCache(
-        (canActivate: ReturnType<typeof getCanActivateAccessKeys>) => {
+        (canActivate: ReturnType<typeof getCanChangeAccessKeysStatus>) => {
           if (canActivate) {
             this.activateButton.enable();
           } else {
@@ -48,7 +48,7 @@ export const initActivateAccessKeysButtonMixin = createSingletonMixin(
 
         this.subscribe(
           this.#onIsAccessKeySelectedUpdate.bind(this),
-          getCanActivateAccessKeys,
+          getCanChangeAccessKeysStatus,
         );
       }
     },

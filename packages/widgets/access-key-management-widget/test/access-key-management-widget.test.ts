@@ -6,7 +6,7 @@ import { mockAccessKeys, mockNewAccessKey } from './mocks/mockAccessKeys';
 import { createSdk } from '../src/lib/widget/api/sdk';
 import {
   getCanModifyAccessKeys,
-  getCanActivateAccessKeys,
+  getCanChangeAccessKeysStatus,
   getHasSelectedExpiredAccessKeys,
 } from '../src/lib/widget/state/selectors';
 import { State } from '../src/lib/widget/state/types';
@@ -291,7 +291,7 @@ describe('access-key-management-widget', () => {
       ...overrides,
     });
 
-    it('getCanActivateAccessKeys should return true for selected editable non-expired keys', () => {
+    it('getCanChangeAccessKeysStatus should return true for selected editable non-expired keys', () => {
       const state: State = {
         ...baseState,
         accessKeysList: {
@@ -303,10 +303,10 @@ describe('access-key-management-widget', () => {
 
       expect(getCanModifyAccessKeys(state)).toBe(true);
       expect(getHasSelectedExpiredAccessKeys(state)).toBe(false);
-      expect(getCanActivateAccessKeys(state)).toBe(true);
+      expect(getCanChangeAccessKeysStatus(state)).toBe(true);
     });
 
-    it('getCanActivateAccessKeys should return false for expired keys', () => {
+    it('getCanChangeAccessKeysStatus should return false for expired keys', () => {
       const state: State = {
         ...baseState,
         accessKeysList: {
@@ -318,10 +318,10 @@ describe('access-key-management-widget', () => {
 
       expect(getCanModifyAccessKeys(state)).toBe(true);
       expect(getHasSelectedExpiredAccessKeys(state)).toBe(true);
-      expect(getCanActivateAccessKeys(state)).toBe(false);
+      expect(getCanChangeAccessKeysStatus(state)).toBe(false);
     });
 
-    it('getCanActivateAccessKeys should return false when mix of expired and non-expired keys selected', () => {
+    it('getCanChangeAccessKeysStatus should return false when mix of expired and non-expired keys selected', () => {
       const state: State = {
         ...baseState,
         accessKeysList: {
@@ -336,7 +336,7 @@ describe('access-key-management-widget', () => {
 
       expect(getCanModifyAccessKeys(state)).toBe(true);
       expect(getHasSelectedExpiredAccessKeys(state)).toBe(true);
-      expect(getCanActivateAccessKeys(state)).toBe(false);
+      expect(getCanChangeAccessKeysStatus(state)).toBe(false);
     });
 
     it('getCanModifyAccessKeys should still return true for expired keys (for delete)', () => {
@@ -352,7 +352,7 @@ describe('access-key-management-widget', () => {
       expect(getCanModifyAccessKeys(state)).toBe(true);
     });
 
-    it('getCanActivateAccessKeys should return false for non-editable keys', () => {
+    it('getCanChangeAccessKeysStatus should return false for non-editable keys', () => {
       const state: State = {
         ...baseState,
         accessKeysList: {
@@ -362,10 +362,10 @@ describe('access-key-management-widget', () => {
         selectedAccessKeysIds: ['1'],
       };
 
-      expect(getCanActivateAccessKeys(state)).toBe(false);
+      expect(getCanChangeAccessKeysStatus(state)).toBe(false);
     });
 
-    it('getCanActivateAccessKeys should return false when no keys selected', () => {
+    it('getCanChangeAccessKeysStatus should return false when no keys selected', () => {
       const state: State = {
         ...baseState,
         accessKeysList: {
@@ -375,7 +375,7 @@ describe('access-key-management-widget', () => {
         selectedAccessKeysIds: [],
       };
 
-      expect(getCanActivateAccessKeys(state)).toBe(false);
+      expect(getCanChangeAccessKeysStatus(state)).toBe(false);
     });
   });
 });
