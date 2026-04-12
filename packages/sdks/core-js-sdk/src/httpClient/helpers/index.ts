@@ -1,7 +1,7 @@
+import setCookieParser from 'set-cookie-parser';
+
 export { default as createFetchLogger } from './createFetchLogger';
 export { getClientSessionId } from './getClientSessionId';
-
-import setCookieParser from 'set-cookie-parser';
 
 export function transformSetCookie(
   setCookieHeader: string,
