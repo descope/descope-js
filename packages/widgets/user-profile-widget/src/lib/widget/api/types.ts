@@ -17,6 +17,7 @@ export type HttpClient = Sdk['httpClient'];
 export type AssociatedTenant = {
   tenantId: string;
   roleNames: string[];
+  permissions?: string[];
 };
 
 export type User = {
@@ -116,4 +117,5 @@ export type UserTenant = {
   tenantId: string;
   tenantName: string;
   roleNames?: string[];
+  permissions?: string[];
 };

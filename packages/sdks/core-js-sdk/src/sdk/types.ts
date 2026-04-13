@@ -97,6 +97,7 @@ export type UserHistoryResponse = {
 export type UserTenant = {
   tenantId: string;
   roleNames?: string[];
+  permissions?: string[];
   tenantName: string;
 };
 
