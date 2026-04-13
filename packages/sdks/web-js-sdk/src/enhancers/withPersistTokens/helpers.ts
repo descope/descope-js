@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { BeforeRequestHook, WebJWTResponse } from '../../types';
 import {
   ID_TOKEN_KEY,
+  REFRESH_COOKIE_NAME_KEY,
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
   TRUSTED_DEVICE_TOKEN_KEY,
@@ -224,7 +225,13 @@ export function getTrustedDeviceToken(prefix: string = ''): string {
   return getLocalStorage(`${prefix}${TRUSTED_DEVICE_TOKEN_KEY}`) || '';
 }
 
-/** Remove both the localStorage refresh JWT and the session cookie.
+/** Return the server-returned refresh cookie name from localStorage, if available */
+export function getStoredRefreshCookieName(prefix: string = ''): string | null {
+  return getLocalStorage(`${prefix}${REFRESH_COOKIE_NAME_KEY}`);
+}
+
+/** Remove auth tokens from localStorage (refresh JWT, session JWT, ID token, server-returned refresh cookie name)
+ * and clear the corresponding cookies if configured.
  * Note: DTD (Trusted Device Token) is NOT removed as it should stay after logging out and outlive these tokens
  */
 export function clearTokens(
@@ -236,6 +243,7 @@ export function clearTokens(
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${ID_TOKEN_KEY}`);
+  removeLocalStorage(`${prefix}${REFRESH_COOKIE_NAME_KEY}`);
   const sessionCookieName = getSessionCookieName(sessionTokenViaCookie);
   Cookies.remove(sessionCookieName, cookieOptions?.session);
 
@@ -244,11 +252,26 @@ export function clearTokens(
 }
 
 export const beforeRequest =
-  (prefix?: string, refreshTokenViaCookie?: CookieConfig): BeforeRequestHook =>
+  (
+    prefix?: string,
+    refreshTokenViaCookie?: CookieConfig,
+    refreshCookieName?: string,
+  ): BeforeRequestHook =>
   (config) => {
     const updatedConfig = Object.assign(config, {
       token: config.token || getRefreshToken(prefix, refreshTokenViaCookie),
     });
+
+    // Inject x-descope-refresh-cookie-name from localStorage when no SDK config override
+    if (!refreshCookieName) {
+      const storedCookieName = getStoredRefreshCookieName(prefix);
+      if (storedCookieName) {
+        updatedConfig.headers = {
+          ...(updatedConfig.headers || {}),
+          'x-descope-refresh-cookie-name': storedCookieName,
+        };
+      }
+    }
 
     // Always send DTD via header if available in localStorage
     // This ensures DTD is sent in both cookie and localStorage modes

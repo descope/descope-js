@@ -23,21 +23,25 @@ const hashUrl = (url: URL) => {
   return `${Math.abs(hash).toString()}`;
 };
 
-const setupScript = (id: string) => {
+const setupScript = (id: string, integrity?: string) => {
   const scriptEle = document.createElement('script');
   scriptEle.id = id;
+
+  if (integrity) {
+    scriptEle.integrity = integrity;
+    scriptEle.crossOrigin = 'anonymous';
+  }
+
+  if ((window as any).DESCOPE_NONCE) {
+    scriptEle.setAttribute('nonce', (window as any).DESCOPE_NONCE);
+  }
 
   return scriptEle;
 };
 
-type ScriptData = {
-  id: string;
-  url: URL;
-};
-
-const injectScript = (scriptId: string, url: URL) => {
+const injectScript = (scriptId: string, url: URL, integrity?: string) => {
   return new Promise((res, rej) => {
-    const scriptEle = setupScript(scriptId);
+    const scriptEle = setupScript(scriptId, integrity);
 
     scriptEle.onerror = (error) => {
       scriptEle.setAttribute('status', 'error');
@@ -54,7 +58,21 @@ const injectScript = (scriptId: string, url: URL) => {
   });
 };
 
-const handleExistingScript = (existingScript: HTMLScriptElement) => {
+const handleExistingScript = (
+  existingScript: HTMLScriptElement,
+  expectedIntegrity?: string,
+) => {
+  if (expectedIntegrity) {
+    const actualIntegrity = existingScript.integrity;
+    if (actualIntegrity !== expectedIntegrity) {
+      return Promise.reject(
+        new Error(
+          `Integrity mismatch: expected ${expectedIntegrity}, found ${actualIntegrity}`,
+        ),
+      );
+    }
+  }
+
   if (isScriptLoaded(existingScript)) {
     return Promise.resolve(existingScript);
   }
@@ -74,23 +92,29 @@ const handleExistingScript = (existingScript: HTMLScriptElement) => {
   });
 };
 
+export type ScriptData = {
+  id: string;
+  url: URL;
+  integrity?: string;
+};
+
 export const injectScriptWithFallbacks = async (
   scriptsData: ScriptData[],
   onError: (scriptData: ScriptData, existingScript: boolean) => void,
 ) => {
   for (const scriptData of scriptsData) {
-    const { id, url } = scriptData;
+    const { id, url, integrity } = scriptData;
     const existingScript = getExistingScript(id);
     if (existingScript) {
       try {
-        await handleExistingScript(existingScript);
+        await handleExistingScript(existingScript, integrity);
         return scriptData;
       } catch (e) {
         onError(scriptData, true);
       }
     } else {
       try {
-        await injectScript(id, url);
+        await injectScript(id, url, integrity);
         return scriptData;
       } catch (e) {
         onError(scriptData, false);
@@ -105,6 +129,7 @@ export const generateLibUrls = (
   libName: string,
   version: string,
   path = '',
+  integrity?: string,
 ) =>
   baseUrls.reduce((prev, curr) => {
     const baseUrl = curr;
@@ -125,13 +150,16 @@ export const generateLibUrls = (
       url.pathname = `/npm/${libName}@${version}/${path}`;
     }
 
-    return [
-      ...prev,
-      {
-        url: url,
-        id: `npmlib-${libName
-          .replaceAll('@', '')
-          .replaceAll('/', '_')}-${hashUrl(url)}`,
-      },
-    ];
+    const scriptData: ScriptData = {
+      url: url,
+      id: `npmlib-${libName.replaceAll('@', '').replaceAll('/', '_')}-${hashUrl(
+        url,
+      )}`,
+    };
+
+    if (integrity) {
+      scriptData.integrity = integrity;
+    }
+
+    return [...prev, scriptData];
   }, []);
