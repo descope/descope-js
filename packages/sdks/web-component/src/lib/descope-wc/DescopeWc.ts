@@ -2033,7 +2033,8 @@ class DescopeWc extends BaseDescopeWc {
     const targetEl = this.contentRootElement.querySelector(`#${componentId}`);
     if (!targetEl) return;
 
-    badgeEl.anchor = targetEl;
+    targetEl.parentElement?.insertBefore(badgeEl, targetEl);
+    badgeEl.appendChild(targetEl);
   }
 
   #hydrate(next: NextFn, screenId: string) {

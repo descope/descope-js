@@ -58,7 +58,8 @@ export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
 
 export const SDK_SCRIPTS_LOAD_TIMEOUT = 5000;
 
-export const DESCOPE_LAST_AUTH_BADGE_COMPONENT = 'descope-last-auth-badge';
+export const DESCOPE_LAST_AUTH_BADGE_COMPONENT =
+  'descope-attachment[data-type="last-auth-badge"]';
 
 export const DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY =
   'dls_last_auth_in_flight';
