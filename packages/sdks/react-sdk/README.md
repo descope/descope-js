@@ -327,6 +327,63 @@ useEffect(() => {
 Descope SDK automatically refreshes the session token when it is about to expire. This is done in the background using the refresh token, without any additional configuration.
 If you want to disable this behavior, you can pass `autoRefresh={false}` to the `AuthProvider` component. This will prevent the SDK from automatically refreshing the session token.
 
+### Activity-Based Session Refresh
+
+Pass `autoRefresh={{ customActivityTracking: true }}` to skip refresh calls for idle users. The SDK will only refresh when `sdk.markUserActive()` has been called since the last refresh. This reduces unnecessary API calls and enables accurate server-side session inactivity tracking.
+
+**Step 1:** Enable it in `AuthProvider`:
+
+```jsx
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
+  <App />
+</AuthProvider>
+```
+
+**Step 2:** Create a `useActivityTracking` hook that calls `markUserActive()` on user interactions:
+
+```jsx
+import { useEffect } from 'react';
+import { useDescope } from '@descope/react-sdk';
+
+function useActivityTracking() {
+  const sdk = useDescope();
+
+  useEffect(() => {
+    const { markUserActive } = sdk;
+
+    document.addEventListener('click', markUserActive);
+    document.addEventListener('keydown', markUserActive);
+    document.addEventListener('touchstart', markUserActive);
+
+    // Mark active when the user switches back to this tab
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') markUserActive();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      document.removeEventListener('click', markUserActive);
+      document.removeEventListener('keydown', markUserActive);
+      document.removeEventListener('touchstart', markUserActive);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [sdk]);
+}
+```
+
+Call `useActivityTracking()` inside a component that is rendered within `<AuthProvider>` so `useDescope()` has access to the context:
+
+```jsx
+function Layout() {
+  useActivityTracking();
+  return <Outlet />;
+}
+
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
+  <Layout />
+</AuthProvider>
+```
+
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
 
 ### Session token server validation (pass session token to server API)

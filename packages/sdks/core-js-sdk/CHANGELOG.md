@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.58.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.0...core-js-sdk-2.58.1) (2026-04-13)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** use set-cookie-parser for correct multi-cookie parsing ([#1365](https://github.com/descope/descope-js/issues/1365)) RELEASE ([e92e848](https://github.com/descope/descope-js/commit/e92e8487e936f1e1af8c67b7b231516eb1eeabce))
+
+## [2.58.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.57.0...core-js-sdk-2.58.0) (2026-03-23)
+
+
+### Features
+
+* Add support for server-configured refresh cookie names for web ([#1343](https://github.com/descope/descope-js/issues/1343)) ([ec33c70](https://github.com/descope/descope-js/commit/ec33c70cd005f64e543db5d7388a3100123adc26))
+* **http:** retry requests on transient error status codes RELEASE ([#1351](https://github.com/descope/descope-js/issues/1351)) ([4e274ac](https://github.com/descope/descope-js/commit/4e274acdab55d1a7b3d1f2e4f903ba2dfaf78cb4))
+
 ## [2.57.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.2...core-js-sdk-2.57.0) (2026-01-29)
 
 

@@ -2,6 +2,87 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.27.4](https://github.com/descope/descope-js/compare/react-sdk-2.27.3...react-sdk-2.27.4) (2026-04-13)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.39`
+* `audit-management-widget` updated to version `0.6.1`
+* `role-management-widget` updated to version `0.5.31`
+* `user-management-widget` updated to version `0.11.18`
+* `user-profile-widget` updated to version `0.9.13`
+* `applications-portal-widget` updated to version `0.5.22`
+* `outbound-applications-widget` updated to version `0.2.29`
+* `web-component` updated to version `3.58.3`
+* `web-js-sdk` updated to version `1.47.1`
+* `core-js-sdk` updated to version `2.58.1`
+* `tenant-profile-widget` updated to version `0.5.29`
+## [2.27.3](https://github.com/descope/descope-js/compare/react-sdk-2.27.2...react-sdk-2.27.3) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `access-key-management-widget` updated to version `0.5.38`
+* `audit-management-widget` updated to version `0.6.0`
+* `role-management-widget` updated to version `0.5.30`
+* `user-management-widget` updated to version `0.11.17`
+* `user-profile-widget` updated to version `0.9.12`
+* `applications-portal-widget` updated to version `0.5.21`
+* `outbound-applications-widget` updated to version `0.2.28`
+* `web-component` updated to version `3.58.2`
+* `tenant-profile-widget` updated to version `0.5.28`
+## [2.27.2](https://github.com/descope/descope-js/compare/react-sdk-2.27.1...react-sdk-2.27.2) (2026-04-06)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.16`
+* `user-profile-widget` updated to version `0.9.11`
+* `outbound-applications-widget` updated to version `0.2.27`
+* `web-component` updated to version `3.58.1`
+* `tenant-profile-widget` updated to version `0.5.27`
+## [2.27.1](https://github.com/descope/descope-js/compare/react-sdk-2.27.0...react-sdk-2.27.1) (2026-03-31)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.15`
+* `user-profile-widget` updated to version `0.9.10`
+* `outbound-applications-widget` updated to version `0.2.26`
+* `web-component` updated to version `3.58.0`
+* `tenant-profile-widget` updated to version `0.5.26`
+## [2.27.0](https://github.com/descope/descope-js/compare/react-sdk-2.26.8...react-sdk-2.27.0) (2026-03-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.37`
+* `audit-management-widget` updated to version `0.5.37`
+* `role-management-widget` updated to version `0.5.29`
+* `user-management-widget` updated to version `0.11.14`
+* `user-profile-widget` updated to version `0.9.9`
+* `applications-portal-widget` updated to version `0.5.20`
+* `outbound-applications-widget` updated to version `0.2.25`
+* `web-component` updated to version `3.57.1`
+* `web-js-sdk` updated to version `1.47.0`
+* `tenant-profile-widget` updated to version `0.5.25`
+
+### Features
+
+* User activity tracking ([#1339](https://github.com/descope/descope-js/issues/1339)) RELEASE ([f8fff57](https://github.com/descope/descope-js/commit/f8fff57c57ebe3fea1a24e70289da51456acb9e5))
+
+## [2.26.8](https://github.com/descope/descope-js/compare/react-sdk-2.26.7...react-sdk-2.26.8) (2026-03-23)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.36`
+* `audit-management-widget` updated to version `0.5.36`
+* `role-management-widget` updated to version `0.5.28`
+* `user-management-widget` updated to version `0.11.13`
+* `user-profile-widget` updated to version `0.9.8`
+* `applications-portal-widget` updated to version `0.5.19`
+* `outbound-applications-widget` updated to version `0.2.24`
+* `web-component` updated to version `3.57.0`
+* `web-js-sdk` updated to version `1.46.0`
+* `core-js-sdk` updated to version `2.58.0`
+* `tenant-profile-widget` updated to version `0.5.24`
 ## [2.26.7](https://github.com/descope/descope-js/compare/react-sdk-2.26.6...react-sdk-2.26.7) (2026-02-26)
 
 ### Dependency Updates

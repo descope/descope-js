@@ -6,6 +6,7 @@ import {
   mockRoles,
   mockAccessKeys,
   mockAccessKeysWithNonEditable,
+  mockAccessKeysWithExpired,
   mockNewAccessKey,
 } from '../test/mocks/mockAccessKeys';
 import rootMock from '../test/mocks/rootMock';
@@ -501,5 +502,101 @@ test.describe('widget', () => {
 
     // activate button is disabled on selection
     await expect(activateAccessKeyTrigger).toBeDisabled();
+  });
+
+  test('activate button is disabled for expired keys', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
+      }),
+    );
+    page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const activateAccessKeyTrigger = page
+      .getByTestId('activate-access-keys-trigger')
+      .first();
+
+    await activateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // activate button initial state is disabled
+    await expect(activateAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // activate button remains disabled for expired keys
+    await expect(activateAccessKeyTrigger).toBeDisabled();
+  });
+
+  test('deactivate button is disabled for expired keys', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
+      }),
+    );
+    page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const deactivateAccessKeyTrigger = page
+      .getByTestId('deactivate-access-keys-trigger')
+      .first();
+
+    await deactivateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // deactivate button initial state is disabled
+    await expect(deactivateAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // deactivate button remains disabled for expired keys
+    await expect(deactivateAccessKeyTrigger).toBeDisabled();
+  });
+
+  test('delete button is still enabled for expired keys', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
+      }),
+    );
+    page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const deleteAccessKeyTrigger = page
+      .getByTestId('delete-access-keys-trigger')
+      .first();
+
+    await deleteAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // delete button initial state is disabled
+    await expect(deleteAccessKeyTrigger).toBeDisabled();
+
+    // select all items
+    await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // delete button is enabled even for expired keys
+    await expect(deleteAccessKeyTrigger).toBeEnabled();
   });
 });

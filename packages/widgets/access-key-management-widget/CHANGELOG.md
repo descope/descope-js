@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.39](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.38...access-key-management-widget-0.5.39) (2026-04-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.1`
+## [0.5.38](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.37...access-key-management-widget-0.5.38) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+* `sdk-component-drivers` updated to version `0.9.1`
+
+### Bug Fixes
+
+* **access-key-widget:** disable activate/deactivate for expired keys ([#1363](https://github.com/descope/descope-js/issues/1363)) ([dd18060](https://github.com/descope/descope-js/commit/dd1806030c787dac6851de5928984547228f7a9c)), closes [descope/etc#11712](https://github.com/descope/etc/issues/11712)
+
+## [0.5.37](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.36...access-key-management-widget-0.5.37) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+## [0.5.36](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.35...access-key-management-widget-0.5.36) (2026-03-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.46.0`
 ## [0.5.35](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.34...access-key-management-widget-0.5.35) (2026-02-26)
 
 ### Dependency Updates

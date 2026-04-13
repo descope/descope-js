@@ -16,6 +16,7 @@ import {
   RESPONSE_ACTIONS,
   SDK_SCRIPTS_LOAD_TIMEOUT,
   URL_CODE_PARAM_NAME,
+  URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
 } from '../constants';
@@ -58,7 +59,8 @@ import {
   replaceElementMessage,
   setCssVars,
   setNOTPVariable,
-  setPhoneAutoDetectDefaultCode,
+  setComponentsAutoDetectByGeo,
+  setComponentsAutoDetectByLocale,
 } from '../helpers/templates';
 import {
   ClientScript,
@@ -187,12 +189,15 @@ class DescopeWc extends BaseDescopeWc {
     const response = JSON.parse(payload);
     if (type === 'oauthWeb' || type === 'sso') {
       let { exchangeCode } = response;
+      let exchangeError: string | undefined;
       if (!exchangeCode) {
         const url = new URL(response.url);
         exchangeCode = url.searchParams?.get(URL_CODE_PARAM_NAME);
+        exchangeError = url.searchParams?.get(URL_ERR_PARAM_NAME) || undefined;
       }
       this.nativeCallbacks.complete?.({
         exchangeCode,
+        exchangeError,
         idpInitiated: true,
       });
     } else if (type === 'magicLink') {
@@ -1086,6 +1091,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcErrorRedirectUri,
       oidcResource,
       action,
+      locale: getUserLocale(locale).locale,
     };
 
     const lastAuth = getLastAuth(loginId);
@@ -1641,9 +1647,10 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
-    // set the default country code based on the locale value we got
-    const { geo } = await this.getExecutionContext();
-    setPhoneAutoDetectDefaultCode(clone, geo);
+    // set auto-detect attributes (country code from geo, lang from locale)
+    const { geo } = (await this.getExecutionContext()) ?? {};
+    setComponentsAutoDetectByGeo(clone, geo);
+    setComponentsAutoDetectByLocale(clone, currentState.locale);
 
     const injectNextPage = async () => {
       await loadDescopeUiComponents;

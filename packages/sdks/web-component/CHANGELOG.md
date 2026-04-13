@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.58.3](https://github.com/descope/descope-js/compare/web-component-3.58.2...web-component-3.58.3) (2026-04-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.1`
+## [3.58.2](https://github.com/descope/descope-js/compare/web-component-3.58.1...web-component-3.58.2) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+## [3.58.1](https://github.com/descope/descope-js/compare/web-component-3.58.0...web-component-3.58.1) (2026-04-06)
+
+
+### Bug Fixes
+
+* use canonical locale for components RELEASE ([#1360](https://github.com/descope/descope-js/issues/1360)) ([8a0c8f5](https://github.com/descope/descope-js/commit/8a0c8f5e0f2c5629a58553b08a97b3b755f9013c))
+
+## [3.58.0](https://github.com/descope/descope-js/compare/web-component-3.57.1...web-component-3.58.0) (2026-03-31)
+
+
+### Features
+
+* Add support for country-subdivision-city component ([#1354](https://github.com/descope/descope-js/issues/1354)) ([33c53cc](https://github.com/descope/descope-js/commit/33c53cc25ece1429c79bd29071b75a2e45ce3272))
+
+## [3.57.1](https://github.com/descope/descope-js/compare/web-component-3.57.0...web-component-3.57.1) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+
+### Bug Fixes
+
+* Extract exchangeError from URL in nativeResume for oauthWeb/sso ([#1349](https://github.com/descope/descope-js/issues/1349)) ([4e430bb](https://github.com/descope/descope-js/commit/4e430bb3db9b701f87fec3b496f4ba6ca9a12042))
+
+## [3.57.0](https://github.com/descope/descope-js/compare/web-component-3.56.0...web-component-3.57.0) (2026-03-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.46.0`
+
+### Features
+
+* Update flow scripts versions ([#1348](https://github.com/descope/descope-js/issues/1348)) ([2167d29](https://github.com/descope/descope-js/commit/2167d294007809fad0c8f4379cf1f6ee335ba22a))
+
 ## [3.56.0](https://github.com/descope/descope-js/compare/web-component-3.55.4...web-component-3.56.0) (2026-02-26)
 
 ### Dependency Updates
