@@ -54,4 +54,15 @@ export const mockSsoApps = [
       loginPageUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
     },
   },
+  {
+    id: 'ssoapp6',
+    name: 'WsFed App 1',
+    description: 'This is the first WS-Fed app',
+    enabled: true,
+    appType: SSOAppType.wsfed,
+    logo: 'logo4',
+    wsfedSettings: {
+      idpInitiatedURL: 'http://www.testingmcafeesites.com/testcat_ac.html',
+    },
+  },
 ];

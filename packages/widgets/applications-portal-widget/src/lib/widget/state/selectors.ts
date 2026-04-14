@@ -19,6 +19,16 @@ export const getOidcWithCustomIdpInitiatedLoginPageUrlApps = createSelector(
     ),
 );
 
+export const getWsFedApps = createSelector(
+  getSSOAppsList,
+  (ssoAppsList) =>
+    ssoAppsList?.filter?.(
+      (app) =>
+        app.appType === SSOAppType.wsfed &&
+        app.wsfedSettings?.idpInitiatedURL,
+    ),
+);
+
 export const getCustomApps = createSelector(
   getSSOAppsList,
   (ssoAppsList) =>
@@ -31,6 +41,8 @@ const getAppUrl = (app: SSOApplication) => {
       return app.samlSettings?.idpInitiatedUrl;
     case SSOAppType.oidc:
       return app.oidcSettings?.customIdpInitiatedLoginPageUrl;
+    case SSOAppType.wsfed:
+      return app.wsfedSettings?.idpInitiatedURL;
     case SSOAppType.custom:
       return app.customSettings?.loginPageUrl;
     default:
@@ -41,9 +53,10 @@ const getAppUrl = (app: SSOApplication) => {
 export const getAppsList = createSelector(
   getSamlApps,
   getOidcWithCustomIdpInitiatedLoginPageUrlApps,
+  getWsFedApps,
   getCustomApps,
-  (samlApps, oidcApps, customApps) =>
-    [...samlApps, ...oidcApps, ...customApps].map((app) => ({
+  (samlApps, oidcApps, wsFedApps, customApps) =>
+    [...samlApps, ...oidcApps, ...wsFedApps, ...customApps].map((app) => ({
       name: app.name,
       icon: app.logo,
       url: getAppUrl(app),
