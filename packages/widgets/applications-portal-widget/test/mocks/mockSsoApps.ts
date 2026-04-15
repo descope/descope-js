@@ -62,7 +62,10 @@ export const mockSsoApps = [
     appType: SSOAppType.wsfed,
     logo: 'logo4',
     wsfedSettings: {
-      idpInitiatedURL: 'http://www.testingmcafeesites.com/testcat_ac.html',
+      idpInitiatedUrl: 'http://www.testingmcafeesites.com/testcat_ac.html',
+      realm: 'urn:wsfed:testing:app1',
+      replyUrl: 'http://www.testingmcafeesites.com/reply',
+      loginPageUrl: 'http://www.testingmcafeesites.com/login',
     },
   },
 ];

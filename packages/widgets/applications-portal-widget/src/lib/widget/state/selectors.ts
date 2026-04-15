@@ -24,8 +24,7 @@ export const getWsFedApps = createSelector(
   (ssoAppsList) =>
     ssoAppsList?.filter?.(
       (app) =>
-        app.appType === SSOAppType.wsfed &&
-        app.wsfedSettings?.idpInitiatedURL,
+        app.appType === SSOAppType.wsfed && app.wsfedSettings?.idpInitiatedUrl,
     ),
 );
 

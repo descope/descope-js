@@ -36,10 +36,10 @@ export interface OidcApplication extends App {
 export interface WsFedApplication extends App {
   appType: SSOAppType.wsfed;
   wsfedSettings?: {
-    idpInitiatedURL: string;
-    realm: string;
-    replyURL: string;
-    loginPageURL: string;
+    idpInitiatedUrl?: string;
+    realm?: string;
+    replyUrl?: string;
+    loginPageUrl?: string;
   };
 }
 

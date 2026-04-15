@@ -34,6 +34,20 @@ const load: () => Promise<{ apps: SSOApplication[] }> = async () =>
             idpInitiatedUrl: '',
           },
         },
+        {
+          id: 'ssoapp4',
+          name: 'App 4',
+          description: 'This is a WS-Fed app',
+          enabled: true,
+          appType: SSOAppType.wsfed,
+          logo: 'logo4',
+          wsfedSettings: {
+            idpInitiatedUrl: '',
+            realm: 'urn:mock:realm',
+            replyUrl: 'http://localhost/reply',
+            loginPageUrl: 'http://localhost/login',
+          },
+        },
       ],
     });
   });
