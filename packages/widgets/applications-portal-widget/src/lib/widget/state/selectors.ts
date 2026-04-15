@@ -41,7 +41,7 @@ const getAppUrl = (app: SSOApplication) => {
     case SSOAppType.oidc:
       return app.oidcSettings?.customIdpInitiatedLoginPageUrl;
     case SSOAppType.wsfed:
-      return app.wsfedSettings?.idpInitiatedURL;
+      return app.wsfedSettings?.idpInitiatedUrl;
     case SSOAppType.custom:
       return app.customSettings?.loginPageUrl;
     default:
