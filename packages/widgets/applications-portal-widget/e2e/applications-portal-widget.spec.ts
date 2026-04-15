@@ -88,15 +88,17 @@ test.describe('widget', () => {
     }
   });
   test('click wsfed app opens a new tab', async ({ page }) => {
+    expect(wsFedApps.length).toBeGreaterThan(0);
+    const wsFedApp = wsFedApps[0];
     const newTabPromise = page.waitForEvent('popup');
 
-    const app = page.locator(`text=${wsFedApps[0].name}`).first();
+    const app = page.locator(`text=${wsFedApp.name}`).first();
     await app.click();
 
     const newTab = await newTabPromise;
     await newTab.waitForLoadState();
 
-    await expect(newTab).toHaveURL(wsFedApps[0].wsfedSettings.idpInitiatedUrl);
+    await expect(newTab).toHaveURL(wsFedApp.wsfedSettings.idpInitiatedUrl);
   });
   test('click app opens a new tab', async ({ page }) => {
     const newTabPromise = page.waitForEvent('popup');
