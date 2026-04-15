@@ -7,6 +7,7 @@ export type HttpClient = Sdk['httpClient'];
 export enum SSOAppType {
   oidc = 'oidc',
   saml = 'saml',
+  wsfed = 'wsfed',
   custom = 'custom',
 }
 
@@ -32,6 +33,16 @@ export interface OidcApplication extends App {
   };
 }
 
+export interface WsFedApplication extends App {
+  appType: SSOAppType.wsfed;
+  wsfedSettings?: {
+    idpInitiatedUrl?: string;
+    realm?: string;
+    replyUrl?: string;
+    loginPageUrl?: string;
+  };
+}
+
 export interface CustomApplication extends App {
   appType: SSOAppType.custom;
   customSettings?: {
@@ -42,4 +53,5 @@ export interface CustomApplication extends App {
 export type SSOApplication =
   | SamlApplication
   | OidcApplication
+  | WsFedApplication
   | CustomApplication;
