@@ -9,6 +9,11 @@ type Device = {
   lastLoginTime: string;
 };
 
+type Passkey = {
+  id: string;
+  createdTime: string;
+};
+
 export type State = {
   me: {
     loading: boolean;
@@ -20,6 +25,11 @@ export type State = {
     error: unknown;
     data: Device[];
   };
+  passkeys: {
+    loading: boolean;
+    error: unknown;
+    data: Passkey[];
+  },
   tenant: {
     currentTenantId: string | null;
     previousTenantId: string | null;
