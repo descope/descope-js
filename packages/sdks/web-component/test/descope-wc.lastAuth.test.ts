@@ -24,8 +24,8 @@ import {
 } from '../src/lib/constants';
 
 class DescopeLastAuthBadge extends HTMLElement {}
-if (!customElements.get('descope-last-auth-badge')) {
-  customElements.define('descope-last-auth-badge', DescopeLastAuthBadge);
+if (!customElements.get('descope-attachment')) {
+  customElements.define('descope-attachment', DescopeLastAuthBadge);
 }
 
 describe('web-component lastAuth', () => {
@@ -238,7 +238,7 @@ describe('web-component lastAuth', () => {
   });
 
   describe('#applyLastAuthBadge', () => {
-    it('should set the badge anchor to the last used button for the current screen', async () => {
+    it('should nest the last used button inside the badge for the current screen', async () => {
       const loginId = 'user@example.com';
       getLastUserLoginIdMock.mockReturnValue(loginId);
 
@@ -254,7 +254,7 @@ describe('web-component lastAuth', () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       fixtures.pageContent = `
-        <descope-last-auth-badge id="badge"></descope-last-auth-badge>
+        <descope-attachment id="badge" data-type="last-auth-badge"></descope-attachment>
         <descope-button id="my-button" opt-in-last-used="true">click</descope-button>
         <span>Loaded</span>
       `;
@@ -268,21 +268,22 @@ describe('web-component lastAuth', () => {
       await waitFor(
         () => {
           const shadowRoot = document.querySelector('descope-wc').shadowRoot;
-          const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
-          const buttonEl = shadowRoot.querySelector('#my-button');
-          expect(badgeEl.anchor).toBe(buttonEl);
+          const badgeEl = shadowRoot.querySelector('descope-attachment');
+          expect(badgeEl.contains(shadowRoot.querySelector('#my-button'))).toBe(
+            true,
+          );
         },
         { timeout: WAIT_TIMEOUT },
       );
     });
 
-    it('should not set the badge anchor when no lastUsedPerScreen in localStorage', async () => {
+    it('should not nest the button when no lastUsedPerScreen in localStorage', async () => {
       getLastUserLoginIdMock.mockReturnValue('user@example.com');
 
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       fixtures.pageContent = `
-        <descope-last-auth-badge id="badge"></descope-last-auth-badge>
+        <descope-attachment id="badge" data-type="last-auth-badge"></descope-attachment>
         <descope-button id="my-button">click</descope-button>
         <span>Loaded</span>
       `;
@@ -296,14 +297,14 @@ describe('web-component lastAuth', () => {
       await waitFor(
         () => {
           const shadowRoot = document.querySelector('descope-wc').shadowRoot;
-          const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
-          expect(badgeEl.anchor).toBeUndefined();
+          const badgeEl = shadowRoot.querySelector('descope-attachment');
+          expect(badgeEl.querySelector('#my-button')).toBeNull();
         },
         { timeout: WAIT_TIMEOUT },
       );
     });
 
-    it('should not set the badge anchor when there is no entry for the current screen', async () => {
+    it('should not nest the button when there is no entry for the current screen', async () => {
       const loginId = 'user@example.com';
       getLastUserLoginIdMock.mockReturnValue(loginId);
 
@@ -321,7 +322,7 @@ describe('web-component lastAuth', () => {
       );
 
       fixtures.pageContent = `
-        <descope-last-auth-badge id="badge"></descope-last-auth-badge>
+        <descope-attachment id="badge" data-type="last-auth-badge"></descope-attachment>
         <descope-button id="my-button">click</descope-button>
         <span>Loaded</span>
       `;
@@ -335,14 +336,14 @@ describe('web-component lastAuth', () => {
       await waitFor(
         () => {
           const shadowRoot = document.querySelector('descope-wc').shadowRoot;
-          const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
-          expect(badgeEl.anchor).toBeUndefined();
+          const badgeEl = shadowRoot.querySelector('descope-attachment');
+          expect(badgeEl.querySelector('#my-button')).toBeNull();
         },
         { timeout: WAIT_TIMEOUT },
       );
     });
 
-    it('should not set the badge anchor when the target component is not in the screen', async () => {
+    it('should not nest the button when the target component is not in the screen', async () => {
       const loginId = 'user@example.com';
       getLastUserLoginIdMock.mockReturnValue(loginId);
 
@@ -358,7 +359,7 @@ describe('web-component lastAuth', () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       fixtures.pageContent = `
-        <descope-last-auth-badge id="badge"></descope-last-auth-badge>
+        <descope-attachment id="badge" data-type="last-auth-badge"></descope-attachment>
         <descope-button id="my-button">click</descope-button>
         <span>Loaded</span>
       `;
@@ -372,8 +373,8 @@ describe('web-component lastAuth', () => {
       await waitFor(
         () => {
           const shadowRoot = document.querySelector('descope-wc').shadowRoot;
-          const badgeEl = shadowRoot.querySelector('descope-last-auth-badge');
-          expect(badgeEl.anchor).toBeUndefined();
+          const badgeEl = shadowRoot.querySelector('descope-attachment');
+          expect(badgeEl.querySelector('#my-button')).toBeNull();
         },
         { timeout: WAIT_TIMEOUT },
       );
