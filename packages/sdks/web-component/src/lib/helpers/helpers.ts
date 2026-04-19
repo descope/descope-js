@@ -12,6 +12,7 @@ import {
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
+  WSFED_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
@@ -271,6 +272,14 @@ export function clearSAMLIDPParamFromUrl() {
   resetUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
 }
 
+export function getWSFedIDPParamFromUrl() {
+  return getUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function clearWSFedIDPParamFromUrl() {
+  resetUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
 export function getSAMLIDPUsernameParamFromUrl() {
   return getUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
 }
@@ -432,6 +441,11 @@ export const handleUrlParams = (
     clearSAMLIDPParamFromUrl();
   }
 
+  const wsfedIdpStateId = getWSFedIDPParamFromUrl();
+  if (wsfedIdpStateId) {
+    clearWSFedIDPParamFromUrl();
+  }
+
   const samlIdpUsername = getSAMLIDPUsernameParamFromUrl();
   if (samlIdpStateId) {
     clearSAMLIDPUsernameParamFromUrl();
@@ -498,6 +512,7 @@ export const handleUrlParams = (
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
+      wsfedIdpStateId,
       samlIdpUsername,
       descopeIdpInitiated: idpInitiatedVal,
       ssoAppId,
