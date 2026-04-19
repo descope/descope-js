@@ -696,6 +696,7 @@ export const showFirstScreenOnExecutionInit = (
   {
     oidcIdpStateId,
     samlIdpStateId,
+    wsfedIdpStateId,
     samlIdpUsername,
     ssoAppId,
     oidcLoginHint,
@@ -710,6 +711,7 @@ export const showFirstScreenOnExecutionInit = (
   !!startScreenId &&
   !oidcIdpStateId &&
   !samlIdpStateId &&
+  !wsfedIdpStateId &&
   !samlIdpUsername &&
   !ssoAppId &&
   !oidcLoginHint &&
