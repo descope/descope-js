@@ -21,6 +21,7 @@ export const DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED = 'data-opt-in-last-used';
 // SSO query params
 export const OIDC_IDP_STATE_ID_PARAM_NAME = 'state_id';
 export const SAML_IDP_STATE_ID_PARAM_NAME = 'saml_idp_state_id';
+export const WSFED_IDP_STATE_ID_PARAM_NAME = 'wsfed_idp_state_id';
 export const SAML_IDP_USERNAME_PARAM_NAME = 'saml_idp_username';
 export const DESCOPE_IDP_INITIATED_PARAM_NAME = 'descope_idp_initiated';
 export const SSO_APP_ID_PARAM_NAME = 'sso_app_id';

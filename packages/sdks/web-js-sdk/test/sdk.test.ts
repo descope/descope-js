@@ -18,7 +18,7 @@ describe('sdk', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.start('id');
     expect(mockFetch).toBeCalledWith(
-      'https://api.descope.com/v1/flow/start',
+      'https://api.descope.com/v2/flow/start',
       expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
@@ -55,7 +55,7 @@ describe('sdk', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.start('id', { tenant: 'yo', preview: true });
     expect(mockFetch).toBeCalledWith(
-      'https://api.descope.com/v1/flow/start',
+      'https://api.descope.com/v2/flow/start',
       expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
@@ -74,7 +74,7 @@ describe('sdk', () => {
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.start('id', { oidcResource: 'https://api.example.com' });
     expect(mockFetch).toBeCalledWith(
-      'https://api.descope.com/v1/flow/start',
+      'https://api.descope.com/v2/flow/start',
       expect.any(Object),
     );
     expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject({
