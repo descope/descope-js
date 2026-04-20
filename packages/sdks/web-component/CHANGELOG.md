@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.59.1](https://github.com/descope/descope-js/compare/web-component-3.59.0...web-component-3.59.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* **wc:** guard SAML/WS-Fed loadForm blocks with URL check RELEASE ([#1370](https://github.com/descope/descope-js/issues/1370)) ([1cfeaf8](https://github.com/descope/descope-js/commit/1cfeaf837ea7935620fcfe79047ed59513ab4f6b)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#543](https://github.com/descope/descope/issues/543)
+
 ## [3.59.0](https://github.com/descope/descope-js/compare/web-component-3.58.4...web-component-3.59.0) (2026-04-20)
 
 ### Dependency Updates
