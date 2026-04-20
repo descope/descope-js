@@ -34,6 +34,17 @@ export function setLastAuth(lastAuth: LastAuthState, forceLoginId?: boolean) {
   setStorageItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY, JSON.stringify(lastAuth));
 }
 
+// Read the in-flight lastUsedPerScreen to be merged into dls_last_auth on completion.
+export function getInFlightLastUsedPerScreen(): Record<string, string> {
+  try {
+    return JSON.parse(
+      getStorageItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY) || '{}',
+    );
+  } catch (e) {
+    return {};
+  }
+}
+
 // Track which opt-in element was last used per screen during an in-progress flow.
 // Written on every qualifying click so the data survives any page navigation
 // (OAuth redirect, magic link, etc.) without special per-mechanism handling.
@@ -50,17 +61,6 @@ export function updateLastUsedPerScreen(screenId: string, elementId: string) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn('[Descope] Failed to update in-flight last auth storage', e);
-  }
-}
-
-// Read the in-flight lastUsedPerScreen to be merged into dls_last_auth on completion.
-export function getInFlightLastUsedPerScreen(): Record<string, string> {
-  try {
-    return JSON.parse(
-      getStorageItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY) || '{}',
-    );
-  } catch (e) {
-    return {};
   }
 }
 

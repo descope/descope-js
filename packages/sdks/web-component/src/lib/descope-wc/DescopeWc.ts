@@ -2015,6 +2015,7 @@ class DescopeWc extends BaseDescopeWc {
       });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   #trackLastUsed(
     submitter: HTMLElement,
     submitterId: string | null,
