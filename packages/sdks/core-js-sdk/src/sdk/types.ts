@@ -307,6 +307,12 @@ export type FlowResponse = {
     samlResponse: string;
     relayState: string;
   };
+  // WS-Fed IDP response (this will be used to build the html form response goes from the IDP through the end user browser to the RP)
+  wsFedIdpResponse?: {
+    url: string;
+    wresult: string;
+    wctx: string;
+  };
   // a URL to open in a new tab
   openInNewTabUrl?: string;
   // webauthn data - if action is one of 'webauthnCreate', 'webauthnGet'
