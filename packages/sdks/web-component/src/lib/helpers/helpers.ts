@@ -742,6 +742,27 @@ export const injectSamlIdpForm = (
   submitCallback(formEle);
 };
 
+export const injectWsFedIdpForm = (
+  url: string,
+  wresult: string,
+  wctx: string,
+  submitCallback: (form: HTMLFormElement) => void,
+) => {
+  const formEle = document.createElement('form');
+  formEle.method = 'POST';
+  formEle.action = url;
+  formEle.innerHTML = `
+  <input type="hidden" name="wa" value="wsignin1.0" />
+  <input type="hidden" name="wresult" value="${wresult}" />
+  <input type="hidden" name="wctx" value="${wctx}" />
+  <input style="display: none;" id="WSFedSubmitButton" type="submit" value="Continue" />
+  `;
+
+  document.body.appendChild(formEle);
+
+  submitCallback(formEle);
+};
+
 export const submitForm = (formEle: HTMLFormElement) => formEle?.submit();
 
 export const getFirstNonEmptyValue = (obj: object, keys: string[]) => {
