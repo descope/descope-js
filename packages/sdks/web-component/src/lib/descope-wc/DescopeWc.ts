@@ -827,9 +827,10 @@ class DescopeWc extends BaseDescopeWc {
     ];
     if (
       action === RESPONSE_ACTIONS.loadForm &&
+      samlIdpResponseUrl &&
       samlProps.some((samlProp) => isChanged(samlProp))
     ) {
-      if (!samlIdpResponseUrl || !samlIdpResponseSamlResponse) {
+      if (!samlIdpResponseSamlResponse) {
         this.loggerWrapper.error('Did not get saml idp params data to load');
         return;
       }
@@ -850,9 +851,10 @@ class DescopeWc extends BaseDescopeWc {
     ];
     if (
       action === RESPONSE_ACTIONS.loadForm &&
+      wsFedIdpResponseUrl &&
       wsFedProps.some((wsFedProp) => isChanged(wsFedProp))
     ) {
-      if (!wsFedIdpResponseUrl || !wsFedIdpResponseWresult) {
+      if (!wsFedIdpResponseWresult) {
         this.loggerWrapper.error('Did not get wsfed idp params data to load');
         return;
       }
