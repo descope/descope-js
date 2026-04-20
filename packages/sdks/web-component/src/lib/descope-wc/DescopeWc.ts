@@ -2037,7 +2037,9 @@ class DescopeWc extends BaseDescopeWc {
     const badgeEl = this.contentRootElement.querySelector(
       DESCOPE_LAST_AUTH_BADGE_COMPONENT,
     ) as any;
-    const targetEl = this.contentRootElement.querySelector(`#${componentId}`);
+    const targetEl = this.contentRootElement.querySelector(
+      `#${CSS.escape(componentId)}`,
+    );
     if (!badgeEl || !targetEl) return;
 
     targetEl.replaceWith(badgeEl);
