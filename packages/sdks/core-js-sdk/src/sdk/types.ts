@@ -348,6 +348,7 @@ export type Options = {
   oidcIdpStateId?: string;
   preview?: boolean;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
   thirdPartyAppId?: string;
