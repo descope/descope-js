@@ -2,8 +2,6 @@
 // @ts-nocheck
 
 import {
-  WAIT_TIMEOUT,
-  fixtures,
   setupWebComponentTestEnv,
   startMock,
   teardownWebComponentTestEnv,
