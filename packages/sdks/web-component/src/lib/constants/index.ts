@@ -16,6 +16,7 @@ export const DESCOPE_ATTRIBUTE_PREFIX = 'data-descope-';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_FIELD = 'data-exclude-field';
 export const DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON = 'data-exclude-next';
 export const DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY = 'dls_last_auth';
+export const DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED = 'data-opt-in-last-used';
 
 // SSO query params
 export const OIDC_IDP_STATE_ID_PARAM_NAME = 'state_id';

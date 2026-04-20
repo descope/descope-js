@@ -50,7 +50,7 @@ describe('web-component lastAuth', () => {
       );
 
       fixtures.pageContent =
-        '<descope-button id="my-button" opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+        '<descope-button id="my-button" data-opt-in-last-used="true">click</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -111,7 +111,7 @@ describe('web-component lastAuth', () => {
       // no nextMock — flow does not complete
 
       fixtures.pageContent =
-        '<descope-button id="my-button" opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+        '<descope-button id="my-button" data-opt-in-last-used="true">click</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -132,6 +132,43 @@ describe('web-component lastAuth', () => {
           // dls_last_auth must NOT be updated before completion
           expect(
             localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY),
+          ).toBeNull();
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('should clear in-flight storage on flow completion', async () => {
+      localStorage.setItem(
+        DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY,
+        JSON.stringify({ 'screen-1': 'my-button' }),
+      );
+
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({ screenId: 'screen-1' }),
+      );
+      nextMock.mockReturnValueOnce(
+        generateSdkResponse({
+          status: 'completed',
+          lastAuth: { authMethod: 'otp', loginId: 'user@example.com' },
+        }),
+      );
+
+      fixtures.pageContent =
+        '<descope-button id="my-button" data-opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () => {
+          expect(
+            localStorage.getItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY),
           ).toBeNull();
         },
         { timeout: WAIT_TIMEOUT },
@@ -208,7 +245,7 @@ describe('web-component lastAuth', () => {
         );
 
       fixtures.pageContent =
-        '<descope-button id="button-a" opt-in-last-used="true">click a</descope-button><descope-button id="button-b" opt-in-last-used="true">click b</descope-button><span>Loaded</span>';
+        '<descope-button id="button-a" data-opt-in-last-used="true">click a</descope-button><descope-button id="button-b" data-opt-in-last-used="true">click b</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -238,7 +275,7 @@ describe('web-component lastAuth', () => {
   });
 
   describe('#applyLastAuthBadge', () => {
-    it('should nest the last used button inside the badge for the current screen', async () => {
+    it('should wrap the last used button with the badge component for the current screen', async () => {
       const loginId = 'user@example.com';
       getLastUserLoginIdMock.mockReturnValue(loginId);
 
@@ -255,7 +292,7 @@ describe('web-component lastAuth', () => {
 
       fixtures.pageContent = `
         <descope-attachment id="badge" data-type="last-auth-badge"></descope-attachment>
-        <descope-button id="my-button" opt-in-last-used="true">click</descope-button>
+        <descope-button id="my-button" data-opt-in-last-used="true">click</descope-button>
         <span>Loaded</span>
       `;
 

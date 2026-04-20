@@ -6,6 +6,7 @@ import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
+  DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED,
   DESCOPE_LAST_AUTH_BADGE_COMPONENT,
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
@@ -1905,14 +1906,7 @@ class DescopeWc extends BaseDescopeWc {
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
-
-        if (
-          submitterId &&
-          screenId &&
-          submitter.getAttribute('opt-in-last-used') === 'true'
-        ) {
-          updateLastUsedPerScreen(screenId, submitterId);
-        }
+        this.#trackLastUsed(submitter, submitterId, screenId);
 
         this.#handleComponentsLoadingState(submitter);
 
@@ -2021,26 +2015,32 @@ class DescopeWc extends BaseDescopeWc {
       });
   }
 
+  #trackLastUsed(
+    submitter: HTMLElement,
+    submitterId: string | null,
+    screenId: string,
+  ) {
+    if (
+      submitterId &&
+      screenId &&
+      submitter.getAttribute(DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED) === 'true'
+    ) {
+      updateLastUsedPerScreen(screenId, submitterId);
+    }
+  }
+
   #applyLastAuthBadge(screenId: string) {
     const loginId = this.sdk.getLastUserLoginId();
-    const lastAuth = getLastAuth(loginId);
-    const lastUsedPerScreen = (lastAuth as any)?.lastUsedPerScreen as
-      | Record<string, string>
-      | undefined;
-    if (!lastUsedPerScreen) return;
-
-    const componentId = lastUsedPerScreen[screenId];
+    const componentId = getLastAuth(loginId).lastUsedPerScreen?.[screenId];
     if (!componentId) return;
 
     const badgeEl = this.contentRootElement.querySelector(
       DESCOPE_LAST_AUTH_BADGE_COMPONENT,
     ) as any;
-    if (!badgeEl) return;
-
     const targetEl = this.contentRootElement.querySelector(`#${componentId}`);
-    if (!targetEl) return;
+    if (!badgeEl || !targetEl) return;
 
-    targetEl.parentElement?.insertBefore(badgeEl, targetEl);
+    targetEl.replaceWith(badgeEl);
     badgeEl.appendChild(targetEl);
   }
 
