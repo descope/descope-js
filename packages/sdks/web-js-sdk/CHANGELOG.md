@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.47.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.1...web-js-sdk-1.47.2) (2026-04-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.2`
+
+### Bug Fixes
+
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
 ## [1.47.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.0...web-js-sdk-1.47.1) (2026-04-13)
 
 ### Dependency Updates

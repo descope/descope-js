@@ -74,6 +74,7 @@ export interface ScreenState {
 export type SSOQueryParams = {
   oidcIdpStateId?: string;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
