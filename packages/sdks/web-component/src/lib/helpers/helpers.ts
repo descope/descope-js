@@ -751,12 +751,26 @@ export const injectWsFedIdpForm = (
   const formEle = document.createElement('form');
   formEle.method = 'POST';
   formEle.action = url;
-  formEle.innerHTML = `
-  <input type="hidden" name="wa" value="wsignin1.0" />
-  <input type="hidden" name="wresult" value="${wresult}" />
-  <input type="hidden" name="wctx" value="${wctx}" />
-  <input style="display: none;" id="WSFedSubmitButton" type="submit" value="Continue" />
-  `;
+
+  // Use DOM APIs to set values safely — wresult is raw XML that would break innerHTML interpolation
+  const createHiddenInput = (name: string, value: string) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    return input;
+  };
+
+  formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
+  formEle.appendChild(createHiddenInput('wresult', wresult));
+  formEle.appendChild(createHiddenInput('wctx', wctx));
+
+  const submitBtn = document.createElement('input');
+  submitBtn.type = 'submit';
+  submitBtn.id = 'WSFedSubmitButton';
+  submitBtn.value = 'Continue';
+  submitBtn.style.display = 'none';
+  formEle.appendChild(submitBtn);
 
   document.body.appendChild(formEle);
 
