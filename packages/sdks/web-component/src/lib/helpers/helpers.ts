@@ -12,6 +12,7 @@ import {
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
+  WSFED_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
@@ -37,6 +38,45 @@ import {
 } from '../types';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
+
+/**
+ * Wraps an async function with retry logic
+ * @param fn - The async function to wrap
+ * @param timeoutMs - Time to wait between retries in milliseconds
+ * @param maxRetries - Maximum number of retry attempts
+ * @returns A new function with retry logic
+ */
+export function withRetry<TArgs extends any[], TReturn>(
+  fn: (...args: TArgs) => Promise<TReturn>,
+  timeoutMs: number,
+  maxRetries: number,
+): (...args: TArgs) => Promise<TReturn> {
+  return async (...args: TArgs): Promise<TReturn> => {
+    let lastError: any;
+    const totalAttempts = maxRetries + 1; // initial attempt + retries
+
+    // eslint-disable-next-line no-plusplus
+    for (let attempt = 0; attempt < totalAttempts; attempt++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        return await fn(...args);
+      } catch (error) {
+        lastError = error;
+
+        // Don't wait after the last attempt
+        if (attempt < maxRetries) {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => {
+            setTimeout(resolve, timeoutMs * Math.pow(2, attempt + 1));
+          });
+        }
+      }
+    }
+
+    // All attempts failed, throw the last error
+    throw lastError;
+  };
+}
 
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -232,6 +272,14 @@ export function clearSAMLIDPParamFromUrl() {
   resetUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
 }
 
+export function getWSFedIDPParamFromUrl() {
+  return getUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function clearWSFedIDPParamFromUrl() {
+  resetUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
 export function getSAMLIDPUsernameParamFromUrl() {
   return getUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
 }
@@ -393,6 +441,11 @@ export const handleUrlParams = (
     clearSAMLIDPParamFromUrl();
   }
 
+  const wsfedIdpStateId = getWSFedIDPParamFromUrl();
+  if (wsfedIdpStateId) {
+    clearWSFedIDPParamFromUrl();
+  }
+
   const samlIdpUsername = getSAMLIDPUsernameParamFromUrl();
   if (samlIdpStateId) {
     clearSAMLIDPUsernameParamFromUrl();
@@ -459,6 +512,7 @@ export const handleUrlParams = (
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
+      wsfedIdpStateId,
       samlIdpUsername,
       descopeIdpInitiated: idpInitiatedVal,
       ssoAppId,
@@ -642,6 +696,7 @@ export const showFirstScreenOnExecutionInit = (
   {
     oidcIdpStateId,
     samlIdpStateId,
+    wsfedIdpStateId,
     samlIdpUsername,
     ssoAppId,
     oidcLoginHint,
@@ -656,6 +711,7 @@ export const showFirstScreenOnExecutionInit = (
   !!startScreenId &&
   !oidcIdpStateId &&
   !samlIdpStateId &&
+  !wsfedIdpStateId &&
   !samlIdpUsername &&
   !ssoAppId &&
   !oidcLoginHint &&

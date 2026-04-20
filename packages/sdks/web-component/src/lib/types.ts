@@ -71,6 +71,7 @@ export interface ScreenState {
 export type SSOQueryParams = {
   oidcIdpStateId?: string;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
@@ -137,6 +138,7 @@ export type StepState = {
   direction: Direction | undefined;
   samlIdpUsername: string;
   action?: string;
+  locale?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<

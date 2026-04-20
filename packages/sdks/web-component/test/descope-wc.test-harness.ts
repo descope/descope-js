@@ -31,6 +31,7 @@ export const defaultOptionsValues = {
   oidcLoginHint: null,
   oidcPrompt: null,
   samlIdpStateId: null,
+  wsfedIdpStateId: null,
   samlIdpUsername: null,
   oidcErrorRedirectUri: null,
   oidcResource: null,
@@ -212,9 +213,17 @@ export function teardownWebComponentTestEnv() {
   document.getElementsByTagName('body')[0].innerHTML = '';
   document.body.append = origAppend;
 
+  // Clear any pending fake timers (e.g. 0ms timers from State.update()) before resetting mocks,
+  // to prevent timer contamination across tests.
+  jest.clearAllTimers();
+
   // We need a full reset to isolate tests, BUT one mock (mockClientScript) must keep a stable implementation.
   // So we reset everything and then immediately restore the implementation for mockClientScript.
   jest.resetAllMocks();
+  // Restore sdk.flow functions to the original mocks after reset, because the component
+  // mutates these properties with withRetry wrappers, and resetAllMocks() does not undo that.
+  sdk.flow.start = startMock;
+  sdk.flow.next = nextMock;
   mockClientScript.mockImplementation(() => ({
     id: 'grecaptcha',
     start: mockStartScript,

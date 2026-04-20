@@ -22,9 +22,12 @@ export const injectNpmLibMixin = createSingletonMixin(
         version: string,
         filePath = '',
         overrides: string[] = [],
+        integrity?: string,
       ) {
         this.logger.debug(
-          `Injecting npm lib: "${libName}" with version: "${version}"`,
+          `Injecting npm lib: "${libName}" with version: "${version}"${
+            integrity ? ' with SRI integrity check' : ''
+          }`,
         );
         return injectScriptWithFallbacks(
           generateLibUrls(
@@ -32,6 +35,7 @@ export const injectNpmLibMixin = createSingletonMixin(
             libName,
             version,
             filePath,
+            integrity,
           ),
           (scriptData, existingScript) => {
             if (existingScript) {

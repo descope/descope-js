@@ -6,3 +6,5 @@ export const REFRESH_TOKEN_KEY = 'DSR';
 export const ID_TOKEN_KEY = 'DSI';
 /* Default name for the trusted device token (DTD) local storage key */
 export const TRUSTED_DEVICE_TOKEN_KEY = 'DTD';
+/* Key for persisting the server-returned refresh cookie name */
+export const REFRESH_COOKIE_NAME_KEY = 'DSRCN';

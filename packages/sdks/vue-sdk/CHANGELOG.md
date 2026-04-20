@@ -2,6 +2,100 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.15.26](https://github.com/descope/descope-js/compare/vue-sdk-2.15.25...vue-sdk-2.15.26) (2026-04-20)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.40`
+* `audit-management-widget` updated to version `0.6.2`
+* `role-management-widget` updated to version `0.5.32`
+* `user-management-widget` updated to version `0.11.19`
+* `user-profile-widget` updated to version `0.9.14`
+* `applications-portal-widget` updated to version `0.6.0`
+* `web-component` updated to version `3.58.4`
+* `web-js-sdk` updated to version `1.47.2`
+* `core-js-sdk` updated to version `2.58.2`
+## [2.15.25](https://github.com/descope/descope-js/compare/vue-sdk-2.15.24...vue-sdk-2.15.25) (2026-04-13)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.39`
+* `audit-management-widget` updated to version `0.6.1`
+* `role-management-widget` updated to version `0.5.31`
+* `user-management-widget` updated to version `0.11.18`
+* `user-profile-widget` updated to version `0.9.13`
+* `applications-portal-widget` updated to version `0.5.22`
+* `web-component` updated to version `3.58.3`
+* `web-js-sdk` updated to version `1.47.1`
+* `core-js-sdk` updated to version `2.58.1`
+## [2.15.24](https://github.com/descope/descope-js/compare/vue-sdk-2.15.23...vue-sdk-2.15.24) (2026-04-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.38`
+* `audit-management-widget` updated to version `0.6.0`
+* `role-management-widget` updated to version `0.5.30`
+* `user-management-widget` updated to version `0.11.17`
+* `user-profile-widget` updated to version `0.9.12`
+* `applications-portal-widget` updated to version `0.5.21`
+* `web-component` updated to version `3.58.2`
+## [2.15.23](https://github.com/descope/descope-js/compare/vue-sdk-2.15.22...vue-sdk-2.15.23) (2026-04-06)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.16`
+* `user-profile-widget` updated to version `0.9.11`
+* `web-component` updated to version `3.58.1`
+## [2.15.22](https://github.com/descope/descope-js/compare/vue-sdk-2.15.21...vue-sdk-2.15.22) (2026-03-31)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.15`
+* `user-profile-widget` updated to version `0.9.10`
+* `web-component` updated to version `3.58.0`
+## [2.15.21](https://github.com/descope/descope-js/compare/vue-sdk-2.15.20...vue-sdk-2.15.21) (2026-03-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.37`
+* `audit-management-widget` updated to version `0.5.37`
+* `role-management-widget` updated to version `0.5.29`
+* `user-management-widget` updated to version `0.11.14`
+* `user-profile-widget` updated to version `0.9.9`
+* `applications-portal-widget` updated to version `0.5.20`
+* `web-component` updated to version `3.57.1`
+* `web-js-sdk` updated to version `1.47.0`
+## [2.15.20](https://github.com/descope/descope-js/compare/vue-sdk-2.15.19...vue-sdk-2.15.20) (2026-03-23)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.36`
+* `audit-management-widget` updated to version `0.5.36`
+* `role-management-widget` updated to version `0.5.28`
+* `user-management-widget` updated to version `0.11.13`
+* `user-profile-widget` updated to version `0.9.8`
+* `applications-portal-widget` updated to version `0.5.19`
+* `web-component` updated to version `3.57.0`
+* `web-js-sdk` updated to version `1.46.0`
+* `core-js-sdk` updated to version `2.58.0`
+## [2.15.19](https://github.com/descope/descope-js/compare/vue-sdk-2.15.18...vue-sdk-2.15.19) (2026-02-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.35`
+* `audit-management-widget` updated to version `0.5.35`
+* `role-management-widget` updated to version `0.5.27`
+* `user-management-widget` updated to version `0.11.12`
+* `user-profile-widget` updated to version `0.9.7`
+* `applications-portal-widget` updated to version `0.5.18`
+* `web-component` updated to version `3.56.0`
+## [2.15.18](https://github.com/descope/descope-js/compare/vue-sdk-2.15.17...vue-sdk-2.15.18) (2026-02-26)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.11.11`
+* `user-profile-widget` updated to version `0.9.6`
+* `web-component` updated to version `3.55.4`
 ## [2.15.17](https://github.com/descope/descope-js/compare/vue-sdk-2.15.16...vue-sdk-2.15.17) (2026-02-19)
 
 ### Dependency Updates

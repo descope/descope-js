@@ -2,6 +2,38 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.47.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.1...web-js-sdk-1.47.2) (2026-04-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.2`
+
+### Bug Fixes
+
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
+## [1.47.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.0...web-js-sdk-1.47.1) (2026-04-13)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.1`
+## [1.47.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.46.0...web-js-sdk-1.47.0) (2026-03-26)
+
+
+### Features
+
+* User activity tracking ([#1339](https://github.com/descope/descope-js/issues/1339)) RELEASE ([f8fff57](https://github.com/descope/descope-js/commit/f8fff57c57ebe3fea1a24e70289da51456acb9e5))
+
+## [1.46.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.45.0...web-js-sdk-1.46.0) (2026-03-23)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.0`
+
+### Features
+
+* Add support for server-configured refresh cookie names for web ([#1343](https://github.com/descope/descope-js/issues/1343)) ([ec33c70](https://github.com/descope/descope-js/commit/ec33c70cd005f64e543db5d7388a3100123adc26))
+
 ## [1.45.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.44.0...web-js-sdk-1.45.0) (2026-01-29)
 
 ### Dependency Updates

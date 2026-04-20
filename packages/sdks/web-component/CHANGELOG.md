@@ -2,6 +2,78 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.58.4](https://github.com/descope/descope-js/compare/web-component-3.58.3...web-component-3.58.4) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+
+### Bug Fixes
+
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
+## [3.58.3](https://github.com/descope/descope-js/compare/web-component-3.58.2...web-component-3.58.3) (2026-04-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.1`
+## [3.58.2](https://github.com/descope/descope-js/compare/web-component-3.58.1...web-component-3.58.2) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+## [3.58.1](https://github.com/descope/descope-js/compare/web-component-3.58.0...web-component-3.58.1) (2026-04-06)
+
+
+### Bug Fixes
+
+* use canonical locale for components RELEASE ([#1360](https://github.com/descope/descope-js/issues/1360)) ([8a0c8f5](https://github.com/descope/descope-js/commit/8a0c8f5e0f2c5629a58553b08a97b3b755f9013c))
+
+## [3.58.0](https://github.com/descope/descope-js/compare/web-component-3.57.1...web-component-3.58.0) (2026-03-31)
+
+
+### Features
+
+* Add support for country-subdivision-city component ([#1354](https://github.com/descope/descope-js/issues/1354)) ([33c53cc](https://github.com/descope/descope-js/commit/33c53cc25ece1429c79bd29071b75a2e45ce3272))
+
+## [3.57.1](https://github.com/descope/descope-js/compare/web-component-3.57.0...web-component-3.57.1) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+
+### Bug Fixes
+
+* Extract exchangeError from URL in nativeResume for oauthWeb/sso ([#1349](https://github.com/descope/descope-js/issues/1349)) ([4e430bb](https://github.com/descope/descope-js/commit/4e430bb3db9b701f87fec3b496f4ba6ca9a12042))
+
+## [3.57.0](https://github.com/descope/descope-js/compare/web-component-3.56.0...web-component-3.57.0) (2026-03-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.46.0`
+
+### Features
+
+* Update flow scripts versions ([#1348](https://github.com/descope/descope-js/issues/1348)) ([2167d29](https://github.com/descope/descope-js/commit/2167d294007809fad0c8f4379cf1f6ee335ba22a))
+
+## [3.56.0](https://github.com/descope/descope-js/compare/web-component-3.55.4...web-component-3.56.0) (2026-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.0`
+
+### Features
+
+* **web-component:** add SRI support for web-component-ui loader RELEASE ([#1333](https://github.com/descope/descope-js/issues/1333)) ([ac04331](https://github.com/descope/descope-js/commit/ac04331642c4a88964eff4399334c36468cb47b4))
+
+## [3.55.4](https://github.com/descope/descope-js/compare/web-component-3.55.3...web-component-3.55.4) (2026-02-26)
+
+
+### Bug Fixes
+
+* retry on flow sdk calls ([#1338](https://github.com/descope/descope-js/issues/1338)) ([e966efa](https://github.com/descope/descope-js/commit/e966efae1f9eb2aaa7539dc2e71392570e5008ab))
+
 ## [3.55.3](https://github.com/descope/descope-js/compare/web-component-3.55.2...web-component-3.55.3) (2026-02-17)
 
 ## [3.55.2](https://github.com/descope/descope-js/compare/web-component-3.55.1...web-component-3.55.2) (2026-02-11)

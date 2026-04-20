@@ -97,6 +97,7 @@ export type UserHistoryResponse = {
 export type UserTenant = {
   tenantId: string;
   roleNames?: string[];
+  permissions?: string[];
   tenantName: string;
 };
 
@@ -135,6 +136,7 @@ export type JWTResponse = {
   cookiePath?: string;
   cookieMaxAge?: number;
   cookieExpiration?: number;
+  cookieName?: string;
   user?: UserResponse;
   firstSeen?: boolean;
   sessionExpiration: number;
@@ -346,6 +348,7 @@ export type Options = {
   oidcIdpStateId?: string;
   preview?: boolean;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
   thirdPartyAppId?: string;

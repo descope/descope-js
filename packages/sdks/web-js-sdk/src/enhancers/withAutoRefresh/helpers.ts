@@ -3,6 +3,25 @@ import logger from '../helpers/logger';
 import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../../constants';
 
 /**
+ * Tracks whether the user has been active since the last refresh.
+ * Starts as true so the first scheduled refresh always proceeds.
+ * Call `reset()` after each successful refresh to start the next period fresh.
+ */
+export const createActivityTracker = () => {
+  let hadActivitySinceLastRefresh = true;
+
+  return {
+    hadActivity: () => hadActivitySinceLastRefresh,
+    reset: () => {
+      hadActivitySinceLastRefresh = false;
+    },
+    markActive: () => {
+      hadActivitySinceLastRefresh = true;
+    },
+  };
+};
+
+/**
  * Get the JWT expiration WITHOUT VALIDATING the JWT
  * @param token The JWT to extract expiration from
  * @returns The Date for when the JWT expires or null if there is an issue

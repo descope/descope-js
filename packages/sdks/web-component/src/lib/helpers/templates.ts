@@ -274,7 +274,9 @@ const applyComponentsState = (
   logger?: { error: (message: string, description: string) => void },
 ) => {
   Object.entries(componentsState).forEach(([componentId, state]) => {
-    const componentEls = baseEle.querySelectorAll(`[id="${CSS.escape(componentId)}"]`);
+    const componentEls = baseEle.querySelectorAll(
+      `[id="${CSS.escape(componentId)}"]`,
+    );
     componentEls.forEach((compEl) => {
       switch (state) {
         case 'disable':
@@ -334,15 +336,53 @@ export const setNOTPVariable = (rootEle: HTMLElement, image?: string) => {
   setImageVariable(rootEle, 'descope-notp-image', image);
 };
 
-export const setPhoneAutoDetectDefaultCode = (
+export const setComponentsAutoDetectByGeo = (
   fragment: DocumentFragment,
-  autoDetectCode?: string,
+  countryCodeIso2?: string, // e.g. 'US', 'IL', 'FR'
 ) => {
-  Array.from(fragment.querySelectorAll('[default-code="autoDetect"]')).forEach(
-    (phoneEle) => {
-      phoneEle.setAttribute('default-code', autoDetectCode);
-    },
-  );
+  const config = {
+    // phone
+    'default-code': 'autoDetect',
+    // country-subdivision-city
+    'default-country': 'autoDetect',
+  };
+  Object.entries(config).forEach(([key, value]) => {
+    Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
+      (ele) => {
+        ele.setAttribute(key, countryCodeIso2 || value);
+      },
+    );
+  });
+};
+
+export const setComponentsAutoDetectByLocale = (
+  fragment: DocumentFragment,
+  locale?: string, // e.g. 'en-US', 'fr-FR'
+) => {
+  const config = {
+    // country-subdivision-city
+    lang: 'autoDetect',
+  };
+
+  let canonicalLocale = locale;
+  if (locale) {
+    try {
+      const [canonical] = Intl.getCanonicalLocales(locale);
+      if (canonical) {
+        canonicalLocale = canonical;
+      }
+    } catch {
+      // locale is not valid, keep original value
+    }
+  }
+
+  Object.entries(config).forEach(([key, value]) => {
+    Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
+      (ele) => {
+        ele.setAttribute(key, canonicalLocale || value);
+      },
+    );
+  });
 };
 
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {

@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable import/order */
-// @ts-nocheck
+/* eslint-disable import/first */
+
+// Disable source-map-support for this file to avoid source map parsing errors
+if (typeof Error.prepareStackTrace !== 'undefined') {
+  Error.prepareStackTrace = undefined;
+}
 
 import {
   WAIT_TIMEOUT,
@@ -40,7 +45,15 @@ describe('web-component', () => {
       originalBroadcastChannel = global.BroadcastChannel;
       broadcastInstances = [];
       class MockBroadcastChannel {
-        constructor(name) {
+        name: string;
+
+        messages: any[];
+
+        closed: boolean;
+
+        onMessageInternal: ((event: any) => void) | null;
+
+        constructor(name: string) {
           this.name = name;
           this.messages = [];
           this.closed = false;
@@ -48,7 +61,7 @@ describe('web-component', () => {
           broadcastInstances.push(this);
         }
 
-        postMessage(msg) {
+        postMessage(msg: any) {
           this.messages.push(msg);
         }
 
@@ -56,7 +69,7 @@ describe('web-component', () => {
           this.closed = true;
         }
 
-        set onmessage(fn) {
+        set onmessage(fn: ((event: any) => void) | null) {
           this.onMessageInternal = fn;
         }
 
@@ -64,11 +77,11 @@ describe('web-component', () => {
           return this.onMessageInternal;
         }
 
-        emit(event) {
+        emit(event: any) {
           if (this.onMessageInternal) this.onMessageInternal(event);
         }
       }
-      // @ts-ignore
+      // @ts-expect-error - Mocking BroadcastChannel for tests
       global.BroadcastChannel = jest.fn(
         (name) => new MockBroadcastChannel(name),
       );
@@ -232,6 +245,8 @@ describe('web-component', () => {
     // Removed deprecated commented redirect tests; active versions added later with cleanup coverage
 
     it('should detect popup close and dispatch event', async () => {
+      jest.useFakeTimers();
+
       startMock.mockReturnValue({
         ok: true,
         data: {
@@ -267,10 +282,13 @@ describe('web-component', () => {
       });
       // Advance time to trigger interval check
       popupObj.closed = true;
-      jest.advanceTimersByTime(1100);
+      await jest.advanceTimersByTimeAsync(1100);
+      await jest.runAllTimersAsync();
       await waitFor(() => expect(onClosed).toHaveBeenCalled(), {
         timeout: 2000,
       });
+
+      jest.useRealTimers();
     });
   });
 });
