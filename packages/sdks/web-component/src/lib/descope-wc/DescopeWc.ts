@@ -29,6 +29,7 @@ import {
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
+  injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
   openCenteredPopup,
@@ -635,6 +636,9 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
+      wsFedIdpResponseUrl,
+      wsFedIdpResponseWresult,
+      wsFedIdpResponseWctx,
       nativeResponseType,
       nativePayload,
       reqTimestamp,
@@ -837,6 +841,29 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpResponseRelayState || '',
         submitForm,
       ); // will redirect us to the saml acs url
+    }
+
+    const wsFedProps = [
+      'wsFedIdpResponseUrl',
+      'wsFedIdpResponseWresult',
+      'wsFedIdpResponseWctx',
+    ];
+    if (
+      action === RESPONSE_ACTIONS.loadForm &&
+      wsFedProps.some((wsFedProp) => isChanged(wsFedProp))
+    ) {
+      if (!wsFedIdpResponseUrl || !wsFedIdpResponseWresult) {
+        this.loggerWrapper.error('Did not get wsfed idp params data to load');
+        return;
+      }
+
+      // Handle WS-Fed IDP end of flow ("redirect like" by using html form with hidden params)
+      injectWsFedIdpForm(
+        wsFedIdpResponseUrl,
+        wsFedIdpResponseWresult,
+        wsFedIdpResponseWctx || '',
+        submitForm,
+      ); // will redirect us to the wsfed reply url
     }
 
     if (
@@ -1425,6 +1452,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthn,
       error,
       samlIdpResponse,
+      wsFedIdpResponse,
       nativeResponse,
     } = sdkResp.data;
 
@@ -1472,6 +1500,9 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
+      wsFedIdpResponseUrl: wsFedIdpResponse?.url,
+      wsFedIdpResponseWresult: wsFedIdpResponse?.wresult,
+      wsFedIdpResponseWctx: wsFedIdpResponse?.wctx,
       nativeResponseType: nativeResponse?.type,
       nativePayload: nativeResponse?.payload,
       reqTimestamp,
