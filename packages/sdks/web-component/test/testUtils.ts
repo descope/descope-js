@@ -19,6 +19,9 @@ export const generateSdkResponse = ({
   samlIdpResponseUrl = '',
   samlIdpResponseSamlResponse = '',
   samlIdpResponseRelayState = '',
+  wsFedIdpResponseUrl = '',
+  wsFedIdpResponseWresult = '',
+  wsFedIdpResponseWctx = '',
   lastAuth = {},
   openInNewTabUrl = '',
   nativeResponseType = '',
@@ -39,11 +42,20 @@ export const generateSdkResponse = ({
       options: webAuthnOptions,
       transactionId: webAuthnTransactionId,
     },
-    samlIdpResponse: {
-      url: samlIdpResponseUrl,
-      samlResponse: samlIdpResponseSamlResponse,
-      relayState: samlIdpResponseRelayState,
-    },
+    samlIdpResponse: samlIdpResponseUrl
+      ? {
+          url: samlIdpResponseUrl,
+          samlResponse: samlIdpResponseSamlResponse,
+          relayState: samlIdpResponseRelayState,
+        }
+      : undefined,
+    wsFedIdpResponse: wsFedIdpResponseUrl
+      ? {
+          url: wsFedIdpResponseUrl,
+          wresult: wsFedIdpResponseWresult,
+          wctx: wsFedIdpResponseWctx,
+        }
+      : undefined,
     lastAuth,
     openInNewTabUrl,
     nativeResponse: {

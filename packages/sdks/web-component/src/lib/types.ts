@@ -126,6 +126,9 @@ export type FlowState = {
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
+  wsFedIdpResponseUrl: string;
+  wsFedIdpResponseWresult: string;
+  wsFedIdpResponseWctx: string;
   nativeResponseType: string;
   nativePayload: Record<string, any>;
   reqTimestamp: number;
