@@ -86,14 +86,22 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginOptions?: LoginOptions,
         token?: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        const { tenantId, ...restLoginOptions } = loginOptions || {};
+        return transformResponse(
           httpClient.post(
             apiPaths.webauthn.signIn.start,
-            { loginId, origin, loginOptions, passkeyOptions },
+            {
+              loginId,
+              origin,
+              tenantId,
+              loginOptions: restLoginOptions,
+              passkeyOptions,
+            },
             { token },
           ),
-        ),
+        );
+      },
     ),
 
     finish: withFinishValidations(

@@ -27,12 +27,14 @@ const withNotp = (httpClient: HttpClient) => ({
       loginId?: string,
       {
         providerId,
+        tenantId,
         ...signUpOptions
       }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<NOTPResponse>> =>
       transformResponse(
         httpClient.post(apiPaths.notp.signUpOrIn, {
           loginId,
+          tenantId,
           loginOptions: signUpOptions,
           providerId,
         }),
@@ -44,6 +46,7 @@ const withNotp = (httpClient: HttpClient) => ({
       user?: User,
       {
         providerId,
+        tenantId,
         ...signUpOptions
       }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<NOTPResponse>> =>
@@ -51,6 +54,7 @@ const withNotp = (httpClient: HttpClient) => ({
         httpClient.post(apiPaths.notp.signUp, {
           loginId,
           user,
+          tenantId,
           providerId,
           loginOptions: signUpOptions,
         }),
@@ -61,6 +65,7 @@ const withNotp = (httpClient: HttpClient) => ({
       loginId?: string,
       {
         providerId,
+        tenantId,
         ...loginOptions
       }: LoginOptions & { providerId?: string } = {},
       token?: string,
@@ -68,7 +73,7 @@ const withNotp = (httpClient: HttpClient) => ({
       transformResponse(
         httpClient.post(
           apiPaths.notp.signIn,
-          { loginId, loginOptions, providerId },
+          { loginId, tenantId, loginOptions, providerId },
           { token },
         ),
       ),

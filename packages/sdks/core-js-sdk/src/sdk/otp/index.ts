@@ -60,6 +60,7 @@ const withOtp = (httpClient: HttpClient) => ({
           loginId: string,
           {
             providerId,
+            tenantId,
             ...loginOptions
           }: LoginOptions & { providerId?: string } = {},
           token?: string,
@@ -67,7 +68,7 @@ const withOtp = (httpClient: HttpClient) => ({
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.otp.signIn, delivery),
-              { loginId, loginOptions, providerId },
+              { loginId, loginOptions, providerId, tenantId },
               { token },
             ),
           ),
@@ -85,6 +86,7 @@ const withOtp = (httpClient: HttpClient) => ({
           user?: User,
           {
             providerId,
+            tenantId,
             ...signUpOptions
           }: SignUpOptions & { providerId?: string } = {},
         ) =>
@@ -94,6 +96,7 @@ const withOtp = (httpClient: HttpClient) => ({
               user,
               loginOptions: signUpOptions,
               providerId,
+              tenantId,
             }),
           ),
       ),
@@ -109,6 +112,7 @@ const withOtp = (httpClient: HttpClient) => ({
           loginId: string,
           {
             providerId,
+            tenantId,
             ...signUpOptions
           }: SignUpOptions & { providerId?: string } = {},
         ) =>
@@ -117,6 +121,7 @@ const withOtp = (httpClient: HttpClient) => ({
               loginId,
               loginOptions: signUpOptions,
               providerId,
+              tenantId,
             }),
           ),
       ),
