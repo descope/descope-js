@@ -147,7 +147,7 @@ describe('password', () => {
       });
     });
 
-    it('should extract tenantId from login options and send it as a top-level field', () => {
+    it('should send tenantId inside loginOptions', () => {
       sdk.password.signIn('loginId', 'abcd1234', {
         tenantId: 'tenant1',
         customClaims: { claim1: 'yes' },
@@ -157,8 +157,10 @@ describe('password', () => {
         {
           loginId: 'loginId',
           password: 'abcd1234',
-          tenantId: 'tenant1',
-          loginOptions: { customClaims: { claim1: 'yes' } },
+          loginOptions: {
+            tenantId: 'tenant1',
+            customClaims: { claim1: 'yes' },
+          },
         },
       );
     });

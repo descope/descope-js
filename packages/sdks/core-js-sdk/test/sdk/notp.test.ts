@@ -111,7 +111,7 @@ describe('NOTP', () => {
       );
     });
 
-    it('should extract tenantId from login options and send it as a top-level field', () => {
+    it('should send tenantId inside loginOptions', () => {
       sdk.notp.signIn(
         'loginId',
         { tenantId: 'tenant1', stepup: true },
@@ -121,8 +121,7 @@ describe('NOTP', () => {
         apiPaths.notp.signIn,
         {
           loginId: 'loginId',
-          tenantId: 'tenant1',
-          loginOptions: { stepup: true },
+          loginOptions: { tenantId: 'tenant1', stepup: true },
         },
         { token: 'token' },
       );

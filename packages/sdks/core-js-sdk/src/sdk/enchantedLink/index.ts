@@ -38,7 +38,6 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       URI?: string,
       {
         providerId,
-        tenantId,
         ...loginOptions
       }: LoginOptions & { providerId?: string } = {},
       token?: string,
@@ -51,7 +50,6 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             URI,
             loginOptions,
             providerId,
-            tenantId,
           },
           { token },
         ),
@@ -64,7 +62,6 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       URI?: string,
       {
         providerId,
-        tenantId,
         ...signUpOptions
       }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
@@ -76,7 +73,6 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             URI,
             loginOptions: signUpOptions,
             providerId,
-            tenantId,
           },
         ),
       ),
@@ -89,7 +85,6 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       user?: User,
       {
         providerId,
-        tenantId,
         ...signUpOptions
       }: SignUpOptions & { providerId?: string } = {},
     ): Promise<SdkResponse<EnchantedLinkResponse>> =>
@@ -102,7 +97,6 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
             user,
             loginOptions: signUpOptions,
             providerId,
-            tenantId,
           },
         ),
       ),

@@ -39,7 +39,6 @@ const withMagicLink = (httpClient: HttpClient) => ({
           URI?: string,
           {
             providerId,
-            tenantId,
             ...loginOptions
           }: LoginOptions & { providerId?: string } = {},
           token?: string,
@@ -47,7 +46,7 @@ const withMagicLink = (httpClient: HttpClient) => ({
           transformResponse(
             httpClient.post(
               pathJoin(apiPaths.magicLink.signIn, delivery),
-              { loginId, URI, loginOptions, providerId, tenantId },
+              { loginId, URI, loginOptions, providerId },
               { token },
             ),
           ),
@@ -66,7 +65,6 @@ const withMagicLink = (httpClient: HttpClient) => ({
           user?: User,
           {
             providerId,
-            tenantId,
             ...signUpOptions
           }: SignUpOptions & { providerId?: string } = {},
         ) =>
@@ -77,7 +75,6 @@ const withMagicLink = (httpClient: HttpClient) => ({
               user,
               loginOptions: signUpOptions,
               providerId,
-              tenantId,
             }),
           ),
       ),
@@ -94,7 +91,6 @@ const withMagicLink = (httpClient: HttpClient) => ({
           URI?: string,
           {
             providerId,
-            tenantId,
             ...signUpOptions
           }: SignUpOptions & { providerId?: string } = {},
         ) =>
@@ -104,7 +100,6 @@ const withMagicLink = (httpClient: HttpClient) => ({
               URI,
               loginOptions: signUpOptions,
               providerId,
-              tenantId,
             }),
           ),
       ),

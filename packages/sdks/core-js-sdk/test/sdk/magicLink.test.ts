@@ -159,7 +159,7 @@ describe('Magic Link', () => {
       );
     });
 
-    it('should extract tenantId from login options and send it as a top-level field', () => {
+    it('should send tenantId inside loginOptions', () => {
       sdk.magicLink.signIn.email(
         'loginId',
         'http://some.thing.com',
@@ -171,8 +171,7 @@ describe('Magic Link', () => {
         {
           loginId: 'loginId',
           URI: 'http://some.thing.com',
-          tenantId: 'tenant1',
-          loginOptions: { stepup: true },
+          loginOptions: { tenantId: 'tenant1', stepup: true },
         },
         { token: 'token' },
       );

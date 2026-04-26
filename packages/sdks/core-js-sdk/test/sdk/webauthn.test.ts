@@ -114,7 +114,7 @@ describe('webauthn', () => {
         });
       });
 
-      it('should extract tenantId from login options and send it as a top-level field', () => {
+      it('should send tenantId inside loginOptions', () => {
         const httpRespJson = { key: 'val' };
         const httpResponse = {
           ok: true,
@@ -135,7 +135,7 @@ describe('webauthn', () => {
           {
             user: { loginId: 'loginId', name: 'John Doe' },
             origin: 'origin',
-            tenantId: 'tenant1',
+            loginOptions: { tenantId: 'tenant1' },
             passkeyOptions: undefined,
           },
         );
@@ -305,7 +305,7 @@ describe('webauthn', () => {
         );
       });
 
-      it('should extract tenantId from login options and send it as a top-level field', () => {
+      it('should send tenantId inside loginOptions', () => {
         const httpRespJson = { key: 'val' };
         const httpResponse = {
           ok: true,
@@ -329,8 +329,7 @@ describe('webauthn', () => {
           {
             loginId: 'loginId',
             origin: 'origin',
-            tenantId: 'tenant1',
-            loginOptions: { stepup: true },
+            loginOptions: { tenantId: 'tenant1', stepup: true },
           },
           { token: 'token' },
         );
@@ -507,7 +506,7 @@ describe('webauthn', () => {
         );
       });
 
-      it('should extract tenantId from login options and send it as a top-level field', () => {
+      it('should send tenantId inside loginOptions', () => {
         const httpRespJson = { key: 'val' };
         const httpResponse = {
           ok: true,
@@ -528,7 +527,7 @@ describe('webauthn', () => {
           {
             loginId: 'loginId',
             origin: 'origin',
-            tenantId: 'tenant1',
+            loginOptions: { tenantId: 'tenant1' },
             passkeyOptions: undefined,
           },
         );
