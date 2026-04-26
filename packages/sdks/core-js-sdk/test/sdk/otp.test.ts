@@ -132,6 +132,23 @@ describe('otp', () => {
       );
     });
 
+    it('should extract tenantId from login options and send it as a top-level field', () => {
+      sdk.otp.signIn.email(
+        'loginId',
+        { tenantId: 'tenant1', stepup: true },
+        'token',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.otp.signIn + '/email',
+        {
+          loginId: 'loginId',
+          tenantId: 'tenant1',
+          loginOptions: { stepup: true },
+        },
+        { token: 'token' },
+      );
+    });
+
     it('should return the correct response', async () => {
       const httpRespJson = { key: 'val', maskedEmail: 'a' };
       const httpResponse = {

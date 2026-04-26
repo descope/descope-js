@@ -111,6 +111,23 @@ describe('NOTP', () => {
       );
     });
 
+    it('should extract tenantId from login options and send it as a top-level field', () => {
+      sdk.notp.signIn(
+        'loginId',
+        { tenantId: 'tenant1', stepup: true },
+        'token',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.notp.signIn,
+        {
+          loginId: 'loginId',
+          tenantId: 'tenant1',
+          loginOptions: { stepup: true },
+        },
+        { token: 'token' },
+      );
+    });
+
     it('should return the correct response', async () => {
       const httpRespJson = { bla: 'bla' };
       const httpResponse = {
