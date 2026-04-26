@@ -51,17 +51,21 @@ const withWebauthn = (httpClient: HttpClient) => ({
         origin: string,
         name: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+        loginOptions?: LoginOptions,
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        const tenantId = loginOptions?.tenantId;
+        return transformResponse(
           httpClient.post(apiPaths.webauthn.signUp.start, {
             user: {
               loginId,
               name,
             },
             origin,
+            tenantId,
             passkeyOptions,
           }),
-        ),
+        );
+      },
     ),
 
     finish: withFinishValidations(
@@ -128,14 +132,18 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginId: string,
         origin: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+        loginOptions?: LoginOptions,
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        const tenantId = loginOptions?.tenantId;
+        return transformResponse(
           httpClient.post(apiPaths.webauthn.signUpOrIn.start, {
             loginId,
             origin,
+            tenantId,
             passkeyOptions,
           }),
-        ),
+        );
+      },
     ),
   },
 
