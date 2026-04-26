@@ -278,6 +278,37 @@ describe('webauthn', () => {
         );
       });
 
+      it('should extract tenantId from login options and send it as a top-level field', () => {
+        const httpRespJson = { key: 'val' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+
+        sdk.webauthn.signIn.start(
+          'loginId',
+          'origin',
+          { tenantId: 'tenant1', stepup: true },
+          'token',
+        );
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.webauthn.signIn.start,
+          {
+            loginId: 'loginId',
+            origin: 'origin',
+            tenantId: 'tenant1',
+            loginOptions: { stepup: true },
+          },
+          { token: 'token' },
+        );
+      });
+
       it('should return the correct response', async () => {
         const httpRespJson = { key: 'val' };
         const httpResponse = {
