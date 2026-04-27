@@ -149,7 +149,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     isSessionFetched.current = true;
 
     setIsSessionLoading(true);
-    withValidation(sdk?.refresh)(undefined, true).then(() => {
+    withValidation(sdk?.refresh)(undefined, true, {
+      skipIfNoSession: true,
+    }).then(() => {
       setIsSessionLoading(false);
     });
   }, [sdk]);

@@ -1215,6 +1215,120 @@ describe('persistTokens', () => {
     });
   });
 
+  describe('lastAuthStatus flag (DSP_LAST_AUTH)', () => {
+    beforeEach(() => {
+      localStorage.clear();
+      jest.clearAllMocks();
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "auth" after a successful auth response (both tokens)', async () => {
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "auth" when sessionJwt is returned', async () => {
+      const sessionOnlyInfo = {
+        sessionJwt: authInfo.sessionJwt,
+        sessionExpiration: authInfo.sessionExpiration,
+        cookieDomain: authInfo.cookieDomain,
+        cookiePath: authInfo.cookiePath,
+        cookieExpiration: authInfo.cookieExpiration,
+      };
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(sessionOnlyInfo));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "auth" when tokens are HttpOnly cookies (only sessionExpiration in body)', async () => {
+      // sessionJwt and refreshJwt are delivered as HttpOnly cookies — invisible to JS.
+      // sessionExpiration is always present in the response body and is the reliable signal.
+      const expirationOnlyInfo = {
+        sessionExpiration: authInfo.sessionExpiration,
+      };
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(expirationOnlyInfo));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "unauth" after logout', async () => {
+      localStorage.setItem('DSP_LAST_AUTH_pid', 'auth');
+      const mockFetch = jest.fn().mockReturnValue(createMockReturnValue({}));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.logout();
+
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('unauth');
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "unauth" when session is invalidated by a 4xx on /refresh', async () => {
+      const failedMock = {
+        clone: () => failedMock,
+        ok: false,
+        status: 401,
+        text: () => Promise.resolve(JSON.stringify({})),
+        url: new URL('http://example.com'),
+        headers: new Headers(),
+      };
+      const mockFetch = jest
+        .fn()
+        .mockReturnValueOnce(createMockReturnValue(authInfo))
+        .mockReturnValueOnce(failedMock);
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+
+      await sdk.httpClient.get('/v1/auth/refresh');
+      await new Promise(process.nextTick);
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('unauth');
+    });
+
+    it('should not apply storagePrefix to the auth status flag', async () => {
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        persistTokens: true,
+        storagePrefix: 'myapp.',
+      });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      // Flag key is DSP_LAST_AUTH_<projectId>, not affected by storagePrefix
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+      expect(localStorage.getItem('myapp.DSP_LAST_AUTH_pid')).toBeNull();
+    });
+  });
+
   describe('server-returned refresh cookie name (DSRCN)', () => {
     beforeEach(() => {
       localStorage.clear();

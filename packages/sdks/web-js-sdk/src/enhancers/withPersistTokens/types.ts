@@ -1,4 +1,5 @@
 export type SameSite = 'Strict' | 'Lax' | 'None';
+export type LastAuthStateValue = 'auth' | 'unauth';
 export type CookieConfig =
   | boolean
   | {

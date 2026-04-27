@@ -5,13 +5,17 @@ import withFlow from './flow';
 import {
   getSessionToken,
   getRefreshToken,
+  getLastAuthStatus,
 } from '../enhancers/withPersistTokens/helpers';
+import { LAST_AUTH_STATE } from '../enhancers/withPersistTokens/constants';
+import { decodeProjectCreatedAt } from '@descope/sdk-helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
 import {
   OIDC_LOGOUT_ERROR_CODE,
   OIDC_REFRESH_ERROR_CODE,
   REFRESH_DISABLED,
+  SKIP_INITIAL_REFRESH_FOR_PROJECTS_AFTER,
 } from '../constants';
 import logger from '../enhancers/helpers/logger';
 import { isDescopeBridge } from '../enhancers/helpers';
@@ -26,6 +30,7 @@ const createSdk = (config: WebSdkConfig) => {
     refresh: async (
       token?: string,
       tryRefresh?: boolean,
+      options?: { skipIfNoSession?: boolean },
     ): ReturnType<CoreSdk['refresh']> => {
       if (isDescopeBridge()) {
         logger.debug(`Refresh called in native flow: ${new Error().stack}`);
@@ -53,10 +58,33 @@ const createSdk = (config: WebSdkConfig) => {
           });
         }
       }
-      // Descope use this query param to monitor if refresh is made
-      // When the user is already logged in in the past or not (We want to optimize that in the future)
       const currentSessionToken = getSessionToken();
       const currentRefreshToken = getRefreshToken();
+
+      // Skip the refresh call when we can prove there is no session to restore.
+      // Callers opt-in via options.skipIfNoSession (e.g. AuthProvider on mount).
+      if (
+        options?.skipIfNoSession &&
+        !currentSessionToken &&
+        !currentRefreshToken &&
+        !config.getExternalToken
+      ) {
+        const status = getLastAuthStatus(config.projectId);
+        if (status === LAST_AUTH_STATE.unauth) {
+          return { ok: true };
+        }
+        if (status !== LAST_AUTH_STATE.auth) {
+          // Flag absent: skip immediately for projects newer than the cutoff
+          const createdAt = decodeProjectCreatedAt(config.projectId);
+          if (
+            createdAt !== null &&
+            createdAt >= SKIP_INITIAL_REFRESH_FOR_PROJECTS_AFTER
+          ) {
+            return { ok: true };
+          }
+          // Legacy project: fall through to make the bootstrap call
+        }
+      }
 
       let externalToken = '';
       if (config.getExternalToken) {

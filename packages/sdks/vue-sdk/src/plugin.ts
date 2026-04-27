@@ -56,7 +56,7 @@ export default {
     const fetchSession = async (tryRefresh?: boolean) => {
       if (isDescopeBridge()) return;
       isSessionLoading.value = true;
-      await sdk.refresh(undefined, tryRefresh);
+      await sdk.refresh(undefined, tryRefresh, { skipIfNoSession: true });
       isSessionLoading.value = false;
     };
 

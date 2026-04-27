@@ -61,6 +61,7 @@ export const withPersistTokens =
           sessionTokenViaCookie,
           refreshTokenViaCookie,
           lastCookieOptions,
+          config.projectId,
         );
       } else {
         const authInfo = await getAuthInfoFromResponse(res);
@@ -84,6 +85,7 @@ export const withPersistTokens =
           sessionTokenViaCookie,
           storagePrefix,
           refreshTokenViaCookie,
+          config.projectId,
         );
         // Only update lastCookieOptions if we actually set a cookie
         if (newCookieOptions) {
@@ -114,6 +116,7 @@ export const withPersistTokens =
         sessionTokenViaCookie,
         refreshTokenViaCookie,
         () => lastCookieOptions,
+        config.projectId,
       ),
     );
 
@@ -136,6 +139,7 @@ const logoutWrapper =
     sessionTokenViaCookie?: CookieConfig,
     refreshTokenViaCookie?: CookieConfig,
     getCookieOptions?: () => LastCookieOptions | undefined,
+    projectId?: string,
   ): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
@@ -146,6 +150,7 @@ const logoutWrapper =
       sessionTokenViaCookie,
       refreshTokenViaCookie,
       getCookieOptions?.(),
+      projectId,
     );
 
     return resp;
