@@ -85,7 +85,7 @@ export const withPersistTokens =
           sessionTokenViaCookie,
           storagePrefix,
           refreshTokenViaCookie,
-          (config as any).projectId,
+          config.projectId,
         );
         // Only update lastCookieOptions if we actually set a cookie
         if (newCookieOptions) {
@@ -116,7 +116,7 @@ export const withPersistTokens =
         sessionTokenViaCookie,
         refreshTokenViaCookie,
         () => lastCookieOptions,
-        (config as any).projectId,
+        config.projectId,
       ),
     );
 
