@@ -70,15 +70,17 @@ export class DescopeAuthService {
       ...beforeRefreshSession,
       isSessionLoading: true
     });
-    return this.descopeSdk.refresh(undefined, tryRefresh).pipe(
-      finalize(() => {
-        const afterRefreshSession = this.sessionSubject.value;
-        this.sessionSubject.next({
-          ...afterRefreshSession,
-          isSessionLoading: false
-        });
-      })
-    );
+    return this.descopeSdk
+      .refresh(undefined, tryRefresh, { skipIfNoSession: true })
+      .pipe(
+        finalize(() => {
+          const afterRefreshSession = this.sessionSubject.value;
+          this.sessionSubject.next({
+            ...afterRefreshSession,
+            isSessionLoading: false
+          });
+        })
+      );
   }
 
   refreshUser() {

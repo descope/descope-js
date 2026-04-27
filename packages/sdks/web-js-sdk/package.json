@@ -87,6 +87,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@descope/sdk-helpers": "workspace:*",
     "@descope/core-js-sdk": "workspace:*",
     "@fingerprintjs/fingerprintjs-pro": "3.11.6",
     "js-cookie": "3.0.5",

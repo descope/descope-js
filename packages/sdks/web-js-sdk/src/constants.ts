@@ -17,3 +17,8 @@ export const OIDC_LOGOUT_ERROR_CODE = 'J161000';
 export const OIDC_REFRESH_ERROR_CODE = 'J161001';
 
 export const REFRESH_DISABLED = 'J171000';
+
+// Projects created after this Unix timestamp (2026-05-05 UTC) will skip the
+// initial refresh entirely when no session state is present. Set to approx.
+// the feature release date + 7-day buffer. Update before shipping.
+export const SKIP_INITIAL_REFRESH_FOR_PROJECTS_AFTER = 1777939200;

@@ -3,6 +3,8 @@ import Cookies from 'js-cookie';
 import { BeforeRequestHook, WebJWTResponse } from '../../types';
 import {
   ID_TOKEN_KEY,
+  LAST_AUTH_KEY,
+  LAST_AUTH_STATE,
   REFRESH_COOKIE_NAME_KEY,
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
@@ -13,7 +15,12 @@ import {
   removeLocalStorage,
   setLocalStorage,
 } from '../helpers';
-import { CookieConfig, LastCookieOptions, SameSite } from './types';
+import {
+  CookieConfig,
+  LastCookieOptions,
+  LastAuthStateValue,
+  SameSite,
+} from './types';
 import logger from '../helpers/logger';
 
 /**
@@ -85,6 +92,7 @@ export const persistTokens = (
   sessionTokenViaCookie: boolean | CookieConfig = false,
   storagePrefix = '',
   refreshTokenViaCookie: boolean | CookieConfig = false,
+  projectId = '',
 ): LastCookieOptions | undefined => {
   // persist refresh token
   const { sessionJwt, refreshJwt, trustedDeviceJwt } = authInfo;
@@ -131,6 +139,8 @@ export const persistTokens = (
       // persist in local storage
       setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
     }
+
+    setLastAuthStatus(projectId, LAST_AUTH_STATE.auth);
   }
 
   // persist session token
@@ -239,6 +249,7 @@ export function clearTokens(
   sessionTokenViaCookie?: CookieConfig,
   refreshTokenViaCookie?: CookieConfig,
   cookieOptions?: LastCookieOptions,
+  projectId = '',
 ) {
   removeLocalStorage(`${prefix}${REFRESH_TOKEN_KEY}`);
   removeLocalStorage(`${prefix}${SESSION_TOKEN_KEY}`);
@@ -249,6 +260,28 @@ export function clearTokens(
 
   const refreshCookieName = getRefreshCookieName(refreshTokenViaCookie);
   Cookies.remove(refreshCookieName, cookieOptions?.refresh);
+
+  setLastAuthStatus(projectId, LAST_AUTH_STATE.unauth);
+}
+
+export function setLastAuthStatus(
+  projectId: string,
+  status: LastAuthStateValue,
+) {
+  if (projectId) {
+    setLocalStorage(`${LAST_AUTH_KEY}_${projectId}`, status);
+  }
+}
+
+/** Returns the last known auth status for a project, or null if unknown (never set). */
+export function getLastAuthStatus(
+  projectId: string,
+): LastAuthStateValue | null {
+  const value = getLocalStorage(`${LAST_AUTH_KEY}_${projectId}`);
+  if (value === LAST_AUTH_STATE.auth || value === LAST_AUTH_STATE.unauth) {
+    return value;
+  }
+  return null;
 }
 
 export const beforeRequest =
