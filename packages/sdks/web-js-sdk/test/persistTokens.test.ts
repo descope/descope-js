@@ -1221,10 +1221,48 @@ describe('persistTokens', () => {
       jest.clearAllMocks();
     });
 
-    it('should set DSP_LAST_AUTH_pid to "auth" after a successful auth response', async () => {
+    it('should set DSP_LAST_AUTH_pid to "auth" after a successful auth response (both tokens)', async () => {
       const mockFetch = jest
         .fn()
         .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "auth" when sessionJwt is returned', async () => {
+      const sessionOnlyInfo = {
+        sessionJwt: authInfo.sessionJwt,
+        sessionExpiration: authInfo.sessionExpiration,
+        cookieDomain: authInfo.cookieDomain,
+        cookiePath: authInfo.cookiePath,
+        cookieExpiration: authInfo.cookieExpiration,
+      };
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(sessionOnlyInfo));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem('DSP_LAST_AUTH_pid')).toEqual('auth');
+    });
+
+    it('should set DSP_LAST_AUTH_pid to "auth" when tokens are HttpOnly cookies (only sessionExpiration in body)', async () => {
+      // sessionJwt and refreshJwt are delivered as HttpOnly cookies — invisible to JS.
+      // sessionExpiration is always present in the response body and is the reliable signal.
+      const expirationOnlyInfo = {
+        sessionExpiration: authInfo.sessionExpiration,
+      };
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(expirationOnlyInfo));
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid', persistTokens: true });

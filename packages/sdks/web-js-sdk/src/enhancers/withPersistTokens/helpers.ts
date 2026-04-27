@@ -139,8 +139,6 @@ export const persistTokens = (
       // persist in local storage
       setLocalStorage(`${storagePrefix}${REFRESH_TOKEN_KEY}`, refreshJwt);
     }
-
-    setLastAuthStatus(projectId, LAST_AUTH_STATE.auth);
   }
 
   // persist session token
@@ -179,6 +177,12 @@ export const persistTokens = (
     } else {
       setLocalStorage(`${storagePrefix}${SESSION_TOKEN_KEY}`, sessionJwt);
     }
+  }
+
+  // sessionJwt and refreshJwt may be delivered as HttpOnly cookies (invisible to JS),
+  // but sessionExpiration is always present in the response body on successful auth.
+  if (sessionJwt || authInfo.sessionExpiration) {
+    setLastAuthStatus(projectId, LAST_AUTH_STATE.auth);
   }
 
   if (authInfo.idToken) {
