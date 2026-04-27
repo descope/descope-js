@@ -128,7 +128,6 @@ export const mockNewUser = {
     {
       tenantId: 't1',
       roleNames: ['Role 1'],
-      tenantName: 't1',
     },
   ],
   status: 'invited',

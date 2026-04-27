@@ -101,6 +101,7 @@ export const createUserSdk = ({
     sendMail,
     inviteUrl,
     invite,
+    userTenants,
   }) => {
     if (mock) {
       return user.create({
@@ -121,6 +122,7 @@ export const createUserSdk = ({
         sendMail,
         inviteUrl,
         invite,
+        userTenants,
       });
     }
     const res = await httpClient.post(
@@ -134,7 +136,7 @@ export const createUserSdk = ({
         middleName,
         familyName,
         roleNames: roles,
-        userTenants: [{ tenantId: tenant }],
+        userTenants: userTenants?.length ? userTenants : [{ tenantId: tenant }],
         customAttributes,
         picture,
         verifiedEmail,
@@ -171,6 +173,7 @@ export const createUserSdk = ({
     middleName,
     familyName,
     additionalLoginIds,
+    userTenants,
   }) => {
     if (mock) {
       return user.update({
@@ -187,6 +190,7 @@ export const createUserSdk = ({
         middleName,
         familyName,
         additionalLoginIds,
+        userTenants,
       });
     }
     const res = await httpClient.patch(
@@ -200,6 +204,7 @@ export const createUserSdk = ({
         middleName,
         familyName,
         roleNames: roles,
+        userTenants,
         customAttributes,
         picture,
         verifiedEmail,

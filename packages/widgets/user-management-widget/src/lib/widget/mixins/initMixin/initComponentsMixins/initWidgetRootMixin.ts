@@ -41,6 +41,7 @@ export const initWidgetRootMixin = createSingletonMixin(
           this.#initWidgetRoot(),
           this.actions.searchUsers(),
           this.actions.getTenantRoles(),
+          this.actions.getSubTenantRoles(),
           this.actions.getCustomAttributes(),
         ]);
 

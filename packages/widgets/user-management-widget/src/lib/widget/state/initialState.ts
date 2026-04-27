@@ -44,6 +44,11 @@ export const initialState: State = {
     error: null,
     data: [],
   },
+  subTenantRoles: {
+    loading: false,
+    error: null,
+    data: [],
+  },
   searchParams: { text: '', sort: [] },
   selectedUsersLoginIds: [],
   notifications: [],

@@ -145,6 +145,17 @@ test.describe('widget', () => {
       route.fulfill({ json: mockRoles }),
     );
 
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({
+        json: {
+          roles: [
+            { tenantId: 'sub-tenant-1', roleNames: ['Role 1', 'Role 2'] },
+            { tenantId: 'sub-tenant-2', roleNames: ['Role 1', 'Role 3'] },
+          ],
+        },
+      }),
+    );
+
     await page.route(apiPath('user', 'customattributes'), async (route) =>
       route.fulfill({ json: mockCustomAttributes }),
     );
@@ -904,5 +915,64 @@ test.describe('widget', () => {
       await page.waitForTimeout(MODAL_TIMEOUT);
       await expect(modal).toBeHidden();
     }
+  });
+
+  test('create user - sub-tenant section is visible when sub-tenants exist', async ({
+    page,
+  }) => {
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
+
+    await openAddUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+    await expect(page.locator('text=Sub Tenant Roles').first()).toBeVisible();
+  });
+
+  test('create user - sub-tenant section is hidden when no sub-tenants', async ({
+    page,
+  }) => {
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({ json: { roles: [] } }),
+    );
+
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
+
+    await openAddUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeHidden();
+  });
+
+  test('edit user - sub-tenant section is visible when sub-tenants exist', async ({
+    page,
+  }) => {
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    const openEditUserModalButton = page
+      .getByTestId('edit-user-trigger')
+      .first();
+    await openEditUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+    await expect(page.locator('text=Sub Tenant Roles').first()).toBeVisible();
   });
 });

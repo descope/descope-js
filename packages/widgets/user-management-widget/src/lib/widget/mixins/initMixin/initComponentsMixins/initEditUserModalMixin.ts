@@ -1,6 +1,7 @@
 import {
   ButtonDriver,
   ModalDriver,
+  MultiLineMappingsDriver,
   MultiSelectDriver,
   TextFieldDriver,
 } from '@descope/sdk-component-drivers';
@@ -17,6 +18,7 @@ import {
   getCustomAttributes,
   getSelectedUsers,
   getTenantRoles,
+  getSubTenantRolesData,
 } from '../../../state/selectors';
 import { flatten, unflatten } from '../../../../helpers';
 
@@ -52,6 +54,10 @@ export const initEditUserModalMixin = createSingletonMixin(
 
       #rolesMultiSelect: MultiSelectDriver;
 
+      #subTenantSection: Element;
+
+      #subTenantMappings: MultiLineMappingsDriver;
+
       #initCancelButton() {
         const cancelButton = new ButtonDriver(
           () =>
@@ -73,10 +79,12 @@ export const initEditUserModalMixin = createSingletonMixin(
             const { loginId, ...formData } = this.getFormData(
               this.editUserModal.ele,
             );
+            const userTenants = this.#subTenantMappings.mergedValue;
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
               ...unflatten(formData, 'customAttributes'),
+              userTenants,
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -91,6 +99,15 @@ export const initEditUserModalMixin = createSingletonMixin(
             label: name,
           })),
         );
+      };
+
+      #updateSubTenantSection = () => {
+        const data = getSubTenantRolesData(this.state);
+        const hasSubTenants = Object.keys(data).length > 0;
+        this.#subTenantSection?.toggleAttribute('hidden', !hasSubTenants);
+        if (hasSubTenants) {
+          this.#subTenantMappings.setData(data);
+        }
       };
 
       // hide and disable fields according to user permissions
@@ -134,14 +151,17 @@ export const initEditUserModalMixin = createSingletonMixin(
         };
 
         this.setFormData(this.editUserModal.ele, formData);
+        this.#subTenantMappings.value = userDetails?.userTenants || [];
       };
 
       async #initEditUserModal() {
         this.editUserModal = this.createModal();
         this.editUserModal.setContent(
           createTemplate(
-            // await import('../../../../../../test/mocks/editUserModalMock').then(module => module.default)
-            await this.fetchWidgetPage('edit-user-modal.html'),
+            await import('../../../../../../test/mocks/editUserModalMock').then(
+              (module) => module.default,
+            ),
+            // await this.fetchWidgetPage('edit-user-modal.html'),
           ),
         );
 
@@ -161,11 +181,23 @@ export const initEditUserModalMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
+        this.#subTenantSection = this.editUserModal.ele?.querySelector(
+          '[data-id="sub-tenant-section"]',
+        );
+        this.#subTenantMappings = new MultiLineMappingsDriver(
+          () =>
+            this.editUserModal.ele?.querySelector(
+              '[data-id="sub-tenant-mappings"]',
+            ),
+          { logger: this.logger },
+        );
+
         this.editUserModal.beforeOpen = async () => {
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
           this.#updateModalData();
           this.#updateCustomFields();
+          this.#updateSubTenantSection();
         };
       }
 

@@ -13,6 +13,7 @@ import {
   setTempUserPassword,
   getCustomAttributes,
   getTenantRoles,
+  getSubTenantRoles,
   removePasskey,
   searchUser,
   updateUser,
@@ -45,6 +46,7 @@ export const stateManagementMixin = createSingletonMixin(
           removePasskey.reducer(builder);
           getCustomAttributes.reducer(builder);
           getTenantRoles.reducer(builder);
+          getSubTenantRoles.reducer(builder);
         },
         asyncActions: {
           searchUsers: searchUser.action,
@@ -56,6 +58,7 @@ export const stateManagementMixin = createSingletonMixin(
           removePasskey: removePasskey.action,
           getCustomAttributes: getCustomAttributes.action,
           getTenantRoles: getTenantRoles.action,
+          getSubTenantRoles: getSubTenantRoles.action,
           setTempUserPassword: setTempUserPassword.action,
         },
       }),
