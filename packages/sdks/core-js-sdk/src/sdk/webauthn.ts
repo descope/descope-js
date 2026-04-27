@@ -51,17 +51,20 @@ const withWebauthn = (httpClient: HttpClient) => ({
         origin: string,
         name: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+        loginOptions?: LoginOptions,
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        return transformResponse(
           httpClient.post(apiPaths.webauthn.signUp.start, {
             user: {
               loginId,
               name,
             },
             origin,
+            loginOptions,
             passkeyOptions,
           }),
-        ),
+        );
+      },
     ),
 
     finish: withFinishValidations(
@@ -86,14 +89,20 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginOptions?: LoginOptions,
         token?: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        return transformResponse(
           httpClient.post(
             apiPaths.webauthn.signIn.start,
-            { loginId, origin, loginOptions, passkeyOptions },
+            {
+              loginId,
+              origin,
+              loginOptions,
+              passkeyOptions,
+            },
             { token },
           ),
-        ),
+        );
+      },
     ),
 
     finish: withFinishValidations(
@@ -116,14 +125,17 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginId: string,
         origin: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+        loginOptions?: LoginOptions,
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        return transformResponse(
           httpClient.post(apiPaths.webauthn.signUpOrIn.start, {
             loginId,
             origin,
+            loginOptions,
             passkeyOptions,
           }),
-        ),
+        );
+      },
     ),
   },
 

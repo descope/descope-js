@@ -146,6 +146,24 @@ describe('password', () => {
         response: httpResponse,
       });
     });
+
+    it('should send tenantId inside loginOptions', () => {
+      sdk.password.signIn('loginId', 'abcd1234', {
+        tenantId: 'tenant1',
+        customClaims: { claim1: 'yes' },
+      });
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.password.signIn,
+        {
+          loginId: 'loginId',
+          password: 'abcd1234',
+          loginOptions: {
+            tenantId: 'tenant1',
+            customClaims: { claim1: 'yes' },
+          },
+        },
+      );
+    });
   });
 
   describe('sendReset', () => {
