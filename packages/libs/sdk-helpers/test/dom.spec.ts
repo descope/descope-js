@@ -14,7 +14,7 @@ describe('dom helpers', () => {
       const template = createTemplate('');
 
       expect(template).toBeInstanceOf(HTMLTemplateElement);
-      expect(template.innerHTML).toBe('');
+      expect(template).toBeEmptyDOMElement();
     });
   });
 });

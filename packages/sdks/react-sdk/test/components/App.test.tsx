@@ -186,7 +186,9 @@ describe('App', () => {
 
     // ensure refresh called only once
     expect(refresh).toHaveBeenCalledTimes(1);
-    expect(refresh).toHaveBeenCalledWith(undefined, true, { skipIfNoSession: true });
+    expect(refresh).toHaveBeenCalledWith(undefined, true, {
+      skipIfNoSession: true,
+    });
 
     const loginButton = await screen.findByText('Login');
     fireEvent.click(loginButton);
