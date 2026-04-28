@@ -2,6 +2,7 @@ import {
   FlowDriver,
   ModalDriver,
   UserAuthMethodDriver,
+  UserPasskeysDriver,
 } from '@descope/sdk-component-drivers';
 import {
   compose,
@@ -15,7 +16,7 @@ import {
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { getHasPasskey } from '../../../state/selectors';
+import { getUserId, getUserPasskeys } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
@@ -29,7 +30,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       cookieConfigMixin,
       modalMixin,
     )(superclass) {
-      passkeyUserAuthMethod: UserAuthMethodDriver;
+      userPasskeys: UserPasskeysDriver;
 
       #addModal: ModalDriver;
 
@@ -40,7 +41,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       #removeFlow: FlowDriver;
 
       #initAddModal() {
-        if (!this.passkeyUserAuthMethod.flowId) return;
+        if (!this.userPasskeys.flowId) return;
 
         this.#addModal = this.createModal({ 'data-id': 'add-passkey' });
         this.#addFlow = new FlowDriver(
@@ -56,7 +57,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#addModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.passkeyUserAuthMethod.flowId,
+            flowId: this.userPasskeys.addPasskeyFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -72,7 +73,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       }
 
       #initRemoveModal() {
-        if (!this.passkeyUserAuthMethod.fulfilledFlowId) return;
+        if (!this.userPasskeys.removePasskeyFlowId) return;
 
         this.#removeModal = this.createModal({ 'data-id': 'remove-passkey' });
         this.#removeFlow = new FlowDriver(
@@ -88,7 +89,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#removeModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
-            flowId: this.passkeyUserAuthMethod.fulfilledFlowId,
+            flowId: this.userPasskeys.removePasskeyFlowId,
             baseUrl: this.baseUrl,
             baseStaticUrl: this.baseStaticUrl,
             baseCdnUrl: this.baseCdnUrl,
@@ -103,40 +104,51 @@ export const initUserPasskeysMixin = createSingletonMixin(
         });
       }
 
-      #initPasskeyAuthMethod() {
-        this.passkeyUserAuthMethod = new UserAuthMethodDriver(
+      async #fetchTrustedDevices() {
+        await this.actions.listPasskeys({
+          userId: getUserId(this.state),
+        });
+      }
+      
+      #initUserPasskeys(passkeysList: ReturnType<typeof getUserPasskeys>) {
+        this.userPasskeys = new UserPasskeysDriver(
           () =>
             this.shadowRoot?.querySelector(
-              'descope-user-auth-method[data-id="passkey"]',
+              'descope-user-passkeys',
             ),
           { logger: this.logger },
         );
 
-        this.passkeyUserAuthMethod.onUnfulfilledButtonClick(() => {
+        this.userPasskeys.data = passkeysList;
+
+
+        this.userPasskeys.onAddPasskeyClick(() => {
           this.#addModal?.open();
         });
 
-        this.passkeyUserAuthMethod.onFulfilledButtonClick(() => {
+        this.userPasskeys.onRemovePasskeyClick(() => {
           this.#removeModal?.open();
         });
       }
 
-      #onFulfilledUpdate = withMemCache(
-        (hasPasskey: ReturnType<typeof getHasPasskey>) => {
-          this.passkeyUserAuthMethod.fulfilled = hasPasskey;
-        },
-      );
+      // #onFulfilledUpdate = withMemCache(
+      //   (hasPasskey: ReturnType<typeof getHasPasskey>) => {
+      //     this.userPasskeys.fulfilled = hasPasskey;
+      //   },
+      // );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initPasskeyAuthMethod();
+        await this.#fetchTrustedDevices();
+
+        this.#initUserPasskeys(getUserPasskeys(this.state));
         this.#initAddModal();
         this.#initRemoveModal();
 
-        this.#onFulfilledUpdate(getHasPasskey(this.state));
+        // this.#onFulfilledUpdate(getHasPasskey(this.state));
 
-        this.subscribe(this.#onFulfilledUpdate.bind(this), getHasPasskey);
+        // this.subscribe(this.#onFulfilledUpdate.bind(this), getHasPasskey);
       }
     },
 );

@@ -82,9 +82,33 @@ const devices = () => ({
   ],
 });
 
+const passkeys = () => ({
+  passkeys: [
+    {
+      id: 'vendor-id-1',
+      name: 'Device 1',
+      passkeyType: 'google',
+      createdAt: 1735977600000,
+    },
+    {
+      id: 'vendor-id-2',
+      name: 'Device 2',
+  		passkeyType: 'edge',
+      createdAt: 1738750500000,
+    },
+    {
+      id: 'vendor-id-3',
+      name: 'Device 3',
+  		passkeyType: 'apple',
+      createdAt: 1741264200000,
+    },
+  ],
+});
+
 const user = {
   me,
   devices,
+  passkeys,
 };
 
 export { user };

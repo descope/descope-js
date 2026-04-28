@@ -59,6 +59,17 @@ export const getTrustedDevices = createSelector(getDeviceList, (devices) =>
   })),
 );
 
+export const getPasskeyList = (state: State) => state.passkeys.data;
+
+export const getUserPasskeys = createSelector(getPasskeyList, (passkeys) =>
+  passkeys.map(({ id, name, passkeyType, createdAt }) => ({
+    id,
+    name,
+    passkeyType,
+    createdAt,
+  })),
+);
+
 export const getNotifications = (state: State) => state.notifications;
 
 export const getUserTenants = createSelector(
