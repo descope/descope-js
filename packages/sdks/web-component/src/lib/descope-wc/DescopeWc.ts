@@ -240,6 +240,7 @@ class DescopeWc extends BaseDescopeWc {
     oauthRedirect?: string;
     magicLinkRedirect?: string;
     ssoRedirect?: string;
+    externalAuthRedirect?: string;
     origin?: string;
   };
 
@@ -678,6 +679,7 @@ class DescopeWc extends BaseDescopeWc {
           oauthRedirect: this.nativeOptions.oauthRedirect,
           magicLinkRedirect: this.nativeOptions.magicLinkRedirect,
           ssoRedirect: this.nativeOptions.ssoRedirect,
+          externalAuthRedirect: this.nativeOptions.externalAuthRedirect,
         }
       : undefined;
     let conditionComponentsConfig: ComponentsConfig = {};

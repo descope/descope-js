@@ -24,6 +24,9 @@ type NativeOptions = {
 
   /** An override for web OAuth that sets the address to redirect to after authentication succeeds at the OAuth provider website */
   oauthRedirect?: string;
+
+  /** An override for external authentication that sets the address to redirect to after authentication succeeds at the external auth provider */
+  externalAuthRedirect?: string;
 };
 
 type AuthMethod =
