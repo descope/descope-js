@@ -723,7 +723,7 @@ describe('web-component', () => {
     );
 
     expect(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)).toEqual(
-      `{"authMethod":"otp"}`,
+      `{"authMethod":"otp","lastUsedPerScreen":{}}`,
     );
   });
 
@@ -759,7 +759,7 @@ describe('web-component', () => {
     );
 
     expect(localStorage.getItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)).toEqual(
-      `{"authMethod":"otp","loginId":"moshe"}`,
+      `{"authMethod":"otp","loginId":"moshe","lastUsedPerScreen":{}}`,
     );
   });
 
