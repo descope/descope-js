@@ -129,12 +129,14 @@ const App = () => {
 
 #### Trigger Auto Refresh
 
-`useSession` triggers a single request to the Descope backend to attempt to refresh the session. If you **don't** `useSession` on your app, the session will not be refreshed automatically. If your app does not require `useSession`, you can trigger the refresh manually by calling `refresh` from `useDescope` hook. Example:
+`useSession` triggers a single request to the Descope backend to attempt to refresh the session. If you **don't** `useSession` in your app, the session will not be refreshed automatically. If your app does not require `useSession`, you can trigger the refresh manually by calling `refresh` from `useDescope` hook. Example:
 
 ```js
+import { useEffect } from 'react';
+
 const { refresh } = useDescope();
 useEffect(() => {
-  refresh();
+  refresh().catch(console.error);
 }, [refresh]);
 ```
 
