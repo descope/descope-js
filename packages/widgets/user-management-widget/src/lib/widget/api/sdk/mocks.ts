@@ -40,7 +40,13 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
         phone: `+1-202-555-010${i}`,
         verifiedEmail: true,
         verifiedPhone: true,
-        userTenants: [],
+        userTenants: [
+          {
+            tenantId: 'sub-tenant-1',
+            tenantName: 'Hurray',
+            roleNames: ['Role 1', 'Role 2'],
+          },
+        ],
         status: 'enabled',
         editable: true,
         createdTime: timeMock,
@@ -227,9 +233,21 @@ const getSubTenantRoles = (): Promise<{ roles: AssociatedTenant[] }> =>
   new Promise((resolve) => {
     resolve({
       roles: [
-        { tenantId: 'sub-tenant-1', roleNames: ['Role 1', 'Role 2'] },
-        { tenantId: 'sub-tenant-2', roleNames: ['Role 1', 'Role 3'] },
-        { tenantId: 'sub-tenant-3', roleNames: ['Role 2'] },
+        {
+          tenantId: 'sub-tenant-1',
+          tenantName: 'Sub Tenant 1',
+          roleNames: ['Role 1', 'Role 2'],
+        },
+        {
+          tenantId: 'sub-tenant-2',
+          tenantName: 'Sub Tenant 2',
+          roleNames: ['Role 1', 'Role 3'],
+        },
+        {
+          tenantId: 'sub-tenant-3',
+          tenantName: 'Sub Tenant 3',
+          roleNames: ['Role 2'],
+        },
       ],
     });
   });

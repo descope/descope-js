@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { flatten, formatCustomAttrValue } from '../../helpers';
 import { State } from './types';
-import { userStatusMappings } from './constants';
+import { userStatusMappings, MULTIPLE_ROLES_LABEL } from './constants';
 
 export const getRawUsersList = (state: State) => state.usersList.data;
 export const getTenantRoles = (state: State) => state.tenantRoles.data;
@@ -17,7 +17,10 @@ export const getSubTenantRolesData = createSelector(
   getSubTenantRoles,
   (subTenantRoles) =>
     Object.fromEntries(
-      subTenantRoles.map(({ tenantId, roleNames }) => [tenantId, roleNames]),
+      subTenantRoles.map(({ tenantId, tenantName, roleNames }) => [
+        tenantId,
+        tenantName ? { label: tenantName, options: roleNames } : roleNames,
+      ]),
     ),
 );
 
@@ -44,6 +47,19 @@ export const getFormattedUserList = createSelector(
     })),
 );
 
+const getRolesDisplay = (user: {
+  roleNames?: string[];
+  userTenants?: { roleNames?: string[] }[];
+}): string[] | string => {
+  const allRoleSets = [
+    user.roleNames || [],
+    ...(user.userTenants || []).map((t) => t.roleNames || []),
+  ];
+  const sorted = allRoleSets.map((roles) => [...roles].sort().join('\0'));
+  const allSame = sorted.every((s) => s === sorted[0]);
+  return allSame ? user.roleNames || [] : MULTIPLE_ROLES_LABEL;
+};
+
 export const getUsersList = createSelector(getFormattedUserList, (users) =>
   users.map((user) => ({
     ...user,
@@ -52,7 +68,10 @@ export const getUsersList = createSelector(getFormattedUserList, (users) =>
       (user?.createdTime || 0) * 1000,
     ).toLocaleString(),
     status: userStatusMappings[user.status] || user.status,
-    roles: user.roleNames,
+    roles: getRolesDisplay(user),
+    tenants: user.userTenants?.map(
+      (tenant) => tenant.tenantName || tenant.tenantId,
+    ),
   })),
 );
 

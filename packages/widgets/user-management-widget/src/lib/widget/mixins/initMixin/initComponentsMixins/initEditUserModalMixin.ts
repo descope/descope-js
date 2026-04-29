@@ -143,7 +143,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           displayName: userDetails?.name,
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
-          roles: userDetails?.roles,
+          roles: userDetails?.roleNames,
           givenName: userDetails?.givenName,
           familyName: userDetails?.familyName,
           middleName: userDetails?.middleName,
@@ -158,10 +158,8 @@ export const initEditUserModalMixin = createSingletonMixin(
         this.editUserModal = this.createModal();
         this.editUserModal.setContent(
           createTemplate(
-            await import('../../../../../../test/mocks/editUserModalMock').then(
-              (module) => module.default,
-            ),
-            // await this.fetchWidgetPage('edit-user-modal.html'),
+            // await import('../../../../../../test/mocks/editUserModalMock').then(module => module.default)
+            await this.fetchWidgetPage('edit-user-modal.html'),
           ),
         );
 
@@ -193,11 +191,15 @@ export const initEditUserModalMixin = createSingletonMixin(
         );
 
         this.editUserModal.beforeOpen = async () => {
+          await Promise.all([
+            this.actions.getTenantRoles(),
+            this.actions.getSubTenantRoles(),
+          ]);
           await this.#updateRolesMultiSelect();
+          this.#updateSubTenantSection();
           this.#idInput.disable();
           this.#updateModalData();
           this.#updateCustomFields();
-          this.#updateSubTenantSection();
         };
       }
 

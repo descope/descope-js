@@ -5,7 +5,9 @@ type Mapping = { tenantId: string; roleNames: string[] };
 export class MultiLineMappingsDriver extends BaseDriver {
   nodeName = 'descope-multi-line-mappings';
 
-  setData(data: Record<string, string[]>) {
+  setData(
+    data: Record<string, string[] | { label?: string; options: string[] }>,
+  ) {
     this.ele?.setAttribute('data', JSON.stringify(data));
   }
 

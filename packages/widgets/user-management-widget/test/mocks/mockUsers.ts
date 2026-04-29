@@ -10,6 +10,13 @@ export const mockUsers = [
     verifiedEmail: true,
     verifiedPhone: false,
     roleNames: ['Tenant Admin', 'Role 2'],
+    userTenants: [
+      {
+        tenantId: 'sub-tenant-1',
+        tenantName: 'Sub Tenant One',
+        roleNames: ['Role 1', 'Role 2'],
+      },
+    ],
     status: 'enabled',
     editable: true,
     externalIds: ['externalId1@externalId1.com'],

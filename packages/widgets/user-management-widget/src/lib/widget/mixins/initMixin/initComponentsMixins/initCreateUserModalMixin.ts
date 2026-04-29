@@ -98,6 +98,10 @@ export const initCreateUserModalMixin = createSingletonMixin(
         this.#updateRolesMultiSelect();
 
         this.createUserModal.beforeOpen = async () => {
+          await Promise.all([
+            this.actions.getTenantRoles(),
+            this.actions.getSubTenantRoles(),
+          ]);
           await this.#updateRolesMultiSelect();
           this.#updateSubTenantSection();
           this.#updateCustomFields();
