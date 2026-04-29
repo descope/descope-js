@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.60.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.1...core-js-sdk-2.60.0) (2026-04-29)
+
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
 ## [2.59.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.0...core-js-sdk-2.59.1) (2026-04-21)
 
 ## [2.59.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.2...core-js-sdk-2.59.0) (2026-04-20)
