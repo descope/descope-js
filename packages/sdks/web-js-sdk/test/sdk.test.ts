@@ -177,4 +177,68 @@ describe('sdk', () => {
     expect(SESSION_TOKEN_KEY).toBeDefined();
     expect(REFRESH_TOKEN_KEY).toBeDefined();
   });
+
+  describe('tryRefresh + DSL cookie optimization', () => {
+    const clearDslCookie = () => {
+      document.cookie = 'DSL=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    };
+    const setDslCookie = () => {
+      document.cookie = 'DSL=1';
+    };
+
+    beforeEach(() => {
+      clearDslCookie();
+      localStorage.removeItem('DSLO');
+    });
+
+    it('should call fetch when DSLO opt-in key is not set, even without DSL cookie', async () => {
+      clearDslCookie();
+      // DSLO not set — optimization is off by default
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.refresh(undefined, true);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+
+    it('should skip fetch when DSLO is enabled and DSL cookie is absent', async () => {
+      clearDslCookie();
+      localStorage.setItem('DSLO', 'true');
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      const result = await sdk.refresh(undefined, true);
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(result).toEqual({ ok: true });
+    });
+
+    it('should call fetch when DSLO is enabled and DSL cookie is present', async () => {
+      setDslCookie();
+      localStorage.setItem('DSLO', 'true');
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.refresh(undefined, true);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+
+    it('should call fetch when DSLO is enabled but tryRefresh is false', async () => {
+      clearDslCookie();
+      localStorage.setItem('DSLO', 'true');
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      // regular refresh (not tryRefresh) — optimization must not apply
+      await sdk.refresh(undefined, false);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+  });
 });
