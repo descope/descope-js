@@ -39,7 +39,6 @@ const createMixinInstance = () => {
       createNotification = mockCreateNotification;
       actions = { clearNotifications: jest.fn() };
       rootElement = document.createElement('div');
-      async init() {}
     } as any,
   );
 
