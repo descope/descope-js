@@ -21,14 +21,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.removePasskey),
   withNotifications({
     getSuccessMsg: () => `Successfully removed user's passkey`,
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to remove user's passkey</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: `Failed to remove user's passkey`,
+      detail: action.error?.message,
+    }),
   }),
 );
 

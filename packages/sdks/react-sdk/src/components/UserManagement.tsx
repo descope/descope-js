@@ -23,7 +23,10 @@ const UserManagementWC = lazy(async () => {
 });
 
 const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId, styleId, onReady }, ref) => {
+  (
+    { logger, tenant, theme, debug, widgetId, styleId, onReady, onToast },
+    ref,
+  ) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -34,11 +37,19 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
     useEffect(() => {
       const ele = innerRef;
       if (onReady) ele?.addEventListener('ready', onReady);
-
       return () => {
         if (onReady) ele?.removeEventListener('ready', onReady);
       };
     }, [innerRef, onReady]);
+
+    useEffect(() => {
+      const ele = innerRef;
+      if (onToast) ele?.addEventListener('toast', onToast as EventListener);
+      return () => {
+        if (onToast)
+          ele?.removeEventListener('toast', onToast as EventListener);
+      };
+    }, [innerRef, onToast]);
 
     return (
 	<Suspense fallback={null}>

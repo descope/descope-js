@@ -85,21 +85,34 @@ export const withRequestStatus = (
   },
 });
 
+type NotificationContent = string | { msg: string; detail?: string };
+
+const toContent = (v: NotificationContent) =>
+  typeof v === 'string' ? { msg: v } : v;
+
 export const withNotifications = ({
   getErrorMsg,
   getSuccessMsg,
 }: {
-  getErrorMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string;
+  getErrorMsg?: (
+    action?: RejectedAction<AsyncThunk<any, any, any>>,
+  ) => NotificationContent;
   getSuccessMsg?: (
     action?: FulfilledAction<AsyncThunk<any, any, any>>,
-  ) => string;
+  ) => NotificationContent;
 }): AsyncReducerConfig<any> => ({
   onFulfilled: (state, action) => {
     if (getSuccessMsg)
-      state.notifications.push({ type: 'success', msg: getSuccessMsg(action) });
+      state.notifications.push({
+        type: 'success',
+        ...toContent(getSuccessMsg(action)),
+      });
   },
   onRejected: (state, action) => {
     if (getErrorMsg)
-      state.notifications.push({ type: 'error', msg: getErrorMsg(action) });
+      state.notifications.push({
+        type: 'error',
+        ...toContent(getErrorMsg(action)),
+      });
   },
 });

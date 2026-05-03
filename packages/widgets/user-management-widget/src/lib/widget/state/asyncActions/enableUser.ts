@@ -30,14 +30,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.enableUser),
   withNotifications({
     getSuccessMsg: () => 'User enabled successfully',
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to enable user</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: 'Failed to enable user',
+      detail: action.error?.message,
+    }),
   }),
 );
 

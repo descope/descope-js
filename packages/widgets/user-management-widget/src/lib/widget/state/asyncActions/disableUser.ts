@@ -30,14 +30,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.disableUser),
   withNotifications({
     getSuccessMsg: () => 'User disabled successfully',
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to disable user</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: 'Failed to disable user',
+      detail: action.error?.message,
+    }),
   }),
 );
 
