@@ -167,7 +167,14 @@ export type DescopeProps = {
   externalRequestId?: string;
 };
 
-export type UserManagementProps = WidgetProps;
+export type UserManagementProps = WidgetProps & {
+  /** Fired before each toast is shown. Call event.preventDefault() to suppress the built-in toast. */
+  onToast?: CustomEventCb<{
+    message: string;
+    detail?: string;
+    severity: 'success' | 'error';
+  }>;
+};
 
 export type RoleManagementProps = WidgetProps;
 

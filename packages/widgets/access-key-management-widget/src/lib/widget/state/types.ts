@@ -49,4 +49,5 @@ export type Builder = ActionReducerMapBuilder<State>;
 type Notification = {
   type: 'success' | 'error';
   msg: string;
+  detail?: string;
 };

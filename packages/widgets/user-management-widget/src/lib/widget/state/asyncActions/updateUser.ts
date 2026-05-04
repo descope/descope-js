@@ -30,14 +30,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.updateUser),
   withNotifications({
     getSuccessMsg: () => 'User updated successfully',
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to update user</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: 'Failed to update user',
+      detail: action.error?.message,
+    }),
   }),
 );
 

@@ -34,12 +34,14 @@ export const initNotificationsMixin = createSingletonMixin(
       initLifecycleMixin,
     )(superclass) {
       // eslint-disable-next-line class-methods-use-this
-      #createNotificationContent({ type, msg }: Notification) {
+      #createNotificationContent({ type, msg, detail }: Notification) {
         const icon = notificationTypesIcons[type];
 
         const closeIcon = Object.assign(close(), { slot: 'close' });
 
-        return `${icon?.outerHTML || ''}${msg}${closeIcon.outerHTML}`;
+        const body = detail ? `<div><div>${msg}</div>${detail}</div>` : msg;
+
+        return `${icon?.outerHTML || ''}${body}${closeIcon.outerHTML}`;
       }
 
       #createNotification(type: Notification['type']) {
@@ -56,11 +58,11 @@ export const initNotificationsMixin = createSingletonMixin(
 
       #onNotificationsUpdate = withMemCache((notifications: Notifications) => {
         if (notifications.length) {
-          notifications.forEach(({ type, msg }) => {
+          notifications.forEach(({ type, msg, detail }) => {
             const notification = this.#createNotification(type);
 
             notification.setContent(
-              this.#createNotificationContent({ type, msg }),
+              this.#createNotificationContent({ type, msg, detail }),
             );
 
             notification.show();

@@ -254,6 +254,36 @@ describe('Descope Widgets', () => {
     expect(onReadyMock).toHaveBeenCalledTimes(1);
   });
 
+  it('should call onToast callback when toast event is dispatched - UserManagement', async () => {
+    const onToastMock = jest.fn();
+    renderWithProvider(
+      <UserManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onToast={onToastMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-management-widget')!;
+    widget.dispatchEvent(
+      new CustomEvent('toast', {
+        cancelable: true,
+        detail: { message: 'hi', severity: 'success' },
+      }),
+    );
+    expect(onToastMock).toHaveBeenCalledTimes(1);
+    expect(onToastMock.mock.calls[0][0].detail).toEqual({
+      message: 'hi',
+      severity: 'success',
+    });
+  });
+
   it('should call onReady callback when ready event is dispatched - RoleManagement', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(
