@@ -1,10 +1,3 @@
-const mockSvgElement = () => document.createElement('span');
-jest.mock('../src/assets/close.svg', () => mockSvgElement, { virtual: true });
-jest.mock('../src/assets/checkmark.svg', () => mockSvgElement, {
-  virtual: true,
-});
-jest.mock('../src/assets/warning.svg', () => mockSvgElement, { virtual: true });
-
 jest.mock('@descope/sdk-helpers', () => {
   const actual = jest.requireActual('@descope/sdk-helpers');
   return {
