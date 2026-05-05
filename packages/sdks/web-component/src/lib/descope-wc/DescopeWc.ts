@@ -327,12 +327,12 @@ class DescopeWc extends BaseDescopeWc {
               newScriptElement.setAttribute('data-script-id', script.id);
               newScriptElement.moduleRes = moduleRes;
               this.shadowRoot.appendChild(newScriptElement);
-              const unsubscribe = this.nextRequestStatus.subscribe(() => {
+              const subscriptionToken = this.nextRequestStatus.subscribe(() => {
                 this.loggerWrapper.debug('Stopping script', script.id);
                 // if the script is stopped successfully, we want to remove it from the DOM
                 // to allow the script element to be re-created on the next request
                 if (moduleRes.stop?.()) {
-                  this.nextRequestStatus.unsubscribe(unsubscribe);
+                  this.nextRequestStatus.unsubscribe(subscriptionToken);
                   this.loggerWrapper.debug('Removing script', script.id);
                   this.shadowRoot.removeChild(newScriptElement);
                 }

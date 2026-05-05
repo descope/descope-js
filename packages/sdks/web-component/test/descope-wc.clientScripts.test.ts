@@ -386,6 +386,9 @@ describe('web-component', () => {
 
       fixtures.pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
 
+      // Spy on appendChild to verify no script injection
+      const appendChildSpy = jest.spyOn(document.body, 'appendChild');
+
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
 
       // module is called directly from globalThis.descope without needing scriptMock.onload()
@@ -394,11 +397,13 @@ describe('web-component', () => {
       });
 
       // no script element should have been injected into document.body
-      const appendCalls = (document.body.append as jest.Mock).mock.calls;
-      const scriptWasInjected = appendCalls.some(
+      const appendChildCalls = appendChildSpy.mock.calls;
+      const scriptWasInjected = appendChildCalls.some(
         ([el]: [HTMLElement]) => el?.localName === 'script',
       );
       expect(scriptWasInjected).toBe(false);
+
+      appendChildSpy.mockRestore();
     });
 
     describe('sdk script stop behavior', () => {
