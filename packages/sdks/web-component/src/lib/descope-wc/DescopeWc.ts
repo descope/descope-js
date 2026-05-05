@@ -302,11 +302,13 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        await this.injectNpmLib(
-          '@descope/flow-scripts',
-          '1.0.14', // currently using a fixed version when loading scripts
-          `dist/${script.id}.js`,
-        );
+        if (!globalThis.descope?.[script.id]) {
+          await this.injectNpmLib(
+            '@descope/flow-scripts',
+            '1.0.16', // currently using a fixed version when loading scripts
+            `dist/${script.id}.js`,
+          );
+        }
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
@@ -325,9 +327,15 @@ class DescopeWc extends BaseDescopeWc {
               newScriptElement.setAttribute('data-script-id', script.id);
               newScriptElement.moduleRes = moduleRes;
               this.shadowRoot.appendChild(newScriptElement);
-              this.nextRequestStatus.subscribe(() => {
-                this.loggerWrapper.debug('Unloading script', script.id);
-                moduleRes.stop?.();
+              const unsubscribe = this.nextRequestStatus.subscribe(() => {
+                this.loggerWrapper.debug('Stopping script', script.id);
+                // if the script is stopped successfully, we want to remove it from the DOM
+                // to allow the script element to be re-created on the next request
+                if (moduleRes.stop?.()) {
+                  this.nextRequestStatus.unsubscribe(unsubscribe);
+                  this.loggerWrapper.debug('Removing script', script.id);
+                  this.shadowRoot.removeChild(newScriptElement);
+                }
               });
             }
           } catch (e) {
