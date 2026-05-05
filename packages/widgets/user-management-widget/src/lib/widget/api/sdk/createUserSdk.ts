@@ -136,7 +136,7 @@ export const createUserSdk = ({
         middleName,
         familyName,
         roleNames: roles,
-        userTenants: userTenants?.length ? userTenants : [{ tenantId: tenant }],
+        userTenants,
         customAttributes,
         picture,
         verifiedEmail,
