@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.35](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.34...outbound-applications-widget-0.2.35) (2026-05-06)
+
+
+### Bug Fixes
+
+* **outboundAppsWidget:** pass tenantId instead of tenant ([#1379](https://github.com/descope/descope-js/issues/1379)) ([c220182](https://github.com/descope/descope-js/commit/c2201822e557e6af49e3f4f2fc21cf4d25a4fee9))
+
 ## [0.2.34](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.33...outbound-applications-widget-0.2.34) (2026-04-29)
 
 ### Dependency Updates
