@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.60.0](https://github.com/descope/descope-js/compare/web-component-3.59.2...web-component-3.60.0) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
 ## [3.59.2](https://github.com/descope/descope-js/compare/web-component-3.59.1...web-component-3.59.2) (2026-04-21)
 
 ### Dependency Updates
