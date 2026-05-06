@@ -5,5 +5,6 @@ export const apiPaths = {
   tenant: {
     details: '/v1/mgmt/tenant',
     adminLinkSso: '/v1/mgmt/tenant/adminlinks/sso/authenticated',
+    ssoConfigurations: '/v1/mgmt/tenant/sso/configurations',
   },
 };

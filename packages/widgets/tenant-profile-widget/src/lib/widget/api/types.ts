@@ -25,6 +25,17 @@ export type TenantAdminLinkSSOResponse = {
   adminSSOConfigurationLink: string;
 };
 
+export type SsoConfiguration = {
+  id: string;
+  name: string;
+  isDefault?: boolean;
+  expires?: string;
+};
+
+export type ListSsoConfigurationsResponse = {
+  configurations: SsoConfiguration[];
+};
+
 export type HttpClient = Sdk['httpClient'];
 
 export type AssociatedTenant = {

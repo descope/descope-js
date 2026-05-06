@@ -1,4 +1,5 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { SsoConfiguration } from '../api/types';
 import { Sdk } from '../api/sdk';
 
 export type State = {
@@ -16,6 +17,11 @@ export type State = {
     loading: boolean;
     error: unknown;
     data: string;
+  };
+  ssoConfigurations: {
+    loading: boolean;
+    error: unknown;
+    data: SsoConfiguration[];
   };
 };
 

@@ -1,5 +1,5 @@
 import { apiPaths } from '../apiPaths';
-import { HttpClient } from '../types';
+import { HttpClient, ListSsoConfigurationsResponse } from '../types';
 import { withErrorHandler } from './helpers';
 import { tenantMock } from './mocks';
 
@@ -48,8 +48,57 @@ export const createTenantSdk = ({
     return data;
   };
 
+  const listSsoConfigs = async (): Promise<ListSsoConfigurationsResponse> => {
+    if (mock) {
+      return tenantMock.listSsoConfigs();
+    }
+    if (!tenantId) throw new Error('tenantId is not defined');
+
+    const res = await httpClient.get(
+      `${apiPaths.tenant.ssoConfigurations}?tenant=${tenantIdEncoded}`,
+    );
+    await withErrorHandler(res);
+    return res.json();
+  };
+
+  const createSsoConfig = async ({
+    name,
+    id,
+  }: {
+    name: string;
+    id?: string;
+  }) => {
+    if (mock) {
+      return tenantMock.createSsoConfig({ name, id });
+    }
+    if (!tenantId) throw new Error('tenantId is not defined');
+
+    const res = await httpClient.post(
+      `${apiPaths.tenant.ssoConfigurations}?tenant=${tenantIdEncoded}`,
+      { name, ...(id && { id }) },
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    await withErrorHandler(res);
+    return res.json();
+  };
+
+  const deleteSsoConfig = async ({ id }: { id: string }) => {
+    if (mock) {
+      return tenantMock.deleteSsoConfig({ id });
+    }
+    if (!tenantId) throw new Error('tenantId is not defined');
+
+    const res = await httpClient.delete(
+      `${apiPaths.tenant.ssoConfigurations}/${encodeURIComponent(id)}?tenant=${tenantIdEncoded}`,
+    );
+    await withErrorHandler(res);
+  };
+
   return {
     details,
     adminLinkSso,
+    listSsoConfigs,
+    createSsoConfig,
+    deleteSsoConfig,
   };
 };

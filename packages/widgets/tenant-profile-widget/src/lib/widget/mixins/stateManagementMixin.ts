@@ -5,7 +5,14 @@ import {
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import { getMe, getTenant, getTenantAdminLinkSSO } from '../state/asyncActions';
+import {
+  createSsoConfiguration,
+  deleteSsoConfiguration,
+  getMe,
+  getSsoConfigurations,
+  getTenant,
+  getTenantAdminLinkSSO,
+} from '../state/asyncActions';
 import { initialState } from '../state/initialState';
 import { apiMixin } from './apiMixin';
 
@@ -20,11 +27,17 @@ export const stateManagementMixin = createSingletonMixin(
           getMe.reducer(builder);
           getTenant.reducer(builder);
           getTenantAdminLinkSSO.reducer(builder);
+          getSsoConfigurations.reducer(builder);
+          createSsoConfiguration.reducer(builder);
+          deleteSsoConfiguration.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
           getTenant: getTenant.action,
           getTenantAdminLinkSSO: getTenantAdminLinkSSO.action,
+          getSsoConfigurations: getSsoConfigurations.action,
+          createSsoConfiguration: createSsoConfiguration.action,
+          deleteSsoConfiguration: deleteSsoConfiguration.action,
         },
       }),
       initLifecycleMixin,

@@ -36,3 +36,8 @@ export const getTenantEnforceSSO = createSelector(
   getTenant,
   (tenant) => tenant.enforceSSO || false,
 );
+
+export const getSsoConfigurations = (state: State) =>
+  state.ssoConfigurations.data;
+export const getSsoConfigurationsError = (state: State) =>
+  state.ssoConfigurations.error;

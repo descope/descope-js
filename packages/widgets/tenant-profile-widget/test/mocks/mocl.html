@@ -1,4 +1,3 @@
-export default `
 <descope-container
   data-editor-type="container"
   direction="column"
@@ -77,7 +76,13 @@ export default `
       edit-flow-id="edit-department"
       delete-flow-id=""
     ></descope-user-attribute>
-    <descope-divider id="2mXCne0kTY" italic="false" mode="primary" variant="body1" vertical="false"></descope-divider>
+    <descope-divider
+      id="2mXCne0kTY"
+      italic="false"
+      mode="primary"
+      variant="body1"
+      vertical="false"
+    ></descope-divider>
     <descope-container
       data-id="tenant-admin-link-sso-row"
       data-editor-type="container"
@@ -100,7 +105,8 @@ export default `
         mode="primary"
         text-align="left"
         variant="body1"
-      >Set up and manage your SSO</descope-enriched-text>
+        >Set up and manage your SSO</descope-enriched-text
+      >
       <descope-link
         data-id="tenant-admin-link-sso"
         full-width="false"
@@ -111,23 +117,38 @@ export default `
         target="_blank"
         text-align="right"
         variant="body1"
-      >SSO Setup</descope-link>
+        >SSO Setup</descope-link
+      >
     </descope-container>
     <descope-container
-      data-id="tenant-sso-configurations"
+      data-id="tenant-sso-multi"
       hidden
       direction="column"
       st-host-width="100%"
     >
       <descope-button data-id="tenant-sso-add-button">Add new</descope-button>
-      <descope-container data-id="tenant-sso-create-form" hidden direction="column">
-        <input data-id="tenant-sso-create-name" type="text" placeholder="Okta — Production" />
+      <descope-container
+        data-id="tenant-sso-create-form"
+        hidden
+        direction="column"
+      >
+        <input
+          data-id="tenant-sso-create-name"
+          type="text"
+          placeholder="Okta — Production"
+        />
         <input data-id="tenant-sso-create-id" type="text" />
-        <descope-button data-id="tenant-sso-create-submit">Add configuration</descope-button>
-        <descope-button data-id="tenant-sso-create-cancel">Cancel</descope-button>
+        <descope-button data-id="tenant-sso-create-submit"
+          >Add configuration</descope-button
+        >
+        <descope-button data-id="tenant-sso-create-cancel"
+          >Cancel</descope-button
+        >
       </descope-container>
-      <descope-container data-id="tenant-sso-configurations-list" direction="column"></descope-container>
+      <descope-container
+        data-id="tenant-sso-configurations-list"
+        direction="column"
+      ></descope-container>
     </descope-container>
   </descope-container>
 </descope-container>
-`;

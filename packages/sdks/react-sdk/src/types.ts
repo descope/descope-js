@@ -185,7 +185,7 @@ export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
   onLogout?: (e: CustomEvent) => void;
 };
 
-export type TenantProfileProps = WidgetProps;
+export type TenantProfileProps = WidgetProps & { multiSso?: boolean };
 
 export type OutboundApplicationsProps = WidgetProps;
 

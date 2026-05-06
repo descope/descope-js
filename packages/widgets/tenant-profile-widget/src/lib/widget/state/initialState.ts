@@ -16,4 +16,9 @@ export const initialState: State = {
     error: null,
     data: '',
   },
+  ssoConfigurations: {
+    loading: false,
+    error: null,
+    data: [],
+  },
 };

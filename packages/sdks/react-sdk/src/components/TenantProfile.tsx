@@ -22,7 +22,7 @@ const TenantProfileWC = lazy(async () => {
 });
 
 const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
-  ({ logger, theme, debug, widgetId, styleId, tenant, onReady }, ref) => {
+  ({ logger, theme, debug, widgetId, styleId, tenant, multiSso, onReady }, ref) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -49,6 +49,7 @@ const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
           baseCdnUrl={baseCdnUrl}
           styleId={styleId}
           tenant={tenant}
+          multiSso={multiSso}
           ref={setInnerRef}
           {...{
             'theme.attr': theme,

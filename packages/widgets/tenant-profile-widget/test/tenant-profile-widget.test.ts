@@ -3,7 +3,11 @@ import '@testing-library/jest-dom';
 import '../src/lib/index';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import { createSdk } from '../src/lib/widget/api/sdk';
-import { mockTenant, mockTenantAdminLinkSSO } from './mocks/mockTenant';
+import {
+  mockSsoConfigurations,
+  mockTenant,
+  mockTenantAdminLinkSSO,
+} from './mocks/mockTenant';
 import { mockUser } from './mocks/mockUser';
 import rootMock from './mocks/rootMock';
 
@@ -19,6 +23,14 @@ export const mockHttpClient = {
   delete: jest.fn(),
   reset: () => {
     mockHttpClient.get.mockImplementation((url) => {
+      if (url.includes(apiPaths.tenant.ssoConfigurations)) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(mockSsoConfigurations),
+          text: () => Promise.resolve(JSON.stringify(mockSsoConfigurations)),
+        });
+      }
       if (url.includes(apiPaths.tenant.details)) {
         return Promise.resolve({
           ok: true,
@@ -58,12 +70,40 @@ export const mockHttpClient = {
             ),
         });
       }
+      if (url.includes(apiPaths.tenant.ssoConfigurations)) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () =>
+            Promise.resolve({
+              id: 'new-sso',
+              name: 'New SSO',
+            }),
+          text: () => Promise.resolve('{}'),
+        });
+      }
       // Default fallback
       return Promise.resolve({
         ok: false,
         status: 404,
         json: () => Promise.resolve({}),
         text: () => Promise.resolve(''),
+      });
+    });
+    mockHttpClient.delete.mockImplementation((url) => {
+      if (url.includes(apiPaths.tenant.ssoConfigurations)) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve({}),
+          text: () => Promise.resolve('{}'),
+        });
+      }
+      return Promise.resolve({
+        ok: false,
+        status: 404,
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve('{}'),
       });
     });
   },
@@ -192,6 +232,54 @@ describe('tenant-profile-widget', () => {
       );
 
       expect(result).toEqual(mockTenantAdminLinkSSO);
+    });
+
+    it('list sso configurations', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
+      const result = await sdk.tenant.listSsoConfigs();
+
+      await waitFor(
+        () => expect(mockHttpClient.get).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.get).toHaveBeenCalledWith(
+          `${apiPaths.tenant.ssoConfigurations}?tenant=${tenantId}`,
+        ),
+      );
+      expect(result).toEqual(mockSsoConfigurations);
+    });
+
+    it('create sso configuration', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
+      await sdk.tenant.createSsoConfig({ name: 'New SSO', id: 'new-sso' });
+
+      await waitFor(
+        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          `${apiPaths.tenant.ssoConfigurations}?tenant=${tenantId}`,
+          { name: 'New SSO', id: 'new-sso' },
+          { headers: { 'Content-Type': 'application/json' } },
+        ),
+      );
+    });
+
+    it('delete sso configuration', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
+      await sdk.tenant.deleteSsoConfig({ id: 'okta-prod' });
+
+      await waitFor(
+        () => expect(mockHttpClient.delete).toHaveBeenCalledTimes(1),
+        { timeout: 5000 },
+      );
+      await waitFor(() =>
+        expect(mockHttpClient.delete).toHaveBeenCalledWith(
+          `${apiPaths.tenant.ssoConfigurations}/${encodeURIComponent('okta-prod')}?tenant=${tenantId}`,
+        ),
+      );
     });
   });
 });
