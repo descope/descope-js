@@ -16,7 +16,7 @@ const OutboundApplicationsWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-outbound-applications-widget ref={ref} {...props} />
+	<descope-outbound-applications-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -43,8 +43,8 @@ const OutboundApplications = React.forwardRef<
   }, [innerRef, onReady]);
 
   return (
-    <Suspense fallback={null}>
-      <OutboundApplicationsWC
+	<Suspense fallback={null}>
+		<OutboundApplicationsWC
         ref={setInnerRef}
         projectId={projectId}
         widgetId={widgetId}
@@ -61,7 +61,7 @@ const OutboundApplications = React.forwardRef<
           'logger.prop': logger,
         }}
       />
-    </Suspense>
+	</Suspense>
   );
 });
 

@@ -7,6 +7,9 @@ import { initLifecycleMixin } from '../initLifecycleMixin';
 import { loggerMixin } from '../loggerMixin';
 import { notificationsMixin } from '../notificationsMixin';
 
+const SUCCESS_NOTIFICATION_DURATION = 3000;
+const ERROR_NOTIFICATION_DURATION = 0;
+
 export type ToastNotification = {
   type: 'success' | 'error';
   msg: string;
@@ -18,9 +21,6 @@ export type ToastEventDetail = {
   detail?: string;
   severity: ToastNotification['type'];
 };
-
-const SUCCESS_NOTIFICATION_DURATION = 3000;
-const ERROR_NOTIFICATION_DURATION = 0;
 
 export type ToastEventsMixinConfig<S = any> = {
   selector: (state: S) => ToastNotification[];

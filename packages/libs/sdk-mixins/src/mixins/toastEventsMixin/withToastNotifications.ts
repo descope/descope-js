@@ -1,7 +1,7 @@
-export type NotificationContent = string | { msg: string; detail?: string };
-
-const toContent = (v: NotificationContent) =>
+const toContent = (v: string | { msg: string; detail?: string }) =>
   typeof v === 'string' ? { msg: v } : v;
+
+export type NotificationContent = string | { msg: string; detail?: string };
 
 export const withToastNotifications = ({
   getErrorMsg,
