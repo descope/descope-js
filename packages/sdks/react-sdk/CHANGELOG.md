@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.27.10](https://github.com/descope/descope-js/compare/react-sdk-2.27.9...react-sdk-2.27.10) (2026-05-06)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.2.35`
 ## [2.27.9](https://github.com/descope/descope-js/compare/react-sdk-2.27.8...react-sdk-2.27.9) (2026-04-29)
 
 ### Dependency Updates
