@@ -1,22 +1,38 @@
-jest.mock('@descope/sdk-helpers', () => {
-  const actual = jest.requireActual('@descope/sdk-helpers');
-  return {
-    ...actual,
-    createSingletonMixin: (fn: any) => fn,
-  };
-});
+/* eslint-disable max-classes-per-file */
+import { initNotificationsMixin } from '../src/lib/widget/mixins/initMixin/initComponentsMixins/initNotificationsMixin';
 
 jest.mock('@descope/sdk-mixins', () => ({
-  initLifecycleMixin: (superclass: any) => superclass,
-  loggerMixin: (superclass: any) => superclass,
-  notificationsMixin: (superclass: any) => superclass,
+  createToastEventsMixin: (config: any) => (superclass: any) =>
+    class extends superclass {
+      async init() {
+        await super.init?.();
+        this.subscribe((notifications: any[]) => {
+          if (!notifications.length) return;
+          notifications.forEach(({ type, msg, detail }: any) => {
+            const event = new CustomEvent(config.eventName ?? 'toast', {
+              cancelable: true,
+              detail: { message: msg, detail, severity: type },
+            });
+            this.dispatchEvent(event);
+            if (event.defaultPrevented) return;
+            const n = this.createNotification({
+              mode: type,
+              duration: 0,
+              position: 'bottom-start',
+              size: 'sm',
+            });
+            n.setContent('');
+            n.show();
+          });
+          setTimeout(() => this.actions.clearNotifications());
+        }, config.selector);
+      }
+    },
 }));
 
 jest.mock('../src/lib/widget/mixins/stateManagementMixin', () => ({
   stateManagementMixin: (superclass: any) => superclass,
 }));
-
-import { initNotificationsMixin } from '../src/lib/widget/mixins/initMixin/initComponentsMixins/initNotificationsMixin';
 
 const createMixinInstance = () => {
   let subscribeCallback: ((notifications: any[]) => void) | undefined;
@@ -26,14 +42,18 @@ const createMixinInstance = () => {
   const MixinClass = initNotificationsMixin(
     class extends EventTarget {
       logger = { debug: jest.fn(), error: jest.fn(), info: jest.fn() };
+
       subscribe = jest.fn((callback: any) => {
         subscribeCallback = callback;
       });
+
       createNotification = mockCreateNotification;
+
       actions = { clearNotifications: jest.fn() };
+
       rootElement = document.createElement('div');
     } as any,
-  );
+  ) as any;
 
   const instance = new MixinClass();
 
