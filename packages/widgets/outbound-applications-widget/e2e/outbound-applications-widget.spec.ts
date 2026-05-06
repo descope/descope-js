@@ -235,7 +235,7 @@ test.describe('widget', () => {
         const widget = document.querySelector(
           'descope-outbound-applications-widget',
         );
-        widget?.setAttribute('tenant', 'mocktenantid');
+        widget?.setAttribute('tenantId', 'mocktenantid');
       });
 
       await page.route(
