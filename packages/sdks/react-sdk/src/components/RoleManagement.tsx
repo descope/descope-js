@@ -23,7 +23,10 @@ const RoleManagementWC = lazy(async () => {
 });
 
 const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId, styleId, onReady }, ref) => {
+  (
+    { logger, tenant, theme, debug, widgetId, styleId, onReady, onToast },
+    ref,
+  ) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -39,6 +42,15 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
         if (onReady) ele?.removeEventListener('ready', onReady);
       };
     }, [innerRef, onReady]);
+
+    useEffect(() => {
+      const ele = innerRef;
+      if (onToast) ele?.addEventListener('toast', onToast as EventListener);
+      return () => {
+        if (onToast)
+          ele?.removeEventListener('toast', onToast as EventListener);
+      };
+    }, [innerRef, onToast]);
 
     return (
 	<Suspense fallback={null}>

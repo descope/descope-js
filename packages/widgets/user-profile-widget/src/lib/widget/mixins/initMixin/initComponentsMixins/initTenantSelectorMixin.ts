@@ -15,6 +15,7 @@ export const initTenantSelectorMixin = createSingletonMixin(
       initWidgetRootMixin,
     )(superclass) {
       tenantSelector: TenantSelectorDriver;
+
       #lastProcessedTenantId: string | null = null;
 
       #initTenantSelector() {

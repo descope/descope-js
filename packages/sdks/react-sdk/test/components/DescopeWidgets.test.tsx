@@ -284,6 +284,94 @@ describe('Descope Widgets', () => {
     });
   });
 
+  it('should call onToast callback when toast event is dispatched - RoleManagement', async () => {
+    const onToastMock = jest.fn();
+    renderWithProvider(
+      <RoleManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onToast={onToastMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-role-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-role-management-widget')!;
+    widget.dispatchEvent(
+      new CustomEvent('toast', {
+        cancelable: true,
+        detail: { message: 'Role deleted', severity: 'success' },
+      }),
+    );
+    expect(onToastMock).toHaveBeenCalledTimes(1);
+    expect(onToastMock.mock.calls[0][0].detail).toEqual({
+      message: 'Role deleted',
+      severity: 'success',
+    });
+  });
+
+  it('should call onToast callback when toast event is dispatched - AccessKeyManagement', async () => {
+    const onToastMock = jest.fn();
+    renderWithProvider(
+      <AccessKeyManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        onToast={onToastMock}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-access-key-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector(
+      'descope-access-key-management-widget',
+    )!;
+    widget.dispatchEvent(
+      new CustomEvent('toast', {
+        cancelable: true,
+        detail: { message: 'Key created', severity: 'success' },
+      }),
+    );
+    expect(onToastMock).toHaveBeenCalledTimes(1);
+    expect(onToastMock.mock.calls[0][0].detail).toEqual({
+      message: 'Key created',
+      severity: 'success',
+    });
+  });
+
+  it('should call onToast callback when toast event is dispatched - UserProfile', async () => {
+    const onToastMock = jest.fn();
+    renderWithProvider(
+      <UserProfile widgetId="widget1" onToast={onToastMock} />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-profile-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-profile-widget')!;
+    widget.dispatchEvent(
+      new CustomEvent('toast', {
+        cancelable: true,
+        detail: { message: 'Tenant switched', severity: 'success' },
+      }),
+    );
+    expect(onToastMock).toHaveBeenCalledTimes(1);
+    expect(onToastMock.mock.calls[0][0].detail).toEqual({
+      message: 'Tenant switched',
+      severity: 'success',
+    });
+  });
+
   it('should call onReady callback when ready event is dispatched - RoleManagement', async () => {
     const onReadyMock = jest.fn();
     renderWithProvider(

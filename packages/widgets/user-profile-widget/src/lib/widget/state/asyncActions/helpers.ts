@@ -85,29 +85,5 @@ export const withRequestStatus = (
   },
 });
 
-export const withNotifications = ({
-  getErrorMsg,
-  getSuccessMsg,
-}: {
-  getErrorMsg?: (action?: RejectedAction<AsyncThunk<any, any, any>>) => string;
-  getSuccessMsg?: (
-    action?: FulfilledAction<AsyncThunk<any, any, any>>,
-  ) => string;
-}): AsyncReducerConfig<any> => ({
-  onFulfilled: (state, action) => {
-    if (getSuccessMsg) {
-      const msg = getSuccessMsg(action);
-      if (msg) {
-        state.notifications.push({ type: 'success', msg });
-      }
-    }
-  },
-  onRejected: (state, action) => {
-    if (getErrorMsg) {
-      const msg = getErrorMsg(action);
-      if (msg) {
-        state.notifications.push({ type: 'error', msg });
-      }
-    }
-  },
-});
+export { withToastNotifications as withNotifications } from '@descope/sdk-mixins';
+export type { NotificationContent } from '@descope/sdk-mixins';
