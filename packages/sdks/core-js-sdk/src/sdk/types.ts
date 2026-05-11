@@ -24,6 +24,9 @@ type NativeOptions = {
 
   /** An override for web OAuth that sets the address to redirect to after authentication succeeds at the OAuth provider website */
   oauthRedirect?: string;
+
+  /** An override for external authentication that sets the address to redirect to after authentication succeeds at the external auth provider */
+  externalAuthRedirect?: string;
 };
 
 type AuthMethod =
@@ -111,6 +114,7 @@ export type LoginOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 /** Access key login options to be added to the different authentication methods */
@@ -124,6 +128,7 @@ export type SignUpOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 export type Claims = Record<string, any>;
