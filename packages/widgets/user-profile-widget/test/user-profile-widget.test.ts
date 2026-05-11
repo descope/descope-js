@@ -11,7 +11,7 @@ import { mockUser } from './mocks/mockUser';
 import rootMock from './mocks/rootMock';
 
 // jsdom@20 defines CSSStyleSheet.replaceSync but does not implement it — override it unconditionally
-CSSStyleSheet.prototype.replaceSync = function () {};
+CSSStyleSheet.prototype.replaceSync = function replaceSync() {};
 
 const origAppend = document.body.append;
 
@@ -171,9 +171,9 @@ describe('user-profile-widget', () => {
       ) as HTMLElement;
       w.setAttribute('project-id', mockProjectId);
       w.setAttribute('widget-id', 'test-widget');
-      const ready = new Promise<void>((resolve) =>
-        w.addEventListener('ready', () => resolve(), { once: true }),
-      );
+      const ready = new Promise<void>((resolve) => {
+        w.addEventListener('ready', () => resolve(), { once: true });
+      });
       document.body.append(w);
       await ready;
       return w;
