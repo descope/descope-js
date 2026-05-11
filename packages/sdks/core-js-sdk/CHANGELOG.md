@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.61.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.60.0...core-js-sdk-2.61.0) (2026-05-11)
+
+
+### Features
+
+* add tenantId to auth method options for tenant user isolation ([#1371](https://github.com/descope/descope-js/issues/1371)) ([a91c636](https://github.com/descope/descope-js/commit/a91c636caaf363c671d6d7486a57f8c441781b32))
+
 ## [2.60.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.1...core-js-sdk-2.60.0) (2026-04-29)
 
 
