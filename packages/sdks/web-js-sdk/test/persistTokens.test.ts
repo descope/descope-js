@@ -30,6 +30,16 @@ jest.mock('js-cookie', () => ({
   remove: jest.fn(),
 }));
 
+const mockCreateSignoutRequest = jest
+  .fn()
+  .mockResolvedValue({ url: 'https://logout-url.com' });
+jest.mock('oidc-client-ts', () => ({
+  OidcClient: jest.fn().mockImplementation(() => ({
+    createSignoutRequest: mockCreateSignoutRequest,
+  })),
+  WebStorageStateStore: jest.fn(),
+}));
+
 describe('persistTokens', () => {
   afterEach(() => {
     localStorage.setItem('DSR', '');
@@ -1091,6 +1101,44 @@ describe('persistTokens', () => {
       const removeMock = Cookies.remove as jest.Mock;
       expect(removeMock).toHaveBeenCalledWith('DS', undefined);
       expect(removeMock).toHaveBeenCalledWith('DSR', undefined);
+    });
+
+    it('should clear tokens before navigation on OIDC logout', async () => {
+      localStorage.setItem('DSR', authInfo.refreshJwt);
+
+      let dsrPresentAtNavigation: boolean | undefined;
+      const location = Object.defineProperties(
+        {},
+        {
+          ...Object.getOwnPropertyDescriptors(window.location),
+          replace: {
+            enumerable: true,
+            value: jest.fn(() => {
+              dsrPresentAtNavigation = !!localStorage.getItem('DSR');
+            }),
+          },
+          href: {
+            enumerable: true,
+            value: 'http://localhost/',
+            writable: true,
+          },
+        },
+      );
+      Object.defineProperty(window, 'location', {
+        enumerable: true,
+        configurable: true,
+        get: () => location,
+      });
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        oidcConfig: true,
+        persistTokens: true,
+      });
+      await sdk.logout();
+
+      // DSR must already be gone when window.location.replace fires
+      expect(dsrPresentAtNavigation).toBe(false);
     });
 
     it('should clear refresh token cookie on logout', async () => {

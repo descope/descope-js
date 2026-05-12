@@ -139,14 +139,14 @@ const logoutWrapper =
   ): SdkFnWrapper<{}> =>
   (fn) =>
   async (...args) => {
-    const resp = await fn(...args);
-
     clearTokens(
       prefix,
       sessionTokenViaCookie,
       refreshTokenViaCookie,
       getCookieOptions?.(),
     );
+
+    const resp = await fn(...args);
 
     return resp;
   };
