@@ -50,7 +50,7 @@ describe('web-component lastAuth', () => {
       );
 
       fixtures.pageContent =
-        '<descope-button id="my-button" data-opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+        '<descope-button id="my-button" data-opt-in-last-used-auth="true">click</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -111,7 +111,7 @@ describe('web-component lastAuth', () => {
       // no nextMock — flow does not complete
 
       fixtures.pageContent =
-        '<descope-button id="my-button" data-opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+        '<descope-button id="my-button" data-opt-in-last-used-auth="true">click</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -155,7 +155,7 @@ describe('web-component lastAuth', () => {
       );
 
       fixtures.pageContent =
-        '<descope-button id="my-button" data-opt-in-last-used="true">click</descope-button><span>Loaded</span>';
+        '<descope-button id="my-button" data-opt-in-last-used-auth="true">click</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -245,7 +245,7 @@ describe('web-component lastAuth', () => {
         );
 
       fixtures.pageContent =
-        '<descope-button id="button-a" data-opt-in-last-used="true">click a</descope-button><descope-button id="button-b" data-opt-in-last-used="true">click b</descope-button><span>Loaded</span>';
+        '<descope-button id="button-a" data-opt-in-last-used-auth="true">click a</descope-button><descope-button id="button-b" data-opt-in-last-used-auth="true">click b</descope-button><span>Loaded</span>';
 
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
@@ -292,7 +292,7 @@ describe('web-component lastAuth', () => {
 
       fixtures.pageContent = `
         <descope-attachment id="badge" data-type="last-auth-badge"></descope-attachment>
-        <descope-button id="my-button" data-opt-in-last-used="true">click</descope-button>
+        <descope-button id="my-button" data-opt-in-last-used-auth="true">click</descope-button>
         <span>Loaded</span>
       `;
 
