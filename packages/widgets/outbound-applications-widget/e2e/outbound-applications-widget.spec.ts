@@ -70,6 +70,7 @@ test.describe('widget', () => {
   });
 
   test('apps are in the list', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
     for (const app of mockOutboundApps.apps) {
       await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
       await expect(
