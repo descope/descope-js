@@ -253,9 +253,7 @@ test.describe('widget', () => {
   test('search roles', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    // Route handler fulfills all search requests; returns filtered results
-    // based on text so we don't assert inside the handler (avoids false failure
-    // when the widget fires an initial empty-string search on focus)
+    // Route handler returns filtered results based on text
     await page.route(apiPath('role', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
       return route.fulfill({
@@ -276,22 +274,14 @@ test.describe('widget', () => {
       .first();
 
     await searchInput.waitFor({ state: 'visible' });
-
-    // focus search input
     await searchInput.focus();
 
-    // Register response waiter before filling to avoid race where response
-    // arrives before waitForResponse is set up
-    const searchResponsePromise = page.waitForResponse(
-      (response) =>
-        response.url().includes(apiPath('role', 'search')) &&
-        response.request().postDataJSON()?.text === 'mockSearchString',
-    );
+    // pressSequentially fires real key events so the custom element value
+    // updates properly, triggering the debounced search handler
+    await searchInput.pressSequentially('mockSearchString', { delay: 50 });
 
-    // Trigger search by typing (simulates user behavior more accurately)
-    await searchInput.fill('mockSearchString');
-
-    await searchResponsePromise;
+    // Wait for debounce (500ms) and the resulting network request to settle
+    await page.waitForLoadState('networkidle');
 
     // only search results shown in grid
     await expect(
