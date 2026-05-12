@@ -45,11 +45,10 @@ export function getInFlightLastUsedPerScreen(): Record<string, string> {
   }
 }
 
-// Track which opt-in element was last used per screen during an in-progress flow.
-// Written on every qualifying click so the data survives any page navigation
-// (OAuth redirect, magic link, etc.) without special per-mechanism handling.
-// This key is separate from dls_last_auth so partial/abandoned flows never
-// pollute the last authenticated user record.
+// Records the last-clicked opt-in element per screen for the current in-progress flow.
+// Kept separate from dls_last_auth, so abandoned flows never pollute the authenticated
+// user record; written on every click so it survives mid-flow navigations
+// (OAuth redirects, magic links, etc.) without special per-mechanism handling.
 export function updateLastUsedPerScreen(screenId: string, elementId: string) {
   try {
     const stored = getInFlightLastUsedPerScreen();
