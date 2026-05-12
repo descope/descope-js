@@ -2,11 +2,11 @@ import React, {
   lazy,
   Suspense,
   useCallback,
-  useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
 import Context from '../hooks/Context';
+import useEventListener from '../hooks/useEventListener';
 import { UserProfileProps } from '../types';
 import withPropsMapping from './withPropsMapping';
 
@@ -56,31 +56,9 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
       [onLogout, setSession, setIsAuthenticated, setUser],
     );
 
-    useEffect(() => {
-      if (innerRef) {
-        innerRef.addEventListener('logout', handleLogout);
-        return () => innerRef.removeEventListener('logout', handleLogout);
-      }
-      return undefined;
-    }, [innerRef, handleLogout]);
-
-    useEffect(() => {
-      const ele = innerRef;
-      if (onReady) ele?.addEventListener('ready', onReady);
-
-      return () => {
-        if (onReady) ele?.removeEventListener('ready', onReady);
-      };
-    }, [innerRef, onReady]);
-
-    useEffect(() => {
-      const ele = innerRef;
-      if (onToast) ele?.addEventListener('toast', onToast as EventListener);
-      return () => {
-        if (onToast)
-          ele?.removeEventListener('toast', onToast as EventListener);
-      };
-    }, [innerRef, onToast]);
+    useEventListener<CustomEvent>(innerRef, 'logout', handleLogout);
+    useEventListener(innerRef, 'ready', onReady);
+    useEventListener(innerRef, 'toast', onToast);
 
     return (
 	<Suspense fallback={null}>

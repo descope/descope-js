@@ -6,9 +6,19 @@ import {
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { loggerMixin } from '../loggerMixin';
 import { notificationsMixin } from '../notificationsMixin';
+import { defaultIcons } from './icons';
 
-const SUCCESS_NOTIFICATION_DURATION = 3000;
-const ERROR_NOTIFICATION_DURATION = 0;
+const DEFAULT_SUCCESS_NOTIFICATION_DURATION = 3000;
+const DEFAULT_ERROR_NOTIFICATION_DURATION = 0;
+
+const ESC: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+const escapeHtml = (s: string) => s.replace(/[&<>"']/g, (c) => ESC[c]);
 
 export type ToastNotification = {
   type: 'success' | 'error';
@@ -16,14 +26,8 @@ export type ToastNotification = {
   detail?: string;
 };
 
-export type ToastEventDetail = {
-  message: string;
-  detail?: string;
-  severity: ToastNotification['type'];
-};
-
 export type ToastEventsMixinConfig<S = any> = {
-  selector: (state: S) => ToastNotification[];
+  selector?: (state: S) => ToastNotification[];
   successDuration?: number;
   errorDuration?: number;
   position?:
@@ -37,24 +41,18 @@ export type ToastEventsMixinConfig<S = any> = {
     | 'bottom-end'
     | 'bottom-stretch';
   size?: 'xs' | 'sm' | 'md' | 'lg';
-  icons?: {
-    success?: () => HTMLElement;
-    error?: () => HTMLElement;
-    close?: () => HTMLElement;
-  };
   eventName?: string;
 };
 
 export const createToastEventsMixin = <S>(
-  config: ToastEventsMixinConfig<S>,
+  config: ToastEventsMixinConfig<S> = {},
 ) => {
   const {
-    selector,
-    successDuration = SUCCESS_NOTIFICATION_DURATION,
-    errorDuration = ERROR_NOTIFICATION_DURATION,
+    selector = (state: any) => state.notifications,
+    successDuration = DEFAULT_SUCCESS_NOTIFICATION_DURATION,
+    errorDuration = DEFAULT_ERROR_NOTIFICATION_DURATION,
     position = 'bottom-start',
     size = 'sm',
-    icons = {},
     eventName = 'toast',
   } = config;
 
@@ -65,6 +63,7 @@ export const createToastEventsMixin = <S>(
         notificationsMixin,
         initLifecycleMixin,
       )(superclass) {
+        // subscribe and actions are provided at runtime by the widget's stateManagementMixin
         declare subscribe: <SelectorR>(
           cb: (state: SelectorR) => void,
           selector?: (state: any) => SelectorR,
@@ -74,16 +73,15 @@ export const createToastEventsMixin = <S>(
 
         // eslint-disable-next-line class-methods-use-this
         #createNotificationContent({ type, msg, detail }: ToastNotification) {
-          const iconFactory =
-            icons[type as keyof Pick<typeof icons, 'success' | 'error'>];
-          const icon = iconFactory?.();
-          const closeIconEl = icons.close
-            ? Object.assign(icons.close(), { slot: 'close' })
-            : null;
-          const body = detail ? `<div><div>${msg}</div>${detail}</div>` : msg;
-          return `${icon?.outerHTML || ''}${body}${
-            closeIconEl?.outerHTML || ''
-          }`;
+          const typeIcon = defaultIcons[type]();
+          const closeIcon = Object.assign(defaultIcons.close(), {
+            slot: 'close',
+          });
+          const body = detail
+            ? `<div><div>${escapeHtml(msg)}</div>${escapeHtml(detail)}</div>`
+            : escapeHtml(msg);
+
+          return `${typeIcon.outerHTML}${body}${closeIcon.outerHTML}`;
         }
 
         #createNotification(type: ToastNotification['type']) {
@@ -98,18 +96,20 @@ export const createToastEventsMixin = <S>(
         #onNotificationsUpdate = withMemCache(
           (notifications: ToastNotification[]) => {
             if (notifications.length) {
-              notifications.forEach(({ type, msg, detail }) => {
+              notifications.forEach((toast) => {
                 const toastEvent = new CustomEvent(eventName, {
                   cancelable: true,
-                  detail: { message: msg, detail, severity: type },
+                  detail: {
+                    message: toast.msg,
+                    detail: toast.detail,
+                    severity: toast.type,
+                  },
                 });
                 this.dispatchEvent(toastEvent);
                 if (toastEvent.defaultPrevented) return;
 
-                const notification = this.#createNotification(type);
-                notification.setContent(
-                  this.#createNotificationContent({ type, msg, detail }),
-                );
+                const notification = this.#createNotification(toast.type);
+                notification.setContent(this.#createNotificationContent(toast));
                 notification.show();
               });
 

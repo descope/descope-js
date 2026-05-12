@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { createToastEventsMixin } from '../src/mixins/toastEventsMixin/toastEventsMixin';
+import { withToastNotifications } from '../src/mixins/toastEventsMixin/withToastNotifications';
 
 jest.mock('@descope/sdk-helpers', () => {
   const actual = jest.requireActual('@descope/sdk-helpers');
@@ -27,17 +28,7 @@ const setup = async (overrides: Record<string, any> = {}) => {
   const mockCreateNotification = jest.fn(() => mockNotification);
   const clearNotifications = jest.fn();
 
-  const selector = (state: any) => state;
-
-  const Mixin = createToastEventsMixin({
-    selector,
-    icons: {
-      success: () => document.createElement('span'),
-      error: () => document.createElement('span'),
-      close: () => document.createElement('span'),
-    },
-    ...overrides,
-  });
+  const Mixin = createToastEventsMixin({ ...overrides });
 
   class Base extends EventTarget {
     logger = { debug: jest.fn(), error: jest.fn(), info: jest.fn() };
@@ -172,5 +163,82 @@ describe('createToastEventsMixin', () => {
     expect(mockCreateNotification).not.toHaveBeenCalled();
     jest.runAllTimers();
     expect(clearNotifications).not.toHaveBeenCalled();
+  });
+
+  it('escapes HTML in msg before rendering', async () => {
+    const { trigger, mockNotification } = await setup();
+
+    trigger([{ type: 'error', msg: '<script>alert(1)</script>' }]);
+
+    expect(mockNotification.setContent).toHaveBeenCalledWith(
+      expect.stringContaining('&lt;script&gt;alert(1)&lt;/script&gt;'),
+    );
+    expect(mockNotification.setContent).not.toHaveBeenCalledWith(
+      expect.stringContaining('<script>'),
+    );
+  });
+
+  it('escapes HTML in detail before rendering', async () => {
+    const { trigger, mockNotification } = await setup();
+
+    trigger([
+      { type: 'error', msg: 'Failed', detail: '<img src=x onerror=alert(1)>' },
+    ]);
+
+    expect(mockNotification.setContent).toHaveBeenCalledWith(
+      expect.stringContaining('&lt;img src=x onerror=alert(1)&gt;'),
+    );
+    expect(mockNotification.setContent).not.toHaveBeenCalledWith(
+      expect.stringContaining('<img'),
+    );
+  });
+});
+
+describe('withToastNotifications', () => {
+  const makeState = () => ({ notifications: [] as any[] });
+
+  it('pushes success notification with string msg', () => {
+    const state = makeState();
+    const { onFulfilled } = withToastNotifications({
+      getSuccessMsg: () => 'Done',
+    });
+    onFulfilled(state, {} as any);
+    expect(state.notifications).toEqual([{ type: 'success', msg: 'Done' }]);
+  });
+
+  it('pushes error notification with object { msg, detail }', () => {
+    const state = makeState();
+    const { onRejected } = withToastNotifications({
+      getErrorMsg: () => ({ msg: 'Failed', detail: 'Some detail' }),
+    });
+    onRejected(state, {} as any);
+    expect(state.notifications).toEqual([
+      { type: 'error', msg: 'Failed', detail: 'Some detail' },
+    ]);
+  });
+
+  it('skips push when getSuccessMsg returns empty string', () => {
+    const state = makeState();
+    const { onFulfilled } = withToastNotifications({
+      getSuccessMsg: () => '',
+    });
+    onFulfilled(state, {} as any);
+    expect(state.notifications).toHaveLength(0);
+  });
+
+  it('skips push when getErrorMsg returns undefined', () => {
+    const state = makeState();
+    const { onRejected } = withToastNotifications({
+      getErrorMsg: () => undefined,
+    });
+    onRejected(state, {} as any);
+    expect(state.notifications).toHaveLength(0);
+  });
+
+  it('skips push when no getSuccessMsg provided on fulfilled', () => {
+    const state = makeState();
+    const { onFulfilled } = withToastNotifications({});
+    onFulfilled(state, {} as any);
+    expect(state.notifications).toHaveLength(0);
   });
 });

@@ -1,4 +1,5 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { ToastNotification } from '@descope/sdk-mixins';
 import { Sdk } from '../api/sdk';
 import { CustomAttr, Role, SortParams, User } from '../api/types';
 
@@ -48,7 +49,7 @@ export type State = {
   };
   searchParams: { text: string; sort: SortParams[] };
   selectedUsersLoginIds: string[][];
-  notifications: Notification[];
+  notifications: ToastNotification[];
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;
@@ -62,9 +63,3 @@ export type ThunkConfigExtraApi = { extra: { api: Sdk } };
 export type RemoveVoid<T> = T extends void ? never : T;
 
 export type Builder = ActionReducerMapBuilder<State>;
-
-type Notification = {
-  type: 'success' | 'error';
-  msg: string;
-  detail?: string;
-};
