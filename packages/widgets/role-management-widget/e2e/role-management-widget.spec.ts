@@ -100,6 +100,7 @@ test.describe('widget', () => {
   });
 
   test('roles table', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
     await expect(
       page.locator(`text=${mockRoles.roles[0]['name']}`).first(),
     ).toBeVisible();
@@ -252,14 +253,20 @@ test.describe('widget', () => {
   test('search roles', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    // Set up route handler first
+    // Route handler fulfills all search requests; returns filtered results
+    // based on text so we don't assert inside the handler (avoids false failure
+    // when the widget fires an initial empty-string search on focus)
     await page.route(apiPath('role', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
-      expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ roles: [mockRoles[1]] }),
+        body: JSON.stringify({
+          roles:
+            text === 'mockSearchString'
+              ? [mockRoles.roles[1]]
+              : mockRoles.roles,
+        }),
       });
     });
 
@@ -273,11 +280,18 @@ test.describe('widget', () => {
     // focus search input
     await searchInput.focus();
 
+    // Register response waiter before filling to avoid race where response
+    // arrives before waitForResponse is set up
+    const searchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPath('role', 'search')) &&
+        response.request().postDataJSON()?.text === 'mockSearchString',
+    );
+
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
-    // Wait for the search request and response
-    await page.waitForResponse(apiPath('role', 'search'));
+    await searchResponsePromise;
 
     // only search results shown in grid
     await expect(

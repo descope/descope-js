@@ -49,11 +49,7 @@ type WidgetProps = {
 
 type WithToastProps = {
   /** Fired before each toast is shown. Call event.preventDefault() to suppress the built-in toast. */
-  onToast?: CustomEventCb<{
-    message: string;
-    detail?: string;
-    severity: 'success' | 'error';
-  }>;
+  onToast?: CustomEventCb<ToastEventPayload>;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
@@ -199,3 +195,11 @@ export type OutboundApplicationsProps = WidgetProps;
 
 export type { ILogger };
 export type DefaultFlowProps = Omit<DescopeProps, 'flowId'>;
+
+export type ToastSeverity = 'success' | 'error';
+
+export type ToastEventPayload = {
+  message: string;
+  detail?: string;
+  severity: ToastSeverity;
+};

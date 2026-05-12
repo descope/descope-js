@@ -1,11 +1,6 @@
-import React, {
-  lazy,
-  Suspense,
-  useImperativeHandle,
-  useState,
-  useEffect,
-} from 'react';
+import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
+import useEventListener from '../hooks/useEventListener';
 import { RoleManagementProps } from '../types';
 import withPropsMapping from './withPropsMapping';
 
@@ -34,23 +29,8 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
     const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
 
-    useEffect(() => {
-      const ele = innerRef;
-      if (onReady) ele?.addEventListener('ready', onReady);
-
-      return () => {
-        if (onReady) ele?.removeEventListener('ready', onReady);
-      };
-    }, [innerRef, onReady]);
-
-    useEffect(() => {
-      const ele = innerRef;
-      if (onToast) ele?.addEventListener('toast', onToast as EventListener);
-      return () => {
-        if (onToast)
-          ele?.removeEventListener('toast', onToast as EventListener);
-      };
-    }, [innerRef, onToast]);
+    useEventListener(innerRef, 'ready', onReady);
+    useEventListener(innerRef, 'toast', onToast);
 
     return (
 	<Suspense fallback={null}>

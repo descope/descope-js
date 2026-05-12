@@ -1,3 +1,4 @@
+export type { ToastEventPayload, ToastSeverity } from './types';
 export { default as AccessKeyManagement } from './components/AccessKeyManagement';
 export { default as ApplicationsPortal } from './components/ApplicationsPortal';
 export { default as AuditManagement } from './components/AuditManagement';

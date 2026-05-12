@@ -718,18 +718,21 @@ test.describe('widget', () => {
     // focus search input
     await searchInput.focus();
 
+    // Register response waiter before triggering the action to avoid a race
+    // where the response arrives before waitForResponse is set up
+    const searchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.user.search) &&
+        response.request().postDataJSON()?.text === 'mockSearchString',
+    );
+
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
     // Trigger search with Enter key to ensure it fires
     await searchInput.press('Enter');
 
-    // Wait for the specific search response triggered by our input
-    await page.waitForResponse(
-      (response) =>
-        response.url().includes(apiPaths.user.search) &&
-        response.request().postDataJSON()?.text === 'mockSearchString',
-    );
+    await searchResponsePromise;
 
     // only search results shown in grid
     await expect(

@@ -32,6 +32,8 @@ export class AccessKeyManagementComponent extends BaseLazyWidgetComponent {
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
+  @Output() toast: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
+
   constructor(
     elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
@@ -93,5 +95,9 @@ export class AccessKeyManagementComponent extends BaseLazyWidgetComponent {
         this.ready?.emit();
       });
     }
+
+    this.webComponent.addEventListener('toast', (e: Event) => {
+      this.toast?.emit(e as CustomEvent);
+    });
   }
 }

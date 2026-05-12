@@ -12,6 +12,7 @@
       :widget-id="widgetId"
       :style-id="styleId"
       @ready="onReady"
+      @toast="onToast"
     />
   </div>
 </template>
@@ -42,9 +43,24 @@ defineProps({
 
 const emit = defineEmits<{
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
+  (
+    e: 'toast',
+    payload: CustomEvent<{
+      message: string;
+      detail?: string;
+      severity: 'success' | 'error';
+    }>,
+  ): void;
 }>();
 
 const { projectId, baseUrl, baseStaticUrl, baseCdnUrl } = useOptions();
 
 const onReady = (e: CustomEvent<Record<string, never>>) => emit('ready', e);
+const onToast = (
+  e: CustomEvent<{
+    message: string;
+    detail?: string;
+    severity: 'success' | 'error';
+  }>,
+) => emit('toast', e);
 </script>
