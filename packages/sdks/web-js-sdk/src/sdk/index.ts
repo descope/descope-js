@@ -5,6 +5,7 @@ import withFlow from './flow';
 import {
   getSessionToken,
   getRefreshToken,
+  hasLoginIndicator,
 } from '../enhancers/withPersistTokens/helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
@@ -37,6 +38,13 @@ const createSdk = (config: WebSdkConfig) => {
               'Refresh is not supported in native flows via the web SDK',
           },
         });
+      }
+
+      // Skip the up-front /try-refresh round-trip when localStorage has no sign
+      // of a prior authenticated session. `withLoggedInIndicator` writes DSLI
+      // on every successful auth and clears it on logout / invalid session.
+      if (tryRefresh && !hasLoginIndicator()) {
+        return Promise.resolve({ ok: true });
       }
 
       if (config.oidcConfig) {

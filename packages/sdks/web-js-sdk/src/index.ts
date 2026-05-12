@@ -5,6 +5,7 @@ import { withCustomStorage } from './enhancers/withCustomStorage';
 import { withFingerprint } from './enhancers/withFingerprint';
 import { withFlowNonce } from './enhancers/withFlowNonce';
 import { withLastLoggedInUser } from './enhancers/withLastLoggedInUser';
+import { withLoggedInIndicator } from './enhancers/withLoggedInIndicator';
 import { withNotifications } from './enhancers/withNotifications';
 import withPersistTokens from './enhancers/withPersistTokens';
 import createSdk from './sdk';
@@ -15,6 +16,7 @@ const decoratedCreateSdk = compose(
   withAnalytics,
   withNotifications,
   withFlowNonce,
+  withLoggedInIndicator,
   // The following two enhancers must remain immediately before withPersistTokens due to TS type inference limitations
   withAutoRefresh,
   withLastLoggedInUser,
