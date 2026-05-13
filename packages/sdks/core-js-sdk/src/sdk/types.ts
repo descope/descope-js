@@ -114,6 +114,7 @@ export type LoginOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 /** Access key login options to be added to the different authentication methods */
@@ -127,6 +128,7 @@ export type SignUpOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 export type Claims = Record<string, any>;
