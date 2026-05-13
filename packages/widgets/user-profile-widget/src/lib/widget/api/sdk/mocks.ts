@@ -93,13 +93,13 @@ const passkeys = () => ({
     {
       id: 'vendor-id-2',
       name: 'Device 2',
-  		passkeyType: 'edge',
+      passkeyType: 'edge',
       createdAt: 1738750500000,
     },
     {
       id: 'vendor-id-3',
       name: 'Device 3',
-  		passkeyType: 'apple',
+      passkeyType: 'apple',
       createdAt: 1741264200000,
     },
   ],

@@ -7,9 +7,9 @@ export const initialState: State = {
     data: {},
   },
   devices: {
-      loading: false,
-      error: null,
-      data: [],
+    loading: false,
+    error: null,
+    data: [],
   },
   passkeys: {
     loading: false,
