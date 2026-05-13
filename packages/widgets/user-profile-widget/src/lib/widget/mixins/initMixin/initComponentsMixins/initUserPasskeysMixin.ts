@@ -1,7 +1,6 @@
 import {
   FlowDriver,
   ModalDriver,
-  UserAuthMethodDriver,
   UserPasskeysDriver,
 } from '@descope/sdk-component-drivers';
 import {
