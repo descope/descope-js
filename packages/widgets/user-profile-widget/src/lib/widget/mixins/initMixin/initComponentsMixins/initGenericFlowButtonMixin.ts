@@ -33,7 +33,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           logger: this.logger,
         });
         button.onClick(() => {
-          this.#initModalContent(button.flowId);
+          this.#initModalContent(button.flowId, getUserId(this.state));
         });
         this.#flowButtons.push(button);
       }
@@ -65,7 +65,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         this.#removePageUpdatedCallback?.();
       }
 
-      #initModalContent(flowId: string) {
+      #initModalContent(flowId: string, userId: string) {
         this.#modal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -76,7 +76,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             'style-id': this.styleId,
-            client: { userId: getUserId(this.state) },
+            client: { userId },
           }),
         );
         const cb = () => this.#onModalNeeded();
