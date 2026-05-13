@@ -357,5 +357,148 @@ describe('web-component', () => {
         }),
       );
     });
+
+    it('should skip npm lib injection when script is already available in globalThis.descope', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      const mockForterScript = jest.fn(() => ({
+        id: 'forter',
+        start: jest.fn(),
+        stop: jest.fn(),
+        refresh: jest.fn(),
+        present: jest.fn(),
+      }));
+      window.descope = { forter: mockForterScript };
+
+      fixtures.configContent = {
+        flows: {
+          'sign-in': {
+            startScreenId: 'screen-0',
+            sdkScripts: [
+              {
+                id: 'forter',
+                initArgs: { siteId: 'some-site-id' },
+                resultKey: 'some-result-key',
+              },
+            ],
+          },
+        },
+      };
+
+      fixtures.pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
+
+      // Spy on appendChild to verify no script injection
+      const appendChildSpy = jest.spyOn(document.body, 'appendChild');
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      // module is called directly from globalThis.descope without needing scriptMock.onload()
+      await waitFor(() => expect(mockForterScript).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // no script element should have been injected into document.body
+      const appendChildCalls = appendChildSpy.mock.calls;
+      const scriptWasInjected = appendChildCalls.some(
+        ([el]: [HTMLElement]) => el?.localName === 'script',
+      );
+      expect(scriptWasInjected).toBe(false);
+
+      appendChildSpy.mockRestore();
+    });
+
+    describe('sdk script stop behavior', () => {
+      let mockStopFn: jest.Mock;
+      let mockForterScript: jest.Mock;
+
+      beforeEach(() => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+        nextMock.mockReturnValue(generateSdkResponse());
+
+        mockStopFn = jest.fn();
+        mockForterScript = jest.fn(() => ({
+          id: 'forter',
+          start: jest.fn(),
+          stop: mockStopFn,
+          refresh: jest.fn(),
+          present: jest.fn(),
+        }));
+        window.descope = { forter: mockForterScript };
+
+        fixtures.configContent = {
+          flows: {
+            'sign-in': {
+              startScreenId: 'screen-0',
+              sdkScripts: [
+                {
+                  id: 'forter',
+                  initArgs: { siteId: 'some-site-id' },
+                  resultKey: 'some-result-key',
+                },
+              ],
+            },
+          },
+        };
+
+        fixtures.pageContent = `<descope-button type="button" id="submitterId">Click</descope-button>`;
+      });
+
+      it('should remove script element from DOM and unsubscribe when stop returns truthy', async () => {
+        mockStopFn.mockReturnValue(true);
+
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.findByShadowText('Click'), {
+          timeout: WAIT_TIMEOUT,
+        });
+        await waitFor(() => expect(mockForterScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        const wc = document.querySelector('descope-wc');
+        expect(
+          wc.shadowRoot.querySelector('[data-script-id="forter"]'),
+        ).toBeTruthy();
+
+        fireEvent.click(screen.getByShadowText('Click'));
+
+        await waitFor(
+          () =>
+            expect(
+              wc.shadowRoot.querySelector('[data-script-id="forter"]'),
+            ).toBeNull(),
+          { timeout: WAIT_TIMEOUT },
+        );
+
+        expect(mockStopFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('should not remove script element from DOM when stop returns falsy', async () => {
+        mockStopFn.mockReturnValue(false);
+
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.findByShadowText('Click'), {
+          timeout: WAIT_TIMEOUT,
+        });
+        await waitFor(() => expect(mockForterScript).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        const wc = document.querySelector('descope-wc');
+        expect(
+          wc.shadowRoot.querySelector('[data-script-id="forter"]'),
+        ).toBeTruthy();
+
+        fireEvent.click(screen.getByShadowText('Click'));
+
+        await waitFor(() => expect(mockStopFn).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        expect(
+          wc.shadowRoot.querySelector('[data-script-id="forter"]'),
+        ).toBeTruthy();
+      });
+    });
   });
 });

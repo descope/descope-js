@@ -2,6 +2,59 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.61.0](https://github.com/descope/descope-js/compare/web-component-3.60.0...web-component-3.61.0) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+
+### Features
+
+* **wc:** support multiple consecutive sdk script runs ([#1378](https://github.com/descope/descope-js/issues/1378)) ([3c780f1](https://github.com/descope/descope-js/commit/3c780f1da6a66706214e437a7f8a27b3492f3cd4))
+
+## [3.60.0](https://github.com/descope/descope-js/compare/web-component-3.59.2...web-component-3.60.0) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
+## [3.59.2](https://github.com/descope/descope-js/compare/web-component-3.59.1...web-component-3.59.2) (2026-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.1`
+## [3.59.1](https://github.com/descope/descope-js/compare/web-component-3.59.0...web-component-3.59.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* **wc:** guard SAML/WS-Fed loadForm blocks with URL check RELEASE ([#1370](https://github.com/descope/descope-js/issues/1370)) ([1cfeaf8](https://github.com/descope/descope-js/commit/1cfeaf837ea7935620fcfe79047ed59513ab4f6b)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#543](https://github.com/descope/descope/issues/543)
+
+## [3.59.0](https://github.com/descope/descope-js/compare/web-component-3.58.4...web-component-3.59.0) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.0`
+
+### Features
+
+* change flow api version to v2 ([#1323](https://github.com/descope/descope-js/issues/1323)) ([756096e](https://github.com/descope/descope-js/commit/756096ecff1678686a2ad77f02428fb1bcf49535))
+* **wc:** add WS-Fed IDP form POST support with correct field names RELEASE ([#1368](https://github.com/descope/descope-js/issues/1368)) ([970ac83](https://github.com/descope/descope-js/commit/970ac8385dd8794d434a42b43b69c571d61758c4)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#536](https://github.com/descope/descope/issues/536)
+
+## [3.58.4](https://github.com/descope/descope-js/compare/web-component-3.58.3...web-component-3.58.4) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+
+### Bug Fixes
+
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
 ## [3.58.3](https://github.com/descope/descope-js/compare/web-component-3.58.2...web-component-3.58.3) (2026-04-13)
 
 ### Dependency Updates

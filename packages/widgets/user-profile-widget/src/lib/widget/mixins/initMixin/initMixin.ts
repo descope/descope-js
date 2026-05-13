@@ -15,6 +15,7 @@ import { initTrustedDevicesMixin } from './initComponentsMixins/initTrustedDevic
 import { initUserPasskeysMixin } from './initComponentsMixins/initUserPasskeysMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
 import { initTenantSelectorMixin } from './initComponentsMixins/initTenantSelectorMixin';
+import { initGenericFlowButtonMixin } from './initComponentsMixins/initGenericFlowButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -37,6 +38,7 @@ export const initMixin = createSingletonMixin(
       initUserPasskeysMixin,
       initNotificationsMixin,
       initTenantSelectorMixin,
+      initGenericFlowButtonMixin,
     )(superclass) {
       async init() {
         await super.init?.();

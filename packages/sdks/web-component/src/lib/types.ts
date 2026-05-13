@@ -71,6 +71,7 @@ export interface ScreenState {
 export type SSOQueryParams = {
   oidcIdpStateId?: string;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
@@ -122,6 +123,9 @@ export type FlowState = {
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
+  wsFedIdpResponseUrl: string;
+  wsFedIdpResponseWresult: string;
+  wsFedIdpResponseWctx: string;
   nativeResponseType: string;
   nativePayload: Record<string, any>;
   reqTimestamp: number;

@@ -31,6 +31,7 @@ export const defaultOptionsValues = {
   oidcLoginHint: null,
   oidcPrompt: null,
   samlIdpStateId: null,
+  wsfedIdpStateId: null,
   samlIdpUsername: null,
   oidcErrorRedirectUri: null,
   oidcResource: null,
