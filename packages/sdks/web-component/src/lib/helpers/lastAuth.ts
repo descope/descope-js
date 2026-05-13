@@ -23,12 +23,15 @@ export function getLastAuth(loginId: string): LastAuthState {
   return lastAuth;
 }
 
-// save last auth to local storage
-export function setLastAuth(lastAuth: LastAuthState, forceLoginId?: boolean) {
+// Save last auth to local storage.
+// requireLoginId: skip the save if no loginId is present — used mid-flow where
+// a loginId-less state has nothing useful to pre-fill on the next screen.
+// On flow completion pass false (or omit) so the auth method is always recorded.
+export function setLastAuth(lastAuth: LastAuthState, requireLoginId?: boolean) {
   if (!lastAuth?.authMethod) {
     return;
   }
-  if (forceLoginId && !lastAuth.loginId) {
+  if (requireLoginId && !lastAuth.loginId) {
     return;
   }
   setStorageItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY, JSON.stringify(lastAuth));

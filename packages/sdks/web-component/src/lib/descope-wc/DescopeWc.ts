@@ -1443,13 +1443,10 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
-        setLastAuth(
-          {
-            ...lastAuth,
-            lastUsedPerScreen: getInFlightLastUsedPerScreen(),
-          },
-          false,
-        );
+        setLastAuth({
+          ...lastAuth,
+          lastUsedPerScreen: getInFlightLastUsedPerScreen(),
+        });
       }
       clearInFlightLastAuth();
       const payload: FlowJWTResponse = { ...authInfo };
