@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.61.0](https://github.com/descope/descope-js/compare/web-component-3.60.0...web-component-3.61.0) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+
+### Features
+
+* **wc:** support multiple consecutive sdk script runs ([#1378](https://github.com/descope/descope-js/issues/1378)) ([3c780f1](https://github.com/descope/descope-js/commit/3c780f1da6a66706214e437a7f8a27b3492f3cd4))
+
 ## [3.60.0](https://github.com/descope/descope-js/compare/web-component-3.59.2...web-component-3.60.0) (2026-04-29)
 
 ### Dependency Updates
