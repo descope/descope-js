@@ -41,7 +41,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       #removeFlow: FlowDriver;
 
       #initAddModal() {
-        if (!this.userPasskeys.flowId) return;
+        if (!this.userPasskeys.addPasskeyFlowId) return;
 
         this.#addModal = this.createModal({ 'data-id': 'add-passkey' });
         this.#addFlow = new FlowDriver(
@@ -69,6 +69,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#addFlow.onSuccess(() => {
           this.#addModal.close();
           this.actions.getMe();
+          this.#fetchPasskeys();
         });
       }
 
@@ -81,11 +82,11 @@ export const initUserPasskeysMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#removeModal.afterClose = this.#initRemoveModalContent.bind(this);
-        this.#initRemoveModalContent();
+        // this.#initRemoveModalContent();
         this.syncFlowTheme(this.#removeFlow);
       }
 
-      #initRemoveModalContent() {
+      #initRemoveModalContent({ loginId }) {
         this.#removeModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -96,59 +97,52 @@ export const initUserPasskeysMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             'style-id': this.styleId,
+            form: { loginId },
           }),
         );
         this.#removeFlow.onSuccess(() => {
           this.#removeModal.close();
           this.actions.getMe();
+          this.#fetchPasskeys();
         });
       }
 
-      async #fetchTrustedDevices() {
+      async #fetchPasskeys() {
         await this.actions.listPasskeys({
           userId: getUserId(this.state),
         });
       }
-      
+
+      updatePasskeyList = withMemCache((data) => {
+        this.userPasskeys.data = data;
+      });
+
       #initUserPasskeys(passkeysList: ReturnType<typeof getUserPasskeys>) {
         this.userPasskeys = new UserPasskeysDriver(
-          () =>
-            this.shadowRoot?.querySelector(
-              'descope-user-passkeys',
-            ),
+          () => this.shadowRoot?.querySelector('descope-user-passkeys'),
           { logger: this.logger },
         );
 
-        this.userPasskeys.data = passkeysList;
-
+        this.updatePasskeyList(passkeysList);
 
         this.userPasskeys.onAddPasskeyClick(() => {
           this.#addModal?.open();
         });
 
-        this.userPasskeys.onRemovePasskeyClick(() => {
+        this.userPasskeys.onRemovePasskeyClick(({ id }) => {
+          this.#initRemoveModalContent({ loginId: id });
           this.#removeModal?.open();
         });
       }
 
-      // #onFulfilledUpdate = withMemCache(
-      //   (hasPasskey: ReturnType<typeof getHasPasskey>) => {
-      //     this.userPasskeys.fulfilled = hasPasskey;
-      //   },
-      // );
-
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        await this.#fetchTrustedDevices();
-
+        await this.#fetchPasskeys();
         this.#initUserPasskeys(getUserPasskeys(this.state));
         this.#initAddModal();
         this.#initRemoveModal();
-
-        // this.#onFulfilledUpdate(getHasPasskey(this.state));
-
-        // this.subscribe(this.#onFulfilledUpdate.bind(this), getHasPasskey);
+        this.subscribe(this.updatePasskeyList.bind(this), getUserPasskeys);
       }
     },
 );

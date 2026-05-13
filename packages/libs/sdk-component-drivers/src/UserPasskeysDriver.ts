@@ -6,6 +6,8 @@ type Data = {
   // createdAt: number;
 }[];
 
+type Detail = { id: string; action: string };
+
 export class UserPasskeysDriver extends BaseDriver {
   nodeName = 'descope-user-passkeys';
 
@@ -22,10 +24,10 @@ export class UserPasskeysDriver extends BaseDriver {
   set data(data: Data) {
     if (this.ele) this.ele.data = data;
   }
-  
-  get flowId() {
-    return this.ele?.getAttribute('flow-id');
-  }
+
+  // get flowId() {
+  //   return this.ele?.getAttribute('flow-id');
+  // }
 
   get addPasskeyFlowId() {
     return this.ele?.getAttribute('add-passkey-flow-id');
@@ -40,8 +42,11 @@ export class UserPasskeysDriver extends BaseDriver {
     return () => this.ele?.removeEventListener('add-passkey-clicked', cb);
   }
 
-  onRemovePasskeyClick(cb: (e: Event) => void) {
-    this.ele?.addEventListener('remove-passkey-clicked', cb);
-    return () => this.ele?.removeEventListener('remove-passkey-clicked', cb);
+  onRemovePasskeyClick(cb: (detail: Detail) => void) {
+    const handler = (e: CustomEvent<Detail>) => cb(e.detail);
+    this.ele?.addEventListener('remove-passkey-clicked', handler);
+
+    return () =>
+      this.ele?.removeEventListener('remove-passkey-clicked', handler);
   }
 }

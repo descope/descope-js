@@ -11,7 +11,10 @@ type Device = {
 
 type Passkey = {
   id: string;
-  createdTime: string;
+  createdTime: number;
+  displayName: string;
+  kind: string;
+  rpId: string;
 };
 
 export type State = {
@@ -29,7 +32,7 @@ export type State = {
     loading: boolean;
     error: unknown;
     data: Passkey[];
-  },
+  };
   tenant: {
     currentTenantId: string | null;
     previousTenantId: string | null;
