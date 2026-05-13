@@ -7,6 +7,8 @@ import {
   getRefreshToken,
   hasLoginIndicator,
 } from '../enhancers/withPersistTokens/helpers';
+import { LOGGED_IN_INDICATOR_DISABLED_KEY } from '../enhancers/withLoggedInIndicator/constants';
+import { getLocalStorage } from '../enhancers/helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
 import {
@@ -43,7 +45,13 @@ const createSdk = (config: WebSdkConfig) => {
       // Skip the up-front /try-refresh round-trip when localStorage has no sign
       // of a prior authenticated session. `withLoggedInIndicator` writes DSLI
       // on every successful auth and clears it on logout / invalid session.
-      if (tryRefresh && !hasLoginIndicator()) {
+      // DSLI_DISABLED overrides the skip — escape hatch for apps that hit the
+      // storeLastAuthenticatedUser=false edge case after upgrading.
+      if (
+        tryRefresh &&
+        !hasLoginIndicator() &&
+        !getLocalStorage(LOGGED_IN_INDICATOR_DISABLED_KEY)
+      ) {
         return Promise.resolve({ ok: true });
       }
 
