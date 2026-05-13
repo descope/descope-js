@@ -6,10 +6,10 @@ import {
   WebSigninResponse,
 } from '../../types';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { IS_BROWSER } from '../../constants';
+import { IS_BROWSER, OIDC_LOGOUT_SIGNAL_PATH } from '../../constants';
 
-// Routes where a failed response indicates an invalid/expired session
-// Other routes (like OTP verify) may fail for invalid input, not session expiration
+// Routes where a failed response indicates an invalid/expired session.
+// Other routes (like OTP verify) may fail for invalid input, not session expiration.
 const SESSION_VALIDATION_ROUTES = [
   '/v1/auth/refresh',
   '/v1/auth/try-refresh',
@@ -167,9 +167,10 @@ export const isInvalidSessionResponse = (
   req: { path?: string },
   res: Response | undefined,
 ): boolean => {
+  const path = req?.path || '';
+  if (path === OIDC_LOGOUT_SIGNAL_PATH) return true;
   const is4xx = res?.status >= 400 && res?.status < 500;
   if (!is4xx) return false;
-  const path = req?.path || '';
   return SESSION_VALIDATION_ROUTES.includes(path);
 };
 

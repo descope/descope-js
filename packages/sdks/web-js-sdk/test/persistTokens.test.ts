@@ -1105,6 +1105,7 @@ describe('persistTokens', () => {
 
     it('should clear tokens before navigation on OIDC logout', async () => {
       localStorage.setItem('DSR', authInfo.refreshJwt);
+      localStorage.setItem('DSI', 'id-token-1');
 
       let dsrPresentAtNavigation: boolean | undefined;
       const location = Object.defineProperties(
@@ -1139,6 +1140,10 @@ describe('persistTokens', () => {
 
       // DSR must already be gone when window.location.replace fires
       expect(dsrPresentAtNavigation).toBe(false);
+      // id_token_hint must be read from DSI before tokens are cleared
+      expect(mockCreateSignoutRequest).toHaveBeenCalledWith(
+        expect.objectContaining({ id_token_hint: 'id-token-1' }),
+      );
     });
 
     it('should clear refresh token cookie on logout', async () => {

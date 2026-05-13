@@ -10,6 +10,7 @@ import type {
 import {
   OIDC_CLIENT_TS_DESCOPE_CDN_URL,
   OIDC_CLIENT_TS_JSDELIVR_CDN_URL,
+  OIDC_LOGOUT_SIGNAL_PATH,
 } from '../../constants';
 import { getIdToken } from '../../enhancers/withPersistTokens/helpers';
 import {
@@ -263,6 +264,12 @@ const createOidc = (
     const res = await client.createSignoutRequest(arg);
     const { url } = res;
     removeLocalStorage(stateUserKey);
+    // Signal withPersistTokens to clear tokens before the browser navigates away.
+    // Mirrors how finishLogin calls afterRequest to persist tokens.
+    await sdk.httpClient.hooks?.afterRequest(
+      { path: OIDC_LOGOUT_SIGNAL_PATH } as RequestConfig,
+      undefined as unknown as Response,
+    );
     if (!disableNavigation) {
       window.location.replace(url);
     }
