@@ -196,9 +196,9 @@ export const initEditUserModalMixin = createSingletonMixin(
             this.actions.getSubTenantRoles(),
           ]);
           await this.#updateRolesMultiSelect();
-          this.#updateSubTenantSection();
           this.#idInput.disable();
           this.#updateModalData();
+          this.#updateSubTenantSection();
           this.#updateCustomFields();
         };
       }
