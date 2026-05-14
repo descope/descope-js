@@ -54,6 +54,40 @@ export const themeMixin = createSingletonMixin(
         return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
       }
 
+      get overrideCss(): Record<string, any> | null {
+        const raw = this.getAttribute('override-css');
+        if (!raw) return null;
+        try {
+          return JSON.parse(raw);
+        } catch {
+          this.logger.error('Failed to parse override-css attribute');
+          return null;
+        }
+      }
+
+      #flattenToVars(obj: Record<string, any>, prefix = ''): string {
+        return Object.entries(obj).reduce((css, [key, value]) => {
+          const path = prefix ? `${prefix}-${key}` : key;
+          if (typeof value === 'object' && value !== null) {
+            return css + this.#flattenToVars(value, path);
+          }
+          return `${css}--descope-${path}:${value};`;
+        }, '');
+      }
+
+      #getOverrideCssString(): string {
+        const override = this.overrideCss;
+        if (!override) return '';
+
+        return (['light', 'dark'] as const)
+          .map((theme) => {
+            const globals = override[theme]?.globals;
+            if (!globals) return '';
+            return `[data-theme="${theme}"]{${this.#flattenToVars(globals)}}`;
+          })
+          .join('');
+      }
+
       #_themeResource: Promise<void | Record<string, any>>;
 
       async #fetchTheme() {
@@ -122,14 +156,17 @@ export const themeMixin = createSingletonMixin(
 
       async #loadGlobalStyle() {
         const theme = await this.#themeResource;
-        if (!theme) return;
+        if (!theme && !this.overrideCss) return;
 
         if (!this.#globalStyle) {
           this.#globalStyle = this.injectStyle('');
         }
 
+        const t = theme as Record<string, any> | undefined;
         this.#globalStyle.replaceSync(
-          (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
+          (t?.light?.globals || '') +
+            (t?.dark?.globals || '') +
+            this.#getOverrideCssString(),
         );
       }
 
@@ -210,6 +247,8 @@ export const themeMixin = createSingletonMixin(
         ]);
 
         this.observeAttributes(['theme'], this.#onThemeChange);
+
+        this.observeAttributes(['override-css'], () => this.#loadGlobalStyle());
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
