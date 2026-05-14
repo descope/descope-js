@@ -5,7 +5,10 @@ import {
 import { getStorageItem, removeStorageItem, setStorageItem } from './storage';
 import { LastAuthState } from '../types';
 
-export function getLastAuth(loginId: string): LastAuthState {
+export function getLastAuth(
+  loginId: string,
+  logger?: { warn: (message: string, description: string) => void },
+): LastAuthState {
   const lastAuth: LastAuthState = {};
   try {
     Object.assign(
@@ -13,8 +16,7 @@ export function getLastAuth(loginId: string): LastAuthState {
       JSON.parse(getStorageItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)),
     );
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn('[Descope] Failed to read last auth from storage', e);
+    logger?.warn('[Descope] Failed to read last auth from storage', String(e));
   }
 
   if (!lastAuth.loginId && !loginId) {
@@ -52,7 +54,11 @@ export function getInFlightLastUsedPerScreen(): Record<string, string> {
 // Kept separate from dls_last_auth, so abandoned flows never pollute the authenticated
 // user record; written on every click so it survives mid-flow navigations
 // (OAuth redirects, magic links, etc.) without special per-mechanism handling.
-export function updateLastUsedPerScreen(screenId: string, elementId: string) {
+export function updateLastUsedPerScreen(
+  screenId: string,
+  elementId: string,
+  logger?: { warn: (message: string, description: string) => void },
+) {
   try {
     const stored = getInFlightLastUsedPerScreen();
     stored[screenId] = elementId;
@@ -61,17 +67,23 @@ export function updateLastUsedPerScreen(screenId: string, elementId: string) {
       JSON.stringify(stored),
     );
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn('[Descope] Failed to update in-flight last auth storage', e);
+    logger?.warn(
+      '[Descope] Failed to update in-flight last auth storage',
+      String(e),
+    );
   }
 }
 
 // Clear in-flight state. Called on flow completion and on new flow start.
-export function clearInFlightLastAuth() {
+export function clearInFlightLastAuth(logger?: {
+  warn: (message: string, description: string) => void;
+}) {
   try {
     removeStorageItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY);
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn('[Descope] Failed to clear in-flight last auth storage', e);
+    logger?.warn(
+      '[Descope] Failed to clear in-flight last auth storage',
+      String(e),
+    );
   }
 }

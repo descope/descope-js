@@ -702,7 +702,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
-      clearInFlightLastAuth();
+      clearInFlightLastAuth(this.loggerWrapper);
       const clientScripts = [
         ...(flowConfig.clientScripts || []),
         ...(flowConfig.sdkScripts || []),
@@ -722,7 +722,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.loggerWrapper),
           },
           flowConfig.conditions,
         ));
@@ -735,7 +735,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.loggerWrapper),
           },
         ));
       } else {
@@ -760,7 +760,7 @@ class DescopeWc extends BaseDescopeWc {
             ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.loggerWrapper),
             abTestingKey,
             locale: getUserLocale(locale).locale,
             nativeOptions,
@@ -1134,7 +1134,7 @@ class DescopeWc extends BaseDescopeWc {
       locale: getUserLocale(locale).locale,
     };
 
-    const lastAuth = getLastAuth(loginId);
+    const lastAuth = getLastAuth(loginId, this.loggerWrapper);
 
     // If there is a start screen id, next action should start the flow
     // But if any of the sso params are not empty, this optimization doesn't happen
@@ -1448,7 +1448,7 @@ class DescopeWc extends BaseDescopeWc {
           lastUsedPerScreen: getInFlightLastUsedPerScreen(),
         });
       }
-      clearInFlightLastAuth();
+      clearInFlightLastAuth(this.loggerWrapper);
       const payload: FlowJWTResponse = { ...authInfo };
       // add flow output onto the jwt response itself, as opposed to changed the response object,
       // to avoid breaking existing functionality
@@ -2066,13 +2066,14 @@ class DescopeWc extends BaseDescopeWc {
       screenId &&
       submitter.getAttribute(DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED) === 'true'
     ) {
-      updateLastUsedPerScreen(screenId, submitterId);
+      updateLastUsedPerScreen(screenId, submitterId, this.loggerWrapper);
     }
   }
 
   #applyLastAuthBadge(screenId: string) {
     const loginId = this.sdk.getLastUserLoginId();
-    const componentId = getLastAuth(loginId).lastUsedPerScreen?.[screenId];
+    const componentId = getLastAuth(loginId, this.loggerWrapper)
+      .lastUsedPerScreen?.[screenId];
     if (!componentId) return;
 
     const badgeEl = this.contentRootElement.querySelector(
