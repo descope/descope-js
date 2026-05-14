@@ -24,6 +24,9 @@ type NativeOptions = {
 
   /** An override for web OAuth that sets the address to redirect to after authentication succeeds at the OAuth provider website */
   oauthRedirect?: string;
+
+  /** An override for external authentication that sets the address to redirect to after authentication succeeds at the external auth provider */
+  externalAuthRedirect?: string;
 };
 
 type AuthMethod =
@@ -111,6 +114,7 @@ export type LoginOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 /** Access key login options to be added to the different authentication methods */
@@ -124,6 +128,7 @@ export type SignUpOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 export type Claims = Record<string, any>;
@@ -307,6 +312,12 @@ export type FlowResponse = {
     samlResponse: string;
     relayState: string;
   };
+  // WS-Fed IDP response (this will be used to build the html form response goes from the IDP through the end user browser to the RP)
+  wsFedIdpResponse?: {
+    url: string;
+    wresult: string;
+    wctx: string;
+  };
   // a URL to open in a new tab
   openInNewTabUrl?: string;
   // webauthn data - if action is one of 'webauthnCreate', 'webauthnGet'
@@ -348,6 +359,7 @@ export type Options = {
   oidcIdpStateId?: string;
   preview?: boolean;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
   thirdPartyAppId?: string;

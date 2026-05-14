@@ -10,6 +10,7 @@ type FlowConfig = {
   theme?: string;
   'style-id'?: string;
   form?: Record<string, string>;
+  client?: Record<string, string> | string;
 };
 
 const stringifyValue = (value: unknown) => {

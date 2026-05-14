@@ -2,6 +2,38 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.61.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.60.0...core-js-sdk-2.61.0) (2026-05-11)
+
+
+### Features
+
+* add tenantId to auth method options for tenant user isolation ([#1371](https://github.com/descope/descope-js/issues/1371)) ([a91c636](https://github.com/descope/descope-js/commit/a91c636caaf363c671d6d7486a57f8c441781b32))
+
+## [2.60.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.1...core-js-sdk-2.60.0) (2026-04-29)
+
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
+## [2.59.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.0...core-js-sdk-2.59.1) (2026-04-21)
+
+## [2.59.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.2...core-js-sdk-2.59.0) (2026-04-20)
+
+
+### Features
+
+* change flow api version to v2 ([#1323](https://github.com/descope/descope-js/issues/1323)) ([756096e](https://github.com/descope/descope-js/commit/756096ecff1678686a2ad77f02428fb1bcf49535))
+* **wc:** add WS-Fed IDP form POST support with correct field names RELEASE ([#1368](https://github.com/descope/descope-js/issues/1368)) ([970ac83](https://github.com/descope/descope-js/commit/970ac8385dd8794d434a42b43b69c571d61758c4)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#536](https://github.com/descope/descope/issues/536)
+
+## [2.58.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.1...core-js-sdk-2.58.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* **types:** add permissions array to usertenants type ([#1357](https://github.com/descope/descope-js/issues/1357)) ([18f06bc](https://github.com/descope/descope-js/commit/18f06bc08b923a3b0c8b777110466b0ddfcc9fe7))
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
 ## [2.58.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.0...core-js-sdk-2.58.1) (2026-04-13)
 
 
