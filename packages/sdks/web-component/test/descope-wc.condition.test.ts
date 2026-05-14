@@ -31,6 +31,7 @@ import {
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
+  WSFED_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
@@ -676,6 +677,45 @@ describe('web-component', () => {
               ...defaultOptionsValues,
               samlIdpStateId: 'abcdefgh',
               samlIdpUsername: 'dummyUser',
+            },
+            undefined,
+            '',
+            '1.2.3',
+            {
+              'sign-in': 0,
+            },
+            {},
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      await waitFor(() => expect(window.location.search).toBe(''));
+    });
+
+    it('should call start with wsfed idp flag and clear it from url', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      fixtures.pageContent = '<span>It works!</span>';
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          'sign-in': { version: 0 },
+        },
+      };
+      const wsfedIdpStateId = 'abcdefgh';
+      const encodedWsfedIdpStateId = encodeURIComponent(wsfedIdpStateId);
+      window.location.search = `?${WSFED_IDP_STATE_ID_PARAM_NAME}=${encodedWsfedIdpStateId}`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'sign-in',
+            {
+              ...defaultOptionsValues,
+              wsfedIdpStateId: 'abcdefgh',
             },
             undefined,
             '',

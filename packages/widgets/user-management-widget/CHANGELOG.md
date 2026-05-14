@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.25](https://github.com/descope/descope-js/compare/user-management-widget-0.11.24...user-management-widget-0.11.25) (2026-05-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.4`
+* `web-component` updated to version `3.62.0`
+* `sdk-mixins` updated to version `0.16.2`
+* `sdk-component-drivers` updated to version `0.10.0`
+## [0.11.24](https://github.com/descope/descope-js/compare/user-management-widget-0.11.23...user-management-widget-0.11.24) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+* `web-component` updated to version `3.61.0`
+## [0.11.23](https://github.com/descope/descope-js/compare/user-management-widget-0.11.22...user-management-widget-0.11.23) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+* `web-component` updated to version `3.60.0`
+## [0.11.22](https://github.com/descope/descope-js/compare/user-management-widget-0.11.21...user-management-widget-0.11.22) (2026-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.1`
+* `web-component` updated to version `3.59.2`
+## [0.11.21](https://github.com/descope/descope-js/compare/user-management-widget-0.11.20...user-management-widget-0.11.21) (2026-04-20)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.59.1`
+## [0.11.20](https://github.com/descope/descope-js/compare/user-management-widget-0.11.19...user-management-widget-0.11.20) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.0`
+* `web-component` updated to version `3.59.0`
+## [0.11.19](https://github.com/descope/descope-js/compare/user-management-widget-0.11.18...user-management-widget-0.11.19) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+* `web-component` updated to version `3.58.4`
 ## [0.11.18](https://github.com/descope/descope-js/compare/user-management-widget-0.11.17...user-management-widget-0.11.18) (2026-04-13)
 
 ### Dependency Updates

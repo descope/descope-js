@@ -208,6 +208,80 @@ test.describe('widget', () => {
     }
   });
 
+  test.describe('generic flow button', () => {
+    const FLOW_ID = 'my-test-flow';
+    const genericFlowButtonRoot = `<descope-button data-generic-flow-button-id="test-btn" flow-id="${FLOW_ID}">Run Flow</descope-button>`;
+
+    test.beforeEach(async ({ page }) => {
+      await page.route('**/root.html', async (route) =>
+        route.fulfill({ body: genericFlowButtonRoot }),
+      );
+      await page.goto(`http://localhost:${widgetPort}`);
+      await page.waitForTimeout(STATE_TIMEOUT);
+    });
+
+    test('discovers [data-generic-flow-button-id] and enables it on init', async ({
+      page,
+    }) => {
+      const button = page.locator('[data-generic-flow-button-id]').first();
+      await expect(button).toBeVisible();
+      await expect(button).not.toHaveAttribute('disabled');
+    });
+
+    test('sets correct flow-id and client.userId on descope-wc when button is clicked', async ({
+      page,
+    }) => {
+      await page.locator('[data-generic-flow-button-id]').first().click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      const descopeWc = page
+        .locator('descope-modal[data-id="generic-flow-modal"]')
+        .locator('descope-wc');
+      await expect(descopeWc).toBeAttached();
+      await expect(descopeWc).toHaveAttribute('flow-id', FLOW_ID);
+      await expect(descopeWc).toHaveAttribute('project-id', /.+/);
+
+      const clientAttr = await descopeWc.getAttribute('client');
+      const client = JSON.parse(clientAttr ?? '{}');
+      expect(client.userId).toBe(mockUser.userId);
+    });
+
+    test('opens the modal when descope-wc fires page-updated', async ({
+      page,
+    }) => {
+      await page.locator('[data-generic-flow-button-id]').first().click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await page
+        .locator('descope-modal[data-id="generic-flow-modal"]')
+        .locator('descope-wc')
+        .dispatchEvent('page-updated');
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await expect(
+        page.locator('descope-modal[data-id="generic-flow-modal"]'),
+      ).toHaveAttribute('opened');
+    });
+
+    test('calls getMe action when descope-wc fires success', async ({
+      page,
+    }) => {
+      await page.locator('[data-generic-flow-button-id]').first().click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      const getMeRequest = page.waitForRequest(
+        (req) => req.url().includes('/auth/me') && req.method() === 'GET',
+      );
+
+      await page
+        .locator('descope-modal[data-id="generic-flow-modal"]')
+        .locator('descope-wc')
+        .dispatchEvent('success');
+
+      await getMeRequest;
+    });
+  });
+
   test.describe('badge visibility', () => {
     test('should show "Unverified" badge when email exists and is not verified', async ({
       page,

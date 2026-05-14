@@ -2,6 +2,17 @@ import { OidcClient } from 'oidc-client-ts';
 import createOidc from '../src/sdk/oidc';
 import { CoreSdk } from '../src/types';
 
+Object.defineProperty(global, 'Response', {
+  value: class {
+    body: string;
+    constructor(body: string) {
+      this.body = body;
+    }
+  },
+  configurable: true,
+  writable: true,
+});
+
 jest.mock('oidc-client-ts', () => {
   return {
     OidcClient: jest.fn().mockImplementation(() => ({
@@ -20,6 +31,10 @@ describe('OIDC', () => {
     sdk = {
       httpClient: {
         buildUrl: jest.fn().mockReturnValue('http://example.com'),
+        hooks: {
+          afterRequest: jest.fn(),
+          beforeRequest: jest.fn(),
+        },
       },
       refresh: jest.fn(),
     } as unknown as CoreSdk;
@@ -80,6 +95,37 @@ describe('OIDC', () => {
       expect(mockCreateSigninRequest).toHaveBeenCalledWith({
         login_hint: 'test@example.com',
       });
+    });
+
+    it('should call afterRequest hook before navigation', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.loginWithRedirect();
+
+      expect(sdk.httpClient.hooks.afterRequest).toHaveBeenCalledWith(
+        {},
+        expect.any(Response),
+      );
+    });
+
+    it('should not call afterRequest hook when navigation is disabled', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.loginWithRedirect({}, true);
+
+      expect(sdk.httpClient.hooks.afterRequest).not.toHaveBeenCalled();
     });
 
     it('should handle errors during authorization', async () => {

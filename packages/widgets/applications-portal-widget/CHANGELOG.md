@@ -2,6 +2,43 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.5](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.4...applications-portal-widget-0.6.5) (2026-05-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.4`
+* `sdk-mixins` updated to version `0.16.2`
+* `sdk-component-drivers` updated to version `0.10.0`
+## [0.6.4](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.3...applications-portal-widget-0.6.4) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+## [0.6.3](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.2...applications-portal-widget-0.6.3) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+## [0.6.2](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.1...applications-portal-widget-0.6.2) (2026-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.1`
+## [0.6.1](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.0...applications-portal-widget-0.6.1) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.0`
+## [0.6.0](https://github.com/descope/descope-js/compare/applications-portal-widget-0.5.22...applications-portal-widget-0.6.0) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+
+### Features
+
+* add WS-Fed apps to applications portal widget ([#1366](https://github.com/descope/descope-js/issues/1366)) ([22d8813](https://github.com/descope/descope-js/commit/22d8813655dbeaf213d1bb6bf018162481b92ebb))
+
 ## [0.5.22](https://github.com/descope/descope-js/compare/applications-portal-widget-0.5.21...applications-portal-widget-0.5.22) (2026-04-13)
 
 ### Dependency Updates
