@@ -5,7 +5,10 @@ import withFlow from './flow';
 import {
   getSessionToken,
   getRefreshToken,
+  hasLoggedInCookie,
 } from '../enhancers/withPersistTokens/helpers';
+import { REFRESH_OPTIMIZATION_KEY } from '../enhancers/withPersistTokens/constants';
+import { getLocalStorage } from '../enhancers/helpers';
 import createOidc from './oidc';
 import { CoreSdk, WebSdkConfig } from '../types';
 import {
@@ -37,6 +40,18 @@ const createSdk = (config: WebSdkConfig) => {
               'Refresh is not supported in native flows via the web SDK',
           },
         });
+      }
+
+      // Skip the network call entirely when the user has never logged in (no DSL cookie).
+      // This avoids a round-trip on every page load for unauthenticated visitors.
+      // Currently opt-in: set localStorage key 'DSLO' to 'true' to enable.
+      // Will be enabled by default once all projects are ensured to have this cookie set, taking into account their refresh token expiration.
+      if (
+        tryRefresh &&
+        getLocalStorage(REFRESH_OPTIMIZATION_KEY) === 'true' &&
+        !hasLoggedInCookie()
+      ) {
+        return Promise.resolve({ ok: true });
       }
 
       if (config.oidcConfig) {

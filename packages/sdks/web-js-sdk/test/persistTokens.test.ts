@@ -3,6 +3,7 @@ import {
   getIdToken,
   getSessionToken,
   getRefreshToken,
+  hasLoggedInCookie,
 } from '../src/enhancers/withPersistTokens/helpers';
 import createSdk from '../src/index';
 import { authInfo, oidcAuthInfo } from './mocks';
@@ -1212,6 +1213,29 @@ describe('persistTokens', () => {
       localStorage.setItem('DSI', 'id-token-1');
 
       expect(getIdToken()).toEqual('id-token-1');
+    });
+  });
+
+  describe('hasLoggedInCookie', () => {
+    it('should return true when DSL cookie is present', () => {
+      const getMock = Cookies.get as jest.Mock;
+      getMock.mockReturnValue('1');
+      expect(hasLoggedInCookie()).toBe(true);
+      expect(getMock).toHaveBeenCalledWith('DSL');
+    });
+
+    it('should return false when DSL cookie is absent', () => {
+      const getMock = Cookies.get as jest.Mock;
+      getMock.mockReturnValue(undefined);
+      expect(hasLoggedInCookie()).toBe(false);
+      expect(getMock).toHaveBeenCalledWith('DSL');
+    });
+
+    it('should return false when DSL cookie is an empty string', () => {
+      const getMock = Cookies.get as jest.Mock;
+      getMock.mockReturnValue('');
+      expect(hasLoggedInCookie()).toBe(false);
+      expect(getMock).toHaveBeenCalledWith('DSL');
     });
   });
 

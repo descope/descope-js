@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { BeforeRequestHook, WebJWTResponse } from '../../types';
 import {
   ID_TOKEN_KEY,
+  LOGGED_IN_COOKIE_KEY,
   REFRESH_COOKIE_NAME_KEY,
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
@@ -228,6 +229,11 @@ export function getTrustedDeviceToken(prefix: string = ''): string {
 /** Return the server-returned refresh cookie name from localStorage, if available */
 export function getStoredRefreshCookieName(prefix: string = ''): string | null {
   return getLocalStorage(`${prefix}${REFRESH_COOKIE_NAME_KEY}`);
+}
+
+/** Returns true if the backend-set DSL login cookie is present, indicating the user has an active session */
+export function hasLoggedInCookie(): boolean {
+  return !!Cookies.get(LOGGED_IN_COOKIE_KEY);
 }
 
 /** Remove auth tokens from localStorage (refresh JWT, session JWT, ID token, server-returned refresh cookie name)

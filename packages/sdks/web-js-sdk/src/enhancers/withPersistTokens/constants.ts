@@ -8,3 +8,7 @@ export const ID_TOKEN_KEY = 'DSI';
 export const TRUSTED_DEVICE_TOKEN_KEY = 'DTD';
 /* Key for persisting the server-returned refresh cookie name */
 export const REFRESH_COOKIE_NAME_KEY = 'DSRCN';
+/* Non-HttpOnly cookie set by backend on login — used to skip the tryRefresh network call when absent */
+export const LOGGED_IN_COOKIE_KEY = 'DSL';
+/* localStorage key that must be set to 'true' to enable the DSL-cookie-based tryRefresh optimization */
+export const REFRESH_OPTIMIZATION_KEY = 'DSLO';
