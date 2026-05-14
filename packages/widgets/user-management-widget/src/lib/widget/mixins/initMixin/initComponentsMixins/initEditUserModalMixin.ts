@@ -79,12 +79,17 @@ export const initEditUserModalMixin = createSingletonMixin(
             const { loginId, ...formData } = this.getFormData(
               this.editUserModal.ele,
             );
-            const userTenants = this.#subTenantMappings.mergedValue;
+            const subTenantSectionVisible =
+              this.#subTenantSection &&
+              !this.#subTenantSection.hasAttribute('hidden');
+            const userTenants = subTenantSectionVisible
+              ? this.#subTenantMappings.mergedValue
+              : undefined;
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
               ...unflatten(formData, 'customAttributes'),
-              userTenants,
+              ...(userTenants !== undefined && { userTenants }),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);

@@ -1139,11 +1139,13 @@ test.describe('widget', () => {
     await page.getByTestId('edit-user-trigger').first().click();
     await page.waitForTimeout(MODAL_TIMEOUT);
 
+    const responsePromise = page.waitForResponse(apiPath('user', 'update'));
     await page
       .locator('descope-button')
       .getByTestId('edit-user-modal-submit')
       .first()
       .click();
+    await responsePromise;
 
     expect(capturedRequestBody.userTenants).toBeDefined();
     expect(capturedRequestBody.userTenants[0].tenantId).toBe('sub-tenant-1');

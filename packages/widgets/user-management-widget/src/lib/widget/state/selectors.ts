@@ -54,10 +54,11 @@ const getRolesDisplay = (user: {
   const allRoleSets = [
     user.roleNames || [],
     ...(user.userTenants || []).map((t) => t.roleNames || []),
-  ];
+  ].filter((roles) => roles.length > 0);
+  if (allRoleSets.length === 0) return user.roleNames || [];
   const sorted = allRoleSets.map((roles) => [...roles].sort().join('\0'));
   const allSame = sorted.every((s) => s === sorted[0]);
-  return allSame ? user.roleNames || [] : MULTIPLE_ROLES_LABEL;
+  return allSame ? allRoleSets[0] : MULTIPLE_ROLES_LABEL;
 };
 
 export const getUsersList = createSelector(getFormattedUserList, (users) =>
@@ -98,7 +99,7 @@ export const getSelectedUsersRolesList = createSelector(
   (users) =>
     users.map((user) => ({
       userId: user.userId,
-      roles: user.roles,
+      roles: user.roleNames,
     })),
 );
 
