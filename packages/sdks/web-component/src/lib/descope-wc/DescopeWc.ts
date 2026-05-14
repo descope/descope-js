@@ -1459,6 +1459,26 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    // setLastAuth writes to dls_last_auth from two places:
+    //
+    //   - Completion (above): saves once the user finishes logging in.
+    //
+    //   - Here (every non-completed response): a mid-flow snapshot so
+    //     a future visit can pre-fill {authMethod, loginId} even if
+    //     the user abandons this flow.
+    //
+    // Use case:
+    //   user submits email@example.com → server responds with
+    //   {loginId: 'email@example.com', authMethod: 'magicLink'} →
+    //   user closes the tab. On the next visit the form pre-fills
+    //   the email and shows magicLink, even though the flow never
+    //   completed.
+    //
+    // The helper decides whether to write. requireLoginId=true tells
+    // it to skip when loginId isn't set yet — without that guard, an
+    // early-screen response could overwrite a prior user's saved
+    // record with an auth-method-only entry that can't pre-fill
+    // anything.
     if (this.storeLastAuthenticatedUser) {
       setLastAuth(lastAuth, true);
     }
@@ -2055,6 +2075,11 @@ class DescopeWc extends BaseDescopeWc {
       });
   }
 
+  // Per-click, per-screen tracker for the last-auth badge. Writes to a
+  // separate in-flight key (not dls_last_auth) so abandoned flows can't
+  // pollute the saved auth method, and so the data survives mid-flow
+  // navigations (OAuth, magic link) without per-mechanism hooks. Merged
+  // into dls_last_auth only on flow completion.
   // eslint-disable-next-line class-methods-use-this
   #trackLastUsed(
     submitter: HTMLElement,
