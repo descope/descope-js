@@ -50,9 +50,14 @@ export const initCreateUserModalMixin = createSingletonMixin(
             this.createUserModal.ele?.querySelector('[data-id="modal-cancel"]'),
           { logger: this.logger },
         );
+        const resetModal = () => {
+          this.resetFormData(this.createUserModal.ele);
+          this.#subTenantMappings.value = [];
+        };
+
         cancelButton.onClick(() => {
           this.createUserModal.close();
-          this.resetFormData(this.createUserModal.ele);
+          resetModal();
         });
 
         const submitButton = new ButtonDriver(
@@ -72,7 +77,7 @@ export const initCreateUserModalMixin = createSingletonMixin(
               verifiedPhone: true,
             });
             this.createUserModal.close();
-            this.resetFormData(this.createUserModal.ele);
+            resetModal();
           }
         });
 

@@ -23,15 +23,14 @@ export class MultiLineMappingsDriver extends BaseDriver {
 
   get mergedValue(): Mapping[] {
     return Object.entries(
-      this.value.reduce<Record<string, string[]>>(
-        (acc, { tenantId, roleNames }) => {
+      this.value
+        .filter(({ tenantId }) => !!tenantId)
+        .reduce<Record<string, string[]>>((acc, { tenantId, roleNames }) => {
           acc[tenantId] = [
             ...new Set([...(acc[tenantId] || []), ...roleNames]),
           ];
           return acc;
-        },
-        {},
-      ),
+        }, {}),
     ).map(([tenantId, roleNames]) => ({ tenantId, roleNames }));
   }
 }
