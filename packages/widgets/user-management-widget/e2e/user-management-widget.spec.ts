@@ -740,15 +740,17 @@ test.describe('widget', () => {
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
-    // Trigger search with Enter key to ensure it fires
-    await searchInput.press('Enter');
-
-    // Wait for the specific search response triggered by our input
-    await page.waitForResponse(
+    // Register before the action so the response isn't missed
+    const searchResponsePromise = page.waitForResponse(
       (response) =>
         response.url().includes(apiPaths.user.search) &&
         response.request().postDataJSON()?.text === 'mockSearchString',
     );
+
+    // Trigger search with Enter key to ensure it fires
+    await searchInput.press('Enter');
+
+    await searchResponsePromise;
 
     // only search results shown in grid
     await expect(
