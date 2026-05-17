@@ -165,6 +165,7 @@ export type DescopeProps = {
   ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
   externalRequestId?: string;
+  customization?: Record<string, any>;
 };
 
 export type UserManagementProps = WidgetProps;

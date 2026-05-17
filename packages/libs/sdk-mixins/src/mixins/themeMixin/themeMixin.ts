@@ -54,13 +54,16 @@ export const themeMixin = createSingletonMixin(
         return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
       }
 
-      get overrideCss(): Record<string, any> | null {
-        const raw = this.getAttribute('override-css');
+      get customization(): Record<string, any> | null {
+        const raw = this.getAttribute('customization');
         if (!raw) return null;
         try {
           return JSON.parse(raw);
-        } catch {
-          this.logger.error('Failed to parse override-css attribute');
+        } catch (e) {
+          this.logger.error(
+            'Failed to parse customization attribute. error: ',
+            e,
+          );
           return null;
         }
       }
@@ -88,7 +91,9 @@ export const themeMixin = createSingletonMixin(
       #flattenToVars(obj: Record<string, any>, prefix = ''): string {
         return Object.entries(obj).reduce((css, [key, value]) => {
           if (!this.#isSafeCssVarSegment(key)) {
-            this.logger.error('Ignoring invalid override-css token path segment');
+            this.logger.error(
+              'Ignoring invalid override-css token path segment',
+            );
             return css;
           }
 
@@ -103,20 +108,22 @@ export const themeMixin = createSingletonMixin(
             this.logger.error('Ignoring invalid override-css token value');
             return css;
           }
-
           return `${css}--descope-${path}:${serializedValue};`;
         }, '');
       }
 
-      #getOverrideCssString(): string {
-        const override = this.overrideCss;
+      #getCustomizationString(): string {
+        const override = this.customization;
         if (!override) return '';
 
         return (['light', 'dark'] as const)
           .map((theme) => {
-            const globals = override[theme]?.globals;
-            if (!globals) return '';
-            return `[data-theme="${theme}"]{${this.#flattenToVars(globals)}}`;
+            const primary = override[theme]?.globals?.colors?.primary;
+            if (!primary) return '';
+
+            return `[data-theme="${theme}"]{${this.#flattenToVars({
+              colors: { primary },
+            })}}`;
           })
           .join('');
       }
@@ -189,8 +196,10 @@ export const themeMixin = createSingletonMixin(
 
       async #loadGlobalStyle() {
         const theme = await this.#themeResource;
-        if (!theme && !this.overrideCss) return;
-
+        if (!theme && !this.customization) {
+          this.#globalStyle?.replaceSync('');
+          return;
+        }
         if (!this.#globalStyle) {
           this.#globalStyle = this.injectStyle('');
         }
@@ -199,7 +208,7 @@ export const themeMixin = createSingletonMixin(
         this.#globalStyle.replaceSync(
           (t?.light?.globals || '') +
             (t?.dark?.globals || '') +
-            this.#getOverrideCssString(),
+            this.#getCustomizationString(),
         );
       }
 
@@ -281,7 +290,9 @@ export const themeMixin = createSingletonMixin(
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
-        this.observeAttributes(['override-css'], () => this.#loadGlobalStyle());
+        this.observeAttributes(['customization'], () =>
+          this.#loadGlobalStyle(),
+        );
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
