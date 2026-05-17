@@ -39,10 +39,13 @@ export enum Direction {
   forward = 'forward',
 }
 
-export interface LastAuthState {
+export type LastAuthState = NonNullable<
+  NextFnReturnPromiseValue['data']['lastAuth']
+> & {
   loginId?: string;
   name?: string;
-}
+  lastUsedPerScreen?: Record<string, string>;
+};
 
 export interface ScreenState {
   errorText?: string;

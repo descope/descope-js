@@ -1,34 +1,89 @@
-import { DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY } from '../constants';
-import { getStorageItem, setStorageItem } from './storage';
-import { NextFnReturnPromiseValue } from '../types';
+import {
+  DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY,
+  DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY,
+} from '../constants';
+import { getStorageItem, removeStorageItem, setStorageItem } from './storage';
+import { LastAuthState } from '../types';
 
-export function getLastAuth(loginId: string) {
-  const lastAuth = {};
+export function getLastAuth(
+  loginId: string,
+  logger?: { warn: (message: string, description: string) => void },
+): LastAuthState {
+  const lastAuth: LastAuthState = {};
   try {
     Object.assign(
       lastAuth,
       JSON.parse(getStorageItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY)),
     );
   } catch (e) {
-    /* empty */
+    logger?.warn('[Descope] Failed to read last auth from storage', String(e));
   }
 
-  if (!(lastAuth as any)?.loginId && !loginId) {
+  if (!lastAuth.loginId && !loginId) {
     return {};
   }
   return lastAuth;
 }
 
-// save last auth to local storage
-export function setLastAuth(
-  lastAuth: NextFnReturnPromiseValue['data']['lastAuth'],
-  forceLoginId?: boolean,
-) {
+// Save last auth to local storage.
+// requireLoginId: skip the save if no loginId is present — used mid-flow where
+// a loginId-less state has nothing useful to pre-fill on the next screen.
+// On flow completion pass false (or omit) so the auth method is always recorded.
+export function setLastAuth(lastAuth: LastAuthState, requireLoginId?: boolean) {
   if (!lastAuth?.authMethod) {
     return;
   }
-  if (forceLoginId && !(lastAuth as any)?.loginId) {
+  if (requireLoginId && !lastAuth.loginId) {
     return;
   }
   setStorageItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY, JSON.stringify(lastAuth));
+}
+
+// Read the in-flight lastUsedPerScreen to be merged into dls_last_auth on completion.
+export function getInFlightLastUsedPerScreen(): Record<string, string> {
+  try {
+    return JSON.parse(
+      getStorageItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY) || '{}',
+    );
+  } catch (e) {
+    return {};
+  }
+}
+
+// Records the last-clicked opt-in element per screen for the current in-progress flow.
+// Kept separate from dls_last_auth, so abandoned flows never pollute the authenticated
+// user record; written on every click so it survives mid-flow navigations
+// (OAuth redirects, magic links, etc.) without special per-mechanism handling.
+export function updateLastUsedPerScreen(
+  screenId: string,
+  elementId: string,
+  logger?: { warn: (message: string, description: string) => void },
+) {
+  try {
+    const stored = getInFlightLastUsedPerScreen();
+    stored[screenId] = elementId;
+    setStorageItem(
+      DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY,
+      JSON.stringify(stored),
+    );
+  } catch (e) {
+    logger?.warn(
+      '[Descope] Failed to update in-flight last auth storage',
+      String(e),
+    );
+  }
+}
+
+// Clear in-flight state. Called on flow completion and on new flow start.
+export function clearInFlightLastAuth(logger?: {
+  warn: (message: string, description: string) => void;
+}) {
+  try {
+    removeStorageItem(DESCOPE_LAST_AUTH_IN_FLIGHT_LOCAL_STORAGE_KEY);
+  } catch (e) {
+    logger?.warn(
+      '[Descope] Failed to clear in-flight last auth storage',
+      String(e),
+    );
+  }
 }
