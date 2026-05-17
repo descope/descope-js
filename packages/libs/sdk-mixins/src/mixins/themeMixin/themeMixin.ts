@@ -65,13 +65,46 @@ export const themeMixin = createSingletonMixin(
         }
       }
 
+      #isSafeCssVarSegment(segment: string): boolean {
+        return /^[a-zA-Z0-9-]+$/.test(segment);
+      }
+
+      #serializeOverrideCssValue(value: unknown): string | null {
+        if (typeof value === 'number') {
+          return Number.isFinite(value) ? String(value) : null;
+        }
+
+        if (typeof value !== 'string') {
+          return null;
+        }
+
+        if (/[;{}]/.test(value)) {
+          return null;
+        }
+
+        return value.trim();
+      }
+
       #flattenToVars(obj: Record<string, any>, prefix = ''): string {
         return Object.entries(obj).reduce((css, [key, value]) => {
+          if (!this.#isSafeCssVarSegment(key)) {
+            this.logger.error('Ignoring invalid override-css token path segment');
+            return css;
+          }
+
           const path = prefix ? `${prefix}-${key}` : key;
+
           if (typeof value === 'object' && value !== null) {
             return css + this.#flattenToVars(value, path);
           }
-          return `${css}--descope-${path}:${value};`;
+
+          const serializedValue = this.#serializeOverrideCssValue(value);
+          if (serializedValue === null) {
+            this.logger.error('Ignoring invalid override-css token value');
+            return css;
+          }
+
+          return `${css}--descope-${path}:${serializedValue};`;
         }, '');
       }
 
