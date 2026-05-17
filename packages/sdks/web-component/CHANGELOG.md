@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.62.0](https://github.com/descope/descope-js/compare/web-component-3.61.0...web-component-3.62.0) (2026-05-14)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.2`
+* `web-js-sdk` updated to version `1.48.4`
+
+### Features
+
+* **web-component:** Track last auth per screen and populate last-aut-badge RELEASE ([#1342](https://github.com/descope/descope-js/issues/1342)) ([00f96e2](https://github.com/descope/descope-js/commit/00f96e2d3e0e980e679bab0a1534d47ddd861f09))
+
 ## [3.61.0](https://github.com/descope/descope-js/compare/web-component-3.60.0...web-component-3.61.0) (2026-05-11)
 
 ### Dependency Updates
