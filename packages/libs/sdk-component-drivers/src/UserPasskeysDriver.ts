@@ -1,9 +1,30 @@
 import { BaseDriver } from './BaseDriver';
 
+type PasskeyType =
+  | 'apple'
+  | 'google'
+  | 'windows'
+  | 'chrome'
+  | 'edge'
+  | 'samsung'
+  | '1password'
+  | 'bitwarden'
+  | 'lastpass'
+  | 'dashlane'
+  | 'keeper'
+  | 'keepassxc'
+  | 'proton'
+  | 'nordpass'
+  | 'enpass'
+  | 'key'
+  | 'phone'
+  | 'other';
+
 type Data = {
   id: string;
-  // name: string;
-  // createdAt: number;
+  name: string;
+  passkeyType: PasskeyType;
+  createdAt: number;
 }[];
 
 type Detail = { id: string; action: string };
@@ -24,10 +45,6 @@ export class UserPasskeysDriver extends BaseDriver {
   set data(data: Data) {
     if (this.ele) this.ele.data = data;
   }
-
-  // get flowId() {
-  //   return this.ele?.getAttribute('flow-id');
-  // }
 
   get addPasskeyFlowId() {
     return this.ele?.getAttribute('add-passkey-flow-id');

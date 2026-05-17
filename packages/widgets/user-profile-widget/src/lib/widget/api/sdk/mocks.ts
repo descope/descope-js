@@ -86,21 +86,24 @@ const passkeys = () => ({
   passkeys: [
     {
       id: 'vendor-id-1',
-      name: 'Device 1',
-      passkeyType: 'google',
-      createdAt: 1735977600000,
+      displayName: 'Device 1',
+      kind: 'google',
+      createdTime: 1735977600,
+      rpId: 'example.com',
     },
     {
       id: 'vendor-id-2',
-      name: 'Device 2',
-      passkeyType: 'edge',
-      createdAt: 1738750500000,
+      displayName: 'Device 2',
+      kind: 'edge',
+      createdTime: 1738750500,
+      rpId: 'example.com',
     },
     {
       id: 'vendor-id-3',
-      name: 'Device 3',
-      passkeyType: 'apple',
-      createdAt: 1741264200000,
+      displayName: 'Device 3',
+      kind: 'apple',
+      createdTime: 1741264200,
+      rpId: 'example.com',
     },
   ],
 });

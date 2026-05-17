@@ -103,14 +103,14 @@ export const descopeUiMixin = createSingletonMixin(
 
         try {
           const componentsVersion = await this.#getComponentsVersion();
-          const componentsVersionSri = await this.#getComponentsVersionSri();
+          // const componentsVersionSri = await this.#getComponentsVersionSri();
 
           await this.injectNpmLib(
             WEB_COMPONENTS_UI_LIB_NAME,
             componentsVersion,
             JS_FILE_PATH,
             [LOCAL_STORAGE_OVERRIDE],
-            componentsVersionSri,
+            // componentsVersionSri,
           );
           this.logger.debug('DescopeUI was loaded');
           return globalThis.DescopeUI;
