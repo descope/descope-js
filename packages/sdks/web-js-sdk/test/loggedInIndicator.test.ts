@@ -1,4 +1,5 @@
 import { LOGGED_IN_INDICATOR_KEY } from '../src/enhancers/withLoggedInIndicator/constants';
+import { hasLoginIndicator } from '../src/enhancers/withLoggedInIndicator/helpers';
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
@@ -178,5 +179,32 @@ describe('withLoggedInIndicator', () => {
     expect(localStorage.getItem(LOGGED_IN_INDICATOR_KEY)).toEqual(
       String(authInfo.sessionExpiration),
     );
+  });
+
+  describe('hasLoginIndicator', () => {
+    beforeEach(() => {
+      localStorage.removeItem('DSLI');
+      localStorage.removeItem('dls_last_user_login_id');
+    });
+
+    it('returns true when DSLI is set', () => {
+      localStorage.setItem('DSLI', '1');
+      expect(hasLoginIndicator()).toBe(true);
+    });
+
+    it('returns true when only the lastUser bootstrap key is set', () => {
+      localStorage.setItem('dls_last_user_login_id', 'someone@example.com');
+      expect(hasLoginIndicator()).toBe(true);
+    });
+
+    it('returns true when both DSLI and lastUser are set', () => {
+      localStorage.setItem('DSLI', '1');
+      localStorage.setItem('dls_last_user_login_id', 'someone@example.com');
+      expect(hasLoginIndicator()).toBe(true);
+    });
+
+    it('returns false when neither key is set', () => {
+      expect(hasLoginIndicator()).toBe(false);
+    });
   });
 });

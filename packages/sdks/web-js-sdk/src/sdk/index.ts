@@ -5,8 +5,8 @@ import withFlow from './flow';
 import {
   getSessionToken,
   getRefreshToken,
-  hasLoginIndicator,
 } from '../enhancers/withPersistTokens/helpers';
+import { hasLoginIndicator } from '../enhancers/withLoggedInIndicator/helpers';
 import { LOGGED_IN_INDICATOR_DISABLED_KEY } from '../enhancers/withLoggedInIndicator/constants';
 import { getLocalStorage } from '../enhancers/helpers';
 import createOidc from './oidc';

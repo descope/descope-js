@@ -8,8 +8,6 @@ import {
   SESSION_TOKEN_KEY,
   TRUSTED_DEVICE_TOKEN_KEY,
 } from './constants';
-import { LOGGED_IN_INDICATOR_KEY } from '../withLoggedInIndicator/constants';
-import { LOCAL_STORAGE_LAST_USER_LOGIN_ID } from '../withLastLoggedInUser/constants';
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -230,28 +228,6 @@ export function getTrustedDeviceToken(prefix: string = ''): string {
 /** Return the server-returned refresh cookie name from localStorage, if available */
 export function getStoredRefreshCookieName(prefix: string = ''): string | null {
   return getLocalStorage(`${prefix}${REFRESH_COOKIE_NAME_KEY}`);
-}
-
-/**
- * Returns true if the browser shows any sign of an authenticated session.
- *
- * Primary signal: the DSLI key, written by `withLoggedInIndicator` after every
- * successful auth response and cleared on logout / invalid-session.
- *
- * Bootstrap fallback: the lastUser key (`dls_last_user_login_id`) written by
- * `withLastLoggedInUser`. This exists so users authenticated under a previous
- * SDK version (before DSLI existed) aren't wrongly treated as anonymous on the
- * first page load after upgrade. Once any successful auth has written DSLI,
- * the fallback is no longer load-bearing and can be dropped in a future cleanup.
- *
- * Both keys are intentionally unprefixed — `storagePrefix` is consumed by
- * `withPersistTokens` and not propagated to other enhancers.
- */
-export function hasLoginIndicator(): boolean {
-  return (
-    !!getLocalStorage(LOGGED_IN_INDICATOR_KEY) ||
-    !!getLocalStorage(LOCAL_STORAGE_LAST_USER_LOGIN_ID)
-  );
 }
 
 /** Remove auth tokens from localStorage (refresh JWT, session JWT, ID token, server-returned refresh cookie name)
