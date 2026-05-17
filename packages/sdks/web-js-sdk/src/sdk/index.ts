@@ -42,19 +42,6 @@ const createSdk = (config: WebSdkConfig) => {
         });
       }
 
-      // Skip the up-front /try-refresh round-trip when localStorage has no sign
-      // of a prior authenticated session. `withLoggedInIndicator` writes DSLI
-      // on every successful auth and clears it on logout / invalid session.
-      // DSLI_DISABLED overrides the skip — escape hatch for apps that hit the
-      // storeLastAuthenticatedUser=false edge case after upgrading.
-      if (
-        tryRefresh &&
-        !hasLoginIndicator() &&
-        !getLocalStorage(LOGGED_IN_INDICATOR_DISABLED_KEY)
-      ) {
-        return Promise.resolve({ ok: true });
-      }
-
       if (config.oidcConfig) {
         try {
           await oidc.refreshToken(token);
@@ -68,6 +55,22 @@ const createSdk = (config: WebSdkConfig) => {
             },
           });
         }
+      }
+
+      // Skip the up-front /try-refresh round-trip when localStorage has no sign
+      // of a prior authenticated session. `withLoggedInIndicator` writes DSLI
+      // on every successful auth and clears it on logout / invalid session.
+      // DSLI_DISABLED overrides the skip — escape hatch for apps that hit the
+      // storeLastAuthenticatedUser=false edge case after upgrading.
+      // OIDC mode is handled above and bypasses this optimization, since OIDC
+      // sessions live under a separate `oidc-client-ts` key and `oidc.refreshToken`
+      // performs its own no-session short-circuit.
+      if (
+        tryRefresh &&
+        !hasLoginIndicator() &&
+        !getLocalStorage(LOGGED_IN_INDICATOR_DISABLED_KEY)
+      ) {
+        return Promise.resolve({ ok: true });
       }
       // Descope use this query param to monitor if refresh is made
       // When the user is already logged in in the past or not (We want to optimize that in the future)
