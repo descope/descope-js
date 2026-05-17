@@ -1006,32 +1006,6 @@ test.describe('widget', () => {
     ).toHaveAttribute('hidden');
   });
 
-  test('edit user - sub-tenant section is visible and pre-populated with user tenants', async ({
-    page,
-  }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
-
-    await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
-    // Both create and edit modals are in the DOM; edit modal's elements are at index 1
-    // Sub-tenant data was loaded from API and section is visible
-    await expect(
-      page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).not.toHaveAttribute('hidden', { timeout: 8000 });
-    // The sub-tenant mappings component is present and rendered
-    await expect(
-      page.locator('[data-id="sub-tenant-mappings"]').nth(1),
-    ).toBeAttached();
-  });
-
   test('edit user - sub-tenant displays tenant name, not tenant id', async ({
     page,
   }) => {

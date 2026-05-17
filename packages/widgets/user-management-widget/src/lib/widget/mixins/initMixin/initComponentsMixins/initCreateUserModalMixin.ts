@@ -15,6 +15,7 @@ import {
   getCustomAttributes,
   getTenantRoles,
   getSubTenantRolesData,
+  getHasSubTenants,
 } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -148,11 +149,10 @@ export const initCreateUserModalMixin = createSingletonMixin(
       };
 
       #updateSubTenantSection = () => {
-        const data = getSubTenantRolesData(this.state);
-        const hasSubTenants = Object.keys(data).length > 0;
+        const hasSubTenants = getHasSubTenants(this.state);
         this.#subTenantSection?.toggleAttribute('hidden', !hasSubTenants);
         if (hasSubTenants) {
-          this.#subTenantMappings.setData(data);
+          this.#subTenantMappings.setData(getSubTenantRolesData(this.state));
         }
       };
 

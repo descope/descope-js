@@ -24,6 +24,11 @@ export const getSubTenantRolesData = createSelector(
     ),
 );
 
+export const getHasSubTenants = createSelector(
+  getSubTenantRolesData,
+  (data) => Object.keys(data).length > 0,
+);
+
 export const getCustomAttrTypes = createSelector(
   getCustomAttributes,
   (customAttrs) =>

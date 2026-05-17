@@ -19,6 +19,7 @@ import {
   getSelectedUsers,
   getTenantRoles,
   getSubTenantRolesData,
+  getHasSubTenants,
 } from '../../../state/selectors';
 import { flatten, unflatten } from '../../../../helpers';
 
@@ -107,11 +108,10 @@ export const initEditUserModalMixin = createSingletonMixin(
       };
 
       #updateSubTenantSection = () => {
-        const data = getSubTenantRolesData(this.state);
-        const hasSubTenants = Object.keys(data).length > 0;
+        const hasSubTenants = getHasSubTenants(this.state);
         this.#subTenantSection?.toggleAttribute('hidden', !hasSubTenants);
         if (hasSubTenants) {
-          this.#subTenantMappings.setData(data);
+          this.#subTenantMappings.setData(getSubTenantRolesData(this.state));
         }
       };
 
