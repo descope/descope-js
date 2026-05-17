@@ -70,7 +70,7 @@
         widgetEle.setAttribute('base-static-url', DESCOPE_BASE_STATIC_URL);
         widgetEle.setAttribute('widget-id', DESCOPE_WIDGET_ID);
         widgetEle.setAttribute('debug', 'false');
-        widgetEle.setAttribute('theme', 'light');
+        widgetEle.setAttribute('theme', 'dark');
         widgetEle.addEventListener('logout', () => {
           window.location.reload();
         });
@@ -88,7 +88,7 @@
           flowEle.setAttribute('base-url', DESCOPE_BASE_URL);
           flowEle.setAttribute('base-static-url', DESCOPE_BASE_STATIC_URL);
           flowEle.setAttribute('flow-id', 'sign-up-or-in');
-          flowEle.setAttribute('debug', 'true');
+          flowEle.setAttribute('debug', 'false');
           flowEle.addEventListener('success', () => {
             flowEle.remove();
             rootEle.appendChild(widgetEle);
