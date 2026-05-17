@@ -81,11 +81,10 @@ export const initUserPasskeysMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#removeModal.afterClose = this.#initRemoveModalContent.bind(this);
-        // this.#initRemoveModalContent();
         this.syncFlowTheme(this.#removeFlow);
       }
 
-      #initRemoveModalContent({ loginId }) {
+      #initRemoveModalContent({ loginId, credentialId }) {
         this.#removeModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -96,7 +95,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             'style-id': this.styleId,
-            form: { loginId },
+            form: { loginId, credentialId },
           }),
         );
         this.#removeFlow.onSuccess(() => {
@@ -128,8 +127,9 @@ export const initUserPasskeysMixin = createSingletonMixin(
           this.#addModal?.open();
         });
 
-        this.userPasskeys.onRemovePasskeyClick(({ id }) => {
-          this.#initRemoveModalContent({ loginId: id });
+        this.userPasskeys.onRemovePasskeyClick(({ id: credentialId }) => {
+          const loginId = getUserId(this.state);
+          this.#initRemoveModalContent({ loginId, credentialId });
           this.#removeModal?.open();
         });
       }
