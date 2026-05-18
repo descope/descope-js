@@ -35,6 +35,7 @@ export const themeMixin = createSingletonMixin(
 
     return class ThemeMixinClass extends BaseClass {
       #globalStyle: InjectedStyle;
+      #customStyle: InjectedStyle;
 
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
@@ -196,8 +197,7 @@ export const themeMixin = createSingletonMixin(
 
       async #loadGlobalStyle() {
         const theme = await this.#themeResource;
-        if (!theme && !this.customization) {
-          this.#globalStyle?.replaceSync('');
+        if (!theme) {
           return;
         }
         if (!this.#globalStyle) {
@@ -206,10 +206,19 @@ export const themeMixin = createSingletonMixin(
 
         const t = theme as Record<string, any> | undefined;
         this.#globalStyle.replaceSync(
-          (t?.light?.globals || '') +
-            (t?.dark?.globals || '') +
-            this.#getCustomizationString(),
+          (t?.light?.globals || '') + (t?.dark?.globals || ''),
         );
+      }
+
+      async #loadCustomStyle() {
+        if (!this.customization) {
+          this.#customStyle?.replaceSync('');
+          return;
+        }
+        if (!this.#customStyle) {
+          this.#customStyle = this.injectStyle('');
+        }
+        this.#customStyle.replaceSync(this.#getCustomizationString());
       }
 
       async #loadComponentsStyle() {
@@ -287,12 +296,11 @@ export const themeMixin = createSingletonMixin(
           this.#loadGlobalStyle(),
           this.#loadComponentsStyle(),
         ]);
+        await this.#loadCustomStyle();
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
-        this.observeAttributes(['customization'], () =>
-          this.#loadGlobalStyle(),
-        );
+        this.observeAttributes(['customization'], this.#loadCustomStyle);
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;

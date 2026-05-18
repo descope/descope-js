@@ -315,6 +315,7 @@ class BaseDescopeWc extends BaseClass {
       'style-id',
       'outbound-app-id',
       'outbound-app-scopes',
+      'customization',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {

@@ -267,7 +267,7 @@ describe('web-component theme', () => {
     );
   });
 
-  it('should reload global style without customization when customization attribute is removed', async () => {
+  it('should clear custom style when customization attribute is removed', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
     fixtures.pageContent = '<span>It works!</span>';
@@ -294,10 +294,14 @@ describe('web-component theme', () => {
         const calls = (global.CSSStyleSheet.prototype.replaceSync as jest.Mock)
           .mock.calls;
         const lastCall = calls[calls.length - 1]?.[0] as string;
-        expect(lastCall).not.toContain('--descope-colors-primary-base');
-        expect(lastCall).toContain('body{}');
+        expect(lastCall).toBe('');
       },
       { timeout: WAIT_TIMEOUT },
+    );
+
+    // Global style with theme globals remains unchanged
+    expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+      'body{}',
     );
   });
 });
