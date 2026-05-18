@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.61.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.60.0...core-js-sdk-2.61.0) (2026-05-11)
+
+
+### Features
+
+* add tenantId to auth method options for tenant user isolation ([#1371](https://github.com/descope/descope-js/issues/1371)) ([a91c636](https://github.com/descope/descope-js/commit/a91c636caaf363c671d6d7486a57f8c441781b32))
+
+## [2.60.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.1...core-js-sdk-2.60.0) (2026-04-29)
+
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
 ## [2.59.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.0...core-js-sdk-2.59.1) (2026-04-21)
 
 ## [2.59.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.2...core-js-sdk-2.59.0) (2026-04-20)

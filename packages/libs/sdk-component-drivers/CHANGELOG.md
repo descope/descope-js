@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.9.1...sdk-component-drivers-0.10.0) (2026-05-14)
+
+
+### Features
+
+* **web-component:** Track last auth per screen and populate last-aut-badge RELEASE ([#1342](https://github.com/descope/descope-js/issues/1342)) ([00f96e2](https://github.com/descope/descope-js/commit/00f96e2d3e0e980e679bab0a1534d47ddd861f09))
+
 ## [0.9.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.9.0...sdk-component-drivers-0.9.1) (2026-04-12)
 
 ### Dependency Updates

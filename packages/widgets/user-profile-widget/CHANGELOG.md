@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.19...user-profile-widget-0.10.0) (2026-05-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.4`
+* `web-component` updated to version `3.62.0`
+* `sdk-mixins` updated to version `0.16.2`
+* `sdk-component-drivers` updated to version `0.10.0`
+
+### Features
+
+* Add generic flow button to User Profile widget ([#1381](https://github.com/descope/descope-js/issues/1381)) ([9857040](https://github.com/descope/descope-js/commit/985704024b11251d9e5de35304c2365ffea491fa))
+
+## [0.9.19](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.18...user-profile-widget-0.9.19) (2026-05-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.61.0`
+* `web-js-sdk` updated to version `1.48.3`
+* `web-component` updated to version `3.61.0`
+## [0.9.18](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.17...user-profile-widget-0.9.18) (2026-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.60.0`
+* `web-js-sdk` updated to version `1.48.2`
+* `web-component` updated to version `3.60.0`
 ## [0.9.17](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.16...user-profile-widget-0.9.17) (2026-04-21)
 
 ### Dependency Updates

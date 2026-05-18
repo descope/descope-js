@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.48.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.3...web-js-sdk-1.48.4) (2026-05-14)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** call afterRequest hook in OIDC loginWithRedirect before navigation ([#1385](https://github.com/descope/descope-js/issues/1385)) ([dcb983c](https://github.com/descope/descope-js/commit/dcb983cfd5a690da9a6e63644802a59d8ef850b0))
+
+## [1.48.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.2...web-js-sdk-1.48.3) (2026-05-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.61.0`
+## [1.48.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.1...web-js-sdk-1.48.2) (2026-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.60.0`
 ## [1.48.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.0...web-js-sdk-1.48.1) (2026-04-21)
 
 ### Dependency Updates
