@@ -157,4 +157,147 @@ describe('web-component theme', () => {
       { timeout: WAIT_TIMEOUT },
     );
   });
+
+  it('should inject CSS variables when a valid customization attribute is set', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '' },
+      dark: { globals: '' },
+    };
+
+    const customization = JSON.stringify({
+      light: { globals: { colors: { primary: { base: 'red' } } } },
+      dark: { globals: { colors: { primary: { base: 'blue' } } } },
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" customization='${customization}'></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () =>
+        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining(
+            '[data-theme="light"]{--descope-colors-primary-base:red;}',
+          ),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () =>
+        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining(
+            '[data-theme="dark"]{--descope-colors-primary-base:blue;}',
+          ),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('should log an error and not crash when customization attribute contains invalid JSON', async () => {
+    const errorSpy = jest.spyOn(console, 'error');
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: 'body{}' },
+      dark: { globals: '' },
+    };
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" customization='not-valid-json'></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
+          expect.stringContaining('Failed to parse customization attribute'),
+          expect.anything(),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    // The theme globals should still be injected despite the parse failure
+    await waitFor(
+      () =>
+        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining('body{}'),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('should reload global style when customization attribute is updated', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '' },
+      dark: { globals: '' },
+    };
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc');
+    const customization = JSON.stringify({
+      light: { globals: { colors: { primary: { base: 'green' } } } },
+    });
+    wc.setAttribute('customization', customization);
+
+    await waitFor(
+      () =>
+        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining(
+            '[data-theme="light"]{--descope-colors-primary-base:green;}',
+          ),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('should reload global style without customization when customization attribute is removed', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: 'body{}' },
+      dark: { globals: '' },
+    };
+
+    const customization = JSON.stringify({
+      light: { globals: { colors: { primary: { base: 'red' } } } },
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" customization='${customization}'></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc');
+    wc.removeAttribute('customization');
+
+    await waitFor(
+      () => {
+        const calls = (global.CSSStyleSheet.prototype.replaceSync as jest.Mock)
+          .mock.calls;
+        const lastCall = calls[calls.length - 1]?.[0] as string;
+        expect(lastCall).not.toContain('--descope-colors-primary-base');
+        expect(lastCall).toContain('body{}');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
 });
