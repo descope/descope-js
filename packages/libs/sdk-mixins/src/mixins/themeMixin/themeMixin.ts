@@ -300,7 +300,7 @@ export const themeMixin = createSingletonMixin(
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
-        this.observeAttributes(['customization'], this.#loadCustomStyle);
+        this.observeAttributes(['customization'], () => this.#loadCustomStyle());
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
