@@ -158,7 +158,7 @@ describe('web-component theme', () => {
     );
   });
 
-  it('should inject CSS variables when a valid customization attribute is set', async () => {
+  it('should inject CSS variables when a valid themeOverride attribute is set', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
     fixtures.pageContent = '<span>It works!</span>';
@@ -167,12 +167,12 @@ describe('web-component theme', () => {
       dark: { globals: '' },
     };
 
-    const customization = JSON.stringify({
+    const themeOverride = JSON.stringify({
       light: { globals: { colors: { primary: { base: 'red' } } } },
       dark: { globals: { colors: { primary: { base: 'blue' } } } },
     });
 
-    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" customization='${customization}'></descope-wc>`;
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme-override='${themeOverride}'></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -199,7 +199,7 @@ describe('web-component theme', () => {
     );
   });
 
-  it('should log an error and not crash when customization attribute contains invalid JSON', async () => {
+  it('should log an error and not crash when themeOverride attribute contains invalid JSON', async () => {
     const errorSpy = jest.spyOn(console, 'error');
     startMock.mockReturnValue(generateSdkResponse());
 
@@ -209,7 +209,7 @@ describe('web-component theme', () => {
       dark: { globals: '' },
     };
 
-    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" customization='not-valid-json'></descope-wc>`;
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme-override='not-valid-json'></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
@@ -219,7 +219,7 @@ describe('web-component theme', () => {
       () =>
         expect(errorSpy).toHaveBeenCalledWith(
           '[Descope]',
-          expect.stringContaining('Failed to parse customization attribute'),
+          expect.stringContaining('Failed to parse theme-override attribute'),
           expect.anything(),
         ),
       { timeout: WAIT_TIMEOUT },
@@ -235,7 +235,7 @@ describe('web-component theme', () => {
     );
   });
 
-  it('should reload global style when customization attribute is updated', async () => {
+  it('should reload global style when themeOverride attribute is updated', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
     fixtures.pageContent = '<span>It works!</span>';
@@ -251,10 +251,10 @@ describe('web-component theme', () => {
     });
 
     const wc = document.querySelector('descope-wc');
-    const customization = JSON.stringify({
+    const themeOverride = JSON.stringify({
       light: { globals: { colors: { primary: { base: 'green' } } } },
     });
-    wc.setAttribute('customization', customization);
+    wc.setAttribute('theme-override', themeOverride);
 
     await waitFor(
       () =>
@@ -267,7 +267,7 @@ describe('web-component theme', () => {
     );
   });
 
-  it('should clear custom style when customization attribute is removed', async () => {
+  it('should clear custom style when themeOverride attribute is removed', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
     fixtures.pageContent = '<span>It works!</span>';
@@ -276,18 +276,18 @@ describe('web-component theme', () => {
       dark: { globals: '' },
     };
 
-    const customization = JSON.stringify({
+    const themeOverride = JSON.stringify({
       light: { globals: { colors: { primary: { base: 'red' } } } },
     });
 
-    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" customization='${customization}'></descope-wc>`;
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme-override='${themeOverride}'></descope-wc>`;
 
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
 
     const wc = document.querySelector('descope-wc');
-    wc.removeAttribute('customization');
+    wc.removeAttribute('theme-override');
 
     await waitFor(
       () => {

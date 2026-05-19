@@ -55,14 +55,14 @@ export const themeMixin = createSingletonMixin(
         return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
       }
 
-      get customization(): Record<string, any> | null {
-        const raw = this.getAttribute('customization');
+      get themeOverride(): Record<string, any> | null {
+        const raw = this.getAttribute('theme-override');
         if (!raw) return null;
         try {
           return JSON.parse(raw);
         } catch (e) {
           this.logger.error(
-            'Failed to parse customization attribute. error: ',
+            'Failed to parse theme-override attribute. error: ',
             e,
           );
           return null;
@@ -113,8 +113,8 @@ export const themeMixin = createSingletonMixin(
         }, '');
       }
 
-      #getCustomizationString(): string {
-        const override = this.customization;
+      #getThemeOverrideString(): string {
+        const override = this.themeOverride;
         if (!override) return '';
 
         return (['light', 'dark'] as const)
@@ -211,14 +211,14 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadCustomStyle() {
-        if (!this.customization) {
+        if (!this.themeOverride) {
           this.#customStyle?.replaceSync('');
           return;
         }
         if (!this.#customStyle) {
           this.#customStyle = this.injectStyle('');
         }
-        this.#customStyle.replaceSync(this.#getCustomizationString());
+        this.#customStyle.replaceSync(this.#getThemeOverrideString());
       }
 
       async #loadComponentsStyle() {
@@ -300,7 +300,7 @@ export const themeMixin = createSingletonMixin(
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
-        this.observeAttributes(['customization'], () => this.#loadCustomStyle());
+        this.observeAttributes(['theme-override'], () => this.#loadCustomStyle());
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
