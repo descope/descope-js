@@ -7,7 +7,7 @@ import { initElementMixin } from '../initElementMixin';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { DEFAULT_STYLE_ID } from './constants';
-import { loadDevTheme, loadFont } from './helpers';
+import { flattenToVars, loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 import { InjectedStyle, injectStyleMixin } from '../injectStyleMixin';
@@ -69,50 +69,6 @@ export const themeMixin = createSingletonMixin(
         }
       }
 
-      #isSafeCssVarSegment(segment: string): boolean {
-        return /^[a-zA-Z0-9-]+$/.test(segment);
-      }
-
-      #serializeOverrideCssValue(value: unknown): string | null {
-        if (typeof value === 'number') {
-          return Number.isFinite(value) ? String(value) : null;
-        }
-
-        if (typeof value !== 'string') {
-          return null;
-        }
-
-        if (/[;{}]/.test(value)) {
-          return null;
-        }
-
-        return value.trim();
-      }
-
-      #flattenToVars(obj: Record<string, any>, prefix = ''): string {
-        return Object.entries(obj).reduce((css, [key, value]) => {
-          if (!this.#isSafeCssVarSegment(key)) {
-            this.logger.error(
-              'Ignoring invalid override-css token path segment',
-            );
-            return css;
-          }
-
-          const path = prefix ? `${prefix}-${key}` : key;
-
-          if (typeof value === 'object' && value !== null) {
-            return css + this.#flattenToVars(value, path);
-          }
-
-          const serializedValue = this.#serializeOverrideCssValue(value);
-          if (serializedValue === null) {
-            this.logger.error('Ignoring invalid override-css token value');
-            return css;
-          }
-          return `${css}--descope-${path}:${serializedValue};`;
-        }, '');
-      }
-
       #getThemeOverrideString(): string {
         const override = this.themeOverride;
         if (!override) return '';
@@ -122,9 +78,10 @@ export const themeMixin = createSingletonMixin(
             const primary = override[theme]?.globals?.colors?.primary;
             if (!primary) return '';
 
-            return `[data-theme="${theme}"]{${this.#flattenToVars({
-              colors: { primary },
-            })}}`;
+            return `[data-theme="${theme}"]{${flattenToVars(
+              { colors: { primary } },
+              (msg) => this.logger.error(msg),
+            )}}`;
           })
           .join('');
       }
@@ -204,9 +161,8 @@ export const themeMixin = createSingletonMixin(
           this.#globalStyle = this.injectStyle('');
         }
 
-        const t = theme as Record<string, any> | undefined;
         this.#globalStyle.replaceSync(
-          (t?.light?.globals || '') + (t?.dark?.globals || ''),
+          (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
         );
       }
 

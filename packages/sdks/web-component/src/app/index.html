@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Uncomment next section if you want to test CSP -->
 
-    <meta
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="connect-src 'self' static.descope.com api.descope.com descopecdn.com;
     style-src fonts.googleapis.com 'nonce-rAnd0m';
     img-src static.descope.com content.app.descope.com imgs.descope.com data:;
     font-src fonts.gstatic.com;
     script-src 'self' static.descope.com descopecdn.com 'nonce-rAnd0m' 'sha256-ZfFIHrd9MzirQdadZrM3hznhYlx+PRQo8+OCWjaPDaY=';"
-    />
+    /> -->
   </head>
   <body>
     <script
@@ -33,6 +33,9 @@
         keep-last-authenticated-user-after-logout="true"
         nonce="rAnd0m"
         dismiss-screen-error-on-input="true"
+        theme="dark"
+        theme-override='{"dark":{"globals": {"colors": { "primary": {"main": "black", "dark": "#6410BC", "light": "#636C74", "highlight": "#005700", "contrast": "#A24309"}}}},  "light": {"globals": {"colors": { "primary": {"main": "#FFFFFF", "dark": "#710A86", "light": "#DA5DF3", "highlight": "#EEB6FA", "contrast": "#FFFFFF"}}}}}'
+        style-id="ofek"
       ></descope-wc>
       <div class="loading">Loading ...</div>
     </div>

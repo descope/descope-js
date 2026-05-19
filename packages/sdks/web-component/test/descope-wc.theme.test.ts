@@ -158,13 +158,15 @@ describe('web-component theme', () => {
     );
   });
 
-  it('should inject CSS variables when a valid themeOverride attribute is set', async () => {
+  it('should inject themeOverride last in DOM', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
+    const lightGlobals = '[data-theme="light"]{--descope-color-bg:white;}';
+    const darkGlobals = '[data-theme="dark"]{--descope-color-bg:black;}';
     fixtures.pageContent = '<span>It works!</span>';
     fixtures.themeContent = {
-      light: { globals: '' },
-      dark: { globals: '' },
+      light: { globals: lightGlobals },
+      dark: { globals: darkGlobals },
     };
 
     const themeOverride = JSON.stringify({
@@ -178,25 +180,49 @@ describe('web-component theme', () => {
       timeout: WAIT_TIMEOUT,
     });
 
+    const replaceSync = global.CSSStyleSheet.prototype.replaceSync as jest.Mock;
+    const expectedStyleIdCss = lightGlobals + darkGlobals;
+    const expectedOverrideSnippet = '--descope-colors-primary-base:red';
+
     await waitFor(
-      () =>
-        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
-          expect.stringContaining(
-            '[data-theme="light"]{--descope-colors-primary-base:red;}',
-          ),
-        ),
+      () => {
+        const contents = replaceSync.mock.calls.map(([css]: [string]) => css);
+        const themeIdx = contents.findIndex((css: string) =>
+          css.includes(':host[data-theme="light"]'),
+        );
+      },
       { timeout: WAIT_TIMEOUT },
     );
 
     await waitFor(
-      () =>
-        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
-          expect.stringContaining(
-            '[data-theme="dark"]{--descope-colors-primary-base:blue;}',
-          ),
-        ),
+      () => {
+        expect(replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining(expectedOverrideSnippet),
+        );
+      },
       { timeout: WAIT_TIMEOUT },
     );
+
+    const allCalls = replaceSync.mock.calls.map(([css]: [string]) => css ?? '');
+    const overrideCallIdx = allCalls.findIndex((css: string) =>
+      css.includes(expectedOverrideSnippet),
+    );
+    // themeOverride must be the last replaceSync call overall
+    expect(allCalls[allCalls.length - 1]).toContain(expectedOverrideSnippet);
+
+    // Verify themeOverride sheet is last in adoptedStyleSheets
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      expect(sheets.length).toBeGreaterThanOrEqual(4);
+      const overrideSheet = sheets.find(
+        (sheet) => (sheet as any)._cssText?.includes(expectedOverrideSnippet),
+      );
+      expect(overrideSheet).toBeDefined();
+      // @ts-ignore - _index is a private property used in our tests to track sheet order
+      expect(overrideSheet._index).toBe(sheets.length - 1);
+    }
   });
 
   it('should log an error and not crash when themeOverride attribute contains invalid JSON', async () => {
@@ -205,7 +231,7 @@ describe('web-component theme', () => {
 
     fixtures.pageContent = '<span>It works!</span>';
     fixtures.themeContent = {
-      light: { globals: 'body{}' },
+      light: { globals: '[data-theme="light"]{--descope-color-bg:white;}' },
       dark: { globals: '' },
     };
 
@@ -226,13 +252,20 @@ describe('web-component theme', () => {
     );
 
     // The theme globals should still be injected despite the parse failure
-    await waitFor(
-      () =>
-        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
-          expect.stringContaining('body{}'),
-        ),
-      { timeout: WAIT_TIMEOUT },
-    );
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      const themeSheet = sheets.find(
+        (sheet) =>
+          (sheet as any)._cssText?.includes(
+            '[data-theme="light"]{--descope-color-bg:white;}',
+          ),
+      );
+      expect(themeSheet).toBeDefined();
+      // @ts-ignore - _index is a private property used in our tests to track sheet order
+      expect(themeSheet._index).toBe(sheets.length - 1);
+    }
   });
 
   it('should reload global style when themeOverride attribute is updated', async () => {
@@ -256,15 +289,20 @@ describe('web-component theme', () => {
     });
     wc.setAttribute('theme-override', themeOverride);
 
+    const replaceSync = global.CSSStyleSheet.prototype.replaceSync as jest.Mock;
+    const expectedOverrideSnippet = '--descope-colors-primary-base:green';
+
     await waitFor(
       () =>
-        expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
-          expect.stringContaining(
-            '[data-theme="light"]{--descope-colors-primary-base:green;}',
-          ),
+        expect(replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining(expectedOverrideSnippet),
         ),
       { timeout: WAIT_TIMEOUT },
     );
+
+    const allCalls = replaceSync.mock.calls.map(([css]: [string]) => css ?? '');
+    // themeOverride must be the last replaceSync call overall
+    expect(allCalls[allCalls.length - 1]).toContain(expectedOverrideSnippet);
   });
 
   it('should clear custom style when themeOverride attribute is removed', async () => {
@@ -272,7 +310,7 @@ describe('web-component theme', () => {
 
     fixtures.pageContent = '<span>It works!</span>';
     fixtures.themeContent = {
-      light: { globals: 'body{}' },
+      light: { globals: '[data-theme="light"]{--descope-color-bg:white;}' },
       dark: { globals: '' },
     };
 
@@ -286,22 +324,27 @@ describe('web-component theme', () => {
       timeout: WAIT_TIMEOUT,
     });
 
-    const wc = document.querySelector('descope-wc');
-    wc.removeAttribute('theme-override');
+    const replaceSync = global.CSSStyleSheet.prototype.replaceSync as jest.Mock;
+    const expectedOverrideSnippet = '--descope-colors-primary-base:red';
 
     await waitFor(
-      () => {
-        const calls = (global.CSSStyleSheet.prototype.replaceSync as jest.Mock)
-          .mock.calls;
-        const lastCall = calls[calls.length - 1]?.[0] as string;
-        expect(lastCall).toBe('');
-      },
+      () =>
+        expect(replaceSync).toHaveBeenCalledWith(
+          expect.stringContaining(expectedOverrideSnippet),
+        ),
       { timeout: WAIT_TIMEOUT },
     );
 
-    // Global style with theme globals remains unchanged
-    expect(global.CSSStyleSheet.prototype.replaceSync).toHaveBeenCalledWith(
-      'body{}',
-    );
+    const wc = document.querySelector('descope-wc');
+    wc.removeAttribute('theme-override');
+
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      expect(sheets.length).toBeGreaterThanOrEqual(4);
+      const overrideSheet = sheets[sheets.length - 1];
+      expect(overrideSheet).toBeDefined();
+      expect(overrideSheet).toEqual('');
+    };
   });
 });

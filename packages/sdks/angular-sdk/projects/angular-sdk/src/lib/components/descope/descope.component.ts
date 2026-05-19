@@ -46,6 +46,7 @@ import type { CustomStorage } from '@descope/web-component';
       [attr.restart-on-error]="restartOnError"
       [attr.debug]="debug"
       [attr.style-id]="styleId"
+      [attr.theme-override]="themeOverride"
       [attr.client]="clientString"
       [attr.nonce]="nonceString"
       [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
@@ -118,6 +119,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;
+  @Input() themeOverride: Record<string, any>;
   @Input() popupOrigin: string;
 
   @Output() success: EventEmitter<CustomEvent> =
