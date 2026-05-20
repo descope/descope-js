@@ -76,10 +76,11 @@ export const themeMixin = createSingletonMixin(
         return (['light', 'dark'] as const)
           .map((theme) => {
             const primary = override[theme]?.globals?.colors?.primary;
-            if (!primary) return '';
+            const secondary = override[theme]?.globals?.colors?.secondary;
+            if (!primary && !secondary) return '';
 
             return `[data-theme="${theme}"]{${flattenToVars(
-              { colors: { primary } },
+              { colors: { primary, secondary } },
               (msg) => this.logger.error(msg),
             )}}`;
           })
