@@ -93,7 +93,6 @@ jobs:
   # ============================================
   release-next-build:
     name: Release Next - Build & Version
-    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -148,7 +147,6 @@ jobs:
   release-next-publish:
     name: Release Next - Publish to npm
     needs: release-next-build
-    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     permissions:
       contents: read
