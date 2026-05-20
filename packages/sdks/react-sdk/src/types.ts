@@ -13,6 +13,7 @@ import type {
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
+import type OverrideThemes from '@descope/web-component';
 import DescopeWc from '@descope/web-component';
 import type { UserResponse } from '@descope/web-js-sdk';
 import React, { DOMAttributes } from 'react';
@@ -165,7 +166,7 @@ export type DescopeProps = {
   ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
   externalRequestId?: string;
-  themeOverride?: Record<string, any>;
+  themeOverride?: OverrideThemes;
 };
 
 export type UserManagementProps = WidgetProps;

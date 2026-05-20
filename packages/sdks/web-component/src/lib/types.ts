@@ -297,6 +297,28 @@ type ThemeTemplate = {
   };
 };
 
+type ThemeColor = {
+  main: string;
+  dark: string;
+  light: string;
+  highlight: string;
+  contrast: string;
+};
+
+export type OverrideTheme = {
+  globals?: {
+    colors?: {
+      primary?: ThemeColor;
+      secondary?: ThemeColor;
+    };
+  };
+};
+
+export type OverrideThemes = {
+  dark?: OverrideTheme;
+  light?: OverrideTheme;
+};
+
 export type FlowConfig = {
   startScreenId?: string;
   startScreenName?: string;
