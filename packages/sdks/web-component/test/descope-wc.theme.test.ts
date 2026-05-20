@@ -178,7 +178,6 @@ describe('web-component theme', () => {
       timeout: WAIT_TIMEOUT,
     });
 
-    const replaceSync = global.CSSStyleSheet.prototype.replaceSync as jest.Mock;
     const expectedOverrideSnippet = '--descope-colors-primary-base:red';
 
     // Verify themeOverride sheet is last in adoptedStyleSheets
@@ -288,8 +287,6 @@ describe('web-component theme', () => {
     await waitFor(() => screen.getByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
-    const expectedOverrideSnippet = '--descope-colors-primary-base:red';
-
     const wc = document.querySelector('descope-wc');
     wc.removeAttribute('theme-override');
 
