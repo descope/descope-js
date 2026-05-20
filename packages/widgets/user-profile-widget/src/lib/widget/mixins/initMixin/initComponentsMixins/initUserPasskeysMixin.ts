@@ -80,11 +80,10 @@ export const initUserPasskeysMixin = createSingletonMixin(
           () => this.#removeModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
         );
-        this.#removeModal.afterClose = this.#initRemoveModalContent.bind(this);
         this.syncFlowTheme(this.#removeFlow);
       }
 
-      #initRemoveModalContent({ loginId, credentialId }) {
+      #initRemoveModalContent({ externalId, credentialId }) {
         this.#removeModal.setContent(
           createFlowTemplate({
             projectId: this.projectId,
@@ -95,7 +94,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
             refreshCookieName: this.refreshCookieName,
             theme: this.theme,
             'style-id': this.styleId,
-            form: { loginId, credentialId },
+            form: { externalId, credentialId },
           }),
         );
         this.#removeFlow.onSuccess(() => {
@@ -128,8 +127,8 @@ export const initUserPasskeysMixin = createSingletonMixin(
         });
 
         this.userPasskeys.onRemovePasskeyClick(({ id: credentialId }) => {
-          const loginId = getUserId(this.state);
-          this.#initRemoveModalContent({ loginId, credentialId });
+          const externalId = getUserId(this.state);
+          this.#initRemoveModalContent({ externalId, credentialId });
           this.#removeModal?.open();
         });
       }

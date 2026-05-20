@@ -282,6 +282,88 @@ test.describe('widget', () => {
     });
   });
 
+  test.describe('passkeys', () => {
+    const passkeysRoot = `<descope-user-passkeys
+      data-id="passkey"
+      allow-remove="true"
+      add-passkey-flow-id="add-passkey-flow"
+      remove-passkey-flow-id="remove-passkey-flow"
+      label="Passkey"
+    ></descope-user-passkeys>`;
+
+    const passkeysResponse = {
+      passkeys: [
+        {
+          id: 'pk-1',
+          displayName: 'iPhone',
+          kind: 'apple',
+          createdTime: 1735977600,
+          rpId: 'example.com',
+        },
+        {
+          id: 'pk-2',
+          displayName: 'Chrome',
+          kind: 'google',
+          createdTime: 1738750500,
+          rpId: 'example.com',
+        },
+      ],
+    };
+
+    test.beforeEach(async ({ page }) => {
+      await page.route('**/root.html', async (route) =>
+        route.fulfill({ body: passkeysRoot }),
+      );
+      await page.route('**/v1/mgmt/user/passkeys/list', async (route) =>
+        route.fulfill({ json: passkeysResponse }),
+      );
+    });
+
+    test('fetches passkeys on init with the user loginId', async ({ page }) => {
+      const passkeysReq = page.waitForRequest(
+        (req) =>
+          req.url().includes('/v1/mgmt/user/passkeys/list') &&
+          req.method() === 'POST',
+      );
+
+      await page.goto(`http://localhost:${widgetPort}`);
+      const req = await passkeysReq;
+
+      expect(JSON.parse(req.postData() ?? '{}')).toEqual({
+        loginId: mockUser.userId,
+      });
+    });
+
+    test('normalizes raw API fields into the element data property', async ({
+      page,
+    }) => {
+      await page.goto(`http://localhost:${widgetPort}`);
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const passkeysEl = page.locator('descope-user-passkeys').first();
+      await expect(passkeysEl).toBeAttached();
+
+      const data = await passkeysEl.evaluate(
+        (el: HTMLElement & { data?: unknown }) => el.data,
+      );
+
+      expect(data).toEqual([
+        {
+          id: 'pk-1',
+          name: 'iPhone',
+          passkeyType: 'apple',
+          createdAt: 1735977600000,
+        },
+        {
+          id: 'pk-2',
+          name: 'Chrome',
+          passkeyType: 'google',
+          createdAt: 1738750500000,
+        },
+      ]);
+    });
+  });
+
   test.describe('badge visibility', () => {
     test('should show "Unverified" badge when email exists and is not verified', async ({
       page,
