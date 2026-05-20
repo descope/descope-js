@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_run:
-    workflows: ['Release']
-    branches: [main]
-    types:
-      - completed
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -19,7 +14,7 @@ jobs:
   # ============================================
   release-build:
     name: Release - Build & Version
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'RELEASE')
+    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -65,7 +60,7 @@ jobs:
   release-publish:
     name: Release - Publish to npm
     needs: release-build
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'RELEASE')
+    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -98,7 +93,7 @@ jobs:
   # ============================================
   release-next-build:
     name: Release Next - Build & Version
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -153,7 +148,7 @@ jobs:
   release-next-publish:
     name: Release Next - Publish to npm
     needs: release-next-build
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    if: contains(github.event.head_commit.message, 'RELEASE')
     runs-on: ubuntu-latest
     permissions:
       contents: read
