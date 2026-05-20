@@ -15,6 +15,7 @@
       :redirect-url="redirectUrl"
       :auto-focus="autoFocus"
       :style-id="styleId"
+      :therme-override="themeOverride"
       :validate-on-blur="validateOnBlur"
       :restart-on-error="restartOnError"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
@@ -115,6 +116,9 @@ const props = defineProps({
   styleId: {
     type: String,
   },
+  themeOverride: {
+    type: Object,
+  },
   nonce: {
     type: String,
   },
@@ -143,12 +147,12 @@ const sdk = useDescope();
 
 const formStr = computed(() => (props.form ? JSON.stringify(props.form) : ''));
 const clientStr = computed(() =>
-  props.client ? JSON.stringify(props.client) : '',
+  props.client ? JSON.stringify(props.client) : ''
 );
 const onSuccess = async (e: CustomEvent<FlowJWTResponse>) => {
   await sdk.httpClient.hooks?.afterRequest?.(
     {} as RequestConfig,
-    new Response(JSON.stringify(e.detail)),
+    new Response(JSON.stringify(e.detail))
   );
   emit('success', e);
 };

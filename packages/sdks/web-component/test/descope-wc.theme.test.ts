@@ -157,4 +157,146 @@ describe('web-component theme', () => {
       { timeout: WAIT_TIMEOUT },
     );
   });
+
+  it('should inject themeOverride last in DOM', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '[data-theme="light"]{--descope-color-bg:white;}' },
+      dark: { globals: '[data-theme="dark"]{--descope-color-bg:black;}' },
+    };
+
+    const themeOverride = JSON.stringify({
+      light: { globals: { colors: { primary: { base: 'red' } } } },
+      dark: { globals: { colors: { primary: { base: 'blue' } } } },
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme-override='${themeOverride}'></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const expectedOverrideSnippet = '--descope-colors-primary-base:red';
+
+    // Verify themeOverride sheet is last in adoptedStyleSheets
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      const overrideSheet = sheets.find(
+        (sheet) => (sheet as any).cssText?.includes(expectedOverrideSnippet),
+      );
+      expect(overrideSheet).toBeDefined();
+      expect(overrideSheet.index).toBe(sheets.length - 1);
+    }
+  });
+
+  it('should log an error and not crash when themeOverride attribute contains invalid JSON', async () => {
+    const errorSpy = jest.spyOn(console, 'error');
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '[data-theme="light"]{--descope-color-bg:white;}' },
+      dark: { globals: '' },
+    };
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme-override='not-valid-json'></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
+          expect.stringContaining('Failed to parse theme-override attribute'),
+          expect.anything(),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    // The theme globals should still be injected despite the parse failure
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      const themeSheet = sheets.find(
+        (sheet) =>
+          (sheet as any).cssText?.includes(
+            '[data-theme="light"]{--descope-color-bg:white;}',
+          ),
+      );
+      expect(themeSheet).toBeDefined();
+      expect(themeSheet.index).toBe(sheets.length - 1);
+    }
+  });
+
+  it('should reload global style when themeOverride attribute is updated', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '' },
+      dark: { globals: '' },
+    };
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc');
+    const themeOverride = JSON.stringify({
+      light: { globals: { colors: { primary: { base: 'green' } } } },
+    });
+    wc.setAttribute('theme-override', themeOverride);
+
+    const expectedOverrideSnippet = '--descope-colors-primary-base:green';
+
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      const overrideSheet = sheets.find(
+        (sheet) => (sheet as any).cssText?.includes(expectedOverrideSnippet),
+      );
+      expect(overrideSheet).toBeDefined();
+      expect(overrideSheet.index).toBe(sheets.length - 1);
+    }
+  });
+
+  it('should clear custom style when themeOverride attribute is removed', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '[data-theme="light"]{--descope-color-bg:white;}' },
+      dark: { globals: '' },
+    };
+
+    const themeOverride = JSON.stringify({
+      light: { globals: { colors: { primary: { base: 'red' } } } },
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme-override='${themeOverride}'></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    const wc = document.querySelector('descope-wc');
+    wc.removeAttribute('theme-override');
+
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      const sheets = shadowRoot.adoptedStyleSheets;
+      expect(sheets.length).toBeGreaterThanOrEqual(4);
+      const overrideSheet = sheets[sheets.length - 1];
+      expect(overrideSheet).toBeDefined();
+      expect(overrideSheet).toEqual('');
+    }
+  });
 });
