@@ -22,6 +22,7 @@ import { DescopeAuthConfig, ILogger } from '../../types/types';
 // This is safe for SSR because it's completely erased at compile time and generates no runtime import.
 import type DescopeWebComponent from '@descope/web-component';
 import type { CustomStorage } from '@descope/web-component';
+import OverrideThemes from '@descope/web-component';
 
 @Component({
   selector: 'descope[flowId]',
@@ -46,6 +47,7 @@ import type { CustomStorage } from '@descope/web-component';
       [attr.restart-on-error]="restartOnError"
       [attr.debug]="debug"
       [attr.style-id]="styleId"
+      [attr.theme-override]="themeOverride"
       [attr.client]="clientString"
       [attr.nonce]="nonceString"
       [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
@@ -118,6 +120,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() form: Record<string, any>;
   @Input() logger: ILogger;
   @Input() styleId: string;
+  @Input() themeOverride: OverrideThemes;
   @Input() popupOrigin: string;
 
   @Output() success: EventEmitter<CustomEvent> =
