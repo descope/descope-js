@@ -11,6 +11,7 @@ import {
 } from '../src/lib/widget/state/selectors';
 import { State } from '../src/lib/widget/state/types';
 import '../src/lib/index';
+import { PERMITTED_IPS_PATTERN } from '../src/lib/widget/mixins/initMixin/initComponentsMixins/initCreateAccessKeyModalMixin';
 import rootMock from './mocks/rootMock';
 import createAccessKeyModalMock from './mocks/createAccessKeyModalMock';
 import createdAccessKeyModalMock from './mocks/createdAccessKeyModalMock';
@@ -257,6 +258,21 @@ describe('access-key-management-widget', () => {
           's',
         ]} deleted successfully`,
       ).toEqual('2 access keys deleted successfully');
+    });
+  });
+
+  describe('PERMITTED_IPS_PATTERN', () => {
+    const re = new RegExp(`^(?:${PERMITTED_IPS_PATTERN})$`);
+
+    it.each(['108.216.155.228', '192.168.1.1', '10.0.0.0/24', '1.2.3.4/32'])(
+      'accepts %s',
+      (value) => {
+        expect(re.test(value)).toBe(true);
+      },
+    );
+
+    it.each(['abc', '999', '1.2.3', ''])('rejects %s', (value) => {
+      expect(re.test(value)).toBe(false);
     });
   });
 
