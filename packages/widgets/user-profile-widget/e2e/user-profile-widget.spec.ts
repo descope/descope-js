@@ -163,6 +163,12 @@ test.describe('widget', () => {
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
+      {
+        name: 'passkey',
+        action: 'add',
+        flagPath: 'webauthn',
+        fulfilled: 'true',
+      },
       { name: 'password', flagPath: 'password', fulfilled: null },
       { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
     ]) {

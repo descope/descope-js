@@ -7,9 +7,9 @@ import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
-  FirstParameter<Sdk['passkey']['passkeys']>,
+  FirstParameter<Sdk['passkey']['listPasskeys']>,
   ThunkConfigExtraApi
->('users/passkeys', (arg, { extra: { api } }) => api.passkey.passkeys(arg));
+>('users/passkeys', (arg, { extra: { api } }) => api.passkey.listPasskeys(arg));
 
 const reducer = buildAsyncReducer(action)(
   {

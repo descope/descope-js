@@ -10,7 +10,7 @@ export const createPasskeySdk = ({
   httpClient: HttpClient;
   mock: boolean;
 }) => {
-  const passkeys = async ({ userId }: { userId: string }) => {
+  const listPasskeys = async ({ userId }: { userId: string }) => {
     if (mock) {
       return user.passkeys();
     }
@@ -24,6 +24,6 @@ export const createPasskeySdk = ({
   };
 
   return {
-    passkeys,
+    listPasskeys,
   };
 };
