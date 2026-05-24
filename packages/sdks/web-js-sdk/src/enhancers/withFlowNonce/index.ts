@@ -17,14 +17,7 @@ import {
 import { FlowNonceOptions } from './types';
 
 /**
- * Adds flow nonce handling to the SDK.
- *
- * Two concurrent flow.next calls in the same SDK instance would otherwise
- * read the same nonce from localStorage. Server rotates atomically on the
- * first and rejects the second with E108201. This enhancer serializes
- * sdk.flow.next calls so each one reads the freshly-rotated nonce stored
- * by the previous call's afterRequest before its own beforeRequest runs.
- * See descope/etc#15600.
+ * Adds flow nonce handling to the SDK
  */
 export const withFlowNonce =
   <T extends CreateWebSdk>(createSdk: T) =>
@@ -41,38 +34,39 @@ export const withFlowNonce =
 
     cleanupExpiredNonces(nonceStoragePrefix);
 
-    const beforeRequest: BeforeRequestHook = (req) => {
-      if (req.path !== FLOW_NEXT_PATH) return req;
-      const execId = getExecutionIdFromRequest(req);
-      if (!execId) return req;
-      const nonce = getFlowNonce(execId, nonceStoragePrefix);
-      if (nonce) {
-        req.headers = req.headers || {};
-        req.headers[FLOW_NONCE_HEADER] = nonce;
+    const afterRequest: AfterRequestHook = async (req, res) => {
+      if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) {
+        return;
       }
-      return req;
+      const { nonce, executionId } = await extractFlowNonce(req, res);
+
+      if (nonce && executionId) {
+        const isStart = req.path === FLOW_START_PATH;
+        setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix);
+      }
     };
 
-    const afterRequest: AfterRequestHook = async (req, res) => {
-      if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) return;
-      const { nonce, executionId } = await extractFlowNonce(req, res);
-      if (nonce && executionId) {
-        setFlowNonce(
-          executionId,
-          nonce,
-          req.path === FLOW_START_PATH,
-          nonceStoragePrefix,
-        );
+    const beforeRequest: BeforeRequestHook = (req) => {
+      if (req.path === FLOW_NEXT_PATH) {
+        const executionId = getExecutionIdFromRequest(req);
+
+        if (executionId) {
+          const nonce = getFlowNonce(executionId, nonceStoragePrefix);
+          if (nonce) {
+            req.headers = req.headers || {};
+            req.headers[FLOW_NONCE_HEADER] = nonce;
+          }
+        }
       }
+      return req;
     };
 
     const sdk = createSdk(
       addHooks(sdkConfig, { afterRequest, beforeRequest }),
     ) as ReturnType<T>;
 
-    // Serialize concurrent flow.next calls. The next call only starts after
-    // the previous call's afterRequest has stored the rotated nonce, so the
-    // next call's beforeRequest reads the fresh value.
+    // Serialize concurrent flow.next calls so the second one reads the
+    // rotated nonce stored by the first's afterRequest. See descope/etc#15600.
     if (sdk.flow?.next) {
       let chain: Promise<void> = Promise.resolve();
       const originalNext = sdk.flow.next.bind(sdk.flow);
