@@ -42,7 +42,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       #initAddModal() {
         if (!this.userPasskeys.addPasskeyFlowId) return;
 
-        this.#addModal = this.createModal({ 'data-id': 'add-passkey' });
+        this.#addModal = this.createModal({ 'data-id': 'add-user-passkey' });
         this.#addFlow = new FlowDriver(
           () => this.#addModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -75,7 +75,9 @@ export const initUserPasskeysMixin = createSingletonMixin(
       #initRemoveModal() {
         if (!this.userPasskeys.removePasskeyFlowId) return;
 
-        this.#removeModal = this.createModal({ 'data-id': 'remove-passkey' });
+        this.#removeModal = this.createModal({
+          'data-id': 'remove-user-passkey',
+        });
         this.#removeFlow = new FlowDriver(
           () => this.#removeModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },

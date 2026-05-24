@@ -74,7 +74,7 @@ test.describe('widget', () => {
 
     const avatar = page.locator('descope-avatar').first();
 
-    avatar.click();
+    await avatar.click();
 
     await page.waitForTimeout(MODAL_TIMEOUT);
 
@@ -88,7 +88,7 @@ test.describe('widget', () => {
       }),
     );
 
-    finishFlowBtn.click();
+    await finishFlowBtn.click();
 
     await page.waitForTimeout(STATE_TIMEOUT);
 
@@ -163,12 +163,6 @@ test.describe('widget', () => {
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
-      {
-        name: 'passkey',
-        action: 'add',
-        flagPath: 'webauthn',
-        fulfilled: 'true',
-      },
       { name: 'password', flagPath: 'password', fulfilled: null },
       { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
     ]) {
@@ -289,13 +283,7 @@ test.describe('widget', () => {
   });
 
   test.describe('passkeys', () => {
-    const passkeysRoot = `<descope-user-passkeys
-      data-id="passkey"
-      allow-remove="true"
-      add-passkey-flow-id="add-passkey-flow"
-      remove-passkey-flow-id="remove-passkey-flow"
-      label="Passkey"
-    ></descope-user-passkeys>`;
+    test.use({ timezoneId: 'UTC' });
 
     const passkeysResponse = {
       passkeys: [
@@ -316,15 +304,6 @@ test.describe('widget', () => {
       ],
     };
 
-    test.beforeEach(async ({ page }) => {
-      await page.route('**/root.html', async (route) =>
-        route.fulfill({ body: passkeysRoot }),
-      );
-      await page.route('**/v1/mgmt/user/passkeys/list', async (route) =>
-        route.fulfill({ json: passkeysResponse }),
-      );
-    });
-
     test('fetches passkeys on init with the user loginId', async ({ page }) => {
       const passkeysReq = page.waitForRequest(
         (req) =>
@@ -340,32 +319,29 @@ test.describe('widget', () => {
       });
     });
 
-    test('normalizes raw API fields into the element data property', async ({
+    test('renders a row per passkey with name, date, and id', async ({
       page,
     }) => {
+      await page.route('**/v1/mgmt/user/passkeys/list', async (route) =>
+        route.fulfill({ json: passkeysResponse }),
+      );
+
       await page.goto(`http://localhost:${widgetPort}`);
       await page.waitForTimeout(STATE_TIMEOUT);
 
       const passkeysEl = page.locator('descope-user-passkeys').first();
-      await expect(passkeysEl).toBeAttached();
 
-      const data = await passkeysEl.evaluate(
-        (el: HTMLElement & { data?: { id: string }[] }) => el.data,
-      );
+      await expect(passkeysEl.getByText('iPhone')).toBeVisible();
+      await expect(passkeysEl.getByText('01/04/2025 08:00')).toBeVisible();
+      await expect(
+        passkeysEl.locator('[data-passkey-id="pk-1"]'),
+      ).toBeAttached();
 
-      expect(data).toHaveLength(2);
-      expect(data.find((p) => p.id === 'pk-1')).toEqual({
-        id: 'pk-1',
-        name: 'iPhone',
-        passkeyType: 'apple',
-        createdAt: 1735977600000,
-      });
-      expect(data.find((p) => p.id === 'pk-2')).toEqual({
-        id: 'pk-2',
-        name: 'Chrome',
-        passkeyType: 'google',
-        createdAt: 1738750500000,
-      });
+      await expect(passkeysEl.getByText('Chrome')).toBeVisible();
+      await expect(passkeysEl.getByText('02/05/2025 10:15')).toBeVisible();
+      await expect(
+        passkeysEl.locator('[data-passkey-id="pk-2"]'),
+      ).toBeAttached();
     });
   });
 
