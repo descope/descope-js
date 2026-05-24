@@ -150,37 +150,6 @@ describe('flowNonce race (descope/etc#15600)', () => {
     expect(nonce2).toBe(rotatedNonce);
   });
 
-  it('does not serialize across different executionIds', async () => {
-    const execA = 'exec-A';
-    const execB = 'exec-B';
-    seedNonce(execA, 'A_V1');
-    seedNonce(execB, 'B_V1');
-
-    const order: string[] = [];
-    const fetchMock = jest.fn().mockImplementation(async (_url, init) => {
-      const body = (init as RequestInit).body as string;
-      const id = body.includes(execA) ? execA : execB;
-      order.push(`start:${id}`);
-      // execA takes longer. If execB were blocked behind execA it would
-      // finish later. Parallel execution means execB finishes first.
-      await new Promise((r) => setTimeout(r, id === execA ? 200 : 20));
-      order.push(`end:${id}`);
-      return buildResponse(id, null);
-    });
-    global.fetch = fetchMock;
-
-    const sdk = createSdk({ projectId: 'pid' });
-
-    await Promise.all([
-      sdk.flow.next(`flow|#|${execA}`, 'step', 'submit'),
-      sdk.flow.next(`flow|#|${execB}`, 'step', 'submit'),
-    ]);
-
-    expect(order.indexOf(`end:${execB}`)).toBeLessThan(
-      order.indexOf(`end:${execA}`),
-    );
-  });
-
   it('releases in-flight slot via the rejection path when first fetch rejects', async () => {
     // afterRequest is not invoked on fetch rejection. The wrapper's catch
     // handler must call finish() synchronously so the successor proceeds

@@ -18,16 +18,6 @@ import {
 } from './helpers';
 import { FlowNonceOptions } from './types';
 
-/**
- * One link in a per-executionId FIFO chain. `promise` resolves when this
- * request finishes; `finish` releases the slot exactly once.
- */
-type ChainLink = { promise: Promise<void>; finish: () => void };
-
-/**
- * `/v1/flow/next` is the only path we serialize. URL may have a query
- * string, so compare against the pathname.
- */
 const isFlowNextUrl = (input: RequestInfo | URL): boolean => {
   const url =
     typeof input === 'string'
@@ -42,11 +32,6 @@ const isFlowNextUrl = (input: RequestInfo | URL): boolean => {
   }
 };
 
-/**
- * SDK serializes flow.next bodies as JSON strings. Anything else (no body,
- * FormData, Blob) is ignored: we only serialize requests whose executionId
- * we can read.
- */
 const readExecIdFromBody = (init?: RequestInit): string | null => {
   if (typeof init?.body !== 'string') return null;
   try {
@@ -60,13 +45,12 @@ const readExecIdFromBody = (init?: RequestInit): string | null => {
 /**
  * Adds flow nonce handling to the SDK.
  *
- * Concurrent flow.next calls for the same executionId would otherwise read
- * the same nonce from localStorage. Server rotates atomically on the first
- * request and rejects the second with E108201. This enhancer chains
- * concurrent calls per executionId: each waits for its predecessor's
- * afterRequest to store the rotated nonce, then re-reads it before sending.
- *
- * See descope/etc#15600.
+ * Two concurrent flow.next calls in the same SDK instance would otherwise
+ * read the same nonce from localStorage. Server rotates atomically on the
+ * first and rejects the second with E108201. This enhancer chains flow.next
+ * requests through a single in-flight promise so each call waits for its
+ * predecessor's afterRequest to store the rotated nonce, then re-reads it
+ * before sending. See descope/etc#15600.
  */
 export const withFlowNonce =
   <T extends CreateWebSdk>(createSdk: T) =>
@@ -83,44 +67,17 @@ export const withFlowNonce =
 
     cleanupExpiredNonces(nonceStoragePrefix);
 
-    // One FIFO chain per executionId. Wrapper appends. afterRequest releases
-    // the head. Each link's finish is idempotent and self-splices.
-    const chains = new Map<string, ChainLink[]>();
+    // One in-flight chain per SDK instance. flow.next requests run serially.
+    let chain: Promise<void> = Promise.resolve();
+    let releaseCurrent: (() => void) | null = null;
+    let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const appendChainLink = (execId: string): ChainLink => {
-      let resolve!: () => void;
-      const promise = new Promise<void>((r) => {
-        resolve = r;
-      });
-      let done = false;
-      const link: ChainLink = {
-        promise,
-        finish: () => {
-          if (done) return;
-          done = true;
-          const list = chains.get(execId);
-          if (list) {
-            const i = list.indexOf(link);
-            if (i !== -1) list.splice(i, 1);
-            if (list.length === 0) chains.delete(execId);
-          }
-          resolve();
-        },
-      };
-      const list = chains.get(execId) ?? [];
-      list.push(link);
-      chains.set(execId, list);
-      return link;
-    };
-
-    const previousLink = (
-      execId: string,
-      self: ChainLink,
-    ): ChainLink | undefined => {
-      const list = chains.get(execId);
-      if (!list) return undefined;
-      const i = list.indexOf(self);
-      return i > 0 ? list[i - 1] : undefined;
+    const releaseChain = () => {
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      fallbackTimer = null;
+      const r = releaseCurrent;
+      releaseCurrent = null;
+      r?.();
     };
 
     const baseFetch: typeof fetch =
@@ -129,41 +86,34 @@ export const withFlowNonce =
 
     const wrappedFetch: typeof fetch = async (input, init) => {
       if (!isFlowNextUrl(input)) return baseFetch(input, init);
+
+      let myRelease!: () => void;
+      const myTurn = chain;
+      chain = new Promise<void>((resolve) => {
+        myRelease = resolve;
+      });
+      await myTurn;
+      // Claim the live slot now that we are at the head of the chain.
+      releaseCurrent = myRelease;
+      fallbackTimer = setTimeout(releaseChain, FLOW_NONCE_INFLIGHT_TIMEOUT_MS);
+
+      // Re-read nonce: predecessor's afterRequest stored the rotated value
+      // before resolving the chain. `new Headers(...)` copies whatever
+      // HeadersInit shape we received without mutating the caller's object.
       const execId = readExecIdFromBody(init);
-      if (!execId) return baseFetch(input, init);
-
-      // Append synchronously so siblings in the same tick see us as their
-      // predecessor.
-      const link = appendChainLink(execId);
-      const predecessor = previousLink(execId, link);
-
-      if (predecessor) {
-        await predecessor.promise.catch(() => undefined);
-      }
-
-      // We are at the head of the chain. Start the stuck-fetch fallback now
-      // (not while waiting), so a slow predecessor does not burn our budget.
-      const fallback = setTimeout(link.finish, FLOW_NONCE_INFLIGHT_TIMEOUT_MS);
-
-      // Re-read after predecessor's afterRequest stored the rotated nonce.
-      // `new Headers(...)` copies whatever HeadersInit we received without
-      // mutating the caller's object.
       const headers = new Headers(init?.headers);
-      const nonce = getFlowNonce(execId, nonceStoragePrefix);
-      if (nonce) headers.set(FLOW_NONCE_HEADER, nonce);
-      else headers.delete(FLOW_NONCE_HEADER);
+      if (execId) {
+        const nonce = getFlowNonce(execId, nonceStoragePrefix);
+        if (nonce) headers.set(FLOW_NONCE_HEADER, nonce);
+        else headers.delete(FLOW_NONCE_HEADER);
+      }
 
       try {
         return await baseFetch(input, { ...init, headers });
       } catch (err) {
-        // afterRequest does not run when fetch rejects; release here so the
-        // successor isn't stuck behind us.
-        link.finish();
+        // afterRequest does not run on fetch reject; release here.
+        releaseChain();
         throw err;
-      } finally {
-        clearTimeout(fallback);
-        // Successful release happens in afterRequest, AFTER the rotated
-        // nonce is written to localStorage.
       }
     };
 
@@ -193,12 +143,9 @@ export const withFlowNonce =
           }
         }
       } finally {
-        // Release the head of the chain. Storage already happened above so
-        // any successor that wakes up reads the rotated nonce.
-        if (req.path === FLOW_NEXT_PATH) {
-          const execId = getExecutionIdFromRequest(req);
-          if (execId) chains.get(execId)?.[0]?.finish();
-        }
+        // Release after storage so any waiting flow.next reads the rotated
+        // nonce instead of the stale one.
+        if (req.path === FLOW_NEXT_PATH) releaseChain();
       }
     };
 
