@@ -144,7 +144,7 @@ export const persistTokens = (
       const cookieDomain =
         sessionTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getSessionCookieName(sessionTokenViaCookie);
-      if (cookieSecure && window.location.protocol !== ('https:' as any)) {
+      if (cookieSecure && window.location.protocol !== 'https:') {
         logger.warn(
           "Session token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass sessionTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
         );
