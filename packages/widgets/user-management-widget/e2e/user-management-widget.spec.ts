@@ -1000,10 +1000,9 @@ test.describe('widget', () => {
     await openAddUserModalButton.click();
     await page.waitForTimeout(MODAL_TIMEOUT);
 
-    // Use attribute check — webkit may not map HTML `hidden` attr to CSS display:none in web components
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
-    ).toHaveAttribute('hidden');
+    ).toBeHidden();
   });
 
   test('edit user - sub-tenant displays tenant name, not tenant id', async ({
@@ -1023,7 +1022,7 @@ test.describe('widget', () => {
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).not.toHaveAttribute('hidden', { timeout: 8000 });
+    ).toBeVisible({ timeout: 8000 });
 
     // The data attribute should map tenantId → { label: tenantName, options: roleNames }
     // so the component receives 'Sub Tenant One' as the display label for 'sub-tenant-1'
@@ -1061,7 +1060,7 @@ test.describe('widget', () => {
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).toHaveAttribute('hidden', { timeout: 8000 });
+    ).toBeHidden({ timeout: 8000 });
   });
 
   test('create user - sub-tenant values reset after cancel', async ({

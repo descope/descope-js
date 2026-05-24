@@ -14,6 +14,10 @@ const reducer = buildAsyncReducer(action)(
       // eslint-disable-next-line no-param-reassign
       state.subTenantRoles.data = action.payload.roles;
     },
+    onRejected: (state) => {
+      // eslint-disable-next-line no-param-reassign
+      state.subTenantRoles.data = [];
+    },
   },
   withRequestStatus((state: State) => state.subTenantRoles),
 );

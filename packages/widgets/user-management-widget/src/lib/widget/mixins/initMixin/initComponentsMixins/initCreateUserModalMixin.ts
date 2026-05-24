@@ -150,7 +150,8 @@ export const initCreateUserModalMixin = createSingletonMixin(
 
       #updateSubTenantSection = () => {
         const hasSubTenants = getHasSubTenants(this.state);
-        this.#subTenantSection?.toggleAttribute('hidden', !hasSubTenants);
+        // hide the sub-tenant section when there are no sub-tenants to assign
+        this.#subTenantSection?.classList.toggle('hidden', !hasSubTenants);
         if (hasSubTenants) {
           this.#subTenantMappings.setData(getSubTenantRolesData(this.state));
         }

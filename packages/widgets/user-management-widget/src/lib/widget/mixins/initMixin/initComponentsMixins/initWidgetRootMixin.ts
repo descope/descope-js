@@ -37,6 +37,8 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
+        this.injectStyle('.hidden { display: none; }');
+
         await Promise.all([
           this.#initWidgetRoot(),
           this.actions.searchUsers(),
