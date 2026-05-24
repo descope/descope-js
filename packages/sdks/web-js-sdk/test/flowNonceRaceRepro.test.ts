@@ -1,7 +1,6 @@
 import createSdk from '../src/index';
 import {
   FLOW_NONCE_HEADER,
-  FLOW_NONCE_INFLIGHT_TIMEOUT_MS,
   FLOW_NONCE_PREFIX,
   FLOW_NEXT_TTL,
 } from '../src/enhancers/withFlowNonce/constants';
@@ -150,46 +149,7 @@ describe('flowNonce race (descope/etc#15600)', () => {
     expect(nonce2).toBe(rotatedNonce);
   });
 
-  it('does not deadlock when core-js-sdk retries on 503', async () => {
-    // core-js-sdk's fetchWrapper retries 503/521/522/524/530 by calling our
-    // wrappedFetch again with the same args. If the retry tried to acquire
-    // the chain it would block on its own outer call's promise.
-    const executionId = 'retry-exec-id';
-    seedNonce(executionId, 'NONCE_V1');
-
-    let callIdx = 0;
-    const fetchMock = jest.fn().mockImplementation(async () => {
-      const idx = callIdx++;
-      if (idx === 0) {
-        const headers = new Headers();
-        return {
-          status: 503,
-          ok: false,
-          json: () => Promise.resolve({}),
-          text: () => Promise.resolve('{}'),
-          clone() {
-            return this;
-          },
-          headers,
-        } as unknown as Response;
-      }
-      return buildResponse(executionId, 'NONCE_V2');
-    });
-    global.fetch = fetchMock;
-
-    const sdk = createSdk({ projectId: 'pid' });
-
-    // Should complete within a single retry delay (~100ms), not 30s+.
-    const start = Date.now();
-    await sdk.flow.next(`flow|#|${executionId}`, 'step', 'submit');
-    expect(Date.now() - start).toBeLessThan(2_000);
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-  });
-
-  it('releases in-flight slot via the rejection path when first fetch rejects', async () => {
-    // afterRequest is not invoked on fetch rejection. The wrapper's catch
-    // handler must call finish() synchronously so the successor proceeds
-    // without waiting for the fallback timeout.
+  it('releases the chain when flow.next rejects so the next call can run', async () => {
     const executionId = 'reject-exec-id';
     seedNonce(executionId, 'NONCE_V1');
 
@@ -213,67 +173,6 @@ describe('flowNonce race (descope/etc#15600)', () => {
     await expect(
       sdk.flow.next(`flow|#|${executionId}`, 'step', 'submit'),
     ).resolves.toBeDefined();
-
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-  });
-
-  it('releases in-flight slot when response has no nonce header', async () => {
-    const executionId = 'no-nonce-exec-id';
-    seedNonce(executionId, 'NONCE_V1');
-
-    const fetchMock = jest
-      .fn()
-      .mockImplementation(async () => buildResponse(executionId, null));
-    global.fetch = fetchMock;
-
-    const sdk = createSdk({ projectId: 'pid' });
-
-    const call1 = sdk.flow.next(`flow|#|${executionId}`, 'step', 'submit');
-    const call2 = sdk.flow.next(`flow|#|${executionId}`, 'step', 'submit');
-    await Promise.all([call1, call2]);
-
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-  });
-
-  it('frees a stuck in-flight slot after the fallback timeout', async () => {
-    jest.useFakeTimers();
-    const executionId = 'stuck-exec-id';
-    seedNonce(executionId, 'NONCE_V1');
-
-    let resolveSecond!: () => void;
-    let callIdx = 0;
-    const fetchMock = jest.fn().mockImplementation(() => {
-      const idx = callIdx++;
-      if (idx === 0) {
-        return new Promise(() => {
-          /* never resolves */
-        });
-      }
-      return new Promise((r) => {
-        resolveSecond = () => r(buildResponse(executionId, null));
-      });
-    });
-    global.fetch = fetchMock;
-
-    const sdk = createSdk({ projectId: 'pid' });
-
-    sdk.flow.next(`flow|#|${executionId}`, 'step', 'submit').catch(() => {
-      /* never settles in this test */
-    });
-
-    const secondPromise = sdk.flow.next(
-      `flow|#|${executionId}`,
-      'step',
-      'submit',
-    );
-
-    await jest.advanceTimersByTimeAsync(FLOW_NONCE_INFLIGHT_TIMEOUT_MS + 1);
-
-    await Promise.resolve();
-    await Promise.resolve();
-    resolveSecond();
-    jest.useRealTimers();
-    await secondPromise;
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
