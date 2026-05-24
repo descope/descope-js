@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.49.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.4...web-js-sdk-1.49.0) (2026-05-24)
+
+
+### Features
+
+* **web-js-sdk:** skip tryRefresh when no login indicator in localStorage ([#1383](https://github.com/descope/descope-js/issues/1383)) RELEASE ([c5b6898](https://github.com/descope/descope-js/commit/c5b6898c1b6a1b260e023b5d08fb50a90df23d81))
+
 ## [1.48.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.3...web-js-sdk-1.48.4) (2026-05-14)
 
 
