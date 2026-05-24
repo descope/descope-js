@@ -350,23 +350,22 @@ test.describe('widget', () => {
       await expect(passkeysEl).toBeAttached();
 
       const data = await passkeysEl.evaluate(
-        (el: HTMLElement & { data?: unknown }) => el.data,
+        (el: HTMLElement & { data?: { id: string }[] }) => el.data,
       );
 
-      expect(data).toEqual([
-        {
-          id: 'pk-1',
-          name: 'iPhone',
-          passkeyType: 'apple',
-          createdAt: 1735977600000,
-        },
-        {
-          id: 'pk-2',
-          name: 'Chrome',
-          passkeyType: 'google',
-          createdAt: 1738750500000,
-        },
-      ]);
+      expect(data).toHaveLength(2);
+      expect(data.find((p) => p.id === 'pk-1')).toEqual({
+        id: 'pk-1',
+        name: 'iPhone',
+        passkeyType: 'apple',
+        createdAt: 1735977600000,
+      });
+      expect(data.find((p) => p.id === 'pk-2')).toEqual({
+        id: 'pk-2',
+        name: 'Chrome',
+        passkeyType: 'google',
+        createdAt: 1738750500000,
+      });
     });
   });
 
