@@ -59,6 +59,12 @@ test.describe('widget', () => {
       }),
     );
 
+    await page.route('**/v1/mgmt/user/passkeys/list', async (route) =>
+      route.fulfill({
+        json: { passkeys: [] },
+      }),
+    );
+
     await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForTimeout(STATE_TIMEOUT);
   });
