@@ -167,7 +167,6 @@ const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
 
 export {
   cleanupExpiredNonces,
-  extractExecId,
   extractFlowNonce,
   getExecutionIdFromRequest,
   getFlowNonce,
