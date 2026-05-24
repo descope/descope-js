@@ -35,6 +35,7 @@ import {
   SAML_IDP_USERNAME_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  CUSTOM_APP_ID_PARAM_NAME,
 } from '../src/lib/constants';
 
 describe('web-component', () => {
