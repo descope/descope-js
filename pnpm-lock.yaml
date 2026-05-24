@@ -245,6 +245,8 @@ importers:
         specifier: ^5.0.2
         version: 5.6.3
 
+  packages/libs/escape-markdown/dist/cjs: {}
+
   packages/libs/sdk-component-drivers:
     dependencies:
       '@descope/sdk-helpers':
@@ -381,6 +383,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/libs/sdk-component-drivers/dist/cjs: {}
+
   packages/libs/sdk-helpers:
     dependencies:
       tslib:
@@ -510,6 +514,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-helpers/dist/cjs: {}
 
   packages/libs/sdk-mixins:
     dependencies:
@@ -667,6 +673,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/libs/sdk-mixins/dist/cjs: {}
 
   packages/sdks/angular-sdk:
     dependencies:
@@ -927,6 +935,8 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.4.5
+
+  packages/sdks/core-js-sdk/dist/cjs: {}
 
   packages/sdks/nextjs-sdk:
     dependencies:
@@ -1573,7 +1583,7 @@ importers:
     devDependencies:
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -1858,6 +1868,8 @@ importers:
         specifier: ^5.0.2
         version: 5.4.5
 
+  packages/sdks/web-js-sdk/dist/cjs: {}
+
   packages/widgets/access-key-management-widget:
     dependencies:
       '@descope/sdk-component-drivers':
@@ -1896,7 +1908,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2077,7 +2089,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2258,7 +2270,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2442,7 +2454,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2623,7 +2635,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2807,7 +2819,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -2998,7 +3010,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3182,7 +3194,7 @@ importers:
         version: link:../../libs/e2e-helpers
       '@descope/web-components-ui':
         specifier: latest
-        version: 3.3.2
+        version: 3.11.5
       '@open-wc/rollup-plugin-html':
         specifier: 1.2.5
         version: 1.2.5
@@ -3585,8 +3597,8 @@ packages:
     resolution: {integrity: sha512-XvcZi1KWf88RVbF9wn8MN6tYFloU5qX8KjuF3E1PVBmJ9eypXfs4GRiJwLuTZL0iSnJUKn1BFPa5BPZZJyFzPg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/compat-data@7.29.0':
-    resolution: {integrity: sha512-T1NCJqT/j9+cn8fvkt7jtwbLBfLC/1y1c7NtCeXFRgzGTsafi68MRv8yzkYSapBnFA6L3U2VSc02ciDzoAJhJg==}
+  '@babel/compat-data@7.29.3':
+    resolution: {integrity: sha512-LIVqM46zQWZhj17qA8wb4nW/ixr2y1Nw+r1etiAWgRM6U1IqP+LNhL1yg440jYZR72jCWcWbLWzIosH+uP1fqg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/core@7.26.0':
@@ -3827,8 +3839,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/parser@7.29.2':
-    resolution: {integrity: sha512-4GgRzy/+fsBa72/RZVJmGKPmZu9Byn8o4MoLpmNe1m8ZfYnz5emHLQz3U4gLud6Zwl0RZIcgiLD7Uq7ySFuDLA==}
+  '@babel/parser@7.29.3':
+    resolution: {integrity: sha512-b3ctpQwp+PROvU/cttc4OYl4MzfJUWy6FZg+PMXfzmt/+39iHVF0sDfqay8TQM3JA2EUOyKcFZt75jWriQijsA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4506,92 +4518,104 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@descope-ui/common@3.3.2':
-    resolution: {integrity: sha512-J/QNAoOv5+gtvadL2OV+B2o25q7GZuHw5W0RLBUL6+SbjP9d4yFJzjQCbJRUGh+p/yvgqAh/abNceWftQxFz+A==}
+  '@descope-ui/common@3.11.5':
+    resolution: {integrity: sha512-7ZfxgatMX7lqF3NEfSR5gnM7cnvtu4PCRFtaFxlTYeV/RoiBV6KtWFBgs6MiVjqHzJMqhW3zuNI3LB2ILlPKmA==}
 
-  '@descope-ui/descope-address-field@3.3.2':
-    resolution: {integrity: sha512-GzNUoxQrcNzfAMJCwG/YSzGM2c9csQxYxjuXVihYSn7kwiKpmLwinvomSvjSfcqXVA/uY4ZubIhdoz4H+QoqOQ==}
+  '@descope-ui/descope-address-field@3.11.5':
+    resolution: {integrity: sha512-Y8cV22v+cJrwiqgQYMNyXC2lrmaHzzm/KZa2RqNHoc3Xpz0wTAf7XtkPOsbCN3/uZ2kpZUyFcA6PSsxUW1dU0Q==}
 
-  '@descope-ui/descope-apps-list@3.3.2':
-    resolution: {integrity: sha512-AKawfGjQb1BNa81NlLmMPJUmHAv9kemgbQHSz4wKNBZji5hbfldHy4pTuQ/gPY5nu6KpwyGpntxqUhrwNd2Y8w==}
+  '@descope-ui/descope-anchored@3.11.5':
+    resolution: {integrity: sha512-yBhSpLfdh0A/AzjMaWmCvSmHz8hBbcvgfQ9alI8uKxJgtupN7y1sN9ClN75cFIj4y+ShQafoPSPxk7+xTmrKsw==}
 
-  '@descope-ui/descope-attachment@3.3.2':
-    resolution: {integrity: sha512-CqhcnWdUK/b0PP0Slc15ZiOPT1nxW1NdDD9wHX3smY8dK1mfS1QwDAIPlkYvQ4seNIr+4iPOr8WEdxe4U6RW8Q==}
+  '@descope-ui/descope-apps-list@3.11.5':
+    resolution: {integrity: sha512-pZdZmmt+66zfj9AyrzC1q99OcLnn8tIEXgYS23hzHbrWv9JZZ6LgdSwSgkoMRTfWo07RTMGQR1JPBxt+0th1ng==}
 
-  '@descope-ui/descope-autocomplete-field@3.3.2':
-    resolution: {integrity: sha512-Ddzdd2basvN2+cSo9QH7D3aPV7GQ2F4AeI2obYdU1hvCLS+UZ3zp20BDxw+KR92fMunqg/ElICm8GQnlQImLPA==}
+  '@descope-ui/descope-attachment@3.11.5':
+    resolution: {integrity: sha512-7g0WewokncFS62uzX9PGTY1/sY6Fe6nOKw09znOhq5LphmQeOCblwsMF8jCvRw3cZXYrLctsgjxgYu5BVioL6w==}
 
-  '@descope-ui/descope-avatar@3.3.2':
-    resolution: {integrity: sha512-oxqa+0ZMYdNsGCKXx08le534sBhrskPoZuuVBQIYWdSUbEvlQOtI/BnfZZPt1+eNRrusqogbCX1R7edSMtzrCA==}
+  '@descope-ui/descope-autocomplete-field@3.11.5':
+    resolution: {integrity: sha512-noXvNSu/4O7lnOBzFBAzlLEz9SwA1zibj6t9YHX/1EasoaadheAFdUGvt/qKsqYmUS/gmnu0P9qIBuZEgS45+A==}
 
-  '@descope-ui/descope-badge@3.3.2':
-    resolution: {integrity: sha512-sJmqPwmsb5ocCFZYEpQm189EXHmA1wOkFT99ycFhJa+gRxiZ3lrW9d/VDsw6ayP3fl87nVeO3G5om18IbcdeNg==}
+  '@descope-ui/descope-avatar@3.11.5':
+    resolution: {integrity: sha512-h5iXhHLJteYqwBftmsuhjWR9JKqC5wyUEObjuPUzu2lOH1TniK1Tv9D7+c5G+OQgIseRJk0bNu4tD8DGf7+xvQ==}
 
-  '@descope-ui/descope-button@3.3.2':
-    resolution: {integrity: sha512-Ib29bSVj7xhSHJ9J41ndzc3jk0Xcfwem+QOOEtydmHtxWxE6iGhfhPKpdw2sKBmtMvRhUJ4r3NdDuvgICB2GUA==}
+  '@descope-ui/descope-badge@3.11.5':
+    resolution: {integrity: sha512-Df+U3vioqokcGTMBImwYzh4wUqsqBQcaPKzrvnatwHwkDRbYJdLqWOQwFV+3mav56WbP5/zbpnT3gJAqG1UcCw==}
 
-  '@descope-ui/descope-collapsible-container@3.3.2':
-    resolution: {integrity: sha512-WU5oM/8xMnP0i5aUw09weEHBBO2o8+fThHLZrBy/0HHY5aYf70AbT7cSsRCLwaakOq93Yh4I16/ejDC6Gp+R2Q==}
+  '@descope-ui/descope-button@3.11.5':
+    resolution: {integrity: sha512-tDBavLi9yqw/xyuixobC19zfvKaYkFDVHeeuE0aszhDpRamKQkN3dGbZQpMpXk1nRuP7cQg1qIQeYlPcBFG1gw==}
 
-  '@descope-ui/descope-combo-box@3.3.2':
-    resolution: {integrity: sha512-PIvSehnfl2p7rgS00puq4BRN7wBuy9r4aoee75pLYwR/dqIWasGgQWog5DDpQ+BGT0nO0jM6yE8AbacRL8MBmg==}
+  '@descope-ui/descope-collapsible-container@3.11.5':
+    resolution: {integrity: sha512-lADXwunxx9U4xjZ/Mo3Pv1uBbQwiRnbqJ6GjGhD7ZonOBwmVSCkq3BLZzaB3VXSLSCFx68XOgf820n8uA+AIRA==}
 
-  '@descope-ui/descope-country-subdivision-city-field@3.3.2':
-    resolution: {integrity: sha512-prPYW2zy+U/WfTVU6WscAS523HuuQ3mZZUMyqFkcfEpyhRt8Od2Q85RxWUJUI4n+i894BBBwO6CB70fV5emqUQ==}
+  '@descope-ui/descope-combo-box@3.11.5':
+    resolution: {integrity: sha512-rO+7wtBVDTAQl2eyLc1FAtNpFdqalxekGfqaclehx3XCaB8Q4i+ozua1tGagWXvPQ71q9PCQLsGScu0PinUKYw==}
 
-  '@descope-ui/descope-enriched-text@3.3.2':
-    resolution: {integrity: sha512-PSRdwJKYeDAD002yw3nr+DAveUtzEL8XJ0ZRq5rhwgJveZes1h960IIFmPmny/Zi+FAx4h73YTCt0elC+90z8A==}
+  '@descope-ui/descope-country-subdivision-city-field@3.11.5':
+    resolution: {integrity: sha512-4hYl8u5yPisaaRIfBHF/tMa+wsCrx4Jojy8KeOcKcr3IweUzUI1PZFzoxBklwUS71KUg1WgqefuAamugi3XqbQ==}
 
-  '@descope-ui/descope-icon@3.3.2':
-    resolution: {integrity: sha512-1Sj1+w2Q0Yy3TbpKtz7b+5AbrNXWIFiUUp7G8SMjib+PX+llwxv2QdLRutugWVPO1f/aHcclaw1ltSiGnGwzjA==}
+  '@descope-ui/descope-enriched-text@3.11.5':
+    resolution: {integrity: sha512-X8YvdFvd1voXvSQW+yIhXcrid8w/TWH9po/yx+4aJBmFU+viZqmkHGeKQ8xww11gnkXELHLaWUVuPdqA7Cun6g==}
 
-  '@descope-ui/descope-image@3.3.2':
-    resolution: {integrity: sha512-NTENT+voEws0p8Dwl+i0kEYwj3NzO/MgCBRYDPB7fNxxrODo9dTk8+ExLDq/FqqAzu/0ef1sPw6sQmhpMinG3w==}
+  '@descope-ui/descope-icon@3.11.5':
+    resolution: {integrity: sha512-pTdwfXM0ur0sIlvn71qf1VZCXf43VvTwFX6tjEMudJ3J/oYNIUXpR9+VBGlEjZZdYu2EE3+r0pn41SMStCaGyA==}
 
-  '@descope-ui/descope-link@3.3.2':
-    resolution: {integrity: sha512-XGJi/3YKi3XfRDK03RgNAX0JOKjxu4sI+s5VOjjtr3H2nZIm72i3P3oy8UzTHBK13Fzrj2Zh6pvF97LcTK0i8A==}
+  '@descope-ui/descope-image@3.11.5':
+    resolution: {integrity: sha512-2JPasmf+ohTxybwD931MHoJMyOgp1BwE37kJh4nX5yQpyee5bN99xDOQb2XE5JbDpJFIy41MbegRj+t7psHe+w==}
 
-  '@descope-ui/descope-list-item@3.3.2':
-    resolution: {integrity: sha512-jzUvxerImPXuzNJEEOZI87BEF8nl8TyVZ9+r2I1BliyOIvrNrmCSJLkjknaCa7o1/pJhChztApL8VUMBmR9mpw==}
+  '@descope-ui/descope-link@3.11.5':
+    resolution: {integrity: sha512-Tx98nhiATupUEKEmSEdHDb8AOV2bO5c/C0mtwvbnmssj1YZZf9pdLwSD+VFd0+sEFaS0LzShDBHgnOXlPwYnbA==}
 
-  '@descope-ui/descope-list@3.3.2':
-    resolution: {integrity: sha512-1FVp6m5bzjS6e7/qd7bOm39z2t42xbuLQ5gVGhAX+YwuT6vLIlVBdIeaWp6jXGmZ3OhnJASipSelf7E5JQs90A==}
+  '@descope-ui/descope-list-item@3.11.5':
+    resolution: {integrity: sha512-UBPjkko/3JYRdKguu/ldv7DZLfj9eEGDthPYq93zJWpcIggQwyXRchvKyXxJajfnubF4z8JEEMPvqWiWa1Zfqw==}
 
-  '@descope-ui/descope-outbound-app-button@3.3.2':
-    resolution: {integrity: sha512-JgfUMrqdw6b569/wckWucgJM6tlppjzBM+/kFSmjh2g3hMeNE/glEmCIE2p01HcMqBJjt0IIkvGgYMfDmhK4Qw==}
+  '@descope-ui/descope-list@3.11.5':
+    resolution: {integrity: sha512-zYnmC9i6Dq356NQdKRTeIcKsAiESz8cjJqZ3tVt1Z3Ih88YcASM/iHCSZTL+hzUxMaTyG4BCGMPHkyW5kq7i9w==}
 
-  '@descope-ui/descope-outbound-apps@3.3.2':
-    resolution: {integrity: sha512-/DS47or5D2Nqk2xY8XUvDGXAMbTTlBpArcWSF89/jLLhqVRk7s82jWt/pcIoaNzR8gbFT2Z1PSyym39INePevA==}
+  '@descope-ui/descope-multi-line-mappings@3.11.5':
+    resolution: {integrity: sha512-DKH6BBZ400aQzjj2thTAEzMPQs0a0JAjFgBacJPC7xBw3oQyWvgyw079D0bjUMcaLxTUc7Hc5sBTsu51bByIhQ==}
 
-  '@descope-ui/descope-password-strength@3.3.2':
-    resolution: {integrity: sha512-oomDSpcuo3Y8j9IsFh7/dz0ePt73EwzO2/2P3zPMJHohcM6fDLKWc5KHBuyg/PPBSH0E6tvFj9Qaf2G+KqKnOQ==}
+  '@descope-ui/descope-multi-select-combo-box@3.11.5':
+    resolution: {integrity: sha512-4j5ZY9orT7AEENWnSOVYNpkw7c5DRPWgiBA603hkOgOM7U2dSqbTi3o+qo1a1MWftRKWjtyUXTpVn6plPgqntQ==}
 
-  '@descope-ui/descope-ponyhot@3.3.2':
-    resolution: {integrity: sha512-JHj7ZtJ0rqiYScHeskFumLKbo2VlNhdzGg3T0MQ76DR2bxsNi8ACnlMPnAs7T1CBoMzSPvXuFB5RFMVonkoqGQ==}
+  '@descope-ui/descope-outbound-app-button@3.11.5':
+    resolution: {integrity: sha512-cRLac2ylOaXGPtCBqRiW/Kn8M90c8QrbRof20c6hS/aqR7iBtgEkvleeAnOz4mpCuQwnH1QoJON9PEx5Qj41jg==}
 
-  '@descope-ui/descope-recovery-codes@3.3.2':
-    resolution: {integrity: sha512-VkL8scGr06jHe/bAS43MhOB5AJohgaoxmmlWjhxXhONIJ/wzvGHCksh9hKsexMqgTK5tABDEOiUqx4JWH9mrvQ==}
+  '@descope-ui/descope-outbound-apps@3.11.5':
+    resolution: {integrity: sha512-mDIynTJk6lnxdI4n+szFszJ6BXIC0R9DtXc8aU1/GL6cjr3Z6GRHLyubTIJjjSL4J+rpth+p78l0ri9RKKRuEQ==}
 
-  '@descope-ui/descope-text@3.3.2':
-    resolution: {integrity: sha512-6rUDES8us+GmhUZ/ZnumUPGGbbjza+VLTMb2ViWyxQ5GpWhG+QL/D4/Bl/6KDRK9K1Pa1mep95FbV+BQtCk4Gw==}
+  '@descope-ui/descope-password-strength@3.11.5':
+    resolution: {integrity: sha512-0cSFxmu369Vcn2fqNOjrfxGM97iaRkUq1GerRGelKFOvDqc4738WpcLwx/W+H255qKZa+bl/kP4blIQkXczeiw==}
 
-  '@descope-ui/descope-timer-button@3.3.2':
-    resolution: {integrity: sha512-+OaZt+T2AsNoU6O9uv4eayA4HoQIrtP1YljxuoQYbKS1lGGuK8C0tnUrRHpoVCYofqAR0SJRZSB17DH6s4MKbQ==}
+  '@descope-ui/descope-ponyhot@3.11.5':
+    resolution: {integrity: sha512-yf4QwyVbznWGaPdRB1S9rrL3fqH9zYT/ouJsBpnpD2sCcGi7pRmzd6sEdTdxmJ08LEHxxMdrYW6wkk0v0gEQxQ==}
 
-  '@descope-ui/descope-timer@3.3.2':
-    resolution: {integrity: sha512-U4xL4Q4q7oQSYqISlEXyGYyR86CwtgQYGk2lmlccgKU2QuaZiGJf6cWtpnttyVKGSxDozt4ric1I6MDy0QGcKQ==}
+  '@descope-ui/descope-recovery-codes@3.11.5':
+    resolution: {integrity: sha512-Esnti3BwsWyPEkeKNhGhjWygVRcLTOe+IofKWt6Ki0J7jVvf7UcWZtm5iqIvrqPvrEw+R0t8nXkhiSFOV/7yPA==}
 
-  '@descope-ui/descope-tooltip@3.3.2':
-    resolution: {integrity: sha512-qz/7bsvC9dV/NC+0vYaem+rwRnXEZqnIYpWHzWQs0sDu3FlKeMJnNOm4jU4tnM7obTACIhQjMKGaXD7ZN0HQxg==}
+  '@descope-ui/descope-text@3.11.5':
+    resolution: {integrity: sha512-vl003EOzA8Xh4XPTh7FYirgFiUKO9frTmulTi0ZdZCYzh0thWgKRUIs+MEmXgvrldl6XAltGPBc+lkC869YPXw==}
 
-  '@descope-ui/descope-trusted-devices@3.3.2':
-    resolution: {integrity: sha512-OWU4wV5uehHTyddNP+rZvusPaWP3NQ5xfIsSoKiYBvdT5YdIYgqBP5q/YbS0XqfCB2xb6otTIokTX8XP+9pxiw==}
+  '@descope-ui/descope-timer-button@3.11.5':
+    resolution: {integrity: sha512-59FqMgsNc6c8e+7qwCjIqihsi+qzQhfcb8vOn4Rtycd5rZDi1/jHCUxw+2iptY8IHowKBV09YabCyt7e6/hbnQ==}
 
-  '@descope-ui/theme-globals@3.3.2':
-    resolution: {integrity: sha512-r2zTbDg7mVViX9KIy+ZiHvK9TRZLUxaV6DBlJN5KOh/w6Lj4OHaPEapM7QknDbWSnLjEzZmipBOjL03NhNBn8A==}
+  '@descope-ui/descope-timer@3.11.5':
+    resolution: {integrity: sha512-dMd+8wwQTDvjqZrl/P8mhDrYRWY0ovoXIIUyS0Ph3+2YQ6RGjP2p/Hr+1gGqZoSQ5W3GkhUZllPKrUvCIAskiQ==}
 
-  '@descope-ui/theme-input-wrapper@3.3.2':
-    resolution: {integrity: sha512-MDyO4Y6eyhO5a90sJ+UCyKOd0BmrdlzxoL81A6Sj0JdVaBioZl8RWnR4vA1WLEwfAUFHrZUxMANZsy4+uK/w8A==}
+  '@descope-ui/descope-tooltip@3.11.5':
+    resolution: {integrity: sha512-/5i0aNONwo4E53t5iri3CYPYiL7+TZJBj0k0GtAFSsasEdnxHgdP1l1PCNeEiUErZyeCo2ID2j5LBJwh5BRsKw==}
+
+  '@descope-ui/descope-trusted-devices@3.11.5':
+    resolution: {integrity: sha512-kMKGPL2LXt8kAfqLt6bqtpZ0GfnyyHyTZk8vkvvCcXBCNyArIIB1Nchwm3Umj4WzzdmCpwUJrPUnvWnhV39f9w==}
+
+  '@descope-ui/descope-user-passkeys@3.11.5':
+    resolution: {integrity: sha512-O5TsMwVSZU18NZ1nVuv/I5NgoHXvndqi/CL7g8yN8m7YA7thJWFK3TmuRAwgIOaHex4su2d6gZWWjzptxAb41A==}
+
+  '@descope-ui/theme-globals@3.11.5':
+    resolution: {integrity: sha512-WhW84KMO0+WUPkmkJl2aQbJu3DZG9o2e2NnuohO1SExyu7oBBzW55tSEYeBhx7Vnq/b5i0p93mPBz7/WVpeT4g==}
+
+  '@descope-ui/theme-input-wrapper@3.11.5':
+    resolution: {integrity: sha512-pE/Nj1SKze6fJe95SjacBiNjlsOJvolZ0+QlLhJxiCQEOsBQPXf59nJ1MhADc4AwWS6byhWTClADJtOBh9uxUQ==}
 
   '@descope/core-js-sdk@2.40.0':
     resolution: {integrity: sha512-hFr/SzQO0QbyDaI1LlN//HKi3hXNJAnU0lFUpsqwo92YmCvYzhSZ7r6aBvT0DU2jaXmvt/0Y9TyNQuEKsGpT/A==}
@@ -4603,8 +4627,8 @@ packages:
     resolution: {integrity: sha512-v4kII4vcCdQO/ootlGpB97ovjTwE3Z2S0MmIF5j7kgXQIPTUM01fOsbAaPPUn5lXX7muD2VcsDs6Ic1k2yQjrA==}
     engines: {node: '>= 16.0.0'}
 
-  '@descope/web-components-ui@3.3.2':
-    resolution: {integrity: sha512-BcbMMnzmSoGjR9MldCJOBUtN8fyUrcAv8SWoUJgD0KHzaBozSZvcS9aLnniU+DHh8BnWKhEG5WAwNGecWLXpiA==}
+  '@descope/web-components-ui@3.11.5':
+    resolution: {integrity: sha512-fD9BIh2ls2twz12s0ruj+1zV7ekk5PlP3FQHBLPXABaNJ9bd1JElDCbaVdhZgJC3wSbamBDH77MQ3CAzE89V1Q==}
 
   '@descope/web-js-sdk@1.29.1':
     resolution: {integrity: sha512-YUMJQ9TrEhp8SDtOcERF4tr7IguBt5//0sm8k8/tFc/9qb1uZ9Hz1z2+1NX8cnni+tMpOUH7tRFEoprpKayPEw==}
@@ -5934,8 +5958,8 @@ packages:
   '@lit-labs/ssr-dom-shim@1.4.0':
     resolution: {integrity: sha512-ficsEARKnmmW5njugNYKipTm4SFnbik7CXtoencDZzmzo/dQ+2Q0bgkzJuoJP20Aj0F+izzJjOqsnkd6F/o1bw==}
 
-  '@lit-labs/ssr-dom-shim@1.5.1':
-    resolution: {integrity: sha512-Aou5UdlSpr5whQe8AA/bZG0jMj96CoJIWbGfZ91qieWu5AWUMKw8VR/pAkQkJYvBNhmCcWnZlyyk5oze8JIqYA==}
+  '@lit-labs/ssr-dom-shim@1.6.0':
+    resolution: {integrity: sha512-VHb0ALPMTlgKjM6yIxxoQNnpKyUKLD04VzeQdsiXkMqkvYlAHxq9glGLmgbb889/1GsohSOAjvQYoiBppXFqrQ==}
 
   '@lit/reactive-element@2.1.1':
     resolution: {integrity: sha512-N+dm5PAYdQ8e6UlywyyrgI2t++wFGXfHx+dSJ1oBrg6FAxUj40jId++EaRm80MKX5JnlH1sBsyZ5h0bcZKemCg==}
@@ -7955,6 +7979,7 @@ packages:
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@vaadin/a11y-base@24.3.22':
     resolution: {integrity: sha512-QrVsB7R+WGHlwEzVyvhwL6HvAGErF6CHTDBEyvKyt3jmjIqRDiCBGjvq6g/SHYUUNQNH1u892ANXGHLAQGGqLQ==}
@@ -8893,8 +8918,8 @@ packages:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
     engines: {node: ^4.5.0 || >= 5.9}
 
-  baseline-browser-mapping@2.10.24:
-    resolution: {integrity: sha512-I2NkZOOrj2XuguvWCK6OVh9GavsNjZjK908Rq3mIBK25+GD8vPX5w2WdxVqnQ7xx3SrZJiCiZFu+/Oz50oSYSA==}
+  baseline-browser-mapping@2.10.32:
+    resolution: {integrity: sha512-wbPvpyjJPC0zdfdKXxqEL3Ea+bOMD/87X4lftiJkkaBiuG6ALQy1SLmEd7BSmVCuwCQsBrCamgBoLyfFDD1EPg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -9071,8 +9096,8 @@ packages:
   caniuse-lite@1.0.30001696:
     resolution: {integrity: sha512-pDCPkvzfa39ehJtJ+OwGT/2yvT2SbjfHhiIW2LWOAcMQ7BzwxT/XuyUp4OTOd0XFWA6BKw0JalnBHgSi5DGJBQ==}
 
-  caniuse-lite@1.0.30001791:
-    resolution: {integrity: sha512-yk0l/YSrOnFZk3UROpDLQD9+kC1l4meK/wed583AXrzoarMGJcbRi2Q4RaUYbKxYAsZ8sWmaSa/DsLmdBeI1vQ==}
+  caniuse-lite@1.0.30001793:
+    resolution: {integrity: sha512-iwSsYWaCOoh26cV8NwNRViHlrfUvYsHDfRVcbtmw0Kg6PJIZZXwMkj1442FYLBGkeUf1juAsU3DTfxW579mrPA==}
 
   case-sensitive-paths-webpack-plugin@2.4.0:
     resolution: {integrity: sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==}
@@ -10120,8 +10145,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.1:
-    resolution: {integrity: sha512-JahakDAIg1gyOm7dlgWSDjV4n7Ip2PKR55NIT6jrMfIgLFgWo81vdr1/QGqWtFNRqXP9UV71oVePtjqS2ebnPw==}
+  dompurify@3.4.5:
+    resolution: {integrity: sha512-OrwIBKsdNSVEeubdJ1HBv/wNENRM9ytAVCv7YXt//A3vPdVMNuACRqK9mXCGCBW2ln7BT/A4X0jXHo2Gu89miA==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -10198,8 +10223,8 @@ packages:
   electron-to-chromium@1.4.825:
     resolution: {integrity: sha512-OCcF+LwdgFGcsYPYC5keEEFC2XT0gBhrYbeGzHCx7i9qRFbzO/AqTmc/C/1xNhJj+JA7rzlN7mpBuStshh96Cg==}
 
-  electron-to-chromium@1.5.345:
-    resolution: {integrity: sha512-F9JXQGiMrz6yVNPI2qOVPvB9HzjH5cGzhs8oJ6A28V5L/YnzN/0KsuiibqF+F1Fd9qxFzD1BUnYSd8JfULxTwg==}
+  electron-to-chromium@1.5.361:
+    resolution: {integrity: sha512-Q6Hts7N9FnJc5LeGRINFvLhCI9xZmNtTDe5ZbcVezQz7cU4a8Aua3GH1b8J2XY8Al9PF+OCwYqhgsOOheMdvkA==}
 
   electron-to-chromium@1.5.90:
     resolution: {integrity: sha512-C3PN4aydfW91Natdyd449Kw+BzhLmof6tzy5W1pFC5SpQxVXT+oyiyOG9AgYYSN9OdA/ik3YkCrpwqI8ug5Tug==}
@@ -11155,11 +11180,13 @@ packages:
   git-raw-commits@4.0.0:
     resolution: {integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==}
     engines: {node: '>=16'}
+    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
     hasBin: true
 
   git-semver-tags@7.0.1:
     resolution: {integrity: sha512-NY0ZHjJzyyNXHTDZmj+GG7PyuAKtMsyWSwh07CR2hOZFa+/yoTsXci/nF2obzL8UDhakFNkD9gNdt/Ed+cxh2Q==}
     engines: {node: '>=16'}
+    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
     hasBin: true
 
   glob-parent@5.1.2:
@@ -12411,8 +12438,8 @@ packages:
     resolution: {integrity: sha512-cNOjgCnLB+FnvWWtyRTzmB3POJ+cXxTA81LoW7u8JdmhfXzriropYwpjShnz1QLLWsQwY7nIxoDmcPTwphDK9w==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  linkify-it@5.0.0:
-    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+  linkify-it@5.0.1:
+    resolution: {integrity: sha512-wVoTjP4Q6R0NW5hiZkVJaFZPWgtXfoGF+6LucL3/FtiNjmcHhYjEr5f1Kqjirc1nBW07J/ZuRFumqr2oqccEWg==}
 
   lint-staged@13.3.0:
     resolution: {integrity: sha512-mPRtrYnipYYv1FEE134ufbWpeggNTo+O/UPzngoaKzbzHAthvR55am+8GfHTnqNRQVRRrYQLGW9ZyUoD7DsBHQ==}
@@ -12459,14 +12486,14 @@ packages:
   lit-html@3.3.1:
     resolution: {integrity: sha512-S9hbyDu/vs1qNrithiNyeyv64c9yqiW9l+DBgI18fL+MTvOtWoFR0FWiyq1TxaYef5wNlpEmzlXoBlZEO+WjoA==}
 
-  lit-html@3.3.2:
-    resolution: {integrity: sha512-Qy9hU88zcmaxBXcc10ZpdK7cOLXvXpRoBxERdtqV9QOrfpMZZ6pSYP91LhpPtap3sFMUiL7Tw2RImbe0Al2/kw==}
+  lit-html@3.3.3:
+    resolution: {integrity: sha512-el8M6jK2o3RXBnrSHX3ZKrsN8zEV63pSExTO1wYJz7QndGYZ8353e2a5PPX+qHe2aGayfnchQmkAojaWAREOIA==}
 
   lit@3.3.1:
     resolution: {integrity: sha512-Ksr/8L3PTapbdXJCk+EJVB78jDodUMaP54gD24W186zGRARvwrsPfS60wae/SSCTCNZVPd1chXqio1qHQmu4NA==}
 
-  lit@3.3.2:
-    resolution: {integrity: sha512-NF9zbsP79l4ao2SNrH3NkfmFgN/hBYSQo90saIVI1o5GpjAdCPVstVzO1MrLOakHoEhYkrtRjPK6Ob521aoYWQ==}
+  lit@3.3.3:
+    resolution: {integrity: sha512-fycuvZg/hkpozL00lm1pEJH5nN/lr9ZXd6mJI2HSN4+Bzc+LDNdEApJ6HFbPkdFNHLvOplIIuJvxkS4XUxqirw==}
 
   livereload-js@3.4.1:
     resolution: {integrity: sha512-5MP0uUeVCec89ZbNOT/i97Mc+q3SxXmiUGhRFOTmhrGPn//uWVQdCvcLJDy64MSBR5MidFdOR7B9viumoavy6g==}
@@ -12933,6 +12960,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.12:
+    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   nanoid@3.3.8:
     resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -13104,8 +13136,9 @@ packages:
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
-  node-releases@2.0.38:
-    resolution: {integrity: sha512-3qT/88Y3FbH/Kx4szpQQ4HzUbVrHPKTLVpVocKiLfoYvw9XSGOX2FmD2d6DrXbVYyAQTF2HeF6My8jmzx7/CRw==}
+  node-releases@2.0.46:
+    resolution: {integrity: sha512-GYVXHE2KnrzAfsAjl4uP++evGFCrAU1jta4ubEjIG7YWt/64Gqv66a30yKwWczVjA6j3bM4nBwH7Pk1JmDHaxQ==}
+    engines: {node: '>=18'}
 
   nopt@7.2.1:
     resolution: {integrity: sha512-taM24ViiimT/XntxbPyJQzCG+p4EKOpgD3mxFwW38mGjVUrfERQOeY4EDHjdnptttfHuHQXFx+lTP08Q+mLa/w==}
@@ -13832,8 +13865,8 @@ packages:
     resolution: {integrity: sha512-6oz2beyjc5VMn/KV1pPw8fliQkhBXrVn1Z3TVyqZxU8kZpzEKhBdmCFqI6ZbmGtamQvQGuU1sgPTk8ZrXDD7jQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.5.12:
-    resolution: {integrity: sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==}
+  postcss@8.5.15:
+    resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.3:
@@ -15643,6 +15676,7 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -16531,7 +16565,7 @@ snapshots:
 
   '@babel/compat-data@7.26.5': {}
 
-  '@babel/compat-data@7.29.0':
+  '@babel/compat-data@7.29.3':
     optional: true
 
   '@babel/core@7.26.0':
@@ -16562,7 +16596,7 @@ snapshots:
       '@babel/helper-compilation-targets': 7.28.6
       '@babel/helper-module-transforms': 7.28.6(@babel/core@7.26.10)
       '@babel/helpers': 7.29.2
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.3
       '@babel/template': 7.28.6
       '@babel/traverse': 7.29.0
       '@babel/types': 7.29.0
@@ -16601,7 +16635,7 @@ snapshots:
 
   '@babel/generator@7.29.1':
     dependencies:
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.3
       '@babel/types': 7.29.0
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
@@ -16630,7 +16664,7 @@ snapshots:
 
   '@babel/helper-compilation-targets@7.28.6':
     dependencies:
-      '@babel/compat-data': 7.29.0
+      '@babel/compat-data': 7.29.3
       '@babel/helper-validator-option': 7.27.1
       browserslist: 4.28.1
       lru-cache: 5.1.1
@@ -16890,7 +16924,7 @@ snapshots:
     dependencies:
       '@babel/types': 7.27.0
 
-  '@babel/parser@7.29.2':
+  '@babel/parser@7.29.3':
     dependencies:
       '@babel/types': 7.29.0
 
@@ -17656,7 +17690,7 @@ snapshots:
   '@babel/template@7.28.6':
     dependencies:
       '@babel/code-frame': 7.29.0
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.3
       '@babel/types': 7.29.0
     optional: true
 
@@ -17692,7 +17726,7 @@ snapshots:
       '@babel/code-frame': 7.29.0
       '@babel/generator': 7.29.1
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.3
       '@babel/template': 7.28.6
       '@babel/types': 7.29.0
       debug: 4.4.3
@@ -17851,205 +17885,238 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@descope-ui/common@3.3.2':
+  '@descope-ui/common@3.11.5':
     dependencies:
       color: 4.2.3
       element-internals-polyfill: 1.3.11
       lodash.debounce: 4.0.8
       lodash.merge: 4.6.2
 
-  '@descope-ui/descope-address-field@3.3.2':
+  '@descope-ui/descope-address-field@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-autocomplete-field': 3.3.2
-      '@descope-ui/theme-input-wrapper': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-autocomplete-field': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-apps-list@3.3.2':
+  '@descope-ui/descope-anchored@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-avatar': 3.3.2
-      '@descope-ui/descope-list': 3.3.2
-      '@descope-ui/descope-list-item': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-attachment@3.3.2':
+  '@descope-ui/descope-apps-list@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-avatar': 3.11.5
+      '@descope-ui/descope-list': 3.11.5
+      '@descope-ui/descope-list-item': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-autocomplete-field@3.3.2':
+  '@descope-ui/descope-attachment@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-combo-box': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
-      '@descope-ui/theme-input-wrapper': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-anchored': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+
+  '@descope-ui/descope-autocomplete-field@3.11.5':
+    dependencies:
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-combo-box': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-avatar@3.3.2':
+  '@descope-ui/descope-avatar@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
       '@vaadin/avatar': 24.3.4
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-badge@3.3.2':
+  '@descope-ui/descope-badge@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-button@3.3.2':
+  '@descope-ui/descope-button@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
       '@vaadin/button': 24.3.4
 
-  '@descope-ui/descope-collapsible-container@3.3.2':
+  '@descope-ui/descope-collapsible-container@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-combo-box@3.3.2':
+  '@descope-ui/descope-combo-box@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
-      '@descope-ui/theme-input-wrapper': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
       '@vaadin/combo-box': 24.3.4
 
-  '@descope-ui/descope-country-subdivision-city-field@3.3.2':
+  '@descope-ui/descope-country-subdivision-city-field@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-combo-box': 3.3.2
-      '@descope-ui/theme-input-wrapper': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-combo-box': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
       '@vaadin/custom-field': 24.3.4
 
-  '@descope-ui/descope-enriched-text@3.3.2':
+  '@descope-ui/descope-enriched-text@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-link': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-link': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
       markdown-it: 14.1.1
 
-  '@descope-ui/descope-icon@3.3.2':
+  '@descope-ui/descope-icon@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-image': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-image': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
       '@vaadin/icon': 24.3.4
-      dompurify: 3.4.1
+      dompurify: 3.4.5
 
-  '@descope-ui/descope-image@3.3.2':
+  '@descope-ui/descope-image@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
-      dompurify: 3.4.1
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+      dompurify: 3.4.5
 
-  '@descope-ui/descope-link@3.3.2':
+  '@descope-ui/descope-link@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-list-item@3.3.2':
+  '@descope-ui/descope-list-item@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-list@3.3.2':
+  '@descope-ui/descope-list@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-list-item': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-list-item': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-outbound-app-button@3.3.2':
+  '@descope-ui/descope-multi-line-mappings@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-button': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-button': 3.11.5
+      '@descope-ui/descope-multi-select-combo-box': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
 
-  '@descope-ui/descope-outbound-apps@3.3.2':
+  '@descope-ui/descope-multi-select-combo-box@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-avatar': 3.3.2
-      '@descope-ui/descope-button': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/descope-list': 3.3.2
-      '@descope-ui/descope-list-item': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
+      '@vaadin/multi-select-combo-box': 24.3.4
 
-  '@descope-ui/descope-password-strength@3.3.2':
+  '@descope-ui/descope-outbound-app-button@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
-      '@descope-ui/theme-input-wrapper': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-button': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+
+  '@descope-ui/descope-outbound-apps@3.11.5':
+    dependencies:
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-avatar': 3.11.5
+      '@descope-ui/descope-button': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/descope-list': 3.11.5
+      '@descope-ui/descope-list-item': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+
+  '@descope-ui/descope-password-strength@3.11.5':
+    dependencies:
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
+      '@descope-ui/theme-input-wrapper': 3.11.5
       '@zxcvbn-ts/core': 3.0.4
       '@zxcvbn-ts/language-common': 3.0.4
       '@zxcvbn-ts/language-en': 3.0.2
 
-  '@descope-ui/descope-ponyhot@3.3.2':
+  '@descope-ui/descope-ponyhot@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-recovery-codes@3.3.2':
+  '@descope-ui/descope-recovery-codes@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
       '@vaadin/icon': 24.3.4
       '@vaadin/icons': 24.3.4
 
-  '@descope-ui/descope-text@3.3.2':
+  '@descope-ui/descope-text@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-timer-button@3.3.2':
+  '@descope-ui/descope-timer-button@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-button': 3.3.2
-      '@descope-ui/descope-timer': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-button': 3.11.5
+      '@descope-ui/descope-timer': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-timer@3.3.2':
+  '@descope-ui/descope-timer@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/descope-tooltip@3.3.2':
+  '@descope-ui/descope-tooltip@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-enriched-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-anchored': 3.11.5
+      '@descope-ui/descope-enriched-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
       '@vaadin/tooltip': 24.3.4
 
-  '@descope-ui/descope-trusted-devices@3.3.2':
+  '@descope-ui/descope-trusted-devices@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-badge': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/descope-link': 3.3.2
-      '@descope-ui/descope-list': 3.3.2
-      '@descope-ui/descope-list-item': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-badge': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/descope-link': 3.11.5
+      '@descope-ui/descope-list': 3.11.5
+      '@descope-ui/descope-list-item': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/theme-globals@3.3.2':
+  '@descope-ui/descope-user-passkeys@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-button': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/descope-link': 3.11.5
+      '@descope-ui/descope-list': 3.11.5
+      '@descope-ui/descope-list-item': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
-  '@descope-ui/theme-input-wrapper@3.3.2':
+  '@descope-ui/theme-globals@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/theme-globals': 3.3.2
+      '@descope-ui/common': 3.11.5
+
+  '@descope-ui/theme-input-wrapper@3.11.5':
+    dependencies:
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/theme-globals': 3.11.5
 
   '@descope/core-js-sdk@2.40.0':
     dependencies:
@@ -18069,35 +18136,39 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@descope/web-components-ui@3.3.2':
+  '@descope/web-components-ui@3.11.5':
     dependencies:
-      '@descope-ui/common': 3.3.2
-      '@descope-ui/descope-address-field': 3.3.2
-      '@descope-ui/descope-apps-list': 3.3.2
-      '@descope-ui/descope-attachment': 3.3.2
-      '@descope-ui/descope-autocomplete-field': 3.3.2
-      '@descope-ui/descope-avatar': 3.3.2
-      '@descope-ui/descope-badge': 3.3.2
-      '@descope-ui/descope-button': 3.3.2
-      '@descope-ui/descope-collapsible-container': 3.3.2
-      '@descope-ui/descope-combo-box': 3.3.2
-      '@descope-ui/descope-country-subdivision-city-field': 3.3.2
-      '@descope-ui/descope-enriched-text': 3.3.2
-      '@descope-ui/descope-icon': 3.3.2
-      '@descope-ui/descope-image': 3.3.2
-      '@descope-ui/descope-link': 3.3.2
-      '@descope-ui/descope-list': 3.3.2
-      '@descope-ui/descope-list-item': 3.3.2
-      '@descope-ui/descope-outbound-app-button': 3.3.2
-      '@descope-ui/descope-outbound-apps': 3.3.2
-      '@descope-ui/descope-password-strength': 3.3.2
-      '@descope-ui/descope-ponyhot': 3.3.2
-      '@descope-ui/descope-recovery-codes': 3.3.2
-      '@descope-ui/descope-text': 3.3.2
-      '@descope-ui/descope-timer': 3.3.2
-      '@descope-ui/descope-timer-button': 3.3.2
-      '@descope-ui/descope-tooltip': 3.3.2
-      '@descope-ui/descope-trusted-devices': 3.3.2
+      '@descope-ui/common': 3.11.5
+      '@descope-ui/descope-address-field': 3.11.5
+      '@descope-ui/descope-anchored': 3.11.5
+      '@descope-ui/descope-apps-list': 3.11.5
+      '@descope-ui/descope-attachment': 3.11.5
+      '@descope-ui/descope-autocomplete-field': 3.11.5
+      '@descope-ui/descope-avatar': 3.11.5
+      '@descope-ui/descope-badge': 3.11.5
+      '@descope-ui/descope-button': 3.11.5
+      '@descope-ui/descope-collapsible-container': 3.11.5
+      '@descope-ui/descope-combo-box': 3.11.5
+      '@descope-ui/descope-country-subdivision-city-field': 3.11.5
+      '@descope-ui/descope-enriched-text': 3.11.5
+      '@descope-ui/descope-icon': 3.11.5
+      '@descope-ui/descope-image': 3.11.5
+      '@descope-ui/descope-link': 3.11.5
+      '@descope-ui/descope-list': 3.11.5
+      '@descope-ui/descope-list-item': 3.11.5
+      '@descope-ui/descope-multi-line-mappings': 3.11.5
+      '@descope-ui/descope-multi-select-combo-box': 3.11.5
+      '@descope-ui/descope-outbound-app-button': 3.11.5
+      '@descope-ui/descope-outbound-apps': 3.11.5
+      '@descope-ui/descope-password-strength': 3.11.5
+      '@descope-ui/descope-ponyhot': 3.11.5
+      '@descope-ui/descope-recovery-codes': 3.11.5
+      '@descope-ui/descope-text': 3.11.5
+      '@descope-ui/descope-timer': 3.11.5
+      '@descope-ui/descope-timer-button': 3.11.5
+      '@descope-ui/descope-tooltip': 3.11.5
+      '@descope-ui/descope-trusted-devices': 3.11.5
+      '@descope-ui/descope-user-passkeys': 3.11.5
       '@vaadin/checkbox': 24.3.4
       '@vaadin/custom-field': 24.3.4
       '@vaadin/dialog': 24.3.4
@@ -19425,7 +19496,7 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.4.0': {}
 
-  '@lit-labs/ssr-dom-shim@1.5.1': {}
+  '@lit-labs/ssr-dom-shim@1.6.0': {}
 
   '@lit/reactive-element@2.1.1':
     dependencies:
@@ -19433,7 +19504,7 @@ snapshots:
 
   '@lit/reactive-element@2.1.2':
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.5.1
+      '@lit-labs/ssr-dom-shim': 1.6.0
 
   '@lmdb/lmdb-darwin-arm64@3.2.2':
     optional: true
@@ -19832,21 +19903,6 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nrwl/js@19.8.4(@babel/traverse@7.29.0)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)':
-    dependencies:
-      '@nx/js': 19.8.4(@babel/traverse@7.29.0)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
-    transitivePeerDependencies:
-      - '@babel/traverse'
-      - '@swc-node/register'
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - debug
-      - nx
-      - supports-color
-      - typescript
-      - verdaccio
-
   '@nrwl/js@19.8.4(@babel/traverse@7.29.0)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)':
     dependencies:
       '@nx/js': 19.8.4(@babel/traverse@7.29.0)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
@@ -20037,7 +20093,7 @@ snapshots:
       '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@babel/runtime': 7.25.6
-      '@nrwl/js': 19.8.4(@babel/traverse@7.29.0)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.4.5)
+      '@nrwl/js': 19.8.4(@babel/traverse@7.29.0)(@swc/core@1.7.1(@swc/helpers@0.5.15))(@types/node@20.17.13)(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))(typescript@5.7.3)
       '@nx/devkit': 19.8.4(nx@19.8.14(@swc/core@1.7.1(@swc/helpers@0.5.15)))
       '@nx/workspace': 19.8.4(@swc/core@1.7.1(@swc/helpers@0.5.15))
       babel-plugin-const-enum: 1.2.0(@babel/core@7.26.0)
@@ -22099,7 +22155,7 @@ snapshots:
       '@vaadin/vaadin-lumo-styles': 24.3.22
       '@vaadin/vaadin-material-styles': 24.3.22
       '@vaadin/vaadin-themable-mixin': 24.3.22
-      lit: 3.3.2
+      lit: 3.3.3
 
   '@vaadin/button@24.3.4':
     dependencies:
@@ -22825,7 +22881,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.3
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -22855,14 +22911,14 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.13':
     dependencies:
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.3
       '@vue/compiler-core': 3.5.13
       '@vue/compiler-dom': 3.5.13
       '@vue/compiler-ssr': 3.5.13
       '@vue/shared': 3.5.13
       estree-walker: 2.0.2
       magic-string: 0.30.21
-      postcss: 8.5.12
+      postcss: 8.5.15
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.4.31':
@@ -23712,7 +23768,7 @@ snapshots:
 
   base64id@2.0.0: {}
 
-  baseline-browser-mapping@2.10.24:
+  baseline-browser-mapping@2.10.32:
     optional: true
 
   basic-auth@2.0.1:
@@ -23871,10 +23927,10 @@ snapshots:
 
   browserslist@4.28.1:
     dependencies:
-      baseline-browser-mapping: 2.10.24
-      caniuse-lite: 1.0.30001791
-      electron-to-chromium: 1.5.345
-      node-releases: 2.0.38
+      baseline-browser-mapping: 2.10.32
+      caniuse-lite: 1.0.30001793
+      electron-to-chromium: 1.5.361
+      node-releases: 2.0.46
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
     optional: true
 
@@ -23996,7 +24052,7 @@ snapshots:
 
   caniuse-lite@1.0.30001696: {}
 
-  caniuse-lite@1.0.30001791:
+  caniuse-lite@1.0.30001793:
     optional: true
 
   case-sensitive-paths-webpack-plugin@2.4.0: {}
@@ -25031,7 +25087,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.1:
+  dompurify@3.4.5:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -25107,7 +25163,7 @@ snapshots:
 
   electron-to-chromium@1.4.825: {}
 
-  electron-to-chromium@1.5.345:
+  electron-to-chromium@1.5.361:
     optional: true
 
   electron-to-chromium@1.5.90: {}
@@ -29072,7 +29128,7 @@ snapshots:
 
   lines-and-columns@2.0.3: {}
 
-  linkify-it@5.0.0:
+  linkify-it@5.0.1:
     dependencies:
       uc.micro: 2.1.0
 
@@ -29168,15 +29224,15 @@ snapshots:
 
   lit-element@4.2.2:
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.5.1
+      '@lit-labs/ssr-dom-shim': 1.6.0
       '@lit/reactive-element': 2.1.2
-      lit-html: 3.3.2
+      lit-html: 3.3.3
 
   lit-html@3.3.1:
     dependencies:
       '@types/trusted-types': 2.0.7
 
-  lit-html@3.3.2:
+  lit-html@3.3.3:
     dependencies:
       '@types/trusted-types': 2.0.7
 
@@ -29186,11 +29242,11 @@ snapshots:
       lit-element: 4.2.1
       lit-html: 3.3.1
 
-  lit@3.3.2:
+  lit@3.3.3:
     dependencies:
       '@lit/reactive-element': 2.1.2
       lit-element: 4.2.2
-      lit-html: 3.3.2
+      lit-html: 3.3.3
 
   livereload-js@3.4.1: {}
 
@@ -29414,7 +29470,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
       entities: 4.5.0
-      linkify-it: 5.0.0
+      linkify-it: 5.0.1
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
@@ -29667,6 +29723,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  nanoid@3.3.12: {}
+
   nanoid@3.3.8: {}
 
   natural-compare-lite@1.4.0: {}
@@ -29871,7 +29929,7 @@ snapshots:
 
   node-releases@2.0.19: {}
 
-  node-releases@2.0.38:
+  node-releases@2.0.46:
     optional: true
 
   nopt@7.2.1:
@@ -30859,9 +30917,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postcss@8.5.12:
+  postcss@8.5.15:
     dependencies:
-      nanoid: 3.3.11
+      nanoid: 3.3.12
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
