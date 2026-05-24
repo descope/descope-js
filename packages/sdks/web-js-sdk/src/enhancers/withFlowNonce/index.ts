@@ -38,8 +38,8 @@ const isFlowNextUrl = (input: RequestInfo | URL): boolean => {
  * read the same nonce from localStorage. Server rotates atomically on the
  * first and rejects the second with E108201. This enhancer chains flow.next
  * requests through a single in-flight promise so each call waits for its
- * predecessor's afterRequest to store the rotated nonce, then re-reads it
- * before sending. See descope/etc#15600.
+ * predecessor to store the rotated nonce, then re-reads it before sending.
+ * See descope/etc#15600.
  */
 export const withFlowNonce =
   <T extends CreateWebSdk>(createSdk: T) =>
@@ -58,20 +58,14 @@ export const withFlowNonce =
 
     // One in-flight chain per SDK instance. flow.next requests run serially.
     let chain: Promise<void> = Promise.resolve();
-    let releaseCurrent: (() => void) | null = null;
-    let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
-    // The current flow's executionId, captured in beforeRequest where we
-    // still have the parsed body. The fetch wrapper only sees the serialized
-    // body, so we reuse this rather than parsing JSON again.
+    // beforeRequest captures the executionId from the parsed body so the
+    // fetch wrapper does not have to re-parse the serialized JSON.
     let currentExecId: string | null = null;
-
-    const releaseChain = () => {
-      if (fallbackTimer) clearTimeout(fallbackTimer);
-      fallbackTimer = null;
-      const r = releaseCurrent;
-      releaseCurrent = null;
-      r?.();
-    };
+    // Tracks RequestInit objects already serialized so the core-js-sdk
+    // retry wrapper (createFetchLogger.ts) does not re-enter and deadlock.
+    // The retry loop calls our fetch with the same args, so this WeakSet
+    // identifies a retry by reference to the original init object.
+    const retryBypass = new WeakSet<object>();
 
     const baseFetch: typeof fetch =
       (sdkConfig as { fetch?: typeof fetch }).fetch ||
@@ -79,20 +73,19 @@ export const withFlowNonce =
 
     const wrappedFetch: typeof fetch = async (input, init) => {
       if (!isFlowNextUrl(input)) return baseFetch(input, init);
+      if (init && retryBypass.has(init)) return baseFetch(input, init);
+      if (init) retryBypass.add(init);
 
-      let myRelease!: () => void;
+      let release!: () => void;
       const myTurn = chain;
       chain = new Promise<void>((resolve) => {
-        myRelease = resolve;
+        release = resolve;
       });
       await myTurn;
-      // Claim the live slot now that we are at the head of the chain.
-      releaseCurrent = myRelease;
-      fallbackTimer = setTimeout(releaseChain, FLOW_NONCE_INFLIGHT_TIMEOUT_MS);
 
-      // Re-read nonce: predecessor's afterRequest stored the rotated value
-      // before resolving the chain. `new Headers(...)` copies whatever
-      // HeadersInit shape we received without mutating the caller's object.
+      // Predecessor has finished and stored its rotated nonce. Re-read and
+      // overwrite the header on a fresh Headers instance so the caller's
+      // object is not mutated.
       const headers = new Headers(init?.headers);
       if (currentExecId) {
         const nonce = getFlowNonce(currentExecId, nonceStoragePrefix);
@@ -100,12 +93,20 @@ export const withFlowNonce =
         else headers.delete(FLOW_NONCE_HEADER);
       }
 
+      const fallback = setTimeout(release, FLOW_NONCE_INFLIGHT_TIMEOUT_MS);
       try {
-        return await baseFetch(input, { ...init, headers });
-      } catch (err) {
-        // afterRequest does not run on fetch reject; release here.
-        releaseChain();
-        throw err;
+        const res = await baseFetch(input, { ...init, headers });
+        // Store the rotated nonce BEFORE releasing the chain so the next
+        // request reads the new value, not the stale one. afterRequest
+        // performs the same write later; it is idempotent.
+        const rotated = res.headers.get(FLOW_NONCE_HEADER);
+        if (rotated && currentExecId) {
+          setFlowNonce(currentExecId, rotated, false, nonceStoragePrefix);
+        }
+        return res;
+      } finally {
+        clearTimeout(fallback);
+        release();
       }
     };
 
@@ -123,22 +124,17 @@ export const withFlowNonce =
     };
 
     const afterRequest: AfterRequestHook = async (req, res) => {
-      try {
-        if (req.path === FLOW_START_PATH || req.path === FLOW_NEXT_PATH) {
-          const { nonce, executionId } = await extractFlowNonce(req, res);
-          if (nonce && executionId) {
-            setFlowNonce(
-              executionId,
-              nonce,
-              req.path === FLOW_START_PATH,
-              nonceStoragePrefix,
-            );
-          }
-        }
-      } finally {
-        // Release after storage so any waiting flow.next reads the rotated
-        // nonce instead of the stale one.
-        if (req.path === FLOW_NEXT_PATH) releaseChain();
+      if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) {
+        return;
+      }
+      const { nonce, executionId } = await extractFlowNonce(req, res);
+      if (nonce && executionId) {
+        setFlowNonce(
+          executionId,
+          nonce,
+          req.path === FLOW_START_PATH,
+          nonceStoragePrefix,
+        );
       }
     };
 

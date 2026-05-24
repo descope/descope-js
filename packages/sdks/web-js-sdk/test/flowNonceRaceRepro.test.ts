@@ -150,6 +150,42 @@ describe('flowNonce race (descope/etc#15600)', () => {
     expect(nonce2).toBe(rotatedNonce);
   });
 
+  it('does not deadlock when core-js-sdk retries on 503', async () => {
+    // core-js-sdk's fetchWrapper retries 503/521/522/524/530 by calling our
+    // wrappedFetch again with the same args. If the retry tried to acquire
+    // the chain it would block on its own outer call's promise.
+    const executionId = 'retry-exec-id';
+    seedNonce(executionId, 'NONCE_V1');
+
+    let callIdx = 0;
+    const fetchMock = jest.fn().mockImplementation(async () => {
+      const idx = callIdx++;
+      if (idx === 0) {
+        const headers = new Headers();
+        return {
+          status: 503,
+          ok: false,
+          json: () => Promise.resolve({}),
+          text: () => Promise.resolve('{}'),
+          clone() {
+            return this;
+          },
+          headers,
+        } as unknown as Response;
+      }
+      return buildResponse(executionId, 'NONCE_V2');
+    });
+    global.fetch = fetchMock;
+
+    const sdk = createSdk({ projectId: 'pid' });
+
+    // Should complete within a single retry delay (~100ms), not 30s+.
+    const start = Date.now();
+    await sdk.flow.next(`flow|#|${executionId}`, 'step', 'submit');
+    expect(Date.now() - start).toBeLessThan(2_000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it('releases in-flight slot via the rejection path when first fetch rejects', async () => {
     // afterRequest is not invoked on fetch rejection. The wrapper's catch
     // handler must call finish() synchronously so the successor proceeds
