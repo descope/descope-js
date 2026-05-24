@@ -10,7 +10,6 @@ import {
 } from './constants';
 import {
   cleanupExpiredNonces,
-  extractExecId,
   extractFlowNonce,
   getExecutionIdFromRequest,
   getFlowNonce,
@@ -29,16 +28,6 @@ const isFlowNextUrl = (input: RequestInfo | URL): boolean => {
     return new URL(url).pathname === FLOW_NEXT_PATH;
   } catch {
     return false;
-  }
-};
-
-const readExecIdFromBody = (init?: RequestInit): string | null => {
-  if (typeof init?.body !== 'string') return null;
-  try {
-    const parsed = JSON.parse(init.body);
-    return parsed?.executionId ? extractExecId(parsed.executionId) : null;
-  } catch {
-    return null;
   }
 };
 
@@ -71,6 +60,10 @@ export const withFlowNonce =
     let chain: Promise<void> = Promise.resolve();
     let releaseCurrent: (() => void) | null = null;
     let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+    // The current flow's executionId, captured in beforeRequest where we
+    // still have the parsed body. The fetch wrapper only sees the serialized
+    // body, so we reuse this rather than parsing JSON again.
+    let currentExecId: string | null = null;
 
     const releaseChain = () => {
       if (fallbackTimer) clearTimeout(fallbackTimer);
@@ -100,10 +93,9 @@ export const withFlowNonce =
       // Re-read nonce: predecessor's afterRequest stored the rotated value
       // before resolving the chain. `new Headers(...)` copies whatever
       // HeadersInit shape we received without mutating the caller's object.
-      const execId = readExecIdFromBody(init);
       const headers = new Headers(init?.headers);
-      if (execId) {
-        const nonce = getFlowNonce(execId, nonceStoragePrefix);
+      if (currentExecId) {
+        const nonce = getFlowNonce(currentExecId, nonceStoragePrefix);
         if (nonce) headers.set(FLOW_NONCE_HEADER, nonce);
         else headers.delete(FLOW_NONCE_HEADER);
       }
@@ -121,6 +113,7 @@ export const withFlowNonce =
       if (req.path !== FLOW_NEXT_PATH) return req;
       const execId = getExecutionIdFromRequest(req);
       if (!execId) return req;
+      currentExecId = execId;
       const nonce = getFlowNonce(execId, nonceStoragePrefix);
       if (nonce) {
         req.headers = req.headers || {};
