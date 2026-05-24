@@ -102,7 +102,7 @@ export const persistTokens = (
       const cookieDomain =
         refreshTokenViaCookie['domain'] ?? authInfo.cookieDomain;
       const cookieName = getRefreshCookieName(refreshTokenViaCookie);
-      if (cookieSecure && window.location.protocol !== ('https:' as any)) {
+      if (cookieSecure && window.location.protocol !== 'https:') {
         logger.warn(
           "Refresh token cookie is configured with secure=true but the page is not using HTTPS. The cookie will not be set. To fix this, pass refreshTokenViaCookie: { secure: process.env['NODE_ENV'] !== 'development' }",
         );
