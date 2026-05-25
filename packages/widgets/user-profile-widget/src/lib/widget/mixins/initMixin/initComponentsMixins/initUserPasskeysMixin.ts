@@ -68,7 +68,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#addFlow.onSuccess(() => {
           this.#addModal.close();
           this.actions.getMe();
-          this.#fetchPasskeys();
+          this.#fetchPasskeys(getUserId(this.state));
         });
       }
 
@@ -102,15 +102,13 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#removeFlow.onSuccess(() => {
           this.#removeModal.close();
           this.actions.getMe();
-          this.#fetchPasskeys();
+          this.#fetchPasskeys(getUserId(this.state));
         });
       }
 
-      async #fetchPasskeys() {
-        await this.actions.listPasskeys({
-          userId: getUserId(this.state),
-        });
-      }
+      #fetchPasskeys = withMemCache((userId: string) => {
+        this.actions.listPasskeys({ userId });
+      });
 
       updatePasskeyList = withMemCache((data) => {
         this.userPasskeys.data = data;
@@ -139,10 +137,10 @@ export const initUserPasskeysMixin = createSingletonMixin(
         );
 
         if (this.userPasskeys.isExists) {
-          await this.#fetchPasskeys();
           this.#initUserPasskeys(getUserPasskeys(this.state));
           this.#initAddModal();
           this.#initRemoveModal();
+          this.subscribe(this.#fetchPasskeys.bind(this), getUserId);
           this.subscribe(this.updatePasskeyList.bind(this), getUserPasskeys);
         }
       }
