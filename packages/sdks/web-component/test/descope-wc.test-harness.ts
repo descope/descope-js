@@ -37,6 +37,7 @@ export const defaultOptionsValues = {
   oidcResource: null,
   descopeIdpInitiated: false,
   ssoAppId: null,
+  customAppId: null,
   client: {},
   redirectAuth: undefined,
   tenant: undefined,
