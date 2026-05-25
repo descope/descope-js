@@ -362,6 +362,7 @@ export type Options = {
   wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  customAppId?: string;
   thirdPartyAppId?: string;
   oidcLoginHint?: string;
   abTestingKey?: number;
