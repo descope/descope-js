@@ -4,6 +4,9 @@
   "sourceRoot": "packages/sdks/web-js-sdk/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "outputs": ["{projectRoot}/dist"]
+    },
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
