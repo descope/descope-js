@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.50.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.49.1...web-js-sdk-1.50.0) (2026-05-25)
+
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
 ## [1.49.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.49.0...web-js-sdk-1.49.1) (2026-05-25)
 
 ### Dependency Updates
