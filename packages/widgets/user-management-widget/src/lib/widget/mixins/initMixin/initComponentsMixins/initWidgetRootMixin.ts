@@ -8,6 +8,7 @@ import {
   initElementMixin,
   initLifecycleMixin,
   loggerMixin,
+  widgetConfigMixin,
 } from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -21,6 +22,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       initElementMixin,
       fetchWidgetPagesMixin,
       stateManagementMixin,
+      widgetConfigMixin,
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
@@ -39,13 +41,18 @@ export const initWidgetRootMixin = createSingletonMixin(
 
         this.injectStyle('.hidden { display: none; }');
 
-        await Promise.all([
+        const widgetConfig = await this.getWidgetConfig();
+
+        const initPromises = [
           this.#initWidgetRoot(),
           this.actions.searchUsers(),
           this.actions.getTenantRoles(),
-          this.actions.getSubTenantRoles(),
           this.actions.getCustomAttributes(),
-        ]);
+        ];
+        if (widgetConfig?.allowSubTenants) {
+          initPromises.push(this.actions.getSubTenantRoles());
+        }
+        await Promise.all(initPromises);
 
         await this.onWidgetRootReady();
         this.dispatchEvent(new CustomEvent('ready'));

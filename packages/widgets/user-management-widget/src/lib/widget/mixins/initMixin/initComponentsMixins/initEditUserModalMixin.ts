@@ -10,7 +10,12 @@ import {
   createSingletonMixin,
   createTemplate,
 } from '@descope/sdk-helpers';
-import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  formMixin,
+  loggerMixin,
+  modalMixin,
+  widgetConfigMixin,
+} from '@descope/sdk-mixins';
 import parsePhone from 'libphonenumber-js/min';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -47,6 +52,7 @@ export const initEditUserModalMixin = createSingletonMixin(
       modalMixin,
       loggerMixin,
       formMixin,
+      widgetConfigMixin,
       initWidgetRootMixin,
     )(superclass) {
       editUserModal: ModalDriver;
@@ -197,9 +203,12 @@ export const initEditUserModalMixin = createSingletonMixin(
         );
 
         this.editUserModal.beforeOpen = async () => {
+          const widgetConfig = await this.getWidgetConfig();
           await Promise.all([
             this.actions.getTenantRoles(),
-            this.actions.getSubTenantRoles(),
+            ...(widgetConfig?.allowSubTenants
+              ? [this.actions.getSubTenantRoles()]
+              : []),
           ]);
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();

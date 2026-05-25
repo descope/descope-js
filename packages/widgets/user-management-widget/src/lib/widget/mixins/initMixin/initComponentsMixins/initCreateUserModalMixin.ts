@@ -9,7 +9,12 @@ import {
   createSingletonMixin,
   createTemplate,
 } from '@descope/sdk-helpers';
-import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  formMixin,
+  loggerMixin,
+  modalMixin,
+  widgetConfigMixin,
+} from '@descope/sdk-mixins';
 import { unflatten } from '../../../../helpers';
 import {
   getCustomAttributes,
@@ -27,6 +32,7 @@ export const initCreateUserModalMixin = createSingletonMixin(
       modalMixin,
       formMixin,
       loggerMixin,
+      widgetConfigMixin,
       initWidgetRootMixin,
     )(superclass) {
       createUserModal: ModalDriver;
@@ -104,9 +110,12 @@ export const initCreateUserModalMixin = createSingletonMixin(
         this.#updateRolesMultiSelect();
 
         this.createUserModal.beforeOpen = async () => {
+          const widgetConfig = await this.getWidgetConfig();
           await Promise.all([
             this.actions.getTenantRoles(),
-            this.actions.getSubTenantRoles(),
+            ...(widgetConfig?.allowSubTenants
+              ? [this.actions.getSubTenantRoles()]
+              : []),
           ]);
           await this.#updateRolesMultiSelect();
           this.#updateSubTenantSection();

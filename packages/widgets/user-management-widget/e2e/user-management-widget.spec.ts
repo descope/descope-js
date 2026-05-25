@@ -25,6 +25,9 @@ const configContent = {
   flows: {
     flow1: { version: 1 },
   },
+  widgets: {
+    wid: { allowSubTenants: true },
+  },
   componentsVersion: '1.2.3',
 };
 
@@ -1125,5 +1128,53 @@ test.describe('widget', () => {
     expect(capturedRequestBody.userTenants).toBeDefined();
     expect(capturedRequestBody.userTenants[0].tenantId).toBe('sub-tenant-1');
     expect(capturedRequestBody.userTenants[0].tenantName).toBeUndefined();
+  });
+
+  test('getSubTenantRoles is not called when allowSubTenants is false', async ({
+    page,
+  }) => {
+    // Override config.json to disable sub-tenants for this widget
+    await page.route('*/**/config.json', async (route) =>
+      route.fulfill({
+        json: {
+          ...configContent,
+          widgets: { wid: { allowSubTenants: false } },
+        },
+      }),
+    );
+
+    let subTenantRolesCallCount = 0;
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) => {
+      subTenantRolesCallCount += 1;
+      return route.fulfill({ json: { roles: [] } });
+    });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // Open create modal — should not trigger the API either
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Close create modal
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-cancel')
+      .first()
+      .click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Open edit modal — should not trigger the API either
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    expect(subTenantRolesCallCount).toBe(0);
   });
 });
