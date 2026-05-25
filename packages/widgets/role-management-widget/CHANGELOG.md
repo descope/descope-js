@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/descope/descope-js/compare/role-management-widget-0.5.39...role-management-widget-0.6.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.5.39](https://github.com/descope/descope-js/compare/role-management-widget-0.5.38...role-management-widget-0.5.39) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+## [0.5.38](https://github.com/descope/descope-js/compare/role-management-widget-0.5.37...role-management-widget-0.5.38) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `sdk-mixins` updated to version `0.17.0`
 ## [0.5.37](https://github.com/descope/descope-js/compare/role-management-widget-0.5.36...role-management-widget-0.5.37) (2026-05-14)
 
 ### Dependency Updates

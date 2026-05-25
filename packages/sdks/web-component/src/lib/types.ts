@@ -78,6 +78,7 @@ export type SSOQueryParams = {
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
+  customAppId?: string;
   thirdPartyAppId: string;
   thirdPartyAppStateId?: string;
   applicationScopes?: string;
@@ -295,6 +296,28 @@ type ThemeTemplate = {
     font1: Font;
     font2: Font;
   };
+};
+
+type ThemeColor = {
+  main: string;
+  dark: string;
+  light: string;
+  highlight: string;
+  contrast: string;
+};
+
+export type OverrideTheme = {
+  globals?: {
+    colors?: {
+      primary?: ThemeColor;
+      secondary?: ThemeColor;
+    };
+  };
+};
+
+export type OverrideThemes = {
+  dark?: OverrideTheme;
+  light?: OverrideTheme;
 };
 
 export type FlowConfig = {

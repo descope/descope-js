@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.10.2...user-profile-widget-0.11.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `web-component` updated to version `3.64.1`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.10.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.10.1...user-profile-widget-0.10.2) (2026-05-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.0`
+* `web-js-sdk` updated to version `1.49.1`
+* `web-component` updated to version `3.64.0`
+## [0.10.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.10.0...user-profile-widget-0.10.1) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `web-component` updated to version `3.63.0`
+* `sdk-mixins` updated to version `0.17.0`
 ## [0.10.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.9.19...user-profile-widget-0.10.0) (2026-05-14)
 
 ### Dependency Updates

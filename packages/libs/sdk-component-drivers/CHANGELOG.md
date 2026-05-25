@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.10.0...sdk-component-drivers-0.11.0) (2026-05-25)
+
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
 ## [0.10.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.9.1...sdk-component-drivers-0.10.0) (2026-05-14)
 
 

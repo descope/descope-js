@@ -150,7 +150,15 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
     setIsSessionLoading(true);
     withValidation(sdk?.refresh)(undefined, true).then(() => {
-      setIsSessionLoading(false);
+      // Defer to a separate render pass so React doesn't batch this with
+      // the setIsSessionLoading(true) above when refresh() short-circuits
+      // synchronously - downstream consumers (e.g. useSession) need to
+      // observe the false→true→false loading transition (#1393)
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          setIsSessionLoading(false);
+        }, 0);
+      });
     });
   }, [sdk]);
 
