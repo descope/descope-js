@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.64.0](https://github.com/descope/descope-js/compare/web-component-3.63.0...web-component-3.64.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+
+### Features
+
+* Add option to submit custom app id in query param - RELEASE ([#1394](https://github.com/descope/descope-js/issues/1394)) ([c814443](https://github.com/descope/descope-js/commit/c814443b978c86a9e985e97554d44a5eeca354b4))
+
 ## [3.63.0](https://github.com/descope/descope-js/compare/web-component-3.62.0...web-component-3.63.0) (2026-05-24)
 
 ### Dependency Updates
