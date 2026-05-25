@@ -117,11 +117,6 @@ export const initUserPasskeysMixin = createSingletonMixin(
       });
 
       #initUserPasskeys(passkeysList: ReturnType<typeof getUserPasskeys>) {
-        this.userPasskeys = new UserPasskeysDriver(
-          () => this.shadowRoot?.querySelector('descope-user-passkeys'),
-          { logger: this.logger },
-        );
-
         this.updatePasskeyList(passkeysList);
 
         this.userPasskeys.onAddPasskeyClick(() => {
@@ -138,11 +133,18 @@ export const initUserPasskeysMixin = createSingletonMixin(
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        await this.#fetchPasskeys();
-        this.#initUserPasskeys(getUserPasskeys(this.state));
-        this.#initAddModal();
-        this.#initRemoveModal();
-        this.subscribe(this.updatePasskeyList.bind(this), getUserPasskeys);
+        this.userPasskeys = new UserPasskeysDriver(
+          () => this.shadowRoot?.querySelector('descope-user-passkeys'),
+          { logger: this.logger },
+        );
+
+        if (this.userPasskeys.isExists) {
+          await this.#fetchPasskeys();
+          this.#initUserPasskeys(getUserPasskeys(this.state));
+          this.#initAddModal();
+          this.#initRemoveModal();
+          this.subscribe(this.updatePasskeyList.bind(this), getUserPasskeys);
+        }
       }
     },
 );
