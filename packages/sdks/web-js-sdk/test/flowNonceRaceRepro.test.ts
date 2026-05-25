@@ -9,14 +9,13 @@ import {
  * Regression tests for descope/etc#15600.
  *
  * Original bug: withFlowNonce read the nonce from localStorage synchronously
- * per request with no in-flight tracking. Two concurrent flow.next() calls for
- * the same executionId both saw the same nonce, the server rotated atomically
- * on the first, and the second was rejected with E108201.
+ * per request with no in-flight tracking. Two concurrent flow.next() calls
+ * both saw the same nonce, the server rotated atomically on the first, and
+ * the second was rejected with E108201.
  *
- * Fix: per-executionId in-flight serialization in withFlowNonce. A new call
- * awaits the previous in-flight promise for the same executionId before
- * reading the nonce. The chain forms synchronously in beforeRequest so
- * sibling calls in the same tick stack deterministically.
+ * Fix: serialize flow.next on the SDK instance via a single promise chain.
+ * Each call awaits the previous before invoking the underlying flow.next, so
+ * the second reads the rotated nonce written by the first's afterRequest.
  */
 describe('flowNonce race (descope/etc#15600)', () => {
   beforeEach(() => {
