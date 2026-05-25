@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.28.2](https://github.com/descope/descope-js/compare/react-sdk-2.28.1...react-sdk-2.28.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* **react-sdk:** defer setIsSessionLoading(false) to a separate render pass ([#1395](https://github.com/descope/descope-js/issues/1395)) RELEASE ([b14751a](https://github.com/descope/descope-js/commit/b14751a6a14a62c48020b4ca54d90c92d487fb3b))
+
 ## [2.28.1](https://github.com/descope/descope-js/compare/react-sdk-2.28.0...react-sdk-2.28.1) (2026-05-25)
 
 ### Dependency Updates
