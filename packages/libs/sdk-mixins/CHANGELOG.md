@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.0...sdk-mixins-0.17.1) (2026-05-25)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.11.0`
 ## [0.17.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.16.2...sdk-mixins-0.17.0) (2026-05-24)
 
 
