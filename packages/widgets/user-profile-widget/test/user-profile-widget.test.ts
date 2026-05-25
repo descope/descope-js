@@ -136,7 +136,7 @@ describe('user-profile-widget', () => {
       });
 
       const sdk = createSdk({ projectId: mockProjectId }, false);
-      const result = await sdk.passkey.passkeys({ userId: 'user-123' });
+      const result = await sdk.passkey.listPasskeys({ userId: 'user-123' });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(apiPaths.user.passkeys, {
         loginId: 'user-123',
