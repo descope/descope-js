@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.0](https://github.com/descope/descope-js/compare/user-management-widget-0.11.27...user-management-widget-0.12.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `web-component` updated to version `3.64.1`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
 ## [0.11.27](https://github.com/descope/descope-js/compare/user-management-widget-0.11.26...user-management-widget-0.11.27) (2026-05-25)
 
 ### Dependency Updates
