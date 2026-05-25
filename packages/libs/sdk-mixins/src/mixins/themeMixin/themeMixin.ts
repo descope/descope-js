@@ -35,6 +35,7 @@ export const themeMixin = createSingletonMixin(
 
     return class ThemeMixinClass extends BaseClass {
       #globalStyle: InjectedStyle;
+      #tenantStyle: InjectedStyle;
       #customStyle: InjectedStyle;
 
       get theme(): ThemeOptions {
@@ -167,6 +168,45 @@ export const themeMixin = createSingletonMixin(
         );
       }
 
+      async #fetchTenantTheme() {
+        const tenantId = this.getAttribute('tenant');
+        if (!tenantId) return undefined;
+        try {
+          const { body: fetchedTenantTheme } = await this.fetchStaticResource(
+            `${tenantId}/theme.json`,
+            'json',
+          );
+          return fetchedTenantTheme;
+        } catch (e) {
+          this.logger.error(
+            'Cannot fetch tenant theme file',
+            'make sure that your tenantId, projectId & flowId are correct',
+          );
+        }
+      }
+
+      async #loadTenantStyle() {
+        const theme = await this.#fetchTenantTheme();
+        if (!theme) {
+          this.#tenantStyle?.replaceSync('');
+          return;
+        }
+        if (!this.#tenantStyle) {
+          this.#tenantStyle = this.injectStyle('');
+        }
+        this.#tenantStyle.replaceSync(
+          (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
+        );
+        const descopeUi = await this.descopeUi;
+        if (descopeUi?.componentsThemeManager) {
+          const existing = descopeUi.componentsThemeManager.themes || {};
+          descopeUi.componentsThemeManager.themes = {
+            light: { ...existing.light, ...theme?.light?.components },
+            dark: { ...existing.dark, ...theme?.dark?.components },
+          };
+        }
+      }
+
       async #loadCustomStyle() {
         if (!this.themeOverride) {
           this.#customStyle?.replaceSync('');
@@ -253,11 +293,16 @@ export const themeMixin = createSingletonMixin(
           this.#loadGlobalStyle(),
           this.#loadComponentsStyle(),
         ]);
+        await this.#loadTenantStyle();
         await this.#loadCustomStyle();
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
-        this.observeAttributes(['theme-override'], () => this.#loadCustomStyle());
+        this.observeAttributes(['theme-override'], () =>
+          this.#loadCustomStyle(),
+        );
+
+        this.observeAttributes(['tenant'], () => this.#loadTenantStyle());
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;
