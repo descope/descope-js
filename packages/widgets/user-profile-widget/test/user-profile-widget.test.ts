@@ -126,6 +126,23 @@ describe('user-profile-widget', () => {
         { tenant: 'tenant-123' },
       );
     });
+
+    it('passkeys', async () => {
+      const passkeys = [{ id: 'pk-1', name: 'Passkey 1' }];
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify(passkeys)),
+        json: () => Promise.resolve(passkeys),
+      });
+
+      const sdk = createSdk({ projectId: mockProjectId }, false);
+      const result = await sdk.passkey.listPasskeys({ userId: 'user-123' });
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(apiPaths.user.passkeys, {
+        loginId: 'user-123',
+      });
+      expect(result).toEqual(passkeys);
+    });
   });
 
   describe('selectors', () => {

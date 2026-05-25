@@ -19,6 +19,9 @@
           "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
         ]
       }
+    },
+    "test": {
+      "dependsOn": ["build", "^build"]
     }
   },
   "tags": []
