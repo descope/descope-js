@@ -78,6 +78,7 @@ export type SSOQueryParams = {
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
+  customAppId?: string;
   thirdPartyAppId: string;
   thirdPartyAppStateId?: string;
   applicationScopes?: string;
