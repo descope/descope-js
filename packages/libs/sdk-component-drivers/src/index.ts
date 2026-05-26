@@ -18,3 +18,4 @@ export * from './DeviceListDriver';
 export * from './FlowButtonDriver';
 export * from './LastAuthBadgeDriver';
 export * from './TenantSelectorDriver';
+export * from './UserPasskeysDriver';

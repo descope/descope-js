@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.1](https://github.com/descope/descope-js/compare/access-key-management-widget-0.6.0...access-key-management-widget-0.6.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [0.6.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.47...access-key-management-widget-0.6.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.5.47](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.46...access-key-management-widget-0.5.47) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
 ## [0.5.46](https://github.com/descope/descope-js/compare/access-key-management-widget-0.5.45...access-key-management-widget-0.5.46) (2026-05-24)
 
 ### Dependency Updates

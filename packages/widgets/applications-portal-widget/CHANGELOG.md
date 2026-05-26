@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.1](https://github.com/descope/descope-js/compare/applications-portal-widget-0.7.0...applications-portal-widget-0.7.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [0.7.0](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.7...applications-portal-widget-0.7.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.6.7](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.6...applications-portal-widget-0.6.7) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
 ## [0.6.6](https://github.com/descope/descope-js/compare/applications-portal-widget-0.6.5...applications-portal-widget-0.6.6) (2026-05-24)
 
 ### Dependency Updates
