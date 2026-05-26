@@ -88,7 +88,7 @@ export const initEditUserModalMixin = createSingletonMixin(
             );
             const subTenantSectionVisible =
               this.#subTenantSection &&
-              !this.#subTenantSection.hasAttribute('hidden');
+              !this.#subTenantSection.classList.contains('hidden');
             const userTenants = subTenantSectionVisible
               ? this.#subTenantMappings.mergedValue
               : undefined;
