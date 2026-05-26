@@ -8,6 +8,7 @@ import {
   teardownWebComponentTestEnv,
   startMock,
   fixtures,
+  fetchMock,
   generateSdkResponse,
   WAIT_TIMEOUT,
 } from './descope-wc.test-harness';
@@ -156,6 +157,317 @@ describe('web-component theme', () => {
         ),
       { timeout: WAIT_TIMEOUT },
     );
+  });
+
+  it('fetches the tenant theme when the tenant attribute is set', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = { light: { globals: '' }, dark: { globals: '' } };
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" tenant="T123"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () =>
+        expect(fetchMock).toHaveBeenCalledWith(
+          expect.stringContaining('T123/theme.json'),
+          expect.anything(),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('injects tenant CSS globals when a tenant theme is fetched', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = { light: { globals: '' }, dark: { globals: '' } };
+    fixtures.configContent = {
+      flows: { otpSignInEmail: { version: 1 } },
+      componentsVersion: '1.2.3',
+    };
+
+    const tenantTheme = {
+      light: { globals: '.tenant-light{color:red;}' },
+      dark: { globals: '.tenant-dark{color:pink;}' },
+    };
+
+    fetchMock.mockImplementation((url: string) => {
+      const res = { ok: true, headers: new Headers({ 'x-geo': 'XX' }) };
+      if (url.includes('tenant-a/theme.json'))
+        return { ...res, json: () => tenantTheme };
+      if (url.endsWith('theme.json'))
+        return { ...res, json: () => fixtures.themeContent };
+      if (url.endsWith('.html'))
+        return { ...res, text: () => fixtures.pageContent };
+      if (url.endsWith('config.json'))
+        return { ...res, json: () => fixtures.configContent };
+      return { ok: false };
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" tenant="tenant-a"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      await waitFor(
+        () => {
+          const sheets = shadowRoot.adoptedStyleSheets;
+          const tenantSheet = sheets.find(
+            (sheet) =>
+              (sheet as any).cssText?.includes(tenantTheme.light.globals),
+          );
+          expect(tenantSheet).toBeDefined();
+          expect(tenantSheet.index).toBe(sheets.length - 1);
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    }
+  });
+
+  it('fetches a new tenant theme when the tenant attribute changes', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = { light: { globals: '' }, dark: { globals: '' } };
+
+    const tenantBTheme = {
+      light: { globals: '.tenant-b-light{color:blue;}' },
+      dark: { globals: '.tenant-b-dark{color:navy;}' },
+    };
+
+    fetchMock.mockImplementation((url: string) => {
+      const res = { ok: true, headers: new Headers({ 'x-geo': 'XX' }) };
+      if (url.includes('tenant-b/theme.json'))
+        return { ...res, json: () => tenantBTheme };
+      if (url.endsWith('theme.json'))
+        return { ...res, json: () => fixtures.themeContent };
+      if (url.endsWith('.html'))
+        return { ...res, text: () => fixtures.pageContent };
+      if (url.endsWith('config.json'))
+        return { ...res, json: () => fixtures.configContent };
+      return { ok: false };
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" tenant="tenant-a"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc') as Element;
+    wc.setAttribute('tenant', 'tenant-b');
+
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+    if ('adoptedStyleSheets' in shadowRoot) {
+      await waitFor(
+        () => {
+          const sheets = shadowRoot.adoptedStyleSheets;
+          const tenantSheet = sheets.find(
+            (sheet) =>
+              (sheet as any).cssText?.includes(tenantBTheme.light.globals),
+          );
+          expect(tenantSheet).toBeDefined();
+          expect(tenantSheet.index).toBe(sheets.length - 1);
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    }
+  });
+
+  it('logs an error and skips the fetch when tenant contains path-traversal characters', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = { light: { globals: '' }, dark: { globals: '' } };
+
+    // Render without a tenant first so the component reaches a stable state.
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // Inject a mock logger so the error reaches a jest.fn() rather than
+    // the module-load-time-bound defaultLogger (which bypasses spyOn).
+    const wc = document.querySelector('descope-wc') as any;
+    const mockError = jest.fn();
+    wc.logger = {
+      error: mockError,
+      warn: jest.fn(),
+      debug: jest.fn(),
+      info: jest.fn(),
+    };
+
+    wc.setAttribute('tenant', '../evil');
+
+    await waitFor(
+      () =>
+        expect(mockError).toHaveBeenCalledWith(
+          'Invalid tenant attribute: must contain only alphanumeric characters, hyphens, or underscores',
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    expect(fetchMock).not.toHaveBeenCalledWith(
+      expect.stringContaining('evil'),
+      expect.anything(),
+    );
+  });
+
+  it('tenant style appears after project style, and clearing tenant does not corrupt project style', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = {
+      light: { globals: '.project-light{background:white;}' },
+      dark: { globals: '.project-dark{background:black;}' },
+    };
+
+    const tenantTheme = {
+      light: { globals: '.tenant-light{color:red;}' },
+      dark: { globals: '.tenant-dark{color:pink;}' },
+    };
+
+    fetchMock.mockImplementation((url: string) => {
+      const res = { ok: true, headers: new Headers({ 'x-geo': 'XX' }) };
+      if (url.includes('tenant-a/theme.json'))
+        return { ...res, json: () => tenantTheme };
+      if (url.endsWith('theme.json'))
+        return { ...res, json: () => fixtures.themeContent };
+      if (url.endsWith('.html'))
+        return { ...res, text: () => fixtures.pageContent };
+      if (url.endsWith('config.json'))
+        return { ...res, json: () => fixtures.configContent };
+      return { ok: false };
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" tenant="tenant-a"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+
+    if ('adoptedStyleSheets' in shadowRoot) {
+      // Verify tenant sheet is injected after the project sheet.
+      await waitFor(
+        () => {
+          const sheets = shadowRoot.adoptedStyleSheets;
+          const projectSheet = sheets.find(
+            (sheet) => (sheet as any).cssText?.includes('.project-light'),
+          );
+          const tenantSheet = sheets.find(
+            (sheet) => (sheet as any).cssText?.includes('.tenant-light'),
+          );
+          expect(projectSheet).toBeDefined();
+          expect(tenantSheet).toBeDefined();
+          expect((tenantSheet as any).index).toBeGreaterThan(
+            (projectSheet as any).index,
+          );
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      // Remove the tenant attribute and verify the project style is untouched.
+      wc.removeAttribute('tenant');
+
+      await waitFor(
+        () => {
+          const sheets = shadowRoot.adoptedStyleSheets;
+          const tenantSheet = sheets.find(
+            (sheet) => (sheet as any).cssText?.includes('.tenant-light'),
+          );
+          expect(tenantSheet).toBeUndefined();
+
+          const projectSheet = sheets.find(
+            (sheet) => (sheet as any).cssText?.includes('.project-light'),
+          );
+          expect(projectSheet).toBeDefined();
+          expect(projectSheet.index).toBe(sheets.length - 1);
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    }
+  });
+
+  it('changing style-id does not corrupt the tenant style', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+
+    const styleV1Theme = {
+      light: { globals: '.style-v1-light{color:green;}' },
+      dark: { globals: '.style-v1-dark{color:teal;}' },
+    };
+    const styleV2Theme = {
+      light: { globals: '.style-v2-light{color:purple;}' },
+      dark: { globals: '.style-v2-dark{color:violet;}' },
+    };
+    const tenantTheme = {
+      light: { globals: '.tenant-light{color:red;}' },
+      dark: { globals: '.tenant-dark{color:pink;}' },
+    };
+
+    fetchMock.mockImplementation((url: string) => {
+      const res = { ok: true, headers: new Headers({ 'x-geo': 'XX' }) };
+      if (url.includes('tenant-a/theme.json'))
+        return { ...res, json: () => tenantTheme };
+      if (url.endsWith('style-v2.json'))
+        return { ...res, json: () => styleV2Theme };
+      if (url.endsWith('style-v1.json'))
+        return { ...res, json: () => styleV1Theme };
+      if (url.endsWith('.html'))
+        return { ...res, text: () => fixtures.pageContent };
+      if (url.endsWith('config.json'))
+        return { ...res, json: () => fixtures.configContent };
+      return { ok: false };
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" style-id="style-v1" tenant="tenant-a"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const wc = document.querySelector('descope-wc') as Element;
+    const shadowRoot = wc.shadowRoot as ShadowRoot;
+
+    if ('adoptedStyleSheets' in shadowRoot) {
+      // Confirm initial state: both project and tenant sheets are present.
+      await waitFor(
+        () => {
+          const sheets = shadowRoot.adoptedStyleSheets;
+          expect(
+            sheets.find((s) => (s as any).cssText?.includes('.style-v1-light')),
+          ).toBeDefined();
+          expect(
+            sheets.find((s) => (s as any).cssText?.includes('.tenant-light')),
+          ).toBeDefined();
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      // Change the style-id and verify tenant style is not corrupted.
+      wc.setAttribute('style-id', 'style-v2');
+
+      await waitFor(
+        () => {
+          const sheets = shadowRoot.adoptedStyleSheets;
+          expect(
+            sheets.find((s) => (s as any).cssText?.includes('.style-v2-light')),
+          ).toBeDefined();
+          expect(
+            sheets.find((s) => (s as any).cssText?.includes('.tenant-light')),
+          ).toBeDefined();
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+    }
   });
 
   it('should inject themeOverride last in DOM', async () => {

@@ -171,6 +171,12 @@ export const themeMixin = createSingletonMixin(
       async #fetchTenantTheme() {
         const tenantId = this.getAttribute('tenant');
         if (!tenantId) return undefined;
+        if (!/^[A-Za-z0-9_-]+$/.test(tenantId)) {
+          this.logger.error(
+            'Invalid tenant attribute: must contain only alphanumeric characters, hyphens, or underscores',
+          );
+          return undefined;
+        }
         try {
           const { body: fetchedTenantTheme } = await this.fetchStaticResource(
             `${tenantId}/theme.json`,
@@ -186,23 +192,39 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadTenantStyle() {
-        const theme = await this.#fetchTenantTheme();
-        if (!theme) {
+        const projectTheme = await this.#themeResource;
+        const tenantTheme = await this.#fetchTenantTheme();
+        const descopeUi = await this.descopeUi;
+
+        if (!tenantTheme) {
           this.#tenantStyle?.replaceSync('');
+          if (descopeUi?.componentsThemeManager && projectTheme) {
+            descopeUi.componentsThemeManager.themes = {
+              light: projectTheme?.light?.components,
+              dark: projectTheme?.dark?.components,
+            };
+          }
           return;
         }
+
         if (!this.#tenantStyle) {
           this.#tenantStyle = this.injectStyle('');
         }
         this.#tenantStyle.replaceSync(
-          (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
+          (tenantTheme?.light?.globals || '') +
+            (tenantTheme?.dark?.globals || ''),
         );
-        const descopeUi = await this.descopeUi;
         if (descopeUi?.componentsThemeManager) {
-          const existing = descopeUi.componentsThemeManager.themes || {};
+          const project = projectTheme as Record<string, any> | undefined;
           descopeUi.componentsThemeManager.themes = {
-            light: { ...existing.light, ...theme?.light?.components },
-            dark: { ...existing.dark, ...theme?.dark?.components },
+            light: {
+              ...project?.light?.components,
+              ...tenantTheme?.light?.components,
+            },
+            dark: {
+              ...project?.dark?.components,
+              ...tenantTheme?.dark?.components,
+            },
           };
         }
       }
@@ -304,11 +326,14 @@ export const themeMixin = createSingletonMixin(
 
         this.observeAttributes(['tenant'], () => this.#loadTenantStyle());
 
-        this.observeAttributes(['style-id'], () => {
+        this.observeAttributes(['style-id'], async () => {
           this.#_themeResource = null;
-          this.#loadFonts();
-          this.#loadGlobalStyle();
-          this.#loadComponentsStyle();
+          await Promise.all([
+            this.#loadFonts(),
+            this.#loadGlobalStyle(),
+            this.#loadComponentsStyle(),
+          ]);
+          await this.#loadTenantStyle();
         });
       }
     };
