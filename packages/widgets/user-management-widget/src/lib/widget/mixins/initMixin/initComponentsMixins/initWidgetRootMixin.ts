@@ -41,18 +41,20 @@ export const initWidgetRootMixin = createSingletonMixin(
 
         this.injectStyle('.hidden { display: none; }');
 
-        const widgetConfig = await this.getWidgetConfig();
+        // gate sub-tenant fetch on the allowSubTenants flag without blocking the parallel init batch
+        const subTenantPromise = this.getWidgetConfig().then((widgetConfig) =>
+          widgetConfig?.allowSubTenants
+            ? this.actions.getSubTenantRoles()
+            : undefined,
+        );
 
-        const initPromises = [
+        await Promise.all([
           this.#initWidgetRoot(),
           this.actions.searchUsers(),
           this.actions.getTenantRoles(),
           this.actions.getCustomAttributes(),
-        ];
-        if (widgetConfig?.allowSubTenants) {
-          initPromises.push(this.actions.getSubTenantRoles());
-        }
-        await Promise.all(initPromises);
+          subTenantPromise,
+        ]);
 
         await this.onWidgetRootReady();
         this.dispatchEvent(new CustomEvent('ready'));

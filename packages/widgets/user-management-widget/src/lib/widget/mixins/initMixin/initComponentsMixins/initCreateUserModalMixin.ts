@@ -110,13 +110,14 @@ export const initCreateUserModalMixin = createSingletonMixin(
         this.#updateRolesMultiSelect();
 
         this.createUserModal.beforeOpen = async () => {
-          const widgetConfig = await this.getWidgetConfig();
-          await Promise.all([
-            this.actions.getTenantRoles(),
-            ...(widgetConfig?.allowSubTenants
-              ? [this.actions.getSubTenantRoles()]
-              : []),
-          ]);
+          // gate sub-tenant fetch on the allowSubTenants flag without blocking the parallel batch
+          const subTenantPromise = this.getWidgetConfig().then(
+            (widgetConfig) =>
+              widgetConfig?.allowSubTenants
+                ? this.actions.getSubTenantRoles()
+                : undefined,
+          );
+          await Promise.all([this.actions.getTenantRoles(), subTenantPromise]);
           await this.#updateRolesMultiSelect();
           this.#updateSubTenantSection();
           this.#updateCustomFields();
