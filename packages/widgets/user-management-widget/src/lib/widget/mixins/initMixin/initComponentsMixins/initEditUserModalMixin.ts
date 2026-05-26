@@ -213,8 +213,10 @@ export const initEditUserModalMixin = createSingletonMixin(
           await Promise.all([this.actions.getTenantRoles(), subTenantPromise]);
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
-          this.#updateModalData();
+          // setData on the sub-tenant mappings before #updateModalData sets value,
+          // otherwise the data-attribute change resets the value
           this.#updateSubTenantSection();
+          this.#updateModalData();
           this.#updateCustomFields();
         };
       }
