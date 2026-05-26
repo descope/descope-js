@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.34](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.33...nextjs-sdk-0.15.34) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `react-sdk` updated to version `2.28.3`
+* `web-component` updated to version `3.64.1`
+## [0.15.33](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.32...nextjs-sdk-0.15.33) (2026-05-25)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.28.2`
+## [0.15.32](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.31...nextjs-sdk-0.15.32) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+* `react-sdk` updated to version `2.28.1`
+* `core-js-sdk` updated to version `2.62.0`
+* `web-component` updated to version `3.64.0`
+## [0.15.31](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.30...nextjs-sdk-0.15.31) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `react-sdk` updated to version `2.28.0`
+* `web-component` updated to version `3.63.0`
 ## [0.15.30](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.29...nextjs-sdk-0.15.30) (2026-05-14)
 
 ### Dependency Updates

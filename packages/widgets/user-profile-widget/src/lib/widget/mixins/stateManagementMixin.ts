@@ -8,6 +8,7 @@ import {
 import {
   getMe,
   listDevices,
+  listPasskeys,
   logout,
   selectTenant,
 } from '../state/asyncActions';
@@ -34,12 +35,14 @@ export const stateManagementMixin = createSingletonMixin(
         extraReducers: (builder) => {
           getMe.reducer(builder);
           listDevices.reducer(builder);
+          listPasskeys.reducer(builder);
           logout.reducer(builder);
           selectTenant.reducer(builder);
         },
         asyncActions: {
           getMe: getMe.action,
           listDevices: listDevices.action,
+          listPasskeys: listPasskeys.action,
           logout: logout.action,
           selectTenant: selectTenant.action,
         },

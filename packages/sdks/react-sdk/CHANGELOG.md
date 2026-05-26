@@ -2,6 +2,62 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.28.3](https://github.com/descope/descope-js/compare/react-sdk-2.28.2...react-sdk-2.28.3) (2026-05-25)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.6.0`
+* `audit-management-widget` updated to version `0.7.0`
+* `role-management-widget` updated to version `0.6.0`
+* `user-management-widget` updated to version `0.12.0`
+* `user-profile-widget` updated to version `0.11.0`
+* `applications-portal-widget` updated to version `0.7.0`
+* `outbound-applications-widget` updated to version `0.3.0`
+* `web-component` updated to version `3.64.1`
+* `web-js-sdk` updated to version `1.50.0`
+* `tenant-profile-widget` updated to version `0.6.0`
+## [2.28.2](https://github.com/descope/descope-js/compare/react-sdk-2.28.1...react-sdk-2.28.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* **react-sdk:** defer setIsSessionLoading(false) to a separate render pass ([#1395](https://github.com/descope/descope-js/issues/1395)) RELEASE ([b14751a](https://github.com/descope/descope-js/commit/b14751a6a14a62c48020b4ca54d90c92d487fb3b))
+
+## [2.28.1](https://github.com/descope/descope-js/compare/react-sdk-2.28.0...react-sdk-2.28.1) (2026-05-25)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.47`
+* `audit-management-widget` updated to version `0.6.9`
+* `role-management-widget` updated to version `0.5.39`
+* `user-management-widget` updated to version `0.11.27`
+* `user-profile-widget` updated to version `0.10.2`
+* `applications-portal-widget` updated to version `0.6.7`
+* `outbound-applications-widget` updated to version `0.2.39`
+* `web-component` updated to version `3.64.0`
+* `web-js-sdk` updated to version `1.49.1`
+* `core-js-sdk` updated to version `2.62.0`
+* `tenant-profile-widget` updated to version `0.5.38`
+## [2.28.0](https://github.com/descope/descope-js/compare/react-sdk-2.27.12...react-sdk-2.28.0) (2026-05-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.5.46`
+* `audit-management-widget` updated to version `0.6.8`
+* `role-management-widget` updated to version `0.5.38`
+* `user-management-widget` updated to version `0.11.26`
+* `user-profile-widget` updated to version `0.10.1`
+* `applications-portal-widget` updated to version `0.6.6`
+* `outbound-applications-widget` updated to version `0.2.38`
+* `web-component` updated to version `3.63.0`
+* `web-js-sdk` updated to version `1.49.0`
+* `tenant-profile-widget` updated to version `0.5.37`
+
+### Features
+
+* Add color theme override ([#1389](https://github.com/descope/descope-js/issues/1389)) ([34272cf](https://github.com/descope/descope-js/commit/34272cfb5c62e0175df6c2b6dcf71ab822d20ab4)), closes [#BD10E0](https://github.com/descope/descope-js/issues/BD10E0) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#710A86](https://github.com/descope/descope-js/issues/710A86) [#DA5DF3](https://github.com/descope/descope-js/issues/DA5DF3) [#EEB6](https://github.com/descope/descope-js/issues/EEB6) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309)
+* **web-js-sdk:** skip tryRefresh when no login indicator in localStorage ([#1383](https://github.com/descope/descope-js/issues/1383)) RELEASE ([c5b6898](https://github.com/descope/descope-js/commit/c5b6898c1b6a1b260e023b5d08fb50a90df23d81))
+
 ## [2.27.12](https://github.com/descope/descope-js/compare/react-sdk-2.27.11...react-sdk-2.27.12) (2026-05-14)
 
 ### Dependency Updates

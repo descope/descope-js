@@ -177,4 +177,67 @@ describe('sdk', () => {
     expect(SESSION_TOKEN_KEY).toBeDefined();
     expect(REFRESH_TOKEN_KEY).toBeDefined();
   });
+
+  describe('tryRefresh skip optimization', () => {
+    const DSLI_KEY = 'DSLI';
+    const LAST_USER_KEY = 'dls_last_user_login_id';
+
+    beforeEach(() => {
+      localStorage.removeItem(DSLI_KEY);
+      localStorage.removeItem(LAST_USER_KEY);
+    });
+
+    it('skips fetch and returns ok when neither DSLI nor lastUser is set', async () => {
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      const result = await sdk.refresh(undefined, true);
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(result).toEqual({ ok: true });
+    });
+
+    it('calls fetch when DSLI is set', async () => {
+      localStorage.setItem(DSLI_KEY, '1');
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.refresh(undefined, true);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+
+    it('calls fetch when only the lastUser bootstrap key is set (DSLI absent)', async () => {
+      localStorage.setItem(LAST_USER_KEY, 'someone@example.com');
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.refresh(undefined, true);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+
+    it('does not skip a regular refresh (tryRefresh=false) even with no indicator', async () => {
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.refresh(undefined, false);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+
+    it('does not skip when tryRefresh is omitted (default behavior preserved)', async () => {
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.refresh('token');
+      expect(mockFetch).toHaveBeenCalled();
+    });
+  });
 });
