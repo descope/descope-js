@@ -280,6 +280,96 @@ describe('web-component theme', () => {
     }
   });
 
+  it('tenant component CSS is concatenated after project CSS so project-only variables are preserved', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.configContent = {
+      flows: { otpSignInEmail: { version: 1 } },
+      componentsVersion: '1.2.3',
+    };
+
+    // Project logo has both favicon and logo-url; tenant only overrides the favicon.
+    const projectLogoHost =
+      ':host{--logo-fallback:url(A);--favicon:url(project-favicon);--logo-url:url(project-logo)}';
+    const tenantLogoHost = ':host{--favicon:url(tenant-favicon)}';
+
+    const projectComponents = {
+      'descope-logo': { host: projectLogoHost },
+      'descope-button': { host: ':host{--bg:blue;}' },
+      'descope-input': { host: ':host{--border:1px solid black;}' },
+    };
+    fixtures.themeContent = {
+      light: { globals: '', components: projectComponents },
+      dark: { globals: '', components: projectComponents },
+    };
+
+    const componentsThemeManager = {
+      themes: undefined as any,
+      currentThemeName: undefined,
+    };
+    globalThis.DescopeUI = { componentsThemeManager };
+
+    const tenantTheme = {
+      light: {
+        globals: '',
+        components: {
+          'descope-logo': { host: tenantLogoHost }, // partial override: no --logo-url
+          'descope-button': { host: '' }, // empty: project CSS preserved
+          'descope-input': null, // null: project CSS preserved
+        },
+      },
+      dark: {
+        globals: '',
+        components: {
+          'descope-logo': { host: tenantLogoHost },
+          'descope-button': { host: '' },
+          'descope-input': null,
+        },
+      },
+    };
+
+    fetchMock.mockImplementation((url: string) => {
+      const res = { ok: true, headers: new Headers({ 'x-geo': 'XX' }) };
+      if (url.includes('tenant-logo/theme.json'))
+        return { ...res, json: () => tenantTheme };
+      if (url.endsWith('theme.json'))
+        return { ...res, json: () => fixtures.themeContent };
+      if (url.endsWith('.html'))
+        return { ...res, text: () => fixtures.pageContent };
+      if (url.endsWith('config.json'))
+        return { ...res, json: () => fixtures.configContent };
+      return { ok: false };
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" tenant="tenant-logo"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () => {
+        const light = componentsThemeManager.themes?.light;
+
+        // Logo: project CSS + tenant CSS concatenated. Via CSS cascade:
+        //   --logo-url stays from project (tenant doesn't define it)
+        //   --favicon is overridden to tenant value (later declaration wins)
+        expect(light?.['descope-logo']?.host).toBe(
+          projectLogoHost + tenantLogoHost,
+        );
+
+        // Button: tenant host is empty string — project CSS is unchanged
+        expect(light?.['descope-button']?.host).toBe(':host{--bg:blue;}');
+
+        // Input: tenant entry is null — project CSS is unchanged
+        expect(light?.['descope-input']?.host).toBe(
+          ':host{--border:1px solid black;}',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
   it('logs an error and skips the fetch when tenant contains path-traversal characters', async () => {
     startMock.mockReturnValue(generateSdkResponse());
     fixtures.pageContent = '<span>It works!</span>';

@@ -25,6 +25,28 @@ const tenantValidation = (_: string, tenant: string | null) =>
 
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
+function deepMergeNonEmpty(
+  base: Record<string, any>,
+  override: Record<string, any>,
+): Record<string, any> {
+  const merged = { ...base };
+  for (const [key, value] of Object.entries(override || {})) {
+    if (value === null || value === undefined) continue;
+    if (typeof value === 'object') {
+      if (Object.keys(value).length === 0) continue;
+      merged[key] = deepMergeNonEmpty(merged[key] || {}, value);
+    } else if (typeof value === 'string') {
+      // Concatenate CSS strings: tenant rules come after project base,
+      // so tenant variables override project ones via CSS cascade while
+      // project-only variables (e.g. --descope-logo-url) are preserved.
+      merged[key] = (merged[key] || '') + value;
+    } else {
+      merged[key] = value;
+    }
+  }
+  return merged;
+}
+
 export const themeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
@@ -158,7 +180,6 @@ export const themeMixin = createSingletonMixin(
           );
         }
 
-        // eslint-disable-next-line no-underscore-dangle
         return this.#_themeResource;
       }
 
@@ -201,7 +222,8 @@ export const themeMixin = createSingletonMixin(
         if (!base && !override) return undefined;
         const merged = { ...(base || {}) };
         for (const [component, value] of Object.entries(override || {})) {
-          merged[component] = { ...(merged[component] || {}), ...value };
+          if (!value || Object.keys(value).length === 0) continue;
+          merged[component] = deepMergeNonEmpty(merged[component] || {}, value);
         }
         return merged;
       }
@@ -221,20 +243,23 @@ export const themeMixin = createSingletonMixin(
       }
 
       async #loadTenantComponentsStyle(tenantTheme?: Record<string, any>) {
-        await this.#loadComponentsStyle();
-        if (!tenantTheme) return;
+        if (!tenantTheme) {
+          await this.#loadComponentsStyle();
+          return;
+        }
 
         const descopeUi = await this.descopeUi;
         if (!descopeUi?.componentsThemeManager) return;
 
-        const projectThemes = descopeUi.componentsThemeManager.themes;
+        const projectThemes = await this.#themeResource;
+        if (!projectThemes) return;
         descopeUi.componentsThemeManager.themes = {
           light: this.#mergeComponentThemes(
-            projectThemes?.light,
+            projectThemes?.light?.components,
             tenantTheme?.light?.components,
           ),
           dark: this.#mergeComponentThemes(
-            projectThemes?.dark,
+            projectThemes?.dark?.components,
             tenantTheme?.dark?.components,
           ),
         };
@@ -316,7 +341,6 @@ export const themeMixin = createSingletonMixin(
         this.#applyTheme();
       }
 
-      // add or remove os theme change listener
       #toggleOsThemeChangeListener = (listen: boolean) => {
         const method = listen ? 'addEventListener' : 'removeEventListener';
         window
