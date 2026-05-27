@@ -18,12 +18,20 @@ const themeValidation = (_: string, theme: string | null) =>
   theme !== 'dark' &&
   'Supported theme values are "light", "dark", or leave empty for using the OS theme';
 
+const tenantValidation = (_: string, tenant: string | null) =>
+  tenant !== null &&
+  !/^[A-Za-z0-9_-]+$/.test(tenant) &&
+  'Invalid tenant attribute: must contain only alphanumeric characters, hyphens, or underscores';
+
 export type ThemeOptions = 'light' | 'dark' | 'os';
 
 export const themeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
-      createValidateAttributesMixin({ theme: themeValidation }),
+      createValidateAttributesMixin({
+        theme: themeValidation,
+        tenant: tenantValidation,
+      }),
       staticResourcesMixin,
       initLifecycleMixin,
       descopeUiMixin,
@@ -171,12 +179,7 @@ export const themeMixin = createSingletonMixin(
       async #fetchTenantTheme() {
         const tenantId = this.getAttribute('tenant');
         if (!tenantId) return undefined;
-        if (!/^[A-Za-z0-9_-]+$/.test(tenantId)) {
-          this.logger.error(
-            'Invalid tenant attribute: must contain only alphanumeric characters, hyphens, or underscores',
-          );
-          return undefined;
-        }
+        if (tenantValidation('tenant', tenantId)) return undefined;
         try {
           const { body: fetchedTenantTheme } = await this.fetchStaticResource(
             `${tenantId}/theme.json`,
@@ -191,22 +194,23 @@ export const themeMixin = createSingletonMixin(
         }
       }
 
-      async #loadTenantStyle() {
-        const projectTheme = await this.#themeResource;
-        const tenantTheme = await this.#fetchTenantTheme();
-        const descopeUi = await this.descopeUi;
+      #mergeComponentThemes(
+        base?: Record<string, any>,
+        override?: Record<string, any>,
+      ): Record<string, any> | undefined {
+        if (!base && !override) return undefined;
+        const merged = { ...(base || {}) };
+        for (const [component, value] of Object.entries(override || {})) {
+          merged[component] = { ...(merged[component] || {}), ...value };
+        }
+        return merged;
+      }
 
+      async #loadTenantGlobalStyle(tenantTheme?: Record<string, any>) {
         if (!tenantTheme) {
           this.#tenantStyle?.replaceSync('');
-          if (descopeUi?.componentsThemeManager && projectTheme) {
-            descopeUi.componentsThemeManager.themes = {
-              light: projectTheme?.light?.components,
-              dark: projectTheme?.dark?.components,
-            };
-          }
           return;
         }
-
         if (!this.#tenantStyle) {
           this.#tenantStyle = this.injectStyle('');
         }
@@ -214,19 +218,32 @@ export const themeMixin = createSingletonMixin(
           (tenantTheme?.light?.globals || '') +
             (tenantTheme?.dark?.globals || ''),
         );
-        if (descopeUi?.componentsThemeManager) {
-          const project = projectTheme as Record<string, any> | undefined;
-          descopeUi.componentsThemeManager.themes = {
-            light: {
-              ...project?.light?.components,
-              ...tenantTheme?.light?.components,
-            },
-            dark: {
-              ...project?.dark?.components,
-              ...tenantTheme?.dark?.components,
-            },
-          };
-        }
+      }
+
+      async #loadTenantComponentsStyle(tenantTheme?: Record<string, any>) {
+        await this.#loadComponentsStyle();
+        if (!tenantTheme) return;
+
+        const descopeUi = await this.descopeUi;
+        if (!descopeUi?.componentsThemeManager) return;
+
+        const projectThemes = descopeUi.componentsThemeManager.themes;
+        descopeUi.componentsThemeManager.themes = {
+          light: this.#mergeComponentThemes(
+            projectThemes?.light,
+            tenantTheme?.light?.components,
+          ),
+          dark: this.#mergeComponentThemes(
+            projectThemes?.dark,
+            tenantTheme?.dark?.components,
+          ),
+        };
+      }
+
+      async #loadTenantStyle() {
+        const tenantTheme = await this.#fetchTenantTheme();
+        await this.#loadTenantGlobalStyle(tenantTheme);
+        await this.#loadTenantComponentsStyle(tenantTheme);
       }
 
       async #loadCustomStyle() {
