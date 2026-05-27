@@ -8,10 +8,6 @@ export const widgetConfigMixin = createSingletonMixin(
     const BaseClass = compose(configMixin, widgetIdMixin)(superclass);
 
     return class WidgetConfigMixinClass extends BaseClass {
-      async init() {
-        await super.init?.();
-      }
-
       async getWidgetConfig(): Promise<WidgetConfig | undefined> {
         const config = await this.config;
         return config?.projectConfig?.widgets?.[this.widgetId];
