@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.11.0...user-profile-widget-0.11.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+* `web-component` updated to version `3.64.2`
+
+### Bug Fixes
+
+* **user-profile-widget:** passkeys add/remove onSuccess memcache RELEASE ([#1398](https://github.com/descope/descope-js/issues/1398)) ([fb775b7](https://github.com/descope/descope-js/commit/fb775b76fbccf1a8eab59c3c21572735e92d0d48))
+
 ## [0.11.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.10.2...user-profile-widget-0.11.0) (2026-05-25)
 
 ### Dependency Updates

@@ -68,7 +68,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#addFlow.onSuccess(() => {
           this.#addModal.close();
           this.actions.getMe();
-          this.#fetchPasskeys(getUserId(this.state));
+          this.actions.listPasskeys({ userId: getUserId(this.state) });
         });
       }
 
@@ -102,7 +102,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.#removeFlow.onSuccess(() => {
           this.#removeModal.close();
           this.actions.getMe();
-          this.#fetchPasskeys(getUserId(this.state));
+          this.actions.listPasskeys({ userId: getUserId(this.state) });
         });
       }
 
