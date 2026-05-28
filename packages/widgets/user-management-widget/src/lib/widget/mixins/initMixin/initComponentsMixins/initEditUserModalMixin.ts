@@ -1,6 +1,7 @@
 import {
   ButtonDriver,
   ModalDriver,
+  MultiLineMappingsDriver,
   MultiSelectDriver,
   TextFieldDriver,
 } from '@descope/sdk-component-drivers';
@@ -9,7 +10,12 @@ import {
   createSingletonMixin,
   createTemplate,
 } from '@descope/sdk-helpers';
-import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  formMixin,
+  loggerMixin,
+  modalMixin,
+  widgetConfigMixin,
+} from '@descope/sdk-mixins';
 import parsePhone from 'libphonenumber-js/min';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -17,6 +23,8 @@ import {
   getCustomAttributes,
   getSelectedUsers,
   getTenantRoles,
+  getSubTenantRolesData,
+  getHasSubTenants,
 } from '../../../state/selectors';
 import { flatten, unflatten } from '../../../../helpers';
 
@@ -44,6 +52,7 @@ export const initEditUserModalMixin = createSingletonMixin(
       modalMixin,
       loggerMixin,
       formMixin,
+      widgetConfigMixin,
       initWidgetRootMixin,
     )(superclass) {
       editUserModal: ModalDriver;
@@ -51,6 +60,10 @@ export const initEditUserModalMixin = createSingletonMixin(
       #idInput: TextFieldDriver;
 
       #rolesMultiSelect: MultiSelectDriver;
+
+      #subTenantSection: Element;
+
+      #subTenantMappings: MultiLineMappingsDriver;
 
       #initCancelButton() {
         const cancelButton = new ButtonDriver(
@@ -73,10 +86,17 @@ export const initEditUserModalMixin = createSingletonMixin(
             const { loginId, ...formData } = this.getFormData(
               this.editUserModal.ele,
             );
+            const subTenantSectionVisible =
+              this.#subTenantSection &&
+              !this.#subTenantSection.classList.contains('hidden');
+            const userTenants = subTenantSectionVisible
+              ? this.#subTenantMappings.mergedValue
+              : undefined;
             this.actions.updateUser({
               // we are joining the ids in order to display it so we need to split it back
               loginId: loginId.split(', ')[0],
               ...unflatten(formData, 'customAttributes'),
+              ...(userTenants !== undefined && { userTenants }),
             });
             this.editUserModal.close();
             this.resetFormData(this.editUserModal.ele);
@@ -91,6 +111,15 @@ export const initEditUserModalMixin = createSingletonMixin(
             label: name,
           })),
         );
+      };
+
+      #updateSubTenantSection = () => {
+        const hasSubTenants = getHasSubTenants(this.state);
+        // hide the sub-tenant section when there are no sub-tenants to assign
+        this.#subTenantSection?.classList.toggle('hidden', !hasSubTenants);
+        if (hasSubTenants) {
+          this.#subTenantMappings.setData(getSubTenantRolesData(this.state));
+        }
       };
 
       // hide and disable fields according to user permissions
@@ -126,7 +155,7 @@ export const initEditUserModalMixin = createSingletonMixin(
           displayName: userDetails?.name,
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
-          roles: userDetails?.roles,
+          roles: userDetails?.roleNames,
           givenName: userDetails?.givenName,
           familyName: userDetails?.familyName,
           middleName: userDetails?.middleName,
@@ -134,6 +163,7 @@ export const initEditUserModalMixin = createSingletonMixin(
         };
 
         this.setFormData(this.editUserModal.ele, formData);
+        this.#subTenantMappings.value = userDetails?.userTenants || [];
       };
 
       async #initEditUserModal() {
@@ -161,9 +191,31 @@ export const initEditUserModalMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
+        this.#subTenantSection = this.editUserModal.ele?.querySelector(
+          '[data-id="sub-tenant-section"]',
+        );
+        this.#subTenantMappings = new MultiLineMappingsDriver(
+          () =>
+            this.editUserModal.ele?.querySelector(
+              '[data-id="sub-tenant-mappings"]',
+            ),
+          { logger: this.logger },
+        );
+
         this.editUserModal.beforeOpen = async () => {
+          // gate sub-tenant fetch on the allowSubTenants flag without blocking the parallel batch
+          const subTenantPromise = this.getWidgetConfig().then(
+            (widgetConfig) =>
+              widgetConfig?.allowSubTenants
+                ? this.actions.getSubTenantRoles()
+                : undefined,
+          );
+          await Promise.all([this.actions.getTenantRoles(), subTenantPromise]);
           await this.#updateRolesMultiSelect();
           this.#idInput.disable();
+          // setData on the sub-tenant mappings before #updateModalData sets value,
+          // otherwise the data-attribute change resets the value
+          this.#updateSubTenantSection();
           this.#updateModalData();
           this.#updateCustomFields();
         };
