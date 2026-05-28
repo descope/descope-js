@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.11.0...sdk-component-drivers-0.12.0) (2026-05-28)
+
+
+### Features
+
+* user-management-widget sub tenant support RELEASE ([#1388](https://github.com/descope/descope-js/issues/1388)) ([416da21](https://github.com/descope/descope-js/commit/416da21112328a2fcb39f1c0bf2e606db4b60667))
+
 ## [0.11.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.10.0...sdk-component-drivers-0.11.0) (2026-05-25)
 
 
