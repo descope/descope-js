@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.18.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.1...sdk-mixins-0.18.0) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.12.0`
+
+### Features
+
+* user-management-widget sub tenant support RELEASE ([#1388](https://github.com/descope/descope-js/issues/1388)) ([416da21](https://github.com/descope/descope-js/commit/416da21112328a2fcb39f1c0bf2e606db4b60667))
+
 ## [0.17.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.0...sdk-mixins-0.17.1) (2026-05-25)
 
 ### Dependency Updates
