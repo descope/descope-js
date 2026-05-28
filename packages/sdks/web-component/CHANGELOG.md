@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.65.0](https://github.com/descope/descope-js/compare/web-component-3.64.3...web-component-3.65.0) (2026-05-28)
+
+
+### Features
+
+* **web-component:** support 'read-only' componentsState action RELEASE ([#1399](https://github.com/descope/descope-js/issues/1399)) ([138eba4](https://github.com/descope/descope-js/commit/138eba448079872889c96893d149d612085297f7)), closes [descope/etc#15647](https://github.com/descope/etc/issues/15647) [descope/console-app#5287](https://github.com/descope/console-app/issues/5287)
+
 ## [3.64.3](https://github.com/descope/descope-js/compare/web-component-3.64.2...web-component-3.64.3) (2026-05-28)
 
 ### Dependency Updates
