@@ -1,14 +1,14 @@
 import { ButtonDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
-import { initCreateRoleModalMixin } from './initCreateRoleModalMixin';
+import { initRoleFormModalMixin } from './initRoleFormModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
 export const initCreateRoleButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitCreateRoleButtonMixinClass extends compose(
       loggerMixin,
-      initCreateRoleModalMixin,
+      initRoleFormModalMixin,
       initWidgetRootMixin,
     )(superclass) {
       createButton: ButtonDriver;
@@ -18,7 +18,7 @@ export const initCreateRoleButtonMixin = createSingletonMixin(
           this.shadowRoot?.querySelector('[data-id="create-role"]'),
           { logger: this.logger },
         );
-        this.createButton.onClick(() => this.createRoleModal.open());
+        this.createButton.onClick(() => this.openRoleModal());
       }
 
       async onWidgetRootReady() {

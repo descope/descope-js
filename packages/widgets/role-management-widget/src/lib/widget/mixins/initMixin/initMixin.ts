@@ -2,6 +2,7 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { initCreateRoleButtonMixin } from './initComponentsMixins/initCreateRoleButtonMixin';
 import { initDeleteRolesButtonMixin } from './initComponentsMixins/initDeleteRolesButtonMixin';
+import { initDuplicateRoleButtonMixin } from './initComponentsMixins/initDuplicateRoleButtonMixin';
 import { initEditRoleButtonMixin } from './initComponentsMixins/initEditRolesButtonMixin';
 import { initFilterRolesInputMixin } from './initComponentsMixins/initFilterRolesInputMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
@@ -16,6 +17,7 @@ export const initMixin = createSingletonMixin(
       initRolesTableMixin,
       initCreateRoleButtonMixin,
       initDeleteRolesButtonMixin,
+      initDuplicateRoleButtonMixin,
       initEditRoleButtonMixin,
       initFilterRolesInputMixin,
       initNotificationsMixin,

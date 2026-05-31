@@ -285,6 +285,57 @@ test.describe('widget', () => {
     ).toBeHidden();
   });
 
+  test('duplicate role button is enabled only when exactly one role is selected', async ({
+    page,
+  }) => {
+    const duplicateTrigger = page.getByTestId('duplicate-role-trigger').first();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // initially disabled
+    await expect(duplicateTrigger).toBeDisabled();
+
+    // select one row → enabled
+    await page.locator('descope-checkbox').last().click();
+    await expect(duplicateTrigger).toBeEnabled();
+
+    // select a second row → disabled
+    await page.locator('descope-checkbox').nth(2).click();
+    await expect(duplicateTrigger).toBeDisabled();
+
+    // unselect the second → back to one selected → enabled
+    await page.locator('descope-checkbox').nth(2).click();
+    await expect(duplicateTrigger).toBeEnabled();
+  });
+
+  test('duplicate role', async ({ page }) => {
+    // select the last role row (Role 2)
+    await page.locator('descope-checkbox').last().click();
+
+    // open duplicate modal
+    await page.getByTestId('duplicate-role-trigger').first().click();
+
+    // name input pre-filled with "<source> Copy" via the shared role-form modal.
+    // The descope-text-field wraps a vaadin-text-field and the test-id propagates
+    // to both, so target the outer wrapper directly.
+    await expect(
+      page.locator('descope-text-field[data-testid="create-role-input-name"]'),
+    ).toHaveAttribute('has-value', 'true');
+
+    // submit (button label is "Create" since the create modal is reused)
+    await page.getByTestId('create-role-modal-submit').first().click();
+
+    // new role appears in the grid
+    await expect(
+      page.locator(`text=${mockNewRole['name']}`).first(),
+    ).toBeVisible();
+
+    // toast text comes from the duplicateRole thunk (not createRole)
+    await expect(
+      page.locator('text=Role duplicated successfully'),
+    ).toBeVisible();
+  });
+
   test('close notification', async ({ page }) => {
     const deleteRoleTrigger = page.getByTestId('delete-roles-trigger').first();
     const deleteRoleModalButton = page
