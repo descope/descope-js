@@ -34,8 +34,8 @@ export const initDuplicateRoleButtonMixin = createSingletonMixin(
           if (!role) return;
           this.openRoleModal('duplicate', {
             name: `${role.name} Copy`,
-            description: role.description,
-            permissionNames: role.permissionNames,
+            description: role.description ?? '',
+            permissionNames: role.permissionNames ?? [],
           });
         });
       }

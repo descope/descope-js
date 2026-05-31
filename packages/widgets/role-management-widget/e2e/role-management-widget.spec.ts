@@ -312,27 +312,38 @@ test.describe('widget', () => {
     // select the last role row (Role 2)
     await page.locator('descope-checkbox').last().click();
 
+    // Override the create-role route to capture the submitted body — verifying
+    // the prefill end-to-end. Reading the wrapper's value via the DOM is
+    // unreliable on Vaadin web-components (the value lives on the inner input
+    // but doesn't surface on the wrapper's .value JS property at assert time).
+    let capturedCreatePayload: any;
+    await page.route(apiPath('role', 'create'), async (route) => {
+      capturedCreatePayload = route.request().postDataJSON();
+      return route.fulfill({ json: mockNewRole });
+    });
+
     // open duplicate modal
     await page.getByTestId('duplicate-role-trigger').first().click();
-
-    // name input pre-filled with "<source> Copy" via the shared role-form modal.
-    // The descope-text-field wraps a vaadin-text-field and the test-id propagates
-    // to both, so target the outer wrapper directly.
-    await expect(
-      page.locator('descope-text-field[data-testid="create-role-input-name"]'),
-    ).toHaveAttribute('has-value', 'true');
 
     // submit (button label is "Create" since the create modal is reused)
     await page.getByTestId('create-role-modal-submit').first().click();
 
+    // toast text comes from the duplicateRole thunk (not createRole).
+    // Toast only appears after the create call completes, so this implicitly
+    // waits for the route handler above to capture the request body.
+    await expect(
+      page.locator('text=Role duplicated successfully'),
+    ).toBeVisible();
+
+    // assert the prefill values made it into the submitted body
+    expect(capturedCreatePayload?.name).toBe(`${mockRoles.roles[2].name} Copy`);
+    expect(capturedCreatePayload?.description).toBe(
+      mockRoles.roles[2].description,
+    );
+
     // new role appears in the grid
     await expect(
       page.locator(`text=${mockNewRole['name']}`).first(),
-    ).toBeVisible();
-
-    // toast text comes from the duplicateRole thunk (not createRole)
-    await expect(
-      page.locator('text=Role duplicated successfully'),
     ).toBeVisible();
   });
 
