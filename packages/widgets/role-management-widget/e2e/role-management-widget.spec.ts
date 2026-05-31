@@ -340,6 +340,9 @@ test.describe('widget', () => {
     expect(capturedCreatePayload?.description).toBe(
       mockRoles.roles[2].description,
     );
+    expect(capturedCreatePayload?.permissionNames).toEqual(
+      mockRoles.roles[2].permissionNames,
+    );
 
     // new role appears in the grid
     await expect(
