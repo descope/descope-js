@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.25.6](https://github.com/descope/descope-js/compare/angular-sdk-0.25.5...angular-sdk-0.25.6) (2026-06-01)
+
+### Dependency Updates
+
+* `role-management-widget` updated to version `0.7.0`
 ## [0.25.5](https://github.com/descope/descope-js/compare/angular-sdk-0.25.4...angular-sdk-0.25.5) (2026-05-28)
 
 ### Dependency Updates
