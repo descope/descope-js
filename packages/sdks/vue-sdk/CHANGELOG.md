@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.16.6](https://github.com/descope/descope-js/compare/vue-sdk-2.16.5...vue-sdk-2.16.6) (2026-06-01)
+
+### Dependency Updates
+
+* `role-management-widget` updated to version `0.7.0`
 ## [2.16.5](https://github.com/descope/descope-js/compare/vue-sdk-2.16.4...vue-sdk-2.16.5) (2026-05-28)
 
 ### Dependency Updates
