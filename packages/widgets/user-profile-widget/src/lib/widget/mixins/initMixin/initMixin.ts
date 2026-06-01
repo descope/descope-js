@@ -12,8 +12,10 @@ import { initTotpUserAuthMethodMixin } from './initComponentsMixins/initTotpUser
 import { initUserBuiltinAttributesMixin } from './initComponentsMixins/initUserBuiltinAttributesMixin';
 import { initUserCustomAttributesMixin } from './initComponentsMixins/initUserCustomAttributesMixin';
 import { initTrustedDevicesMixin } from './initComponentsMixins/initTrustedDevicesMixin';
+import { initUserPasskeysMixin } from './initComponentsMixins/initUserPasskeysMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
 import { initTenantSelectorMixin } from './initComponentsMixins/initTenantSelectorMixin';
+import { initGenericFlowButtonMixin } from './initComponentsMixins/initGenericFlowButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -33,8 +35,10 @@ export const initMixin = createSingletonMixin(
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
       initTrustedDevicesMixin,
+      initUserPasskeysMixin,
       initNotificationsMixin,
       initTenantSelectorMixin,
+      initGenericFlowButtonMixin,
     )(superclass) {
       async init() {
         await super.init?.();

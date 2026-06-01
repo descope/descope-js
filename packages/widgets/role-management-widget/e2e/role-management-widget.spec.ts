@@ -285,6 +285,71 @@ test.describe('widget', () => {
     ).toBeHidden();
   });
 
+  test('duplicate role button is enabled only when exactly one role is selected', async ({
+    page,
+  }) => {
+    const duplicateTrigger = page.getByTestId('duplicate-role-trigger').first();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // initially disabled
+    await expect(duplicateTrigger).toBeDisabled();
+
+    // select one row → enabled
+    await page.locator('descope-checkbox').last().click();
+    await expect(duplicateTrigger).toBeEnabled();
+
+    // select a second row → disabled
+    await page.locator('descope-checkbox').nth(2).click();
+    await expect(duplicateTrigger).toBeDisabled();
+
+    // unselect the second → back to one selected → enabled
+    await page.locator('descope-checkbox').nth(2).click();
+    await expect(duplicateTrigger).toBeEnabled();
+  });
+
+  test('duplicate role', async ({ page }) => {
+    // select the last role row (Role 2)
+    await page.locator('descope-checkbox').last().click();
+
+    // Override the create-role route to capture the submitted body — verifying
+    // the prefill end-to-end. Reading the wrapper's value via the DOM is
+    // unreliable on Vaadin web-components (the value lives on the inner input
+    // but doesn't surface on the wrapper's .value JS property at assert time).
+    let capturedCreatePayload: any;
+    await page.route(apiPath('role', 'create'), async (route) => {
+      capturedCreatePayload = route.request().postDataJSON();
+      return route.fulfill({ json: mockNewRole });
+    });
+
+    // open duplicate modal
+    await page.getByTestId('duplicate-role-trigger').first().click();
+
+    // submit (button label is "Create" since the create modal is reused)
+    await page.getByTestId('create-role-modal-submit').first().click();
+
+    // toast text comes from the duplicateRole thunk (not createRole).
+    // Toast only appears after the create call completes, so this implicitly
+    // waits for the route handler above to capture the request body.
+    await expect(
+      page.locator('text=Role duplicated successfully'),
+    ).toBeVisible();
+
+    // assert the prefill values made it into the submitted body
+    expect(capturedCreatePayload?.name).toBe(`${mockRoles.roles[2].name} Copy`);
+    expect(capturedCreatePayload?.description).toBe(
+      mockRoles.roles[2].description,
+    );
+    expect(capturedCreatePayload?.permissionNames).toEqual(
+      mockRoles.roles[2].permissionNames,
+    );
+
+    // new role appears in the grid
+    await expect(
+      page.locator(`text=${mockNewRole['name']}`).first(),
+    ).toBeVisible();
+  });
+
   test('close notification', async ({ page }) => {
     const deleteRoleTrigger = page.getByTestId('delete-roles-trigger').first();
     const deleteRoleModalButton = page

@@ -1,4 +1,5 @@
 import {
+  AssociatedTenant,
   CreateUserConfig,
   CustomAttr,
   Role,
@@ -39,7 +40,13 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
         phone: `+1-202-555-010${i}`,
         verifiedEmail: true,
         verifiedPhone: true,
-        userTenants: [],
+        userTenants: [
+          {
+            tenantId: 'sub-tenant-1',
+            tenantName: 'Hurray',
+            roleNames: ['Role 1', 'Role 2'],
+          },
+        ],
         status: 'enabled',
         editable: true,
         createdTime: timeMock,
@@ -89,6 +96,7 @@ const create: (config: CreateUserConfig) => Promise<User> = async ({
   givenName,
   middleName,
   familyName,
+  userTenants,
 }) =>
   new Promise((resolve) => {
     const i = Math.random().toString(10).substring(15);
@@ -116,7 +124,7 @@ const create: (config: CreateUserConfig) => Promise<User> = async ({
       status: 'enabled',
       test: false,
       TOTP: false,
-      userTenants: [],
+      userTenants: userTenants || [],
       webauthn: false,
     });
   });
@@ -134,6 +142,7 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
   givenName,
   middleName,
   familyName,
+  userTenants,
 }) =>
   new Promise((resolve) => {
     resolve({
@@ -144,7 +153,7 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
       phone,
       name: displayName,
       roleNames: roles,
-      customAttributes,
+      customAttributes: customAttributes || {},
       picture,
       verifiedEmail,
       verifiedPhone,
@@ -160,7 +169,7 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
       status: 'enabled',
       test: false,
       TOTP: false,
-      userTenants: [],
+      userTenants: userTenants || [],
       webauthn: false,
     });
   });
@@ -220,6 +229,29 @@ const getTenantRoles = (
     resolve({ roles });
   });
 
+const getSubTenantRoles = (): Promise<{ roles: AssociatedTenant[] }> =>
+  new Promise((resolve) => {
+    resolve({
+      roles: [
+        {
+          tenantId: 'sub-tenant-1',
+          tenantName: 'Sub Tenant 1',
+          roleNames: ['Role 1', 'Role 2'],
+        },
+        {
+          tenantId: 'sub-tenant-2',
+          tenantName: 'Sub Tenant 2',
+          roleNames: ['Role 1', 'Role 3'],
+        },
+        {
+          tenantId: 'sub-tenant-3',
+          tenantName: 'Sub Tenant 3',
+          roleNames: ['Role 2'],
+        },
+      ],
+    });
+  });
+
 const user = {
   search,
   create,
@@ -233,5 +265,6 @@ const user = {
 };
 const tenants = {
   getTenantRoles,
+  getSubTenantRoles,
 };
 export { user, tenants };

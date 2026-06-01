@@ -631,7 +631,7 @@ describe('createFetchLogger', () => {
   it('should transform the response if "transformResponse hook is provided"', async () => {
     mockFetch.mockReturnValue({
       text: () => JSON.stringify({ test: 123 }),
-      headers: new Headers({ 'set-cookie': 'DSR=123; DS=456' }),
+      headers: new Headers({ 'set-cookie': 'DSR=123, DS=456' }),
     });
 
     const res = await hookedHttpClient.post('1/2/3', {});

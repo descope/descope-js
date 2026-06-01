@@ -22,6 +22,10 @@ const oidcWithUrlApps = mockSsoApps.filter(
     app.appType === SSOAppType.oidc &&
     app.oidcSettings?.customIdpInitiatedLoginPageUrl,
 );
+const wsFedApps = mockSsoApps.filter(
+  (app) =>
+    app.appType === SSOAppType.wsfed && app.wsfedSettings?.idpInitiatedUrl,
+);
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -77,6 +81,24 @@ test.describe('widget', () => {
     for (const app of oidcWithUrlApps) {
       await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
     }
+  });
+  test('wsfed apps are in the list', async ({ page }) => {
+    for (const app of wsFedApps) {
+      await expect(page.locator(`text=${app.name}`).first()).toBeVisible();
+    }
+  });
+  test('click wsfed app opens a new tab', async ({ page }) => {
+    expect(wsFedApps.length).toBeGreaterThan(0);
+    const wsFedApp = wsFedApps[0];
+    const newTabPromise = page.waitForEvent('popup');
+
+    const app = page.locator(`text=${wsFedApp.name}`).first();
+    await app.click();
+
+    const newTab = await newTabPromise;
+    await newTab.waitForLoadState();
+
+    await expect(newTab).toHaveURL(wsFedApp.wsfedSettings.idpInitiatedUrl);
   });
   test('click app opens a new tab', async ({ page }) => {
     const newTabPromise = page.waitForEvent('popup');

@@ -2,6 +2,32 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.11.0...sdk-component-drivers-0.12.0) (2026-05-28)
+
+
+### Features
+
+* user-management-widget sub tenant support RELEASE ([#1388](https://github.com/descope/descope-js/issues/1388)) ([416da21](https://github.com/descope/descope-js/commit/416da21112328a2fcb39f1c0bf2e606db4b60667))
+
+## [0.11.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.10.0...sdk-component-drivers-0.11.0) (2026-05-25)
+
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.10.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.9.1...sdk-component-drivers-0.10.0) (2026-05-14)
+
+
+### Features
+
+* **web-component:** Track last auth per screen and populate last-aut-badge RELEASE ([#1342](https://github.com/descope/descope-js/issues/1342)) ([00f96e2](https://github.com/descope/descope-js/commit/00f96e2d3e0e980e679bab0a1534d47ddd861f09))
+
+## [0.9.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.9.0...sdk-component-drivers-0.9.1) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
 ## [0.9.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.8.1...sdk-component-drivers-0.9.0) (2026-01-29)
 
 ### Dependency Updates

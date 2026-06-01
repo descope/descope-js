@@ -6,6 +6,8 @@ import {
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
+  DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED,
+  DESCOPE_LAST_AUTH_BADGE_COMPONENT,
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
@@ -29,6 +31,7 @@ import {
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
+  injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
   openCenteredPopup,
@@ -45,7 +48,13 @@ import {
 } from '../helpers';
 import { getABTestingKey } from '../helpers/abTestingKey';
 import { calculateCondition, calculateConditions } from '../helpers/conditions';
-import { getLastAuth, setLastAuth } from '../helpers/lastAuth';
+import {
+  clearInFlightLastAuth,
+  getInFlightLastUsedPerScreen,
+  getLastAuth,
+  setLastAuth,
+  updateLastUsedPerScreen,
+} from '../helpers/lastAuth';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
@@ -239,6 +248,7 @@ class DescopeWc extends BaseDescopeWc {
     oauthRedirect?: string;
     magicLinkRedirect?: string;
     ssoRedirect?: string;
+    externalAuthRedirect?: string;
     origin?: string;
   };
 
@@ -301,11 +311,13 @@ class DescopeWc extends BaseDescopeWc {
           moduleRes?.start?.();
           return moduleRes;
         }
-        await this.injectNpmLib(
-          '@descope/flow-scripts',
-          '1.0.14', // currently using a fixed version when loading scripts
-          `dist/${script.id}.js`,
-        );
+        if (!globalThis.descope?.[script.id]) {
+          await this.injectNpmLib(
+            '@descope/flow-scripts',
+            '1.0.16', // currently using a fixed version when loading scripts
+            `dist/${script.id}.js`,
+          );
+        }
         const module = globalThis.descope?.[script.id];
         return new Promise((resolve, reject) => {
           try {
@@ -324,9 +336,15 @@ class DescopeWc extends BaseDescopeWc {
               newScriptElement.setAttribute('data-script-id', script.id);
               newScriptElement.moduleRes = moduleRes;
               this.shadowRoot.appendChild(newScriptElement);
-              this.nextRequestStatus.subscribe(() => {
-                this.loggerWrapper.debug('Unloading script', script.id);
-                moduleRes.stop?.();
+              const subscriptionToken = this.nextRequestStatus.subscribe(() => {
+                this.loggerWrapper.debug('Stopping script', script.id);
+                // if the script is stopped successfully, we want to remove it from the DOM
+                // to allow the script element to be re-created on the next request
+                if (moduleRes.stop?.()) {
+                  this.nextRequestStatus.unsubscribe(subscriptionToken);
+                  this.loggerWrapper.debug('Removing script', script.id);
+                  this.shadowRoot.removeChild(newScriptElement);
+                }
               });
             }
           } catch (e) {
@@ -635,6 +653,9 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl,
       samlIdpResponseSamlResponse,
       samlIdpResponseRelayState,
+      wsFedIdpResponseUrl,
+      wsFedIdpResponseWresult,
+      wsFedIdpResponseWctx,
       nativeResponseType,
       nativePayload,
       reqTimestamp,
@@ -674,12 +695,14 @@ class DescopeWc extends BaseDescopeWc {
           oauthRedirect: this.nativeOptions.oauthRedirect,
           magicLinkRedirect: this.nativeOptions.magicLinkRedirect,
           ssoRedirect: this.nativeOptions.ssoRedirect,
+          externalAuthRedirect: this.nativeOptions.externalAuthRedirect,
         }
       : undefined;
     let conditionComponentsConfig: ComponentsConfig = {};
 
     // if there is no execution id we should start a new flow
     if (!executionId) {
+      clearInFlightLastAuth(this.loggerWrapper);
       const clientScripts = [
         ...(flowConfig.clientScripts || []),
         ...(flowConfig.sdkScripts || []),
@@ -699,7 +722,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.loggerWrapper),
           },
           flowConfig.conditions,
         ));
@@ -712,7 +735,7 @@ class DescopeWc extends BaseDescopeWc {
             code,
             token,
             abTestingKey,
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.loggerWrapper),
           },
         ));
       } else {
@@ -737,7 +760,7 @@ class DescopeWc extends BaseDescopeWc {
             ...ssoQueryParams,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            lastAuth: getLastAuth(loginId),
+            lastAuth: getLastAuth(loginId, this.loggerWrapper),
             abTestingKey,
             locale: getUserLocale(locale).locale,
             nativeOptions,
@@ -823,9 +846,10 @@ class DescopeWc extends BaseDescopeWc {
     ];
     if (
       action === RESPONSE_ACTIONS.loadForm &&
+      samlIdpResponseUrl &&
       samlProps.some((samlProp) => isChanged(samlProp))
     ) {
-      if (!samlIdpResponseUrl || !samlIdpResponseSamlResponse) {
+      if (!samlIdpResponseSamlResponse) {
         this.loggerWrapper.error('Did not get saml idp params data to load');
         return;
       }
@@ -837,6 +861,30 @@ class DescopeWc extends BaseDescopeWc {
         samlIdpResponseRelayState || '',
         submitForm,
       ); // will redirect us to the saml acs url
+    }
+
+    const wsFedProps = [
+      'wsFedIdpResponseUrl',
+      'wsFedIdpResponseWresult',
+      'wsFedIdpResponseWctx',
+    ];
+    if (
+      action === RESPONSE_ACTIONS.loadForm &&
+      wsFedIdpResponseUrl &&
+      wsFedProps.some((wsFedProp) => isChanged(wsFedProp))
+    ) {
+      if (!wsFedIdpResponseWresult) {
+        this.loggerWrapper.error('Did not get wsfed idp params data to load');
+        return;
+      }
+
+      // Handle WS-Fed IDP end of flow ("redirect like" by using html form with hidden params)
+      injectWsFedIdpForm(
+        wsFedIdpResponseUrl,
+        wsFedIdpResponseWresult,
+        wsFedIdpResponseWctx || '',
+        submitForm,
+      ); // will redirect us to the wsfed reply url
     }
 
     if (
@@ -1086,7 +1134,7 @@ class DescopeWc extends BaseDescopeWc {
       locale: getUserLocale(locale).locale,
     };
 
-    const lastAuth = getLastAuth(loginId);
+    const lastAuth = getLastAuth(loginId, this.loggerWrapper);
 
     // If there is a start screen id, next action should start the flow
     // But if any of the sso params are not empty, this optimization doesn't happen
@@ -1395,8 +1443,12 @@ class DescopeWc extends BaseDescopeWc {
 
     if (status === 'completed') {
       if (this.storeLastAuthenticatedUser) {
-        setLastAuth(lastAuth);
+        setLastAuth({
+          ...lastAuth,
+          lastUsedPerScreen: getInFlightLastUsedPerScreen(),
+        });
       }
+      clearInFlightLastAuth(this.loggerWrapper);
       const payload: FlowJWTResponse = { ...authInfo };
       // add flow output onto the jwt response itself, as opposed to changed the response object,
       // to avoid breaking existing functionality
@@ -1407,6 +1459,26 @@ class DescopeWc extends BaseDescopeWc {
       return;
     }
 
+    // setLastAuth writes to dls_last_auth from two places:
+    //
+    //   - Completion (above): saves once the user finishes logging in.
+    //
+    //   - Here (every non-completed response): a mid-flow snapshot so
+    //     a future visit can pre-fill {authMethod, loginId} even if
+    //     the user abandons this flow.
+    //
+    // Use case:
+    //   user submits email@example.com → server responds with
+    //   {loginId: 'email@example.com', authMethod: 'magicLink'} →
+    //   user closes the tab. On the next visit the form pre-fills
+    //   the email and shows magicLink, even though the flow never
+    //   completed.
+    //
+    // The helper decides whether to write. requireLoginId=true tells
+    // it to skip when loginId isn't set yet — without that guard, an
+    // early-screen response could overwrite a prior user's saved
+    // record with an auth-method-only entry that can't pre-fill
+    // anything.
     if (this.storeLastAuthenticatedUser) {
       setLastAuth(lastAuth, true);
     }
@@ -1425,6 +1497,7 @@ class DescopeWc extends BaseDescopeWc {
       webauthn,
       error,
       samlIdpResponse,
+      wsFedIdpResponse,
       nativeResponse,
     } = sdkResp.data;
 
@@ -1472,6 +1545,9 @@ class DescopeWc extends BaseDescopeWc {
       samlIdpResponseUrl: samlIdpResponse?.url,
       samlIdpResponseSamlResponse: samlIdpResponse?.samlResponse,
       samlIdpResponseRelayState: samlIdpResponse?.relayState,
+      wsFedIdpResponseUrl: wsFedIdpResponse?.url,
+      wsFedIdpResponseWresult: wsFedIdpResponse?.wresult,
+      wsFedIdpResponseWctx: wsFedIdpResponse?.wctx,
       nativeResponseType: nativeResponse?.type,
       nativePayload: nativeResponse?.payload,
       reqTimestamp,
@@ -1585,8 +1661,14 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   async onStepChange(currentState: StepState, prevState: StepState) {
-    const { htmlFilename, htmlLocaleFilename, direction, next, screenState } =
-      currentState;
+    const {
+      htmlFilename,
+      htmlLocaleFilename,
+      direction,
+      next,
+      screenState,
+      screenId,
+    } = currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
@@ -1666,9 +1748,11 @@ class DescopeWc extends BaseDescopeWc {
         });
 
         handleAutoFocus(rootElement, this.autoFocus, isFirstScreen);
+
+        this.#applyLastAuthBadge(screenId);
       });
 
-      this.#hydrate(next);
+      this.#hydrate(next, screenId);
 
       const loader = rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
@@ -1876,12 +1960,14 @@ class DescopeWc extends BaseDescopeWc {
   // in this case, the button will be clicked, but because we have the auto-submit mechanism
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
-    async (submitter: HTMLElement, next: NextFn) => {
+    async (submitter: HTMLElement, next: NextFn, screenId: string) => {
       if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
+        this.#trackLastUsed(submitter, submitterId, screenId);
+
         this.#handleComponentsLoadingState(submitter);
 
         const formData = await this.#getFormData();
@@ -1976,20 +2062,58 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  #addPasscodeAutoSubmitListeners(next: NextFn) {
+  #addPasscodeAutoSubmitListeners(next: NextFn, screenId: string) {
     this.contentRootElement
       .querySelectorAll(`descope-passcode[data-auto-submit="true"]`)
       .forEach((passcode: HTMLInputElement) => {
         passcode.addEventListener('input', () => {
           const isValid = passcode.checkValidity?.();
           if (isValid) {
-            this.#handleSubmit(passcode, next);
+            this.#handleSubmit(passcode, next, screenId);
           }
         });
       });
   }
 
-  #hydrate(next: NextFn) {
+  // Per-click, per-screen tracker for the last-auth badge. Writes to a
+  // separate in-flight key (not dls_last_auth) so abandoned flows can't
+  // pollute the saved auth method, and so the data survives mid-flow
+  // navigations (OAuth, magic link) without per-mechanism hooks. Merged
+  // into dls_last_auth only on flow completion.
+  // eslint-disable-next-line class-methods-use-this
+  #trackLastUsed(
+    submitter: HTMLElement,
+    submitterId: string | null,
+    screenId: string,
+  ) {
+    if (
+      submitterId &&
+      screenId &&
+      submitter.getAttribute(DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED) === 'true'
+    ) {
+      updateLastUsedPerScreen(screenId, submitterId, this.loggerWrapper);
+    }
+  }
+
+  #applyLastAuthBadge(screenId: string) {
+    const loginId = this.sdk.getLastUserLoginId();
+    const componentId = getLastAuth(loginId, this.loggerWrapper)
+      .lastUsedPerScreen?.[screenId];
+    if (!componentId) return;
+
+    const badgeEl = this.contentRootElement.querySelector(
+      DESCOPE_LAST_AUTH_BADGE_COMPONENT,
+    ) as any;
+    const targetEl = this.contentRootElement.querySelector(
+      `#${CSS.escape(componentId)}`,
+    );
+    if (!badgeEl || !targetEl) return;
+
+    targetEl.replaceWith(badgeEl);
+    badgeEl.appendChild(targetEl);
+  }
+
+  #hydrate(next: NextFn, screenId: string) {
     // hydrating the page
     // Adding event listeners to all buttons without the exclude attribute
     this.contentRootElement
@@ -1999,11 +2123,11 @@ class DescopeWc extends BaseDescopeWc {
       .forEach((button: HTMLButtonElement) => {
         // eslint-disable-next-line no-param-reassign
         button.onclick = () => {
-          this.#handleSubmit(button, next);
+          this.#handleSubmit(button, next, screenId);
         };
       });
 
-    this.#addPasscodeAutoSubmitListeners(next);
+    this.#addPasscodeAutoSubmitListeners(next, screenId);
 
     if (this.isDismissScreenErrorOnInput) {
       // listen to all input events in order to clear the global error state

@@ -1,17 +1,20 @@
 export default `
 <descope-container data-editor-type="container" direction="column" id="ROOT" space-between="md" st-horizontal-padding="1rem" st-vertical-padding="1rem" st-align-items="safe center" st-justify-content="safe center" st-host-width="100%" st-gap="1rem">
-  <descope-container data-editor-type="container" direction="row" id="headerContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="start" st-justify-content="space-between" st-background-color="#ffffff00" st-host-width="100%" st-gap="0rem">
+  <descope-container data-editor-type="container" direction="row" id="headerContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="center" st-justify-content="space-between" st-background-color="#ffffff00" st-host-width="100%" st-gap="0.5rem">
     <descope-text-field bordered="true" data-id="search-input" data-testid="search-input" full-width="false" id="search" label="" max="100" name="" placeholder="Search" required="false" size="sm"></descope-text-field>
-    <descope-combo-box bordered="true" data-id="range-input" data-testid="range-input" full-width="false" id="range" item-label-path="data-name" item-value-path="data-id" name="" size="sm" allow-custom-value="false" default-value="day" max="100">
-      <span data-name="Last 15 Minutes" data-id="minuets15">Last 15 Minutes</span>
-      <span data-name="Last Hour" data-id="hour">Last Hour</span>
-      <span data-name="Last 6 Hours" data-id="hour6">Last 6 Hours</span>
-      <span data-name="Last 24 Hours" data-id="day">Last 24 Hours</span>
-      <span data-name="Last 3 Days" data-id="day3">Last 3 Days</span>
-      <span data-name="Last Week" data-id="week">Last Week</span>
-      <span data-name="Last 2 Weeks" data-id="week2">Last 2 Weeks</span>
-      <span data-name="Last Month" data-id="month">Last Month</span>
-    </descope-combo-box>
+    <descope-container data-editor-type="container" direction="row" id="headerRightContainer" st-horizontal-padding="0rem" st-vertical-padding="0rem" st-align-items="center" st-justify-content="flex-end" st-host-width="auto" st-gap="0.5rem">
+      <descope-combo-box bordered="true" data-id="range-input" data-testid="range-input" full-width="false" id="range" item-label-path="data-name" item-value-path="data-id" name="" size="sm" allow-custom-value="false" default-value="day" max="100">
+        <span data-name="Last 15 Minutes" data-id="minuets15">Last 15 Minutes</span>
+        <span data-name="Last Hour" data-id="hour">Last Hour</span>
+        <span data-name="Last 6 Hours" data-id="hour6">Last 6 Hours</span>
+        <span data-name="Last 24 Hours" data-id="day">Last 24 Hours</span>
+        <span data-name="Last 3 Days" data-id="day3">Last 3 Days</span>
+        <span data-name="Last Week" data-id="week">Last Week</span>
+        <span data-name="Last 2 Weeks" data-id="week2">Last 2 Weeks</span>
+        <span data-name="Last Month" data-id="month">Last Month</span>
+      </descope-combo-box>
+      <descope-button data-id="export-button" data-testid="export-button" size="sm" variant="outline">Export</descope-button>
+    </descope-container>
   </descope-container>
   <descope-grid bordered="true" column-reordering-allowed="true" data-id="audit-table" size="sm" st-host-height="300px" style="width:100%">
     <descope-grid-text-column header="Occurred" path="occurredFormatted" resizable="true" sortable="false"></descope-grid-text-column>

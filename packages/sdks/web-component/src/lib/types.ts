@@ -39,10 +39,13 @@ export enum Direction {
   forward = 'forward',
 }
 
-export interface LastAuthState {
+export type LastAuthState = NonNullable<
+  NextFnReturnPromiseValue['data']['lastAuth']
+> & {
   loginId?: string;
   name?: string;
-}
+  lastUsedPerScreen?: Record<string, string>;
+};
 
 export interface ScreenState {
   errorText?: string;
@@ -71,9 +74,11 @@ export interface ScreenState {
 export type SSOQueryParams = {
   oidcIdpStateId?: string;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
+  customAppId?: string;
   thirdPartyAppId: string;
   thirdPartyAppStateId?: string;
   applicationScopes?: string;
@@ -122,6 +127,9 @@ export type FlowState = {
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
+  wsFedIdpResponseUrl: string;
+  wsFedIdpResponseWresult: string;
+  wsFedIdpResponseWctx: string;
   nativeResponseType: string;
   nativePayload: Record<string, any>;
   reqTimestamp: number;
@@ -288,6 +296,28 @@ type ThemeTemplate = {
     font1: Font;
     font2: Font;
   };
+};
+
+type ThemeColor = {
+  main: string;
+  dark: string;
+  light: string;
+  highlight: string;
+  contrast: string;
+};
+
+export type OverrideTheme = {
+  globals?: {
+    colors?: {
+      primary?: ThemeColor;
+      secondary?: ThemeColor;
+    };
+  };
+};
+
+export type OverrideThemes = {
+  dark?: OverrideTheme;
+  light?: OverrideTheme;
 };
 
 export type FlowConfig = {

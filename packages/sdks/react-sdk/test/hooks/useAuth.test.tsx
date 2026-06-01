@@ -139,7 +139,9 @@ describe('hooks', () => {
     // render again
     rerender();
 
-    expect(result.current.isSessionLoading).toEqual(false);
+    await waitFor(() => {
+      expect(result.current.isSessionLoading).toEqual(false);
+    });
     expect(refresh).toHaveBeenCalledTimes(1);
   });
 

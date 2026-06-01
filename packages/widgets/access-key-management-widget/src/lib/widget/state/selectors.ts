@@ -51,6 +51,18 @@ export const getCanModifyAccessKeys = createSelector(
   (isEditable, isSelected) => isEditable && isSelected,
 );
 
+export const getHasSelectedExpiredAccessKeys = createSelector(
+  getSelectedAccessKeys,
+  (selectedAccessKeys) =>
+    selectedAccessKeys.some((accessKey) => accessKey.status === 'expired'),
+);
+
+export const getCanChangeAccessKeysStatus = createSelector(
+  getCanModifyAccessKeys,
+  getHasSelectedExpiredAccessKeys,
+  (canModify, hasExpired) => canModify && !hasExpired,
+);
+
 export const getIsSingleAccessKeysSelected = createSelector(
   getSelectedAccessKeysIds,
   (selected) => selected.length === 1,

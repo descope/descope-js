@@ -158,6 +158,24 @@ describe('Magic Link', () => {
         { token: 'token' },
       );
     });
+
+    it('should send tenantId inside loginOptions', () => {
+      sdk.magicLink.signIn.email(
+        'loginId',
+        'http://some.thing.com',
+        { tenantId: 'tenant1', stepup: true },
+        'token',
+      );
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.magicLink.signIn + '/email',
+        {
+          loginId: 'loginId',
+          URI: 'http://some.thing.com',
+          loginOptions: { tenantId: 'tenant1', stepup: true },
+        },
+        { token: 'token' },
+      );
+    });
   });
 
   describe('signUpOrIn', () => {

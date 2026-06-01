@@ -9,6 +9,7 @@ type Options = Pick<
   | 'redirectAuth'
   | 'oidcIdpStateId'
   | 'samlIdpStateId'
+  | 'wsfedIdpStateId'
   | 'samlIdpUsername'
   | 'ssoAppId'
   | 'thirdPartyAppId'

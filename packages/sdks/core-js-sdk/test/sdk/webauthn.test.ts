@@ -113,6 +113,33 @@ describe('webauthn', () => {
           response: httpResponse,
         });
       });
+
+      it('should send tenantId inside loginOptions', () => {
+        const httpRespJson = { key: 'val' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+
+        sdk.webauthn.signUp.start('loginId', 'origin', 'John Doe', undefined, {
+          tenantId: 'tenant1',
+        });
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.webauthn.signUp.start,
+          {
+            user: { loginId: 'loginId', name: 'John Doe' },
+            origin: 'origin',
+            loginOptions: { tenantId: 'tenant1' },
+            passkeyOptions: undefined,
+          },
+        );
+      });
     });
 
     describe('finish', () => {
@@ -273,6 +300,36 @@ describe('webauthn', () => {
             loginId: 'loginId',
             origin: 'origin',
             loginOptions: { stepup: true, customClaims: { k1: 'v1' } },
+          },
+          { token: 'token' },
+        );
+      });
+
+      it('should send tenantId inside loginOptions', () => {
+        const httpRespJson = { key: 'val' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+
+        sdk.webauthn.signIn.start(
+          'loginId',
+          'origin',
+          { tenantId: 'tenant1', stepup: true },
+          'token',
+        );
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.webauthn.signIn.start,
+          {
+            loginId: 'loginId',
+            origin: 'origin',
+            loginOptions: { tenantId: 'tenant1', stepup: true },
           },
           { token: 'token' },
         );
@@ -445,6 +502,33 @@ describe('webauthn', () => {
           {
             loginId: 'loginId',
             origin: 'origin',
+          },
+        );
+      });
+
+      it('should send tenantId inside loginOptions', () => {
+        const httpRespJson = { key: 'val' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+
+        sdk.webauthn.signUpOrIn.start('loginId', 'origin', undefined, {
+          tenantId: 'tenant1',
+        });
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.webauthn.signUpOrIn.start,
+          {
+            loginId: 'loginId',
+            origin: 'origin',
+            loginOptions: { tenantId: 'tenant1' },
+            passkeyOptions: undefined,
           },
         );
       });

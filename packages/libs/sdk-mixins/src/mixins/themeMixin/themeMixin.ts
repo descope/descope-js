@@ -7,7 +7,7 @@ import { initElementMixin } from '../initElementMixin';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { DEFAULT_STYLE_ID } from './constants';
-import { loadDevTheme, loadFont } from './helpers';
+import { flattenToVars, loadDevTheme, loadFont } from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 import { InjectedStyle, injectStyleMixin } from '../injectStyleMixin';
@@ -35,6 +35,7 @@ export const themeMixin = createSingletonMixin(
 
     return class ThemeMixinClass extends BaseClass {
       #globalStyle: InjectedStyle;
+      #customStyle: InjectedStyle;
 
       get theme(): ThemeOptions {
         const theme = this.getAttribute('theme') as ThemeOptions | null;
@@ -52,6 +53,38 @@ export const themeMixin = createSingletonMixin(
 
       get styleId(): string {
         return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
+      }
+
+      get themeOverride(): Record<string, any> | null {
+        const raw = this.getAttribute('theme-override');
+        if (!raw) return null;
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          this.logger.error(
+            'Failed to parse theme-override attribute. error: ',
+            e,
+          );
+          return null;
+        }
+      }
+
+      #getThemeOverrideString(): string {
+        const override = this.themeOverride;
+        if (!override) return '';
+
+        return (['light', 'dark'] as const)
+          .map((theme) => {
+            const primary = override[theme]?.globals?.colors?.primary;
+            const secondary = override[theme]?.globals?.colors?.secondary;
+            if (!primary && !secondary) return '';
+
+            return `[data-theme="${theme}"]{${flattenToVars(
+              { colors: { primary, secondary } },
+              (msg) => this.logger.error(msg),
+            )}}`;
+          })
+          .join('');
       }
 
       #_themeResource: Promise<void | Record<string, any>>;
@@ -122,8 +155,9 @@ export const themeMixin = createSingletonMixin(
 
       async #loadGlobalStyle() {
         const theme = await this.#themeResource;
-        if (!theme) return;
-
+        if (!theme) {
+          return;
+        }
         if (!this.#globalStyle) {
           this.#globalStyle = this.injectStyle('');
         }
@@ -131,6 +165,17 @@ export const themeMixin = createSingletonMixin(
         this.#globalStyle.replaceSync(
           (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
         );
+      }
+
+      async #loadCustomStyle() {
+        if (!this.themeOverride) {
+          this.#customStyle?.replaceSync('');
+          return;
+        }
+        if (!this.#customStyle) {
+          this.#customStyle = this.injectStyle('');
+        }
+        this.#customStyle.replaceSync(this.#getThemeOverrideString());
       }
 
       async #loadComponentsStyle() {
@@ -208,8 +253,11 @@ export const themeMixin = createSingletonMixin(
           this.#loadGlobalStyle(),
           this.#loadComponentsStyle(),
         ]);
+        await this.#loadCustomStyle();
 
         this.observeAttributes(['theme'], this.#onThemeChange);
+
+        this.observeAttributes(['theme-override'], () => this.#loadCustomStyle());
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;

@@ -240,7 +240,7 @@ test.describe('widget', () => {
 
       await page.route(
         apiPath('outboundApps', 'connectedOutboundApps') +
-          `?userId=${mockUser.userId}&tenant=mocktenantid`,
+          `?userId=${mockUser.userId}&tenantId=mocktenantid`,
         async (route) =>
           route.fulfill({
             json: { appIds: ['obapp1', 'obapp2'] },
@@ -254,7 +254,7 @@ test.describe('widget', () => {
         .nth(1)
         .getByText('Connect');
 
-      expect(connectBtn).toBeVisible();
+      expect(connectBtn).toBeVisible({ timeout: 3000 });
 
       await page.waitForTimeout(STATE_TIMEOUT);
 

@@ -8,6 +8,7 @@ import {
   initElementMixin,
   initLifecycleMixin,
   loggerMixin,
+  widgetConfigMixin,
 } from '@descope/sdk-mixins';
 import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -21,6 +22,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       initElementMixin,
       fetchWidgetPagesMixin,
       stateManagementMixin,
+      widgetConfigMixin,
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
@@ -37,11 +39,21 @@ export const initWidgetRootMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
+        this.injectStyle('.hidden { display: none; }');
+
+        // gate sub-tenant fetch on the allowSubTenants flag without blocking the parallel init batch
+        const subTenantPromise = this.getWidgetConfig().then((widgetConfig) =>
+          widgetConfig?.allowSubTenants
+            ? this.actions.getSubTenantRoles()
+            : undefined,
+        );
+
         await Promise.all([
           this.#initWidgetRoot(),
           this.actions.searchUsers(),
           this.actions.getTenantRoles(),
           this.actions.getCustomAttributes(),
+          subTenantPromise,
         ]);
 
         await this.onWidgetRootReady();

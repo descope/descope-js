@@ -12,8 +12,10 @@ import {
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
+  WSFED_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  CUSTOM_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OVERRIDE_CONTENT_URL,
@@ -271,6 +273,14 @@ export function clearSAMLIDPParamFromUrl() {
   resetUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
 }
 
+export function getWSFedIDPParamFromUrl() {
+  return getUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function clearWSFedIDPParamFromUrl() {
+  resetUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
 export function getSAMLIDPUsernameParamFromUrl() {
   return getUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
 }
@@ -291,12 +301,20 @@ export function getSSOAppIdParamFromUrl() {
   return getUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getCustomAppIdParamFromUrl() {
+  return getUrlParam(CUSTOM_APP_ID_PARAM_NAME);
+}
+
 export function getThirdPartyAppIdParamFromUrl() {
   return getUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
 }
 
 export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearCustomAppIdParamFromUrl() {
+  resetUrlParam(CUSTOM_APP_ID_PARAM_NAME);
 }
 
 export function clearThirdPartyAppIdParamFromUrl() {
@@ -432,6 +450,11 @@ export const handleUrlParams = (
     clearSAMLIDPParamFromUrl();
   }
 
+  const wsfedIdpStateId = getWSFedIDPParamFromUrl();
+  if (wsfedIdpStateId) {
+    clearWSFedIDPParamFromUrl();
+  }
+
   const samlIdpUsername = getSAMLIDPUsernameParamFromUrl();
   if (samlIdpStateId) {
     clearSAMLIDPUsernameParamFromUrl();
@@ -445,6 +468,11 @@ export const handleUrlParams = (
   const ssoAppId = getSSOAppIdParamFromUrl();
   if (ssoAppId) {
     clearSSOAppIdParamFromUrl();
+  }
+
+  const customAppId = getCustomAppIdParamFromUrl();
+  if (customAppId) {
+    clearCustomAppIdParamFromUrl();
   }
 
   const thirdPartyAppId = getThirdPartyAppIdParamFromUrl();
@@ -498,9 +526,11 @@ export const handleUrlParams = (
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
+      wsfedIdpStateId,
       samlIdpUsername,
       descopeIdpInitiated: idpInitiatedVal,
       ssoAppId,
+      customAppId,
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
@@ -681,8 +711,10 @@ export const showFirstScreenOnExecutionInit = (
   {
     oidcIdpStateId,
     samlIdpStateId,
+    wsfedIdpStateId,
     samlIdpUsername,
     ssoAppId,
+    customAppId,
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
@@ -695,8 +727,10 @@ export const showFirstScreenOnExecutionInit = (
   !!startScreenId &&
   !oidcIdpStateId &&
   !samlIdpStateId &&
+  !wsfedIdpStateId &&
   !samlIdpUsername &&
   !ssoAppId &&
+  !customAppId &&
   !oidcLoginHint &&
   !oidcPrompt &&
   !oidcErrorRedirectUri &&
@@ -719,6 +753,41 @@ export const injectSamlIdpForm = (
   <input type="hidden" role="saml-relay-state" name="RelayState" value="${relayState}" />
   <input style="display: none;" id="SAMLSubmitButton" type="submit" value="Continue" />
   `;
+
+  document.body.appendChild(formEle);
+
+  submitCallback(formEle);
+};
+
+export const injectWsFedIdpForm = (
+  url: string,
+  wresult: string,
+  wctx: string,
+  submitCallback: (form: HTMLFormElement) => void,
+) => {
+  const formEle = document.createElement('form');
+  formEle.method = 'POST';
+  formEle.action = url;
+
+  // Use DOM APIs to set values safely — wresult is raw XML that would break innerHTML interpolation
+  const createHiddenInput = (name: string, value: string) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    return input;
+  };
+
+  formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
+  formEle.appendChild(createHiddenInput('wresult', wresult));
+  formEle.appendChild(createHiddenInput('wctx', wctx));
+
+  const submitBtn = document.createElement('input');
+  submitBtn.type = 'submit';
+  submitBtn.id = 'WSFedSubmitButton';
+  submitBtn.value = 'Continue';
+  submitBtn.style.display = 'none';
+  formEle.appendChild(submitBtn);
 
   document.body.appendChild(formEle);
 

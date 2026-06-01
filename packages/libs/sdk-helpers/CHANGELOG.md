@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.6.0...sdk-helpers-0.7.0) (2026-04-12)
+
+
+### Features
+
+* **audit-widget:** add export CSV button ([#1362](https://github.com/descope/descope-js/issues/1362)) ([be22970](https://github.com/descope/descope-js/commit/be22970173d17de38ce7aca1723fead6afd4aec3))
+
 ## [0.6.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.5.1...sdk-helpers-0.6.0) (2026-01-29)
 
 
