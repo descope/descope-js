@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/role-management-widget-0.6.2...role-management-widget-0.7.0) (2026-06-01)
+
+
+### Features
+
+* **role-management-widget:** add Duplicate Role flow RELEASE ([#1401](https://github.com/descope/descope-js/issues/1401)) ([09e6f2f](https://github.com/descope/descope-js/commit/09e6f2f453b3bc168352a11bbcc0a0ab8f07d655)), closes [descope/etc#15701](https://github.com/descope/etc/issues/15701)
+
 ## [0.6.2](https://github.com/descope/descope-js/compare/role-management-widget-0.6.1...role-management-widget-0.6.2) (2026-05-28)
 
 ### Dependency Updates
