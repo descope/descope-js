@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.28.7](https://github.com/descope/descope-js/compare/react-sdk-2.28.6...react-sdk-2.28.7) (2026-06-01)
+
+### Dependency Updates
+
+* `role-management-widget` updated to version `0.7.0`
 ## [2.28.6](https://github.com/descope/descope-js/compare/react-sdk-2.28.5...react-sdk-2.28.6) (2026-05-28)
 
 ### Dependency Updates
