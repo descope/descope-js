@@ -8,6 +8,7 @@ import {
 import {
   createRole,
   deleteRoles,
+  duplicateRole,
   getTenantPermissions,
   searchRole,
   updateRole,
@@ -31,6 +32,7 @@ export const stateManagementMixin = createSingletonMixin(
         },
         extraReducers: (builder) => {
           createRole.reducer(builder);
+          duplicateRole.reducer(builder);
           updateRole.reducer(builder);
           deleteRoles.reducer(builder);
           searchRole.reducer(builder);
@@ -39,6 +41,7 @@ export const stateManagementMixin = createSingletonMixin(
         asyncActions: {
           searchRoles: searchRole.action,
           createRole: createRole.action,
+          duplicateRole: duplicateRole.action,
           updateRole: updateRole.action,
           deleteRoles: deleteRoles.action,
           getTenantPermissions: getTenantPermissions.action,
