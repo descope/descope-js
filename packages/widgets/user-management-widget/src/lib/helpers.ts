@@ -68,7 +68,6 @@ export const createFlowTemplate = (
   const template = createTemplate(`<descope-wc></descope-wc>`);
 
   Object.entries(flowConfig).forEach(([key, value]) => {
-    if (value === undefined || value === null) return;
     template.content
       .querySelector('descope-wc')
       .setAttribute(kebabCase(key), value as string);

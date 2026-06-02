@@ -47,8 +47,8 @@ describe('localeMixin', () => {
     expect(createLocaleMixin({ locale: 'en-US' }).locale).toBe('en-US');
   });
 
-  it('returns undefined when the locale attribute is unset', () => {
-    expect(createLocaleMixin().locale).toBeUndefined();
+  it('returns an empty string when the locale attribute is unset', () => {
+    expect(createLocaleMixin().locale).toBe('');
   });
 
   it('localeCandidates returns only the lowercased explicit locale (no language split for an explicit attr)', () => {
