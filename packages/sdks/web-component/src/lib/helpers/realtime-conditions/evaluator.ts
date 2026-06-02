@@ -20,7 +20,7 @@ export type FormSnapshot = Record<string, unknown>;
 export type ValidityChecker = (formKey: string) => boolean | undefined;
 
 /* ------------------------------------------------------------------ */
-/* coercion helpers — mirror the Go cutils.AnyTo* semantics              */
+/* type-conversion helpers — mirror the Go cutils.AnyTo* semantics       */
 /* ------------------------------------------------------------------ */
 
 export function toFloat(v: unknown): { value: number; ok: boolean } {
@@ -193,33 +193,33 @@ function evaluateRule(
   return atomics.every((a) => evaluateAtomic(a, snapshot, validity));
 }
 
-/** Evaluates a single residual: returns true if any of its rules fire. */
+/** Evaluates a single condition group: returns true if any of its rules fire. */
 export function evaluateResidual(
-  residual: RealtimeComponentsCondition,
+  condition: RealtimeComponentsCondition,
   snapshot: FormSnapshot,
   validity: ValidityChecker,
 ): boolean {
-  return (residual.rules ?? []).some((r) =>
+  return (condition.rules ?? []).some((r) =>
     evaluateRule(r, snapshot, validity),
   );
 }
 
 /**
- * Evaluates all residuals and returns the monotonic OR: for each component
- * touched by any residual, the action of the first firing residual. Components
- * with no firing residual are absent from the result.
+ * Evaluates all condition groups and returns, for each targeted component, the
+ * action of the first group whose rules fire. Components where no group fires
+ * are absent from the result.
  *
- * "First wins" only matters in practice when two CCs target the same component
- * with different actions — uncommon, but deterministic: we iterate residuals
- * in declaration order and the first firing one's action sticks for that id.
+ * "First wins" only matters when two groups target the same component with
+ * different actions — uncommon, but deterministic: we iterate in declaration
+ * order and the first firing group's action sticks for that id.
  */
 export function evaluateAll(
-  residuals: RealtimeComponentsCondition[] | undefined,
+  conditions: RealtimeComponentsCondition[] | undefined,
   snapshot: FormSnapshot,
   validity: ValidityChecker,
 ): Record<string, string> {
   const result: Record<string, string> = {};
-  (residuals ?? []).forEach((r) => {
+  (conditions ?? []).forEach((r) => {
     if (!evaluateResidual(r, snapshot, validity)) return;
     (r.componentIds ?? []).forEach((id) => {
       if (!(id in result)) {
@@ -231,14 +231,14 @@ export function evaluateAll(
 }
 
 /**
- * Returns the set of component IDs touched by ANY residual. The reconciler
- * uses this to know which components belong to the realtime layer.
+ * Returns the set of component IDs targeted by any condition group. The
+ * reconciler uses this to know which components belong to the realtime layer.
  */
 export function collectTouchedComponentIds(
-  residuals: RealtimeComponentsCondition[] | undefined,
+  conditions: RealtimeComponentsCondition[] | undefined,
 ): Set<string> {
   const out = new Set<string>();
-  (residuals ?? []).forEach((r) => {
+  (conditions ?? []).forEach((r) => {
     (r.componentIds ?? []).forEach((id) => out.add(id));
   });
   return out;

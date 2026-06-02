@@ -29,7 +29,7 @@ describe('web-component real-time conditions integration', () => {
   });
 
   it('toggles a component class as the user types in a referenced input', async () => {
-    // A residual that hides _chk while form.phone is empty.
+    // A condition that hides _chk while form.phone is empty.
     startMock.mockReturnValue(
       generateSdkResponse({
         screenState: {
@@ -77,14 +77,14 @@ describe('web-component real-time conditions integration', () => {
       .querySelector('input[name="phone"]') as HTMLInputElement;
     expect(phone).toBeTruthy();
 
-    // User types into phone → residual stops firing → _chk becomes visible.
+    // User types into phone → condition stops firing → _chk becomes visible.
     phone.value = '+1';
     phone.dispatchEvent(new Event('input', { bubbles: true }));
     jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);
 
     expect(chk).not.toHaveClass('hidden');
 
-    // User clears the field → residual fires again → re-hide.
+    // User clears the field → condition fires again → re-hide.
     phone.value = '';
     phone.dispatchEvent(new Event('input', { bubbles: true }));
     jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);

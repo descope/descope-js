@@ -136,7 +136,7 @@ describe('realtimeConditionsMixin', () => {
     chk.classList.add('hidden');
     mkInput(root, 'phone');
 
-    const residual: RealtimeComponentsCondition = {
+    const condition: RealtimeComponentsCondition = {
       componentIds: ['_chk'],
       action: 'hide',
       rules: [
@@ -150,20 +150,20 @@ describe('realtimeConditionsMixin', () => {
     const screenState: ScreenState = {
       form: { phone: '' },
       componentsState: { _chk: 'hide' },
-      realtimeComponentsConditions: [residual],
+      realtimeComponentsConditions: [condition],
     };
 
     host.initRealtimeConditions(root, screenState);
     expect(chk).toHaveClass('hidden'); // unchanged from baseline
   });
 
-  it('unhides on input when residual stops firing', () => {
+  it('unhides on input when condition stops firing', () => {
     const { host, root } = mountHost();
     const chk = mkComponent(root, '_chk');
     chk.classList.add('hidden'); // mirror baseline
     const phone = mkInput(root, 'phone', '');
 
-    const residual: RealtimeComponentsCondition = {
+    const condition: RealtimeComponentsCondition = {
       componentIds: ['_chk'],
       action: 'hide',
       rules: [
@@ -177,7 +177,7 @@ describe('realtimeConditionsMixin', () => {
     host.initRealtimeConditions(root, {
       form: { phone: '' },
       componentsState: { _chk: 'hide' },
-      realtimeComponentsConditions: [residual],
+      realtimeComponentsConditions: [condition],
     });
 
     dispatchInput(phone, '+1');
@@ -223,7 +223,7 @@ describe('realtimeConditionsMixin', () => {
     expect(chk).toHaveClass('hidden');
   });
 
-  it('boolean field with is-true uses string-coerced value', () => {
+  it('boolean field with is-true uses string-converted value', () => {
     const { host, root } = mountHost();
     const banner = mkComponent(root, '_banner');
     banner.classList.add('hidden'); // baseline: agree=false fires "is-false"=true → hide
@@ -327,7 +327,7 @@ describe('realtimeConditionsMixin', () => {
       ],
     });
 
-    // Re-init with a different residual (different component).
+    // Re-init with a different condition group (different component).
     const chk2 = mkComponent(root, '_other');
     const newRoot = root; // same root for simplicity
     // Pre-hide _other to simulate baseline.
@@ -355,7 +355,7 @@ describe('realtimeConditionsMixin', () => {
     });
 
     // Typing into phone should NO longer trigger any change for either
-    // component, because the new residual doesn't reference form.phone.
+    // component, because the new condition doesn't reference form.phone.
     dispatchInput(phone, '+1');
     flushDebounce();
 
@@ -391,7 +391,7 @@ describe('realtimeConditionsMixin', () => {
     });
     expect(chk).toHaveClass('hidden');
 
-    // Re-init with no residuals → cleans up previous applied state.
+    // Re-init with no conditions → cleans up previous applied state.
     host.initRealtimeConditions(root, { form: {} });
     expect(chk).not.toHaveClass('hidden');
   });
@@ -476,10 +476,10 @@ describe('realtimeConditionsMixin', () => {
     expect(chk).not.toHaveClass('hidden');
   });
 
-  // componentsState may include ids the residuals don't touch (e.g. a server
+  // componentsState may include ids the conditions don't target (e.g. a server
   // CC locked them). The mixin must NOT seed those into its applied map,
   // otherwise it could accidentally clear something it doesn't own.
-  it('does not seed applied state for components the residuals do not touch', () => {
+  it('does not seed applied state for components the conditions do not target', () => {
     const { host, root } = mountHost();
     const ownedByMixin = mkComponent(root, '_chk');
     const lockedByServer = mkComponent(root, '_locked');
@@ -775,7 +775,7 @@ describe('realtimeConditionsMixin', () => {
     // Pending debounce.
     dispatchInput(phone, '+1');
 
-    // Re-init with no residuals — should clean up the old timer too.
+    // Re-init with no conditions — should clean up the old timer too.
     host.initRealtimeConditions(root, { form: {} });
 
     // Flush all timers — the old debounce must NOT fire against the new
@@ -796,7 +796,7 @@ describe('realtimeConditionsMixin', () => {
     mkComponent(root, '_chk');
     mkInput(root, 'phone', '');
 
-    const residual: RealtimeComponentsCondition = {
+    const condition: RealtimeComponentsCondition = {
       componentIds: ['_chk'],
       action: 'hide',
       rules: [
@@ -812,12 +812,12 @@ describe('realtimeConditionsMixin', () => {
     for (let i = 0; i < 3; i += 1) {
       host.initRealtimeConditions(root, {
         form: { phone: '' },
-        realtimeComponentsConditions: [residual],
+        realtimeComponentsConditions: [condition],
       });
     }
     expect(host.nextRequestStatus.subscriberCount()).toBe(1);
 
-    // Teardown via re-init with no residuals — should also drop to zero.
+    // Teardown via re-init with no conditions — should also drop to zero.
     host.initRealtimeConditions(root, { form: {} });
     expect(host.nextRequestStatus.subscriberCount()).toBe(0);
   });

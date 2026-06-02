@@ -33,8 +33,8 @@ export interface PausableHost {
 }
 
 export interface RealtimeRuntime {
-  residuals: RealtimeComponentsCondition[];
-  // component IDs that any residual targets
+  conditions: RealtimeComponentsCondition[];
+  // component IDs targeted by any condition group
   touchedIds: Set<string>;
   // current in-memory snapshot of on-screen form values
   snapshot: FormSnapshot;
@@ -62,7 +62,7 @@ function escapeAttr(value: string): string {
 // Some inputs (e.g. descope-* custom elements) render their `name` attribute
 // with the full context key already prefixed by `form.`; others use a bare
 // name. Normalize either to a full `form.*` context key so it matches what
-// rule residuals reference.
+// condition rules reference.
 function toFormKey(name: string): string {
   return name.startsWith('form.') ? name : `form.${name}`;
 }
@@ -98,7 +98,7 @@ function shallowEqualStringMap(
 
 function emptyRuntime(): RealtimeRuntime {
   return {
-    residuals: [],
+    conditions: [],
     touchedIds: new Set(),
     snapshot: {},
     applied: {},
@@ -138,29 +138,29 @@ export const realtimeConditionsMixin = createSingletonMixin(
       ): void {
         this.#teardownRealtimeRuntime();
 
-        const residuals = screenState?.realtimeComponentsConditions ?? [];
-        if (!residuals.length) {
+        const conditions = screenState?.realtimeComponentsConditions ?? [];
+        if (!conditions.length) {
           this.logger.debug(
             `${LOG_PREFIX} no real-time rules to apply on this screen`,
           );
           return;
         }
         this.logger.info(
-          `${LOG_PREFIX} found ${residuals.length} real-time rule(s) for this screen`,
+          `${LOG_PREFIX} found ${conditions.length} real-time rule(s) for this screen`,
         );
 
-        // screenState.form uses bare keys (e.g. "phone"), but residuals
-        // reference the full context key ("form.phone"). Prefix on the way in.
+        // screenState.form uses bare keys (e.g. "phone"), but condition
+        // rules reference the full context key ("form.phone"). Prefix on the way in.
         const initialSnapshot: FormSnapshot = {};
         Object.entries(screenState?.form ?? {}).forEach(([k, v]) => {
           initialSnapshot[`form.${k}`] = v;
         });
 
-        const touchedIds = collectTouchedComponentIds(residuals);
+        const touchedIds = collectTouchedComponentIds(conditions);
 
         // Seed `applied` from the baseline `componentsState` for any component
-        // a residual targets. This tells the reconciler "the server already
-        // applied this state, and we own it now" — so when the residual stops
+        // a condition group targets. This tells the reconciler "the server
+        // already applied this state, and we own it now" — so when the condition
         // firing for an input change, we know to clear the corresponding class
         // / attribute. Without this seed, the baseline-applied `.hidden` would
         // stay forever after the user toggles the controlling input.
@@ -174,7 +174,7 @@ export const realtimeConditionsMixin = createSingletonMixin(
         );
 
         const runtime: RealtimeRuntime = {
-          residuals,
+          conditions,
           touchedIds,
           snapshot: initialSnapshot,
           applied: initialApplied,
@@ -260,7 +260,7 @@ export const realtimeConditionsMixin = createSingletonMixin(
         let next: Record<string, string>;
         try {
           next = evaluateAll(
-            runtime.residuals,
+            runtime.conditions,
             runtime.snapshot,
             makeValidityChecker(runtime.root),
           );

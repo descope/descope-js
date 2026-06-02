@@ -12,7 +12,7 @@ import type { RealtimeComponentsCondition } from '../../../types';
 
 const noValidity = () => undefined;
 
-describe('coercion helpers', () => {
+describe('type-conversion helpers', () => {
   it('toFloat handles numbers, numeric strings, booleans', () => {
     expect(toFloat(42)).toEqual({ value: 42, ok: true });
     expect(toFloat('25.5')).toEqual({ value: 25.5, ok: true });
@@ -35,7 +35,7 @@ describe('coercion helpers', () => {
     expect(toString(undefined)).toBe('');
   });
 
-  it('toBoolean coerces string/boolean/number inputs', () => {
+  it('toBoolean converts string/boolean/number inputs', () => {
     expect(toBoolean(true)).toEqual({ value: true, ok: true });
     expect(toBoolean('true')).toEqual({ value: true, ok: true });
     expect(toBoolean('false')).toEqual({ value: false, ok: true });
@@ -63,7 +63,7 @@ describe('coercion helpers', () => {
 });
 
 describe('evaluateAtomic via evaluateResidual — operators', () => {
-  function residualWithSingleAtom(
+  function conditionWithSingleAtom(
     operator: string,
     target: any,
     predicate?: any,
@@ -86,14 +86,14 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   }
 
   it('empty / not-empty fire correctly on form keys', () => {
-    const r = residualWithSingleAtom('empty', {
+    const r = conditionWithSingleAtom('empty', {
       kind: 'form',
       form: 'form.phone',
     });
     expect(evaluateResidual(r, {}, noValidity)).toBe(true);
     expect(evaluateResidual(r, { 'form.phone': '+1' }, noValidity)).toBe(false);
 
-    const rNotEmpty = residualWithSingleAtom('not-empty', {
+    const rNotEmpty = conditionWithSingleAtom('not-empty', {
       kind: 'form',
       form: 'form.phone',
     });
@@ -106,7 +106,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('equal compares string and literal value', () => {
-    const r = residualWithSingleAtom(
+    const r = conditionWithSingleAtom(
       'equal',
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: 'US' },
@@ -119,8 +119,8 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
     );
   });
 
-  it('greater-than coerces string numerics', () => {
-    const r = residualWithSingleAtom(
+  it('greater-than converts string numerics', () => {
+    const r = conditionWithSingleAtom(
       'greater-than',
       { kind: 'form', form: 'form.age' },
       { kind: 'value', value: 18 },
@@ -131,7 +131,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('is-true / is-false on form-typed values', () => {
-    const rTrue = residualWithSingleAtom('is-true', {
+    const rTrue = conditionWithSingleAtom('is-true', {
       kind: 'form',
       form: 'form.agree',
     });
@@ -145,7 +145,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       false,
     );
 
-    const rFalse = residualWithSingleAtom('is-false', {
+    const rFalse = conditionWithSingleAtom('is-false', {
       kind: 'form',
       form: 'form.agree',
     });
@@ -155,7 +155,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('contains works for string and array targets', () => {
-    const rStr = residualWithSingleAtom(
+    const rStr = conditionWithSingleAtom(
       'contains',
       { kind: 'form', form: 'form.greeting' },
       { kind: 'value', value: 'world' },
@@ -169,7 +169,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('in / not-in', () => {
-    const rIn = residualWithSingleAtom(
+    const rIn = conditionWithSingleAtom(
       'in',
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: ['US', 'CA'] },
@@ -183,7 +183,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('matches uses regex', () => {
-    const r = residualWithSingleAtom(
+    const r = conditionWithSingleAtom(
       'matches',
       { kind: 'form', form: 'form.zip' },
       { kind: 'value', value: '^\\d{5}$' },
@@ -196,7 +196,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('matches returns false on invalid regex without throwing', () => {
-    const r = residualWithSingleAtom(
+    const r = conditionWithSingleAtom(
       'matches',
       { kind: 'form', form: 'form.zip' },
       { kind: 'value', value: '(bad' },
@@ -207,7 +207,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('is-email / is-phone delegate to validity checker', () => {
-    const r = residualWithSingleAtom('is-email', {
+    const r = conditionWithSingleAtom('is-email', {
       kind: 'form',
       form: 'form.email',
     });
@@ -219,13 +219,13 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('pre-evaluated atomic via is-true on literal boolean', () => {
-    const rTrue = residualWithSingleAtom('is-true', {
+    const rTrue = conditionWithSingleAtom('is-true', {
       kind: 'value',
       value: true,
     });
     expect(evaluateResidual(rTrue, {}, noValidity)).toBe(true);
 
-    const rFalse = residualWithSingleAtom('is-true', {
+    const rFalse = conditionWithSingleAtom('is-true', {
       kind: 'value',
       value: false,
     });
@@ -233,7 +233,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
   });
 
   it('unknown operator returns false', () => {
-    const r = residualWithSingleAtom('unknown-op', {
+    const r = conditionWithSingleAtom('unknown-op', {
       kind: 'form',
       form: 'form.x',
     });
@@ -285,7 +285,7 @@ describe('rule combination (AND / OR)', () => {
     ).toBe(true);
   });
 
-  it('multiple rules are OR-combined at the residual level', () => {
+  it('multiple rules are OR-combined at the condition-group level', () => {
     const multi: RealtimeComponentsCondition = {
       componentIds: ['_x'],
       action: 'hide',
@@ -314,9 +314,9 @@ describe('rule combination (AND / OR)', () => {
   });
 });
 
-describe('evaluateAll across residuals', () => {
+describe('evaluateAll across condition groups', () => {
   it('returns first-wins action map per component', () => {
-    const residuals: RealtimeComponentsCondition[] = [
+    const conditions: RealtimeComponentsCondition[] = [
       {
         id: 'cc1',
         componentIds: ['_a'],
@@ -346,15 +346,15 @@ describe('evaluateAll across residuals', () => {
       },
     ];
     const out = evaluateAll(
-      residuals,
+      conditions,
       { 'form.x': '', 'form.y': 'val' },
       noValidity,
     );
     expect(out).toEqual({ _a: 'hide', _b: 'disable' });
   });
 
-  it('omits components whose residuals do not fire', () => {
-    const residuals: RealtimeComponentsCondition[] = [
+  it('omits components whose condition groups do not fire', () => {
+    const conditions: RealtimeComponentsCondition[] = [
       {
         componentIds: ['_a'],
         action: 'hide',
@@ -367,13 +367,13 @@ describe('evaluateAll across residuals', () => {
         ],
       },
     ];
-    const out = evaluateAll(residuals, { 'form.x': 'x' }, noValidity);
+    const out = evaluateAll(conditions, { 'form.x': 'x' }, noValidity);
     expect(out).toEqual({});
   });
 });
 
 describe('collectTouchedComponentIds', () => {
-  const residuals: RealtimeComponentsCondition[] = [
+  const conditions: RealtimeComponentsCondition[] = [
     {
       componentIds: ['_a'],
       action: 'hide',
@@ -403,7 +403,7 @@ describe('collectTouchedComponentIds', () => {
   ];
 
   it('collects all touched component IDs', () => {
-    expect(Array.from(collectTouchedComponentIds(residuals))).toEqual([
+    expect(Array.from(collectTouchedComponentIds(conditions))).toEqual([
       '_a',
       '_b',
       '_c',

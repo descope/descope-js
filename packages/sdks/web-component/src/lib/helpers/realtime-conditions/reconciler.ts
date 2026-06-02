@@ -15,7 +15,7 @@ export function applyAction(el: Element, action: string): void {
       break;
     default:
     // Unknown action — silently ignore. Bad actions shouldn't make it past
-    // the server residualizer; if one does, we'd rather no-op than throw.
+    // the server; if one does, we'd rather no-op than throw.
   }
 }
 
