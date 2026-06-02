@@ -31,9 +31,10 @@ export const fetchWidgetPagesMixin = createSingletonMixin(
       // Fetch <page>-<locale>.html when the widget publishes that locale (config.json
       // targetLocales); otherwise return undefined so the caller falls back to the default page.
       async #tryFetchLocalized(filename: string): Promise<string | undefined> {
-        const userLocale = this.resolvedLocale;
+        const userLocale = await this.firstAvailableLocale(
+          this.localeCandidates,
+        );
         if (!userLocale) return undefined;
-        if (!(await this.isLocaleAvailable(userLocale))) return undefined;
 
         const ext = '.html';
         const base = filename.endsWith(ext)

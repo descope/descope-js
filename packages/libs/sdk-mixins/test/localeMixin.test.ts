@@ -51,12 +51,24 @@ describe('localeMixin', () => {
     expect(createLocaleMixin().locale).toBeUndefined();
   });
 
-  it('resolvedLocale lowercases the attribute locale', () => {
-    expect(createLocaleMixin({ locale: 'en-US' }).resolvedLocale).toBe('en-us');
+  it('localeCandidates returns only the lowercased explicit locale (no language split for an explicit attr)', () => {
+    expect(createLocaleMixin({ locale: 'en-US' }).localeCandidates).toEqual([
+      'en-us',
+    ]);
   });
 
-  it('resolvedLocale falls back to navigator.language when no attribute is set', () => {
-    setNavigatorLanguage('es-ES');
-    expect(createLocaleMixin().resolvedLocale).toBe('es-es');
+  it('localeCandidates falls back to the language part for a region navigator.language', () => {
+    setNavigatorLanguage('en-US');
+    expect(createLocaleMixin().localeCandidates).toEqual(['en-us', 'en']);
+  });
+
+  it('localeCandidates is a single entry when navigator.language has no region', () => {
+    setNavigatorLanguage('de');
+    expect(createLocaleMixin().localeCandidates).toEqual(['de']);
+  });
+
+  it('localeCandidates is empty when there is no locale and no navigator.language', () => {
+    setNavigatorLanguage('');
+    expect(createLocaleMixin().localeCandidates).toEqual([]);
   });
 });

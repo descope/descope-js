@@ -6,6 +6,10 @@ const configBody = (targetLocales?: string[]) => ({
   headers: {},
 });
 
+const setNavigatorLanguage = (value: string) => {
+  Object.defineProperty(navigator, 'language', { value, configurable: true });
+};
+
 type FetchOpts = {
   targetLocales?: string[];
   localized?: string; // suffix of the localized page that resolves, e.g. '-es.html'
@@ -81,5 +85,21 @@ describe('user-profile fetchWidgetPagesMixin (locale-aware fetching)', () => {
     );
 
     await expect(m.fetchWidgetPage('page.html')).resolves.toBe('DEFAULT');
+  });
+
+  // Regression: navigator.language='en-US' against targetLocales=['en'] must use the language
+  // fallback ('en') rather than serving the default page (see resolvedLocale fallback-drop bug).
+  it('falls back to the language candidate of navigator.language (en-US -> en)', async () => {
+    setNavigatorLanguage('en-US');
+    const { m, fetchSpy } = createMixin(
+      { 'widget-id': 'w1' }, // no explicit locale attribute
+      { targetLocales: ['en'], localized: '-en.html' },
+    );
+
+    await expect(m.fetchWidgetPage('page.html')).resolves.toBe('LOCALIZED');
+    expect(fetchSpy).toHaveBeenCalledWith(
+      'user-profile-widget/w1/page-en.html',
+      'text',
+    );
   });
 });
