@@ -148,6 +148,13 @@ function resolveOperand(
   if (operand.kind === 'form' && operand.form) {
     return snapshot[operand.form];
   }
+  if (operand.kind === 'list') {
+    // Each item may itself be a form placeholder or a pre-resolved literal,
+    // so resolve recursively. This is the residual shape the server emits
+    // when an `in` / `not-in` / `contains` predicate is an array containing
+    // a `{{form.X}}` reference to an on-screen key.
+    return (operand.items ?? []).map((item) => resolveOperand(item, snapshot));
+  }
   return operand.value;
 }
 

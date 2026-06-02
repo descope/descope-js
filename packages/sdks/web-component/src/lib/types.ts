@@ -47,15 +47,21 @@ export type LastAuthState = NonNullable<
   lastUsedPerScreen?: Record<string, string>;
 };
 
-export type RealtimeOperandKind = 'value' | 'form';
+export type RealtimeOperandKind = 'value' | 'form' | 'list';
 
 export interface RealtimeOperand {
   kind: RealtimeOperandKind;
   // Form is the context key the client looks up from the live form snapshot
   // (e.g. "form.phone"). Set only when kind === 'form'.
   form?: string;
-  // Pre-resolved literal. Always present on serialized "value" operands, even
-  // when the literal is false / 0 / "".
+  // Items is the operand list when kind === 'list'. Each element is a nested
+  // operand — either a form placeholder or a resolved literal. Used when the
+  // server detects an `in` / `not-in` / `contains` predicate whose array
+  // contains `{{form.X}}` references; the client resolves them at eval time.
+  items?: RealtimeOperand[];
+  // Pre-resolved literal. Set only when kind === 'value', and may legitimately
+  // be false / 0 / "" — do not treat absence as "no value" without checking
+  // kind first.
   value?: unknown;
 }
 

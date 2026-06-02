@@ -182,6 +182,95 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
     );
   });
 
+  it('in resolves a list-kind predicate with form-placeholder items', () => {
+    // The server emits a list operand when an `in` predicate is an array that
+    // contains `{{form.X}}` references to on-screen keys; each item is
+    // resolved against the live snapshot at eval time.
+    const r = conditionWithSingleAtom(
+      'in',
+      { kind: 'form', form: 'form.role' },
+      {
+        kind: 'list',
+        items: [
+          { kind: 'form', form: 'form.allowedRole' },
+          { kind: 'value', value: 'admin' },
+        ],
+      },
+    );
+    expect(
+      evaluateResidual(
+        r,
+        { 'form.role': 'editor', 'form.allowedRole': 'editor' },
+        noValidity,
+      ),
+    ).toBe(true);
+    expect(
+      evaluateResidual(
+        r,
+        { 'form.role': 'admin', 'form.allowedRole': 'editor' },
+        noValidity,
+      ),
+    ).toBe(true);
+    expect(
+      evaluateResidual(
+        r,
+        { 'form.role': 'viewer', 'form.allowedRole': 'editor' },
+        noValidity,
+      ),
+    ).toBe(false);
+  });
+
+  it('not-in with a list-kind predicate resolves placeholders', () => {
+    const r = conditionWithSingleAtom(
+      'not-in',
+      { kind: 'form', form: 'form.role' },
+      {
+        kind: 'list',
+        items: [
+          { kind: 'form', form: 'form.bannedRole' },
+          { kind: 'value', value: 'guest' },
+        ],
+      },
+    );
+    expect(
+      evaluateResidual(
+        r,
+        { 'form.role': 'editor', 'form.bannedRole': 'admin' },
+        noValidity,
+      ),
+    ).toBe(true);
+    expect(
+      evaluateResidual(
+        r,
+        { 'form.role': 'admin', 'form.bannedRole': 'admin' },
+        noValidity,
+      ),
+    ).toBe(false);
+  });
+
+  it('contains with a list-kind target resolves placeholders', () => {
+    // Reverse direction: the server may emit a list-kind target if the form
+    // ref is on the LHS of `contains`. The list materializes as an array;
+    // `contains` checks membership against the predicate.
+    const r = conditionWithSingleAtom(
+      'contains',
+      {
+        kind: 'list',
+        items: [
+          { kind: 'form', form: 'form.tag' },
+          { kind: 'value', value: 'baseline' },
+        ],
+      },
+      { kind: 'value', value: 'urgent' },
+    );
+    expect(evaluateResidual(r, { 'form.tag': 'urgent' }, noValidity)).toBe(
+      true,
+    );
+    expect(evaluateResidual(r, { 'form.tag': 'normal' }, noValidity)).toBe(
+      false,
+    );
+  });
+
   it('matches uses regex', () => {
     const r = conditionWithSingleAtom(
       'matches',
