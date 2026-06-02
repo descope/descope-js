@@ -20,6 +20,17 @@ export const widgetConfigMixin = createSingletonMixin(
         const config = await this.config;
         return config?.projectConfig?.widgets?.[this.widgetId];
       }
+
+      // Whether the widget has published localized screens for the given locale (case-insensitive),
+      // per the widget's targetLocales in config.json.
+      async isLocaleAvailable(locale: string): Promise<boolean> {
+        if (!locale) return false;
+        const widgetConfig = await this.getWidgetConfig();
+        const target = locale.toLowerCase();
+        return !!widgetConfig?.targetLocales
+          ?.map((l) => l.toLowerCase())
+          .includes(target);
+      }
     };
   },
 );

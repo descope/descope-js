@@ -11,6 +11,7 @@ type FlowConfig = {
   theme?: string;
   form?: string;
   'style-id'?: string;
+  locale?: string;
 };
 
 export const createFlowTemplate = (
@@ -19,6 +20,7 @@ export const createFlowTemplate = (
   const template = createTemplate(`<descope-wc></descope-wc>`);
 
   Object.entries(flowConfig).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
     template.content
       .querySelector('descope-wc')
       .setAttribute(kebabCase(key), value);

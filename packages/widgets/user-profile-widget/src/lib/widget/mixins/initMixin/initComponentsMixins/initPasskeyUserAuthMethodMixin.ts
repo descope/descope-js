@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -22,6 +23,7 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PasskeyUserAuthMethodMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -55,6 +57,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       #initAddModalContent() {
         this.#addModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.passkeyUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
@@ -87,6 +90,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       #initRemoveModalContent() {
         this.#removeModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.passkeyUserAuthMethod.fulfilledFlowId,
             baseUrl: this.baseUrl,
