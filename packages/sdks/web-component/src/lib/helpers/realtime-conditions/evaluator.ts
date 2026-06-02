@@ -97,10 +97,8 @@ function compileMatchesPattern(source: string): RegExp | null {
   return compiled;
 }
 
-// `is-email` / `is-phone` are handled outside this map because they need the
-// validity callback; everything else goes through here. The map is typed with
-// the operator union so adding a new operator without an implementation (or
-// vice-versa) is a compile error.
+// `is-email` / `is-phone` consult the host's validity callback (handled in
+// `evaluateAtomic`) and are excluded from this map.
 type EvalOperator = Exclude<RealtimeOperator, 'is-email' | 'is-phone'>;
 
 const operators: Record<EvalOperator, OperatorFn> = {
@@ -145,9 +143,7 @@ const operators: Record<EvalOperator, OperatorFn> = {
     const slice = toSlice(p);
     return slice !== null && slice.includes(t);
   },
-  // Consistent with `in`: a non-sliceable predicate is "bad input" and returns
-  // false, not true. This matches the other operators' policy of declining to
-  // fire when they can't make sense of their inputs.
+  // Mirrors `in`: bad input → false, not true.
   'not-in': (t, p) => {
     const slice = toSlice(p);
     return slice !== null && !slice.includes(t);

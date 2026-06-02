@@ -358,8 +358,6 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
   });
 
   it('unknown operator returns false', () => {
-    // Cast through `unknown` — the union forbids string-typed operators, but
-    // we explicitly want to verify runtime safety against an out-of-band value.
     const r = conditionWithSingleAtom(
       'unknown-op' as unknown as RealtimeOperator,
       { kind: 'form', form: 'form.x' },

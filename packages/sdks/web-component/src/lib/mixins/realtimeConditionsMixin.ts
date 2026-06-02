@@ -11,7 +11,7 @@ import {
   FormSnapshot,
   ValidityChecker,
 } from '../helpers/realtime-conditions/evaluator';
-import { apply } from '../helpers/realtime-conditions/applier';
+import { apply, escapeSelector } from '../helpers/realtime-conditions/applier';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 import type { RealtimeComponentsCondition, ScreenState } from '../types';
 
@@ -52,13 +52,6 @@ export interface RealtimeRuntime {
   root: HTMLElement | null;
 }
 
-function escapeAttr(value: string): string {
-  if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
-    return CSS.escape(value);
-  }
-  return value.replace(/(["\\])/g, '\\$1');
-}
-
 // Some inputs (e.g. descope-* custom elements) render their `name` attribute
 // with the full context key already prefixed by `form.`; others use a bare
 // name. Normalize either to a full `form.*` context key so it matches what
@@ -74,9 +67,9 @@ function makeValidityChecker(root: HTMLElement): ValidityChecker {
     const bare = formKey.startsWith('form.')
       ? formKey.slice('form.'.length)
       : formKey;
-    const el = (root.querySelector(`[name="${escapeAttr(formKey)}"]`) ||
+    const el = (root.querySelector(`[name="${escapeSelector(formKey)}"]`) ||
       root.querySelector(
-        `[name="${escapeAttr(bare)}"]`,
+        `[name="${escapeSelector(bare)}"]`,
       )) as HTMLInputElement | null;
     if (!el) return undefined;
     if (typeof el.checkValidity === 'function') {
@@ -273,14 +266,13 @@ export const realtimeConditionsMixin = createSingletonMixin(
         }
 
         const prevApplied = runtime.applied;
-        const changed = !shallowEqualStringMap(prevApplied, next);
-        if (changed) {
-          this.logger.debug(
-            `${LOG_PREFIX} form changed — updating components: was ${JSON.stringify(
-              prevApplied,
-            )}, now ${JSON.stringify(next)}`,
-          );
-        }
+        if (shallowEqualStringMap(prevApplied, next)) return;
+
+        this.logger.debug(
+          `${LOG_PREFIX} form changed — updating components: was ${JSON.stringify(
+            prevApplied,
+          )}, now ${JSON.stringify(next)}`,
+        );
         runtime.applied = apply(runtime.root, prevApplied, next);
       }
 

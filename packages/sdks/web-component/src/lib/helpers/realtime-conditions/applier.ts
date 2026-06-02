@@ -36,11 +36,14 @@ export function clearAction(el: Element, action: string): void {
   }
 }
 
-function escapeId(id: string): string {
+// CSS.escape with a defensive fallback for environments that lack it (older
+// JSDOM, very old Safari). Exported so callers that build attribute selectors
+// from runtime strings can use a single sanitizer.
+export function escapeSelector(value: string): string {
   if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
-    return CSS.escape(id);
+    return CSS.escape(value);
   }
-  return id.replace(/(["\\])/g, '\\$1');
+  return value.replace(/(["\\])/g, '\\$1');
 }
 
 // Use querySelectorAll, not querySelector. The baseline `applyComponentsState`
@@ -49,7 +52,7 @@ function escapeId(id: string): string {
 // the first match, the rest would stay hidden/disabled/read-only forever once
 // the user toggles the controlling input.
 function findComponents(root: ParentNode, id: string): Element[] {
-  return Array.from(root.querySelectorAll(`[id="${escapeId(id)}"]`));
+  return Array.from(root.querySelectorAll(`[id="${escapeSelector(id)}"]`));
 }
 
 /**
