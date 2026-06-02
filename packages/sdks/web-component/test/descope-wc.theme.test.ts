@@ -370,45 +370,6 @@ describe('web-component theme', () => {
     );
   });
 
-  it('logs an error and skips the fetch when tenant contains path-traversal characters', async () => {
-    startMock.mockReturnValue(generateSdkResponse());
-    fixtures.pageContent = '<span>It works!</span>';
-    fixtures.themeContent = { light: { globals: '' }, dark: { globals: '' } };
-
-    // Render without a tenant first so the component reaches a stable state.
-    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
-
-    await waitFor(() => screen.getByShadowText('It works!'), {
-      timeout: WAIT_TIMEOUT,
-    });
-
-    // Inject a mock logger so the error reaches a jest.fn() rather than
-    // the module-load-time-bound defaultLogger (which bypasses spyOn).
-    const wc = document.querySelector('descope-wc') as any;
-    const mockError = jest.fn();
-    wc.logger = {
-      error: mockError,
-      warn: jest.fn(),
-      debug: jest.fn(),
-      info: jest.fn(),
-    };
-
-    wc.setAttribute('tenant', '../evil');
-
-    await waitFor(
-      () =>
-        expect(mockError).toHaveBeenCalledWith(
-          'Invalid tenant attribute: must contain only alphanumeric characters, hyphens, or underscores',
-        ),
-      { timeout: WAIT_TIMEOUT },
-    );
-
-    expect(fetchMock).not.toHaveBeenCalledWith(
-      expect.stringContaining('evil'),
-      expect.anything(),
-    );
-  });
-
   it('tenant style appears after project style, and clearing tenant does not corrupt project style', async () => {
     startMock.mockReturnValue(generateSdkResponse());
     fixtures.pageContent = '<span>It works!</span>';
