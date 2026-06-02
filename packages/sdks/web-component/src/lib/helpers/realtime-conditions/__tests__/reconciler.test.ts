@@ -97,4 +97,24 @@ describe('reconcile', () => {
   it('silently skips components missing from the DOM', () => {
     expect(() => reconcile(document.body, {}, { ghost: 'hide' })).not.toThrow();
   });
+
+  // Templates can emit multiple elements with the same id (e.g. inside
+  // dynamic-selects); the baseline `applyComponentsState` iterates them all
+  // with querySelectorAll. The reconciler must match that, or stragglers stay
+  // stuck on whatever the server applied.
+  it('applies and clears actions on every element sharing an id', () => {
+    const a1 = mkEl('a');
+    const a2 = mkEl('a');
+    const a3 = mkEl('a');
+
+    reconcile(document.body, {}, { a: 'hide' });
+    expect(a1).toHaveClass('hidden');
+    expect(a2).toHaveClass('hidden');
+    expect(a3).toHaveClass('hidden');
+
+    reconcile(document.body, { a: 'hide' }, {});
+    expect(a1).not.toHaveClass('hidden');
+    expect(a2).not.toHaveClass('hidden');
+    expect(a3).not.toHaveClass('hidden');
+  });
 });

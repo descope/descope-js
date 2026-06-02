@@ -14,8 +14,8 @@ export function applyAction(el: Element, action: string): void {
       el.setAttribute('readonly', 'true');
       break;
     default:
-    // Unknown action — silently ignore. Mirrors today's applyComponentsState
-    // behavior, which logs an error and skips.
+    // Unknown action — silently ignore. Bad actions shouldn't make it past
+    // the server residualizer; if one does, we'd rather no-op than throw.
   }
 }
 
@@ -43,8 +43,13 @@ function escapeId(id: string): string {
   return id.replace(/(["\\])/g, '\\$1');
 }
 
-function findComponent(root: ParentNode, id: string): Element | null {
-  return root.querySelector(`[id="${escapeId(id)}"]`);
+// Use querySelectorAll, not querySelector. The baseline `applyComponentsState`
+// in helpers/templates.ts iterates all elements with a matching id (templates
+// may emit duplicates, e.g. inside dynamic-selects). If we only operated on
+// the first match, the rest would stay hidden/disabled/read-only forever once
+// the user toggles the controlling input.
+function findComponents(root: ParentNode, id: string): Element[] {
+  return Array.from(root.querySelectorAll(`[id="${escapeId(id)}"]`));
 }
 
 /**
@@ -68,16 +73,14 @@ export function reconcile(
     const prev = applied[id];
     const upcoming = next[id];
     if (upcoming === prev) return;
-    const el = findComponent(root, id);
-    if (el) clearAction(el, prev);
+    findComponents(root, id).forEach((el) => clearAction(el, prev));
   });
   // Apply actions in `next` that weren't there or whose action changed.
   Object.keys(next).forEach((id) => {
     const upcoming = next[id];
     const prev = applied[id];
     if (upcoming === prev) return;
-    const el = findComponent(root, id);
-    if (el) applyAction(el, upcoming);
+    findComponents(root, id).forEach((el) => applyAction(el, upcoming));
   });
   return { ...next };
 }

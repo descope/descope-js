@@ -230,42 +230,6 @@ export function evaluateAll(
   return result;
 }
 
-/* ------------------------------------------------------------------ */
-/* dependency index                                                     */
-/* ------------------------------------------------------------------ */
-
-function ensureSet(map: Map<string, Set<number>>, key: string): Set<number> {
-  let set = map.get(key);
-  if (!set) {
-    set = new Set();
-    map.set(key, set);
-  }
-  return set;
-}
-
-/**
- * Walks all placeholders in the residuals and collects, per form key, the set
- * of residual indices that reference it. Used to re-evaluate only the affected
- * residuals when a single input changes.
- */
-export function buildDependencyIndex(
-  residuals: RealtimeComponentsCondition[] | undefined,
-): Map<string, Set<number>> {
-  const index = new Map<string, Set<number>>();
-  (residuals ?? []).forEach((r, idx) => {
-    (r.rules ?? []).forEach((rule) => {
-      (rule.atomicConditions ?? []).forEach((a) => {
-        const targetKey = operandFormKey(a.target);
-        const predicateKey = operandFormKey(a.predicate);
-        [targetKey, predicateKey].forEach((k) => {
-          if (k) ensureSet(index, k).add(idx);
-        });
-      });
-    });
-  });
-  return index;
-}
-
 /**
  * Returns the set of component IDs touched by ANY residual. The reconciler
  * uses this to know which components belong to the realtime layer.

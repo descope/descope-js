@@ -6,7 +6,6 @@ import {
   REALTIME_CONDITION_EVENTS,
 } from '../helpers/realtime-conditions/config';
 import {
-  buildDependencyIndex,
   collectTouchedComponentIds,
   evaluateAll,
   FormSnapshot,
@@ -26,15 +25,15 @@ const LOG_PREFIX = 'realtime-conditions:';
  */
 export interface PausableHost {
   nextRequestStatus?: {
-    subscribe: (cb: (v: { isLoading: boolean }) => void) => void;
-    unsubscribe?: (cb: (v: { isLoading: boolean }) => void) => void;
+    // Mirrors `State<T>` in helpers/state.ts: subscribe returns a token string
+    // that must be passed to unsubscribe. Passing the handler does nothing.
+    subscribe: (cb: (v: { isLoading: boolean }) => void) => string;
+    unsubscribe?: (token: string) => void;
   };
 }
 
 export interface RealtimeRuntime {
   residuals: RealtimeComponentsCondition[];
-  // form key → set of residual indices that reference it
-  dependencyIndex: Map<string, Set<number>>;
   // component IDs that any residual targets
   touchedIds: Set<string>;
   // current in-memory snapshot of on-screen form values
@@ -100,7 +99,6 @@ function shallowEqualStringMap(
 function emptyRuntime(): RealtimeRuntime {
   return {
     residuals: [],
-    dependencyIndex: new Map(),
     touchedIds: new Set(),
     snapshot: {},
     applied: {},
@@ -177,7 +175,6 @@ export const realtimeConditionsMixin = createSingletonMixin(
 
         const runtime: RealtimeRuntime = {
           residuals,
-          dependencyIndex: buildDependencyIndex(residuals),
           touchedIds,
           snapshot: initialSnapshot,
           applied: initialApplied,
@@ -217,9 +214,15 @@ export const realtimeConditionsMixin = createSingletonMixin(
               runtime.debounceTimer = null;
             }
           };
-          pauseState.subscribe(handler);
+          // `State<T>.subscribe` returns a token string; `unsubscribe` expects
+          // that token, NOT the handler. Without storing/using the token,
+          // handlers accumulate across screen transitions and keep old
+          // runtimes (and their DOM roots) alive.
+          const token = pauseState.subscribe(handler);
           runtime.unsubscribePauseListener = () => {
-            pauseState.unsubscribe?.(handler);
+            if (token !== undefined && token !== null) {
+              pauseState.unsubscribe?.(token);
+            }
           };
         }
 
@@ -282,9 +285,21 @@ export const realtimeConditionsMixin = createSingletonMixin(
       }
 
       // Release the pause subscription and any pending debounce when the host
-      // leaves the DOM. No other mixin in the chain currently implements this
-      // lifecycle hook, so we don't forward into super.
+      // leaves the DOM. We still call super so the chain isn't broken below
+      // us — even though no other mixin in the chain currently implements
+      // this hook, future additions shouldn't be silently dropped.
+      //
+      // Note: this only fires when the host's disconnectedCallback chains
+      // into super. BaseDescopeWc must call `super.disconnectedCallback?.()`
+      // for this to reach us in production — otherwise teardown relies on
+      // the next `initRealtimeConditions` call clearing the previous runtime.
       disconnectedCallback() {
+        // `disconnectedCallback` isn't declared on HTMLElement in this lib's
+        // types, but it IS a custom-element lifecycle method that exists at
+        // runtime. Forward into super so any future mixin in the chain that
+        // adds one runs first.
+        // @ts-expect-error custom-element lifecycle method missing from lib types
+        super.disconnectedCallback?.();
         this.#teardownRealtimeRuntime();
       }
 

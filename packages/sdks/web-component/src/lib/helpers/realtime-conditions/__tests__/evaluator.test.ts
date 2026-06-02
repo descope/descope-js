@@ -1,5 +1,4 @@
 import {
-  buildDependencyIndex,
   collectTouchedComponentIds,
   evaluateAll,
   evaluateResidual,
@@ -373,7 +372,7 @@ describe('evaluateAll across residuals', () => {
   });
 });
 
-describe('buildDependencyIndex / collectTouchedComponentIds', () => {
+describe('collectTouchedComponentIds', () => {
   const residuals: RealtimeComponentsCondition[] = [
     {
       componentIds: ['_a'],
@@ -403,13 +402,6 @@ describe('buildDependencyIndex / collectTouchedComponentIds', () => {
     },
   ];
 
-  it('indexes form keys to residual indices', () => {
-    const idx = buildDependencyIndex(residuals);
-    expect(Array.from(idx.get('form.x') ?? [])).toEqual([0]);
-    expect(Array.from(idx.get('form.y') ?? [])).toEqual([1]);
-    expect(Array.from(idx.get('form.z') ?? [])).toEqual([1]);
-  });
-
   it('collects all touched component IDs', () => {
     expect(Array.from(collectTouchedComponentIds(residuals))).toEqual([
       '_a',
@@ -419,7 +411,6 @@ describe('buildDependencyIndex / collectTouchedComponentIds', () => {
   });
 
   it('returns empty results on undefined input', () => {
-    expect(buildDependencyIndex(undefined).size).toBe(0);
     expect(collectTouchedComponentIds(undefined).size).toBe(0);
   });
 });

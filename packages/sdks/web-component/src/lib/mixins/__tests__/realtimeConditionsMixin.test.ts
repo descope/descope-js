@@ -11,31 +11,40 @@ interface HostWithMixin extends HTMLElement {
     screenState: ScreenState | undefined,
   ) => void;
   nextRequestStatus: {
-    subscribe: (cb: (v: { isLoading: boolean }) => void) => void;
-    unsubscribe?: (cb: (v: { isLoading: boolean }) => void) => void;
+    subscribe: (cb: (v: { isLoading: boolean }) => void) => string;
+    unsubscribe?: (token: string) => void;
     emit: (v: { isLoading: boolean }) => void;
+    subscriberCount: () => number;
   };
 }
 
 // A no-frills mixin that gives the host a fake nextRequestStatus shaped like
-// the real State<T> the mixin subscribes to. Handlers live on the instance so
-// repeat access returns the same store.
+// the real State<T> the mixin subscribes to. Handlers live on the instance,
+// keyed by a monotonic token string so subscribe/unsubscribe match the real
+// State<T> contract (subscribe returns token; unsubscribe takes token).
 const nextRequestStatusStubMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class extends superclass {
-      rtTestHandlers: ((v: { isLoading: boolean }) => void)[] = [];
+      rtTestHandlers = new Map<string, (v: { isLoading: boolean }) => void>();
+
+      rtTestNextToken = 0;
 
       rtTestStatus = {
         subscribe: (cb: (v: { isLoading: boolean }) => void) => {
-          this.rtTestHandlers.push(cb);
+          this.rtTestNextToken += 1;
+          const token = String(this.rtTestNextToken);
+          this.rtTestHandlers.set(token, cb);
+          return token;
         },
-        unsubscribe: (cb: (v: { isLoading: boolean }) => void) => {
-          const idx = this.rtTestHandlers.indexOf(cb);
-          if (idx >= 0) this.rtTestHandlers.splice(idx, 1);
+        unsubscribe: (token: string) => {
+          this.rtTestHandlers.delete(token);
         },
         emit: (v: { isLoading: boolean }) => {
-          this.rtTestHandlers.slice().forEach((h) => h(v));
+          Array.from(this.rtTestHandlers.values()).forEach((h) => h(v));
         },
+        // Test-only — number of currently-subscribed handlers. Lets a test
+        // assert teardown actually unsubscribed instead of accumulating.
+        subscriberCount: () => this.rtTestHandlers.size,
       };
 
       get nextRequestStatus() {
@@ -778,6 +787,41 @@ describe('realtimeConditionsMixin', () => {
     expect(chk).not.toHaveClass('hidden'); // cleared by re-init's teardown, not by a leaked timer
   });
 
+  // Re-init must unsubscribe the previous nextRequestStatus handler — the
+  // `subscribe`/`unsubscribe` API is token-based, so storing the handler and
+  // passing it to `unsubscribe` would no-op and pile up subscribers across
+  // screen transitions (keeping old runtimes/DOM roots alive).
+  it('unsubscribes the pause handler across re-inits (no token leak)', () => {
+    const { host, root } = mountHost();
+    mkComponent(root, '_chk');
+    mkInput(root, 'phone', '');
+
+    const residual: RealtimeComponentsCondition = {
+      componentIds: ['_chk'],
+      action: 'hide',
+      rules: [
+        {
+          atomicConditions: [
+            { operator: 'empty', target: { kind: 'form', form: 'form.phone' } },
+          ],
+        },
+      ],
+    };
+
+    // Three init cycles — each subscribes once; each teardown must unsubscribe.
+    for (let i = 0; i < 3; i += 1) {
+      host.initRealtimeConditions(root, {
+        form: { phone: '' },
+        realtimeComponentsConditions: [residual],
+      });
+    }
+    expect(host.nextRequestStatus.subscriberCount()).toBe(1);
+
+    // Teardown via re-init with no residuals — should also drop to zero.
+    host.initRealtimeConditions(root, { form: {} });
+    expect(host.nextRequestStatus.subscriberCount()).toBe(0);
+  });
+
   // Rapid keystrokes inside the debounce window should coalesce into one
   // eval. The handler must clear the previous timer before setting a new one;
   // without that, every keystroke would either accumulate timers or fire
@@ -811,9 +855,9 @@ describe('realtimeConditionsMixin', () => {
 
     // 5 events fired synchronously — every call after the first must hit the
     // clearTimeout(runtime.debounceTimer) branch.
-    for (const v of ['a', 'ab', 'abc', 'abcd', 'abcde']) {
+    ['a', 'ab', 'abc', 'abcd', 'abcde'].forEach((v) => {
       dispatchInput(phone, v);
-    }
+    });
     // Exactly one pending timer — proves the handler cleared the previous
     // timer on each new event rather than accumulating them.
     expect(jest.getTimerCount()).toBe(1);

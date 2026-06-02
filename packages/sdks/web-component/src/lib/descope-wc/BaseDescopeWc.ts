@@ -669,6 +669,10 @@ class BaseDescopeWc extends BaseClass {
       'components-context',
       this.#eventsCbRefs.componentsContext,
     );
+    // Forward to the composed mixin chain so each mixin's
+    // disconnectedCallback (e.g. realtimeConditionsMixin) gets to clean up.
+    // Without this, mixin disconnectedCallbacks are dead code.
+    super.disconnectedCallback?.();
   }
 
   attributeChangedCallback(
