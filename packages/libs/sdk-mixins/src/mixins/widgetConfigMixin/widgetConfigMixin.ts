@@ -34,13 +34,6 @@ export const widgetConfigMixin = createSingletonMixin(
           candidates.find((c) => !!c && targets.includes(c.toLowerCase())) ?? ''
         );
       }
-
-      // Whether the widget has published localized screens for the given locale (case-insensitive),
-      // per the widget's targetLocales in config.json.
-      async isLocaleAvailable(locale: string): Promise<boolean> {
-        if (!locale) return false;
-        return (await this.firstAvailableLocale([locale])) !== '';
-      }
     };
   },
 );

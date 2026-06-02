@@ -39,28 +39,6 @@ describe('widgetConfigMixin', () => {
     });
   });
 
-  describe('isLocaleAvailable', () => {
-    it('matches a target locale case-insensitively', async () => {
-      const m = createMixin('w1');
-      await expect(m.isLocaleAvailable('ES')).resolves.toBe(true);
-    });
-
-    it('is false for a locale not in targetLocales', async () => {
-      const m = createMixin('w1');
-      await expect(m.isLocaleAvailable('de')).resolves.toBe(false);
-    });
-
-    it('is false for an empty locale', async () => {
-      const m = createMixin('w1');
-      await expect(m.isLocaleAvailable('')).resolves.toBe(false);
-    });
-
-    it('is false when the widget has no targetLocales', async () => {
-      const m = createMixin('w2');
-      await expect(m.isLocaleAvailable('es')).resolves.toBe(false);
-    });
-  });
-
   describe('firstAvailableLocale', () => {
     it('returns the first candidate present in targetLocales (case-insensitive)', async () => {
       const m = createMixin('w1'); // targetLocales: ['es', 'fr']
