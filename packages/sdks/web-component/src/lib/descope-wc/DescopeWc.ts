@@ -1754,6 +1754,8 @@ class DescopeWc extends BaseDescopeWc {
 
       this.#hydrate(next, screenId);
 
+      this.initRealtimeConditions(rootElement, screenState);
+
       const loader = rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );

@@ -47,6 +47,36 @@ export type LastAuthState = NonNullable<
   lastUsedPerScreen?: Record<string, string>;
 };
 
+export type RealtimeOperandKind = 'value' | 'form';
+
+export interface RealtimeOperand {
+  kind: RealtimeOperandKind;
+  // Form is the context key the client looks up from the live form snapshot
+  // (e.g. "form.phone"). Set only when kind === 'form'.
+  form?: string;
+  // Pre-resolved literal. Always present on serialized "value" operands, even
+  // when the literal is false / 0 / "".
+  value?: unknown;
+}
+
+export interface RealtimeAtomicCondition {
+  operator: string;
+  target?: RealtimeOperand;
+  predicate?: RealtimeOperand;
+}
+
+export interface RealtimeRule {
+  logicalOr?: boolean;
+  atomicConditions: RealtimeAtomicCondition[];
+}
+
+export interface RealtimeComponentsCondition {
+  id?: string;
+  componentIds: string[];
+  action: string;
+  rules: RealtimeRule[];
+}
+
 export interface ScreenState {
   errorText?: string;
   errorType?: string;
@@ -69,6 +99,9 @@ export interface ScreenState {
   clientScripts?: ClientScript[];
   // map of component IDs to their state
   componentsState?: Record<string, string>;
+  // Client-evaluable visibility conditions, populated only by new backends.
+  // Absent on old backends; new SDKs ignore when absent.
+  realtimeComponentsConditions?: RealtimeComponentsCondition[];
 }
 
 export type SSOQueryParams = {

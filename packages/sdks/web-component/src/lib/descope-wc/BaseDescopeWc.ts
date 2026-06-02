@@ -28,7 +28,7 @@ import {
 } from '../helpers/flowInputs';
 import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin } from '../mixins';
+import { formMountMixin, realtimeConditionsMixin } from '../mixins';
 import {
   AutoFocusOptions,
   CustomStorage,
@@ -50,6 +50,7 @@ const BaseClass = compose(
   themeMixin,
   staticResourcesMixin,
   formMountMixin,
+  realtimeConditionsMixin,
   injectStyleMixin,
 )(HTMLElement);
 
