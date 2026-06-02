@@ -11,7 +11,7 @@ import {
   FormSnapshot,
   ValidityChecker,
 } from '../helpers/realtime-conditions/evaluator';
-import { reconcile } from '../helpers/realtime-conditions/reconciler';
+import { apply } from '../helpers/realtime-conditions/applier';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 import type { RealtimeComponentsCondition, ScreenState } from '../types';
 
@@ -48,7 +48,7 @@ export interface RealtimeRuntime {
   unsubscribePauseListener: (() => void) | null;
   // bound input listener (one ref per screen so we can detach if needed)
   inputHandler: (e: Event) => void;
-  // the content root we operate on (kept for reconciler lookups)
+  // the content root we operate on (kept for DOM lookups when applying state)
   root: HTMLElement | null;
 }
 
@@ -159,9 +159,9 @@ export const realtimeConditionsMixin = createSingletonMixin(
         const touchedIds = collectTouchedComponentIds(conditions);
 
         // Seed `applied` from the baseline `componentsState` for any component
-        // a condition group targets. This tells the reconciler "the server
-        // already applied this state, and we own it now" — so when the condition
-        // firing for an input change, we know to clear the corresponding class
+        // a condition group targets. This tells the applier "the server
+        // already set this state, and we own it now" — so when the condition
+        // fires for an input change, we know to clear the corresponding class
         // / attribute. Without this seed, the baseline-applied `.hidden` would
         // stay forever after the user toggles the controlling input.
         const initialApplied: Record<string, string> = {};
@@ -185,10 +185,10 @@ export const realtimeConditionsMixin = createSingletonMixin(
           root: rootElement,
         };
 
-        // No initial reconcile needed: the baseline `componentsState` was
-        // already applied to the DOM by `applyComponentsState`, and we've
-        // recorded that state in `applied` above. The reconciler runs on the
-        // next input event and diffs against `applied`.
+        // No initial apply needed: the baseline `componentsState` was already
+        // applied to the DOM by `applyComponentsState`, and we've recorded
+        // that state in `applied` above. The applier runs on the next input
+        // event and diffs against `applied`.
 
         runtime.inputHandler = (e: Event) =>
           this.#handleRealtimeInput(e as InputEvent);
@@ -281,7 +281,7 @@ export const realtimeConditionsMixin = createSingletonMixin(
             )}, now ${JSON.stringify(next)}`,
           );
         }
-        runtime.applied = reconcile(runtime.root, prevApplied, next);
+        runtime.applied = apply(runtime.root, prevApplied, next);
       }
 
       // Release the pause subscription and any pending debounce when the host
@@ -316,7 +316,7 @@ export const realtimeConditionsMixin = createSingletonMixin(
           // when the root has already been swapped out (replaceChildren on a
           // new screen) — those nodes are gone and there is nothing to clear.
           if (Object.keys(r.applied).length > 0 && r.root.isConnected) {
-            reconcile(r.root, r.applied, {});
+            apply(r.root, r.applied, {});
           }
           REALTIME_CONDITION_EVENTS.forEach((ev) => {
             r.root!.removeEventListener(ev, r.inputHandler, true);

@@ -127,7 +127,7 @@ describe('realtimeConditionsMixin', () => {
   });
 
   // The mixin trusts the upstream `applyComponentsState` call to have set the
-  // DOM. It does not reconcile on mount; it just records `componentsState` so
+  // DOM. It does not apply changes on mount; it just records `componentsState` so
   // it can clear it when the input changes such that the rule no longer fires.
   it('records baseline applied state from componentsState without touching the DOM on mount', () => {
     const { host, root } = mountHost();
@@ -593,7 +593,7 @@ describe('realtimeConditionsMixin', () => {
       ],
     });
 
-    // Sanity: server-applied baseline is preserved (mixin doesn't reconcile on mount).
+    // Sanity: server-applied baseline is preserved (mixin doesn't apply on mount).
     expect(submit).toHaveClass('hidden');
 
     // Validity flips to true → rule fires → result map says hide → still hidden.
@@ -738,7 +738,7 @@ describe('realtimeConditionsMixin', () => {
     // Now flush — the pending timer must have been cancelled, so no eval.
     flushDebounce();
 
-    // chk remains hidden (no reconcile ran).
+    // chk remains hidden (no apply ran).
     expect(chk).toHaveClass('hidden');
   });
 
@@ -779,7 +779,7 @@ describe('realtimeConditionsMixin', () => {
     host.initRealtimeConditions(root, { form: {} });
 
     // Flush all timers — the old debounce must NOT fire against the new
-    // (empty) runtime. If it did, the reconciler would clear the hide.
+    // (empty) runtime. If it did, the applier would clear the hide.
     // (Re-init's own teardown already cleared the baseline-applied hide,
     // so the chk is now visible. The test is: this doesn't throw and
     // no subsequent timer touches state.)

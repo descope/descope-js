@@ -1,14 +1,17 @@
 import {
   collectTouchedComponentIds,
   evaluateAll,
-  evaluateResidual,
+  evaluateCondition,
   isEmpty,
   toBoolean,
   toFloat,
   toSlice,
   toString,
 } from '../evaluator';
-import type { RealtimeComponentsCondition } from '../../../types';
+import type {
+  RealtimeComponentsCondition,
+  RealtimeOperator,
+} from '../../../types';
 
 const noValidity = () => undefined;
 
@@ -62,9 +65,9 @@ describe('type-conversion helpers', () => {
   });
 });
 
-describe('evaluateAtomic via evaluateResidual — operators', () => {
+describe('evaluateAtomic via evaluateCondition — operators', () => {
   function conditionWithSingleAtom(
-    operator: string,
+    operator: RealtimeOperator,
     target: any,
     predicate?: any,
   ): RealtimeComponentsCondition {
@@ -90,18 +93,20 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       kind: 'form',
       form: 'form.phone',
     });
-    expect(evaluateResidual(r, {}, noValidity)).toBe(true);
-    expect(evaluateResidual(r, { 'form.phone': '+1' }, noValidity)).toBe(false);
+    expect(evaluateCondition(r, {}, noValidity)).toBe(true);
+    expect(evaluateCondition(r, { 'form.phone': '+1' }, noValidity)).toBe(
+      false,
+    );
 
     const rNotEmpty = conditionWithSingleAtom('not-empty', {
       kind: 'form',
       form: 'form.phone',
     });
-    expect(evaluateResidual(rNotEmpty, { 'form.phone': '' }, noValidity)).toBe(
+    expect(evaluateCondition(rNotEmpty, { 'form.phone': '' }, noValidity)).toBe(
       false,
     );
     expect(
-      evaluateResidual(rNotEmpty, { 'form.phone': '+1' }, noValidity),
+      evaluateCondition(rNotEmpty, { 'form.phone': '+1' }, noValidity),
     ).toBe(true);
   });
 
@@ -111,10 +116,10 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: 'US' },
     );
-    expect(evaluateResidual(r, { 'form.country': 'US' }, noValidity)).toBe(
+    expect(evaluateCondition(r, { 'form.country': 'US' }, noValidity)).toBe(
       true,
     );
-    expect(evaluateResidual(r, { 'form.country': 'FR' }, noValidity)).toBe(
+    expect(evaluateCondition(r, { 'form.country': 'FR' }, noValidity)).toBe(
       false,
     );
   });
@@ -125,9 +130,9 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       { kind: 'form', form: 'form.age' },
       { kind: 'value', value: 18 },
     );
-    expect(evaluateResidual(r, { 'form.age': '25' }, noValidity)).toBe(true);
-    expect(evaluateResidual(r, { 'form.age': '17' }, noValidity)).toBe(false);
-    expect(evaluateResidual(r, { 'form.age': 'abc' }, noValidity)).toBe(false);
+    expect(evaluateCondition(r, { 'form.age': '25' }, noValidity)).toBe(true);
+    expect(evaluateCondition(r, { 'form.age': '17' }, noValidity)).toBe(false);
+    expect(evaluateCondition(r, { 'form.age': 'abc' }, noValidity)).toBe(false);
   });
 
   it('is-true / is-false on form-typed values', () => {
@@ -135,22 +140,22 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       kind: 'form',
       form: 'form.agree',
     });
-    expect(evaluateResidual(rTrue, { 'form.agree': 'true' }, noValidity)).toBe(
+    expect(evaluateCondition(rTrue, { 'form.agree': 'true' }, noValidity)).toBe(
       true,
     );
-    expect(evaluateResidual(rTrue, { 'form.agree': true }, noValidity)).toBe(
+    expect(evaluateCondition(rTrue, { 'form.agree': true }, noValidity)).toBe(
       true,
     );
-    expect(evaluateResidual(rTrue, { 'form.agree': 'false' }, noValidity)).toBe(
-      false,
-    );
+    expect(
+      evaluateCondition(rTrue, { 'form.agree': 'false' }, noValidity),
+    ).toBe(false);
 
     const rFalse = conditionWithSingleAtom('is-false', {
       kind: 'form',
       form: 'form.agree',
     });
     expect(
-      evaluateResidual(rFalse, { 'form.agree': 'false' }, noValidity),
+      evaluateCondition(rFalse, { 'form.agree': 'false' }, noValidity),
     ).toBe(true);
   });
 
@@ -161,10 +166,10 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       { kind: 'value', value: 'world' },
     );
     expect(
-      evaluateResidual(rStr, { 'form.greeting': 'hello world' }, noValidity),
+      evaluateCondition(rStr, { 'form.greeting': 'hello world' }, noValidity),
     ).toBe(true);
     expect(
-      evaluateResidual(rStr, { 'form.greeting': 'hello there' }, noValidity),
+      evaluateCondition(rStr, { 'form.greeting': 'hello there' }, noValidity),
     ).toBe(false);
   });
 
@@ -174,10 +179,35 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: ['US', 'CA'] },
     );
-    expect(evaluateResidual(rIn, { 'form.country': 'US' }, noValidity)).toBe(
+    expect(evaluateCondition(rIn, { 'form.country': 'US' }, noValidity)).toBe(
       true,
     );
-    expect(evaluateResidual(rIn, { 'form.country': 'FR' }, noValidity)).toBe(
+    expect(evaluateCondition(rIn, { 'form.country': 'FR' }, noValidity)).toBe(
+      false,
+    );
+
+    const rNotIn = conditionWithSingleAtom(
+      'not-in',
+      { kind: 'form', form: 'form.country' },
+      { kind: 'value', value: ['US', 'CA'] },
+    );
+    expect(
+      evaluateCondition(rNotIn, { 'form.country': 'FR' }, noValidity),
+    ).toBe(true);
+    expect(
+      evaluateCondition(rNotIn, { 'form.country': 'US' }, noValidity),
+    ).toBe(false);
+  });
+
+  it('not-in returns false when the predicate is not sliceable', () => {
+    // Matches `in`'s "false on bad input" policy — the previous behavior
+    // (true on non-sliceable) was inconsistent.
+    const r = conditionWithSingleAtom(
+      'not-in',
+      { kind: 'form', form: 'form.country' },
+      { kind: 'value', value: 42 },
+    );
+    expect(evaluateCondition(r, { 'form.country': 'US' }, noValidity)).toBe(
       false,
     );
   });
@@ -198,21 +228,21 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       },
     );
     expect(
-      evaluateResidual(
+      evaluateCondition(
         r,
         { 'form.role': 'editor', 'form.allowedRole': 'editor' },
         noValidity,
       ),
     ).toBe(true);
     expect(
-      evaluateResidual(
+      evaluateCondition(
         r,
         { 'form.role': 'admin', 'form.allowedRole': 'editor' },
         noValidity,
       ),
     ).toBe(true);
     expect(
-      evaluateResidual(
+      evaluateCondition(
         r,
         { 'form.role': 'viewer', 'form.allowedRole': 'editor' },
         noValidity,
@@ -233,14 +263,14 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       },
     );
     expect(
-      evaluateResidual(
+      evaluateCondition(
         r,
         { 'form.role': 'editor', 'form.bannedRole': 'admin' },
         noValidity,
       ),
     ).toBe(true);
     expect(
-      evaluateResidual(
+      evaluateCondition(
         r,
         { 'form.role': 'admin', 'form.bannedRole': 'admin' },
         noValidity,
@@ -263,10 +293,10 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       },
       { kind: 'value', value: 'urgent' },
     );
-    expect(evaluateResidual(r, { 'form.tag': 'urgent' }, noValidity)).toBe(
+    expect(evaluateCondition(r, { 'form.tag': 'urgent' }, noValidity)).toBe(
       true,
     );
-    expect(evaluateResidual(r, { 'form.tag': 'normal' }, noValidity)).toBe(
+    expect(evaluateCondition(r, { 'form.tag': 'normal' }, noValidity)).toBe(
       false,
     );
   });
@@ -277,9 +307,13 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       { kind: 'form', form: 'form.zip' },
       { kind: 'value', value: '^\\d{5}$' },
     );
-    expect(evaluateResidual(r, { 'form.zip': '12345' }, noValidity)).toBe(true);
-    expect(evaluateResidual(r, { 'form.zip': '1234' }, noValidity)).toBe(false);
-    expect(evaluateResidual(r, { 'form.zip': 'abcde' }, noValidity)).toBe(
+    expect(evaluateCondition(r, { 'form.zip': '12345' }, noValidity)).toBe(
+      true,
+    );
+    expect(evaluateCondition(r, { 'form.zip': '1234' }, noValidity)).toBe(
+      false,
+    );
+    expect(evaluateCondition(r, { 'form.zip': 'abcde' }, noValidity)).toBe(
       false,
     );
   });
@@ -290,7 +324,7 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       { kind: 'form', form: 'form.zip' },
       { kind: 'value', value: '(bad' },
     );
-    expect(evaluateResidual(r, { 'form.zip': '12345' }, noValidity)).toBe(
+    expect(evaluateCondition(r, { 'form.zip': '12345' }, noValidity)).toBe(
       false,
     );
   });
@@ -300,9 +334,11 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       kind: 'form',
       form: 'form.email',
     });
-    expect(evaluateResidual(r, { 'form.email': 'x' }, () => true)).toBe(true);
-    expect(evaluateResidual(r, { 'form.email': 'x' }, () => false)).toBe(false);
-    expect(evaluateResidual(r, { 'form.email': 'x' }, () => undefined)).toBe(
+    expect(evaluateCondition(r, { 'form.email': 'x' }, () => true)).toBe(true);
+    expect(evaluateCondition(r, { 'form.email': 'x' }, () => false)).toBe(
+      false,
+    );
+    expect(evaluateCondition(r, { 'form.email': 'x' }, () => undefined)).toBe(
       false,
     );
   });
@@ -312,21 +348,23 @@ describe('evaluateAtomic via evaluateResidual — operators', () => {
       kind: 'value',
       value: true,
     });
-    expect(evaluateResidual(rTrue, {}, noValidity)).toBe(true);
+    expect(evaluateCondition(rTrue, {}, noValidity)).toBe(true);
 
     const rFalse = conditionWithSingleAtom('is-true', {
       kind: 'value',
       value: false,
     });
-    expect(evaluateResidual(rFalse, {}, noValidity)).toBe(false);
+    expect(evaluateCondition(rFalse, {}, noValidity)).toBe(false);
   });
 
   it('unknown operator returns false', () => {
-    const r = conditionWithSingleAtom('unknown-op', {
-      kind: 'form',
-      form: 'form.x',
-    });
-    expect(evaluateResidual(r, { 'form.x': 'whatever' }, noValidity)).toBe(
+    // Cast through `unknown` — the union forbids string-typed operators, but
+    // we explicitly want to verify runtime safety against an out-of-band value.
+    const r = conditionWithSingleAtom(
+      'unknown-op' as unknown as RealtimeOperator,
+      { kind: 'form', form: 'form.x' },
+    );
+    expect(evaluateCondition(r, { 'form.x': 'whatever' }, noValidity)).toBe(
       false,
     );
   });
@@ -348,13 +386,13 @@ describe('rule combination (AND / OR)', () => {
 
   it('AND (default) requires all atomics', () => {
     expect(
-      evaluateResidual(r, { 'form.a': '', 'form.b': '' }, noValidity),
+      evaluateCondition(r, { 'form.a': '', 'form.b': '' }, noValidity),
     ).toBe(true);
     expect(
-      evaluateResidual(r, { 'form.a': '', 'form.b': 'x' }, noValidity),
+      evaluateCondition(r, { 'form.a': '', 'form.b': 'x' }, noValidity),
     ).toBe(false);
     expect(
-      evaluateResidual(r, { 'form.a': 'x', 'form.b': '' }, noValidity),
+      evaluateCondition(r, { 'form.a': 'x', 'form.b': '' }, noValidity),
     ).toBe(false);
   });
 
@@ -364,13 +402,13 @@ describe('rule combination (AND / OR)', () => {
       rules: [{ ...r.rules[0], logicalOr: true }],
     };
     expect(
-      evaluateResidual(rOr, { 'form.a': 'x', 'form.b': 'x' }, noValidity),
+      evaluateCondition(rOr, { 'form.a': 'x', 'form.b': 'x' }, noValidity),
     ).toBe(false);
     expect(
-      evaluateResidual(rOr, { 'form.a': '', 'form.b': 'x' }, noValidity),
+      evaluateCondition(rOr, { 'form.a': '', 'form.b': 'x' }, noValidity),
     ).toBe(true);
     expect(
-      evaluateResidual(rOr, { 'form.a': 'x', 'form.b': '' }, noValidity),
+      evaluateCondition(rOr, { 'form.a': 'x', 'form.b': '' }, noValidity),
     ).toBe(true);
   });
 
@@ -392,13 +430,13 @@ describe('rule combination (AND / OR)', () => {
       ],
     };
     expect(
-      evaluateResidual(multi, { 'form.a': '', 'form.b': 'x' }, noValidity),
+      evaluateCondition(multi, { 'form.a': '', 'form.b': 'x' }, noValidity),
     ).toBe(true);
     expect(
-      evaluateResidual(multi, { 'form.a': 'x', 'form.b': '' }, noValidity),
+      evaluateCondition(multi, { 'form.a': 'x', 'form.b': '' }, noValidity),
     ).toBe(true);
     expect(
-      evaluateResidual(multi, { 'form.a': 'x', 'form.b': 'x' }, noValidity),
+      evaluateCondition(multi, { 'form.a': 'x', 'form.b': 'x' }, noValidity),
     ).toBe(false);
   });
 });

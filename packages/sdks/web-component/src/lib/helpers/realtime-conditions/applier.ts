@@ -53,16 +53,17 @@ function findComponents(root: ParentNode, id: string): Element[] {
 }
 
 /**
- * Reconciles the previously-applied real-time state against the newly-computed
- * one. Only touches DOM elements whose IDs the realtime layer owns, leaving
- * everything else alone (e.g. submit buttons, dynamically-disabled fields).
+ * Diffs the previously-applied real-time state against the newly-computed one
+ * and updates the DOM accordingly. Only touches elements whose IDs the realtime
+ * layer owns, leaving everything else alone (e.g. submit buttons,
+ * dynamically-disabled fields).
  *
  * - `applied`: what we applied last time (id → action).
  * - `next`: what should be applied now (id → action). Absence means no action.
  *
  * Returns a fresh copy of `next` for the caller to store.
  */
-export function reconcile(
+export function apply(
   root: ParentNode,
   applied: Record<string, string>,
   next: Record<string, string>,

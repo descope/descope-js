@@ -49,6 +49,27 @@ export type LastAuthState = NonNullable<
 
 export type RealtimeOperandKind = 'value' | 'form' | 'list';
 
+// Operators the SDK is allowed to evaluate locally. The server's
+// clientSupportedRealtimeOperators must stay in sync — anything outside this
+// list is pre-evaluated server-side and shipped as a value operand.
+export type RealtimeOperator =
+  | 'equal'
+  | 'not-equal'
+  | 'contains'
+  | 'greater-than'
+  | 'greater-than-or-equal'
+  | 'less-than'
+  | 'less-than-or-equal'
+  | 'empty'
+  | 'not-empty'
+  | 'is-true'
+  | 'is-false'
+  | 'in'
+  | 'not-in'
+  | 'matches'
+  | 'is-email'
+  | 'is-phone';
+
 export interface RealtimeOperand {
   kind: RealtimeOperandKind;
   // Form is the context key the client looks up from the live form snapshot
@@ -66,7 +87,7 @@ export interface RealtimeOperand {
 }
 
 export interface RealtimeAtomicCondition {
-  operator: string;
+  operator: RealtimeOperator;
   target?: RealtimeOperand;
   predicate?: RealtimeOperand;
 }

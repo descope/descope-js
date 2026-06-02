@@ -2,6 +2,7 @@ import type {
   RealtimeAtomicCondition,
   RealtimeComponentsCondition,
   RealtimeOperand,
+  RealtimeOperator,
   RealtimeRule,
 } from '../../types';
 
@@ -78,7 +79,31 @@ export function isEmpty(v: unknown): boolean {
 
 type OperatorFn = (target: unknown, predicate: unknown) => boolean;
 
-const operators: Record<string, OperatorFn> = {
+// Compiled regex cache for `matches`. Patterns come from the server (trusted),
+// and the same condition is re-evaluated on every input event, so caching by
+// pattern source avoids redundant RegExp construction on each keystroke.
+const matchesRegexCache = new Map<string, RegExp | null>();
+function compileMatchesPattern(source: string): RegExp | null {
+  if (matchesRegexCache.has(source)) {
+    return matchesRegexCache.get(source) ?? null;
+  }
+  let compiled: RegExp | null;
+  try {
+    compiled = new RegExp(source);
+  } catch {
+    compiled = null;
+  }
+  matchesRegexCache.set(source, compiled);
+  return compiled;
+}
+
+// `is-email` / `is-phone` are handled outside this map because they need the
+// validity callback; everything else goes through here. The map is typed with
+// the operator union so adding a new operator without an implementation (or
+// vice-versa) is a compile error.
+type EvalOperator = Exclude<RealtimeOperator, 'is-email' | 'is-phone'>;
+
+const operators: Record<EvalOperator, OperatorFn> = {
   equal: (t, p) => t === p || toString(t) === toString(p),
   'not-equal': (t, p) => t !== p && toString(t) !== toString(p),
   contains: (t, p) => {
@@ -120,20 +145,18 @@ const operators: Record<string, OperatorFn> = {
     const slice = toSlice(p);
     return slice !== null && slice.includes(t);
   },
+  // Consistent with `in`: a non-sliceable predicate is "bad input" and returns
+  // false, not true. This matches the other operators' policy of declining to
+  // fire when they can't make sense of their inputs.
   'not-in': (t, p) => {
     const slice = toSlice(p);
-    return slice === null || !slice.includes(t);
+    return slice !== null && !slice.includes(t);
   },
   matches: (t, p) => {
     if (typeof t !== 'string') return false;
-    try {
-      return new RegExp(toString(p)).test(t);
-    } catch {
-      return false;
-    }
+    const re = compileMatchesPattern(toString(p));
+    return re !== null && re.test(t);
   },
-  // is-email / is-phone delegate to the component's own validity in the mixin
-  // via the ValidityChecker. The evaluator never calls these directly.
 };
 
 /* ------------------------------------------------------------------ */
@@ -150,9 +173,9 @@ function resolveOperand(
   }
   if (operand.kind === 'list') {
     // Each item may itself be a form placeholder or a pre-resolved literal,
-    // so resolve recursively. This is the residual shape the server emits
-    // when an `in` / `not-in` / `contains` predicate is an array containing
-    // a `{{form.X}}` reference to an on-screen key.
+    // so resolve recursively. The server emits this shape when an
+    // `in` / `not-in` / `contains` predicate is an array containing a
+    // `{{form.X}}` reference to an on-screen key.
     return (operand.items ?? []).map((item) => resolveOperand(item, snapshot));
   }
   return operand.value;
@@ -179,7 +202,7 @@ function evaluateAtomic(
     return false;
   }
 
-  const fn = operators[atom.operator];
+  const fn = operators[atom.operator as EvalOperator];
   if (!fn) return false;
 
   const t = resolveOperand(atom.target, snapshot);
@@ -201,7 +224,7 @@ function evaluateRule(
 }
 
 /** Evaluates a single condition group: returns true if any of its rules fire. */
-export function evaluateResidual(
+export function evaluateCondition(
   condition: RealtimeComponentsCondition,
   snapshot: FormSnapshot,
   validity: ValidityChecker,
@@ -216,9 +239,9 @@ export function evaluateResidual(
  * action of the first group whose rules fire. Components where no group fires
  * are absent from the result.
  *
- * "First wins" only matters when two groups target the same component with
- * different actions — uncommon, but deterministic: we iterate in declaration
- * order and the first firing group's action sticks for that id.
+ * "First match wins" only matters when two groups target the same component
+ * with different actions — uncommon, but deterministic: we iterate in
+ * declaration order and the first firing group's action sticks for that id.
  */
 export function evaluateAll(
   conditions: RealtimeComponentsCondition[] | undefined,
@@ -226,11 +249,11 @@ export function evaluateAll(
   validity: ValidityChecker,
 ): Record<string, string> {
   const result: Record<string, string> = {};
-  (conditions ?? []).forEach((r) => {
-    if (!evaluateResidual(r, snapshot, validity)) return;
-    (r.componentIds ?? []).forEach((id) => {
+  (conditions ?? []).forEach((c) => {
+    if (!evaluateCondition(c, snapshot, validity)) return;
+    (c.componentIds ?? []).forEach((id) => {
       if (!(id in result)) {
-        result[id] = r.action;
+        result[id] = c.action;
       }
     });
   });
@@ -239,14 +262,14 @@ export function evaluateAll(
 
 /**
  * Returns the set of component IDs targeted by any condition group. The
- * reconciler uses this to know which components belong to the realtime layer.
+ * applier uses this to know which components belong to the realtime layer.
  */
 export function collectTouchedComponentIds(
   conditions: RealtimeComponentsCondition[] | undefined,
 ): Set<string> {
   const out = new Set<string>();
-  (conditions ?? []).forEach((r) => {
-    (r.componentIds ?? []).forEach((id) => out.add(id));
+  (conditions ?? []).forEach((c) => {
+    (c.componentIds ?? []).forEach((id) => out.add(id));
   });
   return out;
 }
