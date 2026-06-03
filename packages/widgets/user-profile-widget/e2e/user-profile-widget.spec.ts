@@ -59,6 +59,12 @@ test.describe('widget', () => {
       }),
     );
 
+    await page.route('**/v1/mgmt/user/passkeys/list', async (route) =>
+      route.fulfill({
+        json: { passkeys: [] },
+      }),
+    );
+
     await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForTimeout(STATE_TIMEOUT);
   });
@@ -68,7 +74,7 @@ test.describe('widget', () => {
 
     const avatar = page.locator('descope-avatar').first();
 
-    avatar.click();
+    await avatar.click();
 
     await page.waitForTimeout(MODAL_TIMEOUT);
 
@@ -82,7 +88,7 @@ test.describe('widget', () => {
       }),
     );
 
-    finishFlowBtn.click();
+    await finishFlowBtn.click();
 
     await page.waitForTimeout(STATE_TIMEOUT);
 
@@ -279,6 +285,69 @@ test.describe('widget', () => {
         .dispatchEvent('success');
 
       await getMeRequest;
+    });
+  });
+
+  test.describe('passkeys', () => {
+    test.use({ timezoneId: 'UTC' });
+
+    const passkeysResponse = {
+      passkeys: [
+        {
+          id: 'pk-1',
+          displayName: 'iPhone',
+          kind: 'apple',
+          createdTime: 1735977600,
+          rpId: 'example.com',
+        },
+        {
+          id: 'pk-2',
+          displayName: 'Chrome',
+          kind: 'google',
+          createdTime: 1738750500,
+          rpId: 'example.com',
+        },
+      ],
+    };
+
+    test('fetches passkeys on init with the user loginId', async ({ page }) => {
+      const passkeysReq = page.waitForRequest(
+        (req) =>
+          req.url().includes('/v1/mgmt/user/passkeys/list') &&
+          req.method() === 'POST',
+      );
+
+      await page.goto(`http://localhost:${widgetPort}`);
+      const req = await passkeysReq;
+
+      expect(JSON.parse(req.postData() ?? '{}')).toEqual({
+        loginId: mockUser.userId,
+      });
+    });
+
+    test('renders a row per passkey with name, date, and id', async ({
+      page,
+    }) => {
+      await page.route('**/v1/mgmt/user/passkeys/list', async (route) =>
+        route.fulfill({ json: passkeysResponse }),
+      );
+
+      await page.goto(`http://localhost:${widgetPort}`);
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const passkeysEl = page.locator('descope-user-passkeys').first();
+
+      await expect(passkeysEl.getByText('iPhone')).toBeVisible();
+      await expect(passkeysEl.getByText('01/04/2025 08:00')).toBeVisible();
+      await expect(
+        passkeysEl.locator('[data-passkey-id="pk-1"]'),
+      ).toBeAttached();
+
+      await expect(passkeysEl.getByText('Chrome')).toBeVisible();
+      await expect(passkeysEl.getByText('02/05/2025 10:15')).toBeVisible();
+      await expect(
+        passkeysEl.locator('[data-passkey-id="pk-2"]'),
+      ).toBeAttached();
     });
   });
 

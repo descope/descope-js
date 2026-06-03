@@ -1,16 +1,33 @@
 import { createSelector } from 'reselect';
 import { flatten, formatCustomAttrValue } from '../../helpers';
 import { State } from './types';
-import { userStatusMappings } from './constants';
+import { userStatusMappings, MULTIPLE_ROLES_LABEL } from './constants';
 
 export const getRawUsersList = (state: State) => state.usersList.data;
 export const getTenantRoles = (state: State) => state.tenantRoles.data;
+export const getSubTenantRoles = (state: State) => state.subTenantRoles.data;
 export const getSelectedUsersLoginIds = (state: State) =>
   state.selectedUsersLoginIds;
 export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
 export const getCustomAttributes = (state: State) =>
   state.customAttributes.data;
+
+export const getSubTenantRolesData = createSelector(
+  getSubTenantRoles,
+  (subTenantRoles) =>
+    Object.fromEntries(
+      subTenantRoles.map(({ tenantId, tenantName, roleNames }) => [
+        tenantId,
+        tenantName ? { label: tenantName, options: roleNames } : roleNames,
+      ]),
+    ),
+);
+
+export const getHasSubTenants = createSelector(
+  getSubTenantRolesData,
+  (data) => Object.keys(data).length > 0,
+);
 
 export const getCustomAttrTypes = createSelector(
   getCustomAttributes,
@@ -26,7 +43,7 @@ export const getFormattedUserList = createSelector(
       ...user,
       ...{
         customAttributes: Object.fromEntries(
-          Object.entries(user.customAttributes).map(([attr, val]) => [
+          Object.entries(user.customAttributes || {}).map(([attr, val]) => [
             attr,
             formatCustomAttrValue(customAttrTypes[attr], val),
           ]),
@@ -34,6 +51,20 @@ export const getFormattedUserList = createSelector(
       },
     })),
 );
+
+const getRolesDisplay = (user: {
+  roleNames?: string[];
+  userTenants?: { roleNames?: string[] }[];
+}): string[] | string => {
+  const allRoleSets = [
+    user.roleNames || [],
+    ...(user.userTenants || []).map((t) => t.roleNames || []),
+  ].filter((roles) => roles.length > 0);
+  if (allRoleSets.length === 0) return user.roleNames || [];
+  const sorted = allRoleSets.map((roles) => [...roles].sort().join('\0'));
+  const allSame = sorted.every((s) => s === sorted[0]);
+  return allSame ? allRoleSets[0] : MULTIPLE_ROLES_LABEL;
+};
 
 export const getUsersList = createSelector(getFormattedUserList, (users) =>
   users.map((user) => ({
@@ -43,7 +74,10 @@ export const getUsersList = createSelector(getFormattedUserList, (users) =>
       (user?.createdTime || 0) * 1000,
     ).toLocaleString(),
     status: userStatusMappings[user.status] || user.status,
-    roles: user.roleNames,
+    roles: getRolesDisplay(user),
+    tenants: user.userTenants?.map(
+      (tenant) => tenant.tenantName || tenant.tenantId,
+    ),
   })),
 );
 
@@ -70,7 +104,7 @@ export const getSelectedUsersRolesList = createSelector(
   (users) =>
     users.map((user) => ({
       userId: user.userId,
-      roles: user.roles,
+      roles: user.roleNames,
     })),
 );
 

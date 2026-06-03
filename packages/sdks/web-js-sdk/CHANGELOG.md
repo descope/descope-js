@@ -2,6 +2,32 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.50.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.0...web-js-sdk-1.50.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** serialize concurrent flow.next calls ([#1392](https://github.com/descope/descope-js/issues/1392)) ([2fd9992](https://github.com/descope/descope-js/commit/2fd9992a28bb19ff73e1ee944c398f6c0866b9dc))
+
+## [1.50.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.49.1...web-js-sdk-1.50.0) (2026-05-25)
+
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [1.49.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.49.0...web-js-sdk-1.49.1) (2026-05-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.0`
+## [1.49.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.4...web-js-sdk-1.49.0) (2026-05-24)
+
+
+### Features
+
+* **web-js-sdk:** skip tryRefresh when no login indicator in localStorage ([#1383](https://github.com/descope/descope-js/issues/1383)) RELEASE ([c5b6898](https://github.com/descope/descope-js/commit/c5b6898c1b6a1b260e023b5d08fb50a90df23d81))
+
 ## [1.48.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.3...web-js-sdk-1.48.4) (2026-05-14)
 
 

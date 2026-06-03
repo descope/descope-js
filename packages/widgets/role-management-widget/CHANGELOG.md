@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/role-management-widget-0.6.2...role-management-widget-0.7.0) (2026-06-01)
+
+
+### Features
+
+* **role-management-widget:** add Duplicate Role flow RELEASE ([#1401](https://github.com/descope/descope-js/issues/1401)) ([09e6f2f](https://github.com/descope/descope-js/commit/09e6f2f453b3bc168352a11bbcc0a0ab8f07d655)), closes [descope/etc#15701](https://github.com/descope/etc/issues/15701)
+
+## [0.6.2](https://github.com/descope/descope-js/compare/role-management-widget-0.6.1...role-management-widget-0.6.2) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.18.0`
+* `sdk-component-drivers` updated to version `0.12.0`
+## [0.6.1](https://github.com/descope/descope-js/compare/role-management-widget-0.6.0...role-management-widget-0.6.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [0.6.0](https://github.com/descope/descope-js/compare/role-management-widget-0.5.39...role-management-widget-0.6.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.5.39](https://github.com/descope/descope-js/compare/role-management-widget-0.5.38...role-management-widget-0.5.39) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+## [0.5.38](https://github.com/descope/descope-js/compare/role-management-widget-0.5.37...role-management-widget-0.5.38) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `sdk-mixins` updated to version `0.17.0`
 ## [0.5.37](https://github.com/descope/descope-js/compare/role-management-widget-0.5.36...role-management-widget-0.5.37) (2026-05-14)
 
 ### Dependency Updates

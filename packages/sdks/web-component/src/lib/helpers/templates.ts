@@ -285,10 +285,13 @@ const applyComponentsState = (
         case 'hide':
           compEl.classList.add('hidden');
           break;
+        case 'read-only':
+          compEl.setAttribute('readonly', 'true');
+          break;
         default:
           logger?.error(
             `Unknown component state "${state}" for component with id "${componentId}"`,
-            'Valid states are "disable" and "hide"',
+            'Valid states are "disable", "hide", and "read-only"',
           );
           break;
       }

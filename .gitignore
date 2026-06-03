@@ -7,6 +7,7 @@ tmp
 
 # dependencies
 node_modules
+.pnpm-store
 
 # IDEs and editors
 /.idea
@@ -55,3 +56,5 @@ test-results
 # we cannot commit this file because it's causing nx to see 2 angular pacakges
 packages/sdks/angular-sdk/projects/angular-sdk/package.json
 environment.development.ts
+
+.playwright-mcp/

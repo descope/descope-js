@@ -94,6 +94,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       popupOrigin,
       children,
       externalRequestId,
+      themeOverride,
     },
     ref,
   ) => {
@@ -199,6 +200,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
             tenant={tenant}
             externalRequestId={externalRequestId}
             customStorage={customStorage}
+            themeOverride={themeOverride}
             {...{
               // attributes
               'theme.attr': theme,

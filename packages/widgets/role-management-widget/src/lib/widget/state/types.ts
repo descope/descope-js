@@ -12,6 +12,10 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  duplicateRole: {
+    loading: boolean;
+    error: unknown;
+  };
   updateRole: {
     loading: boolean;
     error: unknown;

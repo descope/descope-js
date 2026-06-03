@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.2](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.1...audit-management-widget-0.7.2) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.18.0`
+* `sdk-component-drivers` updated to version `0.12.0`
+## [0.7.1](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.0...audit-management-widget-0.7.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [0.7.0](https://github.com/descope/descope-js/compare/audit-management-widget-0.6.9...audit-management-widget-0.7.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.6.9](https://github.com/descope/descope-js/compare/audit-management-widget-0.6.8...audit-management-widget-0.6.9) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+## [0.6.8](https://github.com/descope/descope-js/compare/audit-management-widget-0.6.7...audit-management-widget-0.6.8) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `sdk-mixins` updated to version `0.17.0`
 ## [0.6.7](https://github.com/descope/descope-js/compare/audit-management-widget-0.6.6...audit-management-widget-0.6.7) (2026-05-14)
 
 ### Dependency Updates

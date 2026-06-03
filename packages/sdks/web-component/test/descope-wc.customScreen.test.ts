@@ -423,6 +423,48 @@ describe('web-component', () => {
       expect(disabledInput).toHaveAttribute('disabled', 'true');
       expect(enabledButton).toBeEnabled();
     });
+
+    it('should set readonly on components when componentsState contains read-only state', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'test-email-input': 'read-only',
+              'test-totp-input': 'read-only',
+            },
+          },
+        }),
+      );
+
+      fixtures.pageContent = `<div>
+        <input id="test-email-input" />
+        <input id="test-totp-input" />
+        <input id="editable-input" />
+        <descope-button id="submit-button">Submit</descope-button>
+      </div>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const readonlyEmail =
+        descopeWc.shadowRoot.querySelector('#test-email-input');
+      const readonlyTotp =
+        descopeWc.shadowRoot.querySelector('#test-totp-input');
+      const editableInput =
+        descopeWc.shadowRoot.querySelector('#editable-input');
+
+      expect(readonlyEmail).toHaveAttribute('readonly', 'true');
+      expect(readonlyTotp).toHaveAttribute('readonly', 'true');
+      expect(readonlyEmail).not.toHaveAttribute('disabled');
+      expect(readonlyTotp).not.toHaveAttribute('disabled');
+      expect(editableInput).not.toHaveAttribute('readonly');
+    });
+
     it('should handle empty componentsState gracefully', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({
