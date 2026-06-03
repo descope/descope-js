@@ -17,15 +17,13 @@ export enum CustomAttributeTypeMap {
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
-type Tenant = AssociatedTenant & {
-  tenantName: string;
-};
-
 export type HttpClient = Sdk['httpClient'];
 
 export type AssociatedTenant = {
   tenantId: string;
+  tenantName?: string;
   roleNames: string[];
+  permissions?: string[];
 };
 
 export type User = {
@@ -37,7 +35,7 @@ export type User = {
   verifiedEmail: boolean;
   verifiedPhone: boolean;
   roleNames: string[];
-  userTenants: Tenant[];
+  userTenants: AssociatedTenant[];
   status: UserStatus;
   externalIds: string[];
   picture: string;

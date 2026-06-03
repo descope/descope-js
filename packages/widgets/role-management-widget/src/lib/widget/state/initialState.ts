@@ -10,6 +10,10 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  duplicateRole: {
+    loading: false,
+    error: null,
+  },
   updateRole: {
     loading: false,
     error: null,
