@@ -1,4 +1,6 @@
-import { fetchWidgetPagesMixin } from '../src/lib/widget/mixins/fetchWidgetPagesMixin';
+import { createFetchWidgetPagesMixin } from '../src';
+
+const BASE = 'test-widget';
 
 // configMixin reads config.json and exposes it as `this.config.projectConfig`.
 const configBody = (targetLocales?: string[]) => ({
@@ -20,9 +22,8 @@ const createMixin = (
   attrs: Record<string, string | undefined>,
   { targetLocales, localized, localizedThrows }: FetchOpts = {},
 ) => {
-  const MixinClass = fetchWidgetPagesMixin(
+  const MixinClass = createFetchWidgetPagesMixin(BASE)(
     class {
-      // eslint-disable-next-line class-methods-use-this
       getAttribute(attr: string) {
         return attrs[attr];
       }
@@ -42,7 +43,7 @@ const createMixin = (
   return { m, fetchSpy };
 };
 
-describe('user-profile fetchWidgetPagesMixin (locale-aware fetching)', () => {
+describe('createFetchWidgetPagesMixin (locale-aware fetching)', () => {
   it('fetches the locale-specific page when the locale is available', async () => {
     const { m, fetchSpy } = createMixin(
       { 'widget-id': 'w1', locale: 'es' },
@@ -50,10 +51,7 @@ describe('user-profile fetchWidgetPagesMixin (locale-aware fetching)', () => {
     );
 
     await expect(m.fetchWidgetPage('page.html')).resolves.toBe('LOCALIZED');
-    expect(fetchSpy).toHaveBeenCalledWith(
-      'user-profile-widget/w1/page-es.html',
-      'text',
-    );
+    expect(fetchSpy).toHaveBeenCalledWith(`${BASE}/w1/page-es.html`, 'text');
   });
 
   it('matches the target locale case-insensitively', async () => {
@@ -72,10 +70,7 @@ describe('user-profile fetchWidgetPagesMixin (locale-aware fetching)', () => {
     );
 
     await expect(m.fetchWidgetPage('page.html')).resolves.toBe('DEFAULT');
-    expect(fetchSpy).toHaveBeenCalledWith(
-      'user-profile-widget/w1/page.html',
-      'text',
-    );
+    expect(fetchSpy).toHaveBeenCalledWith(`${BASE}/w1/page.html`, 'text');
   });
 
   it('falls back to the default page when the localized fetch throws', async () => {
@@ -88,7 +83,7 @@ describe('user-profile fetchWidgetPagesMixin (locale-aware fetching)', () => {
   });
 
   // Regression: navigator.language='en-US' against targetLocales=['en'] must use the language
-  // fallback ('en') rather than serving the default page (see resolvedLocale fallback-drop bug).
+  // fallback ('en') rather than serving the default page.
   it('falls back to the language candidate of navigator.language (en-US -> en)', async () => {
     setNavigatorLanguage('en-US');
     const { m, fetchSpy } = createMixin(
@@ -97,9 +92,6 @@ describe('user-profile fetchWidgetPagesMixin (locale-aware fetching)', () => {
     );
 
     await expect(m.fetchWidgetPage('page.html')).resolves.toBe('LOCALIZED');
-    expect(fetchSpy).toHaveBeenCalledWith(
-      'user-profile-widget/w1/page-en.html',
-      'text',
-    );
+    expect(fetchSpy).toHaveBeenCalledWith(`${BASE}/w1/page-en.html`, 'text');
   });
 });
