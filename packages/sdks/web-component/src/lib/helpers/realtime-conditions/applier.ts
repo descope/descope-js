@@ -1,7 +1,11 @@
-/**
- * Applies a single component state to a DOM element. Mirrors the actions
- * understood by helpers/templates.ts#applyComponentsState.
- */
+// Single source of truth for the action vocabulary. Add a new entry here and
+// the matching `case` to both switches below — the constant is also consumed
+// by `componentConditionsMixin.applyComponentsState` for baseline validation,
+// so a server payload referencing an action outside this list is logged once.
+export const COMPONENT_ACTIONS = ['hide', 'disable', 'read-only'] as const;
+export type ComponentAction = (typeof COMPONENT_ACTIONS)[number];
+
+/** Applies a single component state to a DOM element. */
 export function applyAction(el: Element, action: string): void {
   switch (action) {
     case 'hide':

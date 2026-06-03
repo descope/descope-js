@@ -11,7 +11,11 @@ import {
   FormSnapshot,
   ValidityChecker,
 } from '../helpers/realtime-conditions/evaluator';
-import { apply, escapeSelector } from '../helpers/realtime-conditions/applier';
+import {
+  apply,
+  COMPONENT_ACTIONS,
+  escapeSelector,
+} from '../helpers/realtime-conditions/applier';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 import type { RealtimeComponentsCondition, ScreenState } from '../types';
 
@@ -118,15 +122,9 @@ export const componentConditionsMixin = createSingletonMixin(
       #rtRuntime: RealtimeRuntime = emptyRuntime();
 
       /**
-       * Paints the server-side baseline `componentsState` (id → action) to the
-       * DOM. Called pre-mount on a detached `DocumentFragment` so the initial
-       * paint already reflects hide/disable/read-only state — no FOUC.
-       *
-       * Mirrors what `templates.ts → applyComponentsState` used to do, now
-       * owned by this mixin so all component-condition DOM application lives
-       * in one place. Unknown actions are logged once per `(id, action)` pair
-       * (bounded — baseline runs once per screen). The runtime path (see
-       * `initRealtimeConditions`) silently ignores unknown actions to avoid
+       * Paints the server-side baseline hide/disable/read-only state to the
+       * DOM. Unknown actions are logged here (bounded — baseline runs once
+       * per screen) but silently ignored on the runtime path to avoid
        * per-keystroke log spam.
        */
       applyComponentsState(
@@ -135,14 +133,12 @@ export const componentConditionsMixin = createSingletonMixin(
       ): void {
         if (!componentsState) return;
         Object.entries(componentsState).forEach(([id, action]) => {
-          if (
-            action !== 'hide' &&
-            action !== 'disable' &&
-            action !== 'read-only'
-          ) {
+          if (!(COMPONENT_ACTIONS as readonly string[]).includes(action)) {
             this.logger.error(
               `Unknown component action "${action}" for component with id "${id}"`,
-              'Valid actions are "hide", "disable", and "read-only"',
+              `Valid actions are ${COMPONENT_ACTIONS.map((a) => `"${a}"`).join(
+                ', ',
+              )}`,
             );
           }
         });

@@ -14,12 +14,7 @@ interface HostWithMixin extends HTMLElement {
     rootElement: HTMLElement,
     screenState: ScreenState | undefined,
   ) => void;
-  logger: {
-    error: jest.Mock;
-    debug: jest.Mock;
-    info: jest.Mock;
-    warn: jest.Mock;
-  };
+  logger: { error: jest.Mock };
   nextRequestStatus: {
     subscribe: (cb: (v: { isLoading: boolean }) => void) => string;
     unsubscribe?: (token: string) => void;
@@ -148,7 +143,7 @@ describe('componentConditionsMixin', () => {
 
       expect(errorSpy).toHaveBeenCalledWith(
         expect.stringContaining('Unknown component action "self-destruct"'),
-        expect.stringContaining('"hide", "disable", and "read-only"'),
+        expect.stringContaining('"hide", "disable", "read-only"'),
       );
       errorSpy.mockRestore();
     });
