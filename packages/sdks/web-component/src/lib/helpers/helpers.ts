@@ -36,7 +36,6 @@ import {
   SSOQueryParams,
   StepState,
 } from '../types';
-export { getUserLocale } from '@descope/sdk-helpers';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
