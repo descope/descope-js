@@ -147,12 +147,12 @@ const sdk = useDescope();
 
 const formStr = computed(() => (props.form ? JSON.stringify(props.form) : ''));
 const clientStr = computed(() =>
-  props.client ? JSON.stringify(props.client) : ''
+  props.client ? JSON.stringify(props.client) : '',
 );
 const onSuccess = async (e: CustomEvent<FlowJWTResponse>) => {
   await sdk.httpClient.hooks?.afterRequest?.(
     {} as RequestConfig,
-    new Response(JSON.stringify(e.detail))
+    new Response(JSON.stringify(e.detail)),
   );
   emit('success', e);
 };
