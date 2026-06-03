@@ -383,7 +383,7 @@ function Layout() {
 
 <AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <Layout />
-</AuthProvider>
+</AuthProvider>;
 ```
 
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**

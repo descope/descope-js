@@ -154,7 +154,7 @@ describe('hooks', () => {
       wrapper,
     });
 
-    delete((window as any).descopeBridge);
+    delete (window as any).descopeBridge;
 
     expect(result.current.isSessionLoading).toEqual(false);
     expect(refresh).toHaveBeenCalledTimes(0);
