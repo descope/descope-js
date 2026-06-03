@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.25.6](https://github.com/descope/descope-js/compare/angular-sdk-0.25.5...angular-sdk-0.25.6) (2026-06-01)
+
+### Dependency Updates
+
+* `role-management-widget` updated to version `0.7.0`
+## [0.25.5](https://github.com/descope/descope-js/compare/angular-sdk-0.25.4...angular-sdk-0.25.5) (2026-05-28)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.13.1`
+* `user-profile-widget` updated to version `0.11.3`
+* `tenant-profile-widget` updated to version `0.6.3`
+* `web-component` updated to version `3.65.0`
+## [0.25.4](https://github.com/descope/descope-js/compare/angular-sdk-0.25.3...angular-sdk-0.25.4) (2026-05-28)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.6.2`
+* `audit-management-widget` updated to version `0.7.2`
+* `role-management-widget` updated to version `0.6.2`
+* `user-management-widget` updated to version `0.13.0`
+* `user-profile-widget` updated to version `0.11.2`
+* `tenant-profile-widget` updated to version `0.6.2`
+* `applications-portal-widget` updated to version `0.7.2`
+* `web-component` updated to version `3.64.3`
+## [0.25.3](https://github.com/descope/descope-js/compare/angular-sdk-0.25.2...angular-sdk-0.25.3) (2026-05-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.6.1`
+* `audit-management-widget` updated to version `0.7.1`
+* `role-management-widget` updated to version `0.6.1`
+* `user-management-widget` updated to version `0.12.1`
+* `user-profile-widget` updated to version `0.11.1`
+* `tenant-profile-widget` updated to version `0.6.1`
+* `applications-portal-widget` updated to version `0.7.1`
+* `web-component` updated to version `3.64.2`
+* `web-js-sdk` updated to version `1.50.1`
 ## [0.25.2](https://github.com/descope/descope-js/compare/angular-sdk-0.25.1...angular-sdk-0.25.2) (2026-05-25)
 
 ### Dependency Updates

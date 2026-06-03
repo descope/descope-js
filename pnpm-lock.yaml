@@ -944,8 +944,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@descope/node-sdk':
-        specifier: 1.10.0
-        version: 1.10.0(encoding@0.1.13)
+        specifier: 2.6.0
+        version: 2.6.0(encoding@0.1.13)
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
@@ -4622,11 +4622,11 @@ packages:
   '@descope/core-js-sdk@2.40.0':
     resolution: {integrity: sha512-hFr/SzQO0QbyDaI1LlN//HKi3hXNJAnU0lFUpsqwo92YmCvYzhSZ7r6aBvT0DU2jaXmvt/0Y9TyNQuEKsGpT/A==}
 
-  '@descope/core-js-sdk@2.57.0':
-    resolution: {integrity: sha512-dNvmlyz81VNqmZ699GdhucXQD15kaX3by9086bGR6zWHHVlsenHxW9kDpLoKPoWsKkXxvUq0Ysh9bi+6+A4LyQ==}
+  '@descope/core-js-sdk@2.62.0':
+    resolution: {integrity: sha512-fUAZDnFslSg814Dj+tZc9mWuuHA9cjuWcKTf0SLqJXfga7bfB4kPvnvoDVaUPRqyj5ALARt3Mv7ONamwDNoSRQ==}
 
-  '@descope/node-sdk@1.10.0':
-    resolution: {integrity: sha512-v4kII4vcCdQO/ootlGpB97ovjTwE3Z2S0MmIF5j7kgXQIPTUM01fOsbAaPPUn5lXX7muD2VcsDs6Ic1k2yQjrA==}
+  '@descope/node-sdk@2.6.0':
+    resolution: {integrity: sha512-sHw5oq/rPEAEQoq3aozR9KC1VSlkR+VMTMw8EOgAFO/oEcs6xSJTe+eHVKumYXtKvqJ5RCgrTZXvrVzcChfB3w==}
     engines: {node: '>= 16.0.0'}
 
   '@descope/web-components-ui@3.11.6':
@@ -18125,13 +18125,13 @@ snapshots:
       jwt-decode: 4.0.0
     optional: true
 
-  '@descope/core-js-sdk@2.57.0':
+  '@descope/core-js-sdk@2.62.0':
     dependencies:
       jwt-decode: 4.0.0
 
-  '@descope/node-sdk@1.10.0(encoding@0.1.13)':
+  '@descope/node-sdk@2.6.0(encoding@0.1.13)':
     dependencies:
-      '@descope/core-js-sdk': 2.57.0
+      '@descope/core-js-sdk': 2.62.0
       cross-fetch: 4.1.0(encoding@0.1.13)
       jose: 5.2.2
       tslib: 2.8.1

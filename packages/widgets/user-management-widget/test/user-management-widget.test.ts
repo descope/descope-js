@@ -209,6 +209,30 @@ describe('user-management-widget', () => {
         ),
       );
     });
+
+    it('getSubTenantRoles', async () => {
+      const mockRoles = [
+        { tenantId: 'sub-tenant-1', roleNames: ['Role 1', 'Role 2'] },
+      ];
+      mockHttpClient.get.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ roles: mockRoles }),
+        text: () => Promise.resolve(JSON.stringify({ roles: mockRoles })),
+      });
+
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
+      const result = await sdk.tenant.getSubTenantRoles();
+
+      await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
+        timeout: 5000,
+      });
+      expect(mockHttpClient.get).toHaveBeenCalledWith(
+        apiPaths.tenant.subTenantRoles,
+        { queryParams: { tenant: mockTenant } },
+      );
+      expect(result.roles).toEqual(mockRoles);
+    });
   });
 
   describe('utils', () => {
