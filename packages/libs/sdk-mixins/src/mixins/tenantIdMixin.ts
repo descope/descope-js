@@ -14,7 +14,7 @@ export const tenantIdMixin = createSingletonMixin(
 
     return class TenantIdMixinClass extends BaseClass {
       get tenantId() {
-        return this.getAttribute('tenant');
+        return this.getAttribute('tenant') || undefined;
       }
     };
   },
