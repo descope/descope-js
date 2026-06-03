@@ -138,17 +138,26 @@ const getOidcClient = async (
     authority = oidcConfig.issuer;
     oidcClientId = oidcConfig.clientId;
     stateUserKey = `${oidcClientId}_user`;
-    // For custom issuer with clientId, default scope is just 'openid'
     defaultScope = 'openid';
+  } else if (oidcConfig?.inboundAppClientId) {
+    // Inbound app: auto-construct authority as {baseUrl}/v1/apps/{projectId}
+    const projectAuthority = sdk.httpClient.buildUrl(projectId);
+    const baseAuthority = projectAuthority.endsWith(`/${projectId}`)
+      ? projectAuthority.slice(0, -`/${projectId}`.length)
+      : projectAuthority;
+    authority = `${baseAuthority}/v1/apps/${projectId}`;
+    oidcClientId = oidcConfig.inboundAppClientId;
+    stateUserKey = `${oidcClientId}_user`;
+    defaultScope = 'openid email roles descope.custom_claims offline_access';
   } else if (oidcConfig?.applicationId) {
-    // Handle federated apps with applicationId (existing behavior)
+    // Federated app
     authority = sdk.httpClient.buildUrl(projectId);
     authority = `${authority}/${oidcConfig.applicationId}`;
     oidcClientId = projectId;
     stateUserKey = `${oidcClientId}_user`;
     defaultScope = 'openid email roles descope.custom_claims offline_access';
   } else {
-    // Default behavior (existing)
+    // Default: project-level authority
     authority = sdk.httpClient.buildUrl(projectId);
     oidcClientId = projectId;
     stateUserKey = `${oidcClientId}_user`;
@@ -157,12 +166,21 @@ const getOidcClient = async (
 
   const scope = oidcConfig?.scope || defaultScope;
 
+  const extraQueryParams: Record<string, string> = {};
+  if (oidcConfig?.resource) {
+    const resources = Array.isArray(oidcConfig.resource)
+      ? oidcConfig.resource
+      : [oidcConfig.resource];
+    extraQueryParams.resource = resources.join(' ');
+  }
+
   const settings: OidcClientSettings = {
     authority,
     client_id: oidcClientId,
     redirect_uri: redirectUri,
     response_type: 'code',
     scope,
+    ...(Object.keys(extraQueryParams).length > 0 && { extraQueryParams }),
     stateStore: new WebStorageStateStore({
       store: window.localStorage,
       prefix: oidcClientId,

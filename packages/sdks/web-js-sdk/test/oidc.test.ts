@@ -480,5 +480,118 @@ describe('OIDC', () => {
         }),
       );
     });
+
+    it('should initialize with inboundAppClientId and auto-construct authority', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValue(
+        'http://example.com/projectID',
+      );
+
+      const oidc = createOidc(sdk, 'projectID', {
+        inboundAppClientId: 'inbound-client-id',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com/v1/apps/projectID',
+          client_id: 'inbound-client-id',
+          scope: 'openid email roles descope.custom_claims offline_access',
+        }),
+      );
+    });
+
+    it('should include resource as extraQueryParams when a single resource is provided', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        resource: 'https://api.example.com',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          extraQueryParams: { resource: 'https://api.example.com' },
+        }),
+      );
+    });
+
+    it('should space-join multiple resources into extraQueryParams', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        resource: ['https://api1.example.com', 'https://api2.example.com'],
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          extraQueryParams: {
+            resource: 'https://api1.example.com https://api2.example.com',
+          },
+        }),
+      );
+    });
+
+    it('should not set extraQueryParams when no resource is provided', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          extraQueryParams: expect.anything(),
+        }),
+      );
+    });
+
+    it('should combine inboundAppClientId with resource', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValue(
+        'http://example.com/projectID',
+      );
+
+      const oidc = createOidc(sdk, 'projectID', {
+        inboundAppClientId: 'inbound-client-id',
+        resource: 'https://api.example.com',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com/v1/apps/projectID',
+          client_id: 'inbound-client-id',
+          extraQueryParams: { resource: 'https://api.example.com' },
+        }),
+      );
+    });
   });
 });

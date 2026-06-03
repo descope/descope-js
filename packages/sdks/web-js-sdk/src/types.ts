@@ -4,17 +4,24 @@ import { SigninResponse } from 'oidc-client-ts';
 type Head<T extends ReadonlyArray<any>> = T extends readonly [] ? never : T[0];
 
 export type OidcConfigOptions = {
+  // For Federated Apps: the application ID
   applicationId?: string;
-  // Client ID for OIDC. Required if issuer is provided.
-  // For inbound apps, provide issuer with this clientId (e.g., issuer: 'https://api.descope.com/v1/apps/{projectId}')
+  // For Inbound Apps: the app's client ID.
+  // When provided without a custom issuer, the SDK automatically constructs
+  // the authority URL as `{baseUrl}/v1/apps/{projectId}`.
+  inboundAppClientId?: string;
+  // Client ID for OIDC. Required when a custom issuer is provided.
   clientId?: string;
   // Custom issuer/authority URL. If provided, clientId is required.
-  // For inbound apps, construct the issuer URL manually: `${baseUrl}/v1/apps/${projectId}`
   issuer?: string;
+  // OAuth 2.0 Resource Indicators (RFC 8707).
+  // Specifies the resource(s) the access token should be scoped to.
+  // Pass a single URI string or an array of URI strings.
+  resource?: string | string[];
   // default is current URL
   redirectUri?: string;
-  // default is openid email roles descope.custom_claims offline_access
-  // default is 'openid' if issuer (and clientId) is provided
+  // default is 'openid email roles descope.custom_claims offline_access'
+  // default is 'openid' if a custom issuer/clientId is provided
   scope?: string;
 };
 
