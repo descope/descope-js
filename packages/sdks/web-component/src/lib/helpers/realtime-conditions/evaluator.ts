@@ -12,14 +12,6 @@ import type {
  */
 export type FormSnapshot = Record<string, unknown>;
 
-/**
- * Callback used by `is-email`/`is-phone` to consult the component's own
- * validity (e.g. `descope-text-field.checkValidity()`). Returning `undefined`
- * means the component is not currently in the DOM; the operator then returns
- * `false` (no fire).
- */
-export type ValidityChecker = (formKey: string) => boolean | undefined;
-
 /* ------------------------------------------------------------------ */
 /* type-conversion helpers — mirror the Go cutils.AnyTo* semantics       */
 /* ------------------------------------------------------------------ */
@@ -97,61 +89,67 @@ function compileMatchesPattern(source: string): RegExp | null {
   return compiled;
 }
 
-// `is-email` / `is-phone` consult the host's validity callback (handled in
-// `evaluateAtomic`) and are excluded from this map.
-type EvalOperator = Exclude<RealtimeOperator, 'is-email' | 'is-phone'>;
-
-const operators: Record<EvalOperator, OperatorFn> = {
-  equal: (t, p) => t === p || toString(t) === toString(p),
-  'not-equal': (t, p) => t !== p && toString(t) !== toString(p),
-  contains: (t, p) => {
-    if (Array.isArray(t)) return t.includes(p);
-    if (typeof t === 'string') return t.includes(toString(p));
+const operators: Record<RealtimeOperator, OperatorFn> = {
+  equal: (target, predicate) =>
+    target === predicate || toString(target) === toString(predicate),
+  'not-equal': (target, predicate) =>
+    target !== predicate && toString(target) !== toString(predicate),
+  contains: (target, predicate) => {
+    if (Array.isArray(target)) return target.includes(predicate);
+    if (typeof target === 'string') return target.includes(toString(predicate));
     return false;
   },
-  'greater-than': (t, p) => {
-    const tn = toFloat(t);
-    const pn = toFloat(p);
-    return tn.ok && pn.ok && tn.value > pn.value;
+  'greater-than': (target, predicate) => {
+    const targetNum = toFloat(target);
+    const predicateNum = toFloat(predicate);
+    return (
+      targetNum.ok && predicateNum.ok && targetNum.value > predicateNum.value
+    );
   },
-  'greater-than-or-equal': (t, p) => {
-    const tn = toFloat(t);
-    const pn = toFloat(p);
-    return tn.ok && pn.ok && tn.value >= pn.value;
+  'greater-than-or-equal': (target, predicate) => {
+    const targetNum = toFloat(target);
+    const predicateNum = toFloat(predicate);
+    return (
+      targetNum.ok && predicateNum.ok && targetNum.value >= predicateNum.value
+    );
   },
-  'less-than': (t, p) => {
-    const tn = toFloat(t);
-    const pn = toFloat(p);
-    return tn.ok && pn.ok && tn.value < pn.value;
+  'less-than': (target, predicate) => {
+    const targetNum = toFloat(target);
+    const predicateNum = toFloat(predicate);
+    return (
+      targetNum.ok && predicateNum.ok && targetNum.value < predicateNum.value
+    );
   },
-  'less-than-or-equal': (t, p) => {
-    const tn = toFloat(t);
-    const pn = toFloat(p);
-    return tn.ok && pn.ok && tn.value <= pn.value;
+  'less-than-or-equal': (target, predicate) => {
+    const targetNum = toFloat(target);
+    const predicateNum = toFloat(predicate);
+    return (
+      targetNum.ok && predicateNum.ok && targetNum.value <= predicateNum.value
+    );
   },
-  empty: (t) => isEmpty(t),
-  'not-empty': (t) => !isEmpty(t),
-  'is-true': (t) => {
-    const b = toBoolean(t);
-    return b.ok && b.value;
+  empty: (target) => isEmpty(target),
+  'not-empty': (target) => !isEmpty(target),
+  'is-true': (target) => {
+    const asBool = toBoolean(target);
+    return asBool.ok && asBool.value;
   },
-  'is-false': (t) => {
-    const b = toBoolean(t);
-    return b.ok && !b.value;
+  'is-false': (target) => {
+    const asBool = toBoolean(target);
+    return asBool.ok && !asBool.value;
   },
-  in: (t, p) => {
-    const slice = toSlice(p);
-    return slice !== null && slice.includes(t);
+  in: (target, predicate) => {
+    const slice = toSlice(predicate);
+    return slice !== null && slice.includes(target);
   },
   // Mirrors `in`: bad input → false, not true.
-  'not-in': (t, p) => {
-    const slice = toSlice(p);
-    return slice !== null && !slice.includes(t);
+  'not-in': (target, predicate) => {
+    const slice = toSlice(predicate);
+    return slice !== null && !slice.includes(target);
   },
-  matches: (t, p) => {
-    if (typeof t !== 'string') return false;
-    const re = compileMatchesPattern(toString(p));
-    return re !== null && re.test(t);
+  matches: (target, predicate) => {
+    if (typeof target !== 'string') return false;
+    const regex = compileMatchesPattern(toString(predicate));
+    return regex !== null && regex.test(target);
   },
 };
 
@@ -177,57 +175,33 @@ function resolveOperand(
   return operand.value;
 }
 
-function operandFormKey(operand: RealtimeOperand | undefined): string | null {
-  if (!operand) return null;
-  if (operand.kind === 'form' && operand.form) return operand.form;
-  return null;
-}
-
 function evaluateAtomic(
   atom: RealtimeAtomicCondition,
   snapshot: FormSnapshot,
-  validity: ValidityChecker,
 ): boolean {
-  if (atom.operator === 'is-email' || atom.operator === 'is-phone') {
-    const key = operandFormKey(atom.target);
-    if (key) {
-      return validity(key) === true;
-    }
-    // Literal target — we can't replicate `contact.IsValid*` reliably,
-    // so be conservative and return false.
-    return false;
-  }
-
-  const fn = operators[atom.operator as EvalOperator];
+  const fn = operators[atom.operator as RealtimeOperator];
   if (!fn) return false;
 
-  const t = resolveOperand(atom.target, snapshot);
-  const p = resolveOperand(atom.predicate, snapshot);
-  return fn(t, p);
+  const target = resolveOperand(atom.target, snapshot);
+  const predicate = resolveOperand(atom.predicate, snapshot);
+  return fn(target, predicate);
 }
 
-function evaluateRule(
-  rule: RealtimeRule,
-  snapshot: FormSnapshot,
-  validity: ValidityChecker,
-): boolean {
+function evaluateRule(rule: RealtimeRule, snapshot: FormSnapshot): boolean {
   const atomics = rule.atomicConditions ?? [];
   if (!atomics.length) return false;
   if (rule.logicalOr) {
-    return atomics.some((a) => evaluateAtomic(a, snapshot, validity));
+    return atomics.some((a) => evaluateAtomic(a, snapshot));
   }
-  return atomics.every((a) => evaluateAtomic(a, snapshot, validity));
+  return atomics.every((a) => evaluateAtomic(a, snapshot));
 }
 
 /** Evaluates a single condition group: returns true if any of its rules fire. */
 export function evaluateCondition(
   condition: RealtimeComponentsCondition,
   snapshot: FormSnapshot,
-  validity: ValidityChecker,
 ): boolean {
-  return (condition.rules ?? []).some((r) =>
-    evaluateRule(r, snapshot, validity),
-  );
+  return (condition.rules ?? []).some((r) => evaluateRule(r, snapshot));
 }
 
 /**
@@ -242,11 +216,10 @@ export function evaluateCondition(
 export function evaluateAll(
   conditions: RealtimeComponentsCondition[] | undefined,
   snapshot: FormSnapshot,
-  validity: ValidityChecker,
 ): Record<string, string> {
   const result: Record<string, string> = {};
   (conditions ?? []).forEach((c) => {
-    if (!evaluateCondition(c, snapshot, validity)) return;
+    if (!evaluateCondition(c, snapshot)) return;
     (c.componentIds ?? []).forEach((id) => {
       if (!(id in result)) {
         result[id] = c.action;

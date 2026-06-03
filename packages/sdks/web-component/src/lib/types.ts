@@ -52,6 +52,10 @@ export type RealtimeOperandKind = 'value' | 'form' | 'list';
 // Operators the SDK is allowed to evaluate locally. The server's
 // clientSupportedRealtimeOperators must stay in sync — anything outside this
 // list is pre-evaluated server-side and shipped as a value operand.
+//
+// is-email / is-phone are intentionally absent: the server validates them
+// with dedicated libraries (contact.IsValid*); the client has no equivalent,
+// so the server keeps these CCs server-only.
 export type RealtimeOperator =
   | 'equal'
   | 'not-equal'
@@ -66,9 +70,7 @@ export type RealtimeOperator =
   | 'is-false'
   | 'in'
   | 'not-in'
-  | 'matches'
-  | 'is-email'
-  | 'is-phone';
+  | 'matches';
 
 export interface RealtimeOperand {
   kind: RealtimeOperandKind;

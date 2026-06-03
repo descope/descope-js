@@ -9,12 +9,10 @@ import {
   collectTouchedComponentIds,
   evaluateAll,
   FormSnapshot,
-  ValidityChecker,
 } from '../helpers/realtime-conditions/evaluator';
 import {
   apply,
   COMPONENT_ACTIONS,
-  escapeSelector,
 } from '../helpers/realtime-conditions/applier';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 import type { RealtimeComponentsCondition, ScreenState } from '../types';
@@ -62,25 +60,6 @@ export interface RealtimeRuntime {
 // condition rules reference.
 function toFormKey(name: string): string {
   return name.startsWith('form.') ? name : `form.${name}`;
-}
-
-function makeValidityChecker(root: HTMLElement): ValidityChecker {
-  return (formKey: string) => {
-    // Try matching by the full key first (descope components), then fall back
-    // to the bare suffix for inputs that store a bare name.
-    const bare = formKey.startsWith('form.')
-      ? formKey.slice('form.'.length)
-      : formKey;
-    const el = (root.querySelector(`[name="${escapeSelector(formKey)}"]`) ||
-      root.querySelector(
-        `[name="${escapeSelector(bare)}"]`,
-      )) as HTMLInputElement | null;
-    if (!el) return undefined;
-    if (typeof el.checkValidity === 'function') {
-      return el.checkValidity();
-    }
-    return undefined;
-  };
 }
 
 function shallowEqualStringMap(
@@ -280,11 +259,7 @@ export const componentConditionsMixin = createSingletonMixin(
 
         let next: Record<string, string>;
         try {
-          next = evaluateAll(
-            runtime.conditions,
-            runtime.snapshot,
-            makeValidityChecker(runtime.root),
-          );
+          next = evaluateAll(runtime.conditions, runtime.snapshot);
         } catch (e) {
           this.logger.error(
             `${LOG_PREFIX} failed to evaluate real-time rules — keeping the previous state`,

@@ -13,8 +13,6 @@ import type {
   RealtimeOperator,
 } from '../../../types';
 
-const noValidity = () => undefined;
-
 describe('type-conversion helpers', () => {
   it('toFloat handles numbers, numeric strings, booleans', () => {
     expect(toFloat(42)).toEqual({ value: 42, ok: true });
@@ -93,21 +91,15 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       kind: 'form',
       form: 'form.phone',
     });
-    expect(evaluateCondition(r, {}, noValidity)).toBe(true);
-    expect(evaluateCondition(r, { 'form.phone': '+1' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, {})).toBe(true);
+    expect(evaluateCondition(r, { 'form.phone': '+1' })).toBe(false);
 
     const rNotEmpty = conditionWithSingleAtom('not-empty', {
       kind: 'form',
       form: 'form.phone',
     });
-    expect(evaluateCondition(rNotEmpty, { 'form.phone': '' }, noValidity)).toBe(
-      false,
-    );
-    expect(
-      evaluateCondition(rNotEmpty, { 'form.phone': '+1' }, noValidity),
-    ).toBe(true);
+    expect(evaluateCondition(rNotEmpty, { 'form.phone': '' })).toBe(false);
+    expect(evaluateCondition(rNotEmpty, { 'form.phone': '+1' })).toBe(true);
   });
 
   it('equal compares string and literal value', () => {
@@ -116,12 +108,8 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: 'US' },
     );
-    expect(evaluateCondition(r, { 'form.country': 'US' }, noValidity)).toBe(
-      true,
-    );
-    expect(evaluateCondition(r, { 'form.country': 'FR' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, { 'form.country': 'US' })).toBe(true);
+    expect(evaluateCondition(r, { 'form.country': 'FR' })).toBe(false);
   });
 
   it('greater-than converts string numerics', () => {
@@ -130,9 +118,9 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.age' },
       { kind: 'value', value: 18 },
     );
-    expect(evaluateCondition(r, { 'form.age': '25' }, noValidity)).toBe(true);
-    expect(evaluateCondition(r, { 'form.age': '17' }, noValidity)).toBe(false);
-    expect(evaluateCondition(r, { 'form.age': 'abc' }, noValidity)).toBe(false);
+    expect(evaluateCondition(r, { 'form.age': '25' })).toBe(true);
+    expect(evaluateCondition(r, { 'form.age': '17' })).toBe(false);
+    expect(evaluateCondition(r, { 'form.age': 'abc' })).toBe(false);
   });
 
   it('is-true / is-false on form-typed values', () => {
@@ -140,23 +128,15 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       kind: 'form',
       form: 'form.agree',
     });
-    expect(evaluateCondition(rTrue, { 'form.agree': 'true' }, noValidity)).toBe(
-      true,
-    );
-    expect(evaluateCondition(rTrue, { 'form.agree': true }, noValidity)).toBe(
-      true,
-    );
-    expect(
-      evaluateCondition(rTrue, { 'form.agree': 'false' }, noValidity),
-    ).toBe(false);
+    expect(evaluateCondition(rTrue, { 'form.agree': 'true' })).toBe(true);
+    expect(evaluateCondition(rTrue, { 'form.agree': true })).toBe(true);
+    expect(evaluateCondition(rTrue, { 'form.agree': 'false' })).toBe(false);
 
     const rFalse = conditionWithSingleAtom('is-false', {
       kind: 'form',
       form: 'form.agree',
     });
-    expect(
-      evaluateCondition(rFalse, { 'form.agree': 'false' }, noValidity),
-    ).toBe(true);
+    expect(evaluateCondition(rFalse, { 'form.agree': 'false' })).toBe(true);
   });
 
   it('contains works for string and array targets', () => {
@@ -165,12 +145,12 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.greeting' },
       { kind: 'value', value: 'world' },
     );
-    expect(
-      evaluateCondition(rStr, { 'form.greeting': 'hello world' }, noValidity),
-    ).toBe(true);
-    expect(
-      evaluateCondition(rStr, { 'form.greeting': 'hello there' }, noValidity),
-    ).toBe(false);
+    expect(evaluateCondition(rStr, { 'form.greeting': 'hello world' })).toBe(
+      true,
+    );
+    expect(evaluateCondition(rStr, { 'form.greeting': 'hello there' })).toBe(
+      false,
+    );
   });
 
   it('in / not-in', () => {
@@ -179,24 +159,16 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: ['US', 'CA'] },
     );
-    expect(evaluateCondition(rIn, { 'form.country': 'US' }, noValidity)).toBe(
-      true,
-    );
-    expect(evaluateCondition(rIn, { 'form.country': 'FR' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(rIn, { 'form.country': 'US' })).toBe(true);
+    expect(evaluateCondition(rIn, { 'form.country': 'FR' })).toBe(false);
 
     const rNotIn = conditionWithSingleAtom(
       'not-in',
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: ['US', 'CA'] },
     );
-    expect(
-      evaluateCondition(rNotIn, { 'form.country': 'FR' }, noValidity),
-    ).toBe(true);
-    expect(
-      evaluateCondition(rNotIn, { 'form.country': 'US' }, noValidity),
-    ).toBe(false);
+    expect(evaluateCondition(rNotIn, { 'form.country': 'FR' })).toBe(true);
+    expect(evaluateCondition(rNotIn, { 'form.country': 'US' })).toBe(false);
   });
 
   it('not-in returns false when the predicate is not sliceable', () => {
@@ -207,9 +179,7 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.country' },
       { kind: 'value', value: 42 },
     );
-    expect(evaluateCondition(r, { 'form.country': 'US' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, { 'form.country': 'US' })).toBe(false);
   });
 
   it('in resolves a list-kind predicate with form-placeholder items', () => {
@@ -228,25 +198,22 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       },
     );
     expect(
-      evaluateCondition(
-        r,
-        { 'form.role': 'editor', 'form.allowedRole': 'editor' },
-        noValidity,
-      ),
+      evaluateCondition(r, {
+        'form.role': 'editor',
+        'form.allowedRole': 'editor',
+      }),
     ).toBe(true);
     expect(
-      evaluateCondition(
-        r,
-        { 'form.role': 'admin', 'form.allowedRole': 'editor' },
-        noValidity,
-      ),
+      evaluateCondition(r, {
+        'form.role': 'admin',
+        'form.allowedRole': 'editor',
+      }),
     ).toBe(true);
     expect(
-      evaluateCondition(
-        r,
-        { 'form.role': 'viewer', 'form.allowedRole': 'editor' },
-        noValidity,
-      ),
+      evaluateCondition(r, {
+        'form.role': 'viewer',
+        'form.allowedRole': 'editor',
+      }),
     ).toBe(false);
   });
 
@@ -263,18 +230,16 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       },
     );
     expect(
-      evaluateCondition(
-        r,
-        { 'form.role': 'editor', 'form.bannedRole': 'admin' },
-        noValidity,
-      ),
+      evaluateCondition(r, {
+        'form.role': 'editor',
+        'form.bannedRole': 'admin',
+      }),
     ).toBe(true);
     expect(
-      evaluateCondition(
-        r,
-        { 'form.role': 'admin', 'form.bannedRole': 'admin' },
-        noValidity,
-      ),
+      evaluateCondition(r, {
+        'form.role': 'admin',
+        'form.bannedRole': 'admin',
+      }),
     ).toBe(false);
   });
 
@@ -293,12 +258,8 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       },
       { kind: 'value', value: 'urgent' },
     );
-    expect(evaluateCondition(r, { 'form.tag': 'urgent' }, noValidity)).toBe(
-      true,
-    );
-    expect(evaluateCondition(r, { 'form.tag': 'normal' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, { 'form.tag': 'urgent' })).toBe(true);
+    expect(evaluateCondition(r, { 'form.tag': 'normal' })).toBe(false);
   });
 
   it('matches uses regex', () => {
@@ -307,15 +268,9 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.zip' },
       { kind: 'value', value: '^\\d{5}$' },
     );
-    expect(evaluateCondition(r, { 'form.zip': '12345' }, noValidity)).toBe(
-      true,
-    );
-    expect(evaluateCondition(r, { 'form.zip': '1234' }, noValidity)).toBe(
-      false,
-    );
-    expect(evaluateCondition(r, { 'form.zip': 'abcde' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, { 'form.zip': '12345' })).toBe(true);
+    expect(evaluateCondition(r, { 'form.zip': '1234' })).toBe(false);
+    expect(evaluateCondition(r, { 'form.zip': 'abcde' })).toBe(false);
   });
 
   it('matches returns false on invalid regex without throwing', () => {
@@ -324,23 +279,7 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       { kind: 'form', form: 'form.zip' },
       { kind: 'value', value: '(bad' },
     );
-    expect(evaluateCondition(r, { 'form.zip': '12345' }, noValidity)).toBe(
-      false,
-    );
-  });
-
-  it('is-email / is-phone delegate to validity checker', () => {
-    const r = conditionWithSingleAtom('is-email', {
-      kind: 'form',
-      form: 'form.email',
-    });
-    expect(evaluateCondition(r, { 'form.email': 'x' }, () => true)).toBe(true);
-    expect(evaluateCondition(r, { 'form.email': 'x' }, () => false)).toBe(
-      false,
-    );
-    expect(evaluateCondition(r, { 'form.email': 'x' }, () => undefined)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, { 'form.zip': '12345' })).toBe(false);
   });
 
   it('pre-evaluated atomic via is-true on literal boolean', () => {
@@ -348,13 +287,13 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       kind: 'value',
       value: true,
     });
-    expect(evaluateCondition(rTrue, {}, noValidity)).toBe(true);
+    expect(evaluateCondition(rTrue, {})).toBe(true);
 
     const rFalse = conditionWithSingleAtom('is-true', {
       kind: 'value',
       value: false,
     });
-    expect(evaluateCondition(rFalse, {}, noValidity)).toBe(false);
+    expect(evaluateCondition(rFalse, {})).toBe(false);
   });
 
   it('unknown operator returns false', () => {
@@ -362,9 +301,7 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
       'unknown-op' as unknown as RealtimeOperator,
       { kind: 'form', form: 'form.x' },
     );
-    expect(evaluateCondition(r, { 'form.x': 'whatever' }, noValidity)).toBe(
-      false,
-    );
+    expect(evaluateCondition(r, { 'form.x': 'whatever' })).toBe(false);
   });
 });
 
@@ -383,15 +320,9 @@ describe('rule combination (AND / OR)', () => {
   };
 
   it('AND (default) requires all atomics', () => {
-    expect(
-      evaluateCondition(r, { 'form.a': '', 'form.b': '' }, noValidity),
-    ).toBe(true);
-    expect(
-      evaluateCondition(r, { 'form.a': '', 'form.b': 'x' }, noValidity),
-    ).toBe(false);
-    expect(
-      evaluateCondition(r, { 'form.a': 'x', 'form.b': '' }, noValidity),
-    ).toBe(false);
+    expect(evaluateCondition(r, { 'form.a': '', 'form.b': '' })).toBe(true);
+    expect(evaluateCondition(r, { 'form.a': '', 'form.b': 'x' })).toBe(false);
+    expect(evaluateCondition(r, { 'form.a': 'x', 'form.b': '' })).toBe(false);
   });
 
   it('OR fires if any atomic fires', () => {
@@ -399,15 +330,11 @@ describe('rule combination (AND / OR)', () => {
       ...r,
       rules: [{ ...r.rules[0], logicalOr: true }],
     };
-    expect(
-      evaluateCondition(rOr, { 'form.a': 'x', 'form.b': 'x' }, noValidity),
-    ).toBe(false);
-    expect(
-      evaluateCondition(rOr, { 'form.a': '', 'form.b': 'x' }, noValidity),
-    ).toBe(true);
-    expect(
-      evaluateCondition(rOr, { 'form.a': 'x', 'form.b': '' }, noValidity),
-    ).toBe(true);
+    expect(evaluateCondition(rOr, { 'form.a': 'x', 'form.b': 'x' })).toBe(
+      false,
+    );
+    expect(evaluateCondition(rOr, { 'form.a': '', 'form.b': 'x' })).toBe(true);
+    expect(evaluateCondition(rOr, { 'form.a': 'x', 'form.b': '' })).toBe(true);
   });
 
   it('multiple rules are OR-combined at the condition-group level', () => {
@@ -427,15 +354,15 @@ describe('rule combination (AND / OR)', () => {
         },
       ],
     };
-    expect(
-      evaluateCondition(multi, { 'form.a': '', 'form.b': 'x' }, noValidity),
-    ).toBe(true);
-    expect(
-      evaluateCondition(multi, { 'form.a': 'x', 'form.b': '' }, noValidity),
-    ).toBe(true);
-    expect(
-      evaluateCondition(multi, { 'form.a': 'x', 'form.b': 'x' }, noValidity),
-    ).toBe(false);
+    expect(evaluateCondition(multi, { 'form.a': '', 'form.b': 'x' })).toBe(
+      true,
+    );
+    expect(evaluateCondition(multi, { 'form.a': 'x', 'form.b': '' })).toBe(
+      true,
+    );
+    expect(evaluateCondition(multi, { 'form.a': 'x', 'form.b': 'x' })).toBe(
+      false,
+    );
   });
 });
 
@@ -470,11 +397,7 @@ describe('evaluateAll across condition groups', () => {
         ],
       },
     ];
-    const out = evaluateAll(
-      conditions,
-      { 'form.x': '', 'form.y': 'val' },
-      noValidity,
-    );
+    const out = evaluateAll(conditions, { 'form.x': '', 'form.y': 'val' });
     expect(out).toEqual({ _a: 'hide', _b: 'disable' });
   });
 
@@ -492,7 +415,7 @@ describe('evaluateAll across condition groups', () => {
         ],
       },
     ];
-    const out = evaluateAll(conditions, { 'form.x': 'x' }, noValidity);
+    const out = evaluateAll(conditions, { 'form.x': 'x' });
     expect(out).toEqual({});
   });
 });

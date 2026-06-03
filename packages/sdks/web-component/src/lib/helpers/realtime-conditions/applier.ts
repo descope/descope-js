@@ -51,10 +51,10 @@ export function escapeSelector(value: string): string {
 }
 
 // Use querySelectorAll, not querySelector. The baseline `applyComponentsState`
-// in helpers/templates.ts iterates all elements with a matching id (templates
-// may emit duplicates, e.g. inside dynamic-selects). If we only operated on
-// the first match, the rest would stay hidden/disabled/read-only forever once
-// the user toggles the controlling input.
+// in `componentConditionsMixin` iterates all elements with a matching id
+// (templates may emit duplicates, e.g. inside dynamic-selects). If we only
+// operated on the first match, the rest would stay hidden/disabled/read-only
+// forever once the user toggles the controlling input.
 function findComponents(root: ParentNode, id: string): Element[] {
   return Array.from(root.querySelectorAll(`[id="${escapeSelector(id)}"]`));
 }
