@@ -336,7 +336,6 @@ export const themeMixin = createSingletonMixin(
           this.#_themeResource = null;
           this.#loadFonts();
           this.#loadGlobalStyle();
-          this.#loadTenantStyle();
           this.#loadComponentsStyle();
         });
       }
