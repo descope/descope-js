@@ -15,7 +15,7 @@ import { apply, escapeSelector } from '../helpers/realtime-conditions/applier';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 import type { RealtimeComponentsCondition, ScreenState } from '../types';
 
-const LOG_PREFIX = 'realtime-conditions:';
+const LOG_PREFIX = 'component-conditions:';
 
 /**
  * Minimal interface the mixin needs from its host: a State<{isLoading}> we can
@@ -103,7 +103,7 @@ function emptyRuntime(): RealtimeRuntime {
   };
 }
 
-export const realtimeConditionsMixin = createSingletonMixin(
+export const componentConditionsMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     // Compose loggerMixin so we can use `this.logger` regardless of where this
     // mixin lands in the chain — mirrors the pattern used by other mixins in
@@ -111,11 +111,43 @@ export const realtimeConditionsMixin = createSingletonMixin(
     // `logger` setter; ours respects that.
     const BaseClass = compose(loggerMixin)(superclass);
 
-    return class RealtimeConditionsMixin extends BaseClass {
+    return class ComponentConditionsMixin extends BaseClass {
       // Per-instance state. The singleton mixin pattern in this codebase
       // assigns one mixin class per host class, but `this` is a per-element
       // host, so instance-level fields are isolated per <descope-wc>.
       #rtRuntime: RealtimeRuntime = emptyRuntime();
+
+      /**
+       * Paints the server-side baseline `componentsState` (id → action) to the
+       * DOM. Called pre-mount on a detached `DocumentFragment` so the initial
+       * paint already reflects hide/disable/read-only state — no FOUC.
+       *
+       * Mirrors what `templates.ts → applyComponentsState` used to do, now
+       * owned by this mixin so all component-condition DOM application lives
+       * in one place. Unknown actions are logged once per `(id, action)` pair
+       * (bounded — baseline runs once per screen). The runtime path (see
+       * `initRealtimeConditions`) silently ignores unknown actions to avoid
+       * per-keystroke log spam.
+       */
+      applyComponentsState(
+        root: ParentNode,
+        componentsState: Record<string, string> | undefined,
+      ): void {
+        if (!componentsState) return;
+        Object.entries(componentsState).forEach(([id, action]) => {
+          if (
+            action !== 'hide' &&
+            action !== 'disable' &&
+            action !== 'read-only'
+          ) {
+            this.logger.error(
+              `Unknown component action "${action}" for component with id "${id}"`,
+              'Valid actions are "hide", "disable", and "read-only"',
+            );
+          }
+        });
+        apply(root, {}, componentsState);
+      }
 
       /**
        * Initializes (or re-initializes) the real-time conditions layer for the

@@ -1708,6 +1708,11 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
+    // Paint the server-side baseline state pre-mount on the detached fragment.
+    // Owned by the component-conditions mixin so the action→DOM mapping lives
+    // in one place; see also `initRealtimeConditions` for the runtime path.
+    this.applyComponentsState(clone, screenState?.componentsState);
+
     // set auto-detect attributes (country code from geo, lang from locale)
     const { geo } = (await this.getExecutionContext()) ?? {};
     setComponentsAutoDetectByGeo(clone, geo);

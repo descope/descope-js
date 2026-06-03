@@ -1,15 +1,25 @@
 /* eslint-disable max-classes-per-file, no-param-reassign */
 import '@testing-library/jest-dom';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { realtimeConditionsMixin } from '../realtimeConditionsMixin';
+import { componentConditionsMixin } from '../componentConditionsMixin';
 import { REALTIME_CONDITION_DEBOUNCE_MS } from '../../helpers/realtime-conditions/config';
 import type { RealtimeComponentsCondition, ScreenState } from '../../types';
 
 interface HostWithMixin extends HTMLElement {
+  applyComponentsState: (
+    root: ParentNode,
+    componentsState: Record<string, string> | undefined,
+  ) => void;
   initRealtimeConditions: (
     rootElement: HTMLElement,
     screenState: ScreenState | undefined,
   ) => void;
+  logger: {
+    error: jest.Mock;
+    debug: jest.Mock;
+    info: jest.Mock;
+    warn: jest.Mock;
+  };
   nextRequestStatus: {
     subscribe: (cb: (v: { isLoading: boolean }) => void) => string;
     unsubscribe?: (token: string) => void;
@@ -58,7 +68,7 @@ let TestHost: CustomElementConstructor;
 beforeAll(() => {
   const Base = compose(
     nextRequestStatusStubMixin,
-    realtimeConditionsMixin,
+    componentConditionsMixin,
   )(HTMLElement);
   TestHost = class extends Base {} as unknown as CustomElementConstructor;
   customElements.define('test-realtime-host', TestHost);
@@ -100,7 +110,7 @@ function flushDebounce() {
   jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 1);
 }
 
-describe('realtimeConditionsMixin', () => {
+describe('componentConditionsMixin', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -108,6 +118,62 @@ describe('realtimeConditionsMixin', () => {
   afterEach(() => {
     jest.useRealTimers();
     document.body.innerHTML = '';
+  });
+
+  describe('applyComponentsState (baseline)', () => {
+    it('applies hide / disable / read-only to matching ids on a DocumentFragment', () => {
+      const { host } = mountHost();
+      const fragment = document.createDocumentFragment();
+      const a = mkComponent(fragment as unknown as HTMLElement, '_a');
+      const b = mkComponent(fragment as unknown as HTMLElement, '_b');
+      const c = mkComponent(fragment as unknown as HTMLElement, '_c');
+
+      host.applyComponentsState(fragment, {
+        _a: 'hide',
+        _b: 'disable',
+        _c: 'read-only',
+      });
+
+      expect(a).toHaveClass('hidden');
+      expect(b).toHaveAttribute('disabled', 'true');
+      expect(c).toHaveAttribute('readonly', 'true');
+    });
+
+    it('logs an error for unknown actions', () => {
+      const { host, root } = mountHost();
+      mkComponent(root, '_x');
+      const errorSpy = jest.spyOn(host.logger, 'error');
+
+      host.applyComponentsState(root, { _x: 'self-destruct' });
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Unknown component action "self-destruct"'),
+        expect.stringContaining('"hide", "disable", and "read-only"'),
+      );
+      errorSpy.mockRestore();
+    });
+
+    it('no-ops when componentsState is undefined or empty', () => {
+      const { host, root } = mountHost();
+      const x = mkComponent(root, '_x');
+
+      expect(() => host.applyComponentsState(root, undefined)).not.toThrow();
+      expect(() => host.applyComponentsState(root, {})).not.toThrow();
+      expect(x).not.toHaveClass('hidden');
+      expect(x).not.toHaveAttribute('disabled');
+    });
+
+    it('silently no-ops when an id in componentsState is absent from the root', () => {
+      const { host, root } = mountHost();
+      mkComponent(root, '_present');
+      const errorSpy = jest.spyOn(host.logger, 'error');
+
+      expect(() =>
+        host.applyComponentsState(root, { _missing: 'hide' }),
+      ).not.toThrow();
+      expect(errorSpy).not.toHaveBeenCalled();
+      errorSpy.mockRestore();
+    });
   });
 
   it('no-ops when no realtimeComponentsConditions present (old backend)', () => {
@@ -126,15 +192,15 @@ describe('realtimeConditionsMixin', () => {
     expect(chk).toHaveClass('hidden');
   });
 
-  // The mixin trusts the upstream `applyComponentsState` call to have set the
-  // DOM. It does not apply changes on mount; it just records `componentsState` so
-  // it can clear it when the input changes such that the rule no longer fires.
-  it('records baseline applied state from componentsState without touching the DOM on mount', () => {
+  it('records baseline applied state from componentsState so initRealtimeConditions can later clear it', () => {
     const { host, root } = mountHost();
     const chk = mkComponent(root, '_chk');
-    // Simulate the upstream `applyComponentsState` call.
-    chk.classList.add('hidden');
     mkInput(root, 'phone');
+
+    // Mount-path order: applyComponentsState paints baseline, then
+    // initRealtimeConditions sets up the runtime layer and seeds `applied`.
+    host.applyComponentsState(root, { _chk: 'hide' });
+    expect(chk).toHaveClass('hidden');
 
     const condition: RealtimeComponentsCondition = {
       componentIds: ['_chk'],
@@ -154,7 +220,7 @@ describe('realtimeConditionsMixin', () => {
     };
 
     host.initRealtimeConditions(root, screenState);
-    expect(chk).toHaveClass('hidden'); // unchanged from baseline
+    expect(chk).toHaveClass('hidden'); // unchanged — runtime trusts baseline.
   });
 
   it('unhides on input when condition stops firing', () => {

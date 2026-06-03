@@ -28,7 +28,7 @@ import {
 } from '../helpers/flowInputs';
 import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin, realtimeConditionsMixin } from '../mixins';
+import { formMountMixin, componentConditionsMixin } from '../mixins';
 import {
   AutoFocusOptions,
   CustomStorage,
@@ -50,7 +50,7 @@ const BaseClass = compose(
   themeMixin,
   staticResourcesMixin,
   formMountMixin,
-  realtimeConditionsMixin,
+  componentConditionsMixin,
   injectStyleMixin,
 )(HTMLElement);
 
@@ -670,7 +670,7 @@ class BaseDescopeWc extends BaseClass {
       this.#eventsCbRefs.componentsContext,
     );
     // Forward to the composed mixin chain so each mixin's
-    // disconnectedCallback (e.g. realtimeConditionsMixin) gets to clean up.
+    // disconnectedCallback (e.g. componentConditionsMixin) gets to clean up.
     // Without this, mixin disconnectedCallbacks are dead code.
     super.disconnectedCallback?.();
   }
