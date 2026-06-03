@@ -489,8 +489,8 @@ describe('OIDC', () => {
         createSigninRequest: mockCreateSigninRequest,
       }));
 
-      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValue(
-        'http://example.com/projectID',
+      (sdk.httpClient.buildUrl as jest.Mock).mockImplementation((path) =>
+        path ? `http://example.com/${path}` : 'http://example.com',
       );
 
       const oidc = createOidc(sdk, 'projectID', {
@@ -498,6 +498,7 @@ describe('OIDC', () => {
       });
       await oidc.loginWithRedirect({}, true);
 
+      expect(sdk.httpClient.buildUrl).toHaveBeenCalledWith('');
       expect(OidcClient).toHaveBeenCalledWith(
         expect.objectContaining({
           authority: 'http://example.com/v1/apps/projectID',
@@ -523,28 +524,6 @@ describe('OIDC', () => {
       expect(OidcClient).toHaveBeenCalledWith(
         expect.objectContaining({
           extraQueryParams: { resource: 'https://api.example.com' },
-        }),
-      );
-    });
-
-    it('should space-join multiple resources into extraQueryParams', async () => {
-      const mockCreateSigninRequest = jest
-        .fn()
-        .mockResolvedValue({ url: 'mockUrl' });
-      (OidcClient as jest.Mock).mockImplementation(() => ({
-        createSigninRequest: mockCreateSigninRequest,
-      }));
-
-      const oidc = createOidc(sdk, 'projectID', {
-        resource: ['https://api1.example.com', 'https://api2.example.com'],
-      });
-      await oidc.loginWithRedirect({}, true);
-
-      expect(OidcClient).toHaveBeenCalledWith(
-        expect.objectContaining({
-          extraQueryParams: {
-            resource: 'https://api1.example.com https://api2.example.com',
-          },
         }),
       );
     });
@@ -575,8 +554,8 @@ describe('OIDC', () => {
         createSigninRequest: mockCreateSigninRequest,
       }));
 
-      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValue(
-        'http://example.com/projectID',
+      (sdk.httpClient.buildUrl as jest.Mock).mockImplementation((path) =>
+        path ? `http://example.com/${path}` : 'http://example.com',
       );
 
       const oidc = createOidc(sdk, 'projectID', {

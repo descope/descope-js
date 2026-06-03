@@ -14,10 +14,9 @@ export type OidcConfigOptions = {
   clientId?: string;
   // Custom issuer/authority URL. If provided, clientId is required.
   issuer?: string;
-  // OAuth 2.0 Resource Indicators (RFC 8707).
-  // Specifies the resource(s) the access token should be scoped to.
-  // Pass a single URI string or an array of URI strings.
-  resource?: string | string[];
+  // OAuth 2.0 Resource Indicator (RFC 8707).
+  // Specifies the target resource the access token should be scoped to.
+  resource?: string;
   // default is current URL
   redirectUri?: string;
   // default is 'openid email roles descope.custom_claims offline_access'

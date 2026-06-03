@@ -141,10 +141,7 @@ const getOidcClient = async (
     defaultScope = 'openid';
   } else if (oidcConfig?.inboundAppClientId) {
     // Inbound app: auto-construct authority as {baseUrl}/v1/apps/{projectId}
-    const projectAuthority = sdk.httpClient.buildUrl(projectId);
-    const baseAuthority = projectAuthority.endsWith(`/${projectId}`)
-      ? projectAuthority.slice(0, -`/${projectId}`.length)
-      : projectAuthority;
+    const baseAuthority = sdk.httpClient.buildUrl('').replace(/\/$/, '');
     authority = `${baseAuthority}/v1/apps/${projectId}`;
     oidcClientId = oidcConfig.inboundAppClientId;
     stateUserKey = `${oidcClientId}_user`;
@@ -168,10 +165,7 @@ const getOidcClient = async (
 
   const extraQueryParams: Record<string, string> = {};
   if (oidcConfig?.resource) {
-    const resources = Array.isArray(oidcConfig.resource)
-      ? oidcConfig.resource
-      : [oidcConfig.resource];
-    extraQueryParams.resource = resources.join(' ');
+    extraQueryParams.resource = oidcConfig.resource;
   }
 
   const settings: OidcClientSettings = {
