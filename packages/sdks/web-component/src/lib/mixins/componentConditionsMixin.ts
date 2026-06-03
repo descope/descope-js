@@ -204,7 +204,13 @@ export const componentConditionsMixin = createSingletonMixin(
           } component(s) start hidden / disabled / read-only by these rules`,
         );
 
-        // Pause input handling while flow/next is in flight.
+        // When the user clicks submit, DescopeWc fires a /next request. If we
+        // let the debounced evaluator run while that request is in flight, it
+        // could apply stale condition results to a DOM that the next-screen
+        // render is about to replace — causing visible flicker or, worse,
+        // hiding a component the new screen needs visible. Subscribing to the
+        // loading state lets us freeze evaluation until the response lands and
+        // the new screen is mounted (which calls initRealtimeConditions fresh).
         const pauseState = (this as unknown as PausableHost).nextRequestStatus;
         if (pauseState?.subscribe) {
           const handler = ({ isLoading }: { isLoading: boolean }) => {
