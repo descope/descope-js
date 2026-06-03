@@ -91,10 +91,7 @@ export type OIDCOptions = {
   oidcResource?: string;
 };
 
-export type Locale = {
-  locale: string;
-  fallback: string;
-};
+export type { Locale } from '@descope/sdk-helpers';
 
 export type FlowState = {
   flowId: string;

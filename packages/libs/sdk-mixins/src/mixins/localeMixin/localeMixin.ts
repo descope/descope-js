@@ -1,5 +1,4 @@
-import { createSingletonMixin } from '@descope/sdk-helpers';
-import { getUserLocale } from './helpers';
+import { createSingletonMixin, getUserLocale } from '@descope/sdk-helpers';
 
 /**
  * Exposes the widget's locale to mixins that need it (HTML fetching, flow propagation).

@@ -33,10 +33,10 @@ import {
   AutoFocusOptions,
   CustomScreenState,
   Direction,
-  Locale,
   SSOQueryParams,
   StepState,
 } from '../types';
+export { getUserLocale } from '@descope/sdk-helpers';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
@@ -814,25 +814,6 @@ export const leadingDebounce = <T extends (...args: any[]) => void>(
     }, wait);
   } as T;
 };
-
-export function getUserLocale(locale: string): Locale {
-  if (locale) {
-    return { locale: locale.toLowerCase(), fallback: locale.toLowerCase() };
-  }
-  const nl = navigator.language;
-  if (!nl) {
-    return { locale: '', fallback: '' };
-  }
-
-  if (nl.includes('-')) {
-    return {
-      locale: nl.toLowerCase(),
-      fallback: nl.split('-')[0].toLowerCase(),
-    };
-  }
-
-  return { locale: nl.toLowerCase(), fallback: nl.toLowerCase() };
-}
 
 export const clearPreviousExternalInputs = () => {
   document

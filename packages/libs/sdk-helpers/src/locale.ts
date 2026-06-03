@@ -4,13 +4,13 @@ export type Locale = {
 };
 
 /**
- * Resolves the user-facing locale. Mirrors web-component's getUserLocale exactly so widget
- * locale resolution matches the flow runtime byte-for-byte.
+ * Resolves the user-facing locale, shared by the web-component flow runtime and the widget mixins
+ * so both resolve locale identically.
  *
  * Order:
- *  1. Explicit locale argument (lowercased)
+ *  1. Explicit locale argument (lowercased), used as its own fallback
  *  2. navigator.language (lowercased), with the language part as fallback for 'xx-YY' forms
- *  3. Empty string
+ *  3. Empty strings
  */
 export function getUserLocale(locale: string): Locale {
   if (locale) {
