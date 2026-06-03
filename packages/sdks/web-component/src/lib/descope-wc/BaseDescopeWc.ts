@@ -197,10 +197,6 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  get tenantId() {
-    return this.getAttribute('tenant') || undefined;
-  }
-
   get redirectUrl() {
     return this.getAttribute('redirect-url') || undefined;
   }
