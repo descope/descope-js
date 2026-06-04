@@ -15,15 +15,13 @@ module.exports = {
       statements: 93.5,
     },
   },
-  // A set of global variables that need to be available in all test environments
   globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
     BUILD_VERSION: 'one.two.three',
   },
 
-  preset: 'ts-jest',
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+  },
   testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules', 'src'],
 
