@@ -270,6 +270,7 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
     );
     expect(evaluateCondition(r, { 'form.zip': '12345' })).toBe(true);
     expect(evaluateCondition(r, { 'form.zip': '1234' })).toBe(false);
+    expect(evaluateCondition(r, { 'form.zip': '123456' })).toBe(false);
     expect(evaluateCondition(r, { 'form.zip': 'abcde' })).toBe(false);
   });
 

@@ -1,7 +1,5 @@
 // Single source of truth for the action vocabulary. Add a new entry here and
-// the matching `case` to both switches below — the constant is also consumed
-// by `componentConditionsMixin.applyComponentsState` for baseline validation,
-// so a server payload referencing an action outside this list is logged once.
+// the matching `case` to both switches below.
 export const COMPONENT_ACTIONS = ['hide', 'disable', 'read-only'] as const;
 export type ComponentAction = (typeof COMPONENT_ACTIONS)[number];
 
@@ -40,21 +38,23 @@ export function clearAction(el: Element, action: string): void {
   }
 }
 
-// CSS.escape with a defensive fallback for environments that lack it (older
-// JSDOM, very old Safari). Exported so callers that build attribute selectors
-// from runtime strings can use a single sanitizer.
+// Escape only the chars that would break `[id="..."]` selectors:
+// double-quote (would close the quoted attribute) and backslash (would
+// escape the next char). Narrower than the real CSS.escape; just enough
+// for environments that don't expose it (older JSDOM, very old Safari).
+const ATTR_SELECTOR_ESCAPE_PATTERN = /(["\\])/g;
+
+// CSS.escape with the fallback above for environments that lack it.
+// Exported so callers that build attribute selectors from runtime strings
+// can use a single sanitizer.
 export function escapeSelector(value: string): string {
   if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
     return CSS.escape(value);
   }
-  return value.replace(/(["\\])/g, '\\$1');
+  return value.replace(ATTR_SELECTOR_ESCAPE_PATTERN, '\\$1');
 }
 
-// Use querySelectorAll, not querySelector. The baseline `applyComponentsState`
-// in `componentConditionsMixin` iterates all elements with a matching id
-// (templates may emit duplicates, e.g. inside dynamic-selects). If we only
-// operated on the first match, the rest would stay hidden/disabled/read-only
-// forever once the user toggles the controlling input.
+// IDs can repeat (e.g. duplicates inside dynamic-selects), so match all.
 function findComponents(root: ParentNode, id: string): Element[] {
   return Array.from(root.querySelectorAll(`[id="${escapeSelector(id)}"]`));
 }
