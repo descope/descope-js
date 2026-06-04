@@ -218,6 +218,131 @@ describe('componentConditionsMixin', () => {
     expect(chk).toHaveClass('hidden'); // unchanged — runtime trusts baseline.
   });
 
+  it('reconciles baseline against DOM defaults on init (server-baseline was wrong)', () => {
+    // The flow editor renders a default by setting `checked="true"` on the
+    // component itself — the server never sees that and so its baseline
+    // evaluation of `is-false(form.trustThisDevice)` fires incorrectly. On
+    // init the mixin must read the DOM value and clear the bogus hide.
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    host.applyComponentsState(root, { _btn: 'hide' }); // baseline says hide
+    expect(btn).toHaveClass('hidden');
+
+    // Render a checkbox that's checked by default. Plain <input type="checkbox">
+    // mirrors `.checked` the same way descope-checkbox does.
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.trustThisDevice');
+    cb.checked = true;
+    root.appendChild(cb);
+
+    host.initRealtimeConditions(root, {
+      // screenState.form lacks trustThisDevice (server didn't seed it)
+      form: {},
+      componentsState: { _btn: 'hide' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-false',
+                  target: { kind: 'form', form: 'form.trustThisDevice' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Reconcile: DOM says checked=true, is-false fires false, hide cleared.
+    expect(btn).not.toHaveClass('hidden');
+  });
+
+  it('reads the `checked` HTML attribute on <descope-checkbox> at reconcile (property is unhydrated at mount)', () => {
+    // descope-checkbox parses its `checked` HTML attribute into `.checked`
+    // asynchronously, so the reconcile-time read must source from the
+    // attribute. Setting `.checked` as a property here would be a lie
+    // relative to production timing.
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    host.applyComponentsState(root, { _btn: 'hide' });
+
+    // Fake the descope-checkbox shape: tag name, `checked="true"` attribute
+    // (as rendered in the HTML template), `.checked` property left as the
+    // unhydrated false to mirror first-mount state. `'checked' in el` must
+    // still be true so the helper picks the boolean read path.
+    const cb = document.createElement('descope-checkbox');
+    cb.setAttribute('name', 'form.trustThisDevice');
+    cb.setAttribute('checked', 'true');
+    (cb as unknown as { checked: boolean }).checked = false;
+    root.appendChild(cb);
+
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _btn: 'hide' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-false',
+                  target: { kind: 'form', form: 'form.trustThisDevice' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // .checked=true → is-false fires false → baseline hide cleared.
+    expect(btn).not.toHaveClass('hidden');
+  });
+
+  it('reconcile keeps baseline when DOM agrees with the server', () => {
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    host.applyComponentsState(root, { _btn: 'hide' });
+    expect(btn).toHaveClass('hidden');
+
+    // Checkbox unchecked → is-false fires true → baseline hide is correct.
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.trustThisDevice');
+    cb.checked = false;
+    root.appendChild(cb);
+
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _btn: 'hide' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-false',
+                  target: { kind: 'form', form: 'form.trustThisDevice' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(btn).toHaveClass('hidden');
+  });
+
   it('unhides on input when condition stops firing', () => {
     const { host, root } = mountHost();
     const chk = mkComponent(root, '_chk');

@@ -242,3 +242,31 @@ export function collectTouchedComponentIds(
   });
   return out;
 }
+
+/**
+ * Returns every form key (e.g. `form.phone`) referenced by any operand in
+ * any rule. The mixin uses this on mount to know which DOM inputs to read so
+ * it can seed the snapshot from rendered defaults that the server can't see.
+ */
+export function collectReferencedFormKeys(
+  conditions: RealtimeComponentsCondition[] | undefined,
+): Set<string> {
+  const out = new Set<string>();
+  const walkOperand = (operand: RealtimeOperand | undefined) => {
+    if (!operand) return;
+    if (operand.kind === 'form' && operand.form) {
+      out.add(operand.form);
+    } else if (operand.kind === 'list') {
+      (operand.items ?? []).forEach(walkOperand);
+    }
+  };
+  (conditions ?? []).forEach((c) =>
+    (c.rules ?? []).forEach((r) =>
+      (r.atomicConditions ?? []).forEach((a) => {
+        walkOperand(a.target);
+        walkOperand(a.predicate);
+      }),
+    ),
+  );
+  return out;
+}

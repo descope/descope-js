@@ -6,6 +6,7 @@ import {
   REALTIME_CONDITION_EVENTS,
 } from '../helpers/realtime-conditions/config';
 import {
+  collectReferencedFormKeys,
   collectTouchedComponentIds,
   evaluateAll,
   FormSnapshot,
@@ -13,6 +14,7 @@ import {
 import {
   apply,
   COMPONENT_ACTIONS,
+  escapeSelector,
 } from '../helpers/realtime-conditions/applier';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 import type { RealtimeComponentsCondition, ScreenState } from '../types';
@@ -60,6 +62,50 @@ export interface RealtimeRuntime {
 // condition rules reference.
 function toFormKey(name: string): string {
   return name.startsWith('form.') ? name : `form.${name}`;
+}
+
+// Find the DOM element for a form key — try the full key first (descope
+// components), then the bare suffix (plain inputs).
+function findInputForFormKey(
+  root: ParentNode,
+  formKey: string,
+): Element | null {
+  const bare = formKey.startsWith('form.')
+    ? formKey.slice('form.'.length)
+    : formKey;
+  return (
+    root.querySelector(`[name="${escapeSelector(formKey)}"]`) ||
+    root.querySelector(`[name="${escapeSelector(bare)}"]`)
+  );
+}
+
+// Read the current value off a form input.
+//
+// For native <input>: properties are hydrated synchronously, so we read them
+// directly. Checkboxes store state in `.checked`; everything else uses
+// `.value` (native checkbox's `.value` is the string "on" regardless of
+// state, which is why we special-case it).
+//
+// For Descope custom elements (descope-checkbox, descope-switch-toggle,
+// descope-text-field, ...): on first mount the rendered HTML attributes are
+// already parsed but the element's property setters may not have run yet,
+// so reading `.checked`/`.value` returns the class default (e.g. false /
+// undefined). The reliable read at this timing is the HTML attribute itself.
+// Detect "this is a boolean component" via `'checked' in el` — Descope's
+// boolean custom elements expose that property; non-boolean ones don't.
+function readInputValue(el: Element): unknown {
+  if (el instanceof HTMLInputElement) {
+    return el.type === 'checkbox' ? el.checked : el.value;
+  }
+  if ('checked' in el) {
+    return el.getAttribute('checked') === 'true';
+  }
+  if ('value' in el) {
+    return (
+      el.getAttribute('value') ?? (el as unknown as { value: unknown }).value
+    );
+  }
+  return undefined;
 }
 
 function shallowEqualStringMap(
@@ -156,6 +202,18 @@ export const componentConditionsMixin = createSingletonMixin(
           initialSnapshot[`form.${k}`] = v;
         });
 
+        // Overlay DOM values for every form key the rules reference. Component
+        // defaults (e.g. `checked="true"` on a descope-checkbox) live only on
+        // the rendered HTML — they never reach the server's execution context,
+        // so screenState.form often misses them. Reading the DOM here lets the
+        // first eval below see what the user actually sees.
+        collectReferencedFormKeys(conditions).forEach((formKey) => {
+          const el = findInputForFormKey(rootElement, formKey);
+          if (!el) return;
+          const v = readInputValue(el);
+          if (v !== undefined) initialSnapshot[formKey] = v;
+        });
+
         const touchedIds = collectTouchedComponentIds(conditions);
 
         // Seed `applied` from the baseline `componentsState` for any component
@@ -185,10 +243,14 @@ export const componentConditionsMixin = createSingletonMixin(
           root: rootElement,
         };
 
-        // No initial apply needed: the baseline `componentsState` was already
-        // applied to the DOM by `applyComponentsState`, and we've recorded
-        // that state in `applied` above. The applier runs on the next input
-        // event and diffs against `applied`.
+        // Reconcile baseline against the DOM-corrected snapshot. The server
+        // evaluated against an empty execution context (component defaults
+        // don't reach it), so its `componentsState` can disagree with what
+        // the user actually sees. Re-evaluate once and apply the diff.
+        const reconciled = evaluateAll(conditions, initialSnapshot);
+        if (!shallowEqualStringMap(initialApplied, reconciled)) {
+          runtime.applied = apply(rootElement, initialApplied, reconciled);
+        }
 
         runtime.inputHandler = (e: Event) =>
           this.#handleRealtimeInput(e as InputEvent);
