@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.19.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.18.0...sdk-mixins-0.19.0) (2026-06-04)
+
+
+### Features
+
+* Add tenant style sheet ([#1397](https://github.com/descope/descope-js/issues/1397)) ([90ab9dd](https://github.com/descope/descope-js/commit/90ab9dd5f05cd696da8ced616e5e0b081a2d970c))
+
 ## [0.18.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.1...sdk-mixins-0.18.0) (2026-05-28)
 
 ### Dependency Updates
