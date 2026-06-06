@@ -24,6 +24,7 @@ export * from './mixins/formMixin';
 export * from './mixins/initElementMixin';
 export * from './mixins/initLifecycleMixin';
 export * from './mixins/projectIdMixin';
+export * from './mixins/tenantIdMixin';
 export * from './mixins/widgetIdMixin';
 export * from './mixins/widgetConfigMixin';
 export * from './mixins/baseUrlMixin';

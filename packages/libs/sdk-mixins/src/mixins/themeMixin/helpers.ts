@@ -65,3 +65,22 @@ export const loadDevTheme = async () => {
     };
   }
 };
+
+export function deepMergeNonEmpty(
+  base: Record<string, any>,
+  override: Record<string, any>,
+): Record<string, any> {
+  const merged = { ...base };
+  for (const [key, value] of Object.entries(override || {})) {
+    if (value === null || value === undefined) continue;
+    if (typeof value === 'object') {
+      if (Object.keys(value).length === 0) continue;
+      merged[key] = deepMergeNonEmpty(merged[key] || {}, value);
+    } else if (typeof value === 'string') {
+      merged[key] = (merged[key] || '') + value;
+    } else {
+      merged[key] = value;
+    }
+  }
+  return merged;
+}
