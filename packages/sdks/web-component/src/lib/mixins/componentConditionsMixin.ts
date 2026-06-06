@@ -42,8 +42,17 @@ export interface RealtimeRuntime {
   touchedIds: Set<string>;
   // current in-memory snapshot of on-screen form values
   snapshot: FormSnapshot;
-  // last-applied real-time state map (id → action)
+  // last-applied real-time state map (id → action). Tracks the effective
+  // action currently on the DOM for components the realtime layer touches —
+  // server baseline if no realtime CC is firing for that id, realtime's
+  // verdict if one is. Diffed against on each re-evaluation.
   applied: Record<string, string>;
+  // Snapshot of server-applied actions for components the realtime layer
+  // touches. Kept immutable for the screen's lifetime so we can restore the
+  // server's verdict on any touched component when its realtime CC stops
+  // firing. Without this, server-only actions would silently disappear once
+  // a sibling realtime CC fires + stops on the same component.
+  serverBaseline: Record<string, string>;
   // debounce timer
   debounceTimer: ReturnType<typeof setTimeout> | null;
   // whether input events are currently ignored (during submit)
@@ -79,31 +88,27 @@ function findInputForFormKey(
   );
 }
 
-// Read the current value off a form input.
+// Read the current value off a form input. Called after the screen has been
+// mounted AND `updateScreenFromScreenState` has populated .value/.checked from
+// any carried form context, so JS properties are authoritative here — both
+// component defaults (parsed from HTML attributes by the element's own
+// connectedCallback) and cross-screen carried values (written via the .value
+// property after mount) are visible to us.
 //
-// For native <input>: properties are hydrated synchronously, so we read them
-// directly. Checkboxes store state in `.checked`; everything else uses
-// `.value` (native checkbox's `.value` is the string "on" regardless of
-// state, which is why we special-case it).
-//
-// For Descope custom elements (descope-checkbox, descope-switch-toggle,
-// descope-text-field, ...): on first mount the rendered HTML attributes are
-// already parsed but the element's property setters may not have run yet,
-// so reading `.checked`/`.value` returns the class default (e.g. false /
-// undefined). The reliable read at this timing is the HTML attribute itself.
-// Detect "this is a boolean component" via `'checked' in el` — Descope's
-// boolean custom elements expose that property; non-boolean ones don't.
+// `'checked' in el` distinguishes Descope's boolean custom elements
+// (descope-checkbox, descope-switch-toggle) from non-boolean ones — their
+// classes define `checked` as an instance property, others don't. Native
+// <input> is handled separately because for type=checkbox, `.value` is the
+// string "on" regardless of state — only `.checked` reflects the real state.
 function readInputValue(el: Element): unknown {
   if (el instanceof HTMLInputElement) {
     return el.type === 'checkbox' ? el.checked : el.value;
   }
   if ('checked' in el) {
-    return el.getAttribute('checked') === 'true';
+    return (el as unknown as { checked: boolean }).checked;
   }
   if ('value' in el) {
-    return (
-      el.getAttribute('value') ?? (el as unknown as { value: unknown }).value
-    );
+    return (el as unknown as { value: unknown }).value;
   }
   return undefined;
 }
@@ -124,12 +129,35 @@ function emptyRuntime(): RealtimeRuntime {
     touchedIds: new Set(),
     snapshot: {},
     applied: {},
+    serverBaseline: {},
     debounceTimer: null,
     paused: false,
     unsubscribePauseListener: null,
     inputHandler: () => {},
     root: null,
   };
+}
+
+// Merges the realtime layer's per-eval verdict with the server's baseline
+// for components the realtime layer touches. Realtime wins where it fires;
+// server baseline fills in for touched components where realtime doesn't fire.
+// Untouched components (not in touchedIds) are not in the result — those
+// belong purely to the server baseline and applyComponentsState already
+// painted them.
+function effectiveActions(
+  realtimeVerdict: Record<string, string>,
+  serverBaseline: Record<string, string>,
+  touchedIds: Set<string>,
+): Record<string, string> {
+  const out: Record<string, string> = {};
+  touchedIds.forEach((id) => {
+    if (realtimeVerdict[id]) {
+      out[id] = realtimeVerdict[id];
+    } else if (serverBaseline[id]) {
+      out[id] = serverBaseline[id];
+    }
+  });
+  return out;
 }
 
 export const componentConditionsMixin = createSingletonMixin(
@@ -175,8 +203,11 @@ export const componentConditionsMixin = createSingletonMixin(
        * current screen. Idempotent: calling twice on the same screen rebuilds
        * the index from `screenState`.
        *
-       * Reads the initial form snapshot from `screenState.form` rather than
-       * the DOM, to avoid the race with `updateScreenFromScreenState`.
+       * Must be called AFTER `updateScreenFromScreenState` (see the call site
+       * in DescopeWc.ts, inside the post-replaceChildren setTimeout). By that
+       * point each input's `.value` / `.checked` reflects both server-shipped
+       * form context and component-default attributes, so the DOM read below
+       * is authoritative.
        */
       initRealtimeConditions(
         rootElement: HTMLElement,
@@ -205,8 +236,9 @@ export const componentConditionsMixin = createSingletonMixin(
         // Overlay DOM values for every form key the rules reference. Component
         // defaults (e.g. `checked="true"` on a descope-checkbox) live only on
         // the rendered HTML — they never reach the server's execution context,
-        // so screenState.form often misses them. Reading the DOM here lets the
-        // first eval below see what the user actually sees.
+        // so screenState.form often misses them. Reading the DOM here — after
+        // updateScreenFromScreenState has run — lets the first eval below see
+        // what the user actually sees.
         collectReferencedFormKeys(conditions).forEach((formKey) => {
           const el = findInputForFormKey(rootElement, formKey);
           if (!el) return;
@@ -216,26 +248,75 @@ export const componentConditionsMixin = createSingletonMixin(
 
         const touchedIds = collectTouchedComponentIds(conditions);
 
-        // Seed `applied` from the baseline `componentsState` for any component
-        // a condition group targets. This tells the applier "the server
-        // already set this state, and we own it now" — so when the condition
-        // fires for an input change, we know to clear the corresponding class
-        // / attribute. Without this seed, the baseline-applied `.hidden` would
-        // stay forever after the user toggles the controlling input.
+        // serverBaseline is the fallback action the realtime layer restores
+        // when a realtime CC stops firing on a touched component.
+        //
+        // Preferred source: `screenState.serverOnlyComponentsState`, shipped
+        // explicitly by the new BE. It carries the per-component verdict of
+        // SERVER-ONLY CCs only, computed during the same BE pass that
+        // produced `componentsState` (which is the full last-wins-over-all
+        // verdict). We filter to touched ids so the runtime ignores any
+        // entries for components the realtime layer doesn't own.
+        //
+        // Fallback for old backends that don't ship the explicit field:
+        // infer by exclusion — for each touched component, the server's
+        // contribution is `componentsState[id]` UNLESS a realtime CC for
+        // that id has the same action (in which case the realtime CC is
+        // the likely source of the value, and we don't treat the baseline
+        // as restorable). The heuristic approximates the new-BE behavior
+        // and matches what this SDK has done historically; it has one
+        // known gap that new-BE/new-SDK closes — when a server-only CC
+        // and a realtime CC happen to have the same action for the same
+        // id, the heuristic excludes the id and a later "realtime stops
+        // firing" event can drop the action even though the server-only
+        // CC still considers it applied. New BEs prevent the same-action
+        // collision from shipping in the first place (same-action prune
+        // + later-server-only prune), so this gap only matters during the
+        // transient old-BE/new-SDK rollout window.
+        const serverBaseline: Record<string, string> = {};
+        // initialApplied mirrors what applyComponentsState already painted
+        // on the DOM (filtered to touched ids), so the diff against the
+        // first realtime evaluation correctly replaces or clears it.
         const initialApplied: Record<string, string> = {};
+
         Object.entries(screenState?.componentsState ?? {}).forEach(
           ([id, action]) => {
-            if (touchedIds.has(id)) {
-              initialApplied[id] = action;
-            }
+            if (!touchedIds.has(id)) return;
+            initialApplied[id] = action;
           },
         );
+
+        if (screenState?.serverOnlyComponentsState) {
+          Object.entries(screenState.serverOnlyComponentsState).forEach(
+            ([id, action]) => {
+              if (touchedIds.has(id)) {
+                serverBaseline[id] = action;
+              }
+            },
+          );
+        } else {
+          // Legacy heuristic: derive from componentsState by excluding
+          // entries whose action matches a realtime CC's action for the
+          // same id (treats those as realtime-owned).
+          Object.entries(screenState?.componentsState ?? {}).forEach(
+            ([id, action]) => {
+              if (!touchedIds.has(id)) return;
+              const realtimeMatchesServerAction = conditions.some(
+                (c) => c.componentIds?.includes(id) && c.action === action,
+              );
+              if (!realtimeMatchesServerAction) {
+                serverBaseline[id] = action;
+              }
+            },
+          );
+        }
 
         const runtime: RealtimeRuntime = {
           conditions,
           touchedIds,
           snapshot: initialSnapshot,
           applied: initialApplied,
+          serverBaseline,
           debounceTimer: null,
           paused: false,
           unsubscribePauseListener: null,
@@ -247,7 +328,11 @@ export const componentConditionsMixin = createSingletonMixin(
         // evaluated against an empty execution context (component defaults
         // don't reach it), so its `componentsState` can disagree with what
         // the user actually sees. Re-evaluate once and apply the diff.
-        const reconciled = evaluateAll(conditions, initialSnapshot);
+        const reconciled = effectiveActions(
+          evaluateAll(conditions, initialSnapshot),
+          serverBaseline,
+          touchedIds,
+        );
         if (!shallowEqualStringMap(initialApplied, reconciled)) {
           runtime.applied = apply(rootElement, initialApplied, reconciled);
         }
@@ -301,16 +386,20 @@ export const componentConditionsMixin = createSingletonMixin(
         const runtime = this.#rtRuntime;
         if (!runtime.root || runtime.paused) return;
 
-        const target = e.target as HTMLInputElement | null;
+        const target = e.target as Element | null;
         if (!target) return;
         if (target.hasAttribute?.(DESCOPE_ATTRIBUTE_EXCLUDE_FIELD)) return;
 
         const name = target.getAttribute?.('name');
         if (!name) return;
 
-        // Update snapshot only — actual eval is debounced.
+        // Update snapshot only — actual eval is debounced. Use readInputValue
+        // so checkboxes and Descope boolean components read the same way here
+        // as in the mount-time overlay (otherwise `target.value` would be the
+        // literal string "on" for native checkboxes and silently break is-true
+        // rules on the first user toggle).
         const key = toFormKey(name);
-        runtime.snapshot[key] = target.value;
+        runtime.snapshot[key] = readInputValue(target);
 
         if (runtime.debounceTimer) {
           clearTimeout(runtime.debounceTimer);
@@ -327,7 +416,11 @@ export const componentConditionsMixin = createSingletonMixin(
 
         let next: Record<string, string>;
         try {
-          next = evaluateAll(runtime.conditions, runtime.snapshot);
+          next = effectiveActions(
+            evaluateAll(runtime.conditions, runtime.snapshot),
+            runtime.serverBaseline,
+            runtime.touchedIds,
+          );
         } catch (e) {
           this.logger.error(
             `${LOG_PREFIX} failed to evaluate real-time rules — keeping the previous state`,

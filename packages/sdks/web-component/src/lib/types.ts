@@ -126,8 +126,27 @@ export interface ScreenState {
   linkId?: unknown;
   sentTo?: unknown;
   clientScripts?: ClientScript[];
-  // map of component IDs to their state
+  // map of component IDs to their state — the FULL last-wins verdict over
+  // all CCs (server-only + client-eligible) the BE evaluated at screen-init.
+  // Used by `applyComponentsState` for the first DOM paint.
   componentsState?: Record<string, string>;
+  // Subset of `componentsState` contributed by SERVER-ONLY CCs — those the
+  // client cannot re-evaluate locally (operators on the server-only
+  // allow-list like `is-email`, or rules referencing context the client
+  // doesn't have). Parallels `componentsState` in structure but excludes
+  // contributions from client-eligible CCs that also ship in
+  // `realtimeComponentsConditions`.
+  //
+  // The realtime layer uses this as the fallback action to restore when a
+  // realtime CC stops firing on a touched component — without it the SDK
+  // can't tell whether the action in `componentsState` came from a
+  // server-only CC (must persist) or from a realtime CC also re-shipped
+  // (must clear).
+  //
+  // Absent on old backends; new SDKs fall back to a legacy heuristic that
+  // infers the same information from `componentsState`, so the old-BE /
+  // new-SDK combination still works correctly.
+  serverOnlyComponentsState?: Record<string, string>;
   // Client-evaluable visibility conditions, populated only by new backends.
   // Absent on old backends; new SDKs ignore when absent.
   realtimeComponentsConditions?: RealtimeComponentsCondition[];

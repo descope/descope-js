@@ -262,23 +262,27 @@ describe('componentConditionsMixin', () => {
     expect(btn).not.toHaveClass('hidden');
   });
 
-  it('reads the `checked` HTML attribute on <descope-checkbox> at reconcile (property is unhydrated at mount)', () => {
-    // descope-checkbox parses its `checked` HTML attribute into `.checked`
-    // asynchronously, so the reconcile-time read must source from the
-    // attribute. Setting `.checked` as a property here would be a lie
-    // relative to production timing.
+  it('reads the .checked property on <descope-checkbox> for boolean defaults', () => {
+    // descope-checkbox parses its `checked="true"` HTML attribute into the
+    // `.checked` property via its connectedCallback. DescopeWc schedules
+    // initRealtimeConditions inside the same post-replaceChildren setTimeout
+    // as updateScreenFromScreenState, so by the time the mixin reads form
+    // values the property is already hydrated — both for baked-in attribute
+    // defaults (this case) and for cross-screen carried values that
+    // updateScreenFromScreenState assigns directly to `.value` / `.checked`.
+    // Reading the property here is authoritative.
     const { host, root } = mountHost();
     const btn = mkComponent(root, '_btn');
     host.applyComponentsState(root, { _btn: 'hide' });
 
-    // Fake the descope-checkbox shape: tag name, `checked="true"` attribute
-    // (as rendered in the HTML template), `.checked` property left as the
-    // unhydrated false to mirror first-mount state. `'checked' in el` must
-    // still be true so the helper picks the boolean read path.
+    // Fake the descope-checkbox shape after connectedCallback has run: the
+    // `checked="true"` attribute is parsed and `.checked` reflects it. Tests
+    // depend on this hydration being visible to the realtime read, so the
+    // explicit `.checked = true` mirrors the real post-init state.
     const cb = document.createElement('descope-checkbox');
     cb.setAttribute('name', 'form.trustThisDevice');
     cb.setAttribute('checked', 'true');
-    (cb as unknown as { checked: boolean }).checked = false;
+    (cb as unknown as { checked: boolean }).checked = true;
     root.appendChild(cb);
 
     host.initRealtimeConditions(root, {
@@ -304,6 +308,54 @@ describe('componentConditionsMixin', () => {
 
     // .checked=true → is-false fires false → baseline hide cleared.
     expect(btn).not.toHaveClass('hidden');
+  });
+
+  it('reads the .value property on <descope-text-field> for cross-screen carried values', () => {
+    // Regression: a `form.text` value carried over from a prior screen lives
+    // only on the input's `.value` property — it isn't baked into the static
+    // screen template as a `value` HTML attribute. DescopeWc populates it via
+    // updateScreenFromScreenState after replaceChildren; initRealtimeConditions
+    // is scheduled to run right after, in the same setTimeout, so reading
+    // `.value` here sees the carried value. Without that ordering, a
+    // `form.text empty → hide` condition fires incorrectly on first paint
+    // and stays applied until the user types.
+    const { host, root } = mountHost();
+    const endBtn = mkComponent(root, '_end');
+
+    // Fake the descope-text-field shape after updateScreenFromScreenState has
+    // run: tag name, name attribute, no HTML `value` attribute (BE doesn't
+    // bake dynamic values into the static template), `.value` property
+    // populated with the carried value.
+    const tf = document.createElement('descope-text-field');
+    tf.setAttribute('name', 'form.text');
+    (tf as unknown as { value: string }).value = 'carried-from-prev-screen';
+    root.appendChild(tf);
+
+    host.initRealtimeConditions(root, {
+      // screenState.form lacks form.text — simulate the worst case where
+      // the realtime layer is the only thing that could surface the carried
+      // value (it must do so via the DOM property read).
+      form: {},
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_end'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'empty',
+                  target: { kind: 'form', form: 'form.text' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // .value="carried-from-prev-screen" → empty fires false → hide not applied.
+    expect(endBtn).not.toHaveClass('hidden');
   });
 
   it('reconcile keeps baseline when DOM agrees with the server', () => {
@@ -701,6 +753,278 @@ describe('componentConditionsMixin', () => {
     expect(ownedByMixin).not.toHaveClass('hidden');
     // Server owns _locked → mixin must not touch it.
     expect(lockedByServer).toHaveClass('hidden');
+  });
+
+  // When the server applies one action via componentsState and a sibling
+  // realtime CC fires with a DIFFERENT action on the same component, only
+  // the realtime CC's action wins on the DOM. No stacking — one action per
+  // component, last-wins, matching the BE evaluator.
+  it('realtime CC replaces a different-action server baseline (no stacking)', () => {
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    // Server applied `disable` baseline (e.g. from a server-only CC).
+    host.applyComponentsState(root, { _btn: 'disable' });
+    expect(btn).toHaveAttribute('disabled', 'true');
+
+    // Boolean input that drives the realtime rule, default checked.
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.toggle');
+    cb.checked = true;
+    root.appendChild(cb);
+
+    host.initRealtimeConditions(root, {
+      form: {},
+      // componentsState carries `disable` from another CC; the realtime CC
+      // below applies `hide` (different action) when its rule fires.
+      componentsState: { _btn: 'disable' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-true',
+                  target: { kind: 'form', form: 'form.toggle' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Realtime fires (is-true(true)) → hide replaces disable. Server's
+    // baseline action is cleared from the DOM; only the realtime action
+    // remains.
+    expect(btn).toHaveClass('hidden');
+    expect(btn).not.toHaveAttribute('disabled');
+  });
+
+  // Sequel: when the realtime rule stops firing, the realtime layer yields
+  // control back to the server baseline — so the server's original action is
+  // RESTORED on the DOM. Still one action per component, but which action it
+  // is depends on whether the realtime layer is currently firing.
+  it('restores the server baseline when the realtime rule stops firing', () => {
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    host.applyComponentsState(root, { _btn: 'disable' });
+
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.toggle');
+    cb.checked = true;
+    root.appendChild(cb);
+
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _btn: 'disable' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-true',
+                  target: { kind: 'form', form: 'form.toggle' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // While realtime fires, its `hide` replaces the server's `disable`.
+    expect(btn).toHaveClass('hidden');
+    expect(btn).not.toHaveAttribute('disabled');
+
+    // Flip the controlling input — rule stops firing.
+    cb.checked = false;
+    cb.dispatchEvent(new Event('input', { bubbles: true }));
+    flushDebounce();
+
+    // Realtime layer yields — server's baseline `disable` comes back.
+    expect(btn).not.toHaveClass('hidden');
+    expect(btn).toHaveAttribute('disabled', 'true');
+  });
+
+  // When the BE ships `serverOnlyComponentsState` explicitly, the SDK uses
+  // it directly and ignores the "same-action exclusion" heuristic — the BE
+  // knows precisely what server-only CCs contributed, no inference needed.
+  it('uses screenState.serverOnlyComponentsState directly when shipped by the BE', () => {
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    host.applyComponentsState(root, { _btn: 'hide' });
+
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.toggle');
+    cb.checked = true;
+    root.appendChild(cb);
+
+    // Wire-level shape: componentsState carries the final last-wins verdict
+    // (`hide` from a realtime CC); serverOnlyComponentsState carries the
+    // EARLIER server-only CC's verdict (`disable`). Under the legacy
+    // heuristic the SDK would have excluded `_btn` from its inferred
+    // baseline (because the matching realtime CC's action equals
+    // componentsState[_btn]) — which would strand the server-only `disable`
+    // when the realtime CC stops firing. The shipped field tells the SDK
+    // exactly what to restore.
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _btn: 'hide' },
+      serverOnlyComponentsState: { _btn: 'disable' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-true',
+                  target: { kind: 'form', form: 'form.toggle' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Realtime fires (toggle is true) → `hide` is already what the DOM
+    // shows from applyComponentsState, no change needed.
+    expect(btn).toHaveClass('hidden');
+    expect(btn).not.toHaveAttribute('disabled');
+
+    // Toggle off → realtime stops. Server baseline (shipped explicitly)
+    // says `disable` — that's what should appear on the DOM.
+    cb.checked = false;
+    cb.dispatchEvent(new Event('input', { bubbles: true }));
+    flushDebounce();
+
+    expect(btn).not.toHaveClass('hidden');
+    expect(btn).toHaveAttribute('disabled', 'true');
+  });
+
+  // Old-BE / new-SDK compatibility: when `serverOnlyComponentsState` is
+  // absent, the SDK falls back to the legacy heuristic (infer baseline from
+  // componentsState, excluding matching realtime actions). Behavior must
+  // match the prior session's pinned tests on the cross-layer scenarios.
+  it('falls back to legacy heuristic when screenState.serverOnlyComponentsState is absent', () => {
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    host.applyComponentsState(root, { _btn: 'disable' });
+
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.toggle');
+    cb.checked = true;
+    root.appendChild(cb);
+
+    // No `serverOnlyComponentsState` on the wire — old BE. Realtime CC's
+    // action differs from componentsState, so the legacy heuristic
+    // includes `_btn: 'disable'` in the inferred baseline.
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _btn: 'disable' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-true',
+                  target: { kind: 'form', form: 'form.toggle' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Realtime fires → replaces disable with hide.
+    expect(btn).toHaveClass('hidden');
+    expect(btn).not.toHaveAttribute('disabled');
+
+    // Realtime stops → fallback restores baseline `disable`.
+    cb.checked = false;
+    cb.dispatchEvent(new Event('input', { bubbles: true }));
+    flushDebounce();
+
+    expect(btn).not.toHaveClass('hidden');
+    expect(btn).toHaveAttribute('disabled', 'true');
+  });
+
+  // The wire-shipped serverOnlyComponentsState can contain entries for
+  // components the realtime layer doesn't touch (e.g. a server-only CC that
+  // hides a footer link unrelated to any realtime rule). The runtime must
+  // only carry entries for `touchedIds` — otherwise the realtime layer
+  // could accidentally clear or interact with components it doesn't own.
+  it('filters shipped serverOnlyComponentsState to touched components only', () => {
+    const { host, root } = mountHost();
+    const btn = mkComponent(root, '_btn');
+    const unrelated = mkComponent(root, '_unrelated');
+    host.applyComponentsState(root, { _btn: 'disable', _unrelated: 'hide' });
+    expect(unrelated).toHaveClass('hidden');
+
+    const cb = document.createElement('input');
+    cb.setAttribute('type', 'checkbox');
+    cb.setAttribute('name', 'form.toggle');
+    cb.checked = true;
+    root.appendChild(cb);
+
+    // serverOnlyComponentsState lists both `_btn` (touched by the realtime
+    // CC below) AND `_unrelated` (NOT touched — managed purely by a
+    // server-only CC). The realtime layer should ignore the `_unrelated`
+    // entry: the component stays painted from applyComponentsState and the
+    // runtime never sees it in any of its bookkeeping.
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _btn: 'disable', _unrelated: 'hide' },
+      serverOnlyComponentsState: { _btn: 'disable', _unrelated: 'hide' },
+      realtimeComponentsConditions: [
+        {
+          componentIds: ['_btn'],
+          action: 'hide',
+          rules: [
+            {
+              atomicConditions: [
+                {
+                  operator: 'is-true',
+                  target: { kind: 'form', form: 'form.toggle' },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Realtime fires → `_btn` becomes hidden. `_unrelated` stays exactly as
+    // applyComponentsState left it — no realtime interaction.
+    expect(btn).toHaveClass('hidden');
+    expect(unrelated).toHaveClass('hidden');
+
+    // Flip the toggle. The realtime CC stops firing → `_btn` falls back to
+    // its server-only `disable`. `_unrelated` is still untouched throughout.
+    cb.checked = false;
+    cb.dispatchEvent(new Event('input', { bubbles: true }));
+    flushDebounce();
+
+    expect(btn).not.toHaveClass('hidden');
+    expect(btn).toHaveAttribute('disabled', 'true');
+    // The realtime layer must never have removed the class painted by
+    // applyComponentsState on a component it doesn't touch.
+    expect(unrelated).toHaveClass('hidden');
   });
 
   it('ignores inputs that have the exclude-field attribute', () => {

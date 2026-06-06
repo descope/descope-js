@@ -368,7 +368,7 @@ describe('rule combination (AND / OR)', () => {
 });
 
 describe('evaluateAll across condition groups', () => {
-  it('returns first-wins action map per component', () => {
+  it('returns one action per component when groups target distinct components', () => {
     const conditions: RealtimeComponentsCondition[] = [
       {
         id: 'cc1',
@@ -400,6 +400,44 @@ describe('evaluateAll across condition groups', () => {
     ];
     const out = evaluateAll(conditions, { 'form.x': '', 'form.y': 'val' });
     expect(out).toEqual({ _a: 'hide', _b: 'disable' });
+  });
+
+  // Mirrors the BE behavior: when two CCs target the same component with
+  // different actions and both fire, the LAST-declared CC's action wins.
+  // BE assigns `componentsState[id] = action` unconditionally, so the
+  // SDK matches that — neither side stacks actions, neither side keeps
+  // the first.
+  it('last firing CC wins when two target the same component with different actions', () => {
+    const conditions: RealtimeComponentsCondition[] = [
+      {
+        id: 'cc1',
+        componentIds: ['_btn'],
+        action: 'hide',
+        rules: [
+          {
+            atomicConditions: [
+              { operator: 'empty', target: { kind: 'form', form: 'form.x' } },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'cc2',
+        componentIds: ['_btn'],
+        action: 'disable',
+        rules: [
+          {
+            atomicConditions: [
+              { operator: 'empty', target: { kind: 'form', form: 'form.x' } },
+            ],
+          },
+        ],
+      },
+    ];
+    // Both fire because form.x is empty in the snapshot.
+    expect(evaluateAll(conditions, { 'form.x': '' })).toEqual({
+      _btn: 'disable',
+    });
   });
 
   it('omits components whose condition groups do not fire', () => {

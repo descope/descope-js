@@ -206,12 +206,14 @@ export function evaluateCondition(
 
 /**
  * Evaluates all condition groups and returns, for each targeted component, the
- * action of the first group whose rules fire. Components where no group fires
- * are absent from the result.
+ * action of the LAST firing group. Components where no group fires are absent
+ * from the result.
  *
- * "First match wins" only matters when two groups target the same component
- * with different actions — uncommon, but deterministic: we iterate in
- * declaration order and the first firing group's action sticks for that id.
+ * "Last match wins" mirrors the BE evaluator: when two groups target the same
+ * component with different actions, the BE assigns
+ * `componentsState[id] = cc.Then.Action` unconditionally in declaration order,
+ * so a later CC's action overwrites an earlier one. The SDK matches this so
+ * the two layers can't disagree on which action a component ends up with.
  */
 export function evaluateAll(
   conditions: RealtimeComponentsCondition[] | undefined,
@@ -221,9 +223,7 @@ export function evaluateAll(
   (conditions ?? []).forEach((c) => {
     if (!evaluateCondition(c, snapshot)) return;
     (c.componentIds ?? []).forEach((id) => {
-      if (!(id in result)) {
-        result[id] = c.action;
-      }
+      result[id] = c.action;
     });
   });
   return result;

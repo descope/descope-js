@@ -78,6 +78,11 @@ describe('web-component real-time conditions integration', () => {
     expect(phone).toBeTruthy();
 
     // User types into phone → condition stops firing → _chk becomes visible.
+    // Advance timers once to let DescopeWc's post-render setTimeout — which
+    // wraps initRealtimeConditions so it runs AFTER updateScreenFromScreenState
+    // populates carried .value/.checked properties — finish. Without this,
+    // the realtime listener isn't attached yet when we dispatch input below.
+    jest.advanceTimersByTime(0);
     phone.value = '+1';
     phone.dispatchEvent(new Event('input', { bubbles: true }));
     jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);
@@ -142,6 +147,10 @@ describe('web-component real-time conditions integration', () => {
     const agree = wc.shadowRoot!.querySelector(
       '[name="agree"]',
     ) as HTMLInputElement;
+    // Let DescopeWc's post-render setTimeout fire so initRealtimeConditions
+    // attaches its listener before we dispatch (init is wrapped in setTimeout
+    // so it runs after updateScreenFromScreenState populates carried values).
+    jest.advanceTimersByTime(0);
     agree.value = 'true';
     agree.dispatchEvent(new Event('input', { bubbles: true }));
     jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);
@@ -205,6 +214,10 @@ describe('web-component real-time conditions integration', () => {
     const expected = wc.shadowRoot!.querySelector(
       '[name="expected"]',
     ) as HTMLInputElement;
+
+    // Let DescopeWc's post-render setTimeout fire so initRealtimeConditions
+    // attaches its listener before we dispatch.
+    jest.advanceTimersByTime(0);
 
     // Make text match the expected → rule fires → hide.
     text.value = 'go';
@@ -312,6 +325,10 @@ describe('web-component real-time conditions integration', () => {
     // The old screen-1 elements should be gone from the shadow DOM.
     expect(wc.shadowRoot.querySelector('[id="_btn1"]')).toBeNull();
     expect(wc.shadowRoot.querySelector('[name="s1"]')).toBeNull();
+
+    // Let DescopeWc's post-render setTimeout fire so initRealtimeConditions
+    // attaches its listener on the new screen-2 root before we dispatch.
+    jest.advanceTimersByTime(0);
 
     // Driving form.s2 should now work via the freshly-initialized runtime.
     const s2 = wc.shadowRoot.querySelector('[name="s2"]') as HTMLInputElement;

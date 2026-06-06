@@ -1745,6 +1745,12 @@ class DescopeWc extends BaseDescopeWc {
         // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(rootElement, screenState);
 
+        // Runs after updateScreenFromScreenState so the realtime layer reads the
+        // populated .value / .checked properties rather than the unpopulated DOM
+        // at mount — otherwise on screen N a form key carried over from screen
+        // N-1 (e.g. `form.text`) reads as empty and conditions evaluate wrong.
+        this.initRealtimeConditions(rootElement, screenState);
+
         this.#dispatchPageEvents({
           isFirstScreen,
           isCustomScreen: false,
@@ -1757,8 +1763,6 @@ class DescopeWc extends BaseDescopeWc {
       });
 
       this.#hydrate(next, screenId);
-
-      this.initRealtimeConditions(rootElement, screenState);
 
       const loader = rootElement.querySelector(
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
