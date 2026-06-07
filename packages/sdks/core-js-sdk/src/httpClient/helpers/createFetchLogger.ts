@@ -102,9 +102,10 @@ const buildResponseLog = async (resp: Response & { retries?: number }) => {
     .build();
 };
 
-const fetchWrapper =
-  (fetch: Fetch) =>
-  async (...args: Parameters<Fetch>) => {
+const fetchWrapper = (fetch: Fetch) =>
+  // Named function rather than an `async (...rest) =>` arrow: Metro/Hermes
+  // (RN 0.85+) mis-compiles that construct when bundling — facebook/metro#1725.
+  async function fetchWithRetries(...args: Parameters<Fetch>) {
     let resp: Response & { retries?: number } = await fetch(...args);
 
     let retries = 0;
@@ -147,7 +148,8 @@ const createFetchLogger = (logger: Logger, receivedFetch?: Fetch) => {
     );
 
   if (!logger) return fetchWrapper(baseFetch);
-  return async (...args: Parameters<Fetch>) => {
+  // Named function rather than an `async (...rest) =>` arrow — see fetchWrapper above.
+  return async function loggingFetch(...args: Parameters<Fetch>) {
     if (!baseFetch)
       throw Error(
         'Cannot send http request, fetch is not defined, if you are running in a test, make sure fetch is defined globally',
