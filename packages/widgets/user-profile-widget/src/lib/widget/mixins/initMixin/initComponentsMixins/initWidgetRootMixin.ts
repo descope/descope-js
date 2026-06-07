@@ -11,6 +11,7 @@ import {
   loggerMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
+import { nativeBridgeMixin } from '../../nativeBridgeMixin';
 
 const WIDGET_PAGES_BASE_DIR = 'user-profile-widget';
 
@@ -23,6 +24,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       initElementMixin,
       createFetchWidgetPagesMixin(WIDGET_PAGES_BASE_DIR),
       stateManagementMixin,
+      nativeBridgeMixin,
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
@@ -39,9 +41,32 @@ export const initWidgetRootMixin = createSingletonMixin(
 
       async init() {
         await super.init?.();
-        await this.actions.getMe();
-        await this.#initWidgetRoot();
-        await this.onWidgetRootReady();
+        // When running inside a native mobile host, we defer the init to allow native SDK
+        // to properly initialize and inject the session. When done, native calls
+        // `widget.lazyInit()`. Same pattern is used inside descope-wc.
+        await this.waitForNativeBridgeIfNeeded?.();
+        try {
+          await this.actions.getMe();
+          await this.#initWidgetRoot();
+          await this.onWidgetRootReady();
+        } catch (err: unknown) {
+          // Surface fatal init errors via the standard `error` CustomEvent.
+          // Host pages and the native bridge both listen on the widget element.
+          const code = (err as { code?: string })?.code;
+          const message =
+            (err as { message?: string })?.message ||
+            (typeof err === 'string' ? err : 'Widget failed to initialize');
+          this.dispatchEvent(
+            new CustomEvent('error', {
+              detail: {
+                code,
+                description: 'Widget failed to initialize',
+                message,
+              },
+            }),
+          );
+          throw err;
+        }
         this.dispatchEvent(new CustomEvent('ready'));
       }
     },

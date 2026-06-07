@@ -139,8 +139,15 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   // Native bridge version native / web syncing - change this when
-  // a major change happens that requires some form of compatibility
-  bridgeVersion = 2;
+  // a major change happens that requires some form of compatibility.
+  // v3: opt-in registration with multi-component native bridges (Mobile UPW).
+  static readonly bridgeVersion = 3; // widget bridges read via the constructor before any wc exists
+
+  bridgeVersion = DescopeWc.bridgeVersion; // flow bridges read this off a live wc instance
+
+  // Handle returned from `descopeBridge.register(this)` when running inside a
+  // multi-component native bridge; used to unregister on disconnect.
+  #descopeBridgeHandle?: string;
 
   // A collection of callbacks that are maintained as part of the web-component state
   // when it's connected to a native bridge.
@@ -409,6 +416,8 @@ class DescopeWc extends BaseDescopeWc {
     }
     // eslint-disable-next-line no-underscore-dangle
     (this as any).lazyInit = this._init;
+    // Opt-in registration with multi-component native bridges (Mobile UPW).
+    this.#descopeBridgeHandle = (window as any).descopeBridge.register?.(this);
     return undefined;
   }
 
@@ -479,6 +488,12 @@ class DescopeWc extends BaseDescopeWc {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+
+    // Drop our handle from the native bridge (mirror of the init-time register).
+    if (this.#descopeBridgeHandle) {
+      (window as any).descopeBridge?.unregister?.(this.#descopeBridgeHandle);
+      this.#descopeBridgeHandle = undefined;
+    }
 
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();

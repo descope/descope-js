@@ -1,6 +1,7 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
+import { nativeBridgeMixin } from '../nativeBridgeMixin';
 import { initAvatarMixin } from './initComponentsMixins/initAvatarMixin';
 import { initEmailUserAttrMixin } from './initComponentsMixins/initEmailUserAttrMixin';
 import { initLogoutMixin } from './initComponentsMixins/initLogoutMixin';
@@ -23,6 +24,7 @@ export const initMixin = createSingletonMixin(
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
+      nativeBridgeMixin, // Sets up the JS<->native bridge when running inside a Descope mobile SDK
       flowRedirectUrlMixin, // This mixin must be before all other mixins that loads flows
       initUserCustomAttributesMixin,
       initEmailUserAttrMixin,
