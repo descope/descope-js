@@ -171,7 +171,7 @@ describe('componentConditionsMixin', () => {
     });
   });
 
-  it('no-ops when no realtimeComponentsConditions present (old backend)', () => {
+  it('no-ops when no realtimeComponentsConditions present', () => {
     const { host, root } = mountHost();
     const chk = mkComponent(root, '_chk');
     chk.classList.add('hidden'); // simulate baseline-applied state
@@ -810,7 +810,7 @@ describe('componentConditionsMixin', () => {
   it('restores the server baseline when the realtime rule stops firing', () => {
     const { host, root } = mountHost();
     const btn = mkComponent(root, '_btn');
-    host.applyComponentsState(root, { _btn: 'disable' });
+    host.applyComponentsState(root, { _btn: 'hide' });
 
     const cb = document.createElement('input');
     cb.setAttribute('type', 'checkbox');
@@ -820,7 +820,8 @@ describe('componentConditionsMixin', () => {
 
     host.initRealtimeConditions(root, {
       form: {},
-      componentsState: { _btn: 'disable' },
+      componentsState: { _btn: 'hide' },
+      serverOnlyComponentsState: { _btn: 'disable' },
       realtimeComponentsConditions: [
         {
           componentIds: ['_btn'],
@@ -853,10 +854,10 @@ describe('componentConditionsMixin', () => {
     expect(btn).toHaveAttribute('disabled', 'true');
   });
 
-  // When the BE ships `serverOnlyComponentsState` explicitly, the SDK uses
-  // it directly and ignores the "same-action exclusion" heuristic — the BE
-  // knows precisely what server-only CCs contributed, no inference needed.
-  it('uses screenState.serverOnlyComponentsState directly when shipped by the BE', () => {
+  // The SDK uses `serverOnlyComponentsState` directly — it lists exactly
+  // which actions came from server-only rules, so the SDK knows what to
+  // restore when a real-time rule stops matching.
+  it('uses screenState.serverOnlyComponentsState directly', () => {
     const { host, root } = mountHost();
     const btn = mkComponent(root, '_btn');
     host.applyComponentsState(root, { _btn: 'hide' });
@@ -867,14 +868,11 @@ describe('componentConditionsMixin', () => {
     cb.checked = true;
     root.appendChild(cb);
 
-    // Wire-level shape: componentsState carries the final last-wins verdict
-    // (`hide` from a realtime CC); serverOnlyComponentsState carries the
-    // EARLIER server-only CC's verdict (`disable`). Under the legacy
-    // heuristic the SDK would have excluded `_btn` from its inferred
-    // baseline (because the matching realtime CC's action equals
-    // componentsState[_btn]) — which would strand the server-only `disable`
-    // when the realtime CC stops firing. The shipped field tells the SDK
-    // exactly what to restore.
+    // Wire-level shape: componentsState carries the final last-wins action
+    // (`hide` from a real-time rule); serverOnlyComponentsState carries the
+    // earlier server-only rule's action (`disable`). The SDK uses the
+    // shipped field directly to know what to restore when the real-time
+    // rule stops matching.
     host.initRealtimeConditions(root, {
       form: {},
       componentsState: { _btn: 'hide' },
@@ -904,58 +902,6 @@ describe('componentConditionsMixin', () => {
 
     // Toggle off → realtime stops. Server baseline (shipped explicitly)
     // says `disable` — that's what should appear on the DOM.
-    cb.checked = false;
-    cb.dispatchEvent(new Event('input', { bubbles: true }));
-    flushDebounce();
-
-    expect(btn).not.toHaveClass('hidden');
-    expect(btn).toHaveAttribute('disabled', 'true');
-  });
-
-  // Old-BE / new-SDK compatibility: when `serverOnlyComponentsState` is
-  // absent, the SDK falls back to the legacy heuristic (infer baseline from
-  // componentsState, excluding matching realtime actions). Behavior must
-  // match the prior session's pinned tests on the cross-layer scenarios.
-  it('falls back to legacy heuristic when screenState.serverOnlyComponentsState is absent', () => {
-    const { host, root } = mountHost();
-    const btn = mkComponent(root, '_btn');
-    host.applyComponentsState(root, { _btn: 'disable' });
-
-    const cb = document.createElement('input');
-    cb.setAttribute('type', 'checkbox');
-    cb.setAttribute('name', 'form.toggle');
-    cb.checked = true;
-    root.appendChild(cb);
-
-    // No `serverOnlyComponentsState` on the wire — old BE. Realtime CC's
-    // action differs from componentsState, so the legacy heuristic
-    // includes `_btn: 'disable'` in the inferred baseline.
-    host.initRealtimeConditions(root, {
-      form: {},
-      componentsState: { _btn: 'disable' },
-      realtimeComponentsConditions: [
-        {
-          componentIds: ['_btn'],
-          action: 'hide',
-          rules: [
-            {
-              atomicConditions: [
-                {
-                  operator: 'is-true',
-                  target: { kind: 'form', form: 'form.toggle' },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
-
-    // Realtime fires → replaces disable with hide.
-    expect(btn).toHaveClass('hidden');
-    expect(btn).not.toHaveAttribute('disabled');
-
-    // Realtime stops → fallback restores baseline `disable`.
     cb.checked = false;
     cb.dispatchEvent(new Event('input', { bubbles: true }));
     flushDebounce();
