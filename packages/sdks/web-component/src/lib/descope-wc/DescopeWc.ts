@@ -1010,6 +1010,8 @@ class DescopeWc extends BaseDescopeWc {
 
       let response: string;
       let failure: string;
+      let failureReason: string;
+      let failureMessage: string;
 
       try {
         response =
@@ -1026,6 +1028,8 @@ class DescopeWc extends BaseDescopeWc {
           this.loggerWrapper.error(e.message);
         }
         failure = e.name;
+        failureReason = e.reason;
+        failureMessage = e.message;
       }
       // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
@@ -1038,6 +1042,8 @@ class DescopeWc extends BaseDescopeWc {
           transactionId: webauthnTransactionId,
           response,
           failure,
+          failureReason,
+          failureMessage,
         },
       );
       this.#handleSdkResponse(sdkResp);

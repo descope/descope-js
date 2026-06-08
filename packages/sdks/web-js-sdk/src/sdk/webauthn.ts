@@ -132,18 +132,26 @@ const createWebAuthn = (sdk: CoreSdk) => ({
 
 async function create(options: string): Promise<string> {
   const createOptions = decodeCreateOptions(options);
-  const createResponse = (await navigator.credentials.create(
-    createOptions,
-  )) as AttestationPublicKeyCredential;
-  return encodeCreateResponse(createResponse);
+  try {
+    const createResponse = (await navigator.credentials.create(
+      createOptions,
+    )) as AttestationPublicKeyCredential;
+    return encodeCreateResponse(createResponse);
+  } catch (error) {
+    throw await annotateWebauthnError(error, createOptions, true);
+  }
 }
 
 async function get(options: string): Promise<string> {
   const getOptions = decodeGetOptions(options);
-  const getResponse = (await navigator.credentials.get(
-    getOptions,
-  )) as AssertionPublicKeyCredential;
-  return encodeGetResponse(getResponse);
+  try {
+    const getResponse = (await navigator.credentials.get(
+      getOptions,
+    )) as AssertionPublicKeyCredential;
+    return encodeGetResponse(getResponse);
+  } catch (error) {
+    throw await annotateWebauthnError(error, getOptions, false);
+  }
 }
 
 /**
@@ -160,10 +168,78 @@ async function conditional(
   const getOptions = decodeGetOptions(options);
   getOptions.signal = abort.signal;
   getOptions.mediation = 'conditional' as any;
-  const getResponse = (await navigator.credentials.get(
-    getOptions,
-  )) as AssertionPublicKeyCredential;
-  return encodeGetResponse(getResponse);
+  try {
+    const getResponse = (await navigator.credentials.get(
+      getOptions,
+    )) as AssertionPublicKeyCredential;
+    return encodeGetResponse(getResponse);
+  } catch (error) {
+    throw await annotateWebauthnError(error, getOptions, false);
+  }
+}
+
+// Improved error metadata
+
+async function identifyWebauthnError(
+  error: any,
+  options: any,
+  isCreate: boolean,
+): Promise<string> {
+  const name = error?.name;
+
+  if (name === 'AbortError' && options?.signal instanceof AbortSignal) {
+    return 'aborted';
+  }
+
+  if (name === 'InvalidStateError' && isCreate) {
+    return 'authenticator_already_registered';
+  }
+
+  if (name === 'NotSupportedError') {
+    return 'no_supported_algorithm';
+  }
+
+  if (name === 'ConstraintError') {
+    return 'authenticator_constraints_unsupported';
+  }
+
+  if (name === 'SecurityError') {
+    const effectiveDomain = window.location.hostname;
+    const isValidDomain =
+      effectiveDomain === 'localhost' ||
+      /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/i.test(effectiveDomain);
+    return isValidDomain ? 'invalid_rpid' : 'invalid_domain';
+  }
+
+  if (!(await isSupported())) {
+    return 'webauthn_unsupported';
+  }
+
+  const requirePlatformAuthenticator =
+    options?.publicKey?.authenticatorSelection?.authenticatorAttachment ===
+    'platform';
+  if (isCreate && requirePlatformAuthenticator && !(await isSupported(true))) {
+    return 'platform_authenticator_unsupported';
+  }
+
+  if (name === 'NotAllowedError') {
+    return 'not_allowed';
+  }
+
+  return 'unknown';
+}
+
+async function annotateWebauthnError(
+  error: any,
+  options: any,
+  isCreate: boolean,
+): Promise<any> {
+  if (error && typeof error === 'object') {
+    try {
+      error.reason = await identifyWebauthnError(error, options, isCreate);
+    } catch {}
+  }
+  return error;
 }
 
 // eslint-disable-next-line import/exports-last
