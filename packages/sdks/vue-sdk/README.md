@@ -316,6 +316,12 @@ Important Note:
 
 - For the user to be able to use the widget, they need to be assigned the `Tenant Admin` Role.
 
+All widget components accept an optional `locale` prop. It can be any supported locale the widget's screens are translated to; if not provided, the locale is taken from the browser's locale.
+
+```html
+<UserManagement widget-id="user-management-widget" tenant="tenant-id" locale="en" />
+```
+
 #### User Management
 
 The `UserManagement` widget lets you embed a user table in your site to view and take action.
