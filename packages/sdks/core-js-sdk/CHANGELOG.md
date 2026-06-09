@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.62.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.1...core-js-sdk-2.62.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** declare tslib as a runtime dependency RELEASE ([#1411](https://github.com/descope/descope-js/issues/1411)) ([f1a3f72](https://github.com/descope/descope-js/commit/f1a3f720c8af0820adbebc234c9bfb80636d914b))
+
 ## [2.62.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.0...core-js-sdk-2.62.1) (2026-06-07)
 
 
