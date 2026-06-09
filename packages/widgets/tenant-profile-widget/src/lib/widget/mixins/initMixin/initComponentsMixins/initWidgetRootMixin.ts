@@ -4,6 +4,7 @@ import {
   createTemplate,
 } from '@descope/sdk-helpers';
 import {
+  createFetchWidgetPagesMixin,
   descopeUiMixin,
   initElementMixin,
   initLifecycleMixin,
@@ -14,9 +15,10 @@ import {
   getTenantAdminLinkSSOError,
   getTenantError,
 } from '../../../state/selectors';
-import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { createErrorComponent } from './ErrorComponent';
+
+const WIDGET_PAGES_BASE_DIR = 'tenant-profile-widget';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -25,7 +27,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       initLifecycleMixin,
       descopeUiMixin,
       initElementMixin,
-      fetchWidgetPagesMixin,
+      createFetchWidgetPagesMixin(WIDGET_PAGES_BASE_DIR),
       stateManagementMixin,
     )(superclass) {
       async #initWidgetRoot() {

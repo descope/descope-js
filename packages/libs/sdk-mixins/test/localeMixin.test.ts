@@ -47,4 +47,29 @@ describe('localeMixin', () => {
     setNavigatorLanguage('');
     expect(createLocaleMixin().localeCandidates).toEqual([]);
   });
+
+  describe('firstAvailableLocale', () => {
+    it('returns the matching candidate present in the available locales (case-insensitive)', () => {
+      expect(
+        createLocaleMixin({ locale: 'fr' }).firstAvailableLocale(['ES', 'FR']),
+      ).toBe('fr');
+    });
+
+    it('falls back from a region locale to its language candidate', () => {
+      setNavigatorLanguage('en-US'); // candidates: ['en-us', 'en']
+      expect(createLocaleMixin().firstAvailableLocale(['en'])).toBe('en');
+    });
+
+    it('returns empty string when no candidate is available', () => {
+      expect(
+        createLocaleMixin({ locale: 'de' }).firstAvailableLocale(['es', 'fr']),
+      ).toBe('');
+    });
+
+    it('returns empty string when there are no available locales', () => {
+      expect(createLocaleMixin({ locale: 'es' }).firstAvailableLocale([])).toBe(
+        '',
+      );
+    });
+  });
 });

@@ -20,20 +20,6 @@ export const widgetConfigMixin = createSingletonMixin(
         const config = await this.config;
         return config?.projectConfig?.widgets?.[this.widgetId];
       }
-
-      // The first candidate locale for which the widget has published localized screens
-      // (case-insensitive), per the widget's targetLocales in config.json. Returns '' when none
-      // match. Callers pass candidates most-specific first (e.g. ['en-us', 'en']) so a region
-      // locale falls back to its language, mirroring the web-component's resolution.
-      async firstAvailableLocale(candidates: string[]): Promise<string> {
-        const widgetConfig = await this.getWidgetConfig();
-        const targets = (widgetConfig?.targetLocales ?? []).map((l) =>
-          l.toLowerCase(),
-        );
-        return (
-          candidates.find((c) => !!c && targets.includes(c.toLowerCase())) ?? ''
-        );
-      }
     };
   },
 );

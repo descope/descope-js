@@ -8,6 +8,8 @@ import { createSingletonMixin, getUserLocale } from '@descope/sdk-helpers';
  *  - `localeCandidates` returns the lowercased locales to try, most-specific first: the resolved
  *    locale and then its language-only fallback (e.g. 'en-us' then 'en'), matching the
  *    web-component's getHtmlFilenameWithLocale probe order. Falls back to navigator.language.
+ *  - `firstAvailableLocale(availableLocales)` returns the most-specific candidate that the consumer
+ *    actually publishes (e.g. a widget's config.json targetLocales), or '' when none match.
  */
 export const localeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -19,6 +21,12 @@ export const localeMixin = createSingletonMixin(
       get localeCandidates(): string[] {
         const { locale, fallback } = getUserLocale(this.locale);
         return [...new Set([locale, fallback].filter(Boolean))];
+      }
+
+      firstAvailableLocale(availableLocales: string[]): string {
+        const available = (availableLocales ?? []).map((l) => l.toLowerCase());
+        // localeCandidates are already lowercased, most-specific first.
+        return this.localeCandidates.find((c) => available.includes(c)) ?? '';
       }
     },
 );

@@ -45,8 +45,9 @@ export const createFetchWidgetPagesMixin = (widgetPagesBaseDir: string) =>
       // Fetch <page>-<locale>.html when the widget publishes that locale (config.json
       // targetLocales); otherwise return undefined so the caller falls back to the default page.
       async #tryFetchLocalized(filename: string): Promise<string | undefined> {
-        const userLocale = await this.firstAvailableLocale(
-          this.localeCandidates,
+        const widgetConfig = await this.getWidgetConfig();
+        const userLocale = this.firstAvailableLocale(
+          widgetConfig?.targetLocales ?? [],
         );
         if (!userLocale) return undefined;
 
