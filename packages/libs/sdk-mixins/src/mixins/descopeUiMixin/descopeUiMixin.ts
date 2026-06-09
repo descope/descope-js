@@ -103,7 +103,13 @@ export const descopeUiMixin = createSingletonMixin(
 
         try {
           const componentsVersion = await this.#getComponentsVersion();
-          const componentsVersionSri = await this.#getComponentsVersionSri();
+          // When the dev-panel override is set, the URL points at a locally
+          // built bundle whose bytes won't match the CDN-published SRI hash.
+          // Skip SRI in that case so the override actually loads instead of
+          // failing the integrity check and falling back to the CDN.
+          const componentsVersionSri = LOCAL_STORAGE_OVERRIDE
+            ? undefined
+            : await this.#getComponentsVersionSri();
 
           await this.injectNpmLib(
             WEB_COMPONENTS_UI_LIB_NAME,

@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.20.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.19.0...sdk-mixins-0.20.0) (2026-06-09)
+
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
 ## [0.19.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.18.0...sdk-mixins-0.19.0) (2026-06-04)
 
 

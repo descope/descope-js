@@ -359,14 +359,20 @@ test.describe('widget', () => {
   test('search access keys', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    // Set up route handler first
+    // Handle all search requests (initial empty-text mount call AND the user-typed
+    // call). Branch on `text` to filter — asserting inside the handler would race
+    // with the initial mount call where text is "".
     await page.route(apiPath('accesskey', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
-      expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ keys: [mockAccessKeys.keys[1]] }),
+        body: JSON.stringify({
+          keys:
+            text === 'mockSearchString'
+              ? [mockAccessKeys.keys[1]]
+              : mockAccessKeys.keys,
+        }),
       });
     });
 
@@ -383,8 +389,17 @@ test.describe('widget', () => {
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
-    // Wait for the search request and response
-    await page.waitForResponse(apiPath('accesskey', 'search'));
+    // Wait for a search request whose body carries the typed text. This also
+    // verifies the wiring (input → request body) — replaces the assertion that
+    // used to live inside the route handler.
+    await page.waitForRequest((req) => {
+      if (!req.url().includes('/accesskey/search')) return false;
+      try {
+        return req.postDataJSON()?.text === 'mockSearchString';
+      } catch {
+        return false;
+      }
+    });
 
     // only search results shown in grid - wait longer for UI to update
     await expect(
@@ -394,6 +409,12 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
     ).toBeVisible({ timeout: 10000 });
+
+    // The unfiltered key is no longer in the grid — proves the filter actually
+    // ran on the typed text (not just that the response renders).
+    await expect(
+      page.locator(`text=${mockAccessKeys.keys[0].name}`).first(),
+    ).toBeHidden({ timeout: 10000 });
   });
 
   test('close notification', async ({ page }) => {
