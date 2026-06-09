@@ -252,14 +252,20 @@ test.describe('widget', () => {
   test('search roles', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    // Set up route handler first
+    // Handle all search requests (initial empty-text mount call AND the user-typed
+    // call). Branch on `text` to filter — asserting inside the handler would race
+    // with the initial mount call where text is "".
     await page.route(apiPath('role', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
-      expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ roles: [mockRoles[1]] }),
+        body: JSON.stringify({
+          roles:
+            text === 'mockSearchString'
+              ? [mockRoles.roles[1]]
+              : mockRoles.roles,
+        }),
       });
     });
 
@@ -276,8 +282,17 @@ test.describe('widget', () => {
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
-    // Wait for the search request and response
-    await page.waitForResponse(apiPath('role', 'search'));
+    // Wait for a search request whose body carries the typed text. This also
+    // verifies the wiring (input → request body) — replaces the assertion that
+    // used to live inside the route handler.
+    await page.waitForRequest((req) => {
+      if (!req.url().includes('/role/search')) return false;
+      try {
+        return req.postDataJSON()?.text === 'mockSearchString';
+      } catch {
+        return false;
+      }
+    });
 
     // only search results shown in grid
     await expect(
