@@ -29,14 +29,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.updateRole),
   withNotifications({
     getSuccessMsg: () => 'Role updated successfully',
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to update role</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: 'Failed to update role',
+      detail: action.error?.message,
+    }),
   }),
 );
 

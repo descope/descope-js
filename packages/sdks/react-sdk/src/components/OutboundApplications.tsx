@@ -1,11 +1,6 @@
-import React, {
-  lazy,
-  Suspense,
-  useImperativeHandle,
-  useState,
-  useEffect,
-} from 'react';
+import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
+import useEventListener from '../hooks/useEventListener';
 import { OutboundApplicationsProps } from '../types';
 import withPropsMapping from './withPropsMapping';
 
@@ -33,14 +28,7 @@ const OutboundApplications = React.forwardRef<
   const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
     React.useContext(Context);
 
-  useEffect(() => {
-    const ele = innerRef;
-    if (onReady) ele?.addEventListener('ready', onReady);
-
-    return () => {
-      if (onReady) ele?.removeEventListener('ready', onReady);
-    };
-  }, [innerRef, onReady]);
+  useEventListener(innerRef, 'ready', onReady);
 
   return (
 	<Suspense fallback={null}>

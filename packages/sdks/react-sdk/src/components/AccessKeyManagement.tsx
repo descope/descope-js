@@ -1,11 +1,6 @@
-import React, {
-  lazy,
-  Suspense,
-  useImperativeHandle,
-  useState,
-  useEffect,
-} from 'react';
+import React, { lazy, Suspense, useImperativeHandle, useState } from 'react';
 import Context from '../hooks/Context';
+import useEventListener from '../hooks/useEventListener';
 import { AccessKeyManagementProps } from '../types';
 import withPropsMapping from './withPropsMapping';
 
@@ -16,7 +11,7 @@ const AccessKeyManagementWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-access-key-management-widget ref={ref} {...props} />
+	<descope-access-key-management-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -27,7 +22,7 @@ const AccessKeyManagement = React.forwardRef<
   AccessKeyManagementProps
 >(
   (
-    { logger, tenant, theme, locale, debug, widgetId, styleId, onReady },
+    { logger, tenant, theme, locale, debug, widgetId, styleId, onReady, onToast },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -37,18 +32,12 @@ const AccessKeyManagement = React.forwardRef<
     const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
       React.useContext(Context);
 
-    useEffect(() => {
-      const ele = innerRef;
-      if (onReady) ele?.addEventListener('ready', onReady);
-
-      return () => {
-        if (onReady) ele?.removeEventListener('ready', onReady);
-      };
-    }, [innerRef, onReady]);
+    useEventListener(innerRef, 'ready', onReady);
+    useEventListener(innerRef, 'toast', onToast);
 
     return (
-      <Suspense fallback={null}>
-        <AccessKeyManagementWC
+	<Suspense fallback={null}>
+		<AccessKeyManagementWC
           ref={setInnerRef}
           projectId={projectId}
           widgetId={widgetId}
@@ -67,7 +56,7 @@ const AccessKeyManagement = React.forwardRef<
             'logger.prop': logger,
           }}
         />
-      </Suspense>
+	</Suspense>
     );
   },
 );

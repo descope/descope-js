@@ -100,6 +100,7 @@ test.describe('widget', () => {
   });
 
   test('roles table', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
     await expect(
       page.locator(`text=${mockRoles.roles[0]['name']}`).first(),
     ).toBeVisible();
@@ -275,12 +276,11 @@ test.describe('widget', () => {
       .first();
 
     await searchInput.waitFor({ state: 'visible' });
-
-    // focus search input
     await searchInput.focus();
 
-    // Trigger search by typing (simulates user behavior more accurately)
-    await searchInput.fill('mockSearchString');
+    // pressSequentially fires real key events so the custom element value
+    // updates properly, triggering the debounced search handler
+    await searchInput.pressSequentially('mockSearchString', { delay: 50 });
 
     // Wait for a search request whose body carries the typed text. This also
     // verifies the wiring (input → request body) — replaces the assertion that

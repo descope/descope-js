@@ -22,14 +22,10 @@ const reducer = buildAsyncReducer(action)(
   withNotifications({
     getSuccessMsg: () => `Successfully reset user password`,
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to reset user's password</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: `Failed to reset user's password`,
+      detail: action.error?.message,
+    }),
   }),
 );
 

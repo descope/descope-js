@@ -35,6 +35,8 @@ declare global {
   }
 }
 
+type CustomEventCb<T extends Record<string, any>> = (e: CustomEvent<T>) => void;
+
 type WidgetProps = {
   logger?: ILogger;
   tenant: string;
@@ -48,13 +50,16 @@ type WidgetProps = {
   onReady?: CustomEventCb<{}>;
 };
 
+type WithToastProps = {
+  /** Fired before each toast is shown. Call event.preventDefault() to suppress the built-in toast. */
+  onToast?: CustomEventCb<ToastEventPayload>;
+};
+
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
 
 type ErrorResponse = Required<FlowResponse>['error'];
 
 type JWTResponse = Required<Required<FlowResponse>['data']>['authInfo'];
-
-type CustomEventCb<T extends Record<string, any>> = (e: CustomEvent<T>) => void;
 
 export type User = UserResponse;
 
@@ -171,17 +176,18 @@ export type DescopeProps = {
   themeOverride?: OverrideThemes;
 };
 
-export type UserManagementProps = WidgetProps;
+export type UserManagementProps = WidgetProps & WithToastProps;
 
-export type RoleManagementProps = WidgetProps;
+export type RoleManagementProps = WidgetProps & WithToastProps;
 
-export type AccessKeyManagementProps = WidgetProps;
+export type AccessKeyManagementProps = WidgetProps & WithToastProps;
 
 export type AuditManagementProps = WidgetProps;
 
-export type UserProfileProps = Omit<WidgetProps, 'tenant'> & {
-  onLogout?: (e: CustomEvent) => void;
-};
+export type UserProfileProps = Omit<WidgetProps, 'tenant'> &
+  WithToastProps & {
+    onLogout?: (e: CustomEvent) => void;
+  };
 
 export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
   onLogout?: (e: CustomEvent) => void;
@@ -193,3 +199,11 @@ export type OutboundApplicationsProps = WidgetProps;
 
 export type { ILogger };
 export type DefaultFlowProps = Omit<DescopeProps, 'flowId'>;
+
+export type ToastSeverity = 'success' | 'error';
+
+export type ToastEventPayload = {
+  message: string;
+  detail?: string;
+  severity: ToastSeverity;
+};

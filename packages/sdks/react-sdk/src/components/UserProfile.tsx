@@ -2,11 +2,11 @@ import React, {
   lazy,
   Suspense,
   useCallback,
-  useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
 import Context from '../hooks/Context';
+import useEventListener from '../hooks/useEventListener';
 import { UserProfileProps } from '../types';
 import withPropsMapping from './withPropsMapping';
 
@@ -25,7 +25,17 @@ const UserProfileWC = lazy(async () => {
 
 const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
   (
-    { logger, theme, locale, debug, widgetId, onLogout, styleId, onReady },
+    {
+      logger,
+      theme,
+      locale,
+      debug,
+      widgetId,
+      onLogout,
+      styleId,
+      onReady,
+      onToast,
+    },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -56,22 +66,9 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
       [onLogout, setSession, setIsAuthenticated, setUser],
     );
 
-    useEffect(() => {
-      if (innerRef) {
-        innerRef.addEventListener('logout', handleLogout);
-        return () => innerRef.removeEventListener('logout', handleLogout);
-      }
-      return undefined;
-    }, [innerRef, handleLogout]);
-
-    useEffect(() => {
-      const ele = innerRef;
-      if (onReady) ele?.addEventListener('ready', onReady);
-
-      return () => {
-        if (onReady) ele?.removeEventListener('ready', onReady);
-      };
-    }, [innerRef, onReady]);
+    useEventListener<CustomEvent>(innerRef, 'logout', handleLogout);
+    useEventListener(innerRef, 'ready', onReady);
+    useEventListener(innerRef, 'toast', onToast);
 
     return (
 	<Suspense fallback={null}>

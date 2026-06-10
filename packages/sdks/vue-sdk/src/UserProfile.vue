@@ -13,6 +13,7 @@
       :style-id="styleId"
       @logout="onLogout"
       @ready="onReady"
+      @toast="onToast"
     />
   </div>
 </template>
@@ -26,6 +27,14 @@ import { useOptions } from './hooks';
 const emit = defineEmits<{
   (e: 'logout', payload: Event): void;
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
+  (
+    e: 'toast',
+    payload: CustomEvent<{
+      message: string;
+      detail?: string;
+      severity: 'success' | 'error';
+    }>,
+  ): void;
 }>();
 
 const onLogout = (e: Event) => {
@@ -34,6 +43,13 @@ const onLogout = (e: Event) => {
 };
 
 const onReady = (e: CustomEvent<Record<string, never>>) => emit('ready', e);
+const onToast = (
+  e: CustomEvent<{
+    message: string;
+    detail?: string;
+    severity: 'success' | 'error';
+  }>,
+) => emit('toast', e);
 
 defineProps({
   widgetId: {

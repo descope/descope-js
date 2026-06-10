@@ -24,14 +24,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.createAccessKey),
   withNotifications({
     getSuccessMsg: () => 'Access Key created successfully',
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to create access key</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: 'Failed to create access key',
+      detail: action.error?.message,
+    }),
   }),
 );
 

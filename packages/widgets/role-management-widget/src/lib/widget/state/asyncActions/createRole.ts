@@ -24,14 +24,10 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.createRole),
   withNotifications({
     getSuccessMsg: () => 'Role created successfully',
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message;
-      return `
-      <div>
-        <div>Failed to create role</div>
-        ${errorMsg}
-      </div>`;
-    },
+    getErrorMsg: (action) => ({
+      msg: 'Failed to create role',
+      detail: action.error?.message,
+    }),
   }),
 );
 
