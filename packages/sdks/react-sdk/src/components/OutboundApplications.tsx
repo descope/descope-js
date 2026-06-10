@@ -16,7 +16,7 @@ const OutboundApplicationsWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-outbound-applications-widget ref={ref} {...props} />
+	<descope-outbound-applications-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -25,7 +25,7 @@ const OutboundApplicationsWC = lazy(async () => {
 const OutboundApplications = React.forwardRef<
   HTMLElement,
   OutboundApplicationsProps
->(({ logger, theme, debug, widgetId, styleId, onReady }, ref) => {
+>(({ logger, theme, locale, debug, widgetId, styleId, onReady }, ref) => {
   const [innerRef, setInnerRef] = useState(null);
 
   useImperativeHandle(ref, () => innerRef);
@@ -43,8 +43,8 @@ const OutboundApplications = React.forwardRef<
   }, [innerRef, onReady]);
 
   return (
-    <Suspense fallback={null}>
-      <OutboundApplicationsWC
+	<Suspense fallback={null}>
+		<OutboundApplicationsWC
         ref={setInnerRef}
         projectId={projectId}
         widgetId={widgetId}
@@ -54,6 +54,7 @@ const OutboundApplications = React.forwardRef<
         {...{
           // attributes
           'theme.attr': theme,
+          'locale.attr': locale,
           'debug.attr': debug,
           'styleId.attr': styleId,
           'refreshCookieName.attr': refreshCookieName,
@@ -61,7 +62,7 @@ const OutboundApplications = React.forwardRef<
           'logger.prop': logger,
         }}
       />
-    </Suspense>
+	</Suspense>
   );
 });
 

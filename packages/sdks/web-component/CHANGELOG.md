@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.67.1](https://github.com/descope/descope-js/compare/web-component-3.67.0...web-component-3.67.1) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+## [3.67.0](https://github.com/descope/descope-js/compare/web-component-3.66.1...web-component-3.67.0) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
 ## [3.66.1](https://github.com/descope/descope-js/compare/web-component-3.66.0...web-component-3.66.1) (2026-06-07)
 
 ### Dependency Updates

@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -22,6 +23,7 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initTotpUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TotpUserAuthMethodMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -55,6 +57,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initAddModalContent() {
         this.#addModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.totpUserAuthMethod.flowId,
             baseUrl: this.baseUrl,
@@ -88,6 +91,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initRemoveTotpModalContent() {
         this.#removeTotpModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.totpUserAuthMethod.fulfilledFlowId,
             baseUrl: this.baseUrl,

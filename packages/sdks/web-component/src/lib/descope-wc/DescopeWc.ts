@@ -1,3 +1,4 @@
+import { getUserLocale } from '@descope/sdk-helpers';
 import {
   clearFingerprintData,
   ensureFingerprintIds,
@@ -27,7 +28,6 @@ import {
   getElementDescopeAttributes,
   getFirstNonEmptyValue,
   getScriptResultPath,
-  getUserLocale,
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
@@ -1714,6 +1714,10 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper,
     );
 
+    // Apply on the fragment before mount so the first paint shows the right
+    // state (otherwise the user briefly sees unhidden/enabled components).
+    this.applyComponentsState(clone, screenState?.componentsState);
+
     // set auto-detect attributes (country code from geo, lang from locale)
     const { geo } = (await this.getExecutionContext()) ?? {};
     setComponentsAutoDetectByGeo(clone, geo);
@@ -1746,6 +1750,12 @@ class DescopeWc extends BaseDescopeWc {
 
         // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(rootElement, screenState);
+
+        // Runs after updateScreenFromScreenState so the realtime layer reads the
+        // populated .value / .checked properties rather than the unpopulated DOM
+        // at mount — otherwise on screen N a form key carried over from screen
+        // N-1 (e.g. `form.text`) reads as empty and conditions evaluate wrong.
+        this.initRealtimeConditions(rootElement, screenState);
 
         this.#dispatchPageEvents({
           isFirstScreen,

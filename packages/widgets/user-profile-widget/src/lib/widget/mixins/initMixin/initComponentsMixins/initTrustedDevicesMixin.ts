@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -23,6 +24,7 @@ import { getTrustedDevices, getUserId } from '../../../state/selectors';
 export const initTrustedDevicesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TrustedDevicesMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       themeMixin,
       stateManagementMixin,
@@ -52,6 +54,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       #initModalContent(deviceId: string = '') {
         this.#modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.deviceList.flowId,
             baseUrl: this.baseUrl,
