@@ -1,6 +1,7 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
+import { initMultiSsoConfigurationsMixin } from './initComponentsMixins/initMultiSsoConfigurationsMixin';
 import { initTenantAdminLinkSSOMixin } from './initComponentsMixins/initTenantAdminLinkSSOMixin';
 import { initTenantCustomAttributesMixin } from './initComponentsMixins/initTenantCustomAttributesMixin';
 import { initTenantEmailDomainsMixin } from './initComponentsMixins/initTenantEmailDomainsMixin';
@@ -27,6 +28,7 @@ export const initMixin = createSingletonMixin(
       initTenantAdminLinkSSOMixin,
       initTenantPasswordPolicyUserAuthMethodMixin,
       initTenantSessionSettingsUserAuthMethodMixin,
+      initMultiSsoConfigurationsMixin,
     )(superclass) {
       async init() {
         await super.init?.();

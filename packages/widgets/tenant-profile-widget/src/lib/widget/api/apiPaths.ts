@@ -4,6 +4,6 @@ export const apiPaths = {
   },
   tenant: {
     details: '/v1/mgmt/tenant',
-    adminLinkSso: '/v1/mgmt/tenant/adminlinks/sso/authenticated',
+    adminLinkSso: '/v1/mgmt/tenant/adminlinks/sso/authenticated/batch',
   },
 };

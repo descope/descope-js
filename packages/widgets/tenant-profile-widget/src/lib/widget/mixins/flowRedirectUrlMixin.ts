@@ -1,3 +1,4 @@
+import { getAdditionalSSOIds } from './../state/selectors';
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
@@ -57,11 +58,12 @@ export const flowRedirectUrlMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        flow.onSuccess(() => {
+        flow.onSuccess(async () => {
           modal.close();
           this.actions.getMe();
-          this.actions.getTenant();
-          this.actions.getTenantAdminLinkSSO();
+          await this.actions.getTenant();
+          const ssoIds = getAdditionalSSOIds(this.state);
+          await this.actions.getTenantAdminLinkSSO({ ssoIds });
         });
 
         modal.afterClose = () => {

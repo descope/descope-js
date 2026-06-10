@@ -9,7 +9,7 @@ import {
   loggerMixin,
   modalMixin,
 } from '@descope/sdk-mixins';
-import { getTenantAdminLinkSSO } from '../../../state/selectors';
+import { getTenantDefaultSSOLink } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -37,7 +37,7 @@ export const initTenantAdminLinkSSOMixin = createSingletonMixin(
       }
 
       #onValueUpdate = withMemCache(
-        (tenantAdminLinkSSO: ReturnType<typeof getTenantAdminLinkSSO>) => {
+        (tenantAdminLinkSSO: ReturnType<typeof getTenantDefaultSSOLink>) => {
           this.tenantAdminLinkSSODriver.href = tenantAdminLinkSSO;
         },
       );
@@ -47,9 +47,9 @@ export const initTenantAdminLinkSSOMixin = createSingletonMixin(
 
         this.#initTenantAdminLinkSSO();
 
-        this.#onValueUpdate(getTenantAdminLinkSSO(this.state));
+        this.#onValueUpdate(getTenantDefaultSSOLink(this.state));
 
-        this.subscribe(this.#onValueUpdate.bind(this), getTenantAdminLinkSSO);
+        this.subscribe(this.#onValueUpdate.bind(this), getTenantDefaultSSOLink);
       }
     },
 );
