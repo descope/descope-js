@@ -61,7 +61,7 @@ test.describe('tenant profile widget', () => {
     );
 
     await page.route(
-      '**/mgmt/tenant/adminlinks/sso/authenticated?**',
+      '**/mgmt/tenant/adminlinks/sso/authenticated/batch?**',
       async (route) =>
         route.fulfill({
           json: mockTenantAdminLinkSSO,
@@ -192,7 +192,7 @@ test.describe('tenant profile widget', () => {
 
       await expect(userAttr).toHaveAttribute(
         'href',
-        mockTenantAdminLinkSSO.adminSSOConfigurationLink,
+        mockTenantAdminLinkSSO.defaultLink,
       );
     });
   });

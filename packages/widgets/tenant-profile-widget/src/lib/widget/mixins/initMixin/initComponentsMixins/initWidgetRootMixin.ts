@@ -11,6 +11,7 @@ import {
   loggerMixin,
 } from '@descope/sdk-mixins';
 import {
+  getAdditionalSSOIds,
   getMeError,
   getTenantAdminLinkSSOError,
   getTenantError,
@@ -53,11 +54,9 @@ export const initWidgetRootMixin = createSingletonMixin(
         await super.init?.();
 
         try {
-          await Promise.all([
-            this.actions.getMe(),
-            this.actions.getTenant(),
-            this.actions.getTenantAdminLinkSSO(),
-          ]);
+          await Promise.all([this.actions.getMe(), this.actions.getTenant()]);
+          const ssoIds = getAdditionalSSOIds(this.state);
+          await this.actions.getTenantAdminLinkSSO({ ssoIds });
         } catch (e) {
           // Errors are handled in state, but catch just in case
         }

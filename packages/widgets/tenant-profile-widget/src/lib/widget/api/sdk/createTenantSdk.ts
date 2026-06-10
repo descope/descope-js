@@ -28,7 +28,7 @@ export const createTenantSdk = ({
     return data;
   };
 
-  const adminLinkSso = async () => {
+  const adminLinkSso = async ({ ssoIds }: { ssoIds: string[] }) => {
     if (mock) {
       return tenantMock.getTenantAdminLinkSSO();
     }
@@ -38,6 +38,7 @@ export const createTenantSdk = ({
       `${apiPaths.tenant.adminLinkSso}?tenant=${tenantIdEncoded}`,
       {
         tenantId: tenantIdEncoded,
+        ssoIds,
       },
       {
         headers: { 'Content-Type': 'application/json' },

@@ -78,39 +78,35 @@ export default `
       delete-flow-id=""
     ></descope-user-attribute>
     <descope-divider id="2mXCne0kTY" italic="false" mode="primary" variant="body1" vertical="false"></descope-divider>
+    <descope-link data-id="tenant-admin-link-sso" italic="false" underline="true" variant="body1" text-align="center" full-width="false" target="_blank" mode="primary" id="_Q1UFBN56C">SSO Setup</descope-link>
     <descope-container
       data-editor-type="container"
-      id="isG9wyAH3S"
-      st-items-grow="1"
-      direction="row"
-      st-host-width="100%"
-      st-horizontal-padding="1rem"
-      st-vertical-padding="2rem"
-      st-align-items="center"
-      st-justify-content="space-between"
+      direction="column"
+      id="userAttrsContainer"
+      st-horizontal-padding="0rem"
+      st-vertical-padding="1rem"
+      st-align-items="start"
+      st-justify-content="flex-start"
       st-background-color="#ffffff00"
-      st-gap="1rem"
+      st-host-width="100%"
+      st-gap="2rem"
     >
-      <descope-enriched-text
-        full-width="false"
-        id="4MLf3AZ9ve"
-        italic="false"
-        link-target-blank="true"
-        mode="primary"
-        text-align="left"
-        variant="body1"
-      >Set up and manage your SSO</descope-enriched-text>
-      <descope-link
-        data-id="tenant-admin-link-sso"
-        full-width="false"
-        href="#"
-        id="DHwR5a3IpS"
-        italic="false"
-        mode="primary"
-        target="_blank"
-        text-align="right"
-        variant="body1"
-      >SSO Setup</descope-link>
+      <descope-multi-sso
+        full-width="true"
+        data-create-flow-id="tenant-profile-create-sso-config"
+        data-delete-flow-id="tenant-profile-delete-sso-config"
+        label="Configurations"
+        allow-create="true"
+        allow-delete="true"
+        allow-configure="true"
+        create-button-label="Add"
+        id="4aD7P6mPyn"
+      >
+        <descope-icon slot="title-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiPgogIDxwYXRoIGQ9Ik0xMi42NSAxMEMxMS44MyA3LjY3IDkuNjEgNiA3IDZjLTMuMzEgMC02IDIuNjktNiA2czIuNjkgNiA2IDZjMi42MSAwIDQuODMtMS42NyA1LjY1LTRIMTd2NGg0di00aDJ2LTRIMTIuNjV6TTcgMTRjLTEuMSAwLTItLjktMi0ycy45LTIgMi0yIDIgLjkgMiAyLS45IDItMiAyeiIvPgo8L3N2Zz4="></descope-icon>
+        <descope-icon slot="create-button-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiPgogIDxwYXRoIGQ9Ik0xOSAxMWgtNlY1aC0ydjZINXYyaDZ2Nmgydi02aDZ2LTJ6Ii8+Cjwvc3ZnPg=="></descope-icon>
+        <descope-icon slot="delete-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMSAxNkMxIDE3LjEgMS45IDE4IDMgMThIMTFDMTIuMSAxOCAxMyAxNy4xIDEzIDE2VjRIMVYxNlpNMyA2SDExVjE2SDNWNlpNMTAuNSAxTDkuNSAwSDQuNUwzLjUgMUgwVjNIMTRWMUgxMC41WiIgZmlsbD0iY3VycmVudENvbG9yIi8+PC9zdmc+"></descope-icon>
+        <descope-icon slot="external-link-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkgMTlINVY1SDEyVjNINUMzLjg5IDMgMyAzLjkgMyA1VjE5QzMgMjAuMSAzLjg5IDIxIDUgMjFIMTlDMjAuMSAyMSAyMSAyMC4xIDIxIDE5VjEySDE5VjE5Wk0xNCAzVjVIMTcuNTlMNy43NiAxNC44M0w5LjE3IDE2LjI0TDE5IDYuNDFWMTBIMjFWM0gxNFoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvc3ZnPg=="></descope-icon>
+      </descope-multi-sso>
     </descope-container>
   </descope-container>
 </descope-container>

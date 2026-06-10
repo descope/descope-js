@@ -1,23 +1,25 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Sdk } from '../../api/sdk';
-import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
+import { TenantAdminLinkSSOResponse } from '../../api/types';
+import { State, ThunkConfigExtraApi } from '../types';
 import { buildAsyncReducer, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
-  any,
-  FirstParameter<Sdk['tenant']['adminLinkSso']>,
-  ThunkConfigExtraApi
->('tenant/adminLinkSso', (arg, { extra: { api } }) =>
-  api.tenant.adminLinkSso(),
-);
+  TenantAdminLinkSSOResponse,
+  { ssoIds: string[] },
+  ThunkConfigExtraApi & { state: State }
+>('tenant/adminLinkSso', ({ ssoIds }, { extra: { api } }) => {
+  return api.tenant.adminLinkSso({ ssoIds });
+});
 
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.tenantAdminLinkSSO.data =
-        action.payload?.adminSSOConfigurationLink || '';
+      state.tenantAdminLinkSSO.data = action.payload ?? {
+        defaultLink: '',
+        ssoIdToLink: {},
+      };
     },
   },
   withRequestStatus((state: State) => state.tenantAdminLinkSSO),
