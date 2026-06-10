@@ -8,6 +8,12 @@ type CustomAttributes = Record<string, CustomAttributeType>;
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
+export type TenantSsoConfiguration = {
+  ssoId: string;
+  name: string;
+  authType: string;
+};
+
 export type Tenant = AssociatedTenant & {
   id: string;
   name: string;
@@ -19,21 +25,20 @@ export type Tenant = AssociatedTenant & {
   disabled: boolean;
   enforceSSO: boolean;
   enforceSSOExclusions?: string[];
+  additionalSSOConfigs?: TenantSsoConfiguration[];
 };
 
 export type TenantAdminLinkSSOResponse = {
-  adminSSOConfigurationLink: string;
+  defaultLink: string;
+  ssoIdToLink: Record<string, string>;
 };
 
 export type SsoConfiguration = {
   id: string;
   name: string;
+  authType?: string;
   isDefault?: boolean;
-  expires?: string;
-};
-
-export type ListSsoConfigurationsResponse = {
-  configurations: SsoConfiguration[];
+  link?: string;
 };
 
 export type HttpClient = Sdk['httpClient'];

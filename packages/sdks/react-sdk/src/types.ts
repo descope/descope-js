@@ -41,6 +41,8 @@ type WidgetProps = {
   widgetId: string;
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
+  // If locale is not provided - the browser's locale will be used
+  locale?: string;
   debug?: boolean;
   styleId?: string;
   onReady?: CustomEventCb<{}>;
@@ -185,7 +187,7 @@ export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {
   onLogout?: (e: CustomEvent) => void;
 };
 
-export type TenantProfileProps = WidgetProps & { multiSso?: boolean };
+export type TenantProfileProps = WidgetProps;
 
 export type OutboundApplicationsProps = WidgetProps;
 

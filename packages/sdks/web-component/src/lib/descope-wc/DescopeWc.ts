@@ -1,3 +1,4 @@
+import { getUserLocale } from '@descope/sdk-helpers';
 import {
   clearFingerprintData,
   ensureFingerprintIds,
@@ -27,7 +28,6 @@ import {
   getElementDescopeAttributes,
   getFirstNonEmptyValue,
   getScriptResultPath,
-  getUserLocale,
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,

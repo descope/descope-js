@@ -26,6 +26,8 @@ export class AccessKeyManagementComponent extends BaseLazyWidgetComponent {
   @Input() widgetId: string;
 
   @Input() theme: 'light' | 'dark' | 'os';
+
+  @Input() locale: string;
   @Input() debug: boolean;
   @Input() logger: ILogger;
   @Input() styleId: string;
@@ -75,6 +77,9 @@ export class AccessKeyManagementComponent extends BaseLazyWidgetComponent {
     }
     if (this.theme) {
       this.webComponent.setAttribute('theme', this.theme);
+    }
+    if (this.locale) {
+      this.webComponent.setAttribute('locale', this.locale);
     }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());

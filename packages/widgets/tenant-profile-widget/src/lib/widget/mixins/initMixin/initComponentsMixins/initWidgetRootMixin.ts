@@ -4,19 +4,22 @@ import {
   createTemplate,
 } from '@descope/sdk-helpers';
 import {
+  createFetchWidgetPagesMixin,
   descopeUiMixin,
   initElementMixin,
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
 import {
+  getAdditionalSSOIds,
   getMeError,
   getTenantAdminLinkSSOError,
   getTenantError,
 } from '../../../state/selectors';
-import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { createErrorComponent } from './ErrorComponent';
+
+const WIDGET_PAGES_BASE_DIR = 'tenant-profile-widget';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -25,15 +28,20 @@ export const initWidgetRootMixin = createSingletonMixin(
       initLifecycleMixin,
       descopeUiMixin,
       initElementMixin,
-      fetchWidgetPagesMixin,
+      createFetchWidgetPagesMixin(WIDGET_PAGES_BASE_DIR),
       stateManagementMixin,
     )(superclass) {
       async #initWidgetRoot() {
-        const html =
-          process.env.NODE_ENV === 'development'
-            ? (await import('../../../dev/rootMock')).default
-            : await this.fetchWidgetPage('root.html');
-        const template = createTemplate(html);
+        /*
+        const importRoot = await import(
+          '../../../../../../test/mocks/rootMock'
+        ).then((module) => module.default);
+        */
+
+        const template = createTemplate(
+          // importRoot,
+          await this.fetchWidgetPage('root.html'),
+        );
 
         await this.loadDescopeUiComponents(template);
         this.contentRootElement.append(template.content.cloneNode(true));
@@ -46,11 +54,9 @@ export const initWidgetRootMixin = createSingletonMixin(
         await super.init?.();
 
         try {
-          await Promise.all([
-            this.actions.getMe(),
-            this.actions.getTenant(),
-            this.actions.getTenantAdminLinkSSO(),
-          ]);
+          await Promise.all([this.actions.getMe(), this.actions.getTenant()]);
+          const ssoIds = getAdditionalSSOIds(this.state);
+          await this.actions.getTenantAdminLinkSSO({ ssoIds });
         } catch (e) {
           // Errors are handled in state, but catch just in case
         }

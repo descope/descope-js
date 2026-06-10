@@ -1,10 +1,4 @@
-import {
-  ListSsoConfigurationsResponse,
-  SsoConfiguration,
-  Tenant,
-  TenantAdminLinkSSOResponse,
-  User,
-} from '../types';
+import { Tenant, TenantAdminLinkSSOResponse, User } from '../types';
 
 const me: () => Promise<User> = async () =>
   new Promise((resolve) => {
@@ -61,39 +55,17 @@ const getTenantAdminLinkSSO: () => Promise<TenantAdminLinkSSOResponse> =
   async () =>
     new Promise((resolve) => {
       resolve({
-        adminSSOConfigurationLink: '_blank',
+        defaultLink: '_blank',
+        ssoIdToLink: {
+          'okta-prod': '_blank?ssoId=okta-prod',
+          'entra-eu': '_blank?ssoId=entra-eu',
+        },
       });
     });
-
-const mockConfigurations: SsoConfiguration[] = [
-  { id: 'default', name: 'Default SSO configuration', isDefault: true },
-  { id: 'okta-prod', name: 'Okta — Production', expires: '02/07/2026, 9:52 GMT+2' },
-  { id: 'entra-eu', name: 'Microsoft Entra ID — EU' },
-];
-
-const listSsoConfigs: () => Promise<ListSsoConfigurationsResponse> = async () =>
-  new Promise((resolve) => {
-    resolve({ configurations: mockConfigurations });
-  });
-
-const createSsoConfig: (args: {
-  name: string;
-  id?: string;
-}) => Promise<SsoConfiguration> = async ({ name, id }) =>
-  new Promise((resolve) => {
-    const newId = id || name.toLowerCase().replace(/\s+/g, '-');
-    resolve({ id: newId, name });
-  });
-
-const deleteSsoConfig: (args: { id: string }) => Promise<void> = async () =>
-  new Promise((resolve) => resolve());
 
 const tenantMock = {
   get,
   getTenantAdminLinkSSO,
-  listSsoConfigs,
-  createSsoConfig,
-  deleteSsoConfig,
 };
 
 export { tenantMock, user };

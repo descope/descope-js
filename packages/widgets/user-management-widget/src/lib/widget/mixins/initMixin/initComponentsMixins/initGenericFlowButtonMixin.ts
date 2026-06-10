@@ -8,7 +8,12 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  localeMixin,
+  formMixin,
+  loggerMixin,
+  modalMixin,
+} from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -23,6 +28,7 @@ import {
 export const initGenericFlowButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitGenericFlowButtonMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       modalMixin,
@@ -94,6 +100,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       #initModalContent(flowId: string) {
         this.#modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId,
             baseUrl: this.baseUrl,

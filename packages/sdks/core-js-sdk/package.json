@@ -1,6 +1,6 @@
 {
   "name": "@descope/core-js-sdk",
-  "version": "2.62.1",
+  "version": "2.62.2",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -82,7 +82,8 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "jwt-decode": "4.0.0"
+    "jwt-decode": "4.0.0",
+    "tslib": "2.8.1"
   },
   "overrides": {
     "terser": "^5.14.2"

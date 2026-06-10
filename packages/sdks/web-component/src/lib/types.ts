@@ -172,11 +172,6 @@ export type OIDCOptions = {
   oidcResource?: string;
 };
 
-export type Locale = {
-  locale: string;
-  fallback: string;
-};
-
 export type FlowState = {
   flowId: string;
   projectId: string;

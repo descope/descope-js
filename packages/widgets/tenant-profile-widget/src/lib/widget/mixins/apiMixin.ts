@@ -52,10 +52,6 @@ export const apiMixin = createSingletonMixin(
         return this.getAttribute('style-id') || DEFAULT_STYLE_ID;
       }
 
-      get multiSso() {
-        return this.getAttribute('multi-sso') === 'true';
-      }
-
       get api() {
         if (!this.#api) {
           this.#createSdk();
@@ -68,7 +64,7 @@ export const apiMixin = createSingletonMixin(
         await super.init?.();
 
         this.observeAttributes(
-          ['project-id', 'base-url', 'tenant', 'mock', 'multi-sso'],
+          ['project-id', 'base-url', 'tenant', 'mock'],
           () => {
             if (this.#api) {
               this.#createSdk();

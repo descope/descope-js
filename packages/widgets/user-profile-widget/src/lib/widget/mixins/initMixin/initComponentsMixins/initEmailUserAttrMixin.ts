@@ -9,14 +9,12 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
 } from '@descope/sdk-mixins';
-import {
-  getEmail,
-  getEmailBadgeLabel,
-} from '../../../state/selectors';
+import { getEmail, getEmailBadgeLabel } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -25,6 +23,7 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initEmailUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class EmailUserAttrMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -58,6 +57,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #initEditModalContent() {
         this.#editModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.emailUserAttr.editFlowId,
             baseUrl: this.baseUrl,
@@ -90,6 +90,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.emailUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,

@@ -14,11 +14,6 @@ export const initialState: State = {
   tenantAdminLinkSSO: {
     loading: false,
     error: null,
-    data: '',
-  },
-  ssoConfigurations: {
-    loading: false,
-    error: null,
-    data: [],
+    data: { defaultLink: '', ssoIdToLink: {} },
   },
 };

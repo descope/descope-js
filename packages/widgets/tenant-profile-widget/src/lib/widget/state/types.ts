@@ -1,5 +1,4 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
-import { SsoConfiguration } from '../api/types';
 import { Sdk } from '../api/sdk';
 
 export type State = {
@@ -16,12 +15,7 @@ export type State = {
   tenantAdminLinkSSO: {
     loading: boolean;
     error: unknown;
-    data: string;
-  };
-  ssoConfigurations: {
-    loading: boolean;
-    error: unknown;
-    data: SsoConfiguration[];
+    data: { defaultLink: string; ssoIdToLink: Record<string, string> };
   };
 };
 

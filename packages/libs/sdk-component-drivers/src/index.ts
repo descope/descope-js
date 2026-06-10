@@ -20,3 +20,4 @@ export * from './FlowButtonDriver';
 export * from './LastAuthBadgeDriver';
 export * from './TenantSelectorDriver';
 export * from './UserPasskeysDriver';
+export * from './MultiSsoConfigurationsDriver';
