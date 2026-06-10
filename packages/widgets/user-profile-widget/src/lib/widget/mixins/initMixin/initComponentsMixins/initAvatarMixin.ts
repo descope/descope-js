@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -23,6 +24,7 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initAvatarMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class AvatarMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       themeMixin,
       stateManagementMixin,
@@ -53,6 +55,7 @@ export const initAvatarMixin = createSingletonMixin(
       #initModalContent() {
         this.#modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.avatar.flowId,
             baseUrl: this.baseUrl,

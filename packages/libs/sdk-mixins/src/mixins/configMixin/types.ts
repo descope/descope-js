@@ -77,6 +77,8 @@ export type FlowConfig = {
 
 export type WidgetConfig = {
   allowSubTenants?: boolean;
+  version?: number;
+  targetLocales?: string[];
 };
 
 export type ProjectConfiguration = {

@@ -16,6 +16,7 @@ type FlowConfig = {
   'style-id'?: string;
   client?: string;
   tenant?: string;
+  locale?: string;
 };
 
 export const unflatten = (formData: Partial<User>, keyPrefix: string) =>
