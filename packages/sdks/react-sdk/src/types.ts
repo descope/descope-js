@@ -13,6 +13,7 @@ import type {
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
+import type OverrideThemes from '@descope/web-component';
 import DescopeWc from '@descope/web-component';
 import type { UserResponse } from '@descope/web-js-sdk';
 import React, { DOMAttributes } from 'react';
@@ -42,6 +43,8 @@ type WidgetProps = {
   widgetId: string;
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
+  // If locale is not provided - the browser's locale will be used
+  locale?: string;
   debug?: boolean;
   styleId?: string;
   onReady?: CustomEventCb<{}>;
@@ -170,6 +173,7 @@ export type DescopeProps = {
   ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
   externalRequestId?: string;
+  themeOverride?: OverrideThemes;
 };
 
 export type UserManagementProps = WidgetProps & WithToastProps;

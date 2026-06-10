@@ -4,7 +4,7 @@ import {
   ModalDriver,
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -14,6 +14,7 @@ import { getUserId } from '../../../state/selectors';
 export const initGenericFlowButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitGenericFlowButtonMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       modalMixin,
@@ -68,6 +69,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       #initModalContent(flowId: string, userId: string) {
         this.#modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId,
             baseUrl: this.baseUrl,

@@ -22,7 +22,7 @@ const AccessKeyManagement = React.forwardRef<
   AccessKeyManagementProps
 >(
   (
-    { logger, tenant, theme, debug, widgetId, styleId, onReady, onToast },
+    { logger, tenant, theme, locale, debug, widgetId, styleId, onReady, onToast },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -48,6 +48,7 @@ const AccessKeyManagement = React.forwardRef<
           {...{
             // attributes
             'theme.attr': theme,
+            'locale.attr': locale,
             'debug.attr': debug,
             'styleId.attr': styleId,
             'refreshCookieName.attr': refreshCookieName,

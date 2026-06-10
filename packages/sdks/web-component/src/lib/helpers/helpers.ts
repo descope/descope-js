@@ -15,6 +15,7 @@ import {
   WSFED_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  CUSTOM_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OVERRIDE_CONTENT_URL,
@@ -32,7 +33,6 @@ import {
   AutoFocusOptions,
   CustomScreenState,
   Direction,
-  Locale,
   SSOQueryParams,
   StepState,
 } from '../types';
@@ -300,12 +300,20 @@ export function getSSOAppIdParamFromUrl() {
   return getUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getCustomAppIdParamFromUrl() {
+  return getUrlParam(CUSTOM_APP_ID_PARAM_NAME);
+}
+
 export function getThirdPartyAppIdParamFromUrl() {
   return getUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
 }
 
 export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearCustomAppIdParamFromUrl() {
+  resetUrlParam(CUSTOM_APP_ID_PARAM_NAME);
 }
 
 export function clearThirdPartyAppIdParamFromUrl() {
@@ -461,6 +469,11 @@ export const handleUrlParams = (
     clearSSOAppIdParamFromUrl();
   }
 
+  const customAppId = getCustomAppIdParamFromUrl();
+  if (customAppId) {
+    clearCustomAppIdParamFromUrl();
+  }
+
   const thirdPartyAppId = getThirdPartyAppIdParamFromUrl();
   if (thirdPartyAppId) {
     clearThirdPartyAppIdParamFromUrl();
@@ -516,6 +529,7 @@ export const handleUrlParams = (
       samlIdpUsername,
       descopeIdpInitiated: idpInitiatedVal,
       ssoAppId,
+      customAppId,
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
@@ -699,6 +713,7 @@ export const showFirstScreenOnExecutionInit = (
     wsfedIdpStateId,
     samlIdpUsername,
     ssoAppId,
+    customAppId,
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
@@ -714,6 +729,7 @@ export const showFirstScreenOnExecutionInit = (
   !wsfedIdpStateId &&
   !samlIdpUsername &&
   !ssoAppId &&
+  !customAppId &&
   !oidcLoginHint &&
   !oidcPrompt &&
   !oidcErrorRedirectUri &&
@@ -797,25 +813,6 @@ export const leadingDebounce = <T extends (...args: any[]) => void>(
     }, wait);
   } as T;
 };
-
-export function getUserLocale(locale: string): Locale {
-  if (locale) {
-    return { locale: locale.toLowerCase(), fallback: locale.toLowerCase() };
-  }
-  const nl = navigator.language;
-  if (!nl) {
-    return { locale: '', fallback: '' };
-  }
-
-  if (nl.includes('-')) {
-    return {
-      locale: nl.toLowerCase(),
-      fallback: nl.split('-')[0].toLowerCase(),
-    };
-  }
-
-  return { locale: nl.toLowerCase(), fallback: nl.toLowerCase() };
-}
 
 export const clearPreviousExternalInputs = () => {
   document

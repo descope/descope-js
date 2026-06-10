@@ -5,6 +5,7 @@ import {
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -17,6 +18,7 @@ import { initWidgetRootMixin } from './initWidgetRootMixin';
 export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantPasswordPolicyUserAuthMethodMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -48,6 +50,7 @@ export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
       #initModalContent() {
         this.#modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.TenantPasswordPolicyUserAuthMethodDriver.flowId,
             tenant: this.tenantId,

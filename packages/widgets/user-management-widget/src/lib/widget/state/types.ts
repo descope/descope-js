@@ -1,7 +1,13 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { ToastNotification } from '@descope/sdk-mixins';
 import { Sdk } from '../api/sdk';
-import { CustomAttr, Role, SortParams, User } from '../api/types';
+import {
+  AssociatedTenant,
+  CustomAttr,
+  Role,
+  SortParams,
+  User,
+} from '../api/types';
 
 export type State = {
   usersList: {
@@ -46,6 +52,11 @@ export type State = {
     loading: boolean;
     error: unknown;
     data: Role[];
+  };
+  subTenantRoles: {
+    loading: boolean;
+    error: unknown;
+    data: AssociatedTenant[];
   };
   searchParams: { text: string; sort: SortParams[] };
   selectedUsersLoginIds: string[][];

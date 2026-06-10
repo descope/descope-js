@@ -61,9 +61,31 @@ export const withFlowNonce =
       return req;
     };
 
-    return createSdk(
+    const sdk = createSdk(
       addHooks(sdkConfig, { afterRequest, beforeRequest }),
     ) as ReturnType<T>;
+
+    // Serialize concurrent flow.next calls so the second one reads the
+    // rotated nonce stored by the first's afterRequest. See descope/etc#15600.
+    if (sdk.flow?.next) {
+      let chain: Promise<void> = Promise.resolve();
+      const originalNext = sdk.flow.next.bind(sdk.flow);
+      sdk.flow.next = async (...args: Parameters<typeof originalNext>) => {
+        const myTurn = chain;
+        let release!: () => void;
+        chain = new Promise<void>((resolve) => {
+          release = resolve;
+        });
+        await myTurn;
+        try {
+          return await originalNext(...args);
+        } finally {
+          release();
+        }
+      };
+    }
+
+    return sdk;
   };
 
 export * from './helpers';

@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -22,6 +23,7 @@ import { initWidgetRootMixin } from './initWidgetRootMixin';
 export const initTenantNameMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantNameMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -53,6 +55,7 @@ export const initTenantNameMixin = createSingletonMixin(
       #initEditModalContent() {
         this.#editModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.tenantNameDriver.editFlowId,
             tenant: this.tenantId,

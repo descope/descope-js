@@ -2,6 +2,79 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.5](https://github.com/descope/descope-js/compare/user-management-widget-0.13.4...user-management-widget-0.13.5) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+* `web-component` updated to version `3.67.1`
+## [0.13.4](https://github.com/descope/descope-js/compare/user-management-widget-0.13.3...user-management-widget-0.13.4) (2026-06-09)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.67.0`
+* `sdk-mixins` updated to version `0.20.0`
+## [0.13.3](https://github.com/descope/descope-js/compare/user-management-widget-0.13.2...user-management-widget-0.13.3) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+* `web-component` updated to version `3.66.1`
+## [0.13.2](https://github.com/descope/descope-js/compare/user-management-widget-0.13.1...user-management-widget-0.13.2) (2026-06-04)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.66.0`
+* `sdk-mixins` updated to version `0.19.0`
+## [0.13.1](https://github.com/descope/descope-js/compare/user-management-widget-0.13.0...user-management-widget-0.13.1) (2026-05-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.65.0`
+## [0.13.0](https://github.com/descope/descope-js/compare/user-management-widget-0.12.1...user-management-widget-0.13.0) (2026-05-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.64.3`
+* `sdk-mixins` updated to version `0.18.0`
+* `sdk-component-drivers` updated to version `0.12.0`
+
+### Features
+
+* user-management-widget sub tenant support RELEASE ([#1388](https://github.com/descope/descope-js/issues/1388)) ([416da21](https://github.com/descope/descope-js/commit/416da21112328a2fcb39f1c0bf2e606db4b60667))
+
+## [0.12.1](https://github.com/descope/descope-js/compare/user-management-widget-0.12.0...user-management-widget-0.12.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+* `web-component` updated to version `3.64.2`
+## [0.12.0](https://github.com/descope/descope-js/compare/user-management-widget-0.11.27...user-management-widget-0.12.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `web-component` updated to version `3.64.1`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.11.27](https://github.com/descope/descope-js/compare/user-management-widget-0.11.26...user-management-widget-0.11.27) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+* `web-component` updated to version `3.64.0`
+## [0.11.26](https://github.com/descope/descope-js/compare/user-management-widget-0.11.25...user-management-widget-0.11.26) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `web-component` updated to version `3.63.0`
+* `sdk-mixins` updated to version `0.17.0`
 ## [0.11.25](https://github.com/descope/descope-js/compare/user-management-widget-0.11.24...user-management-widget-0.11.25) (2026-05-14)
 
 ### Dependency Updates

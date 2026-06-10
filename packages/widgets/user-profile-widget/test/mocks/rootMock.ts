@@ -171,7 +171,13 @@ export default `
               </svg>
           </descope-icon>
         </descope-user-auth-method>
-      </descope-container
+      <descope-user-passkeys
+      data-id="passkey"
+      allow-remove="true"
+      add-passkey-flow-id="add-passkey-flow"
+      remove-passkey-flow-id="remove-passkey-flow"
+      label="Passkey"
+    ></descope-user-passkeys></descope-container
   ><descope-divider
     id="divider2"
     italic="false"

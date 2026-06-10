@@ -7,6 +7,7 @@
       :base-static-url="baseStaticUrl"
       :base-cdn-url="baseCdnUrl"
       :theme.attr="theme"
+      :locale.attr="locale"
       :debug.attr="debug"
       :widget-id="widgetId"
       :style-id="styleId"
@@ -25,6 +26,9 @@ defineProps({
     required: true,
   },
   theme: {
+    type: String,
+  },
+  locale: {
     type: String,
   },
   styleId: {

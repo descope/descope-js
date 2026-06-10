@@ -75,12 +75,21 @@ export type FlowConfig = {
   fingerprintKey?: string;
 };
 
+export type WidgetConfig = {
+  allowSubTenants?: boolean;
+  version?: number;
+  targetLocales?: string[];
+};
+
 export type ProjectConfiguration = {
   componentsVersion: string;
   componentsVersionSri?: string;
   cssTemplate: Style;
   flows: {
     [key: string]: FlowConfig; // dynamic key names for flows
+  };
+  widgets?: {
+    [key: string]: WidgetConfig; // dynamic key names for widgets
   };
   styles: Record<string, Style>;
 };

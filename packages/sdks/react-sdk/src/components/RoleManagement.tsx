@@ -19,7 +19,17 @@ const RoleManagementWC = lazy(async () => {
 
 const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
   (
-    { logger, tenant, theme, debug, widgetId, styleId, onReady, onToast },
+    {
+      logger,
+      tenant,
+      theme,
+      locale,
+      debug,
+      widgetId,
+      styleId,
+      onReady,
+      onToast,
+    },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -45,6 +55,7 @@ const RoleManagement = React.forwardRef<HTMLElement, RoleManagementProps>(
           {...{
             // attributes
             'theme.attr': theme,
+            'locale.attr': locale,
             'debug.attr': debug,
             'styleId.attr': styleId,
             'refreshCookieName.attr': refreshCookieName,

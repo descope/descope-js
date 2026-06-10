@@ -25,6 +25,9 @@ const configContent = {
   flows: {
     flow1: { version: 1 },
   },
+  widgets: {
+    wid: { allowSubTenants: true },
+  },
   componentsVersion: '1.2.3',
 };
 
@@ -143,6 +146,25 @@ test.describe('widget', () => {
 
     await page.route(apiPath('tenant', 'roles'), async (route) =>
       route.fulfill({ json: mockRoles }),
+    );
+
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({
+        json: {
+          roles: [
+            {
+              tenantId: 'sub-tenant-1',
+              tenantName: 'Sub Tenant One',
+              roleNames: ['Role 1', 'Role 2'],
+            },
+            {
+              tenantId: 'sub-tenant-2',
+              tenantName: 'Sub Tenant Two',
+              roleNames: ['Role 1', 'Role 3'],
+            },
+          ],
+        },
+      }),
     );
 
     await page.route(apiPath('user', 'customattributes'), async (route) =>
@@ -907,5 +929,253 @@ test.describe('widget', () => {
       await page.waitForTimeout(MODAL_TIMEOUT);
       await expect(modal).toBeHidden();
     }
+  });
+
+  test('roles display - shows "Multiple roles" when tenants have different roles', async ({
+    page,
+  }) => {
+    // mockUsers[0]: roleNames=['Tenant Admin','Role 2'], userTenants[0].roleNames=['Role 1','Role 2'] — mismatch
+    await page.waitForTimeout(STATE_TIMEOUT);
+    await expect(page.locator('text=Multiple roles').first()).toBeVisible();
+  });
+
+  test('roles display - shows role names when all role sets are identical', async ({
+    page,
+  }) => {
+    // mockUsers[1] has no userTenants, so only top-level roleNames — always "same"
+    await page.waitForTimeout(STATE_TIMEOUT);
+    await expect(
+      page.locator(`text=${mockUsers[1].roleNames.join(', ')}`).first(),
+    ).toBeVisible();
+  });
+
+  test('create user - sends empty userTenants when no sub-tenants assigned', async ({
+    page,
+  }) => {
+    let capturedRequestBody: any;
+    await page.route(apiPath('user', 'create'), async (route) => {
+      capturedRequestBody = route.request().postDataJSON();
+      return route.fulfill({ json: { user: mockNewUser } });
+    });
+
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await page.getByLabel('Login Id').first().fill('someLoginId@test.com');
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-submit')
+      .first()
+      .click();
+
+    expect(capturedRequestBody.userTenants).toEqual([]);
+  });
+
+  test('create user - sub-tenant section is visible when sub-tenants exist', async ({
+    page,
+  }) => {
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
+
+    await openAddUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+    await expect(page.locator('text=Sub Tenant Roles').first()).toBeVisible();
+  });
+
+  test('create user - sub-tenant section is hidden when no sub-tenants', async ({
+    page,
+  }) => {
+    // Must intercept before page load since getSubTenantRoles is called on widget init
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({ json: { roles: [] } }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
+
+    await openAddUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeHidden();
+  });
+
+  test('edit user - sub-tenant displays tenant name, not tenant id', async ({
+    page,
+  }) => {
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+    // Both create and edit modals are in the DOM; edit modal's elements are at index 1
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').nth(1),
+    ).toBeVisible({ timeout: 8000 });
+
+    // The data attribute should map tenantId → { label: tenantName, options: roleNames }
+    // so the component receives 'Sub Tenant One' as the display label for 'sub-tenant-1'
+    const dataAttr = await page
+      .locator('[data-id="sub-tenant-mappings"]')
+      .nth(1)
+      .getAttribute('data', { timeout: 8000 });
+    const parsedData = JSON.parse(dataAttr || '{}');
+    expect(parsedData['sub-tenant-1']).toHaveProperty(
+      'label',
+      'Sub Tenant One',
+    );
+  });
+
+  test('edit user - sub-tenant section is hidden when no sub-tenants', async ({
+    page,
+  }) => {
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({ json: { roles: [] } }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Both create and edit modals are in the DOM; edit modal's elements are at index 1
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').nth(1),
+    ).toBeHidden({ timeout: 8000 });
+  });
+
+  test('create user - sub-tenant values reset after cancel', async ({
+    page,
+  }) => {
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Sub-tenant section is present on first open
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+
+    // Cancel the modal
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-cancel')
+      .first()
+      .click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Reopen the modal — sub-tenant section should still be visible (not broken by reset)
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+    // The multi-line-mappings component should have no pre-selected tenants after reset
+    await expect(page.locator('text=Sub Tenant One')).not.toBeVisible();
+  });
+
+  test('edit user - update request sends tenant id, not tenant name', async ({
+    page,
+  }) => {
+    let capturedRequestBody: any;
+    await page.route(apiPath('user', 'update'), async (route) => {
+      capturedRequestBody = route.request().postDataJSON();
+      return route.fulfill({ json: { user: mockUsers[0] } });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    const responsePromise = page.waitForResponse(apiPath('user', 'update'));
+    await page
+      .locator('descope-button')
+      .getByTestId('edit-user-modal-submit')
+      .first()
+      .click();
+    await responsePromise;
+
+    expect(capturedRequestBody.userTenants).toBeDefined();
+    expect(capturedRequestBody.userTenants[0].tenantId).toBe('sub-tenant-1');
+    expect(capturedRequestBody.userTenants[0].tenantName).toBeUndefined();
+  });
+
+  test('getSubTenantRoles is not called when allowSubTenants is false', async ({
+    page,
+  }) => {
+    // Override config.json to disable sub-tenants for this widget
+    await page.route('*/**/config.json', async (route) =>
+      route.fulfill({
+        json: {
+          ...configContent,
+          widgets: { wid: { allowSubTenants: false } },
+        },
+      }),
+    );
+
+    let subTenantRolesCallCount = 0;
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) => {
+      subTenantRolesCallCount += 1;
+      return route.fulfill({ json: { roles: [] } });
+    });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // Open create modal — should not trigger the API either
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Close create modal
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-cancel')
+      .first()
+      .click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Open edit modal — should not trigger the API either
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    expect(subTenantRolesCallCount).toBe(0);
   });
 });

@@ -27,8 +27,6 @@
         min-height: 300px;
         margin: auto;
         position: relative;
-        top: 50%;
-        transform: translateY(-50%);
       }
     </style>
   </head>
@@ -71,6 +69,9 @@
         widgetEle.setAttribute('widget-id', DESCOPE_WIDGET_ID);
         widgetEle.setAttribute('debug', 'false');
         widgetEle.setAttribute('theme', 'dark');
+        if (DESCOPE_LOCALE) {
+          widgetEle.setAttribute('locale', DESCOPE_LOCALE);
+        }
         widgetEle.addEventListener('logout', () => {
           window.location.reload();
         });
@@ -89,6 +90,9 @@
           flowEle.setAttribute('base-static-url', DESCOPE_BASE_STATIC_URL);
           flowEle.setAttribute('flow-id', 'sign-up-or-in');
           flowEle.setAttribute('debug', 'false');
+          if (DESCOPE_LOCALE) {
+            flowEle.setAttribute('locale', DESCOPE_LOCALE);
+          }
           flowEle.addEventListener('success', () => {
             flowEle.remove();
             rootEle.appendChild(widgetEle);

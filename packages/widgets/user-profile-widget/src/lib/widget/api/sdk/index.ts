@@ -2,6 +2,7 @@ import '@descope/core-js-sdk';
 import createWebSdk from '@descope/web-js-sdk';
 import { createUserSdk } from './createUserSdk';
 import { createDeviceSdk } from './createDeviceSdk';
+import { createPasskeySdk } from './createPasskeySdk';
 
 declare const BUILD_VERSION: string;
 
@@ -29,6 +30,9 @@ export const createSdk = (
     },
     device: {
       ...createDeviceSdk({ httpClient: webSdk.httpClient, mock }),
+    },
+    passkey: {
+      ...createPasskeySdk({ httpClient: webSdk.httpClient, mock }),
     },
   };
 };

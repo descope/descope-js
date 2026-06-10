@@ -23,7 +23,10 @@ const AuditManagementWC = lazy(async () => {
 });
 
 const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
-  ({ logger, tenant, theme, debug, widgetId, styleId, onReady }, ref) => {
+  (
+    { logger, tenant, theme, locale, debug, widgetId, styleId, onReady },
+    ref,
+  ) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -53,6 +56,7 @@ const AuditManagement = React.forwardRef<HTMLElement, AuditManagementProps>(
           {...{
             // attributes
             'theme.attr': theme,
+            'locale.attr': locale,
             'debug.attr': debug,
             'styleId.attr': styleId,
             'refreshCookieName.attr': refreshCookieName,

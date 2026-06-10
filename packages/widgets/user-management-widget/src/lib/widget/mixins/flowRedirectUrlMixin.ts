@@ -1,6 +1,7 @@
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   initLifecycleMixin,
   loggerMixin,
   modalMixin,
@@ -15,6 +16,7 @@ const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
 export const flowRedirectUrlMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class FlowRedirectUrlMixinClass extends compose(
+      localeMixin,
       initLifecycleMixin,
       modalMixin,
       stateManagementMixin,
@@ -37,6 +39,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
         modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: widgetFlow,
             baseUrl: this.baseUrl,

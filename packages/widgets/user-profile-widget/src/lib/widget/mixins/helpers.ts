@@ -11,6 +11,7 @@ type FlowConfig = {
   'style-id'?: string;
   form?: Record<string, string>;
   client?: Record<string, string> | string;
+  locale?: string;
 };
 
 const stringifyValue = (value: unknown) => {

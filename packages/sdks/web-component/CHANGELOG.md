@@ -2,6 +2,80 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.67.1](https://github.com/descope/descope-js/compare/web-component-3.67.0...web-component-3.67.1) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+## [3.67.0](https://github.com/descope/descope-js/compare/web-component-3.66.1...web-component-3.67.0) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
+## [3.66.1](https://github.com/descope/descope-js/compare/web-component-3.66.0...web-component-3.66.1) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+## [3.66.0](https://github.com/descope/descope-js/compare/web-component-3.65.0...web-component-3.66.0) (2026-06-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.19.0`
+
+### Features
+
+* Add tenant style sheet ([#1397](https://github.com/descope/descope-js/issues/1397)) ([90ab9dd](https://github.com/descope/descope-js/commit/90ab9dd5f05cd696da8ced616e5e0b081a2d970c))
+
+## [3.65.0](https://github.com/descope/descope-js/compare/web-component-3.64.3...web-component-3.65.0) (2026-05-28)
+
+
+### Features
+
+* **web-component:** support 'read-only' componentsState action RELEASE ([#1399](https://github.com/descope/descope-js/issues/1399)) ([138eba4](https://github.com/descope/descope-js/commit/138eba448079872889c96893d149d612085297f7)), closes [descope/etc#15647](https://github.com/descope/etc/issues/15647) [descope/console-app#5287](https://github.com/descope/console-app/issues/5287)
+
+## [3.64.3](https://github.com/descope/descope-js/compare/web-component-3.64.2...web-component-3.64.3) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.18.0`
+## [3.64.2](https://github.com/descope/descope-js/compare/web-component-3.64.1...web-component-3.64.2) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [3.64.1](https://github.com/descope/descope-js/compare/web-component-3.64.0...web-component-3.64.1) (2026-05-25)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.17.1`
+* `web-js-sdk` updated to version `1.50.0`
+## [3.64.0](https://github.com/descope/descope-js/compare/web-component-3.63.0...web-component-3.64.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+
+### Features
+
+* Add option to submit custom app id in query param - RELEASE ([#1394](https://github.com/descope/descope-js/issues/1394)) ([c814443](https://github.com/descope/descope-js/commit/c814443b978c86a9e985e97554d44a5eeca354b4))
+
+## [3.63.0](https://github.com/descope/descope-js/compare/web-component-3.62.0...web-component-3.63.0) (2026-05-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.17.0`
+* `web-js-sdk` updated to version `1.49.0`
+
+### Features
+
+* Add color theme override ([#1389](https://github.com/descope/descope-js/issues/1389)) ([34272cf](https://github.com/descope/descope-js/commit/34272cfb5c62e0175df6c2b6dcf71ab822d20ab4)), closes [#BD10E0](https://github.com/descope/descope-js/issues/BD10E0) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#710A86](https://github.com/descope/descope-js/issues/710A86) [#DA5DF3](https://github.com/descope/descope-js/issues/DA5DF3) [#EEB6](https://github.com/descope/descope-js/issues/EEB6) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309)
+
 ## [3.62.0](https://github.com/descope/descope-js/compare/web-component-3.61.0...web-component-3.62.0) (2026-05-14)
 
 ### Dependency Updates

@@ -28,7 +28,7 @@ import {
 } from '../helpers/flowInputs';
 import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin } from '../mixins';
+import { formMountMixin, componentConditionsMixin } from '../mixins';
 import {
   AutoFocusOptions,
   CustomStorage,
@@ -50,6 +50,7 @@ const BaseClass = compose(
   themeMixin,
   staticResourcesMixin,
   formMountMixin,
+  componentConditionsMixin,
   injectStyleMixin,
 )(HTMLElement);
 
@@ -197,10 +198,6 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  get tenantId() {
-    return this.getAttribute('tenant') || undefined;
-  }
-
   get redirectUrl() {
     return this.getAttribute('redirect-url') || undefined;
   }
@@ -315,6 +312,7 @@ class BaseDescopeWc extends BaseClass {
       'style-id',
       'outbound-app-id',
       'outbound-app-scopes',
+      'theme-override',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
@@ -667,6 +665,10 @@ class BaseDescopeWc extends BaseClass {
       'components-context',
       this.#eventsCbRefs.componentsContext,
     );
+    // Forward to the composed mixin chain so each mixin's
+    // disconnectedCallback (e.g. componentConditionsMixin) gets to clean up.
+    // Without this, mixin disconnectedCallbacks are dead code.
+    super.disconnectedCallback?.();
   }
 
   attributeChangedCallback(

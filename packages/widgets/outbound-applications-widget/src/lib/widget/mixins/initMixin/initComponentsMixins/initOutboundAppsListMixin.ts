@@ -8,7 +8,7 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { getAppsList, getUserId } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -18,6 +18,7 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initOutboundAppsListMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitAppsListMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -105,6 +106,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       #initConnectModalContent(appId: string) {
         this.#connectModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.#obAppsList.connectFlowId,
             baseUrl: this.baseUrl,
@@ -131,6 +133,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       #initDisconnectModalContent(appId: string) {
         this.#disconnectModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.#obAppsList.disconnectFlowId,
             baseUrl: this.baseUrl,

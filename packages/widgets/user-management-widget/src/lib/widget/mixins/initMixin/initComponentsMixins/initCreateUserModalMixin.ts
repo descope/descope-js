@@ -1,6 +1,7 @@
 import {
   ButtonDriver,
   ModalDriver,
+  MultiLineMappingsDriver,
   MultiSelectDriver,
 } from '@descope/sdk-component-drivers';
 import {
@@ -8,9 +9,19 @@ import {
   createSingletonMixin,
   createTemplate,
 } from '@descope/sdk-helpers';
-import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  formMixin,
+  loggerMixin,
+  modalMixin,
+  widgetConfigMixin,
+} from '@descope/sdk-mixins';
 import { unflatten } from '../../../../helpers';
-import { getCustomAttributes, getTenantRoles } from '../../../state/selectors';
+import {
+  getCustomAttributes,
+  getTenantRoles,
+  getSubTenantRolesData,
+  getHasSubTenants,
+} from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -21,11 +32,16 @@ export const initCreateUserModalMixin = createSingletonMixin(
       modalMixin,
       formMixin,
       loggerMixin,
+      widgetConfigMixin,
       initWidgetRootMixin,
     )(superclass) {
       createUserModal: ModalDriver;
 
       #rolesMultiSelect: MultiSelectDriver;
+
+      #subTenantSection: Element;
+
+      #subTenantMappings: MultiLineMappingsDriver;
 
       async #initCreateUserModal() {
         this.createUserModal = this.createModal();
@@ -41,9 +57,14 @@ export const initCreateUserModalMixin = createSingletonMixin(
             this.createUserModal.ele?.querySelector('[data-id="modal-cancel"]'),
           { logger: this.logger },
         );
+        const resetModal = () => {
+          this.resetFormData(this.createUserModal.ele);
+          this.#subTenantMappings.value = [];
+        };
+
         cancelButton.onClick(() => {
           this.createUserModal.close();
-          this.resetFormData(this.createUserModal.ele);
+          resetModal();
         });
 
         const submitButton = new ButtonDriver(
@@ -54,14 +75,16 @@ export const initCreateUserModalMixin = createSingletonMixin(
         submitButton.onClick(async () => {
           if (this.validateForm(this.createUserModal.ele)) {
             const formData = this.getFormData(this.createUserModal.ele);
+            const userTenants = this.#subTenantMappings.mergedValue;
             this.actions.createUser({
               ...unflatten(formData, 'customAttributes'),
+              userTenants,
               invite: true,
               verifiedEmail: true,
               verifiedPhone: true,
             });
             this.createUserModal.close();
-            this.resetFormData(this.createUserModal.ele);
+            resetModal();
           }
         });
 
@@ -73,10 +96,30 @@ export const initCreateUserModalMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
+        this.#subTenantSection = this.createUserModal.ele?.querySelector(
+          '[data-id="sub-tenant-section"]',
+        );
+        this.#subTenantMappings = new MultiLineMappingsDriver(
+          () =>
+            this.createUserModal.ele?.querySelector(
+              '[data-id="sub-tenant-mappings"]',
+            ),
+          { logger: this.logger },
+        );
+
         this.#updateRolesMultiSelect();
 
         this.createUserModal.beforeOpen = async () => {
+          // gate sub-tenant fetch on the allowSubTenants flag without blocking the parallel batch
+          const subTenantPromise = this.getWidgetConfig().then(
+            (widgetConfig) =>
+              widgetConfig?.allowSubTenants
+                ? this.actions.getSubTenantRoles()
+                : undefined,
+          );
+          await Promise.all([this.actions.getTenantRoles(), subTenantPromise]);
           await this.#updateRolesMultiSelect();
+          this.#updateSubTenantSection();
           this.#updateCustomFields();
         };
       }
@@ -113,6 +156,15 @@ export const initCreateUserModalMixin = createSingletonMixin(
             label: name,
           })),
         );
+      };
+
+      #updateSubTenantSection = () => {
+        const hasSubTenants = getHasSubTenants(this.state);
+        // hide the sub-tenant section when there are no sub-tenants to assign
+        this.#subTenantSection?.classList.toggle('hidden', !hasSubTenants);
+        if (hasSubTenants) {
+          this.#subTenantMappings.setData(getSubTenantRolesData(this.state));
+        }
       };
 
       async onWidgetRootReady() {
