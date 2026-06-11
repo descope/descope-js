@@ -22,11 +22,11 @@ export const withToastNotifications = <A extends AnyAction = AnyAction>({
   onFulfilled: (state: any, action: A) => {
     if (!getSuccessMsg) return;
     const c = normalize(getSuccessMsg(action));
-    if (c.msg) state.notifications.push({ type: 'success', ...c });
+    if (c.msg) state.notifications.push({ ...c, type: 'success' });
   },
   onRejected: (state: any, action: any) => {
     if (!getErrorMsg) return;
     const c = normalize(getErrorMsg(action));
-    if (c.msg) state.notifications.push({ type: 'error', ...c });
+    if (c.msg) state.notifications.push({ ...c, type: 'error' });
   },
 });

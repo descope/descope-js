@@ -165,31 +165,28 @@ describe('createToastEventsMixin', () => {
     expect(clearNotifications).not.toHaveBeenCalled();
   });
 
-  it('escapes HTML in msg before rendering', async () => {
+  it('renders msg safely via textContent (no HTML injection)', async () => {
     const { trigger, mockNotification } = await setup();
 
     trigger([{ type: 'error', msg: '<script>alert(1)</script>' }]);
 
-    expect(mockNotification.setContent).toHaveBeenCalledWith(
-      expect.stringContaining('&lt;script&gt;alert(1)&lt;/script&gt;'),
-    );
-    expect(mockNotification.setContent).not.toHaveBeenCalledWith(
-      expect.stringContaining('<script>'),
-    );
+    const template = mockNotification.setContent.mock.calls[0][0];
+    expect(template).toBeInstanceOf(HTMLTemplateElement);
+    // textContent sees the literal characters — they are never parsed as HTML
+    expect(template.content.textContent).toContain('<script>alert(1)</script>');
   });
 
-  it('escapes HTML in detail before rendering', async () => {
+  it('renders detail safely via textContent (no HTML injection)', async () => {
     const { trigger, mockNotification } = await setup();
 
     trigger([
       { type: 'error', msg: 'Failed', detail: '<img src=x onerror=alert(1)>' },
     ]);
 
-    expect(mockNotification.setContent).toHaveBeenCalledWith(
-      expect.stringContaining('&lt;img src=x onerror=alert(1)&gt;'),
-    );
-    expect(mockNotification.setContent).not.toHaveBeenCalledWith(
-      expect.stringContaining('<img'),
+    const template = mockNotification.setContent.mock.calls[0][0];
+    expect(template).toBeInstanceOf(HTMLTemplateElement);
+    expect(template.content.textContent).toContain(
+      '<img src=x onerror=alert(1)>',
     );
   });
 });

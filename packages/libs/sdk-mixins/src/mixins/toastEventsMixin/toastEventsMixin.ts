@@ -11,15 +11,6 @@ import { defaultIcons } from './icons';
 const DEFAULT_SUCCESS_NOTIFICATION_DURATION = 3000;
 const DEFAULT_ERROR_NOTIFICATION_DURATION = 0;
 
-const ESC: Record<string, string> = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;',
-};
-const escapeHtml = (s: string) => s.replace(/[&<>"']/g, (c) => ESC[c]);
-
 export type ToastNotification = {
   type: 'success' | 'error';
   msg: string;
@@ -44,6 +35,14 @@ export type ToastEventsMixinConfig<S = any> = {
   eventName?: string;
 };
 
+type WithStateMixin = abstract new (...args: any[]) => {
+  subscribe: <SelectorR>(
+    cb: (state: SelectorR) => void,
+    selector?: (state: any) => SelectorR,
+  ) => () => void;
+  actions: { clearNotifications: () => void };
+};
+
 export const createToastEventsMixin = <S>(
   config: ToastEventsMixinConfig<S> = {},
 ) => {
@@ -57,13 +56,12 @@ export const createToastEventsMixin = <S>(
   } = config;
 
   return createSingletonMixin(
-    <T extends CustomElementConstructor>(superclass: T) =>
+    <T extends CustomElementConstructor & WithStateMixin>(superclass: T) =>
       class ToastEventsMixinClass extends compose(
         loggerMixin,
         notificationsMixin,
         initLifecycleMixin,
       )(superclass) {
-        // subscribe and actions are provided at runtime by the widget's stateManagementMixin
         declare subscribe: <SelectorR>(
           cb: (state: SelectorR) => void,
           selector?: (state: any) => SelectorR,
@@ -77,11 +75,23 @@ export const createToastEventsMixin = <S>(
           const closeIcon = Object.assign(defaultIcons.close(), {
             slot: 'close',
           });
-          const body = detail
-            ? `<div><div>${escapeHtml(msg)}</div>${escapeHtml(detail)}</div>`
-            : escapeHtml(msg);
 
-          return `${typeIcon.outerHTML}${body}${closeIcon.outerHTML}`;
+          const template = document.createElement('template');
+          template.content.appendChild(typeIcon);
+
+          if (detail) {
+            const wrapper = document.createElement('div');
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = msg;
+            wrapper.appendChild(msgDiv);
+            wrapper.appendChild(document.createTextNode(detail));
+            template.content.appendChild(wrapper);
+          } else {
+            template.content.appendChild(document.createTextNode(msg));
+          }
+
+          template.content.appendChild(closeIcon);
+          return template;
         }
 
         #createNotification(type: ToastNotification['type']) {

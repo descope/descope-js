@@ -1,1 +1,1 @@
-module.exports = () => document.createElement('span');
+module.exports = () => {};

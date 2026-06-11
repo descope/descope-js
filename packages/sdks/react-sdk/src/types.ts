@@ -50,7 +50,7 @@ type WidgetProps = {
   onReady?: CustomEventCb<{}>;
 };
 
-type WithToastProps = {
+type ToastProps = {
   /** Fired before each toast is shown. Call event.preventDefault() to suppress the built-in toast. */
   onToast?: CustomEventCb<ToastEventPayload>;
 };
@@ -176,16 +176,16 @@ export type DescopeProps = {
   themeOverride?: OverrideThemes;
 };
 
-export type UserManagementProps = WidgetProps & WithToastProps;
+export type UserManagementProps = WidgetProps & ToastProps;
 
-export type RoleManagementProps = WidgetProps & WithToastProps;
+export type RoleManagementProps = WidgetProps & ToastProps;
 
-export type AccessKeyManagementProps = WidgetProps & WithToastProps;
+export type AccessKeyManagementProps = WidgetProps & ToastProps;
 
 export type AuditManagementProps = WidgetProps;
 
 export type UserProfileProps = Omit<WidgetProps, 'tenant'> &
-  WithToastProps & {
+  ToastProps & {
     onLogout?: (e: CustomEvent) => void;
   };
 
