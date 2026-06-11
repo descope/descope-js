@@ -125,9 +125,12 @@ describe('web-component webauthn', () => {
 
     nextMock.mockReturnValueOnce(generateSdkResponse());
 
-    sdk.webauthn.helpers.get.mockReturnValueOnce(
-      Promise.reject(new DOMException('', 'NotAllowedError')),
+    const error = new DOMException(
+      'The operation either timed out or was not allowed.',
+      'NotAllowedError',
     );
+    error.reason = 'not_allowed';
+    sdk.webauthn.helpers.get.mockReturnValueOnce(Promise.reject(error));
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="webauthn_signup" project-id="1"></descope-wc>`;
 
@@ -137,6 +140,8 @@ describe('web-component webauthn', () => {
     expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
       transactionId: 't1',
       failure: 'NotAllowedError',
+      failureReason: 'not_allowed',
+      failureMessage: 'The operation either timed out or was not allowed.',
     });
   });
 });
