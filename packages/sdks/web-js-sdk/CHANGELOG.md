@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.50.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.3...web-js-sdk-1.50.4) (2026-06-14)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** bump js-cookie to 3.0.8 for CVE-2026-46625 RELEASE ([#1412](https://github.com/descope/descope-js/issues/1412)) ([adb86b9](https://github.com/descope/descope-js/commit/adb86b9f11b67884a9d5ff168ad32249b1522709))
+
 ## [1.50.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.2...web-js-sdk-1.50.3) (2026-06-09)
 
 ### Dependency Updates
