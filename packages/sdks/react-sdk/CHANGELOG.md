@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.29.0](https://github.com/descope/descope-js/compare/react-sdk-2.28.11...react-sdk-2.29.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.8.0`
+* `access-key-management-widget` updated to version `0.8.0`
+* `audit-management-widget` updated to version `0.8.0`
+* `role-management-widget` updated to version `0.9.0`
+* `user-management-widget` updated to version `0.14.0`
+* `user-profile-widget` updated to version `0.12.0`
+* `applications-portal-widget` updated to version `0.8.0`
+* `outbound-applications-widget` updated to version `0.4.0`
+* `web-component` updated to version `3.68.0`
+* `web-js-sdk` updated to version `1.50.4`
+* `tenant-profile-widget` updated to version `0.7.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
 ## [2.28.11](https://github.com/descope/descope-js/compare/react-sdk-2.28.10...react-sdk-2.28.11) (2026-06-09)
 
 ### Dependency Updates
