@@ -365,7 +365,7 @@
         const guestRoleArn = document.getElementById('guestRoleArn').value;
         const region = document.getElementById('region').value;
 
-        if (!appId || !identityPoolId) {
+        if (!appId) {
           alert(
             'Please fill in Application ID and Identity Pool ID at minimum',
           );
@@ -375,8 +375,9 @@
         const config = {
           enabled: true,
           rumConfig: {
+            signing: false,
             applicationId: appId,
-            identityPoolId: identityPoolId,
+            // identityPoolId: identityPoolId,
             ...(guestRoleArn && { guestRoleArn }), // Only include if provided (for classic flow)
             region: region,
             sessionSampleRate: 1.0,
