@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.68.0](https://github.com/descope/descope-js/compare/web-component-3.67.1...web-component-3.68.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `web-js-sdk` updated to version `1.50.4`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
 ## [3.67.1](https://github.com/descope/descope-js/compare/web-component-3.67.0...web-component-3.67.1) (2026-06-09)
 
 ### Dependency Updates
