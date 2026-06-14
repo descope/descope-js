@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.20.0...sdk-mixins-0.21.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.13.0`
+* `sdk-helpers` updated to version `0.8.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
 ## [0.20.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.19.0...sdk-mixins-0.20.0) (2026-06-09)
 
 
