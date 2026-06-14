@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.0](https://github.com/descope/descope-js/compare/vue-sdk-2.16.10...vue-sdk-2.17.0) (2026-06-14)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.8.0`
+* `audit-management-widget` updated to version `0.8.0`
+* `role-management-widget` updated to version `0.9.0`
+* `user-management-widget` updated to version `0.14.0`
+* `user-profile-widget` updated to version `0.12.0`
+* `applications-portal-widget` updated to version `0.8.0`
+* `web-component` updated to version `3.68.0`
+* `web-js-sdk` updated to version `1.50.4`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
 ## [2.16.10](https://github.com/descope/descope-js/compare/vue-sdk-2.16.9...vue-sdk-2.16.10) (2026-06-09)
 
 ### Dependency Updates
