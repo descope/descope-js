@@ -164,11 +164,6 @@ export class TelemetryManager {
     eventPluginsToLoad: Plugin[],
   ): AwsRum {
     const rumConfig = {
-      sessionSampleRate: this.config.rumConfig.sessionSampleRate,
-      identityPoolId: this.config.rumConfig.identityPoolId,
-      ...(this.config.rumConfig.guestRoleArn && {
-        guestRoleArn: this.config.rumConfig.guestRoleArn,
-      }),
       endpoint: this.config.rumConfig.endpoint,
       telemetries,
       eventPluginsToLoad,
@@ -179,6 +174,7 @@ export class TelemetryManager {
       batchLimit: 500, // Max events per batch/request (default: 100)
       eventCacheSize: 2000, // Max events in cache before dropping (default: 200)
       dispatchInterval: 5000, // Dispatch every 5 seconds (default: 10s)
+      ...this.config.rumConfig,
     };
 
     this.logger.debug('Creating RUM client with config:', rumConfig);

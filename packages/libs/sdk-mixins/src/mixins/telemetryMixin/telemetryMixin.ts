@@ -244,7 +244,9 @@ export const telemetryMixin = createSingletonMixin(
 
       async init() {
         const sdkVersion = (this as any).sdkVersion || '1.0.0';
-        await this.#initializeTelemetry(await this.#getTelemetryConfig(), {
+        const config = await this.#getTelemetryConfig();
+
+        await this.#initializeTelemetry(config as any, {
           projectId: this.projectId,
           flowId: this.flowId,
           version: sdkVersion,
