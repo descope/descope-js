@@ -179,6 +179,176 @@ describe('webauthn', () => {
   });
 });
 
+describe('webauthn error categorization (error.reason)', () => {
+  const originalPublicKeyCredential = (window as any).PublicKeyCredential;
+
+  function createOptions(publicKeyExtra: any = {}): string {
+    return JSON.stringify({
+      publicKey: {
+        challenge: 'RCDjLZgO_tSVZOkFQEkn3-gVyTQ1nhdUd4i1aqf1J38',
+        user: { id: 'MkFsanhuc1ROdHhUb2ZIZkVrY2oxRlB0SWxB' },
+        ...publicKeyExtra,
+      },
+    });
+  }
+
+  function setWebauthnSupported(platformAuthenticatorAvailable = true) {
+    (window as any).PublicKeyCredential = {
+      isUserVerifyingPlatformAuthenticatorAvailable: jest
+        .fn()
+        .mockResolvedValue(platformAuthenticatorAvailable),
+    };
+    // @ts-ignore
+    global.navigator.credentials = mockCredentials;
+  }
+
+  beforeEach(() => setWebauthnSupported(true));
+  afterEach(() => {
+    (window as any).PublicKeyCredential = originalPublicKeyCredential;
+    // @ts-ignore
+    global.navigator.credentials = mockCredentials;
+  });
+
+  it('should report not_allowed for a NotAllowedError', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'NotAllowedError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('not_allowed');
+  });
+
+  it('should report authenticator_already_registered for an InvalidStateError on create', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'InvalidStateError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('authenticator_already_registered');
+  });
+
+  it('should report authenticator_constraints_unsupported for a ConstraintError', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'ConstraintError'),
+    );
+
+    const options = createOptions({
+      authenticatorSelection: { requireResidentKey: true },
+    });
+    const error = await webauthn.helpers.create(options).catch((e) => e);
+    expect(error.reason).toEqual('authenticator_constraints_unsupported');
+  });
+
+  it('should report no_supported_algorithm for a NotSupportedError', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'NotSupportedError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('no_supported_algorithm');
+  });
+
+  it('should report invalid_rpid for a SecurityError on a valid effective domain', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'SecurityError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('invalid_rpid');
+  });
+
+  it('should report unknown for an unmapped error', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'UnknownError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('unknown');
+  });
+
+  it('should report unknown for an InvalidStateError during get (create-only reason not applied)', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.get.mockRejectedValueOnce(
+      new DOMException('boom', 'InvalidStateError'),
+    );
+
+    const error = await webauthn.helpers
+      .get(mockGetOptions.options)
+      .catch((e) => e);
+    expect(error.reason).toEqual('unknown');
+  });
+
+  it('should report webauthn_unsupported for an opaque failure when WebAuthn is unsupported', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    delete (window as any).PublicKeyCredential;
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'NotAllowedError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('webauthn_unsupported');
+  });
+
+  it('should report platform_authenticator_unsupported for an opaque failure when a required platform authenticator is unavailable', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    setWebauthnSupported(false);
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'NotAllowedError'),
+    );
+
+    const options = createOptions({
+      authenticatorSelection: { authenticatorAttachment: 'platform' },
+    });
+    const error = await webauthn.helpers.create(options).catch((e) => e);
+    expect(error.reason).toEqual('platform_authenticator_unsupported');
+  });
+
+  it('should not override a specific error reason with the capability check', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    delete (window as any).PublicKeyCredential;
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('boom', 'InvalidStateError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.reason).toEqual('authenticator_already_registered');
+  });
+
+  it('should preserve the original error name and message', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.create.mockRejectedValueOnce(
+      new DOMException('the message', 'NotAllowedError'),
+    );
+
+    const error = await webauthn.helpers
+      .create(createOptions())
+      .catch((e) => e);
+    expect(error.name).toEqual('NotAllowedError');
+    expect(error.message).toEqual('the message');
+    expect(error.reason).toEqual('not_allowed');
+  });
+});
+
 function createMockSdk(signUpOrInCreate?: boolean): any {
   return {
     webauthn: {
