@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.7...tenant-profile-widget-0.7.0) (2026-06-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.4`
+* `web-component` updated to version `3.68.0`
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `sdk-component-drivers` updated to version `0.13.0`
+
+### Features
+
+* tenant multi sso ([#1400](https://github.com/descope/descope-js/issues/1400)) ([7d840b7](https://github.com/descope/descope-js/commit/7d840b773ba58aace60f28a645e00cac6f923488))
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
 ## [0.6.7](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.6...tenant-profile-widget-0.6.7) (2026-06-09)
 
 ### Dependency Updates
