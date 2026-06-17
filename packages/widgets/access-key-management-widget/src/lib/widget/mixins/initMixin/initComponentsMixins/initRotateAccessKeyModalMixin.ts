@@ -17,9 +17,6 @@ import { stateManagementMixin } from '../../stateManagementMixin';
 import { initRotatedAccessKeyModalMixin } from './initRotatedAccessKeyModalMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
-// Confirm dialog for the Rotate flow — mirrors initDeactivateAccessKeysModalMixin.
-// Submit calls actions.rotateAccessKey({ id }) and, on success, opens the
-// dedicated rotated-access-key reveal modal with the new cleartext.
 export const initRotateAccessKeyModalMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitRotateAccessKeyModalMixinClass extends compose(
