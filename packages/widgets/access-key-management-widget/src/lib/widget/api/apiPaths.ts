@@ -5,6 +5,7 @@ export const apiPaths = {
     create: '/v1/mgmt/accesskey/create',
     deactivate: '/v1/mgmt/accesskey/deactivate/batch',
     activate: '/v1/mgmt/accesskey/activate/batch',
+    rotate: '/v1/mgmt/accesskey/rotate',
   },
   tenant: {
     roles: '/v1/mgmt/role/all',

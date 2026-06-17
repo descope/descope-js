@@ -6,6 +6,7 @@ export default `
         <descope-button data-id="delete-access-keys" data-testid="delete-access-keys-trigger" data-type="button" formNoValidate="false" full-width="false" id="deleteAccessKeys" shape="" size="sm" variant="outline" mode="primary" square="false">Delete</descope-button>
         <descope-button data-id="activate-access-keys" data-testid="activate-access-keys-trigger" data-type="button" formNoValidate="false" full-width="false" id="activateAccessKeys" shape="" size="sm" variant="outline" mode="primary" square="false">Activate</descope-button>
         <descope-button data-id="deactivate-access-keys" data-testid="deactivate-access-keys-trigger" data-type="button" formNoValidate="false" full-width="false" id="deactivateAccessKeys" shape="" size="sm" variant="outline" mode="primary" square="false">Deactivate</descope-button>
+        <descope-button data-id="rotate-access-keys" data-testid="rotate-access-keys-trigger" data-type="button" formNoValidate="false" full-width="false" id="rotateAccessKeys" shape="" size="sm" variant="outline" mode="primary" square="false">Rotate</descope-button>
         <descope-button data-id="create-access-key" data-testid="create-access-key-trigger" data-type="button" formNoValidate="false" full-width="false" id="createAccessKey" shape="" size="sm" variant="contained" mode="primary" square="false">+ Access Key</descope-button>
     </descope-container>
   </descope-container>

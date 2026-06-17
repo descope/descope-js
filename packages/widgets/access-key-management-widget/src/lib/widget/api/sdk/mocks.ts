@@ -2,6 +2,7 @@ import {
   AccessKey,
   CreateAccessKeyConfig,
   Role,
+  RotateAccessKeyConfig,
   SearchAccessKeyConfig,
 } from '../types';
 
@@ -80,6 +81,28 @@ const deactivate = async () => {};
 
 const deleteBatch = async () => {};
 
+const rotate: (
+  config: RotateAccessKeyConfig,
+) => Promise<{ cleartext: string; key: AccessKey }> = async ({ id }) =>
+  new Promise((resolve) => {
+    resolve({
+      cleartext: Math.random().toString(20).substring(2),
+      key: {
+        id,
+        name: `Access Key ${id}`,
+        createdBy: 'User',
+        editable: true,
+        expireTime: new Date().getTime() / 1000 + 60 * 60 * 24 * 30,
+        createdTime: new Date().getTime() / 1000,
+        roleNames: [],
+        permittedIps: [],
+        status: 'active',
+        clientId: `Client ID ${id}`,
+        boundUserId: 'User',
+      },
+    });
+  });
+
 const getTenantRoles = (
   tenant: string,
 ): Promise<{
@@ -105,6 +128,7 @@ const accessKey = {
   activate,
   deactivate,
   deleteBatch,
+  rotate,
 };
 const tenants = {
   getTenantRoles,
