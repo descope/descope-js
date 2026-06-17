@@ -44,14 +44,15 @@ const readShadowDomElementValue = (
       if (!root) return null;
       const direct = root.querySelector?.(s);
       if (direct) return direct;
-      const all = root.querySelectorAll?.('*') || [];
-      for (const el of all) {
+      const all = Array.from(root.querySelectorAll?.('*') || []);
+      let found: any = null;
+      all.some((el: any) => {
         if (el.shadowRoot) {
-          const found = findInShadow(el.shadowRoot, s);
-          if (found) return found;
+          found = findInShadow(el.shadowRoot, s);
         }
-      }
-      return null;
+        return !!found;
+      });
+      return found;
     }
     return findInShadow(document, sel)?.value;
   }, selector);

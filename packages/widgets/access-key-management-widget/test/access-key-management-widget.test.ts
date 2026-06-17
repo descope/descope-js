@@ -253,7 +253,7 @@ describe('access-key-management-widget', () => {
 
     it('rotate', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
-      const id = mockAccessKeys.keys[0]['id'];
+      const { id } = mockAccessKeys.keys[0];
       const rotateResponse = { cleartext: 'rotated-secret', key: { id } };
       mockHttpClient.post.mockResolvedValueOnce({
         ok: true,
