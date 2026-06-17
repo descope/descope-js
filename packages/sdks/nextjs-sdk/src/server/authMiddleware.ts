@@ -43,6 +43,12 @@ type MiddlewareOptions = {
 	// Defaults to 'DSR'
 	// Used to refresh the session when the JWT expires
 	refreshTokenCookieName?: string;
+
+	// The Resource identifier (OAuth Resource Server) to validate the JWT audience against.
+	// Required when using Inbound Apps scoped to a specific Resource.
+	// Should match the resource identifier configured in the Descope console.
+	// Accepts a single resource identifier or an array for multi-audience scenarios.
+	resource?: string | string[];
 };
 
 const getSessionJwt = (
@@ -67,9 +73,8 @@ const getRefreshJwt = (
 	req: NextRequest,
 	options: MiddlewareOptions
 ): string | undefined => {
-	const refreshJwt = req.cookies?.get(
-		options?.refreshTokenCookieName || 'DSR'
-	)?.value;
+	const refreshJwt = req.cookies?.get(options?.refreshTokenCookieName || 'DSR')
+		?.value;
 	return refreshJwt;
 };
 
@@ -137,7 +142,7 @@ const createAuthMiddleware =
 			await getGlobalSdk({
 				projectId: options.projectId,
 				baseUrl: options.baseUrl
-			}).validateJwt(sessionJwt);
+			}).validateJwt(sessionJwt, { audience: options.resource });
 			validToken = true;
 			logger.debug('[Auth middleware] Session JWT is valid');
 		} catch (err) {
