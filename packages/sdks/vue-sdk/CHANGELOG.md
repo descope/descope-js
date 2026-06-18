@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.1](https://github.com/descope/descope-js/compare/vue-sdk-2.17.0...vue-sdk-2.17.1) (2026-06-18)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.0`
+* `user-profile-widget` updated to version `0.12.1`
 ## [2.17.0](https://github.com/descope/descope-js/compare/vue-sdk-2.16.10...vue-sdk-2.17.0) (2026-06-14)
 
 ### Dependency Updates
