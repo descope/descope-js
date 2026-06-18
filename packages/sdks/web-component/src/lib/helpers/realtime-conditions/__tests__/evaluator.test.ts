@@ -153,6 +153,41 @@ describe('evaluateAtomic via evaluateCondition — operators', () => {
     );
   });
 
+  it('doesnt-contains is the inverse of contains for string and array targets', () => {
+    const rStr = conditionWithSingleAtom(
+      'doesnt-contains',
+      { kind: 'form', form: 'form.greeting' },
+      { kind: 'value', value: 'world' },
+    );
+    expect(evaluateCondition(rStr, { 'form.greeting': 'hello there' })).toBe(
+      true,
+    );
+    expect(evaluateCondition(rStr, { 'form.greeting': 'hello world' })).toBe(
+      false,
+    );
+
+    const rArr = conditionWithSingleAtom(
+      'doesnt-contains',
+      { kind: 'form', form: 'form.tags' },
+      { kind: 'value', value: 'admin' },
+    );
+    expect(evaluateCondition(rArr, { 'form.tags': ['user', 'guest'] })).toBe(
+      true,
+    );
+    expect(evaluateCondition(rArr, { 'form.tags': ['user', 'admin'] })).toBe(
+      false,
+    );
+  });
+
+  it('doesnt-contains returns false on non-string non-array target (mirrors contains)', () => {
+    const r = conditionWithSingleAtom(
+      'doesnt-contains',
+      { kind: 'form', form: 'form.x' },
+      { kind: 'value', value: 'y' },
+    );
+    expect(evaluateCondition(r, { 'form.x': 42 })).toBe(false);
+  });
+
   it('in / not-in', () => {
     const rIn = conditionWithSingleAtom(
       'in',
