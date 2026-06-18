@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.8.0...access-key-management-widget-0.9.0) (2026-06-18)
+
+
+### Features
+
+* **access-key-management-widget:** add Rotate action RELEASE ([#1414](https://github.com/descope/descope-js/issues/1414)) ([48e1233](https://github.com/descope/descope-js/commit/48e12334231a4a30a0943689bc64b6647a32eb6b)), closes [descope/etc#15738](https://github.com/descope/etc/issues/15738)
+
 ## [0.8.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.7.1...access-key-management-widget-0.8.0) (2026-06-14)
 
 ### Dependency Updates
