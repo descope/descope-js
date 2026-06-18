@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.1](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.0...user-profile-widget-0.12.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* **user-profile-widget:** init builtin attribute modals + listeners once ([#1413](https://github.com/descope/descope-js/issues/1413)) ([b03e259](https://github.com/descope/descope-js/commit/b03e259b1370bac499a3ce5045e02e2b9b0b685f)), closes [descope/etc#16306](https://github.com/descope/etc/issues/16306) [descope/etc#16292](https://github.com/descope/etc/issues/16292)
+
 ## [0.12.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.11.7...user-profile-widget-0.12.0) (2026-06-14)
 
 ### Dependency Updates
