@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.63.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.2...core-js-sdk-2.63.0) (2026-06-21)
+
+
+### Features
+
+* **core-js-sdk:** add mfa option to OTP update phone/email ([#1420](https://github.com/descope/descope-js/issues/1420)) ([8d43092](https://github.com/descope/descope-js/commit/8d43092c8860b55ff01119ff746bd939edef81cc)), closes [descope/etc#16372](https://github.com/descope/etc/issues/16372)
+
 ## [2.62.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.1...core-js-sdk-2.62.2) (2026-06-09)
 
 

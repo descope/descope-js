@@ -3,6 +3,7 @@ import {
   CreateAccessKeyConfig,
   SearchAccessKeyConfig,
   AccessKey,
+  RotateAccessKeyConfig,
 } from '../types';
 import { apiPaths } from '../apiPaths';
 import { withErrorHandler } from './helpers';
@@ -147,11 +148,34 @@ export const createAccessKeySdk = ({
     return json;
   };
 
+  const rotate: (
+    config: RotateAccessKeyConfig,
+  ) => Promise<{ cleartext: string; key: AccessKey }> = async ({ id }) => {
+    if (mock) {
+      return accessKey.rotate({ id });
+    }
+
+    const res = await httpClient.post(
+      apiPaths.accesskey.rotate,
+      { id },
+      {
+        queryParams: { tenant },
+      },
+    );
+
+    await withErrorHandler(res);
+
+    const json = await res.json();
+
+    return json;
+  };
+
   return {
     search,
     deleteBatch,
     create,
     activate,
     deactivate,
+    rotate,
   };
 };

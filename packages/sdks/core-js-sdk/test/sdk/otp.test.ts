@@ -378,6 +378,31 @@ describe('otp', () => {
         );
       });
 
+      it('should send the correct request with mfa', () => {
+        const httpRespJson = { response: 'response' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        sdk.otp.update.email('loginId', 'new@email.com', 'token', {
+          mfa: true,
+        });
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.otp.update.email,
+          {
+            email: 'new@email.com',
+            loginId: 'loginId',
+            mfa: true,
+          },
+          { token: 'token' },
+        );
+      });
+
       it('should return the correct response', async () => {
         const httpRespJson = { response: 'response' };
         const httpResponse = {
@@ -451,6 +476,31 @@ describe('otp', () => {
             phone: '+9720000000',
             loginId: 'loginId',
             providerId: 'some-provider',
+          },
+          { token: 'token' },
+        );
+      });
+
+      it('should send the correct request with mfa', async () => {
+        const httpRespJson = { response: 'response', maskedPhone: '**99' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        await sdk.otp.update.phone.sms('loginId', '+9720000000', 'token', {
+          mfa: true,
+        });
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.otp.update.phone + '/sms',
+          {
+            phone: '+9720000000',
+            loginId: 'loginId',
+            mfa: true,
           },
           { token: 'token' },
         );

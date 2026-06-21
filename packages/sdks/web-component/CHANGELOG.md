@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.69.1](https://github.com/descope/descope-js/compare/web-component-3.69.0...web-component-3.69.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.17 RELEASE ([#1421](https://github.com/descope/descope-js/issues/1421)) ([13b11d3](https://github.com/descope/descope-js/commit/13b11d37953047ad004e88e0bb288bb49fe58323))
+
+## [3.69.0](https://github.com/descope/descope-js/compare/web-component-3.68.0...web-component-3.69.0) (2026-06-18)
+
+
+### Features
+
+* **web-component:** support new doesnt-contains realtime operator RELEASE ([#1417](https://github.com/descope/descope-js/issues/1417)) ([fe37871](https://github.com/descope/descope-js/commit/fe378717bb2bc3492ca1f4c2a1f438b0f647e4be)), closes [descope/backend#1348](https://github.com/descope/backend/issues/1348) [descope/etc#16322](https://github.com/descope/etc/issues/16322) [descope/backend#1348](https://github.com/descope/backend/issues/1348) [#1348](https://github.com/descope/descope-js/issues/1348)
+
 ## [3.68.0](https://github.com/descope/descope-js/compare/web-component-3.67.1...web-component-3.68.0) (2026-06-14)
 
 ### Dependency Updates
