@@ -67,11 +67,19 @@ export type Role = {
 
 export type SortParams = { field: string; desc: boolean };
 
+export type FilterRow = {
+  column: string;
+  operator: string;
+  value: string | string[] | null;
+};
+
 export type SearchUsersConfig = {
   page?: number;
   limit?: number;
   customAttributes?: CustomAttributes;
   statuses?: UserStatus;
+  roleNames?: string[];
+  loginIds?: string[];
   emails?: string[];
   phones?: string[];
   text?: string;
