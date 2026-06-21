@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.46](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.45...nextjs-sdk-0.15.46) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+* `react-sdk` updated to version `2.29.3`
+* `core-js-sdk` updated to version `2.63.0`
+* `web-component` updated to version `3.69.1`
+
+### Bug Fixes
+
+* **nextjs-sdk:** bump @descope/node-sdk to 2.8.0 (Brotli JWKS fetch fix) ([#1419](https://github.com/descope/descope-js/issues/1419)) ([3f824b6](https://github.com/descope/descope-js/commit/3f824b617be17a3da45b826f91f85bdf08e48be8)), closes [descope/node-sdk#742](https://github.com/descope/node-sdk/issues/742) [#1418](https://github.com/descope/descope-js/issues/1418) [#1418](https://github.com/descope/descope-js/issues/1418) [descope/node-sdk#742](https://github.com/descope/node-sdk/issues/742)
+
 ## [0.15.45](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.44...nextjs-sdk-0.15.45) (2026-06-18)
 
 ### Dependency Updates
