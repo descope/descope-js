@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.69.1](https://github.com/descope/descope-js/compare/web-component-3.69.0...web-component-3.69.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.17 RELEASE ([#1421](https://github.com/descope/descope-js/issues/1421)) ([13b11d3](https://github.com/descope/descope-js/commit/13b11d37953047ad004e88e0bb288bb49fe58323))
+
 ## [3.69.0](https://github.com/descope/descope-js/compare/web-component-3.68.0...web-component-3.69.0) (2026-06-18)
 
 
