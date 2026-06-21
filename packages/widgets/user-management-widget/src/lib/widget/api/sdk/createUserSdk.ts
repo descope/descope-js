@@ -37,6 +37,8 @@ export const createUserSdk = ({
         limit,
         customAttributes,
         statuses,
+        roleNames,
+        loginIds,
         emails,
         phones,
         text,

@@ -1,12 +1,38 @@
 import { BaseDriver } from './BaseDriver';
 
-type FilterRow = {
+export type FilterInputType =
+  | 'text'
+  | 'number'
+  | 'email'
+  | 'boolean'
+  | 'singleselect'
+  | 'multiselect';
+
+export type FilterValueType =
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'enum'
+  | 'multi-enum';
+
+export type FilterOption = { value: string; label: string };
+
+export type FilterColumn = {
+  id: string;
+  label: string;
+  inputType: FilterInputType;
+  valueType?: FilterValueType;
+  options?: FilterOption[];
+  operators?: string[];
+};
+
+export type FilterRow = {
   column: string;
   operator: string;
   value: string | string[] | null;
 };
 
-type FilterEventDetail = {
+export type FilterEventDetail = {
   value: FilterRow[];
   action: 'apply' | 'clear-all' | 'cancel';
 };
@@ -14,7 +40,7 @@ type FilterEventDetail = {
 export class FilterDriver extends BaseDriver {
   nodeName = 'descope-filter';
 
-  get data(): any[] {
+  get data(): FilterColumn[] {
     try {
       return JSON.parse(this.ele?.getAttribute('data') || '[]');
     } catch {
@@ -22,7 +48,7 @@ export class FilterDriver extends BaseDriver {
     }
   }
 
-  set data(value: any[]) {
+  set data(value: FilterColumn[]) {
     this.ele?.setAttribute('data', JSON.stringify(value));
   }
 
@@ -54,19 +80,5 @@ export class FilterDriver extends BaseDriver {
     const handler = (e: Event) => cb((e as CustomEvent).detail);
     this.ele?.addEventListener('filter-cancel', handler);
     return () => this.ele?.removeEventListener('filter-cancel', handler);
-  }
-
-  // Update the options for a specific column by id. Used to inject runtime
-  // values (e.g. Roles populated from tenant state) without rebuilding the
-  // full column array on the consumer side.
-  setColumnOptions(
-    columnId: string,
-    options: { value: string; label: string }[],
-  ) {
-    const cols = this.data;
-    const col = cols.find((c: any) => c.id === columnId);
-    if (!col) return;
-    col.options = options;
-    this.data = cols;
   }
 }

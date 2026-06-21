@@ -1,4 +1,4 @@
-import { FilterRow, SearchUsersConfig } from '../../../api/types';
+import { FilterRow, SearchUsersConfig } from '../api/types';
 
 // Multi-value columns map directly to native exact-match array fields.
 const ARRAY_FIELDS: Record<string, keyof SearchUsersConfig> = {

@@ -77,7 +77,7 @@ export type SearchUsersConfig = {
   page?: number;
   limit?: number;
   customAttributes?: CustomAttributes;
-  statuses?: UserStatus;
+  statuses?: UserStatus[];
   roleNames?: string[];
   loginIds?: string[];
   emails?: string[];
