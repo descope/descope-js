@@ -84,6 +84,12 @@ export type SearchUsersConfig = {
   phones?: string[];
   text?: string;
   sort?: SortParams[];
+  verifiedEmail?: boolean;
+  verifiedPhone?: boolean;
+  password?: boolean;
+  totp?: boolean;
+  webauthn?: boolean;
+  scim?: boolean;
 };
 
 export type UpdateUserConfig = {

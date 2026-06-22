@@ -11,6 +11,13 @@ describe('filterToSearchParams', () => {
       emails: undefined,
       phones: undefined,
       text: undefined,
+      customAttributes: undefined,
+      verifiedEmail: undefined,
+      verifiedPhone: undefined,
+      password: undefined,
+      totp: undefined,
+      webauthn: undefined,
+      scim: undefined,
     });
   });
 
@@ -114,5 +121,177 @@ describe('filterToSearchParams', () => {
       { column: 'familyName', operator: 'contains', value: 'second' },
     ]);
     expect(params.text).toBe('second');
+  });
+
+  describe('custom attributes', () => {
+    it('routes customAttributes.<name> rows into the customAttributes map', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'customAttributes.department',
+          operator: 'equal',
+          value: 'engineering',
+        },
+      ]);
+      expect(params.customAttributes).toEqual({ department: 'engineering' });
+    });
+
+    it('preserves array values for multiselect CA rows', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'customAttributes.skills',
+          operator: 'is-any-of',
+          value: ['ts', 'go'],
+        },
+      ]);
+      expect(params.customAttributes).toEqual({ skills: ['ts', 'go'] });
+    });
+
+    it('combines multiple CA rows into one customAttributes map', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'customAttributes.department',
+          operator: 'equal',
+          value: 'eng',
+        },
+        {
+          column: 'customAttributes.level',
+          operator: 'equal',
+          value: '5',
+        },
+      ]);
+      expect(params.customAttributes).toEqual({
+        department: 'eng',
+        level: '5',
+      });
+    });
+
+    it('drops CA rows with empty values', () => {
+      const params = filterToSearchParams([
+        { column: 'customAttributes.department', operator: 'equal', value: '' },
+        {
+          column: 'customAttributes.skills',
+          operator: 'is-any-of',
+          value: [],
+        },
+      ]);
+      expect(params.customAttributes).toBeUndefined();
+    });
+
+    it('drops negated CA operators', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'customAttributes.department',
+          operator: 'not-equal',
+          value: 'eng',
+        },
+      ]);
+      expect(params.customAttributes).toBeUndefined();
+    });
+
+    it('drops a CA row with empty attribute name', () => {
+      const params = filterToSearchParams([
+        { column: 'customAttributes.', operator: 'equal', value: 'x' },
+      ]);
+      expect(params.customAttributes).toBeUndefined();
+    });
+
+    it('combines CA rows with base columns', () => {
+      const params = filterToSearchParams([
+        { column: 'status', operator: 'is-any-of', value: ['active'] },
+        {
+          column: 'customAttributes.department',
+          operator: 'equal',
+          value: 'eng',
+        },
+      ]);
+      expect(params).toEqual(
+        expect.objectContaining({
+          statuses: ['enabled'],
+          customAttributes: { department: 'eng' },
+        }),
+      );
+    });
+
+    it('emits null for is-empty CA operator', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'customAttributes.department',
+          operator: 'is-empty',
+          value: null,
+        },
+      ]);
+      expect(params.customAttributes).toEqual({ department: null });
+    });
+
+    it('combines is-empty with another CA equal row', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'customAttributes.department',
+          operator: 'is-empty',
+          value: null,
+        },
+        {
+          column: 'customAttributes.level',
+          operator: 'equal',
+          value: '5',
+        },
+      ]);
+      expect(params.customAttributes).toEqual({
+        department: null,
+        level: '5',
+      });
+    });
+  });
+
+  describe('boolean columns', () => {
+    it('routes verifiedEmail equal "true" to boolean true', () => {
+      const params = filterToSearchParams([
+        { column: 'verifiedEmail', operator: 'equal', value: 'true' },
+      ]);
+      expect(params.verifiedEmail).toBe(true);
+    });
+
+    it('routes password equal "false" to boolean false', () => {
+      const params = filterToSearchParams([
+        { column: 'password', operator: 'equal', value: 'false' },
+      ]);
+      expect(params.password).toBe(false);
+    });
+
+    it('drops boolean row with non-boolean string value', () => {
+      const params = filterToSearchParams([
+        { column: 'totp', operator: 'equal', value: 'maybe' },
+      ]);
+      expect(params.totp).toBeUndefined();
+    });
+
+    it('drops boolean row with non-equal operator', () => {
+      const params = filterToSearchParams([
+        { column: 'webauthn', operator: 'not-equal', value: 'true' },
+      ]);
+      expect(params.webauthn).toBeUndefined();
+    });
+
+    it('combines boolean rows with base columns', () => {
+      const params = filterToSearchParams([
+        { column: 'status', operator: 'is-any-of', value: ['active'] },
+        { column: 'verifiedEmail', operator: 'equal', value: 'true' },
+        { column: 'SCIM', operator: 'equal', value: 'false' },
+      ]);
+      expect(params).toEqual(
+        expect.objectContaining({
+          statuses: ['enabled'],
+          verifiedEmail: true,
+          scim: false,
+        }),
+      );
+    });
+
+    it('routes uppercase SCIM column id to lowercase proto field', () => {
+      const params = filterToSearchParams([
+        { column: 'SCIM', operator: 'equal', value: 'true' },
+      ]);
+      expect(params.scim).toBe(true);
+    });
   });
 });

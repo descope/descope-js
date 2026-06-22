@@ -1,9 +1,29 @@
 import { FilterRow, SearchUsersConfig } from '../api/types';
 
+// Column-id prefix marking a custom-attribute filter row. Console-app emits
+// `customAttributes.<attrName>` for opt-in CA cols; widget enriches them at
+// runtime (see initFilterMixin). Values are routed verbatim into the BE
+// `customAttributes` map keyed by attrName.
+const CA_COL_PREFIX = 'customAttributes.';
+
 // Multi-value columns map directly to native exact-match array fields.
 const ARRAY_FIELDS: Record<string, keyof SearchUsersConfig> = {
   status: 'statuses',
   roles: 'roleNames',
+};
+
+// Boolean columns map directly to optional-bool proto fields. Only `equal`
+// is exposed in the UI (per console-app metadata) — flipping the value
+// covers the negation case.
+// Console-app emits SCIM with uppercase id (matches grid col convention via
+// USERS_FIELDS.scim = 'SCIM'). Wire field is lowercase per proto.
+const BOOLEAN_FIELDS: Record<string, keyof SearchUsersConfig> = {
+  verifiedEmail: 'verifiedEmail',
+  verifiedPhone: 'verifiedPhone',
+  password: 'password',
+  totp: 'totp',
+  webauthn: 'webauthn',
+  SCIM: 'scim',
 };
 
 // Per-column value translation: UI/legacy values → wire values accepted by
@@ -59,13 +79,49 @@ export const filterToSearchParams = (
   [
     ...Object.values(ARRAY_FIELDS),
     ...Object.values(EXACT_FIELDS),
+    ...Object.values(BOOLEAN_FIELDS),
     'text' as const,
+    'customAttributes' as const,
   ].forEach((field) => {
     (params as any)[field] = undefined;
   });
 
   rows.forEach((row) => {
     if (!row.column || !row.operator || row.operator.startsWith('not-')) return;
+
+    if (row.column.startsWith(CA_COL_PREFIX)) {
+      const name = row.column.slice(CA_COL_PREFIX.length);
+      if (!name) return;
+      // `is-empty` op: BE matches users with no value / null / default for the
+      // attribute when value === null (gated server-side by feature flag
+      // UserSearchEmptyCustomAttr).
+      if (row.operator === 'is-empty') {
+        params.customAttributes = params.customAttributes || {};
+        (params.customAttributes as any)[name] = null;
+        return;
+      }
+      // Pass value through as-is — BE handles type coercion. Array values
+      // (multiselect CAs) preserved; primitives pass as strings.
+      const value = Array.isArray(row.value)
+        ? row.value.length
+          ? row.value
+          : undefined
+        : row.value === '' || row.value == null
+          ? undefined
+          : row.value;
+      if (value === undefined) return;
+      params.customAttributes = params.customAttributes || {};
+      (params.customAttributes as any)[name] = value;
+      return;
+    }
+
+    if (BOOLEAN_FIELDS[row.column] && row.operator === 'equal') {
+      const v = Array.isArray(row.value) ? row.value[0] : row.value;
+      if (v === 'true') (params as any)[BOOLEAN_FIELDS[row.column]] = true;
+      else if (v === 'false')
+        (params as any)[BOOLEAN_FIELDS[row.column]] = false;
+      return;
+    }
 
     if (ARRAY_FIELDS[row.column]) {
       const arr = toArray(row.value);
