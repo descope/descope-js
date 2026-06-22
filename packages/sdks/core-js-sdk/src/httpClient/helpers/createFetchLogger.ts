@@ -76,11 +76,12 @@ const buildRequestLog = (args: Parameters<Fetch>) =>
 
 // we should retry on these status codes:
 // 503: Service Unavailable
+// 520: Web Server Returned an Unknown Error (Cloudflare error)
 // 521: Web Server Is Down (Cloudflare error)
 // 522: Connection Timed Out (Cloudflare error)
 // 524: A Timeout Occurred (Cloudflare error)
 // 530: Cloudflare error
-const retryStatusCodes = [503, 521, 522, 524, 530];
+const retryStatusCodes = [503, 520, 521, 522, 524, 530];
 
 // Retry delays in ms: first retry after 100ms, subsequent retries after 5000ms
 const retryDelaysMs = [100, 5000, 5000];
