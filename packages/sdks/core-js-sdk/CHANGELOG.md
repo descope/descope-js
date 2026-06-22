@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.64.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.63.0...core-js-sdk-2.64.0) (2026-06-22)
+
+
+### Features
+
+* **core-js-sdk:** also retry on transient status code 520 RELEASE ([#1423](https://github.com/descope/descope-js/issues/1423)) RELEASE ([1876b86](https://github.com/descope/descope-js/commit/1876b862cceb7406b897dd9db583dc6a9b4117d0)), closes [descope/go-sdk#775](https://github.com/descope/go-sdk/issues/775) [descope/python-sdk#1581](https://github.com/descope/python-sdk/issues/1581)
+
 ## [2.63.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.2...core-js-sdk-2.63.0) (2026-06-21)
 
 
