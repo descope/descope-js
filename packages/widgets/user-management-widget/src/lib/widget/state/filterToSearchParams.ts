@@ -1,3 +1,4 @@
+import { FilterColumn } from '@descope/sdk-component-drivers';
 import { FilterRow, SearchUsersConfig } from '../api/types';
 
 // Column-id prefix marking a custom-attribute filter row. Console-app emits
@@ -65,15 +66,45 @@ const translateValues = (column: string, values: string[]): string[] => {
   return values.map((v) => map[v] ?? v);
 };
 
+// Parse a CA row value per the column's declared `inputType`. WC always
+// emits strings; BE jsonpath equality is type-strict (`@ == "true"` won't
+// match stored bool `true`). Without parsing, bool/numeric CA filters look
+// broken (zero results, no error).
+//
+// Returns `undefined` to signal "drop this row" (unparseable bool, NaN
+// numeric, empty value, etc.).
+const parseCaValue = (
+  value: FilterRow['value'],
+  inputType: FilterColumn['inputType'] | undefined,
+): unknown => {
+  if (Array.isArray(value)) return value.length ? value : undefined;
+  if (value == null || value === '') return undefined;
+  if (inputType === 'boolean') {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return undefined;
+  }
+  if (inputType === 'number') {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : undefined;
+  }
+  return value;
+};
+
 // Translate descope-filter `filter-apply` event detail.value into native
 // SearchUsersRequest fields. Negation (`not-any-of`/`not-equal`/etc) is
 // unsupported by the endpoint and dropped — restrict via column `operators`
 // allowlist in console-app metadata to prevent users from picking it.
 //
+// `cols` is the live filter column schema (`this.filter.data`) used to parse
+// CA bool/numeric string values into JS bool/number for BE jsonpath equality.
+// Optional — when absent, values pass through as strings (back-compat).
+//
 // Seeds all touched fields with `undefined` so a removed row clears its
 // value instead of being retained by the searchUsers thunk merge.
 export const filterToSearchParams = (
   rows: FilterRow[],
+  cols?: FilterColumn[],
 ): Partial<SearchUsersConfig> => {
   const params: Partial<SearchUsersConfig> = {};
   [
@@ -100,15 +131,11 @@ export const filterToSearchParams = (
         (params.customAttributes as any)[name] = null;
         return;
       }
-      // Pass value through as-is — BE handles type coercion. Array values
-      // (multiselect CAs) preserved; primitives pass as strings.
-      const value = Array.isArray(row.value)
-        ? row.value.length
-          ? row.value
-          : undefined
-        : row.value === '' || row.value == null
-          ? undefined
-          : row.value;
+      // BE jsonpath equality is type-strict — parse string→bool/number per
+      // the column's declared `inputType`. Array values (multiselect CAs)
+      // preserved; unparseable values drop the row.
+      const col = cols?.find((c) => c.id === row.column);
+      const value = parseCaValue(row.value, col?.inputType);
       if (value === undefined) return;
       params.customAttributes = params.customAttributes || {};
       (params.customAttributes as any)[name] = value;

@@ -241,6 +241,154 @@ describe('filterToSearchParams', () => {
         level: '5',
       });
     });
+
+    describe('type parsing via cols', () => {
+      it('parses boolean CA "true" to JS true', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.is_premium',
+              operator: 'equal',
+              value: 'true',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.is_premium',
+              label: 'Premium',
+              inputType: 'boolean',
+            },
+          ],
+        );
+        expect(params.customAttributes).toEqual({ is_premium: true });
+      });
+
+      it('parses boolean CA "false" to JS false', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.is_premium',
+              operator: 'equal',
+              value: 'false',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.is_premium',
+              label: 'Premium',
+              inputType: 'boolean',
+            },
+          ],
+        );
+        expect(params.customAttributes).toEqual({ is_premium: false });
+      });
+
+      it('parses numeric CA "5" to JS number 5', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.level',
+              operator: 'equal',
+              value: '5',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.level',
+              label: 'Level',
+              inputType: 'number',
+            },
+          ],
+        );
+        expect(params.customAttributes).toEqual({ level: 5 });
+      });
+
+      it('drops numeric CA row with non-numeric value', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.level',
+              operator: 'equal',
+              value: 'abc',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.level',
+              label: 'Level',
+              inputType: 'number',
+            },
+          ],
+        );
+        expect(params.customAttributes).toBeUndefined();
+      });
+
+      it('keeps text CA values as strings', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.department',
+              operator: 'equal',
+              value: 'eng',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.department',
+              label: 'Department',
+              inputType: 'text',
+            },
+          ],
+        );
+        expect(params.customAttributes).toEqual({ department: 'eng' });
+      });
+
+      it('preserves array values for multiselect CA cols', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.skills',
+              operator: 'is-any-of',
+              value: ['ts', 'go'],
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.skills',
+              label: 'Skills',
+              inputType: 'multiselect',
+            },
+          ],
+        );
+        expect(params.customAttributes).toEqual({ skills: ['ts', 'go'] });
+      });
+
+      it('combines bool CA with base status row', () => {
+        const params = filterToSearchParams(
+          [
+            { column: 'status', operator: 'is-any-of', value: ['active'] },
+            {
+              column: 'customAttributes.is_premium',
+              operator: 'equal',
+              value: 'true',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.is_premium',
+              label: 'Premium',
+              inputType: 'boolean',
+            },
+          ],
+        );
+        expect(params).toEqual(
+          expect.objectContaining({
+            statuses: ['enabled'],
+            customAttributes: { is_premium: true },
+          }),
+        );
+      });
+    });
   });
 
   describe('boolean columns', () => {

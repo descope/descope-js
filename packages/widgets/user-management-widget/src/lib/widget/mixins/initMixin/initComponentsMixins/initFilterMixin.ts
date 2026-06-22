@@ -75,13 +75,16 @@ export const initFilterMixin = createSingletonMixin(
           ? detail.value
           : [];
         this.actions.searchUsers({
-          ...filterToSearchParams(rows),
+          ...filterToSearchParams(rows, this.filter.data),
           page: 0,
         });
       };
 
       #onClear = () => {
-        this.actions.searchUsers({ ...filterToSearchParams([]), page: 0 });
+        this.actions.searchUsers({
+          ...filterToSearchParams([], this.filter.data),
+          page: 0,
+        });
       };
 
       #enrichCustomAttributeCol = (
@@ -110,11 +113,17 @@ export const initFilterMixin = createSingletonMixin(
 
       #syncColumns = () => {
         if (!this.filter?.isExists) return;
-        if (!this.#originalCols)
-          this.#originalCols = Object.freeze(this.filter.data.slice());
 
         const tenantRoles = getTenantRoles(this.state);
         const customAttrs = getCustomAttributes(this.state);
+
+        // Defer #originalCols snapshot until CAs resolve. Initial data attr
+        // may arrive without CA cols (console-app writes them asynchronously
+        // after the CA fetch). Freezing too early loses CA cols permanently.
+        if (!this.#originalCols) {
+          if (customAttrs === undefined) return;
+          this.#originalCols = Object.freeze(this.filter.data.slice());
+        }
 
         let cols: FilterColumn[] = this.#originalCols.slice();
 
