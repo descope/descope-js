@@ -12,7 +12,7 @@ import {
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
+import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasswordUserAuthMethodMixin = createSingletonMixin(
@@ -25,6 +25,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       passwordUserAuthMethod: UserAuthMethodDriver;
 
@@ -47,16 +48,8 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.buildFlowTemplate({
             flowId: this.passwordUserAuthMethod.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#flow.onSuccess(() => {

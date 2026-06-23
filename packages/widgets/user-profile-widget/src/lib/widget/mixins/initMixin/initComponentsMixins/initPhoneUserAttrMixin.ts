@@ -15,7 +15,7 @@ import {
   cookieConfigMixin,
 } from '@descope/sdk-mixins';
 import { getPhone, getPhoneBadgeLabel } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
+import { flowInputMixin } from '../../flowInputMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -30,6 +30,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       phoneUserAttr: UserAttributeDriver;
 
@@ -56,17 +57,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: this.phoneUserAttr.editFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.buildFlowTemplate({ flowId: this.phoneUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -89,17 +80,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: this.phoneUserAttr.deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.buildFlowTemplate({ flowId: this.phoneUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();

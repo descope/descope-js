@@ -17,7 +17,7 @@ import {
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getHasPasskey } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
+import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
@@ -30,6 +30,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       passkeyUserAuthMethod: UserAuthMethodDriver;
 
@@ -56,16 +57,8 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
 
       #initAddModalContent() {
         this.#addModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.buildFlowTemplate({
             flowId: this.passkeyUserAuthMethod.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#addFlow.onSuccess(() => {
@@ -89,16 +82,8 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
 
       #initRemoveModalContent() {
         this.#removeModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.buildFlowTemplate({
             flowId: this.passkeyUserAuthMethod.fulfilledFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#removeFlow.onSuccess(() => {

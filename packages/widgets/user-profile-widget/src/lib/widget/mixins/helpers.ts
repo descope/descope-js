@@ -9,7 +9,7 @@ type FlowConfig = {
   refreshCookieName?: string;
   theme?: string;
   'style-id'?: string;
-  form?: Record<string, string>;
+  form?: Record<string, string> | string;
   client?: Record<string, string> | string;
   locale?: string;
 };

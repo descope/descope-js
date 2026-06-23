@@ -8,7 +8,7 @@ import { localeMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { createFlowTemplate } from '../../helpers';
+import { flowInputMixin } from '../../flowInputMixin';
 import { getUserId } from '../../../state/selectors';
 
 export const initGenericFlowButtonMixin = createSingletonMixin(
@@ -20,6 +20,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       modalMixin,
       loggerMixin,
       initWidgetRootMixin,
+      flowInputMixin,
     )(superclass) {
       #modal: ModalDriver;
 
@@ -68,18 +69,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
 
       #initModalContent(flowId: string, userId: string) {
         this.#modal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-            client: { userId },
-          }),
+          this.buildFlowTemplate({ flowId, client: { userId } }),
         );
         const cb = () => this.#onModalNeeded();
         this.#removePageUpdatedCallback = this.#flow.onPageUpdated(cb);

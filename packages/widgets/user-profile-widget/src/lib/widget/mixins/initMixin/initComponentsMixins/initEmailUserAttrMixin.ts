@@ -15,7 +15,7 @@ import {
   modalMixin,
 } from '@descope/sdk-mixins';
 import { getEmail, getEmailBadgeLabel } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
+import { flowInputMixin } from '../../flowInputMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -30,6 +30,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       emailUserAttr: UserAttributeDriver;
 
@@ -56,17 +57,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: this.emailUserAttr.editFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.buildFlowTemplate({ flowId: this.emailUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -89,17 +80,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: this.emailUserAttr.deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.buildFlowTemplate({ flowId: this.emailUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();
