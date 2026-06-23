@@ -48,7 +48,7 @@ export const flowInputMixin = createSingletonMixin(
         if (!form) return callerForm;
         if (!callerForm) return form;
         try {
-          return JSON.stringify({ ...JSON.parse(callerForm), ...form });
+          return { ...JSON.parse(callerForm), ...form };
         } catch (e) {
           return form;
         }
