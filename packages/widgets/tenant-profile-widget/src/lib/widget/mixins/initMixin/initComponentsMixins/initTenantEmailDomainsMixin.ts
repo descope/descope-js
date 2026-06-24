@@ -9,6 +9,7 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
@@ -22,6 +23,7 @@ import { initWidgetRootMixin } from './initWidgetRootMixin';
 export const initTenantEmailDomainsMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantEmailDomainsMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -57,6 +59,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
       #initEditModalContent() {
         this.#editModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.tenantEmailDomainsDriver.editFlowId,
             tenant: this.tenantId,
@@ -95,6 +98,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.tenantEmailDomainsDriver.deleteFlowId,
             tenant: this.tenantId,

@@ -704,6 +704,46 @@ describe('createFetchLogger', () => {
       expect(await response.text()).toBe('Success');
     });
 
+    it('should retry when receiving status code 520', async () => {
+      fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          text: () => 'Cloudflare error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 520,
+          statusText: 'Web Server Returned an Unknown Error',
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: () => 'Success',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 200,
+          statusText: 'OK',
+        });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(fetch).toHaveBeenNthCalledWith(1, 'http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+      expect(fetch).toHaveBeenNthCalledWith(2, 'http://descope.com/test', {
+        method: 'GET',
+        headers: new Headers({ test: '123' }),
+      });
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe('Success');
+    });
+
     it('should retry when receiving status code 524', async () => {
       fetch
         .mockResolvedValueOnce({

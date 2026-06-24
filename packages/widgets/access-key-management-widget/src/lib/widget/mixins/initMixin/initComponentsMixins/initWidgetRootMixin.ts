@@ -4,13 +4,15 @@ import {
   createTemplate,
 } from '@descope/sdk-helpers';
 import {
+  createFetchWidgetPagesMixin,
   descopeUiMixin,
   initElementMixin,
   initLifecycleMixin,
   loggerMixin,
 } from '@descope/sdk-mixins';
-import { fetchWidgetPagesMixin } from '../../fetchWidgetPagesMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
+
+const WIDGET_PAGES_BASE_DIR = 'access-key-management-widget';
 
 export const initWidgetRootMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -19,7 +21,7 @@ export const initWidgetRootMixin = createSingletonMixin(
       initLifecycleMixin,
       descopeUiMixin,
       initElementMixin,
-      fetchWidgetPagesMixin,
+      createFetchWidgetPagesMixin(WIDGET_PAGES_BASE_DIR),
       stateManagementMixin,
     )(superclass) {
       async #initWidgetRoot() {

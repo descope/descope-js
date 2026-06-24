@@ -7,10 +7,16 @@ import { initElementMixin } from '../initElementMixin';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { staticResourcesMixin } from '../staticResourcesMixin';
 import { DEFAULT_STYLE_ID } from './constants';
-import { flattenToVars, loadDevTheme, loadFont } from './helpers';
+import {
+  deepMergeNonEmpty,
+  flattenToVars,
+  loadDevTheme,
+  loadFont,
+} from './helpers';
 import { observeAttributesMixin } from '../observeAttributesMixin';
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 import { InjectedStyle, injectStyleMixin } from '../injectStyleMixin';
+import { tenantIdMixin } from '../tenantIdMixin';
 
 const themeValidation = (_: string, theme: string | null) =>
   (theme || false) &&
@@ -24,6 +30,7 @@ export const themeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
       createValidateAttributesMixin({ theme: themeValidation }),
+      tenantIdMixin,
       staticResourcesMixin,
       initLifecycleMixin,
       descopeUiMixin,
@@ -35,6 +42,7 @@ export const themeMixin = createSingletonMixin(
 
     return class ThemeMixinClass extends BaseClass {
       #globalStyle: InjectedStyle;
+      #tenantStyle: InjectedStyle;
       #customStyle: InjectedStyle;
 
       get theme(): ThemeOptions {
@@ -88,6 +96,7 @@ export const themeMixin = createSingletonMixin(
       }
 
       #_themeResource: Promise<void | Record<string, any>>;
+      #_tenantThemeResource: Promise<Record<string, any> | undefined>;
 
       async #fetchTheme() {
         try {
@@ -149,7 +158,6 @@ export const themeMixin = createSingletonMixin(
           );
         }
 
-        // eslint-disable-next-line no-underscore-dangle
         return this.#_themeResource;
       }
 
@@ -158,13 +166,59 @@ export const themeMixin = createSingletonMixin(
         if (!theme) {
           return;
         }
+        const styles =
+          (theme?.light?.globals || '') + (theme?.dark?.globals || '');
         if (!this.#globalStyle) {
-          this.#globalStyle = this.injectStyle('');
+          // Use prepend so project global style always precedes tenant style regardless of fetch order
+          this.#globalStyle = this.injectStyle(styles, { prepend: true });
+        } else {
+          this.#globalStyle.replaceSync(styles);
         }
+      }
 
-        this.#globalStyle.replaceSync(
-          (theme?.light?.globals || '') + (theme?.dark?.globals || ''),
-        );
+      async #fetchTenantTheme() {
+        const tenantId = this.tenantId;
+        if (!tenantId) return undefined;
+        try {
+          const { body: fetchedTenantTheme } = await this.fetchStaticResource(
+            `${tenantId}/theme.json`,
+            'json',
+          );
+          return fetchedTenantTheme;
+        } catch (e) {
+          this.logger.error(
+            'Cannot fetch tenant theme file',
+            'make sure that your tenantId, projectId & flowId are correct',
+          );
+        }
+        return undefined;
+      }
+
+      get #tenantThemeResource(): Promise<Record<string, any> | undefined> {
+        if (!this.#_tenantThemeResource) {
+          this.#_tenantThemeResource = this.#fetchTenantTheme();
+        }
+        return this.#_tenantThemeResource;
+      }
+
+      async #loadTenantStyle() {
+        if (!this.tenantId) {
+          this.#tenantStyle?.replaceSync('');
+          return;
+        }
+        const tenantTheme = await this.#tenantThemeResource;
+        if (!tenantTheme) {
+          this.#tenantStyle?.replaceSync('');
+          return;
+        }
+        const styles =
+          (tenantTheme.light?.globals || '') +
+          (tenantTheme.dark?.globals || '');
+        if (!this.#tenantStyle) {
+          this.#tenantStyle = this.injectStyle(styles);
+        } else {
+          this.#tenantStyle.replaceSync(styles);
+        }
       }
 
       async #loadCustomStyle() {
@@ -172,10 +226,12 @@ export const themeMixin = createSingletonMixin(
           this.#customStyle?.replaceSync('');
           return;
         }
+        const overrideString = this.#getThemeOverrideString();
         if (!this.#customStyle) {
-          this.#customStyle = this.injectStyle('');
+          this.#customStyle = this.injectStyle(overrideString);
+        } else {
+          this.#customStyle.replaceSync(overrideString);
         }
-        this.#customStyle.replaceSync(this.#getThemeOverrideString());
       }
 
       async #loadComponentsStyle() {
@@ -183,12 +239,20 @@ export const themeMixin = createSingletonMixin(
         if (!theme) return;
 
         const descopeUi = await this.descopeUi;
-        if (descopeUi?.componentsThemeManager) {
-          descopeUi.componentsThemeManager.themes = {
-            light: theme?.light?.components,
-            dark: theme?.dark?.components,
-          };
-        }
+        if (!descopeUi?.componentsThemeManager) return;
+
+        const tenantTheme = await this.#tenantThemeResource;
+
+        descopeUi.componentsThemeManager.themes = {
+          light: deepMergeNonEmpty(
+            theme?.light?.components || {},
+            tenantTheme?.light?.components || {},
+          ),
+          dark: deepMergeNonEmpty(
+            theme?.dark?.components || {},
+            tenantTheme?.dark?.components || {},
+          ),
+        };
       }
 
       async #getFontsConfig() {
@@ -251,13 +315,22 @@ export const themeMixin = createSingletonMixin(
         this.#onThemeChange();
         await Promise.all([
           this.#loadGlobalStyle(),
+          this.#loadTenantStyle(),
           this.#loadComponentsStyle(),
         ]);
-        await this.#loadCustomStyle();
+        this.#loadCustomStyle();
 
         this.observeAttributes(['theme'], this.#onThemeChange);
 
-        this.observeAttributes(['theme-override'], () => this.#loadCustomStyle());
+        this.observeAttributes(['theme-override'], () =>
+          this.#loadCustomStyle(),
+        );
+
+        this.observeAttributes(['tenant'], () => {
+          this.#_tenantThemeResource = null;
+          this.#loadTenantStyle();
+          this.#loadComponentsStyle();
+        });
 
         this.observeAttributes(['style-id'], () => {
           this.#_themeResource = null;

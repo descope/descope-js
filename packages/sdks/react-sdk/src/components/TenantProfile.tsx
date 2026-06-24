@@ -22,7 +22,10 @@ const TenantProfileWC = lazy(async () => {
 });
 
 const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
-  ({ logger, theme, debug, widgetId, styleId, tenant, onReady }, ref) => {
+  (
+    { logger, theme, locale, debug, widgetId, styleId, tenant, onReady },
+    ref,
+  ) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -52,6 +55,7 @@ const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
           ref={setInnerRef}
           {...{
             'theme.attr': theme,
+            'locale.attr': locale,
             'debug.attr': debug,
             'styleId.attr': styleId,
             'tenant.attr': tenant,

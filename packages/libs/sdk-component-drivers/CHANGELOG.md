@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.12.0...sdk-component-drivers-0.13.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.8.0`
+
+### Features
+
+* tenant multi sso ([#1400](https://github.com/descope/descope-js/issues/1400)) ([7d840b7](https://github.com/descope/descope-js/commit/7d840b773ba58aace60f28a645e00cac6f923488))
+
 ## [0.12.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.11.0...sdk-component-drivers-0.12.0) (2026-05-28)
 
 

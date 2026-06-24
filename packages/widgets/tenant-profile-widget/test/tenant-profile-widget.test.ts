@@ -52,8 +52,9 @@ export const mockHttpClient = {
           text: () =>
             Promise.resolve(
               JSON.stringify({
-                adminSSOConfigurationLink:
+                defaultLink:
                   'https://api.descope.TESTEST/sso/setup?tenantId=tenant-1',
+                ssoIdToLink: {},
               }),
             ),
         });
@@ -175,7 +176,7 @@ describe('tenant-profile-widget', () => {
 
     it('tenant admin link sso', async () => {
       const sdk = createSdk({ projectId: mockProjectId }, tenantId, false);
-      const result = await sdk.tenant.adminLinkSso();
+      const result = await sdk.tenant.adminLinkSso({ ssoIds: [] });
 
       await waitFor(
         () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
@@ -186,7 +187,7 @@ describe('tenant-profile-widget', () => {
       await waitFor(() =>
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           `${apiPaths.tenant.adminLinkSso}?tenant=${tenantId}`,
-          { tenantId },
+          { tenantId, ssoIds: [] },
           { headers: { 'Content-Type': 'application/json' } },
         ),
       );

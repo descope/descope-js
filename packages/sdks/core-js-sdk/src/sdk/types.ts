@@ -428,4 +428,11 @@ export type UpdateOptions<T extends boolean> = {
   templateOptions?: TemplateOptions;
   templateId?: string;
   providerId?: string;
+  /**
+   * When true, preserves the auth methods already on the refresh token and adds the
+   * updated factor to them (so the resulting `amr` keeps the previously-passed factors)
+   * instead of replacing it with a single factor. Requires a valid refresh token.
+   * Currently applies to the OTP update phone / email flows.
+   */
+  mfa?: boolean;
 };

@@ -15,6 +15,8 @@ import createdAccessKeyModalMock from '../test/mocks/createdAccessKeyModalMock';
 import deleteAccessKeyModalMock from '../test/mocks/deleteAccessKeyModalMock';
 import activateAccessKeyModalMock from '../test/mocks/activateAccessKeyModalMock';
 import deactivateAccessKeyModalMock from '../test/mocks/deactivateAccessKeyModalMock';
+import rotateAccessKeyModalMock from '../test/mocks/rotateAccessKeyModalMock';
+import rotatedAccessKeyModalMock from '../test/mocks/rotatedAccessKeyModalMock';
 
 const configContent = {
   flows: {
@@ -29,6 +31,31 @@ const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
 const MODAL_TIMEOUT = 500;
 const STATE_TIMEOUT = 2000;
 const cleartext = 'aaaaaaaaaaaaaa';
+
+// Reads `.value` from a custom element matching `selector` anywhere in the
+// page, walking shadow roots. Needed because descope-text-field isn't a native
+// <input>, so playwright's locator.inputValue() doesn't work on it.
+const readShadowDomElementValue = (
+  page: import('@playwright/test').Page,
+  selector: string,
+): Promise<string | undefined> =>
+  page.evaluate((sel: string) => {
+    function findInShadow(root: any, s: string): any {
+      if (!root) return null;
+      const direct = root.querySelector?.(s);
+      if (direct) return direct;
+      const all = Array.from(root.querySelectorAll?.('*') || []);
+      let found: any = null;
+      all.some((el: any) => {
+        if (el.shadowRoot) {
+          found = findInShadow(el.shadowRoot, s);
+        }
+        return !!found;
+      });
+      return found;
+    }
+    return findInShadow(document, sel)?.value;
+  }, selector);
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
@@ -71,6 +98,14 @@ test.describe('widget', () => {
       route.fulfill({ body: deactivateAccessKeyModalMock }),
     );
 
+    await page.route('*/**/rotate-access-key-modal.html', async (route) =>
+      route.fulfill({ body: rotateAccessKeyModalMock }),
+    );
+
+    await page.route('*/**/rotated-access-key-modal.html', async (route) =>
+      route.fulfill({ body: rotatedAccessKeyModalMock }),
+    );
+
     await page.route(apiPath('accesskey', 'create'), async (route) =>
       route.fulfill({ json: { key: mockNewAccessKey, cleartext } }),
     );
@@ -97,6 +132,12 @@ test.describe('widget', () => {
 
     await page.route(apiPath('accesskey', 'deactivate'), async (route) =>
       route.fulfill({ json: { tenant: 'mockTenant' } }),
+    );
+
+    await page.route(apiPath('accesskey', 'rotate'), async (route) =>
+      route.fulfill({
+        json: { key: mockAccessKeys.keys[0], cleartext },
+      }),
     );
 
     await page.route('**/auth/me', async (route) =>
@@ -179,10 +220,11 @@ test.describe('widget', () => {
       page.locator('text=Access Key created successfully'),
     ).toBeVisible();
 
-    const generatedAccessKeyNameInput = page
-      .getByPlaceholder('Generated Key')
-      .last();
-    expect(await generatedAccessKeyNameInput.inputValue()).toEqual(cleartext);
+    const createdAccessKeyValue = await readShadowDomElementValue(
+      page,
+      '[data-testid="created-access-key-input"]',
+    );
+    expect(createdAccessKeyValue).toEqual(cleartext);
 
     // click modal create button
     const closeCreatedAccessKeyButton = page
@@ -359,14 +401,20 @@ test.describe('widget', () => {
   test('search access keys', async ({ page }) => {
     await page.waitForLoadState('networkidle');
 
-    // Set up route handler first
+    // Handle all search requests (initial empty-text mount call AND the user-typed
+    // call). Branch on `text` to filter — asserting inside the handler would race
+    // with the initial mount call where text is "".
     await page.route(apiPath('accesskey', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
-      expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ keys: [mockAccessKeys.keys[1]] }),
+        body: JSON.stringify({
+          keys:
+            text === 'mockSearchString'
+              ? [mockAccessKeys.keys[1]]
+              : mockAccessKeys.keys,
+        }),
       });
     });
 
@@ -383,8 +431,17 @@ test.describe('widget', () => {
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
-    // Wait for the search request and response
-    await page.waitForResponse(apiPath('accesskey', 'search'));
+    // Wait for a search request whose body carries the typed text. This also
+    // verifies the wiring (input → request body) — replaces the assertion that
+    // used to live inside the route handler.
+    await page.waitForRequest((req) => {
+      if (!req.url().includes('/accesskey/search')) return false;
+      try {
+        return req.postDataJSON()?.text === 'mockSearchString';
+      } catch {
+        return false;
+      }
+    });
 
     // only search results shown in grid - wait longer for UI to update
     await expect(
@@ -394,6 +451,12 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
     ).toBeVisible({ timeout: 10000 });
+
+    // The unfiltered key is no longer in the grid — proves the filter actually
+    // ran on the typed text (not just that the response renders).
+    await expect(
+      page.locator(`text=${mockAccessKeys.keys[0].name}`).first(),
+    ).toBeHidden({ timeout: 10000 });
   });
 
   test('close notification', async ({ page }) => {
@@ -566,6 +629,223 @@ test.describe('widget', () => {
 
     // deactivate button remains disabled for expired keys
     await expect(deactivateAccessKeyTrigger).toBeDisabled();
+  });
+
+  test('rotate access key', async ({ page, browserName }) => {
+    const rotatedCleartext = 'rotated-cleartext-value';
+    await page.route(apiPath('accesskey', 'rotate'), async (route) =>
+      route.fulfill({
+        json: {
+          key: mockAccessKeys.keys[0],
+          cleartext: rotatedCleartext,
+        },
+      }),
+    );
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const rotateAccessKeyTrigger = page
+      .getByTestId('rotate-access-keys-trigger')
+      .first();
+    const rotateModalSubmitButton = page
+      .getByTestId('rotate-access-key-modal-submit')
+      .first();
+
+    await rotateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // rotate button initial state is disabled
+    await expect(rotateAccessKeyTrigger).toBeDisabled();
+
+    // select a single row (.first() is the select-all header checkbox; .nth(1)
+    // is the first row's checkbox)
+    await page.locator('descope-checkbox').nth(1).click();
+
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // rotate button is enabled when exactly one active key is selected
+    await expect(rotateAccessKeyTrigger).toBeEnabled();
+
+    // click rotate — opens the confirm modal first
+    await rotateAccessKeyTrigger.click();
+
+    // confirm modal renders with the rotate title + selected key name in the
+    // dynamic body
+    const rotateConfirmTitle = page.locator('text=Rotate access key').first();
+    await expect(rotateConfirmTitle).toBeVisible();
+    await expect(
+      page.locator(`text=Rotate ${mockAccessKeys.keys[0].name}?`),
+    ).toBeVisible();
+
+    // confirm — fires the rotate API and opens the reveal modal
+    await rotateModalSubmitButton.click();
+
+    // success notification
+    await expect(
+      page.locator('text=Access key rotated successfully'),
+    ).toBeVisible();
+
+    // reveal modal now has the rotate-specific title
+    await expect(page.locator('text=Access key secret rotated')).toBeVisible();
+
+    const rotatedAccessKeyValue = await readShadowDomElementValue(
+      page,
+      '[data-testid="rotated-access-key-input"]',
+    );
+    expect(rotatedAccessKeyValue).toEqual(rotatedCleartext);
+
+    // close the reveal modal — exercises the clipboard copy
+    const closeRevealButton = page
+      .getByTestId('rotated-access-key-modal-close')
+      .first();
+    await closeRevealButton.click();
+
+    if (browserName === 'chromium') {
+      const clipboardContent = await page.evaluate(
+        'navigator.clipboard.readText()',
+      );
+      expect(clipboardContent).toEqual(rotatedCleartext);
+    }
+  });
+
+  test('rotate keeps the reveal modal closed when the API rejects', async ({
+    page,
+  }) => {
+    // Override the default rotate route to return a server error
+    await page.route(apiPath('accesskey', 'rotate'), async (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          errorCode: 'E000000',
+          errorDescription: 'simulated server error',
+        }),
+      }),
+    );
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const rotateAccessKeyTrigger = page
+      .getByTestId('rotate-access-keys-trigger')
+      .first();
+    const rotateModalSubmitButton = page
+      .getByTestId('rotate-access-key-modal-submit')
+      .first();
+
+    await rotateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // pick a row + open the confirm modal
+    await page.locator('descope-checkbox').nth(1).click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+    await rotateAccessKeyTrigger.click();
+
+    await expect(page.locator('text=Rotate access key').first()).toBeVisible();
+
+    // submit → API rejects → no reveal modal, error notification surfaces
+    await rotateModalSubmitButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // The "secret isn't lost" invariant: reveal modal must NOT open on failure,
+    // otherwise the user would see an empty/stale cleartext input.
+    await expect(page.locator('text=Access key secret rotated')).toBeHidden();
+
+    // Error notification surfaced via the withNotifications helper.
+    await expect(
+      page.locator('text=Failed to rotate access key').first(),
+    ).toBeVisible();
+  });
+
+  test('rotate confirm modal can be cancelled without firing the API', async ({
+    page,
+  }) => {
+    let rotateCalls = 0;
+    await page.route(apiPath('accesskey', 'rotate'), async (route) => {
+      rotateCalls += 1;
+      return route.fulfill({
+        json: {
+          key: mockAccessKeys.keys[0],
+          cleartext: 'should-not-be-shown',
+        },
+      });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const rotateAccessKeyTrigger = page
+      .getByTestId('rotate-access-keys-trigger')
+      .first();
+    const rotateModalCancelButton = page
+      .getByTestId('rotate-access-key-modal-cancel')
+      .first();
+
+    await rotateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // pick a row + open the confirm modal
+    await page.locator('descope-checkbox').nth(1).click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+    await rotateAccessKeyTrigger.click();
+
+    await expect(page.locator('text=Rotate access key').first()).toBeVisible();
+
+    // cancel → modal closes, no API call, no reveal
+    await rotateModalCancelButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    expect(rotateCalls).toBe(0);
+    await expect(page.locator('text=Access key secret rotated')).toBeHidden();
+  });
+
+  test('rotate button is disabled when multiple keys are selected', async ({
+    page,
+  }) => {
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const rotateAccessKeyTrigger = page
+      .getByTestId('rotate-access-keys-trigger')
+      .first();
+
+    await rotateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    // rotate button initial state is disabled
+    await expect(rotateAccessKeyTrigger).toBeDisabled();
+
+    // select-all checkbox (selects all 3 keys)
+    await page.locator('descope-checkbox').first().click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // rotate requires a single selection — stays disabled with multi-select
+    await expect(rotateAccessKeyTrigger).toBeDisabled();
+  });
+
+  test('rotate button is disabled for expired keys', async ({ page }) => {
+    await page.waitForLoadState('networkidle');
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
+      }),
+    );
+    page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const rotateAccessKeyTrigger = page
+      .getByTestId('rotate-access-keys-trigger')
+      .first();
+
+    await rotateAccessKeyTrigger.waitFor({ state: 'visible' });
+
+    await expect(rotateAccessKeyTrigger).toBeDisabled();
+
+    // select first row's checkbox
+    await page.locator('descope-checkbox').nth(1).click();
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // rotate stays disabled for expired keys
+    await expect(rotateAccessKeyTrigger).toBeDisabled();
   });
 
   test('delete button is still enabled for expired keys', async ({ page }) => {

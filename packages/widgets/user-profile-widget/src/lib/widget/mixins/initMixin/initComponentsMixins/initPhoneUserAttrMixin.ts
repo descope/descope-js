@@ -9,14 +9,12 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   loggerMixin,
   modalMixin,
   cookieConfigMixin,
 } from '@descope/sdk-mixins';
-import {
-  getPhone,
-  getPhoneBadgeLabel,
-} from '../../../state/selectors';
+import { getPhone, getPhoneBadgeLabel } from '../../../state/selectors';
 import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -25,6 +23,7 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initPhoneUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PhoneUserAttrMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
@@ -58,6 +57,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #initEditModalContent() {
         this.#editModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.phoneUserAttr.editFlowId,
             baseUrl: this.baseUrl,
@@ -90,6 +90,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: this.phoneUserAttr.deleteFlowId,
             baseUrl: this.baseUrl,

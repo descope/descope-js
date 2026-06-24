@@ -11,6 +11,7 @@ type FlowConfig = {
   'style-id'?: string;
   form?: string;
   outboundAppId?: string;
+  locale?: string;
 };
 
 export const createFlowTemplate = (

@@ -1,6 +1,8 @@
+import { getAdditionalSSOIds } from './../state/selectors';
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   initLifecycleMixin,
   loggerMixin,
@@ -15,6 +17,7 @@ const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
 export const flowRedirectUrlMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class FlowRedirectUrlMixinClass extends compose(
+      localeMixin,
       initLifecycleMixin,
       modalMixin,
       stateManagementMixin,
@@ -37,6 +40,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
         modal.setContent(
           createFlowTemplate({
+            locale: this.locale,
             projectId: this.projectId,
             flowId: widgetFlow,
             tenant: this.tenantId,
@@ -54,11 +58,12 @@ export const flowRedirectUrlMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        flow.onSuccess(() => {
+        flow.onSuccess(async () => {
           modal.close();
           this.actions.getMe();
-          this.actions.getTenant();
-          this.actions.getTenantAdminLinkSSO();
+          await this.actions.getTenant();
+          const ssoIds = getAdditionalSSOIds(this.state);
+          await this.actions.getTenantAdminLinkSSO({ ssoIds });
         });
 
         modal.afterClose = () => {

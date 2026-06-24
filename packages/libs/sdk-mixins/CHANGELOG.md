@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.20.0...sdk-mixins-0.21.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.13.0`
+* `sdk-helpers` updated to version `0.8.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.20.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.19.0...sdk-mixins-0.20.0) (2026-06-09)
+
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
+## [0.19.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.18.0...sdk-mixins-0.19.0) (2026-06-04)
+
+
+### Features
+
+* Add tenant style sheet ([#1397](https://github.com/descope/descope-js/issues/1397)) ([90ab9dd](https://github.com/descope/descope-js/commit/90ab9dd5f05cd696da8ced616e5e0b081a2d970c))
+
 ## [0.18.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.1...sdk-mixins-0.18.0) (2026-05-28)
 
 ### Dependency Updates

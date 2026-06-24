@@ -11,6 +11,7 @@ type FlowConfig = {
   theme?: string;
   form?: string;
   'style-id'?: string;
+  locale?: string;
 };
 
 export const createFlowTemplate = (

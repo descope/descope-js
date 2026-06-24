@@ -2,6 +2,70 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.69.2](https://github.com/descope/descope-js/compare/web-component-3.69.1...web-component-3.69.2) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+## [3.69.1](https://github.com/descope/descope-js/compare/web-component-3.69.0...web-component-3.69.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.17 RELEASE ([#1421](https://github.com/descope/descope-js/issues/1421)) ([13b11d3](https://github.com/descope/descope-js/commit/13b11d37953047ad004e88e0bb288bb49fe58323))
+
+## [3.69.0](https://github.com/descope/descope-js/compare/web-component-3.68.0...web-component-3.69.0) (2026-06-18)
+
+
+### Features
+
+* **web-component:** support new doesnt-contains realtime operator RELEASE ([#1417](https://github.com/descope/descope-js/issues/1417)) ([fe37871](https://github.com/descope/descope-js/commit/fe378717bb2bc3492ca1f4c2a1f438b0f647e4be)), closes [descope/backend#1348](https://github.com/descope/backend/issues/1348) [descope/etc#16322](https://github.com/descope/etc/issues/16322) [descope/backend#1348](https://github.com/descope/backend/issues/1348) [#1348](https://github.com/descope/descope-js/issues/1348)
+
+## [3.68.0](https://github.com/descope/descope-js/compare/web-component-3.67.1...web-component-3.68.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `web-js-sdk` updated to version `1.50.4`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [3.67.1](https://github.com/descope/descope-js/compare/web-component-3.67.0...web-component-3.67.1) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+## [3.67.0](https://github.com/descope/descope-js/compare/web-component-3.66.1...web-component-3.67.0) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
+## [3.66.1](https://github.com/descope/descope-js/compare/web-component-3.66.0...web-component-3.66.1) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+## [3.66.0](https://github.com/descope/descope-js/compare/web-component-3.65.0...web-component-3.66.0) (2026-06-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.19.0`
+
+### Features
+
+* Add tenant style sheet ([#1397](https://github.com/descope/descope-js/issues/1397)) ([90ab9dd](https://github.com/descope/descope-js/commit/90ab9dd5f05cd696da8ced616e5e0b081a2d970c))
+
 ## [3.65.0](https://github.com/descope/descope-js/compare/web-component-3.64.3...web-component-3.65.0) (2026-05-28)
 
 

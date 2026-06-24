@@ -19,6 +19,6 @@ export const mockTenant: Tenant = {
 };
 
 export const mockTenantAdminLinkSSO: TenantAdminLinkSSOResponse = {
-  adminSSOConfigurationLink:
-    'https://api.descope.TESTEST/sso/setup?tenantId=tenant-1',
+  defaultLink: 'https://api.descope.TESTEST/sso/setup?tenantId=tenant-1',
+  ssoIdToLink: {},
 };

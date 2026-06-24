@@ -2,6 +2,34 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.64.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.63.0...core-js-sdk-2.64.0) (2026-06-22)
+
+
+### Features
+
+* **core-js-sdk:** also retry on transient status code 520 RELEASE ([#1423](https://github.com/descope/descope-js/issues/1423)) RELEASE ([1876b86](https://github.com/descope/descope-js/commit/1876b862cceb7406b897dd9db583dc6a9b4117d0)), closes [descope/go-sdk#775](https://github.com/descope/go-sdk/issues/775) [descope/python-sdk#1581](https://github.com/descope/python-sdk/issues/1581)
+
+## [2.63.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.2...core-js-sdk-2.63.0) (2026-06-21)
+
+
+### Features
+
+* **core-js-sdk:** add mfa option to OTP update phone/email ([#1420](https://github.com/descope/descope-js/issues/1420)) ([8d43092](https://github.com/descope/descope-js/commit/8d43092c8860b55ff01119ff746bd939edef81cc)), closes [descope/etc#16372](https://github.com/descope/etc/issues/16372)
+
+## [2.62.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.1...core-js-sdk-2.62.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** declare tslib as a runtime dependency RELEASE ([#1411](https://github.com/descope/descope-js/issues/1411)) ([f1a3f72](https://github.com/descope/descope-js/commit/f1a3f720c8af0820adbebc234c9bfb80636d914b))
+
+## [2.62.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.0...core-js-sdk-2.62.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** add react-native build target (es2016) ([#1408](https://github.com/descope/descope-js/issues/1408)) RELEASE ([45ef6b9](https://github.com/descope/descope-js/commit/45ef6b9db52a383485619894f223367bebd6af78))
+
 ## [2.62.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.61.0...core-js-sdk-2.62.0) (2026-05-25)
 
 

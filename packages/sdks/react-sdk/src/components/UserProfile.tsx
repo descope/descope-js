@@ -24,7 +24,10 @@ const UserProfileWC = lazy(async () => {
 });
 
 const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
-  ({ logger, theme, debug, widgetId, onLogout, styleId, onReady }, ref) => {
+  (
+    { logger, theme, locale, debug, widgetId, onLogout, styleId, onReady },
+    ref,
+  ) => {
     const [innerRef, setInnerRef] = useState(null);
 
     useImperativeHandle(ref, () => innerRef);
@@ -83,6 +86,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
           {...{
             // attributes
             'theme.attr': theme,
+            'locale.attr': locale,
             'debug.attr': debug,
             'styleId.attr': styleId,
             'refreshCookieName.attr': refreshCookieName,

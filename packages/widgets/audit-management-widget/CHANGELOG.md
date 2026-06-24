@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.2](https://github.com/descope/descope-js/compare/audit-management-widget-0.8.1...audit-management-widget-0.8.2) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+## [0.8.1](https://github.com/descope/descope-js/compare/audit-management-widget-0.8.0...audit-management-widget-0.8.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+## [0.8.0](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.6...audit-management-widget-0.8.0) (2026-06-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.4`
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `sdk-component-drivers` updated to version `0.13.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.7.6](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.5...audit-management-widget-0.7.6) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+## [0.7.5](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.4...audit-management-widget-0.7.5) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+## [0.7.4](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.3...audit-management-widget-0.7.4) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+## [0.7.3](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.2...audit-management-widget-0.7.3) (2026-06-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.19.0`
 ## [0.7.2](https://github.com/descope/descope-js/compare/audit-management-widget-0.7.1...audit-management-widget-0.7.2) (2026-05-28)
 
 ### Dependency Updates
