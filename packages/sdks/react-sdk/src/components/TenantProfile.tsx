@@ -23,7 +23,18 @@ const TenantProfileWC = lazy(async () => {
 
 const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
   (
-    { logger, theme, locale, debug, widgetId, styleId, tenant, onReady },
+    {
+      logger,
+      theme,
+      locale,
+      debug,
+      widgetId,
+      styleId,
+      tenant,
+      onReady,
+      client,
+      form,
+    },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -60,6 +71,8 @@ const TenantProfile = React.forwardRef<HTMLElement, TenantProfileProps>(
             'styleId.attr': styleId,
             'tenant.attr': tenant,
             'refreshCookieName.attr': refreshCookieName,
+            'client.attr': client,
+            'form.attr': form,
             'logger.prop': logger,
           }}
         />

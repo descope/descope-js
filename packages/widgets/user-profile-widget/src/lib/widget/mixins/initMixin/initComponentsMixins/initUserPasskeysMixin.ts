@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getUserId, getUserPasskeys } from '../../../state/selectors';
-import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initUserPasskeysMixin = createSingletonMixin(
@@ -57,7 +57,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
       #initAddModalContent() {
         this.#addModal.setContent(
-          this.buildFlowTemplate({
+          this.createFlowTemplate({
             flowId: this.userPasskeys.addPasskeyFlowId,
           }),
         );
@@ -83,7 +83,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
       #initRemoveModalContent({ externalId, credentialId }) {
         this.#removeModal.setContent(
-          this.buildFlowTemplate({
+          this.createFlowTemplate({
             flowId: this.userPasskeys.removePasskeyFlowId,
             form: { externalId, credentialId },
           }),

@@ -13,9 +13,9 @@ import {
   loggerMixin,
   modalMixin,
   cookieConfigMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getPhone, getPhoneBadgeLabel } from '../../../state/selectors';
-import { flowInputMixin } from '../../flowInputMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -57,7 +57,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          this.buildFlowTemplate({ flowId: this.phoneUserAttr.editFlowId }),
+          this.createFlowTemplate({ flowId: this.phoneUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -80,7 +80,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          this.buildFlowTemplate({ flowId: this.phoneUserAttr.deleteFlowId }),
+          this.createFlowTemplate({ flowId: this.phoneUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();

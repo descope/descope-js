@@ -13,9 +13,9 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getEmail, getEmailBadgeLabel } from '../../../state/selectors';
-import { flowInputMixin } from '../../flowInputMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -57,7 +57,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          this.buildFlowTemplate({ flowId: this.emailUserAttr.editFlowId }),
+          this.createFlowTemplate({ flowId: this.emailUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -80,7 +80,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          this.buildFlowTemplate({ flowId: this.emailUserAttr.deleteFlowId }),
+          this.createFlowTemplate({ flowId: this.emailUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();

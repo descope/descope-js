@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getName } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initNameUserAttrMixin = createSingletonMixin(
@@ -57,7 +57,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          this.buildFlowTemplate({ flowId: this.nameUserAttr.editFlowId }),
+          this.createFlowTemplate({ flowId: this.nameUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -80,7 +80,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          this.buildFlowTemplate({ flowId: this.nameUserAttr.deleteFlowId }),
+          this.createFlowTemplate({ flowId: this.nameUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();

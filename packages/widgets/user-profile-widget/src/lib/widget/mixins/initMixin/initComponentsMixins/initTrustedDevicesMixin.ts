@@ -14,10 +14,10 @@ import {
   loggerMixin,
   modalMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { getTrustedDevices, getUserId } from '../../../state/selectors';
 
@@ -54,7 +54,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
 
       #initModalContent(deviceId: string = '') {
         this.#modal.setContent(
-          this.buildFlowTemplate({
+          this.createFlowTemplate({
             flowId: this.deviceList.flowId,
             form: { deviceId },
           }),

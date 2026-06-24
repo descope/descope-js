@@ -7,9 +7,9 @@ import {
   modalMixin,
   cookieConfigMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getUrlParam, resetUrlParam } from './helpers';
-import { flowInputMixin } from './flowInputMixin';
 import { stateManagementMixin } from './stateManagementMixin';
 
 const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
@@ -39,7 +39,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
 
       #createFlowRedirectModal(widgetFlow: string) {
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
-        modal.setContent(this.buildFlowTemplate({ flowId: widgetFlow }));
+        modal.setContent(this.createFlowTemplate({ flowId: widgetFlow }));
 
         const flow = new FlowDriver(
           () => modal.ele?.querySelector('descope-wc'),

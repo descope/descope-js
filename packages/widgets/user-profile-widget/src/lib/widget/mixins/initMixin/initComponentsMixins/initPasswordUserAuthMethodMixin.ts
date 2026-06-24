@@ -9,10 +9,10 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasswordUserAuthMethodMixin = createSingletonMixin(
@@ -48,7 +48,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          this.buildFlowTemplate({
+          this.createFlowTemplate({
             flowId: this.passwordUserAuthMethod.flowId,
           }),
         );

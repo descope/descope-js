@@ -14,11 +14,11 @@ import {
   loggerMixin,
   modalMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getName, getPicture } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initAvatarMixin = createSingletonMixin(
@@ -55,7 +55,7 @@ export const initAvatarMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          this.buildFlowTemplate({ flowId: this.avatar.flowId }),
+          this.createFlowTemplate({ flowId: this.avatar.flowId }),
         );
         this.#flow.onSuccess(() => {
           this.#modal.close();

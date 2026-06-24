@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getHasTotp } from '../../../state/selectors';
-import { flowInputMixin } from '../../flowInputMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initTotpUserAuthMethodMixin = createSingletonMixin(
@@ -57,7 +57,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
 
       #initAddModalContent() {
         this.#addModal.setContent(
-          this.buildFlowTemplate({ flowId: this.totpUserAuthMethod.flowId }),
+          this.createFlowTemplate({ flowId: this.totpUserAuthMethod.flowId }),
         );
         this.#addFlow.onSuccess(() => {
           this.#addModal.close();
@@ -81,7 +81,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
 
       #initRemoveTotpModalContent() {
         this.#removeTotpModal.setContent(
-          this.buildFlowTemplate({
+          this.createFlowTemplate({
             flowId: this.totpUserAuthMethod.fulfilledFlowId,
           }),
         );

@@ -13,10 +13,10 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
 import { getUserCustomAttrs } from '../../../state/selectors';
-import { flowInputMixin } from '../../flowInputMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -55,7 +55,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
 
       #initEditModalContent(flowId: string) {
         this.#editModals[flowId]?.setContent(
-          this.buildFlowTemplate({ flowId }),
+          this.createFlowTemplate({ flowId }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
           this.#editModals[flowId]?.close();
@@ -66,7 +66,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       // have 2 init functions for edit and delete modals in order to keep the same standards as the email/phone/name mixin
       #initDeleteModalContent(flowId: string) {
         this.#deleteModals[flowId]?.setContent(
-          this.buildFlowTemplate({ flowId }),
+          this.createFlowTemplate({ flowId }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {
           this.#deleteModals[flowId]?.close();
