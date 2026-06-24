@@ -99,7 +99,7 @@ export default {
   myTenants: '/v1/auth/me/tenants',
   history: '/v1/auth/me/history',
   flow: {
-    start: '/v1/flow/start',
-    next: '/v1/flow/next',
+    start: '/v2/flow/start',
+    next: '/v2/flow/next',
   },
 };
