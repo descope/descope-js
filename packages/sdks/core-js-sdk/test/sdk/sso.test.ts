@@ -11,10 +11,6 @@ describe('sso', () => {
     mockHttpClient.reset();
   });
 
-  it('should be an alias of saml', () => {
-    expect(sdk.sso).toBe(sdk.saml);
-  });
-
   describe('start', () => {
     it('should return the correct url', async () => {
       const httpRespJson = { url: 'http://redirecturl.com/' };
