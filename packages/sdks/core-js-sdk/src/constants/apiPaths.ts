@@ -51,6 +51,10 @@ export default {
     start: '/v1/auth/saml/authorize',
     exchange: '/v1/auth/saml/exchange',
   },
+  sso: {
+    start: '/v1/auth/saml/authorize',
+    exchange: '/v1/auth/saml/exchange',
+  },
   totp: {
     verify: '/v1/auth/totp/verify',
     signUp: '/v1/auth/totp/signup',
