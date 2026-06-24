@@ -1,17 +1,27 @@
 import { createFlowTemplate } from '../src';
 
-const wc = (template: HTMLTemplateElement) =>
-  template.content.querySelector('descope-wc');
+// Read the descope-wc's attributes into a plain object so assertions use plain
+// jest matchers (these packages don't set up @testing-library/jest-dom) and
+// getAttribute never sits directly inside expect().
+const attrsOf = (template: HTMLTemplateElement) => {
+  const el = template.content.querySelector('descope-wc');
+  return Object.fromEntries(
+    el.getAttributeNames().map((name) => [name, el.getAttribute(name)]),
+  );
+};
 
 describe('createFlowTemplate', () => {
   it('renders a <descope-wc> element', () => {
-    const el = wc(createFlowTemplate({ projectId: 'p1', flowId: 'sign-in' }));
-    expect(el).not.toBeNull();
-    expect(el.tagName.toLowerCase()).toBe('descope-wc');
+    const el = createFlowTemplate({
+      projectId: 'p1',
+      flowId: 'sign-in',
+    }).content.querySelector('descope-wc');
+
+    expect(el?.tagName.toLowerCase()).toBe('descope-wc');
   });
 
   it('maps config keys to kebab-case attributes', () => {
-    const el = wc(
+    const attrs = attrsOf(
       createFlowTemplate({
         projectId: 'p1',
         flowId: 'sign-in',
@@ -25,19 +35,21 @@ describe('createFlowTemplate', () => {
       }),
     );
 
-    expect(el.getAttribute('project-id')).toBe('p1');
-    expect(el.getAttribute('flow-id')).toBe('sign-in');
-    expect(el.getAttribute('base-url')).toBe('https://api');
-    expect(el.getAttribute('base-static-url')).toBe('https://static');
-    expect(el.getAttribute('base-cdn-url')).toBe('https://cdn');
-    expect(el.getAttribute('refresh-cookie-name')).toBe('DSR_x');
-    expect(el.getAttribute('theme')).toBe('dark');
-    expect(el.getAttribute('style-id')).toBe('style-1');
-    expect(el.getAttribute('locale')).toBe('en-US');
+    expect(attrs).toMatchObject({
+      'project-id': 'p1',
+      'flow-id': 'sign-in',
+      'base-url': 'https://api',
+      'base-static-url': 'https://static',
+      'base-cdn-url': 'https://cdn',
+      'refresh-cookie-name': 'DSR_x',
+      theme: 'dark',
+      'style-id': 'style-1',
+      locale: 'en-US',
+    });
   });
 
   it('JSON-stringifies object client/form flow inputs', () => {
-    const el = wc(
+    const attrs = attrsOf(
       createFlowTemplate({
         projectId: 'p1',
         flowId: 'f',
@@ -46,12 +58,12 @@ describe('createFlowTemplate', () => {
       }),
     );
 
-    expect(el.getAttribute('client')).toBe('{"userId":"u1","tenantId":"t1"}');
-    expect(el.getAttribute('form')).toBe('{"cookieName":"DSR_x"}');
+    expect(attrs.client).toBe('{"userId":"u1","tenantId":"t1"}');
+    expect(attrs.form).toBe('{"cookieName":"DSR_x"}');
   });
 
   it('passes string client/form inputs through unchanged', () => {
-    const el = wc(
+    const attrs = attrsOf(
       createFlowTemplate({
         projectId: 'p1',
         flowId: 'f',
@@ -60,12 +72,12 @@ describe('createFlowTemplate', () => {
       }),
     );
 
-    expect(el.getAttribute('client')).toBe('{"userId":"u1"}');
-    expect(el.getAttribute('form')).toBe('{"a":"b"}');
+    expect(attrs.client).toBe('{"userId":"u1"}');
+    expect(attrs.form).toBe('{"a":"b"}');
   });
 
   it('serializes nested array values inside inputs', () => {
-    const el = wc(
+    const attrs = attrsOf(
       createFlowTemplate({
         projectId: 'p1',
         flowId: 'f',
@@ -73,11 +85,11 @@ describe('createFlowTemplate', () => {
       }),
     );
 
-    expect(el.getAttribute('client')).toBe('{"userIds":["a","b"]}');
+    expect(attrs.client).toBe('{"userIds":["a","b"]}');
   });
 
   it('forwards widget-specific context (tenant, outboundAppId)', () => {
-    const el = wc(
+    const attrs = attrsOf(
       createFlowTemplate({
         projectId: 'p1',
         flowId: 'f',
@@ -86,22 +98,19 @@ describe('createFlowTemplate', () => {
       }),
     );
 
-    expect(el.getAttribute('tenant')).toBe('t1');
-    expect(el.getAttribute('outbound-app-id')).toBe('app1');
+    expect(attrs.tenant).toBe('t1');
+    expect(attrs['outbound-app-id']).toBe('app1');
   });
 
   it('sets an empty string for undefined values', () => {
-    const el = wc(
+    const attrs = attrsOf(
       createFlowTemplate({ projectId: 'p1', flowId: 'f', baseUrl: undefined }),
     );
 
-    expect(el.getAttribute('base-url')).toBe('');
+    expect(attrs['base-url']).toBe('');
   });
 
   it('renders a bare <descope-wc> with no attributes for an empty config', () => {
-    const el = wc(createFlowTemplate());
-
-    expect(el).not.toBeNull();
-    expect(el.attributes.length).toBe(0);
+    expect(attrsOf(createFlowTemplate())).toEqual({});
   });
 });

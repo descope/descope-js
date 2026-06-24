@@ -1,6 +1,12 @@
 import { createTemplate } from './dom';
 import { isPlainObject, kebabCase } from './generic';
 
+const stringifyValue = (value: unknown) => {
+  if (typeof value === 'string') return value;
+  if (isPlainObject(value)) return JSON.stringify(value);
+  return '';
+};
+
 export type FlowConfig = {
   projectId: string;
   flowId: string;
@@ -17,12 +23,6 @@ export type FlowConfig = {
   // widget-specific context
   tenant?: string;
   outboundAppId?: string;
-};
-
-const stringifyValue = (value: unknown) => {
-  if (typeof value === 'string') return value;
-  if (isPlainObject(value)) return JSON.stringify(value);
-  return '';
 };
 
 /**

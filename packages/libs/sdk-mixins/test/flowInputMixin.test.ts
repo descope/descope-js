@@ -28,7 +28,15 @@ const createFlowInputEl = (attrs: Record<string, string | null> = {}) => {
   return new MixinClass() as any;
 };
 
-const wc = (template: any) => template.content.querySelector('descope-wc');
+// Read the produced descope-wc's attributes into a plain object so assertions
+// use plain jest matchers (these packages don't set up jest-dom) and
+// getAttribute never sits directly inside expect().
+const attrsOf = (template: any) => {
+  const el = template.content.querySelector('descope-wc');
+  return Object.fromEntries(
+    el.getAttributeNames().map((name: string) => [name, el.getAttribute(name)]),
+  );
+};
 
 describe('flowInputMixin', () => {
   describe('clientInput', () => {
@@ -71,17 +79,20 @@ describe('flowInputMixin', () => {
         'style-id': 's1',
         locale: 'en-US',
       });
-      const el2 = wc(el.createFlowTemplate({ flowId: 'sign-in' }));
 
-      expect(el2.getAttribute('project-id')).toBe('p1');
-      expect(el2.getAttribute('flow-id')).toBe('sign-in');
-      expect(el2.getAttribute('base-url')).toBe('https://api');
-      expect(el2.getAttribute('base-static-url')).toBe('https://static');
-      expect(el2.getAttribute('base-cdn-url')).toBe('https://cdn');
-      expect(el2.getAttribute('refresh-cookie-name')).toBe('DSR_x');
-      expect(el2.getAttribute('theme')).toBe('dark');
-      expect(el2.getAttribute('style-id')).toBe('s1');
-      expect(el2.getAttribute('locale')).toBe('en-US');
+      expect(
+        attrsOf(el.createFlowTemplate({ flowId: 'sign-in' })),
+      ).toMatchObject({
+        'project-id': 'p1',
+        'flow-id': 'sign-in',
+        'base-url': 'https://api',
+        'base-static-url': 'https://static',
+        'base-cdn-url': 'https://cdn',
+        'refresh-cookie-name': 'DSR_x',
+        theme: 'dark',
+        'style-id': 's1',
+        locale: 'en-US',
+      });
     });
 
     it('forwards the caller-supplied client/form inputs into the flow', () => {
@@ -90,12 +101,10 @@ describe('flowInputMixin', () => {
         client: '{"tenantId":"t1"}',
         form: '{"cookieName":"DSR_x"}',
       });
-      const el2 = wc(el.createFlowTemplate({ flowId: 'f' }));
+      const attrs = attrsOf(el.createFlowTemplate({ flowId: 'f' }));
 
-      expect(JSON.parse(el2.getAttribute('client'))).toEqual({
-        tenantId: 't1',
-      });
-      expect(el2.getAttribute('form')).toBe('{"cookieName":"DSR_x"}');
+      expect(JSON.parse(attrs.client)).toEqual({ tenantId: 't1' });
+      expect(attrs.form).toBe('{"cookieName":"DSR_x"}');
     });
 
     it('merges a per-flow client over the caller-supplied client (per-flow wins)', () => {
@@ -103,11 +112,11 @@ describe('flowInputMixin', () => {
         'project-id': 'p1',
         client: '{"tenantId":"t1","userId":"caller"}',
       });
-      const el2 = wc(
+      const attrs = attrsOf(
         el.createFlowTemplate({ flowId: 'f', client: { userId: 'flow' } }),
       );
 
-      expect(JSON.parse(el2.getAttribute('client'))).toEqual({
+      expect(JSON.parse(attrs.client)).toEqual({
         tenantId: 't1',
         userId: 'flow',
       });
@@ -118,11 +127,11 @@ describe('flowInputMixin', () => {
         'project-id': 'p1',
         form: '{"cookieName":"DSR_x","deviceId":"old"}',
       });
-      const el2 = wc(
+      const attrs = attrsOf(
         el.createFlowTemplate({ flowId: 'f', form: { deviceId: 'new' } }),
       );
 
-      expect(JSON.parse(el2.getAttribute('form'))).toEqual({
+      expect(JSON.parse(attrs.form)).toEqual({
         cookieName: 'DSR_x',
         deviceId: 'new',
       });
@@ -130,16 +139,16 @@ describe('flowInputMixin', () => {
 
     it('uses the per-flow form when no caller form is set', () => {
       const el = createFlowInputEl({ 'project-id': 'p1' });
-      const el2 = wc(
+      const attrs = attrsOf(
         el.createFlowTemplate({ flowId: 'f', form: { deviceId: 'd1' } }),
       );
 
-      expect(JSON.parse(el2.getAttribute('form'))).toEqual({ deviceId: 'd1' });
+      expect(JSON.parse(attrs.form)).toEqual({ deviceId: 'd1' });
     });
 
     it('forwards widget-specific context (tenant, outboundAppId)', () => {
       const el = createFlowInputEl({ 'project-id': 'p1' });
-      const el2 = wc(
+      const attrs = attrsOf(
         el.createFlowTemplate({
           flowId: 'f',
           tenant: 't1',
@@ -147,8 +156,8 @@ describe('flowInputMixin', () => {
         }),
       );
 
-      expect(el2.getAttribute('tenant')).toBe('t1');
-      expect(el2.getAttribute('outbound-app-id')).toBe('app1');
+      expect(attrs.tenant).toBe('t1');
+      expect(attrs['outbound-app-id']).toBe('app1');
     });
   });
 });
