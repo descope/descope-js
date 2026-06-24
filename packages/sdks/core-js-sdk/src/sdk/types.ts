@@ -35,6 +35,7 @@ type AuthMethod =
   | 'otp'
   | 'totp'
   | 'oauth'
+  | 'sso'
   | 'saml'
   | 'webauthn';
 
