@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.69.3](https://github.com/descope/descope-js/compare/web-component-3.69.2...web-component-3.69.3) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+
+### Bug Fixes
+
+* **web-component:** clear loading state after flow completes RELEASE ([#1426](https://github.com/descope/descope-js/issues/1426)) ([a88ca4b](https://github.com/descope/descope-js/commit/a88ca4b0a5c461df4a21b56ba53361622095b7cc)), closes [descope/etc#16353](https://github.com/descope/etc/issues/16353)
+
 ## [3.69.2](https://github.com/descope/descope-js/compare/web-component-3.69.1...web-component-3.69.2) (2026-06-22)
 
 ### Dependency Updates
