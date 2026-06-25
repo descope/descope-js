@@ -1,10 +1,6 @@
 import { ButtonDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
-import {
-  isNativeBridgeAvailable,
-  requestNativeLogout,
-} from '../../nativeBridgeMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -18,6 +14,13 @@ export const initLogoutMixin = createSingletonMixin(
     )(superclass) {
       logout: ButtonDriver;
 
+      // Overridable: nativeBridgeMixin wraps this to route through the host SDK
+      // when the native bridge is present.
+      async handleLogout() {
+        await this.actions.logout();
+        this.dispatchEvent(new CustomEvent('logout'));
+      }
+
       #initLogout() {
         this.logout = new ButtonDriver(
           () =>
@@ -25,15 +28,7 @@ export const initLogoutMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.logout.onClick(async () => {
-          // In native mode the host SDK owns logout
-          if (isNativeBridgeAvailable()) {
-            requestNativeLogout();
-            return;
-          }
-          await this.actions.logout();
-          this.dispatchEvent(new CustomEvent('logout'));
-        });
+        this.logout.onClick(() => this.handleLogout());
       }
 
       async onWidgetRootReady() {

@@ -11,7 +11,6 @@ import {
   loggerMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { nativeBridgeMixin } from '../../nativeBridgeMixin';
 
 const WIDGET_PAGES_BASE_DIR = 'user-profile-widget';
 
@@ -24,7 +23,6 @@ export const initWidgetRootMixin = createSingletonMixin(
       initElementMixin,
       createFetchWidgetPagesMixin(WIDGET_PAGES_BASE_DIR),
       stateManagementMixin,
-      nativeBridgeMixin,
     )(superclass) {
       async #initWidgetRoot() {
         const template = createTemplate(
@@ -41,10 +39,6 @@ export const initWidgetRootMixin = createSingletonMixin(
 
       async init() {
         await super.init?.();
-        // When running inside a native mobile host, we defer the init to allow native SDK
-        // to properly initialize and inject the session. When done, native calls
-        // `widget.lazyInit()`. Same pattern is used inside descope-wc.
-        await this.waitForNativeBridgeIfNeeded?.();
         try {
           await this.actions.getMe();
           await this.#initWidgetRoot();

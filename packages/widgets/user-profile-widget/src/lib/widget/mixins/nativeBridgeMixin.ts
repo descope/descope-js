@@ -1,6 +1,10 @@
 // Bridges the User Profile Widget to a host mobile SDK. The host installs
 // `window.descopeWidgetBridge`, the per-`<descope-wc>` bridge stays on
 // `window.descopeBridge` and is owned by descope-wc itself.
+//
+// All bridge concerns live here. When composed last in the chain this mixin
+// overrides `init()` (to pause for the lazy-init handshake) and `handleLogout()`
+// (to delegate to native) from the mixins below it.
 import { createSingletonMixin } from '@descope/sdk-helpers';
 
 // Bump when the JS-native widget bridge protocol changes incompatibly.
@@ -19,25 +23,30 @@ declare global {
   }
 }
 
-export const isNativeBridgeAvailable = (): boolean => {
+// Returns the bridge only when it advertises a version we understand.
+// Missing or newer-than-supported version means no bridge.
+const getBridge = (): DescopeWidgetBridge | null => {
   const bridge = window.descopeWidgetBridge;
-  if (!bridge) return false;
-  if (typeof bridge.version !== 'number') return false;
-  return bridge.version <= widgetBridgeVersion;
+  if (!bridge) return null;
+  if (typeof bridge.version !== 'number') return null;
+  if (bridge.version > widgetBridgeVersion) return null;
+  return bridge;
 };
 
-const getBridge = (): DescopeWidgetBridge | null =>
-  isNativeBridgeAvailable() ? window.descopeWidgetBridge! : null;
-
-// In native mode the host SDK owns logout; callers gate with
-// `isNativeBridgeAvailable()` before invoking.
-export const requestNativeLogout = () => {
-  getBridge()?.requestLogout();
+// Tells TypeScript the inner mixins in the compose chain may define these
+// methods. Required for `super.init?.()` / `super.handleLogout?.()` to
+// type-check; both calls are optional-chained so a missing inner method is
+// a runtime no-op.
+type NativeBridgeSuper = {
+  init?(): void | Promise<void>;
+  handleLogout?(): void | Promise<void>;
 };
 
 export const nativeBridgeMixin = createSingletonMixin(
-  <T extends CustomElementConstructor>(superclass: T) =>
-    class NativeBridgeMixinClass extends superclass {
+  <T extends CustomElementConstructor>(superclass: T) => {
+    const Base = superclass as T &
+      (new (...args: any[]) => NativeBridgeSuper);
+    return class NativeBridgeMixinClass extends Base {
       #lazyInitResolve?: () => void;
 
       // Native calls this once the session is seeded; releases the deferred init.
@@ -48,9 +57,25 @@ export const nativeBridgeMixin = createSingletonMixin(
         resolve?.();
       }
 
-      // Pauses init until native invokes `widget.lazyInit()`. Resolves
-      // immediately in web mode so the caller falls through.
-      async waitForNativeBridgeIfNeeded(): Promise<void> {
+      // Overrides the inner mixins' init(): pauses for native to seed the
+      // session before any API call runs, then chains down.
+      async init() {
+        await this.#waitForNativeBridge();
+        await super.init?.();
+      }
+
+      // Overrides `initLogoutMixin.handleLogout` when present: routes through
+      // native when the bridge is installed, else falls back to the web path.
+      async handleLogout() {
+        const bridge = getBridge();
+        if (bridge) {
+          bridge.requestLogout();
+          return;
+        }
+        await super.handleLogout?.();
+      }
+
+      async #waitForNativeBridge(): Promise<void> {
         const bridge = getBridge();
         if (!bridge) return;
         const promise = new Promise<void>((resolve) => {
@@ -59,5 +84,6 @@ export const nativeBridgeMixin = createSingletonMixin(
         bridge.registerWidget(this);
         await promise;
       }
-    },
+    };
+  },
 );

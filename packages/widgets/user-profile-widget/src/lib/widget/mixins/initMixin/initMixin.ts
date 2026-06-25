@@ -24,7 +24,6 @@ export const initMixin = createSingletonMixin(
     class InitMixinClass extends compose(
       debuggerMixin,
       themeMixin,
-      nativeBridgeMixin, // Sets up the JS<->native bridge when running inside a Descope mobile SDK
       flowRedirectUrlMixin, // This mixin must be before all other mixins that loads flows
       initUserCustomAttributesMixin,
       initEmailUserAttrMixin,
@@ -36,6 +35,11 @@ export const initMixin = createSingletonMixin(
       initTotpUserAuthMethodMixin,
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
+      // Overrides `init()` and `handleLogout()` from the mixins above when
+      // running inside a Descope mobile SDK. Must sit after initLogoutMixin
+      // (which transitively brings in initWidgetRootMixin) for the overrides
+      // to resolve via super.
+      nativeBridgeMixin,
       initTrustedDevicesMixin,
       initUserPasskeysMixin,
       initNotificationsMixin,

@@ -1,7 +1,5 @@
 import {
-  isNativeBridgeAvailable,
   nativeBridgeMixin,
-  requestNativeLogout,
   widgetBridgeVersion,
 } from '../src/lib/widget/mixins/nativeBridgeMixin';
 
@@ -12,45 +10,22 @@ const makeBridge = (overrides: Partial<Record<string, unknown>> = {}) => ({
   ...overrides,
 });
 
-describe('nativeBridgeMixin - version handshake', () => {
-  afterEach(() => {
-    delete (window as any).descopeWidgetBridge;
-  });
+describe('nativeBridgeMixin - method overrides', () => {
+  // Minimal base class with init/handleLogout the mixin will wrap.
+  // Counters let us assert the super chain ran (or was short-circuited).
+  class BaseElement extends HTMLElement {
+    superInitCalls = 0;
 
-  it('returns false when the bridge is not installed (web mode)', () => {
-    expect(isNativeBridgeAvailable()).toBe(false);
-  });
+    superHandleLogoutCalls = 0;
 
-  it('returns false when the bridge has no version field (legacy bridge)', () => {
-    (window as any).descopeWidgetBridge = makeBridge({ version: undefined });
-    expect(isNativeBridgeAvailable()).toBe(false);
-  });
+    async init() {
+      this.superInitCalls += 1;
+    }
 
-  it('returns true when the bridge version matches the UPW build version', () => {
-    (window as any).descopeWidgetBridge = makeBridge({
-      version: widgetBridgeVersion,
-    });
-    expect(isNativeBridgeAvailable()).toBe(true);
-  });
-
-  it('returns true when the bridge version is older than the UPW build (clamp down)', () => {
-    (window as any).descopeWidgetBridge = makeBridge({
-      version: Math.max(0, widgetBridgeVersion - 1),
-    });
-    expect(isNativeBridgeAvailable()).toBe(true);
-  });
-
-  it('returns false when the bridge advertises a version newer than this UPW build', () => {
-    (window as any).descopeWidgetBridge = makeBridge({
-      version: widgetBridgeVersion + 1,
-    });
-    expect(isNativeBridgeAvailable()).toBe(false);
-  });
-});
-
-describe('nativeBridgeMixin - class methods', () => {
-  // Compose the mixin with a minimal HTMLElement base and register it once for the suite
-  class BaseElement extends HTMLElement {}
+    async handleLogout() {
+      this.superHandleLogoutCalls += 1;
+    }
+  }
   const NativeBridgeElement = nativeBridgeMixin(BaseElement);
   if (!customElements.get('test-native-bridge-element')) {
     customElements.define('test-native-bridge-element', NativeBridgeElement);
@@ -68,74 +43,95 @@ describe('nativeBridgeMixin - class methods', () => {
     delete (window as any).descopeWidgetBridge;
   });
 
-  describe('waitForNativeBridgeIfNeeded', () => {
-    it('resolves immediately when no bridge is installed (web mode)', async () => {
-      await expect(
-        element.waitForNativeBridgeIfNeeded(),
-      ).resolves.toBeUndefined();
+  describe('init', () => {
+    it('calls super.init without a handshake when no bridge is installed', async () => {
+      await element.init();
+      expect(element.superInitCalls).toBe(1);
     });
 
-    it('returns a promise and calls registerWidget when bridge is installed', () => {
+    it('pauses until lazyInit, then calls super.init', async () => {
       const bridge = makeBridge();
       (window as any).descopeWidgetBridge = bridge;
 
-      const result = element.waitForNativeBridgeIfNeeded();
-      expect(result).toBeInstanceOf(Promise);
-      expect(bridge.registerWidget).toHaveBeenCalledTimes(1);
+      const initPromise = element.init();
+      // registerWidget runs as part of the handshake setup
       expect(bridge.registerWidget).toHaveBeenCalledWith(element);
-    });
+      // super.init must not have run yet - we're parked on the handshake
+      expect(element.superInitCalls).toBe(0);
 
-    it('resolves the promise once native invokes element.lazyInit()', async () => {
-      (window as any).descopeWidgetBridge = makeBridge();
-
-      const promise = element.waitForNativeBridgeIfNeeded() as Promise<void>;
       element.lazyInit();
-      await expect(promise).resolves.toBeUndefined();
+      await initPromise;
+      expect(element.superInitCalls).toBe(1);
     });
 
-    it('does not resolve until lazyInit is invoked', async () => {
-      (window as any).descopeWidgetBridge = makeBridge();
+    it('engages handshake for older bridge versions (clamp down)', async () => {
+      const bridge = makeBridge({
+        version: Math.max(0, widgetBridgeVersion - 1),
+      });
+      (window as any).descopeWidgetBridge = bridge;
 
-      const promise = element.waitForNativeBridgeIfNeeded() as Promise<void>;
-      const resolvedSentinel = Symbol('resolved');
-      const winner = await Promise.race([
-        promise.then(() => resolvedSentinel),
-        new Promise((r) => {
-          setTimeout(() => r('timeout'), 25);
-        }),
-      ]);
-      expect(winner).toBe('timeout');
+      const initPromise = element.init();
+      expect(bridge.registerWidget).toHaveBeenCalled();
+
+      element.lazyInit();
+      await initPromise;
+      expect(element.superInitCalls).toBe(1);
     });
 
-    it('refuses to engage when the bridge advertises an unsupported version', async () => {
+    it('skips the handshake when the bridge advertises an unsupported version', async () => {
       const bridge = makeBridge({ version: widgetBridgeVersion + 5 });
       (window as any).descopeWidgetBridge = bridge;
-      await expect(
-        element.waitForNativeBridgeIfNeeded(),
-      ).resolves.toBeUndefined();
+
+      await element.init();
       expect(bridge.registerWidget).not.toHaveBeenCalled();
+      expect(element.superInitCalls).toBe(1);
+    });
+
+    it('skips the handshake when the bridge omits a version field (legacy)', async () => {
+      const bridge = makeBridge({ version: undefined });
+      (window as any).descopeWidgetBridge = bridge;
+
+      await element.init();
+      expect(bridge.registerWidget).not.toHaveBeenCalled();
+      expect(element.superInitCalls).toBe(1);
+    });
+
+    it('lazyInit is a safe no-op outside an active handshake', () => {
+      expect(() => element.lazyInit()).not.toThrow();
     });
   });
 
-});
+  describe('handleLogout', () => {
+    it('falls through to super.handleLogout in web mode', async () => {
+      await element.handleLogout();
+      expect(element.superHandleLogoutCalls).toBe(1);
+    });
 
-describe('requestNativeLogout', () => {
-  afterEach(() => {
-    delete (window as any).descopeWidgetBridge;
-  });
+    it('calls bridge.requestLogout and short-circuits super in native mode', async () => {
+      const bridge = makeBridge();
+      (window as any).descopeWidgetBridge = bridge;
 
-  it('is a no-op when no bridge is installed', () => {
-    expect(() => requestNativeLogout()).not.toThrow();
-  });
+      await element.handleLogout();
+      expect(bridge.requestLogout).toHaveBeenCalledTimes(1);
+      expect(element.superHandleLogoutCalls).toBe(0);
+    });
 
-  it('calls bridge.requestLogout when the bridge is installed', () => {
-    const bridge = {
-      version: widgetBridgeVersion,
-      registerWidget: jest.fn(),
-      requestLogout: jest.fn(),
-    };
-    (window as any).descopeWidgetBridge = bridge;
-    requestNativeLogout();
-    expect(bridge.requestLogout).toHaveBeenCalledTimes(1);
+    it('falls through to super when the bridge advertises an unsupported version', async () => {
+      const bridge = makeBridge({ version: widgetBridgeVersion + 5 });
+      (window as any).descopeWidgetBridge = bridge;
+
+      await element.handleLogout();
+      expect(bridge.requestLogout).not.toHaveBeenCalled();
+      expect(element.superHandleLogoutCalls).toBe(1);
+    });
+
+    it('falls through to super when the bridge omits a version field (legacy)', async () => {
+      const bridge = makeBridge({ version: undefined });
+      (window as any).descopeWidgetBridge = bridge;
+
+      await element.handleLogout();
+      expect(bridge.requestLogout).not.toHaveBeenCalled();
+      expect(element.superHandleLogoutCalls).toBe(1);
+    });
   });
 });
