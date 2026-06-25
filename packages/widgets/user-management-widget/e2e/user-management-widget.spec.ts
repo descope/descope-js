@@ -941,6 +941,8 @@ test.describe('widget', () => {
     );
     await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForLoadState('networkidle');
+    // let the widget finish init and wire the generic-flow button
+    await page.waitForTimeout(STATE_TIMEOUT);
 
     // a consumer sets client/form on the widget element; the widget reads them
     // lazily when it opens a flow
@@ -953,13 +955,15 @@ test.describe('widget', () => {
       );
     });
 
-    await page.locator('[data-generic-flow-button-id]').first().click();
+    const flowButton = page.locator('[data-generic-flow-button-id]').first();
+    await expect(flowButton).toBeEnabled();
+    await flowButton.click();
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     const descopeWc = page
       .locator('descope-modal[data-id="generic-flow-modal"]')
       .locator('descope-wc');
-    await expect(descopeWc).toBeAttached();
+    await expect(descopeWc).toBeAttached({ timeout: 10000 });
 
     // caller form is forwarded into the flow as-is
     await expect(descopeWc).toHaveAttribute(
