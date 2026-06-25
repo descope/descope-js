@@ -930,6 +930,48 @@ test.describe('widget', () => {
     }
   });
 
+  test('forwards caller client/form flow inputs into the generic flow', async ({
+    page,
+  }) => {
+    // the default mock has no generic-flow button - add an always-enabled one
+    await page.route('**/root.html', async (route) =>
+      route.fulfill({
+        body: `${rootMock}<descope-button data-generic-flow-button-id="test-btn" flow-id="my-test-flow" enable-mode="always">Run Flow</descope-button>`,
+      }),
+    );
+    await page.goto(`http://localhost:${widgetPort}`);
+    await page.waitForLoadState('networkidle');
+
+    // a consumer sets client/form on the widget element; the widget reads them
+    // lazily when it opens a flow
+    await page.evaluate(() => {
+      const widget = document.querySelector('descope-user-management-widget');
+      widget.setAttribute('client', JSON.stringify({ acme: 'corp' }));
+      widget.setAttribute(
+        'form',
+        JSON.stringify({ cookieName: 'DSR_wellsense' }),
+      );
+    });
+
+    await page.locator('[data-generic-flow-button-id]').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    const descopeWc = page
+      .locator('descope-modal[data-id="generic-flow-modal"]')
+      .locator('descope-wc');
+    await expect(descopeWc).toBeAttached();
+
+    // caller form is forwarded into the flow as-is
+    await expect(descopeWc).toHaveAttribute(
+      'form',
+      JSON.stringify({ cookieName: 'DSR_wellsense' }),
+    );
+
+    // caller client is merged with the widget's own flow context
+    const client = JSON.parse((await descopeWc.getAttribute('client')) ?? '{}');
+    expect(client).toMatchObject({ acme: 'corp' });
+  });
+
   test('roles display - shows "Multiple roles" when tenants have different roles', async ({
     page,
   }) => {

@@ -182,6 +182,48 @@ test.describe('widget', () => {
 
         expect(connectBtn).toBeVisible();
       });
+
+      test('forwards caller client/form flow inputs into the disconnect flow', async ({
+        page,
+      }) => {
+        const disconnectBtn = page
+          .locator('descope-button')
+          .filter({ hasText: 'Disconnect' })
+          .getByRole('button');
+        await expect(disconnectBtn).toBeVisible();
+
+        // a consumer sets client/form on the widget; read lazily at flow open
+        await page.evaluate(() => {
+          const widget = document.querySelector(
+            'descope-outbound-applications-widget',
+          );
+          widget?.setAttribute('client', JSON.stringify({ acme: 'corp' }));
+          widget?.setAttribute(
+            'form',
+            JSON.stringify({ cookieName: 'DSR_wellsense' }),
+          );
+        });
+
+        await disconnectBtn.click();
+        await page.waitForTimeout(MODAL_TIMEOUT);
+
+        const descopeWc = page
+          .locator('descope-modal[data-id="outbound-apps-disconnect"]')
+          .locator('descope-wc');
+        await expect(descopeWc).toBeAttached();
+
+        // caller form forwarded as-is
+        await expect(descopeWc).toHaveAttribute(
+          'form',
+          JSON.stringify({ cookieName: 'DSR_wellsense' }),
+        );
+
+        // caller client forwarded
+        const client = JSON.parse(
+          (await descopeWc.getAttribute('client')) ?? '{}',
+        );
+        expect(client).toMatchObject({ acme: 'corp' });
+      });
     });
 
     test.describe('app connect', () => {
