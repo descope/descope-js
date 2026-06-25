@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.51.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.6...web-js-sdk-1.51.0) (2026-06-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.65.0`
+
+### Features
+
+* Added SSO Functions (left SAML for BC) ([#1425](https://github.com/descope/descope-js/issues/1425)) ([79d6363](https://github.com/descope/descope-js/commit/79d63636a44ea8f5d48c9de708b8d502ced83717))
+
 ## [1.50.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.5...web-js-sdk-1.50.6) (2026-06-22)
 
 ### Dependency Updates
