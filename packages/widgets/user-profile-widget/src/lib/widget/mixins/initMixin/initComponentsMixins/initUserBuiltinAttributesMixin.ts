@@ -13,10 +13,10 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getUserBuiltinAttrs } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -30,6 +30,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       // field name (e.g. `givenName`) -> driver wrapping the matching descope-user-attribute
       #drivers: Record<string, UserAttributeDriver> = {};
@@ -45,17 +46,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
 
       #initEditModalContent(flowId: string) {
         this.#editModals[flowId]?.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
           this.#editModals[flowId]?.close();
@@ -66,17 +57,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
       // have 2 init functions for edit and delete modals in order to keep the same standards as the email/phone/name mixin
       #initDeleteModalContent(flowId: string) {
         this.#deleteModals[flowId]?.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {
           this.#deleteModals[flowId]?.close();

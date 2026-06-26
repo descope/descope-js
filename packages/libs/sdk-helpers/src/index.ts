@@ -1,4 +1,5 @@
 export * from './compose';
+export * from './createFlowTemplate';
 export * from './dom';
 export * from './generic';
 export * from './mixins';

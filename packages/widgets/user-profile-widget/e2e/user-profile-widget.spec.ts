@@ -252,6 +252,41 @@ test.describe('widget', () => {
       expect(client.userId).toBe(mockUser.userId);
     });
 
+    test('forwards caller client/form flow inputs into descope-wc', async ({
+      page,
+    }) => {
+      // a consumer sets client/form on the widget element; read lazily at flow open
+      await page.evaluate(() => {
+        const widget = document.querySelector('descope-user-profile-widget');
+        widget.setAttribute('client', JSON.stringify({ acme: 'corp' }));
+        widget.setAttribute(
+          'form',
+          JSON.stringify({ cookieName: 'DSR_wellsense' }),
+        );
+      });
+
+      await page.locator('[data-generic-flow-button-id]').first().click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      const descopeWc = page
+        .locator('descope-modal[data-id="generic-flow-modal"]')
+        .locator('descope-wc');
+      await expect(descopeWc).toBeAttached();
+
+      // caller form is forwarded into the flow as-is
+      await expect(descopeWc).toHaveAttribute(
+        'form',
+        JSON.stringify({ cookieName: 'DSR_wellsense' }),
+      );
+
+      // caller client is merged with the widget's own flow context (userId)
+      const client = JSON.parse(
+        (await descopeWc.getAttribute('client')) ?? '{}',
+      );
+      expect(client).toMatchObject({ acme: 'corp' });
+      expect(client.userId).toBe(mockUser.userId);
+    });
+
     test('opens the modal when descope-wc fires page-updated', async ({
       page,
     }) => {

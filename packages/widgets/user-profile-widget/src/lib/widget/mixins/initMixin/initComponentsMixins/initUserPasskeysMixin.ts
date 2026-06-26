@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getUserId, getUserPasskeys } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initUserPasskeysMixin = createSingletonMixin(
@@ -30,6 +30,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       userPasskeys: UserPasskeysDriver;
 
@@ -56,16 +57,8 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
       #initAddModalContent() {
         this.#addModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.userPasskeys.addPasskeyFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#addFlow.onSuccess(() => {
@@ -90,16 +83,8 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
       #initRemoveModalContent({ externalId, credentialId }) {
         this.#removeModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.userPasskeys.removePasskeyFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             form: { externalId, credentialId },
           }),
         );

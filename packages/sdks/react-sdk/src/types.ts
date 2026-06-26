@@ -46,6 +46,10 @@ type WidgetProps = {
   debug?: boolean;
   styleId?: string;
   onReady?: CustomEventCb<{}>;
+  // use to override screen's form inputs in the widget's flow execution
+  form?: Record<string, any>;
+  // use to override client context in the widget's flow execution
+  client?: Record<string, any>;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
