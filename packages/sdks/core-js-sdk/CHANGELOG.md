@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.66.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.65.0...core-js-sdk-2.66.0) (2026-06-28)
+
+
+### Features
+
+* **core-js-sdk:** add mfa option to webauthn passkey enrollment ([#1427](https://github.com/descope/descope-js/issues/1427)) ([0cf282d](https://github.com/descope/descope-js/commit/0cf282db97ed59ed3344a0c77f129385a308f996)), closes [descope/etc#16573](https://github.com/descope/etc/issues/16573)
+
 ## [2.65.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.64.0...core-js-sdk-2.65.0) (2026-06-25)
 
 
