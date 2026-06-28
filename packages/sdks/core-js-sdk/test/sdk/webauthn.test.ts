@@ -642,6 +642,33 @@ describe('webauthn', () => {
           response: httpResponse,
         });
       });
+
+      it('should send the correct request with mfa login options', () => {
+        const httpRespJson = { key: 'val' };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+
+        sdk.webauthn.update.start('loginId', 'origin', 'token', undefined, {
+          mfa: true,
+        });
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.webauthn.update.start,
+          {
+            loginId: 'loginId',
+            origin: 'origin',
+            loginOptions: { mfa: true },
+          },
+          { token: 'token' },
+        );
+      });
     });
 
     describe('finish', () => {
@@ -715,6 +742,23 @@ describe('webauthn', () => {
           ok: true,
           response: httpResponse,
         });
+      });
+
+      it('should return the merged session under jwt for an mfa enrollment', async () => {
+        const httpRespJson = { jwt: { sessionJwt: 'session', refreshJwt: 'refresh' } };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+
+        const resp = await sdk.webauthn.update.finish('transactionId', 'response');
+
+        expect(resp.data?.jwt?.sessionJwt).toEqual('session');
       });
     });
   });
