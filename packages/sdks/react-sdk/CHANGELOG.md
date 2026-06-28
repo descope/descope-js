@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.1](https://github.com/descope/descope-js/compare/react-sdk-2.30.0...react-sdk-2.30.1) (2026-06-28)
+
+
+### Bug Fixes
+
+* **react-sdk:** clear loading state when AuthProvider refresh/me reject ([#1429](https://github.com/descope/descope-js/issues/1429)) RELEASE ([3b38e2d](https://github.com/descope/descope-js/commit/3b38e2d6f8397374525e06d57e314badd6dcf58d)), closes [#1393](https://github.com/descope/descope-js/issues/1393) [#1416](https://github.com/descope/descope-js/issues/1416)
+
 ## [2.30.0](https://github.com/descope/descope-js/compare/react-sdk-2.29.5...react-sdk-2.30.0) (2026-06-28)
 
 ### Dependency Updates
