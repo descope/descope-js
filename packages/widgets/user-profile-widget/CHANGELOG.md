@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.13.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.5...user-profile-widget-0.13.0) (2026-06-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.66.0`
+* `web-js-sdk` updated to version `1.51.1`
+* `web-component` updated to version `3.69.4`
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `sdk-component-drivers` updated to version `0.13.1`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
 ## [0.12.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.4...user-profile-widget-0.12.5) (2026-06-25)
 
 ### Dependency Updates
