@@ -45,7 +45,10 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initAddModal() {
         if (!this.totpUserAuthMethod.flowId) return;
 
-        this.#addModal = this.createModal({ 'data-id': 'totp' });
+        this.#addModal = this.createModal({
+          'data-id': 'totp',
+          'close-on-outside-click': 'true',
+        });
         this.#addFlow = new FlowDriver(
           () => this.#addModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -68,7 +71,10 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initRemoveTotpModal() {
         if (!this.totpUserAuthMethod.fulfilledFlowId) return;
 
-        this.#removeTotpModal = this.createModal({ 'data-id': 'remove-totp' });
+        this.#removeTotpModal = this.createModal({
+          'data-id': 'remove-totp',
+          'close-on-outside-click': 'true',
+        });
         this.#removeTotpFlow = new FlowDriver(
           () => this.#removeTotpModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },

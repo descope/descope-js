@@ -160,6 +160,31 @@ test.describe('widget', () => {
     }
   });
 
+  test.describe('close on outside click', () => {
+    // the widget opts every modal into close-on-outside-click by setting the
+    // attribute at createModal time. the actual close-on-backdrop behavior lives
+    // in the descope-modal component and is covered by the web-components-ui
+    // tests; here we just verify the widget wires the opt-in onto its modals.
+    test('opens edit modals with close-on-outside-click enabled', async ({
+      page,
+    }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const editBtn = page
+        .locator(`descope-user-attribute[data-id="email"]`)
+        .first()
+        .locator(`descope-button[data-id="edit-btn"]`)
+        .first();
+
+      editBtn.click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await expect(
+        page.locator(`descope-modal[data-id="edit-email"]`),
+      ).toHaveAttribute('close-on-outside-click', 'true');
+    });
+  });
+
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [

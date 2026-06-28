@@ -45,7 +45,10 @@ export const initNameUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.nameUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({ 'data-id': 'edit-name' });
+        this.#editModal = this.createModal({
+          'data-id': 'edit-name',
+          'close-on-outside-click': 'true',
+        });
         this.#editFlow = new FlowDriver(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -68,7 +71,10 @@ export const initNameUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.nameUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({ 'data-id': 'delete-name' });
+        this.#deleteModal = this.createModal({
+          'data-id': 'delete-name',
+          'close-on-outside-click': 'true',
+        });
         this.#deleteFlow = new FlowDriver(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },

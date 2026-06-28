@@ -36,7 +36,10 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       #initModal() {
         if (!this.passwordUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'password' });
+        this.#modal = this.createModal({
+          'data-id': 'password',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },

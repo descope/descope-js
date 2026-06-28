@@ -110,6 +110,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
         if (editFlowId) {
           this.#editModals[editFlowId] = this.createModal({
             'data-id': `edit-${customAttrName}`,
+            'close-on-outside-click': 'true',
           });
 
           this.#editFlows[editFlowId] = new FlowDriver(
@@ -138,6 +139,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
         if (deleteFlowId) {
           this.#deleteModals[deleteFlowId] = this.createModal({
             'data-id': `delete-${customAttrName}`,
+            'close-on-outside-click': 'true',
           });
 
           this.#deleteFlows[deleteFlowId] = new FlowDriver(

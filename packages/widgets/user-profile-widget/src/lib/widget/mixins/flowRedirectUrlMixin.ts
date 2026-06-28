@@ -38,6 +38,9 @@ export const flowRedirectUrlMixin = createSingletonMixin(
       }
 
       #createFlowRedirectModal(widgetFlow: string) {
+        // this modal is auto-opened from a URL param and removes itself on close,
+        // so it intentionally does not opt into close-on-outside-click - an
+        // accidental tap should not discard the redirect flow
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
         modal.setContent(this.createFlowTemplate({ flowId: widgetFlow }));
 
