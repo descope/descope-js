@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
 import { getTenantCustomAttributes } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -41,6 +41,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       // flow Id is key in all maps
       #editModals: Record<string, ModalDriver> = {};
@@ -57,22 +58,14 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
           type === AttributeTypeName.ARRAY ? (value || []).join(',') : value;
 
         this.#editModals[flowId]?.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-            form: JSON.stringify({
+            form: {
               customAttributes: {
                 [attName]: customAttributeValue,
               },
-            }),
+            },
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
@@ -84,17 +77,9 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       // have 2 init functions for edit and delete modals in order to keep the same standards as the email/phone/name mixin
       #initDeleteModalContent(flowId: string) {
         this.#deleteModals[flowId]?.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {

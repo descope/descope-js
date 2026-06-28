@@ -4,14 +4,13 @@ import {
   MultiSsoConfigurationsDriver,
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { loggerMixin, modalMixin, flowInputMixin } from '@descope/sdk-mixins';
 import {
   getAdditionalSSOIds,
   getSSOConfigurations,
 } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { createFlowTemplate } from '../../helpers';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
 export const initMultiSsoConfigurationsMixin = createSingletonMixin(
@@ -22,6 +21,7 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
       modalMixin,
       loggerMixin,
       initWidgetRootMixin,
+      flowInputMixin,
     )(superclass) {
       #multiSso: MultiSsoConfigurationsDriver;
 
@@ -58,15 +58,8 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
 
       #openCreateModal(createFlowId: string) {
         this.#createModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: createFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             tenant: this.tenantId,
           }),
         );
@@ -81,19 +74,10 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
 
       #openDeleteModal(deleteFlowId: string, id: string) {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             tenant: this.tenantId,
-            form: JSON.stringify({
-              deleteSSOConfigurationId: id,
-            }),
+            form: { deleteSSOConfigurationId: id },
           }),
         );
         this.#deleteModal.open();

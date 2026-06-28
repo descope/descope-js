@@ -1,23 +1,8 @@
-import { createTemplate, kebabCase } from '@descope/sdk-helpers';
 import {
   CustomAttributeType,
   CustomAttributeTypeMap,
   User,
 } from './widget/api/types';
-
-type FlowConfig = {
-  projectId: string;
-  flowId: string;
-  baseUrl?: string;
-  baseStaticUrl?: string;
-  baseCdnUrl?: string;
-  refreshCookieName?: string;
-  theme?: string;
-  'style-id'?: string;
-  client?: string;
-  tenant?: string;
-  locale?: string;
-};
 
 export const unflatten = (formData: Partial<User>, keyPrefix: string) =>
   Object.entries(formData).reduce((acc, [key, value]) => {
@@ -60,20 +45,6 @@ export const formatCustomAttrValue = (
     default:
       return val;
   }
-};
-
-export const createFlowTemplate = (
-  flowConfig: FlowConfig = {} as FlowConfig,
-) => {
-  const template = createTemplate(`<descope-wc></descope-wc>`);
-
-  Object.entries(flowConfig).forEach(([key, value]) => {
-    template.content
-      .querySelector('descope-wc')
-      .setAttribute(kebabCase(key), value as string);
-  });
-
-  return template;
 };
 
 export function getUrlParam(paramName: string) {

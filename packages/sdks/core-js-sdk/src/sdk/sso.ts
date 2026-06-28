@@ -7,7 +7,8 @@ import { stringNonEmpty, withValidations } from './validations';
 const withStartValidations = withValidations(stringNonEmpty('tenant'));
 const withExchangeValidations = withValidations(stringNonEmpty('code'));
 
-const withSaml = (httpClient: HttpClient) => ({
+/** SSO authentication (SAML and OIDC). Prefer `sdk.sso` over `sdk.saml`. */
+const withSso = (httpClient: HttpClient) => ({
   start: withStartValidations(
     (
       tenantIdOrEmail: string,
@@ -20,7 +21,7 @@ const withSaml = (httpClient: HttpClient) => ({
       enforceInitiatedEmail?: boolean,
     ): Promise<SdkResponse<URLResponse>> =>
       transformResponse(
-        httpClient.post(apiPaths.saml.start, loginOptions || {}, {
+        httpClient.post(apiPaths.sso.start, loginOptions || {}, {
           queryParams: {
             tenant: tenantIdOrEmail,
             ...(redirectUrl && { redirectURL: redirectUrl }),
@@ -35,8 +36,8 @@ const withSaml = (httpClient: HttpClient) => ({
   ),
   exchange: withExchangeValidations(
     (code: string): Promise<SdkResponse<JWTResponse>> =>
-      transformResponse(httpClient.post(apiPaths.saml.exchange, { code })),
+      transformResponse(httpClient.post(apiPaths.sso.exchange, { code })),
   ),
 });
 
-export default withSaml;
+export default withSso;

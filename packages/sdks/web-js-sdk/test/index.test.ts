@@ -11,6 +11,7 @@ describe('sdk', () => {
         otp: expect.any(Object),
         magicLink: expect.any(Object),
         oauth: expect.any(Object),
+        sso: expect.any(Object),
         saml: expect.any(Object),
         totp: expect.any(Object),
         webauthn: expect.any(Object),

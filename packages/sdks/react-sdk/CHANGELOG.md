@@ -2,6 +2,87 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.0](https://github.com/descope/descope-js/compare/react-sdk-2.29.5...react-sdk-2.30.0) (2026-06-28)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.9.0`
+* `access-key-management-widget` updated to version `0.9.4`
+* `audit-management-widget` updated to version `0.8.4`
+* `role-management-widget` updated to version `0.9.4`
+* `user-management-widget` updated to version `0.15.0`
+* `user-profile-widget` updated to version `0.13.0`
+* `applications-portal-widget` updated to version `0.8.4`
+* `outbound-applications-widget` updated to version `0.5.0`
+* `web-component` updated to version `3.69.4`
+* `web-js-sdk` updated to version `1.51.1`
+* `core-js-sdk` updated to version `2.66.0`
+* `tenant-profile-widget` updated to version `0.8.0`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
+## [2.29.5](https://github.com/descope/descope-js/compare/react-sdk-2.29.4...react-sdk-2.29.5) (2026-06-25)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.3`
+* `audit-management-widget` updated to version `0.8.3`
+* `role-management-widget` updated to version `0.9.3`
+* `user-management-widget` updated to version `0.14.4`
+* `user-profile-widget` updated to version `0.12.5`
+* `applications-portal-widget` updated to version `0.8.3`
+* `outbound-applications-widget` updated to version `0.4.4`
+* `web-component` updated to version `3.69.3`
+* `web-js-sdk` updated to version `1.51.0`
+* `core-js-sdk` updated to version `2.65.0`
+* `tenant-profile-widget` updated to version `0.7.4`
+## [2.29.4](https://github.com/descope/descope-js/compare/react-sdk-2.29.3...react-sdk-2.29.4) (2026-06-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.2`
+* `audit-management-widget` updated to version `0.8.2`
+* `role-management-widget` updated to version `0.9.2`
+* `user-management-widget` updated to version `0.14.3`
+* `user-profile-widget` updated to version `0.12.4`
+* `applications-portal-widget` updated to version `0.8.2`
+* `outbound-applications-widget` updated to version `0.4.3`
+* `web-component` updated to version `3.69.2`
+* `web-js-sdk` updated to version `1.50.6`
+* `core-js-sdk` updated to version `2.64.0`
+* `tenant-profile-widget` updated to version `0.7.3`
+## [2.29.3](https://github.com/descope/descope-js/compare/react-sdk-2.29.2...react-sdk-2.29.3) (2026-06-21)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.1`
+* `audit-management-widget` updated to version `0.8.1`
+* `role-management-widget` updated to version `0.9.1`
+* `user-management-widget` updated to version `0.14.2`
+* `user-profile-widget` updated to version `0.12.3`
+* `applications-portal-widget` updated to version `0.8.1`
+* `outbound-applications-widget` updated to version `0.4.2`
+* `web-component` updated to version `3.69.1`
+* `web-js-sdk` updated to version `1.50.5`
+* `core-js-sdk` updated to version `2.63.0`
+* `tenant-profile-widget` updated to version `0.7.2`
+## [2.29.2](https://github.com/descope/descope-js/compare/react-sdk-2.29.1...react-sdk-2.29.2) (2026-06-18)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.14.1`
+* `user-profile-widget` updated to version `0.12.2`
+* `outbound-applications-widget` updated to version `0.4.1`
+* `web-component` updated to version `3.69.0`
+* `tenant-profile-widget` updated to version `0.7.1`
+## [2.29.1](https://github.com/descope/descope-js/compare/react-sdk-2.29.0...react-sdk-2.29.1) (2026-06-18)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.0`
+* `user-profile-widget` updated to version `0.12.1`
 ## [2.29.0](https://github.com/descope/descope-js/compare/react-sdk-2.28.11...react-sdk-2.29.0) (2026-06-14)
 
 ### Dependency Updates

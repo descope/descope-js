@@ -2,6 +2,36 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.4](https://github.com/descope/descope-js/compare/access-key-management-widget-0.9.3...access-key-management-widget-0.9.4) (2026-06-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.1`
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `sdk-component-drivers` updated to version `0.13.1`
+## [0.9.3](https://github.com/descope/descope-js/compare/access-key-management-widget-0.9.2...access-key-management-widget-0.9.3) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+## [0.9.2](https://github.com/descope/descope-js/compare/access-key-management-widget-0.9.1...access-key-management-widget-0.9.2) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+## [0.9.1](https://github.com/descope/descope-js/compare/access-key-management-widget-0.9.0...access-key-management-widget-0.9.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+## [0.9.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.8.0...access-key-management-widget-0.9.0) (2026-06-18)
+
+
+### Features
+
+* **access-key-management-widget:** add Rotate action RELEASE ([#1414](https://github.com/descope/descope-js/issues/1414)) ([48e1233](https://github.com/descope/descope-js/commit/48e12334231a4a30a0943689bc64b6647a32eb6b)), closes [descope/etc#15738](https://github.com/descope/etc/issues/15738)
+
 ## [0.8.0](https://github.com/descope/descope-js/compare/access-key-management-widget-0.7.1...access-key-management-widget-0.8.0) (2026-06-14)
 
 ### Dependency Updates

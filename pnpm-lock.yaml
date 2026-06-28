@@ -947,8 +947,8 @@ importers:
         specifier: workspace:*
         version: link:../core-js-sdk
       '@descope/node-sdk':
-        specifier: 2.6.0
-        version: 2.6.0(encoding@0.1.13)
+        specifier: 2.8.0
+        version: 2.8.0(encoding@0.1.13)
       '@descope/react-sdk':
         specifier: workspace:*
         version: link:../react-sdk
@@ -4638,8 +4638,8 @@ packages:
   '@descope/core-js-sdk@2.62.1':
     resolution: {integrity: sha512-Rs+CNjDyOQum0NCtXqspe04gdmXscva3kcNsYM74GOY9Rc5AU7OMHO14AZAm4U3Om7U2WusBxSyfTJPfjF49nA==}
 
-  '@descope/node-sdk@2.6.0':
-    resolution: {integrity: sha512-sHw5oq/rPEAEQoq3aozR9KC1VSlkR+VMTMw8EOgAFO/oEcs6xSJTe+eHVKumYXtKvqJ5RCgrTZXvrVzcChfB3w==}
+  '@descope/node-sdk@2.8.0':
+    resolution: {integrity: sha512-+FM75wTRU0ND6EZJJ4f+d0Fi6OiU/+N/PWiQ5bMr1UrL1xOmNxyPWGrN65Cens22dfEb3//uh7Lo4ZBSM67BnA==}
     engines: {node: '>= 16.0.0'}
 
   '@descope/web-components-ui@3.14.1':
@@ -18184,7 +18184,7 @@ snapshots:
     dependencies:
       jwt-decode: 4.0.0
 
-  '@descope/node-sdk@2.6.0(encoding@0.1.13)':
+  '@descope/node-sdk@2.8.0(encoding@0.1.13)':
     dependencies:
       '@descope/core-js-sdk': 2.62.1
       cross-fetch: 4.1.0(encoding@0.1.13)

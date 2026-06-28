@@ -24,7 +24,18 @@ const UserManagementWC = lazy(async () => {
 
 const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
   (
-    { logger, tenant, theme, locale, debug, widgetId, styleId, onReady },
+    {
+      logger,
+      tenant,
+      theme,
+      locale,
+      debug,
+      widgetId,
+      styleId,
+      onReady,
+      client,
+      form,
+    },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -60,6 +71,8 @@ const UserManagement = React.forwardRef<HTMLElement, UserManagementProps>(
             'debug.attr': debug,
             'styleId.attr': styleId,
             'refreshCookieName.attr': refreshCookieName,
+            'client.attr': client,
+            'form.attr': form,
             // props
             'logger.prop': logger,
           }}
