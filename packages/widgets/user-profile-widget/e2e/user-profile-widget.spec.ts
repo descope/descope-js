@@ -160,12 +160,13 @@ test.describe('widget', () => {
     }
   });
 
-  test.describe('close on outside click', () => {
-    // the widget opts every modal into close-on-outside-click by setting the
-    // attribute at createModal time. the actual close-on-backdrop behavior lives
-    // in the descope-modal component and is covered by the web-components-ui
-    // tests; here we just verify the widget wires the opt-in onto its modals.
-    test('opens edit modals with close-on-outside-click enabled', async ({
+  test.describe('close-on-outside-click opt-in', () => {
+    // this only checks that the widget wires the opt-in onto its modals (sets
+    // the `close-on-outside-click` attribute). the actual close-on-backdrop
+    // behavior lives in the descope-modal component and is covered by the
+    // web-components-ui tests - it cannot be exercised here because this suite
+    // loads the published component from node_modules (see playwright.config).
+    test('sets close-on-outside-click on the modals it opens', async ({
       page,
     }) => {
       await page.waitForTimeout(STATE_TIMEOUT);
