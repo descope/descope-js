@@ -643,7 +643,7 @@ describe('webauthn', () => {
         });
       });
 
-      it('should send the correct request with mfa login options', () => {
+      it('should send the correct request with mfa', () => {
         const httpRespJson = { key: 'val' };
         const httpResponse = {
           ok: true,
@@ -655,16 +655,14 @@ describe('webauthn', () => {
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
 
-        sdk.webauthn.update.start('loginId', 'origin', 'token', undefined, {
-          mfa: true,
-        });
+        sdk.webauthn.update.start('loginId', 'origin', 'token', undefined, true);
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.webauthn.update.start,
           {
             loginId: 'loginId',
             origin: 'origin',
-            loginOptions: { mfa: true },
+            mfa: true,
           },
           { token: 'token' },
         );
