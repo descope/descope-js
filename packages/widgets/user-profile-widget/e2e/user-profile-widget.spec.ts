@@ -160,6 +160,32 @@ test.describe('widget', () => {
     }
   });
 
+  test.describe('close-on-outside-click opt-in', () => {
+    // this only checks that the widget wires the opt-in onto its modals (sets
+    // the `close-on-outside-click` attribute). the actual close-on-backdrop
+    // behavior lives in the descope-modal component and is covered by the
+    // web-components-ui tests - it cannot be exercised here because this suite
+    // loads the published component from node_modules (see playwright.config).
+    test('sets close-on-outside-click on the modals it opens', async ({
+      page,
+    }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const editBtn = page
+        .locator(`descope-user-attribute[data-id="email"]`)
+        .first()
+        .locator(`descope-button[data-id="edit-btn"]`)
+        .first();
+
+      editBtn.click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await expect(
+        page.locator(`descope-modal[data-id="edit-email"]`),
+      ).toHaveAttribute('close-on-outside-click', 'true');
+    });
+  });
+
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [

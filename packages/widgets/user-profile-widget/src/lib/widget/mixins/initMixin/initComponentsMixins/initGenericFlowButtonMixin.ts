@@ -54,7 +54,10 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       }
 
       #initModal() {
-        this.#modal = this.createModal({ 'data-id': 'generic-flow-modal' });
+        this.#modal = this.createModal({
+          'data-id': 'generic-flow-modal',
+          'close-on-outside-click': 'true',
+        });
         this.#modal.afterClose = () => {
           this.#removePageUpdatedCallback?.();
           this.#removePageUpdatedCallback = null;

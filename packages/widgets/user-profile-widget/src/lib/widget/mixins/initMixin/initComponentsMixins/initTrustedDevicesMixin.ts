@@ -43,7 +43,10 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       #initModal() {
         if (!this.deviceList.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'untrust-device' });
+        this.#modal = this.createModal({
+          'data-id': 'untrust-device',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },

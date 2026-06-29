@@ -43,7 +43,10 @@ export const initAvatarMixin = createSingletonMixin(
       #initModal() {
         if (!this.avatar.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'update-pic' });
+        this.#modal = this.createModal({
+          'data-id': 'update-pic',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },

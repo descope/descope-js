@@ -75,6 +75,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
 
         this.#editModals[editFlowId] = this.createModal({
           'data-id': `edit-${field}`,
+          'close-on-outside-click': 'true',
         });
 
         this.#editFlows[editFlowId] = new FlowDriver(
@@ -102,6 +103,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
 
         this.#deleteModals[deleteFlowId] = this.createModal({
           'data-id': `delete-${field}`,
+          'close-on-outside-click': 'true',
         });
 
         this.#deleteFlows[deleteFlowId] = new FlowDriver(
