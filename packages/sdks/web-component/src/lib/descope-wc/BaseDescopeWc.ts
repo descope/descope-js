@@ -28,7 +28,11 @@ import {
 } from '../helpers/flowInputs';
 import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin, componentConditionsMixin } from '../mixins';
+import {
+  formMountMixin,
+  componentConditionsMixin,
+  duplicateFlowWarningMixin,
+} from '../mixins';
 import {
   AutoFocusOptions,
   CustomStorage,
@@ -51,6 +55,7 @@ const BaseClass = compose(
   staticResourcesMixin,
   formMountMixin,
   componentConditionsMixin,
+  duplicateFlowWarningMixin,
   injectStyleMixin,
 )(HTMLElement);
 
@@ -705,6 +710,11 @@ class BaseDescopeWc extends BaseClass {
       });
 
       this.#debugState.update({ isDebug: this.debug });
+
+      // Forward to the composed mixin chain (e.g. duplicateFlowWarningMixin) so
+      // mixins can react to project-id/flow-id changes. Only reached for real
+      // post-init changes, so it does not double-fire during initial mount.
+      super.attributeChangedCallback?.(attrName, oldValue, newValue);
     }
   }
 }
