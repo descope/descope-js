@@ -11,6 +11,7 @@ import {
   deactivateAccessKeys,
   deleteAccessKeys,
   getTenantRoles,
+  rotateAccessKey,
   searchAccessKeys,
 } from '../state/asyncActions';
 import { initialState } from '../state/initialState';
@@ -36,6 +37,7 @@ export const stateManagementMixin = createSingletonMixin(
           searchAccessKeys.reducer(builder);
           activateAccessKeys.reducer(builder);
           deactivateAccessKeys.reducer(builder);
+          rotateAccessKey.reducer(builder);
           getTenantRoles.reducer(builder);
         },
         asyncActions: {
@@ -44,6 +46,7 @@ export const stateManagementMixin = createSingletonMixin(
           activateAccessKeys: activateAccessKeys.action,
           deactivateAccessKeys: deactivateAccessKeys.action,
           deleteAccessKeys: deleteAccessKeys.action,
+          rotateAccessKey: rotateAccessKey.action,
           getTenantRoles: getTenantRoles.action,
         },
       }),

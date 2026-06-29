@@ -22,6 +22,10 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
+  rotateAccessKey: {
+    loading: false,
+    error: null,
+  },
   tenantRoles: {
     loading: false,
     error: null,
