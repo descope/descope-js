@@ -67,8 +67,14 @@ export const initFilterMixin = createSingletonMixin(
       filter: FilterDriver;
 
       // Snapshot of published columns (incl. Roles). Frozen once captured to
-      // protect against accidental mutation through driver writes.
+      // protect against accidental mutation through driver writes. Invalidated
+      // when the descope-filter `data` attribute is changed externally (e.g.
+      // console-app editor publishing a new pick list).
       #originalCols: readonly FilterColumn[] | null = null;
+
+      // Raw `data` attribute string we last wrote. Used to distinguish our own
+      // writes from external ones in the MutationObserver below.
+      #lastWrittenDataAttr: string | null = null;
 
       #onApply = (detail: FilterEventDetail) => {
         const rows: FilterRow[] = Array.isArray(detail?.value)
@@ -150,16 +156,31 @@ export const initFilterMixin = createSingletonMixin(
         );
 
         this.filter.data = cols;
+        this.#lastWrittenDataAttr = JSON.stringify(cols);
       };
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.filter = new FilterDriver(
-          this.shadowRoot?.querySelector('descope-filter'),
-          { logger: this.logger },
-        );
+        const filterEle = this.shadowRoot?.querySelector('descope-filter');
+        this.filter = new FilterDriver(filterEle, { logger: this.logger });
         if (!this.filter.isExists) return;
+
+        // Watch the `data` attribute for external changes (e.g. screen editor
+        // republishing a reduced pick list). Our own writes also fire here
+        // but match `#lastWrittenDataAttr`, so they're skipped.
+        if (filterEle) {
+          const observer = new MutationObserver(() => {
+            const current = filterEle.getAttribute('data') ?? '[]';
+            if (current === this.#lastWrittenDataAttr) return;
+            this.#originalCols = null;
+            this.#syncColumns();
+          });
+          observer.observe(filterEle, {
+            attributes: true,
+            attributeFilter: ['data'],
+          });
+        }
 
         this.#syncColumns();
         this.subscribe(this.#syncColumns, getTenantRoles);
