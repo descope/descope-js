@@ -3,12 +3,12 @@ import {
   widgetBridgeVersion,
 } from '../src/lib/widget/mixins/nativeBridgeMixin';
 
-const makeBridge = (overrides: Partial<Record<string, unknown>> = {}) => ({
-  version: widgetBridgeVersion,
-  registerWidget: jest.fn(),
-  requestLogout: jest.fn(),
-  ...overrides,
-});
+const installBridge = (overrides: Partial<{ version: unknown }> = {}): void => {
+  (window as any).descopeWidgetBridge = {
+    version: widgetBridgeVersion,
+    ...overrides,
+  };
+};
 
 describe('nativeBridgeMixin - method overrides', () => {
   // Minimal base class with init/handleLogout the mixin will wrap.
@@ -32,10 +32,16 @@ describe('nativeBridgeMixin - method overrides', () => {
   }
 
   let element: any;
+  let widgetRegisterListener: jest.Mock;
+  let widgetLogoutListener: jest.Mock;
 
   beforeEach(() => {
     element = document.createElement('test-native-bridge-element');
     document.body.appendChild(element);
+    widgetRegisterListener = jest.fn();
+    widgetLogoutListener = jest.fn();
+    element.addEventListener('widget-register', widgetRegisterListener);
+    element.addEventListener('widget-logout', widgetLogoutListener);
   });
 
   afterEach(() => {
@@ -47,15 +53,15 @@ describe('nativeBridgeMixin - method overrides', () => {
     it('calls super.init without a handshake when no bridge is installed', async () => {
       await element.init();
       expect(element.superInitCalls).toBe(1);
+      expect(widgetRegisterListener).not.toHaveBeenCalled();
     });
 
-    it('pauses until lazyInit, then calls super.init', async () => {
-      const bridge = makeBridge();
-      (window as any).descopeWidgetBridge = bridge;
+    it('dispatches widget-register and pauses until lazyInit, then calls super.init', async () => {
+      installBridge();
 
       const initPromise = element.init();
-      // registerWidget runs as part of the handshake setup
-      expect(bridge.registerWidget).toHaveBeenCalledWith(element);
+      // widget-register fires as part of the handshake setup
+      expect(widgetRegisterListener).toHaveBeenCalledTimes(1);
       // super.init must not have run yet - we're parked on the handshake
       expect(element.superInitCalls).toBe(0);
 
@@ -65,13 +71,10 @@ describe('nativeBridgeMixin - method overrides', () => {
     });
 
     it('engages handshake for older bridge versions (clamp down)', async () => {
-      const bridge = makeBridge({
-        version: Math.max(0, widgetBridgeVersion - 1),
-      });
-      (window as any).descopeWidgetBridge = bridge;
+      installBridge({ version: Math.max(0, widgetBridgeVersion - 1) });
 
       const initPromise = element.init();
-      expect(bridge.registerWidget).toHaveBeenCalled();
+      expect(widgetRegisterListener).toHaveBeenCalledTimes(1);
 
       element.lazyInit();
       await initPromise;
@@ -79,20 +82,18 @@ describe('nativeBridgeMixin - method overrides', () => {
     });
 
     it('skips the handshake when the bridge advertises an unsupported version', async () => {
-      const bridge = makeBridge({ version: widgetBridgeVersion + 5 });
-      (window as any).descopeWidgetBridge = bridge;
+      installBridge({ version: widgetBridgeVersion + 5 });
 
       await element.init();
-      expect(bridge.registerWidget).not.toHaveBeenCalled();
+      expect(widgetRegisterListener).not.toHaveBeenCalled();
       expect(element.superInitCalls).toBe(1);
     });
 
     it('skips the handshake when the bridge omits a version field (legacy)', async () => {
-      const bridge = makeBridge({ version: undefined });
-      (window as any).descopeWidgetBridge = bridge;
+      installBridge({ version: undefined });
 
       await element.init();
-      expect(bridge.registerWidget).not.toHaveBeenCalled();
+      expect(widgetRegisterListener).not.toHaveBeenCalled();
       expect(element.superInitCalls).toBe(1);
     });
 
@@ -105,32 +106,30 @@ describe('nativeBridgeMixin - method overrides', () => {
     it('falls through to super.handleLogout in web mode', async () => {
       await element.handleLogout();
       expect(element.superHandleLogoutCalls).toBe(1);
+      expect(widgetLogoutListener).not.toHaveBeenCalled();
     });
 
-    it('calls bridge.requestLogout and short-circuits super in native mode', async () => {
-      const bridge = makeBridge();
-      (window as any).descopeWidgetBridge = bridge;
+    it('dispatches widget-logout and short-circuits super in native mode', async () => {
+      installBridge();
 
       await element.handleLogout();
-      expect(bridge.requestLogout).toHaveBeenCalledTimes(1);
+      expect(widgetLogoutListener).toHaveBeenCalledTimes(1);
       expect(element.superHandleLogoutCalls).toBe(0);
     });
 
     it('falls through to super when the bridge advertises an unsupported version', async () => {
-      const bridge = makeBridge({ version: widgetBridgeVersion + 5 });
-      (window as any).descopeWidgetBridge = bridge;
+      installBridge({ version: widgetBridgeVersion + 5 });
 
       await element.handleLogout();
-      expect(bridge.requestLogout).not.toHaveBeenCalled();
+      expect(widgetLogoutListener).not.toHaveBeenCalled();
       expect(element.superHandleLogoutCalls).toBe(1);
     });
 
     it('falls through to super when the bridge omits a version field (legacy)', async () => {
-      const bridge = makeBridge({ version: undefined });
-      (window as any).descopeWidgetBridge = bridge;
+      installBridge({ version: undefined });
 
       await element.handleLogout();
-      expect(bridge.requestLogout).not.toHaveBeenCalled();
+      expect(widgetLogoutListener).not.toHaveBeenCalled();
       expect(element.superHandleLogoutCalls).toBe(1);
     });
   });
