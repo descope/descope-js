@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.13.1...sdk-component-drivers-0.14.0) (2026-06-29)
+
+
+### Features
+
+* **user-profile-widget:** close modals on outside click RELEASE ([#1430](https://github.com/descope/descope-js/issues/1430)) ([6a35ee4](https://github.com/descope/descope-js/commit/6a35ee417800bf633ab051bd9532468db90618f5)), closes [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072) [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072)
+
 ## [0.13.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.13.0...sdk-component-drivers-0.13.1) (2026-06-28)
 
 ### Dependency Updates
