@@ -65,6 +65,7 @@ const startResponse = {
 const installLoggerSpy = () => {
   const warn = jest.fn();
   document.querySelectorAll('descope-wc').forEach((el) => {
+    // eslint-disable-next-line no-param-reassign
     (el as any).logger = {
       error: jest.fn(),
       warn,
