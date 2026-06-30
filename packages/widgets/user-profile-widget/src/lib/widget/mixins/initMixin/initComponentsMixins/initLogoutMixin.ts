@@ -14,6 +14,13 @@ export const initLogoutMixin = createSingletonMixin(
     )(superclass) {
       logout: ButtonDriver;
 
+      // Overridable: nativeBridgeMixin wraps this to route through the host SDK
+      // when the native bridge is present.
+      async handleLogout() {
+        await this.actions.logout();
+        this.dispatchEvent(new CustomEvent('logout'));
+      }
+
       #initLogout() {
         this.logout = new ButtonDriver(
           () =>
@@ -21,10 +28,7 @@ export const initLogoutMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        this.logout.onClick(async () => {
-          await this.actions.logout();
-          this.dispatchEvent(new CustomEvent('logout'));
-        });
+        this.logout.onClick(() => this.handleLogout());
       }
 
       async onWidgetRootReady() {

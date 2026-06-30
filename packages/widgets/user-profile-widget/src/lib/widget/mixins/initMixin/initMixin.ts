@@ -1,6 +1,7 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
+import { nativeBridgeMixin } from '../nativeBridgeMixin';
 import { initAvatarMixin } from './initComponentsMixins/initAvatarMixin';
 import { initEmailUserAttrMixin } from './initComponentsMixins/initEmailUserAttrMixin';
 import { initLogoutMixin } from './initComponentsMixins/initLogoutMixin';
@@ -34,6 +35,11 @@ export const initMixin = createSingletonMixin(
       initTotpUserAuthMethodMixin,
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
+      // Overrides `init()` and `handleLogout()` from the mixins above when
+      // running inside a Descope mobile SDK. Must sit after initLogoutMixin
+      // (which transitively brings in initWidgetRootMixin) for the overrides
+      // to resolve via super.
+      nativeBridgeMixin,
       initTrustedDevicesMixin,
       initUserPasskeysMixin,
       initNotificationsMixin,

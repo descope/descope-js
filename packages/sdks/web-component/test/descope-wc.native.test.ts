@@ -386,4 +386,105 @@ describe('web-component', () => {
       wcEle.removeEventListener('success', onSuccess);
     });
   });
+
+  describe('native bridge v3 - multi-component register/unregister', () => {
+    afterEach(() => {
+      delete (window as any).descopeBridge;
+    });
+
+    it('Exposes bridgeVersion = 3 as both an instance field and a static field', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      // single-flow bridges leave register/unregister undefined; ensure that path still works
+      (window as any).descopeBridge = {};
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
+
+      await waitFor(
+        () => expect(wcEle.lazyInit).toEqual(expect.any(Function)),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      expect(wcEle.bridgeVersion).toBe(3);
+      // static accessor for natives that read the version from the constructor
+      expect((wcEle.constructor as any).bridgeVersion).toBe(3);
+    });
+
+    it('Calls descopeBridge.register(this) on connect with the wc instance', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      const register = jest.fn().mockReturnValue('wc_42');
+      const unregister = jest.fn();
+      (window as any).descopeBridge = { register, unregister };
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
+
+      await waitFor(() => expect(register).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(register).toHaveBeenCalledWith(wcEle);
+    });
+
+    it('Calls descopeBridge.unregister with the handle returned from register on disconnect', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      const register = jest.fn().mockReturnValue('wc_7');
+      const unregister = jest.fn();
+      (window as any).descopeBridge = { register, unregister };
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
+
+      await waitFor(() => expect(register).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // detaching from the DOM fires disconnectedCallback
+      wcEle.remove();
+
+      expect(unregister).toHaveBeenCalledTimes(1);
+      expect(unregister).toHaveBeenCalledWith('wc_7');
+    });
+
+    it('Does not throw when descopeBridge omits register/unregister (single-flow bridge)', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      (window as any).descopeBridge = {}; // no register, no unregister
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
+
+      await waitFor(
+        () => expect(wcEle.lazyInit).toEqual(expect.any(Function)),
+        {
+          timeout: WAIT_TIMEOUT,
+        },
+      );
+
+      // disconnecting must still not throw
+      expect(() => wcEle.remove()).not.toThrow();
+    });
+
+    it('Does not call unregister when register returned a falsy handle', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      const register = jest.fn().mockReturnValue(null);
+      const unregister = jest.fn();
+      (window as any).descopeBridge = { register, unregister };
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
+
+      await waitFor(() => expect(register).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      wcEle.remove();
+      expect(unregister).not.toHaveBeenCalled();
+    });
+  });
 });
