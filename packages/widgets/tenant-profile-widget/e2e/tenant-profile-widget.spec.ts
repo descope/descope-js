@@ -180,6 +180,48 @@ test.describe('tenant profile widget', () => {
     }
   });
 
+  test.describe('flow inputs', () => {
+    test('forwards caller client/form flow inputs into an edit flow', async ({
+      page,
+    }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      // a consumer sets client/form on the widget; read lazily at flow open
+      await page.evaluate(() => {
+        const widget = document.querySelector('descope-tenant-profile-widget');
+        widget.setAttribute('client', JSON.stringify({ acme: 'corp' }));
+        widget.setAttribute(
+          'form',
+          JSON.stringify({ cookieName: 'DSR_wellsense' }),
+        );
+      });
+
+      const userAttr = page
+        .locator('descope-user-attribute[data-id="tenant-name-edit"]')
+        .first();
+      await userAttr
+        .locator('descope-button[data-id="edit-btn"]')
+        .first()
+        .click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      const descopeWc = page
+        .locator('descope-modal[data-id="tenant-profile-set-name"]')
+        .locator('descope-wc');
+      await expect(descopeWc).toBeAttached();
+
+      // caller form is merged with the per-flow form (tenantName)
+      const form = JSON.parse((await descopeWc.getAttribute('form')) ?? '{}');
+      expect(form).toMatchObject({ cookieName: 'DSR_wellsense' });
+
+      // caller client forwarded
+      const client = JSON.parse(
+        (await descopeWc.getAttribute('client')) ?? '{}',
+      );
+      expect(client).toMatchObject({ acme: 'corp' });
+    });
+  });
+
   test.describe('tenant admin sso configuration link', () => {
     test('get tenant admin sso configuration link', async ({ page }) => {
       await page.waitForTimeout(STATE_TIMEOUT);

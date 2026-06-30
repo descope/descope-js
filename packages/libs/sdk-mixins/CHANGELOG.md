@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.23.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.22.0...sdk-mixins-0.23.0) (2026-06-29)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.14.0`
+
+### Features
+
+* **user-profile-widget:** close modals on outside click RELEASE ([#1430](https://github.com/descope/descope-js/issues/1430)) ([6a35ee4](https://github.com/descope/descope-js/commit/6a35ee417800bf633ab051bd9532468db90618f5)), closes [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072) [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072)
+
+## [0.22.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.21.0...sdk-mixins-0.22.0) (2026-06-28)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.13.1`
+* `sdk-helpers` updated to version `0.9.0`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
 ## [0.21.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.20.0...sdk-mixins-0.21.0) (2026-06-14)
 
 ### Dependency Updates

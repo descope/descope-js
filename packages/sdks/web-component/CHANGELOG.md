@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.69.5](https://github.com/descope/descope-js/compare/web-component-3.69.4...web-component-3.69.5) (2026-06-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.0`
+## [3.69.4](https://github.com/descope/descope-js/compare/web-component-3.69.3...web-component-3.69.4) (2026-06-28)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `web-js-sdk` updated to version `1.51.1`
+## [3.69.3](https://github.com/descope/descope-js/compare/web-component-3.69.2...web-component-3.69.3) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+
+### Bug Fixes
+
+* **web-component:** clear loading state after flow completes RELEASE ([#1426](https://github.com/descope/descope-js/issues/1426)) ([a88ca4b](https://github.com/descope/descope-js/commit/a88ca4b0a5c461df4a21b56ba53361622095b7cc)), closes [descope/etc#16353](https://github.com/descope/etc/issues/16353)
+
+## [3.69.2](https://github.com/descope/descope-js/compare/web-component-3.69.1...web-component-3.69.2) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
 ## [3.69.1](https://github.com/descope/descope-js/compare/web-component-3.69.0...web-component-3.69.1) (2026-06-21)
 
 ### Dependency Updates

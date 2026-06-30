@@ -2,6 +2,47 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.13.0...user-profile-widget-0.14.0) (2026-06-29)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.69.5`
+* `sdk-mixins` updated to version `0.23.0`
+* `sdk-component-drivers` updated to version `0.14.0`
+
+### Features
+
+* **user-profile-widget:** close modals on outside click RELEASE ([#1430](https://github.com/descope/descope-js/issues/1430)) ([6a35ee4](https://github.com/descope/descope-js/commit/6a35ee417800bf633ab051bd9532468db90618f5)), closes [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072) [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072)
+
+## [0.13.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.5...user-profile-widget-0.13.0) (2026-06-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.66.0`
+* `web-js-sdk` updated to version `1.51.1`
+* `web-component` updated to version `3.69.4`
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `sdk-component-drivers` updated to version `0.13.1`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
+## [0.12.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.4...user-profile-widget-0.12.5) (2026-06-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.65.0`
+* `web-js-sdk` updated to version `1.51.0`
+* `web-component` updated to version `3.69.3`
+## [0.12.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.3...user-profile-widget-0.12.4) (2026-06-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.64.0`
+* `web-js-sdk` updated to version `1.50.6`
+* `web-component` updated to version `3.69.2`
 ## [0.12.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.12.2...user-profile-widget-0.12.3) (2026-06-21)
 
 ### Dependency Updates

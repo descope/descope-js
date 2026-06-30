@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getHasTotp } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initTotpUserAuthMethodMixin = createSingletonMixin(
@@ -30,6 +30,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       totpUserAuthMethod: UserAuthMethodDriver;
 
@@ -44,7 +45,10 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initAddModal() {
         if (!this.totpUserAuthMethod.flowId) return;
 
-        this.#addModal = this.createModal({ 'data-id': 'totp' });
+        this.#addModal = this.createModal({
+          'data-id': 'totp',
+          'close-on-outside-click': 'true',
+        });
         this.#addFlow = new FlowDriver(
           () => this.#addModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -56,17 +60,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
 
       #initAddModalContent() {
         this.#addModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: this.totpUserAuthMethod.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.totpUserAuthMethod.flowId }),
         );
         this.#addFlow.onSuccess(() => {
           this.#addModal.close();
@@ -77,7 +71,10 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initRemoveTotpModal() {
         if (!this.totpUserAuthMethod.fulfilledFlowId) return;
 
-        this.#removeTotpModal = this.createModal({ 'data-id': 'remove-totp' });
+        this.#removeTotpModal = this.createModal({
+          'data-id': 'remove-totp',
+          'close-on-outside-click': 'true',
+        });
         this.#removeTotpFlow = new FlowDriver(
           () => this.#removeTotpModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -90,15 +87,8 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
 
       #initRemoveTotpModalContent() {
         this.#removeTotpModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.totpUserAuthMethod.fulfilledFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
           }),
         );
         this.#removeTotpFlow.onSuccess(() => {

@@ -2,6 +2,65 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.27.2](https://github.com/descope/descope-js/compare/angular-sdk-0.27.1...angular-sdk-0.27.2) (2026-06-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.5`
+* `audit-management-widget` updated to version `0.8.5`
+* `role-management-widget` updated to version `0.9.5`
+* `user-management-widget` updated to version `0.15.1`
+* `user-profile-widget` updated to version `0.14.0`
+* `tenant-profile-widget` updated to version `0.8.1`
+* `applications-portal-widget` updated to version `0.8.5`
+* `web-component` updated to version `3.69.5`
+## [0.27.1](https://github.com/descope/descope-js/compare/angular-sdk-0.27.0...angular-sdk-0.27.1) (2026-06-28)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.4`
+* `audit-management-widget` updated to version `0.8.4`
+* `role-management-widget` updated to version `0.9.4`
+* `user-management-widget` updated to version `0.15.0`
+* `user-profile-widget` updated to version `0.13.0`
+* `tenant-profile-widget` updated to version `0.8.0`
+* `applications-portal-widget` updated to version `0.8.4`
+* `web-component` updated to version `3.69.4`
+* `web-js-sdk` updated to version `1.51.1`
+* `core-js-sdk` updated to version `2.66.0`
+## [0.27.0](https://github.com/descope/descope-js/compare/angular-sdk-0.26.4...angular-sdk-0.27.0) (2026-06-25)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.3`
+* `audit-management-widget` updated to version `0.8.3`
+* `role-management-widget` updated to version `0.9.3`
+* `user-management-widget` updated to version `0.14.4`
+* `user-profile-widget` updated to version `0.12.5`
+* `tenant-profile-widget` updated to version `0.7.4`
+* `applications-portal-widget` updated to version `0.8.3`
+* `web-component` updated to version `3.69.3`
+* `web-js-sdk` updated to version `1.51.0`
+* `core-js-sdk` updated to version `2.65.0`
+
+### Features
+
+* Added SSO Functions (left SAML for BC) ([#1425](https://github.com/descope/descope-js/issues/1425)) ([79d6363](https://github.com/descope/descope-js/commit/79d63636a44ea8f5d48c9de708b8d502ced83717))
+
+## [0.26.4](https://github.com/descope/descope-js/compare/angular-sdk-0.26.3...angular-sdk-0.26.4) (2026-06-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.2`
+* `audit-management-widget` updated to version `0.8.2`
+* `role-management-widget` updated to version `0.9.2`
+* `user-management-widget` updated to version `0.14.3`
+* `user-profile-widget` updated to version `0.12.4`
+* `tenant-profile-widget` updated to version `0.7.3`
+* `applications-portal-widget` updated to version `0.8.2`
+* `web-component` updated to version `3.69.2`
+* `web-js-sdk` updated to version `1.50.6`
+* `core-js-sdk` updated to version `2.64.0`
 ## [0.26.3](https://github.com/descope/descope-js/compare/angular-sdk-0.26.2...angular-sdk-0.26.3) (2026-06-21)
 
 ### Dependency Updates

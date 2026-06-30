@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.8.0...sdk-helpers-0.9.0) (2026-06-28)
+
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
 ## [0.8.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.7.0...sdk-helpers-0.8.0) (2026-06-14)
 
 
