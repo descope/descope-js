@@ -71,7 +71,7 @@ export const duplicateFlowWarningMixin = createSingletonMixin(
           this.#warnedForKey = key;
           this.logger.warn(
             'Multiple Descope flow components detected on the same page',
-            `More than one <descope-wc> is running the same project ("${projectId}") and flow ("${flowId}") on this page. Running the same flow in more than one component at once is not supported and may cause the flow to behave unexpectedly. Render a single Descope flow component per page.`,
+            `The same flow ("${flowId}") and project ("${projectId}") are running more than once on this page. This is not supported and may cause the flow to behave unexpectedly.`,
           );
         });
       }
@@ -81,9 +81,9 @@ export const duplicateFlowWarningMixin = createSingletonMixin(
         this.#scheduleDuplicateFlowCheck();
       }
 
-      // Re-check when the flow identity changes at runtime. Relies on
-      // BaseDescopeWc forwarding `super.attributeChangedCallback?.()` (it only
-      // forwards post-init changes, so this does not double-fire on mount).
+      // Re-check when the flow identity changes at runtime. BaseDescopeWc
+      // forwards `super.attributeChangedCallback?.()`; the `#warnedForKey`
+      // de-dupe keeps this to one warning even if it also fires on mount.
       attributeChangedCallback(
         attrName: string,
         oldValue: string,

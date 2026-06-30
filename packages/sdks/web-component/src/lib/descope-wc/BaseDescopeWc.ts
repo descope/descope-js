@@ -681,6 +681,10 @@ class BaseDescopeWc extends BaseClass {
     oldValue: string,
     newValue: string,
   ) {
+    // Forward to the composed mixin chain first so other mixins always receive
+    // the callback, regardless of the early return below.
+    super.attributeChangedCallback?.(attrName, oldValue, newValue);
+
     if (!this.shadowRoot.isConnected || !this.#init) return;
 
     if (
@@ -710,11 +714,6 @@ class BaseDescopeWc extends BaseClass {
       });
 
       this.#debugState.update({ isDebug: this.debug });
-
-      // Forward to the composed mixin chain (e.g. duplicateFlowWarningMixin) so
-      // mixins can react to project-id/flow-id changes. Only reached for real
-      // post-init changes, so it does not double-fire during initial mount.
-      super.attributeChangedCallback?.(attrName, oldValue, newValue);
     }
   }
 }
