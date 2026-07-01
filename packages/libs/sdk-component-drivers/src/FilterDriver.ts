@@ -8,20 +8,12 @@ export type FilterInputType =
   | 'singleselect'
   | 'multiselect';
 
-export type FilterValueType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'enum'
-  | 'multi-enum';
-
 export type FilterOption = { value: string; label: string };
 
 export type FilterColumn = {
   id: string;
   label: string;
   inputType: FilterInputType;
-  valueType?: FilterValueType;
   options?: FilterOption[];
   operators?: string[];
 };

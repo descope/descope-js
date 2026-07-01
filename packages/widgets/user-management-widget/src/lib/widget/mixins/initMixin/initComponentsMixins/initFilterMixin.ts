@@ -21,31 +21,26 @@ const CA_COL_PREFIX = 'customAttributes.';
 // op support yet). Widen when BE confirms richer ops on `customAttributes`.
 const CA_TYPE_TO_FILTER: Record<
   number,
-  Pick<FilterColumn, 'inputType' | 'valueType'> & { operators: string[] }
+  Pick<FilterColumn, 'inputType'> & { operators: string[] }
 > = {
   [CustomAttributeTypeMap.text]: {
     inputType: 'text',
-    valueType: 'string',
     operators: ['equal', 'is-empty'],
   },
   [CustomAttributeTypeMap.numeric]: {
     inputType: 'number',
-    valueType: 'number',
     operators: ['equal', 'is-empty'],
   },
   [CustomAttributeTypeMap.bool]: {
     inputType: 'boolean',
-    valueType: 'boolean',
     operators: ['equal', 'is-empty'],
   },
   [CustomAttributeTypeMap.singleSelect]: {
     inputType: 'singleselect',
-    valueType: 'enum',
     operators: ['equal', 'is-empty'],
   },
   [CustomAttributeTypeMap.array]: {
     inputType: 'multiselect',
-    valueType: 'multi-enum',
     operators: ['is-any-of', 'is-empty'],
   },
 };
@@ -111,7 +106,6 @@ export const initFilterMixin = createSingletonMixin(
           ...col,
           label: col.label || (attr as any).displayName || name,
           inputType: map.inputType,
-          valueType: map.valueType,
           operators: map.operators,
           ...(options ? { options } : {}),
         };
