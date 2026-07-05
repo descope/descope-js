@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.70.0](https://github.com/descope/descope-js/compare/web-component-3.69.5...web-component-3.70.0) (2026-07-05)
+
+
+### Features
+
+* **web-component:** warn on multiple same-flow components on a page RELEASE ([#1431](https://github.com/descope/descope-js/issues/1431)) ([2f91a28](https://github.com/descope/descope-js/commit/2f91a2800e927589328e98c25219fafb2d63c4b2)), closes [#14040](https://github.com/descope/descope-js/issues/14040) [descope/etc#14040](https://github.com/descope/etc/issues/14040)
+
 ## [3.69.5](https://github.com/descope/descope-js/compare/web-component-3.69.4...web-component-3.69.5) (2026-06-29)
 
 ### Dependency Updates
