@@ -28,7 +28,11 @@ import {
 } from '../helpers/flowInputs';
 import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin, componentConditionsMixin } from '../mixins';
+import {
+  formMountMixin,
+  componentConditionsMixin,
+  duplicateFlowWarningMixin,
+} from '../mixins';
 import {
   AutoFocusOptions,
   CustomStorage,
@@ -51,6 +55,7 @@ const BaseClass = compose(
   staticResourcesMixin,
   formMountMixin,
   componentConditionsMixin,
+  duplicateFlowWarningMixin,
   injectStyleMixin,
 )(HTMLElement);
 
@@ -676,6 +681,10 @@ class BaseDescopeWc extends BaseClass {
     oldValue: string,
     newValue: string,
   ) {
+    // Forward to the composed mixin chain first so other mixins always receive
+    // the callback, regardless of the early return below.
+    super.attributeChangedCallback?.(attrName, oldValue, newValue);
+
     if (!this.shadowRoot.isConnected || !this.#init) return;
 
     if (
