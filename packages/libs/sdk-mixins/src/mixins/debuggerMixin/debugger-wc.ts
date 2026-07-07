@@ -15,9 +15,7 @@ const MIN_SIZE = 200;
 
 const template = document.createElement('template');
 template.innerHTML = `
-<div style="top:${INITIAL_POS_THRESHOLD}px; left:${
-  window.innerWidth - INITIAL_WIDTH - INITIAL_POS_THRESHOLD
-}px;" class="debugger">
+<div class="debugger">
   <div class="header">
     <span>Debugger messages</span>
   </div>
@@ -166,6 +164,14 @@ class Debugger extends BaseClass {
 
     this.#rootEle =
       this.shadowRoot!.querySelector<HTMLDivElement>('.debugger')!;
+
+    // Set initial position via CSSOM instead of an inline style attribute,
+    // which a strict CSP style-src (without 'unsafe-inline') would block.
+    this.#rootEle.style.top = `${INITIAL_POS_THRESHOLD}px`;
+    this.#rootEle.style.left = `${
+      window.innerWidth - INITIAL_WIDTH - INITIAL_POS_THRESHOLD
+    }px`;
+
     this.#contentEle = this.#rootEle.querySelector<HTMLDivElement>('.content')!;
     this.#headerEle = this.#rootEle.querySelector<HTMLDivElement>('.header')!;
   }
