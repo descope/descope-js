@@ -148,24 +148,33 @@ const createAuthMiddleware =
 		} catch (err) {
 			logger.debug('[Auth middleware] Failed to validate session JWT', err);
 
-			// Try to validate the refresh token instead
-			const refreshJwt = getRefreshJwt(req, options);
-			if (refreshJwt) {
-				logger.debug('[Auth middleware] Attempting to validate refresh token');
-				try {
-					await getGlobalSdk({
-						projectId: options.projectId,
-						baseUrl: options.baseUrl
-					}).validateJwt(refreshJwt);
+			const isAudienceMismatch =
+				options.resource &&
+				(err as any)?.code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' &&
+				(err as any)?.claim === 'aud';
 
-					logger.debug('[Auth middleware] Refresh token is valid');
-					validToken = true;
-				} catch (refreshErr) {
+			if (!isAudienceMismatch) {
+				// Try to validate the refresh token instead
+				const refreshJwt = getRefreshJwt(req, options);
+				if (refreshJwt) {
 					logger.debug(
-						'[Auth middleware] Refresh token validation failed',
-						refreshErr
+						'[Auth middleware] Attempting to validate refresh token'
 					);
-					// Refresh token validation failed, continue to redirect logic below
+					try {
+						await getGlobalSdk({
+							projectId: options.projectId,
+							baseUrl: options.baseUrl
+						}).validateJwt(refreshJwt);
+
+						logger.debug('[Auth middleware] Refresh token is valid');
+						validToken = true;
+					} catch (refreshErr) {
+						logger.debug(
+							'[Auth middleware] Refresh token validation failed',
+							refreshErr
+						);
+						// Refresh token validation failed, continue to redirect logic below
+					}
 				}
 			}
 
