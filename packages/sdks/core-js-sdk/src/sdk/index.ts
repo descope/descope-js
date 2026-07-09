@@ -15,7 +15,7 @@ import withMagicLink from './magicLink';
 import withOauth from './oauth';
 import withOutbound from './outbound';
 import withOtp from './otp';
-import withSaml from './saml';
+import withSso from './sso';
 import withTotp from './totp';
 import withPassword from './password';
 import {
@@ -50,7 +50,8 @@ export default (httpClient: HttpClient) => ({
   enchantedLink: withEnchantedLink(httpClient),
   oauth: withOauth(httpClient),
   outbound: withOutbound(httpClient),
-  saml: withSaml(httpClient),
+  sso: withSso(httpClient),
+  saml: withSso(httpClient),
   totp: withTotp(httpClient),
   notp: withNotp(httpClient),
   webauthn: withWebauthn(httpClient),

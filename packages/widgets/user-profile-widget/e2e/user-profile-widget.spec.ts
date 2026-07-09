@@ -160,6 +160,32 @@ test.describe('widget', () => {
     }
   });
 
+  test.describe('close-on-outside-click opt-in', () => {
+    // this only checks that the widget wires the opt-in onto its modals (sets
+    // the `close-on-outside-click` attribute). the actual close-on-backdrop
+    // behavior lives in the descope-modal component and is covered by the
+    // web-components-ui tests - it cannot be exercised here because this suite
+    // loads the published component from node_modules (see playwright.config).
+    test('sets close-on-outside-click on the modals it opens', async ({
+      page,
+    }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const editBtn = page
+        .locator(`descope-user-attribute[data-id="email"]`)
+        .first()
+        .locator(`descope-button[data-id="edit-btn"]`)
+        .first();
+
+      editBtn.click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      await expect(
+        page.locator(`descope-modal[data-id="edit-email"]`),
+      ).toHaveAttribute('close-on-outside-click', 'true');
+    });
+  });
+
   test.describe('user auth methods', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [
@@ -249,6 +275,41 @@ test.describe('widget', () => {
 
       const clientAttr = await descopeWc.getAttribute('client');
       const client = JSON.parse(clientAttr ?? '{}');
+      expect(client.userId).toBe(mockUser.userId);
+    });
+
+    test('forwards caller client/form flow inputs into descope-wc', async ({
+      page,
+    }) => {
+      // a consumer sets client/form on the widget element; read lazily at flow open
+      await page.evaluate(() => {
+        const widget = document.querySelector('descope-user-profile-widget');
+        widget.setAttribute('client', JSON.stringify({ acme: 'corp' }));
+        widget.setAttribute(
+          'form',
+          JSON.stringify({ cookieName: 'DSR_wellsense' }),
+        );
+      });
+
+      await page.locator('[data-generic-flow-button-id]').first().click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      const descopeWc = page
+        .locator('descope-modal[data-id="generic-flow-modal"]')
+        .locator('descope-wc');
+      await expect(descopeWc).toBeAttached();
+
+      // caller form is forwarded into the flow as-is
+      await expect(descopeWc).toHaveAttribute(
+        'form',
+        JSON.stringify({ cookieName: 'DSR_wellsense' }),
+      );
+
+      // caller client is merged with the widget's own flow context (userId)
+      const client = JSON.parse(
+        (await descopeWc.getAttribute('client')) ?? '{}',
+      );
+      expect(client).toMatchObject({ acme: 'corp' });
       expect(client.userId).toBe(mockUser.userId);
     });
 

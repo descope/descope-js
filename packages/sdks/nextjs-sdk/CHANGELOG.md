@@ -2,6 +2,71 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.52](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.51...nextjs-sdk-0.15.52) (2026-07-05)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.30.3`
+* `web-component` updated to version `3.70.0`
+## [0.15.51](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.50...nextjs-sdk-0.15.51) (2026-06-29)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.30.2`
+* `web-component` updated to version `3.69.5`
+## [0.15.50](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.49...nextjs-sdk-0.15.50) (2026-06-28)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.30.1`
+## [0.15.49](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.48...nextjs-sdk-0.15.49) (2026-06-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.1`
+* `react-sdk` updated to version `2.30.0`
+* `core-js-sdk` updated to version `2.66.0`
+* `web-component` updated to version `3.69.4`
+## [0.15.48](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.47...nextjs-sdk-0.15.48) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+* `react-sdk` updated to version `2.29.5`
+* `core-js-sdk` updated to version `2.65.0`
+* `web-component` updated to version `3.69.3`
+## [0.15.47](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.46...nextjs-sdk-0.15.47) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+* `react-sdk` updated to version `2.29.4`
+* `core-js-sdk` updated to version `2.64.0`
+* `web-component` updated to version `3.69.2`
+## [0.15.46](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.45...nextjs-sdk-0.15.46) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+* `react-sdk` updated to version `2.29.3`
+* `core-js-sdk` updated to version `2.63.0`
+* `web-component` updated to version `3.69.1`
+
+### Bug Fixes
+
+* **nextjs-sdk:** bump @descope/node-sdk to 2.8.0 (Brotli JWKS fetch fix) ([#1419](https://github.com/descope/descope-js/issues/1419)) ([3f824b6](https://github.com/descope/descope-js/commit/3f824b617be17a3da45b826f91f85bdf08e48be8)), closes [descope/node-sdk#742](https://github.com/descope/node-sdk/issues/742) [#1418](https://github.com/descope/descope-js/issues/1418) [#1418](https://github.com/descope/descope-js/issues/1418) [descope/node-sdk#742](https://github.com/descope/node-sdk/issues/742)
+
+## [0.15.45](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.44...nextjs-sdk-0.15.45) (2026-06-18)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.29.2`
+* `web-component` updated to version `3.69.0`
+## [0.15.44](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.43...nextjs-sdk-0.15.44) (2026-06-18)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `2.29.1`
 ## [0.15.43](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.42...nextjs-sdk-0.15.43) (2026-06-14)
 
 ### Dependency Updates

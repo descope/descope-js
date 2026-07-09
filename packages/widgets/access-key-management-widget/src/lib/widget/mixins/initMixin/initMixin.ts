@@ -7,6 +7,7 @@ import { initDeactivateAccessKeysButtonMixin } from './initComponentsMixins/init
 import { initDeleteAccessKeysButtonMixin } from './initComponentsMixins/initDeleteAccessKeysButtonMixin';
 import { initFilterAccessKeysInputMixin } from './initComponentsMixins/initFilterAccessKeysInputMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
+import { initRotateAccessKeyButtonMixin } from './initComponentsMixins/initRotateAccessKeyButtonMixin';
 
 export const initMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -20,6 +21,7 @@ export const initMixin = createSingletonMixin(
       initFilterAccessKeysInputMixin,
       initActivateAccessKeysButtonMixin,
       initDeactivateAccessKeysButtonMixin,
+      initRotateAccessKeyButtonMixin,
       initNotificationsMixin,
     )(superclass) {
       async init() {

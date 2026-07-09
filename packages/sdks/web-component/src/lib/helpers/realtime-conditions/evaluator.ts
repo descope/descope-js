@@ -99,6 +99,13 @@ const operators: Record<RealtimeOperator, OperatorFn> = {
     if (typeof target === 'string') return target.includes(toString(predicate));
     return false;
   },
+  // Mirrors `contains`: bad input → false, not true.
+  'doesnt-contains': (target, predicate) => {
+    if (Array.isArray(target)) return !target.includes(predicate);
+    if (typeof target === 'string')
+      return !target.includes(toString(predicate));
+    return false;
+  },
   'greater-than': (target, predicate) => {
     const targetNum = toFloat(target);
     const predicateNum = toFloat(predicate);

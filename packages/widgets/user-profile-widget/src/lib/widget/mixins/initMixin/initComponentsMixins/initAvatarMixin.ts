@@ -14,11 +14,11 @@ import {
   loggerMixin,
   modalMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getName, getPicture } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initAvatarMixin = createSingletonMixin(
@@ -32,6 +32,7 @@ export const initAvatarMixin = createSingletonMixin(
       cookieConfigMixin,
       initWidgetRootMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       avatar: AvatarDriver;
 
@@ -42,7 +43,10 @@ export const initAvatarMixin = createSingletonMixin(
       #initModal() {
         if (!this.avatar.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'update-pic' });
+        this.#modal = this.createModal({
+          'data-id': 'update-pic',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -54,17 +58,7 @@ export const initAvatarMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: this.avatar.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.avatar.flowId }),
         );
         this.#flow.onSuccess(() => {
           this.#modal.close();

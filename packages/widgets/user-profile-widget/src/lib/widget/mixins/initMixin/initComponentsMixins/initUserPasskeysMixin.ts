@@ -13,11 +13,11 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getUserId, getUserPasskeys } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initUserPasskeysMixin = createSingletonMixin(
@@ -30,6 +30,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       userPasskeys: UserPasskeysDriver;
 
@@ -44,7 +45,10 @@ export const initUserPasskeysMixin = createSingletonMixin(
       #initAddModal() {
         if (!this.userPasskeys.addPasskeyFlowId) return;
 
-        this.#addModal = this.createModal({ 'data-id': 'add-user-passkey' });
+        this.#addModal = this.createModal({
+          'data-id': 'add-user-passkey',
+          'close-on-outside-click': 'true',
+        });
         this.#addFlow = new FlowDriver(
           () => this.#addModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -56,16 +60,8 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
       #initAddModalContent() {
         this.#addModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.userPasskeys.addPasskeyFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#addFlow.onSuccess(() => {
@@ -80,6 +76,7 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
         this.#removeModal = this.createModal({
           'data-id': 'remove-user-passkey',
+          'close-on-outside-click': 'true',
         });
         this.#removeFlow = new FlowDriver(
           () => this.#removeModal.ele?.querySelector('descope-wc'),
@@ -90,16 +87,8 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
       #initRemoveModalContent({ externalId, credentialId }) {
         this.#removeModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.userPasskeys.removePasskeyFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             form: { externalId, credentialId },
           }),
         );

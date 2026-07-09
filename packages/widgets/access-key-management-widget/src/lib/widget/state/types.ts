@@ -24,6 +24,10 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
+  rotateAccessKey: {
+    loading: boolean;
+    error: unknown;
+  };
   tenantRoles: {
     loading: boolean;
     error: unknown;

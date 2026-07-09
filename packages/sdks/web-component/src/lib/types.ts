@@ -60,6 +60,7 @@ export type RealtimeOperator =
   | 'equal'
   | 'not-equal'
   | 'contains'
+  | 'doesnt-contains'
   | 'greater-than'
   | 'greater-than-or-equal'
   | 'less-than'

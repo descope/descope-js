@@ -214,6 +214,70 @@ describe('web-component loading state', () => {
     );
   });
 
+  // Regression for issue #16353: when the flow completes while the component
+  // stays mounted, the submit button must not stay stuck in loading state.
+  it('should restore states after the flow completes successfully', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    // last screen submit completes the flow (no new screen rendered)
+    nextMock.mockReturnValue(generateSdkResponse({ status: 'completed' }));
+
+    fixtures.pageContent = `
+      <span>Test Page</span>
+      <descope-button id="submit">Submit</descope-button>
+      <descope-button id="another">Another Button</descope-button>
+      <input id="input" placeholder="Input"/>
+      `;
+
+    const onSuccess = jest.fn();
+    document.body.innerHTML = `<descope-wc flow-id="test-flow" project-id="1"></descope-wc>`;
+    document.querySelector('descope-wc').addEventListener('success', onSuccess);
+
+    await waitFor(() => screen.getByShadowText('Test Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('Submit'));
+
+    // loading is set while the next request is in flight
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Submit')).toHaveAttribute(
+          'loading',
+          'true',
+        );
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    // the flow completes and success fires
+    await waitFor(() => expect(onSuccess).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // once the flow completed, the submitter and the other elements should be
+    // restored even though no new screen renders and the element stays mounted
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Submit')).not.toHaveAttribute('loading');
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowText('Another Button')).toBeEnabled();
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByShadowPlaceholderText('Input')).toBeEnabled();
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
   it('should NOT restore states when navigating to a different screen', async () => {
     startMock.mockReturnValue(generateSdkResponse());
     nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));

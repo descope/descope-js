@@ -321,7 +321,7 @@ class DescopeWc extends BaseDescopeWc {
         if (!globalThis.descope?.[script.id]) {
           await this.injectNpmLib(
             '@descope/flow-scripts',
-            '1.0.16', // currently using a fixed version when loading scripts
+            '1.0.17', // currently using a fixed version when loading scripts
             `dist/${script.id}.js`,
           );
         }
@@ -1859,13 +1859,18 @@ class DescopeWc extends BaseDescopeWc {
       ),
     ).filter((ele) => ele !== submitter);
 
-    const restoreComponentsState = async () => {
-      this.loggerWrapper.debug('Restoring components state');
-      this.removeEventListener('popupclosed', restoreComponentsState);
+    // reset the in-flight loading/disabled state set when the next request started
+    const resetComponentsState = () => {
       submitter.removeAttribute('loading');
       enabledElements.forEach((ele) => {
         ele.removeAttribute('disabled');
       });
+    };
+
+    const restoreComponentsState = async () => {
+      this.loggerWrapper.debug('Restoring components state');
+      this.removeEventListener('popupclosed', restoreComponentsState);
+      resetComponentsState();
       // if there are client scripts, we want to reload them
       const flowConfig = await this.getFlowConfig();
       const clientScripts = [
@@ -1922,8 +1927,17 @@ class DescopeWc extends BaseDescopeWc {
           );
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
-          // when next request is done, we want to listen to screenId updates
-          handleScreenIdUpdates();
+          // If the flow completed successfully, no new screen will render to
+          // clear the loading state. The element can stay mounted after that
+          // (e.g. a settings page running a step-up flow), so reset the
+          // in-flight loading/disabled state here directly.
+          if (this.flowStatus === 'success') {
+            this.removeEventListener('popupclosed', restoreComponentsState);
+            resetComponentsState();
+          } else {
+            // when next request is done, we want to listen to screenId updates
+            handleScreenIdUpdates();
+          }
         }
       },
     );
