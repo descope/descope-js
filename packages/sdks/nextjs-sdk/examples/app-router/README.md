@@ -25,6 +25,7 @@ DESCOPE_MANAGEMENT_KEY=<Your Descope Management Key> # Default is sign-up-or-in
 # This is an example of a custom route for the sign-in page
 # the /login route is the one that this example uses
 SIGN_IN_ROUTE="/login"
+DESCOPE_RESOURCE=<Optional: Resource identifier (RFC 8707) to validate the JWT audience against - must match a Resource associated with your Inbound App>
 ```
 
 ## Run the example

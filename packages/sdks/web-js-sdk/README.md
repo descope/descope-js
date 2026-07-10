@@ -157,7 +157,38 @@ const sdk = descopeSdk({
 });
 ```
 
+`issuer` also accepts the full well-known URL as-is - you don't need to strip it yourself:
+
+```js
+oidcConfig: {
+  issuer:
+    'https://api.descope.com/v1/apps/P1234567890/.well-known/openid-configuration',
+  clientId: 'your-inbound-app-client-id',
+},
+```
+
+Federated apps (`applicationId`) and inbound apps (`issuer` + `clientId`) are distinct OIDC paths with distinct default scopes - the default scope is never inferred from the shape of the `issuer` URL, only from which fields you supplied.
+
 When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
+
+##### Requesting a resource-scoped token (`resource`)
+
+If your inbound app is scoped to a specific resource, pass `resource` (per [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)) to request an access token bound to that resource at sign-in. It's applied both when redirecting to sign in and when refreshing the token, and accepts either a single resource or an array:
+
+```js
+oidcConfig: {
+  issuer: 'https://api.descope.com/v1/apps/P1234567890',
+  clientId: 'your-inbound-app-client-id',
+  resource: 'https://api.my-app.com',
+  // or: resource: ['https://api.my-app.com', 'https://other-api.my-app.com'],
+},
+```
+
+You can also pass `resource` per-call, without setting it in `oidcConfig`, by forwarding it to `loginWithRedirect`:
+
+```js
+await sdk.oidc.loginWithRedirect({ resource: 'https://api.my-app.com' });
+```
 
 #### Start OIDC login
 

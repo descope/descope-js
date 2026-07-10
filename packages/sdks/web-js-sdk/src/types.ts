@@ -10,12 +10,17 @@ export type OidcConfigOptions = {
   clientId?: string;
   // Custom issuer/authority URL. If provided, clientId is required.
   // For inbound apps, construct the issuer URL manually: `${baseUrl}/v1/apps/${projectId}`
+  // Also accepts a full well-known URL (`.../.well-known/openid-configuration`) - it is
+  // automatically normalized to the bare issuer.
   issuer?: string;
   // default is current URL
   redirectUri?: string;
   // default is openid email roles descope.custom_claims offline_access
   // default is 'openid' if issuer (and clientId) is provided
   scope?: string;
+  // RFC 8707 resource indicator(s) requested at sign-in and on refresh.
+  // Applies to both federated (applicationId) and inbound (issuer) apps.
+  resource?: string | string[];
 };
 
 export type OidcConfig = boolean | OidcConfigOptions;

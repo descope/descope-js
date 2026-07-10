@@ -914,7 +914,34 @@ To use an inbound app as an OIDC provider, you must provide both the `issuer` an
 </AuthProvider>
 ```
 
+`issuer` also accepts the full well-known URL as-is - you don't need to strip it yourself:
+
+```js
+oidcConfig={{
+  issuer:
+    'https://api.descope.com/v1/apps/<Project ID>/.well-known/openid-configuration',
+  clientId: 'your-inbound-app-client-id',
+}}
+```
+
+Federated apps (`applicationId`) and inbound apps (`issuer` + `clientId`) are distinct OIDC paths with distinct default scopes - the default scope is never inferred from the shape of the `issuer` URL, only from which fields you supplied.
+
 When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
+
+##### Requesting a resource-scoped token (`resource`)
+
+If your inbound app is scoped to a specific resource, pass `resource` (per [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)) to request an access token bound to that resource at sign-in. It's applied both when redirecting to sign in and when refreshing the token, and accepts either a single resource or an array:
+
+```js
+oidcConfig={{
+  issuer: 'https://api.descope.com/v1/apps/<Project ID>',
+  clientId: 'your-inbound-app-client-id',
+  resource: 'https://api.my-app.com',
+  // or: resource: ['https://api.my-app.com', 'https://other-api.my-app.com'],
+}}
+```
+
+You can also pass `resource` per-call, without setting it in `oidcConfig`, by forwarding it to `loginWithRedirect` (see below).
 
 ### Login
 
@@ -932,6 +959,8 @@ const MyComponent = () => {
           // By default, the login will redirect the user to the current URL
           // If you want to redirect the user to a different URL, you can specify it here
           redirect_uri: window.location.origin,
+          // resource can also be overridden per-call, without setting it in oidcConfig
+          resource: 'https://api.my-app.com',
         });
       }}
     >

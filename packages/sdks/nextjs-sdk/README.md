@@ -332,6 +332,8 @@ session({
 
 This allows developers to use `session()` even if the project ID is not set in the environment.
 
+Both `authMiddleware` and `session()` also accept a `resource` option (RFC 8707) to validate the token's audience against a resource-scoped access token. If you request a resource-scoped token client-side via `oidcConfig.resource` (see the [react-sdk](../react-sdk/README.md#requesting-a-resource-scoped-token-resource) / [web-js-sdk](../web-js-sdk/README.md#requesting-a-resource-scoped-token-resource) docs), the `resource` value passed here must match it, so the server validates against the same audience the client requested at sign-in.
+
 #### Access Descope SDK in server side
 
 Use `createSdk` function to create Descope SDK in server side.
