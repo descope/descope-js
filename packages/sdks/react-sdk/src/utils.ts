@@ -28,4 +28,4 @@ export const wrapInTry =
 
 // Detect if running in a native flow (e.g., mobile app with Descope bridge in a webview)
 export const isDescopeBridge = () =>
-  typeof window !== 'undefined' && !!window['descopeBridge'];
+  typeof window !== 'undefined' && !!window.descopeBridge;

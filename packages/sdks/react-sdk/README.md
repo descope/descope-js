@@ -338,7 +338,7 @@ Pass `autoRefresh={{ customActivityTracking: true }}` to skip refresh calls for 
 ```jsx
 <AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <App />
-</AuthProvider>
+</AuthProvider>;
 ```
 
 **Step 2:** Create a `useActivityTracking` hook that calls `markUserActive()` on user interactions:
@@ -383,7 +383,7 @@ function Layout() {
 
 <AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <Layout />
-</AuthProvider>
+</AuthProvider>;
 ```
 
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
