@@ -149,7 +149,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     isSessionFetched.current = true;
 
     setIsSessionLoading(true);
-    withValidation(sdk?.refresh)(undefined, true).then(() => {
+    const stopSessionLoading = () => {
       // Defer to a separate render pass so React doesn't batch this with
       // the setIsSessionLoading(true) above when refresh() short-circuits
       // synchronously - downstream consumers (e.g. useSession) need to
@@ -159,7 +159,16 @@ const AuthProvider: FC<IAuthProviderProps> = ({
           setIsSessionLoading(false);
         }, 0);
       });
-    });
+    };
+    // Clear the loading state on both fulfilment and rejection. A rejected
+    // refresh (e.g. a transient network failure on the proactive refresh) must
+    // still clear `isSessionLoading` - `isSessionFetched` is already set so
+    // `fetchSession` never re-runs, and consumers (e.g. useSession) would
+    // otherwise hang on "loading" forever despite a valid session.
+    withValidation(sdk?.refresh)(undefined, true).then(
+      stopSessionLoading,
+      stopSessionLoading,
+    );
   }, [sdk]);
 
   const fetchUser = useCallback(() => {
@@ -168,9 +177,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     isUserFetched.current = true;
 
     setIsUserLoading(true);
-    withValidation(sdk.me)().then(() => {
-      setIsUserLoading(false);
-    });
+    // Clear the loading state on both fulfilment and rejection so a failed
+    // `me()` doesn't leave `isUserLoading` stuck `true` (see fetchSession).
+    const stopUserLoading = () => setIsUserLoading(false);
+    withValidation(sdk.me)().then(stopUserLoading, stopUserLoading);
   }, [sdk]);
 
   const value = useMemo<IContext>(

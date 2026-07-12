@@ -14,10 +14,10 @@ import {
   loggerMixin,
   modalMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { getTrustedDevices, getUserId } from '../../../state/selectors';
 
@@ -32,6 +32,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       cookieConfigMixin,
       initWidgetRootMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       deviceList: DeviceListDriver;
 
@@ -42,7 +43,10 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       #initModal() {
         if (!this.deviceList.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'untrust-device' });
+        this.#modal = this.createModal({
+          'data-id': 'untrust-device',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -53,16 +57,8 @@ export const initTrustedDevicesMixin = createSingletonMixin(
 
       #initModalContent(deviceId: string = '') {
         this.#modal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.deviceList.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             form: { deviceId },
           }),
         );

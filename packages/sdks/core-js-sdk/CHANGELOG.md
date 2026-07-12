@@ -2,6 +2,34 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.67.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.66.0...core-js-sdk-2.67.0) (2026-07-12)
+
+
+### Features
+
+* **core-js:** expose externalToken on JWTResponse ([#1435](https://github.com/descope/descope-js/issues/1435)) RELEASE ([7e248bf](https://github.com/descope/descope-js/commit/7e248bfd1f73556f3ab87f5c5fa5f950b0af1e40))
+
+## [2.66.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.65.0...core-js-sdk-2.66.0) (2026-06-28)
+
+
+### Features
+
+* **core-js-sdk:** add mfa option to webauthn passkey enrollment ([#1427](https://github.com/descope/descope-js/issues/1427)) ([0cf282d](https://github.com/descope/descope-js/commit/0cf282db97ed59ed3344a0c77f129385a308f996)), closes [descope/etc#16573](https://github.com/descope/etc/issues/16573)
+
+## [2.65.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.64.0...core-js-sdk-2.65.0) (2026-06-25)
+
+
+### Features
+
+* Added SSO Functions (left SAML for BC) ([#1425](https://github.com/descope/descope-js/issues/1425)) ([79d6363](https://github.com/descope/descope-js/commit/79d63636a44ea8f5d48c9de708b8d502ced83717))
+
+## [2.64.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.63.0...core-js-sdk-2.64.0) (2026-06-22)
+
+
+### Features
+
+* **core-js-sdk:** also retry on transient status code 520 RELEASE ([#1423](https://github.com/descope/descope-js/issues/1423)) RELEASE ([1876b86](https://github.com/descope/descope-js/commit/1876b862cceb7406b897dd9db583dc6a9b4117d0)), closes [descope/go-sdk#775](https://github.com/descope/go-sdk/issues/775) [descope/python-sdk#1581](https://github.com/descope/python-sdk/issues/1581)
+
 ## [2.63.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.2...core-js-sdk-2.63.0) (2026-06-21)
 
 

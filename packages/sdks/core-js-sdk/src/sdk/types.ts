@@ -35,6 +35,7 @@ type AuthMethod =
   | 'otp'
   | 'totp'
   | 'oauth'
+  | 'sso'
   | 'saml'
   | 'webauthn';
 
@@ -148,6 +149,7 @@ export type JWTResponse = {
   claims: Claims;
   trustedDeviceJwt?: string;
   nextRefreshSeconds?: number;
+  externalToken?: string;
 };
 
 /** Authentication info result from exchanging access keys for a session */

@@ -9,10 +9,10 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasswordUserAuthMethodMixin = createSingletonMixin(
@@ -25,6 +25,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       passwordUserAuthMethod: UserAuthMethodDriver;
 
@@ -35,7 +36,10 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       #initModal() {
         if (!this.passwordUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'password' });
+        this.#modal = this.createModal({
+          'data-id': 'password',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -47,16 +51,8 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.passwordUserAuthMethod.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#flow.onSuccess(() => {

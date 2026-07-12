@@ -13,10 +13,10 @@ import {
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getTenantName } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -30,6 +30,7 @@ export const initTenantNameMixin = createSingletonMixin(
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       tenantNameDriver: UserAttributeDriver;
 
@@ -54,18 +55,10 @@ export const initTenantNameMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.tenantNameDriver.editFlowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-            form: JSON.stringify({ tenantName: getTenantName(this.state) }),
+            form: { tenantName: getTenantName(this.state) },
           }),
         );
         this.#editFlow.onSuccess(() => {

@@ -7,8 +7,9 @@ import {
   modalMixin,
   cookieConfigMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
-import { createFlowTemplate, getUrlParam, resetUrlParam } from './helpers';
+import { getUrlParam, resetUrlParam } from './helpers';
 import { stateManagementMixin } from './stateManagementMixin';
 
 const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
@@ -23,6 +24,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
       cookieConfigMixin,
       loggerMixin,
       themeMixin,
+      flowInputMixin,
     )(superclass) {
       async init() {
         await super.init?.();
@@ -36,20 +38,11 @@ export const flowRedirectUrlMixin = createSingletonMixin(
       }
 
       #createFlowRedirectModal(widgetFlow: string) {
+        // this modal is auto-opened from a URL param and removes itself on close,
+        // so it intentionally does not opt into close-on-outside-click - an
+        // accidental tap should not discard the redirect flow
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
-        modal.setContent(
-          createFlowTemplate({
-            locale: this.locale,
-            projectId: this.projectId,
-            flowId: widgetFlow,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
-        );
+        modal.setContent(this.createFlowTemplate({ flowId: widgetFlow }));
 
         const flow = new FlowDriver(
           () => modal.ele?.querySelector('descope-wc'),
