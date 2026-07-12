@@ -211,7 +211,7 @@ export const filterToSearchParams = (
       } else {
         // contains / starts-with / ends-with → full-text search.
         // Last text row wins (proto only exposes a single `text` string).
-        (params as any).text = arr[0];
+        [(params as any).text] = arr;
       }
     }
   });

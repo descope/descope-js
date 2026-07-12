@@ -88,6 +88,7 @@ export const initFilterMixin = createSingletonMixin(
         });
       };
 
+      // eslint-disable-next-line class-methods-use-this
       #enrichCustomAttributeCol = (
         col: FilterColumn,
         customAttrs: ReturnType<typeof getCustomAttributes>,
