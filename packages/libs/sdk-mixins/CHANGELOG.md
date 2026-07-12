@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.23.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.23.0...sdk-mixins-0.23.1) (2026-07-12)
+
+
+### Bug Fixes
+
+* **sdk-mixins:** avoid CSP style-src violation in debugger overlay RELEASE ([#1432](https://github.com/descope/descope-js/issues/1432)) ([0460630](https://github.com/descope/descope-js/commit/046063013126388f4c89c711c95763ed2592f7af))
+
 ## [0.23.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.22.0...sdk-mixins-0.23.0) (2026-06-29)
 
 ### Dependency Updates
