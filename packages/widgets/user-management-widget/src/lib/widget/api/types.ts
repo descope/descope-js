@@ -67,6 +67,17 @@ export type Role = {
 
 export type SortParams = { field: string; desc: boolean };
 
+// Structured filter sent to /v1/mgmt/user/search `searchFields` (mirrors the
+// BE common SearchField). `valStr` may carry `%` wildcards for LIKE; `negative`
+// flips to NOT LIKE / != any. Honored only when the BE feature flag is on.
+export type SearchField = {
+  field: string;
+  valStr?: string;
+  valArr?: string[];
+  negative?: boolean;
+  valType?: string;
+};
+
 export type FilterRow = {
   column: string;
   operator: string;
@@ -83,6 +94,7 @@ export type SearchUsersConfig = {
   emails?: string[];
   phones?: string[];
   text?: string;
+  searchFields?: SearchField[];
   sort?: SortParams[];
   verifiedEmail?: boolean;
   verifiedPhone?: boolean;

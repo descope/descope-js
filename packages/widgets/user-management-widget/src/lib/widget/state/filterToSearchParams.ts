@@ -54,6 +54,31 @@ const TEXT_COLUMNS = new Set([
   'phone',
 ]);
 
+// Text columns whose fuzzy/negation operators route to the BE `searchFields`
+// engine (wildcard LIKE / NOT LIKE). Keyed by widget column id → BE column key.
+// Only columns the BE can LIKE are listed (name/givenName/middleName/familyName
+// are a BE gap — not searchable, so their fuzzy ops stay unexposed). `equal`
+// still uses the flat exact/text fields below, so search keeps working when the
+// BE searchFields flag is off; only these richer ops need searchFields.
+const LIKE_FIELD_MAP: Record<string, string> = {
+  loginIds: 'externalid',
+  displayName: 'displayname',
+  email: 'email',
+  phone: 'phonenumber',
+};
+
+// Operators handled via searchFields. The value is already affixed with `%`
+// by the widget per the operator's prefix/suffix config; the SDK forwards it
+// verbatim. Console only exposes these ops once the BE flag is on — that
+// column config is the effective rollout gate.
+const SEARCH_FIELD_OPS = new Set([
+  'contains',
+  'not-contains',
+  'starts-with',
+  'ends-with',
+  'not-equal',
+]);
+
 const toArray = (v: FilterRow['value']): string[] => {
   if (Array.isArray(v)) return v;
   if (v == null || v === '') return [];
@@ -112,13 +137,31 @@ export const filterToSearchParams = (
     ...Object.values(EXACT_FIELDS),
     ...Object.values(BOOLEAN_FIELDS),
     'text' as const,
+    'searchFields' as const,
     'customAttributes' as const,
   ].forEach((field) => {
     (params as any)[field] = undefined;
   });
 
   rows.forEach((row) => {
-    if (!row.column || !row.operator || row.operator.startsWith('not-')) return;
+    if (!row.column || !row.operator) return;
+
+    // searchFields path: text-column fuzzy/negation ops → BE LIKE engine.
+    // Handled before the not-* drop below so negation reaches the BE here.
+    if (LIKE_FIELD_MAP[row.column] && SEARCH_FIELD_OPS.has(row.operator)) {
+      const v = Array.isArray(row.value) ? row.value[0] : row.value;
+      if (v == null || v === '') return;
+      params.searchFields = params.searchFields || [];
+      params.searchFields.push({
+        field: LIKE_FIELD_MAP[row.column],
+        valStr: String(v),
+        ...(row.operator.startsWith('not-') ? { negative: true } : {}),
+      });
+      return;
+    }
+
+    // Other negation ops remain unsupported on the flat path — drop them.
+    if (row.operator.startsWith('not-')) return;
 
     if (row.column.startsWith(CA_COL_PREFIX)) {
       const name = row.column.slice(CA_COL_PREFIX.length);

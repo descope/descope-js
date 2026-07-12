@@ -11,6 +11,7 @@ describe('filterToSearchParams', () => {
       emails: undefined,
       phones: undefined,
       text: undefined,
+      searchFields: undefined,
       customAttributes: undefined,
       verifiedEmail: undefined,
       verifiedPhone: undefined,
@@ -121,6 +122,55 @@ describe('filterToSearchParams', () => {
       { column: 'familyName', operator: 'contains', value: 'second' },
     ]);
     expect(params.text).toBe('second');
+  });
+
+  describe('searchFields', () => {
+    it('routes displayName contains (already %-affixed) to searchFields displayname', () => {
+      const params = filterToSearchParams([
+        { column: 'displayName', operator: 'contains', value: '%john%' },
+      ]);
+      expect(params.searchFields).toEqual([
+        { field: 'displayname', valStr: '%john%' },
+      ]);
+      // not double-filtered via the flat text field
+      expect(params.text).toBeUndefined();
+    });
+
+    it('maps not-equal to a negative searchField', () => {
+      const params = filterToSearchParams([
+        { column: 'email', operator: 'not-equal', value: 'a@b.com' },
+      ]);
+      expect(params.searchFields).toEqual([
+        { field: 'email', valStr: 'a@b.com', negative: true },
+      ]);
+    });
+
+    it('maps loginIds contains to externalid and phone ends-with to phonenumber', () => {
+      const params = filterToSearchParams([
+        { column: 'loginIds', operator: 'contains', value: '%x%' },
+        { column: 'phone', operator: 'ends-with', value: '%99' },
+      ]);
+      expect(params.searchFields).toEqual([
+        { field: 'externalid', valStr: '%x%' },
+        { field: 'phonenumber', valStr: '%99' },
+      ]);
+    });
+
+    it('keeps equal on the flat path (no searchFields)', () => {
+      const params = filterToSearchParams([
+        { column: 'email', operator: 'equal', value: 'a@b.com' },
+      ]);
+      expect(params.searchFields).toBeUndefined();
+      expect(params.emails).toEqual(['a@b.com']);
+    });
+
+    it('does not build searchFields for BE-gap columns (name/familyName)', () => {
+      const params = filterToSearchParams([
+        { column: 'name', operator: 'contains', value: '%john%' },
+      ]);
+      expect(params.searchFields).toBeUndefined();
+      expect(params.text).toBe('%john%');
+    });
   });
 
   describe('custom attributes', () => {

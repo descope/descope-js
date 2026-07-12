@@ -29,6 +29,7 @@ export const createUserSdk = ({
     emails,
     phones,
     text,
+    searchFields,
     sort,
   } = {}) => {
     if (mock) {
@@ -42,6 +43,7 @@ export const createUserSdk = ({
         emails,
         phones,
         text,
+        searchFields,
         sort,
       });
     }
@@ -58,6 +60,7 @@ export const createUserSdk = ({
         emails,
         phones,
         text,
+        searchFields,
         sort,
       },
       {
