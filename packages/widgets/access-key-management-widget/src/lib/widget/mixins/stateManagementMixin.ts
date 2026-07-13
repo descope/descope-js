@@ -26,9 +26,6 @@ export const stateManagementMixin = createSingletonMixin(
           setSelectedAccessKeysIds: (state, { payload }) => {
             state.selectedAccessKeysIds = payload;
           },
-          clearNotifications: (state) => {
-            state.notifications = [];
-          },
         },
         extraReducers: (builder) => {
           createAccessKey.reducer(builder);

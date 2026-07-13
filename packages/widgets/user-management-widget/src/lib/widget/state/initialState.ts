@@ -51,5 +51,4 @@ export const initialState: State = {
   },
   searchParams: { text: '', sort: [] },
   selectedUsersLoginIds: [],
-  notifications: [],
 };

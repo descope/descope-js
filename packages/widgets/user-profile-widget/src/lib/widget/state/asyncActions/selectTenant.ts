@@ -4,11 +4,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
 import { extractDctFromToken } from '../helpers';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 import { getCurrentTenantId } from '../selectors';
 
 const action = createAsyncThunk<
@@ -56,15 +52,16 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.selectTenant),
-  withNotifications({
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message || '';
-      if (action.error?.name === 'Error') {
-        return errorMsg;
-      }
-      return `${errorMsg || 'Error'}`;
-    },
-  }),
 );
+
+notifyOn(action, {
+  getErrorMsg: (action) => {
+    const errorMsg = action.error?.message || '';
+    if (action.error?.name === 'Error') {
+      return errorMsg;
+    }
+    return `${errorMsg || 'Error'}`;
+  },
+});
 
 export const selectTenant = { action, reducer };

@@ -3,11 +3,7 @@ import { pluralize } from '@descope/sdk-helpers';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
@@ -29,21 +25,19 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.activateAccessKey),
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  withNotifications({
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    getSuccessMsg: (action) =>
-      pluralize(action.meta.arg.length)`${['', action.meta.arg.length]} ${[
-        'A',
-        'a',
-      ]}ccess key${['', 's']} activated successfully`,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    getErrorMsg: (action) =>
-      pluralize(action.meta.arg.length)`Failed to activate access key${[
-        '',
-        's',
-      ]}`,
-  }),
 );
+
+notifyOn(action, {
+  getSuccessMsg: (settled) =>
+    pluralize(settled.meta.arg.length)`${['', settled.meta.arg.length]} ${[
+      'A',
+      'a',
+    ]}ccess key${['', 's']} activated successfully`,
+  getErrorMsg: (settled) =>
+    pluralize(settled.meta.arg.length)`Failed to activate access key${[
+      '',
+      's',
+    ]}`,
+});
 
 export const activateAccessKeys = { action, reducer };

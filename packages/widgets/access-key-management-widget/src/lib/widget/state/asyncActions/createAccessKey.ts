@@ -3,11 +3,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
@@ -22,13 +18,14 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.createAccessKey),
-  withNotifications({
-    getSuccessMsg: () => 'Access Key created successfully',
-    getErrorMsg: (action) => ({
-      msg: 'Failed to create access key',
-      detail: action.error?.message,
-    }),
-  }),
 );
+
+notifyOn(action, {
+  getSuccessMsg: () => 'Access Key created successfully',
+  getErrorMsg: (action) => ({
+    msg: 'Failed to create access key',
+    detail: action.error?.message,
+  }),
+});
 
 export const createAccessKey = { action, reducer };

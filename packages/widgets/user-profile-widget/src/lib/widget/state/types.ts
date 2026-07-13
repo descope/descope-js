@@ -1,5 +1,4 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
-import { ToastNotification } from '@descope/sdk-mixins';
 import { Sdk } from '../api/sdk';
 
 type Device = {
@@ -42,7 +41,6 @@ export type State = {
     loading: boolean;
     error: unknown;
   };
-  notifications: ToastNotification[];
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;

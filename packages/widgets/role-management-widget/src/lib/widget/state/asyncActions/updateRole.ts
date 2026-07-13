@@ -3,11 +3,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
@@ -27,13 +23,14 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.updateRole),
-  withNotifications({
-    getSuccessMsg: () => 'Role updated successfully',
-    getErrorMsg: (action) => ({
-      msg: 'Failed to update role',
-      detail: action.error?.message,
-    }),
-  }),
 );
+
+notifyOn(action, {
+  getSuccessMsg: () => 'Role updated successfully',
+  getErrorMsg: (action) => ({
+    msg: 'Failed to update role',
+    detail: action.error?.message,
+  }),
+});
 
 export const updateRole = { action, reducer };

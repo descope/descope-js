@@ -3,7 +3,6 @@ import { State } from './types';
 
 export const getRawRolesList = (state: State) => state.rolesList.data;
 export const getSelectedRolesIds = (state: State) => state.selectedRolesIds;
-export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
 export const getTenantPermissions = (state: State) =>
   state.tenantPermissions.data || [];

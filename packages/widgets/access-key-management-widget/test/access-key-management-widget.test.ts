@@ -270,7 +270,6 @@ describe('access-key-management-widget', () => {
       tenantRoles: { loading: false, error: null, data: [] },
       searchParams: { text: '', sort: [] },
       selectedAccessKeysIds: [],
-      notifications: [],
     };
 
     const pastTime = Math.floor(Date.now() / 1000) - 3600;

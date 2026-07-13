@@ -22,9 +22,6 @@ export const stateManagementMixin = createSingletonMixin(
         name: 'widget',
         initialState,
         reducers: {
-          clearNotifications: (state) => {
-            state.notifications = [];
-          },
           setCurrentTenantId: (
             state,
             { payload }: { payload: string | null },

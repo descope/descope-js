@@ -4,11 +4,7 @@ import { compareArrays } from '@descope/sdk-helpers';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
@@ -28,13 +24,14 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.enableUser),
-  withNotifications({
-    getSuccessMsg: () => 'User enabled successfully',
-    getErrorMsg: (action) => ({
-      msg: 'Failed to enable user',
-      detail: action.error?.message,
-    }),
-  }),
 );
+
+notifyOn(action, {
+  getSuccessMsg: () => 'User enabled successfully',
+  getErrorMsg: (action) => ({
+    msg: 'Failed to enable user',
+    detail: action.error?.message,
+  }),
+});
 
 export const enableUser = { action, reducer };

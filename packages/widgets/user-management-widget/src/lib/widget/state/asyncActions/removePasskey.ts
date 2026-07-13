@@ -3,11 +3,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
@@ -19,13 +15,14 @@ const action = createAsyncThunk<
 
 const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.removePasskey),
-  withNotifications({
-    getSuccessMsg: () => `Successfully removed user's passkey`,
-    getErrorMsg: (action) => ({
-      msg: `Failed to remove user's passkey`,
-      detail: action.error?.message,
-    }),
-  }),
 );
+
+notifyOn(action, {
+  getSuccessMsg: () => `Successfully removed user's passkey`,
+  getErrorMsg: (action) => ({
+    msg: `Failed to remove user's passkey`,
+    detail: action.error?.message,
+  }),
+});
 
 export const removePasskey = { action, reducer };

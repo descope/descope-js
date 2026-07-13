@@ -70,8 +70,6 @@ export const getUserPasskeys = createSelector(getPasskeyList, (passkeys) =>
   })),
 );
 
-export const getNotifications = (state: State) => state.notifications;
-
 export const getUserTenants = createSelector(
   getMe,
   (me) => me.userTenants || [],

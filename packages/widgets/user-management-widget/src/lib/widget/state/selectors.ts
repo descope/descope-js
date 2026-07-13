@@ -8,7 +8,6 @@ export const getTenantRoles = (state: State) => state.tenantRoles.data;
 export const getSubTenantRoles = (state: State) => state.subTenantRoles.data;
 export const getSelectedUsersLoginIds = (state: State) =>
   state.selectedUsersLoginIds;
-export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
 export const getCustomAttributes = (state: State) =>
   state.customAttributes.data;

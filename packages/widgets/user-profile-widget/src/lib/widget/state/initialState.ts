@@ -24,5 +24,4 @@ export const initialState: State = {
     loading: false,
     error: null,
   },
-  notifications: [],
 };

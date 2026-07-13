@@ -4,7 +4,6 @@ import { State } from './types';
 export const getRawAccessKeysList = (state: State) => state.accessKeysList.data;
 export const getSelectedAccessKeysIds = (state: State) =>
   state.selectedAccessKeysIds;
-export const getNotifications = (state: State) => state.notifications;
 export const getSearchParams = (state: State) => state.searchParams;
 export const getTenantRoles = (state: State) => state.tenantRoles.data || [];
 

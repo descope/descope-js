@@ -1,5 +1,4 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
-import { ToastNotification } from '@descope/sdk-mixins';
 import { Sdk } from '../api/sdk';
 import { AccessKey, Role, SortParams } from '../api/types';
 
@@ -32,7 +31,6 @@ export type State = {
   };
   searchParams: { text: string; sort: SortParams[] };
   selectedAccessKeysIds: string[];
-  notifications: ToastNotification[];
 };
 
 type First<T extends any[]> = T extends [infer U, ...any[]] ? U : never;

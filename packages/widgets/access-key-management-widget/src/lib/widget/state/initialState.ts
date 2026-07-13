@@ -29,5 +29,4 @@ export const initialState: State = {
   },
   searchParams: { text: '', sort: [] },
   selectedAccessKeysIds: [],
-  notifications: [],
 };

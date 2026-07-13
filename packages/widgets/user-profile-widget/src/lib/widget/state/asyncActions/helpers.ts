@@ -85,5 +85,4 @@ export const withRequestStatus = (
   },
 });
 
-export { withToastNotifications as withNotifications } from '@descope/sdk-mixins';
-export type { NotificationContent } from '@descope/sdk-mixins';
+export { notifyOn } from '@descope/sdk-mixins';

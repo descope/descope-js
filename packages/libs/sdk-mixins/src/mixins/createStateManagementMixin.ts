@@ -6,7 +6,12 @@ import type {
   SliceCaseReducers,
   SliceSelectors,
 } from '@reduxjs/toolkit';
-import { configureStore, createSlice, unwrapResult } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  createListenerMiddleware,
+  createSlice,
+  unwrapResult,
+} from '@reduxjs/toolkit';
 import type { Unsubscribe } from 'redux'; //  workaround for https://github.com/microsoft/TypeScript/issues/42873
 import { loggerMixin } from './loggerMixin';
 
@@ -44,6 +49,8 @@ export const createStateManagementMixin = <
       constructor(...args: any) {
         super(...args);
 
+        const listenerMiddleware = createListenerMiddleware();
+
         const store = configureStore({
           reducer: slice.reducer,
           middleware: (getDefaultMiddleware) =>
@@ -52,7 +59,7 @@ export const createStateManagementMixin = <
                 extraArgument: this,
               },
               serializableCheck: false,
-            }),
+            }).prepend(listenerMiddleware.middleware),
           // change to true if we want to debug redux
           devTools: false,
         });
@@ -81,6 +88,18 @@ export const createStateManagementMixin = <
 
         this.subscribe = (cb, selector = (state) => state as any) =>
           store.subscribe(() => cb(selector(store.getState())));
+
+        // run side effects when an async action settles. An action opts in by
+        // attaching an `onSettled` effect (see `notifyOn` for toasts). Uses the
+        // built-in listener middleware + the thunk's `settled` matcher.
+        Object.values(options.asyncActions ?? {}).forEach((thunk: any) => {
+          if (typeof thunk?.onSettled !== 'function') return;
+
+          listenerMiddleware.startListening({
+            matcher: thunk.settled,
+            effect: (action) => thunk.onSettled(action, this),
+          });
+        });
       }
     };
   });

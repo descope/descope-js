@@ -26,9 +26,6 @@ export const stateManagementMixin = createSingletonMixin(
           setSelectedRolesIds: (state, { payload }) => {
             state.selectedRolesIds = payload;
           },
-          clearNotifications: (state) => {
-            state.notifications = [];
-          },
         },
         extraReducers: (builder) => {
           createRole.reducer(builder);

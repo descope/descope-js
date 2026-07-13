@@ -34,4 +34,4 @@ export * from './mixins/cookieConfigMixin';
 export * from './mixins/injectNpmLibMixin';
 export * from './mixins/injectStyleMixin';
 export * from './mixins/cspNonceMixin';
-export * from './mixins/toastEventsMixin';
+export * from './mixins/toastNotificationsMixin';

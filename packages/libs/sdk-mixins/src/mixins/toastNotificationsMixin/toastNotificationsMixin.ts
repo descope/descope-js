@@ -1,24 +1,14 @@
-import {
-  compose,
-  createSingletonMixin,
-  withMemCache,
-} from '@descope/sdk-helpers';
+import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { initLifecycleMixin } from '../initLifecycleMixin';
 import { loggerMixin } from '../loggerMixin';
 import { notificationsMixin } from '../notificationsMixin';
 import { defaultIcons } from './icons';
+import { ToastNotification } from './types';
 
 const DEFAULT_SUCCESS_NOTIFICATION_DURATION = 3000;
 const DEFAULT_ERROR_NOTIFICATION_DURATION = 0;
 
-export type ToastNotification = {
-  type: 'success' | 'error';
-  msg: string;
-  detail?: string;
-};
-
-export type ToastEventsMixinConfig<S = any> = {
-  selector?: (state: S) => ToastNotification[];
+export type ToastNotificationsMixinConfig = {
   successDuration?: number;
   errorDuration?: number;
   position?:
@@ -35,19 +25,20 @@ export type ToastEventsMixinConfig<S = any> = {
   eventName?: string;
 };
 
-type WithStateMixin = abstract new (...args: any[]) => {
-  subscribe: <SelectorR>(
-    cb: (state: SelectorR) => void,
-    selector?: (state: any) => SelectorR,
-  ) => () => void;
-  actions: { clearNotifications: () => void };
-};
-
-export const createToastEventsMixin = <S>(
-  config: ToastEventsMixinConfig<S> = {},
+/**
+ * Self-contained toast notifications mixin.
+ *
+ * Composes everything it needs (logger, descope-ui notifications, init
+ * lifecycle) and exposes a single public method: `notify()`. Call it with a
+ * toast (or a list) and it shows them right away.
+ *
+ * It does NOT depend on any state mixin. Emitting a toast is an explicit call,
+ * so there is no hidden "you must also compose the state mixin" requirement.
+ */
+export const createToastNotificationsMixin = (
+  config: ToastNotificationsMixinConfig = {},
 ) => {
   const {
-    selector = (state: any) => state.notifications,
     successDuration = DEFAULT_SUCCESS_NOTIFICATION_DURATION,
     errorDuration = DEFAULT_ERROR_NOTIFICATION_DURATION,
     position = 'bottom-start',
@@ -56,19 +47,12 @@ export const createToastEventsMixin = <S>(
   } = config;
 
   return createSingletonMixin(
-    <T extends CustomElementConstructor & WithStateMixin>(superclass: T) =>
-      class ToastEventsMixinClass extends compose(
+    <T extends CustomElementConstructor>(superclass: T) =>
+      class ToastNotificationsMixinClass extends compose(
         loggerMixin,
         notificationsMixin,
         initLifecycleMixin,
       )(superclass) {
-        declare subscribe: <SelectorR>(
-          cb: (state: SelectorR) => void,
-          selector?: (state: any) => SelectorR,
-        ) => () => void;
-
-        declare actions: { clearNotifications: () => void };
-
         // eslint-disable-next-line class-methods-use-this
         #createNotificationContent({ type, msg, detail }: ToastNotification) {
           const typeIcon = defaultIcons[type]();
@@ -103,36 +87,33 @@ export const createToastEventsMixin = <S>(
           });
         }
 
-        #onNotificationsUpdate = withMemCache(
-          (notifications: ToastNotification[]) => {
-            if (notifications.length) {
-              notifications.forEach((toast) => {
-                const toastEvent = new CustomEvent(eventName, {
-                  cancelable: true,
-                  detail: {
-                    message: toast.msg,
-                    detail: toast.detail,
-                    severity: toast.type,
-                  },
-                });
-                this.dispatchEvent(toastEvent);
-                if (toastEvent.defaultPrevented) return;
+        #show(toast: ToastNotification) {
+          const toastEvent = new CustomEvent(eventName, {
+            cancelable: true,
+            detail: {
+              message: toast.msg,
+              detail: toast.detail,
+              severity: toast.type,
+            },
+          });
+          this.dispatchEvent(toastEvent);
 
-                const notification = this.#createNotification(toast.type);
-                notification.setContent(this.#createNotificationContent(toast));
-                notification.show();
-              });
+          // consumers can handle the event and call preventDefault to render
+          // their own toast instead of the built-in one
+          if (toastEvent.defaultPrevented) return;
 
-              // when there is a selection update from the table we get a double notification
-              // this is why we are wrapping the clearNotifications action with timeout;
-              setTimeout(() => this.actions.clearNotifications());
-            }
-          },
-        );
+          const notification = this.#createNotification(toast.type);
+          notification.setContent(this.#createNotificationContent(toast));
+          notification.show();
+        }
+
+        notify(toast: ToastNotification | ToastNotification[]) {
+          const toasts = Array.isArray(toast) ? toast : [toast];
+          toasts.forEach((t) => this.#show(t));
+        }
 
         async init() {
           await super.init?.();
-          this.subscribe(this.#onNotificationsUpdate.bind(this), selector);
         }
       },
   );

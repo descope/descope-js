@@ -31,9 +31,6 @@ export const stateManagementMixin = createSingletonMixin(
           setSelectedUsersIds: (state, { payload }) => {
             state.selectedUsersLoginIds = payload;
           },
-          clearNotifications: (state) => {
-            state.notifications = [];
-          },
         },
         extraReducers: (builder) => {
           createUser.reducer(builder);

@@ -3,11 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { pluralize } from '@descope/sdk-helpers';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
-import {
-  buildAsyncReducer,
-  withNotifications,
-  withRequestStatus,
-} from './helpers';
+import { buildAsyncReducer, notifyOn, withRequestStatus } from './helpers';
 
 const action = createAsyncThunk<
   any,
@@ -27,18 +23,16 @@ const reducer = buildAsyncReducer(action)(
     },
   },
   withRequestStatus((state: State) => state.deleteRole),
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  withNotifications({
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    getSuccessMsg: (action) =>
-      pluralize(action.meta.arg.length)`${['', action.meta.arg.length]} ${[
-        'R',
-        'r',
-      ]}ole${['', 's']} deleted successfully`,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    getErrorMsg: (action) =>
-      pluralize(action.meta.arg.length)`Failed to delete role${['', 's']}`,
-  }),
 );
+
+notifyOn(action, {
+  getSuccessMsg: (settled) =>
+    pluralize(settled.meta.arg.length)`${['', settled.meta.arg.length]} ${[
+      'R',
+      'r',
+    ]}ole${['', 's']} deleted successfully`,
+  getErrorMsg: (settled) =>
+    pluralize(settled.meta.arg.length)`Failed to delete role${['', 's']}`,
+});
 
 export const deleteRoles = { action, reducer };
