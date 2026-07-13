@@ -405,6 +405,43 @@ describe('OIDC', () => {
         expect.objectContaining({ resource: 'https://per-call.example.com' }),
       );
     });
+
+    it('should persist a per-call audience (aliased to resource) so refreshToken honors it', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      const mockProcessSigninResponse = jest.fn().mockResolvedValue({
+        id_token: 'idToken',
+        session_state: 'sessionState',
+        profile: { sub: 'user123' },
+      });
+      const mockUseRefreshToken = jest
+        .fn()
+        .mockResolvedValue({ id_token: 'newIdToken' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+        processSigninResponse: mockProcessSigninResponse,
+        useRefreshToken: mockUseRefreshToken,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+        clientId: 'custom-client-id',
+      });
+
+      await oidc.loginWithRedirect(
+        { audience: 'https://per-call-audience.example.com' },
+        true,
+      );
+      await oidc.finishLogin('https://my-app.com/redirect?code=1&state=2');
+      await oidc.refreshToken('oldRefreshToken');
+
+      expect(mockUseRefreshToken).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: 'https://per-call-audience.example.com',
+        }),
+      );
+    });
   });
 
   describe('logout', () => {
@@ -548,9 +585,13 @@ describe('OIDC', () => {
         createSigninRequest: mockCreateSigninRequest,
       }));
 
-      // Mock buildUrl to return base URL for inbound apps
-      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValue(
-        'http://example.com',
+      // Mock buildUrl to mirror real behavior (`${baseUrl}/${projectId}`), so the inbound
+      // app's `/v1/apps/{projectId}` issuer is correctly distinguished from a federated
+      // authority sharing the same host. Use `mockReturnValueOnce` (rather than
+      // `mockReturnValue`) so this override doesn't leak into later tests -
+      // `jest.clearAllMocks()` in `beforeEach` clears call history but not implementations.
+      (sdk.httpClient.buildUrl as jest.Mock).mockReturnValueOnce(
+        'http://example.com/projectID',
       );
 
       const oidc = createOidc(sdk, 'projectID', {
@@ -700,7 +741,7 @@ describe('OIDC', () => {
       );
     });
 
-    it('should keep federated and inbound default scopes distinct regardless of issuer URL shape', async () => {
+    it('should default to openid scope for a custom-domain issuer that does not match the federated authority shape', async () => {
       const mockCreateSigninRequest = jest
         .fn()
         .mockResolvedValue({ url: 'mockUrl' });
@@ -708,9 +749,8 @@ describe('OIDC', () => {
         createSigninRequest: mockCreateSigninRequest,
       }));
 
-      // An inbound-app issuer that happens NOT to follow the illustrative
-      // `/v1/apps/{projectId}` shape - scope must still default to 'openid',
-      // since it's keyed on the issuer field being supplied, not URL sniffing.
+      // A custom domain that doesn't match `${buildUrl(projectId)}[/...]` - treated as an
+      // inbound-style authority, so clientId is required and scope defaults to 'openid'.
       const oidc = createOidc(sdk, 'projectID', {
         issuer: 'https://totally-custom-domain.example.com',
         clientId: 'inbound-client-id',
@@ -735,6 +775,53 @@ describe('OIDC', () => {
 
       expect(OidcClient).toHaveBeenCalledWith(
         expect.objectContaining({
+          scope: 'openid email roles descope.custom_claims offline_access',
+        }),
+      );
+    });
+
+    it('should auto-detect a federated-shaped issuer URL and default clientId to the projectId', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      // buildUrl(projectId) mocked to 'http://example.com' - a federated app's discovery URL
+      // for that project is `http://example.com/projectID/.well-known/openid-configuration`.
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'http://example.com/projectID/.well-known/openid-configuration',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com/projectID',
+          client_id: 'projectID',
+          scope: 'openid email roles descope.custom_claims offline_access',
+        }),
+      );
+    });
+
+    it('should let clientId override the projectId default for a federated-shaped issuer URL', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'http://example.com/projectID/app123',
+        clientId: 'custom-client-id',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: 'http://example.com/projectID/app123',
+          client_id: 'custom-client-id',
           scope: 'openid email roles descope.custom_claims offline_access',
         }),
       );
@@ -780,6 +867,73 @@ describe('OIDC', () => {
       expect(OidcClient).toHaveBeenCalledWith(
         expect.objectContaining({
           resource: ['https://api-a.example.com', 'https://api-b.example.com'],
+        }),
+      );
+    });
+
+    it('should treat oidcConfig.audience as an alias for oidcConfig.resource', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+        clientId: 'custom-client-id',
+        audience: 'https://api.example.com',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: 'https://api.example.com',
+        }),
+      );
+    });
+
+    it('should treat an array oidcConfig.audience as an alias for oidcConfig.resource', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+        clientId: 'custom-client-id',
+        audience: ['https://api-a.example.com', 'https://api-b.example.com'],
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: ['https://api-a.example.com', 'https://api-b.example.com'],
+        }),
+      );
+    });
+
+    it('should prefer oidcConfig.resource over oidcConfig.audience when both are provided', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      const oidc = createOidc(sdk, 'projectID', {
+        issuer: 'https://custom-issuer.com',
+        clientId: 'custom-client-id',
+        resource: 'https://resource-wins.example.com',
+        audience: 'https://audience-loses.example.com',
+      });
+      await oidc.loginWithRedirect({}, true);
+
+      expect(OidcClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: 'https://resource-wins.example.com',
         }),
       );
     });

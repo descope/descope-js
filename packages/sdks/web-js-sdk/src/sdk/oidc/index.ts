@@ -125,6 +125,22 @@ const getPendingResourceKey = (stateUserKey: string): string =>
 const normalizeIssuer = (issuer: string): string =>
   issuer.replace(/\/+\.well-known\/openid-configuration\/?$/, '');
 
+// A federated app's authority is always `${baseUrl}/${projectId}` or
+// `${baseUrl}/${projectId}/${applicationId}` (no `/v1/apps/` segment). Anything else -
+// including the documented inbound-app shape `/v1/apps/{projectId}`, or a fully custom
+// domain - is treated as an inbound-style authority and still requires an explicit clientId.
+const isFederatedAuthority = (
+  normalizedIssuer: string,
+  federatedBase: string,
+): boolean =>
+  normalizedIssuer === federatedBase ||
+  normalizedIssuer.startsWith(`${federatedBase}/`);
+
+const resolveResource = (source?: {
+  resource?: string | string[];
+  audience?: string | string[];
+}): string | string[] | undefined => source?.resource ?? source?.audience;
+
 const getOidcClient = async (
   sdk: CoreSdk,
   projectId: string,
@@ -148,18 +164,30 @@ const getOidcClient = async (
   let stateUserKey: string;
   let defaultScope: string;
 
-  // Handle custom issuer (requires clientId)
+  // Handle custom issuer. A pasted Federated App discovery/authority URL is auto-detected
+  // (see isFederatedAuthority) and doesn't require clientId; anything else is treated as an
+  // inbound-app-style authority and does require clientId.
   if (oidcConfig?.issuer) {
-    if (!oidcConfig.clientId) {
-      throw new Error(
-        'clientId is required when providing a custom issuer/authority',
-      );
+    const normalizedIssuer = normalizeIssuer(oidcConfig.issuer);
+    const federatedBase = sdk.httpClient.buildUrl(projectId);
+
+    if (isFederatedAuthority(normalizedIssuer, federatedBase)) {
+      authority = normalizedIssuer;
+      oidcClientId = oidcConfig.clientId || projectId;
+      stateUserKey = `${oidcClientId}_user`;
+      defaultScope = 'openid email roles descope.custom_claims offline_access';
+    } else {
+      if (!oidcConfig.clientId) {
+        throw new Error(
+          'clientId is required when providing a custom issuer/authority',
+        );
+      }
+      authority = normalizedIssuer;
+      oidcClientId = oidcConfig.clientId;
+      stateUserKey = `${oidcClientId}_user`;
+      // For custom issuer with clientId, default scope is just 'openid'
+      defaultScope = 'openid';
     }
-    authority = normalizeIssuer(oidcConfig.issuer);
-    oidcClientId = oidcConfig.clientId;
-    stateUserKey = `${oidcClientId}_user`;
-    // For custom issuer with clientId, default scope is just 'openid'
-    defaultScope = 'openid';
   } else if (oidcConfig?.applicationId) {
     // Handle federated apps with applicationId (existing behavior)
     authority = sdk.httpClient.buildUrl(projectId);
@@ -189,7 +217,7 @@ const getOidcClient = async (
     }),
     loadUserInfo: true,
     fetchRequestCredentials: 'same-origin',
-    resource: oidcConfig?.resource,
+    resource: resolveResource(oidcConfig),
   };
 
   if (oidcConfig?.redirectUri) {
@@ -224,18 +252,18 @@ const createOidc = (
   // Start the login process by creating a signin request
   // And redirecting the user to the returned URL
   const loginWithRedirect = async (
-    arg: CreateSigninRequestArgs = {},
+    arg: CreateSigninRequestArgs & { audience?: string | string[] } = {},
     disableNavigation: boolean = false,
   ): Promise<SdkResponse<URLResponse>> => {
     const { client, stateUserKey } = await getCachedClient();
     const res = await client.createSigninRequest(arg);
     const { url } = res;
-    // A per-call `resource` arg takes precedence over `oidcConfig.resource` for this signin
-    // (mirroring oidc-client-ts's own createSigninRequest precedence). Persist whichever one
-    // is actually in effect so refreshToken can honor it later, even if it only ever came from
-    // a per-call arg and was never set on oidcConfig.
+    // A per-call `resource`/`audience` arg takes precedence over `oidcConfig.resource`/
+    // `audience` for this signin (mirroring oidc-client-ts's own createSigninRequest
+    // precedence). Persist whichever one is actually in effect so refreshToken can honor it
+    // later, even if it only ever came from a per-call arg and was never set on oidcConfig.
     const resource =
-      arg.resource ?? (oidcConfig as OidcConfigOptions)?.resource;
+      resolveResource(arg) ?? resolveResource(oidcConfig as OidcConfigOptions);
     if (resource) {
       setLocalStorage(
         getPendingResourceKey(stateUserKey),
@@ -344,8 +372,9 @@ const createOidc = (
       // omitting it would silently stop applying resource-scoped tokens after the first
       // refresh. Prefer the resource actually used at signin (covers a per-call
       // `loginWithRedirect({ resource })` override, which oidcConfig never sees) and fall back
-      // to oidcConfig.resource for sessions cached before this field existed.
-      resource: user.resource ?? (oidcConfig as OidcConfigOptions)?.resource,
+      // to oidcConfig.resource/audience for sessions cached before this field existed.
+      resource:
+        user.resource ?? resolveResource(oidcConfig as OidcConfigOptions),
     });
 
     // In order to make sure all the after-hooks are running with the success response
