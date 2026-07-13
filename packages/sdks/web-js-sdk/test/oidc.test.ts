@@ -436,7 +436,35 @@ describe('OIDC', () => {
       await oidc.finishLogin('https://my-app.com/redirect?code=1&state=2');
       await oidc.refreshToken('oldRefreshToken');
 
+      expect(mockCreateSigninRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: 'https://per-call-audience.example.com',
+        }),
+      );
       expect(mockUseRefreshToken).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: 'https://per-call-audience.example.com',
+        }),
+      );
+    });
+
+    it('should pass a per-call audience (aliased to resource) to createSigninRequest even with no resource anywhere', async () => {
+      const mockCreateSigninRequest = jest
+        .fn()
+        .mockResolvedValue({ url: 'mockUrl' });
+      (OidcClient as jest.Mock).mockImplementation(() => ({
+        createSigninRequest: mockCreateSigninRequest,
+      }));
+
+      // No `resource` set on oidcConfig or anywhere else - `audience` is the only thing
+      // in play, and must still make it into the actual signin request as `resource`.
+      const oidc = createOidc(sdk, 'projectID');
+      await oidc.loginWithRedirect(
+        { audience: 'https://per-call-audience.example.com' },
+        true,
+      );
+
+      expect(mockCreateSigninRequest).toHaveBeenCalledWith(
         expect.objectContaining({
           resource: 'https://per-call-audience.example.com',
         }),
@@ -824,6 +852,20 @@ describe('OIDC', () => {
           client_id: 'custom-client-id',
           scope: 'openid email roles descope.custom_claims offline_access',
         }),
+      );
+    });
+
+    it('should not misclassify a matching issuer as a federated authority when projectId is falsy', async () => {
+      // An empty projectId must never make isFederatedAuthority over-match: `buildUrl('')`
+      // would otherwise degrade to a bare host with no path, and any issuer under that host
+      // (including this one, which equals the default mocked buildUrl return value) would be
+      // wrongly treated as federated - silently skipping the clientId requirement.
+      const oidc = createOidc(sdk, '', {
+        issuer: 'http://example.com',
+      });
+
+      await expect(oidc.loginWithRedirect({}, true)).rejects.toThrow(
+        'clientId is required when providing a custom issuer/authority',
       );
     });
 

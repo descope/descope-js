@@ -132,9 +132,11 @@ const normalizeIssuer = (issuer: string): string =>
 const isFederatedAuthority = (
   normalizedIssuer: string,
   federatedBase: string,
+  projectId: string,
 ): boolean =>
-  normalizedIssuer === federatedBase ||
-  normalizedIssuer.startsWith(`${federatedBase}/`);
+  !!projectId &&
+  (normalizedIssuer === federatedBase ||
+    normalizedIssuer.startsWith(`${federatedBase}/`));
 
 const resolveResource = (source?: {
   resource?: string | string[];
@@ -171,7 +173,7 @@ const getOidcClient = async (
     const normalizedIssuer = normalizeIssuer(oidcConfig.issuer);
     const federatedBase = sdk.httpClient.buildUrl(projectId);
 
-    if (isFederatedAuthority(normalizedIssuer, federatedBase)) {
+    if (isFederatedAuthority(normalizedIssuer, federatedBase, projectId)) {
       authority = normalizedIssuer;
       oidcClientId = oidcConfig.clientId || projectId;
       stateUserKey = `${oidcClientId}_user`;
@@ -256,14 +258,19 @@ const createOidc = (
     disableNavigation: boolean = false,
   ): Promise<SdkResponse<URLResponse>> => {
     const { client, stateUserKey } = await getCachedClient();
-    const res = await client.createSigninRequest(arg);
-    const { url } = res;
+    // Resolve resource/audience before calling into oidc-client-ts: its createSigninRequest
+    // only destructures `resource` (falling back to `this.settings.resource`) and has no
+    // concept of `audience` at all, so an `audience`-only arg would otherwise silently
+    // contribute nothing to the actual signin request even though we'd still persist it below.
     // A per-call `resource`/`audience` arg takes precedence over `oidcConfig.resource`/
     // `audience` for this signin (mirroring oidc-client-ts's own createSigninRequest
-    // precedence). Persist whichever one is actually in effect so refreshToken can honor it
-    // later, even if it only ever came from a per-call arg and was never set on oidcConfig.
+    // precedence).
     const resource =
       resolveResource(arg) ?? resolveResource(oidcConfig as OidcConfigOptions);
+    const res = await client.createSigninRequest({ ...arg, resource });
+    const { url } = res;
+    // Persist whichever resource/audience is actually in effect so refreshToken can honor it
+    // later, even if it only ever came from a per-call arg and was never set on oidcConfig.
     if (resource) {
       setLocalStorage(
         getPendingResourceKey(stateUserKey),
