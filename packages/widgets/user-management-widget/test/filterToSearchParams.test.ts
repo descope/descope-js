@@ -125,9 +125,15 @@ describe('filterToSearchParams', () => {
   });
 
   describe('searchFields', () => {
-    it('routes displayName contains (already %-affixed) to searchFields displayname', () => {
+    it('affixes the raw value with prefix/suffix into valStr (contains → %john%)', () => {
       const params = filterToSearchParams([
-        { column: 'displayName', operator: 'contains', value: '%john%' },
+        {
+          column: 'displayName',
+          operator: 'contains',
+          value: 'john',
+          prefix: '%',
+          suffix: '%',
+        },
       ]);
       expect(params.searchFields).toEqual([
         { field: 'displayname', valStr: '%john%' },
@@ -136,23 +142,28 @@ describe('filterToSearchParams', () => {
       expect(params.text).toBeUndefined();
     });
 
-    it('maps not-equal to a negative searchField', () => {
+    it('starts-with affixes suffix only, ends-with prefix only (raw value)', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'displayName',
+          operator: 'starts-with',
+          value: 'jo',
+          suffix: '%',
+        },
+        { column: 'phone', operator: 'ends-with', value: '99', prefix: '%' },
+      ]);
+      expect(params.searchFields).toEqual([
+        { field: 'displayname', valStr: 'jo%' },
+        { field: 'phonenumber', valStr: '%99' },
+      ]);
+    });
+
+    it('maps not-equal to a negative searchField (no affix → exact)', () => {
       const params = filterToSearchParams([
         { column: 'email', operator: 'not-equal', value: 'a@b.com' },
       ]);
       expect(params.searchFields).toEqual([
         { field: 'email', valStr: 'a@b.com', negative: true },
-      ]);
-    });
-
-    it('maps loginIds contains to externalid and phone ends-with to phonenumber', () => {
-      const params = filterToSearchParams([
-        { column: 'loginIds', operator: 'contains', value: '%x%' },
-        { column: 'phone', operator: 'ends-with', value: '%99' },
-      ]);
-      expect(params.searchFields).toEqual([
-        { field: 'externalid', valStr: '%x%' },
-        { field: 'phonenumber', valStr: '%99' },
       ]);
     });
 
@@ -166,10 +177,16 @@ describe('filterToSearchParams', () => {
 
     it('does not build searchFields for BE-gap columns (name/familyName)', () => {
       const params = filterToSearchParams([
-        { column: 'name', operator: 'contains', value: '%john%' },
+        {
+          column: 'name',
+          operator: 'contains',
+          value: 'john',
+          prefix: '%',
+          suffix: '%',
+        },
       ]);
       expect(params.searchFields).toBeUndefined();
-      expect(params.text).toBe('%john%');
+      expect(params.text).toBe('john');
     });
   });
 

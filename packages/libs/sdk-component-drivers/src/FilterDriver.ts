@@ -15,13 +15,28 @@ export type FilterColumn = {
   label: string;
   inputType: FilterInputType;
   options?: FilterOption[];
-  operators?: string[];
+  // A built-in operator id, or an object overriding widget defaults — notably
+  // `prefix`/`suffix` (query affixes the consumer applies, e.g. SQL-LIKE `%`).
+  operators?: (
+    | string
+    | {
+        id: string;
+        label?: string;
+        noValue?: boolean;
+        prefix?: string;
+        suffix?: string;
+      }
+  )[];
 };
 
 export type FilterRow = {
   column: string;
   operator: string;
   value: string | string[] | null;
+  // Emitted on applied rows when the operator defines query affixes. The value
+  // stays raw; the consumer builds the query as `${prefix}${value}${suffix}`.
+  prefix?: string;
+  suffix?: string;
 };
 
 export type FilterEventDetail = {

@@ -148,13 +148,17 @@ export const filterToSearchParams = (
 
     // searchFields path: text-column fuzzy/negation ops → BE LIKE engine.
     // Handled before the not-* drop below so negation reaches the BE here.
+    // The widget emits the RAW value + the operator's prefix/suffix affixes;
+    // we build the LIKE pattern here so the affix lives only in the query,
+    // never in the widget's value input.
     if (LIKE_FIELD_MAP[row.column] && SEARCH_FIELD_OPS.has(row.operator)) {
       const v = Array.isArray(row.value) ? row.value[0] : row.value;
       if (v == null || v === '') return;
+      const valStr = `${row.prefix ?? ''}${v}${row.suffix ?? ''}`;
       params.searchFields = params.searchFields || [];
       params.searchFields.push({
         field: LIKE_FIELD_MAP[row.column],
-        valStr: String(v),
+        valStr,
         ...(row.operator.startsWith('not-') ? { negative: true } : {}),
       });
       return;

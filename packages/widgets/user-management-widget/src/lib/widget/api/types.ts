@@ -82,6 +82,10 @@ export type FilterRow = {
   column: string;
   operator: string;
   value: string | string[] | null;
+  // Query affixes the widget resolves from the operator config (e.g. SQL-LIKE
+  // `%`). The value stays raw; the consumer builds the query with these.
+  prefix?: string;
+  suffix?: string;
 };
 
 export type SearchUsersConfig = {
