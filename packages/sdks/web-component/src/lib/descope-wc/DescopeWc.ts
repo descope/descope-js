@@ -145,9 +145,9 @@ class DescopeWc extends BaseDescopeWc {
 
   bridgeVersion = DescopeWc.bridgeVersion; // flow bridges read this off a live wc instance
 
-  // Key returned from `descopeBridge.register(this)` when running inside a
+  // Key returned from `descopeBridge.registerFlow(this)` when running inside a
   // multi-component native bridge; used to unregister on disconnect.
-  #wcKey?: string;
+  #bridgeKey?: string;
 
   // A collection of callbacks that are maintained as part of the web-component state
   // when it's connected to a native bridge.
@@ -417,7 +417,7 @@ class DescopeWc extends BaseDescopeWc {
     // eslint-disable-next-line no-underscore-dangle
     (this as any).lazyInit = this._init;
     // Opt-in registration with multi-component native bridges (Mobile UPW).
-    this.#wcKey = (window as any).descopeBridge.register?.(this);
+    this.#bridgeKey = (window as any).descopeBridge.registerFlow?.(this);
     return undefined;
   }
 
@@ -490,9 +490,9 @@ class DescopeWc extends BaseDescopeWc {
     super.disconnectedCallback();
 
     // Drop our handle from the native bridge (mirror of the init-time register).
-    if (this.#wcKey) {
-      (window as any).descopeBridge?.unregister?.(this.#wcKey);
-      this.#wcKey = undefined;
+    if (this.#bridgeKey) {
+      (window as any).descopeBridge?.unregisterFlow?.(this.#bridgeKey);
+      this.#bridgeKey = undefined;
     }
 
     this.flowState.unsubscribeAll();

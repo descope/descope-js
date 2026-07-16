@@ -387,7 +387,7 @@ describe('web-component', () => {
     });
   });
 
-  describe('native bridge v3 - multi-component register/unregister', () => {
+  describe('native bridge v3 - multi-component registerFlow/unregisterFlow', () => {
     afterEach(() => {
       delete (window as any).descopeBridge;
     });
@@ -413,47 +413,47 @@ describe('web-component', () => {
       expect((wcEle.constructor as any).bridgeVersion).toBe(3);
     });
 
-    it('Calls descopeBridge.register(this) on connect with the wc instance', async () => {
+    it('Calls descopeBridge.registerFlow(this) on connect with the wc instance', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
-      const register = jest.fn().mockReturnValue('wc_42');
-      const unregister = jest.fn();
-      (window as any).descopeBridge = { register, unregister };
+      const registerFlow = jest.fn().mockReturnValue('wc_42');
+      const unregisterFlow = jest.fn();
+      (window as any).descopeBridge = { registerFlow, unregisterFlow };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
       const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
 
-      await waitFor(() => expect(register).toHaveBeenCalledTimes(1), {
+      await waitFor(() => expect(registerFlow).toHaveBeenCalledTimes(1), {
         timeout: WAIT_TIMEOUT,
       });
-      expect(register).toHaveBeenCalledWith(wcEle);
+      expect(registerFlow).toHaveBeenCalledWith(wcEle);
     });
 
-    it('Calls descopeBridge.unregister with the handle returned from register on disconnect', async () => {
+    it('Calls descopeBridge.unregisterFlow with the handle returned from registerFlow on disconnect', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
-      const register = jest.fn().mockReturnValue('wc_7');
-      const unregister = jest.fn();
-      (window as any).descopeBridge = { register, unregister };
+      const registerFlow = jest.fn().mockReturnValue('wc_7');
+      const unregisterFlow = jest.fn();
+      (window as any).descopeBridge = { registerFlow, unregisterFlow };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
       const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
 
-      await waitFor(() => expect(register).toHaveBeenCalledTimes(1), {
+      await waitFor(() => expect(registerFlow).toHaveBeenCalledTimes(1), {
         timeout: WAIT_TIMEOUT,
       });
 
       // detaching from the DOM fires disconnectedCallback
       wcEle.remove();
 
-      expect(unregister).toHaveBeenCalledTimes(1);
-      expect(unregister).toHaveBeenCalledWith('wc_7');
+      expect(unregisterFlow).toHaveBeenCalledTimes(1);
+      expect(unregisterFlow).toHaveBeenCalledWith('wc_7');
     });
 
-    it('Does not throw when descopeBridge omits register/unregister (single-flow bridge)', async () => {
+    it('Does not throw when descopeBridge omits registerFlow/unregisterFlow (single-flow bridge)', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
-      (window as any).descopeBridge = {}; // no register, no unregister
+      (window as any).descopeBridge = {}; // no registerFlow, no unregisterFlow
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
       const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
@@ -469,22 +469,22 @@ describe('web-component', () => {
       expect(() => wcEle.remove()).not.toThrow();
     });
 
-    it('Does not call unregister when register returned a falsy handle', async () => {
+    it('Does not call unregister when registerFlow returned a falsy handle', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
-      const register = jest.fn().mockReturnValue(null);
-      const unregister = jest.fn();
-      (window as any).descopeBridge = { register, unregister };
+      const registerFlow = jest.fn().mockReturnValue(null);
+      const unregisterFlow = jest.fn();
+      (window as any).descopeBridge = { registerFlow, unregisterFlow };
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
       const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
 
-      await waitFor(() => expect(register).toHaveBeenCalledTimes(1), {
+      await waitFor(() => expect(registerFlow).toHaveBeenCalledTimes(1), {
         timeout: WAIT_TIMEOUT,
       });
 
       wcEle.remove();
-      expect(unregister).not.toHaveBeenCalled();
+      expect(unregisterFlow).not.toHaveBeenCalled();
     });
   });
 });
