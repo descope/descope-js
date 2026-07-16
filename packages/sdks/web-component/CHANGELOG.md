@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.70.3](https://github.com/descope/descope-js/compare/web-component-3.70.2...web-component-3.70.3) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+
+### Bug Fixes
+
+* **web-component:** stop flow polling loop on nonce validation error ([#1437](https://github.com/descope/descope-js/issues/1437)) ([f8bdf28](https://github.com/descope/descope-js/commit/f8bdf285821c5ab20ccb078884fc47eed56885c0)), closes [descope/etc#16663](https://github.com/descope/etc/issues/16663)
+
 ## [3.70.2](https://github.com/descope/descope-js/compare/web-component-3.70.1...web-component-3.70.2) (2026-07-12)
 
 ### Dependency Updates
