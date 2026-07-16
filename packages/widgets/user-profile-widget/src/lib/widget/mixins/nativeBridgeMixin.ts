@@ -1,9 +1,8 @@
-// Bridges the User Profile Widget to a host mobile SDK. Native installs
-// `window.descopeBridge` — the same object descope-wc uses for per-component
-// signals. The widget calls `descopeBridge.registerWidget(this)` from init(),
-// which seeds the session and attaches widget-lifecycle listeners in one step.
-// Logout goes through a `widget-logout` CustomEvent that native subscribes to
-// during registration.
+// Wires the widget to a host mobile SDK via window.descopeBridge — the same
+// object descope-wc uses. init() calls descopeBridge.registerWidget(this) so
+// native flushes the cached session JWT to localStorage and attaches widget
+// lifecycle listeners before the widget reads its session. handleLogout
+// dispatches a widget-logout event that native listens for.
 import { createSingletonMixin } from '@descope/sdk-helpers';
 
 type DescopeBridge = {
@@ -19,9 +18,7 @@ declare global {
 const hasNativeBridge = (): boolean =>
   typeof window.descopeBridge?.registerWidget === 'function';
 
-// Tells TypeScript the inner mixins in the compose chain may define these
-// methods. `super.init?.()` / `super.handleLogout?.()` optional-chain so a
-// missing inner method is a runtime no-op.
+// Inner mixins may or may not define these; super.*?.() no-ops when absent.
 type NativeBridgeSuper = {
   init?(): void | Promise<void>;
   handleLogout?(): void | Promise<void>;
@@ -31,8 +28,8 @@ export const nativeBridgeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const Base = superclass as T & (new (...args: any[]) => NativeBridgeSuper);
     return class NativeBridgeMixinClass extends Base {
-      // Registers with native (session seed + lifecycle listeners) before the
-      // inner init reads localStorage or fires an authenticated request.
+      // Register before super.init so the session JWT and listeners are in place
+      // before the inner init reads localStorage or fires an authenticated request.
       async init() {
         if (hasNativeBridge()) {
           window.descopeBridge!.registerWidget!(this);
@@ -40,8 +37,7 @@ export const nativeBridgeMixin = createSingletonMixin(
         await super.init?.();
       }
 
-      // Native mode: dispatch a widget-logout event that native subscribes to.
-      // Web mode: fall through to the built-in logout flow.
+      // Native mode: fire widget-logout for native to handle. Web mode: fall through.
       async handleLogout() {
         if (hasNativeBridge()) {
           this.dispatchEvent(new CustomEvent('widget-logout'));

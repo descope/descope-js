@@ -138,15 +138,13 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  // Native bridge version native / web syncing - change this when
-  // a major change happens that requires some form of compatibility.
-  // v3: opt-in registration with multi-component native bridges (Mobile UPW).
-  static readonly bridgeVersion = 3; // widget bridges read via the constructor before any wc exists
+  // Native bridge protocol version — bump on incompatible changes.
+  // v3: wcs self-register with `descopeBridge.registerFlow(this)` so a single
+  // native bridge can drive multiple flows in one page (Mobile UPW).
+  static readonly bridgeVersion = 3; // readable off the constructor before any wc mounts
+  bridgeVersion = DescopeWc.bridgeVersion; // readable off a live instance
 
-  bridgeVersion = DescopeWc.bridgeVersion; // flow bridges read this off a live wc instance
-
-  // Key returned from `descopeBridge.registerFlow(this)` when running inside a
-  // multi-component native bridge; used to unregister on disconnect.
+  // Key returned from `descopeBridge.registerFlow(this)`; used to unregister on disconnect.
   #bridgeKey?: string;
 
   // A collection of callbacks that are maintained as part of the web-component state
@@ -416,7 +414,7 @@ class DescopeWc extends BaseDescopeWc {
     }
     // eslint-disable-next-line no-underscore-dangle
     (this as any).lazyInit = this._init;
-    // Opt-in registration with multi-component native bridges (Mobile UPW).
+    // Self-register with a v3 native bridge (Mobile UPW). No-op otherwise.
     this.#bridgeKey = (window as any).descopeBridge.registerFlow?.(this);
     return undefined;
   }

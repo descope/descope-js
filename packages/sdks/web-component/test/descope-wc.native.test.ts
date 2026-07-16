@@ -395,7 +395,7 @@ describe('web-component', () => {
     it('Exposes bridgeVersion = 3 as both an instance field and a static field', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
-      // single-flow bridges leave register/unregister undefined; ensure that path still works
+      // legacy bridges omit registerFlow/unregisterFlow; ensure that path still works
       (window as any).descopeBridge = {};
 
       document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
@@ -450,7 +450,7 @@ describe('web-component', () => {
       expect(unregisterFlow).toHaveBeenCalledWith('wc_7');
     });
 
-    it('Does not throw when descopeBridge omits registerFlow/unregisterFlow (single-flow bridge)', async () => {
+    it('Does not throw when descopeBridge omits registerFlow/unregisterFlow (legacy bridge)', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       (window as any).descopeBridge = {}; // no registerFlow, no unregisterFlow
