@@ -1,43 +1,27 @@
-// Bridges the User Profile Widget to a host mobile SDK. The host installs
-// `window.descopeWidgetBridge` as a presence + version handshake; all
-// JS→native widget signals go through CustomEvents dispatched on the widget
-// root (`widget-register`, `widget-logout`), mirroring how descope-wc already
-// uses `bridge`/`success`/`error` events. The per-`<descope-wc>` bridge for
-// component-level native actions stays on `window.descopeBridge` and is
-// owned by descope-wc itself.
-//
-// All bridge concerns live here. When composed last in the chain this mixin
-// overrides `init()` (to pause for the lazy-init handshake) and `handleLogout()`
-// (to delegate to native) from the mixins below it.
+// Bridges the User Profile Widget to a host mobile SDK. Native installs
+// `window.descopeBridge` — the same object descope-wc uses for per-component
+// signals. The widget calls `descopeBridge.registerWidget(this)` from init(),
+// which seeds the session and attaches widget-lifecycle listeners in one step.
+// Logout goes through a `widget-logout` CustomEvent that native subscribes to
+// during registration.
 import { createSingletonMixin } from '@descope/sdk-helpers';
 
-// Bump when the JS-native widget bridge protocol changes incompatibly.
-export const widgetBridgeVersion = 1;
-
-type DescopeWidgetBridge = {
-  version?: number;
+type DescopeBridge = {
+  registerWidget?: (widget: unknown) => void;
 };
 
 declare global {
   interface Window {
-    descopeWidgetBridge?: DescopeWidgetBridge;
+    descopeBridge?: DescopeBridge;
   }
 }
 
-// Returns true when native installed a bridge advertising a version we understand.
-// Missing or newer-than-supported version means no bridge.
-const hasNativeBridge = (): boolean => {
-  const bridge = window.descopeWidgetBridge;
-  if (!bridge) return false;
-  if (typeof bridge.version !== 'number') return false;
-  if (bridge.version > widgetBridgeVersion) return false;
-  return true;
-};
+const hasNativeBridge = (): boolean =>
+  typeof window.descopeBridge?.registerWidget === 'function';
 
 // Tells TypeScript the inner mixins in the compose chain may define these
-// methods. Required for `super.init?.()` / `super.handleLogout?.()` to
-// type-check; both calls are optional-chained so a missing inner method is
-// a runtime no-op.
+// methods. `super.init?.()` / `super.handleLogout?.()` optional-chain so a
+// missing inner method is a runtime no-op.
 type NativeBridgeSuper = {
   init?(): void | Promise<void>;
   handleLogout?(): void | Promise<void>;
@@ -47,41 +31,23 @@ export const nativeBridgeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const Base = superclass as T & (new (...args: any[]) => NativeBridgeSuper);
     return class NativeBridgeMixinClass extends Base {
-      #lazyInitResolve?: () => void;
-
-      // Native calls this once the session is seeded; releases the deferred init.
-      // Safe no-op when no resolver is registered (web mode, or called twice).
-      lazyInit() {
-        const resolve = this.#lazyInitResolve;
-        this.#lazyInitResolve = undefined;
-        resolve?.();
-      }
-
-      // Overrides the inner mixins' init(): pauses for native to seed the
-      // session before any API call runs, then chains down.
+      // Registers with native (session seed + lifecycle listeners) before the
+      // inner init reads localStorage or fires an authenticated request.
       async init() {
-        await this.#waitForNativeBridge();
+        if (hasNativeBridge()) {
+          window.descopeBridge!.registerWidget!(this);
+        }
         await super.init?.();
       }
 
-      // Overrides `initLogoutMixin.handleLogout` when present: routes through
-      // native via a widget-logout CustomEvent when the bridge is installed,
-      // else falls back to the web path.
+      // Native mode: dispatch a widget-logout event that native subscribes to.
+      // Web mode: fall through to the built-in logout flow.
       async handleLogout() {
         if (hasNativeBridge()) {
           this.dispatchEvent(new CustomEvent('widget-logout'));
           return;
         }
         await super.handleLogout?.();
-      }
-
-      async #waitForNativeBridge(): Promise<void> {
-        if (!hasNativeBridge()) return;
-        const promise = new Promise<void>((resolve) => {
-          this.#lazyInitResolve = resolve;
-        });
-        this.dispatchEvent(new CustomEvent('widget-register'));
-        await promise;
       }
     };
   },
