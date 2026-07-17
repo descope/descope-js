@@ -1,7 +1,6 @@
 import descopeSdk, { AuthenticationInfo } from '@descope/node-sdk';
 import { NextApiRequest } from 'next';
 import { cookies, headers } from 'next/headers';
-import { DESCOPE_SESSION_HEADER } from './constants';
 import { getGlobalSdk, CreateSdkParams } from './sdk';
 import { LogLevel } from '../types';
 import { logger, setLogger } from './logger';
@@ -19,22 +18,6 @@ type SessionConfig = CreateSdkParams & {
 	// The name of the refresh token cookie
 	// Defaults to 'DSR'
 	refreshTokenCookieName?: string;
-};
-
-const extractSession = (
-	descopeSession?: string
-): AuthenticationInfo | undefined => {
-	if (!descopeSession) {
-		return undefined;
-	}
-	try {
-		const authInfo = JSON.parse(
-			Buffer.from(descopeSession, 'base64').toString()
-		) as AuthenticationInfo;
-		return authInfo;
-	} catch (err) {
-		return undefined;
-	}
 };
 
 const getSessionFromCookie = async (
@@ -57,39 +40,46 @@ const getSessionFromCookie = async (
 	}
 };
 
-// tries to extract the session header,
-// if it doesn't exist, it will attempt to get the session from the cookie
-const extractOrGetSession = async (
-	sessionHeader?: string,
+// tries to validate the Authorization header,
+// if it doesn't exist or is invalid, it will attempt to get the session from the cookie
+const getSessionFromAuthorizationOrCookie = async (
+	authorization?: string | null,
 	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
-	const session = extractSession(sessionHeader);
-	if (session) {
-		return session;
+	const sessionJwt = authorization?.split(' ')[1];
+	if (sessionJwt) {
+		try {
+			const sdk = getGlobalSdk(config);
+			return await sdk.validateJwt(sessionJwt);
+		} catch (err) {
+			logger.debug('Error validating session from Authorization header', err);
+		}
 	}
 
 	return getSessionFromCookie(config);
 };
 
-// returns the session token if it exists in the headers
+// returns the session token if it exists in the Authorization header or cookie
 export const session = async (
 	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
 	setLogger(config?.logLevel);
-	// first attempt to get the session from the headers
 	const reqHeaders = await headers();
-	const sessionHeader = reqHeaders.get(DESCOPE_SESSION_HEADER);
-	return extractOrGetSession(sessionHeader, config);
+	return getSessionFromAuthorizationOrCookie(
+		reqHeaders.get('Authorization'),
+		config
+	);
 };
 
-// returns the session token if it exists in the request headers
+// returns the session token if it exists in the request Authorization header or cookie
 export const getSession = async (
 	req: NextApiRequest,
 	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
 	setLogger(config?.logLevel);
-	return extractOrGetSession(
-		req.headers[DESCOPE_SESSION_HEADER.toLowerCase()] as string,
+	const { authorization } = req.headers;
+	return getSessionFromAuthorizationOrCookie(
+		typeof authorization === 'string' ? authorization : undefined,
 		config
 	);
 };

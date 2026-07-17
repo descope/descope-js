@@ -76,7 +76,21 @@ describe('session utilities', () => {
 			expect(result).toBeUndefined();
 		});
 
-		it('should extract and return session information if present', async () => {
+		it('should validate session information from the authorization header', async () => {
+			const authInfo = {
+				jwt: 'authorizationJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+			(headers as jest.Mock).mockImplementation(
+				() => new Map([['Authorization', 'Bearer authorizationJwt']])
+			);
+			const result = await session({ projectId: 'test' });
+			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt');
+			expect(result).toEqual(authInfo);
+		});
+
+		it('should ignore the legacy session header', async () => {
 			(headers as jest.Mock).mockImplementation(
 				() =>
 					new Map([
@@ -88,8 +102,37 @@ describe('session utilities', () => {
 						]
 					])
 			);
-			const result = await session();
-			expect(result).toEqual({ user: 'testUser' });
+			(cookies as jest.Mock).mockImplementation(() => new Map());
+
+			const result = await session({ projectId: 'test' });
+
+			expect(mockValidateJwt).not.toHaveBeenCalled();
+			expect(result).toBeUndefined();
+		});
+
+		it('should fall back to the session cookie when authorization validation fails', async () => {
+			const authInfo = {
+				jwt: 'cookieJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Invalid JWT'))
+				.mockResolvedValueOnce(authInfo);
+			(headers as jest.Mock).mockImplementation(
+				() => new Map([['Authorization', 'Bearer invalidAuthorizationJwt']])
+			);
+			(cookies as jest.Mock).mockImplementation(
+				() => new Map([['DS', { value: 'cookieJwt' }]])
+			);
+
+			const result = await session({ projectId: 'test' });
+
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(
+				1,
+				'invalidAuthorizationJwt'
+			);
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'cookieJwt');
+			expect(result).toEqual(authInfo);
 		});
 
 		it('should return undefined if session header is missing', async () => {
@@ -160,7 +203,23 @@ describe('session utilities', () => {
 			expect(result).toBeUndefined();
 		});
 
-		it('should extract and return session information if present in request headers', async () => {
+		it('should validate session information from the authorization header', async () => {
+			const authInfo = {
+				jwt: 'authorizationJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+			const mockReq = {
+				headers: {
+					authorization: 'Bearer authorizationJwt'
+				}
+			};
+			const result = await getSession(mockReq as any, { projectId: 'test' });
+			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt');
+			expect(result).toEqual(authInfo);
+		});
+
+		it('should ignore the legacy session header', async () => {
 			const mockReq = {
 				headers: {
 					'x-descope-session': Buffer.from(
@@ -168,8 +227,12 @@ describe('session utilities', () => {
 					).toString('base64')
 				}
 			};
-			const result = await getSession(mockReq as any);
-			expect(result).toEqual({ user: 'testUser' });
+			(cookies as jest.Mock).mockImplementation(() => new Map());
+
+			const result = await getSession(mockReq as any, { projectId: 'test' });
+
+			expect(mockValidateJwt).not.toHaveBeenCalled();
+			expect(result).toBeUndefined();
 		});
 
 		it('should return undefined if session header is missing in request', async () => {
@@ -178,7 +241,7 @@ describe('session utilities', () => {
 			expect(result).toBeUndefined();
 		});
 
-		it('should return undefined if session header is malformed', async () => {
+		it('should ignore a malformed legacy session header', async () => {
 			const mockReq = {
 				headers: {
 					'x-descope-session': 'malformedBase64'

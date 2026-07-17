@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import descopeSdk from '@descope/node-sdk';
-import type { AuthenticationInfo } from '@descope/node-sdk';
 import { DEFAULT_PUBLIC_ROUTES, DESCOPE_SESSION_HEADER } from './constants';
 import { getGlobalSdk } from './sdk';
 import { mergeSearchParams } from './utils';
@@ -116,24 +115,14 @@ const isPublicRoute = (req: NextRequest, options: MiddlewareOptions) => {
 	return isDefaultPublicRoute;
 };
 
-const addSessionToHeadersIfExists = (
-	headers: Headers,
-	session: AuthenticationInfo | undefined
-): Headers => {
-	if (session) {
-		const requestHeaders = new Headers(headers);
-		requestHeaders.set(
-			DESCOPE_SESSION_HEADER,
-			Buffer.from(JSON.stringify(session)).toString('base64')
-		);
-		return requestHeaders;
-	}
-	return headers;
+const removeSessionHeader = (headers: Headers): Headers => {
+	const requestHeaders = new Headers(headers);
+	requestHeaders.delete(DESCOPE_SESSION_HEADER);
+	return requestHeaders;
 };
 
 // returns a Middleware that checks if the user is authenticated
 // if the user is not authenticated, it redirects to the redirectUrl
-// if the user is authenticated, it adds the session to the headers
 const createAuthMiddleware =
 	(options: MiddlewareOptions = {}) =>
 	async (req: NextRequest) => {
@@ -143,10 +132,9 @@ const createAuthMiddleware =
 		const sessionJwt = getSessionJwt(req, options);
 
 		// check if the user is authenticated
-		let session: AuthenticationInfo | undefined;
 		let validToken = false;
 		try {
-			session = await getGlobalSdk({
+			await getGlobalSdk({
 				projectId: options.projectId,
 				baseUrl: options.baseUrl
 			}).validateJwt(sessionJwt);
@@ -198,8 +186,7 @@ const createAuthMiddleware =
 
 		logger.debug('[Auth middleware] finishes');
 
-		// Add the session to the request headers and continue
-		const headers = addSessionToHeadersIfExists(req.headers, session);
+		const headers = removeSessionHeader(req.headers);
 		return NextResponse.next({
 			request: {
 				headers
