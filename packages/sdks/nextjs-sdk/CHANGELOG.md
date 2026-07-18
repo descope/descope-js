@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.57](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.56...nextjs-sdk-0.15.57) (2026-07-18)
+
+
+### Bug Fixes
+
+* **nextjs-sdk:** read session cookie from request in getSession ([#1440](https://github.com/descope/descope-js/issues/1440)) RELEASE ([1ebde1d](https://github.com/descope/descope-js/commit/1ebde1df300426fdbf8bd9cf68bfc75b7e807000))
+
 ## [0.15.56](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.55...nextjs-sdk-0.15.56) (2026-07-17)
 
 ## [0.15.55](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.54...nextjs-sdk-0.15.55) (2026-07-16)
