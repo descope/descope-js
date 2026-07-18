@@ -20,30 +20,14 @@ type SessionConfig = CreateSdkParams & {
 	refreshTokenCookieName?: string;
 };
 
-const getSessionFromCookie = async (
-	config?: SessionConfig
-): Promise<AuthenticationInfo | undefined> => {
-	logger.debug('attempting to get session from cookie');
-	try {
-		const sessionCookie = (await cookies()).get(
-			config?.sessionCookieName || descopeSdk.SessionTokenCookieName
-		);
-		if (!sessionCookie?.value) {
-			logger.debug('Session cookie not found');
-			return undefined;
-		}
-		const sdk = getGlobalSdk(config);
-		return await sdk.validateJwt(sessionCookie.value);
-	} catch (err) {
-		logger.debug('Error getting session from cookie', err);
-		return undefined;
-	}
-};
+const getSessionCookieName = (config?: SessionConfig) =>
+	config?.sessionCookieName || descopeSdk.SessionTokenCookieName;
 
 // tries to validate the Authorization header,
-// if it doesn't exist or is invalid, it will attempt to get the session from the cookie
+// if it doesn't exist or is invalid, it will attempt to validate the session cookie
 const getSessionFromAuthorizationOrCookie = async (
-	authorization?: string | null,
+	authorization: string | null | undefined,
+	cookieJwt: string | undefined,
 	config?: SessionConfig
 ): Promise<AuthenticationInfo | undefined> => {
 	const sessionJwt = authorization?.split(' ')[1];
@@ -56,7 +40,18 @@ const getSessionFromAuthorizationOrCookie = async (
 		}
 	}
 
-	return getSessionFromCookie(config);
+	logger.debug('attempting to get session from cookie');
+	if (!cookieJwt) {
+		logger.debug('Session cookie not found');
+		return undefined;
+	}
+	try {
+		const sdk = getGlobalSdk(config);
+		return await sdk.validateJwt(cookieJwt);
+	} catch (err) {
+		logger.debug('Error getting session from cookie', err);
+		return undefined;
+	}
 };
 
 // returns the session token if it exists in the Authorization header or cookie
@@ -65,8 +60,10 @@ export const session = async (
 ): Promise<AuthenticationInfo | undefined> => {
 	setLogger(config?.logLevel);
 	const reqHeaders = await headers();
+	const cookieJwt = (await cookies()).get(getSessionCookieName(config))?.value;
 	return getSessionFromAuthorizationOrCookie(
 		reqHeaders.get('Authorization'),
+		cookieJwt,
 		config
 	);
 };
@@ -80,6 +77,9 @@ export const getSession = async (
 	const { authorization } = req.headers;
 	return getSessionFromAuthorizationOrCookie(
 		typeof authorization === 'string' ? authorization : undefined,
+		// Pages Router request - next/headers cookies() is not available here,
+		// so the session cookie must be read directly from the request
+		req.cookies?.[getSessionCookieName(config)],
 		config
 	);
 };

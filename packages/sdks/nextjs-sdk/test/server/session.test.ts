@@ -85,6 +85,7 @@ describe('session utilities', () => {
 			(headers as jest.Mock).mockImplementation(
 				() => new Map([['Authorization', 'Bearer authorizationJwt']])
 			);
+			(cookies as jest.Mock).mockImplementation(() => new Map());
 			const result = await session({ projectId: 'test' });
 			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt');
 			expect(result).toEqual(authInfo);
@@ -137,17 +138,15 @@ describe('session utilities', () => {
 
 		it('should return undefined if session header is missing', async () => {
 			(headers as jest.Mock).mockImplementation(() => new Map());
-			jest.mock('next/headers', () => ({
-				headers: jest.fn().mockImplementation(() => new Map())
-			}));
+			(cookies as jest.Mock).mockImplementation(() => new Map());
 			const result = await session();
 			expect(result).toBeUndefined();
 		});
 	});
 
 	describe('getSession', () => {
-		it('should return session if session is in the cookie', async () => {
-			const mockReq = { headers: {} };
+		it('should return session if session is in the request cookie', async () => {
+			const mockReq = { headers: {}, cookies: { DS: 'validJwt' } };
 
 			// Mock validateJwt to simulate an authenticated user
 			const authInfo = {
@@ -155,47 +154,48 @@ describe('session utilities', () => {
 				token: { iss: 'project-1', sub: 'user-123' }
 			};
 			mockValidateJwt.mockImplementation(() => authInfo);
-			(cookies as jest.Mock).mockImplementation(
-				() =>
-					new Map([
-						[
-							'DS',
-							{
-								value: 'validJwt'
-							}
-						]
-					])
-			);
-			(headers as jest.Mock).mockImplementation(() => new Map());
-			jest.mock('next/headers', () => ({
-				headers: jest.fn().mockImplementation(() => new Map())
-			}));
 			const result = await getSession(mockReq as any, {
 				projectId: 'test',
 				baseUrl: 'http://example.com'
 			});
+			expect(mockValidateJwt).toHaveBeenCalledWith('validJwt');
+			expect(result).toEqual(authInfo);
+		});
+
+		it('should read the request cookie even when next/headers is unavailable (Pages Router)', async () => {
+			const authInfo = {
+				jwt: 'cookieJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+			(cookies as jest.Mock).mockImplementation(() => {
+				throw new Error('`cookies` was called outside a request scope');
+			});
+			const mockReq = { headers: {}, cookies: { DS: 'cookieJwt' } };
+			const result = await getSession(mockReq as any, { projectId: 'test' });
+			expect(mockValidateJwt).toHaveBeenCalledWith('cookieJwt');
+			expect(result).toEqual(authInfo);
+		});
+
+		it('should support a custom session cookie name', async () => {
+			const authInfo = {
+				jwt: 'customJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+			const mockReq = { headers: {}, cookies: { 'my-session': 'customJwt' } };
+			const result = await getSession(mockReq as any, {
+				projectId: 'test',
+				sessionCookieName: 'my-session'
+			});
+			expect(mockValidateJwt).toHaveBeenCalledWith('customJwt');
 			expect(result).toEqual(authInfo);
 		});
 
 		it('should return undefined if session in cookie is not valid', async () => {
-			const mockReq = { headers: {} };
+			const mockReq = { headers: {}, cookies: { DS: 'invalidJwt' } };
 			// Mock validateJwt to simulate invalid JWT
 			mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
-			(cookies as jest.Mock).mockImplementation(
-				() =>
-					new Map([
-						[
-							'DS',
-							{
-								value: 'invalidJwt'
-							}
-						]
-					])
-			);
-			(headers as jest.Mock).mockImplementation(() => new Map());
-			jest.mock('next/headers', () => ({
-				headers: jest.fn().mockImplementation(() => new Map())
-			}));
 			const result = await getSession(mockReq as any, {
 				projectId: 'test',
 				baseUrl: 'http://example.com'
