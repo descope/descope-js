@@ -829,50 +829,28 @@ export const clearPreviousExternalInputs = () => {
 // Note: WebKit's save heuristics only capture user-typed values, so on
 // Safari the save prompt still asks for the username; the anchor serves
 // autofill and DOM-scanning password managers
-export const injectUsernameAnchor = (
+const findPasswordComponent = (contentRootEle: Element) =>
+  contentRootEle.querySelector('descope-new-password') ||
+  contentRootEle.querySelector('descope-password');
+
+// place the anchor inside the component's shadow tree, next to the password
+// fields, so the password manager sees the username in the same context as
+// the password inputs. the anchor is removed together with the component
+// when the next screen renders
+const getAnchorContainer = (
+  passwordEle: Element,
   hostEle: HTMLElement,
-  contentRootEle: Element,
-  user?: { email?: string; loginIds?: string[] },
-  logger?: { debug: (...args: string[]) => void },
-) => {
-  const email = user?.email || user?.loginIds?.[0];
+): Element | ShadowRoot =>
+  passwordEle.shadowRoot?.querySelector(
+    'descope-new-password-internal .wrapper',
+  ) ||
+  passwordEle.shadowRoot ||
+  hostEle;
 
-  const passwordEle =
-    contentRootEle.querySelector('descope-new-password') ||
-    contentRootEle.querySelector('descope-password');
-  if (!passwordEle) {
-    logger?.debug('Username anchor: no password component on screen');
-    return;
-  }
-  if (!email) {
-    logger?.debug('Username anchor: no user identifier available');
-    return;
-  }
+const hasUsernameInput = (roots: (Element | ShadowRoot)[]) =>
+  roots.some((root) => root.querySelector('input[autocomplete="username"]'));
 
-  // inject inside the component's shadow tree, next to the password fields,
-  // so the password manager sees the username in the same context as the
-  // password inputs. the anchor is removed together with the component when
-  // the next screen renders
-  const container: Element | ShadowRoot =
-    passwordEle.shadowRoot?.querySelector(
-      'descope-new-password-internal .wrapper',
-    ) ||
-    passwordEle.shadowRoot ||
-    hostEle;
-
-  if (
-    container.querySelector('input[autocomplete="username"]') ||
-    hostEle.querySelector('input[autocomplete="username"]') ||
-    contentRootEle.querySelector('input[autocomplete="username"]')
-  ) {
-    logger?.debug(
-      'Username anchor: screen already has an autocomplete="username" input',
-    );
-    return;
-  }
-
-  logger?.debug('Username anchor: injecting hidden username input');
-
+const createUsernameAnchor = (email: string) => {
   const input = document.createElement('input');
   input.setAttribute('autocomplete', 'username');
   input.setAttribute('name', 'username');
@@ -897,8 +875,38 @@ export const injectUsernameAnchor = (
     height: '0',
     border: '0',
   });
+  return input;
+};
 
-  container.appendChild(input);
+export const injectUsernameAnchor = (
+  hostEle: HTMLElement,
+  contentRootEle: Element,
+  user?: { email?: string; loginIds?: string[] },
+  logger?: { debug: (...args: string[]) => void },
+) => {
+  const email = user?.email || user?.loginIds?.[0];
+
+  const passwordEle = findPasswordComponent(contentRootEle);
+  if (!passwordEle) {
+    logger?.debug('Username anchor: no password component on screen');
+    return;
+  }
+  if (!email) {
+    logger?.debug('Username anchor: no user identifier available');
+    return;
+  }
+
+  const container = getAnchorContainer(passwordEle, hostEle);
+
+  if (hasUsernameInput([container, hostEle, contentRootEle])) {
+    logger?.debug(
+      'Username anchor: screen already has an autocomplete="username" input',
+    );
+    return;
+  }
+
+  logger?.debug('Username anchor: injecting hidden username input');
+  container.appendChild(createUsernameAnchor(email));
 };
 
 export const shouldHandleMarkdown = (compName: string) =>
