@@ -14,6 +14,7 @@ import {
   FETCH_EXCEPTION_ERROR_CODE,
   FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE,
   FLOW_TIMED_OUT_ERROR_CODE,
+  NONCE_VALIDATION_ERROR_CODE,
   POLLING_STATUS_NOT_FOUND_ERROR_CODE,
   RESPONSE_ACTIONS,
   SDK_SCRIPTS_LOAD_TIMEOUT,
@@ -1298,6 +1299,9 @@ class DescopeWc extends BaseDescopeWc {
     const stopOnErrors = [
       FLOW_TIMED_OUT_ERROR_CODE,
       POLLING_STATUS_NOT_FOUND_ERROR_CODE,
+      // A consumed/stale flow nonce (verified elsewhere or rotated) fails every
+      // retry with no new nonce in the response, so retrying loops forever.
+      NONCE_VALIDATION_ERROR_CODE,
     ];
 
     if (this.flowState.current.action === RESPONSE_ACTIONS.poll) {
@@ -1438,7 +1442,8 @@ class DescopeWc extends BaseDescopeWc {
       const errorCode = sdkResp?.error?.errorCode;
       if (
         (errorCode === FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE ||
-          errorCode === FLOW_TIMED_OUT_ERROR_CODE) &&
+          errorCode === FLOW_TIMED_OUT_ERROR_CODE ||
+          errorCode === NONCE_VALIDATION_ERROR_CODE) &&
         this.isRestartOnError
       ) {
         this.#handleFlowRestart();
@@ -1716,14 +1721,6 @@ class DescopeWc extends BaseDescopeWc {
             Boolean,
           ),
     };
-    this.loggerWrapper.debug(
-      'Screen user resolved',
-      `state.user: ${JSON.stringify(
-        stateUser,
-      )}, lastSubmittedLoginId: ${getLastSubmittedLoginId()}, lastUserLoginId: ${this.sdk.getLastUserLoginId()}, resolved: ${JSON.stringify(
-        this.#screenUser,
-      )}`,
-    );
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(
@@ -1990,11 +1987,6 @@ class DescopeWc extends BaseDescopeWc {
       this.#screenUser?.email ||
       this.#screenUser?.loginIds?.[0];
     const password = getFirstNonEmptyValue(formData, passwordFields);
-
-    this.loggerWrapper.debug(
-      'Store credentials',
-      `id: ${id}, hasPassword: ${!!password}, PasswordCredential supported: ${!!globalThis.PasswordCredential}`,
-    );
 
     // PasswordCredential not supported in Firefox
     if (id && password) {

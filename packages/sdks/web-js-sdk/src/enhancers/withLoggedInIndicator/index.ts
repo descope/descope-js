@@ -5,8 +5,8 @@ import {
   addHooks,
   getAuthInfoFromResponse,
   isInvalidSessionResponse,
-  removeLocalStorage,
-  setLocalStorage,
+  removeInternalStorage,
+  setInternalStorage,
 } from '../helpers';
 import { LOGGED_IN_INDICATOR_KEY } from './constants';
 
@@ -14,7 +14,7 @@ const logoutWrapper: SdkFnWrapper<{}> =
   (fn) =>
   async (...args) => {
     const resp = await fn(...args);
-    removeLocalStorage(LOGGED_IN_INDICATOR_KEY);
+    removeInternalStorage(LOGGED_IN_INDICATOR_KEY);
     return resp;
   };
 
@@ -26,14 +26,14 @@ const withLoggedInIndicator =
   (config: Parameters<T>[0]): ReturnType<T> => {
     const afterRequest: AfterRequestHook = async (req, res) => {
       if (isInvalidSessionResponse(req, res)) {
-        removeLocalStorage(LOGGED_IN_INDICATOR_KEY);
+        removeInternalStorage(LOGGED_IN_INDICATOR_KEY);
         return;
       }
       const authInfo = await getAuthInfoFromResponse(res);
       // sessionExpiration is the reliable auth-success signal — JWTs may live in
       // HttpOnly cookies, but sessionExpiration is always in the response body.
       if (authInfo?.sessionExpiration) {
-        setLocalStorage(
+        setInternalStorage(
           LOGGED_IN_INDICATOR_KEY,
           String(authInfo.sessionExpiration),
         );

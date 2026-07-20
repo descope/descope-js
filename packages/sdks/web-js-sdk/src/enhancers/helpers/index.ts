@@ -195,3 +195,27 @@ export const getLocalStorageKey = (index: number): string | null =>
 export const setCustomStorage = (storage: CustomStorage) => {
   customStorage = storage;
 };
+
+// Internal indicator keys (DSLI, DSLI_DISABLED) are non-PII booleans that must
+// live in real localStorage regardless of customStorage, so the try-refresh
+// optimization stays correct when the app routes token storage elsewhere
+// (sessionStorage, consent-gated bags, etc).
+export const isInternalStorageAvailable = (): boolean =>
+  IS_BROWSER && typeof window.localStorage !== 'undefined';
+
+export const getInternalStorage = (key: string) =>
+  (IS_BROWSER && window.localStorage?.getItem?.(key)) || null;
+export const setInternalStorage = (key: string, value: string) => {
+  try {
+    if (IS_BROWSER) window.localStorage?.setItem?.(key, value);
+  } catch {
+    /* blocked / quota-exceeded storage — indicator is best-effort */
+  }
+};
+export const removeInternalStorage = (key: string) => {
+  try {
+    if (IS_BROWSER) window.localStorage?.removeItem?.(key);
+  } catch {
+    /* blocked storage — nothing to clear */
+  }
+};

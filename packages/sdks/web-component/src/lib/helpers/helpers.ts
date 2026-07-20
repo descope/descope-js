@@ -845,10 +845,7 @@ export const injectUsernameAnchor = (
     return;
   }
   if (!email) {
-    logger?.debug(
-      'Username anchor: no user identifier available',
-      `user: ${JSON.stringify(user)}`,
-    );
+    logger?.debug('Username anchor: no user identifier available');
     return;
   }
 
@@ -874,7 +871,7 @@ export const injectUsernameAnchor = (
     return;
   }
 
-  logger?.debug(`Username anchor: injecting hidden input with value ${email}`);
+  logger?.debug('Username anchor: injecting hidden username input');
 
   const input = document.createElement('input');
   input.setAttribute('autocomplete', 'username');
