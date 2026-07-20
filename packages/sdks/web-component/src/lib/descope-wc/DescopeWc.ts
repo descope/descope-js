@@ -9,6 +9,7 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED,
   DESCOPE_LAST_AUTH_BADGE_COMPONENT,
+  DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
@@ -81,8 +82,6 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
-const LAST_SUBMITTED_LOGIN_ID_KEY = 'dls_last_submitted_login_id';
-
 // the last identifier the user submitted on a previous screen in this flow
 // (e.g. the email entered before a magic link was sent), used when neither
 // the flow state nor a previous authentication provides one.
@@ -90,7 +89,11 @@ const LAST_SUBMITTED_LOGIN_ID_KEY = 'dls_last_submitted_login_id';
 // survives page reloads during the flow
 const getLastSubmittedLoginId = (): string => {
   try {
-    return window.sessionStorage?.getItem(LAST_SUBMITTED_LOGIN_ID_KEY) || '';
+    return (
+      window.sessionStorage?.getItem(
+        DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
+      ) || ''
+    );
   } catch (e) {
     return '';
   }
@@ -98,7 +101,10 @@ const getLastSubmittedLoginId = (): string => {
 
 const setLastSubmittedLoginId = (loginId: string) => {
   try {
-    window.sessionStorage?.setItem(LAST_SUBMITTED_LOGIN_ID_KEY, loginId);
+    window.sessionStorage?.setItem(
+      DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
+      loginId,
+    );
   } catch (e) {
     // sessionStorage unavailable, losing reload persistence is acceptable
   }
