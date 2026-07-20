@@ -194,6 +194,36 @@ describe('web-component', () => {
         });
       });
 
+      it('should not use an identifier submitted in a different flow execution', async () => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+        sessionStorage.setItem(
+          'dls_last_submitted_login_id',
+          JSON.stringify({
+            executionId: 'some-other-execution',
+            loginId: 'stale@user.com',
+          }),
+        );
+
+        fixtures.pageContent = newPasswordPage;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        const rootEle = document.getElementsByTagName('descope-wc')[0];
+
+        await waitFor(
+          () =>
+            expect(
+              rootEle.querySelector('input[type="password"]'),
+            ).not.toBeNull(),
+          { timeout: WAIT_TIMEOUT },
+        );
+
+        expect(getAnchor()).toBeNull();
+      });
+
       it('should not inject a username anchor when there is no authenticated user', async () => {
         startMock.mockReturnValueOnce(generateSdkResponse());
 

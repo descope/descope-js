@@ -86,24 +86,29 @@ import BaseDescopeWc from './BaseDescopeWc';
 // (e.g. the email entered before a magic link was sent), used when neither
 // the flow state nor a previous authentication provides one.
 // kept in sessionStorage (tab scoped, cleared when the tab closes) so it
-// survives page reloads during the flow
-const getLastSubmittedLoginId = (): string => {
+// survives page reloads during the flow, and scoped to the flow execution so
+// a stale identifier is never carried into another flow (or another user)
+// running in the same tab
+const getLastSubmittedLoginId = (executionId: string): string => {
   try {
-    return (
-      window.sessionStorage?.getItem(
-        DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
-      ) || ''
+    const raw = window.sessionStorage?.getItem(
+      DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
     );
+    if (!raw) {
+      return '';
+    }
+    const stored = JSON.parse(raw);
+    return stored.executionId === executionId ? stored.loginId || '' : '';
   } catch (e) {
     return '';
   }
 };
 
-const setLastSubmittedLoginId = (loginId: string) => {
+const setLastSubmittedLoginId = (loginId: string, executionId: string) => {
   try {
     window.sessionStorage?.setItem(
       DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
-      loginId,
+      JSON.stringify({ executionId, loginId }),
     );
   } catch (e) {
     // sessionStorage unavailable, losing reload persistence is acceptable
@@ -1162,6 +1167,7 @@ class DescopeWc extends BaseDescopeWc {
       htmlLocaleFilename: filenameWithLocale,
       screenId: readyScreenId,
       stepName: currentState.stepName || startScreenName,
+      executionId,
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
@@ -1709,9 +1715,12 @@ class DescopeWc extends BaseDescopeWc {
       next,
       screenState,
       screenId,
+      executionId,
     } = currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
+
+    this.#executionId = executionId;
 
     // flow state does not always carry the user (e.g. after magic link auth),
     // so fall back to the last authenticated user's login id
@@ -1723,9 +1732,10 @@ class DescopeWc extends BaseDescopeWc {
       email: stateUser?.email,
       loginIds: stateUser?.loginIds?.length
         ? stateUser.loginIds
-        : [getLastSubmittedLoginId() || this.sdk.getLastUserLoginId()].filter(
-            Boolean,
-          ),
+        : [
+            getLastSubmittedLoginId(executionId) ||
+              this.sdk.getLastUserLoginId(),
+          ].filter(Boolean),
     };
 
     const stepTemplate = document.createElement('template');
@@ -1983,6 +1993,8 @@ class DescopeWc extends BaseDescopeWc {
   // identifier input (e.g. step-up password change)
   #screenUser: { email?: string; loginIds?: string[] };
 
+  #executionId: string;
+
   // handle storing passwords in password managers
   #handleStoreCredentials(formData = {}) {
     const idFields = ['externalId', 'email', 'phone'];
@@ -2075,7 +2087,7 @@ class DescopeWc extends BaseDescopeWc {
           'phone',
         ]);
         if (submittedLoginId) {
-          setLastSubmittedLoginId(submittedLoginId);
+          setLastSubmittedLoginId(submittedLoginId, this.#executionId);
         }
 
         this.nextRequestStatus.update({ isLoading: true });

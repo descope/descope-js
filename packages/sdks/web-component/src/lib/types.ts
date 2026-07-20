@@ -216,6 +216,7 @@ export type StepState = {
   screenState: ScreenState;
   screenId: string;
   stepName: string;
+  executionId?: string;
   htmlFilename: string;
   htmlLocaleFilename: string;
   next: NextFn;
