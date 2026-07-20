@@ -820,23 +820,12 @@ export const clearPreviousExternalInputs = () => {
     .forEach((ele) => ele.remove());
 };
 
-// Password managers need an autocomplete="username" input alongside the
-// password inputs in order to associate the credential with a user and update
-// an existing entry instead of creating a duplicate. Password screens without
-// an identifier input (e.g. step-up password change, the password step of a
-// multi-step login) have nothing to anchor on, so we inject a hidden username
-// input populated with the resolved user identifier.
-// Note: WebKit's save heuristics only capture user-typed values, so on
-// Safari the save prompt still asks for the username; the anchor serves
-// autofill and DOM-scanning password managers
 const findPasswordComponent = (contentRootEle: Element) =>
   contentRootEle.querySelector('descope-new-password') ||
   contentRootEle.querySelector('descope-password');
 
-// place the anchor inside the component's shadow tree, next to the password
-// fields, so the password manager sees the username in the same context as
-// the password inputs. the anchor is removed together with the component
-// when the next screen renders
+// prefer the component's shadow tree so the anchor sits next to the password
+// fields and is removed with the component on screen change
 const getAnchorContainer = (
   passwordEle: Element,
   hostEle: HTMLElement,
@@ -858,16 +847,13 @@ const createUsernameAnchor = (email: string) => {
   input.setAttribute('readonly', 'true');
   input.setAttribute('tabindex', '-1');
   input.setAttribute('aria-hidden', 'true');
-  // so it gets cleaned up by clearPreviousExternalInputs if it ends up in
-  // the light DOM (fallback when the component has no shadow root yet)
+  // cleaned up by clearPreviousExternalInputs when in the light DOM
   input.setAttribute('data-hidden-input', 'true');
-  // the content attribute mirrors server-rendered markup, which some
-  // password managers read instead of the live property
+  // some password managers read the markup value rather than the property
   input.setAttribute('value', email);
   input.value = email;
-  // password managers ignore type="hidden" inputs, so hide it via CSS,
-  // and use the CSSOM (rather than a style attribute) to comply with
-  // strict CSP style-src policies
+  // real input hidden via CSSOM: managers ignore type="hidden", and strict
+  // CSP style-src blocks style attributes
   Object.assign(input.style, {
     position: 'absolute',
     opacity: '0',
@@ -878,6 +864,11 @@ const createUsernameAnchor = (email: string) => {
   return input;
 };
 
+// Anchors a hidden autocomplete="username" input next to the password fields
+// on password screens that have no identifier input, so password managers can
+// associate the credential with a user (descope/etc#16712). WebKit save
+// prompts only pick up user-typed values; the anchor serves autofill and
+// DOM-scanning managers
 export const injectUsernameAnchor = (
   hostEle: HTMLElement,
   contentRootEle: Element,
