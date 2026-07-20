@@ -820,6 +820,14 @@ export const clearPreviousExternalInputs = () => {
     .forEach((ele) => ele.remove());
 };
 
+const USERNAME_ANCHOR_ATTRIBUTE = 'data-username-anchor';
+
+export const clearUsernameAnchor = () => {
+  document
+    .querySelectorAll(`[${USERNAME_ANCHOR_ATTRIBUTE}="true"]`)
+    .forEach((ele) => ele.remove());
+};
+
 const findPasswordComponent = (contentRootEle: Element) =>
   contentRootEle.querySelector('descope-new-password') ||
   contentRootEle.querySelector('descope-password');
@@ -835,8 +843,8 @@ const createUsernameAnchor = (email: string) => {
   input.setAttribute('readonly', 'true');
   input.setAttribute('tabindex', '-1');
   input.setAttribute('aria-hidden', 'true');
-  // cleaned up by clearPreviousExternalInputs between screens
-  input.setAttribute('data-hidden-input', 'true');
+  // cleaned up by clearUsernameAnchor between screens
+  input.setAttribute(USERNAME_ANCHOR_ATTRIBUTE, 'true');
   // some password managers read the markup value rather than the property
   input.setAttribute('value', email);
   input.value = email;

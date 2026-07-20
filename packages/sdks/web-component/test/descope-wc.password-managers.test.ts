@@ -194,6 +194,33 @@ describe('web-component', () => {
         });
       });
 
+      it('should remove the anchor when moving to a screen without a password component', async () => {
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: { user: { email: '1@1.com' } },
+          }),
+        );
+        nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+        fixtures.pageContent = `<descope-button id="submitterId">click</descope-button>${newPasswordPage}`;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => expect(getAnchor()).toHaveValue('1@1.com'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        fixtures.pageContent = '<span>Next screen</span>';
+        fireEvent.click(screen.getByShadowText('click'));
+
+        await waitFor(() => screen.getByShadowText('Next screen'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(getAnchor()).toBeNull(), {
+          timeout: WAIT_TIMEOUT,
+        });
+      });
+
       it('should not use an identifier submitted in a different flow execution', async () => {
         startMock.mockReturnValueOnce(generateSdkResponse());
         sessionStorage.setItem(

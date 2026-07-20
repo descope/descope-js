@@ -26,6 +26,7 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearUsernameAnchor,
   getAnimationDirection,
   getElementDescopeAttributes,
   getFirstNonEmptyValue,
@@ -90,6 +91,11 @@ import BaseDescopeWc from './BaseDescopeWc';
 // a stale identifier is never carried into another flow (or another user)
 // running in the same tab
 const getLastSubmittedLoginId = (executionId: string): string => {
+  // a missing execution id must never match anything, otherwise two flows
+  // without one would share the stored identifier
+  if (!executionId) {
+    return '';
+  }
   try {
     const raw = window.sessionStorage?.getItem(
       DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
@@ -105,6 +111,9 @@ const getLastSubmittedLoginId = (executionId: string): string => {
 };
 
 const setLastSubmittedLoginId = (loginId: string, executionId: string) => {
+  if (!loginId || !executionId) {
+    return;
+  }
   try {
     window.sessionStorage?.setItem(
       DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
@@ -1803,6 +1812,7 @@ class DescopeWc extends BaseDescopeWc {
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
         this.#updateExternalInputs();
+        this.#updateUsernameAnchor();
 
         if (this.validateOnBlur) {
           handleReportValidityOnBlur(rootElement);
@@ -2030,6 +2040,12 @@ class DescopeWc extends BaseDescopeWc {
       '[external-input="true"]',
     );
     eles.forEach((ele) => this.#handleExternalInputs(ele));
+  }
+
+  #updateUsernameAnchor() {
+    // clear the previous screen's anchor, so each screen gets an anchor only
+    // if it needs one
+    clearUsernameAnchor();
 
     injectUsernameAnchor(
       this,
@@ -2080,16 +2096,6 @@ class DescopeWc extends BaseDescopeWc {
         const formData = await this.#getFormData();
         const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
-        // same identifier hierarchy as #handleStoreCredentials
-        const submittedLoginId = getFirstNonEmptyValue(formData, [
-          'externalId',
-          'email',
-          'phone',
-        ]);
-        if (submittedLoginId) {
-          setLastSubmittedLoginId(submittedLoginId, this.#executionId);
-        }
-
         this.nextRequestStatus.update({ isLoading: true });
 
         const actionArgs = {
@@ -2102,9 +2108,25 @@ class DescopeWc extends BaseDescopeWc {
           origin: this.nativeOptions?.origin || window.location.origin,
         };
 
-        await next(submitterId, actionArgs);
+        const res = await next(submitterId, actionArgs);
 
         this.nextRequestStatus.update({ isLoading: false });
+
+        // same identifier hierarchy as #handleStoreCredentials.
+        // captured after next resolves: on flows that render their first
+        // screen before the flow starts, the execution id only exists on the
+        // response
+        const submittedLoginId = getFirstNonEmptyValue(formData, [
+          'externalId',
+          'email',
+          'phone',
+        ]);
+        if (submittedLoginId) {
+          setLastSubmittedLoginId(
+            submittedLoginId,
+            res?.data?.executionId || this.#executionId,
+          );
+        }
 
         this.#handleStoreCredentials(formData);
       }
