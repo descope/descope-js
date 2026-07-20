@@ -1,4 +1,4 @@
-/* eslint-disable import/order */
+/* eslint-disable import/order, max-classes-per-file */
 // @ts-nocheck
 
 import {
@@ -6,6 +6,7 @@ import {
   teardownWebComponentTestEnv,
   startMock,
   nextMock,
+  getLastUserLoginIdMock,
   fixtures,
   WAIT_TIMEOUT,
 } from './descope-wc.test-harness';
@@ -171,6 +172,228 @@ describe('web-component', () => {
           }),
         { timeout: WAIT_TIMEOUT },
       );
+    });
+
+    it('should fall back to the authenticated user email when storing credentials without id fields', async () => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          screenState: { user: { email: '1@1.com' } },
+        }),
+      );
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      Object.assign(navigator, { credentials: { store: jest.fn() } });
+      globalThis.PasswordCredential = class {
+        constructor(obj) {
+          Object.assign(this, obj);
+        }
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="new-password" name="newPassword" value="pass"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          expect(navigator.credentials.store).toHaveBeenCalledWith({
+            id: '1@1.com',
+            password: 'pass',
+          }),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    describe('username anchor injection', () => {
+      const newPasswordPage =
+        '<descope-new-password external-input="true" id="new-password"><input slot="password" type="password"/></descope-new-password><span>It works!</span>';
+
+      // stub mirroring the real component structure: shadow root containing
+      // the internal component with the .wrapper that holds the password fields
+      beforeAll(() => {
+        customElements.define(
+          'descope-new-password',
+          class extends HTMLElement {
+            constructor() {
+              super();
+              this.attachShadow({ mode: 'open' });
+              this.shadowRoot.innerHTML =
+                '<descope-new-password-internal><div class="wrapper"></div></descope-new-password-internal>';
+            }
+          },
+        );
+        customElements.define(
+          'descope-password',
+          class extends HTMLElement {
+            constructor() {
+              super();
+              this.attachShadow({ mode: 'open' });
+            }
+          },
+        );
+      });
+
+      // the anchor is expected inside the component's shadow root, next to
+      // the password fields
+      const getAnchor = () =>
+        document
+          .getElementsByTagName('descope-wc')[0]
+          .shadowRoot.querySelector('descope-new-password')
+          ?.shadowRoot.querySelector('input[autocomplete="username"]') || null;
+
+      it('should inject a hidden username anchor when screen has new-password and user email', async () => {
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: { user: { email: '1@1.com' } },
+          }),
+        );
+
+        fixtures.pageContent = newPasswordPage;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(
+          () => {
+            const anchor = getAnchor();
+            expect(anchor).not.toBeNull();
+            expect(anchor).toHaveValue('1@1.com');
+            expect(anchor).toHaveAttribute('readonly');
+            expect(anchor).not.toHaveAttribute('type', 'hidden');
+            expect(anchor).toHaveStyle({ opacity: '0' });
+            // injected next to the password fields, inside the wrapper
+            expect(anchor.parentElement).toHaveClass('wrapper');
+          },
+          { timeout: WAIT_TIMEOUT },
+        );
+      });
+
+      it('should inject a username anchor from an identifier submitted on a previous screen', async () => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+        nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+        fixtures.pageContent = `<descope-button id="submitterId">click</descope-button><input id="email" name="email" value="typed@user.com"></input>${newPasswordPage}`;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        // no identifier is known on the first screen
+        expect(getAnchor()).toBeNull();
+
+        fireEvent.click(screen.getByShadowText('click'));
+
+        await waitFor(() => expect(getAnchor()).toHaveValue('typed@user.com'), {
+          timeout: WAIT_TIMEOUT,
+        });
+      });
+
+      it('should inject a username anchor from the last authenticated user when flow state has no user', async () => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+        getLastUserLoginIdMock.mockReturnValue('last@user.com');
+
+        fixtures.pageContent = newPasswordPage;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(() => expect(getAnchor()).toHaveValue('last@user.com'), {
+          timeout: WAIT_TIMEOUT,
+        });
+      });
+
+      it('should inject a username anchor for a password component without an identifier input', async () => {
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: { user: { email: '1@1.com' } },
+          }),
+        );
+
+        fixtures.pageContent =
+          '<descope-password id="password"></descope-password><span>It works!</span>';
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        await waitFor(
+          () =>
+            expect(
+              document
+                .getElementsByTagName('descope-wc')[0]
+                .shadowRoot.querySelector('descope-password')
+                ?.shadowRoot.querySelector('input[autocomplete="username"]'),
+            ).toHaveValue('1@1.com'),
+          { timeout: WAIT_TIMEOUT },
+        );
+      });
+
+      it('should not inject a username anchor when there is no authenticated user', async () => {
+        startMock.mockReturnValueOnce(generateSdkResponse());
+
+        fixtures.pageContent = newPasswordPage;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        const rootEle = document.getElementsByTagName('descope-wc')[0];
+
+        // wait for the external input to be slotted, which happens in the same tick
+        // as the (potential) anchor injection
+        await waitFor(
+          () =>
+            expect(
+              rootEle.querySelector('input[type="password"]'),
+            ).not.toBeNull(),
+          { timeout: WAIT_TIMEOUT },
+        );
+
+        expect(getAnchor()).toBeNull();
+      });
+
+      it('should not inject a username anchor when the screen already has one', async () => {
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: { user: { email: '1@1.com' } },
+          }),
+        );
+
+        fixtures.pageContent = `<div external-input="true" id="email"><input slot="email" autocomplete="username" type="email"/></div>${newPasswordPage}`;
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+        await waitFor(() => screen.getByShadowText('It works!'), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        const rootEle = document.getElementsByTagName('descope-wc')[0];
+
+        await waitFor(
+          () =>
+            expect(
+              rootEle.querySelector('input[type="password"]'),
+            ).not.toBeNull(),
+          { timeout: WAIT_TIMEOUT },
+        );
+
+        // the screen's own username input is the only one, no anchor injected
+        expect(getAnchor()).toBeNull();
+        expect(
+          rootEle.querySelectorAll('input[autocomplete="username"]'),
+        ).toHaveLength(1);
+      });
     });
   });
 

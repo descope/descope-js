@@ -31,6 +31,7 @@ import {
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
+  injectUsernameAnchor,
   injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
@@ -78,6 +79,29 @@ import {
   FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+
+const LAST_SUBMITTED_LOGIN_ID_KEY = 'dls_last_submitted_login_id';
+
+// the last identifier the user submitted on a previous screen in this flow
+// (e.g. the email entered before a magic link was sent), used when neither
+// the flow state nor a previous authentication provides one.
+// kept in sessionStorage (tab scoped, cleared when the tab closes) so it
+// survives page reloads during the flow
+const getLastSubmittedLoginId = (): string => {
+  try {
+    return window.sessionStorage?.getItem(LAST_SUBMITTED_LOGIN_ID_KEY) || '';
+  } catch (e) {
+    return '';
+  }
+};
+
+const setLastSubmittedLoginId = (loginId: string) => {
+  try {
+    window.sessionStorage?.setItem(LAST_SUBMITTED_LOGIN_ID_KEY, loginId);
+  } catch (e) {
+    // sessionStorage unavailable, losing reload persistence is acceptable
+  }
+};
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -1678,6 +1702,29 @@ class DescopeWc extends BaseDescopeWc {
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
+    // flow state does not always carry the user (e.g. after magic link auth),
+    // so fall back to the last authenticated user's login id
+    const stateUser = screenState?.user as {
+      email?: string;
+      loginIds?: string[];
+    };
+    this.#screenUser = {
+      email: stateUser?.email,
+      loginIds: stateUser?.loginIds?.length
+        ? stateUser.loginIds
+        : [getLastSubmittedLoginId() || this.sdk.getLastUserLoginId()].filter(
+            Boolean,
+          ),
+    };
+    this.loggerWrapper.debug(
+      'Screen user resolved',
+      `state.user: ${JSON.stringify(
+        stateUser,
+      )}, lastSubmittedLoginId: ${getLastSubmittedLoginId()}, lastUserLoginId: ${this.sdk.getLastUserLoginId()}, resolved: ${JSON.stringify(
+        this.#screenUser,
+      )}`,
+    );
+
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(
       htmlFilename,
@@ -1928,13 +1975,26 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
+  // the authenticated user of the current screen (if any), used as a fallback
+  // identifier for password manager integrations on screens that have no
+  // identifier input (e.g. step-up password change)
+  #screenUser: { email?: string; loginIds?: string[] };
+
   // handle storing passwords in password managers
   #handleStoreCredentials(formData = {}) {
     const idFields = ['externalId', 'email', 'phone'];
     const passwordFields = ['newPassword', 'password'];
 
-    const id = getFirstNonEmptyValue(formData, idFields);
+    const id =
+      getFirstNonEmptyValue(formData, idFields) ||
+      this.#screenUser?.email ||
+      this.#screenUser?.loginIds?.[0];
     const password = getFirstNonEmptyValue(formData, passwordFields);
+
+    this.loggerWrapper.debug(
+      'Store credentials',
+      `id: ${id}, hasPassword: ${!!password}, PasswordCredential supported: ${!!globalThis.PasswordCredential}`,
+    );
 
     // PasswordCredential not supported in Firefox
     if (id && password) {
@@ -1960,6 +2020,13 @@ class DescopeWc extends BaseDescopeWc {
       '[external-input="true"]',
     );
     eles.forEach((ele) => this.#handleExternalInputs(ele));
+
+    injectUsernameAnchor(
+      this,
+      this.contentRootElement,
+      this.#screenUser,
+      this.loggerWrapper,
+    );
   }
 
   #handleExternalInputs(ele: Element) {
@@ -2002,6 +2069,16 @@ class DescopeWc extends BaseDescopeWc {
 
         const formData = await this.#getFormData();
         const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+
+        // same identifier hierarchy as #handleStoreCredentials
+        const submittedLoginId = getFirstNonEmptyValue(formData, [
+          'externalId',
+          'email',
+          'phone',
+        ]);
+        if (submittedLoginId) {
+          setLastSubmittedLoginId(submittedLoginId);
+        }
 
         this.nextRequestStatus.update({ isLoading: true });
 

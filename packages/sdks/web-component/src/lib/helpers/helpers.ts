@@ -820,6 +820,90 @@ export const clearPreviousExternalInputs = () => {
     .forEach((ele) => ele.remove());
 };
 
+// Password managers need an autocomplete="username" input alongside the
+// password inputs in order to associate the credential with a user and update
+// an existing entry instead of creating a duplicate. Password screens without
+// an identifier input (e.g. step-up password change, the password step of a
+// multi-step login) have nothing to anchor on, so we inject a hidden username
+// input populated with the resolved user identifier.
+// Note: WebKit's save heuristics only capture user-typed values, so on
+// Safari the save prompt still asks for the username; the anchor serves
+// autofill and DOM-scanning password managers
+export const injectUsernameAnchor = (
+  hostEle: HTMLElement,
+  contentRootEle: Element,
+  user?: { email?: string; loginIds?: string[] },
+  logger?: { debug: (...args: string[]) => void },
+) => {
+  const email = user?.email || user?.loginIds?.[0];
+
+  const passwordEle =
+    contentRootEle.querySelector('descope-new-password') ||
+    contentRootEle.querySelector('descope-password');
+  if (!passwordEle) {
+    logger?.debug('Username anchor: no password component on screen');
+    return;
+  }
+  if (!email) {
+    logger?.debug(
+      'Username anchor: no user identifier available',
+      `user: ${JSON.stringify(user)}`,
+    );
+    return;
+  }
+
+  // inject inside the component's shadow tree, next to the password fields,
+  // so the password manager sees the username in the same context as the
+  // password inputs. the anchor is removed together with the component when
+  // the next screen renders
+  const container: Element | ShadowRoot =
+    passwordEle.shadowRoot?.querySelector(
+      'descope-new-password-internal .wrapper',
+    ) ||
+    passwordEle.shadowRoot ||
+    hostEle;
+
+  if (
+    container.querySelector('input[autocomplete="username"]') ||
+    hostEle.querySelector('input[autocomplete="username"]') ||
+    contentRootEle.querySelector('input[autocomplete="username"]')
+  ) {
+    logger?.debug(
+      'Username anchor: screen already has an autocomplete="username" input',
+    );
+    return;
+  }
+
+  logger?.debug(`Username anchor: injecting hidden input with value ${email}`);
+
+  const input = document.createElement('input');
+  input.setAttribute('autocomplete', 'username');
+  input.setAttribute('name', 'username');
+  input.setAttribute('type', 'email');
+  input.setAttribute('readonly', 'true');
+  input.setAttribute('tabindex', '-1');
+  input.setAttribute('aria-hidden', 'true');
+  // so it gets cleaned up by clearPreviousExternalInputs if it ends up in
+  // the light DOM (fallback when the component has no shadow root yet)
+  input.setAttribute('data-hidden-input', 'true');
+  // the content attribute mirrors server-rendered markup, which some
+  // password managers read instead of the live property
+  input.setAttribute('value', email);
+  input.value = email;
+  // password managers ignore type="hidden" inputs, so hide it via CSS,
+  // and use the CSSOM (rather than a style attribute) to comply with
+  // strict CSP style-src policies
+  Object.assign(input.style, {
+    position: 'absolute',
+    opacity: '0',
+    pointerEvents: 'none',
+    height: '0',
+    border: '0',
+  });
+
+  container.appendChild(input);
+};
+
 export const shouldHandleMarkdown = (compName: string) =>
   MD_COMPONENTS.includes(compName);
 
