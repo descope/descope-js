@@ -824,19 +824,7 @@ const findPasswordComponent = (contentRootEle: Element) =>
   contentRootEle.querySelector('descope-new-password') ||
   contentRootEle.querySelector('descope-password');
 
-// prefer the component's shadow tree so the anchor sits next to the password
-// fields and is removed with the component on screen change
-const getAnchorContainer = (
-  passwordEle: Element,
-  hostEle: HTMLElement,
-): Element | ShadowRoot =>
-  passwordEle.shadowRoot?.querySelector(
-    'descope-new-password-internal .wrapper',
-  ) ||
-  passwordEle.shadowRoot ||
-  hostEle;
-
-const hasUsernameInput = (roots: (Element | ShadowRoot)[]) =>
+const hasUsernameInput = (roots: Element[]) =>
   roots.some((root) => root.querySelector('input[autocomplete="username"]'));
 
 const createUsernameAnchor = (email: string) => {
@@ -847,7 +835,7 @@ const createUsernameAnchor = (email: string) => {
   input.setAttribute('readonly', 'true');
   input.setAttribute('tabindex', '-1');
   input.setAttribute('aria-hidden', 'true');
-  // cleaned up by clearPreviousExternalInputs when in the light DOM
+  // cleaned up by clearPreviousExternalInputs between screens
   input.setAttribute('data-hidden-input', 'true');
   // some password managers read the markup value rather than the property
   input.setAttribute('value', email);
@@ -864,11 +852,10 @@ const createUsernameAnchor = (email: string) => {
   return input;
 };
 
-// Anchors a hidden autocomplete="username" input next to the password fields
-// on password screens that have no identifier input, so password managers can
-// associate the credential with a user (descope/etc#16712). WebKit save
-// prompts only pick up user-typed values; the anchor serves autofill and
-// DOM-scanning managers
+// Anchors a hidden autocomplete="username" input on password screens that
+// have no identifier input, so password managers can associate the credential
+// with a user (descope/etc#16712). Appended to the host light DOM — password
+// manager save heuristics (verified on WebKit) do not scan shadow trees
 export const injectUsernameAnchor = (
   hostEle: HTMLElement,
   contentRootEle: Element,
@@ -877,8 +864,7 @@ export const injectUsernameAnchor = (
 ) => {
   const email = user?.email || user?.loginIds?.[0];
 
-  const passwordEle = findPasswordComponent(contentRootEle);
-  if (!passwordEle) {
+  if (!findPasswordComponent(contentRootEle)) {
     logger?.debug('Username anchor: no password component on screen');
     return;
   }
@@ -886,10 +872,7 @@ export const injectUsernameAnchor = (
     logger?.debug('Username anchor: no user identifier available');
     return;
   }
-
-  const container = getAnchorContainer(passwordEle, hostEle);
-
-  if (hasUsernameInput([container, hostEle, contentRootEle])) {
+  if (hasUsernameInput([hostEle, contentRootEle])) {
     logger?.debug(
       'Username anchor: screen already has an autocomplete="username" input',
     );
@@ -897,7 +880,7 @@ export const injectUsernameAnchor = (
   }
 
   logger?.debug('Username anchor: injecting hidden username input');
-  container.appendChild(createUsernameAnchor(email));
+  hostEle.appendChild(createUsernameAnchor(email));
 };
 
 export const shouldHandleMarkdown = (compName: string) =>

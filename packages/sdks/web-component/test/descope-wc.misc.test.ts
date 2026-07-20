@@ -213,38 +213,12 @@ describe('web-component', () => {
       const newPasswordPage =
         '<descope-new-password external-input="true" id="new-password"><input slot="password" type="password"/></descope-new-password><span>It works!</span>';
 
-      // stub mirroring the real component structure: shadow root containing
-      // the internal component with the .wrapper that holds the password fields
-      beforeAll(() => {
-        customElements.define(
-          'descope-new-password',
-          class extends HTMLElement {
-            constructor() {
-              super();
-              this.attachShadow({ mode: 'open' });
-              this.shadowRoot.innerHTML =
-                '<descope-new-password-internal><div class="wrapper"></div></descope-new-password-internal>';
-            }
-          },
-        );
-        customElements.define(
-          'descope-password',
-          class extends HTMLElement {
-            constructor() {
-              super();
-              this.attachShadow({ mode: 'open' });
-            }
-          },
-        );
-      });
-
-      // the anchor is expected inside the component's shadow root, next to
-      // the password fields
+      // the anchor is expected in the host light DOM, where password manager
+      // save heuristics can see it
       const getAnchor = () =>
         document
           .getElementsByTagName('descope-wc')[0]
-          .shadowRoot.querySelector('descope-new-password')
-          ?.shadowRoot.querySelector('input[autocomplete="username"]') || null;
+          .querySelector('input[autocomplete="username"]');
 
       it('should inject a hidden username anchor when screen has new-password and user email', async () => {
         startMock.mockReturnValueOnce(
@@ -268,8 +242,10 @@ describe('web-component', () => {
             expect(anchor).toHaveAttribute('readonly');
             expect(anchor).not.toHaveAttribute('type', 'hidden');
             expect(anchor).toHaveStyle({ opacity: '0' });
-            // injected next to the password fields, inside the wrapper
-            expect(anchor.parentElement).toHaveClass('wrapper');
+            // injected into the host light DOM, visible to password managers
+            expect(anchor.parentElement).toBe(
+              document.getElementsByTagName('descope-wc')[0],
+            );
           },
           { timeout: WAIT_TIMEOUT },
         );
@@ -327,16 +303,9 @@ describe('web-component', () => {
           timeout: WAIT_TIMEOUT,
         });
 
-        await waitFor(
-          () =>
-            expect(
-              document
-                .getElementsByTagName('descope-wc')[0]
-                .shadowRoot.querySelector('descope-password')
-                ?.shadowRoot.querySelector('input[autocomplete="username"]'),
-            ).toHaveValue('1@1.com'),
-          { timeout: WAIT_TIMEOUT },
-        );
+        await waitFor(() => expect(getAnchor()).toHaveValue('1@1.com'), {
+          timeout: WAIT_TIMEOUT,
+        });
       });
 
       it('should not inject a username anchor when there is no authenticated user', async () => {
@@ -389,7 +358,6 @@ describe('web-component', () => {
         );
 
         // the screen's own username input is the only one, no anchor injected
-        expect(getAnchor()).toBeNull();
         expect(
           rootEle.querySelectorAll('input[autocomplete="username"]'),
         ).toHaveLength(1);
