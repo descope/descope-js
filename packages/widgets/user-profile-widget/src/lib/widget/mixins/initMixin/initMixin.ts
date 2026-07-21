@@ -35,10 +35,8 @@ export const initMixin = createSingletonMixin(
       initTotpUserAuthMethodMixin,
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
-      // Overrides `init()` and `handleLogout()` from the mixins above when
-      // running inside a Descope mobile SDK. Must sit after initLogoutMixin
-      // (which transitively brings in initWidgetRootMixin) for the overrides
-      // to resolve via super.
+      // IMPORTANT: ORDER MATTERS
+      // nativeBridgeMixin overrides `init()` and `handleLogout()` from the mixins above it
       nativeBridgeMixin,
       initTrustedDevicesMixin,
       initUserPasskeysMixin,

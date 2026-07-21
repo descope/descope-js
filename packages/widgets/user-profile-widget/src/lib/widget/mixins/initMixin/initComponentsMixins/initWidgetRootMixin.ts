@@ -44,8 +44,7 @@ export const initWidgetRootMixin = createSingletonMixin(
           await this.#initWidgetRoot();
           await this.onWidgetRootReady();
         } catch (err: unknown) {
-          // Surface fatal init errors via the standard `error` CustomEvent.
-          // Host pages and the native bridge both listen on the widget element.
+          // make sure init errors are published via `error` event.
           const code = (err as { code?: string })?.code;
           const message =
             (err as { message?: string })?.message ||

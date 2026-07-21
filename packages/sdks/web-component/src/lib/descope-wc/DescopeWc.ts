@@ -139,10 +139,10 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  // Native bridge protocol version — bump on incompatible changes.
-  // v3: wcs self-register with `descopeBridge.registerFlow(this)` so a single
-  // native bridge can drive multiple flows in one page (Mobile UPW).
+  // bridgeVersion tracks compatibility with the native SDK bridges.
+  // v3: support multiple WCs in a single page via new registration mechanism (User Profile Widget)
   static readonly bridgeVersion = 3; // readable off the constructor before any wc mounts
+
   bridgeVersion = DescopeWc.bridgeVersion; // readable off a live instance
 
   // Key returned from `descopeBridge.registerFlow(this)`; used to unregister on disconnect.
@@ -415,7 +415,8 @@ class DescopeWc extends BaseDescopeWc {
     }
     // eslint-disable-next-line no-underscore-dangle
     (this as any).lazyInit = this._init;
-    // Self-register with a v3 native bridge (Mobile UPW). No-op otherwise.
+    // from bridge version 3 onwards, wc registers itself with the descopeBridge instead
+    // of the previous polling mechanism, which still works for backwards compat
     this.#bridgeKey = (window as any).descopeBridge.registerFlow?.(this);
     return undefined;
   }
