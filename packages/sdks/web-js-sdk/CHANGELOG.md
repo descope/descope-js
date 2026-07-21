@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.51.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.2...web-js-sdk-1.51.3) (2026-07-16)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** keep DSLI try-refresh indicator in real localStorage under customStorage ([#1438](https://github.com/descope/descope-js/issues/1438)) RELEASE ([6caaf21](https://github.com/descope/descope-js/commit/6caaf212fa9da9bc90c89b140005a138655a4ae7)), closes [#1383](https://github.com/descope/descope-js/issues/1383)
+
+## [1.51.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.1...web-js-sdk-1.51.2) (2026-07-12)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.67.0`
 ## [1.51.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.0...web-js-sdk-1.51.1) (2026-06-28)
 
 ### Dependency Updates

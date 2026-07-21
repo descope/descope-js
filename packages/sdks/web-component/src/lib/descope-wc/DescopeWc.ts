@@ -14,6 +14,7 @@ import {
   FETCH_EXCEPTION_ERROR_CODE,
   FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE,
   FLOW_TIMED_OUT_ERROR_CODE,
+  NONCE_VALIDATION_ERROR_CODE,
   POLLING_STATUS_NOT_FOUND_ERROR_CODE,
   RESPONSE_ACTIONS,
   SDK_SCRIPTS_LOAD_TIMEOUT,
@@ -1287,6 +1288,9 @@ class DescopeWc extends BaseDescopeWc {
     const stopOnErrors = [
       FLOW_TIMED_OUT_ERROR_CODE,
       POLLING_STATUS_NOT_FOUND_ERROR_CODE,
+      // A consumed/stale flow nonce (verified elsewhere or rotated) fails every
+      // retry with no new nonce in the response, so retrying loops forever.
+      NONCE_VALIDATION_ERROR_CODE,
     ];
 
     if (this.flowState.current.action === RESPONSE_ACTIONS.poll) {
@@ -1427,7 +1431,8 @@ class DescopeWc extends BaseDescopeWc {
       const errorCode = sdkResp?.error?.errorCode;
       if (
         (errorCode === FLOW_REQUESTED_IS_IN_OLD_VERSION_ERROR_CODE ||
-          errorCode === FLOW_TIMED_OUT_ERROR_CODE) &&
+          errorCode === FLOW_TIMED_OUT_ERROR_CODE ||
+          errorCode === NONCE_VALIDATION_ERROR_CODE) &&
         this.isRestartOnError
       ) {
         this.#handleFlowRestart();

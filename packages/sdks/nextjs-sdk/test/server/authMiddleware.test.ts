@@ -27,9 +27,7 @@ const createMockNextRequest = (
 	} = {}
 ) =>
 	({
-		headers: {
-			get: (name: string) => options.headers?.[name]
-		},
+		headers: new Headers(options.headers),
 		cookies: {
 			get: (name: string) =>
 				options.cookies?.[name] ? { value: options.cookies[name] } : undefined
@@ -70,16 +68,22 @@ describe('authMiddleware', () => {
 		});
 	});
 
-	it('allows unauthenticated users for public routes', async () => {
+	it('allows unauthenticated users for public routes and removes unvalidated session headers', async () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
 		const middleware = authMiddleware({
 			publicRoutes: ['/sign-in', '/sign-up']
 		});
-		const mockReq = createMockNextRequest({ pathname: '/sign-in' });
+		const mockReq = createMockNextRequest({
+			pathname: '/sign-in',
+			headers: { 'x-descope-session': 'unvalidated-session' }
+		});
 
 		await middleware(mockReq);
 		// Expect the middleware not to redirect
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
+			.request.headers;
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('redirects unauthenticated users for private routes', async () => {
@@ -96,7 +100,7 @@ describe('authMiddleware', () => {
 		});
 	});
 
-	it('allows authenticated users for private routes and adds proper headers', async () => {
+	it('allows authenticated users for private routes without adding session headers', async () => {
 		// Mock validateJwt to simulate an authenticated user
 		const authInfo = {
 			jwt: 'validJwt',
@@ -109,7 +113,10 @@ describe('authMiddleware', () => {
 		});
 		const mockReq = createMockNextRequest({
 			pathname: '/private',
-			headers: { Authorization: 'Bearer validJwt' }
+			headers: {
+				Authorization: 'Bearer validJwt',
+				'x-descope-session': 'unvalidated-session'
+			}
 		});
 
 		await middleware(mockReq);
@@ -119,9 +126,8 @@ describe('authMiddleware', () => {
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('Authorization')).toBe('Bearer validJwt');
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('allows unauthenticated users for public routes when both public and private routes are defined', async () => {
@@ -151,7 +157,7 @@ describe('authMiddleware', () => {
 		});
 	});
 
-	it('allows authenticated users for non-public routes and adds proper headers', async () => {
+	it('allows authenticated users for non-public routes without adding session headers', async () => {
 		// Mock validateJwt to simulate an authenticated user
 		const authInfo = {
 			jwt: 'validJwt',
@@ -172,9 +178,7 @@ describe('authMiddleware', () => {
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('redirects unauthenticated users for private routes matching wildcard patterns', async () => {
@@ -214,15 +218,13 @@ describe('authMiddleware', () => {
 
 		await middleware(mockReq);
 
-		// Expect no redirect and that the session header is set
+		// Expect no redirect and that no internal session header is set
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(NextResponse.next).toHaveBeenCalled();
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('allows unauthenticated users for public routes matching wildcard patterns', async () => {
@@ -286,15 +288,13 @@ describe('authMiddleware', () => {
 
 		await middleware(mockReq);
 
-		// Expect no redirect and that the session header is set
+		// Expect no redirect and that no internal session header is set
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(NextResponse.next).toHaveBeenCalled();
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	describe('Refresh token validation', () => {
@@ -310,6 +310,7 @@ describe('authMiddleware', () => {
 			const middleware = authMiddleware();
 			const mockReq = createMockNextRequest({
 				pathname: '/private',
+				headers: { 'x-descope-session': 'unvalidated-session' },
 				cookies: { DS: 'expiredSessionJwt', DSR: 'validRefreshJwt' }
 			});
 
@@ -425,7 +426,7 @@ describe('authMiddleware', () => {
 			// Verify that session headers are NOT set (because we don't add refresh token validation to headers)
 			const headersArg = (NextResponse.next as any as jest.Mock).mock
 				.lastCall[0].request.headers;
-			expect(headersArg.get('x-descope-session')).toBeUndefined();
+			expect(headersArg.get('x-descope-session')).toBeNull();
 		});
 
 		it('allows access to public routes even when both tokens fail', async () => {

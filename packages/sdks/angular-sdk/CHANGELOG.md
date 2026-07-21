@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.27.6](https://github.com/descope/descope-js/compare/angular-sdk-0.27.5...angular-sdk-0.27.6) (2026-07-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.8`
+* `audit-management-widget` updated to version `0.8.8`
+* `role-management-widget` updated to version `0.9.8`
+* `user-management-widget` updated to version `0.15.5`
+* `user-profile-widget` updated to version `0.14.4`
+* `tenant-profile-widget` updated to version `0.8.5`
+* `applications-portal-widget` updated to version `0.8.8`
+* `web-component` updated to version `3.70.3`
+* `web-js-sdk` updated to version `1.51.3`
+## [0.27.5](https://github.com/descope/descope-js/compare/angular-sdk-0.27.4...angular-sdk-0.27.5) (2026-07-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.7`
+* `audit-management-widget` updated to version `0.8.7`
+* `role-management-widget` updated to version `0.9.7`
+* `user-management-widget` updated to version `0.15.4`
+* `user-profile-widget` updated to version `0.14.3`
+* `tenant-profile-widget` updated to version `0.8.4`
+* `applications-portal-widget` updated to version `0.8.7`
+* `web-component` updated to version `3.70.2`
+## [0.27.4](https://github.com/descope/descope-js/compare/angular-sdk-0.27.3...angular-sdk-0.27.4) (2026-07-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.6`
+* `audit-management-widget` updated to version `0.8.6`
+* `role-management-widget` updated to version `0.9.6`
+* `user-management-widget` updated to version `0.15.3`
+* `user-profile-widget` updated to version `0.14.2`
+* `tenant-profile-widget` updated to version `0.8.3`
+* `applications-portal-widget` updated to version `0.8.6`
+* `web-component` updated to version `3.70.1`
+* `web-js-sdk` updated to version `1.51.2`
+* `core-js-sdk` updated to version `2.67.0`
 ## [0.27.3](https://github.com/descope/descope-js/compare/angular-sdk-0.27.2...angular-sdk-0.27.3) (2026-07-05)
 
 ### Dependency Updates

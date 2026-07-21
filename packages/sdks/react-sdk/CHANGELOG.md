@@ -2,6 +2,53 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.6](https://github.com/descope/descope-js/compare/react-sdk-2.30.5...react-sdk-2.30.6) (2026-07-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.8`
+* `audit-management-widget` updated to version `0.8.8`
+* `role-management-widget` updated to version `0.9.8`
+* `user-management-widget` updated to version `0.15.5`
+* `user-profile-widget` updated to version `0.14.4`
+* `applications-portal-widget` updated to version `0.8.8`
+* `outbound-applications-widget` updated to version `0.5.5`
+* `web-component` updated to version `3.70.3`
+* `web-js-sdk` updated to version `1.51.3`
+* `tenant-profile-widget` updated to version `0.8.5`
+
+### Bug Fixes
+
+* **web-js-sdk:** keep DSLI try-refresh indicator in real localStorage under customStorage ([#1438](https://github.com/descope/descope-js/issues/1438)) RELEASE ([6caaf21](https://github.com/descope/descope-js/commit/6caaf212fa9da9bc90c89b140005a138655a4ae7)), closes [#1383](https://github.com/descope/descope-js/issues/1383)
+
+## [2.30.5](https://github.com/descope/descope-js/compare/react-sdk-2.30.4...react-sdk-2.30.5) (2026-07-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.7`
+* `audit-management-widget` updated to version `0.8.7`
+* `role-management-widget` updated to version `0.9.7`
+* `user-management-widget` updated to version `0.15.4`
+* `user-profile-widget` updated to version `0.14.3`
+* `applications-portal-widget` updated to version `0.8.7`
+* `outbound-applications-widget` updated to version `0.5.4`
+* `web-component` updated to version `3.70.2`
+* `tenant-profile-widget` updated to version `0.8.4`
+## [2.30.4](https://github.com/descope/descope-js/compare/react-sdk-2.30.3...react-sdk-2.30.4) (2026-07-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.6`
+* `audit-management-widget` updated to version `0.8.6`
+* `role-management-widget` updated to version `0.9.6`
+* `user-management-widget` updated to version `0.15.3`
+* `user-profile-widget` updated to version `0.14.2`
+* `applications-portal-widget` updated to version `0.8.6`
+* `outbound-applications-widget` updated to version `0.5.3`
+* `web-component` updated to version `3.70.1`
+* `web-js-sdk` updated to version `1.51.2`
+* `core-js-sdk` updated to version `2.67.0`
+* `tenant-profile-widget` updated to version `0.8.3`
 ## [2.30.3](https://github.com/descope/descope-js/compare/react-sdk-2.30.2...react-sdk-2.30.3) (2026-07-05)
 
 ### Dependency Updates

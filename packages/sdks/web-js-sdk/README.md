@@ -222,7 +222,7 @@ This is useful when Descope's session inactivity feature is enabled, ensuring re
 
 ### Custom Storage
 
-By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, client-side session-refresh optimization markers, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper, a cross-frame bridge — pass a `customStorage` object to the SDK.
+By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, tokens when they aren't stored in cookies, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper, a cross-frame bridge — pass a `customStorage` object to the SDK.
 
 ```js
 const inMemoryStorage = (() => {
@@ -254,11 +254,13 @@ type CustomStorage = {
 };
 ```
 
-> **Note:** The SDK writes a small set of internal keys (e.g. for the last-authenticated user feature and client-side session-refresh optimizations). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, some optimizations may degrade — for example, an extra `/v1/auth/try-refresh` round-trip may be made on every page load even for anonymous visitors.
+> **Note:** `customStorage` backs the keys the SDK persists on your behalf (tokens, last-authenticated user). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, the features that rely on them may degrade.
+>
+> The internal, non-PII markers for the client-side session-refresh optimization (`DSLI` / `DSLI_DISABLED`) are the exception: the SDK always keeps them in real `window.localStorage`, independent of `customStorage`. This is what makes the optimization behave correctly even when you back the other keys with `sessionStorage` or an in-memory store.
 
 ### Last Login Indicator
 
-The SDK maintains a `DSLI` (Descope Session Login Indicator) entry in `localStorage` that tracks whether this browser has previously had an active authenticated session. On every successful authentication, `DSLI` is written. On logout or an invalid-session response, it is cleared.
+The SDK maintains a `DSLI` (Descope Session Login Indicator) entry in real `window.localStorage` — always, even when a `customStorage` is provided — that tracks whether this browser has previously had an active authenticated session. On every successful authentication, `DSLI` is written. On logout or an invalid-session response, it is cleared.
 
 When `sdk.refresh()` is called in "try-refresh" mode (i.e. on SDK initialization, to restore a prior session), the SDK skips the network call entirely if neither `DSLI` nor the last-user key (`dls_last_user_login_id`) is present. This eliminates a redundant `/v1/auth/try-refresh` round-trip for anonymous visitors who have never logged in.
 

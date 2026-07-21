@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.67.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.66.0...core-js-sdk-2.67.0) (2026-07-12)
+
+
+### Features
+
+* **core-js:** expose externalToken on JWTResponse ([#1435](https://github.com/descope/descope-js/issues/1435)) RELEASE ([7e248bf](https://github.com/descope/descope-js/commit/7e248bfd1f73556f3ab87f5c5fa5f950b0af1e40))
+
 ## [2.66.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.65.0...core-js-sdk-2.66.0) (2026-06-28)
 
 
