@@ -113,7 +113,11 @@ describe('web-component', () => {
       await waitFor(() =>
         expect(onScreenUpdate).toHaveBeenCalledWith(
           expect.anything(),
-          expect.objectContaining({ inboundAppApproveScopes: [{ a: 1 }] }),
+          expect.objectContaining({
+            data: expect.objectContaining({
+              inboundAppApproveScopes: [{ a: 1 }],
+            }),
+          }),
           expect.any(Function),
           expect.any(HTMLElement),
         ),

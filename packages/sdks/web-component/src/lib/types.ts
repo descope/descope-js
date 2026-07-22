@@ -227,18 +227,97 @@ export type StepState = {
 
 export type CustomScreenState = Omit<
   ScreenState,
-  'cssVars' | 'componentsConfig' | 'inputs'
+  // Removed from the top level of the custom-screen context:
+  // - cssVars/componentsConfig/inputs/clientScripts: internal.
+  // - errorText/errorType: reshaped into `error`.
+  // - the rest: server-produced screen data, relocated under `data`.
+  | 'cssVars'
+  | 'componentsConfig'
+  | 'inputs'
+  | 'errorText'
+  | 'errorType'
+  | 'clientScripts'
+  | 'totp'
+  | 'notp'
+  | 'sentTo'
+  | 'sso'
+  | 'selfProvisionDomains'
 > & {
   error?: {
     text: ScreenState['errorText'];
     type: ScreenState['errorType'];
   };
   action?: string;
-  inboundAppApproveScopes?: {
-    desc: string;
-    id: string;
-    required: boolean;
-  }[];
+  /**
+   * All server-produced screen data, in one place. Previously this data was spread
+   * across the top level and a deeply-nested, selector-keyed `componentsConfig`.
+   * Only known, documented fields are exposed (renamed/normalized); anything else is
+   * dropped. SDK-owned/reserved — a value with this key coming from the backend is ignored.
+   */
+  data?: CustomScreenData;
+};
+
+/**
+ * Cleaned view of the flow screen's `componentsConfig`. Every field is optional and
+ * only present when the screen actually produces it.
+ */
+export type CustomScreenData = {
+  /** TOTP MFA setup: QR image + provisioning URL. */
+  totp?: { image?: string; provisionUrl?: string };
+  /** Notification-OTP setup: image + redirect URL. */
+  notp?: { image?: string; redirectUrl?: string };
+  /** Where the OTP/code was sent — masked email and/or phone. */
+  sentTo?: { maskedEmail?: string; maskedPhone?: string };
+  /** SSO (SAML) service-provider config for SSO-setup screens. */
+  sso?: { acsUrl?: string; descopeEntityId?: string; spMetadataUrl?: string };
+  /** Email domains allowed to self-provision into the tenant. */
+  selfProvisionDomains?: string;
+  /** OAuth scopes an inbound (third-party) app is asking the user to approve. */
+  inboundAppApproveScopes?: { desc: string; id: string; required: boolean }[];
+  /** Password rules to show/enforce on a password screen. */
+  passwordPolicy?: {
+    minLength?: string;
+    strength?: string;
+    disallowedChars?: string;
+    email?: string;
+    activePolicies?: string;
+    availablePolicies?: string;
+  };
+  /** Security questions to set up, plus how many are required. */
+  securityQuestionsSetup?: {
+    questions?: { id: string; text: string }[];
+    count?: number;
+  };
+  /** Security questions to verify the user against. */
+  securityQuestionsVerify?: { questions?: { id: string; text: string }[] };
+  /** Tenants the user can pick from (tenant-selection screen). */
+  userTenants?: { label: string; value: string }[];
+  /** SSO applications the user can pick from. */
+  ssoApplications?: { label: string; value: string }[];
+  /** SSO configurations the user can pick from. */
+  ssoConfigurations?: { label: string; value: string }[];
+  /** Roles the user can pick from. */
+  userRoles?: { label: string; value: string }[];
+  /** SAML attribute-mapping options (SSO-setup screens). */
+  samlAttributeMappings?: { label: string; value: string }[];
+  /** OIDC attribute-mapping options (SSO-setup screens). */
+  oidcAttributeMappings?: { label: string; value: string }[];
+  /** SAML group-mapping options (SSO-setup screens). */
+  samlGroupMappings?: { label: string; value: string }[];
+  /** Generated MFA recovery codes to display to the user. */
+  recoveryCodes?: string[];
+  /** Outbound OAuth app button info (label, icon, app id). */
+  outboundApp?: { label?: string; iconSrc?: string; appId?: string };
+
+  // Contract rule: every key on `data` is an SDK-owned, documented name. We never
+  // place arbitrary, flow-author-controlled keys directly on `data`, so adding new
+  // named fields stays backwards-compatible (no collisions, no reshape).
+  //
+  // Reserved for a future addition: dynamic-select options. Their keys are the
+  // flow's own select field names (e.g. "country"), so they can't be named here —
+  // when exposed, they'll go under their own sub-map to keep them collision-free:
+  //   selects?: Record<string, { label: string; value: string }[]>;
+  // Not populated yet (see README). Adding it later is additive, not breaking.
 };
 
 export type DebugState = {
