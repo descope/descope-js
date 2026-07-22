@@ -1883,27 +1883,17 @@ class DescopeWc extends BaseDescopeWc {
       this.loggerWrapper.debug('Restoring components state');
       this.removeEventListener('popupclosed', restoreComponentsState);
 
-      // Only a genuine web-popup-closed-without-response arms the token-refresh
-      // gate below. No-event callers (pageshow, same-screen resubmit) and
-      // non-web-popup emitters fall through to false, keeping today's behavior.
+      // Only a genuine web-popup-closed-without-response arms the refresh below;
+      // no-event callers (pageshow, same-screen) fall through to today's path.
       const abandoned = (e as CustomEvent)?.detail?.abandoned === true;
 
       if (abandoned && screenClientScripts.length) {
-        // A popup returns a *redirect*, not a screen, so the usual "reload the
-        // screen's client scripts" step (see #handleStepUpdate) never runs when
-        // the popup closes. That is why the captcha token that was already spent
-        // by the popup attempt gets reused on the next submit and the backend
-        // rejects it as a duplicate ("DUPE").
-        //
-        // Reload the screen's client scripts (captured at click time - the
-        // captcha lives there) to regenerate a fresh single-use token. Only
-        // clientScripts are reloaded, NOT sdkScripts (forter, darwinium, ...),
-        // which must not re-run just because a popup closed.
-        //
-        // Assigned to #sdkScriptsLoading before we re-enable the button, so the
-        // next submit blocks on the fresh token via `await this.#sdkScriptsLoading`.
-        // Wrapped so it can never reject - a rejected #sdkScriptsLoading would
-        // throw out of #runSdkScriptsModules and break the submit.
+        // The abandoned popup already spent the single-use captcha token, and a
+        // popup returns a redirect (not a screen) so the usual screen-scripts
+        // reload never runs - reusing that token would be rejected as "DUPE".
+        // Reload the screen's clientScripts (only these, not sdkScripts) to mint
+        // a fresh token, and gate the next submit on it via #sdkScriptsLoading
+        // (assigned before re-enabling the button; wrapped so it never rejects).
         this.#sdkScriptsLoading = (async () => {
           try {
             await this.loadSdkScripts(screenClientScripts);
