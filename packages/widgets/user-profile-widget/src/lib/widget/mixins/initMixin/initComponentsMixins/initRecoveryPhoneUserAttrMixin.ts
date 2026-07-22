@@ -1,0 +1,140 @@
+import {
+  FlowDriver,
+  ModalDriver,
+  UserAttributeDriver,
+} from '@descope/sdk-component-drivers';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
+import {
+  localeMixin,
+  cookieConfigMixin,
+  loggerMixin,
+  modalMixin,
+  flowInputMixin,
+} from '@descope/sdk-mixins';
+import { getVerifiedRecoveryPhone } from '../../../state/selectors';
+import { stateManagementMixin } from '../../stateManagementMixin';
+import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+
+export const initRecoveryPhoneUserAttrMixin = createSingletonMixin(
+  <T extends CustomElementConstructor>(superclass: T) =>
+    class RecoveryPhoneUserAttrMixinClass extends compose(
+      localeMixin,
+      flowSyncThemeMixin,
+      stateManagementMixin,
+      loggerMixin,
+      initWidgetRootMixin,
+      cookieConfigMixin,
+      modalMixin,
+      flowInputMixin,
+    )(superclass) {
+      recoveryPhoneUserAttr: UserAttributeDriver;
+
+      #editModal: ModalDriver;
+
+      #editFlow: FlowDriver;
+
+      #deleteModal: ModalDriver;
+
+      #deleteFlow: FlowDriver;
+
+      #initEditModal() {
+        if (!this.recoveryPhoneUserAttr.editFlowId) return;
+
+        this.#editModal = this.createModal({
+          'data-id': 'edit-recovery-phone',
+          'close-on-outside-click': 'true',
+        });
+        this.#editFlow = new FlowDriver(
+          () => this.#editModal.ele?.querySelector('descope-wc'),
+          { logger: this.logger },
+        );
+        this.#editModal.afterClose = this.#initEditModalContent.bind(this);
+        this.#initEditModalContent();
+        this.syncFlowTheme(this.#editFlow);
+      }
+
+      #initEditModalContent() {
+        this.#editModal.setContent(
+          this.createFlowTemplate({
+            flowId: this.recoveryPhoneUserAttr.editFlowId,
+          }),
+        );
+        this.#editFlow.onSuccess(() => {
+          this.#editModal.close();
+          this.actions.getMe();
+        });
+      }
+
+      #initDeleteModal() {
+        if (!this.recoveryPhoneUserAttr.deleteFlowId) return;
+
+        this.#deleteModal = this.createModal({
+          'data-id': 'delete-recovery-phone',
+          'close-on-outside-click': 'true',
+        });
+        this.#deleteFlow = new FlowDriver(
+          () => this.#deleteModal.ele?.querySelector('descope-wc'),
+          { logger: this.logger },
+        );
+        this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
+        this.#initDeleteModalContent();
+        this.syncFlowTheme(this.#deleteFlow);
+      }
+
+      #initDeleteModalContent() {
+        this.#deleteModal.setContent(
+          this.createFlowTemplate({
+            flowId: this.recoveryPhoneUserAttr.deleteFlowId,
+          }),
+        );
+        this.#deleteFlow.onSuccess(() => {
+          this.#deleteModal.close();
+          this.actions.getMe();
+        });
+      }
+
+      #initRecoveryPhoneUserAttr() {
+        this.recoveryPhoneUserAttr = new UserAttributeDriver(
+          () =>
+            this.shadowRoot?.querySelector(
+              'descope-user-attribute[data-id="recoveryPhone"]',
+            ),
+          { logger: this.logger },
+        );
+
+        this.recoveryPhoneUserAttr.onEditClick(() => {
+          this.#editModal?.open();
+        });
+
+        this.recoveryPhoneUserAttr.onDeleteClick(() => {
+          this.#deleteModal?.open();
+        });
+      }
+
+      #onValueUpdate = withMemCache(
+        (recoveryPhone: ReturnType<typeof getVerifiedRecoveryPhone>) => {
+          this.recoveryPhoneUserAttr.value = recoveryPhone;
+        },
+      );
+
+      async onWidgetRootReady() {
+        await super.onWidgetRootReady?.();
+
+        this.#initRecoveryPhoneUserAttr();
+        this.#initEditModal();
+        this.#initDeleteModal();
+
+        this.#onValueUpdate(getVerifiedRecoveryPhone(this.state));
+
+        this.subscribe(
+          this.#onValueUpdate.bind(this),
+          getVerifiedRecoveryPhone,
+        );
+      }
+    },
+);
