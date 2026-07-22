@@ -31,6 +31,7 @@ import {
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
 import {
   AutoFocusOptions,
+  ComponentsConfig,
   CustomScreenData,
   CustomScreenState,
   Direction,
@@ -835,24 +836,6 @@ const omitBy = <T extends Record<string, any>>(
     ),
   ) as T;
 
-// Known componentsConfig field -> [clean `data` key, sub-key to unwrap].
-// The backend wraps option lists as `{ data: [...] }` / `{ options: [...] }`;
-// null means keep the value as-is. This is an allow-list: any componentsConfig
-// field not listed here (and not handled separately below) is intentionally dropped,
-// so `data` stays a documented, stable contract and internal backend fields never leak.
-const CONFIG_FIELD_MAP: Record<string, [string, 'data' | 'options' | null]> = {
-  thirdPartyAppApproveScopes: ['inboundAppApproveScopes', 'data'],
-  sqSetup: ['securityQuestionsSetup', null],
-  sqVerify: ['securityQuestionsVerify', null],
-  userSelectedTenant: ['userTenants', 'data'],
-  userRoles: ['userRoles', 'data'],
-  ssoApplications: ['ssoApplications', 'data'],
-  ssoConfigurations: ['ssoConfigurations', 'data'],
-  samlMappings: ['samlAttributeMappings', 'options'],
-  oidcMappings: ['oidcAttributeMappings', 'options'],
-  samlGroupMappings: ['samlGroupMappings', 'options'],
-};
-
 // Reads the `data-name` value out of a `[data-name="x"]` selector (either quote style).
 const dataNameOf = (selector: string): string | undefined =>
   selector.match(/\[data-name=["']([^"']+)["']\]/)?.[1];
@@ -866,23 +849,116 @@ const PASSWORD_POLICY_KEYS: Record<string, string> = {
   availablePolicies: 'available-policies',
 };
 
-const normalizePasswordPolicy = (p: Record<string, any>) =>
-  Object.fromEntries(
+// Renames the backend's password-policy attribute keys to clean names.
+// Returns undefined when the screen has no password policy.
+const normalizePasswordPolicy = (
+  newPassword: Record<string, any> | undefined,
+): Record<string, unknown> | undefined => {
+  if (!newPassword) return undefined;
+  const policy = Object.fromEntries(
     Object.entries(PASSWORD_POLICY_KEYS)
-      .map(([clean, raw]) => [clean, p[raw]])
+      .map(([clean, raw]) => [clean, newPassword[raw]])
       .filter(([, v]) => v !== undefined),
   );
+  return Object.keys(policy).length ? policy : undefined;
+};
+
+// Reads one `componentsDynamicAttrs` entry by its `[data-name="…"]` name. The backend
+// keys these by CSS selector, so we match on the data-name rather than the raw key.
+const dynamicAttrsOf = (
+  componentsConfig: ComponentsConfig | undefined,
+  name: string,
+): Record<string, any> | undefined => {
+  const entries = componentsConfig?.componentsDynamicAttrs;
+  if (!entries) return undefined;
+  const match = Object.entries(entries).find(
+    ([selector]) => dataNameOf(selector) === name,
+  );
+  return match?.[1]?.attributes;
+};
+
+const recoveryCodesOf = (componentsConfig: ComponentsConfig | undefined) => {
+  const attributes = dynamicAttrsOf(componentsConfig, 'recoveryCodes');
+  if (!attributes) return undefined;
+  return Array.isArray(attributes.data)
+    ? attributes.data.map((code: { value: string }) => code.value)
+    : [];
+};
+
+const outboundAppOf = (componentsConfig: ComponentsConfig | undefined) => {
+  const attributes = dynamicAttrsOf(componentsConfig, 'outboundApp');
+  if (!attributes) return undefined;
+  return {
+    label: attributes.label,
+    iconSrc: attributes['icon-src'],
+    appId: attributes['data-descope-outbound-oauth-app-id'],
+  };
+};
+
+// The complete, allow-listed contract for `context.data`: one entry per `data` field,
+// each with the `data` key and a `from` reader over the raw screen state. Every field
+// is defined the same way and at the same level. Because we only read the fields listed
+// here, all other screen-state data is left out by construction — internal backend
+// fields, and dynamic-select options (which the backend spreads into componentsConfig
+// under arbitrary flow-defined keys). Exposing those is reserved for a future
+// `data.selects` map. Mirrors the backend `ExternalStateContext` / `ComponentsConfig`
+// structs (orchestrationservice .../domain/context.go).
+const DATA_FIELDS: {
+  key: string;
+  from: (screenState: ScreenState) => unknown;
+}[] = [
+  // moved verbatim from the top level of the screen state
+  { key: 'totp', from: (s) => s.totp },
+  { key: 'notp', from: (s) => s.notp },
+  { key: 'sentTo', from: (s) => s.sentTo },
+  { key: 'sso', from: (s) => s.sso },
+  { key: 'selfProvisionDomains', from: (s) => s.selfProvisionDomains },
+  // from componentsConfig — renamed, most unwrapped from a `{ data }` / `{ options }` wrapper
+  {
+    key: 'inboundAppApproveScopes',
+    from: (s) => s.componentsConfig?.thirdPartyAppApproveScopes?.data,
+  },
+  { key: 'securityQuestionsSetup', from: (s) => s.componentsConfig?.sqSetup },
+  { key: 'securityQuestionsVerify', from: (s) => s.componentsConfig?.sqVerify },
+  {
+    key: 'userTenants',
+    from: (s) => s.componentsConfig?.userSelectedTenant?.data,
+  },
+  { key: 'userRoles', from: (s) => s.componentsConfig?.userRoles?.data },
+  {
+    key: 'ssoApplications',
+    from: (s) => s.componentsConfig?.ssoApplications?.data,
+  },
+  {
+    key: 'ssoConfigurations',
+    from: (s) => s.componentsConfig?.ssoConfigurations?.data,
+  },
+  {
+    key: 'samlAttributeMappings',
+    from: (s) => s.componentsConfig?.samlMappings?.options,
+  },
+  {
+    key: 'oidcAttributeMappings',
+    from: (s) => s.componentsConfig?.oidcMappings?.options,
+  },
+  {
+    key: 'samlGroupMappings',
+    from: (s) => s.componentsConfig?.samlGroupMappings?.options,
+  },
+  {
+    key: 'passwordPolicy',
+    from: (s) => normalizePasswordPolicy(s.componentsConfig?.newPassword),
+  },
+  // from componentsConfig.componentsDynamicAttrs, matched by [data-name="…"]
+  { key: 'recoveryCodes', from: (s) => recoveryCodesOf(s.componentsConfig) },
+  { key: 'outboundApp', from: (s) => outboundAppOf(s.componentsConfig) },
+];
 
 /**
  * Build the custom-screen `data` field — all server-produced screen data in one place.
- * Sources:
- *  - top-level `screenState` screen data (totp, notp, sentTo, sso, …), moved in verbatim.
- *  - `componentsConfig`: only known, allow-listed fields — renamed/normalized.
- *    Unlisted fields are dropped (see CONFIG_FIELD_MAP), so `data` is a stable contract.
- *  - `componentsDynamicAttrs`: only recognized entries (recovery codes, outbound app);
- *    arbitrary connector/input selectors are dropped.
- * Mirrors the backend `ExternalStateContext` / `ComponentsConfig` structs
- * (orchestrationservice .../domain/context.go). Returns undefined when empty.
+ * Every field is declared in DATA_FIELDS as a `data` key + a reader over the raw screen
+ * state; this function just applies them and skips any whose reader returns undefined.
+ * Returns undefined when nothing was produced.
  */
 const buildCustomScreenData = (
   screenState: ScreenState | undefined,
@@ -890,63 +966,10 @@ const buildCustomScreenData = (
   if (!screenState) return undefined;
 
   const data: Record<string, unknown> = {};
-
-  const set = (key: string, value: unknown) => {
+  DATA_FIELDS.forEach(({ key, from }) => {
+    const value = from(screenState);
     if (value !== undefined) data[key] = value;
-  };
-
-  // server-produced screen data that used to sit at the top level
-  set('totp', screenState.totp);
-  set('notp', screenState.notp);
-  set('sentTo', screenState.sentTo);
-  set('sso', screenState.sso);
-  set('selfProvisionDomains', screenState.selfProvisionDomains);
-
-  const { componentsConfig } = screenState;
-  if (componentsConfig) {
-    // allow-list: only known fields surface; everything else is dropped.
-    // `newPassword` and `componentsDynamicAttrs` are handled separately below and are
-    // intentionally absent from CONFIG_FIELD_MAP. Dropped here too: dynamic-select
-    // options, which the backend spreads into componentsConfig under the flow's own
-    // field names (arbitrary keys). We don't put arbitrary keys on `data`; exposing
-    // them is reserved for a future `data.selects` map.
-    Object.entries(componentsConfig).forEach(([key, value]) => {
-      if (value == null) return;
-
-      const mapping = CONFIG_FIELD_MAP[key];
-      if (!mapping) return;
-
-      const [cleanKey, unwrap] = mapping;
-      set(cleanKey, unwrap ? value[unwrap] : value);
-    });
-
-    if (componentsConfig.newPassword) {
-      const policy = normalizePasswordPolicy(componentsConfig.newPassword);
-      if (Object.keys(policy).length) data.passwordPolicy = policy;
-    }
-
-    const dynamicAttrs = componentsConfig.componentsDynamicAttrs;
-    if (dynamicAttrs) {
-      Object.entries(dynamicAttrs).forEach(([selector, entry]) => {
-        const attributes = entry?.attributes;
-        if (!attributes) return;
-
-        const name = dataNameOf(selector);
-        if (name === 'recoveryCodes') {
-          data.recoveryCodes = Array.isArray(attributes.data)
-            ? attributes.data.map((code: { value: string }) => code.value)
-            : [];
-        } else if (name === 'outboundApp') {
-          data.outboundApp = {
-            label: attributes.label,
-            iconSrc: attributes['icon-src'],
-            appId: attributes['data-descope-outbound-oauth-app-id'],
-          };
-        }
-        // other selectors (connector/input configs) are dropped for now
-      });
-    }
-  }
+  });
 
   return Object.keys(data).length ? (data as CustomScreenData) : undefined;
 };
