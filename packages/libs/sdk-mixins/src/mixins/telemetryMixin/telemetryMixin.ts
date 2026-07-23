@@ -32,9 +32,7 @@ declare global {
 }
 
 export const telemetryMixin = createSingletonMixin(
-  <T extends CustomElementConstructor & { sdkVersion?: string }>(
-    superclass: T,
-  ) => {
+  <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
       injectNpmLibMixin,
       loggerMixin,
@@ -296,17 +294,35 @@ export const telemetryMixin = createSingletonMixin(
         }
       }
 
+      #telemetryReady: Promise<void> | null = null;
+
       async init() {
-        const sdkVersion = (this as any).sdkVersion || '1.0.0';
-        const config = await this.#getTelemetryConfig();
-
-        await this.#initializeTelemetry(config as any, {
-          projectId: this.projectId,
-          flowId: this.flowId,
-          version: sdkVersion,
-        });
-
+        // super.init() FIRST so downstream mixins finish setup and the
+        // SDK's user-facing paint isn't blocked on our CDN load or the
+        // `this.config` fetch. Kick off telemetry as its OWN promise chain
+        // stored on the instance. NOT awaited here — tests using
+        // jest.useFakeTimers can't advance the fetch chain, and blocking on
+        // it would freeze the render. Failures are caught so telemetry
+        // errors can never break the SDK's boot.
         await super.init?.();
+        const sdkVersion = (this as any).sdkVersion || '1.0.0';
+        this.#telemetryReady = this.#getTelemetryConfig()
+          .then((config) =>
+            this.#initializeTelemetry(config as any, {
+              projectId: this.projectId,
+              flowId: this.flowId,
+              version: sdkVersion,
+            }),
+          )
+          .catch((error) => {
+            this.logger.error('Failed to start telemetry:', error);
+          });
+      }
+
+      // Test hook: resolves once telemetry init has settled (success or
+      // caught error). Not part of the public SDK contract.
+      get telemetryReady(): Promise<void> {
+        return this.#telemetryReady ?? Promise.resolve();
       }
 
       disconnectedCallback() {

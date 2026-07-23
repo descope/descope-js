@@ -147,6 +147,7 @@ describe('telemetryMixin', () => {
     const { instance, logger, wrappedLogger } = createTelemetryHost();
 
     await instance.init();
+    await (instance as any).telemetryReady;
 
     expect(instance.injectNpmLib).toHaveBeenCalledWith(
       DEBUG_LOGS_LIB_NAME,
@@ -182,7 +183,9 @@ describe('telemetryMixin', () => {
     const { instance, logger } = createTelemetryHost();
 
     await instance.init();
+    await (instance as any).telemetryReady;
     await instance.init();
+    await (instance as any).telemetryReady;
 
     expect(instance.injectNpmLib).toHaveBeenCalledTimes(1);
     expect(TelemetryManagerCtor).toHaveBeenCalledTimes(1);
@@ -196,6 +199,7 @@ describe('telemetryMixin', () => {
     delete window.DescopeDebugLogs;
 
     await instance.init();
+    await (instance as any).telemetryReady;
 
     expect(logger.error).toHaveBeenCalledWith(
       'Failed to initialize telemetry:',
@@ -208,6 +212,7 @@ describe('telemetryMixin', () => {
     const { instance } = createTelemetryHost();
 
     await instance.init();
+    await (instance as any).telemetryReady;
 
     instance.updateTelemetryContext({ locale: 'en-US' });
 
@@ -220,6 +225,7 @@ describe('telemetryMixin', () => {
     const { instance, logger } = createTelemetryHost();
 
     await instance.init();
+    await (instance as any).telemetryReady;
     instance.disconnectedCallback();
 
     expect(telemetryManagerMock.shutdown).toHaveBeenCalledTimes(1);
@@ -247,6 +253,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(instance.injectNpmLib).not.toHaveBeenCalled();
       expect(TelemetryManagerCtor).not.toHaveBeenCalled();
@@ -266,6 +273,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(TelemetryManagerCtor).toHaveBeenCalled();
       expect(logger.info).toHaveBeenCalledWith(
@@ -287,6 +295,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(instance.telemetryManager).toBe(telemetryManagerMock);
 
@@ -310,6 +319,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(logger.warn).toHaveBeenCalledWith(
         expect.stringContaining(
@@ -332,6 +342,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       // Disconnect before expiration
       instance.disconnectedCallback();
@@ -352,6 +363,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(TelemetryManagerCtor).toHaveBeenCalled();
       expect(logger.info).toHaveBeenCalledWith(
@@ -391,6 +403,7 @@ describe('telemetryMixin', () => {
       configValue.telemetry = { enabled: true };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(TelemetryManagerCtor).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -420,6 +433,7 @@ describe('telemetryMixin', () => {
       };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(TelemetryManagerCtor).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -444,6 +458,7 @@ describe('telemetryMixin', () => {
       configValue.telemetry = { enabled: true };
 
       await instance.init();
+      await (instance as any).telemetryReady;
 
       expect(TelemetryManagerCtor).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
