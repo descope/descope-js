@@ -205,7 +205,8 @@ export const telemetryMixin = createSingletonMixin(
             identityPoolId:
               process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID || '',
             region: process.env.DESCOPE_TELEMETRY_REGION || '',
-            sessionSampleRate: Number.isFinite(sampleRate) ? sampleRate : 1,
+            sessionSampleRate:
+              Number.isFinite(sampleRate) && sampleRate > 0 ? sampleRate : 1,
             ...(process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN && {
               guestRoleArn: process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN,
             }),

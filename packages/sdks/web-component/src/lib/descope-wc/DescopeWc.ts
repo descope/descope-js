@@ -79,7 +79,6 @@ import {
   FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
-import { exec } from 'child_process';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
