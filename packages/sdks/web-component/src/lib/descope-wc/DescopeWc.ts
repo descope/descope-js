@@ -925,6 +925,13 @@ class DescopeWc extends BaseDescopeWc {
           }`,
         );
 
+        // whether the popup sent a response back (code or exchange error) before
+        // it closed. if it did, the popup was NOT abandoned - so we should not
+        // regenerate the risk token on close. this is a per-popup signal, kept
+        // local on purpose (reading the global flowState.code would false-positive
+        // after any earlier successful OAuth, since it is never cleared).
+        let receivedCode = false;
+
         const onPostMessage = (event: MessageEvent) => {
           this.loggerWrapper.debug(
             'Received popup message',
@@ -943,6 +950,9 @@ class DescopeWc extends BaseDescopeWc {
 
           const { action: popupAction, data } = event.data || {};
           if (popupAction === 'code') {
+            // a response came back (success code or exchange error) - the popup
+            // completed, it was not abandoned.
+            receivedCode = true;
             this.flowState.update({
               code: data.code,
               exchangeError: data.exchangeError,
@@ -959,7 +969,9 @@ class DescopeWc extends BaseDescopeWc {
               'Popup closed, dispatching popupclosed event',
             );
             clearInterval(intervalId);
-            this.#dispatch('popupclosed', {});
+            // mark whether the popup was abandoned (closed without sending a
+            // response) so the close handler can regenerate the risk token.
+            this.#dispatch('popupclosed', { abandoned: !receivedCode });
 
             this.loggerWrapper.debug('Cleaning up popup listeners');
             cleanup?.();
@@ -1849,6 +1861,16 @@ class DescopeWc extends BaseDescopeWc {
       ),
     ).filter((ele) => ele !== submitter);
 
+    // Capture the current screen's client scripts NOW, at click time. If this
+    // submit opens an OAuth popup, the redirect response overwrites screenState
+    // (screenState.clientScripts becomes empty), so by the time the popup closes
+    // we can no longer read them. We need them to regenerate the captcha token
+    // if the popup is abandoned. The captcha is a screen-level clientScript
+    // (screenState), not a flow-level one, so this is the only place it's still
+    // available.
+    const screenClientScripts =
+      this.flowState.current?.screenState?.clientScripts || [];
+
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
       submitter.removeAttribute('loading');
@@ -1857,9 +1879,37 @@ class DescopeWc extends BaseDescopeWc {
       });
     };
 
-    const restoreComponentsState = async () => {
+    const restoreComponentsState = async (e?: Event) => {
       this.loggerWrapper.debug('Restoring components state');
       this.removeEventListener('popupclosed', restoreComponentsState);
+
+      // Only a genuine web-popup-closed-without-response arms the refresh below;
+      // no-event callers (pageshow, same-screen) fall through to today's path.
+      const abandoned = (e as CustomEvent)?.detail?.abandoned === true;
+
+      if (abandoned && screenClientScripts.length) {
+        // The abandoned popup already spent the single-use captcha token, and a
+        // popup returns a redirect (not a screen) so the usual screen-scripts
+        // reload never runs - reusing that token would be rejected as "DUPE".
+        // Reload the screen's clientScripts (only these, not sdkScripts) to mint
+        // a fresh token, and gate the next submit on it via #sdkScriptsLoading
+        // (assigned before re-enabling the button; wrapped so it never rejects).
+        this.#sdkScriptsLoading = (async () => {
+          try {
+            await this.loadSdkScripts(screenClientScripts);
+          } catch (err) {
+            this.loggerWrapper.warn(
+              'Failed to refresh client scripts on popup close',
+              (err as Error)?.message,
+            );
+          }
+        })();
+        resetComponentsState();
+        return;
+      }
+
+      // Re-enable first (before the awaited reload below) so the button never
+      // stays stuck if getFlowConfig rejects.
       resetComponentsState();
       // if there are client scripts, we want to reload them
       const flowConfig = await this.getFlowConfig();

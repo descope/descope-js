@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.70.4](https://github.com/descope/descope-js/compare/web-component-3.70.3...web-component-3.70.4) (2026-07-22)
+
+
+### Bug Fixes
+
+* **web-component:** refresh captcha token on abandoned OAuth popup RELEASE ([#1443](https://github.com/descope/descope-js/issues/1443)) ([babd53b](https://github.com/descope/descope-js/commit/babd53b740aa298afebd5a0167e36c1c9f20bc7a)), closes [descope/etc#17057](https://github.com/descope/etc/issues/17057)
+
 ## [3.70.3](https://github.com/descope/descope-js/compare/web-component-3.70.2...web-component-3.70.3) (2026-07-16)
 
 ### Dependency Updates
