@@ -14,8 +14,9 @@ const PASSWORD_FIELDS = ['newPassword', 'password'];
 const USERNAME_ANCHOR_ATTRIBUTE = 'data-username-anchor';
 
 // What the mixin needs from its host. Defined as an interface (not imported)
-// to avoid a circular dependency on DescopeWc.
-interface PasswordManagerHost {
+// to avoid a circular dependency on DescopeWc. Exported so declaration emit
+// can name it from BaseDescopeWc's composed base class.
+export interface PasswordManagerHost {
   contentRootElement?: HTMLElement;
   flowState?: { current?: { executionId?: string } };
   sdk?: { getLastUserLoginId?: () => string };
