@@ -338,7 +338,7 @@ Pass `autoRefresh={{ customActivityTracking: true }}` to skip refresh calls for 
 ```jsx
 <AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <App />
-</AuthProvider>
+</AuthProvider>;
 ```
 
 **Step 2:** Create a `useActivityTracking` hook that calls `markUserActive()` on user interactions:
@@ -383,7 +383,7 @@ function Layout() {
 
 <AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <Layout />
-</AuthProvider>
+</AuthProvider>;
 ```
 
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
@@ -890,23 +890,27 @@ const AppRoot = () => {
 };
 ```
 
-#### Using Inbound Apps as OIDC Provider
+#### Using Inbound Apps or Federated Apps as an OIDC Provider (`issuer`)
 
-To use an inbound app as an OIDC provider, you must provide both the `issuer` and `clientId` configuration options. The `issuer` is the OIDC authority URL, and the `clientId` is the client ID for your inbound app.
+Instead of picking `applicationId` vs. `clientId` up front, you can just paste the **discovery/authority URL** of whichever app you want to use - a Federated App or an Inbound App - into `issuer`, including the full well-known URL as-is (`.../.well-known/openid-configuration`); it's automatically normalized to the bare issuer. The SDK detects which kind of app it is from the URL's shape:
 
-> **Note:** When configuring an inbound app as an OIDC provider, you must obtain the issuer URL directly from the inbound app settings page in the Descope console. The issuer URL is specific to your inbound app configuration and cannot be constructed manually. In addition, you'll need to provide the client ID from the same inbound app settings.
+- **Federated App URL** (the default OIDC path derived from your project, e.g. `https://api.descope.com/<Project ID>` or `https://api.descope.com/<Project ID>/<Application ID>`): `clientId` defaults to your project ID - you only need to set it if you want to override that default.
+- **Inbound App URL** (always shaped like `https://api.descope.com/v1/apps/<Project ID>`), or any other custom domain: `clientId` is required.
+
+> **Note:** For an Inbound App, obtain the issuer URL directly from the inbound app's settings page in the Descope console - it cannot be constructed manually. You'll also need the client ID from the same settings page.
 
 ```js
 <AuthProvider
   projectId="my-project-id"
   oidcConfig={{
-    // Required: Get this from your inbound app settings page
+    // Paste the Inbound App's issuer/discovery URL from its settings page in the console
     issuer: 'https://api.descope.com/v1/apps/<Project ID>',
-    // Required: Client ID from your inbound app settings
+    // Required for an Inbound App URL; defaults to the project ID for a Federated App URL
     clientId: 'your-inbound-app-client-id',
     // Optional: Custom redirect URI (defaults to current URL)
     redirectUri: 'https://my-app.com/redirect',
-    // Optional: Custom scope (defaults to 'openid' when issuer is provided)
+    // Optional: Custom scope (defaults to 'openid' for an Inbound App URL, or the full
+    // Descope scope for a Federated App URL - see below)
     scope: 'openid profile email',
   }}
 >
@@ -914,7 +918,40 @@ To use an inbound app as an OIDC provider, you must provide both the `issuer` an
 </AuthProvider>
 ```
 
-When using a custom `issuer` (including inbound apps), the default scope is `'openid'` instead of the full Descope scope. You can override this by providing a custom `scope` value.
+##### Overriding the default `scope`
+
+`scope` is set once, at `AuthProvider` init - it isn't scoped per-resource or overridable per sign-in call. The default depends on which kind of app `issuer` (or `applicationId`) resolves to:
+
+```js
+// Inbound App - default scope is 'openid'
+oidcConfig={{
+  issuer: 'https://api.descope.com/v1/apps/<Project ID>',
+  clientId: 'your-inbound-app-client-id',
+  scope: 'openid profile email', // overrides the 'openid'-only default
+}}
+
+// Federated App - default scope is 'openid email roles descope.custom_claims offline_access'
+oidcConfig={{
+  applicationId: 'my-application-id',
+  scope: 'openid profile email', // overrides the full Descope default scope
+}}
+```
+
+##### Requesting a resource-scoped token (`resource` / `audience`)
+
+Pass `resource` (per [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)) to request an access token bound to a specific resource. `audience` is accepted as an alias for callers coming from an `audience`-based vocabulary - if both are provided, `resource` wins. Either can be set once at `AuthProvider` init (`oidcConfig`) **or** per sign-in call via `loginWithRedirect` (per-call takes precedence for that sign-in - see below); it's applied both when redirecting to sign in and when refreshing the token, and accepts either a single resource or an array:
+
+```js
+oidcConfig={{
+  issuer: 'https://api.descope.com/v1/apps/<Project ID>',
+  clientId: 'your-inbound-app-client-id',
+  resource: 'https://api.my-app.com',
+  // or: resource: ['https://api.my-app.com', 'https://other-api.my-app.com'],
+  // or, equivalently: audience: 'https://api.my-app.com',
+}}
+```
+
+You can also pass `resource` (or `audience`) per-call, without setting it in `oidcConfig`, by forwarding it to `loginWithRedirect` (see below).
 
 ### Login
 
@@ -932,6 +969,9 @@ const MyComponent = () => {
           // By default, the login will redirect the user to the current URL
           // If you want to redirect the user to a different URL, you can specify it here
           redirect_uri: window.location.origin,
+          // resource (or its alias, audience) can be set per-call, overriding oidcConfig
+          // for this sign-in - no need to set it in oidcConfig at all if you only need it here
+          resource: 'https://api.my-app.com',
         });
       }}
     >

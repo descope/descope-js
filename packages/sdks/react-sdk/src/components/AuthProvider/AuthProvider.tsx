@@ -45,6 +45,10 @@ interface IAuthProviderProps {
   hooks?: Hooks;
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
+  // `issuer` accepts either the bare issuer or a full well-known URL
+  // (`.../.well-known/openid-configuration`), which is auto-normalized.
+  // `resource` (RFC 8707) can be set here to request a resource-scoped access
+  // token at sign-in, for either federated (applicationId) or inbound (issuer) apps.
   oidcConfig?: OidcConfig;
   // Default is true. If true, last authenticated user will be stored on local storage and can accessed with getUser function
   storeLastAuthenticatedUser?: boolean;
