@@ -8,8 +8,10 @@ import { initNameUserAttrMixin } from './initComponentsMixins/initNameUserAttrMi
 import { initPasskeyUserAuthMethodMixin } from './initComponentsMixins/initPasskeyUserAuthMethodMixin';
 import { initPasswordUserAuthMethodMixin } from './initComponentsMixins/initPasswordUserAuthMethodMixin';
 import { initPhoneUserAttrMixin } from './initComponentsMixins/initPhoneUserAttrMixin';
-import { initRecoveryEmailUserAttrMixin } from './initComponentsMixins/initRecoveryEmailUserAttrMixin';
-import { initRecoveryPhoneUserAttrMixin } from './initComponentsMixins/initRecoveryPhoneUserAttrMixin';
+import {
+  initRecoveryEmailUserAttrMixin,
+  initRecoveryPhoneUserAttrMixin,
+} from './initComponentsMixins/recoveryUserAttrMixins';
 import { initTotpUserAuthMethodMixin } from './initComponentsMixins/initTotpUserAuthMethodMixin';
 import { initUserBuiltinAttributesMixin } from './initComponentsMixins/initUserBuiltinAttributesMixin';
 import { initUserCustomAttributesMixin } from './initComponentsMixins/initUserCustomAttributesMixin';
