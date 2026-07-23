@@ -5,13 +5,6 @@ import { ConsolePlugin } from './plugins/consolePlugin';
 import { NavigationPlugin } from './plugins/navigationPlugin';
 import { DomMutationPlugin } from './plugins/domMutationPlugin';
 import { NetworkPlugin } from './plugins/networkPlugin';
-import type { NetworkCaptureConfig } from './types';
-
-export interface Logger {
-  debug: (...args: any[]) => void;
-  info: (...args: any[]) => void;
-  error: (...args: any[]) => void;
-}
 
 function normalizeConfig<T extends Record<string, any>>(
   value: boolean | T | undefined,
@@ -26,6 +19,12 @@ function normalizeConfig<T extends Record<string, any>>(
 
   // value is true
   return {};
+}
+
+export interface Logger {
+  debug: (...args: any[]) => void;
+  info: (...args: any[]) => void;
+  error: (...args: any[]) => void;
 }
 
 /**
