@@ -67,15 +67,45 @@ export type Role = {
 
 export type SortParams = { field: string; desc: boolean };
 
+// Structured filter sent to /v1/mgmt/user/search `searchFields` (mirrors the
+// BE common SearchField). `valStr` may carry `%` wildcards for LIKE; `negative`
+// flips to NOT LIKE / != any. Honored only when the BE feature flag is on.
+export type SearchField = {
+  field: string;
+  valStr?: string;
+  valArr?: string[];
+  negative?: boolean;
+  valType?: string;
+};
+
+export type FilterRow = {
+  column: string;
+  operator: string;
+  value: string | string[] | null;
+  // Query affixes the widget resolves from the operator config (e.g. SQL-LIKE
+  // `%`). The value stays raw; the consumer builds the query with these.
+  prefix?: string;
+  suffix?: string;
+};
+
 export type SearchUsersConfig = {
   page?: number;
   limit?: number;
   customAttributes?: CustomAttributes;
-  statuses?: UserStatus;
+  statuses?: UserStatus[];
+  roleNames?: string[];
+  loginIds?: string[];
   emails?: string[];
   phones?: string[];
   text?: string;
+  searchFields?: SearchField[];
   sort?: SortParams[];
+  verifiedEmail?: boolean;
+  verifiedPhone?: boolean;
+  password?: boolean;
+  totp?: boolean;
+  webauthn?: boolean;
+  scim?: boolean;
 };
 
 export type UpdateUserConfig = {

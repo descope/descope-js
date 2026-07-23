@@ -24,9 +24,12 @@ export const createUserSdk = ({
     limit = 10000,
     customAttributes,
     statuses,
+    roleNames,
+    loginIds,
     emails,
     phones,
     text,
+    searchFields,
     sort,
   } = {}) => {
     if (mock) {
@@ -35,9 +38,12 @@ export const createUserSdk = ({
         limit,
         customAttributes,
         statuses,
+        roleNames,
+        loginIds,
         emails,
         phones,
         text,
+        searchFields,
         sort,
       });
     }
@@ -49,9 +55,12 @@ export const createUserSdk = ({
         withTestUser: false,
         customAttributes,
         statuses,
+        roleNames,
+        loginIds,
         emails,
         phones,
         text,
+        searchFields,
         sort,
       },
       {

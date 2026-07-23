@@ -11,6 +11,7 @@ import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import mockRoles from '../test/mocks/mockRoles';
 import rootMock from '../test/mocks/rootMock';
+import rootMockWithFilter from '../test/mocks/rootMockWithFilter';
 import createUserModalMock from '../test/mocks/createUserModalMock';
 import deleteUserModalMock from '../test/mocks/deleteUserModalMock';
 import enableUserModalMock from '../test/mocks/enableUserModalMock';
@@ -759,6 +760,175 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
     ).toBeHidden({ timeout: 20000 });
+  });
+
+  test('filter users by status', async ({ page }) => {
+    test.setTimeout(60_000);
+
+    await page.route('*/**/root.html', async (route) =>
+      route.fulfill({ body: rootMockWithFilter }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    // Set up route handler — fulfill all search requests; payload is asserted via
+    // the waitForResponse predicate below.
+    await page.route(apiPath('user', 'search'), async (route) => {
+      const { statuses } = route.request().postDataJSON();
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          users:
+            Array.isArray(statuses) && statuses.includes('enabled')
+              ? [mockUsers[1]]
+              : mockUsers,
+        }),
+      });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // Dispatch the filter-apply event directly on the descope-filter element —
+    // we don't drive the popover UI in unit-style e2e since the popover's
+    // operator/value combos require multi-step click sequences and the wire
+    // shape is what we want to assert here.
+    const filter = page.locator('descope-filter').first();
+    await filter.waitFor({ state: 'attached' });
+
+    const searchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.user.search) &&
+        Array.isArray(response.request().postDataJSON()?.statuses) &&
+        response.request().postDataJSON().statuses.includes('enabled'),
+    );
+
+    await filter.evaluate((el) => {
+      el.dispatchEvent(
+        new CustomEvent('filter-apply', {
+          detail: {
+            action: 'apply',
+            value: [
+              { column: 'status', operator: 'is-any-of', value: ['active'] },
+            ],
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+
+    await searchResponsePromise;
+
+    // Only filtered users shown in grid.
+    await expect(
+      page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
+    ).toBeHidden({ timeout: 20000 });
+  });
+
+  test('filter users by roles', async ({ page }) => {
+    test.setTimeout(60_000);
+
+    await page.route('*/**/root.html', async (route) =>
+      route.fulfill({ body: rootMockWithFilter }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.route(apiPath('user', 'search'), async (route) => {
+      const { roleNames } = route.request().postDataJSON();
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          users:
+            Array.isArray(roleNames) && roleNames.length
+              ? [mockUsers[1]]
+              : mockUsers,
+        }),
+      });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const filter = page.locator('descope-filter').first();
+    await filter.waitFor({ state: 'attached' });
+
+    const searchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.user.search) &&
+        Array.isArray(response.request().postDataJSON()?.roleNames) &&
+        response.request().postDataJSON().roleNames.includes('Tenant Admin'),
+    );
+
+    await filter.evaluate((el) => {
+      el.dispatchEvent(
+        new CustomEvent('filter-apply', {
+          detail: {
+            action: 'apply',
+            value: [
+              {
+                column: 'roles',
+                operator: 'is-any-of',
+                value: ['Tenant Admin'],
+              },
+            ],
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+
+    await searchResponsePromise;
+
+    await expect(
+      page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
+    ).toBeHidden({ timeout: 20000 });
+  });
+
+  test('clearing the filter sends a search with no filter fields', async ({
+    page,
+  }) => {
+    test.setTimeout(60_000);
+
+    await page.route('*/**/root.html', async (route) =>
+      route.fulfill({ body: rootMockWithFilter }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    await page.route(apiPath('user', 'search'), async (route) => {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ users: mockUsers }),
+      });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const filter = page.locator('descope-filter').first();
+    await filter.waitFor({ state: 'attached' });
+
+    const clearResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.user.search) &&
+        response.request().postDataJSON()?.statuses === undefined &&
+        response.request().postDataJSON()?.roleNames === undefined,
+    );
+
+    await filter.evaluate((el) => {
+      el.dispatchEvent(
+        new CustomEvent('filter-clear', {
+          detail: { action: 'clear-all', value: [] },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+
+    await clearResponsePromise;
   });
 
   test('close notification', async ({ page }) => {
