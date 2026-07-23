@@ -12,6 +12,18 @@ import { configMixin } from '../configMixin';
 import { projectIdMixin } from '../projectIdMixin';
 import { flowIdMixin } from '../flowIdMixin';
 
+// Human-readable delay formatter. Picks the largest unit that fits so logs
+// read as "30 minutes" / "2 days" instead of "1800 seconds" / "172800 seconds".
+function formatDelay(ms: number): string {
+  const s = Math.floor(ms / 1000);
+  if (s < 60) return `${s} seconds`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m} minutes`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h} hours`;
+  return `${Math.floor(h / 24)} days`;
+}
+
 // Extend global window to include DescopeDebugLogs (UMD global)
 declare global {
   interface Window {
@@ -37,11 +49,6 @@ export const telemetryMixin = createSingletonMixin(
       #telemetryInitialized = false;
       #expirationTimeoutId: NodeJS.Timeout | null = null;
 
-      /**
-       * Initialize telemetry if enabled in config
-       * @param config - The configuration object
-       * @param context - Context information (projectId, flowId, version)
-       */
       async #initializeTelemetry(
         config: Config['telemetry'],
         context: {
@@ -50,44 +57,33 @@ export const telemetryMixin = createSingletonMixin(
           version?: string;
         },
       ) {
-        // Skip if telemetry not enabled
         if (!config?.enabled) {
           this.logger.debug('Telemetry is disabled, skipping initialization');
           return;
         }
 
-        // Skip if already initialized
         if (this.#telemetryInitialized) {
           this.logger.debug('Telemetry already initialized');
           return;
         }
 
-        // Check if telemetry has expired
-        if (config.expiration) {
-          const now = Date.now();
-          if (now >= config.expiration) {
-            this.logger.info(
-              `Telemetry expiration time has passed (${new Date(
-                config.expiration,
-              ).toISOString()}), skipping initialization`,
-            );
-            return;
-          }
+        if (config.expiration && Date.now() >= config.expiration) {
+          this.logger.info(
+            `Telemetry expiration time has passed (${new Date(
+              config.expiration,
+            ).toISOString()}), skipping initialization`,
+          );
+          return;
         }
 
         try {
           this.logger.debug('Initializing telemetry...');
-
-          // Load the debug-logs library from CDN
-          // Use version from config, default to 'latest' if not provided
           const version = config.version || 'latest';
 
           await this.injectNpmLib(DEBUG_LOGS_LIB_NAME, version, JS_FILE_PATH, [
             LOCAL_STORAGE_OVERRIDE,
           ]);
 
-          // Check if the library was loaded successfully
-          // The UMD build exposes the TelemetryManager class directly as window.DescopeDebugLogs
           const TelemetryManager = window.DescopeDebugLogs;
           if (!TelemetryManager) {
             throw new Error(
@@ -96,41 +92,27 @@ export const telemetryMixin = createSingletonMixin(
             );
           }
 
-          // Build telemetry configuration
-          const telemetryConfig = {
-            enabled: true,
-            rumConfig: {
-              ...config.rumConfig,
-              // Ensure sessionSampleRate has a default
-              sessionSampleRate: config.rumConfig.sessionSampleRate ?? 1.0,
-            },
-            capture: config.capture || {},
-          };
-
-          // Build context for telemetry
-          const telemetryContext = {
-            projectId: context.projectId,
-            flowId: context.flowId,
-            version: context.version || '1.0.0',
-          };
-
-          // Initialize the telemetry manager
-          // TelemetryManager(config, context, logger?)
           this.#telemetryManager = new TelemetryManager(
-            telemetryConfig,
-            telemetryContext,
-            this.logger, // Pass logger for telemetry internal logging
+            {
+              enabled: true,
+              rumConfig: config.rumConfig,
+              capture: config.capture,
+            },
+            {
+              projectId: context.projectId,
+              flowId: context.flowId,
+              version: context.version || '1.0.0',
+            },
+            this.logger,
           );
           this.#telemetryInitialized = true;
 
           this.logger.info('Telemetry initialized successfully');
 
-          // Schedule automatic shutdown if expiration is set
           if (config.expiration) {
             this.#scheduleExpirationShutdown(config.expiration);
           }
         } catch (error) {
-          // Fail silently - telemetry should never break the application
           this.logger.error('Failed to initialize telemetry:', error);
           this.#telemetryInitialized = false;
         }
@@ -145,28 +127,28 @@ export const telemetryMixin = createSingletonMixin(
         const timeUntilExpiration = expirationMs - now;
 
         if (timeUntilExpiration <= 0) {
-          // Already expired, shutdown immediately
           this.logger.info('Telemetry expiration time reached, shutting down');
           this.#shutdownTelemetry();
           return;
         }
 
-        // Limit timeout to 1 day (86400000 milliseconds)
+        // setTimeout's max safe delay is ~24.8 days; cap at 1 day so a
+        // mis-set expiration far in the future doesn't underflow to 0.
         const MAX_TIMEOUT = 86400000;
         const delay = Math.min(timeUntilExpiration, MAX_TIMEOUT);
 
         if (timeUntilExpiration > MAX_TIMEOUT) {
           this.logger.warn(
-            `Telemetry expiration is beyond maximum timeout (${Math.floor(
-              timeUntilExpiration / 86400000,
-            )} days). Setting to maximum.`,
+            `Telemetry expiration is beyond maximum timeout (${formatDelay(
+              timeUntilExpiration,
+            )}). Setting to maximum.`,
           );
         }
 
         this.logger.info(
           `Telemetry will expire at ${new Date(
             expirationMs,
-          ).toISOString()} (in ${Math.floor(delay / 1000)} seconds)`,
+          ).toISOString()} (in ${formatDelay(delay)})`,
         );
 
         this.#expirationTimeoutId = setTimeout(() => {
@@ -175,11 +157,7 @@ export const telemetryMixin = createSingletonMixin(
         }, delay);
       }
 
-      /**
-       * Shutdown telemetry and clean up resources
-       */
       #shutdownTelemetry() {
-        // Clear expiration timeout if exists
         if (this.#expirationTimeoutId) {
           clearTimeout(this.#expirationTimeoutId);
           this.#expirationTimeoutId = null;
@@ -205,28 +183,97 @@ export const telemetryMixin = createSingletonMixin(
         return this.#telemetryManager;
       }
 
-      async #getTelemetryConfig() {
-        const { telemetry } = (await this.config) || {};
+      async #getTelemetryConfig(): Promise<Config['telemetry']> {
+        // Prefer telemetry config shipped by the backend in the project's
+        // config.json. Otherwise, fall back to values from
+        // packages/sdks/web-component/.env (DESCOPE_TELEMETRY_* — substituted
+        // at WC build time via rollup.config.app.mjs). We MERGE rather than
+        // replace so the backend can override individual fields (e.g. just
+        // expiration) without re-stating every credential.
+        const beTelemetry = (await this.config)?.telemetry;
 
-        return {
-          enabled: true,
-          expiration: Date.now() + 5 * 60 * 1000, // 5 minutes from now
+        const sampleRate = Number(
+          process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE,
+        );
+
+        const fallback: NonNullable<Config['telemetry']> = {
+          enabled:
+            (process.env.DESCOPE_TELEMETRY_ENABLED || '').toLowerCase() ===
+            'true',
           rumConfig: {
-            applicationId: '29ffa5ff-1d8b-4cc6-b464-9003ab8c52ba',
-            identityPoolId: 'eu-west-1:9830bbf8-cb94-47d0-a7ef-48e5cde4a1c3',
-            region: 'eu-west-1',
-            sessionSampleRate: 1,
+            applicationId: process.env.DESCOPE_TELEMETRY_APPLICATION_ID || '',
+            identityPoolId:
+              process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID || '',
+            region: process.env.DESCOPE_TELEMETRY_REGION || '',
+            sessionSampleRate: Number.isFinite(sampleRate) ? sampleRate : 1,
+            ...(process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN && {
+              guestRoleArn: process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN,
+            }),
           },
-          capture: {
+        };
+
+        const cfg: NonNullable<Config['telemetry']> = {
+          ...fallback,
+          ...beTelemetry,
+          rumConfig: {
+            ...fallback.rumConfig,
+            ...beTelemetry?.rumConfig,
+          },
+          capture: this.#resolveCapture(beTelemetry?.capture),
+        };
+
+        // If enabled but a required RUM credential is missing (empty from both
+        // the BE block and the .env fallback), disable rather than hand AwsRum
+        // an empty applicationId/identityPoolId/region — that would either
+        // throw at construction or silently no-op with no session recorded.
+        if (
+          cfg.enabled &&
+          (!cfg.rumConfig?.applicationId ||
+            !cfg.rumConfig?.identityPoolId ||
+            !cfg.rumConfig?.region)
+        ) {
+          this.logger.warn(
+            'Telemetry enabled but rumConfig is incomplete (applicationId/identityPoolId/region required). Skipping initialization.',
+          );
+          cfg.enabled = false;
+        }
+
+        // Safety cap: when no backend telemetry config is present at all,
+        // end the session after 5 minutes so dev sessions don't leak. Once
+        // the backend owns the config it controls expiration explicitly.
+        if (!beTelemetry) {
+          cfg.expiration = Date.now() + 5 * 60 * 1000;
+        }
+
+        return cfg;
+      }
+
+      /**
+       * The backend can't serialize a DOM element reference, so we always
+       * inject this.shadowRoot here. Respect an explicit `dom: false`.
+       */
+      #resolveCapture(
+        beCapture: NonNullable<Config['telemetry']>['capture'],
+      ): NonNullable<Config['telemetry']>['capture'] {
+        const domSetting = beCapture?.dom;
+        if (domSetting === false) {
+          return {
             console: true,
-            network: {
-              urlFilter: [],
-            },
-            dom: {
-              rootElement: this.shadowRoot as any,
-              throttleMs: 2000,
-            },
+            network: { urlFilter: [] },
             navigation: true,
+            ...beCapture,
+            dom: false,
+          };
+        }
+        return {
+          console: true,
+          network: { urlFilter: [] },
+          navigation: true,
+          ...beCapture,
+          dom: {
+            throttleMs: 2000,
+            ...(typeof domSetting === 'object' ? domSetting : {}),
+            rootElement: this.shadowRoot as any,
           },
         };
       }

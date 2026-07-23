@@ -185,9 +185,21 @@
 
       <div class="warning">
         <strong>⚠️ Important:</strong> You need to configure your AWS CloudWatch
-        RUM credentials below. Without valid credentials, the RUM client will
-        fail silently (by design).
+        RUM credentials below. The fields below are pre-populated from
+        <code>packages/libs/debug-logs/.env</code>. If they're empty or you
+        haven't created that file, see the package README. Without valid
+        credentials, the RUM client will fail silently (by design).
       </div>
+      <div
+        id="env-missing-banner"
+        class="warning"
+        style="
+          display: none;
+          background: #f8d7da;
+          border-color: #f5c2c7;
+          color: #842029;
+        "
+      ></div>
     </div>
 
     <div class="container">
@@ -200,7 +212,6 @@
             type="text"
             id="appId"
             placeholder="Enter AWS RUM Application ID"
-            value="29ffa5ff-1d8b-4cc6-b464-9003ab8c52ba"
           />
         </label>
         <br />
@@ -220,7 +231,6 @@
             type="text"
             id="identityPoolId"
             placeholder="eu-west-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            value="eu-west-1:9830bbf8-cb94-47d0-a7ef-48e5cde4a1c3"
           />
         </label>
         <br />
@@ -230,18 +240,12 @@
             type="text"
             id="guestRoleArn"
             placeholder="Leave empty for enhanced flow (recommended)"
-            value=""
           />
         </label>
         <br />
         <label>
           Region:
-          <input
-            type="text"
-            id="region"
-            placeholder="eu-west-1"
-            value="eu-west-1"
-          />
+          <input type="text" id="region" placeholder="eu-west-1" />
         </label>
       </div>
 
@@ -353,8 +357,52 @@
       <button onclick="clearLocalLog()">Clear Log</button>
     </div>
 
+    <!-- Generated at dev-server start time from .env (gitignored). Loaded as
+         a regular script so it sets window.__demoEnv before the module below
+         runs. If the file is missing or empty, the form stays blank and a
+         warning is shown. See packages/libs/debug-logs/README.md. -->
+    <script
+      src="./dist/demo-env.js"
+      onerror="window.__demoEnvLoadFailed = true"
+    ></script>
+
     <script type="module">
       import TelemetryManager from './dist/index.esm.js';
+
+      const ENV_KEYS = [
+        ['DESCOPE_TELEMETRY_APPLICATION_ID', 'appId'],
+        ['DESCOPE_TELEMETRY_IDENTITY_POOL_ID', 'identityPoolId'],
+        ['DESCOPE_TELEMETRY_REGION', 'region'],
+        ['DESCOPE_TELEMETRY_GUEST_ROLE_ARN', 'guestRoleArn'],
+      ];
+
+      const env = window.__demoEnv || {};
+      const missing = [];
+      ENV_KEYS.forEach(([envKey, fieldId]) => {
+        const value = env[envKey] || '';
+        const optional = envKey === 'DESCOPE_TELEMETRY_GUEST_ROLE_ARN';
+        if (value) {
+          document.getElementById(fieldId).value = value;
+        } else if (!optional) {
+          missing.push(envKey);
+        }
+      });
+
+      if (window.__demoEnvLoadFailed || missing.length > 0) {
+        const banner = document.getElementById('env-missing-banner');
+        const reason = window.__demoEnvLoadFailed
+          ? 'dist/demo-env.js was not loaded — has `pnpm dev` run since you last edited .env?'
+          : `Missing in .env: ${missing.join(', ')}`;
+        banner.innerHTML =
+          '<strong>⚠️ Missing env values.</strong> ' +
+          reason +
+          ' See <code>packages/libs/debug-logs/README.md</code>.';
+        banner.style.display = 'block';
+        console.warn(
+          '[debug-logs demo] Missing env values:',
+          missing.length ? missing : ['demo-env.js failed to load'],
+        );
+      }
 
       let telemetryManager = null;
 
@@ -375,10 +423,9 @@
         const config = {
           enabled: true,
           rumConfig: {
-            signing: false,
             applicationId: appId,
-            // identityPoolId: identityPoolId,
-            ...(guestRoleArn && { guestRoleArn }), // Only include if provided (for classic flow)
+            identityPoolId: identityPoolId,
+            ...(guestRoleArn && { guestRoleArn }),
             region: region,
             sessionSampleRate: 1.0,
           },

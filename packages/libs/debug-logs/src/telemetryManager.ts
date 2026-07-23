@@ -9,6 +9,7 @@ import type { NetworkCaptureConfig } from './types';
 
 export interface Logger {
   debug: (...args: any[]) => void;
+  info: (...args: any[]) => void;
   error: (...args: any[]) => void;
 }
 
@@ -91,7 +92,14 @@ export class TelemetryManager {
         plugin.enable();
       });
 
-      this.logger.debug('✅ Telemetry initialized successfully');
+      // info-level so it shows in DevTools without enabling Verbose. Useful
+      // for grabbing the sessionId and finding the session in CloudWatch RUM.
+      const sessionId = this.tryGetSessionId();
+      this.logger.info(
+        `TelemetryManager: RUM client ready (sessionId=${
+          sessionId ?? 'unknown'
+        })`,
+      );
     } catch (error) {
       this.logger.error('Failed to initialize telemetry:', error);
       // Re-throw to be caught by constructor - this marks initialization as failed
@@ -196,138 +204,102 @@ export class TelemetryManager {
       this.logger.debug('Telemetry already shutdown');
       return;
     }
-
-    try {
+    // Flip the flag BEFORE the work so a mid-shutdown throw doesn't leave the
+    // instance in a half-shutdown state that repeat callers can re-enter.
+    this.isShutdown = true;
+    // Isolate each step in its own safe() so a throw in one (e.g. rumClient
+    // disable) doesn't skip the others (e.g. plugin observers left running).
+    this.safe('shutdown rum client', () => {
       if (this.rumClient) {
         this.rumClient.disable();
         this.rumClient = null;
       }
-
-      // Disable all plugins
-      this.plugins.forEach((plugin) => {
-        plugin.disable();
-      });
-      this.plugins = [];
-
-      this.isShutdown = true;
-      this.logger.debug('Telemetry shutdown complete');
-    } catch (error) {
-      this.logger.error('Failed to shutdown telemetry:', error);
-    }
+    });
+    this.plugins.forEach((plugin) => {
+      this.safe('disable plugin', () => plugin.disable());
+    });
+    this.plugins = [];
+    this.logger.debug('Telemetry shutdown complete');
   }
 
-  /**
-   * Enable telemetry collection (re-enable plugins)
-   */
   enable(): void {
-    if (this.initializationFailed) {
-      this.logger.error('Cannot enable: Telemetry initialization failed');
-      return;
-    }
-
-    if (this.isShutdown) {
-      this.logger.error(
-        'Cannot enable: Telemetry has been shutdown. Create a new instance.',
-      );
-      return;
-    }
-
-    if (!this.rumClient) {
-      this.logger.error('Cannot enable: Telemetry not initialized');
-      return;
-    }
-
-    this.plugins.forEach((plugin) => {
-      plugin.enable();
+    if (!this.assertMutable('enable')) return;
+    this.safe('enable', () => {
+      this.plugins.forEach((plugin) => plugin.enable());
+      this.logger.debug('Telemetry enabled');
     });
-    this.logger.debug('Telemetry enabled');
   }
 
-  /**
-   * Disable telemetry collection (disable plugins)
-   */
   disable(): void {
-    if (this.initializationFailed) {
-      this.logger.error('Cannot disable: Telemetry initialization failed');
-      return;
-    }
-
-    if (this.isShutdown) {
-      this.logger.error(
-        'Cannot disable: Telemetry has been shutdown. Create a new instance.',
-      );
-      return;
-    }
-
-    if (!this.rumClient) {
-      this.logger.error('Cannot disable: Telemetry not initialized');
-      return;
-    }
-
-    this.plugins.forEach((plugin) => {
-      plugin.disable();
+    if (!this.assertMutable('disable')) return;
+    this.safe('disable', () => {
+      this.plugins.forEach((plugin) => plugin.disable());
+      this.logger.debug('Telemetry disabled');
     });
-    this.logger.debug('Telemetry disabled');
   }
 
-  /**
-   * Update the telemetry context with new values.
-   * This adds or overwrites session attributes that will be included in all subsequent events.
-   *
-   * @param context - Partial context to update (e.g., { screenId: 'login', executionId: '123' })
-   */
   updateContext(
     context: Partial<Record<string, string | number | boolean>>,
   ): void {
-    if (this.initializationFailed) {
-      this.logger.error(
-        'Cannot update context: Telemetry initialization failed.',
-      );
-      return;
-    }
-
-    if (this.isShutdown) {
-      this.logger.error('Cannot update context: Telemetry has been shutdown.');
-      return;
-    }
-
-    if (!this.rumClient) {
-      this.logger.error('Cannot update context: Telemetry not initialized');
-      return;
-    }
-
-    try {
-      // Filter out undefined values to satisfy AWS RUM type requirements
+    if (!this.assertMutable('update telemetry context')) return;
+    this.safe('update telemetry context', () => {
       const filteredContext = Object.fromEntries(
         Object.entries(context).filter(([, value]) => value !== undefined),
       ) as { [key: string]: string | number | boolean };
-
-      // Update internal context reference
       this.context = { ...this.context, ...filteredContext };
-
-      // Update RUM session attributes - these will be included in all subsequent events
-      this.rumClient.addSessionAttributes(filteredContext);
-
+      this.rumClient!.addSessionAttributes(filteredContext);
       this.logger.debug('Telemetry context updated:', filteredContext);
-    } catch (error) {
-      // Fail silently - telemetry should never break the application
-      this.logger.error('Failed to update telemetry context:', error);
-    }
+    });
   }
 
-  /**
-   * Check if telemetry is active and ready
-   */
   isReady(): boolean {
     return (
       !this.isShutdown && !this.initializationFailed && this.rumClient !== null
     );
   }
 
-  /**
-   * Get the underlying RUM client (for advanced usage)
-   */
   getRumClient(): AwsRum | null {
     return this.rumClient;
+  }
+
+  private assertMutable(op: string): boolean {
+    if (this.initializationFailed) {
+      this.logger.error(`Cannot ${op}: telemetry initialization failed`);
+      return false;
+    }
+    if (this.isShutdown) {
+      this.logger.error(
+        `Cannot ${op}: telemetry has been shutdown. Create a new instance.`,
+      );
+      return false;
+    }
+    if (!this.rumClient) {
+      this.logger.error(`Cannot ${op}: telemetry not initialized`);
+      return false;
+    }
+    return true;
+  }
+
+  private safe(op: string, fn: () => void): void {
+    try {
+      fn();
+    } catch (error) {
+      this.logger.error(`Failed to ${op}:`, error);
+    }
+  }
+
+  /**
+   * aws-rum-web does not expose a public getSessionId(); the session lives
+   * inside the private eventCache. Reach in for debug logging only — keep
+   * this strictly best-effort.
+   */
+  private tryGetSessionId(): string | null {
+    try {
+      return (
+        (this.rumClient as any)?.eventCache?.getSession?.()?.sessionId ?? null
+      );
+    } catch {
+      return null;
+    }
   }
 }

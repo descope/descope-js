@@ -8,13 +8,14 @@ import { MockAwsRum, mockAddSessionAttributes, mockDisable } from './setup';
 
 describe('TelemetryManager', () => {
   let manager: TelemetryManager;
-  let mockLogger: { debug: jest.Mock; error: jest.Mock };
+  let mockLogger: { debug: jest.Mock; info: jest.Mock; error: jest.Mock };
   let validConfig: TelemetryConfig;
   let validContext: TelemetryContext;
 
   beforeEach(() => {
     mockLogger = {
       debug: jest.fn(),
+      info: jest.fn(),
       error: jest.fn(),
     };
 
@@ -49,8 +50,8 @@ describe('TelemetryManager', () => {
     it('should initialize when enabled', () => {
       manager = new TelemetryManager(validConfig, validContext, mockLogger);
 
-      expect(mockLogger.debug).toHaveBeenCalledWith(
-        '✅ Telemetry initialized successfully',
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        expect.stringContaining('TelemetryManager: RUM client ready'),
       );
       expect(manager.isReady()).toBe(true);
     });
@@ -98,7 +99,7 @@ describe('TelemetryManager', () => {
       manager.enable();
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Cannot enable: Telemetry initialization failed',
+        'Cannot enable: telemetry initialization failed',
       );
     });
 
@@ -113,7 +114,7 @@ describe('TelemetryManager', () => {
       manager.disable();
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Cannot disable: Telemetry initialization failed',
+        'Cannot disable: telemetry initialization failed',
       );
     });
 
@@ -128,7 +129,7 @@ describe('TelemetryManager', () => {
       manager.updateContext({ screenId: 'test' });
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Cannot update context: Telemetry initialization failed.',
+        'Cannot update telemetry context: telemetry initialization failed',
       );
     });
 
@@ -515,7 +516,7 @@ describe('TelemetryManager', () => {
       }).not.toThrow();
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Failed to shutdown telemetry:',
+        'Failed to shutdown rum client:',
         expect.any(Error),
       );
     });
@@ -559,7 +560,7 @@ describe('TelemetryManager', () => {
       manager.enable();
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Cannot enable: Telemetry has been shutdown. Create a new instance.',
+        'Cannot enable: telemetry has been shutdown. Create a new instance.',
       );
     });
 
@@ -570,7 +571,7 @@ describe('TelemetryManager', () => {
       manager.disable();
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Cannot disable: Telemetry has been shutdown. Create a new instance.',
+        'Cannot disable: telemetry has been shutdown. Create a new instance.',
       );
     });
 
@@ -582,11 +583,13 @@ describe('TelemetryManager', () => {
         throw new Error('Enable failed');
       });
 
-      // The enable method currently doesn't wrap in try-catch, so it will throw
-      // This test documents current behavior
-      expect(() => {
-        manager.enable();
-      }).toThrow('Enable failed');
+      // safe() swallows plugin errors and logs them — telemetry must never
+      // throw out of a lifecycle method.
+      expect(() => manager.enable()).not.toThrow();
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Failed to enable:',
+        expect.any(Error),
+      );
     });
   });
 
@@ -756,7 +759,7 @@ describe('TelemetryManager', () => {
 
       expect(mockAddSessionAttributes).not.toHaveBeenCalled();
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Cannot update context: Telemetry has been shutdown.',
+        'Cannot update telemetry context: telemetry has been shutdown. Create a new instance.',
       );
     });
 

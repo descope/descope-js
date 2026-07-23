@@ -282,8 +282,9 @@ describe('TelemetryManager Integration', () => {
         manager.shutdown();
       }).not.toThrow();
 
-      // Manager marks itself as not ready even if shutdown has errors
-      expect(manager.isReady()).toBe(true); // Still ready because disable() threw
+      // shutdown() flips isShutdown=true before invoking rumClient.disable(),
+      // so isReady() returns false even when disable() throws — no re-entry.
+      expect(manager.isReady()).toBe(false);
 
       // Restore spy so per-test cleanup can complete normally
       disableSpy.mockRestore();
@@ -495,12 +496,15 @@ describe('TelemetryManager Integration', () => {
       // Simulate page unload - shutdown and disable all plugins
       manager.shutdown();
 
-      // Allow any pending flush triggered during shutdown to complete
-      await waitFor(50);
+      // Give MutationObserver microtasks + the DOM throttle window (50ms)
+      // room to drain any pre-shutdown flush before we snapshot the baseline.
+      await waitFor(300);
 
-      const baselineAfterShutdown = mockRecord.mock.calls.length;
+      // Snapshot AFTER settle so any late pre-shutdown delivery is baked in.
+      mockRecord.mockClear();
 
-      // NOW create new elements AFTER shutdown - these should NOT be recorded
+      // NOW create new elements AFTER shutdown. With every plugin disabled
+      // and its native APIs restored, none of these should record a thing.
       history.pushState(null, '', '/after');
       const postShutdownContainer = createTestElement('post-shutdown-test');
       postShutdownContainer.appendChild(document.createElement('div'));
@@ -508,9 +512,10 @@ describe('TelemetryManager Integration', () => {
       // Wait to see if any new events are recorded
       await waitFor(250);
 
-      // Check that NO new events were recorded after shutdown
-      const eventsAfterShutdown = mockRecord.mock.calls.length;
-      expect(eventsAfterShutdown).toBe(baselineAfterShutdown);
+      // The intent is: no NEW records from post-shutdown user actions. If a
+      // stray dom_mutation squeaks through here it's a genuine leak, not a
+      // timing artefact of the pre-shutdown pipeline.
+      expect(mockRecord).not.toHaveBeenCalled();
 
       // Clean up test elements
       preShutdownContainer.remove();

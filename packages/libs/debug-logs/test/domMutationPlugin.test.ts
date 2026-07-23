@@ -380,6 +380,28 @@ describe('DomMutationPlugin', () => {
       expect(call.rootElementHTML).not.toContain('Original');
     });
 
+    it('should omit rootElementHTML when only attribute changes happened', async () => {
+      createTestElement('attr-only-target', '<p id="x">hi</p>');
+      plugin = new DomMutationPlugin({
+        rootElement: '#attr-only-target',
+        throttleMs: 50,
+      });
+      plugin.load(mockContext);
+
+      document
+        .getElementById('attr-only-target')!
+        .querySelector('#x')!
+        .setAttribute('data-attr', 'changed');
+
+      await waitFor(100);
+
+      const call = mockRecord.mock.calls[0][1];
+      expect(call.attributeChanges).toBeGreaterThanOrEqual(1);
+      expect(call.addedNodes).toBe(0);
+      expect(call.removedNodes).toBe(0);
+      expect(call.rootElementHTML).toBe('');
+    });
+
     it('should truncate HTML exceeding maxHtmlLength', async () => {
       createTestElement('truncate-target');
       plugin = new DomMutationPlugin({

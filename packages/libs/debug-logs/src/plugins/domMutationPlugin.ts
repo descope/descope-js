@@ -157,33 +157,39 @@ export class DomMutationPlugin implements Plugin {
     if (mutationsToRecord.length === 0) return;
 
     try {
-      // Get HTML and truncate if needed
-      let html = this.rootElement.innerHTML;
-      if (html.length > this.maxHtmlLength) {
-        html = html.substring(0, this.maxHtmlLength - 20) + '... [truncated]';
+      // Single pass over the mutation list — previously we walked it four
+      // times (two reduces + two filter-lengths). Cheap win on chatty pages.
+      let addedNodes = 0;
+      let removedNodes = 0;
+      let attributeChanges = 0;
+      let characterDataChanges = 0;
+      for (const m of mutationsToRecord) {
+        addedNodes += m.addedNodes.length;
+        removedNodes += m.removedNodes.length;
+        if (m.type === 'attributes') attributeChanges++;
+        else if (m.type === 'characterData') characterDataChanges++;
       }
 
-      // Aggregate mutation data
-      const summary = {
-        addedNodes: mutationsToRecord.reduce(
-          (sum, m) => sum + m.addedNodes.length,
-          0,
-        ),
-        removedNodes: mutationsToRecord.reduce(
-          (sum, m) => sum + m.removedNodes.length,
-          0,
-        ),
-        attributeChanges: mutationsToRecord.filter(
-          (m) => m.type === 'attributes',
-        ).length,
-        characterDataChanges: mutationsToRecord.filter(
-          (m) => m.type === 'characterData',
-        ).length,
-        timestamp: Date.now(),
-        rootElementHTML: html,
-      };
+      // Only serialize the (potentially heavy) HTML snapshot when the DOM
+      // shape actually changed. Pure attribute/text edits don't need it.
+      const hasStructuralChange = addedNodes > 0 || removedNodes > 0;
+      let rootElementHTML = '';
+      if (hasStructuralChange) {
+        const raw = this.rootElement.innerHTML;
+        rootElementHTML =
+          raw.length > this.maxHtmlLength
+            ? raw.substring(0, this.maxHtmlLength - 20) + '... [truncated]'
+            : raw;
+      }
 
-      this.context.record('dom_mutation', summary);
+      this.context.record('dom_mutation', {
+        addedNodes,
+        removedNodes,
+        attributeChanges,
+        characterDataChanges,
+        timestamp: Date.now(),
+        rootElementHTML,
+      });
     } catch (error) {
       // Fail silently
     }

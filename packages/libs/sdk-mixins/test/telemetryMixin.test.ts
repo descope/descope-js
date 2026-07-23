@@ -20,16 +20,50 @@ type TelemetryTestInstance = {
 };
 
 const OriginalMutationObserver = global.MutationObserver;
+const TELEMETRY_ENV_DEFAULTS: Record<string, string> = {
+  DESCOPE_TELEMETRY_ENABLED: 'true',
+  DESCOPE_TELEMETRY_APPLICATION_ID: 'test-app',
+  DESCOPE_TELEMETRY_IDENTITY_POOL_ID: 'test-pool',
+  DESCOPE_TELEMETRY_REGION: 'test-region',
+};
+
+function snapshotEnv(keys: string[]): () => void {
+  const snapshot: Record<string, string | undefined> = {};
+  keys.forEach((k) => {
+    snapshot[k] = process.env[k];
+  });
+  return () => {
+    keys.forEach((k) => {
+      if (snapshot[k] === undefined) {
+        delete process.env[k];
+      } else {
+        process.env[k] = snapshot[k];
+      }
+    });
+  };
+}
+
+let restoreTelemetryEnv: (() => void) | null = null;
 
 beforeAll(() => {
   global.MutationObserver = class {
     observe() {}
     disconnect() {}
   } as unknown as typeof MutationObserver;
+  // telemetryMixin#getTelemetryConfig reads enabled + fallback rumConfig from
+  // process.env.DESCOPE_TELEMETRY_* (substituted into the WC bundle at build
+  // time). Seed them here so every test runs with telemetry on and with
+  // enough creds to pass the missing-creds guard. The Config fallback + merge
+  // describe overrides per-test as needed.
+  restoreTelemetryEnv = snapshotEnv(Object.keys(TELEMETRY_ENV_DEFAULTS));
+  Object.entries(TELEMETRY_ENV_DEFAULTS).forEach(([k, v]) => {
+    process.env[k] = v;
+  });
 });
 
 afterAll(() => {
   global.MutationObserver = OriginalMutationObserver;
+  restoreTelemetryEnv?.();
 });
 
 const createTelemetryHost = () => {
@@ -325,6 +359,95 @@ describe('telemetryMixin', () => {
       );
       expect(logger.info).not.toHaveBeenCalledWith(
         expect.stringContaining('Telemetry will expire at'),
+      );
+    });
+  });
+
+  describe('Config fallback + merge', () => {
+    const MERGE_ENV_KEYS = [
+      'DESCOPE_TELEMETRY_APPLICATION_ID',
+      'DESCOPE_TELEMETRY_IDENTITY_POOL_ID',
+      'DESCOPE_TELEMETRY_REGION',
+      'DESCOPE_TELEMETRY_GUEST_ROLE_ARN',
+      'DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE',
+    ];
+    let restore: (() => void) | null = null;
+
+    beforeEach(() => {
+      restore = snapshotEnv(MERGE_ENV_KEYS);
+    });
+
+    afterEach(() => {
+      restore?.();
+    });
+
+    it('uses env-driven rumConfig when BE ships no rumConfig', async () => {
+      process.env.DESCOPE_TELEMETRY_APPLICATION_ID = 'env-app';
+      process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID = 'env-pool';
+      process.env.DESCOPE_TELEMETRY_REGION = 'env-region';
+      process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE = '0.5';
+
+      const { instance, configValue } = createTelemetryHost();
+      configValue.telemetry = { enabled: true };
+
+      await instance.init();
+
+      expect(TelemetryManagerCtor).toHaveBeenCalledWith(
+        expect.objectContaining({
+          rumConfig: expect.objectContaining({
+            applicationId: 'env-app',
+            identityPoolId: 'env-pool',
+            region: 'env-region',
+            sessionSampleRate: 0.5,
+          }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('BE rumConfig wins per-key, env fills the gaps', async () => {
+      process.env.DESCOPE_TELEMETRY_APPLICATION_ID = 'env-app';
+      process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID = 'env-pool';
+      process.env.DESCOPE_TELEMETRY_REGION = 'env-region';
+
+      const { instance, configValue } = createTelemetryHost();
+      configValue.telemetry = {
+        enabled: true,
+        rumConfig: {
+          applicationId: 'be-app',
+        },
+      };
+
+      await instance.init();
+
+      expect(TelemetryManagerCtor).toHaveBeenCalledWith(
+        expect.objectContaining({
+          rumConfig: expect.objectContaining({
+            applicationId: 'be-app',
+            identityPoolId: 'env-pool',
+            region: 'env-region',
+          }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('skips initialization when required RUM credentials are missing', async () => {
+      // Both BE block and env leave applicationId/identityPoolId/region empty
+      delete process.env.DESCOPE_TELEMETRY_APPLICATION_ID;
+      delete process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID;
+      delete process.env.DESCOPE_TELEMETRY_REGION;
+
+      const { instance, logger, configValue } = createTelemetryHost();
+      configValue.telemetry = { enabled: true };
+
+      await instance.init();
+
+      expect(TelemetryManagerCtor).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('rumConfig is incomplete'),
       );
     });
   });

@@ -160,12 +160,41 @@ pnpm lint             # eslint over src and test
 
 ## Manual Playground (HTML)
 
+The package ships with `test-standalone.html` — a one-page harness that
+instantiates `TelemetryManager` directly and exposes buttons for every event
+type (console, network, navigation, DOM mutations).
+
+### Configure AWS CloudWatch RUM credentials
+
+The form on the page is pre-populated from a `.env` file in this package
+(`packages/libs/debug-logs/.env`). The file is gitignored. To set it up:
+
+```env
+DESCOPE_TELEMETRY_APPLICATION_ID=<cloudwatch-rum-app-monitor-id>
+DESCOPE_TELEMETRY_IDENTITY_POOL_ID=<aws-cognito-identity-pool-id>
+DESCOPE_TELEMETRY_REGION=<aws-region>
+DESCOPE_TELEMETRY_GUEST_ROLE_ARN=<iam-guest-role-arn>   # optional, classic flow only
+DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE=1                  # optional, defaults to 1
+```
+
+How it works: when `pnpm dev` starts, a small rollup plugin (`emitDemoEnv`
+in `rollup.config.dev.mjs`) reads `.env` and writes `dist/demo-env.js`,
+which exposes the values on `window.__demoEnv`. The test page loads that
+script and copies the values into the form fields.
+
+**Restart `pnpm dev` after editing `.env`** — rollup's watch mode does not
+watch `.env` itself. If any required key is missing, the page shows a red
+warning banner above the form and logs a `console.warn` to DevTools.
+
+### Run the playground
+
 1. Run `pnpm dev` inside the package.
-2. Navigate to `http://localhost:5555`.
-3. Enter real AWS RUM credentials (app ID, identity pool, region, optional guest
-   role ARN).
-4. Use the console, network, navigation, and DOM buttons to emit sample events
-   and confirm they show up in CloudWatch RUM.
+2. Browser opens at `http://localhost:5555/test-standalone.html`.
+3. Click **🚀 Initialize Telemetry**.
+4. Use the test buttons to emit events. Verify they reach CloudWatch RUM
+   by either:
+   - watching the Network tab for POSTs to the RUM data plane, or
+   - opening the CloudWatch RUM console → app monitor → your session.
 
 ## Troubleshooting
 
