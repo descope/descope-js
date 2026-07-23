@@ -9,7 +9,6 @@ import {
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
   DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED,
   DESCOPE_LAST_AUTH_BADGE_COMPONENT,
-  DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
   ELEMENT_TYPE_ATTRIBUTE,
   FETCH_ERROR_RESPONSE_ERROR_CODE,
   FETCH_EXCEPTION_ERROR_CODE,
@@ -26,15 +25,12 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
-  clearUsernameAnchor,
   getAnimationDirection,
   getElementDescopeAttributes,
-  getFirstNonEmptyValue,
   getScriptResultPath,
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
-  injectUsernameAnchor,
   injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
@@ -82,47 +78,6 @@ import {
   FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
-
-// the last identifier the user submitted on a previous screen in this flow
-// (e.g. the email entered before a magic link was sent), used when neither
-// the flow state nor a previous authentication provides one.
-// kept in sessionStorage (tab scoped, cleared when the tab closes) so it
-// survives page reloads during the flow, and scoped to the flow execution so
-// a stale identifier is never carried into another flow (or another user)
-// running in the same tab
-const getLastSubmittedLoginId = (executionId: string): string => {
-  // a missing execution id must never match anything, otherwise two flows
-  // without one would share the stored identifier
-  if (!executionId) {
-    return '';
-  }
-  try {
-    const raw = window.sessionStorage?.getItem(
-      DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
-    );
-    if (!raw) {
-      return '';
-    }
-    const stored = JSON.parse(raw);
-    return stored.executionId === executionId ? stored.loginId || '' : '';
-  } catch (e) {
-    return '';
-  }
-};
-
-const setLastSubmittedLoginId = (loginId: string, executionId: string) => {
-  if (!loginId || !executionId) {
-    return;
-  }
-  try {
-    window.sessionStorage?.setItem(
-      DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY,
-      JSON.stringify({ executionId, loginId }),
-    );
-  } catch (e) {
-    // sessionStorage unavailable, losing reload persistence is acceptable
-  }
-};
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -1188,7 +1143,6 @@ class DescopeWc extends BaseDescopeWc {
       htmlLocaleFilename: filenameWithLocale,
       screenId: readyScreenId,
       stepName: currentState.stepName || startScreenName,
-      executionId,
       samlIdpUsername,
       oidcLoginHint,
       oidcPrompt,
@@ -1736,28 +1690,11 @@ class DescopeWc extends BaseDescopeWc {
       next,
       screenState,
       screenId,
-      executionId,
     } = currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
-    this.#executionId = executionId;
-
-    // flow state does not always carry the user (e.g. after magic link auth),
-    // so fall back to the last authenticated user's login id
-    const stateUser = screenState?.user as {
-      email?: string;
-      loginIds?: string[];
-    };
-    this.#screenUser = {
-      email: stateUser?.email,
-      loginIds: stateUser?.loginIds?.length
-        ? stateUser.loginIds
-        : [
-            getLastSubmittedLoginId(executionId) ||
-              this.sdk.getLastUserLoginId(),
-          ].filter(Boolean),
-    };
+    this.updateScreenUser(screenState?.user);
 
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(
@@ -1824,7 +1761,7 @@ class DescopeWc extends BaseDescopeWc {
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
         this.#updateExternalInputs();
-        this.#updateUsernameAnchor();
+        this.updateUsernameAnchor();
 
         if (this.validateOnBlur) {
           handleReportValidityOnBlur(rootElement);
@@ -2048,39 +1985,6 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  // the authenticated user of the current screen (if any), used as a fallback
-  // identifier for password manager integrations on screens that have no
-  // identifier input (e.g. step-up password change)
-  #screenUser: { email?: string; loginIds?: string[] };
-
-  #executionId: string;
-
-  // handle storing passwords in password managers
-  #handleStoreCredentials(formData = {}) {
-    const idFields = ['externalId', 'email', 'phone'];
-    const passwordFields = ['newPassword', 'password'];
-
-    const id =
-      getFirstNonEmptyValue(formData, idFields) ||
-      this.#screenUser?.email ||
-      this.#screenUser?.loginIds?.[0];
-    const password = getFirstNonEmptyValue(formData, passwordFields);
-
-    // PasswordCredential not supported in Firefox
-    if (id && password) {
-      try {
-        if (!globalThis.PasswordCredential) {
-          return;
-        }
-        const cred = new globalThis.PasswordCredential({ id, password });
-
-        navigator?.credentials?.store?.(cred);
-      } catch (e) {
-        this.loggerWrapper.error('Could not store credentials', e.message);
-      }
-    }
-  }
-
   #updateExternalInputs() {
     // we need to clear external inputs that were created previously, so each screen has only
     // the slotted inputs it needs
@@ -2090,19 +1994,6 @@ class DescopeWc extends BaseDescopeWc {
       '[external-input="true"]',
     );
     eles.forEach((ele) => this.#handleExternalInputs(ele));
-  }
-
-  #updateUsernameAnchor() {
-    // clear the previous screen's anchor, so each screen gets an anchor only
-    // if it needs one
-    clearUsernameAnchor();
-
-    injectUsernameAnchor(
-      this,
-      this.contentRootElement,
-      this.#screenUser,
-      this.loggerWrapper,
-    );
   }
 
   #handleExternalInputs(ele: Element) {
@@ -2162,23 +2053,8 @@ class DescopeWc extends BaseDescopeWc {
 
         this.nextRequestStatus.update({ isLoading: false });
 
-        // same identifier hierarchy as #handleStoreCredentials.
-        // captured after next resolves: on flows that render their first
-        // screen before the flow starts, the execution id only exists on the
-        // response
-        const submittedLoginId = getFirstNonEmptyValue(formData, [
-          'externalId',
-          'email',
-          'phone',
-        ]);
-        if (submittedLoginId) {
-          setLastSubmittedLoginId(
-            submittedLoginId,
-            res?.data?.executionId || this.#executionId,
-          );
-        }
-
-        this.#handleStoreCredentials(formData);
+        this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
+        this.storeCredentials(formData);
       }
     },
   );

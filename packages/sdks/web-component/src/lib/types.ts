@@ -107,6 +107,14 @@ export interface RealtimeComponentsCondition {
   rules: RealtimeRule[];
 }
 
+// the server sends the full user object; only the fields the SDK reads are
+// typed here
+export interface ScreenStateUser {
+  email?: string;
+  loginIds?: string[];
+  [key: string]: unknown;
+}
+
 export interface ScreenState {
   errorText?: string;
   errorType?: string;
@@ -119,7 +127,7 @@ export interface ScreenState {
   totp?: { image?: string; provisionUrl?: string };
   notp?: { image?: string; redirectUrl?: string };
   selfProvisionDomains?: unknown;
-  user?: unknown;
+  user?: ScreenStateUser;
   sso?: unknown;
   dynamicSelects?: unknown;
   keysInUse?: unknown;
@@ -216,7 +224,6 @@ export type StepState = {
   screenState: ScreenState;
   screenId: string;
   stepName: string;
-  executionId?: string;
   htmlFilename: string;
   htmlLocaleFilename: string;
   next: NextFn;
