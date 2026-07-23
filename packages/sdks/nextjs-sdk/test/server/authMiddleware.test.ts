@@ -3,11 +3,13 @@ import authMiddleware from '../../src/server/authMiddleware';
 import { DEFAULT_PUBLIC_ROUTES } from '../../src/server/constants';
 
 const mockValidateJwt = jest.fn();
-jest.mock('@descope/node-sdk', () =>
-	jest.fn(() => ({
+jest.mock('@descope/node-sdk', () => {
+	const res = jest.fn(() => ({
 		validateJwt: mockValidateJwt
-	}))
-);
+	}));
+	(res as any).SessionTokenCookieName = 'DS';
+	return res;
+});
 
 jest.mock('next/server', () => ({
 	NextResponse: {
@@ -25,11 +27,10 @@ const createMockNextRequest = (
 	} = {}
 ) =>
 	({
-		headers: {
-			get: (name: string) => options.headers?.[name]
-		},
+		headers: new Headers(options.headers),
 		cookies: {
-			get: (name: string) => ({ value: options.cookies?.[name] })
+			get: (name: string) =>
+				options.cookies?.[name] ? { value: options.cookies[name] } : undefined
 		},
 		nextUrl: {
 			pathname: options.pathname || '/',
@@ -67,16 +68,22 @@ describe('authMiddleware', () => {
 		});
 	});
 
-	it('allows unauthenticated users for public routes', async () => {
+	it('allows unauthenticated users for public routes and removes unvalidated session headers', async () => {
 		mockValidateJwt.mockRejectedValue(new Error('Invalid JWT'));
 		const middleware = authMiddleware({
 			publicRoutes: ['/sign-in', '/sign-up']
 		});
-		const mockReq = createMockNextRequest({ pathname: '/sign-in' });
+		const mockReq = createMockNextRequest({
+			pathname: '/sign-in',
+			headers: { 'x-descope-session': 'unvalidated-session' }
+		});
 
 		await middleware(mockReq);
 		// Expect the middleware not to redirect
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
+		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
+			.request.headers;
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('redirects unauthenticated users for private routes', async () => {
@@ -93,7 +100,7 @@ describe('authMiddleware', () => {
 		});
 	});
 
-	it('allows authenticated users for private routes and adds proper headers', async () => {
+	it('allows authenticated users for private routes without adding session headers', async () => {
 		// Mock validateJwt to simulate an authenticated user
 		const authInfo = {
 			jwt: 'validJwt',
@@ -106,7 +113,10 @@ describe('authMiddleware', () => {
 		});
 		const mockReq = createMockNextRequest({
 			pathname: '/private',
-			headers: { Authorization: 'Bearer validJwt' }
+			headers: {
+				Authorization: 'Bearer validJwt',
+				'x-descope-session': 'unvalidated-session'
+			}
 		});
 
 		await middleware(mockReq);
@@ -116,9 +126,8 @@ describe('authMiddleware', () => {
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('Authorization')).toBe('Bearer validJwt');
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('allows unauthenticated users for public routes when both public and private routes are defined', async () => {
@@ -148,7 +157,7 @@ describe('authMiddleware', () => {
 		});
 	});
 
-	it('allows authenticated users for non-public routes and adds proper headers', async () => {
+	it('allows authenticated users for non-public routes without adding session headers', async () => {
 		// Mock validateJwt to simulate an authenticated user
 		const authInfo = {
 			jwt: 'validJwt',
@@ -169,9 +178,7 @@ describe('authMiddleware', () => {
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('redirects unauthenticated users for private routes matching wildcard patterns', async () => {
@@ -211,15 +218,13 @@ describe('authMiddleware', () => {
 
 		await middleware(mockReq);
 
-		// Expect no redirect and that the session header is set
+		// Expect no redirect and that no internal session header is set
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(NextResponse.next).toHaveBeenCalled();
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
 	it('allows unauthenticated users for public routes matching wildcard patterns', async () => {
@@ -283,14 +288,166 @@ describe('authMiddleware', () => {
 
 		await middleware(mockReq);
 
-		// Expect no redirect and that the session header is set
+		// Expect no redirect and that no internal session header is set
 		expect(NextResponse.redirect).not.toHaveBeenCalled();
 		expect(NextResponse.next).toHaveBeenCalled();
 
 		const headersArg = (NextResponse.next as any as jest.Mock).mock.lastCall[0]
 			.request.headers;
-		expect(headersArg.get('x-descope-session')).toEqual(
-			Buffer.from(JSON.stringify(authInfo)).toString('base64')
-		);
+		expect(headersArg.get('x-descope-session')).toBeNull();
+	});
+
+	describe('Refresh token validation', () => {
+		it('validates refresh token when session JWT fails', async () => {
+			// First call fails (session JWT), second call succeeds (refresh token)
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Session JWT expired'))
+				.mockResolvedValueOnce({
+					jwt: 'validRefreshJwt',
+					token: { iss: 'project-1', sub: 'user-123' }
+				});
+
+			const middleware = authMiddleware();
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				headers: { 'x-descope-session': 'unvalidated-session' },
+				cookies: { DS: 'expiredSessionJwt', DSR: 'validRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			// Expect validateJwt to be called twice
+			expect(mockValidateJwt).toHaveBeenCalledTimes(2);
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(1, 'expiredSessionJwt');
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'validRefreshJwt');
+
+			// Expect no redirect since refresh token is valid
+			expect(NextResponse.redirect).not.toHaveBeenCalled();
+			expect(NextResponse.next).toHaveBeenCalled();
+		});
+
+		it('redirects when both session JWT and refresh token fail', async () => {
+			// Both calls fail
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Session JWT expired'))
+				.mockRejectedValueOnce(new Error('Refresh token expired'));
+
+			const middleware = authMiddleware();
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'expiredSessionJwt', DSR: 'expiredRefreshJwt' }
+			});
+
+			const response = await middleware(mockReq);
+
+			// Expect validateJwt to be called twice
+			expect(mockValidateJwt).toHaveBeenCalledTimes(2);
+
+			// Expect redirect since both tokens are invalid
+			expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
+			expect(response).toEqual({
+				pathname: DEFAULT_PUBLIC_ROUTES.signIn
+			});
+		});
+
+		it('redirects when session JWT fails and no refresh token exists', async () => {
+			mockValidateJwt.mockRejectedValueOnce(new Error('Session JWT expired'));
+
+			const middleware = authMiddleware();
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'expiredSessionJwt' } // No refresh token
+			});
+
+			const response = await middleware(mockReq);
+
+			// Expect validateJwt to be called only once (session JWT)
+			expect(mockValidateJwt).toHaveBeenCalledTimes(1);
+
+			// Expect redirect since no refresh token is available
+			expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
+			expect(response).toEqual({
+				pathname: DEFAULT_PUBLIC_ROUTES.signIn
+			});
+		});
+
+		it('uses custom refreshTokenCookieName when provided', async () => {
+			// First call fails (session JWT), second call succeeds (refresh token)
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Session JWT expired'))
+				.mockResolvedValueOnce({
+					jwt: 'validRefreshJwt',
+					token: { iss: 'project-1', sub: 'user-123' }
+				});
+
+			const customRefreshCookieName = 'CUSTOM_REFRESH';
+			const middleware = authMiddleware({
+				refreshTokenCookieName: customRefreshCookieName
+			});
+
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: {
+					DS: 'expiredSessionJwt',
+					[customRefreshCookieName]: 'validRefreshJwt'
+				}
+			});
+
+			await middleware(mockReq);
+
+			// Expect validateJwt to be called twice with correct tokens
+			expect(mockValidateJwt).toHaveBeenCalledTimes(2);
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'validRefreshJwt');
+
+			// Expect no redirect since refresh token is valid
+			expect(NextResponse.redirect).not.toHaveBeenCalled();
+		});
+
+		it('does not add refresh token validation result to session headers', async () => {
+			// First call fails (session JWT), second call succeeds (refresh token)
+			const refreshAuthInfo = {
+				jwt: 'validRefreshJwt',
+				token: { iss: 'project-1', sub: 'user-123', exp: 1234567890 }
+			};
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Session JWT expired'))
+				.mockResolvedValueOnce(refreshAuthInfo);
+
+			const middleware = authMiddleware();
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'expiredSessionJwt', DSR: 'validRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			expect(NextResponse.next).toHaveBeenCalled();
+
+			// Verify that session headers are NOT set (because we don't add refresh token validation to headers)
+			const headersArg = (NextResponse.next as any as jest.Mock).mock
+				.lastCall[0].request.headers;
+			expect(headersArg.get('x-descope-session')).toBeNull();
+		});
+
+		it('allows access to public routes even when both tokens fail', async () => {
+			// Both calls fail
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Session JWT expired'))
+				.mockRejectedValueOnce(new Error('Refresh token expired'));
+
+			const middleware = authMiddleware({
+				publicRoutes: ['/public']
+			});
+			const mockReq = createMockNextRequest({
+				pathname: '/public',
+				cookies: { DS: 'expiredSessionJwt', DSR: 'expiredRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			// Expect no redirect for public routes
+			expect(NextResponse.redirect).not.toHaveBeenCalled();
+			expect(NextResponse.next).toHaveBeenCalled();
+		});
 	});
 });

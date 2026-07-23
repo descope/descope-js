@@ -9,14 +9,15 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
 import { getTenantCustomAttributes } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
@@ -33,12 +34,14 @@ const getFormattedValue = (type: string, val: any) => {
 export const initTenantCustomAttributesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantCustomAttributesMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       // flow Id is key in all maps
       #editModals: Record<string, ModalDriver> = {};
@@ -55,21 +58,14 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
           type === AttributeTypeName.ARRAY ? (value || []).join(',') : value;
 
         this.#editModals[flowId]?.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-            form: JSON.stringify({
+            form: {
               customAttributes: {
                 [attName]: customAttributeValue,
               },
-            }),
+            },
           }),
         );
         this.#editFlows[flowId]?.onSuccess(() => {
@@ -81,16 +77,9 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       // have 2 init functions for edit and delete modals in order to keep the same standards as the email/phone/name mixin
       #initDeleteModalContent(flowId: string) {
         this.#deleteModals[flowId]?.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#deleteFlows[flowId]?.onSuccess(() => {

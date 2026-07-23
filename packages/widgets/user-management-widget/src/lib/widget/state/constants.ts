@@ -3,3 +3,5 @@ export const userStatusMappings = {
   disabled: 'disabled',
   invited: 'invited',
 };
+
+export const MULTIPLE_ROLES_LABEL = 'Multiple roles';

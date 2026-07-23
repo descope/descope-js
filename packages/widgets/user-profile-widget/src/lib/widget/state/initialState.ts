@@ -11,5 +11,18 @@ export const initialState: State = {
     error: null,
     data: [],
   },
+  passkeys: {
+    loading: false,
+    error: null,
+    data: [],
+  },
+  tenant: {
+    currentTenantId: null,
+    previousTenantId: null,
+  },
+  selectTenant: {
+    loading: false,
+    error: null,
+  },
   notifications: [],
 };

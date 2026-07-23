@@ -127,6 +127,67 @@ const App = () => {
 };
 ```
 
+#### Activity-Based Session Refresh
+
+By default, the SDK fires a periodic heartbeat (refresh call) whenever the tab is active. You can opt in to fine-grained control by passing `autoRefresh={{ customActivityTracking: true }}` to `AuthProvider`. With this mode enabled, the SDK only refreshes when `sdk.markUserActive()` has been called since the last refresh — useful for enforcing server-side inactivity timeouts.
+
+**Step 1:** Enable it in `AuthProvider`:
+
+```tsx
+import { AuthProvider } from '@descope/nextjs-sdk';
+
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
+  <App />
+</AuthProvider>
+```
+
+**Step 2:** Call `markUserActive()` on user interactions using the `useDescope` hook from `@descope/nextjs-sdk/client`:
+
+```tsx
+'use client';
+import { useEffect } from 'react';
+import { useDescope } from '@descope/nextjs-sdk/client';
+
+function useActivityTracking() {
+  const sdk = useDescope();
+
+  useEffect(() => {
+    const { markUserActive } = sdk;
+
+    document.addEventListener('click', markUserActive);
+    document.addEventListener('keydown', markUserActive);
+    document.addEventListener('touchstart', markUserActive);
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') markUserActive();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      document.removeEventListener('click', markUserActive);
+      document.removeEventListener('keydown', markUserActive);
+      document.removeEventListener('touchstart', markUserActive);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [sdk]);
+}
+```
+
+Call `useActivityTracking()` inside a client component rendered within `<AuthProvider>`.
+
+#### Trigger Auto Refresh
+
+`useSession` triggers a single request to the Descope backend to attempt to refresh the session. If you **don't** `useSession` in your app, the session will not be refreshed automatically. If your app does not require `useSession`, you can trigger the refresh manually by calling `refresh` from `useDescope` hook. Example:
+
+```js
+import { useEffect } from 'react';
+
+const { refresh } = useDescope();
+useEffect(() => {
+  refresh().catch(console.error);
+}, [refresh]);
+```
+
 #### Server Side Usage
 
 ##### Require authentication for application (Middleware)

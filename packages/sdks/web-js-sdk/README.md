@@ -195,6 +195,77 @@ await sdk.oidc.finishLogin();
 
 The SDK will automatically manage the OIDC session for you, according to `persistTokens` and `autoRefresh` options. The SDK will automatically refresh the OIDC session when it expires, and will store the session token in the browser storage or cookies, according to the `persistTokens` option.
 
+### Activity-Based Session Refresh
+
+When `autoRefresh: { customActivityTracking: true }`, the SDK skips refresh calls for idle users. This reduces unnecessary API calls and enables accurate session inactivity tracking on the server. The developer is responsible for calling `sdk.markUserActive()` to signal user activity.
+
+```js
+const sdk = descopeSdk({
+  projectId: 'xxx',
+  autoRefresh: { customActivityTracking: true },
+});
+
+// Call this whenever the user interacts with your app
+document.addEventListener('click', () => sdk.markUserActive());
+document.addEventListener('keydown', () => sdk.markUserActive());
+```
+
+**Behavior:**
+
+- When refresh timer fires and `markUserActive()` has not been called since the last refresh: skips refresh, marks as skipped
+- When `markUserActive()` is called after a skipped refresh: triggers refresh immediately
+- When refresh timer fires and `markUserActive()` was called: refreshes normally
+- After a successful refresh: activity flag is reset (next refresh period starts fresh)
+- `sdk.markUserActive()` is always available — it logs a warning when `customActivityTracking` is not set
+
+This is useful when Descope's session inactivity feature is enabled, ensuring refreshes only occur for genuinely active users.
+
+### Custom Storage
+
+By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, tokens when they aren't stored in cookies, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper, a cross-frame bridge — pass a `customStorage` object to the SDK.
+
+```js
+const inMemoryStorage = (() => {
+  const map = new Map();
+  return {
+    getItem: (key) => (map.has(key) ? map.get(key) : null),
+    setItem: (key, value) => {
+      map.set(key, value);
+    },
+    removeItem: (key) => {
+      map.delete(key);
+    },
+  };
+})();
+
+const sdk = descopeSdk({
+  projectId: 'xxx',
+  customStorage: inMemoryStorage,
+});
+```
+
+The object must implement the `CustomStorage` interface:
+
+```ts
+type CustomStorage = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+};
+```
+
+> **Note:** `customStorage` backs the keys the SDK persists on your behalf (tokens, last-authenticated user). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, the features that rely on them may degrade.
+>
+> The internal, non-PII markers for the client-side session-refresh optimization (`DSLI` / `DSLI_DISABLED`) are the exception: the SDK always keeps them in real `window.localStorage`, independent of `customStorage`. This is what makes the optimization behave correctly even when you back the other keys with `sessionStorage` or an in-memory store.
+
+### Last Login Indicator
+
+The SDK maintains a `DSLI` (Descope Session Login Indicator) entry in real `window.localStorage` — always, even when a `customStorage` is provided — that tracks whether this browser has previously had an active authenticated session. On every successful authentication, `DSLI` is written. On logout or an invalid-session response, it is cleared.
+
+When `sdk.refresh()` is called in "try-refresh" mode (i.e. on SDK initialization, to restore a prior session), the SDK skips the network call entirely if neither `DSLI` nor the last-user key (`dls_last_user_login_id`) is present. This eliminates a redundant `/v1/auth/try-refresh` round-trip for anonymous visitors who have never logged in.
+
+> **Note:** If you set `storeLastAuthenticatedUser: false`, `dls_last_user_login_id` is never written. In that case, only `DSLI` is available as the indicator. Existing authenticated users will trigger the refresh as expected once they authenticate with the new SDK version.
+
 ### Run Example
 
 To run the example:

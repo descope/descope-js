@@ -7,6 +7,7 @@ import {
   loggerMixin,
   observeAttributesMixin,
   projectIdMixin,
+  widgetIdMixin,
 } from '@descope/sdk-mixins';
 import { Sdk, createSdk } from '../api/sdk';
 
@@ -14,6 +15,7 @@ export const apiMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(
       projectIdMixin,
+      widgetIdMixin,
       observeAttributesMixin,
       loggerMixin,
       baseUrlMixin,
@@ -42,10 +44,6 @@ export const apiMixin = createSingletonMixin(
 
       get tenantId() {
         return this.getAttribute('tenant');
-      }
-
-      get widgetId() {
-        return this.getAttribute('widget-id');
       }
 
       get mock() {

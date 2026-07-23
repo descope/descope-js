@@ -5,24 +5,27 @@ import {
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
 export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantPasswordPolicyUserAuthMethodMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       TenantPasswordPolicyUserAuthMethodDriver: UserAuthMethodDriver;
 
@@ -47,15 +50,9 @@ export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.TenantPasswordPolicyUserAuthMethodDriver.flowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
           }),
         );
         this.#flow.onSuccess(() => {

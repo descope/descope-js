@@ -183,6 +183,47 @@ describe('Descope Widgets', () => {
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
   });
 
+  it('forwards client and form flow inputs as attributes - UserProfile', async () => {
+    renderWithProvider(
+      <UserProfile
+        widgetId="widget1"
+        client={{ userId: 'u1' }}
+        form={{ cookieName: 'DSR_x' }}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-profile-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-profile-widget');
+    expect(widget).toHaveAttribute('client', '{"userId":"u1"}');
+    expect(widget).toHaveAttribute('form', '{"cookieName":"DSR_x"}');
+  });
+
+  it('forwards client and form flow inputs as attributes - UserManagement', async () => {
+    renderWithProvider(
+      <UserManagement
+        tenant="tenant1"
+        widgetId="widget1"
+        client={{ tenantId: 't1' }}
+        form={{ cookieName: 'DSR_x' }}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-management-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-management-widget');
+    expect(widget).toHaveAttribute('client', '{"tenantId":"t1"}');
+    expect(widget).toHaveAttribute('form', '{"cookieName":"DSR_x"}');
+  });
+
   it('render User Profile and triggers logout', async () => {
     const setIsAuthenticatedMock = jest.fn();
     const setSessionMock = jest.fn();

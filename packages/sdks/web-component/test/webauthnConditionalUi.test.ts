@@ -237,6 +237,7 @@ describe('webauthnConditionalUi', () => {
     isWebauthnSupportedMock.mockReturnValueOnce(true);
     webauthnSignInStartMock.mockResolvedValueOnce({
       ok: false,
+      error: { errorMessage: '' },
       data: { options: 'options', transactionId: 'transactionId' },
     });
 
@@ -247,8 +248,18 @@ describe('webauthnConditionalUi', () => {
 
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
+    // Wait for the component to load and process webauthn conditional UI
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: 10000,
+    });
+
     await waitFor(
-      () => expect(warnSpi).toHaveBeenCalledWith('Webauthn start failed', ''),
+      () =>
+        expect(warnSpi).toHaveBeenCalledWith(
+          '[Descope]',
+          'Webauthn start failed',
+          '',
+        ),
       { timeout: 3000 },
     );
   });

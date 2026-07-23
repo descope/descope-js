@@ -9,25 +9,28 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getName } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initNameUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class NameUserAttrMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       nameUserAttr: UserAttributeDriver;
 
@@ -42,7 +45,10 @@ export const initNameUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.nameUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({ 'data-id': 'edit-name' });
+        this.#editModal = this.createModal({
+          'data-id': 'edit-name',
+          'close-on-outside-click': 'true',
+        });
         this.#editFlow = new FlowDriver(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -54,16 +60,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.nameUserAttr.editFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.nameUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -74,7 +71,10 @@ export const initNameUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.nameUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({ 'data-id': 'delete-name' });
+        this.#deleteModal = this.createModal({
+          'data-id': 'delete-name',
+          'close-on-outside-click': 'true',
+        });
         this.#deleteFlow = new FlowDriver(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -86,16 +86,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.nameUserAttr.deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.nameUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();

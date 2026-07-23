@@ -1,11 +1,17 @@
 import { SdkFnWrapper, wrapWith } from '@descope/core-js-sdk';
 import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook } from '../../types';
-import { addHooks, getAuthInfoFromResponse, isDescopeBridge } from '../helpers';
+import {
+  addHooks,
+  getAuthInfoFromResponse,
+  isDescopeBridge,
+  isInvalidSessionResponse,
+} from '../helpers';
 import {
   createTimerFunctions,
   getTokenExpiration,
   getAutoRefreshTimeout,
+  createActivityTracker,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
@@ -18,9 +24,24 @@ import { getRefreshToken } from '../withPersistTokens/helpers';
  */
 export const withAutoRefresh =
   <T extends CreateWebSdk>(createSdk: T) =>
-  ({ autoRefresh, ...config }: Parameters<T>[0] & AutoRefreshOptions) => {
-    // Never auto refresh in native flows
-    if (!autoRefresh || isDescopeBridge()) return createSdk(config);
+  ({
+    autoRefresh,
+    ...config
+  }: Parameters<T>[0] & AutoRefreshOptions): ReturnType<T> & {
+    markUserActive: () => void;
+  } => {
+    const autoRefreshEnabled = !!autoRefresh;
+    const customActivityTracking =
+      typeof autoRefresh === 'object' && autoRefresh?.customActivityTracking;
+
+    // Never auto refresh when disabled or in native flows
+    if (!autoRefreshEnabled || isDescopeBridge()) {
+      return Object.assign(createSdk(config), {
+        markUserActive: () => {
+          logger.warn('markUserActive() called but has no effect');
+        },
+      }) as ReturnType<T> & { markUserActive: () => void };
+    }
 
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
     // in order to prevent it, we hold a list of timers and cancel all of them when a new timer is set, which means we should have one active timer only at a time
@@ -30,6 +51,17 @@ export const withAutoRefresh =
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpirationDate: Date;
     let refreshToken: string;
+
+    let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
+    let hasInactivityTimeout = false;
+
+    let refreshWasSkipped = false;
+
+    if (customActivityTracking) {
+      logger.debug('Activity-based refresh enabled');
+      activityTracker = createActivityTracker();
+    }
+
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
         // tab becomes visible and the session is expired, do a refresh
@@ -47,13 +79,13 @@ export const withAutoRefresh =
       });
     }
 
-    const afterRequest: AfterRequestHook = async (_req, res) => {
-      const { sessionJwt, refreshJwt, sessionExpiration } =
+    const afterRequest: AfterRequestHook = async (req, res) => {
+      const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
         await getAuthInfoFromResponse(res);
 
-      // if we got 401 we want to cancel all timers
-      if (res?.status === 401) {
-        logger.debug('Received 401, canceling all timers');
+      // if we got a failed response on a session validation route we want to cancel all timers
+      if (isInvalidSessionResponse(req, res)) {
+        logger.debug('Session invalidated, canceling all timers');
         clearAllTimers();
       } else if (sessionJwt || sessionExpiration) {
         sessionExpirationDate = getTokenExpiration(
@@ -65,7 +97,12 @@ export const withAutoRefresh =
           return;
         }
         refreshToken = refreshJwt;
-        const timeout = getAutoRefreshTimeout(sessionExpirationDate);
+        // Updated on each server response — may change if server starts/stops returning nextRefreshSeconds
+        hasInactivityTimeout = nextRefreshSeconds > 0;
+        const timeout = getAutoRefreshTimeout(
+          sessionExpirationDate,
+          nextRefreshSeconds,
+        );
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {
@@ -87,7 +124,30 @@ export const withAutoRefresh =
           `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
         );
 
+        // Reset activity tracking after receiving new session (refresh succeeded)
+        if (activityTracker) {
+          activityTracker.reset();
+          refreshWasSkipped = false;
+        }
+
         setTimer(() => {
+          // Skip refresh if document is hidden - the visibilitychange handler will refresh when user returns
+          if (IS_BROWSER && document.visibilityState === 'hidden') {
+            logger.debug('Skipping refresh due to timer - document is hidden');
+            return;
+          }
+
+          // Check activity if tracking is enabled and server signals inactivity timeout
+          if (
+            activityTracker &&
+            hasInactivityTimeout &&
+            !activityTracker.hadActivity()
+          ) {
+            logger.debug('Skipping refresh due to timer - user is idle');
+            refreshWasSkipped = true;
+            return; // Don't reschedule - wait for markUserActive() call
+          }
+
           logger.debug('Refreshing session due to timer');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
@@ -109,5 +169,32 @@ export const withAutoRefresh =
         return resp;
       };
 
-    return wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper);
+    return Object.assign(
+      wrapWith(sdk, ['logout', 'logoutAll', 'oidc.logout'], wrapper),
+      {
+        markUserActive: activityTracker
+          ? () => {
+              logger.debug('markUserActive() called');
+              if (!hasInactivityTimeout) {
+                logger.debug(
+                  'markUserActive() called but server does not have inactivity timeout configured (no nextRefreshSeconds)',
+                );
+              }
+              activityTracker.markActive();
+              if (refreshWasSkipped) {
+                logger.debug(
+                  'User became active after skipped refresh, triggering refresh',
+                );
+                refreshWasSkipped = false;
+                clearAllTimers(); // Prevent race condition with pending timer
+                sdk.refresh(getRefreshToken() || refreshToken);
+              }
+            }
+          : () => {
+              logger.warn(
+                'markUserActive() called but customActivityTracking is not enabled — this call has no effect',
+              );
+            },
+      },
+    ) as ReturnType<T> & { markUserActive: () => void };
   };

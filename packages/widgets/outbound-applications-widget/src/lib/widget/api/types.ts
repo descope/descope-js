@@ -6,6 +6,7 @@ export type HttpClient = Sdk['httpClient'];
 
 export type User = {
   userId: string;
+  tenantId?: string;
 };
 
 export type OutboundApplication = {

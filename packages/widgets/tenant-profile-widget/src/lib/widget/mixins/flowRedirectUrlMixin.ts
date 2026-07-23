@@ -1,13 +1,16 @@
+import { getAdditionalSSOIds } from './../state/selectors';
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   initLifecycleMixin,
   loggerMixin,
   modalMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
-import { createFlowTemplate, getUrlParam, resetUrlParam } from './helpers';
+import { getUrlParam, resetUrlParam } from './helpers';
 import { stateManagementMixin } from './stateManagementMixin';
 
 const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
@@ -15,12 +18,14 @@ const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
 export const flowRedirectUrlMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class FlowRedirectUrlMixinClass extends compose(
+      localeMixin,
       initLifecycleMixin,
       modalMixin,
       stateManagementMixin,
       cookieConfigMixin,
       loggerMixin,
       themeMixin,
+      flowInputMixin,
     )(superclass) {
       async init() {
         await super.init?.();
@@ -36,16 +41,9 @@ export const flowRedirectUrlMixin = createSingletonMixin(
       #createFlowRedirectModal(widgetFlow: string) {
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
         modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: widgetFlow,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
 
@@ -54,11 +52,12 @@ export const flowRedirectUrlMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        flow.onSuccess(() => {
+        flow.onSuccess(async () => {
           modal.close();
           this.actions.getMe();
-          this.actions.getTenant();
-          this.actions.getTenantAdminLinkSSO();
+          await this.actions.getTenant();
+          const ssoIds = getAdditionalSSOIds(this.state);
+          await this.actions.getTenantAdminLinkSSO({ ssoIds });
         });
 
         modal.afterClose = () => {

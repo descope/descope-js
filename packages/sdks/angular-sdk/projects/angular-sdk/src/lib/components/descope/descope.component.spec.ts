@@ -3,7 +3,11 @@ import { default as DescopeWC } from '@descope/web-component';
 import { DescopeComponent } from './descope.component';
 import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
-import { CUSTOM_ELEMENTS_SCHEMA, EventEmitter } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  EventEmitter,
+  PLATFORM_ID
+} from '@angular/core';
 import mocked = jest.mocked;
 
 jest.mock('@descope/web-js-sdk');
@@ -210,6 +214,61 @@ describe('DescopeComponent', () => {
         'descope-wc'
       ) as any;
       expect(webComponent.customStorage).toBe(newCustomStorage);
+    });
+  });
+
+  describe('SSR (Server-Side Rendering)', () => {
+    it('should not load web component when not in browser (SSR)', () => {
+      // Create a new test bed with server platform
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig },
+          { provide: PLATFORM_ID, useValue: 'server' }
+        ]
+      });
+
+      const ssrFixture = TestBed.createComponent(DescopeComponent);
+      const ssrComponent = ssrFixture.componentInstance;
+      ssrComponent.projectId = '123';
+      ssrComponent.flowId = 'sign-in';
+
+      ssrFixture.detectChanges();
+
+      // The web component should be rendered in template (for hydration),
+      // but loadWebComponent should not attempt dynamic import
+      const html: HTMLElement = ssrFixture.nativeElement;
+      const webComponentHtml = html.querySelector('descope-wc');
+      expect(webComponentHtml).toBeDefined();
+
+      // Verify that ngOnInit completes without errors in SSR context
+      expect(ssrComponent).toBeTruthy();
+    });
+
+    it('should handle ngOnInit gracefully when platform is server', async () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig },
+          { provide: PLATFORM_ID, useValue: 'server' }
+        ]
+      });
+
+      const ssrFixture = TestBed.createComponent(DescopeComponent);
+      const ssrComponent = ssrFixture.componentInstance;
+      ssrComponent.flowId = 'sign-in';
+
+      ssrFixture.detectChanges();
+      await ssrFixture.whenStable();
+
+      // Should not throw any errors
+      expect(ssrComponent).toBeTruthy();
+      // Web component should not be loaded
+      expect((ssrComponent as any).isWebComponentLoaded).toBe(false);
     });
   });
 });

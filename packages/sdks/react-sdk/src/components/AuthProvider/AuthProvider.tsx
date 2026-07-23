@@ -6,7 +6,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
+import {
+  CookieConfig,
+  OidcConfig,
+  AutoRefreshConfig,
+} from '@descope/web-js-sdk';
 import { Claims } from '@descope/core-js-sdk';
 import { CustomStorage } from '@descope/web-component';
 import Context from '../../hooks/Context';
@@ -25,13 +29,19 @@ interface IAuthProviderProps {
   baseCdnUrl?: string;
   // Default is true. If true, tokens will be stored on local storage and can accessed with getToken function
   persistTokens?: boolean;
-  // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire
-  autoRefresh?: boolean;
+  // Default is true. If true, the SDK will automatically refresh the session token when it is about to expire.
+  // Pass `{ customActivityTracking: true }` to skip refresh for idle users — you must call `sdk.markUserActive()` to signal activity.
+  autoRefresh?: AutoRefreshConfig;
   // If true, session token (jwt) will be stored on cookie. Otherwise, the session token will be
   // stored on local storage and can accessed with getSessionToken function
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: CookieConfig;
+  // If true, refresh token will be stored on cookie. Otherwise, the refresh token will be
+  // stored on local storage and can be accessed with getRefreshToken function
+  // Use this option if you need server-side access to the refresh token (e.g., in Next.js middleware)
+  // to enable refreshing sessions on the server before they expire
+  refreshTokenViaCookie?: CookieConfig;
   hooks?: Hooks;
   // If truthy he SDK refresh and logout functions will use the OIDC client
   // Accepts boolean or OIDC configuration
@@ -56,6 +66,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   baseStaticUrl = '',
   baseCdnUrl = '',
   sessionTokenViaCookie = false,
+  refreshTokenViaCookie = false,
   hooks = undefined,
   persistTokens = true,
   autoRefresh = true,
@@ -85,6 +96,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     persistTokens,
     autoRefresh,
     sessionTokenViaCookie,
+    refreshTokenViaCookie,
     hooks,
     oidcConfig,
     storeLastAuthenticatedUser,
@@ -137,9 +149,26 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     isSessionFetched.current = true;
 
     setIsSessionLoading(true);
-    withValidation(sdk?.refresh)(undefined, true).then(() => {
-      setIsSessionLoading(false);
-    });
+    const stopSessionLoading = () => {
+      // Defer to a separate render pass so React doesn't batch this with
+      // the setIsSessionLoading(true) above when refresh() short-circuits
+      // synchronously - downstream consumers (e.g. useSession) need to
+      // observe the false→true→false loading transition (#1393)
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          setIsSessionLoading(false);
+        }, 0);
+      });
+    };
+    // Clear the loading state on both fulfilment and rejection. A rejected
+    // refresh (e.g. a transient network failure on the proactive refresh) must
+    // still clear `isSessionLoading` - `isSessionFetched` is already set so
+    // `fetchSession` never re-runs, and consumers (e.g. useSession) would
+    // otherwise hang on "loading" forever despite a valid session.
+    withValidation(sdk?.refresh)(undefined, true).then(
+      stopSessionLoading,
+      stopSessionLoading,
+    );
   }, [sdk]);
 
   const fetchUser = useCallback(() => {
@@ -148,9 +177,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     isUserFetched.current = true;
 
     setIsUserLoading(true);
-    withValidation(sdk.me)().then(() => {
-      setIsUserLoading(false);
-    });
+    // Clear the loading state on both fulfilment and rejection so a failed
+    // `me()` doesn't leave `isUserLoading` stuck `true` (see fetchSession).
+    const stopUserLoading = () => setIsUserLoading(false);
+    withValidation(sdk.me)().then(stopUserLoading, stopUserLoading);
   }, [sdk]);
 
   const value = useMemo<IContext>(

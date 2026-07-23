@@ -21,7 +21,7 @@ import {
 } from './validations';
 
 const deliveryMethods = Object.keys(DeliveryMethods).filter(
-  (d) => d !== DeliveryPhone.voice,
+  (d) => d !== DeliveryPhone.voice && d !== DeliveryPhone.im,
 );
 
 const withMagicLink = (httpClient: HttpClient) => ({

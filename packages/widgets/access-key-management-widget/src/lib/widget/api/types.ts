@@ -45,6 +45,10 @@ export type DeactivateAccessKeyConfig = {
   id: string;
 };
 
+export type RotateAccessKeyConfig = {
+  id: string;
+};
+
 export type Role = {
   name: string;
   description: string;

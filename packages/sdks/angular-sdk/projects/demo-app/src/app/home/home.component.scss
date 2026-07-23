@@ -4,6 +4,21 @@
   align-items: center;
   flex-direction: column;
 }
+
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+
+  code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
 .action-button {
   border: 1px solid #00ace1;
   background-color: white;

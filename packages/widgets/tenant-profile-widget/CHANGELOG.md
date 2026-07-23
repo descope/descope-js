@@ -2,6 +2,350 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.6](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.5...tenant-profile-widget-0.8.6) (2026-07-22)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.4`
+## [0.8.5](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.4...tenant-profile-widget-0.8.5) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+* `web-component` updated to version `3.70.3`
+## [0.8.4](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.3...tenant-profile-widget-0.8.4) (2026-07-12)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.2`
+* `sdk-mixins` updated to version `0.23.1`
+## [0.8.3](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.2...tenant-profile-widget-0.8.3) (2026-07-12)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.67.0`
+* `web-js-sdk` updated to version `1.51.2`
+* `web-component` updated to version `3.70.1`
+## [0.8.2](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.1...tenant-profile-widget-0.8.2) (2026-07-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.0`
+## [0.8.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.0...tenant-profile-widget-0.8.1) (2026-06-29)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.69.5`
+* `sdk-mixins` updated to version `0.23.0`
+* `sdk-component-drivers` updated to version `0.14.0`
+## [0.8.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.7.4...tenant-profile-widget-0.8.0) (2026-06-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.66.0`
+* `web-js-sdk` updated to version `1.51.1`
+* `web-component` updated to version `3.69.4`
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `sdk-component-drivers` updated to version `0.13.1`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
+## [0.7.4](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.7.3...tenant-profile-widget-0.7.4) (2026-06-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.65.0`
+* `web-js-sdk` updated to version `1.51.0`
+* `web-component` updated to version `3.69.3`
+## [0.7.3](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.7.2...tenant-profile-widget-0.7.3) (2026-06-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.64.0`
+* `web-js-sdk` updated to version `1.50.6`
+* `web-component` updated to version `3.69.2`
+## [0.7.2](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.7.1...tenant-profile-widget-0.7.2) (2026-06-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.63.0`
+* `web-js-sdk` updated to version `1.50.5`
+* `web-component` updated to version `3.69.1`
+## [0.7.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.7.0...tenant-profile-widget-0.7.1) (2026-06-18)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.69.0`
+## [0.7.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.7...tenant-profile-widget-0.7.0) (2026-06-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.4`
+* `web-component` updated to version `3.68.0`
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `sdk-component-drivers` updated to version `0.13.0`
+
+### Features
+
+* tenant multi sso ([#1400](https://github.com/descope/descope-js/issues/1400)) ([7d840b7](https://github.com/descope/descope-js/commit/7d840b773ba58aace60f28a645e00cac6f923488))
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.6.7](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.6...tenant-profile-widget-0.6.7) (2026-06-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.2`
+* `web-js-sdk` updated to version `1.50.3`
+* `web-component` updated to version `3.67.1`
+## [0.6.6](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.5...tenant-profile-widget-0.6.6) (2026-06-09)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.67.0`
+* `sdk-mixins` updated to version `0.20.0`
+## [0.6.5](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.4...tenant-profile-widget-0.6.5) (2026-06-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.1`
+* `web-js-sdk` updated to version `1.50.2`
+* `web-component` updated to version `3.66.1`
+## [0.6.4](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.3...tenant-profile-widget-0.6.4) (2026-06-04)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.66.0`
+* `sdk-mixins` updated to version `0.19.0`
+## [0.6.3](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.2...tenant-profile-widget-0.6.3) (2026-05-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.65.0`
+## [0.6.2](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.1...tenant-profile-widget-0.6.2) (2026-05-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.64.3`
+* `sdk-mixins` updated to version `0.18.0`
+* `sdk-component-drivers` updated to version `0.12.0`
+## [0.6.1](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.6.0...tenant-profile-widget-0.6.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+* `web-component` updated to version `3.64.2`
+## [0.6.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.38...tenant-profile-widget-0.6.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `web-component` updated to version `3.64.1`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.5.38](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.37...tenant-profile-widget-0.5.38) (2026-05-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.0`
+* `web-js-sdk` updated to version `1.49.1`
+* `web-component` updated to version `3.64.0`
+## [0.5.37](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.36...tenant-profile-widget-0.5.37) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `web-component` updated to version `3.63.0`
+* `sdk-mixins` updated to version `0.17.0`
+## [0.5.36](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.35...tenant-profile-widget-0.5.36) (2026-05-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.4`
+* `web-component` updated to version `3.62.0`
+* `sdk-mixins` updated to version `0.16.2`
+* `sdk-component-drivers` updated to version `0.10.0`
+## [0.5.35](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.34...tenant-profile-widget-0.5.35) (2026-05-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.61.0`
+* `web-js-sdk` updated to version `1.48.3`
+* `web-component` updated to version `3.61.0`
+## [0.5.34](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.33...tenant-profile-widget-0.5.34) (2026-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.60.0`
+* `web-js-sdk` updated to version `1.48.2`
+* `web-component` updated to version `3.60.0`
+## [0.5.33](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.32...tenant-profile-widget-0.5.33) (2026-04-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.59.1`
+* `web-js-sdk` updated to version `1.48.1`
+* `web-component` updated to version `3.59.2`
+## [0.5.32](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.31...tenant-profile-widget-0.5.32) (2026-04-20)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.59.1`
+## [0.5.31](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.30...tenant-profile-widget-0.5.31) (2026-04-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.59.0`
+* `web-js-sdk` updated to version `1.48.0`
+* `web-component` updated to version `3.59.0`
+## [0.5.30](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.29...tenant-profile-widget-0.5.30) (2026-04-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.2`
+* `web-js-sdk` updated to version `1.47.2`
+* `web-component` updated to version `3.58.4`
+## [0.5.29](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.28...tenant-profile-widget-0.5.29) (2026-04-13)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.1`
+* `web-js-sdk` updated to version `1.47.1`
+* `web-component` updated to version `3.58.3`
+## [0.5.28](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.27...tenant-profile-widget-0.5.28) (2026-04-12)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.58.2`
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+* `sdk-component-drivers` updated to version `0.9.1`
+## [0.5.27](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.26...tenant-profile-widget-0.5.27) (2026-04-06)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.58.1`
+## [0.5.26](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.25...tenant-profile-widget-0.5.26) (2026-03-31)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.58.0`
+## [0.5.25](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.24...tenant-profile-widget-0.5.25) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+* `web-component` updated to version `3.57.1`
+## [0.5.24](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.23...tenant-profile-widget-0.5.24) (2026-03-23)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.0`
+* `web-js-sdk` updated to version `1.46.0`
+* `web-component` updated to version `3.57.0`
+## [0.5.23](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.22...tenant-profile-widget-0.5.23) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.56.0`
+* `sdk-mixins` updated to version `0.16.0`
+## [0.5.22](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.21...tenant-profile-widget-0.5.22) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.4`
+## [0.5.21](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.20...tenant-profile-widget-0.5.21) (2026-02-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.3`
+## [0.5.20](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.19...tenant-profile-widget-0.5.20) (2026-02-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.2`
+## [0.5.19](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.18...tenant-profile-widget-0.5.19) (2026-02-01)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.1`
+## [0.5.18](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.17...tenant-profile-widget-0.5.18) (2026-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.57.0`
+* `web-js-sdk` updated to version `1.45.0`
+* `web-component` updated to version `3.55.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+## [0.5.17](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.16...tenant-profile-widget-0.5.17) (2026-01-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.2`
+* `web-js-sdk` updated to version `1.44.0`
+* `web-component` updated to version `3.54.0`
+## [0.5.16](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.15...tenant-profile-widget-0.5.16) (2026-01-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.1`
+* `web-js-sdk` updated to version `1.43.1`
+* `web-component` updated to version `3.53.4`
+## [0.5.15](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.14...tenant-profile-widget-0.5.15) (2026-01-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.0`
+* `web-js-sdk` updated to version `1.43.0`
+* `web-component` updated to version `3.53.3`
+## [0.5.14](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.13...tenant-profile-widget-0.5.14) (2025-12-30)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.53.2`
+## [0.5.13](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.12...tenant-profile-widget-0.5.13) (2025-12-30)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.55.0`
+* `web-js-sdk` updated to version `1.42.1`
+* `web-component` updated to version `3.53.1`
+## [0.5.12](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.11...tenant-profile-widget-0.5.12) (2025-12-24)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.53.0`
+* `sdk-mixins` updated to version `0.15.0`
+## [0.5.11](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.10...tenant-profile-widget-0.5.11) (2025-12-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.54.0`
+* `web-js-sdk` updated to version `1.42.0`
+* `web-component` updated to version `3.52.4`
+* `sdk-mixins` updated to version `0.14.1`
+## [0.5.10](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.9...tenant-profile-widget-0.5.10) (2025-12-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.41.0`
+* `web-component` updated to version `3.52.3`
+## [0.5.9](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.8...tenant-profile-widget-0.5.9) (2025-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.2`
+* `web-component` updated to version `3.52.2`
 ## [0.5.8](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.5.7...tenant-profile-widget-0.5.8) (2025-12-03)
 
 ### Dependency Updates

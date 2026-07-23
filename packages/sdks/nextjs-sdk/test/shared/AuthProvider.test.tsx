@@ -42,4 +42,40 @@ describe('AuthProvider', () => {
 			expect.anything()
 		);
 	});
+
+	it('should pass both sessionTokenViaCookie and refreshTokenViaCookie with sameSite Lax by default', () => {
+		render(<AuthProvider projectId="project1" />);
+		expect(AuthProviderComp).toHaveBeenCalledWith(
+			expect.objectContaining({
+				sessionTokenViaCookie: { sameSite: 'Lax' },
+				refreshTokenViaCookie: { sameSite: 'Lax' }
+			}),
+			expect.anything()
+		);
+	});
+
+	it('should allow refreshTokenViaCookie to be overridden with different value', () => {
+		render(
+			<AuthProvider
+				projectId="project1"
+				refreshTokenViaCookie={{ sameSite: 'Strict', secure: true }}
+			/>
+		);
+		expect(AuthProviderComp).toHaveBeenCalledWith(
+			expect.objectContaining({
+				refreshTokenViaCookie: { sameSite: 'Strict', secure: true }
+			}),
+			expect.anything()
+		);
+	});
+
+	it('should allow refreshTokenViaCookie to be overridden to false', () => {
+		render(<AuthProvider projectId="project1" refreshTokenViaCookie={false} />);
+		expect(AuthProviderComp).toHaveBeenCalledWith(
+			expect.objectContaining({
+				refreshTokenViaCookie: false
+			}),
+			expect.anything()
+		);
+	});
 });

@@ -19,8 +19,9 @@ export const mockHttpClient = {
   post: jest.fn(),
   put: jest.fn(),
   delete: jest.fn(),
+  patch: jest.fn(),
   reset: () =>
-    ['post'].forEach((key) =>
+    ['post', 'patch'].forEach((key) =>
       mockHttpClient[key].mockResolvedValue({
         ok: true,
         status: 200,
@@ -193,11 +194,11 @@ describe('user-management-widget', () => {
       await sdk.user.update(updateData);
 
       await waitFor(
-        () => expect(mockHttpClient.post).toHaveBeenCalledTimes(1),
+        () => expect(mockHttpClient.patch).toHaveBeenCalledTimes(1),
         { timeout: 5000 },
       );
       await waitFor(() =>
-        expect(mockHttpClient.post).toHaveBeenCalledWith(
+        expect(mockHttpClient.patch).toHaveBeenCalledWith(
           apiPaths.user.update,
           updateData,
           {
@@ -207,6 +208,30 @@ describe('user-management-widget', () => {
           },
         ),
       );
+    });
+
+    it('getSubTenantRoles', async () => {
+      const mockRoles = [
+        { tenantId: 'sub-tenant-1', roleNames: ['Role 1', 'Role 2'] },
+      ];
+      mockHttpClient.get.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ roles: mockRoles }),
+        text: () => Promise.resolve(JSON.stringify({ roles: mockRoles })),
+      });
+
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
+      const result = await sdk.tenant.getSubTenantRoles();
+
+      await waitFor(() => expect(mockHttpClient.get).toHaveBeenCalledTimes(1), {
+        timeout: 5000,
+      });
+      expect(mockHttpClient.get).toHaveBeenCalledWith(
+        apiPaths.tenant.subTenantRoles,
+        { queryParams: { tenant: mockTenant } },
+      );
+      expect(result.roles).toEqual(mockRoles);
     });
   });
 

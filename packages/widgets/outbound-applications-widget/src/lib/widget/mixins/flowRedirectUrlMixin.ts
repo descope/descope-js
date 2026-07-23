@@ -1,13 +1,15 @@
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   initLifecycleMixin,
   loggerMixin,
   modalMixin,
   cookieConfigMixin,
   themeMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
-import { createFlowTemplate, getUrlParam, resetUrlParam } from './helpers';
+import { getUrlParam, resetUrlParam } from './helpers';
 import { stateManagementMixin } from './stateManagementMixin';
 
 const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
@@ -15,12 +17,14 @@ const REDIRECT_FLOW_NAME_QUERY_PARAM = 'widget-flow';
 export const flowRedirectUrlMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class FlowRedirectUrlMixinClass extends compose(
+      localeMixin,
       initLifecycleMixin,
       modalMixin,
       stateManagementMixin,
       cookieConfigMixin,
       loggerMixin,
       themeMixin,
+      flowInputMixin,
     )(superclass) {
       async init() {
         await super.init?.();
@@ -35,18 +39,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
 
       #createFlowRedirectModal(widgetFlow: string) {
         const modal = this.createModal({ 'data-id': 'redirect-flow' });
-        modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: widgetFlow,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
-        );
+        modal.setContent(this.createFlowTemplate({ flowId: widgetFlow }));
 
         const flow = new FlowDriver(
           () => modal.ele?.querySelector('descope-wc'),

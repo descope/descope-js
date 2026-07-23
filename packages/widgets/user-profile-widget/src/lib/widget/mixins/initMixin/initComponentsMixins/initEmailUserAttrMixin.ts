@@ -9,12 +9,13 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
-import { getEmail, getIsEmailVerified } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
+import { getEmail, getEmailBadgeLabel } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -22,12 +23,14 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initEmailUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class EmailUserAttrMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       emailUserAttr: UserAttributeDriver;
 
@@ -42,7 +45,10 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.emailUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({ 'data-id': 'edit-email' });
+        this.#editModal = this.createModal({
+          'data-id': 'edit-email',
+          'close-on-outside-click': 'true',
+        });
         this.#editFlow = new FlowDriver(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -54,16 +60,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.emailUserAttr.editFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.emailUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -74,7 +71,10 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.emailUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({ 'data-id': 'delete-email' });
+        this.#deleteModal = this.createModal({
+          'data-id': 'delete-email',
+          'close-on-outside-click': 'true',
+        });
         this.#deleteFlow = new FlowDriver(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -86,16 +86,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.emailUserAttr.deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.emailUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();
@@ -125,9 +116,9 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         this.emailUserAttr.value = email;
       });
 
-      #onValueBadgeLabelUpdate = withMemCache(
-        (isEmailVerified: ReturnType<typeof getIsEmailVerified>) => {
-          this.emailUserAttr.badgeLabel = isEmailVerified ? '' : 'Unverified';
+      #onBadgeLabelUpdate = withMemCache(
+        (badgeLabel: ReturnType<typeof getEmailBadgeLabel>) => {
+          this.emailUserAttr.badgeLabel = badgeLabel;
         },
       );
 
@@ -139,14 +130,10 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         this.#initDeleteModal();
 
         this.#onValueUpdate(getEmail(this.state));
-        this.#onValueBadgeLabelUpdate(getIsEmailVerified(this.state));
+        this.#onBadgeLabelUpdate(getEmailBadgeLabel(this.state));
 
         this.subscribe(this.#onValueUpdate.bind(this), getEmail);
-
-        this.subscribe(
-          this.#onValueBadgeLabelUpdate.bind(this),
-          getIsEmailVerified,
-        );
+        this.subscribe(this.#onBadgeLabelUpdate.bind(this), getEmailBadgeLabel);
       }
     },
 );

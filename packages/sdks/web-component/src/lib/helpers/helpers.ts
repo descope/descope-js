@@ -12,8 +12,10 @@ import {
   URL_REDIRECT_AUTH_INITIATOR_PARAM_NAME,
   OIDC_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_STATE_ID_PARAM_NAME,
+  WSFED_IDP_STATE_ID_PARAM_NAME,
   SAML_IDP_USERNAME_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
+  CUSTOM_APP_ID_PARAM_NAME,
   OIDC_LOGIN_HINT_PARAM_NAME,
   DESCOPE_IDP_INITIATED_PARAM_NAME,
   OVERRIDE_CONTENT_URL,
@@ -31,12 +33,50 @@ import {
   AutoFocusOptions,
   CustomScreenState,
   Direction,
-  Locale,
   SSOQueryParams,
   StepState,
 } from '../types';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
+
+/**
+ * Wraps an async function with retry logic
+ * @param fn - The async function to wrap
+ * @param timeoutMs - Time to wait between retries in milliseconds
+ * @param maxRetries - Maximum number of retry attempts
+ * @returns A new function with retry logic
+ */
+export function withRetry<TArgs extends any[], TReturn>(
+  fn: (...args: TArgs) => Promise<TReturn>,
+  timeoutMs: number,
+  maxRetries: number,
+): (...args: TArgs) => Promise<TReturn> {
+  return async (...args: TArgs): Promise<TReturn> => {
+    let lastError: any;
+    const totalAttempts = maxRetries + 1; // initial attempt + retries
+
+    // eslint-disable-next-line no-plusplus
+    for (let attempt = 0; attempt < totalAttempts; attempt++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        return await fn(...args);
+      } catch (error) {
+        lastError = error;
+
+        // Don't wait after the last attempt
+        if (attempt < maxRetries) {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => {
+            setTimeout(resolve, timeoutMs * Math.pow(2, attempt + 1));
+          });
+        }
+      }
+    }
+
+    // All attempts failed, throw the last error
+    throw lastError;
+  };
+}
 
 function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -232,6 +272,14 @@ export function clearSAMLIDPParamFromUrl() {
   resetUrlParam(SAML_IDP_STATE_ID_PARAM_NAME);
 }
 
+export function getWSFedIDPParamFromUrl() {
+  return getUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
+export function clearWSFedIDPParamFromUrl() {
+  resetUrlParam(WSFED_IDP_STATE_ID_PARAM_NAME);
+}
+
 export function getSAMLIDPUsernameParamFromUrl() {
   return getUrlParam(SAML_IDP_USERNAME_PARAM_NAME);
 }
@@ -252,12 +300,20 @@ export function getSSOAppIdParamFromUrl() {
   return getUrlParam(SSO_APP_ID_PARAM_NAME);
 }
 
+export function getCustomAppIdParamFromUrl() {
+  return getUrlParam(CUSTOM_APP_ID_PARAM_NAME);
+}
+
 export function getThirdPartyAppIdParamFromUrl() {
   return getUrlParam(THIRD_PARTY_APP_ID_PARAM_NAME);
 }
 
 export function clearSSOAppIdParamFromUrl() {
   resetUrlParam(SSO_APP_ID_PARAM_NAME);
+}
+
+export function clearCustomAppIdParamFromUrl() {
+  resetUrlParam(CUSTOM_APP_ID_PARAM_NAME);
 }
 
 export function clearThirdPartyAppIdParamFromUrl() {
@@ -393,6 +449,11 @@ export const handleUrlParams = (
     clearSAMLIDPParamFromUrl();
   }
 
+  const wsfedIdpStateId = getWSFedIDPParamFromUrl();
+  if (wsfedIdpStateId) {
+    clearWSFedIDPParamFromUrl();
+  }
+
   const samlIdpUsername = getSAMLIDPUsernameParamFromUrl();
   if (samlIdpStateId) {
     clearSAMLIDPUsernameParamFromUrl();
@@ -406,6 +467,11 @@ export const handleUrlParams = (
   const ssoAppId = getSSOAppIdParamFromUrl();
   if (ssoAppId) {
     clearSSOAppIdParamFromUrl();
+  }
+
+  const customAppId = getCustomAppIdParamFromUrl();
+  if (customAppId) {
+    clearCustomAppIdParamFromUrl();
   }
 
   const thirdPartyAppId = getThirdPartyAppIdParamFromUrl();
@@ -459,9 +525,11 @@ export const handleUrlParams = (
     ssoQueryParams: {
       oidcIdpStateId,
       samlIdpStateId,
+      wsfedIdpStateId,
       samlIdpUsername,
       descopeIdpInitiated: idpInitiatedVal,
       ssoAppId,
+      customAppId,
       oidcLoginHint,
       oidcPrompt,
       oidcErrorRedirectUri,
@@ -507,6 +575,9 @@ export const withMemCache = <I extends any[], O>(fn: (...args: I) => O) => {
   );
 };
 
+export const FOCUSABLE_INPUTS_SELECTOR =
+  '*[name]:not([auto-focus="false"]):not([aria-hidden="true"])';
+
 export const handleAutoFocus = (
   ele: HTMLElement,
   autoFocus: AutoFocusOptions,
@@ -517,7 +588,9 @@ export const handleAutoFocus = (
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
     // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector('*[name]');
+    const firstVisibleInput: HTMLInputElement = ele.querySelector(
+      FOCUSABLE_INPUTS_SELECTOR,
+    );
     setTimeout(() => {
       firstVisibleInput?.focus();
     });
@@ -637,8 +710,10 @@ export const showFirstScreenOnExecutionInit = (
   {
     oidcIdpStateId,
     samlIdpStateId,
+    wsfedIdpStateId,
     samlIdpUsername,
     ssoAppId,
+    customAppId,
     oidcLoginHint,
     oidcPrompt,
     oidcErrorRedirectUri,
@@ -651,8 +726,10 @@ export const showFirstScreenOnExecutionInit = (
   !!startScreenId &&
   !oidcIdpStateId &&
   !samlIdpStateId &&
+  !wsfedIdpStateId &&
   !samlIdpUsername &&
   !ssoAppId &&
+  !customAppId &&
   !oidcLoginHint &&
   !oidcPrompt &&
   !oidcErrorRedirectUri &&
@@ -681,6 +758,41 @@ export const injectSamlIdpForm = (
   submitCallback(formEle);
 };
 
+export const injectWsFedIdpForm = (
+  url: string,
+  wresult: string,
+  wctx: string,
+  submitCallback: (form: HTMLFormElement) => void,
+) => {
+  const formEle = document.createElement('form');
+  formEle.method = 'POST';
+  formEle.action = url;
+
+  // Use DOM APIs to set values safely — wresult is raw XML that would break innerHTML interpolation
+  const createHiddenInput = (name: string, value: string) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    return input;
+  };
+
+  formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
+  formEle.appendChild(createHiddenInput('wresult', wresult));
+  formEle.appendChild(createHiddenInput('wctx', wctx));
+
+  const submitBtn = document.createElement('input');
+  submitBtn.type = 'submit';
+  submitBtn.id = 'WSFedSubmitButton';
+  submitBtn.value = 'Continue';
+  submitBtn.style.display = 'none';
+  formEle.appendChild(submitBtn);
+
+  document.body.appendChild(formEle);
+
+  submitCallback(formEle);
+};
+
 export const submitForm = (formEle: HTMLFormElement) => formEle?.submit();
 
 export const getFirstNonEmptyValue = (obj: object, keys: string[]) => {
@@ -701,25 +813,6 @@ export const leadingDebounce = <T extends (...args: any[]) => void>(
     }, wait);
   } as T;
 };
-
-export function getUserLocale(locale: string): Locale {
-  if (locale) {
-    return { locale: locale.toLowerCase(), fallback: locale.toLowerCase() };
-  }
-  const nl = navigator.language;
-  if (!nl) {
-    return { locale: '', fallback: '' };
-  }
-
-  if (nl.includes('-')) {
-    return {
-      locale: nl.toLowerCase(),
-      fallback: nl.split('-')[0].toLowerCase(),
-    };
-  }
-
-  return { locale: nl.toLowerCase(), fallback: nl.toLowerCase() };
-}
 
 export const clearPreviousExternalInputs = () => {
   document

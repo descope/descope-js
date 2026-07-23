@@ -268,36 +268,15 @@ const setImageVariable = (
   }
 };
 
-const applyComponentsState = (
-  baseEle: DocumentFragment,
-  componentsState: Record<string, string> = {},
-  logger?: { error: (message: string, description: string) => void },
-) => {
-  Object.entries(componentsState).forEach(([componentId, state]) => {
-    const componentEls = baseEle.querySelectorAll(`[id="${CSS.escape(componentId)}"]`);
-    componentEls.forEach((compEl) => {
-      switch (state) {
-        case 'disable':
-          compEl.setAttribute('disabled', 'true');
-          break;
-        case 'hide':
-          compEl.classList.add('hidden');
-          break;
-        default:
-          logger?.error(
-            `Unknown component state "${state}" for component with id "${componentId}"`,
-            'Valid states are "disable" and "hide"',
-          );
-          break;
-      }
-    });
-  });
-};
-
 /**
  * Update a screen template based on the screen state
  *  - Show/hide error messages
  *  - Replace element templates ({{...}} syntax) with screen state object
+ *
+ * Note: applying `screenState.componentsState` (the server-applied baseline
+ * hide/disable/read-only map) is owned by the `componentConditionsMixin`. The
+ * host calls `this.applyComponentsState(...)` after this function returns and
+ * before the fragment is mounted.
  */
 export const updateTemplateFromScreenState = (
   baseEle: DocumentFragment,
@@ -311,7 +290,6 @@ export const updateTemplateFromScreenState = (
   setElementConfig(baseEle, screenState?.componentsConfig, logger);
   replaceTemplateDynamicAttrValues(baseEle, screenState);
   setFormConfigValues(baseEle, flowInputs);
-  applyComponentsState(baseEle, screenState?.componentsState, logger);
 };
 
 /**
@@ -334,15 +312,53 @@ export const setNOTPVariable = (rootEle: HTMLElement, image?: string) => {
   setImageVariable(rootEle, 'descope-notp-image', image);
 };
 
-export const setPhoneAutoDetectDefaultCode = (
+export const setComponentsAutoDetectByGeo = (
   fragment: DocumentFragment,
-  autoDetectCode?: string,
+  countryCodeIso2?: string, // e.g. 'US', 'IL', 'FR'
 ) => {
-  Array.from(fragment.querySelectorAll('[default-code="autoDetect"]')).forEach(
-    (phoneEle) => {
-      phoneEle.setAttribute('default-code', autoDetectCode);
-    },
-  );
+  const config = {
+    // phone
+    'default-code': 'autoDetect',
+    // country-subdivision-city
+    'default-country': 'autoDetect',
+  };
+  Object.entries(config).forEach(([key, value]) => {
+    Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
+      (ele) => {
+        ele.setAttribute(key, countryCodeIso2 || value);
+      },
+    );
+  });
+};
+
+export const setComponentsAutoDetectByLocale = (
+  fragment: DocumentFragment,
+  locale?: string, // e.g. 'en-US', 'fr-FR'
+) => {
+  const config = {
+    // country-subdivision-city
+    lang: 'autoDetect',
+  };
+
+  let canonicalLocale = locale;
+  if (locale) {
+    try {
+      const [canonical] = Intl.getCanonicalLocales(locale);
+      if (canonical) {
+        canonicalLocale = canonical;
+      }
+    } catch {
+      // locale is not valid, keep original value
+    }
+  }
+
+  Object.entries(config).forEach(([key, value]) => {
+    Array.from(fragment.querySelectorAll(`[${key}="${value}"]`)).forEach(
+      (ele) => {
+        ele.setAttribute(key, canonicalLocale || value);
+      },
+    );
+  });
 };
 
 export const disableWebauthnButtons = (fragment: DocumentFragment) => {

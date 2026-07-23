@@ -1,7 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import fs from 'fs';
 import autoExternal from 'rollup-plugin-auto-external';
-import define from 'rollup-plugin-define';
+import replace from '@rollup/plugin-replace';
 import del from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
 import { terser } from 'rollup-plugin-terser';
@@ -35,10 +35,9 @@ export default [
     ],
     plugins: [
       del({ targets: 'dist/*' }),
-      define({
-        replacements: {
-          BUILD_VERSION: JSON.stringify(packageJson.version),
-        },
+      replace({
+        BUILD_VERSION: JSON.stringify(packageJson.version),
+        preventAssignment: true,
       }),
       typescript({
         compilerOptions: {
@@ -64,10 +63,9 @@ export default [
       },
     },
     plugins: [
-      define({
-        replacements: {
-          BUILD_VERSION: JSON.stringify(packageJson.version),
-        },
+      replace({
+        BUILD_VERSION: JSON.stringify(packageJson.version),
+        preventAssignment: true,
       }),
       typescript({
         compilerOptions: {

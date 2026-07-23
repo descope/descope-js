@@ -3,6 +3,10 @@ import '@testing-library/jest-dom';
 import '../src/lib/index';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import { createSdk } from '../src/lib/widget/api/sdk';
+import {
+  getCurrentTenantId,
+  getUserTenants,
+} from '../src/lib/widget/state/selectors';
 import { mockUser } from './mocks/mockUser';
 import rootMock from './mocks/rootMock';
 
@@ -29,7 +33,11 @@ mockHttpClient.reset();
 
 jest.mock('@descope/web-js-sdk', () => ({
   __esModule: true,
-  default: jest.fn(() => ({ httpClient: mockHttpClient })),
+  default: jest.fn(() => ({
+    httpClient: mockHttpClient,
+    logout: jest.fn(() => Promise.resolve()),
+  })),
+  getSessionToken: jest.fn(() => 'mock-session-token'),
 }));
 
 jest.mock('../src/lib/widget/api/sdk/createUserSdk', () => {
@@ -101,6 +109,63 @@ describe('user-profile-widget', () => {
       );
 
       expect(result).toEqual(mockUser);
+    });
+
+    it('setCurrentTenant', async () => {
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({})),
+        json: () => Promise.resolve({}),
+      });
+
+      const sdk = createSdk({ projectId: mockProjectId }, false);
+      await sdk.user.setCurrentTenant('tenant-123');
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.user.selectTenant,
+        { tenant: 'tenant-123' },
+      );
+    });
+
+    it('passkeys', async () => {
+      const passkeys = [{ id: 'pk-1', name: 'Passkey 1' }];
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify(passkeys)),
+        json: () => Promise.resolve(passkeys),
+      });
+
+      const sdk = createSdk({ projectId: mockProjectId }, false);
+      const result = await sdk.passkey.listPasskeys({ userId: 'user-123' });
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(apiPaths.user.passkeys, {
+        loginId: 'user-123',
+      });
+      expect(result).toEqual(passkeys);
+    });
+  });
+
+  describe('selectors', () => {
+    it('getCurrentTenantId should return currentTenantId from state', () => {
+      const state = {
+        tenant: { currentTenantId: 'tenant-123' },
+      } as any;
+      expect(getCurrentTenantId(state)).toBe('tenant-123');
+    });
+
+    it('getUserTenants should return user tenants from state', () => {
+      const tenants = [{ tenantId: 't1', tenantName: 'Tenant 1' }];
+      const state = {
+        me: { data: { userTenants: tenants } },
+      } as any;
+      expect(getUserTenants(state)).toEqual(tenants);
+    });
+
+    it('getUserTenants should return empty array when undefined', () => {
+      const state = {
+        me: { data: {} },
+      } as any;
+      expect(getUserTenants(state)).toEqual([]);
     });
   });
 });

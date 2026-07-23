@@ -93,9 +93,13 @@ describe('DescopeApplicationsPortalComponent', () => {
     webComponentHtml.dispatchEvent(new CustomEvent('logout', event));
   });
 
-  it('should emit ready event when web component dispatches ready', () => {
+  it('should emit ready event when web component dispatches ready', async () => {
     const readySpy = jest.fn();
     component.ready.subscribe(readySpy);
+
+    // Wait for async widget loading to complete
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     const html: HTMLElement = fixture.nativeElement;
     const webComponentHtml = html.querySelector(

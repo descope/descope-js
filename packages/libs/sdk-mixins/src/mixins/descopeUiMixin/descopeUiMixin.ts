@@ -32,6 +32,18 @@ export const descopeUiMixin = createSingletonMixin(
         return componentsVersion;
       }
 
+      async #getComponentsVersionSri() {
+        const config = await this.config;
+        const componentsVersionSri =
+          config?.projectConfig?.componentsVersionSri;
+
+        if (componentsVersionSri) {
+          this.logger.debug('SRI hash available for components');
+        }
+
+        return componentsVersionSri;
+      }
+
       #descopeUi: Promise<any>;
 
       get descopeUi() {
@@ -90,11 +102,21 @@ export const descopeUiMixin = createSingletonMixin(
         }
 
         try {
+          const componentsVersion = await this.#getComponentsVersion();
+          // When the dev-panel override is set, the URL points at a locally
+          // built bundle whose bytes won't match the CDN-published SRI hash.
+          // Skip SRI in that case so the override actually loads instead of
+          // failing the integrity check and falling back to the CDN.
+          const componentsVersionSri = LOCAL_STORAGE_OVERRIDE
+            ? undefined
+            : await this.#getComponentsVersionSri();
+
           await this.injectNpmLib(
             WEB_COMPONENTS_UI_LIB_NAME,
-            await this.#getComponentsVersion(),
+            componentsVersion,
             JS_FILE_PATH,
             [LOCAL_STORAGE_OVERRIDE],
+            componentsVersionSri,
           );
           this.logger.debug('DescopeUI was loaded');
           return globalThis.DescopeUI;

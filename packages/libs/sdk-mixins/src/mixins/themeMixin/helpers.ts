@@ -1,5 +1,39 @@
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 
+export const isSafeCssVarSegment = (segment: string): boolean =>
+  /^[a-zA-Z0-9-]+$/.test(segment);
+
+export const serializeOverrideCssValue = (value: unknown): string | null => {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? String(value) : null;
+  }
+  if (typeof value !== 'string') return null;
+  if (/[;{}]/.test(value)) return null;
+  return value.trim();
+};
+
+export const flattenToVars = (
+  obj: Record<string, any>,
+  onError: (msg: string) => void,
+  prefix = '',
+): string =>
+  Object.entries(obj).reduce((css, [key, value]) => {
+    if (!isSafeCssVarSegment(key)) {
+      onError('Ignoring invalid override-css token path segment');
+      return css;
+    }
+    const path = prefix ? `${prefix}-${key}` : key;
+    if (typeof value === 'object' && value !== null) {
+      return css + flattenToVars(value, onError, path);
+    }
+    const serializedValue = serializeOverrideCssValue(value);
+    if (serializedValue === null) {
+      onError('Ignoring invalid override-css token value');
+      return css;
+    }
+    return `${css}--descope-${path}:${serializedValue};`;
+  }, '');
+
 export const loadFont = (url: string) => {
   const font = document.createElement('link');
   font.href = url;
@@ -31,3 +65,22 @@ export const loadDevTheme = async () => {
     };
   }
 };
+
+export function deepMergeNonEmpty(
+  base: Record<string, any>,
+  override: Record<string, any>,
+): Record<string, any> {
+  const merged = { ...base };
+  for (const [key, value] of Object.entries(override || {})) {
+    if (value === null || value === undefined) continue;
+    if (typeof value === 'object') {
+      if (Object.keys(value).length === 0) continue;
+      merged[key] = deepMergeNonEmpty(merged[key] || {}, value);
+    } else if (typeof value === 'string') {
+      merged[key] = (merged[key] || '') + value;
+    } else {
+      merged[key] = value;
+    }
+  }
+  return merged;
+}

@@ -2,6 +2,119 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.23.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.23.0...sdk-mixins-0.23.1) (2026-07-12)
+
+
+### Bug Fixes
+
+* **sdk-mixins:** avoid CSP style-src violation in debugger overlay RELEASE ([#1432](https://github.com/descope/descope-js/issues/1432)) ([0460630](https://github.com/descope/descope-js/commit/046063013126388f4c89c711c95763ed2592f7af))
+
+## [0.23.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.22.0...sdk-mixins-0.23.0) (2026-06-29)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.14.0`
+
+### Features
+
+* **user-profile-widget:** close modals on outside click RELEASE ([#1430](https://github.com/descope/descope-js/issues/1430)) ([6a35ee4](https://github.com/descope/descope-js/commit/6a35ee417800bf633ab051bd9532468db90618f5)), closes [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072) [descope/web-components-ui#1072](https://github.com/descope/web-components-ui/issues/1072)
+
+## [0.22.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.21.0...sdk-mixins-0.22.0) (2026-06-28)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.13.1`
+* `sdk-helpers` updated to version `0.9.0`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
+## [0.21.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.20.0...sdk-mixins-0.21.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.13.0`
+* `sdk-helpers` updated to version `0.8.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.20.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.19.0...sdk-mixins-0.20.0) (2026-06-09)
+
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
+## [0.19.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.18.0...sdk-mixins-0.19.0) (2026-06-04)
+
+
+### Features
+
+* Add tenant style sheet ([#1397](https://github.com/descope/descope-js/issues/1397)) ([90ab9dd](https://github.com/descope/descope-js/commit/90ab9dd5f05cd696da8ced616e5e0b081a2d970c))
+
+## [0.18.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.1...sdk-mixins-0.18.0) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.12.0`
+
+### Features
+
+* user-management-widget sub tenant support RELEASE ([#1388](https://github.com/descope/descope-js/issues/1388)) ([416da21](https://github.com/descope/descope-js/commit/416da21112328a2fcb39f1c0bf2e606db4b60667))
+
+## [0.17.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.17.0...sdk-mixins-0.17.1) (2026-05-25)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.11.0`
+## [0.17.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.16.2...sdk-mixins-0.17.0) (2026-05-24)
+
+
+### Features
+
+* Add color theme override ([#1389](https://github.com/descope/descope-js/issues/1389)) ([34272cf](https://github.com/descope/descope-js/commit/34272cfb5c62e0175df6c2b6dcf71ab822d20ab4)), closes [#BD10E0](https://github.com/descope/descope-js/issues/BD10E0) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#710A86](https://github.com/descope/descope-js/issues/710A86) [#DA5DF3](https://github.com/descope/descope-js/issues/DA5DF3) [#EEB6](https://github.com/descope/descope-js/issues/EEB6) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309)
+
+## [0.16.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.16.1...sdk-mixins-0.16.2) (2026-05-14)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.10.0`
+## [0.16.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.16.0...sdk-mixins-0.16.1) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.9.1`
+* `sdk-helpers` updated to version `0.7.0`
+## [0.16.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.15.1...sdk-mixins-0.16.0) (2026-02-26)
+
+
+### Features
+
+* **web-component:** add SRI support for web-component-ui loader RELEASE ([#1333](https://github.com/descope/descope-js/issues/1333)) ([ac04331](https://github.com/descope/descope-js/commit/ac04331642c4a88964eff4399334c36468cb47b4))
+
+## [0.15.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.15.0...sdk-mixins-0.15.1) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.9.0`
+* `sdk-helpers` updated to version `0.6.0`
+## [0.15.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.14.1...sdk-mixins-0.15.0) (2025-12-24)
+
+
+### Features
+
+* Add Descope prefix to default logger ([#1291](https://github.com/descope/descope-js/issues/1291)) ([b40c871](https://github.com/descope/descope-js/commit/b40c87159f31bd6bd2e84839f219deacb5b12a35))
+
+## [0.14.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.14.0...sdk-mixins-0.14.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* update static resource mixin fallback urls logic ([#1287](https://github.com/descope/descope-js/issues/1287)) ([696328b](https://github.com/descope/descope-js/commit/696328baacce97b9e82976dfc6e3e64972218199))
+
 ## [0.14.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.13.16...sdk-mixins-0.14.0) (2025-11-09)
 
 ### Dependency Updates

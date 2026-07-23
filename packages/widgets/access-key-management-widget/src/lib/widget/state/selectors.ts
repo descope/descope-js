@@ -51,6 +51,18 @@ export const getCanModifyAccessKeys = createSelector(
   (isEditable, isSelected) => isEditable && isSelected,
 );
 
+export const getHasSelectedExpiredAccessKeys = createSelector(
+  getSelectedAccessKeys,
+  (selectedAccessKeys) =>
+    selectedAccessKeys.some((accessKey) => accessKey.status === 'expired'),
+);
+
+export const getCanChangeAccessKeysStatus = createSelector(
+  getCanModifyAccessKeys,
+  getHasSelectedExpiredAccessKeys,
+  (canModify, hasExpired) => canModify && !hasExpired,
+);
+
 export const getIsSingleAccessKeysSelected = createSelector(
   getSelectedAccessKeysIds,
   (selected) => selected.length === 1,
@@ -64,4 +76,14 @@ export const getSelectedAccessKeysDetailsForDisplay = createSelector(
     }
     return `${selectedAccessKeys.length} access keys`;
   },
+);
+
+// canChangeStatus is shared with Activate (which needs inactive), so it does
+// NOT gate on active — we add that here for Rotate.
+export const getCanRotateAccessKey = createSelector(
+  getCanChangeAccessKeysStatus,
+  getIsSingleAccessKeysSelected,
+  getSelectedAccessKeys,
+  (canChangeStatus, isSingle, selected) =>
+    canChangeStatus && isSingle && selected[0]?.status === 'active',
 );

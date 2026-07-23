@@ -74,10 +74,20 @@ const buildRequestLog = (args: Parameters<Fetch>) =>
     .body(args[1].body)
     .build();
 
-// we should retry once in case we got these status codes:
+// we should retry on these status codes:
+// 503: Service Unavailable
+// 520: Web Server Returned an Unknown Error (Cloudflare error)
 // 521: Web Server Is Down (Cloudflare error)
+// 522: Connection Timed Out (Cloudflare error)
 // 524: A Timeout Occurred (Cloudflare error)
-const retryStatusCodes = [521, 524];
+// 530: Cloudflare error
+const retryStatusCodes = [503, 520, 521, 522, 524, 530];
+
+// Retry delays in ms: first retry after 100ms, subsequent retries after 5000ms
+const retryDelaysMs = [100, 5000, 5000];
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /** Log the response object */
 const buildResponseLog = async (resp: Response & { retries?: number }) => {
@@ -93,14 +103,24 @@ const buildResponseLog = async (resp: Response & { retries?: number }) => {
     .build();
 };
 
-const fetchWrapper =
-  (fetch: Fetch) =>
-  async (...args: Parameters<Fetch>) => {
+const fetchWrapper = (fetch: Fetch) =>
+  // Named function rather than an `async (...rest) =>` arrow: Metro/Hermes
+  // (RN 0.85+) mis-compiles that construct when bundling — facebook/metro#1725.
+  async function fetchWithRetries(...args: Parameters<Fetch>) {
     let resp: Response & { retries?: number } = await fetch(...args);
 
-    if (retryStatusCodes.includes(resp.status)) {
+    let retries = 0;
+    while (
+      retryStatusCodes.includes(resp.status) &&
+      retries < retryDelaysMs.length
+    ) {
+      await sleep(retryDelaysMs[retries]);
       resp = await fetch(...args);
-      resp.retries = 1;
+      retries++;
+    }
+
+    if (retries > 0) {
+      resp.retries = retries;
     }
 
     // we found out that cloning the response is problematic when using node fetch
@@ -129,7 +149,8 @@ const createFetchLogger = (logger: Logger, receivedFetch?: Fetch) => {
     );
 
   if (!logger) return fetchWrapper(baseFetch);
-  return async (...args: Parameters<Fetch>) => {
+  // Named function rather than an `async (...rest) =>` arrow — see fetchWrapper above.
+  return async function loggingFetch(...args: Parameters<Fetch>) {
     if (!baseFetch)
       throw Error(
         'Cannot send http request, fetch is not defined, if you are running in a test, make sure fetch is defined globally',

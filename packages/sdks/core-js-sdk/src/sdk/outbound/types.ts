@@ -3,4 +3,5 @@ export type ConnectOptions = {
   scopes?: string[];
   tenantId?: string;
   tenantLevel?: boolean;
+  externalIdentifier?: string;
 };

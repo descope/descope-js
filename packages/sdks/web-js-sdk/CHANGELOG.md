@@ -2,6 +2,221 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.51.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.2...web-js-sdk-1.51.3) (2026-07-16)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** keep DSLI try-refresh indicator in real localStorage under customStorage ([#1438](https://github.com/descope/descope-js/issues/1438)) RELEASE ([6caaf21](https://github.com/descope/descope-js/commit/6caaf212fa9da9bc90c89b140005a138655a4ae7)), closes [#1383](https://github.com/descope/descope-js/issues/1383)
+
+## [1.51.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.1...web-js-sdk-1.51.2) (2026-07-12)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.67.0`
+## [1.51.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.0...web-js-sdk-1.51.1) (2026-06-28)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.66.0`
+## [1.51.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.6...web-js-sdk-1.51.0) (2026-06-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.65.0`
+
+### Features
+
+* Added SSO Functions (left SAML for BC) ([#1425](https://github.com/descope/descope-js/issues/1425)) ([79d6363](https://github.com/descope/descope-js/commit/79d63636a44ea8f5d48c9de708b8d502ced83717))
+
+## [1.50.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.5...web-js-sdk-1.50.6) (2026-06-22)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.64.0`
+## [1.50.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.4...web-js-sdk-1.50.5) (2026-06-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.63.0`
+## [1.50.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.3...web-js-sdk-1.50.4) (2026-06-14)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** bump js-cookie to 3.0.8 for CVE-2026-46625 RELEASE ([#1412](https://github.com/descope/descope-js/issues/1412)) ([adb86b9](https://github.com/descope/descope-js/commit/adb86b9f11b67884a9d5ff168ad32249b1522709))
+
+## [1.50.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.2...web-js-sdk-1.50.3) (2026-06-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.2`
+## [1.50.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.1...web-js-sdk-1.50.2) (2026-06-07)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.1`
+## [1.50.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.50.0...web-js-sdk-1.50.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** serialize concurrent flow.next calls ([#1392](https://github.com/descope/descope-js/issues/1392)) ([2fd9992](https://github.com/descope/descope-js/commit/2fd9992a28bb19ff73e1ee944c398f6c0866b9dc))
+
+## [1.50.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.49.1...web-js-sdk-1.50.0) (2026-05-25)
+
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [1.49.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.49.0...web-js-sdk-1.49.1) (2026-05-25)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.62.0`
+## [1.49.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.4...web-js-sdk-1.49.0) (2026-05-24)
+
+
+### Features
+
+* **web-js-sdk:** skip tryRefresh when no login indicator in localStorage ([#1383](https://github.com/descope/descope-js/issues/1383)) RELEASE ([c5b6898](https://github.com/descope/descope-js/commit/c5b6898c1b6a1b260e023b5d08fb50a90df23d81))
+
+## [1.48.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.3...web-js-sdk-1.48.4) (2026-05-14)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** call afterRequest hook in OIDC loginWithRedirect before navigation ([#1385](https://github.com/descope/descope-js/issues/1385)) ([dcb983c](https://github.com/descope/descope-js/commit/dcb983cfd5a690da9a6e63644802a59d8ef850b0))
+
+## [1.48.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.2...web-js-sdk-1.48.3) (2026-05-11)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.61.0`
+## [1.48.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.1...web-js-sdk-1.48.2) (2026-04-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.60.0`
+## [1.48.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.48.0...web-js-sdk-1.48.1) (2026-04-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.59.1`
+## [1.48.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.2...web-js-sdk-1.48.0) (2026-04-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.59.0`
+
+### Features
+
+* change flow api version to v2 ([#1323](https://github.com/descope/descope-js/issues/1323)) ([756096e](https://github.com/descope/descope-js/commit/756096ecff1678686a2ad77f02428fb1bcf49535))
+
+## [1.47.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.1...web-js-sdk-1.47.2) (2026-04-20)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.2`
+
+### Bug Fixes
+
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
+## [1.47.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.47.0...web-js-sdk-1.47.1) (2026-04-13)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.1`
+## [1.47.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.46.0...web-js-sdk-1.47.0) (2026-03-26)
+
+
+### Features
+
+* User activity tracking ([#1339](https://github.com/descope/descope-js/issues/1339)) RELEASE ([f8fff57](https://github.com/descope/descope-js/commit/f8fff57c57ebe3fea1a24e70289da51456acb9e5))
+
+## [1.46.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.45.0...web-js-sdk-1.46.0) (2026-03-23)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.58.0`
+
+### Features
+
+* Add support for server-configured refresh cookie names for web ([#1343](https://github.com/descope/descope-js/issues/1343)) ([ec33c70](https://github.com/descope/descope-js/commit/ec33c70cd005f64e543db5d7388a3100123adc26))
+
+## [1.45.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.44.0...web-js-sdk-1.45.0) (2026-01-29)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.57.0`
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
+## [1.44.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.1...web-js-sdk-1.44.0) (2026-01-21)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.2`
+
+### Features
+
+* add logs when wrong refresh/session token via cookie conf ([#1311](https://github.com/descope/descope-js/issues/1311)) ([e120c18](https://github.com/descope/descope-js/commit/e120c18497520bd53de59613bebfc1ac2e031e0f))
+
+
+### Bug Fixes
+
+* improve session invalidation ([#1303](https://github.com/descope/descope-js/issues/1303)) ([5d4cd88](https://github.com/descope/descope-js/commit/5d4cd88c9a437651059f37add673827843b5ea42))
+
+## [1.43.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.43.0...web-js-sdk-1.43.1) (2026-01-04)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.1`
+## [1.43.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.42.1...web-js-sdk-1.43.0) (2026-01-01)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.56.0`
+
+### Features
+
+* session inactivity improvement  ([#1300](https://github.com/descope/descope-js/issues/1300)) RELEASE ([eeeaec0](https://github.com/descope/descope-js/commit/eeeaec072d1a9dffcd9c87332e97b02ad1d4ca85))
+
+## [1.42.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.42.0...web-js-sdk-1.42.1) (2025-12-30)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.55.0`
+## [1.42.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.41.0...web-js-sdk-1.42.0) (2025-12-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.54.0`
+
+### Features
+
+* Angular SSR ([#1293](https://github.com/descope/descope-js/issues/1293)) RELEASE ([44a1856](https://github.com/descope/descope-js/commit/44a18560100a3c9fa494ea4c32e9fc8e4c6e67c0))
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
+## [1.41.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.2...web-js-sdk-1.41.0) (2025-12-16)
+
+
+### Features
+
+* Disable explicit refresh calls when running in native flows ([#1284](https://github.com/descope/descope-js/issues/1284)) ([7043ce7](https://github.com/descope/descope-js/commit/7043ce717b21afc155610dfe42702f1614b61610))
+* pass refresh to the middleware in next ([#1286](https://github.com/descope/descope-js/issues/1286)) RELEASE ([e0b89bc](https://github.com/descope/descope-js/commit/e0b89bc27407a5c25b5186f185893eb7779bc2b9))
+
+## [1.40.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.1...web-js-sdk-1.40.2) (2025-12-04)
+
+
+### Bug Fixes
+
+* remove last cookie domain ([#1282](https://github.com/descope/descope-js/issues/1282)) RELEASE ([f53c121](https://github.com/descope/descope-js/commit/f53c121f2e8a425b6a42be9d3cd281847661c5a9))
+
 ## [1.40.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.40.0...web-js-sdk-1.40.1) (2025-12-03)
 
 ### Dependency Updates

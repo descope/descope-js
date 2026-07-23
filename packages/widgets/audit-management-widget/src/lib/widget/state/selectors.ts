@@ -29,6 +29,11 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         oidc_response,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         oidc_generated_user,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        scim_request,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        scim_result,
+        Change,
         ...data
       } = {
         saml_request: '',
@@ -37,6 +42,9 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         saml_generated_roles: '',
         oidc_response: '',
         oidc_generated_user: '',
+        scim_request: '',
+        scim_result: '',
+        Change: '',
       },
       ...auditRest
     } = audit || {};
@@ -60,6 +68,9 @@ export const getAuditList = createSelector(getRawAuditList, (audits) =>
         'oidc_generated_user',
         conditionalJsonParse(oidc_generated_user),
       ),
+      ...conditionalObj('scim_request', scim_request),
+      ...conditionalObj('scim_result', scim_result),
+      ...conditionalObj('Change', Change),
       occurredFormatted: !occurred
         ? 'N/A'
         : new Date(Number(occurred) || 0).toLocaleString(),

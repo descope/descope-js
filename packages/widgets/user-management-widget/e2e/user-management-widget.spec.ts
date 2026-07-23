@@ -25,6 +25,9 @@ const configContent = {
   flows: {
     flow1: { version: 1 },
   },
+  widgets: {
+    wid: { allowSubTenants: true },
+  },
   componentsVersion: '1.2.3',
 };
 
@@ -145,6 +148,25 @@ test.describe('widget', () => {
       route.fulfill({ json: mockRoles }),
     );
 
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({
+        json: {
+          roles: [
+            {
+              tenantId: 'sub-tenant-1',
+              tenantName: 'Sub Tenant One',
+              roleNames: ['Role 1', 'Role 2'],
+            },
+            {
+              tenantId: 'sub-tenant-2',
+              tenantName: 'Sub Tenant Two',
+              roleNames: ['Role 1', 'Role 3'],
+            },
+          ],
+        },
+      }),
+    );
+
     await page.route(apiPath('user', 'customattributes'), async (route) =>
       route.fulfill({ json: mockCustomAttributes }),
     );
@@ -175,7 +197,7 @@ test.describe('widget', () => {
     );
 
     await page.goto(`http://localhost:${widgetPort}`);
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.waitForLoadState('networkidle');
   });
 
   test('users table', async ({ page }) => {
@@ -227,11 +249,11 @@ test.describe('widget', () => {
       .first();
 
     // initial buttons state
-    expect(createUserTrigger).toBeEnabled();
-    expect(editUserTrigger).toBeDisabled();
-    expect(enableUserTrigger).toBeDisabled();
-    expect(disableUserTrigger).toBeDisabled();
-    expect(removePasskeyTrigger).toBeDisabled();
+    await expect(createUserTrigger).toBeEnabled();
+    await expect(editUserTrigger).toBeDisabled();
+    await expect(enableUserTrigger).toBeDisabled();
+    await expect(disableUserTrigger).toBeDisabled();
+    await expect(removePasskeyTrigger).toBeDisabled();
 
     // select non-editable user (editable: false)
     const NonEditableUserCheckbox = await getTableBodyCellContentLocatorByIndex(
@@ -244,11 +266,11 @@ test.describe('widget', () => {
     // wait for widget state
     await page.waitForTimeout(MODAL_TIMEOUT);
 
-    expect(createUserTrigger).toBeEnabled();
-    expect(editUserTrigger).toBeDisabled();
-    expect(enableUserTrigger).toBeDisabled();
-    expect(disableUserTrigger).toBeDisabled();
-    expect(removePasskeyTrigger).toBeDisabled();
+    await expect(createUserTrigger).toBeEnabled();
+    await expect(editUserTrigger).toBeDisabled();
+    await expect(enableUserTrigger).toBeDisabled();
+    await expect(disableUserTrigger).toBeDisabled();
+    await expect(removePasskeyTrigger).toBeDisabled();
 
     // de-select non-editable user
     await NonEditableUserCheckbox.click();
@@ -261,15 +283,11 @@ test.describe('widget', () => {
     );
     await editableUserCheckbox.click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    expect(createUserTrigger).toBeEnabled();
-    expect(editUserTrigger).toBeEnabled();
-    expect(enableUserTrigger).toBeDisabled();
-    expect(disableUserTrigger).toBeEnabled();
-    expect(removePasskeyTrigger).toBeEnabled();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await expect(createUserTrigger).toBeEnabled();
+    await expect(editUserTrigger).toBeEnabled();
+    await expect(enableUserTrigger).toBeDisabled();
+    await expect(disableUserTrigger).toBeEnabled();
+    await expect(removePasskeyTrigger).toBeEnabled();
 
     // de-select enabled and editable user
     await editableUserCheckbox.click();
@@ -282,11 +300,11 @@ test.describe('widget', () => {
     );
     await disabledUserCheckbox.click();
 
-    expect(createUserTrigger).toBeEnabled();
-    expect(editUserTrigger).toBeEnabled();
-    expect(enableUserTrigger).toBeEnabled();
-    expect(disableUserTrigger).toBeDisabled();
-    expect(removePasskeyTrigger).toBeEnabled();
+    await expect(createUserTrigger).toBeEnabled();
+    await expect(editUserTrigger).toBeEnabled();
+    await expect(enableUserTrigger).toBeEnabled();
+    await expect(disableUserTrigger).toBeDisabled();
+    await expect(removePasskeyTrigger).toBeEnabled();
   });
 
   test('create user', async ({ page }) => {
@@ -424,14 +442,14 @@ test.describe('widget', () => {
       .first();
 
     // delete button initial state is disabled
-    expect(deleteUserTrigger).toBeDisabled();
+    await expect(deleteUserTrigger).toBeDisabled();
 
     // select all items
     const selectAll = await getTableHeadCellContentLocatorByIndex(page, 0);
     await selectAll.click();
 
     // delete button is enabled on selection (even for non editable user)
-    expect(deleteUserTrigger).toBeEnabled();
+    await expect(deleteUserTrigger).toBeEnabled();
 
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -441,14 +459,14 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     // delete button is enabled on selection
-    expect(deleteUserTrigger).toBeEnabled();
+    await expect(deleteUserTrigger).toBeEnabled();
 
     // delete users
     await deleteUserTrigger.click();
 
     // show delete users modal
     const deleteUserModal = page.locator('text=Delete Users');
-    expect(deleteUserModal).toBeVisible();
+    await expect(deleteUserModal).toBeVisible();
 
     // click modal delete button
     await deleteUserModalButton.click();
@@ -482,7 +500,7 @@ test.describe('widget', () => {
       .first();
 
     // disable user button initial state is disabled
-    expect(disableUserTrigger).toBeDisabled();
+    await expect(disableUserTrigger).toBeDisabled();
 
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -503,7 +521,7 @@ test.describe('widget', () => {
 
     // show disable user modal
     const disableUserModal = page.locator('text=Disable User');
-    expect(disableUserModal).toBeVisible();
+    await expect(disableUserModal).toBeVisible();
 
     // click modal activate button
     await disableUserModalButton.click();
@@ -532,7 +550,7 @@ test.describe('widget', () => {
       .first();
 
     // enable user button initial state is disabled
-    expect(enableUserTrigger).toBeDisabled();
+    await expect(enableUserTrigger).toBeDisabled();
 
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -553,7 +571,7 @@ test.describe('widget', () => {
 
     // show enable user modal
     const enableUserModal = page.locator('text=Activate User');
-    expect(enableUserModal).toBeVisible();
+    await expect(enableUserModal).toBeVisible();
 
     // click modal activate button
     await enableUserModalButton.click();
@@ -582,7 +600,7 @@ test.describe('widget', () => {
       .first();
 
     // enable user button initial state is disabled
-    expect(removePasskeyTrigger).toBeDisabled();
+    await expect(removePasskeyTrigger).toBeDisabled();
 
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -605,7 +623,7 @@ test.describe('widget', () => {
 
     // show enable user modal
     const removePasskeyModal = page.locator('text=Remove passkey for');
-    expect(removePasskeyModal).toBeVisible();
+    await expect(removePasskeyModal).toBeVisible();
 
     // click modal activate button
     await removePasskeyModalButton.click();
@@ -637,7 +655,7 @@ test.describe('widget', () => {
       .first();
 
     // enable user button initial state is disabled
-    expect(resetPasswordTrigger).toBeDisabled();
+    await expect(resetPasswordTrigger).toBeDisabled();
 
     // wait for widget state
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -656,14 +674,8 @@ test.describe('widget', () => {
     // enable user
     await resetPasswordTrigger.click();
 
-    // show enable user modal
-    const resetPasswordModal = page.locator('text=Reset User Password');
-    expect(resetPasswordModal).toBeVisible();
-
-    const resetPasswordModalMessage = page.locator(
-      `text=This will generate a new temporary password for ${mockUsers[1].email}`,
-    );
-    expect(resetPasswordModalMessage).toBeVisible();
+    // show reset password modal
+    await expect(resetPasswordModalButton).toBeVisible();
 
     // click modal button
     await resetPasswordModalButton.click();
@@ -671,8 +683,8 @@ test.describe('widget', () => {
     // wait for modal to close
     await page.waitForTimeout(MODAL_TIMEOUT);
 
-    // enable modal closed
-    await expect(page.locator('Reset User Password')).toBeHidden();
+    // reset password modal closed
+    await expect(resetPasswordModalButton).toBeHidden();
 
     // show notification
     await expect(
@@ -704,14 +716,15 @@ test.describe('widget', () => {
     test.setTimeout(60_000);
     await page.waitForLoadState('networkidle');
 
-    // Set up route handler first
+    // Set up route handler - fulfill all search requests; filter on mockSearchString
     await page.route(apiPath('user', 'search'), async (route) => {
       const { text } = route.request().postDataJSON();
-      expect(text).toEqual('mockSearchString');
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ users: [mockUsers[1]] }),
+        body: JSON.stringify({
+          users: text === 'mockSearchString' ? [mockUsers[1]] : mockUsers,
+        }),
       });
     });
 
@@ -730,11 +743,17 @@ test.describe('widget', () => {
     // Trigger search by typing (simulates user behavior more accurately)
     await searchInput.fill('mockSearchString');
 
+    // Register before the action so the response isn't missed
+    const searchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.user.search) &&
+        response.request().postDataJSON()?.text === 'mockSearchString',
+    );
+
     // Trigger search with Enter key to ensure it fires
     await searchInput.press('Enter');
 
-    // Wait for the search request and response
-    await page.waitForResponse(apiPath('user', 'search'));
+    await searchResponsePromise;
 
     // only search results shown in grid
     await expect(
@@ -760,7 +779,7 @@ test.describe('widget', () => {
 
     // show delete users modal
     const deleteUserModal = page.locator('text=Delete Users');
-    expect(deleteUserModal).toBeVisible();
+    await expect(deleteUserModal).toBeVisible();
 
     // click modal delete button
     await deleteUserModalButton.click();
@@ -909,5 +928,299 @@ test.describe('widget', () => {
       await page.waitForTimeout(MODAL_TIMEOUT);
       await expect(modal).toBeHidden();
     }
+  });
+
+  test('forwards caller client/form flow inputs into the generic flow', async ({
+    page,
+  }) => {
+    // the default mock has no generic-flow button - add an always-enabled one
+    await page.route('**/root.html', async (route) =>
+      route.fulfill({
+        body: `${rootMock}<descope-button data-generic-flow-button-id="test-btn" flow-id="my-test-flow" enable-mode="always">Run Flow</descope-button>`,
+      }),
+    );
+    await page.goto(`http://localhost:${widgetPort}`);
+    await page.waitForLoadState('networkidle');
+    // let the widget finish init and wire the generic-flow button
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // a consumer sets client/form on the widget element; the widget reads them
+    // lazily when it opens a flow
+    await page.evaluate(() => {
+      const widget = document.querySelector('descope-user-management-widget');
+      widget.setAttribute('client', JSON.stringify({ acme: 'corp' }));
+      widget.setAttribute(
+        'form',
+        JSON.stringify({ cookieName: 'DSR_wellsense' }),
+      );
+    });
+
+    const flowButton = page.locator('[data-generic-flow-button-id]').first();
+    await expect(flowButton).toBeEnabled();
+    await flowButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    const descopeWc = page
+      .locator('descope-modal[data-id="generic-flow-modal"]')
+      .locator('descope-wc');
+    await expect(descopeWc).toBeAttached({ timeout: 10000 });
+
+    // caller form is forwarded into the flow as-is
+    await expect(descopeWc).toHaveAttribute(
+      'form',
+      JSON.stringify({ cookieName: 'DSR_wellsense' }),
+    );
+
+    // caller client is merged with the widget's own flow context
+    const client = JSON.parse((await descopeWc.getAttribute('client')) ?? '{}');
+    expect(client).toMatchObject({ acme: 'corp' });
+  });
+
+  test('roles display - shows "Multiple roles" when tenants have different roles', async ({
+    page,
+  }) => {
+    // mockUsers[0]: roleNames=['Tenant Admin','Role 2'], userTenants[0].roleNames=['Role 1','Role 2'] — mismatch
+    await page.waitForTimeout(STATE_TIMEOUT);
+    await expect(page.locator('text=Multiple roles').first()).toBeVisible();
+  });
+
+  test('roles display - shows role names when all role sets are identical', async ({
+    page,
+  }) => {
+    // mockUsers[1] has no userTenants, so only top-level roleNames — always "same"
+    await page.waitForTimeout(STATE_TIMEOUT);
+    await expect(
+      page.locator(`text=${mockUsers[1].roleNames.join(', ')}`).first(),
+    ).toBeVisible();
+  });
+
+  test('create user - sends empty userTenants when no sub-tenants assigned', async ({
+    page,
+  }) => {
+    let capturedRequestBody: any;
+    await page.route(apiPath('user', 'create'), async (route) => {
+      capturedRequestBody = route.request().postDataJSON();
+      return route.fulfill({ json: { user: mockNewUser } });
+    });
+
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await page.getByLabel('Login Id').first().fill('someLoginId@test.com');
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-submit')
+      .first()
+      .click();
+
+    expect(capturedRequestBody.userTenants).toEqual([]);
+  });
+
+  test('create user - sub-tenant section is visible when sub-tenants exist', async ({
+    page,
+  }) => {
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
+
+    await openAddUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+    await expect(page.locator('text=Sub Tenant Roles').first()).toBeVisible();
+  });
+
+  test('create user - sub-tenant section is hidden when no sub-tenants', async ({
+    page,
+  }) => {
+    // Must intercept before page load since getSubTenantRoles is called on widget init
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({ json: { roles: [] } }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    const openAddUserModalButton = page
+      .getByTestId('create-user-trigger')
+      .first();
+
+    await openAddUserModalButton.click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeHidden();
+  });
+
+  test('edit user - sub-tenant displays tenant name, not tenant id', async ({
+    page,
+  }) => {
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+    // Both create and edit modals are in the DOM; edit modal's elements are at index 1
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').nth(1),
+    ).toBeVisible({ timeout: 8000 });
+
+    // The data attribute should map tenantId → { label: tenantName, options: roleNames }
+    // so the component receives 'Sub Tenant One' as the display label for 'sub-tenant-1'
+    const dataAttr = await page
+      .locator('[data-id="sub-tenant-mappings"]')
+      .nth(1)
+      .getAttribute('data', { timeout: 8000 });
+    const parsedData = JSON.parse(dataAttr || '{}');
+    expect(parsedData['sub-tenant-1']).toHaveProperty(
+      'label',
+      'Sub Tenant One',
+    );
+  });
+
+  test('edit user - sub-tenant section is hidden when no sub-tenants', async ({
+    page,
+  }) => {
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) =>
+      route.fulfill({ json: { roles: [] } }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Both create and edit modals are in the DOM; edit modal's elements are at index 1
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').nth(1),
+    ).toBeHidden({ timeout: 8000 });
+  });
+
+  test('create user - sub-tenant values reset after cancel', async ({
+    page,
+  }) => {
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Sub-tenant section is present on first open
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+
+    // Cancel the modal
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-cancel')
+      .first()
+      .click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Reopen the modal — sub-tenant section should still be visible (not broken by reset)
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    await expect(
+      page.locator('[data-id="sub-tenant-section"]').first(),
+    ).toBeVisible();
+    // The multi-line-mappings component should have no pre-selected tenants after reset
+    await expect(page.locator('text=Sub Tenant One')).not.toBeVisible();
+  });
+
+  test('edit user - update request sends tenant id, not tenant name', async ({
+    page,
+  }) => {
+    let capturedRequestBody: any;
+    await page.route(apiPath('user', 'update'), async (route) => {
+      capturedRequestBody = route.request().postDataJSON();
+      return route.fulfill({ json: { user: mockUsers[0] } });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    const responsePromise = page.waitForResponse(apiPath('user', 'update'));
+    await page
+      .locator('descope-button')
+      .getByTestId('edit-user-modal-submit')
+      .first()
+      .click();
+    await responsePromise;
+
+    expect(capturedRequestBody.userTenants).toBeDefined();
+    expect(capturedRequestBody.userTenants[0].tenantId).toBe('sub-tenant-1');
+    expect(capturedRequestBody.userTenants[0].tenantName).toBeUndefined();
+  });
+
+  test('getSubTenantRoles is not called when allowSubTenants is false', async ({
+    page,
+  }) => {
+    // Override config.json to disable sub-tenants for this widget
+    await page.route('*/**/config.json', async (route) =>
+      route.fulfill({
+        json: {
+          ...configContent,
+          widgets: { wid: { allowSubTenants: false } },
+        },
+      }),
+    );
+
+    let subTenantRolesCallCount = 0;
+    await page.route(apiPath('tenant', 'subTenantRoles'), async (route) => {
+      subTenantRolesCallCount += 1;
+      return route.fulfill({ json: { roles: [] } });
+    });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    // Open create modal — should not trigger the API either
+    await page.getByTestId('create-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Close create modal
+    await page
+      .locator('descope-button')
+      .getByTestId('create-user-modal-cancel')
+      .first()
+      .click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // Open edit modal — should not trigger the API either
+    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
+      page,
+      0,
+      0,
+    );
+    await cellContentLocator.click();
+    await page.getByTestId('edit-user-trigger').first().click();
+    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    expect(subTenantRolesCallCount).toBe(0);
   });
 });

@@ -2,6 +2,151 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.67.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.66.0...core-js-sdk-2.67.0) (2026-07-12)
+
+
+### Features
+
+* **core-js:** expose externalToken on JWTResponse ([#1435](https://github.com/descope/descope-js/issues/1435)) RELEASE ([7e248bf](https://github.com/descope/descope-js/commit/7e248bfd1f73556f3ab87f5c5fa5f950b0af1e40))
+
+## [2.66.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.65.0...core-js-sdk-2.66.0) (2026-06-28)
+
+
+### Features
+
+* **core-js-sdk:** add mfa option to webauthn passkey enrollment ([#1427](https://github.com/descope/descope-js/issues/1427)) ([0cf282d](https://github.com/descope/descope-js/commit/0cf282db97ed59ed3344a0c77f129385a308f996)), closes [descope/etc#16573](https://github.com/descope/etc/issues/16573)
+
+## [2.65.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.64.0...core-js-sdk-2.65.0) (2026-06-25)
+
+
+### Features
+
+* Added SSO Functions (left SAML for BC) ([#1425](https://github.com/descope/descope-js/issues/1425)) ([79d6363](https://github.com/descope/descope-js/commit/79d63636a44ea8f5d48c9de708b8d502ced83717))
+
+## [2.64.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.63.0...core-js-sdk-2.64.0) (2026-06-22)
+
+
+### Features
+
+* **core-js-sdk:** also retry on transient status code 520 RELEASE ([#1423](https://github.com/descope/descope-js/issues/1423)) RELEASE ([1876b86](https://github.com/descope/descope-js/commit/1876b862cceb7406b897dd9db583dc6a9b4117d0)), closes [descope/go-sdk#775](https://github.com/descope/go-sdk/issues/775) [descope/python-sdk#1581](https://github.com/descope/python-sdk/issues/1581)
+
+## [2.63.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.2...core-js-sdk-2.63.0) (2026-06-21)
+
+
+### Features
+
+* **core-js-sdk:** add mfa option to OTP update phone/email ([#1420](https://github.com/descope/descope-js/issues/1420)) ([8d43092](https://github.com/descope/descope-js/commit/8d43092c8860b55ff01119ff746bd939edef81cc)), closes [descope/etc#16372](https://github.com/descope/etc/issues/16372)
+
+## [2.62.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.1...core-js-sdk-2.62.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** declare tslib as a runtime dependency RELEASE ([#1411](https://github.com/descope/descope-js/issues/1411)) ([f1a3f72](https://github.com/descope/descope-js/commit/f1a3f720c8af0820adbebc234c9bfb80636d914b))
+
+## [2.62.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.62.0...core-js-sdk-2.62.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** add react-native build target (es2016) ([#1408](https://github.com/descope/descope-js/issues/1408)) RELEASE ([45ef6b9](https://github.com/descope/descope-js/commit/45ef6b9db52a383485619894f223367bebd6af78))
+
+## [2.62.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.61.0...core-js-sdk-2.62.0) (2026-05-25)
+
+
+### Features
+
+* Add option to submit custom app id in query param - RELEASE ([#1394](https://github.com/descope/descope-js/issues/1394)) ([c814443](https://github.com/descope/descope-js/commit/c814443b978c86a9e985e97554d44a5eeca354b4))
+
+## [2.61.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.60.0...core-js-sdk-2.61.0) (2026-05-11)
+
+
+### Features
+
+* add tenantId to auth method options for tenant user isolation ([#1371](https://github.com/descope/descope-js/issues/1371)) ([a91c636](https://github.com/descope/descope-js/commit/a91c636caaf363c671d6d7486a57f8c441781b32))
+
+## [2.60.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.1...core-js-sdk-2.60.0) (2026-04-29)
+
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
+## [2.59.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.59.0...core-js-sdk-2.59.1) (2026-04-21)
+
+## [2.59.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.2...core-js-sdk-2.59.0) (2026-04-20)
+
+
+### Features
+
+* change flow api version to v2 ([#1323](https://github.com/descope/descope-js/issues/1323)) ([756096e](https://github.com/descope/descope-js/commit/756096ecff1678686a2ad77f02428fb1bcf49535))
+* **wc:** add WS-Fed IDP form POST support with correct field names RELEASE ([#1368](https://github.com/descope/descope-js/issues/1368)) ([970ac83](https://github.com/descope/descope-js/commit/970ac8385dd8794d434a42b43b69c571d61758c4)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#536](https://github.com/descope/descope/issues/536)
+
+## [2.58.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.1...core-js-sdk-2.58.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* **types:** add permissions array to usertenants type ([#1357](https://github.com/descope/descope-js/issues/1357)) ([18f06bc](https://github.com/descope/descope-js/commit/18f06bc08b923a3b0c8b777110466b0ddfcc9fe7))
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
+## [2.58.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.58.0...core-js-sdk-2.58.1) (2026-04-13)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** use set-cookie-parser for correct multi-cookie parsing ([#1365](https://github.com/descope/descope-js/issues/1365)) RELEASE ([e92e848](https://github.com/descope/descope-js/commit/e92e8487e936f1e1af8c67b7b231516eb1eeabce))
+
+## [2.58.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.57.0...core-js-sdk-2.58.0) (2026-03-23)
+
+
+### Features
+
+* Add support for server-configured refresh cookie names for web ([#1343](https://github.com/descope/descope-js/issues/1343)) ([ec33c70](https://github.com/descope/descope-js/commit/ec33c70cd005f64e543db5d7388a3100123adc26))
+* **http:** retry requests on transient error status codes RELEASE ([#1351](https://github.com/descope/descope-js/issues/1351)) ([4e274ac](https://github.com/descope/descope-js/commit/4e274acdab55d1a7b3d1f2e4f903ba2dfaf78cb4))
+
+## [2.57.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.2...core-js-sdk-2.57.0) (2026-01-29)
+
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
+## [2.56.2](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.1...core-js-sdk-2.56.2) (2026-01-21)
+
+
+### Bug Fixes
+
+* improve session invalidation ([#1303](https://github.com/descope/descope-js/issues/1303)) ([5d4cd88](https://github.com/descope/descope-js/commit/5d4cd88c9a437651059f37add673827843b5ea42))
+
+## [2.56.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.56.0...core-js-sdk-2.56.1) (2026-01-04)
+
+
+### Bug Fixes
+
+* Fix `im` delivery method ([#1301](https://github.com/descope/descope-js/issues/1301)) RELEASE ([256e7a6](https://github.com/descope/descope-js/commit/256e7a61af3c873b278ee252938f2589335d8366))
+
+## [2.56.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.55.0...core-js-sdk-2.56.0) (2026-01-01)
+
+
+### Features
+
+* session inactivity improvement  ([#1300](https://github.com/descope/descope-js/issues/1300)) RELEASE ([eeeaec0](https://github.com/descope/descope-js/commit/eeeaec072d1a9dffcd9c87332e97b02ad1d4ca85))
+
+## [2.55.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.54.0...core-js-sdk-2.55.0) (2025-12-30)
+
+
+### Features
+
+* Add `im` to delivery methods ([#1298](https://github.com/descope/descope-js/issues/1298)) RELEASE ([f0d5910](https://github.com/descope/descope-js/commit/f0d5910d8b07c5093afaeee5509e1b82802fa912))
+
+## [2.54.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.1...core-js-sdk-2.54.0) (2025-12-24)
+
+
+### Features
+
+* support saving and retrieving Descope Trusted Device (DTD) Token from local storage ([#1290](https://github.com/descope/descope-js/issues/1290)) ([a784230](https://github.com/descope/descope-js/commit/a7842303b09aa49bfb2fa37ed1231d1cb1a9c5e3))
+
 ## [2.53.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.53.0...core-js-sdk-2.53.1) (2025-12-03)
 
 ## [2.53.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.52.2...core-js-sdk-2.53.0) (2025-12-01)

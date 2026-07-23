@@ -39,9 +39,72 @@ export enum Direction {
   forward = 'forward',
 }
 
-export interface LastAuthState {
+export type LastAuthState = NonNullable<
+  NextFnReturnPromiseValue['data']['lastAuth']
+> & {
   loginId?: string;
   name?: string;
+  lastUsedPerScreen?: Record<string, string>;
+};
+
+export type RealtimeOperandKind = 'value' | 'form' | 'list';
+
+// Operators the SDK is allowed to evaluate locally. The server's
+// clientSupportedRealtimeOperators must stay in sync — anything outside this
+// list is pre-evaluated server-side and shipped as a value operand.
+//
+// is-email / is-phone are intentionally absent: the server validates them
+// with dedicated libraries (contact.IsValid*); the client has no equivalent,
+// so the server keeps these CCs server-only.
+export type RealtimeOperator =
+  | 'equal'
+  | 'not-equal'
+  | 'contains'
+  | 'doesnt-contains'
+  | 'greater-than'
+  | 'greater-than-or-equal'
+  | 'less-than'
+  | 'less-than-or-equal'
+  | 'empty'
+  | 'not-empty'
+  | 'is-true'
+  | 'is-false'
+  | 'in'
+  | 'not-in'
+  | 'matches';
+
+export interface RealtimeOperand {
+  kind: RealtimeOperandKind;
+  // Form is the context key the client looks up from the live form snapshot
+  // (e.g. "form.phone"). Set only when kind === 'form'.
+  form?: string;
+  // Items is the operand list when kind === 'list'. Each element is a nested
+  // operand — either a form placeholder or a resolved literal. Used when the
+  // server detects an `in` / `not-in` / `contains` predicate whose array
+  // contains `{{form.X}}` references; the client resolves them at eval time.
+  items?: RealtimeOperand[];
+  // Pre-resolved literal. Set only when kind === 'value', and may legitimately
+  // be false / 0 / "" — do not treat absence as "no value" without checking
+  // kind first.
+  value?: unknown;
+}
+
+export interface RealtimeAtomicCondition {
+  operator: RealtimeOperator;
+  target?: RealtimeOperand;
+  predicate?: RealtimeOperand;
+}
+
+export interface RealtimeRule {
+  logicalOr?: boolean;
+  atomicConditions: RealtimeAtomicCondition[];
+}
+
+export interface RealtimeComponentsCondition {
+  id?: string;
+  componentIds: string[];
+  action: string;
+  rules: RealtimeRule[];
 }
 
 export interface ScreenState {
@@ -64,16 +127,40 @@ export interface ScreenState {
   linkId?: unknown;
   sentTo?: unknown;
   clientScripts?: ClientScript[];
-  // map of component IDs to their state
+  // map of component IDs to their state — the FULL last-wins verdict over
+  // all CCs (server-only + client-eligible) the BE evaluated at screen-init.
+  // Used by `applyComponentsState` for the first DOM paint.
   componentsState?: Record<string, string>;
+  // Subset of `componentsState` contributed by SERVER-ONLY CCs — those the
+  // client cannot re-evaluate locally (operators on the server-only
+  // allow-list like `is-email`, or rules referencing context the client
+  // doesn't have). Parallels `componentsState` in structure but excludes
+  // contributions from client-eligible CCs that also ship in
+  // `realtimeComponentsConditions`.
+  //
+  // The realtime layer uses this as the fallback action to restore when a
+  // realtime CC stops firing on a touched component — without it the SDK
+  // can't tell whether the action in `componentsState` came from a
+  // server-only CC (must persist) or from a realtime CC also re-shipped
+  // (must clear).
+  //
+  // Absent on old backends; new SDKs fall back to a legacy heuristic that
+  // infers the same information from `componentsState`, so the old-BE /
+  // new-SDK combination still works correctly.
+  serverOnlyComponentsState?: Record<string, string>;
+  // Client-evaluable visibility conditions, populated only by new backends.
+  // Absent on old backends; new SDKs ignore when absent.
+  realtimeComponentsConditions?: RealtimeComponentsCondition[];
 }
 
 export type SSOQueryParams = {
   oidcIdpStateId?: string;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   descopeIdpInitiated?: boolean;
   ssoAppId?: string;
+  customAppId?: string;
   thirdPartyAppId: string;
   thirdPartyAppStateId?: string;
   applicationScopes?: string;
@@ -84,11 +171,6 @@ export type OIDCOptions = {
   oidcPrompt?: string;
   oidcErrorRedirectUri?: string;
   oidcResource?: string;
-};
-
-export type Locale = {
-  locale: string;
-  fallback: string;
 };
 
 export type FlowState = {
@@ -117,10 +199,14 @@ export type FlowState = {
   redirectAuthBackupCallbackUri: string;
   redirectAuthInitiator: string;
   deferredRedirect: boolean;
+  deferredPolling: boolean;
   locale: string;
   samlIdpResponseUrl: string;
   samlIdpResponseSamlResponse: string;
   samlIdpResponseRelayState: string;
+  wsFedIdpResponseUrl: string;
+  wsFedIdpResponseWresult: string;
+  wsFedIdpResponseWctx: string;
   nativeResponseType: string;
   nativePayload: Record<string, any>;
   reqTimestamp: number;
@@ -136,6 +222,7 @@ export type StepState = {
   direction: Direction | undefined;
   samlIdpUsername: string;
   action?: string;
+  locale?: string;
 } & OIDCOptions;
 
 export type CustomScreenState = Omit<
@@ -286,6 +373,28 @@ type ThemeTemplate = {
     font1: Font;
     font2: Font;
   };
+};
+
+type ThemeColor = {
+  main: string;
+  dark: string;
+  light: string;
+  highlight: string;
+  contrast: string;
+};
+
+export type OverrideTheme = {
+  globals?: {
+    colors?: {
+      primary?: ThemeColor;
+      secondary?: ThemeColor;
+    };
+  };
+};
+
+export type OverrideThemes = {
+  dark?: OverrideTheme;
+  light?: OverrideTheme;
 };
 
 export type FlowConfig = {

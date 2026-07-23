@@ -8,21 +8,27 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  localeMixin,
+  loggerMixin,
+  modalMixin,
+  flowInputMixin,
+} from '@descope/sdk-mixins';
 import { getAppsList, getUserId } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initOutboundAppsListMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitAppsListMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       #obAppsList: OutboundAppsListDriver;
 
@@ -104,15 +110,8 @@ export const initOutboundAppsListMixin = createSingletonMixin(
 
       #initConnectModalContent(appId: string) {
         this.#connectModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.#obAppsList.connectFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             outboundAppId: appId,
           }),
         );
@@ -123,21 +122,15 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           this.#connectModal.close();
           this.actions.getConnectedOutboundApps({
             userId: getUserId(this.state),
+            tenantId: this.tenantId,
           });
         });
       }
 
       #initDisconnectModalContent(appId: string) {
         this.#disconnectModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.#obAppsList.disconnectFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
             outboundAppId: appId,
           }),
         );

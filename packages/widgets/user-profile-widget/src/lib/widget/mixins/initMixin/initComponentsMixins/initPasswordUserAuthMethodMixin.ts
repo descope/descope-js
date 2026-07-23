@@ -5,24 +5,27 @@ import {
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { createFlowTemplate } from '../../helpers';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
 export const initPasswordUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PasswordUserAuthMethodMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       passwordUserAuthMethod: UserAuthMethodDriver;
 
@@ -33,7 +36,10 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       #initModal() {
         if (!this.passwordUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({ 'data-id': 'password' });
+        this.#modal = this.createModal({
+          'data-id': 'password',
+          'close-on-outside-click': 'true',
+        });
         this.#flow = new FlowDriver(
           () => this.#modal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -45,15 +51,8 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
 
       #initModalContent() {
         this.#modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.passwordUserAuthMethod.flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#flow.onSuccess(() => {

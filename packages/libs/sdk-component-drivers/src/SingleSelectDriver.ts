@@ -22,4 +22,10 @@ export class SingleSelectDriver extends BaseDriver {
   async setData(data: { label: string; value: string }[]) {
     (await this.asyncEle)?.setAttribute('data', JSON.stringify(data.sort()));
   }
+
+  setAllowCustomValue(allow: boolean) {
+    if (this.ele) {
+      this.ele.toggleAttribute('allow-custom-value', allow);
+    }
+  }
 }

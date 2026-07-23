@@ -9,12 +9,13 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   loggerMixin,
   modalMixin,
   cookieConfigMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
-import { getIsPhoneVerified, getPhone } from '../../../state/selectors';
-import { createFlowTemplate } from '../../helpers';
+import { getPhone, getPhoneBadgeLabel } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -22,12 +23,14 @@ import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 export const initPhoneUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PhoneUserAttrMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       phoneUserAttr: UserAttributeDriver;
 
@@ -42,7 +45,10 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.phoneUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({ 'data-id': 'edit-phone' });
+        this.#editModal = this.createModal({
+          'data-id': 'edit-phone',
+          'close-on-outside-click': 'true',
+        });
         this.#editFlow = new FlowDriver(
           () => this.#editModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -54,16 +60,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.phoneUserAttr.editFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.phoneUserAttr.editFlowId }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -74,7 +71,10 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.phoneUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({ 'data-id': 'delete-phone' });
+        this.#deleteModal = this.createModal({
+          'data-id': 'delete-phone',
+          'close-on-outside-click': 'true',
+        });
         this.#deleteFlow = new FlowDriver(
           () => this.#deleteModal.ele?.querySelector('descope-wc'),
           { logger: this.logger },
@@ -86,16 +86,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
-            flowId: this.phoneUserAttr.deleteFlowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-          }),
+          this.createFlowTemplate({ flowId: this.phoneUserAttr.deleteFlowId }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();
@@ -125,9 +116,9 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         this.phoneUserAttr.value = phone;
       });
 
-      #onValueBadgeLabelUpdate = withMemCache(
-        (isPhoneVerified: ReturnType<typeof getIsPhoneVerified>) => {
-          this.phoneUserAttr.badgeLabel = isPhoneVerified ? '' : 'Unverified';
+      #onBadgeLabelUpdate = withMemCache(
+        (badgeLabel: ReturnType<typeof getPhoneBadgeLabel>) => {
+          this.phoneUserAttr.badgeLabel = badgeLabel;
         },
       );
 
@@ -139,14 +130,10 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         this.#initDeleteModal();
 
         this.#onValueUpdate(getPhone(this.state));
-        this.#onValueBadgeLabelUpdate(getIsPhoneVerified(this.state));
+        this.#onBadgeLabelUpdate(getPhoneBadgeLabel(this.state));
 
         this.subscribe(this.#onValueUpdate.bind(this), getPhone);
-
-        this.subscribe(
-          this.#onValueBadgeLabelUpdate.bind(this),
-          getIsPhoneVerified,
-        );
+        this.subscribe(this.#onBadgeLabelUpdate.bind(this), getPhoneBadgeLabel);
       }
     },
 );

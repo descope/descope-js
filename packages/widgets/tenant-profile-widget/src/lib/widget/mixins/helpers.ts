@@ -1,32 +1,3 @@
-import { createTemplate, kebabCase } from '@descope/sdk-helpers';
-
-type FlowConfig = {
-  projectId: string;
-  flowId: string;
-  tenant?: string;
-  baseUrl?: string;
-  baseStaticUrl?: string;
-  baseCdnUrl?: string;
-  refreshCookieName?: string;
-  theme?: string;
-  form?: string;
-  'style-id'?: string;
-};
-
-export const createFlowTemplate = (
-  flowConfig: FlowConfig = {} as FlowConfig,
-) => {
-  const template = createTemplate(`<descope-wc></descope-wc>`);
-
-  Object.entries(flowConfig).forEach(([key, value]) => {
-    template.content
-      .querySelector('descope-wc')
-      .setAttribute(kebabCase(key), value);
-  });
-
-  return template;
-};
-
 export function getUrlParam(paramName: string) {
   const urlParams = new URLSearchParams(window.location.search);
 

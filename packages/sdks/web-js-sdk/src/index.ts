@@ -5,6 +5,7 @@ import { withCustomStorage } from './enhancers/withCustomStorage';
 import { withFingerprint } from './enhancers/withFingerprint';
 import { withFlowNonce } from './enhancers/withFlowNonce';
 import { withLastLoggedInUser } from './enhancers/withLastLoggedInUser';
+import { withLoggedInIndicator } from './enhancers/withLoggedInIndicator';
 import { withNotifications } from './enhancers/withNotifications';
 import withPersistTokens from './enhancers/withPersistTokens';
 import createSdk from './sdk';
@@ -12,11 +13,13 @@ import createSdk from './sdk';
 const decoratedCreateSdk = compose(
   withCustomStorage, // must be first
   withFingerprint,
-  withAutoRefresh,
   withAnalytics,
   withNotifications,
   withFlowNonce,
-  withLastLoggedInUser, // must be one before last due to TS types
+  withLoggedInIndicator,
+  // The following two enhancers must remain immediately before withPersistTokens due to TS type inference limitations
+  withAutoRefresh,
+  withLastLoggedInUser,
   withPersistTokens, // must be last due to TS known limitation https://github.com/microsoft/TypeScript/issues/30727
 )(createSdk);
 
@@ -33,11 +36,14 @@ export {
   clearFingerprintData,
 } from './enhancers/withFingerprint/helpers';
 
+export { getSessionToken } from './enhancers/withPersistTokens/helpers';
+
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
 export type { JWTResponse } from '@descope/core-js-sdk';
 export type { OneTapConfig } from './sdk/fedcm';
 export type { CookieConfig } from './enhancers/withPersistTokens/types';
 export type { FlowNonceOptions } from './enhancers/withFlowNonce/types';
+export type { AutoRefreshConfig } from './enhancers/withAutoRefresh/types';
 export default decoratedCreateSdk;
 export { decoratedCreateSdk as createSdk };

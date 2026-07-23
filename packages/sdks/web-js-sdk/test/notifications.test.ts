@@ -87,11 +87,13 @@ describe('notifications', () => {
     const isAuthenticatedHandler = jest.fn();
     sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
 
-    await sdk.httpClient.get('1/2/3');
+    // First call returns auth info
+    await sdk.httpClient.get('/v1/auth/me');
 
     await new Promise(process.nextTick);
 
-    await sdk.httpClient.get('1/2/3');
+    // Second call returns 401 on an auth route that should trigger unauthenticated behavior
+    await sdk.httpClient.get('/v1/auth/refresh');
 
     await new Promise(process.nextTick);
 
@@ -103,6 +105,130 @@ describe('notifications', () => {
     expect(userHandler).toHaveBeenNthCalledWith(2, null);
     expect(claimsHandler).toHaveBeenNthCalledWith(2, null);
     expect(isAuthenticatedHandler).toHaveBeenNthCalledWith(2, false);
+  });
+
+  it('should clear auth state when /refresh call fails', async () => {
+    const failedMock = {
+      clone: () => failedMock,
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(Promise.resolve(createMockReturnValue(authInfo)))
+      .mockReturnValueOnce(Promise.resolve(failedMock));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+
+    const sessionTokenHandler = jest.fn();
+    sdk.onSessionTokenChange(sessionTokenHandler);
+
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
+    // First call returns auth info
+    await sdk.httpClient.get('/v1/auth/me');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).toHaveBeenCalledTimes(1);
+    expect(isAuthenticatedHandler).toHaveBeenCalledWith(true);
+
+    sessionTokenHandler.mockClear();
+    isAuthenticatedHandler.mockClear();
+
+    // Failed /refresh call should clear auth state
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).toHaveBeenCalledWith(null);
+    expect(isAuthenticatedHandler).toHaveBeenCalledWith(false);
+  });
+
+  it('should NOT clear auth state when other routes fail (e.g., OTP verify)', async () => {
+    const failedOtpMock = {
+      clone: () => failedOtpMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({ error: 'Invalid OTP' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(Promise.resolve(createMockReturnValue(authInfo)))
+      .mockReturnValueOnce(Promise.resolve(failedOtpMock));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+
+    const sessionTokenHandler = jest.fn();
+    sdk.onSessionTokenChange(sessionTokenHandler);
+
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
+    // First call returns auth info
+    await sdk.httpClient.get('/v1/auth/me');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).toHaveBeenCalledTimes(1);
+    expect(isAuthenticatedHandler).toHaveBeenCalledWith(true);
+
+    sessionTokenHandler.mockClear();
+    isAuthenticatedHandler.mockClear();
+
+    // Failed OTP verify call should NOT clear auth state
+    await sdk.httpClient.get('/v1/auth/otp/verify');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).not.toHaveBeenCalledWith(null);
+    expect(isAuthenticatedHandler).not.toHaveBeenCalledWith(false);
+  });
+
+  it('should NOT clear auth state when 5xx server error occurs on session validation route', async () => {
+    const serverErrorMock = {
+      clone: () => serverErrorMock,
+      ok: false,
+      status: 500,
+      text: () =>
+        Promise.resolve(JSON.stringify({ error: 'Internal Server Error' })),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(Promise.resolve(createMockReturnValue(authInfo)))
+      .mockReturnValueOnce(Promise.resolve(serverErrorMock));
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+
+    const sessionTokenHandler = jest.fn();
+    sdk.onSessionTokenChange(sessionTokenHandler);
+
+    const isAuthenticatedHandler = jest.fn();
+    sdk.onIsAuthenticatedChange(isAuthenticatedHandler);
+
+    // First call returns auth info
+    await sdk.httpClient.get('/v1/auth/me');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).toHaveBeenCalledTimes(1);
+    expect(isAuthenticatedHandler).toHaveBeenCalledWith(true);
+
+    sessionTokenHandler.mockClear();
+    isAuthenticatedHandler.mockClear();
+
+    // 500 error on /refresh should NOT clear auth state (only 4xx should)
+    await sdk.httpClient.get('/v1/auth/refresh');
+    await new Promise(process.nextTick);
+
+    expect(sessionTokenHandler).not.toHaveBeenCalledWith(null);
+    expect(isAuthenticatedHandler).not.toHaveBeenCalledWith(false);
   });
 
   it('should not update state when response does not contain jwt response', async () => {

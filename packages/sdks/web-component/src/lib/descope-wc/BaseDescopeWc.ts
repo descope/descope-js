@@ -22,6 +22,7 @@ import {
   getRunIdsFromUrl,
   handleUrlParams,
   State,
+  withRetry,
 } from '../helpers';
 import {
   extractNestedAttribute,
@@ -29,7 +30,11 @@ import {
 } from '../helpers/flowInputs';
 import { setCustomStorage } from '../helpers/storage';
 import { IsChanged } from '../helpers/state';
-import { formMountMixin } from '../mixins';
+import {
+  formMountMixin,
+  componentConditionsMixin,
+  duplicateFlowWarningMixin,
+} from '../mixins';
 import {
   AutoFocusOptions,
   CustomStorage,
@@ -51,6 +56,8 @@ const BaseClass = compose(
   themeMixin,
   staticResourcesMixin,
   formMountMixin,
+  componentConditionsMixin,
+  duplicateFlowWarningMixin,
   injectStyleMixin,
   telemetryMixin,
 )(HTMLElement);
@@ -197,10 +204,6 @@ class BaseDescopeWc extends BaseClass {
     }
   }
 
-  get tenantId() {
-    return this.getAttribute('tenant') || undefined;
-  }
-
   get redirectUrl() {
     return this.getAttribute('redirect-url') || undefined;
   }
@@ -315,6 +318,7 @@ class BaseDescopeWc extends BaseClass {
       'style-id',
       'outbound-app-id',
       'outbound-app-scopes',
+      'theme-override',
     ];
 
     BaseDescopeWc.observedAttributes.forEach((attr: string) => {
@@ -358,12 +362,14 @@ class BaseDescopeWc extends BaseClass {
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
       const origFn = this.sdk.flow[key];
+      const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
         try {
-          const resp = await origFn(...args);
+          const resp = await fnWithRetry(...args);
           return resp;
         } catch (e) {
+          this.logger.error(`Error in sdk flow ${key} function`, e);
           // return a generic error object in case of an error
           return {
             error: {
@@ -665,6 +671,10 @@ class BaseDescopeWc extends BaseClass {
       'components-context',
       this.#eventsCbRefs.componentsContext,
     );
+    // Forward to the composed mixin chain so each mixin's
+    // disconnectedCallback (e.g. componentConditionsMixin) gets to clean up.
+    // Without this, mixin disconnectedCallbacks are dead code.
+    super.disconnectedCallback?.();
   }
 
   attributeChangedCallback(
@@ -672,6 +682,10 @@ class BaseDescopeWc extends BaseClass {
     oldValue: string,
     newValue: string,
   ) {
+    // Forward to the composed mixin chain first so other mixins always receive
+    // the callback, regardless of the early return below.
+    super.attributeChangedCallback?.(attrName, oldValue, newValue);
+
     if (!this.shadowRoot.isConnected || !this.#init) return;
 
     if (

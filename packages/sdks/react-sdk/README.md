@@ -188,6 +188,12 @@ const App = () => {
 
             // Clear screen error message on user input
             //dismissScreenErrorOnInput={true}
+
+            // Outbound application ID to use for connecting to external services
+            // outboundAppId="my-outbound-app-id"
+
+            // Array of scopes to request from the outbound application
+            // outboundAppScopes={["email", "profile"]}
         />
     )
 }
@@ -307,7 +313,9 @@ const App = () => {
 };
 ```
 
-Note: `useSession` triggers a single request to the Descope backend to attempt to refresh the session. If you **don't** `useSession` on your app, the session will not be refreshed automatically. If your app does not require `useSession`, you can trigger the refresh manually by calling `refresh` from `useDescope` hook. Example:
+### Trigger Auto Refresh
+
+`useSession` triggers a single request to the Descope backend to attempt to refresh the session. If you **don't** `useSession` in your app, the session will not be refreshed automatically. If your app does not require `useSession`, you can trigger the refresh manually by calling `refresh` from `useDescope` hook. Example:
 
 ```js
 const { refresh } = useDescope();
@@ -320,6 +328,63 @@ useEffect(() => {
 
 Descope SDK automatically refreshes the session token when it is about to expire. This is done in the background using the refresh token, without any additional configuration.
 If you want to disable this behavior, you can pass `autoRefresh={false}` to the `AuthProvider` component. This will prevent the SDK from automatically refreshing the session token.
+
+### Activity-Based Session Refresh
+
+Pass `autoRefresh={{ customActivityTracking: true }}` to skip refresh calls for idle users. The SDK will only refresh when `sdk.markUserActive()` has been called since the last refresh. This reduces unnecessary API calls and enables accurate server-side session inactivity tracking.
+
+**Step 1:** Enable it in `AuthProvider`:
+
+```jsx
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
+  <App />
+</AuthProvider>
+```
+
+**Step 2:** Create a `useActivityTracking` hook that calls `markUserActive()` on user interactions:
+
+```jsx
+import { useEffect } from 'react';
+import { useDescope } from '@descope/react-sdk';
+
+function useActivityTracking() {
+  const sdk = useDescope();
+
+  useEffect(() => {
+    const { markUserActive } = sdk;
+
+    document.addEventListener('click', markUserActive);
+    document.addEventListener('keydown', markUserActive);
+    document.addEventListener('touchstart', markUserActive);
+
+    // Mark active when the user switches back to this tab
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') markUserActive();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      document.removeEventListener('click', markUserActive);
+      document.removeEventListener('keydown', markUserActive);
+      document.removeEventListener('touchstart', markUserActive);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [sdk]);
+}
+```
+
+Call `useActivityTracking()` inside a component that is rendered within `<AuthProvider>` so `useDescope()` has access to the context:
+
+```jsx
+function Layout() {
+  useActivityTracking();
+  return <Outlet />;
+}
+
+<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
+  <Layout />
+</AuthProvider>
+```
 
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
 
@@ -476,9 +541,52 @@ const AppRoot = () => {
 };
 ````
 
+### Custom Storage
+
+By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, tokens when they aren't stored in cookies, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper — pass a `customStorage` prop to the `AuthProvider`.
+
+```js
+import { AuthProvider } from '@descope/react-sdk';
+
+const inMemoryStorage = (() => {
+  const map = new Map();
+  return {
+    getItem: (key) => (map.has(key) ? map.get(key) : null),
+    setItem: (key, value) => {
+      map.set(key, value);
+    },
+    removeItem: (key) => {
+      map.delete(key);
+    },
+  };
+})();
+
+const AppRoot = () => (
+  <AuthProvider projectId="my-project-id" customStorage={inMemoryStorage}>
+    <App />
+  </AuthProvider>
+);
+```
+
+The object must implement the `CustomStorage` interface:
+
+```ts
+type CustomStorage = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+};
+```
+
+> **Note:** `customStorage` backs the keys the SDK persists on your behalf (tokens, last-authenticated user). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, the features that rely on them may degrade.
+>
+> The internal, non-PII markers for the client-side session-refresh optimization (`DSLI` / `DSLI_DISABLED`) are the exception: the SDK always keeps them in real `window.localStorage`, independent of `customStorage`. This is what makes the optimization behave correctly even when you back the other keys with `sessionStorage` or an in-memory store.
+
 ### Last User Persistence
 
 Descope stores the last user information in local storage. If you wish to disable this feature, you can pass `storeLastAuthenticatedUser={false}` to the `AuthProvider` component. Please note that some features related to the last authenticated user may not function as expected if this behavior is disabled. Local storage is being cleared when the user logs out, if you want the avoid clearing the local storage, you can pass `keepLastAuthenticatedUserAfterLogout={true}` to the `AuthProvider` component.
+
+The last-user key also serves as a signal for the SDK's session initialization optimization: on mount, the `AuthProvider` skips the initial `/try-refresh` network call when it finds no prior session indicator — neither the `DSLI` key (written to real `window.localStorage` on every successful authentication, independent of `customStorage`) nor the last-user key. This means anonymous visitors never pay a round-trip at startup. If `storeLastAuthenticatedUser={false}`, only the `DSLI` key is used as the indicator.
 
 ### Seamless Session Migration
 
@@ -508,6 +616,12 @@ Widgets are components that allow you to expose management features for tenant-b
 Important Note:
 
 - For the user to be able to use the widget, they need to be assigned the `Tenant Admin` Role.
+
+All widget components accept an optional `locale` prop. It can be any supported locale the widget's screens are translated to; if not provided, the locale is taken from the browser's locale.
+
+```jsx
+<UserManagement widgetId="user-management-widget" tenant="tenant-id" locale="en" />
+```
 
 #### User Management
 

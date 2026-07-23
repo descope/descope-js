@@ -8,11 +8,16 @@ import {
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import {
+  localeMixin,
+  formMixin,
+  loggerMixin,
+  modalMixin,
+  flowInputMixin,
+} from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
-import { createFlowTemplate } from '../../../../helpers';
 import {
   getSelectedUsersAllIds,
   getSelectedUsersLoginIds,
@@ -23,12 +28,14 @@ import {
 export const initGenericFlowButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitGenericFlowButtonMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       modalMixin,
       loggerMixin,
       formMixin,
       initWidgetRootMixin,
+      flowInputMixin,
     )(superclass) {
       #modal: ModalDriver;
 
@@ -93,20 +100,13 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
 
       #initModalContent(flowId: string) {
         this.#modal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-            client: JSON.stringify({
+            client: {
               userIds: getSelectedUsersUserIds(this.state),
               loginIds: getSelectedUsersAllIds(this.state),
               usersAndRoles: getSelectedUsersRolesList(this.state),
-            }),
+            },
             tenant: this.tenantId,
           }),
         );

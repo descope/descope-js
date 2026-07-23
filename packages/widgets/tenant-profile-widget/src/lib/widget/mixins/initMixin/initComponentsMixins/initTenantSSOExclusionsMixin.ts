@@ -9,25 +9,28 @@ import {
   withMemCache,
 } from '@descope/sdk-helpers';
 import {
+  localeMixin,
   cookieConfigMixin,
   loggerMixin,
   modalMixin,
+  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getTenantSSOExclusions } from '../../../state/selectors';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
-import { createFlowTemplate } from '../../helpers';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 
 export const initTenantSSOExclusionsMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TenantSSOExclusionsMixinClass extends compose(
+      localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
       modalMixin,
+      flowInputMixin,
     )(superclass) {
       tenantSSOExclusionsDriver: UserAttributeDriver;
 
@@ -56,19 +59,12 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.tenantSSOExclusionsDriver.editFlowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
-            form: JSON.stringify({
+            form: {
               enforceSSOExclusions: getTenantSSOExclusions(this.state),
-            }),
+            },
           }),
         );
         this.#editFlow.onSuccess(() => {
@@ -94,16 +90,9 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          createFlowTemplate({
-            projectId: this.projectId,
+          this.createFlowTemplate({
             flowId: this.tenantSSOExclusionsDriver.deleteFlowId,
             tenant: this.tenantId,
-            baseUrl: this.baseUrl,
-            baseStaticUrl: this.baseStaticUrl,
-            baseCdnUrl: this.baseCdnUrl,
-            refreshCookieName: this.refreshCookieName,
-            theme: this.theme,
-            'style-id': this.styleId,
           }),
         );
         this.#deleteFlow.onSuccess(() => {

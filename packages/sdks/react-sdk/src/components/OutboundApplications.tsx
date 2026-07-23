@@ -16,7 +16,7 @@ const OutboundApplicationsWC = lazy(async () => {
   return {
     default: withPropsMapping(
       React.forwardRef<HTMLElement>((props, ref) => (
-        <descope-outbound-applications-widget ref={ref} {...props} />
+	<descope-outbound-applications-widget ref={ref} {...props} />
       )),
     ),
   };
@@ -25,44 +25,52 @@ const OutboundApplicationsWC = lazy(async () => {
 const OutboundApplications = React.forwardRef<
   HTMLElement,
   OutboundApplicationsProps
->(({ logger, theme, debug, widgetId, styleId, onReady }, ref) => {
-  const [innerRef, setInnerRef] = useState(null);
+>(
+  (
+    { logger, theme, locale, debug, widgetId, styleId, onReady, client, form },
+    ref,
+  ) => {
+    const [innerRef, setInnerRef] = useState(null);
 
-  useImperativeHandle(ref, () => innerRef);
+    useImperativeHandle(ref, () => innerRef);
 
-  const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
-    React.useContext(Context);
+    const { projectId, baseUrl, baseStaticUrl, baseCdnUrl, refreshCookieName } =
+      React.useContext(Context);
 
-  useEffect(() => {
-    const ele = innerRef;
-    if (onReady) ele?.addEventListener('ready', onReady);
+    useEffect(() => {
+      const ele = innerRef;
+      if (onReady) ele?.addEventListener('ready', onReady);
 
-    return () => {
-      if (onReady) ele?.removeEventListener('ready', onReady);
-    };
-  }, [innerRef, onReady]);
+      return () => {
+        if (onReady) ele?.removeEventListener('ready', onReady);
+      };
+    }, [innerRef, onReady]);
 
-  return (
-    <Suspense fallback={null}>
-      <OutboundApplicationsWC
-        ref={setInnerRef}
-        projectId={projectId}
-        widgetId={widgetId}
-        baseUrl={baseUrl}
-        baseStaticUrl={baseStaticUrl}
-        baseCdnUrl={baseCdnUrl}
-        {...{
-          // attributes
-          'theme.attr': theme,
-          'debug.attr': debug,
-          'styleId.attr': styleId,
-          'refreshCookieName.attr': refreshCookieName,
-          // props
-          'logger.prop': logger,
-        }}
-      />
-    </Suspense>
-  );
-});
+    return (
+	<Suspense fallback={null}>
+		<OutboundApplicationsWC
+          ref={setInnerRef}
+          projectId={projectId}
+          widgetId={widgetId}
+          baseUrl={baseUrl}
+          baseStaticUrl={baseStaticUrl}
+          baseCdnUrl={baseCdnUrl}
+          {...{
+            // attributes
+            'theme.attr': theme,
+            'locale.attr': locale,
+            'debug.attr': debug,
+            'styleId.attr': styleId,
+            'refreshCookieName.attr': refreshCookieName,
+            'client.attr': client,
+            'form.attr': form,
+            // props
+            'logger.prop': logger,
+          }}
+        />
+	</Suspense>
+    );
+  },
+);
 
 export default OutboundApplications;

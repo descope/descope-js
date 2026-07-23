@@ -63,6 +63,7 @@ const MyOutboundApplications = () => {
       <OutboundApplications
         widgetId="outbound-applications-widget"
         theme={process.env.DESCOPE_THEME as any}
+        tenant={process.env.DESCOPE_TENANT_ID || ''}
         styleId={process.env.DESCOPE_STYLE_ID}
         debug={process.env.DESCOPE_DEBUG_MODE === 'true'}
         logger={console}

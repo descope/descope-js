@@ -81,6 +81,9 @@
         widgetEle.setAttribute('base-static-url', DESCOPE_BASE_STATIC_URL);
         widgetEle.setAttribute('tenant', DESCOPE_TENANT);
         widgetEle.setAttribute('widget-id', DESCOPE_WIDGET_ID);
+        if (DESCOPE_LOCALE) {
+          widgetEle.setAttribute('locale', DESCOPE_LOCALE);
+        }
         widgetEle.setAttribute('debug', 'false');
         if (isMock) {
           widgetEle.setAttribute('mock', 'true');
@@ -95,6 +98,9 @@
           flowEle.setAttribute('project-id', DESCOPE_PROJECT_ID);
           flowEle.setAttribute('base-url', DESCOPE_BASE_URL);
           flowEle.setAttribute('flow-id', 'sign-up-or-in');
+          if (DESCOPE_LOCALE) {
+            flowEle.setAttribute('locale', DESCOPE_LOCALE);
+          }
           flowEle.setAttribute('debug', 'false');
           flowEle.addEventListener('success', () => {
             flowEle.remove();

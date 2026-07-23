@@ -7,8 +7,10 @@
       :base-static-url="baseStaticUrl"
       :base-cdn-url="baseCdnUrl"
       :theme.attr="theme"
+      :locale.attr="locale"
       :debug.attr="debug"
       :widget-id="widgetId"
+      :style-id="styleId"
       @logout="onLogout"
       @ready="onReady"
     />
@@ -39,6 +41,12 @@ defineProps({
     required: true,
   },
   theme: {
+    type: String,
+  },
+  locale: {
+    type: String,
+  },
+  styleId: {
     type: String,
   },
   debug: {

@@ -1,6 +1,5 @@
-import { ILogger } from '@descope/web-component';
 import { CookieConfig, OidcConfig } from '@descope/web-js-sdk';
-import type { CustomStorage } from '@descope/web-component';
+import type { CustomStorage, ILogger } from '@descope/web-component';
 export class DescopeAuthConfig {
   projectId = '';
   baseUrl?: string;

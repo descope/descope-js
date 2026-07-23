@@ -1,4 +1,17 @@
-import { User } from '../types';
+import { Tenant, User } from '../types';
+
+const mockTenants: Tenant[] = [
+  {
+    tenantName: 'Tenant 1',
+    tenantId: 'tn1',
+    roleNames: ['Role'],
+  },
+  {
+    tenantName: 'Tenant 2',
+    tenantId: 'tn2',
+    roleNames: ['Role'],
+  },
+];
 
 const me: () => Promise<User> = async () =>
   new Promise((resolve) => {
@@ -12,7 +25,7 @@ const me: () => Promise<User> = async () =>
       phone: `+1-202-555-010`,
       verifiedEmail: true,
       verifiedPhone: true,
-      userTenants: [],
+      userTenants: mockTenants,
       status: 'enabled',
       editable: true,
       createdTime: new Date().getTime(),
@@ -69,9 +82,36 @@ const devices = () => ({
   ],
 });
 
+const passkeys = () => ({
+  passkeys: [
+    {
+      id: 'vendor-id-1',
+      displayName: 'Device 1',
+      kind: 'google',
+      createdTime: 1735977600,
+      rpId: 'example.com',
+    },
+    {
+      id: 'vendor-id-2',
+      displayName: 'Device 2',
+      kind: 'edge',
+      createdTime: 1738750500,
+      rpId: 'example.com',
+    },
+    {
+      id: 'vendor-id-3',
+      displayName: 'Device 3',
+      kind: 'apple',
+      createdTime: 1741264200,
+      rpId: 'example.com',
+    },
+  ],
+});
+
 const user = {
   me,
   devices,
+  passkeys,
 };
 
 export { user };

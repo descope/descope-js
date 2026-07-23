@@ -13,7 +13,7 @@ import { DescopeAuthModule } from '../../../../angular-sdk/src/lib/descope-auth.
   imports: [CommonModule, DescopeAuthModule]
 })
 export class LoginComponent {
-  flowId = environment.descopeFlowId ?? 'sign-up-or-in';
+  flowId = environment.descopeFlowId || 'sign-up-or-in';
   theme = (environment.descopeTheme as 'light' | 'dark' | 'os') ?? 'os';
   telemetryKey = environment.descopeTelemetryKey ?? '';
   debugMode = environment.descopeDebugMode ?? false;

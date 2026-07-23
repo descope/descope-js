@@ -2,6 +2,34 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.8.0...sdk-helpers-0.9.0) (2026-06-28)
+
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
+## [0.8.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.7.0...sdk-helpers-0.8.0) (2026-06-14)
+
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.7.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.6.0...sdk-helpers-0.7.0) (2026-04-12)
+
+
+### Features
+
+* **audit-widget:** add export CSV button ([#1362](https://github.com/descope/descope-js/issues/1362)) ([be22970](https://github.com/descope/descope-js/commit/be22970173d17de38ce7aca1723fead6afd4aec3))
+
+## [0.6.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.5.1...sdk-helpers-0.6.0) (2026-01-29)
+
+
+### Features
+
+* User Profile Widget Tenant Selector RELEASE ([#1321](https://github.com/descope/descope-js/issues/1321)) ([d89cc29](https://github.com/descope/descope-js/commit/d89cc29b8fcec6d80f4758b4b18b177bceefb7bc))
+
 ## [0.5.1](https://github.com/descope/descope-js/compare/sdk-helpers-0.5.0...sdk-helpers-0.5.1) (2025-11-09)
 
 ## [0.5.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.4.1...sdk-helpers-0.5.0) (2025-10-16)

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'fs';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -187,5 +188,43 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
     ).toBeVisible();
+  });
+
+  test('export button downloads CSV', async ({ page }) => {
+    // wait for audit data to load
+    await expect(
+      page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
+    ).toBeVisible({ timeout: 10000 });
+
+    // verify export button is visible
+    const exportButton = page.locator(
+      'descope-button[data-testid="export-button"]',
+    );
+    await expect(exportButton).toBeVisible();
+
+    // set up download listener and click
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      exportButton.click(),
+    ]);
+
+    // verify the downloaded file
+    const filename = download.suggestedFilename();
+    expect(filename).toMatch(/^audit_logs_\d{4}-\d{2}-\d{2}\.csv$/);
+
+    const downloadPath = await download.path();
+    const csvContent = readFileSync(downloadPath, 'utf-8');
+    const lines = csvContent.split('\n');
+
+    // header + 3 audit rows
+    expect(lines.length).toBe(4);
+    expect(lines[0]).toContain('Occurred');
+    expect(lines[0]).toContain('User ID');
+    expect(lines[0]).toContain('Action');
+
+    // verify audit data is in the CSV
+    expect(csvContent).toContain(mockAudit.audit[0]['actorId']);
+    expect(csvContent).toContain(mockAudit.audit[1]['actorId']);
+    expect(csvContent).toContain(mockAudit.audit[2]['actorId']);
   });
 });

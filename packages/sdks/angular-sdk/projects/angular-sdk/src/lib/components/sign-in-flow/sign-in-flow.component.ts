@@ -5,9 +5,8 @@ import {
   Output,
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
-import { ILogger } from '@descope/web-component';
 import { DescopeComponent } from '../descope/descope.component';
-import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
 
 @Component({
   selector: 'descope-sign-in-flow',

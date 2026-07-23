@@ -3,7 +3,6 @@ import { HttpClient } from '../httpClient';
 import { transformResponse } from './helpers';
 import {
   SdkResponse,
-  ResponseData,
   LoginOptions,
   JWTResponse,
   PasskeyOptions,
@@ -51,17 +50,20 @@ const withWebauthn = (httpClient: HttpClient) => ({
         origin: string,
         name: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+        loginOptions?: LoginOptions,
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        return transformResponse(
           httpClient.post(apiPaths.webauthn.signUp.start, {
             user: {
               loginId,
               name,
             },
             origin,
+            loginOptions,
             passkeyOptions,
           }),
-        ),
+        );
+      },
     ),
 
     finish: withFinishValidations(
@@ -86,14 +88,20 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginOptions?: LoginOptions,
         token?: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        return transformResponse(
           httpClient.post(
             apiPaths.webauthn.signIn.start,
-            { loginId, origin, loginOptions, passkeyOptions },
+            {
+              loginId,
+              origin,
+              loginOptions,
+              passkeyOptions,
+            },
             { token },
           ),
-        ),
+        );
+      },
     ),
 
     finish: withFinishValidations(
@@ -116,14 +124,17 @@ const withWebauthn = (httpClient: HttpClient) => ({
         loginId: string,
         origin: string,
         passkeyOptions?: PasskeyOptions,
-      ): Promise<SdkResponse<WebAuthnStartResponse>> =>
-        transformResponse(
+        loginOptions?: LoginOptions,
+      ): Promise<SdkResponse<WebAuthnStartResponse>> => {
+        return transformResponse(
           httpClient.post(apiPaths.webauthn.signUpOrIn.start, {
             loginId,
             origin,
+            loginOptions,
             passkeyOptions,
           }),
-        ),
+        );
+      },
     ),
   },
 
@@ -134,21 +145,25 @@ const withWebauthn = (httpClient: HttpClient) => ({
         origin: string,
         token?: string,
         passkeyOptions?: PasskeyOptions,
+        mfa?: boolean,
       ): Promise<SdkResponse<WebAuthnStartResponse>> =>
         transformResponse(
           httpClient.post(
             apiPaths.webauthn.update.start,
-            { loginId, origin, passkeyOptions },
+            { loginId, origin, passkeyOptions, mfa },
             { token },
           ),
         ),
     ),
 
+    // When the matching update.start set mfa, the response carries a session whose amr merges the user's
+    // previously-passed factors with the new passkey, nested under `jwt`. For the default enrollment flow
+    // `jwt` is absent (the credential is registered, no session minted).
     finish: withFinishValidations(
       (
         transactionId: string,
         response: string,
-      ): Promise<SdkResponse<ResponseData>> =>
+      ): Promise<SdkResponse<{ jwt?: JWTResponse }>> =>
         transformResponse(
           httpClient.post(apiPaths.webauthn.update.finish, {
             transactionId,

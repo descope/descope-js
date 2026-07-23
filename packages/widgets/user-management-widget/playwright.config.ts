@@ -96,7 +96,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort}`,
+      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort} -C`,
     },
     {
       command: `npx serve build -l ${widgetPort}`,

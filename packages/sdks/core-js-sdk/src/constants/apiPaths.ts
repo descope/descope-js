@@ -51,6 +51,10 @@ export default {
     start: '/v1/auth/saml/authorize',
     exchange: '/v1/auth/saml/exchange',
   },
+  sso: {
+    start: '/v1/auth/saml/authorize',
+    exchange: '/v1/auth/saml/exchange',
+  },
   totp: {
     verify: '/v1/auth/totp/verify',
     signUp: '/v1/auth/totp/signup',
@@ -87,6 +91,9 @@ export default {
     replace: '/v1/auth/password/replace',
     policy: '/v1/auth/password/policy',
   },
+  // NOTE: When adding routes that validate session state (like refresh, me, etc.),
+  // consider adding them to SESSION_VALIDATION_ROUTES in web-js-sdk/src/enhancers/helpers/index.ts
+  // These routes trigger logout/clear tokens on failure, unlike OTP routes that may fail for invalid input
   refresh: '/v1/auth/refresh',
   tryRefresh: '/v1/auth/try-refresh',
   selectTenant: '/v1/auth/tenant/select',

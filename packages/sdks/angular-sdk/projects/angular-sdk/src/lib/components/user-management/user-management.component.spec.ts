@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserManagementComponent } from './user-management.component';
 import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, PLATFORM_ID } from '@angular/core';
 import mocked = jest.mocked;
 
 jest.mock('@descope/web-js-sdk');
@@ -82,9 +82,13 @@ describe('DescopeUserManagementComponent', () => {
     expect(webComponentHtml.getAttribute('style-id')).toStrictEqual('style-1');
   });
 
-  it('should emit ready event when web component dispatches ready', () => {
+  it('should emit ready event when web component dispatches ready', async () => {
     const readySpy = jest.fn();
     component.ready.subscribe(readySpy);
+
+    // Wait for async widget loading to complete
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     const html: HTMLElement = fixture.nativeElement;
     const webComponentHtml = html.querySelector(
@@ -96,5 +100,37 @@ describe('DescopeUserManagementComponent', () => {
 
     // Check that the component emits the ready event
     expect(readySpy).toHaveBeenCalledTimes(1);
+  });
+
+  describe('SSR (Server-Side Rendering)', () => {
+    it('should not load widget when not in browser (SSR)', async () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig },
+          { provide: PLATFORM_ID, useValue: 'server' }
+        ]
+      });
+
+      const ssrFixture = TestBed.createComponent(UserManagementComponent);
+      const ssrComponent = ssrFixture.componentInstance;
+      ssrComponent.tenant = 'tenant-1';
+      ssrComponent.widgetId = 'widget-1';
+
+      ssrFixture.detectChanges();
+      await ssrFixture.whenStable();
+
+      // Widget should not be loaded in SSR context
+      const html: HTMLElement = ssrFixture.nativeElement;
+      const webComponentHtml = html.querySelector(
+        'descope-user-management-widget'
+      );
+      expect(webComponentHtml).toBeNull();
+
+      // Component should still be created without errors
+      expect(ssrComponent).toBeTruthy();
+    });
   });
 });

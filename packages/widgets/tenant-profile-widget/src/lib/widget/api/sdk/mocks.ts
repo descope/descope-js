@@ -55,7 +55,11 @@ const getTenantAdminLinkSSO: () => Promise<TenantAdminLinkSSOResponse> =
   async () =>
     new Promise((resolve) => {
       resolve({
-        adminSSOConfigurationLink: '_blank',
+        defaultLink: '_blank',
+        ssoIdToLink: {
+          'okta-prod': '_blank?ssoId=okta-prod',
+          'entra-eu': '_blank?ssoId=entra-eu',
+        },
       });
     });
 

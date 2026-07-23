@@ -24,6 +24,9 @@ type NativeOptions = {
 
   /** An override for web OAuth that sets the address to redirect to after authentication succeeds at the OAuth provider website */
   oauthRedirect?: string;
+
+  /** An override for external authentication that sets the address to redirect to after authentication succeeds at the external auth provider */
+  externalAuthRedirect?: string;
 };
 
 type AuthMethod =
@@ -32,6 +35,7 @@ type AuthMethod =
   | 'otp'
   | 'totp'
   | 'oauth'
+  | 'sso'
   | 'saml'
   | 'webauthn';
 
@@ -97,6 +101,7 @@ export type UserHistoryResponse = {
 export type UserTenant = {
   tenantId: string;
   roleNames?: string[];
+  permissions?: string[];
   tenantName: string;
 };
 
@@ -110,11 +115,13 @@ export type LoginOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 /** Access key login options to be added to the different authentication methods */
 export type AccessKeyLoginOptions = {
   customClaims?: Record<string, any>;
+  selectedTenant?: string;
 };
 
 /** Sign Up options to be added to the different authentication methods */
@@ -122,6 +129,7 @@ export type SignUpOptions = {
   customClaims?: Record<string, any>;
   templateId?: string;
   templateOptions?: TemplateOptions;
+  tenantId?: string;
 };
 
 export type Claims = Record<string, any>;
@@ -134,10 +142,14 @@ export type JWTResponse = {
   cookiePath?: string;
   cookieMaxAge?: number;
   cookieExpiration?: number;
+  cookieName?: string;
   user?: UserResponse;
   firstSeen?: boolean;
   sessionExpiration: number;
   claims: Claims;
+  trustedDeviceJwt?: string;
+  nextRefreshSeconds?: number;
+  externalToken?: string;
 };
 
 /** Authentication info result from exchanging access keys for a session */
@@ -224,6 +236,7 @@ export enum DeliveryPhone {
   sms = 'sms',
   voice = 'voice',
   whatsapp = 'whatsapp',
+  im = 'im',
 }
 
 export enum DeliveryEmail {
@@ -301,6 +314,12 @@ export type FlowResponse = {
     samlResponse: string;
     relayState: string;
   };
+  // WS-Fed IDP response (this will be used to build the html form response goes from the IDP through the end user browser to the RP)
+  wsFedIdpResponse?: {
+    url: string;
+    wresult: string;
+    wctx: string;
+  };
   // a URL to open in a new tab
   openInNewTabUrl?: string;
   // webauthn data - if action is one of 'webauthnCreate', 'webauthnGet'
@@ -342,8 +361,10 @@ export type Options = {
   oidcIdpStateId?: string;
   preview?: boolean;
   samlIdpStateId?: string;
+  wsfedIdpStateId?: string;
   samlIdpUsername?: string;
   ssoAppId?: string;
+  customAppId?: string;
   thirdPartyAppId?: string;
   oidcLoginHint?: string;
   abTestingKey?: number;
@@ -408,4 +429,11 @@ export type UpdateOptions<T extends boolean> = {
   templateOptions?: TemplateOptions;
   templateId?: string;
   providerId?: string;
+  /**
+   * When true, preserves the auth methods already on the refresh token and adds the
+   * updated factor to them (so the resulting `amr` keeps the previously-passed factors)
+   * instead of replacing it with a single factor. Requires a valid refresh token.
+   * Currently applies to the OTP update phone / email flows.
+   */
+  mfa?: boolean;
 };

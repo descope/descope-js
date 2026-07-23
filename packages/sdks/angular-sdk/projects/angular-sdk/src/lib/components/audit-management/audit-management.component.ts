@@ -2,16 +2,14 @@ import {
   Component,
   ElementRef,
   Input,
-  OnChanges,
-  OnInit,
   Output,
   EventEmitter,
-  AfterViewInit,
-  CUSTOM_ELEMENTS_SCHEMA
+  CUSTOM_ELEMENTS_SCHEMA,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import DescopeAuditManagementWidget from '@descope/audit-management-widget';
-import { ILogger } from '@descope/web-component';
-import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
+import { BaseLazyWidgetComponent } from '../../base/base-lazy-widget.component';
 
 @Component({
   selector: 'audit-management[tenant]',
@@ -19,9 +17,7 @@ import { DescopeAuthConfig } from '../../types/types';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: ''
 })
-export class AuditManagementComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export class AuditManagementComponent extends BaseLazyWidgetComponent {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -30,38 +26,41 @@ export class AuditManagementComponent
   @Input() widgetId: string;
 
   @Input() theme: 'light' | 'dark' | 'os';
+
+  @Input() locale: string;
   @Input() debug: boolean;
   @Input() logger: ILogger;
   @Input() styleId: string;
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private readonly webComponent = new DescopeAuditManagementWidget();
-
   constructor(
-    private elementRef: ElementRef,
-    descopeConfig: DescopeAuthConfig
+    elementRef: ElementRef,
+    descopeConfig: DescopeAuthConfig,
+    @Inject(PLATFORM_ID) platformId: object
   ) {
+    super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
-  ngOnInit() {
-    this.setupWebComponent();
-    this.elementRef.nativeElement.appendChild(this.webComponent);
+  protected async loadWidget(): Promise<HTMLElement | null> {
+    try {
+      const WidgetModule = await import('@descope/audit-management-widget');
+      const DescopeAuditManagementWidget = WidgetModule.default;
+      return new DescopeAuditManagementWidget() as unknown as HTMLElement;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load Audit Management widget:', error);
+      return null;
+    }
   }
 
-  ngOnChanges(): void {
-    this.setupWebComponent();
-  }
+  protected setupWebComponent() {
+    if (!this.webComponent) return;
 
-  ngAfterViewInit(): void {
-    this.setupEventListeners();
-  }
-
-  private setupWebComponent() {
     this.webComponent.setAttribute('project-id', this.projectId);
     this.webComponent.setAttribute('tenant', this.tenant);
     this.webComponent.setAttribute('widget-id', this.widgetId);
@@ -77,6 +76,9 @@ export class AuditManagementComponent
     if (this.theme) {
       this.webComponent.setAttribute('theme', this.theme);
     }
+    if (this.locale) {
+      this.webComponent.setAttribute('locale', this.locale);
+    }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
     }
@@ -89,7 +91,9 @@ export class AuditManagementComponent
     }
   }
 
-  private setupEventListeners(): void {
+  protected setupEventListeners(): void {
+    if (!this.webComponent) return;
+
     if (this.ready) {
       this.webComponent.addEventListener('ready', () => {
         this.ready?.emit();

@@ -3,22 +3,20 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
-  OnInit,
   Output,
-  AfterViewInit
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import DescopeUserProfileWidget from '@descope/user-profile-widget';
-import { ILogger } from '@descope/web-component';
-import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthConfig, ILogger } from '../../types/types';
 import { DescopeAuthService } from '../../services/descope-auth.service';
+import { BaseLazyWidgetComponent } from '../../base/base-lazy-widget.component';
 
 @Component({
   selector: 'user-profile',
   standalone: true,
   template: ''
 })
-export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
+export class UserProfileComponent extends BaseLazyWidgetComponent {
   projectId: string;
   baseUrl?: string;
   baseStaticUrl?: string;
@@ -26,6 +24,8 @@ export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() widgetId: string;
 
   @Input() theme: 'light' | 'dark' | 'os';
+
+  @Input() locale: string;
   @Input() debug: boolean;
   @Input() logger: ILogger;
   @Input() styleId: string;
@@ -34,33 +34,34 @@ export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
-  private readonly webComponent = new DescopeUserProfileWidget();
-
   constructor(
-    private elementRef: ElementRef,
+    elementRef: ElementRef,
     descopeConfig: DescopeAuthConfig,
-    private descopeAuthService: DescopeAuthService
+    private descopeAuthService: DescopeAuthService,
+    @Inject(PLATFORM_ID) platformId: object
   ) {
+    super(elementRef, platformId);
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
     this.baseStaticUrl = descopeConfig.baseStaticUrl;
     this.baseCdnUrl = descopeConfig.baseCdnUrl;
   }
 
-  ngOnInit() {
-    this.setupWebComponent();
-    this.elementRef.nativeElement.appendChild(this.webComponent);
+  protected async loadWidget(): Promise<HTMLElement | null> {
+    try {
+      const WidgetModule = await import('@descope/user-profile-widget');
+      const DescopeUserProfileWidget = WidgetModule.default;
+      return new DescopeUserProfileWidget() as unknown as HTMLElement;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load User Profile widget:', error);
+      return null;
+    }
   }
 
-  ngOnChanges(): void {
-    this.setupWebComponent();
-  }
+  protected setupWebComponent() {
+    if (!this.webComponent) return;
 
-  ngAfterViewInit(): void {
-    this.setupEventListeners();
-  }
-
-  private setupWebComponent() {
     this.webComponent.setAttribute('project-id', this.projectId);
     this.webComponent.setAttribute('widget-id', this.widgetId);
     if (this.baseUrl) {
@@ -75,6 +76,9 @@ export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.theme) {
       this.webComponent.setAttribute('theme', this.theme);
     }
+    if (this.locale) {
+      this.webComponent.setAttribute('locale', this.locale);
+    }
     if (this.debug) {
       this.webComponent.setAttribute('debug', this.debug.toString());
     }
@@ -87,7 +91,9 @@ export class UserProfileComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  private setupEventListeners(): void {
+  protected setupEventListeners(): void {
+    if (!this.webComponent) return;
+
     this.webComponent.addEventListener('logout', (e: Event) => {
       this.logout?.emit(e as CustomEvent);
       this.descopeAuthService.setSession('');

@@ -13,6 +13,7 @@ import type {
   ILogger,
   ThemeOptions,
 } from '@descope/web-component';
+import type OverrideThemes from '@descope/web-component';
 import DescopeWc from '@descope/web-component';
 import type { UserResponse } from '@descope/web-js-sdk';
 import React, { DOMAttributes } from 'react';
@@ -40,9 +41,15 @@ type WidgetProps = {
   widgetId: string;
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
+  // If locale is not provided - the browser's locale will be used
+  locale?: string;
   debug?: boolean;
   styleId?: string;
   onReady?: CustomEventCb<{}>;
+  // use to override screen's form inputs in the widget's flow execution
+  form?: Record<string, any>;
+  // use to override client context in the widget's flow execution
+  client?: Record<string, any>;
 };
 
 type FlowResponse = Awaited<ReturnType<Sdk['flow']['next']>>;
@@ -165,6 +172,7 @@ export type DescopeProps = {
   ) => boolean | Promise<boolean>;
   children?: React.ReactNode;
   externalRequestId?: string;
+  themeOverride?: OverrideThemes;
 };
 
 export type UserManagementProps = WidgetProps;

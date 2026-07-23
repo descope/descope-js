@@ -1,4 +1,5 @@
 import {
+  AssociatedTenant,
   CreateUserConfig,
   CustomAttr,
   Role,
@@ -6,6 +7,20 @@ import {
   UpdateUserConfig,
   User,
 } from '../types';
+
+const compareValues = (a: any, b: any, desc: boolean) => {
+  // Handle boolean values by converting to numeric for proper comparison
+  if (typeof a === 'boolean' && typeof b === 'boolean') {
+    const aNum = a ? 1 : 0;
+    const bNum = b ? 1 : 0;
+    // reverse `desc` to prefer true over false when ascending
+    return !desc ? bNum - aNum : aNum - bNum;
+  }
+
+  const aStr = a?.toString() || '';
+  const bStr = b?.toString() || '';
+  return desc ? bStr.localeCompare(aStr) : aStr.localeCompare(bStr);
+};
 
 const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
   text,
@@ -25,7 +40,13 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
         phone: `+1-202-555-010${i}`,
         verifiedEmail: true,
         verifiedPhone: true,
-        userTenants: [],
+        userTenants: [
+          {
+            tenantId: 'sub-tenant-1',
+            tenantName: 'Hurray',
+            roleNames: ['Role 1', 'Role 2'],
+          },
+        ],
         status: 'enabled',
         editable: true,
         createdTime: timeMock,
@@ -36,18 +57,16 @@ const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
         middleName: '',
         picture: '',
         password: true,
-        SAML: false,
+        SAML: i % 3 === 0,
+        OIDC: i % 3 === 1,
+        SCIM: i % 3 === 2,
         test: false,
         TOTP: false,
         webauthn: false,
       });
     }
     sort.forEach((s) => {
-      users.sort((a, b) =>
-        !s.desc
-          ? (a[s.field] as string)?.localeCompare(b[s.field] as string)
-          : (b[s.field] as string)?.localeCompare(a[s.field] as string),
-      );
+      users.sort((a, b) => compareValues(a[s.field], b[s.field], s.desc));
     });
     resolve(
       users.filter(
@@ -77,6 +96,7 @@ const create: (config: CreateUserConfig) => Promise<User> = async ({
   givenName,
   middleName,
   familyName,
+  userTenants,
 }) =>
   new Promise((resolve) => {
     const i = Math.random().toString(10).substring(15);
@@ -99,10 +119,12 @@ const create: (config: CreateUserConfig) => Promise<User> = async ({
       editable: true,
       password: true,
       SAML: false,
+      SCIM: false,
+      OIDC: false,
       status: 'enabled',
       test: false,
       TOTP: false,
-      userTenants: [],
+      userTenants: userTenants || [],
       webauthn: false,
     });
   });
@@ -120,6 +142,7 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
   givenName,
   middleName,
   familyName,
+  userTenants,
 }) =>
   new Promise((resolve) => {
     resolve({
@@ -130,7 +153,7 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
       phone,
       name: displayName,
       roleNames: roles,
-      customAttributes,
+      customAttributes: customAttributes || {},
       picture,
       verifiedEmail,
       verifiedPhone,
@@ -141,10 +164,12 @@ const update: (config: UpdateUserConfig) => Promise<User> = async ({
       editable: true,
       password: true,
       SAML: false,
+      SCIM: false,
+      OIDC: false,
       status: 'enabled',
       test: false,
       TOTP: false,
-      userTenants: [],
+      userTenants: userTenants || [],
       webauthn: false,
     });
   });
@@ -204,6 +229,29 @@ const getTenantRoles = (
     resolve({ roles });
   });
 
+const getSubTenantRoles = (): Promise<{ roles: AssociatedTenant[] }> =>
+  new Promise((resolve) => {
+    resolve({
+      roles: [
+        {
+          tenantId: 'sub-tenant-1',
+          tenantName: 'Sub Tenant 1',
+          roleNames: ['Role 1', 'Role 2'],
+        },
+        {
+          tenantId: 'sub-tenant-2',
+          tenantName: 'Sub Tenant 2',
+          roleNames: ['Role 1', 'Role 3'],
+        },
+        {
+          tenantId: 'sub-tenant-3',
+          tenantName: 'Sub Tenant 3',
+          roleNames: ['Role 2'],
+        },
+      ],
+    });
+  });
+
 const user = {
   search,
   create,
@@ -217,5 +265,6 @@ const user = {
 };
 const tenants = {
   getTenantRoles,
+  getSubTenantRoles,
 };
 export { user, tenants };

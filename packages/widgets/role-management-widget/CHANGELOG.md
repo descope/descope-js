@@ -2,6 +2,237 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.8](https://github.com/descope/descope-js/compare/role-management-widget-0.9.7...role-management-widget-0.9.8) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+## [0.9.7](https://github.com/descope/descope-js/compare/role-management-widget-0.9.6...role-management-widget-0.9.7) (2026-07-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.1`
+## [0.9.6](https://github.com/descope/descope-js/compare/role-management-widget-0.9.5...role-management-widget-0.9.6) (2026-07-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.2`
+## [0.9.5](https://github.com/descope/descope-js/compare/role-management-widget-0.9.4...role-management-widget-0.9.5) (2026-06-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.0`
+* `sdk-component-drivers` updated to version `0.14.0`
+## [0.9.4](https://github.com/descope/descope-js/compare/role-management-widget-0.9.3...role-management-widget-0.9.4) (2026-06-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.1`
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `sdk-component-drivers` updated to version `0.13.1`
+## [0.9.3](https://github.com/descope/descope-js/compare/role-management-widget-0.9.2...role-management-widget-0.9.3) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+## [0.9.2](https://github.com/descope/descope-js/compare/role-management-widget-0.9.1...role-management-widget-0.9.2) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+## [0.9.1](https://github.com/descope/descope-js/compare/role-management-widget-0.9.0...role-management-widget-0.9.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+## [0.9.0](https://github.com/descope/descope-js/compare/role-management-widget-0.8.1...role-management-widget-0.9.0) (2026-06-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.4`
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `sdk-component-drivers` updated to version `0.13.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.8.1](https://github.com/descope/descope-js/compare/role-management-widget-0.8.0...role-management-widget-0.8.1) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+## [0.8.0](https://github.com/descope/descope-js/compare/role-management-widget-0.7.2...role-management-widget-0.8.0) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
+## [0.7.2](https://github.com/descope/descope-js/compare/role-management-widget-0.7.1...role-management-widget-0.7.2) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+## [0.7.1](https://github.com/descope/descope-js/compare/role-management-widget-0.7.0...role-management-widget-0.7.1) (2026-06-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.19.0`
+## [0.7.0](https://github.com/descope/descope-js/compare/role-management-widget-0.6.2...role-management-widget-0.7.0) (2026-06-01)
+
+
+### Features
+
+* **role-management-widget:** add Duplicate Role flow RELEASE ([#1401](https://github.com/descope/descope-js/issues/1401)) ([09e6f2f](https://github.com/descope/descope-js/commit/09e6f2f453b3bc168352a11bbcc0a0ab8f07d655)), closes [descope/etc#15701](https://github.com/descope/etc/issues/15701)
+
+## [0.6.2](https://github.com/descope/descope-js/compare/role-management-widget-0.6.1...role-management-widget-0.6.2) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.18.0`
+* `sdk-component-drivers` updated to version `0.12.0`
+## [0.6.1](https://github.com/descope/descope-js/compare/role-management-widget-0.6.0...role-management-widget-0.6.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [0.6.0](https://github.com/descope/descope-js/compare/role-management-widget-0.5.39...role-management-widget-0.6.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.5.39](https://github.com/descope/descope-js/compare/role-management-widget-0.5.38...role-management-widget-0.5.39) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+## [0.5.38](https://github.com/descope/descope-js/compare/role-management-widget-0.5.37...role-management-widget-0.5.38) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `sdk-mixins` updated to version `0.17.0`
+## [0.5.37](https://github.com/descope/descope-js/compare/role-management-widget-0.5.36...role-management-widget-0.5.37) (2026-05-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.4`
+* `sdk-mixins` updated to version `0.16.2`
+* `sdk-component-drivers` updated to version `0.10.0`
+## [0.5.36](https://github.com/descope/descope-js/compare/role-management-widget-0.5.35...role-management-widget-0.5.36) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+## [0.5.35](https://github.com/descope/descope-js/compare/role-management-widget-0.5.34...role-management-widget-0.5.35) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+## [0.5.34](https://github.com/descope/descope-js/compare/role-management-widget-0.5.33...role-management-widget-0.5.34) (2026-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.1`
+## [0.5.33](https://github.com/descope/descope-js/compare/role-management-widget-0.5.32...role-management-widget-0.5.33) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.0`
+## [0.5.32](https://github.com/descope/descope-js/compare/role-management-widget-0.5.31...role-management-widget-0.5.32) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+## [0.5.31](https://github.com/descope/descope-js/compare/role-management-widget-0.5.30...role-management-widget-0.5.31) (2026-04-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.1`
+## [0.5.30](https://github.com/descope/descope-js/compare/role-management-widget-0.5.29...role-management-widget-0.5.30) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+* `sdk-component-drivers` updated to version `0.9.1`
+## [0.5.29](https://github.com/descope/descope-js/compare/role-management-widget-0.5.28...role-management-widget-0.5.29) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+## [0.5.28](https://github.com/descope/descope-js/compare/role-management-widget-0.5.27...role-management-widget-0.5.28) (2026-03-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.46.0`
+## [0.5.27](https://github.com/descope/descope-js/compare/role-management-widget-0.5.26...role-management-widget-0.5.27) (2026-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.0`
+## [0.5.26](https://github.com/descope/descope-js/compare/role-management-widget-0.5.25...role-management-widget-0.5.26) (2026-01-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.45.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+## [0.5.25](https://github.com/descope/descope-js/compare/role-management-widget-0.5.24...role-management-widget-0.5.25) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+## [0.5.24](https://github.com/descope/descope-js/compare/role-management-widget-0.5.23...role-management-widget-0.5.24) (2026-01-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.1`
+## [0.5.23](https://github.com/descope/descope-js/compare/role-management-widget-0.5.22...role-management-widget-0.5.23) (2026-01-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.0`
+## [0.5.22](https://github.com/descope/descope-js/compare/role-management-widget-0.5.21...role-management-widget-0.5.22) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+## [0.5.21](https://github.com/descope/descope-js/compare/role-management-widget-0.5.20...role-management-widget-0.5.21) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+## [0.5.20](https://github.com/descope/descope-js/compare/role-management-widget-0.5.19...role-management-widget-0.5.20) (2025-12-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.0`
+* `sdk-mixins` updated to version `0.14.1`
+## [0.5.19](https://github.com/descope/descope-js/compare/role-management-widget-0.5.18...role-management-widget-0.5.19) (2025-12-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.41.0`
+## [0.5.18](https://github.com/descope/descope-js/compare/role-management-widget-0.5.17...role-management-widget-0.5.18) (2025-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.2`
 ## [0.5.17](https://github.com/descope/descope-js/compare/role-management-widget-0.5.16...role-management-widget-0.5.17) (2025-12-03)
 
 ### Dependency Updates

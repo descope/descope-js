@@ -2,6 +2,382 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.70.4](https://github.com/descope/descope-js/compare/web-component-3.70.3...web-component-3.70.4) (2026-07-22)
+
+
+### Bug Fixes
+
+* **web-component:** refresh captcha token on abandoned OAuth popup RELEASE ([#1443](https://github.com/descope/descope-js/issues/1443)) ([babd53b](https://github.com/descope/descope-js/commit/babd53b740aa298afebd5a0167e36c1c9f20bc7a)), closes [descope/etc#17057](https://github.com/descope/etc/issues/17057)
+
+## [3.70.3](https://github.com/descope/descope-js/compare/web-component-3.70.2...web-component-3.70.3) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+
+### Bug Fixes
+
+* **web-component:** stop flow polling loop on nonce validation error ([#1437](https://github.com/descope/descope-js/issues/1437)) ([f8bdf28](https://github.com/descope/descope-js/commit/f8bdf285821c5ab20ccb078884fc47eed56885c0)), closes [descope/etc#16663](https://github.com/descope/etc/issues/16663)
+
+## [3.70.2](https://github.com/descope/descope-js/compare/web-component-3.70.1...web-component-3.70.2) (2026-07-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.1`
+## [3.70.1](https://github.com/descope/descope-js/compare/web-component-3.70.0...web-component-3.70.1) (2026-07-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.2`
+## [3.70.0](https://github.com/descope/descope-js/compare/web-component-3.69.5...web-component-3.70.0) (2026-07-05)
+
+
+### Features
+
+* **web-component:** warn on multiple same-flow components on a page RELEASE ([#1431](https://github.com/descope/descope-js/issues/1431)) ([2f91a28](https://github.com/descope/descope-js/commit/2f91a2800e927589328e98c25219fafb2d63c4b2)), closes [#14040](https://github.com/descope/descope-js/issues/14040) [descope/etc#14040](https://github.com/descope/etc/issues/14040)
+
+## [3.69.5](https://github.com/descope/descope-js/compare/web-component-3.69.4...web-component-3.69.5) (2026-06-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.0`
+## [3.69.4](https://github.com/descope/descope-js/compare/web-component-3.69.3...web-component-3.69.4) (2026-06-28)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `web-js-sdk` updated to version `1.51.1`
+## [3.69.3](https://github.com/descope/descope-js/compare/web-component-3.69.2...web-component-3.69.3) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+
+### Bug Fixes
+
+* **web-component:** clear loading state after flow completes RELEASE ([#1426](https://github.com/descope/descope-js/issues/1426)) ([a88ca4b](https://github.com/descope/descope-js/commit/a88ca4b0a5c461df4a21b56ba53361622095b7cc)), closes [descope/etc#16353](https://github.com/descope/etc/issues/16353)
+
+## [3.69.2](https://github.com/descope/descope-js/compare/web-component-3.69.1...web-component-3.69.2) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+## [3.69.1](https://github.com/descope/descope-js/compare/web-component-3.69.0...web-component-3.69.1) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.17 RELEASE ([#1421](https://github.com/descope/descope-js/issues/1421)) ([13b11d3](https://github.com/descope/descope-js/commit/13b11d37953047ad004e88e0bb288bb49fe58323))
+
+## [3.69.0](https://github.com/descope/descope-js/compare/web-component-3.68.0...web-component-3.69.0) (2026-06-18)
+
+
+### Features
+
+* **web-component:** support new doesnt-contains realtime operator RELEASE ([#1417](https://github.com/descope/descope-js/issues/1417)) ([fe37871](https://github.com/descope/descope-js/commit/fe378717bb2bc3492ca1f4c2a1f438b0f647e4be)), closes [descope/backend#1348](https://github.com/descope/backend/issues/1348) [descope/etc#16322](https://github.com/descope/etc/issues/16322) [descope/backend#1348](https://github.com/descope/backend/issues/1348) [#1348](https://github.com/descope/descope-js/issues/1348)
+
+## [3.68.0](https://github.com/descope/descope-js/compare/web-component-3.67.1...web-component-3.68.0) (2026-06-14)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `web-js-sdk` updated to version `1.50.4`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [3.67.1](https://github.com/descope/descope-js/compare/web-component-3.67.0...web-component-3.67.1) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+## [3.67.0](https://github.com/descope/descope-js/compare/web-component-3.66.1...web-component-3.67.0) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+
+### Features
+
+* **web-component:** client-side realtime evaluation of componentsConditions RELEASE ([#1404](https://github.com/descope/descope-js/issues/1404)) ([adab0d9](https://github.com/descope/descope-js/commit/adab0d9ef33affb83c919af3f4d95759f89a6ae5)), closes [descope/etc#14360](https://github.com/descope/etc/issues/14360)
+
+## [3.66.1](https://github.com/descope/descope-js/compare/web-component-3.66.0...web-component-3.66.1) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+## [3.66.0](https://github.com/descope/descope-js/compare/web-component-3.65.0...web-component-3.66.0) (2026-06-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.19.0`
+
+### Features
+
+* Add tenant style sheet ([#1397](https://github.com/descope/descope-js/issues/1397)) ([90ab9dd](https://github.com/descope/descope-js/commit/90ab9dd5f05cd696da8ced616e5e0b081a2d970c))
+
+## [3.65.0](https://github.com/descope/descope-js/compare/web-component-3.64.3...web-component-3.65.0) (2026-05-28)
+
+
+### Features
+
+* **web-component:** support 'read-only' componentsState action RELEASE ([#1399](https://github.com/descope/descope-js/issues/1399)) ([138eba4](https://github.com/descope/descope-js/commit/138eba448079872889c96893d149d612085297f7)), closes [descope/etc#15647](https://github.com/descope/etc/issues/15647) [descope/console-app#5287](https://github.com/descope/console-app/issues/5287)
+
+## [3.64.3](https://github.com/descope/descope-js/compare/web-component-3.64.2...web-component-3.64.3) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.18.0`
+## [3.64.2](https://github.com/descope/descope-js/compare/web-component-3.64.1...web-component-3.64.2) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+## [3.64.1](https://github.com/descope/descope-js/compare/web-component-3.64.0...web-component-3.64.1) (2026-05-25)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.17.1`
+* `web-js-sdk` updated to version `1.50.0`
+## [3.64.0](https://github.com/descope/descope-js/compare/web-component-3.63.0...web-component-3.64.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+
+### Features
+
+* Add option to submit custom app id in query param - RELEASE ([#1394](https://github.com/descope/descope-js/issues/1394)) ([c814443](https://github.com/descope/descope-js/commit/c814443b978c86a9e985e97554d44a5eeca354b4))
+
+## [3.63.0](https://github.com/descope/descope-js/compare/web-component-3.62.0...web-component-3.63.0) (2026-05-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.17.0`
+* `web-js-sdk` updated to version `1.49.0`
+
+### Features
+
+* Add color theme override ([#1389](https://github.com/descope/descope-js/issues/1389)) ([34272cf](https://github.com/descope/descope-js/commit/34272cfb5c62e0175df6c2b6dcf71ab822d20ab4)), closes [#BD10E0](https://github.com/descope/descope-js/issues/BD10E0) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309) [#710A86](https://github.com/descope/descope-js/issues/710A86) [#DA5DF3](https://github.com/descope/descope-js/issues/DA5DF3) [#EEB6](https://github.com/descope/descope-js/issues/EEB6) [#6410](https://github.com/descope/descope-js/issues/6410) [#636C74](https://github.com/descope/descope-js/issues/636C74) [#005700](https://github.com/descope/descope-js/issues/005700) [#A24309](https://github.com/descope/descope-js/issues/A24309)
+
+## [3.62.0](https://github.com/descope/descope-js/compare/web-component-3.61.0...web-component-3.62.0) (2026-05-14)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.2`
+* `web-js-sdk` updated to version `1.48.4`
+
+### Features
+
+* **web-component:** Track last auth per screen and populate last-aut-badge RELEASE ([#1342](https://github.com/descope/descope-js/issues/1342)) ([00f96e2](https://github.com/descope/descope-js/commit/00f96e2d3e0e980e679bab0a1534d47ddd861f09))
+
+## [3.61.0](https://github.com/descope/descope-js/compare/web-component-3.60.0...web-component-3.61.0) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+
+### Features
+
+* **wc:** support multiple consecutive sdk script runs ([#1378](https://github.com/descope/descope-js/issues/1378)) ([3c780f1](https://github.com/descope/descope-js/commit/3c780f1da6a66706214e437a7f8a27b3492f3cd4))
+
+## [3.60.0](https://github.com/descope/descope-js/compare/web-component-3.59.2...web-component-3.60.0) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+
+### Features
+
+* **wc:** add externalAuthRedirect to nativeOptions ([#1374](https://github.com/descope/descope-js/issues/1374)) RELEASE ([574897f](https://github.com/descope/descope-js/commit/574897f22de43340f33349b7bab1689993b7dc5e))
+
+## [3.59.2](https://github.com/descope/descope-js/compare/web-component-3.59.1...web-component-3.59.2) (2026-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.1`
+## [3.59.1](https://github.com/descope/descope-js/compare/web-component-3.59.0...web-component-3.59.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* **wc:** guard SAML/WS-Fed loadForm blocks with URL check RELEASE ([#1370](https://github.com/descope/descope-js/issues/1370)) ([1cfeaf8](https://github.com/descope/descope-js/commit/1cfeaf837ea7935620fcfe79047ed59513ab4f6b)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#543](https://github.com/descope/descope/issues/543)
+
+## [3.59.0](https://github.com/descope/descope-js/compare/web-component-3.58.4...web-component-3.59.0) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.0`
+
+### Features
+
+* change flow api version to v2 ([#1323](https://github.com/descope/descope-js/issues/1323)) ([756096e](https://github.com/descope/descope-js/commit/756096ecff1678686a2ad77f02428fb1bcf49535))
+* **wc:** add WS-Fed IDP form POST support with correct field names RELEASE ([#1368](https://github.com/descope/descope-js/issues/1368)) ([970ac83](https://github.com/descope/descope-js/commit/970ac8385dd8794d434a42b43b69c571d61758c4)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#536](https://github.com/descope/descope/issues/536)
+
+## [3.58.4](https://github.com/descope/descope-js/compare/web-component-3.58.3...web-component-3.58.4) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+
+### Bug Fixes
+
+* **wc:** add wsfedIdpStateId URL param support for WS-Fed IDP flow RELEASE ([#1367](https://github.com/descope/descope-js/issues/1367)) ([b146bec](https://github.com/descope/descope-js/commit/b146bec3670ae33974331731929482e884d23c85)), closes [descope/etc#15054](https://github.com/descope/etc/issues/15054) [descope/descope#532](https://github.com/descope/descope/issues/532)
+
+## [3.58.3](https://github.com/descope/descope-js/compare/web-component-3.58.2...web-component-3.58.3) (2026-04-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.1`
+## [3.58.2](https://github.com/descope/descope-js/compare/web-component-3.58.1...web-component-3.58.2) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+## [3.58.1](https://github.com/descope/descope-js/compare/web-component-3.58.0...web-component-3.58.1) (2026-04-06)
+
+
+### Bug Fixes
+
+* use canonical locale for components RELEASE ([#1360](https://github.com/descope/descope-js/issues/1360)) ([8a0c8f5](https://github.com/descope/descope-js/commit/8a0c8f5e0f2c5629a58553b08a97b3b755f9013c))
+
+## [3.58.0](https://github.com/descope/descope-js/compare/web-component-3.57.1...web-component-3.58.0) (2026-03-31)
+
+
+### Features
+
+* Add support for country-subdivision-city component ([#1354](https://github.com/descope/descope-js/issues/1354)) ([33c53cc](https://github.com/descope/descope-js/commit/33c53cc25ece1429c79bd29071b75a2e45ce3272))
+
+## [3.57.1](https://github.com/descope/descope-js/compare/web-component-3.57.0...web-component-3.57.1) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+
+### Bug Fixes
+
+* Extract exchangeError from URL in nativeResume for oauthWeb/sso ([#1349](https://github.com/descope/descope-js/issues/1349)) ([4e430bb](https://github.com/descope/descope-js/commit/4e430bb3db9b701f87fec3b496f4ba6ca9a12042))
+
+## [3.57.0](https://github.com/descope/descope-js/compare/web-component-3.56.0...web-component-3.57.0) (2026-03-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.46.0`
+
+### Features
+
+* Update flow scripts versions ([#1348](https://github.com/descope/descope-js/issues/1348)) ([2167d29](https://github.com/descope/descope-js/commit/2167d294007809fad0c8f4379cf1f6ee335ba22a))
+
+## [3.56.0](https://github.com/descope/descope-js/compare/web-component-3.55.4...web-component-3.56.0) (2026-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.0`
+
+### Features
+
+* **web-component:** add SRI support for web-component-ui loader RELEASE ([#1333](https://github.com/descope/descope-js/issues/1333)) ([ac04331](https://github.com/descope/descope-js/commit/ac04331642c4a88964eff4399334c36468cb47b4))
+
+## [3.55.4](https://github.com/descope/descope-js/compare/web-component-3.55.3...web-component-3.55.4) (2026-02-26)
+
+
+### Bug Fixes
+
+* retry on flow sdk calls ([#1338](https://github.com/descope/descope-js/issues/1338)) ([e966efa](https://github.com/descope/descope-js/commit/e966efae1f9eb2aaa7539dc2e71392570e5008ab))
+
+## [3.55.3](https://github.com/descope/descope-js/compare/web-component-3.55.2...web-component-3.55.3) (2026-02-17)
+
+## [3.55.2](https://github.com/descope/descope-js/compare/web-component-3.55.1...web-component-3.55.2) (2026-02-11)
+
+## [3.55.1](https://github.com/descope/descope-js/compare/web-component-3.55.0...web-component-3.55.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Prevent auto-focus in hidden inputs RELEASE ([#1325](https://github.com/descope/descope-js/issues/1325)) ([46a029b](https://github.com/descope/descope-js/commit/46a029bcd010b14133f2ff7804e4e4f927ea719e))
+
+## [3.55.0](https://github.com/descope/descope-js/compare/web-component-3.54.0...web-component-3.55.0) (2026-01-29)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `web-js-sdk` updated to version `1.45.0`
+
+### Features
+
+* **outbound:** add support for external identifier in flows and sdks ([#1313](https://github.com/descope/descope-js/issues/1313)) ([63877a8](https://github.com/descope/descope-js/commit/63877a8b9eb183467211fb41b8eef15d27a23730)), closes [descope/etc#13777](https://github.com/descope/etc/issues/13777)
+
+## [3.54.0](https://github.com/descope/descope-js/compare/web-component-3.53.4...web-component-3.54.0) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+
+### Features
+
+* Mobile only - defer polling when in background until in foreground ([#1319](https://github.com/descope/descope-js/issues/1319)) RELEASE ([995966b](https://github.com/descope/descope-js/commit/995966bf1e125663657d7313e1f7d9e4ead5cac6))
+
+## [3.53.4](https://github.com/descope/descope-js/compare/web-component-3.53.3...web-component-3.53.4) (2026-01-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.1`
+## [3.53.3](https://github.com/descope/descope-js/compare/web-component-3.53.2...web-component-3.53.3) (2026-01-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.0`
+## [3.53.2](https://github.com/descope/descope-js/compare/web-component-3.53.1...web-component-3.53.2) (2025-12-30)
+
+
+### Bug Fixes
+
+* Bridge actions (native) now trigger component state reset ([#1299](https://github.com/descope/descope-js/issues/1299)) RELEASE ([949d4ea](https://github.com/descope/descope-js/commit/949d4ea9ed3efceca84a8ecf6f3dfd18da82f460))
+
+## [3.53.1](https://github.com/descope/descope-js/compare/web-component-3.53.0...web-component-3.53.1) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+
+### Bug Fixes
+
+* issue 13444 - hidden conditional components should not be validated ([#1297](https://github.com/descope/descope-js/issues/1297)) ([7b309cd](https://github.com/descope/descope-js/commit/7b309cd587f0e911e6a7760eb779b98942590850))
+
+## [3.53.0](https://github.com/descope/descope-js/compare/web-component-3.52.4...web-component-3.53.0) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+
+### Features
+
+* Add Descope prefix to default logger ([#1291](https://github.com/descope/descope-js/issues/1291)) ([b40c871](https://github.com/descope/descope-js/commit/b40c87159f31bd6bd2e84839f219deacb5b12a35))
+
+## [3.52.4](https://github.com/descope/descope-js/compare/web-component-3.52.3...web-component-3.52.4) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.14.1`
+* `web-js-sdk` updated to version `1.42.0`
+## [3.52.3](https://github.com/descope/descope-js/compare/web-component-3.52.2...web-component-3.52.3) (2025-12-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.41.0`
+## [3.52.2](https://github.com/descope/descope-js/compare/web-component-3.52.1...web-component-3.52.2) (2025-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.2`
 ## [3.52.1](https://github.com/descope/descope-js/compare/web-component-3.52.0...web-component-3.52.1) (2025-12-03)
 
 ### Dependency Updates

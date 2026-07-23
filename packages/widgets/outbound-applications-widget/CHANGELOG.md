@@ -2,6 +2,340 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.6](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.5.5...outbound-applications-widget-0.5.6) (2026-07-22)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.4`
+## [0.5.5](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.5.4...outbound-applications-widget-0.5.5) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+* `web-component` updated to version `3.70.3`
+## [0.5.4](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.5.3...outbound-applications-widget-0.5.4) (2026-07-12)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.1`
+* `web-component` updated to version `3.70.2`
+## [0.5.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.5.2...outbound-applications-widget-0.5.3) (2026-07-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.2`
+* `web-component` updated to version `3.70.1`
+## [0.5.2](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.5.1...outbound-applications-widget-0.5.2) (2026-07-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.0`
+## [0.5.1](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.5.0...outbound-applications-widget-0.5.1) (2026-06-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.0`
+* `sdk-component-drivers` updated to version `0.14.0`
+* `web-component` updated to version `3.69.5`
+## [0.5.0](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.4.4...outbound-applications-widget-0.5.0) (2026-06-28)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.1`
+* `sdk-helpers` updated to version `0.9.0`
+* `sdk-mixins` updated to version `0.22.0`
+* `sdk-component-drivers` updated to version `0.13.1`
+* `web-component` updated to version `3.69.4`
+
+### Features
+
+* **user-profile-widget:** forward client/form flow inputs into widget flows ([#1424](https://github.com/descope/descope-js/issues/1424)) ([94de8ba](https://github.com/descope/descope-js/commit/94de8ba26b5c2c498d8ac1d5ce857aa86c330960)), closes [descope/etc#16443](https://github.com/descope/etc/issues/16443)
+
+## [0.4.4](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.4.3...outbound-applications-widget-0.4.4) (2026-06-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.0`
+* `web-component` updated to version `3.69.3`
+## [0.4.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.4.2...outbound-applications-widget-0.4.3) (2026-06-22)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.6`
+* `web-component` updated to version `3.69.2`
+## [0.4.2](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.4.1...outbound-applications-widget-0.4.2) (2026-06-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.5`
+* `web-component` updated to version `3.69.1`
+## [0.4.1](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.4.0...outbound-applications-widget-0.4.1) (2026-06-18)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.69.0`
+## [0.4.0](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.7...outbound-applications-widget-0.4.0) (2026-06-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.4`
+* `sdk-helpers` updated to version `0.8.0`
+* `sdk-mixins` updated to version `0.21.0`
+* `sdk-component-drivers` updated to version `0.13.0`
+* `web-component` updated to version `3.68.0`
+
+### Features
+
+* **widgets:** add widget localization ([#1403](https://github.com/descope/descope-js/issues/1403)) ([5c2375a](https://github.com/descope/descope-js/commit/5c2375ae42aad3e911a66bf17866d44909cff048))
+
+## [0.3.7](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.6...outbound-applications-widget-0.3.7) (2026-06-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.3`
+* `web-component` updated to version `3.67.1`
+## [0.3.6](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.5...outbound-applications-widget-0.3.6) (2026-06-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.20.0`
+* `web-component` updated to version `3.67.0`
+## [0.3.5](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.4...outbound-applications-widget-0.3.5) (2026-06-07)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.2`
+* `web-component` updated to version `3.66.1`
+## [0.3.4](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.3...outbound-applications-widget-0.3.4) (2026-06-04)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.19.0`
+* `web-component` updated to version `3.66.0`
+## [0.3.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.2...outbound-applications-widget-0.3.3) (2026-05-28)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.65.0`
+## [0.3.2](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.1...outbound-applications-widget-0.3.2) (2026-05-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.18.0`
+* `sdk-component-drivers` updated to version `0.12.0`
+* `web-component` updated to version `3.64.3`
+## [0.3.1](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.3.0...outbound-applications-widget-0.3.1) (2026-05-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.1`
+* `web-component` updated to version `3.64.2`
+## [0.3.0](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.39...outbound-applications-widget-0.3.0) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.50.0`
+* `sdk-mixins` updated to version `0.17.1`
+* `sdk-component-drivers` updated to version `0.11.0`
+* `web-component` updated to version `3.64.1`
+
+### Features
+
+* **widgets:** User profile multiple passkeys RELEASE ([#1386](https://github.com/descope/descope-js/issues/1386)) ([f798b20](https://github.com/descope/descope-js/commit/f798b20c52f6d9c3bb097b4948de15ddae9a0cd0))
+
+## [0.2.39](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.38...outbound-applications-widget-0.2.39) (2026-05-25)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.1`
+* `web-component` updated to version `3.64.0`
+## [0.2.38](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.37...outbound-applications-widget-0.2.38) (2026-05-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.49.0`
+* `sdk-mixins` updated to version `0.17.0`
+* `web-component` updated to version `3.63.0`
+## [0.2.37](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.36...outbound-applications-widget-0.2.37) (2026-05-14)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.4`
+* `sdk-mixins` updated to version `0.16.2`
+* `sdk-component-drivers` updated to version `0.10.0`
+* `web-component` updated to version `3.62.0`
+## [0.2.36](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.35...outbound-applications-widget-0.2.36) (2026-05-11)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.3`
+* `web-component` updated to version `3.61.0`
+## [0.2.35](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.34...outbound-applications-widget-0.2.35) (2026-05-06)
+
+
+### Bug Fixes
+
+* **outboundAppsWidget:** pass tenantId instead of tenant ([#1379](https://github.com/descope/descope-js/issues/1379)) ([c220182](https://github.com/descope/descope-js/commit/c2201822e557e6af49e3f4f2fc21cf4d25a4fee9))
+
+## [0.2.34](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.33...outbound-applications-widget-0.2.34) (2026-04-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.2`
+* `web-component` updated to version `3.60.0`
+## [0.2.33](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.32...outbound-applications-widget-0.2.33) (2026-04-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.1`
+* `web-component` updated to version `3.59.2`
+## [0.2.32](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.31...outbound-applications-widget-0.2.32) (2026-04-20)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.59.1`
+## [0.2.31](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.30...outbound-applications-widget-0.2.31) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.48.0`
+* `web-component` updated to version `3.59.0`
+## [0.2.30](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.29...outbound-applications-widget-0.2.30) (2026-04-20)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.2`
+* `web-component` updated to version `3.58.4`
+## [0.2.29](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.28...outbound-applications-widget-0.2.29) (2026-04-13)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.1`
+* `web-component` updated to version `3.58.3`
+## [0.2.28](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.27...outbound-applications-widget-0.2.28) (2026-04-12)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.7.0`
+* `sdk-mixins` updated to version `0.16.1`
+* `sdk-component-drivers` updated to version `0.9.1`
+* `web-component` updated to version `3.58.2`
+## [0.2.27](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.26...outbound-applications-widget-0.2.27) (2026-04-06)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.58.1`
+## [0.2.26](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.25...outbound-applications-widget-0.2.26) (2026-03-31)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.58.0`
+## [0.2.25](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.24...outbound-applications-widget-0.2.25) (2026-03-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.47.0`
+* `web-component` updated to version `3.57.1`
+## [0.2.24](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.23...outbound-applications-widget-0.2.24) (2026-03-23)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.46.0`
+* `web-component` updated to version `3.57.0`
+## [0.2.23](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.22...outbound-applications-widget-0.2.23) (2026-02-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.16.0`
+* `web-component` updated to version `3.56.0`
+## [0.2.22](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.21...outbound-applications-widget-0.2.22) (2026-02-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.4`
+## [0.2.21](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.20...outbound-applications-widget-0.2.21) (2026-02-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.3`
+## [0.2.20](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.19...outbound-applications-widget-0.2.20) (2026-02-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.2`
+## [0.2.19](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.18...outbound-applications-widget-0.2.19) (2026-02-01)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.55.1`
+## [0.2.18](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.17...outbound-applications-widget-0.2.18) (2026-01-29)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.45.0`
+* `sdk-helpers` updated to version `0.6.0`
+* `sdk-mixins` updated to version `0.15.1`
+* `sdk-component-drivers` updated to version `0.9.0`
+* `web-component` updated to version `3.55.0`
+## [0.2.17](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.16...outbound-applications-widget-0.2.17) (2026-01-21)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.44.0`
+* `web-component` updated to version `3.54.0`
+## [0.2.16](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.15...outbound-applications-widget-0.2.16) (2026-01-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.1`
+* `web-component` updated to version `3.53.4`
+## [0.2.15](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.14...outbound-applications-widget-0.2.15) (2026-01-01)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.43.0`
+* `web-component` updated to version `3.53.3`
+## [0.2.14](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.13...outbound-applications-widget-0.2.14) (2025-12-30)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.53.2`
+## [0.2.13](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.12...outbound-applications-widget-0.2.13) (2025-12-30)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.1`
+* `web-component` updated to version `3.53.1`
+## [0.2.12](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.11...outbound-applications-widget-0.2.12) (2025-12-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.15.0`
+* `web-component` updated to version `3.53.0`
+
+### Bug Fixes
+
+* Add tenantId to OutboundAppsWidget fetch of apps with tokens ([#1294](https://github.com/descope/descope-js/issues/1294)) ([c520033](https://github.com/descope/descope-js/commit/c520033fa3383ab1c5fc9b2d50503949b0bd7ea6))
+
+## [0.2.11](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.10...outbound-applications-widget-0.2.11) (2025-12-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.42.0`
+* `sdk-mixins` updated to version `0.14.1`
+* `web-component` updated to version `3.52.4`
+## [0.2.10](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.9...outbound-applications-widget-0.2.10) (2025-12-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.41.0`
+* `web-component` updated to version `3.52.3`
+## [0.2.9](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.8...outbound-applications-widget-0.2.9) (2025-12-04)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.40.2`
+* `web-component` updated to version `3.52.2`
 ## [0.2.8](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.2.7...outbound-applications-widget-0.2.8) (2025-12-03)
 
 ### Dependency Updates
