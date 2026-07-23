@@ -58,11 +58,15 @@ const response = await sdk.outbound.connect('app-id', {
 For multi-tenant applications, you can specify tenant-level connections:
 
 ```js
-const response = await sdk.outbound.connect('app-id', {
-  redirectUrl: 'https://your-app.com/callback',
-  scopes: ['email', 'profile'],
-  externalIdentifier: 'external-user-id-123',
-  tenantId: 'tenant-123',
-  tenantLevel: true,
-}, 'user-session-token');
+const response = await sdk.outbound.connect(
+  'app-id',
+  {
+    redirectUrl: 'https://your-app.com/callback',
+    scopes: ['email', 'profile'],
+    externalIdentifier: 'external-user-id-123',
+    tenantId: 'tenant-123',
+    tenantLevel: true,
+  },
+  'user-session-token',
+);
 ```

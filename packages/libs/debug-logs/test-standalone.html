@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug Logs Standalone Test</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 10px;
+      }
+
+      h2 {
+        color: #555;
+        margin-top: 20px;
+      }
+
+      .config-section {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+
+      .config-section pre {
+        background: #2d2d2d;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 14px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      button:active {
+        background-color: #3d8b40;
+      }
+
+      button.disabled-test {
+        background-color: #9e9e9e;
+        opacity: 0.6;
+      }
+
+      button.disabled-test:hover {
+        background-color: #9e9e9e;
+      }
+
+      .danger {
+        background-color: #f44336;
+      }
+
+      .danger:hover {
+        background-color: #da190b;
+      }
+
+      .toggle-enabled {
+        background-color: #ff9800;
+      }
+
+      .toggle-enabled:hover {
+        background-color: #fb8c00;
+      }
+
+      .toggle-disabled {
+        background-color: #2196f3;
+      }
+
+      .toggle-disabled:hover {
+        background-color: #1976d2;
+      }
+
+      .test-group {
+        border-left: 4px solid #4caf50;
+        padding-left: 15px;
+        margin: 15px 0;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .status.active {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .status.inactive {
+        background-color: #999;
+        color: white;
+      }
+
+      input[type='text'] {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 300px;
+      }
+
+      #mutation-target {
+        min-height: 100px;
+        border: 2px dashed #ccc;
+        padding: 20px;
+        margin: 10px 0;
+        border-radius: 4px;
+        background: #fafafa;
+      }
+
+      .log-output {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 15px;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        margin: 10px 0;
+      }
+
+      .warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        color: #856404;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 15px 0;
+      }
+
+      .info {
+        background-color: #d1ecf1;
+        border: 1px solid #17a2b8;
+        color: #0c5460;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 15px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>🧪 Debug Logs Standalone Test</h1>
+      <div class="info">
+        <strong>Info:</strong> This page tests the @descope/debug-logs package
+        in isolation. Open your browser's DevTools Console and Network tabs to
+        see the telemetry in action. Check CloudWatch RUM console for recorded
+        events.
+      </div>
+
+      <div class="warning">
+        <strong>⚠️ Important:</strong> You need to configure your AWS CloudWatch
+        RUM credentials below. The fields below are pre-populated from
+        <code>packages/libs/debug-logs/.env</code>. If they're empty or you
+        haven't created that file, see the package README. Without valid
+        credentials, the RUM client will fail silently (by design).
+      </div>
+      <div
+        id="env-missing-banner"
+        class="warning"
+        style="
+          display: none;
+          background: #f8d7da;
+          border-color: #f5c2c7;
+          color: #842029;
+        "
+      ></div>
+    </div>
+
+    <div class="container">
+      <h2>📋 Configuration</h2>
+      <div class="config-section">
+        <h3>RUM Configuration</h3>
+        <label>
+          Application ID:
+          <input
+            type="text"
+            id="appId"
+            placeholder="Enter AWS RUM Application ID"
+          />
+        </label>
+        <br />
+        <label>
+          Application Version:
+          <input
+            type="text"
+            id="appVersion"
+            placeholder="1.0.0"
+            value="1.0.0"
+          />
+        </label>
+        <br />
+        <label>
+          Identity Pool ID:
+          <input
+            type="text"
+            id="identityPoolId"
+            placeholder="eu-west-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          />
+        </label>
+        <br />
+        <label>
+          Guest Role ARN:
+          <input
+            type="text"
+            id="guestRoleArn"
+            placeholder="Leave empty for enhanced flow (recommended)"
+          />
+        </label>
+        <br />
+        <label>
+          Region:
+          <input type="text" id="region" placeholder="eu-west-1" />
+        </label>
+      </div>
+
+      <div class="config-section">
+        <h3>Telemetry Configuration</h3>
+        <pre>
+{
+  "console": {
+    "levels": ["log", "warn", "error"]
+  },
+  "network": {
+    "urlFilter": "^https://api\\."
+  },
+  "dom": {
+    "rootElement": "#mutation-target",
+    "throttleMs": 2000
+  },
+  "navigation": true
+}</pre
+        >
+      </div>
+
+      <button onclick="initializeTelemetry()">🚀 Initialize Telemetry</button>
+      <button onclick="shutdownTelemetry()" class="danger">
+        🛑 Shutdown Telemetry
+      </button>
+      <button
+        onclick="toggleTelemetry()"
+        id="toggle-btn"
+        class="toggle-enabled"
+        disabled
+      >
+        ⏸️ Disable
+      </button>
+      <span class="status inactive" id="telemetry-status">Inactive</span>
+    </div>
+
+    <div class="container">
+      <h2>🧪 Test Cases</h2>
+
+      <div class="test-group">
+        <h3>1. Console Logging Tests</h3>
+        <p>
+          Test different console log levels. Only log, warn, and error should be
+          captured.
+        </p>
+        <button onclick="testConsole('log')">console.log()</button>
+        <button onclick="testConsole('warn')">console.warn()</button>
+        <button onclick="testConsole('error')">console.error()</button>
+        <button onclick="testConsole('info')">console.info() [filtered]</button>
+        <button onclick="testConsole('debug')">
+          console.debug() [filtered]
+        </button>
+      </div>
+
+      <div class="test-group">
+        <h3>2. Network Request Tests</h3>
+        <p>
+          Test fetch requests. Only URLs matching the filter pattern should be
+          captured.
+        </p>
+        <button onclick="testFetch('https://api.github.com/users/octocat')">
+          Fetch (matches filter)
+        </button>
+        <button
+          onclick="testFetch('https://jsonplaceholder.typicode.com/posts/1')"
+        >
+          Fetch (no match)
+        </button>
+        <button onclick="testFetch('https://api.example.com/data')">
+          Fetch API (matches)
+        </button>
+      </div>
+
+      <div class="test-group">
+        <h3>3. Navigation Tests</h3>
+        <p>
+          Test SPA navigation events (pushState, replaceState, hash changes).
+        </p>
+        <button onclick="testNavigation('push')">history.pushState()</button>
+        <button onclick="testNavigation('replace')">
+          history.replaceState()
+        </button>
+        <button onclick="testNavigation('hash')">Hash change</button>
+        <button onclick="testNavigation('back')">Go back</button>
+      </div>
+
+      <div class="test-group">
+        <h3>4. DOM Mutation Tests</h3>
+        <p>
+          Test DOM mutations within the scoped element. Throttled to 2 seconds.
+        </p>
+        <div id="mutation-target">
+          <p>Target element for DOM mutations</p>
+          <div id="dynamic-content"></div>
+        </div>
+        <button onclick="testDomMutation('add')">Add Element</button>
+        <button onclick="testDomMutation('modify')">Modify Text</button>
+        <button onclick="testDomMutation('remove')">Remove Element</button>
+        <button onclick="testDomMutation('batch')">Batch Changes (10)</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>📊 Local Console Output</h2>
+      <div class="log-output" id="local-log">
+        <p style="color: #888">Waiting for actions...</p>
+      </div>
+      <button onclick="clearLocalLog()">Clear Log</button>
+    </div>
+
+    <!-- Generated at dev-server start time from .env (gitignored). Loaded as
+         a regular script so it sets window.__demoEnv before the module below
+         runs. If the file is missing or empty, the form stays blank and a
+         warning is shown. See packages/libs/debug-logs/README.md. -->
+    <script
+      src="./dist/demo-env.js"
+      onerror="window.__demoEnvLoadFailed = true"
+    ></script>
+
+    <script type="module">
+      import TelemetryManager from './dist/index.esm.js';
+
+      const ENV_KEYS = [
+        ['DESCOPE_TELEMETRY_APPLICATION_ID', 'appId'],
+        ['DESCOPE_TELEMETRY_IDENTITY_POOL_ID', 'identityPoolId'],
+        ['DESCOPE_TELEMETRY_REGION', 'region'],
+        ['DESCOPE_TELEMETRY_GUEST_ROLE_ARN', 'guestRoleArn'],
+      ];
+
+      const env = window.__demoEnv || {};
+      const missing = [];
+      ENV_KEYS.forEach(([envKey, fieldId]) => {
+        const value = env[envKey] || '';
+        const optional = envKey === 'DESCOPE_TELEMETRY_GUEST_ROLE_ARN';
+        if (value) {
+          document.getElementById(fieldId).value = value;
+        } else if (!optional) {
+          missing.push(envKey);
+        }
+      });
+
+      if (window.__demoEnvLoadFailed || missing.length > 0) {
+        const banner = document.getElementById('env-missing-banner');
+        const reason = window.__demoEnvLoadFailed
+          ? 'dist/demo-env.js was not loaded — has `pnpm dev` run since you last edited .env?'
+          : `Missing in .env: ${missing.join(', ')}`;
+        banner.innerHTML =
+          '<strong>⚠️ Missing env values.</strong> ' +
+          reason +
+          ' See <code>packages/libs/debug-logs/README.md</code>.';
+        banner.style.display = 'block';
+        console.warn(
+          '[debug-logs demo] Missing env values:',
+          missing.length ? missing : ['demo-env.js failed to load'],
+        );
+      }
+
+      let telemetryManager = null;
+
+      window.initializeTelemetry = function () {
+        const appId = document.getElementById('appId').value;
+        const appVersion = document.getElementById('appVersion').value;
+        const identityPoolId = document.getElementById('identityPoolId').value;
+        const guestRoleArn = document.getElementById('guestRoleArn').value;
+        const region = document.getElementById('region').value;
+
+        if (!appId) {
+          alert(
+            'Please fill in Application ID and Identity Pool ID at minimum',
+          );
+          return;
+        }
+
+        const config = {
+          enabled: true,
+          rumConfig: {
+            applicationId: appId,
+            identityPoolId: identityPoolId,
+            ...(guestRoleArn && { guestRoleArn }),
+            region: region,
+            sessionSampleRate: 1.0,
+          },
+          capture: {
+            console: {
+              levels: ['log', 'warn', 'error'],
+            },
+            network: {
+              urlFilter: /^https:\/\/api\./,
+            },
+            dom: {
+              rootElement: '#mutation-target',
+              throttleMs: 2000,
+            },
+            navigation: true,
+          },
+        };
+
+        const context = {
+          projectId: 'test-project-123',
+          flowId: 'standalone-test-flow',
+          version: appVersion || undefined,
+        };
+
+        try {
+          // Shutdown existing instance if any
+          if (telemetryManager) {
+            telemetryManager.shutdown();
+          }
+
+          // Create new instance
+          telemetryManager = new TelemetryManager(config, context);
+
+          isEnabled = true;
+          document.getElementById('toggle-btn').disabled = false;
+          updateToggleButton();
+          updateTestButtons();
+          logLocal('✅ Telemetry initialized successfully');
+        } catch (error) {
+          logLocal(`❌ Failed to initialize: ${error.message}`, 'error');
+        }
+      };
+
+      window.shutdownTelemetry = function () {
+        if (!telemetryManager) {
+          logLocal('⚠️ No telemetry instance to shutdown', 'warn');
+          return;
+        }
+
+        try {
+          telemetryManager.shutdown();
+          telemetryManager = null;
+          isEnabled = true;
+          document.getElementById('telemetry-status').textContent = 'Inactive';
+          document.getElementById('telemetry-status').className =
+            'status inactive';
+          document.getElementById('toggle-btn').disabled = true;
+          updateTestButtons();
+          logLocal('🛑 Telemetry shutdown');
+        } catch (error) {
+          logLocal(`❌ Failed to shutdown: ${error.message}`, 'error');
+        }
+      };
+
+      let isEnabled = true;
+
+      function updateTestButtons() {
+        const isActive = telemetryManager && isEnabled;
+        const testButtons = document.querySelectorAll('.test-group button');
+
+        testButtons.forEach((button) => {
+          if (isActive) {
+            button.classList.remove('disabled-test');
+          } else {
+            button.classList.add('disabled-test');
+          }
+        });
+      }
+
+      window.toggleTelemetry = function () {
+        if (!telemetryManager) {
+          alert('Please initialize telemetry first');
+          return;
+        }
+
+        try {
+          if (isEnabled) {
+            telemetryManager.disable();
+            isEnabled = false;
+            logLocal('⏸️ Telemetry disabled');
+          } else {
+            telemetryManager.enable();
+            isEnabled = true;
+            logLocal('▶️ Telemetry enabled');
+          }
+          updateToggleButton();
+          updateTestButtons();
+        } catch (error) {
+          logLocal(`❌ Failed to toggle: ${error.message}`, 'error');
+        }
+      };
+
+      function updateToggleButton() {
+        const btn = document.getElementById('toggle-btn');
+        const status = document.getElementById('telemetry-status');
+
+        if (isEnabled) {
+          btn.textContent = '⏸️ Disable';
+          btn.className = 'toggle-enabled';
+          status.textContent = 'Active';
+          status.className = 'status active';
+        } else {
+          btn.textContent = '▶️ Enable';
+          btn.className = 'toggle-disabled';
+          status.textContent = 'Disabled';
+          status.className = 'status inactive';
+        }
+      }
+
+      window.testConsole = function (level) {
+        const message = `Test ${level} message at ${new Date().toLocaleTimeString()}`;
+        console[level](message, { extra: 'data', timestamp: Date.now() });
+        logLocal(`Console.${level}: ${message}`);
+      };
+
+      window.testFetch = async function (url) {
+        logLocal(`Fetching: ${url}`);
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          logLocal(`✅ Fetch successful: ${response.status}`);
+        } catch (error) {
+          logLocal(`❌ Fetch failed: ${error.message}`, 'error');
+        }
+      };
+
+      window.testNavigation = function (type) {
+        const timestamp = Date.now();
+        switch (type) {
+          case 'push':
+            history.pushState({ test: timestamp }, '', `#/test/${timestamp}`);
+            logLocal(`Navigation: pushState to #/test/${timestamp}`);
+            break;
+          case 'replace':
+            history.replaceState(
+              { test: timestamp },
+              '',
+              `#/replace/${timestamp}`,
+            );
+            logLocal(`Navigation: replaceState to #/replace/${timestamp}`);
+            break;
+          case 'hash':
+            window.location.hash = `#hash-${timestamp}`;
+            logLocal(`Navigation: hash change to #hash-${timestamp}`);
+            break;
+          case 'back':
+            history.back();
+            logLocal('Navigation: history.back()');
+            break;
+        }
+      };
+
+      let domCounter = 0;
+      window.testDomMutation = function (type) {
+        const target = document.getElementById('dynamic-content');
+        switch (type) {
+          case 'add':
+            const newEl = document.createElement('p');
+            newEl.textContent = `Added element ${++domCounter}`;
+            newEl.id = `el-${domCounter}`;
+            target.appendChild(newEl);
+            logLocal(`DOM: Added element #el-${domCounter}`);
+            break;
+          case 'modify':
+            if (target.children.length > 0) {
+              target.children[0].textContent = `Modified at ${new Date().toLocaleTimeString()}`;
+              logLocal('DOM: Modified text content');
+            } else {
+              logLocal('DOM: No elements to modify', 'warn');
+            }
+            break;
+          case 'remove':
+            if (target.children.length > 0) {
+              const removed = target.children[0];
+              removed.remove();
+              logLocal(`DOM: Removed element ${removed.id}`);
+            } else {
+              logLocal('DOM: No elements to remove', 'warn');
+            }
+            break;
+          case 'batch':
+            for (let i = 0; i < 10; i++) {
+              const el = document.createElement('span');
+              el.textContent = `Batch ${i} `;
+              target.appendChild(el);
+            }
+            logLocal('DOM: Added 10 elements (should throttle to 1 event)');
+            break;
+        }
+      };
+
+      window.logLocal = function (message, level = 'info') {
+        const logDiv = document.getElementById('local-log');
+        const timestamp = new Date().toLocaleTimeString();
+        const color =
+          level === 'error'
+            ? '#f48771'
+            : level === 'warn'
+              ? '#dcdcaa'
+              : '#4ec9b0';
+        logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+
+      window.clearLocalLog = function () {
+        document.getElementById('local-log').innerHTML =
+          '<p style="color: #888;">Log cleared...</p>';
+      };
+
+      // Log ready state
+      logLocal(
+        '🎯 Test page loaded. Configure RUM and click "Initialize Telemetry"',
+      );
+      updateTestButtons();
+    </script>
+  </body>
+</html>

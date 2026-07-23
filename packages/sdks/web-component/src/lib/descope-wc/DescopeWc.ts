@@ -439,6 +439,19 @@ class DescopeWc extends BaseDescopeWc {
       }),
       { forceUpdate: true },
     );
+
+    // Track screenId & executionId changes for telemetry
+    this.flowState?.subscribe(
+      ({ screenId, executionId }) => {
+        try {
+          this.updateTelemetryContext({ screenId, executionId });
+        } catch (error) {
+          // Fail silently - telemetry errors should never break the web-component
+          this.logger?.error('Error updating telemetry screenId:', error);
+        }
+      },
+      (state) => ({ screenId: state.screenId, executionId: state.executionId }),
+    );
   }
 
   // because the screen does not re-render,
