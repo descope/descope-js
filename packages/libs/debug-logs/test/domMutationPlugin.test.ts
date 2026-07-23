@@ -344,6 +344,7 @@ describe('DomMutationPlugin', () => {
       plugin = new DomMutationPlugin({
         rootElement: '#snapshot-target',
         throttleMs: 50,
+        includeText: true,
       });
       plugin.load(mockContext);
 
@@ -367,6 +368,7 @@ describe('DomMutationPlugin', () => {
       plugin = new DomMutationPlugin({
         rootElement: '#state-target',
         throttleMs: 50,
+        includeText: true,
       });
       plugin.load(mockContext);
 
@@ -378,6 +380,28 @@ describe('DomMutationPlugin', () => {
       const call = mockRecord.mock.calls[0][1];
       expect(call.rootElementHTML).toContain('Modified');
       expect(call.rootElementHTML).not.toContain('Original');
+    });
+
+    it('should strip text nodes by default (structure-only snapshot)', async () => {
+      createTestElement('strip-target', '<p>Existing text</p>');
+      plugin = new DomMutationPlugin({
+        rootElement: '#strip-target',
+        throttleMs: 50,
+      });
+      plugin.load(mockContext);
+
+      const container = document.getElementById('strip-target')!;
+      const div = document.createElement('div');
+      div.textContent = 'user@example.com';
+      container.appendChild(div);
+
+      await waitFor(100);
+
+      const call = mockRecord.mock.calls[0][1];
+      expect(call.rootElementHTML).not.toContain('user@example.com');
+      expect(call.rootElementHTML).not.toContain('Existing text');
+      expect(call.rootElementHTML).toContain('<p>');
+      expect(call.rootElementHTML).toContain('<div>');
     });
 
     it('should omit rootElementHTML when only attribute changes happened', async () => {
@@ -408,6 +432,7 @@ describe('DomMutationPlugin', () => {
         rootElement: '#truncate-target',
         throttleMs: 50,
         maxHtmlLength: 100,
+        includeText: true,
       });
       plugin.load(mockContext);
 
@@ -428,6 +453,7 @@ describe('DomMutationPlugin', () => {
         rootElement: '#no-truncate-target',
         throttleMs: 50,
         maxHtmlLength: 1000,
+        includeText: true,
       });
       plugin.load(mockContext);
 
@@ -447,6 +473,7 @@ describe('DomMutationPlugin', () => {
       plugin = new DomMutationPlugin({
         rootElement: '#default-max-target',
         throttleMs: 50,
+        includeText: true,
       });
       plugin.load(mockContext);
 

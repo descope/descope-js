@@ -4,6 +4,36 @@ export interface DomMutationPluginConfig {
   rootElement?: string | HTMLElement;
   throttleMs?: number;
   maxHtmlLength?: number;
+  /**
+   * When false (DEFAULT), the DOM snapshot strips all text nodes — only tag
+   * hierarchy + attributes are recorded. Prevents rendered content leaking
+   * into RUM (e.g. an error screen echoing an email, one-time recovery codes,
+   * OTP flow copy). Structure is enough to debug most UI issues.
+   *
+   * Set to true only when you need to see rendered text for a specific
+   * support session, and confirm no sensitive text lives in the observed
+   * root at that time.
+   */
+  includeText?: boolean;
+}
+
+/**
+ * Strip every text node from a cloned element tree. Keeps tags, attributes,
+ * and structure — throws away rendered copy. Used when `includeText` is
+ * false (the default) so error messages, one-time codes, and displayed
+ * emails don't reach RUM.
+ */
+function stripTextNodes(root: HTMLElement): HTMLElement {
+  const clone = root.cloneNode(true) as HTMLElement;
+  const walker = document.createTreeWalker(clone, NodeFilter.SHOW_TEXT);
+  const toRemove: Node[] = [];
+  let node = walker.nextNode();
+  while (node) {
+    toRemove.push(node);
+    node = walker.nextNode();
+  }
+  toRemove.forEach((n) => n.parentNode?.removeChild(n));
+  return clone;
 }
 
 // AWS RUM has a 256KB limit for the entire event payload
@@ -24,6 +54,7 @@ export class DomMutationPlugin implements Plugin {
   private flushTimeout: ReturnType<typeof setTimeout> | null = null;
   private throttleMs: number;
   private maxHtmlLength: number;
+  private includeText: boolean;
   private config: DomMutationPluginConfig;
   private rootElement: HTMLElement = document.body;
 
@@ -31,6 +62,7 @@ export class DomMutationPlugin implements Plugin {
     this.config = config;
     this.throttleMs = config.throttleMs || 100;
     this.maxHtmlLength = config.maxHtmlLength ?? DEFAULT_MAX_HTML_LENGTH;
+    this.includeText = config.includeText === true;
   }
 
   load(context: PluginContext): void {
@@ -172,10 +204,16 @@ export class DomMutationPlugin implements Plugin {
 
       // Only serialize the (potentially heavy) HTML snapshot when the DOM
       // shape actually changed. Pure attribute/text edits don't need it.
+      // By default we strip text nodes so rendered copy (emails, one-time
+      // codes, error messages) never reaches RUM. Set config.includeText =
+      // true only during a controlled support session.
       const hasStructuralChange = addedNodes > 0 || removedNodes > 0;
       let rootElementHTML = '';
       if (hasStructuralChange) {
-        const raw = this.rootElement.innerHTML;
+        const source = this.includeText
+          ? this.rootElement
+          : stripTextNodes(this.rootElement);
+        const raw = source.innerHTML;
         rootElementHTML =
           raw.length > this.maxHtmlLength
             ? raw.substring(0, this.maxHtmlLength - 20) + '... [truncated]'

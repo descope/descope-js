@@ -256,11 +256,17 @@ export const telemetryMixin = createSingletonMixin(
       #resolveCapture(
         beCapture: NonNullable<Config['telemetry']>['capture'],
       ): NonNullable<Config['telemetry']>['capture'] {
+        // `network: true` = capture ALL network traffic. We used to default to
+        // `{ urlFilter: [] }` but the two network paths had inverted semantics
+        // for the empty array: the custom NetworkPlugin treated it as
+        // "capture everything", while AWS RUM's built-in HTTP telemetry
+        // treated it as "capture nothing". `true` is consistent — both paths
+        // capture all by default. BE can override with a narrow filter later.
         const domSetting = beCapture?.dom;
         if (domSetting === false) {
           return {
             console: true,
-            network: { urlFilter: [] },
+            network: true,
             navigation: true,
             ...beCapture,
             dom: false,
@@ -268,7 +274,7 @@ export const telemetryMixin = createSingletonMixin(
         }
         return {
           console: true,
-          network: { urlFilter: [] },
+          network: true,
           navigation: true,
           ...beCapture,
           dom: {

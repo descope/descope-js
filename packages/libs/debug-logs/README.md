@@ -66,20 +66,20 @@ manager.shutdown(); // tear down permanently
 
 ## Configuration Reference
 
-| Key                           | Description                                            |
-| ----------------------------- | ------------------------------------------------------ |
-| `enabled`                     | Gatekeeper. If `false`, nothing initializes.           |
-| `rumConfig.applicationId`     | CloudWatch RUM application ID.                         |
-| `rumConfig.identityPoolId`    | Cognito identity pool used by RUM.                     |
-| `rumConfig.sessionSampleRate` | 0-1 float controlling sampling.                        |
-| `rumConfig.endpoint`          | Optional custom ingestion endpoint.                    |
-| `capture.console`             | `false`, `true`, or `{ levels: ConsoleLevel[] }`.      |
-| `capture.network`             | `false`, `true`, or `{ urlFilter, maxHeaderLength }`.  |
-| `capture.navigation`          | Toggle SPA navigation plugin.                          |
-| `capture.dom`                 | `false`, `true`, or `{ rootElement, throttleMs }`.     |
-| `context.projectId`           | Injected into session attributes.                      |
-| `context.flowId`              | Additional session dimension.                          |
-| `context.version`             | Overrides SDK version sent to RUM (defaults to 1.0.0). |
+| Key                           | Description                                                                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`                     | Gatekeeper. If `false`, nothing initializes.                                                                                                                                                            |
+| `rumConfig.applicationId`     | CloudWatch RUM application ID.                                                                                                                                                                          |
+| `rumConfig.identityPoolId`    | Cognito identity pool used by RUM.                                                                                                                                                                      |
+| `rumConfig.sessionSampleRate` | 0-1 float controlling sampling.                                                                                                                                                                         |
+| `rumConfig.endpoint`          | Optional custom ingestion endpoint.                                                                                                                                                                     |
+| `capture.console`             | `false`, `true`, or `{ levels: ConsoleLevel[] }`.                                                                                                                                                       |
+| `capture.network`             | `false`, `true`, or `{ urlFilter, maxHeaderLength }`.                                                                                                                                                   |
+| `capture.navigation`          | Toggle SPA navigation plugin.                                                                                                                                                                           |
+| `capture.dom`                 | `false`, `true`, or `{ rootElement, throttleMs, maxHtmlLength, includeText }`. `includeText` defaults to `false` — snapshots record tag structure only, no text nodes. See _DOM mutation plugin_ below. |
+| `context.projectId`           | Injected into session attributes.                                                                                                                                                                       |
+| `context.flowId`              | Additional session dimension.                                                                                                                                                                           |
+| `context.version`             | Overrides SDK version sent to RUM (defaults to 1.0.0).                                                                                                                                                  |
 
 ## Built-in Plugins
 
@@ -104,6 +104,22 @@ manager.shutdown(); // tear down permanently
   payloads.
 - Captures truncated HTML snapshots so investigators can see the exact DOM
   fragment involved.
+
+#### Structure-only capture (default)
+
+By default the DOM snapshot **strips all text nodes** — only tag hierarchy and
+attributes are recorded. This prevents rendered content from leaking into RUM
+in an auth flow that may show:
+
+- an error screen echoing an email address (`"No such account for user@…"`)
+- one-time recovery codes displayed after MFA setup
+- OTP flow copy or magic-link "check your inbox at foo@bar.com" text
+
+Structure alone is enough to debug most UI issues (which element changed,
+class toggles, layout shape). If you need the rendered text for a specific
+support session — and you've confirmed no sensitive text lives in the
+observed root at that time — set `capture.dom.includeText: true` explicitly.
+Leave it off in production.
 
 ### Network plugin
 
