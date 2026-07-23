@@ -22,7 +22,7 @@
     "build": "rimraf dist && rollup -c",
     "dev": "rollup -c rollup.config.dev.mjs --watch",
     "test": "jest",
-    "lint": "eslint '+(src|test)/**/*.ts'"
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint '+(src|test)/**/*.ts'"
   },
   "license": "MIT",
   "files": [
