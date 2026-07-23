@@ -32,8 +32,12 @@ export type User = {
   name: string;
   email: string;
   phone: string;
+  recoveryEmail: string;
+  recoveryPhone: string;
   verifiedEmail: boolean;
   verifiedPhone: boolean;
+  verifiedRecoveryEmail: boolean;
+  verifiedRecoveryPhone: boolean;
   roleNames: string[];
   userTenants: AssociatedTenant[];
   status: UserStatus;
@@ -82,6 +86,8 @@ export type UpdateUserConfig = {
   loginId?: string;
   email?: string;
   phone?: string;
+  recoveryEmail?: string;
+  recoveryPhone?: string;
   displayName?: string;
   roles?: string[];
   customAttributes?: CustomAttributes;
