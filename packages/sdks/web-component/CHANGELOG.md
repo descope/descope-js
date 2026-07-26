@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.70.5](https://github.com/descope/descope-js/compare/web-component-3.70.4...web-component-3.70.5) (2026-07-26)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.23.2`
+## [3.70.4](https://github.com/descope/descope-js/compare/web-component-3.70.3...web-component-3.70.4) (2026-07-22)
+
+
+### Bug Fixes
+
+* **web-component:** refresh captcha token on abandoned OAuth popup RELEASE ([#1443](https://github.com/descope/descope-js/issues/1443)) ([babd53b](https://github.com/descope/descope-js/commit/babd53b740aa298afebd5a0167e36c1c9f20bc7a)), closes [descope/etc#17057](https://github.com/descope/etc/issues/17057)
+
+## [3.70.3](https://github.com/descope/descope-js/compare/web-component-3.70.2...web-component-3.70.3) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+
+### Bug Fixes
+
+* **web-component:** stop flow polling loop on nonce validation error ([#1437](https://github.com/descope/descope-js/issues/1437)) ([f8bdf28](https://github.com/descope/descope-js/commit/f8bdf285821c5ab20ccb078884fc47eed56885c0)), closes [descope/etc#16663](https://github.com/descope/etc/issues/16663)
+
 ## [3.70.2](https://github.com/descope/descope-js/compare/web-component-3.70.1...web-component-3.70.2) (2026-07-12)
 
 ### Dependency Updates

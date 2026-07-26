@@ -1,8 +1,24 @@
 import { LOGGED_IN_INDICATOR_KEY } from '../src/enhancers/withLoggedInIndicator/constants';
 import { hasLoginIndicator } from '../src/enhancers/withLoggedInIndicator/helpers';
+import { setCustomStorage } from '../src/enhancers/helpers';
 import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue } from './testUtils';
+
+// In-memory customStorage bag that is NOT backed by window.localStorage —
+// mirrors a consent-gated / sessionStorage adapter a customer might pass.
+const makeBag = () => {
+  const store = new Map<string, string>();
+  return {
+    getItem: jest.fn((k: string) => store.get(k) ?? null),
+    setItem: jest.fn((k: string, v: string) => {
+      store.set(k, v);
+    }),
+    removeItem: jest.fn((k: string) => {
+      store.delete(k);
+    }),
+  };
+};
 
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
@@ -204,6 +220,49 @@ describe('withLoggedInIndicator', () => {
     });
 
     it('returns false when neither key is set', () => {
+      expect(hasLoginIndicator()).toBe(false);
+    });
+  });
+
+  // Regression for the customStorage bug: the DSLI indicator must live in real
+  // localStorage regardless of a customStorage adapter, otherwise a returning
+  // user whose adapter is sessionStorage-backed is misread as a fresh device.
+  describe('with customStorage', () => {
+    afterEach(() => {
+      setCustomStorage(undefined);
+    });
+
+    it('writes DSLI to real localStorage, not to the customStorage bag', async () => {
+      const bag = makeBag();
+      const fetchMock = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(authInfo));
+      global.fetch = fetchMock;
+
+      const sdk = createSdk({ projectId: 'pid', customStorage: bag });
+      await sdk.httpClient.get('1/2/3');
+      await new Promise(process.nextTick);
+
+      expect(localStorage.getItem(LOGGED_IN_INDICATOR_KEY)).toEqual(
+        String(authInfo.sessionExpiration),
+      );
+      expect(bag.setItem).not.toHaveBeenCalledWith(
+        LOGGED_IN_INDICATOR_KEY,
+        expect.anything(),
+      );
+    });
+
+    it('reads DSLI from real localStorage even when customStorage is set', () => {
+      const bag = makeBag();
+      createSdk({ projectId: 'pid', customStorage: bag }); // installs the singleton
+      localStorage.setItem(LOGGED_IN_INDICATOR_KEY, '1');
+      expect(hasLoginIndicator()).toBe(true);
+    });
+
+    it('does not read DSLI from the customStorage bag', () => {
+      const bag = makeBag();
+      bag.setItem(LOGGED_IN_INDICATOR_KEY, '1'); // only in the bag, not real localStorage
+      createSdk({ projectId: 'pid', customStorage: bag });
       expect(hasLoginIndicator()).toBe(false);
     });
   });

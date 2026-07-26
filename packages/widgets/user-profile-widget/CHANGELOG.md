@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.14.5...user-profile-widget-0.14.6) (2026-07-26)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.5`
+* `sdk-mixins` updated to version `0.23.2`
+* `sdk-component-drivers` updated to version `0.14.1`
+
+### Bug Fixes
+
+* **user-profile-widget:** rebuild preloaded modal flow on value change RELEASE ([#1447](https://github.com/descope/descope-js/issues/1447)) ([3bcebc1](https://github.com/descope/descope-js/commit/3bcebc1ea8255cf2f2940cdef48babcf3d04fb86)), closes [descope/etc#17202](https://github.com/descope/etc/issues/17202)
+
+## [0.14.5](https://github.com/descope/descope-js/compare/user-profile-widget-0.14.4...user-profile-widget-0.14.5) (2026-07-22)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.4`
+## [0.14.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.14.3...user-profile-widget-0.14.4) (2026-07-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.3`
+* `web-component` updated to version `3.70.3`
 ## [0.14.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.14.2...user-profile-widget-0.14.3) (2026-07-12)
 
 ### Dependency Updates

@@ -1,4 +1,5 @@
 import createSdk, { REFRESH_TOKEN_KEY, SESSION_TOKEN_KEY } from '../src/index';
+import { setCustomStorage } from '../src/enhancers/helpers';
 import { flowResponse } from './mocks';
 import { createMockReturnValue } from './testUtils';
 
@@ -187,6 +188,10 @@ describe('sdk', () => {
       localStorage.removeItem(LAST_USER_KEY);
     });
 
+    afterEach(() => {
+      setCustomStorage(undefined);
+    });
+
     it('skips fetch and returns ok when neither DSLI nor lastUser is set', async () => {
       const mockFetch = jest
         .fn()
@@ -237,6 +242,25 @@ describe('sdk', () => {
       global.fetch = mockFetch;
       const sdk = createSdk({ projectId: 'pid' });
       await sdk.refresh('token');
+      expect(mockFetch).toHaveBeenCalled();
+    });
+
+    // Core customStorage regression: DSLI lives in real localStorage, so a
+    // returning user is recognized (try-refresh runs) even though their
+    // customStorage bag is empty on a fresh session — no wrong skip.
+    it('calls fetch when DSLI is in real localStorage even with customStorage set', async () => {
+      const bag = {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+      };
+      localStorage.setItem(DSLI_KEY, '1');
+      const mockFetch = jest
+        .fn()
+        .mockReturnValue(createMockReturnValue(flowResponse));
+      global.fetch = mockFetch;
+      const sdk = createSdk({ projectId: 'pid', customStorage: bag });
+      await sdk.refresh(undefined, true);
       expect(mockFetch).toHaveBeenCalled();
     });
   });

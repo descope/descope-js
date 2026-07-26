@@ -543,7 +543,7 @@ const AppRoot = () => {
 
 ### Custom Storage
 
-By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, client-side session-refresh optimization markers, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper — pass a `customStorage` prop to the `AuthProvider`.
+By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, tokens when they aren't stored in cookies, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper — pass a `customStorage` prop to the `AuthProvider`.
 
 ```js
 import { AuthProvider } from '@descope/react-sdk';
@@ -578,13 +578,15 @@ type CustomStorage = {
 };
 ```
 
-> **Note:** The SDK writes a small set of internal keys (e.g. for the last-authenticated user feature and client-side session-refresh optimizations). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, some optimizations may degrade — for example, an extra `/v1/auth/try-refresh` round-trip may be made on every page load even for anonymous visitors.
+> **Note:** `customStorage` backs the keys the SDK persists on your behalf (tokens, last-authenticated user). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, the features that rely on them may degrade.
+>
+> The internal, non-PII markers for the client-side session-refresh optimization (`DSLI` / `DSLI_DISABLED`) are the exception: the SDK always keeps them in real `window.localStorage`, independent of `customStorage`. This is what makes the optimization behave correctly even when you back the other keys with `sessionStorage` or an in-memory store.
 
 ### Last User Persistence
 
 Descope stores the last user information in local storage. If you wish to disable this feature, you can pass `storeLastAuthenticatedUser={false}` to the `AuthProvider` component. Please note that some features related to the last authenticated user may not function as expected if this behavior is disabled. Local storage is being cleared when the user logs out, if you want the avoid clearing the local storage, you can pass `keepLastAuthenticatedUserAfterLogout={true}` to the `AuthProvider` component.
 
-The last-user key also serves as a signal for the SDK's session initialization optimization: on mount, the `AuthProvider` skips the initial `/try-refresh` network call if no prior session indicator is found in `localStorage` (neither the last-user key nor the `DSLI` key written on every successful authentication). This means anonymous visitors never pay a round-trip at startup. If `storeLastAuthenticatedUser={false}`, only the `DSLI` key is used as the indicator.
+The last-user key also serves as a signal for the SDK's session initialization optimization: on mount, the `AuthProvider` skips the initial `/try-refresh` network call when it finds no prior session indicator — neither the `DSLI` key (written to real `window.localStorage` on every successful authentication, independent of `customStorage`) nor the last-user key. This means anonymous visitors never pay a round-trip at startup. If `storeLastAuthenticatedUser={false}`, only the `DSLI` key is used as the indicator.
 
 ### Seamless Session Migration
 
