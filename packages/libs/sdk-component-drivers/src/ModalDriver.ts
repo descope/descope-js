@@ -48,6 +48,14 @@ export class ModalDriver extends BaseDriver {
     });
   }
 
+  get isOpen() {
+    return this.ele?.getAttribute('opened') === 'true';
+  }
+
+  get isClosed() {
+    return !this.isOpen;
+  }
+
   close() {
     // removing `opened` triggers the observer above, which runs afterClose
     this.ele?.removeAttribute('opened');
