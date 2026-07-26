@@ -160,6 +160,99 @@ test.describe('widget', () => {
     }
   });
 
+  // Regression for issue 17202: the edit/delete flows are preloaded once so
+  // opening a modal has no load delay. When the value changes (e.g. after a
+  // delete) the preloaded flow used to keep the value it captured at load, so
+  // reopening the edit modal showed the stale value. The fix rebuilds the
+  // preloaded content on a value change.
+  test.describe('edit modal refresh on value change (issue 17202)', () => {
+    test('rebuilds the preloaded edit-phone flow after the phone is deleted', async ({
+      page,
+    }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      const editPhoneWc = page
+        .locator('descope-modal[data-id="edit-phone"]')
+        .locator('descope-wc');
+      await expect(editPhoneWc).toBeAttached();
+
+      // tag the preloaded flow element so we can tell if it is rebuilt
+      await editPhoneWc.evaluate((el) =>
+        el.setAttribute('data-repro-tag', 'A'),
+      );
+
+      // once deleted, getMe returns an empty phone
+      await page.route('**/auth/me', async (route) =>
+        route.fulfill({ json: { ...mockUser, phone: '' } }),
+      );
+
+      // run the delete-phone flow to completion
+      const phoneAttr = page
+        .locator('descope-user-attribute[data-id="phone"]')
+        .first();
+      await phoneAttr
+        .locator('descope-button[data-id="delete-btn"]')
+        .first()
+        .click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+      await page
+        .locator('descope-modal[data-id="delete-phone"]')
+        .locator('button', { hasText: 'Finish Flow' })
+        .click();
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      // the phone value cleared...
+      expect(await phoneAttr.getAttribute('value')).toBe('');
+
+      // ...and the preloaded edit-phone flow was rebuilt (fresh element, so the
+      // tag is gone). Without the fix the element is built only once and would
+      // still carry the tag - and would still show the deleted phone.
+      await expect(
+        page
+          .locator('descope-modal[data-id="edit-phone"]')
+          .locator('descope-wc'),
+      ).not.toHaveAttribute('data-repro-tag', 'A');
+    });
+
+    test('does not rebuild an edit modal while it is open', async ({
+      page,
+    }) => {
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      // open the edit-phone modal and tag its flow element
+      const phoneAttr = page
+        .locator('descope-user-attribute[data-id="phone"]')
+        .first();
+      await phoneAttr
+        .locator('descope-button[data-id="edit-btn"]')
+        .first()
+        .click();
+      await page.waitForTimeout(MODAL_TIMEOUT);
+      await page
+        .locator('descope-modal[data-id="edit-phone"]')
+        .locator('descope-wc')
+        .evaluate((el) => el.setAttribute('data-repro-tag', 'A'));
+
+      // trigger a value change from another flow while the edit modal is open
+      await page.route('**/auth/me', async (route) =>
+        route.fulfill({ json: { ...mockUser, phone: '' } }),
+      );
+      await page
+        .locator('descope-modal[data-id="delete-phone"]')
+        .locator('descope-wc')
+        .dispatchEvent('success');
+      await page.waitForTimeout(STATE_TIMEOUT);
+
+      // the open modal keeps its flow (tag intact) - rebuilding it would drop
+      // the flow the user is interacting with.
+      await expect(
+        page
+          .locator('descope-modal[data-id="edit-phone"]')
+          .locator('descope-wc'),
+      ).toHaveAttribute('data-repro-tag', 'A');
+    });
+  });
+
   test.describe('close-on-outside-click opt-in', () => {
     // this only checks that the widget wires the opt-in onto its modals (sets
     // the `close-on-outside-click` attribute). the actual close-on-backdrop
