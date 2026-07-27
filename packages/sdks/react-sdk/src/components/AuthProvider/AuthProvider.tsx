@@ -150,15 +150,17 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
     setIsSessionLoading(true);
     const stopSessionLoading = () => {
-      // Defer to a separate render pass so React doesn't batch this with
+      // Defer to a separate macrotask so React doesn't batch this with
       // the setIsSessionLoading(true) above when refresh() short-circuits
       // synchronously - downstream consumers (e.g. useSession) need to
-      // observe the false→true→false loading transition (#1393)
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          setIsSessionLoading(false);
-        }, 0);
-      });
+      // observe the false→true→false loading transition (#1393).
+      // Deliberately not requestAnimationFrame: rAF callbacks don't run
+      // while the tab is backgrounded (e.g. a login page opened from an
+      // email magic link), which left isSessionLoading stuck true (#1433).
+      // setTimeout always fires, visible tab or not.
+      setTimeout(() => {
+        setIsSessionLoading(false);
+      }, 0);
     };
     // Clear the loading state on both fulfilment and rejection. A rejected
     // refresh (e.g. a transient network failure on the proactive refresh) must
