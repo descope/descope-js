@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.9](https://github.com/descope/descope-js/compare/react-sdk-2.30.8...react-sdk-2.30.9) (2026-07-27)
+
+
+### Bug Fixes
+
+* **react-sdk:** clear isSessionLoading via setTimeout so it also fires in backgrounded tabs ([#1436](https://github.com/descope/descope-js/issues/1436)) RELEASE ([d90fa9c](https://github.com/descope/descope-js/commit/d90fa9cc0bc613ff08222dec5f47f4f4508f3253)), closes [#1395](https://github.com/descope/descope-js/issues/1395) [#1393](https://github.com/descope/descope-js/issues/1393) [#1393](https://github.com/descope/descope-js/issues/1393) [#1433](https://github.com/descope/descope-js/issues/1433) [#1393](https://github.com/descope/descope-js/issues/1393) [#1393](https://github.com/descope/descope-js/issues/1393) [#1433](https://github.com/descope/descope-js/issues/1433)
+
 ## [2.30.8](https://github.com/descope/descope-js/compare/react-sdk-2.30.7...react-sdk-2.30.8) (2026-07-26)
 
 ### Dependency Updates
