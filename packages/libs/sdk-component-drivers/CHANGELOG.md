@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.14.0...sdk-component-drivers-0.14.1) (2026-07-26)
+
+
+### Bug Fixes
+
+* **user-profile-widget:** rebuild preloaded modal flow on value change RELEASE ([#1447](https://github.com/descope/descope-js/issues/1447)) ([3bcebc1](https://github.com/descope/descope-js/commit/3bcebc1ea8255cf2f2940cdef48babcf3d04fb86)), closes [descope/etc#17202](https://github.com/descope/etc/issues/17202)
+
 ## [0.14.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.13.1...sdk-component-drivers-0.14.0) (2026-06-29)
 
 
