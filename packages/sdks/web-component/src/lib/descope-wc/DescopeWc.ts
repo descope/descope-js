@@ -417,7 +417,7 @@ class DescopeWc extends BaseDescopeWc {
     (this as any).lazyInit = this._init;
     // from bridge version 3 onwards, wc registers itself with the descopeBridge instead
     // of the previous polling mechanism, which still works for backwards compat
-    this.#bridgeKey = (window as any).descopeBridge.registerFlow?.(this);
+    this.#bridgeKey = (window as any)?.descopeBridge?.registerFlow?.(this);
     return undefined;
   }
 
