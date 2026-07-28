@@ -72,6 +72,24 @@ export default `
       full-width="true"
       label="Phone"
       required="false"
+    ></descope-user-attribute
+    ><descope-user-attribute
+      edit-flow-id="user-profile-set-recovery-email"
+      delete-flow-id="user-profile-delete-recovery-email"
+      data-id="recoveryEmail"
+      placeholder="Add a recovery email"
+      full-width="true"
+      label="Recovery Email"
+      required="false"
+    ></descope-user-attribute
+    ><descope-user-attribute
+      edit-flow-id="user-profile-set-recovery-phone"
+      delete-flow-id="user-profile-delete-recovery-phone"
+      data-id="recoveryPhone"
+      placeholder="Add a recovery phone"
+      full-width="true"
+      label="Recovery Phone"
+      required="false"
     ></descope-user-attribute></descope-container
   ><descope-divider
     id="divider1"
