@@ -11,9 +11,6 @@ module.exports = {
     global: {
       branches: 0,
       functions: 12,
-      // Recovery email/phone attribute mixins mirror the existing (equally untested)
-      // email/phone user-attribute mixins; their DOM/flow-driver bodies aren't unit-tested
-      // (no widget-mount harness in this package), which lowers the global line ratio.
       lines: 32,
       statements: 32,
     },
