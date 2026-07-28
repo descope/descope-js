@@ -27,7 +27,6 @@ import {
   clearPreviousExternalInputs,
   getAnimationDirection,
   getElementDescopeAttributes,
-  getFirstNonEmptyValue,
   getScriptResultPath,
   handleAutoFocus,
   handleReportValidityOnBlur,
@@ -1695,6 +1694,8 @@ class DescopeWc extends BaseDescopeWc {
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
+    this.updateScreenUser(screenState?.user);
+
     const stepTemplate = document.createElement('template');
     stepTemplate.innerHTML = await this.getPageContent(
       htmlFilename,
@@ -1760,6 +1761,7 @@ class DescopeWc extends BaseDescopeWc {
       // we need to wait for all components to render before we can set its value
       setTimeout(() => {
         this.#updateExternalInputs();
+        this.updateUsernameAnchor();
 
         if (this.validateOnBlur) {
           handleReportValidityOnBlur(rootElement);
@@ -1983,29 +1985,6 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  // handle storing passwords in password managers
-  #handleStoreCredentials(formData = {}) {
-    const idFields = ['externalId', 'email', 'phone'];
-    const passwordFields = ['newPassword', 'password'];
-
-    const id = getFirstNonEmptyValue(formData, idFields);
-    const password = getFirstNonEmptyValue(formData, passwordFields);
-
-    // PasswordCredential not supported in Firefox
-    if (id && password) {
-      try {
-        if (!globalThis.PasswordCredential) {
-          return;
-        }
-        const cred = new globalThis.PasswordCredential({ id, password });
-
-        navigator?.credentials?.store?.(cred);
-      } catch (e) {
-        this.loggerWrapper.error('Could not store credentials', e.message);
-      }
-    }
-  }
-
   #updateExternalInputs() {
     // we need to clear external inputs that were created previously, so each screen has only
     // the slotted inputs it needs
@@ -2070,11 +2049,12 @@ class DescopeWc extends BaseDescopeWc {
           origin: this.nativeOptions?.origin || window.location.origin,
         };
 
-        await next(submitterId, actionArgs);
+        const res = await next(submitterId, actionArgs);
 
         this.nextRequestStatus.update({ isLoading: false });
 
-        this.#handleStoreCredentials(formData);
+        this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
+        this.storeCredentials(formData);
       }
     },
   );

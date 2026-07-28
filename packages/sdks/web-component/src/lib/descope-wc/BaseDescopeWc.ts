@@ -32,6 +32,7 @@ import {
   formMountMixin,
   componentConditionsMixin,
   duplicateFlowWarningMixin,
+  passwordManagerMixin,
 } from '../mixins';
 import {
   AutoFocusOptions,
@@ -56,6 +57,7 @@ const BaseClass = compose(
   formMountMixin,
   componentConditionsMixin,
   duplicateFlowWarningMixin,
+  passwordManagerMixin,
   injectStyleMixin,
 )(HTMLElement);
 
