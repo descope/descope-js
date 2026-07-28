@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createSdk } from '@descope/web-js-sdk';
-import { render, waitFor } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { AuthProvider, useSession, useUser } from '../../src';
 
@@ -50,6 +50,61 @@ describe('AuthProvider loading state on a rejected refresh / me', () => {
     await waitFor(() =>
       expect(getByTestId('session-loading').textContent).toBe('false'),
     );
+  });
+
+  // Regression for #1393 - when refresh() short-circuits synchronously the
+  // isSessionLoading clear must land in a separate macrotask, so consumers
+  // always observe the true→false transition instead of both updates being
+  // batched into a single render
+  it('defers the isSessionLoading clear to a separate macrotask', async () => {
+    jest.useFakeTimers();
+    try {
+      const { getByTestId } = render(
+        <AuthProvider projectId="p1">
+          <SessionProbe />
+        </AuthProvider>,
+      );
+
+      // let refresh() resolve and its microtask handlers run - the clear must
+      // not have landed yet, consumers still see the loading state
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(refresh).toHaveBeenCalled();
+      expect(getByTestId('session-loading').textContent).toBe('true');
+
+      // the deferred clear fires from a timer
+      await act(async () => {
+        jest.runAllTimers();
+      });
+      expect(getByTestId('session-loading').textContent).toBe('false');
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  // Regression for #1433 - the loading clear must not depend on
+  // requestAnimationFrame, which never fires while the tab is backgrounded
+  // (e.g. a login page opened from an email magic link)
+  it('clears isSessionLoading even when requestAnimationFrame never fires', async () => {
+    const rafSpy = jest
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation(() => 1); // backgrounded tab: callback never runs
+
+    try {
+      const { getByTestId } = render(
+        <AuthProvider projectId="p1">
+          <SessionProbe />
+        </AuthProvider>,
+      );
+
+      await waitFor(() => expect(refresh).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(getByTestId('session-loading').textContent).toBe('false'),
+      );
+    } finally {
+      rafSpy.mockRestore();
+    }
   });
 
   it('clears isUserLoading when me rejects', async () => {

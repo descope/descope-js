@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.9](https://github.com/descope/descope-js/compare/react-sdk-2.30.8...react-sdk-2.30.9) (2026-07-27)
+
+
+### Bug Fixes
+
+* **react-sdk:** clear isSessionLoading via setTimeout so it also fires in backgrounded tabs ([#1436](https://github.com/descope/descope-js/issues/1436)) RELEASE ([d90fa9c](https://github.com/descope/descope-js/commit/d90fa9cc0bc613ff08222dec5f47f4f4508f3253)), closes [#1395](https://github.com/descope/descope-js/issues/1395) [#1393](https://github.com/descope/descope-js/issues/1393) [#1393](https://github.com/descope/descope-js/issues/1393) [#1433](https://github.com/descope/descope-js/issues/1433) [#1393](https://github.com/descope/descope-js/issues/1393) [#1393](https://github.com/descope/descope-js/issues/1393) [#1433](https://github.com/descope/descope-js/issues/1433)
+
+## [2.30.8](https://github.com/descope/descope-js/compare/react-sdk-2.30.7...react-sdk-2.30.8) (2026-07-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.9`
+* `audit-management-widget` updated to version `0.8.9`
+* `role-management-widget` updated to version `0.9.9`
+* `user-management-widget` updated to version `0.15.7`
+* `user-profile-widget` updated to version `0.14.6`
+* `applications-portal-widget` updated to version `0.8.9`
+* `outbound-applications-widget` updated to version `0.5.7`
+* `web-component` updated to version `3.70.5`
+* `tenant-profile-widget` updated to version `0.8.7`
+## [2.30.7](https://github.com/descope/descope-js/compare/react-sdk-2.30.6...react-sdk-2.30.7) (2026-07-22)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.15.6`
+* `user-profile-widget` updated to version `0.14.5`
+* `outbound-applications-widget` updated to version `0.5.6`
+* `web-component` updated to version `3.70.4`
+* `tenant-profile-widget` updated to version `0.8.6`
 ## [2.30.6](https://github.com/descope/descope-js/compare/react-sdk-2.30.5...react-sdk-2.30.6) (2026-07-16)
 
 ### Dependency Updates
