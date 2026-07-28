@@ -76,6 +76,13 @@ const Page = () => {
 
 Refer to the [Descope React SDK Section](../react-sdk/README.md) for a list of available props.
 
+> **Breaking change (v-next):** if you render custom screens via `onScreenUpdate`, the
+> server-produced screen data that used to sit directly on `context` now lives under
+> **`context.data`** — e.g. `context.totp` → `context.data.totp`. See the
+> [React SDK `onScreenUpdate` section](../react-sdk/README.md#onscreenupdate) and the
+> [@descope/web-component README](https://www.npmjs.com/package/@descope/web-component#the-context-object)
+> for the full list of `context.data` fields.
+
 **Note:** Descope is a client component. if the component that renders it is a server component, you cannot pass `onSuccess`/`onError`/`errorTransformer`/`logger` props because they are not serializable. To redirect the user after the flow is completed, use the `redirectAfterSuccess` and `redirectAfterError` props.
 
 #### Client Side Usage
@@ -136,9 +143,12 @@ By default, the SDK fires a periodic heartbeat (refresh call) whenever the tab i
 ```tsx
 import { AuthProvider } from '@descope/nextjs-sdk';
 
-<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
-  <App />
-</AuthProvider>
+<AuthProvider
+	projectId="my-project-id"
+	autoRefresh={{ customActivityTracking: true }}
+>
+	<App />
+</AuthProvider>;
 ```
 
 **Step 2:** Call `markUserActive()` on user interactions using the `useDescope` hook from `@descope/nextjs-sdk/client`:
@@ -149,27 +159,27 @@ import { useEffect } from 'react';
 import { useDescope } from '@descope/nextjs-sdk/client';
 
 function useActivityTracking() {
-  const sdk = useDescope();
+	const sdk = useDescope();
 
-  useEffect(() => {
-    const { markUserActive } = sdk;
+	useEffect(() => {
+		const { markUserActive } = sdk;
 
-    document.addEventListener('click', markUserActive);
-    document.addEventListener('keydown', markUserActive);
-    document.addEventListener('touchstart', markUserActive);
+		document.addEventListener('click', markUserActive);
+		document.addEventListener('keydown', markUserActive);
+		document.addEventListener('touchstart', markUserActive);
 
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') markUserActive();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
+		const onVisibility = () => {
+			if (document.visibilityState === 'visible') markUserActive();
+		};
+		document.addEventListener('visibilitychange', onVisibility);
 
-    return () => {
-      document.removeEventListener('click', markUserActive);
-      document.removeEventListener('keydown', markUserActive);
-      document.removeEventListener('touchstart', markUserActive);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [sdk]);
+		return () => {
+			document.removeEventListener('click', markUserActive);
+			document.removeEventListener('keydown', markUserActive);
+			document.removeEventListener('touchstart', markUserActive);
+			document.removeEventListener('visibilitychange', onVisibility);
+		};
+	}, [sdk]);
 }
 ```
 
@@ -184,7 +194,7 @@ import { useEffect } from 'react';
 
 const { refresh } = useDescope();
 useEffect(() => {
-  refresh().catch(console.error);
+	refresh().catch(console.error);
 }, [refresh]);
 ```
 
