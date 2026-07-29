@@ -32,6 +32,31 @@ export const getPhoneBadgeLabel = createSelector(
   (phone, isVerified) =>
     phone && phone.trim() !== '' && !isVerified ? 'Unverified' : '',
 );
+
+export const getRecoveryEmail = createSelector(getMe, (me) => me.recoveryEmail);
+export const getIsRecoveryEmailVerified = createSelector(
+  getMe,
+  (me) => me.verifiedRecoveryEmail,
+);
+export const getRecoveryPhone = createSelector(getMe, (me) => me.recoveryPhone);
+export const getIsRecoveryPhoneVerified = createSelector(
+  getMe,
+  (me) => me.verifiedRecoveryPhone,
+);
+
+// Recovery values are only "fulfilled" once verified via the validation flow. An unverified
+// (pending) recovery value renders as empty, prompting the user to set + verify it.
+export const getVerifiedRecoveryEmail = createSelector(
+  getRecoveryEmail,
+  getIsRecoveryEmailVerified,
+  (recoveryEmail, isVerified) => (isVerified ? recoveryEmail : ''),
+);
+
+export const getVerifiedRecoveryPhone = createSelector(
+  getRecoveryPhone,
+  getIsRecoveryPhoneVerified,
+  (recoveryPhone, isVerified) => (isVerified ? recoveryPhone : ''),
+);
 export const getHasPasskey = createSelector(getMe, (me) => me.webauthn);
 export const getHasPassword = createSelector(getMe, (me) => me.password);
 export const getHasTotp = createSelector(getMe, (me) => me.TOTP);

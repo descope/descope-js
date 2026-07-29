@@ -155,6 +155,8 @@ export const initEditUserModalMixin = createSingletonMixin(
           displayName: userDetails?.name,
           email: userDetails?.email,
           phone: formatPhoneNumber(userDetails?.phone),
+          recoveryEmail: userDetails?.recoveryEmail,
+          recoveryPhone: formatPhoneNumber(userDetails?.recoveryPhone),
           roles: userDetails?.roleNames,
           givenName: userDetails?.givenName,
           familyName: userDetails?.familyName,

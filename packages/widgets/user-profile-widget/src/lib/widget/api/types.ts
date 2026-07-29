@@ -26,8 +26,12 @@ export type User = {
   name: string;
   email: string;
   phone: string;
+  recoveryEmail: string;
+  recoveryPhone: string;
   verifiedEmail: boolean;
   verifiedPhone: boolean;
+  verifiedRecoveryEmail: boolean;
+  verifiedRecoveryPhone: boolean;
   roleNames: string[];
   userTenants: Tenant[];
   status: UserStatus;

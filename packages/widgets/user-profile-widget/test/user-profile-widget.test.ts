@@ -5,7 +5,13 @@ import { apiPaths } from '../src/lib/widget/api/apiPaths';
 import { createSdk } from '../src/lib/widget/api/sdk';
 import {
   getCurrentTenantId,
+  getIsRecoveryEmailVerified,
+  getIsRecoveryPhoneVerified,
+  getRecoveryEmail,
+  getRecoveryPhone,
   getUserTenants,
+  getVerifiedRecoveryEmail,
+  getVerifiedRecoveryPhone,
 } from '../src/lib/widget/state/selectors';
 import { mockUser } from './mocks/mockUser';
 import rootMock from './mocks/rootMock';
@@ -166,6 +172,51 @@ describe('user-profile-widget', () => {
         me: { data: {} },
       } as any;
       expect(getUserTenants(state)).toEqual([]);
+    });
+
+    it('reads recovery email/phone + verified flags from state', () => {
+      const state = {
+        me: {
+          data: {
+            recoveryEmail: 'rec@example.com',
+            verifiedRecoveryEmail: true,
+            recoveryPhone: '+15550001111',
+            verifiedRecoveryPhone: false,
+          },
+        },
+      } as any;
+      expect(getRecoveryEmail(state)).toBe('rec@example.com');
+      expect(getIsRecoveryEmailVerified(state)).toBe(true);
+      expect(getRecoveryPhone(state)).toBe('+15550001111');
+      expect(getIsRecoveryPhoneVerified(state)).toBe(false);
+    });
+
+    it('exposes a recovery value only once verified (fulfilled), else empty', () => {
+      const verified = {
+        me: {
+          data: {
+            recoveryEmail: 'rec@example.com',
+            verifiedRecoveryEmail: true,
+            recoveryPhone: '+15550001111',
+            verifiedRecoveryPhone: true,
+          },
+        },
+      } as any;
+      expect(getVerifiedRecoveryEmail(verified)).toBe('rec@example.com');
+      expect(getVerifiedRecoveryPhone(verified)).toBe('+15550001111');
+
+      const pending = {
+        me: {
+          data: {
+            recoveryEmail: 'rec@example.com',
+            verifiedRecoveryEmail: false,
+            recoveryPhone: '+15550001111',
+            verifiedRecoveryPhone: false,
+          },
+        },
+      } as any;
+      expect(getVerifiedRecoveryEmail(pending)).toBe('');
+      expect(getVerifiedRecoveryPhone(pending)).toBe('');
     });
   });
 });
