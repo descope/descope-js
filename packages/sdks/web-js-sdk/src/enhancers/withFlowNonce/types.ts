@@ -21,6 +21,17 @@ export interface StorageItem {
    * - false: 3 hours TTL (for flow next)
    */
   isStart?: boolean;
+
+  /**
+   * Highest per-execution sequence seen so far, parsed from the server nonce
+   * prefix "<seq>.<random>" (descope/etc#17286). Concurrent flow legs across
+   * tabs and SDK instances write this one shared key out of order; keeping the
+   * highest sequence ensures the newest nonce wins regardless of arrival order.
+   * Retained across unsequenced writes so a plain nonce (feature disabled /
+   * older server / partial failure) cannot erase it. Undefined only until the
+   * first sequenced nonce is seen.
+   */
+  seq?: number;
 }
 
 /**

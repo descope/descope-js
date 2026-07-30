@@ -16,6 +16,33 @@ import {
 } from './constants';
 import { StorageItem } from './types';
 
+// The server may prefix the nonce with a monotonic per-execution sequence as
+// "<seq>.<random>" (descope/etc#17286). Parse it as a canonical non-negative
+// safe integer; anything else (plain nonce, malformed prefix, out-of-range) is
+// treated as no sequence so ordering falls back to last-writer-wins.
+const parseNonceSeq = (nonce: string): number | undefined => {
+  const dot = nonce.indexOf('.');
+  if (dot <= 0) {
+    return undefined;
+  }
+  const prefix = nonce.slice(0, dot);
+  if (!/^\d+$/.test(prefix)) {
+    return undefined;
+  }
+  const seq = Number(prefix);
+  return Number.isSafeInteger(seq) ? seq : undefined;
+};
+
+// Highest of the defined sequences, or undefined when neither is set.
+const maxSeq = (
+  a: number | undefined,
+  b: number | undefined,
+): number | undefined => {
+  if (a === undefined) return b;
+  if (b === undefined) return a;
+  return Math.max(a, b);
+};
+
 // Helper to create storage key from execution ID
 const getNonceKeyForExecution = (
   executionId: string,
@@ -24,11 +51,11 @@ const getNonceKeyForExecution = (
   return `${prefix}${executionId}`;
 };
 
-// Get nonce from storage with expiration check
-const getFlowNonce = (
+// Read the stored nonce record (value + sequence) with expiration check
+const getFlowNonceRecord = (
   executionId: string,
   prefix: string = FLOW_NONCE_PREFIX,
-): string | null => {
+): { value: string; seq?: number } | null => {
   try {
     const key = getNonceKeyForExecution(executionId, prefix);
     const itemStr = getLocalStorage(key);
@@ -44,7 +71,7 @@ const getFlowNonce = (
       return null;
     }
 
-    return item.value;
+    return { value: item.value, seq: item.seq };
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('Error getting flow nonce:', e);
@@ -52,12 +79,19 @@ const getFlowNonce = (
   }
 };
 
+// Get nonce from storage with expiration check
+const getFlowNonce = (
+  executionId: string,
+  prefix: string = FLOW_NONCE_PREFIX,
+): string | null => getFlowNonceRecord(executionId, prefix)?.value ?? null;
+
 // Store nonce with appropriate TTL
 const setFlowNonce = (
   executionId: string,
   nonce: string,
   isStart: boolean,
   prefix: string = FLOW_NONCE_PREFIX,
+  seq?: number,
 ): void => {
   try {
     const key = getNonceKeyForExecution(executionId, prefix);
@@ -67,6 +101,7 @@ const setFlowNonce = (
       value: nonce,
       expiry: Date.now() + ttlSeconds * 1000,
       isStart,
+      seq,
     };
 
     setLocalStorage(key, JSON.stringify(item));
@@ -96,13 +131,18 @@ const extractExecId = (executionId: string): string | null => {
   return regex.exec(executionId)?.[1] || null;
 };
 
-// Extract nonce and execution ID from response
+// Extract nonce, sequence, and execution ID from response
 const extractFlowNonce = async (
   req: RequestConfig,
   response: Response,
-): Promise<{ nonce: string | null; executionId: string | null }> => {
+): Promise<{
+  nonce: string | null;
+  seq: number | undefined;
+  executionId: string | null;
+}> => {
   try {
     const nonce = response.headers.get(FLOW_NONCE_HEADER);
+    const seq = nonce === null ? undefined : parseNonceSeq(nonce);
 
     // Clone the response to prevent body consumption
     let executionId = await response
@@ -118,10 +158,11 @@ const extractFlowNonce = async (
 
     return {
       nonce,
+      seq,
       executionId: extractExecId(executionId),
     };
   } catch (e) {
-    return { nonce: null, executionId: null };
+    return { nonce: null, seq: undefined, executionId: null };
   }
 };
 
@@ -165,12 +206,40 @@ const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
   }
 };
 
+// Run a nonce store read-modify-write atomically across tabs/SDK instances.
+// Web Locks makes the read-compare-write critical section atomic. When it is
+// unavailable or rejects, fall back to running the write unlocked - the write
+// must still happen exactly once (a lost write would strand the flow).
+const withNonceWriteLock = async (
+  executionId: string,
+  fn: () => void,
+): Promise<void> => {
+  const locks = globalThis.navigator?.locks;
+  if (locks?.request) {
+    try {
+      await locks.request(`descope-flow-nonce-${executionId}`, async () =>
+        fn(),
+      );
+      return;
+    } catch (e) {
+      // Lock acquisition failed/rejected - do not drop the write.
+      // eslint-disable-next-line no-console
+      console.error('Error acquiring flow nonce lock:', e);
+    }
+  }
+  fn();
+};
+
 export {
   cleanupExpiredNonces,
   extractFlowNonce,
   getExecutionIdFromRequest,
   getFlowNonce,
+  getFlowNonceRecord,
   getNonceKeyForExecution,
+  maxSeq,
+  parseNonceSeq,
   removeFlowNonce,
   setFlowNonce,
+  withNonceWriteLock,
 };

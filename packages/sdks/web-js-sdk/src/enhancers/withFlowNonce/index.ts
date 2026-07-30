@@ -12,7 +12,10 @@ import {
   extractFlowNonce,
   getExecutionIdFromRequest,
   getFlowNonce,
+  getFlowNonceRecord,
+  maxSeq,
   setFlowNonce,
+  withNonceWriteLock,
 } from './helpers';
 import { FlowNonceOptions } from './types';
 
@@ -38,12 +41,35 @@ export const withFlowNonce =
       if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) {
         return;
       }
-      const { nonce, executionId } = await extractFlowNonce(req, res);
+      const { nonce, seq, executionId } = await extractFlowNonce(req, res);
 
-      if (nonce && executionId) {
-        const isStart = req.path === FLOW_START_PATH;
-        setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix);
+      if (!nonce || !executionId) {
+        return;
       }
+      const isStart = req.path === FLOW_START_PATH;
+      await withNonceWriteLock(executionId, () => {
+        const stored = getFlowNonceRecord(executionId, nonceStoragePrefix);
+        // Concurrent flow legs (polling loop, verify/resume, submits) across
+        // tabs and SDK instances write this one shared key out of order. The
+        // server prefixes each nonce with a monotonic per-execution sequence;
+        // track the highest seen so the newest nonce wins regardless of arrival
+        // order and a late stale response cannot overwrite it (descope/etc#17286).
+        // `highWater` is retained independently of the stored nonce so an
+        // unsequenced write (feature disabled / older server / partial failure)
+        // does not erase it and reopen the race. Unsequenced nonces fall back to
+        // last-writer-wins, unchanged prior behavior.
+        const highWater = stored?.seq;
+        const skip =
+          !isStart &&
+          seq !== undefined &&
+          highWater !== undefined &&
+          seq <= highWater;
+        if (skip) {
+          return;
+        }
+        const nextSeq = maxSeq(seq, isStart ? undefined : highWater);
+        setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix, nextSeq);
+      });
     };
 
     const beforeRequest: BeforeRequestHook = (req) => {
