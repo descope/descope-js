@@ -97,6 +97,64 @@ describe('web-component real-time conditions integration', () => {
     expect(chk).toHaveClass('hidden');
   });
 
+  it('re-evaluates on a `change` event, not just `input`', async () => {
+    // descope-radio-group and the button selection-groups re-emit `change`
+    // (not `input`) from the host on selection. This pins that `change` is a
+    // valid trigger so a future trim of REALTIME_CONDITION_EVENTS can't
+    // silently re-break those components.
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenState: {
+          form: { phone: '' },
+          componentsState: { _chk: 'hide' },
+          realtimeComponentsConditions: [
+            {
+              id: 'cc1',
+              componentIds: ['_chk'],
+              action: 'hide',
+              rules: [
+                {
+                  atomicConditions: [
+                    {
+                      operator: 'empty',
+                      target: { kind: 'form', form: 'form.phone' },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+
+    fixtures.pageContent = `
+      <input name="phone" id="phone" />
+      <span id="_chk">Checkbox</span>
+    `;
+
+    document.body.innerHTML = `<descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+    const chk = await waitFor(() => screen.getByShadowText('Checkbox'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(chk).toHaveClass('hidden');
+
+    const phone = chk
+      .getRootNode()
+      .querySelector('input[name="phone"]') as HTMLInputElement;
+    expect(phone).toBeTruthy();
+
+    jest.advanceTimersByTime(0);
+
+    // Only a `change` event — no `input`. Condition should still re-evaluate.
+    phone.value = '+1';
+    phone.dispatchEvent(new Event('change', { bubbles: true }));
+    jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);
+
+    expect(chk).not.toHaveClass('hidden');
+  });
+
   it('applies the read-only action and clears it when the rule stops firing', async () => {
     // Use the boolean toggle as the trigger and the text input as the target.
     startMock.mockReturnValue(
