@@ -3,6 +3,7 @@ import { createSdk } from '@descope/web-js-sdk';
 import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { AuthProvider, useSession, useUser } from '../../src';
+import Context from '../../src/hooks/Context';
 
 jest.mock('@descope/web-js-sdk', () => {
   const sdk = {
@@ -105,6 +106,43 @@ describe('AuthProvider loading state on a rejected refresh / me', () => {
     } finally {
       rafSpy.mockRestore();
     }
+  });
+
+  // Regression for the #1436 stuck-loading race (admin-portal blank flow on
+  // loaded CI runners): useSession must not depend on *observing* an
+  // isSessionLoading true→false toggle. When refresh() short-circuits
+  // synchronously that transition can collapse into a single batched commit, so
+  // loading has to resolve off isSessionFetched instead of stranding `true`.
+  // This drives useSession directly: isSessionFetched flips false→true while
+  // isSessionLoading never toggles. Before the fix (ref cached on the toggle)
+  // this stayed 'true'.
+  it('resolves loading from isSessionFetched without an observed isSessionLoading toggle', () => {
+    const base = {
+      session: undefined,
+      claims: undefined,
+      isSessionLoading: false,
+      isOidcLoading: false,
+      isAuthenticated: false,
+      fetchSession: jest.fn(),
+    };
+
+    const { getByTestId, rerender } = render(
+      <Context.Provider value={{ ...base, isSessionFetched: false } as any}>
+        <SessionProbe />
+      </Context.Provider>,
+    );
+    // before the one-shot fetch completes we are loading, even though the
+    // context's isSessionLoading is false
+    expect(getByTestId('session-loading').textContent).toBe('true');
+
+    // fetch completes (isSessionFetched → true) WITHOUT isSessionLoading ever
+    // toggling to true and back
+    rerender(
+      <Context.Provider value={{ ...base, isSessionFetched: true } as any}>
+        <SessionProbe />
+      </Context.Provider>,
+    );
+    expect(getByTestId('session-loading').textContent).toBe('false');
   });
 
   it('clears isUserLoading when me rejects', async () => {

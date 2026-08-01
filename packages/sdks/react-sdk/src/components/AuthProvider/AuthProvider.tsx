@@ -127,6 +127,13 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const isSessionFetched = useRef(false);
   const isUserFetched = useRef(false);
 
+  // Observable mirror of `isSessionFetched.current`. Completing the one-shot
+  // session fetch must always trigger a re-render: consumers (useSession)
+  // derive their loading flag from this, and without a state change React can
+  // bail out of the re-render when isSessionLoading nets false→false (the
+  // synchronous-refresh batch), stranding the loading flag `true` (#1393/#1436).
+  const [isSessionFetchedState, setIsSessionFetchedState] = useState(false);
+
   // if oidc config is enabled, and we have oidc params in the url
   // we will finish the login (this should run only once)
   useEffect(() => {
@@ -136,6 +143,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
         setIsOidcLoading(false);
         // We want that the session will fetched only once
         isSessionFetched.current = true;
+        setIsSessionFetchedState(true);
       });
     }
   }, []);
@@ -147,6 +155,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     // We want that the session will fetched only once
     if (isSessionFetched.current) return;
     isSessionFetched.current = true;
+    setIsSessionFetchedState(true);
 
     setIsSessionLoading(true);
     const stopSessionLoading = () => {
@@ -196,7 +205,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isAuthenticated,
       isSessionLoading,
       isOidcLoading,
-      isSessionFetched: isSessionFetched.current,
+      isSessionFetched: isSessionFetchedState,
       projectId,
       baseUrl,
       baseStaticUrl,
@@ -221,7 +230,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isAuthenticated,
       isSessionLoading,
       isOidcLoading,
-      isSessionFetched.current,
+      isSessionFetchedState,
       projectId,
       baseUrl,
       baseStaticUrl,

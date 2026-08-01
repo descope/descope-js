@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect } from 'react';
 import useContext from './useContext';
 import { isDescopeBridge } from '../utils';
 
@@ -13,24 +13,24 @@ const useSession = () => {
     isAuthenticated,
   } = useContext();
 
-  // when session should be received, we want the return value of "isSessionLoading" to be true starting from the first call
-  // (and not only when receiving an update from the context)
-  const isLoading = useRef(isSessionLoading || isOidcLoading);
-
-  // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
-  useMemo(() => {
-    isLoading.current = isSessionLoading || isOidcLoading;
-  }, [isSessionLoading, isOidcLoading]);
-
   // In case we're in a native flow, we won't refresh the session anyway, so no point in marking the state as loading
-  const shouldFetchSession = !isAuthenticated && !isSessionLoading && !isDescopeBridge();
+  const shouldFetchSession =
+    !isAuthenticated && !isSessionLoading && !isDescopeBridge();
 
-  // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
-  useMemo(() => {
-    if (shouldFetchSession && !isSessionFetched) {
-      isLoading.current = true;
-    }
-  }, [isSessionFetched]);
+  // Derive the loading state directly on every render instead of caching it in
+  // a ref that only updates when the context value *changes*. When refresh()
+  // short-circuits synchronously the AuthProvider's setIsSessionLoading(true)
+  // and (false) can be batched into a single commit (or React can bail out of
+  // the re-render entirely, since the value nets false→false) - the context
+  // value then never observably toggles, a change-keyed memo never re-runs, and
+  // a cached ref stays stuck `true` forever (#1393, and its resurfacing via the
+  // #1436 setTimeout race). Computing inline removes the dependency on observing
+  // the transition: we're loading while the SDK is actively refreshing, or
+  // before the one-shot fetch has completed for a session we expect to receive.
+  const isSessionLoadingResolved =
+    isSessionLoading ||
+    isOidcLoading ||
+    (shouldFetchSession && !isSessionFetched);
 
   // Fetch session if it's not already fetched
   // We want this to happen only once, so the dependency array should not contain shouldFetchSession
@@ -39,8 +39,9 @@ const useSession = () => {
       fetchSession();
     }
   }, [fetchSession]);
+
   return {
-    isSessionLoading: isLoading.current,
+    isSessionLoading: isSessionLoadingResolved,
     sessionToken: session,
     claims,
     isAuthenticated,
