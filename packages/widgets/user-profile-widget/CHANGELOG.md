@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.14.6...user-profile-widget-0.15.0) (2026-08-02)
+
+### Dependency Updates
+
+* `web-component` updated to version `3.70.6`
+
+### Features
+
+* **widgets:** recovery email/phone in user management + user profile widgets ([#1445](https://github.com/descope/descope-js/issues/1445)) ([0ea68f8](https://github.com/descope/descope-js/commit/0ea68f875c69ba9a391ff3af282ad1b0d2336256)), closes [descope/backend#1894](https://github.com/descope/backend/issues/1894) [descope/console-app#5598](https://github.com/descope/console-app/issues/5598) [descope/content#2136](https://github.com/descope/content/issues/2136) [descope/etc#15631](https://github.com/descope/etc/issues/15631)
+
 ## [0.14.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.14.5...user-profile-widget-0.14.6) (2026-07-26)
 
 ### Dependency Updates
