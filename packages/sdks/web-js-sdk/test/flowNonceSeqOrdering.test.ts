@@ -173,16 +173,19 @@ describe('flowNonce sequence write ordering', () => {
   it('unsequenced write does NOT erase the high-water mark', async () => {
     // Mixed execution: store at seq 10, then a plain (unsequenced) newer nonce
     // arrives and wins by LWW, but the mark must survive so a later stale
-    // seq-9 nonce is still rejected (the erasure bug Codex flagged).
+    // seq-9 nonce is still rejected instead of reopening the race.
     seed(N(10), 10);
-    global.fetch = jest.fn().mockResolvedValue(resp(N(null, 'plain11')));
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(resp(N(null, 'plain11')))
+      .mockResolvedValueOnce(resp(N(9, 'stale')));
     const sdk = createSdk({ projectId: 'pid' });
     await sdk.flow.next(FULL, 'step', 'polling');
     expect(record()).toEqual({ value: 'plain11', seq: 10 });
 
-    global.fetch = jest.fn().mockResolvedValue(resp(N(9, 'stale')));
     await sdk.flow.next(FULL, 'step', 'polling');
     expect(record()).toEqual({ value: 'plain11', seq: 10 });
+    expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
   it('flow start always writes and resets the mark to its own sequence', async () => {
