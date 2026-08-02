@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.70.6](https://github.com/descope/descope-js/compare/web-component-3.70.5...web-component-3.70.6) (2026-08-02)
+
+
+### Bug Fixes
+
+* **web-component:** anchor username for password managers on password screens ([#1442](https://github.com/descope/descope-js/issues/1442)) ([db583f3](https://github.com/descope/descope-js/commit/db583f3c71e0635a37a259f37a47cbcb02e2af20)), closes [descope/etc#16712](https://github.com/descope/etc/issues/16712) [descope/etc#16712](https://github.com/descope/etc/issues/16712)
+
 ## [3.70.5](https://github.com/descope/descope-js/compare/web-component-3.70.4...web-component-3.70.5) (2026-07-26)
 
 ### Dependency Updates
