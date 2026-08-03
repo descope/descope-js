@@ -17,9 +17,11 @@ export const enrichCustomAttributeCol = (
   const name = col.id.slice(CA_COL_PREFIX.length);
   const attr = customAttrs?.find((a) => a.name === name);
   if (!attr) return col;
+  // Select options already arrive as {value,label} from the API; keep them,
+  // just backfill a missing label from the value.
   const options =
     Array.isArray(attr.options) && attr.options.length
-      ? attr.options.map((value) => ({ value, label: value }))
+      ? attr.options.map((o) => ({ value: o.value, label: o.label || o.value }))
       : undefined;
   return {
     ...col,

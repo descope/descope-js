@@ -94,6 +94,14 @@ describe('filterToSearchParams', () => {
     expect(params.statuses).toBeUndefined();
   });
 
+  it('drops a negation on a non-LIKE text column — never inverts it to full-text', () => {
+    const params = filterToSearchParams([
+      { column: 'name', operator: 'not-contains', value: 'john' },
+    ]);
+    expect(params.text).toBeUndefined();
+    expect(params.searchFields).toBeUndefined();
+  });
+
   it('drops rows missing column or operator', () => {
     const params = filterToSearchParams([
       { column: '', operator: 'is-any-of', value: ['x'] },

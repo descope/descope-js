@@ -26,22 +26,40 @@ describe('enrichCustomAttributeCol', () => {
     expect(out.operators).toEqual(['equal']);
   });
 
-  it('attaches live options from the attribute schema', () => {
+  it('passes through select options ({value,label}) from the schema', () => {
     const out = enrichCustomAttributeCol(
       col({ id: 'customAttributes.tier', inputType: 'singleselect' }),
       [
         {
           name: 'tier',
           type: 4,
-          options: ['gold', 'silver'],
+          options: [
+            { value: 'gold', label: 'Gold' },
+            { value: 'silver', label: 'Silver' },
+          ],
           displayName: 'Tier',
         } as CustomAttr,
       ],
     );
     expect(out.options).toEqual([
-      { value: 'gold', label: 'gold' },
-      { value: 'silver', label: 'silver' },
+      { value: 'gold', label: 'Gold' },
+      { value: 'silver', label: 'Silver' },
     ]);
+  });
+
+  it('backfills a missing option label from its value', () => {
+    const out = enrichCustomAttributeCol(
+      col({ id: 'customAttributes.tier', inputType: 'singleselect' }),
+      [
+        {
+          name: 'tier',
+          type: 4,
+          options: [{ value: 'gold', label: '' }],
+          displayName: 'Tier',
+        } as CustomAttr,
+      ],
+    );
+    expect(out.options).toEqual([{ value: 'gold', label: 'gold' }]);
   });
 
   it('omits options when the attribute has none', () => {
@@ -90,7 +108,7 @@ describe('enrichCustomAttributeCols', () => {
         {
           name: 'tier',
           type: 4,
-          options: ['gold'],
+          options: [{ value: 'gold', label: 'Gold' }],
           displayName: 'Tier',
         } as CustomAttr,
       ],
@@ -98,7 +116,7 @@ describe('enrichCustomAttributeCols', () => {
     expect(out[0]).toBe(status); // untouched
     expect(out[1]).toBeNull(); // nullish passthrough
     expect(out[2].label).toBe('Tier');
-    expect(out[2].options).toEqual([{ value: 'gold', label: 'gold' }]);
+    expect(out[2].options).toEqual([{ value: 'gold', label: 'Gold' }]);
   });
 });
 

@@ -141,7 +141,9 @@ export type CreateUserConfig = {
 export type CustomAttr = {
   name: string;
   type: number;
-  options: string[];
+  // Select-type attributes carry their choices as {value,label} objects
+  // (matches the mgmt customattributes API); other types have an empty array.
+  options: { value: string; label: string }[];
   displayName: string;
   defaultValue: Record<string, string>;
   ViewPermissions: string[];
