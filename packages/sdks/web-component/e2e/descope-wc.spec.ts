@@ -51,7 +51,7 @@ test.describe('descope-wc', () => {
     await page.route('**/start', async (route) =>
       route.fulfill({
         json: {
-          executionId: 'pass|#|2tlLFAOthDriBZIOVXahmLnYv8Q',
+          executionId: 'pass---2tlLFAOthDriBZIOVXahmLnYv8Q',
           stepId: '4',
           status: 'waiting',
           action: '',

@@ -70,7 +70,7 @@ describe('flowNonce', () => {
 
       const mockFetch = jest
         .fn()
-        .mockResolvedValue(createResponse(`flow|#|${executionId}`, nonce));
+        .mockResolvedValue(createResponse(`flow---${executionId}`, nonce));
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
@@ -91,11 +91,11 @@ describe('flowNonce', () => {
 
       const mockFetch = jest
         .fn()
-        .mockResolvedValue(createResponse(`flow|#|${executionId}`, nonce));
+        .mockResolvedValue(createResponse(`flow---${executionId}`, nonce));
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+      await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
       const key = `${FLOW_NONCE_PREFIX}${executionId}`;
       const stored = localStorage.getItem(key);
@@ -115,7 +115,7 @@ describe('flowNonce', () => {
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+      await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
       const [url, options] = mockFetch.mock.calls[0];
       expect(url).toContain('flow/next');
@@ -149,7 +149,7 @@ describe('flowNonce', () => {
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+      await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
       const [url, options] = mockFetch.mock.calls[0];
       expect(hasHeader(options, FLOW_NONCE_HEADER)).toBe(false);
@@ -159,7 +159,7 @@ describe('flowNonce', () => {
     it('extracts execution ID from complex formats', async () => {
       const executionId = 'test-execution-id';
       const nonce = 'test-nonce-value';
-      const complexId = `flow|#|${executionId}`;
+      const complexId = `flow---${executionId}`;
 
       const mockFetch = jest
         .fn()
@@ -224,7 +224,7 @@ describe('flowNonce', () => {
 
       const mockFetch = jest
         .fn()
-        .mockResolvedValue(createResponse(`flow|#|${executionId}`, null));
+        .mockResolvedValue(createResponse(`flow---${executionId}`, null));
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
@@ -282,7 +282,7 @@ describe('flowNonce', () => {
       const sdk = createSdk({ projectId: 'pid' });
 
       // Call the SDK method that would typically store the nonce
-      await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+      await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
       // Instead of checking actual localStorage, just verify the call was made correctly
       expect(mockFetch).toHaveBeenCalled();
@@ -315,7 +315,7 @@ describe('flowNonce', () => {
       // Verify the item exists before the test
       expect(localStorage.getItem(storageKey)).not.toBeNull();
 
-      await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+      await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
       // Verify the item was removed from localStorage
       expect(localStorage.getItem(storageKey)).toBeNull();
@@ -332,7 +332,7 @@ describe('flowNonce', () => {
 
       const mockFetch = jest
         .fn()
-        .mockResolvedValue(createResponse(`flow|#|${executionId}`, nonce));
+        .mockResolvedValue(createResponse(`flow---${executionId}`, nonce));
       global.fetch = mockFetch;
 
       const sdk = createSdk({
@@ -351,7 +351,7 @@ describe('flowNonce', () => {
 
       const mockFetch = jest
         .fn()
-        .mockResolvedValue(createResponse(`flow|#|${executionId}`, nonce));
+        .mockResolvedValue(createResponse(`flow---${executionId}`, nonce));
       global.fetch = mockFetch;
 
       const sdk = createSdk({
@@ -391,7 +391,7 @@ describe('flowNonce', () => {
         global.fetch = mockFetch;
 
         const sdk = createSdk({ projectId: 'pid' });
-        await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+        await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
         // Verify the operation completes without throwing
         expect(mockFetch).toHaveBeenCalled();
@@ -414,7 +414,7 @@ describe('flowNonce', () => {
       try {
         const mockFetch = jest
           .fn()
-          .mockResolvedValue(createResponse(`flow|#|${executionId}`, nonce));
+          .mockResolvedValue(createResponse(`flow---${executionId}`, nonce));
         global.fetch = mockFetch;
 
         const sdk = createSdk({ projectId: 'pid' });
@@ -446,7 +446,7 @@ describe('flowNonce', () => {
         global.fetch = mockFetch;
 
         const sdk = createSdk({ projectId: 'pid' });
-        await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+        await sdk.flow.next(`flow---${executionId}`, 'stepId', 'interactionId');
 
         // Verify the operation completes without throwing
         expect(mockFetch).toHaveBeenCalled();
