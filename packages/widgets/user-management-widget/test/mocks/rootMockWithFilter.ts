@@ -10,6 +10,11 @@ const FILTER_COLUMNS = [
       { value: 'invited', label: 'Invited' },
       { value: 'disabled', label: 'Disabled' },
     ],
+    mapping: {
+      kind: 'array',
+      field: 'statuses',
+      valueMap: { active: 'enabled' },
+    },
   },
   {
     id: 'roles',
@@ -17,6 +22,7 @@ const FILTER_COLUMNS = [
     inputType: 'multiselect',
     valueType: 'multi-enum',
     operators: ['is-any-of'],
+    mapping: { kind: 'array', field: 'roleNames' },
   },
 ];
 
