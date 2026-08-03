@@ -10,7 +10,6 @@ describe('filterToSearchParams', () => {
       loginIds: undefined,
       emails: undefined,
       phones: undefined,
-      text: undefined,
       searchFields: undefined,
       customAttributes: undefined,
       verifiedEmail: undefined,
@@ -20,6 +19,15 @@ describe('filterToSearchParams', () => {
       webauthn: undefined,
       scim: undefined,
     });
+  });
+
+  it('never seeds text — it is co-owned by the standalone search input, so a non-text filter must not clobber the typed query', () => {
+    const params = filterToSearchParams([
+      { column: 'status', operator: 'is-any-of', value: ['active'] },
+    ]);
+    // No `text` key at all → searchUsers merge preserves searchParams.text.
+    expect('text' in params).toBe(false);
+    expect(params.statuses).toEqual(['enabled']);
   });
 
   it('maps status is-any-of to statuses, translating active → enabled', () => {

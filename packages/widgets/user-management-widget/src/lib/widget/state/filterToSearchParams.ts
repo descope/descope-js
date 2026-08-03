@@ -127,6 +127,12 @@ const parseCaValue = (
 //
 // Seeds all touched fields with `undefined` so a removed row clears its
 // value instead of being retained by the searchUsers thunk merge.
+//
+// `text` is deliberately NOT seeded: it is co-owned by the standalone
+// free-text search input (initFilterUsersInputMixin), which writes the same
+// shared `searchParams.text`. Seeding it to `undefined` here would clobber the
+// user's typed search on every filter apply. The filter still SETS `text` when
+// it has a full-text row (below); it just never clears the box's value.
 export const filterToSearchParams = (
   rows: FilterRow[],
   cols?: FilterColumn[],
@@ -136,7 +142,6 @@ export const filterToSearchParams = (
     ...Object.values(ARRAY_FIELDS),
     ...Object.values(EXACT_FIELDS),
     ...Object.values(BOOLEAN_FIELDS),
-    'text' as const,
     'searchFields' as const,
     'customAttributes' as const,
   ].forEach((field) => {
