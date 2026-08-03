@@ -1,15 +1,15 @@
 import '@testing-library/jest-dom';
 import { filterToSearchParams } from '../src/lib/widget/helpers/filterToSearchParams';
-import { FilterableColumn, FilterRoute } from '../src/lib/widget/api/types';
+import { FilterableColumn, FieldMapping } from '../src/lib/widget/api/types';
 
 const col = (
   id: string,
-  route: FilterRoute,
+  mapping: FieldMapping,
   inputType = 'text',
 ): FilterableColumn =>
-  ({ id, label: id, inputType, route }) as FilterableColumn;
+  ({ id, label: id, inputType, mapping }) as FilterableColumn;
 
-// Column catalog with the routes console-app bakes into the published data.
+// Column catalog with the field mappings baked into the published data.
 const CATALOG: FilterableColumn[] = [
   col(
     'status',
@@ -268,13 +268,13 @@ describe('filterToSearchParams', () => {
       ).toBeUndefined();
     });
 
-    it('skips a column with an unrecognized route kind (forward-compat)', () => {
+    it('skips a column with an unrecognized mapping kind (forward-compat)', () => {
       const cols = [
         {
           id: 'future',
           label: 'future',
           inputType: 'text',
-          route: { kind: 'brand-new' },
+          mapping: { kind: 'brand-new' },
         } as any,
       ];
       const params = filterToSearchParams(
@@ -287,7 +287,7 @@ describe('filterToSearchParams', () => {
       });
     });
 
-    it('skips a column with no route', () => {
+    it('skips a column with no mapping', () => {
       const cols = [
         { id: 'plain', label: 'plain', inputType: 'text' } as FilterableColumn,
       ];
@@ -304,7 +304,7 @@ describe('filterToSearchParams', () => {
   });
 
   describe('custom attributes', () => {
-    it('routes equal → customAttributes map', () => {
+    it('maps equal → customAttributes', () => {
       expect(
         run([
           {
