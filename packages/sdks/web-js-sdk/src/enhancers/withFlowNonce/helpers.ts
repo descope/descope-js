@@ -206,30 +206,6 @@ const cleanupExpiredNonces = (prefix: string = FLOW_NONCE_PREFIX): void => {
   }
 };
 
-// Run a nonce store read-modify-write atomically across tabs/SDK instances.
-// Web Locks makes the read-compare-write critical section atomic. When it is
-// unavailable or rejects, fall back to running the write unlocked - the write
-// must still happen exactly once (a lost write would strand the flow).
-const withNonceWriteLock = async (
-  executionId: string,
-  fn: () => void,
-): Promise<void> => {
-  const locks = globalThis.navigator?.locks;
-  if (locks?.request) {
-    try {
-      await locks.request(`descope-flow-nonce-${executionId}`, async () =>
-        fn(),
-      );
-      return;
-    } catch (e) {
-      // Lock acquisition failed/rejected - do not drop the write.
-      // eslint-disable-next-line no-console
-      console.error('Error acquiring flow nonce lock:', e);
-    }
-  }
-  fn();
-};
-
 export {
   cleanupExpiredNonces,
   extractFlowNonce,
@@ -241,5 +217,4 @@ export {
   parseNonceSeq,
   removeFlowNonce,
   setFlowNonce,
-  withNonceWriteLock,
 };

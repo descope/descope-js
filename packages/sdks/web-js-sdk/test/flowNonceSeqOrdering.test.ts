@@ -221,19 +221,4 @@ describe('flowNonce sequence write ordering', () => {
     expect(record()).toEqual({ value: N(1), seq: 1 });
   });
 
-  it('Web Locks rejection still writes (no lost update)', async () => {
-    const original = (globalThis.navigator as any).locks;
-    (globalThis.navigator as any).locks = {
-      request: () => Promise.reject(new Error('lock denied')),
-    };
-    try {
-      seed(N(1), 1);
-      global.fetch = jest.fn().mockResolvedValue(resp(N(2)));
-      const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.next(FULL, 'step', 'polling');
-      expect(record()).toEqual({ value: N(2), seq: 2 });
-    } finally {
-      (globalThis.navigator as any).locks = original;
-    }
-  });
 });
