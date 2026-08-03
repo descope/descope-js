@@ -104,7 +104,7 @@ The function can be sync or async, and should return a boolean indicating whethe
 - `true`: Render a custom screen
 - `false`: Render the default flow screen
 
-> **Breaking change (v-next):** server-produced screen data that used to sit directly on
+> **Breaking change (v3.0.0):** server-produced screen data that used to sit directly on
 > `context` now lives under **`context.data`** — e.g. `context.totp` → `context.data.totp`,
 > `context.inboundAppApproveScopes` → `context.data.inboundAppApproveScopes`. Status,
 > `form`, and identity fields (`user` / `project` / `lastAuth`) stay at the top level.
