@@ -196,6 +196,55 @@ describe('filterToSearchParams', () => {
       expect(params.searchFields).toBeUndefined();
       expect(params.text).toBe('john');
     });
+
+    it('drops a LIKE row with an empty value (no searchField built)', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'email',
+          operator: 'contains',
+          value: '',
+          prefix: '%',
+          suffix: '%',
+        },
+      ]);
+      expect(params.searchFields).toBeUndefined();
+    });
+
+    it('uses the first element of an array value for a LIKE row', () => {
+      const params = filterToSearchParams([
+        {
+          column: 'email',
+          operator: 'contains',
+          value: ['john', 'jane'],
+          prefix: '%',
+          suffix: '%',
+        },
+      ]);
+      expect(params.searchFields).toEqual([
+        { field: 'email', valStr: '%john%' },
+      ]);
+    });
+  });
+
+  it('ignores a row whose column matches no rule', () => {
+    const params = filterToSearchParams([
+      { column: 'unknownColumn', operator: 'equal', value: 'x' },
+    ]);
+    expect(params).toEqual({
+      statuses: undefined,
+      roleNames: undefined,
+      loginIds: undefined,
+      emails: undefined,
+      phones: undefined,
+      searchFields: undefined,
+      customAttributes: undefined,
+      verifiedEmail: undefined,
+      verifiedPhone: undefined,
+      password: undefined,
+      totp: undefined,
+      webauthn: undefined,
+      scim: undefined,
+    });
   });
 
   describe('custom attributes', () => {
@@ -336,6 +385,26 @@ describe('filterToSearchParams', () => {
           ],
         );
         expect(params.customAttributes).toEqual({ is_premium: true });
+      });
+
+      it('drops a boolean CA row with a non-boolean value', () => {
+        const params = filterToSearchParams(
+          [
+            {
+              column: 'customAttributes.is_premium',
+              operator: 'equal',
+              value: 'maybe',
+            },
+          ],
+          [
+            {
+              id: 'customAttributes.is_premium',
+              label: 'Premium',
+              inputType: 'boolean',
+            },
+          ],
+        );
+        expect(params.customAttributes).toBeUndefined();
       });
 
       it('parses boolean CA "false" to JS false', () => {

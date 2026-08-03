@@ -1,6 +1,8 @@
 import { FilterColumn } from '@descope/sdk-component-drivers';
 import { FilterRow, SearchUsersConfig } from '../api/types';
 
+type Params = Partial<SearchUsersConfig>;
+
 // Column-id prefix marking a custom-attribute filter row. Console-app emits
 // `customAttributes.<attrName>` for opt-in CA cols; widget enriches them at
 // runtime (see initFilterMixin). Values are routed verbatim into the BE
@@ -27,16 +29,9 @@ const BOOLEAN_FIELDS: Record<string, keyof SearchUsersConfig> = {
   SCIM: 'scim',
 };
 
-// Per-column value translation: UI/legacy values → wire values accepted by
-// /v1/mgmt/user/search (SearchUsersRequest proto). Backend rejects unknown
-// status strings — translate UI 'active' to wire 'enabled'.
-const VALUE_TRANSLATIONS: Record<string, Record<string, string>> = {
-  status: { active: 'enabled' },
-};
-
-// Text columns: which operators route to which field. `equal` uses the exact
-// array field; everything else (contains/starts-with/etc) falls back to the
-// `text` full-text search field.
+// Text columns whose `equal` operator maps to a native exact-match array field.
+// Other operators (contains/starts-with/etc) fall back to the `text` full-text
+// field, or to `searchFields` for the LIKE-able columns below.
 const EXACT_FIELDS: Record<string, keyof SearchUsersConfig> = {
   loginIds: 'loginIds',
   email: 'emails',
@@ -58,8 +53,8 @@ const TEXT_COLUMNS = new Set([
 // engine (wildcard LIKE / NOT LIKE). Keyed by widget column id → BE column key.
 // Only columns the BE can LIKE are listed (name/givenName/middleName/familyName
 // are a BE gap — not searchable, so their fuzzy ops stay unexposed). `equal`
-// still uses the flat exact/text fields below, so search keeps working when the
-// BE searchFields flag is off; only these richer ops need searchFields.
+// still uses the flat exact/text fields, so search keeps working when the BE
+// searchFields flag is off; only these richer ops need searchFields.
 const LIKE_FIELD_MAP: Record<string, string> = {
   loginIds: 'externalid',
   displayName: 'displayname',
@@ -79,25 +74,47 @@ const SEARCH_FIELD_OPS = new Set([
   'not-equal',
 ]);
 
+// Per-column value translation: UI/legacy values → wire values accepted by
+// /v1/mgmt/user/search. Backend rejects unknown status strings — translate
+// UI 'active' to wire 'enabled'.
+const VALUE_TRANSLATIONS: Record<string, Record<string, string>> = {
+  status: { active: 'enabled' },
+};
+
+// Fields the filter owns and clears each apply, so a removed row drops its
+// value instead of being retained by the searchUsers thunk merge. `text` is
+// deliberately excluded: it is co-owned by the standalone free-text search
+// input (initFilterUsersInputMixin) which writes the same shared
+// `searchParams.text`. Clearing it here would wipe the user's typed query on
+// every filter apply — the filter still SETS text for full-text rows, but
+// never clears the box's value.
+const CLEARED_FIELDS: (keyof SearchUsersConfig)[] = [
+  ...Object.values(ARRAY_FIELDS),
+  ...Object.values(EXACT_FIELDS),
+  ...Object.values(BOOLEAN_FIELDS),
+  'searchFields',
+  'customAttributes',
+];
+
+const firstValue = (v: FilterRow['value']): string | null => {
+  const s = Array.isArray(v) ? v[0] : v;
+  return s == null || s === '' ? null : String(s);
+};
+
 const toArray = (v: FilterRow['value']): string[] => {
   if (Array.isArray(v)) return v;
-  if (v == null || v === '') return [];
-  return [String(v)];
+  return v == null || v === '' ? [] : [String(v)];
 };
 
 const translateValues = (column: string, values: string[]): string[] => {
   const map = VALUE_TRANSLATIONS[column];
-  if (!map) return values;
-  return values.map((v) => map[v] ?? v);
+  return map ? values.map((v) => map[v] ?? v) : values;
 };
 
-// Parse a CA row value per the column's declared `inputType`. WC always
-// emits strings; BE jsonpath equality is type-strict (`@ == "true"` won't
-// match stored bool `true`). Without parsing, bool/numeric CA filters look
-// broken (zero results, no error).
-//
-// Returns `undefined` to signal "drop this row" (unparseable bool, NaN
-// numeric, empty value, etc.).
+// Parse a CA row value per the column's declared `inputType`. WC always emits
+// strings; BE jsonpath equality is type-strict (`@ == "true"` won't match a
+// stored bool `true`). Returns `undefined` to signal "drop this row"
+// (unparseable bool, NaN numeric, empty value).
 const parseCaValue = (
   value: FilterRow['value'],
   inputType: FilterColumn['inputType'] | undefined,
@@ -116,114 +133,127 @@ const parseCaValue = (
   return value;
 };
 
-// Translate descope-filter `filter-apply` event detail.value into native
-// SearchUsersRequest fields. Negation (`not-any-of`/`not-equal`/etc) is
-// unsupported by the endpoint and dropped — restrict via column `operators`
-// allowlist in console-app metadata to prevent users from picking it.
-//
-// `cols` is the live filter column schema (`this.filter.data`) used to parse
-// CA bool/numeric string values into JS bool/number for BE jsonpath equality.
-// Optional — when absent, values pass through as strings (back-compat).
-//
-// Seeds all touched fields with `undefined` so a removed row clears its
-// value instead of being retained by the searchUsers thunk merge.
-//
-// `text` is deliberately NOT seeded: it is co-owned by the standalone
-// free-text search input (initFilterUsersInputMixin), which writes the same
-// shared `searchParams.text`. Seeding it to `undefined` here would clobber the
-// user's typed search on every filter apply. The filter still SETS `text` when
-// it has a full-text row (below); it just never clears the box's value.
+// Each rule maps one column category to a params patch, or returns null if the
+// row isn't its category (try the next rule). An empty patch `{}` means "this
+// row is mine, but it contributes nothing" (e.g. dropped / empty value) and
+// still stops the chain. Order matters: searchFields runs before the negation
+// drop so NOT-LIKE ops reach the BE. Rules are pure — the caller owns mutation.
+type RowRule = (row: FilterRow, cols?: FilterColumn[]) => Params | null;
+
+// Fuzzy/negation ops on LIKE-able text columns → BE searchFields engine. The
+// widget emits the raw value; we glue the operator's prefix/suffix affixes into
+// the LIKE pattern here so they live only in the query, never in the input.
+const applySearchField: RowRule = (row) => {
+  if (!(LIKE_FIELD_MAP[row.column] && SEARCH_FIELD_OPS.has(row.operator))) {
+    return null;
+  }
+  const v = firstValue(row.value);
+  if (v === null) return {};
+  return {
+    searchFields: [
+      {
+        field: LIKE_FIELD_MAP[row.column],
+        valStr: `${row.prefix ?? ''}${v}${row.suffix ?? ''}`,
+        ...(row.operator.startsWith('not-') ? { negative: true } : {}),
+      },
+    ],
+  };
+};
+
+// Any remaining negation op is unsupported on the flat path — drop the row.
+const dropUnsupportedNegation: RowRule = (row) =>
+  row.operator.startsWith('not-') ? {} : null;
+
+const applyCustomAttribute: RowRule = (row, cols) => {
+  if (!row.column.startsWith(CA_COL_PREFIX)) return null;
+  const name = row.column.slice(CA_COL_PREFIX.length);
+  if (!name) return {};
+  // `is-empty`: BE matches users with no/null/default value when value === null
+  // (gated server-side by feature flag UserSearchEmptyCustomAttr).
+  if (row.operator === 'is-empty') {
+    return { customAttributes: { [name]: null } as any };
+  }
+  const col = cols?.find((c) => c.id === row.column);
+  const value = parseCaValue(row.value, col?.inputType);
+  return value === undefined
+    ? {}
+    : { customAttributes: { [name]: value } as any };
+};
+
+const applyBoolean: RowRule = (row) => {
+  const field = BOOLEAN_FIELDS[row.column];
+  if (!field || row.operator !== 'equal') return null;
+  const v = firstValue(row.value);
+  if (v === 'true') return { [field]: true } as Params;
+  if (v === 'false') return { [field]: false } as Params;
+  return {};
+};
+
+const applyArray: RowRule = (row) => {
+  const field = ARRAY_FIELDS[row.column];
+  if (!field) return null;
+  const arr = toArray(row.value);
+  return arr.length
+    ? ({ [field]: translateValues(row.column, arr) } as Params)
+    : {};
+};
+
+const applyText: RowRule = (row) => {
+  if (!TEXT_COLUMNS.has(row.column)) return null;
+  const arr = toArray(row.value);
+  if (!arr.length) return {};
+  if (row.operator === 'equal' && EXACT_FIELDS[row.column]) {
+    return { [EXACT_FIELDS[row.column]]: arr } as Params;
+  }
+  // contains / starts-with / ends-with → full-text. Last text row wins
+  // (proto exposes a single `text` string).
+  return { text: arr[0] };
+};
+
+const ROW_RULES: RowRule[] = [
+  applySearchField,
+  dropUnsupportedNegation,
+  applyCustomAttribute,
+  applyBoolean,
+  applyArray,
+  applyText,
+];
+
+// Translate descope-filter `filter-apply` event rows into native
+// SearchUsersRequest fields. `cols` is the live filter column schema
+// (`this.filter.data`), used to parse CA bool/numeric strings into JS
+// bool/number for BE jsonpath equality — optional; absent → values pass
+// through as strings (back-compat). Negation is unsupported by the endpoint
+// (except NOT-LIKE via searchFields) and dropped; restrict via the column
+// `operators` allowlist in console-app metadata.
 export const filterToSearchParams = (
   rows: FilterRow[],
   cols?: FilterColumn[],
-): Partial<SearchUsersConfig> => {
-  const params: Partial<SearchUsersConfig> = {};
-  [
-    ...Object.values(ARRAY_FIELDS),
-    ...Object.values(EXACT_FIELDS),
-    ...Object.values(BOOLEAN_FIELDS),
-    'searchFields' as const,
-    'customAttributes' as const,
-  ].forEach((field) => {
+): Params => {
+  const params: Params = {};
+  CLEARED_FIELDS.forEach((field) => {
     (params as any)[field] = undefined;
   });
-
   rows.forEach((row) => {
     if (!row.column || !row.operator) return;
-
-    // searchFields path: text-column fuzzy/negation ops → BE LIKE engine.
-    // Handled before the not-* drop below so negation reaches the BE here.
-    // The widget emits the RAW value + the operator's prefix/suffix affixes;
-    // we build the LIKE pattern here so the affix lives only in the query,
-    // never in the widget's value input.
-    if (LIKE_FIELD_MAP[row.column] && SEARCH_FIELD_OPS.has(row.operator)) {
-      const v = Array.isArray(row.value) ? row.value[0] : row.value;
-      if (v == null || v === '') return;
-      const valStr = `${row.prefix ?? ''}${v}${row.suffix ?? ''}`;
-      params.searchFields = params.searchFields || [];
-      params.searchFields.push({
-        field: LIKE_FIELD_MAP[row.column],
-        valStr,
-        ...(row.operator.startsWith('not-') ? { negative: true } : {}),
-      });
-      return;
+    const patch = ROW_RULES.reduce<Params | null>(
+      (found, rule) => found ?? rule(row, cols),
+      null,
+    );
+    if (!patch) return;
+    // searchFields and customAttributes accumulate across rows; everything else
+    // is a straight assignment.
+    const { searchFields, customAttributes, ...rest } = patch;
+    Object.assign(params, rest);
+    if (searchFields) {
+      params.searchFields = [...(params.searchFields ?? []), ...searchFields];
     }
-
-    // Other negation ops remain unsupported on the flat path — drop them.
-    if (row.operator.startsWith('not-')) return;
-
-    if (row.column.startsWith(CA_COL_PREFIX)) {
-      const name = row.column.slice(CA_COL_PREFIX.length);
-      if (!name) return;
-      // `is-empty` op: BE matches users with no value / null / default for the
-      // attribute when value === null (gated server-side by feature flag
-      // UserSearchEmptyCustomAttr).
-      if (row.operator === 'is-empty') {
-        params.customAttributes = params.customAttributes || {};
-        (params.customAttributes as any)[name] = null;
-        return;
-      }
-      // BE jsonpath equality is type-strict — parse string→bool/number per
-      // the column's declared `inputType`. Array values (multiselect CAs)
-      // preserved; unparseable values drop the row.
-      const col = cols?.find((c) => c.id === row.column);
-      const value = parseCaValue(row.value, col?.inputType);
-      if (value === undefined) return;
-      params.customAttributes = params.customAttributes || {};
-      (params.customAttributes as any)[name] = value;
-      return;
-    }
-
-    if (BOOLEAN_FIELDS[row.column] && row.operator === 'equal') {
-      const v = Array.isArray(row.value) ? row.value[0] : row.value;
-      if (v === 'true') (params as any)[BOOLEAN_FIELDS[row.column]] = true;
-      else if (v === 'false')
-        (params as any)[BOOLEAN_FIELDS[row.column]] = false;
-      return;
-    }
-
-    if (ARRAY_FIELDS[row.column]) {
-      const arr = toArray(row.value);
-      if (!arr.length) return;
-      (params as any)[ARRAY_FIELDS[row.column]] = translateValues(
-        row.column,
-        arr,
-      );
-      return;
-    }
-
-    if (TEXT_COLUMNS.has(row.column)) {
-      const arr = toArray(row.value);
-      if (!arr.length) return;
-      if (row.operator === 'equal' && EXACT_FIELDS[row.column]) {
-        (params as any)[EXACT_FIELDS[row.column]] = arr;
-      } else {
-        // contains / starts-with / ends-with → full-text search.
-        // Last text row wins (proto only exposes a single `text` string).
-        [(params as any).text] = arr;
-      }
+    if (customAttributes) {
+      params.customAttributes = {
+        ...(params.customAttributes ?? {}),
+        ...customAttributes,
+      };
     }
   });
-
   return params;
 };
