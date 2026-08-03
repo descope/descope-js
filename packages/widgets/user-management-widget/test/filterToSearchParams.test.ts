@@ -1,148 +1,148 @@
 import '@testing-library/jest-dom';
 import { filterToSearchParams } from '../src/lib/widget/helpers/filterToSearchParams';
+import { FilterableColumn, FilterRoute } from '../src/lib/widget/api/types';
+
+const col = (
+  id: string,
+  route: FilterRoute,
+  inputType = 'text',
+): FilterableColumn =>
+  ({ id, label: id, inputType, route }) as FilterableColumn;
+
+// Column catalog with the routes console-app bakes into the published data.
+const CATALOG: FilterableColumn[] = [
+  col(
+    'status',
+    { kind: 'array', field: 'statuses', valueMap: { active: 'enabled' } },
+    'multiselect',
+  ),
+  col('roles', { kind: 'array', field: 'roleNames' }, 'multiselect'),
+  col('loginIds', {
+    kind: 'text',
+    exactField: 'loginIds',
+    likeField: 'externalid',
+  }),
+  col('displayName', { kind: 'text', likeField: 'displayname' }),
+  col(
+    'email',
+    { kind: 'text', exactField: 'emails', likeField: 'email' },
+    'email',
+  ),
+  col('phone', {
+    kind: 'text',
+    exactField: 'phones',
+    likeField: 'phonenumber',
+  }),
+  col('name', { kind: 'text' }),
+  col('familyName', { kind: 'text' }),
+  col('verifiedEmail', { kind: 'boolean', field: 'verifiedEmail' }, 'boolean'),
+  col('SCIM', { kind: 'boolean', field: 'scim' }, 'boolean'),
+  col(
+    'customAttributes.department',
+    { kind: 'customAttribute', name: 'department' },
+    'text',
+  ),
+  col(
+    'customAttributes.is_premium',
+    { kind: 'customAttribute', name: 'is_premium' },
+    'boolean',
+  ),
+  col(
+    'customAttributes.level',
+    { kind: 'customAttribute', name: 'level' },
+    'number',
+  ),
+  col(
+    'customAttributes.skills',
+    { kind: 'customAttribute', name: 'skills' },
+    'multiselect',
+  ),
+];
+
+const run = (rows: any[]) => filterToSearchParams(rows, CATALOG);
 
 describe('filterToSearchParams', () => {
-  it('seeds all touched fields with undefined when given no rows', () => {
-    const params = filterToSearchParams([]);
-    expect(params).toEqual({
+  it('clears only the fields the configured columns can write (never text)', () => {
+    expect(run([])).toEqual({
       statuses: undefined,
       roleNames: undefined,
       loginIds: undefined,
       emails: undefined,
       phones: undefined,
+      verifiedEmail: undefined,
+      scim: undefined,
       searchFields: undefined,
       customAttributes: undefined,
-      verifiedEmail: undefined,
-      verifiedPhone: undefined,
-      password: undefined,
-      totp: undefined,
-      webauthn: undefined,
-      scim: undefined,
     });
   });
 
-  it('never seeds text — it is co-owned by the standalone search input, so a non-text filter must not clobber the typed query', () => {
-    const params = filterToSearchParams([
+  it('never clears text — it is co-owned by the standalone search input', () => {
+    const params = run([
       { column: 'status', operator: 'is-any-of', value: ['active'] },
     ]);
-    // No `text` key at all → searchUsers merge preserves searchParams.text.
     expect('text' in params).toBe(false);
     expect(params.statuses).toEqual(['enabled']);
   });
 
-  it('maps status is-any-of to statuses, translating active → enabled', () => {
-    const params = filterToSearchParams([
-      { column: 'status', operator: 'is-any-of', value: ['active', 'invited'] },
-    ]);
-    expect(params.statuses).toEqual(['enabled', 'invited']);
+  it('array: is-any-of → field, applying valueMap', () => {
+    expect(
+      run([
+        {
+          column: 'status',
+          operator: 'is-any-of',
+          value: ['active', 'invited'],
+        },
+      ]).statuses,
+    ).toEqual(['enabled', 'invited']);
+    expect(
+      run([{ column: 'roles', operator: 'is-any-of', value: ['Admin'] }])
+        .roleNames,
+    ).toEqual(['Admin']);
   });
 
-  it('maps roles is-any-of to roleNames', () => {
-    const params = filterToSearchParams([
-      {
-        column: 'roles',
-        operator: 'is-any-of',
-        value: ['Tenant Admin', 'Reader'],
-      },
-    ]);
-    expect(params.roleNames).toEqual(['Tenant Admin', 'Reader']);
+  it('text equal → exact array field when configured', () => {
+    expect(
+      run([{ column: 'loginIds', operator: 'equal', value: 'a@b.com' }])
+        .loginIds,
+    ).toEqual(['a@b.com']);
+    expect(
+      run([{ column: 'email', operator: 'equal', value: 'b@c.com' }]).emails,
+    ).toEqual(['b@c.com']);
   });
 
-  it('maps loginIds equal to loginIds exact-match array', () => {
-    const params = filterToSearchParams([
-      { column: 'loginIds', operator: 'equal', value: 'alice@example.com' },
-    ]);
-    expect(params.loginIds).toEqual(['alice@example.com']);
+  it('text equal → full-text when no exact field (displayName/name)', () => {
+    expect(
+      run([{ column: 'name', operator: 'contains', value: 'moshe' }]).text,
+    ).toBe('moshe');
+    expect(
+      run([{ column: 'displayName', operator: 'equal', value: 'jo' }]).text,
+    ).toBe('jo');
+    expect(
+      run([{ column: 'displayName', operator: 'equal', value: 'jo' }])
+        .searchFields,
+    ).toBeUndefined();
   });
 
-  it('maps email equal to emails exact-match array', () => {
-    const params = filterToSearchParams([
-      { column: 'email', operator: 'equal', value: 'bob@example.com' },
-    ]);
-    expect(params.emails).toEqual(['bob@example.com']);
+  it('boolean equal true/false → optional bool field', () => {
+    expect(
+      run([{ column: 'verifiedEmail', operator: 'equal', value: 'true' }])
+        .verifiedEmail,
+    ).toBe(true);
+    expect(
+      run([{ column: 'SCIM', operator: 'equal', value: 'false' }]).scim,
+    ).toBe(false);
   });
 
-  it('maps phone equal to phones exact-match array', () => {
-    const params = filterToSearchParams([
-      { column: 'phone', operator: 'equal', value: '+15555555555' },
-    ]);
-    expect(params.phones).toEqual(['+15555555555']);
+  it('drops boolean row with a non-boolean value', () => {
+    expect(
+      run([{ column: 'verifiedEmail', operator: 'equal', value: 'maybe' }])
+        .verifiedEmail,
+    ).toBeUndefined();
   });
 
-  it('routes text-column contains operator to the text full-text field', () => {
-    const params = filterToSearchParams([
-      { column: 'name', operator: 'contains', value: 'moshe' },
-    ]);
-    expect(params.text).toBe('moshe');
-  });
-
-  it('routes any fuzzy text column (familyName/displayName/etc) to text', () => {
-    const params = filterToSearchParams([
-      { column: 'familyName', operator: 'contains', value: 'cohen' },
-    ]);
-    expect(params.text).toBe('cohen');
-  });
-
-  it('drops not-any-of operator since the endpoint does not support negation', () => {
-    const params = filterToSearchParams([
-      {
-        column: 'status',
-        operator: 'not-any-of',
-        value: ['enabled'],
-      },
-    ]);
-    expect(params.statuses).toBeUndefined();
-  });
-
-  it('drops a negation on a non-LIKE text column — never inverts it to full-text', () => {
-    const params = filterToSearchParams([
-      { column: 'name', operator: 'not-contains', value: 'john' },
-    ]);
-    expect(params.text).toBeUndefined();
-    expect(params.searchFields).toBeUndefined();
-  });
-
-  it('drops rows missing column or operator', () => {
-    const params = filterToSearchParams([
-      { column: '', operator: 'is-any-of', value: ['x'] },
-      { column: 'status', operator: '', value: ['x'] },
-    ]);
-    expect(params.statuses).toBeUndefined();
-  });
-
-  it('drops rows whose value is empty', () => {
-    const params = filterToSearchParams([
-      { column: 'name', operator: 'contains', value: '' },
-      { column: 'roles', operator: 'is-any-of', value: [] },
-    ]);
-    expect(params.text).toBeUndefined();
-    expect(params.roleNames).toBeUndefined();
-  });
-
-  it('combines status and roles into a single params object', () => {
-    const params = filterToSearchParams([
-      { column: 'status', operator: 'is-any-of', value: ['active'] },
-      { column: 'roles', operator: 'is-any-of', value: ['Reader'] },
-    ]);
-    expect(params).toEqual(
-      expect.objectContaining({
-        statuses: ['enabled'],
-        roleNames: ['Reader'],
-      }),
-    );
-  });
-
-  it('last text-column row wins when multiple text rows are present', () => {
-    const params = filterToSearchParams([
-      { column: 'name', operator: 'contains', value: 'first' },
-      { column: 'familyName', operator: 'contains', value: 'second' },
-    ]);
-    expect(params.text).toBe('second');
-  });
-
-  describe('searchFields', () => {
-    it('affixes the raw value with prefix/suffix into valStr (contains → %john%)', () => {
-      const params = filterToSearchParams([
+  describe('searchFields (LIKE)', () => {
+    it('affixes prefix/suffix into valStr', () => {
+      const params = run([
         {
           column: 'displayName',
           operator: 'contains',
@@ -154,12 +154,11 @@ describe('filterToSearchParams', () => {
       expect(params.searchFields).toEqual([
         { field: 'displayname', valStr: '%john%' },
       ]);
-      // not double-filtered via the flat text field
       expect(params.text).toBeUndefined();
     });
 
-    it('starts-with affixes suffix only, ends-with prefix only (raw value)', () => {
-      const params = filterToSearchParams([
+    it('starts-with suffix only, ends-with prefix only', () => {
+      const params = run([
         {
           column: 'displayName',
           operator: 'starts-with',
@@ -174,25 +173,15 @@ describe('filterToSearchParams', () => {
       ]);
     });
 
-    it('maps not-equal to a negative searchField (no affix → exact)', () => {
-      const params = filterToSearchParams([
-        { column: 'email', operator: 'not-equal', value: 'a@b.com' },
-      ]);
-      expect(params.searchFields).toEqual([
-        { field: 'email', valStr: 'a@b.com', negative: true },
-      ]);
+    it('not-equal → negative searchField', () => {
+      expect(
+        run([{ column: 'email', operator: 'not-equal', value: 'a@b.com' }])
+          .searchFields,
+      ).toEqual([{ field: 'email', valStr: 'a@b.com', negative: true }]);
     });
 
-    it('keeps equal on the flat path (no searchFields)', () => {
-      const params = filterToSearchParams([
-        { column: 'email', operator: 'equal', value: 'a@b.com' },
-      ]);
-      expect(params.searchFields).toBeUndefined();
-      expect(params.emails).toEqual(['a@b.com']);
-    });
-
-    it('does not build searchFields for BE-gap columns (name/familyName)', () => {
-      const params = filterToSearchParams([
+    it('full-text for text columns with no LIKE field (name)', () => {
+      const params = run([
         {
           column: 'name',
           operator: 'contains',
@@ -205,345 +194,307 @@ describe('filterToSearchParams', () => {
       expect(params.text).toBe('john');
     });
 
-    it('drops a LIKE row with an empty value (no searchField built)', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'email',
-          operator: 'contains',
-          value: '',
-          prefix: '%',
-          suffix: '%',
-        },
-      ]);
-      expect(params.searchFields).toBeUndefined();
+    it('drops a LIKE row with an empty value', () => {
+      expect(
+        run([
+          {
+            column: 'email',
+            operator: 'contains',
+            value: '',
+            prefix: '%',
+            suffix: '%',
+          },
+        ]).searchFields,
+      ).toBeUndefined();
     });
 
-    it('uses the first element of an array value for a LIKE row', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'email',
-          operator: 'contains',
-          value: ['john', 'jane'],
-          prefix: '%',
-          suffix: '%',
-        },
-      ]);
-      expect(params.searchFields).toEqual([
-        { field: 'email', valStr: '%john%' },
-      ]);
+    it('uses the first element of an array value', () => {
+      expect(
+        run([
+          {
+            column: 'email',
+            operator: 'contains',
+            value: ['john', 'jane'],
+            prefix: '%',
+            suffix: '%',
+          },
+        ]).searchFields,
+      ).toEqual([{ field: 'email', valStr: '%john%' }]);
     });
   });
 
-  it('ignores a row whose column matches no rule', () => {
-    const params = filterToSearchParams([
-      { column: 'unknownColumn', operator: 'equal', value: 'x' },
-    ]);
-    expect(params).toEqual({
-      statuses: undefined,
-      roleNames: undefined,
-      loginIds: undefined,
-      emails: undefined,
-      phones: undefined,
-      searchFields: undefined,
-      customAttributes: undefined,
-      verifiedEmail: undefined,
-      verifiedPhone: undefined,
-      password: undefined,
-      totp: undefined,
-      webauthn: undefined,
-      scim: undefined,
+  describe('drops / never inverts', () => {
+    it('drops not-any-of on a multiselect (never becomes is-any-of)', () => {
+      expect(
+        run([{ column: 'status', operator: 'not-any-of', value: ['enabled'] }])
+          .statuses,
+      ).toBeUndefined();
+    });
+
+    it('drops a negation on a non-LIKE text column (never full-text)', () => {
+      const params = run([
+        { column: 'name', operator: 'not-contains', value: 'john' },
+      ]);
+      expect(params.text).toBeUndefined();
+      expect(params.searchFields).toBeUndefined();
+    });
+
+    it('drops rows missing column or operator', () => {
+      expect(
+        run([
+          { column: '', operator: 'is-any-of', value: ['x'] },
+          { column: 'status', operator: '', value: ['x'] },
+        ]).statuses,
+      ).toBeUndefined();
+    });
+
+    it('drops empty values', () => {
+      const params = run([
+        { column: 'name', operator: 'contains', value: '' },
+        { column: 'roles', operator: 'is-any-of', value: [] },
+      ]);
+      expect(params.text).toBeUndefined();
+      expect(params.roleNames).toBeUndefined();
+    });
+
+    it('ignores a row whose column is not in the catalog', () => {
+      expect(
+        'statuses' in
+          run([{ column: 'unknownColumn', operator: 'equal', value: 'x' }]),
+      ).toBe(true);
+      expect(
+        run([{ column: 'unknownColumn', operator: 'equal', value: 'x' }])
+          .statuses,
+      ).toBeUndefined();
+    });
+
+    it('skips a column with an unrecognized route kind (forward-compat)', () => {
+      const cols = [
+        {
+          id: 'future',
+          label: 'future',
+          inputType: 'text',
+          route: { kind: 'brand-new' },
+        } as any,
+      ];
+      const params = filterToSearchParams(
+        [{ column: 'future', operator: 'equal', value: 'x' }],
+        cols,
+      );
+      expect(params).toEqual({
+        searchFields: undefined,
+        customAttributes: undefined,
+      });
+    });
+
+    it('skips a column with no route', () => {
+      const cols = [
+        { id: 'plain', label: 'plain', inputType: 'text' } as FilterableColumn,
+      ];
+      expect(
+        filterToSearchParams(
+          [{ column: 'plain', operator: 'equal', value: 'x' }],
+          cols,
+        ),
+      ).toEqual({
+        searchFields: undefined,
+        customAttributes: undefined,
+      });
     });
   });
 
   describe('custom attributes', () => {
-    it('routes customAttributes.<name> rows into the customAttributes map', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'customAttributes.department',
-          operator: 'equal',
-          value: 'engineering',
-        },
-      ]);
-      expect(params.customAttributes).toEqual({ department: 'engineering' });
+    it('routes equal → customAttributes map', () => {
+      expect(
+        run([
+          {
+            column: 'customAttributes.department',
+            operator: 'equal',
+            value: 'eng',
+          },
+        ]).customAttributes,
+      ).toEqual({ department: 'eng' });
     });
 
-    it('combines multiple CA rows into one customAttributes map', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'customAttributes.department',
-          operator: 'equal',
-          value: 'eng',
-        },
-        {
-          column: 'customAttributes.level',
-          operator: 'equal',
-          value: '5',
-        },
-      ]);
-      expect(params.customAttributes).toEqual({
-        department: 'eng',
-        level: '5',
-      });
+    it('preserves array values for multiselect CA', () => {
+      expect(
+        run([
+          {
+            column: 'customAttributes.skills',
+            operator: 'is-any-of',
+            value: ['ts', 'go'],
+          },
+        ]).customAttributes,
+      ).toEqual({ skills: ['ts', 'go'] });
     });
 
-    it('drops CA rows with empty values', () => {
-      const params = filterToSearchParams([
-        { column: 'customAttributes.department', operator: 'equal', value: '' },
-        {
-          column: 'customAttributes.skills',
-          operator: 'is-any-of',
-          value: [],
-        },
-      ]);
-      expect(params.customAttributes).toBeUndefined();
+    it('parses boolean CA by inputType', () => {
+      expect(
+        run([
+          {
+            column: 'customAttributes.is_premium',
+            operator: 'equal',
+            value: 'true',
+          },
+        ]).customAttributes,
+      ).toEqual({ is_premium: true });
+      expect(
+        run([
+          {
+            column: 'customAttributes.is_premium',
+            operator: 'equal',
+            value: 'maybe',
+          },
+        ]).customAttributes,
+      ).toBeUndefined();
+    });
+
+    it('parses numeric CA by inputType', () => {
+      expect(
+        run([
+          { column: 'customAttributes.level', operator: 'equal', value: '5' },
+        ]).customAttributes,
+      ).toEqual({ level: 5 });
+      expect(
+        run([
+          { column: 'customAttributes.level', operator: 'equal', value: 'abc' },
+        ]).customAttributes,
+      ).toBeUndefined();
+    });
+
+    it('is-empty → null', () => {
+      expect(
+        run([
+          {
+            column: 'customAttributes.department',
+            operator: 'is-empty',
+            value: null,
+          },
+        ]).customAttributes,
+      ).toEqual({ department: null });
     });
 
     it('drops negated CA operators', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'customAttributes.department',
-          operator: 'not-equal',
-          value: 'eng',
-        },
-      ]);
-      expect(params.customAttributes).toBeUndefined();
+      expect(
+        run([
+          {
+            column: 'customAttributes.department',
+            operator: 'not-equal',
+            value: 'eng',
+          },
+        ]).customAttributes,
+      ).toBeUndefined();
     });
 
-    it('drops a CA row with empty attribute name', () => {
-      const params = filterToSearchParams([
-        { column: 'customAttributes.', operator: 'equal', value: 'x' },
-      ]);
-      expect(params.customAttributes).toBeUndefined();
-    });
-
-    it('emits null for is-empty CA operator', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'customAttributes.department',
-          operator: 'is-empty',
-          value: null,
-        },
-      ]);
-      expect(params.customAttributes).toEqual({ department: null });
-    });
-
-    it('combines is-empty with another CA equal row', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'customAttributes.department',
-          operator: 'is-empty',
-          value: null,
-        },
-        {
-          column: 'customAttributes.level',
-          operator: 'equal',
-          value: '5',
-        },
-      ]);
-      expect(params.customAttributes).toEqual({
-        department: null,
-        level: '5',
-      });
-    });
-
-    describe('type parsing via cols', () => {
-      it('parses boolean CA "true" to JS true', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.is_premium',
-              operator: 'equal',
-              value: 'true',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.is_premium',
-              label: 'Premium',
-              inputType: 'boolean',
-            },
-          ],
-        );
-        expect(params.customAttributes).toEqual({ is_premium: true });
-      });
-
-      it('drops a boolean CA row with a non-boolean value', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.is_premium',
-              operator: 'equal',
-              value: 'maybe',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.is_premium',
-              label: 'Premium',
-              inputType: 'boolean',
-            },
-          ],
-        );
-        expect(params.customAttributes).toBeUndefined();
-      });
-
-      it('parses boolean CA "false" to JS false', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.is_premium',
-              operator: 'equal',
-              value: 'false',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.is_premium',
-              label: 'Premium',
-              inputType: 'boolean',
-            },
-          ],
-        );
-        expect(params.customAttributes).toEqual({ is_premium: false });
-      });
-
-      it('parses numeric CA "5" to JS number 5', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.level',
-              operator: 'equal',
-              value: '5',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.level',
-              label: 'Level',
-              inputType: 'number',
-            },
-          ],
-        );
-        expect(params.customAttributes).toEqual({ level: 5 });
-      });
-
-      it('drops numeric CA row with non-numeric value', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.level',
-              operator: 'equal',
-              value: 'abc',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.level',
-              label: 'Level',
-              inputType: 'number',
-            },
-          ],
-        );
-        expect(params.customAttributes).toBeUndefined();
-      });
-
-      it('preserves array values for multiselect CA cols', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.skills',
-              operator: 'is-any-of',
-              value: ['ts', 'go'],
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.skills',
-              label: 'Skills',
-              inputType: 'multiselect',
-            },
-          ],
-        );
-        expect(params.customAttributes).toEqual({ skills: ['ts', 'go'] });
-      });
-
-      it('combines bool CA with base status row', () => {
-        const params = filterToSearchParams(
-          [
-            { column: 'status', operator: 'is-any-of', value: ['active'] },
-            {
-              column: 'customAttributes.is_premium',
-              operator: 'equal',
-              value: 'true',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.is_premium',
-              label: 'Premium',
-              inputType: 'boolean',
-            },
-          ],
-        );
-        expect(params).toEqual(
-          expect.objectContaining({
-            statuses: ['enabled'],
-            customAttributes: { is_premium: true },
-          }),
-        );
-      });
-    });
-  });
-
-  describe('boolean columns', () => {
-    it('routes verifiedEmail equal "true" to boolean true', () => {
-      const params = filterToSearchParams([
-        { column: 'verifiedEmail', operator: 'equal', value: 'true' },
-      ]);
-      expect(params.verifiedEmail).toBe(true);
-    });
-
-    it('routes password equal "false" to boolean false', () => {
-      const params = filterToSearchParams([
-        { column: 'password', operator: 'equal', value: 'false' },
-      ]);
-      expect(params.password).toBe(false);
-    });
-
-    it('drops boolean row with non-boolean string value', () => {
-      const params = filterToSearchParams([
-        { column: 'totp', operator: 'equal', value: 'maybe' },
-      ]);
-      expect(params.totp).toBeUndefined();
-    });
-
-    it('drops boolean row with non-equal operator', () => {
-      const params = filterToSearchParams([
-        { column: 'webauthn', operator: 'not-equal', value: 'true' },
-      ]);
-      expect(params.webauthn).toBeUndefined();
-    });
-
-    it('combines boolean rows with base columns', () => {
-      const params = filterToSearchParams([
+    it('combines CA rows with base columns', () => {
+      const params = run([
         { column: 'status', operator: 'is-any-of', value: ['active'] },
-        { column: 'verifiedEmail', operator: 'equal', value: 'true' },
-        { column: 'SCIM', operator: 'equal', value: 'false' },
+        {
+          column: 'customAttributes.is_premium',
+          operator: 'equal',
+          value: 'true',
+        },
       ]);
       expect(params).toEqual(
         expect.objectContaining({
           statuses: ['enabled'],
-          verifiedEmail: true,
-          scim: false,
+          customAttributes: { is_premium: true },
         }),
       );
     });
+  });
 
-    it('routes uppercase SCIM column id to lowercase proto field', () => {
-      const params = filterToSearchParams([
-        { column: 'SCIM', operator: 'equal', value: 'true' },
-      ]);
-      expect(params.scim).toBe(true);
-    });
+  it('defaults to an empty catalog when cols are omitted', () => {
+    expect(
+      filterToSearchParams([
+        { column: 'status', operator: 'is-any-of', value: ['x'] },
+      ]),
+    ).toEqual({ searchFields: undefined, customAttributes: undefined });
+  });
+
+  it('drops a boolean row with a non-equal operator', () => {
+    expect(
+      run([{ column: 'verifiedEmail', operator: 'not-equal', value: 'true' }])
+        .verifiedEmail,
+    ).toBeUndefined();
+  });
+
+  it('drops a text exact row with an empty value', () => {
+    expect(
+      run([{ column: 'loginIds', operator: 'equal', value: '' }]).loginIds,
+    ).toBeUndefined();
+  });
+
+  it('parses boolean CA "false" and drops empty/empty-array CA values', () => {
+    expect(
+      run([
+        {
+          column: 'customAttributes.is_premium',
+          operator: 'equal',
+          value: 'false',
+        },
+      ]).customAttributes,
+    ).toEqual({ is_premium: false });
+    expect(
+      run([
+        { column: 'customAttributes.department', operator: 'equal', value: '' },
+      ]).customAttributes,
+    ).toBeUndefined();
+    expect(
+      run([
+        { column: 'customAttributes.skills', operator: 'is-any-of', value: [] },
+      ]).customAttributes,
+    ).toBeUndefined();
+  });
+
+  it('accumulates multiple CA rows into one map', () => {
+    expect(
+      run([
+        {
+          column: 'customAttributes.department',
+          operator: 'equal',
+          value: 'eng',
+        },
+        { column: 'customAttributes.level', operator: 'equal', value: '5' },
+      ]).customAttributes,
+    ).toEqual({ department: 'eng', level: 5 });
+  });
+
+  it('last text row wins (single text field)', () => {
+    expect(
+      run([
+        { column: 'name', operator: 'contains', value: 'first' },
+        { column: 'familyName', operator: 'contains', value: 'second' },
+      ]).text,
+    ).toBe('second');
+  });
+
+  it('combines multiple categories in one call', () => {
+    const params = run([
+      { column: 'status', operator: 'is-any-of', value: ['active'] },
+      { column: 'roles', operator: 'is-any-of', value: ['Admin'] },
+      { column: 'verifiedEmail', operator: 'equal', value: 'true' },
+      {
+        column: 'email',
+        operator: 'contains',
+        value: 'x',
+        prefix: '%',
+        suffix: '%',
+      },
+      {
+        column: 'customAttributes.department',
+        operator: 'equal',
+        value: 'eng',
+      },
+    ]);
+    expect(params).toEqual(
+      expect.objectContaining({
+        statuses: ['enabled'],
+        roleNames: ['Admin'],
+        verifiedEmail: true,
+        searchFields: [{ field: 'email', valStr: '%x%' }],
+        customAttributes: { department: 'eng' },
+      }),
+    );
   });
 });

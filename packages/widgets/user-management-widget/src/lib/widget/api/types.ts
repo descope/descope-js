@@ -92,6 +92,22 @@ export type FilterRow = {
   suffix?: string;
 };
 
+// How a column's rows map to request fields. Authored by console-app and baked
+// into the published data, so the SDK stays a generic interpreter with no
+// backend field names. Unknown kinds are skipped.
+export type FilterRoute =
+  | { kind: 'array'; field: string; valueMap?: Record<string, string> }
+  | { kind: 'boolean'; field: string }
+  | { kind: 'text'; exactField?: string; likeField?: string }
+  | { kind: 'customAttribute'; name: string };
+
+// The published column shape the widget consumes: the driver's FilterColumn
+// plus the routing baked by console-app.
+export type FilterableColumn =
+  import('@descope/sdk-component-drivers').FilterColumn & {
+    route?: FilterRoute;
+  };
+
 export type SearchUsersConfig = {
   page?: number;
   limit?: number;
