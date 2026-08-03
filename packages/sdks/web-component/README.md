@@ -189,6 +189,12 @@ The function can be sync or async, and should return a boolean indicating whethe
 - `true`: Render a custom screen
 - `false`: Render the default flow screen
 
+> **Breaking change (v4.0.0):** server-produced screen data that used to sit directly on
+> `context` now lives under **`context.data`** — e.g. `context.totp` → `context.data.totp`,
+> `context.inboundAppApproveScopes` → `context.data.inboundAppApproveScopes`. Status,
+> `form`, and identity fields (`user` / `project` / `lastAuth`) stay at the top level.
+> See [The `context` object](#the-context-object) below for the full list of `context.data` fields.
+
 This function allows rendering custom screens instead of the default flow screens.
 It can be useful for highly customized UIs or specific logic not covered by the default screens
 
