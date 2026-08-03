@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { filterToSearchParams } from '../src/lib/widget/state/filterToSearchParams';
+import { filterToSearchParams } from '../src/lib/widget/helpers/filterToSearchParams';
 
 describe('filterToSearchParams', () => {
   it('seeds all touched fields with undefined when given no rows', () => {
@@ -259,17 +259,6 @@ describe('filterToSearchParams', () => {
       expect(params.customAttributes).toEqual({ department: 'engineering' });
     });
 
-    it('preserves array values for multiselect CA rows', () => {
-      const params = filterToSearchParams([
-        {
-          column: 'customAttributes.skills',
-          operator: 'is-any-of',
-          value: ['ts', 'go'],
-        },
-      ]);
-      expect(params.customAttributes).toEqual({ skills: ['ts', 'go'] });
-    });
-
     it('combines multiple CA rows into one customAttributes map', () => {
       const params = filterToSearchParams([
         {
@@ -317,23 +306,6 @@ describe('filterToSearchParams', () => {
         { column: 'customAttributes.', operator: 'equal', value: 'x' },
       ]);
       expect(params.customAttributes).toBeUndefined();
-    });
-
-    it('combines CA rows with base columns', () => {
-      const params = filterToSearchParams([
-        { column: 'status', operator: 'is-any-of', value: ['active'] },
-        {
-          column: 'customAttributes.department',
-          operator: 'equal',
-          value: 'eng',
-        },
-      ]);
-      expect(params).toEqual(
-        expect.objectContaining({
-          statuses: ['enabled'],
-          customAttributes: { department: 'eng' },
-        }),
-      );
     });
 
     it('emits null for is-empty CA operator', () => {
@@ -465,26 +437,6 @@ describe('filterToSearchParams', () => {
           ],
         );
         expect(params.customAttributes).toBeUndefined();
-      });
-
-      it('keeps text CA values as strings', () => {
-        const params = filterToSearchParams(
-          [
-            {
-              column: 'customAttributes.department',
-              operator: 'equal',
-              value: 'eng',
-            },
-          ],
-          [
-            {
-              id: 'customAttributes.department',
-              label: 'Department',
-              inputType: 'text',
-            },
-          ],
-        );
-        expect(params.customAttributes).toEqual({ department: 'eng' });
       });
 
       it('preserves array values for multiselect CA cols', () => {

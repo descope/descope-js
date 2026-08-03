@@ -2,7 +2,6 @@ import {
   FilterColumn,
   FilterDriver,
   FilterEventDetail,
-  FilterOption,
   FilterRow,
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
@@ -10,47 +9,11 @@ import { loggerMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getCustomAttributes, getTenantRoles } from '../../../state/selectors';
-import { filterToSearchParams } from '../../../state/filterToSearchParams';
-import { CustomAttributeTypeMap } from '../../../api/types';
-
-const ROLES_COLUMN_ID = 'roles';
-const CA_COL_PREFIX = 'customAttributes.';
-
-// Map CustomAttribute proto `type` → filter inputType + operator allowlist.
-// v0: equality only across the board (date intentionally omitted — no BE
-// op support yet). Widen when BE confirms richer ops on `customAttributes`.
-const CA_TYPE_TO_FILTER: Record<
-  number,
-  Pick<FilterColumn, 'inputType'> & { operators: string[] }
-> = {
-  [CustomAttributeTypeMap.text]: {
-    inputType: 'text',
-    operators: ['equal', 'is-empty'],
-  },
-  [CustomAttributeTypeMap.numeric]: {
-    inputType: 'number',
-    operators: ['equal', 'is-empty'],
-  },
-  [CustomAttributeTypeMap.bool]: {
-    inputType: 'boolean',
-    operators: ['equal', 'is-empty'],
-  },
-  [CustomAttributeTypeMap.singleSelect]: {
-    inputType: 'singleselect',
-    operators: ['equal', 'is-empty'],
-  },
-  [CustomAttributeTypeMap.array]: {
-    inputType: 'multiselect',
-    operators: ['is-any-of', 'is-empty'],
-  },
-};
-
-const toFilterOption = (raw: unknown): FilterOption => {
-  if (typeof raw === 'string') return { value: raw, label: raw };
-  const o = raw as { value?: string; label?: string };
-  const value = o?.value ?? '';
-  return { value, label: o?.label ?? value };
-};
+import { filterToSearchParams } from '../../../helpers/filterToSearchParams';
+import {
+  applyRolesColumn,
+  enrichCustomAttributeCols,
+} from '../../../helpers/filterColumns';
 
 export const initFilterMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -88,30 +51,6 @@ export const initFilterMixin = createSingletonMixin(
         });
       };
 
-      // eslint-disable-next-line class-methods-use-this
-      #enrichCustomAttributeCol = (
-        col: FilterColumn,
-        customAttrs: ReturnType<typeof getCustomAttributes>,
-      ): FilterColumn => {
-        const name = col.id.slice(CA_COL_PREFIX.length);
-        const attr = customAttrs?.find((a: any) => a.name === name);
-        if (!attr) return col;
-        const map = CA_TYPE_TO_FILTER[attr.type];
-        if (!map) return col; // unsupported type (e.g. date) — leave as-is
-        const rawOptions = (attr as any).options;
-        const options =
-          Array.isArray(rawOptions) && rawOptions.length
-            ? rawOptions.map(toFilterOption)
-            : undefined;
-        return {
-          ...col,
-          label: col.label || (attr as any).displayName || name,
-          inputType: map.inputType,
-          operators: map.operators,
-          ...(options ? { options } : {}),
-        };
-      };
-
       #syncColumns = () => {
         if (!this.filter?.isExists) return;
 
@@ -126,29 +65,11 @@ export const initFilterMixin = createSingletonMixin(
           this.#originalCols = Object.freeze(this.filter.data.slice());
         }
 
+        // Resolve the published pick list against runtime state: populate/hide
+        // the Roles column, then enrich any custom-attribute columns.
         let cols: FilterColumn[] = this.#originalCols.slice();
-
-        // Roles col: hide when no tenant roles; populate options when present.
-        if (!tenantRoles?.length) {
-          cols = cols.filter((c) => c?.id !== ROLES_COLUMN_ID);
-        } else {
-          const roleOptions: FilterOption[] = tenantRoles.map((r: any) => ({
-            value: r.name,
-            label: r.name,
-          }));
-          cols = cols.map((c) =>
-            c?.id === ROLES_COLUMN_ID ? { ...c, options: roleOptions } : c,
-          );
-        }
-
-        // Custom attribute cols: enrich any col with id prefix `customAttributes.`
-        // using runtime CA schema. Authoring opt-in lives in console-app —
-        // widget never auto-injects, only enriches what the admin picked.
-        cols = cols.map((c) =>
-          c?.id?.startsWith(CA_COL_PREFIX)
-            ? this.#enrichCustomAttributeCol(c, customAttrs)
-            : c,
-        );
+        cols = applyRolesColumn(cols, tenantRoles);
+        cols = enrichCustomAttributeCols(cols, customAttrs);
 
         this.filter.data = cols;
         this.#lastWrittenDataAttr = JSON.stringify(cols);

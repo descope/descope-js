@@ -160,8 +160,13 @@ const applySearchField: RowRule = (row) => {
   };
 };
 
-// Any remaining negation op is unsupported on the flat path — drop the row.
-const dropUnsupportedNegation: RowRule = (row) =>
+// Drop any negation op that survived applySearchField. NOT-LIKE on LIKE-able
+// columns is already handled there (searchFields `negative: true`); the flat
+// endpoint has no way to express any other negation. Consuming the row here is
+// what prevents it falling through to the array/boolean/text rules below, where
+// e.g. `status not-any-of ['enabled']` would set `statuses: ['enabled']` and
+// silently filter FOR the value instead of excluding it.
+const dropUnexpressibleNegation: RowRule = (row) =>
   row.operator.startsWith('not-') ? {} : null;
 
 const applyCustomAttribute: RowRule = (row, cols) => {
@@ -212,7 +217,7 @@ const applyText: RowRule = (row) => {
 
 const ROW_RULES: RowRule[] = [
   applySearchField,
-  dropUnsupportedNegation,
+  dropUnexpressibleNegation,
   applyCustomAttribute,
   applyBoolean,
   applyArray,
