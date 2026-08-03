@@ -281,7 +281,7 @@ by the flow). Their keys are the flow's own field names, so they don't fit the f
 above; they are omitted for now and reserved for a future `context.data.selects` map. This
 data was not available to custom screens before, so nothing changes for existing code.
 
-> **Breaking change (v-next):** screen-data fields that used to sit directly on `context`
+> **Breaking change (v4.0.0):** screen-data fields that used to sit directly on `context`
 > now live under `context.data`. Migrate reads accordingly, e.g.
 > `context.inboundAppApproveScopes` → `context.data.inboundAppApproveScopes`,
 > `context.totp` → `context.data.totp`. Status, `form`, and identity fields
