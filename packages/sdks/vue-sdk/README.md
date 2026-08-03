@@ -95,7 +95,7 @@ const handleReady = () => {
 A function that is called whenever there is a new screen state and after every next call. It receives the following parameters:
 
 - `screenName`: The name of the screen that is about to be rendered
-- `context`: An object containing the upcoming screen state
+- `context`: An object containing the upcoming screen state. All server-produced screen data lives under `context.data`.
 - `next`: A function that, when called, continues the flow execution
 - `ref`: A reference to the descope-wc node
 
@@ -103,6 +103,13 @@ The function can be sync or async, and should return a boolean indicating whethe
 
 - `true`: Render a custom screen
 - `false`: Render the default flow screen
+
+> **Breaking change (v3.0.0):** server-produced screen data that used to sit directly on
+> `context` now lives under **`context.data`** — e.g. `context.totp` → `context.data.totp`,
+> `context.inboundAppApproveScopes` → `context.data.inboundAppApproveScopes`. Status,
+> `form`, and identity fields (`user` / `project` / `lastAuth`) stay at the top level.
+> See the [@descope/web-component README](https://www.npmjs.com/package/@descope/web-component#the-context-object)
+> for the full list of `context.data` fields.
 
 This function allows rendering custom screens instead of the default flow screens.
 It can be useful for highly customized UIs or specific logic not covered by the default screens

@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.0](https://github.com/descope/descope-js/compare/react-sdk-2.30.11...react-sdk-3.0.0) (2026-08-03)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.2`
+* `user-profile-widget` updated to version `0.15.2`
+* `outbound-applications-widget` updated to version `0.5.10`
+* `web-component` updated to version `4.0.0`
+* `tenant-profile-widget` updated to version `0.8.10`
+
+### ⚠ BREAKING CHANGES
+
+* **sdks:** server-produced screen data in onScreenUpdate now lives under context.data instead of directly on context.
+
+### Features
+
+* **sdks:** onScreenUpdate screen data moved under context.data ([#1453](https://github.com/descope/descope-js/issues/1453)) RELEASE ([ddb9dbd](https://github.com/descope/descope-js/commit/ddb9dbd6daa9ae3019c06f3d40d5199ccf3d07ea))
+
+## [2.30.11](https://github.com/descope/descope-js/compare/react-sdk-2.30.10...react-sdk-2.30.11) (2026-08-03)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.1`
+* `user-profile-widget` updated to version `0.15.1`
+* `outbound-applications-widget` updated to version `0.5.9`
+* `web-component` updated to version `3.70.7`
+* `tenant-profile-widget` updated to version `0.8.9`
+## [2.30.10](https://github.com/descope/descope-js/compare/react-sdk-2.30.9...react-sdk-2.30.10) (2026-08-02)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.0`
+* `user-profile-widget` updated to version `0.15.0`
+* `outbound-applications-widget` updated to version `0.5.8`
+* `web-component` updated to version `3.70.6`
+* `tenant-profile-widget` updated to version `0.8.8`
 ## [2.30.9](https://github.com/descope/descope-js/compare/react-sdk-2.30.8...react-sdk-2.30.9) (2026-07-27)
 
 

@@ -189,6 +189,12 @@ The function can be sync or async, and should return a boolean indicating whethe
 - `true`: Render a custom screen
 - `false`: Render the default flow screen
 
+> **Breaking change (v4.0.0):** server-produced screen data that used to sit directly on
+> `context` now lives under **`context.data`** — e.g. `context.totp` → `context.data.totp`,
+> `context.inboundAppApproveScopes` → `context.data.inboundAppApproveScopes`. Status,
+> `form`, and identity fields (`user` / `project` / `lastAuth`) stay at the top level.
+> See [The `context` object](#the-context-object) below for the full list of `context.data` fields.
+
 This function allows rendering custom screens instead of the default flow screens.
 It can be useful for highly customized UIs or specific logic not covered by the default screens
 
@@ -225,6 +231,61 @@ const descopeWcEle = document.querySelector('descope-wc');
 
 descopeWcEle.onScreenUpdate = onScreenUpdate;
 ```
+
+#### The `context` object
+
+`context` carries the upcoming screen's state:
+
+- **Top level** — `error`, `action`, `form` (the input/output channel), and the acting
+  user's context: `user`, `project`, `lastAuth`.
+- **`context.data`** — all server-produced screen data, in one clean, stable place, so you
+  don't have to read internal, deeply-nested paths.
+
+For example, a screen that generates MFA recovery codes exposes them as a plain array:
+
+```javascript
+function onScreenUpdate(screenName, context, next, ref) {
+  if (screenName === 'Display recovery codes') {
+    const codes = context.data.recoveryCodes; // string[]
+    // render the codes in your custom UI…
+    return true;
+  }
+  return false;
+}
+```
+
+`context.data` may include (each present only when the screen produces it):
+
+- `recoveryCodes` — generated MFA recovery codes (`string[]`)
+- `totp` / `notp` — MFA setup (image, provisioning/redirect URL)
+- `sentTo` — where an OTP/code was sent (masked email/phone)
+- `inboundAppApproveScopes` — scopes an inbound app is asking the user to approve
+- `passwordPolicy` — password rules to show/enforce
+- `securityQuestionsSetup` / `securityQuestionsVerify` — security questions
+- `userTenants`, `userRoles`, `ssoApplications`, `ssoConfigurations` — selection options
+- `samlAttributeMappings`, `oidcAttributeMappings`, `samlGroupMappings` — SSO mappings
+- `sso` — SSO service-provider config
+- `selfProvisionDomains` — tenant self-provision domains
+- `outboundApp` — outbound OAuth app button info
+
+`context.data` is a supported, stable field owned by the SDK — prefer it over reading
+raw screen-state internals. It exposes only the documented fields above; any other
+internal screen-state data is intentionally omitted. New fields are added in SDK releases.
+
+Every key on `context.data` is an SDK-owned, documented name. The SDK never puts
+arbitrary, flow-defined keys directly on `context.data`, so new fields are always added
+without breaking existing ones.
+
+**Not exposed yet:** dynamic-select options (a select component whose options are computed
+by the flow). Their keys are the flow's own field names, so they don't fit the fixed shape
+above; they are omitted for now and reserved for a future `context.data.selects` map. This
+data was not available to custom screens before, so nothing changes for existing code.
+
+> **Breaking change (v4.0.0):** screen-data fields that used to sit directly on `context`
+> now live under `context.data`. Migrate reads accordingly, e.g.
+> `context.inboundAppApproveScopes` → `context.data.inboundAppApproveScopes`,
+> `context.totp` → `context.data.totp`. Status, `form`, and identity fields
+> (`user`/`project`/`lastAuth`) stay at the top level.
 
 ## Events
 

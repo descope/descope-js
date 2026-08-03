@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.0.0](https://github.com/descope/descope-js/compare/web-component-3.70.7...web-component-4.0.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **sdks:** server-produced screen data in onScreenUpdate now lives under context.data instead of directly on context.
+
+### Features
+
+* **sdks:** onScreenUpdate screen data moved under context.data ([#1453](https://github.com/descope/descope-js/issues/1453)) RELEASE ([ddb9dbd](https://github.com/descope/descope-js/commit/ddb9dbd6daa9ae3019c06f3d40d5199ccf3d07ea))
+
+## [3.70.7](https://github.com/descope/descope-js/compare/web-component-3.70.6...web-component-3.70.7) (2026-08-03)
+
+## [3.70.6](https://github.com/descope/descope-js/compare/web-component-3.70.5...web-component-3.70.6) (2026-08-02)
+
+
+### Bug Fixes
+
+* **web-component:** anchor username for password managers on password screens ([#1442](https://github.com/descope/descope-js/issues/1442)) ([db583f3](https://github.com/descope/descope-js/commit/db583f3c71e0635a37a259f37a47cbcb02e2af20)), closes [descope/etc#16712](https://github.com/descope/etc/issues/16712) [descope/etc#16712](https://github.com/descope/etc/issues/16712)
+
 ## [3.70.5](https://github.com/descope/descope-js/compare/web-component-3.70.4...web-component-3.70.5) (2026-07-26)
 
 ### Dependency Updates
