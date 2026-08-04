@@ -11,8 +11,8 @@ import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getCustomAttributes, getTenantRoles } from '../../../state/selectors';
 import { filterToSearchParams } from '../../../helpers/filterToSearchParams';
 import {
-  applyRolesColumn,
-  enrichCustomAttributeCols,
+  applyFilterRolesColumn,
+  enrichFilterCustomAttributeColumns,
 } from '../../../helpers/filterColumns';
 
 export const initFilterMixin = createSingletonMixin(
@@ -68,8 +68,8 @@ export const initFilterMixin = createSingletonMixin(
         // Resolve the published pick list against runtime state: populate/hide
         // the Roles column, then enrich any custom-attribute columns.
         let cols: FilterColumn[] = this.#originalCols.slice();
-        cols = applyRolesColumn(cols, tenantRoles);
-        cols = enrichCustomAttributeCols(cols, customAttrs);
+        cols = applyFilterRolesColumn(cols, tenantRoles);
+        cols = enrichFilterCustomAttributeColumns(cols, customAttrs);
 
         this.filter.data = cols;
         this.#lastWrittenDataAttr = JSON.stringify(cols);

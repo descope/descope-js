@@ -1,23 +1,42 @@
 /*
- * Translate descope-filter rows → SearchUsersRequest fields (POST /user/search).
+ * Build the body of a POST /user/search request from the filter UI's rows.
  *
- * - Generic interpreter: no backend field names. Each column in the widget's
- *   `data` carries a `mapping` describing how its rows map to request fields.
- *   That mapping is set at widget-design time (in the console editor) and baked
- *   into the published config — the SDK just reads it, no runtime dependency.
- * - So new/renamed fields and value maps are config changes, not SDK releases.
- * - Unknown mapping kinds are skipped, so an older SDK never breaks on new config
- *   (a brand-new mechanic still needs SDK support to be used).
- * - Only the structural containers (`searchFields`, `customAttributes`, `text`)
- *   are referenced directly.
+ * A row is what the user picked in the filter: { column, operator, value }.
+ * This file turns the rows into the fields the search request expects. Example:
+ *
+ *   row:    { column: 'status', operator: 'is-any-of', value: ['active'] }
+ *   result: { statuses: ['enabled'] }
+ *
+ * Backend field names are not hard-coded here. Each column carries a `mapping`
+ * (authored in the console editor) that says which request field it writes; this
+ * file just reads it. Unknown mapping kinds are skipped, so an older SDK keeps
+ * working against newer config.
  */
 import { FilterColumn } from '@descope/sdk-component-drivers';
-import { FilterableColumn, FilterRow, SearchUsersConfig } from '../api/types';
+import {
+  FieldMapping,
+  FilterableColumn,
+  FilterRow,
+  SearchUsersConfig,
+} from '../api/types';
 
 type Params = Partial<SearchUsersConfig>;
 
-// Text fuzzy operators routed to the searchFields LIKE engine (with `%` affixes
-// supplied on the row) or to full-text when no LIKE field is configured.
+// --- Types ---
+
+type ArrayMapping = Extract<FieldMapping, { kind: 'array' }>;
+type BooleanMapping = Extract<FieldMapping, { kind: 'boolean' }>;
+type TextMapping = Extract<FieldMapping, { kind: 'text' }>;
+type CustomAttributeMapping = Extract<
+  FieldMapping,
+  { kind: 'customAttribute' }
+>;
+
+// --- Operators ---
+
+// Operators handled as substring search. LIKE_OPS use the searchFields LIKE
+// query when the column sets a like field; FULLTEXT_OPS are the positive subset
+// that can fall back to the flat `text` field when it does not.
 const LIKE_OPS = new Set([
   'contains',
   'not-contains',
@@ -27,19 +46,27 @@ const LIKE_OPS = new Set([
 ]);
 const FULLTEXT_OPS = new Set(['contains', 'starts-with', 'ends-with']);
 
-const firstValue = (v: FilterRow['value']): string | null => {
-  const s = Array.isArray(v) ? v[0] : v;
-  return s == null || s === '' ? null : String(s);
+// --- Value helpers ---
+
+// The one value of a single-value row (equal, contains, ...) as a string, or
+// null when empty. The value may arrive bare or wrapped in a one-item array, so
+// unwrap it. (Multi-value rows use toArray instead.)
+const singleValue = (value: FilterRow['value']): string | null => {
+  const unwrapped = Array.isArray(value) ? value[0] : value;
+  return unwrapped == null || unwrapped === '' ? null : String(unwrapped);
 };
 
-const toArray = (v: FilterRow['value']): string[] => {
-  if (Array.isArray(v)) return v;
-  return v == null || v === '' ? [] : [String(v)];
+// The row's value as a string array (empty array when there is no value).
+const toArray = (value: FilterRow['value']): string[] => {
+  if (Array.isArray(value)) return value;
+  return value == null || value === '' ? [] : [String(value)];
 };
 
-// Parse a custom-attribute value to the column's declared type (BE jsonpath
-// equality is type-strict). Returns undefined to signal "drop this row".
-const parseCaValue = (
+// Convert a custom-attribute value to the type its column declares. The backend
+// matches custom attributes by exact type, so a number attribute needs a real
+// number (5), not the string "5". Returns undefined when there is nothing to
+// send, which the caller reads as "skip this row".
+const convertCustomAttributeValue = (
   value: FilterRow['value'],
   inputType: FilterColumn['inputType'] | undefined,
 ): unknown => {
@@ -51,88 +78,162 @@ const parseCaValue = (
     return undefined;
   }
   if (inputType === 'number') {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : undefined;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : undefined;
   }
   return value;
 };
 
-// Build the request-field patch for one row from its column's mapping. Returns
-// null when the row can't be expressed (no mapping, unknown kind, or an operator
-// the kind doesn't support) — the caller then drops the row, so a filter is
-// never silently inverted into its positive form.
+// --- Output channels ---
+
+// The search request expresses a filter three ways, and every handler result
+// targets one of them:
+//   directField    a typed top-level param (statuses, text, emails, ...)
+//   searchField    an entry in searchFields[] (LIKE/substring, can be negated)
+//   customAttr     an entry in customAttributes{} (per-project dynamic attrs)
+// searchFields and customAttributes accumulate across rows (see mergePatch);
+// direct fields are set outright.
+const directField = (field: string, value: unknown): Params =>
+  ({ [field]: value }) as Params;
+
+const searchField = (
+  field: string,
+  valStr: string,
+  negative: boolean,
+): Params => ({
+  searchFields: [{ field, valStr, ...(negative ? { negative: true } : {}) }],
+});
+
+const customAttr = (name: string, value: unknown): Params =>
+  ({ customAttributes: { [name]: value } }) as Params;
+
+// --- Row handlers (one per mapping kind) ---
+
+// Each handler turns one row into request fields. Returns null when the mapping
+// cannot express the row's operator (caller drops it), or {} when there is
+// nothing to send (for example an empty value).
+
+// array: is-any-of into a direct field, mapped through valueMap when set.
+const mapArrayRow = (mapping: ArrayMapping, row: FilterRow): Params | null => {
+  if (row.operator !== 'is-any-of') return null;
+  const values = toArray(row.value);
+  if (!values.length) return {};
+  const mapped = mapping.valueMap
+    ? values.map((value) => mapping.valueMap![value] ?? value)
+    : values;
+  return directField(mapping.field, mapped);
+};
+
+// boolean: equal true/false into a direct field.
+const mapBooleanRow = (
+  mapping: BooleanMapping,
+  row: FilterRow,
+): Params | null => {
+  if (row.operator !== 'equal') return null;
+  const value = singleValue(row.value);
+  if (value === 'true') return directField(mapping.field, true);
+  if (value === 'false') return directField(mapping.field, false);
+  return {};
+};
+
+// Exact match: the values into a direct field (empty when the row has no value).
+const textExactMatch = (field: string, row: FilterRow): Params => {
+  const values = toArray(row.value);
+  return values.length ? directField(field, values) : {};
+};
+
+// Fuzzy match: a searchField entry. The row supplies the `%` wrapping via
+// prefix/suffix; a `not-` operator makes it a negative match.
+const textLikeMatch = (field: string, row: FilterRow): Params => {
+  const value = singleValue(row.value);
+  if (value === null) return {};
+  const valStr = `${row.prefix ?? ''}${value}${row.suffix ?? ''}`;
+  return searchField(field, valStr, row.operator.startsWith('not-'));
+};
+
+// Full-text: the value into the `text` direct field (flat search box query).
+const textFullTextMatch = (row: FilterRow): Params => {
+  const value = singleValue(row.value);
+  return value === null ? {} : directField('text', value);
+};
+
+// Can this row be an exact match? `equal` on a column that has an exact field.
+const canExactMatch = (
+  mapping: TextMapping,
+  row: FilterRow,
+): mapping is TextMapping & { exactField: string } =>
+  row.operator === 'equal' && mapping.exactField != null;
+
+// Can this row be a LIKE match? a substring operator on a column with a like field.
+const canLikeMatch = (
+  mapping: TextMapping,
+  row: FilterRow,
+): mapping is TextMapping & { likeField: string } =>
+  LIKE_OPS.has(row.operator) && mapping.likeField != null;
+
+// Can this row fall back to full-text? any positive substring operator, or equal.
+const canFullTextMatch = (row: FilterRow): boolean =>
+  FULLTEXT_OPS.has(row.operator) || row.operator === 'equal';
+
+// text: pick one of the three matches by which one the row qualifies for. An
+// operator that fits none (for example a negation on a column with no like
+// field) returns null so the caller drops the row.
+const mapTextRow = (mapping: TextMapping, row: FilterRow): Params | null => {
+  if (canExactMatch(mapping, row))
+    return textExactMatch(mapping.exactField, row);
+  if (canLikeMatch(mapping, row)) return textLikeMatch(mapping.likeField, row);
+  if (canFullTextMatch(row)) return textFullTextMatch(row);
+  return null;
+};
+
+// Does this row ask for an empty attribute? the is-empty operator.
+const isEmptyOperator = (row: FilterRow): boolean =>
+  row.operator === 'is-empty';
+
+// Does this row match against a value? equal (one value) or is-any-of (a list).
+const isValueOperator = (row: FilterRow): boolean =>
+  row.operator === 'equal' || row.operator === 'is-any-of';
+
+// customAttribute: a customAttr entry. is-empty sends null; otherwise the value
+// is converted to the column's declared type.
+const mapCustomAttributeRow = (
+  mapping: CustomAttributeMapping,
+  row: FilterRow,
+  inputType: FilterColumn['inputType'] | undefined,
+): Params | null => {
+  if (isEmptyOperator(row)) return customAttr(mapping.name, null);
+  if (!isValueOperator(row)) return {};
+  const value = convertCustomAttributeValue(row.value, inputType);
+  return value === undefined ? {} : customAttr(mapping.name, value);
+};
+
+// Send the row to the handler for its mapping kind. If there is no mapping, or
+// the kind is one this SDK does not know (newer config), returns null and the
+// caller skips the row.
 const mapRow = (col: FilterableColumn, row: FilterRow): Params | null => {
   const { mapping } = col;
   if (!mapping) return null;
 
   switch (mapping.kind) {
-    case 'array': {
-      if (row.operator !== 'is-any-of') return null;
-      const arr = toArray(row.value);
-      if (!arr.length) return {};
-      const vals = mapping.valueMap
-        ? arr.map((v) => mapping.valueMap![v] ?? v)
-        : arr;
-      return { [mapping.field]: vals } as Params;
-    }
-
-    case 'boolean': {
-      if (row.operator !== 'equal') return null;
-      const v = firstValue(row.value);
-      if (v === 'true') return { [mapping.field]: true } as Params;
-      if (v === 'false') return { [mapping.field]: false } as Params;
-      return {};
-    }
-
-    case 'text': {
-      if (row.operator === 'equal' && mapping.exactField) {
-        const arr = toArray(row.value);
-        return arr.length ? ({ [mapping.exactField]: arr } as Params) : {};
-      }
-      if (LIKE_OPS.has(row.operator) && mapping.likeField) {
-        const v = firstValue(row.value);
-        if (v === null) return {};
-        return {
-          searchFields: [
-            {
-              field: mapping.likeField,
-              valStr: `${row.prefix ?? ''}${v}${row.suffix ?? ''}`,
-              ...(row.operator.startsWith('not-') ? { negative: true } : {}),
-            },
-          ],
-        };
-      }
-      // Positive fuzzy, or `equal` without an exact field → flat full-text.
-      // Anything else (e.g. a negation with no LIKE field) is unexpressible.
-      if (FULLTEXT_OPS.has(row.operator) || row.operator === 'equal') {
-        const v = firstValue(row.value);
-        return v === null ? {} : { text: v };
-      }
-      return null;
-    }
-
-    case 'customAttribute': {
-      if (row.operator === 'is-empty') {
-        return { customAttributes: { [mapping.name]: null } as any };
-      }
-      if (row.operator !== 'equal' && row.operator !== 'is-any-of') return {};
-      const value = parseCaValue(row.value, col.inputType);
-      return value === undefined
-        ? {}
-        : { customAttributes: { [mapping.name]: value } as any };
-    }
-
+    case 'array':
+      return mapArrayRow(mapping, row);
+    case 'boolean':
+      return mapBooleanRow(mapping, row);
+    case 'text':
+      return mapTextRow(mapping, row);
+    case 'customAttribute':
+      return mapCustomAttributeRow(mapping, row, col.inputType);
     default:
-      return null; // unknown kind → skip (forward-compat)
+      return null;
   }
 };
 
-// Fields the current column set can write, cleared each apply so a removed row
-// drops its value (the searchUsers thunk merges params). `text` is excluded —
-// it is co-owned by the standalone search input, so clearing it here would wipe
-// the user's typed query. `searchFields`/`customAttributes` are always cleared
-// (filter-owned containers).
-const clearedFields = (cols: FilterableColumn[]): Set<string> => {
+// --- Request assembly ---
+
+// The request fields this filter can write, so the caller can blank them before
+// applying rows. `text` is left out on purpose: it is shared with the standalone
+// search box, and clearing it would erase what the user typed there.
+const fieldsToClear = (cols: FilterableColumn[]): Set<string> => {
   const fields = new Set<string>(['searchFields', 'customAttributes']);
   cols.forEach((col) => {
     const { mapping } = col;
@@ -146,33 +247,74 @@ const clearedFields = (cols: FilterableColumn[]): Set<string> => {
   return fields;
 };
 
+// Append a row's searchFields onto the ones collected so far.
+const appendSearchFields = (
+  base: Params['searchFields'],
+  incoming: NonNullable<Params['searchFields']>,
+): Params['searchFields'] => [...(base ?? []), ...incoming];
+
+// Merge a row's customAttributes onto the ones collected so far.
+const mergeCustomAttributes = (
+  base: Params['customAttributes'],
+  incoming: NonNullable<Params['customAttributes']>,
+): Params['customAttributes'] => ({ ...(base ?? {}), ...incoming });
+
+// Merge one row's result onto the request so far and return the new request.
+// searchFields and customAttributes build up across rows; every other field is
+// set directly.
+const mergePatch = (params: Params, patch: Params): Params => {
+  const { searchFields, customAttributes, ...directFields } = patch;
+
+  const mergedSearchFields = searchFields
+    ? appendSearchFields(params.searchFields, searchFields)
+    : params.searchFields;
+
+  const mergedCustomAttributes = customAttributes
+    ? mergeCustomAttributes(params.customAttributes, customAttributes)
+    : params.customAttributes;
+
+  return {
+    ...params,
+    ...directFields,
+    searchFields: mergedSearchFields,
+    customAttributes: mergedCustomAttributes,
+  };
+};
+
+// The row's column, or undefined when the row is incomplete or names a column
+// that is not in the current set.
+const columnForRow = (
+  row: FilterRow,
+  byId: Map<string, FilterableColumn>,
+): FilterableColumn | undefined => {
+  if (!row.column || !row.operator) return undefined;
+  return byId.get(row.column);
+};
+
+// --- Entry point ---
+
+// Build the /user/search body from the filter's rows and columns.
 export const filterToSearchParams = (
   rows: FilterRow[],
   cols: FilterableColumn[] = [],
 ): Params => {
-  const params: Params = {};
-  clearedFields(cols).forEach((field) => {
-    (params as any)[field] = undefined;
+  // The search remembers the previous params and merges the new ones on top, so
+  // a filter the user removed would otherwise stay applied. Start by setting
+  // every filterable field to undefined to clear it; the active rows below then
+  // set the ones still in use.
+  const cleared: Params = {};
+
+  fieldsToClear(cols).forEach((field) => {
+    (cleared as any)[field] = undefined;
   });
+
   const byId = new Map(cols.map((c) => [c.id, c]));
 
-  rows.forEach((row) => {
-    if (!row.column || !row.operator) return;
-    const col = byId.get(row.column);
-    if (!col) return;
+  // Merge each row's result on top of the cleared base.
+  return rows.reduce((params, row) => {
+    const col = columnForRow(row, byId);
+    if (!col) return params;
     const patch = mapRow(col, row);
-    if (!patch) return;
-    const { searchFields, customAttributes, ...rest } = patch;
-    Object.assign(params, rest);
-    if (searchFields) {
-      params.searchFields = [...(params.searchFields ?? []), ...searchFields];
-    }
-    if (customAttributes) {
-      params.customAttributes = {
-        ...(params.customAttributes ?? {}),
-        ...customAttributes,
-      };
-    }
-  });
-  return params;
+    return patch ? mergePatch(params, patch) : params;
+  }, cleared);
 };
