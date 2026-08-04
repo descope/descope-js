@@ -3,22 +3,12 @@ import {
   FLOW_NONCE_PREFIX,
   FLOW_NONCE_HEADER,
 } from '../src/enhancers/withFlowNonce/constants';
-import {
-  parseNonceSeq,
-  maxSeq,
-} from '../src/enhancers/withFlowNonce/helpers';
-
-// Sequence-based write ordering for the shared flow-nonce store
-// (descope/etc#17286). The server prefixes each nonce with a monotonic
-// per-execution sequence ("<seq>.<random>"). The client keeps the highest
-// seen so the newest nonce wins regardless of network arrival order, and
-// retains that high-water mark across unsequenced writes.
+import { parseNonceSeq } from '../src/enhancers/withFlowNonce/helpers';
 
 const EXEC = 'seq-execution-id';
 const FULL = `flow|#|${EXEC}`;
 const KEY = `${FLOW_NONCE_PREFIX}${EXEC}`;
 
-// Build a sequenced nonce value the way the server does.
 const N = (seq: number | null, random = 'ygzG6QEt') =>
   seq === null ? random : `${seq}.${random}`;
 
@@ -71,15 +61,6 @@ describe('parseNonceSeq', () => {
     expect(parseNonceSeq('1e308.abc')).toBeUndefined();
     expect(parseNonceSeq('99999999999999999999.abc')).toBeUndefined();
     expect(parseNonceSeq(' 3.abc')).toBeUndefined();
-  });
-});
-
-describe('maxSeq', () => {
-  it('returns the higher defined value, or undefined when both unset', () => {
-    expect(maxSeq(3, 5)).toBe(5);
-    expect(maxSeq(5, undefined)).toBe(5);
-    expect(maxSeq(undefined, 2)).toBe(2);
-    expect(maxSeq(undefined, undefined)).toBeUndefined();
   });
 });
 
@@ -171,9 +152,6 @@ describe('flowNonce sequence write ordering', () => {
   });
 
   it('unsequenced write does NOT erase the high-water mark', async () => {
-    // Mixed execution: store at seq 10, then a plain (unsequenced) newer nonce
-    // arrives and wins by LWW, but the mark must survive so a later stale
-    // seq-9 nonce is still rejected instead of reopening the race.
     seed(N(10), 10);
     global.fetch = jest
       .fn()
@@ -220,5 +198,4 @@ describe('flowNonce sequence write ordering', () => {
     await sdk.flow.next(FULL, 'step', 'submit');
     expect(record()).toEqual({ value: N(1), seq: 1 });
   });
-
 });

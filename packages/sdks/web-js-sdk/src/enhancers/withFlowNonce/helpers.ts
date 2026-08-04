@@ -16,10 +16,7 @@ import {
 } from './constants';
 import { StorageItem } from './types';
 
-// The server may prefix the nonce with a monotonic per-execution sequence as
-// "<seq>.<random>" (descope/etc#17286). Parse it as a canonical non-negative
-// safe integer; anything else (plain nonce, malformed prefix, out-of-range) is
-// treated as no sequence so ordering falls back to last-writer-wins.
+// The server may prefix the nonce as "<seq>.<random>" (descope/etc#17286).
 const parseNonceSeq = (nonce: string): number | undefined => {
   const dot = nonce.indexOf('.');
   if (dot <= 0) {
@@ -33,16 +30,6 @@ const parseNonceSeq = (nonce: string): number | undefined => {
   return Number.isSafeInteger(seq) ? seq : undefined;
 };
 
-// Highest of the defined sequences, or undefined when neither is set.
-const maxSeq = (
-  a: number | undefined,
-  b: number | undefined,
-): number | undefined => {
-  if (a === undefined) return b;
-  if (b === undefined) return a;
-  return Math.max(a, b);
-};
-
 // Helper to create storage key from execution ID
 const getNonceKeyForExecution = (
   executionId: string,
@@ -51,7 +38,6 @@ const getNonceKeyForExecution = (
   return `${prefix}${executionId}`;
 };
 
-// Read the stored nonce record (value + sequence) with expiration check
 const getFlowNonceRecord = (
   executionId: string,
   prefix: string = FLOW_NONCE_PREFIX,
@@ -131,7 +117,7 @@ const extractExecId = (executionId: string): string | null => {
   return regex.exec(executionId)?.[1] || null;
 };
 
-// Extract nonce, sequence, and execution ID from response
+// Extract nonce and execution ID from response
 const extractFlowNonce = async (
   req: RequestConfig,
   response: Response,
@@ -213,7 +199,6 @@ export {
   getFlowNonce,
   getFlowNonceRecord,
   getNonceKeyForExecution,
-  maxSeq,
   parseNonceSeq,
   removeFlowNonce,
   setFlowNonce,
