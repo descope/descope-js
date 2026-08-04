@@ -4,17 +4,13 @@ import { CustomAttr, Role } from '../api/types';
 export const CA_COL_PREFIX = 'customAttributes.';
 export const ROLES_COLUMN_ID = 'roles';
 
-// These helpers build the column list handed to the <descope-filter> component.
-// "Column" here is a filter row's config, and its `options` are the choices in
-// that row's value combo-box (the dropdown a user picks from). We fill in the
-// options that can only be known at runtime; everything else is published as-is
-// by console-app.
+// These helpers finish the <descope-filter> columns at runtime: they fill the
+// value combo-box options that can only be known live. Everything else is
+// published as-is by console-app.
 
-// Fill the value combo-box for one custom-attribute filter column from the live
-// CA schema. console-app omits a select attribute's choices from the published
-// column (they drift after publish), so we attach the current {value,label}
-// options here and backfill a missing label. inputType/operators/mapping are
-// trusted as published. Returns the column unchanged when its attribute is gone.
+// Fill one custom-attribute column's combo-box from the live CA schema (console
+// omits select options, since they drift after publish) and backfill its label.
+// Returns the column unchanged when its attribute is gone.
 const enrichColumn = (
   col: FilterColumn,
   customAttrs: CustomAttr[] | undefined,
