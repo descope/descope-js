@@ -93,6 +93,14 @@ export type { FilterRow } from '@descope/sdk-component-drivers';
 export type FieldMapping =
   | { kind: 'array'; field: string; valueMap?: Record<string, string> }
   | { kind: 'boolean'; field: string }
+  // text: two backend fields, because the search API matches two ways.
+  //   exactField - the top-level array field for an `equal` row (exact match),
+  //     e.g. `emails`, `loginIds`, `phones`.
+  //   likeField  - the searchFields column for substring rows (contains /
+  //     starts-with / ends-with / not-*), sent as a `%value%` LIKE query,
+  //     e.g. `email`, `displayname`, `name`.
+  // A column needs whichever field its operators use; a row whose operator has
+  // no matching field is dropped (see mapTextRow).
   | { kind: 'text'; exactField?: string; likeField?: string }
   | { kind: 'customAttribute'; name: string };
 

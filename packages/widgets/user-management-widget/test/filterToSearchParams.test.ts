@@ -514,3 +514,167 @@ describe('edge cases', () => {
     ).not.toThrow();
   });
 });
+
+// Routing matrix: one row per column-mapping x operator the console can offer,
+// asserting which request channel it lands in. Mirrors the console
+// filterableColumnsMetadata specs so a routing regression (or a console op that
+// the widget silently drops) shows up here.
+describe('routing matrix (mapping x operator)', () => {
+  const CONTAINS = { prefix: '%', suffix: '%' };
+
+  type Channel = 'direct' | 'searchFields' | 'customAttributes' | 'DROP';
+  const channelOf = (out: Record<string, any>): Channel => {
+    const set = Object.entries(out).filter(
+      ([, v]) => v !== undefined && !(Array.isArray(v) && v.length === 0),
+    );
+    if (set.length === 0) return 'DROP';
+    if ('searchFields' in Object.fromEntries(set)) return 'searchFields';
+    if ('customAttributes' in Object.fromEntries(set))
+      return 'customAttributes';
+    return 'direct';
+  };
+
+  const text = (over: Partial<FieldMapping>): FieldMapping =>
+    ({ kind: 'text', ...over }) as FieldMapping;
+
+  type Case = {
+    label: string;
+    mapping: FieldMapping;
+    op: string;
+    value: any;
+    affix?: { prefix?: string; suffix?: string };
+    expected: Channel;
+  };
+
+  const LIKE_EXACT = text({ exactField: 'emails', likeField: 'email' });
+  const LIKE_ONLY = text({ likeField: 'displayname' });
+
+  const CASES: Case[] = [
+    // array
+    {
+      label: 'array is-any-of',
+      mapping: { kind: 'array', field: 'statuses' },
+      op: 'is-any-of',
+      value: ['active'],
+      expected: 'direct',
+    },
+    // text with exactField + likeField (loginIds/email/phone)
+    {
+      label: 'text equal (has exactField)',
+      mapping: LIKE_EXACT,
+      op: 'equal',
+      value: 'x',
+      expected: 'direct',
+    },
+    {
+      label: 'text not-equal (has likeField)',
+      mapping: LIKE_EXACT,
+      op: 'not-equal',
+      value: 'x',
+      expected: 'searchFields',
+    },
+    {
+      label: 'text contains',
+      mapping: LIKE_EXACT,
+      op: 'contains',
+      value: 'x',
+      affix: CONTAINS,
+      expected: 'searchFields',
+    },
+    {
+      label: 'text not-contains',
+      mapping: LIKE_EXACT,
+      op: 'not-contains',
+      value: 'x',
+      affix: CONTAINS,
+      expected: 'searchFields',
+    },
+    {
+      label: 'text starts-with',
+      mapping: LIKE_EXACT,
+      op: 'starts-with',
+      value: 'x',
+      affix: { suffix: '%' },
+      expected: 'searchFields',
+    },
+    {
+      label: 'text ends-with',
+      mapping: LIKE_EXACT,
+      op: 'ends-with',
+      value: 'x',
+      affix: { prefix: '%' },
+      expected: 'searchFields',
+    },
+    // text with likeField only (name/givenName/middleName/familyName/displayName)
+    {
+      label: 'likeField-only contains',
+      mapping: LIKE_ONLY,
+      op: 'contains',
+      value: 'x',
+      affix: CONTAINS,
+      expected: 'searchFields',
+    },
+    // KNOWN GAP: console offers `equal` on displayName (LIKE_OPERATORS) but there
+    // is no exactField and `equal` is not a LIKE op, so the row is dropped. Flip
+    // to 'searchFields'/'direct' when the displayName-equal fix lands.
+    {
+      label: 'likeField-only equal (KNOWN GAP -> DROP)',
+      mapping: LIKE_ONLY,
+      op: 'equal',
+      value: 'x',
+      expected: 'DROP',
+    },
+    // boolean (needs true/false value)
+    {
+      label: 'boolean equal true',
+      mapping: { kind: 'boolean', field: 'scim' },
+      op: 'equal',
+      value: 'true',
+      expected: 'direct',
+    },
+    {
+      label: 'boolean equal false',
+      mapping: { kind: 'boolean', field: 'scim' },
+      op: 'equal',
+      value: 'false',
+      expected: 'direct',
+    },
+    // custom attribute
+    {
+      label: 'CA equal',
+      mapping: { kind: 'customAttribute', name: 'dept' },
+      op: 'equal',
+      value: 'x',
+      expected: 'customAttributes',
+    },
+    {
+      label: 'CA is-any-of',
+      mapping: { kind: 'customAttribute', name: 'tags' },
+      op: 'is-any-of',
+      value: ['x'],
+      expected: 'customAttributes',
+    },
+    {
+      label: 'CA is-empty',
+      mapping: { kind: 'customAttribute', name: 'dept' },
+      op: 'is-empty',
+      value: '',
+      expected: 'customAttributes',
+    },
+  ];
+
+  it.each(CASES)('$label', ({ mapping, op, value, affix, expected }) => {
+    const id =
+      mapping.kind === 'customAttribute'
+        ? `customAttributes.${mapping.name}`
+        : 'c';
+    const cols = [
+      { id, label: id, inputType: 'text', mapping } as FilterableColumn,
+    ];
+    const out = filterToSearchParams(
+      [{ column: id, operator: op, value, ...affix } as any],
+      cols,
+    );
+    expect(channelOf(out)).toBe(expected);
+  });
+});
