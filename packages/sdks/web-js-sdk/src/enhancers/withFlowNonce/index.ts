@@ -12,6 +12,7 @@ import {
   extractFlowNonce,
   getExecutionIdFromRequest,
   getFlowNonce,
+  getFlowNonceRecord,
   setFlowNonce,
 } from './helpers';
 import { FlowNonceOptions } from './types';
@@ -38,12 +39,28 @@ export const withFlowNonce =
       if (req.path !== FLOW_START_PATH && req.path !== FLOW_NEXT_PATH) {
         return;
       }
-      const { nonce, executionId } = await extractFlowNonce(req, res);
+      const { nonce, seq, executionId } = await extractFlowNonce(req, res);
 
-      if (nonce && executionId) {
-        const isStart = req.path === FLOW_START_PATH;
-        setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix);
+      if (!nonce || !executionId) {
+        return;
       }
+      const isStart = req.path === FLOW_START_PATH;
+      // Keep the highest server sequence so a late stale response cannot
+      // overwrite the newest nonce (descope/etc#17286). Unlocked by design: a
+      // lost interleave keeps a nonce the server still accepts, and the next
+      // sequenced response converges the store.
+      const highWater = getFlowNonceRecord(executionId, nonceStoragePrefix)
+        ?.seq;
+      const skip =
+        !isStart &&
+        seq !== undefined &&
+        highWater !== undefined &&
+        seq <= highWater;
+      if (skip) {
+        return;
+      }
+      const nextSeq = seq ?? (isStart ? undefined : highWater);
+      setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix, nextSeq);
     };
 
     const beforeRequest: BeforeRequestHook = (req) => {
