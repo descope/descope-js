@@ -57,11 +57,11 @@ export const initFilterMixin = createSingletonMixin(
         const tenantRoles = getTenantRoles(this.state);
         const customAttrs = getCustomAttributes(this.state);
 
-        // Defer #originalCols snapshot until CAs resolve. Initial data attr
-        // may arrive without CA cols (console-app writes them asynchronously
-        // after the CA fetch). Freezing too early loses CA cols permanently.
+        // Snapshot the published columns once. If console-app later rewrites the
+        // `data` attribute (e.g. adds CA columns after its fetch), the
+        // MutationObserver in onWidgetRootReady resets #originalCols so we
+        // re-snapshot from the new data.
         if (!this.#originalCols) {
-          if (customAttrs === undefined) return;
           this.#originalCols = Object.freeze(this.filter.data.slice());
         }
 

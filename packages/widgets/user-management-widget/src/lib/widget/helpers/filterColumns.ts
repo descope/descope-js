@@ -8,6 +8,20 @@ export const ROLES_COLUMN_ID = 'roles';
 // value combo-box options that can only be known live. Everything else is
 // published as-is by console-app.
 
+// One CA option as {value,label}. Most arrive that way; some attributes return
+// plain strings, so accept both.
+const toOption = (option: unknown): FilterOption => {
+  if (typeof option === 'string') return { value: option, label: option };
+  const { value, label } = option as { value: string; label?: string };
+  return { value, label: label || value };
+};
+
+// A CA's select options as {value,label}, or undefined when it has none.
+const optionsFromAttr = (attr: CustomAttr): FilterOption[] | undefined =>
+  Array.isArray(attr.options) && attr.options.length
+    ? attr.options.map(toOption)
+    : undefined;
+
 // Fill one custom-attribute column's combo-box from the live CA schema (console
 // omits select options, since they drift after publish) and backfill its label.
 // Returns the column unchanged when its attribute is gone.
@@ -18,17 +32,13 @@ const enrichColumn = (
   const name = col.id.slice(CA_COL_PREFIX.length);
   const attr = customAttrs?.find((a) => a.name === name);
   if (!attr) return col;
-  // Combo-box options already arrive as {value,label} from the API; keep them,
-  // just backfill a missing label from the value.
-  const options =
-    Array.isArray(attr.options) && attr.options.length
-      ? attr.options.map((o) => ({ value: o.value, label: o.label || o.value }))
-      : undefined;
-  return {
-    ...col,
-    label: col.label || attr.displayName || name,
-    ...(options ? { options } : {}),
-  };
+
+  const label = col.label || attr.displayName || name;
+  const options = optionsFromAttr(attr);
+
+  const enriched: FilterColumn = { ...col, label };
+  if (options) enriched.options = options;
+  return enriched;
 };
 
 // For every custom-attribute column in the filter, fill its value combo-box from

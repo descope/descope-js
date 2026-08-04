@@ -30,6 +30,12 @@ export const createUserSdk = ({
     phones,
     text,
     searchFields,
+    verifiedEmail,
+    verifiedPhone,
+    password,
+    totp,
+    webauthn,
+    scim,
     sort,
   } = {}) => {
     if (mock) {
@@ -44,6 +50,12 @@ export const createUserSdk = ({
         phones,
         text,
         searchFields,
+        verifiedEmail,
+        verifiedPhone,
+        password,
+        totp,
+        webauthn,
+        scim,
         sort,
       });
     }
@@ -61,6 +73,12 @@ export const createUserSdk = ({
         phones,
         text,
         searchFields,
+        verifiedEmail,
+        verifiedPhone,
+        password,
+        totp,
+        webauthn,
+        scim,
         sort,
       },
       {

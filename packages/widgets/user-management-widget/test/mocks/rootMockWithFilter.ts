@@ -24,6 +24,13 @@ const FILTER_COLUMNS = [
     operators: ['is-any-of'],
     mapping: { kind: 'array', field: 'roleNames' },
   },
+  {
+    id: 'name',
+    label: 'Name',
+    inputType: 'text',
+    operators: [{ id: 'contains', prefix: '%', suffix: '%' }],
+    mapping: { kind: 'text', likeField: 'name' },
+  },
 ];
 
 export default `

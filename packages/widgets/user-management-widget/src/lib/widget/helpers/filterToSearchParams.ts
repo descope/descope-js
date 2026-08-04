@@ -34,9 +34,8 @@ type CustomAttributeMapping = Extract<
 
 // --- Operators ---
 
-// Operators handled as substring search. LIKE_OPS use the searchFields LIKE
-// query when the column sets a like field; FULLTEXT_OPS are the positive subset
-// that can fall back to the flat `text` field when it does not.
+// Substring operators. They go to the searchFields LIKE query, and require the
+// column to set a like field; a row that needs LIKE without one is dropped.
 const LIKE_OPS = new Set([
   'contains',
   'not-contains',
@@ -44,7 +43,6 @@ const LIKE_OPS = new Set([
   'ends-with',
   'not-equal',
 ]);
-const FULLTEXT_OPS = new Set(['contains', 'starts-with', 'ends-with']);
 
 // --- Value helpers ---
 
@@ -88,7 +86,7 @@ const convertCustomAttributeValue = (
 
 // The search request expresses a filter three ways, and every handler result
 // targets one of them:
-//   directField    a typed top-level param (statuses, text, emails, ...)
+//   directField    a typed top-level param (statuses, emails, roleNames, ...)
 //   searchField    an entry in searchFields[] (LIKE/substring, can be negated)
 //   customAttr     an entry in customAttributes{} (per-project dynamic attrs)
 // searchFields and customAttributes accumulate across rows (see mergePatch);
@@ -151,12 +149,6 @@ const textLikeMatch = (field: string, row: FilterRow): Params => {
   return searchField(field, valStr, row.operator.startsWith('not-'));
 };
 
-// Full-text: the value into the `text` direct field (flat search box query).
-const textFullTextMatch = (row: FilterRow): Params => {
-  const value = singleValue(row.value);
-  return value === null ? {} : directField('text', value);
-};
-
 // Can this row be an exact match? `equal` on a column that has an exact field.
 const canExactMatch = (
   mapping: TextMapping,
@@ -171,18 +163,14 @@ const canLikeMatch = (
 ): mapping is TextMapping & { likeField: string } =>
   LIKE_OPS.has(row.operator) && mapping.likeField != null;
 
-// Can this row fall back to full-text? any positive substring operator, or equal.
-const canFullTextMatch = (row: FilterRow): boolean =>
-  FULLTEXT_OPS.has(row.operator) || row.operator === 'equal';
-
-// text: pick one of the three matches by which one the row qualifies for. An
-// operator that fits none (for example a negation on a column with no like
-// field) returns null so the caller drops the row.
+// text: exact match, or a searchFields LIKE match, by whichever the row
+// qualifies for. A row that fits neither (no matching field for its operator)
+// returns null so the caller drops it. The filter never writes the shared `text`
+// field; that belongs to the standalone search box.
 const mapTextRow = (mapping: TextMapping, row: FilterRow): Params | null => {
   if (canExactMatch(mapping, row))
     return textExactMatch(mapping.exactField, row);
   if (canLikeMatch(mapping, row)) return textLikeMatch(mapping.likeField, row);
-  if (canFullTextMatch(row)) return textFullTextMatch(row);
   return null;
 };
 
@@ -231,8 +219,8 @@ const mapRow = (col: FilterableColumn, row: FilterRow): Params | null => {
 // --- Request assembly ---
 
 // The request fields this filter can write, so the caller can blank them before
-// applying rows. `text` is left out on purpose: it is shared with the standalone
-// search box, and clearing it would erase what the user typed there.
+// applying rows. The shared `text` field is never written by the filter (the
+// standalone search box owns it), so it is not cleared here either.
 const fieldsToClear = (cols: FilterableColumn[]): Set<string> => {
   const fields = new Set<string>(['searchFields', 'customAttributes']);
   cols.forEach((col) => {

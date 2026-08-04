@@ -33,8 +33,10 @@ const CATALOG: FilterableColumn[] = [
     exactField: 'phones',
     likeField: 'phonenumber',
   }),
-  col('name', { kind: 'text' }),
-  col('familyName', { kind: 'text' }),
+  col('name', { kind: 'text', likeField: 'name' }),
+  col('familyName', { kind: 'text', likeField: 'familyName' }),
+  // A text column with no exact/like field, to exercise the drop path.
+  col('bareText', { kind: 'text' }),
   col('verifiedEmail', { kind: 'boolean', field: 'verifiedEmail' }, 'boolean'),
   col('SCIM', { kind: 'boolean', field: 'scim' }, 'boolean'),
   col(
@@ -110,17 +112,34 @@ describe('filterToSearchParams', () => {
     ).toEqual(['b@c.com']);
   });
 
-  it('text equal → full-text when no exact field (displayName/name)', () => {
-    expect(
-      run([{ column: 'name', operator: 'contains', value: 'moshe' }]).text,
-    ).toBe('moshe');
-    expect(
-      run([{ column: 'displayName', operator: 'equal', value: 'jo' }]).text,
-    ).toBe('jo');
-    expect(
-      run([{ column: 'displayName', operator: 'equal', value: 'jo' }])
-        .searchFields,
-    ).toBeUndefined();
+  it('name (like field) → searchFields LIKE, never the shared text field', () => {
+    const params = run([
+      {
+        column: 'name',
+        operator: 'contains',
+        value: 'lena',
+        prefix: '%',
+        suffix: '%',
+      },
+    ]);
+    expect(params.searchFields).toEqual([{ field: 'name', valStr: '%lena%' }]);
+    expect(params.text).toBeUndefined();
+  });
+
+  it('drops a text row that maps to no field for its operator', () => {
+    // no exact/like field at all, and displayName `equal` has no exact field.
+    // Neither writes the shared `text` field (that is the search box's).
+    const bare = run([
+      { column: 'bareText', operator: 'contains', value: 'x' },
+    ]);
+    expect(bare.text).toBeUndefined();
+    expect(bare.searchFields).toBeUndefined();
+
+    const displayName = run([
+      { column: 'displayName', operator: 'equal', value: 'jo' },
+    ]);
+    expect(displayName.text).toBeUndefined();
+    expect(displayName.searchFields).toBeUndefined();
   });
 
   it('boolean equal true/false → optional bool field', () => {
@@ -180,20 +199,6 @@ describe('filterToSearchParams', () => {
       ).toEqual([{ field: 'email', valStr: 'a@b.com', negative: true }]);
     });
 
-    it('full-text for text columns with no LIKE field (name)', () => {
-      const params = run([
-        {
-          column: 'name',
-          operator: 'contains',
-          value: 'john',
-          prefix: '%',
-          suffix: '%',
-        },
-      ]);
-      expect(params.searchFields).toBeUndefined();
-      expect(params.text).toBe('john');
-    });
-
     it('drops a LIKE row with an empty value', () => {
       expect(
         run([
@@ -231,9 +236,9 @@ describe('filterToSearchParams', () => {
       ).toBeUndefined();
     });
 
-    it('drops a negation on a non-LIKE text column (never full-text)', () => {
+    it('drops a negation on a text column with no like field', () => {
       const params = run([
-        { column: 'name', operator: 'not-contains', value: 'john' },
+        { column: 'bareText', operator: 'not-contains', value: 'john' },
       ]);
       expect(params.text).toBeUndefined();
       expect(params.searchFields).toBeUndefined();
@@ -458,15 +463,6 @@ describe('filterToSearchParams', () => {
         { column: 'customAttributes.level', operator: 'equal', value: '5' },
       ]).customAttributes,
     ).toEqual({ department: 'eng', level: 5 });
-  });
-
-  it('last text row wins (single text field)', () => {
-    expect(
-      run([
-        { column: 'name', operator: 'contains', value: 'first' },
-        { column: 'familyName', operator: 'contains', value: 'second' },
-      ]).text,
-    ).toBe('second');
   });
 
   it('combines multiple categories in one call', () => {

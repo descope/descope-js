@@ -826,6 +826,79 @@ test.describe('widget', () => {
     ).toBeHidden({ timeout: 20000 });
   });
 
+  test('filter users by name sends a searchFields LIKE query', async ({
+    page,
+  }) => {
+    test.setTimeout(60_000);
+
+    await page.route('*/**/root.html', async (route) =>
+      route.fulfill({ body: rootMockWithFilter }),
+    );
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    // Assert the wire shape of the search request; never hits a real backend.
+    await page.route(apiPath('user', 'search'), async (route) => {
+      const body = route.request().postDataJSON();
+      const searchFields = body?.searchFields;
+      const matchesName =
+        Array.isArray(searchFields) &&
+        searchFields[0]?.field === 'name' &&
+        searchFields[0]?.valStr === '%Lena%';
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          users: matchesName ? [mockUsers[1]] : mockUsers,
+        }),
+      });
+    });
+
+    await page.waitForTimeout(STATE_TIMEOUT);
+
+    const filter = page.locator('descope-filter').first();
+    await filter.waitFor({ state: 'attached' });
+
+    const searchResponsePromise = page.waitForResponse((response) => {
+      if (!response.url().includes(apiPaths.user.search)) return false;
+      const body = response.request().postDataJSON();
+      // A text column with a likeField routes to searchFields (LIKE), never the
+      // shared `text` field (that belongs to the standalone search box).
+      return (
+        body?.searchFields?.[0]?.field === 'name' &&
+        body?.searchFields?.[0]?.valStr === '%Lena%' &&
+        !body?.text
+      );
+    });
+
+    await filter.evaluate((el) => {
+      el.dispatchEvent(
+        new CustomEvent('filter-apply', {
+          detail: {
+            action: 'apply',
+            value: [
+              {
+                column: 'name',
+                operator: 'contains',
+                value: 'Lena',
+                prefix: '%',
+                suffix: '%',
+              },
+            ],
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+
+    await searchResponsePromise;
+
+    await expect(
+      page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
+    ).toBeHidden({ timeout: 20000 });
+  });
+
   test('filter users by roles', async ({ page }) => {
     test.setTimeout(60_000);
 
