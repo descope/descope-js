@@ -371,7 +371,6 @@ export const componentConditionsMixin = createSingletonMixin(
       disconnectedCallback() {
         // disconnectedCallback isn't on HTMLElement in the lib types, but it
         // exists at runtime — forward into super in case the chain uses it.
-        // @ts-expect-error custom-element lifecycle method missing from lib types
         super.disconnectedCallback?.();
         this.#teardownRealtimeRuntime();
       }

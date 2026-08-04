@@ -63,6 +63,20 @@ DESCOPE_FLOW_ID=<flow-id>
 DESCOPE_BASE_URL
 # Optional - Descope locale (according to the target locales configured in the flow)
 DESCOPE_LOCALE=<locale>
+
+# Telemetry fallback config (AWS CloudWatch RUM).
+# Optional — used by the SDK only when the backend's config.json doesn't
+# ship a `telemetry` block. Once it does, these are ignored.
+# Leave DESCOPE_TELEMETRY_ENABLED unset or set to anything other than
+# "true" to keep the fallback off.
+DESCOPE_TELEMETRY_ENABLED=<true|false>
+DESCOPE_TELEMETRY_APPLICATION_ID=<cloudwatch-rum-app-monitor-id>
+DESCOPE_TELEMETRY_IDENTITY_POOL_ID=<aws-cognito-identity-pool-id>
+DESCOPE_TELEMETRY_REGION=<aws-region>
+# Optional — only required for the classic Cognito flow.
+DESCOPE_TELEMETRY_GUEST_ROLE_ARN=<iam-guest-role-arn>
+# Optional — 0..1, defaults to 1 (capture every session).
+DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE=1
 ```
 
 1. Run the sample `pnpm run start` / `pnpm run start-web-sample`

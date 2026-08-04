@@ -13,6 +13,22 @@ const input = './src/lib/descope-wc/index.ts';
 const external = (id) =>
   !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
+/**
+ * Strip any surviving `process.env.<KEY>` references from the prod bundle.
+ * Only refs the earlier `replace()` step handles explicitly (NODE_ENV) will
+ * already be gone by the time this plugin runs, so this is a safety net for
+ * every other build-time env var (e.g. DESCOPE_TELEMETRY_*) — prevents
+ * ReferenceError in browsers where `process` doesn't exist, and blocks
+ * accidental leaks of any future env var into the published bundle.
+ */
+const stubEnvInProd = () => ({
+  name: 'stub-env-in-prod',
+  transform(code) {
+    if (!code.includes('process.env.')) return null;
+    return code.replace(/\bprocess\.env\.[A-Za-z_][A-Za-z0-9_]*\b/g, '""');
+  },
+});
+
 export default [
   {
     input,
@@ -39,6 +55,7 @@ export default [
         preventAssignment: true,
         'process.env.NODE_ENV': JSON.stringify('production'),
       }),
+      stubEnvInProd(),
       terser(),
     ],
   },
@@ -71,6 +88,7 @@ export default [
         preventAssignment: true,
         'process.env.NODE_ENV': JSON.stringify('production'),
       }),
+      stubEnvInProd(),
       terser(),
     ],
     external,

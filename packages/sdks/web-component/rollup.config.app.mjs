@@ -34,6 +34,27 @@ export default {
         'process.env.DESCOPE_BASE_CDN_URL': JSON.stringify(
           process.env.DESCOPE_BASE_CDN_URL || '',
         ),
+        // Telemetry fallback config (read by telemetryMixin#getTelemetryConfig
+        // when the backend doesn't ship a telemetry block). Keep these out
+        // of source code — they live in packages/sdks/web-component/.env.
+        'process.env.DESCOPE_TELEMETRY_ENABLED': JSON.stringify(
+          process.env.DESCOPE_TELEMETRY_ENABLED || '',
+        ),
+        'process.env.DESCOPE_TELEMETRY_APPLICATION_ID': JSON.stringify(
+          process.env.DESCOPE_TELEMETRY_APPLICATION_ID || '',
+        ),
+        'process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID': JSON.stringify(
+          process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID || '',
+        ),
+        'process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN': JSON.stringify(
+          process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN || '',
+        ),
+        'process.env.DESCOPE_TELEMETRY_REGION': JSON.stringify(
+          process.env.DESCOPE_TELEMETRY_REGION || '',
+        ),
+        'process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE': JSON.stringify(
+          process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE || '',
+        ),
       },
     }),
     del({ targets: 'build' }),
