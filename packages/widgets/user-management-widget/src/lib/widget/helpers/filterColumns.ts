@@ -30,7 +30,7 @@ const enrichColumn = (
   customAttrs: CustomAttr[] | undefined,
 ): FilterColumn => {
   const name = col.id.slice(CA_COL_PREFIX.length);
-  const attr = customAttrs?.find((a) => a.name === name);
+  const attr = customAttrs?.find((candidate) => candidate.name === name);
   if (!attr) return col;
 
   const label = col.label || attr.displayName || name;
@@ -51,15 +51,15 @@ export const enrichFilterCustomAttributeColumns = (
     // Drop a custom-attribute column whose attribute no longer exists, so users
     // cannot filter on a deleted attribute (which always returns zero results).
     // Keep everything while the schema is still loading (customAttrs undefined).
-    .filter((c) => {
-      if (!c?.id?.startsWith(CA_COL_PREFIX) || customAttrs === undefined) {
+    .filter((col) => {
+      if (!col?.id?.startsWith(CA_COL_PREFIX) || customAttrs === undefined) {
         return true;
       }
-      const name = c.id.slice(CA_COL_PREFIX.length);
-      return customAttrs.some((a) => a.name === name);
+      const name = col.id.slice(CA_COL_PREFIX.length);
+      return customAttrs.some((attr) => attr.name === name);
     })
-    .map((c) =>
-      c?.id?.startsWith(CA_COL_PREFIX) ? enrichColumn(c, customAttrs) : c,
+    .map((col) =>
+      col?.id?.startsWith(CA_COL_PREFIX) ? enrichColumn(col, customAttrs) : col,
     );
 
 // Resolve the Roles column in the filter against the tenant's roles: drop the
@@ -69,11 +69,13 @@ export const applyFilterRolesColumn = (
   tenantRoles: Role[] | undefined,
 ): FilterColumn[] => {
   if (!tenantRoles?.length) {
-    return cols.filter((c) => c?.id !== ROLES_COLUMN_ID);
+    return cols.filter((col) => col?.id !== ROLES_COLUMN_ID);
   }
-  const options: FilterOption[] = tenantRoles.map((r) => ({
-    value: r.name,
-    label: r.name,
+  const options: FilterOption[] = tenantRoles.map((role) => ({
+    value: role.name,
+    label: role.name,
   }));
-  return cols.map((c) => (c?.id === ROLES_COLUMN_ID ? { ...c, options } : c));
+  return cols.map((col) =>
+    col?.id === ROLES_COLUMN_ID ? { ...col, options } : col,
+  );
 };
