@@ -47,9 +47,20 @@ export const enrichFilterCustomAttributeColumns = (
   cols: FilterColumn[],
   customAttrs: CustomAttr[] | undefined,
 ): FilterColumn[] =>
-  cols.map((c) =>
-    c?.id?.startsWith(CA_COL_PREFIX) ? enrichColumn(c, customAttrs) : c,
-  );
+  cols
+    // Drop a custom-attribute column whose attribute no longer exists, so users
+    // cannot filter on a deleted attribute (which always returns zero results).
+    // Keep everything while the schema is still loading (customAttrs undefined).
+    .filter((c) => {
+      if (!c?.id?.startsWith(CA_COL_PREFIX) || customAttrs === undefined) {
+        return true;
+      }
+      const name = c.id.slice(CA_COL_PREFIX.length);
+      return customAttrs.some((a) => a.name === name);
+    })
+    .map((c) =>
+      c?.id?.startsWith(CA_COL_PREFIX) ? enrichColumn(c, customAttrs) : c,
+    );
 
 // Resolve the Roles column in the filter against the tenant's roles: drop the
 // column when there are none, else fill its value combo-box with the role list.

@@ -83,15 +83,9 @@ export type SearchField = {
   valType?: string;
 };
 
-export type FilterRow = {
-  column: string;
-  operator: string;
-  value: string | string[] | null;
-  // Query affixes the widget resolves from the operator config (e.g. SQL-LIKE
-  // `%`). The value stays raw; the consumer builds the query with these.
-  prefix?: string;
-  suffix?: string;
-};
+// Re-exported from the driver (identical shape) so the widget's rows and the
+// FilterDriver's cannot drift apart.
+export type { FilterRow } from '@descope/sdk-component-drivers';
 
 // How a column's rows map to request fields. Set at widget-design time and baked
 // into the published data, so the SDK stays a generic interpreter with no

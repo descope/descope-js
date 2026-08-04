@@ -494,3 +494,23 @@ describe('filterToSearchParams', () => {
     );
   });
 });
+
+describe('edge cases', () => {
+  it('unions two rows on the same array column (both apply, not last-wins)', () => {
+    const params = run([
+      { column: 'status', operator: 'is-any-of', value: ['active'] },
+      { column: 'status', operator: 'is-any-of', value: ['invited'] },
+    ]);
+    expect(params.statuses).toEqual(['enabled', 'invited']);
+  });
+
+  it('does not throw on a nullish column entry in the catalog', () => {
+    const cols = [...CATALOG, null as unknown as FilterableColumn];
+    expect(() =>
+      filterToSearchParams(
+        [{ column: 'status', operator: 'is-any-of', value: ['active'] }],
+        cols,
+      ),
+    ).not.toThrow();
+  });
+});

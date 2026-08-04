@@ -14,10 +14,28 @@ const enrichOne = (c: FilterColumn, cas: CustomAttr[] | undefined) =>
   enrichFilterCustomAttributeColumns([c], cas)[0];
 
 describe('enrichFilterCustomAttributeColumns', () => {
-  it('returns the column unchanged when the attribute is missing or schema is absent', () => {
+  it('keeps the column unchanged while the schema is still loading (undefined)', () => {
     const input = col({ inputType: 'text', operators: ['equal'] });
-    expect(enrichOne(input, [])).toBe(input);
     expect(enrichOne(input, undefined)).toBe(input);
+  });
+
+  it('drops a custom-attribute column whose attribute no longer exists', () => {
+    const input = col({ id: 'customAttributes.dept', inputType: 'text' });
+    // schema loaded (array) but dept is gone -> column removed
+    expect(enrichFilterCustomAttributeColumns([input], [])).toEqual([]);
+    expect(
+      enrichFilterCustomAttributeColumns(
+        [input],
+        [
+          {
+            name: 'other',
+            type: 1,
+            options: [],
+            displayName: 'Other',
+          } as CustomAttr,
+        ],
+      ),
+    ).toEqual([]);
   });
 
   it('trusts the published inputType/operators (does not re-derive them)', () => {

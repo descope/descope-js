@@ -224,7 +224,7 @@ const mapRow = (col: FilterableColumn, row: FilterRow): Params | null => {
 const fieldsToClear = (cols: FilterableColumn[]): Set<string> => {
   const fields = new Set<string>(['searchFields', 'customAttributes']);
   cols.forEach((col) => {
-    const { mapping } = col;
+    const mapping = col?.mapping;
     if (!mapping) return;
     if (mapping.kind === 'array' || mapping.kind === 'boolean') {
       fields.add(mapping.field);
@@ -247,9 +247,17 @@ const mergeCustomAttributes = (
   incoming: NonNullable<Params['customAttributes']>,
 ): Params['customAttributes'] => ({ ...(base ?? {}), ...incoming });
 
+// Merge one direct field value onto the previous one. Array fields (statuses,
+// roleNames, emails, ...) union, so two rows on the same column both apply
+// instead of the second silently replacing the first; scalars just overwrite.
+const mergeDirectField = (previous: unknown, next: unknown): unknown =>
+  Array.isArray(previous) && Array.isArray(next)
+    ? [...previous, ...next.filter((v) => !previous.includes(v))]
+    : next;
+
 // Merge one row's result onto the request so far and return the new request.
-// searchFields and customAttributes build up across rows; every other field is
-// set directly.
+// searchFields and customAttributes build up across rows; direct fields merge
+// via mergeDirectField (array fields union, scalars overwrite).
 const mergePatch = (params: Params, patch: Params): Params => {
   const { searchFields, customAttributes, ...directFields } = patch;
 
@@ -261,9 +269,16 @@ const mergePatch = (params: Params, patch: Params): Params => {
     ? mergeCustomAttributes(params.customAttributes, customAttributes)
     : params.customAttributes;
 
+  const merged: Params = { ...params };
+  Object.entries(directFields).forEach(([field, value]) => {
+    (merged as Record<string, unknown>)[field] = mergeDirectField(
+      (merged as Record<string, unknown>)[field],
+      value,
+    );
+  });
+
   return {
-    ...params,
-    ...directFields,
+    ...merged,
     searchFields: mergedSearchFields,
     customAttributes: mergedCustomAttributes,
   };
@@ -296,7 +311,9 @@ export const filterToSearchParams = (
     (cleared as any)[field] = undefined;
   });
 
-  const byId = new Map(cols.map((c) => [c.id, c]));
+  const byId = new Map(
+    cols.filter((c): c is FilterableColumn => Boolean(c)).map((c) => [c.id, c]),
+  );
 
   // Merge each row's result on top of the cleared base.
   return rows.reduce((params, row) => {
