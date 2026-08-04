@@ -5,17 +5,27 @@ type Head<T extends ReadonlyArray<any>> = T extends readonly [] ? never : T[0];
 
 export type OidcConfigOptions = {
   applicationId?: string;
-  // Client ID for OIDC. Required if issuer is provided.
-  // For inbound apps, provide issuer with this clientId (e.g., issuer: 'https://api.descope.com/v1/apps/{projectId}')
+  // Client ID for OIDC. Required when `issuer` is a non-federated (e.g. inbound-app)
+  // authority. If `issuer` is a Federated App's discovery/authority URL, this defaults to
+  // the project ID and only needs to be set to override it.
   clientId?: string;
-  // Custom issuer/authority URL. If provided, clientId is required.
-  // For inbound apps, construct the issuer URL manually: `${baseUrl}/v1/apps/${projectId}`
+  // Custom issuer/authority URL - paste the discovery/authority URL of either a Federated
+  // App or an Inbound App as-is, including a full well-known URL
+  // (`.../.well-known/openid-configuration`), which is automatically normalized to the bare
+  // issuer. Which kind of app it is gets auto-detected from the URL shape; see `clientId`.
   issuer?: string;
   // default is current URL
   redirectUri?: string;
   // default is openid email roles descope.custom_claims offline_access
-  // default is 'openid' if issuer (and clientId) is provided
+  // default is 'openid' if issuer resolves to a non-federated (e.g. inbound-app) authority
   scope?: string;
+  // RFC 8707 resource indicator(s) requested at sign-in and on refresh.
+  // Applies to both federated (applicationId) and inbound (issuer) apps.
+  resource?: string | string[];
+  // Alias for `resource` - RFC 8707 resource indicator(s). If both `resource` and
+  // `audience` are supplied, `resource` wins. Provided for callers coming from an
+  // `audience`-based OAuth/OIDC vocabulary; the wire parameter sent is always `resource`.
+  audience?: string | string[];
 };
 
 export type OidcConfig = boolean | OidcConfigOptions;

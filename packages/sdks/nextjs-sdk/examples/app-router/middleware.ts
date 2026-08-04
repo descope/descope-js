@@ -3,7 +3,8 @@ import { authMiddleware } from '@descope/nextjs-sdk/server';
 export default authMiddleware({
 	projectId: process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID,
 	baseUrl: process.env.NEXT_PUBLIC_DESCOPE_BASE_URL,
-	logLevel: process.env.DESCOPE_LOG_LEVEL as any
+	logLevel: process.env.DESCOPE_LOG_LEVEL as any,
+	resource: process.env.DESCOPE_RESOURCE as any
 });
 
 export const config = {
