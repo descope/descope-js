@@ -1,3 +1,4 @@
+import type { FilterColumn } from '@descope/sdk-component-drivers';
 import createWebSdk from '@descope/web-js-sdk';
 
 export type Sdk = ReturnType<typeof createWebSdk>;
@@ -103,10 +104,7 @@ export type FieldMapping =
 
 // The published column shape the widget consumes: the driver's FilterColumn
 // plus the field mapping baked into its data.
-export type FilterableColumn =
-  import('@descope/sdk-component-drivers').FilterColumn & {
-    mapping?: FieldMapping;
-  };
+export type FilterableColumn = FilterColumn & { mapping?: FieldMapping };
 
 export type SearchUsersConfig = {
   page?: number;
