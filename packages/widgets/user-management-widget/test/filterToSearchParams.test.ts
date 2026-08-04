@@ -614,11 +614,11 @@ describe('routing matrix (mapping x operator)', () => {
       affix: CONTAINS,
       expected: 'searchFields',
     },
-    // KNOWN GAP: console offers `equal` on displayName (LIKE_OPERATORS) but there
-    // is no exactField and `equal` is not a LIKE op, so the row is dropped. Flip
-    // to 'searchFields'/'direct' when the displayName-equal fix lands.
+    // A likeField-only column cannot serve `equal` (not a LIKE op, no exactField),
+    // so the widget drops it. The console no longer offers `equal` on such columns
+    // (enforced by the console spec-invariant test), so this is defensive.
     {
-      label: 'likeField-only equal (KNOWN GAP -> DROP)',
+      label: 'likeField-only equal is dropped (console never offers it)',
       mapping: LIKE_ONLY,
       op: 'equal',
       value: 'x',
