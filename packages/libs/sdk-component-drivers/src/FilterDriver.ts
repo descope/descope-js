@@ -47,6 +47,10 @@ export type FilterEventDetail = {
 export class FilterDriver extends BaseDriver {
   nodeName = 'descope-filter';
 
+  // Serialized value of the last `data` we wrote, so onDataChange can tell our
+  // own writes apart from external ones.
+  #lastData: string | null = null;
+
   get data(): FilterColumn[] {
     try {
       return JSON.parse(this.ele?.getAttribute('data') || '[]');
@@ -56,7 +60,8 @@ export class FilterDriver extends BaseDriver {
   }
 
   set data(value: FilterColumn[]) {
-    this.ele?.setAttribute('data', JSON.stringify(value));
+    this.#lastData = JSON.stringify(value);
+    this.ele?.setAttribute('data', this.#lastData);
   }
 
   get value(): FilterRow[] {
@@ -83,9 +88,17 @@ export class FilterDriver extends BaseDriver {
     return () => this.ele?.removeEventListener('filter-clear', handler);
   }
 
-  onCancel(cb: (detail: FilterEventDetail) => void) {
-    const handler = (e: Event) => cb((e as CustomEvent).detail);
-    this.ele?.addEventListener('filter-cancel', handler);
-    return () => this.ele?.removeEventListener('filter-cancel', handler);
+  // Fires when the `data` attribute is changed by something other than this
+  // driver (e.g. the screen editor republishing a different pick list). The
+  // driver's own writes are skipped by comparing against #lastData.
+  onDataChange(cb: () => void) {
+    const ele = this.ele;
+    if (!ele) return () => {};
+    const observer = new MutationObserver(() => {
+      if ((ele.getAttribute('data') ?? '[]') === this.#lastData) return;
+      cb();
+    });
+    observer.observe(ele, { attributes: true, attributeFilter: ['data'] });
+    return () => observer.disconnect();
   }
 }
