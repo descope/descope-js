@@ -1,5 +1,6 @@
 export * from './AppsListDriver';
 export * from './AvatarDriver';
+export * from './FilterDriver';
 export * from './ButtonDriver';
 export * from './FlowDriver';
 export * from './GenericFlowButtonDriver';

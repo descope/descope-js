@@ -115,9 +115,13 @@ describe('user-management-widget', () => {
             customAttributes: undefined,
             emails: undefined,
             limit: 10000,
+            loginIds: undefined,
             page: undefined,
             phones: undefined,
+            roleNames: undefined,
+            sort: undefined,
             statuses: undefined,
+            text: undefined,
             withTestUser: false,
           },
           {
@@ -130,6 +134,33 @@ describe('user-management-widget', () => {
 
       expect(result[0].loginIds[0]).toEqual(mockUsers[0]['loginIds'][0]);
       expect(result[1].loginIds[0]).toEqual(mockUsers[1]['loginIds'][0]);
+    });
+
+    it('search with filter fields forwards them to the backend', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
+      await sdk.user.search({
+        statuses: ['enabled', 'invited'],
+        roleNames: ['Tenant Admin'],
+        loginIds: ['alice@example.com'],
+        emails: ['bob@example.com'],
+        phones: ['+15555555555'],
+        text: 'moshe',
+      });
+
+      await waitFor(() =>
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.user.search,
+          expect.objectContaining({
+            statuses: ['enabled', 'invited'],
+            roleNames: ['Tenant Admin'],
+            loginIds: ['alice@example.com'],
+            emails: ['bob@example.com'],
+            phones: ['+15555555555'],
+            text: 'moshe',
+          }),
+          { queryParams: { tenant: mockTenant } },
+        ),
+      );
     });
 
     it('deleteBatch', async () => {
