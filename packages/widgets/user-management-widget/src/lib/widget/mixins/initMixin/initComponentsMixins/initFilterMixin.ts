@@ -4,7 +4,11 @@ import {
   FilterEventDetail,
   FilterRow,
 } from '@descope/sdk-component-drivers';
-import { compose, createSingletonMixin } from '@descope/sdk-helpers';
+import {
+  compose,
+  createSingletonMixin,
+  withMemCache,
+} from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
@@ -30,73 +34,81 @@ export const initFilterMixin = createSingletonMixin(
       // console-app editor publishing a new pick list).
       #originalCols: readonly FilterColumn[] | null = null;
 
-      // Raw `data` attribute string we last wrote. Used to distinguish our own
-      // writes from external ones in the MutationObserver below.
-      #lastWrittenDataAttr: string | null = null;
+      // Build the request from the full published column set, not the trimmed
+      // filter.data, so a column hidden at runtime (e.g. Roles when the tenant
+      // has none) still gets its field cleared instead of lingering.
+      #columnsForRequest = (): FilterColumn[] =>
+        this.#originalCols ? [...this.#originalCols] : this.filter.data;
 
       #onApply = (detail: FilterEventDetail) => {
         const rows: FilterRow[] = Array.isArray(detail?.value)
           ? detail.value
           : [];
         this.actions.searchUsers({
-          ...filterToSearchParams(rows, this.filter.data),
+          ...filterToSearchParams(rows, this.#columnsForRequest()),
           page: 0,
         });
       };
 
       #onClear = () => {
         this.actions.searchUsers({
-          ...filterToSearchParams([], this.filter.data),
+          ...filterToSearchParams([], this.#columnsForRequest()),
           page: 0,
         });
       };
 
+      // subscribe() fires on every state change, so memoize on (roles, CAs) plus
+      // #originalCols. onDataChange nulls #originalCols to force a re-snapshot,
+      // which busts the cache (the key changes); unrelated state changes keep the
+      // same refs and skip.
+      #updateColumns = withMemCache(
+        (
+          tenantRoles: ReturnType<typeof getTenantRoles>,
+          customAttrs: ReturnType<typeof getCustomAttributes>,
+          originalCols: readonly FilterColumn[] | null,
+        ) => {
+          // Snapshot the published columns once. If console-app later rewrites
+          // the `data` attribute (e.g. adds CA columns after its fetch), the
+          // driver's onDataChange handler resets #originalCols so we re-snapshot.
+          if (!originalCols) {
+            this.#originalCols = Object.freeze(this.filter.data.slice());
+          }
+          this.filter.data = this.#resolveColumns(tenantRoles, customAttrs);
+        },
+      );
+
       #syncColumns = () => {
         if (!this.filter?.isExists) return;
-
-        const tenantRoles = getTenantRoles(this.state);
-        const customAttrs = getCustomAttributes(this.state);
-
-        // Snapshot the published columns once. If console-app later rewrites the
-        // `data` attribute (e.g. adds CA columns after its fetch), the
-        // MutationObserver in onWidgetRootReady resets #originalCols so we
-        // re-snapshot from the new data.
-        if (!this.#originalCols) {
-          this.#originalCols = Object.freeze(this.filter.data.slice());
-        }
-
-        // Resolve the published pick list against runtime state: populate/hide
-        // the Roles column, then enrich any custom-attribute columns.
-        let cols: FilterColumn[] = this.#originalCols.slice();
-        cols = applyFilterRolesColumn(cols, tenantRoles);
-        cols = enrichFilterCustomAttributeColumns(cols, customAttrs);
-
-        this.filter.data = cols;
-        this.#lastWrittenDataAttr = JSON.stringify(cols);
+        this.#updateColumns(
+          getTenantRoles(this.state),
+          getCustomAttributes(this.state),
+          this.#originalCols,
+        );
       };
+
+      // Resolve the published pick list against runtime state: populate/hide the
+      // Roles column, then enrich any custom-attribute columns.
+      #resolveColumns(
+        tenantRoles: ReturnType<typeof getTenantRoles>,
+        customAttrs: ReturnType<typeof getCustomAttributes>,
+      ): FilterColumn[] {
+        const base = this.#originalCols?.slice() ?? [];
+        const withRoles = applyFilterRolesColumn(base, tenantRoles);
+        return enrichFilterCustomAttributeColumns(withRoles, customAttrs);
+      }
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
         const filterEle = this.shadowRoot?.querySelector('descope-filter');
         this.filter = new FilterDriver(filterEle, { logger: this.logger });
+
         if (!this.filter.isExists) return;
 
-        // Watch the `data` attribute for external changes (e.g. screen editor
-        // republishing a reduced pick list). Our own writes also fire here
-        // but match `#lastWrittenDataAttr`, so they're skipped.
-        if (filterEle) {
-          const observer = new MutationObserver(() => {
-            const current = filterEle.getAttribute('data') ?? '[]';
-            if (current === this.#lastWrittenDataAttr) return;
-            this.#originalCols = null;
-            this.#syncColumns();
-          });
-          observer.observe(filterEle, {
-            attributes: true,
-            attributeFilter: ['data'],
-          });
-        }
+        this.filter.onDataChange(() => {
+          this.#originalCols = null;
+          this.#syncColumns();
+        });
 
         this.#syncColumns();
         this.subscribe(this.#syncColumns, getTenantRoles);

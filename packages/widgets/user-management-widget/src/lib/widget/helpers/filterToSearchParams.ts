@@ -102,8 +102,10 @@ const searchField = (
   searchFields: [{ field, valStr, ...(negative ? { negative: true } : {}) }],
 });
 
-const customAttr = (name: string, value: unknown): Params =>
-  ({ customAttributes: { [name]: value } }) as Params;
+const customAttr = (name: string, value: unknown): Params => ({
+  // CA values may be arrays, which the map's single-value type does not include.
+  customAttributes: { [name]: value } as SearchUsersConfig['customAttributes'],
+});
 
 // --- Row handlers (one per mapping kind) ---
 
@@ -301,14 +303,13 @@ export const filterToSearchParams = (
   rows: FilterRow[],
   cols: FilterableColumn[] = [],
 ): Params => {
-  // The search remembers the previous params and merges the new ones on top, so
-  // a filter the user removed would otherwise stay applied. Start by setting
-  // every filterable field to undefined to clear it; the active rows below then
-  // set the ones still in use.
-  const cleared: Params = {};
-
+  // searchUsers merges each apply onto the previous params ({ ...previous, ...new })
+  // and persists it, so a field the user cleared lingers unless we overwrite it.
+  // Seed every filterable field to undefined first; the active rows below overwrite
+  // the ones still in use.
+  const cleared: Record<string, undefined> = {};
   fieldsToClear(cols).forEach((field) => {
-    (cleared as any)[field] = undefined;
+    cleared[field] = undefined;
   });
 
   const byId = new Map(
@@ -321,5 +322,5 @@ export const filterToSearchParams = (
     if (!col) return params;
     const patch = mapRow(col, row);
     return patch ? mergePatch(params, patch) : params;
-  }, cleared);
+  }, cleared as Params);
 };
