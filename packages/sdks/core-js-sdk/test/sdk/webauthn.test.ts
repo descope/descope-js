@@ -28,10 +28,10 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.signUp.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() =>
+          sdk.webauthn.signUp.start('loginId', '', 'name'),
+        ).not.toThrow();
       });
 
       it('should throw an error when name is not a string', () => {
@@ -229,10 +229,8 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.signIn.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() => sdk.webauthn.signIn.start('loginId', '')).not.toThrow();
       });
 
       it('should send the correct request', () => {
@@ -453,10 +451,8 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.signUpOrIn.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() => sdk.webauthn.signUpOrIn.start('loginId', '')).not.toThrow();
       });
 
       it('should send the correct request', () => {
@@ -575,10 +571,8 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.update.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() => sdk.webauthn.update.start('loginId', '')).not.toThrow();
       });
 
       it('should throw an error when token is undefined', () => {
