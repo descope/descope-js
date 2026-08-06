@@ -17,7 +17,7 @@ import {
 
 const loginIdStringValidations = string('loginId');
 const loginIdNonEmptyValidations = stringNonEmpty('loginId');
-const originValidations = stringNonEmpty('origin');
+const originValidations = string('origin');
 
 const withSignUpStartValidations = withValidations(
   loginIdNonEmptyValidations,
