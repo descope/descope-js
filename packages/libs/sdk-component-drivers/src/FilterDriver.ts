@@ -61,6 +61,11 @@ export class FilterDriver extends BaseDriver {
 
   set data(value: FilterColumn[]) {
     this.#lastData = JSON.stringify(value);
+    // setAttribute always fires the component's attributeChangedCallback, even
+    // for an identical value (the DOM doesn't short-circuit a same-value set).
+    // The component re-renders its columns from `data` there, dropping the user's
+    // applied rows - so skip the write when the attribute already holds this value.
+    if (this.#lastData === this.ele?.getAttribute('data')) return;
     this.ele?.setAttribute('data', this.#lastData);
   }
 
