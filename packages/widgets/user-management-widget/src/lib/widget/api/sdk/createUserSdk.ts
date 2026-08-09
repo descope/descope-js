@@ -19,68 +19,16 @@ export const createUserSdk = ({
   tenant: string;
   mock: boolean;
 }) => {
-  const search: (config: SearchUsersConfig) => Promise<User[]> = async ({
-    page,
-    limit = 10000,
-    customAttributes,
-    statuses,
-    roleNames,
-    loginIds,
-    emails,
-    phones,
-    text,
-    searchFields,
-    verifiedEmail,
-    verifiedPhone,
-    password,
-    totp,
-    webauthn,
-    scim,
-    sort,
-  } = {}) => {
+  const search: (config: SearchUsersConfig) => Promise<User[]> = async (
+    config = {},
+  ) => {
+    const { limit = 10000, ...rest } = config;
     if (mock) {
-      return user.search({
-        page,
-        limit,
-        customAttributes,
-        statuses,
-        roleNames,
-        loginIds,
-        emails,
-        phones,
-        text,
-        searchFields,
-        verifiedEmail,
-        verifiedPhone,
-        password,
-        totp,
-        webauthn,
-        scim,
-        sort,
-      });
+      return user.search({ ...rest, limit });
     }
     const res = await httpClient.post(
       apiPaths.user.search,
-      {
-        limit,
-        page,
-        withTestUser: false,
-        customAttributes,
-        statuses,
-        roleNames,
-        loginIds,
-        emails,
-        phones,
-        text,
-        searchFields,
-        verifiedEmail,
-        verifiedPhone,
-        password,
-        totp,
-        webauthn,
-        scim,
-        sort,
-      },
+      { ...rest, limit, withTestUser: false },
       {
         queryParams: { tenant },
       },

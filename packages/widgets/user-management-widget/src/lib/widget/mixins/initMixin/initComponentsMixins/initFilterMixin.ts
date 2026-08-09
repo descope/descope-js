@@ -19,6 +19,20 @@ import {
   enrichFilterCustomAttributeColumns,
 } from '../../../helpers/filterColumns';
 
+// The published columns are static; fill the runtime-only parts against current
+// state: the Roles column's options from the tenant's roles (drop it when there
+// are none), and custom-attribute options from the live CA schema (drop a
+// deleted attribute).
+const resolveColumns = (
+  originalCols: readonly FilterColumn[] | null,
+  tenantRoles: ReturnType<typeof getTenantRoles>,
+  customAttrs: ReturnType<typeof getCustomAttributes>,
+): FilterColumn[] => {
+  const base = originalCols?.slice() ?? [];
+  const withRoles = applyFilterRolesColumn(base, tenantRoles);
+  return enrichFilterCustomAttributeColumns(withRoles, customAttrs);
+};
+
 export const initFilterMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitFilterMixinClass extends compose(
@@ -57,45 +71,40 @@ export const initFilterMixin = createSingletonMixin(
         });
       };
 
-      // subscribe() fires on every state change, so memoize on (roles, CAs) plus
-      // #originalCols. onDataChange nulls #originalCols to force a re-snapshot,
-      // which busts the cache (the key changes); unrelated state changes keep the
-      // same refs and skip.
+      // subscribe() fires on every state change, so memoize on the inputs the
+      // resolved columns depend on: (#originalCols, roles, CAs). #originalCols is
+      // re-snapshotted to a fresh frozen array on every external `data` change
+      // (see #captureAndSync), so its ref changes and the cache busts; unrelated
+      // state changes keep the same refs and skip.
       #updateColumns = withMemCache(
         (
+          originalCols: readonly FilterColumn[] | null,
           tenantRoles: ReturnType<typeof getTenantRoles>,
           customAttrs: ReturnType<typeof getCustomAttributes>,
-          originalCols: readonly FilterColumn[] | null,
         ) => {
-          // Snapshot the published columns once. If console-app later rewrites
-          // the `data` attribute (e.g. adds CA columns after its fetch), the
-          // driver's onDataChange handler resets #originalCols so we re-snapshot.
-          if (!originalCols) {
-            this.#originalCols = Object.freeze(this.filter.data.slice());
-          }
-          this.filter.data = this.#resolveColumns(tenantRoles, customAttrs);
+          this.filter.data = resolveColumns(
+            originalCols,
+            tenantRoles,
+            customAttrs,
+          );
         },
       );
 
       #syncColumns = () => {
         if (!this.filter?.isExists) return;
         this.#updateColumns(
+          this.#originalCols,
           getTenantRoles(this.state),
           getCustomAttributes(this.state),
-          this.#originalCols,
         );
       };
 
-      // Resolve the published pick list against runtime state: populate/hide the
-      // Roles column, then enrich any custom-attribute columns.
-      #resolveColumns(
-        tenantRoles: ReturnType<typeof getTenantRoles>,
-        customAttrs: ReturnType<typeof getCustomAttributes>,
-      ): FilterColumn[] {
-        const base = this.#originalCols?.slice() ?? [];
-        const withRoles = applyFilterRolesColumn(base, tenantRoles);
-        return enrichFilterCustomAttributeColumns(withRoles, customAttrs);
-      }
+      // Snapshot the published columns (a fresh frozen array), then sync. Runs at
+      // init and on every external `data` change so the memo key updates.
+      #captureAndSync = () => {
+        this.#originalCols = Object.freeze(this.filter.data.slice());
+        this.#syncColumns();
+      };
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
@@ -105,12 +114,9 @@ export const initFilterMixin = createSingletonMixin(
 
         if (!this.filter.isExists) return;
 
-        this.filter.onDataChange(() => {
-          this.#originalCols = null;
-          this.#syncColumns();
-        });
+        this.filter.onDataChange(this.#captureAndSync);
 
-        this.#syncColumns();
+        this.#captureAndSync();
         this.subscribe(this.#syncColumns, getTenantRoles);
         this.subscribe(this.#syncColumns, getCustomAttributes);
 
