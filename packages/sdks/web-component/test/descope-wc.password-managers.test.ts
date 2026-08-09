@@ -99,6 +99,8 @@ describe('web-component', () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
+      const errorSpy = jest.spyOn(console, 'error');
+
       // headless Chromium rejects store() with NotSupportedError; the rejection
       // must be caught, not surface as an unhandled rejection
       Object.assign(navigator, {
@@ -130,7 +132,7 @@ describe('web-component', () => {
 
       await waitFor(
         () =>
-          expect(console.error).toHaveBeenCalledWith(
+          expect(errorSpy).toHaveBeenCalledWith(
             '[Descope]',
             'Could not store credentials',
             'The user agent does not support public key credentials',

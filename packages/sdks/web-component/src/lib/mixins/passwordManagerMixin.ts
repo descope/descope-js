@@ -225,7 +225,7 @@ export const passwordManagerMixin = createSingletonMixin(
             // store() may be missing (optional chain -> undefined) or reject
             // async (e.g. NotSupportedError in headless Chromium). catch the
             // rejection so it doesn't surface as an unhandled rejection.
-            void navigator?.credentials?.store?.(cred)?.catch((err) => {
+            navigator?.credentials?.store?.(cred)?.catch((err) => {
               this.logger.error(
                 'Could not store credentials',
                 err?.message ?? err,
