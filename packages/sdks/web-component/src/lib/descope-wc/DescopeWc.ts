@@ -1949,7 +1949,9 @@ class DescopeWc extends BaseDescopeWc {
         }
         const cred = new globalThis.PasswordCredential({ id, password });
 
-        navigator?.credentials?.store?.(cred);
+        navigator?.credentials?.store?.(cred)?.catch((e) => {
+          this.loggerWrapper.error('Could not store credentials', e?.message);
+        });
       } catch (e) {
         this.loggerWrapper.error('Could not store credentials', e.message);
       }

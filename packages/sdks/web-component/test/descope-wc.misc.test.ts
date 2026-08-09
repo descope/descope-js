@@ -172,6 +172,49 @@ describe('web-component', () => {
         { timeout: WAIT_TIMEOUT },
       );
     });
+
+    it('should log a rejected credentials.store instead of leaving it unhandled', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      const storeError = new Error(
+        'The user agent does not support public key credentials.',
+      );
+      Object.assign(navigator, {
+        credentials: { store: jest.fn().mockRejectedValue(storeError) },
+      });
+      globalThis.PasswordCredential = class {
+        constructor(obj) {
+          Object.assign(this, obj);
+        }
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email" value="1@1.com"></input><input id="password" name="password" value="pass"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const error = jest.fn();
+      document.querySelector('descope-wc').logger = {
+        error,
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn(),
+      };
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() =>
+        expect(error).toHaveBeenCalledWith(
+          'Could not store credentials',
+          storeError.message,
+          expect.any(Error),
+        ),
+      );
+    });
   });
 
   describe('componentsConfig', () => {
