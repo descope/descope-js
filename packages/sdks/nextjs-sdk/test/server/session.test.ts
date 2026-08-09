@@ -87,7 +87,9 @@ describe('session utilities', () => {
 			);
 			(cookies as jest.Mock).mockImplementation(() => new Map());
 			const result = await session({ projectId: 'test' });
-			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt');
+			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt', {
+				audience: undefined
+			});
 			expect(result).toEqual(authInfo);
 		});
 
@@ -130,9 +132,12 @@ describe('session utilities', () => {
 
 			expect(mockValidateJwt).toHaveBeenNthCalledWith(
 				1,
-				'invalidAuthorizationJwt'
+				'invalidAuthorizationJwt',
+				{ audience: undefined }
 			);
-			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'cookieJwt');
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'cookieJwt', {
+				audience: undefined
+			});
 			expect(result).toEqual(authInfo);
 		});
 
@@ -141,6 +146,42 @@ describe('session utilities', () => {
 			(cookies as jest.Mock).mockImplementation(() => new Map());
 			const result = await session();
 			expect(result).toBeUndefined();
+		});
+
+		it('passes resource as audience to validateJwt when provided in config', async () => {
+			const authInfo = {
+				jwt: 'validJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+			(cookies as jest.Mock).mockImplementation(
+				() => new Map([['DS', { value: 'validJwt' }]])
+			);
+			(headers as jest.Mock).mockImplementation(() => new Map());
+
+			await session({ projectId: 'test', resource: 'https://mcp.myapp.com' });
+
+			expect(mockValidateJwt).toHaveBeenCalledWith('validJwt', {
+				audience: 'https://mcp.myapp.com'
+			});
+		});
+
+		it('calls validateJwt without audience when resource is not provided', async () => {
+			const authInfo = {
+				jwt: 'validJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+			(cookies as jest.Mock).mockImplementation(
+				() => new Map([['DS', { value: 'validJwt' }]])
+			);
+			(headers as jest.Mock).mockImplementation(() => new Map());
+
+			await session({ projectId: 'test' });
+
+			expect(mockValidateJwt).toHaveBeenCalledWith('validJwt', {
+				audience: undefined
+			});
 		});
 	});
 
@@ -158,7 +199,9 @@ describe('session utilities', () => {
 				projectId: 'test',
 				baseUrl: 'http://example.com'
 			});
-			expect(mockValidateJwt).toHaveBeenCalledWith('validJwt');
+			expect(mockValidateJwt).toHaveBeenCalledWith('validJwt', {
+				audience: undefined
+			});
 			expect(result).toEqual(authInfo);
 		});
 
@@ -173,7 +216,9 @@ describe('session utilities', () => {
 			});
 			const mockReq = { headers: {}, cookies: { DS: 'cookieJwt' } };
 			const result = await getSession(mockReq as any, { projectId: 'test' });
-			expect(mockValidateJwt).toHaveBeenCalledWith('cookieJwt');
+			expect(mockValidateJwt).toHaveBeenCalledWith('cookieJwt', {
+				audience: undefined
+			});
 			expect(result).toEqual(authInfo);
 		});
 
@@ -188,7 +233,9 @@ describe('session utilities', () => {
 				projectId: 'test',
 				sessionCookieName: 'my-session'
 			});
-			expect(mockValidateJwt).toHaveBeenCalledWith('customJwt');
+			expect(mockValidateJwt).toHaveBeenCalledWith('customJwt', {
+				audience: undefined
+			});
 			expect(result).toEqual(authInfo);
 		});
 
@@ -215,7 +262,9 @@ describe('session utilities', () => {
 				}
 			};
 			const result = await getSession(mockReq as any, { projectId: 'test' });
-			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt');
+			expect(mockValidateJwt).toHaveBeenCalledWith('authorizationJwt', {
+				audience: undefined
+			});
 			expect(result).toEqual(authInfo);
 		});
 

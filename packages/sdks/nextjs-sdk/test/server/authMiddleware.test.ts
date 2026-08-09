@@ -297,6 +297,95 @@ describe('authMiddleware', () => {
 		expect(headersArg.get('x-descope-session')).toBeNull();
 	});
 
+	describe('resource / audience forwarding', () => {
+		it('passes resource as audience to validateJwt when provided', async () => {
+			const authInfo = {
+				jwt: 'sessionJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+
+			const middleware = authMiddleware({ resource: 'https://mcp.myapp.com' });
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'sessionJwt' }
+			});
+
+			await middleware(mockReq);
+
+			expect(mockValidateJwt).toHaveBeenCalledWith('sessionJwt', {
+				audience: 'https://mcp.myapp.com'
+			});
+		});
+
+		it('does NOT pass resource audience when validating refresh token', async () => {
+			mockValidateJwt
+				.mockRejectedValueOnce(new Error('Session JWT expired'))
+				.mockResolvedValueOnce({
+					jwt: 'validRefreshJwt',
+					token: { iss: 'project-1', sub: 'user-123' }
+				});
+
+			const middleware = authMiddleware({ resource: 'https://mcp.myapp.com' });
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'expiredSessionJwt', DSR: 'validRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			// Session JWT gets the audience check; refresh token does not
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(1, 'expiredSessionJwt', {
+				audience: 'https://mcp.myapp.com'
+			});
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'validRefreshJwt');
+		});
+
+		it('redirects and skips refresh fallback when session JWT fails with audience mismatch', async () => {
+			const audienceMismatchErr = Object.assign(
+				new Error('JWT audience mismatch'),
+				{ code: 'ERR_JWT_CLAIM_VALIDATION_FAILED', claim: 'aud' }
+			);
+			mockValidateJwt.mockRejectedValueOnce(audienceMismatchErr);
+
+			const middleware = authMiddleware({ resource: 'https://mcp.myapp.com' });
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'wrongAudienceJwt', DSR: 'validRefreshJwt' }
+			});
+
+			const response = await middleware(mockReq);
+
+			// Only the session JWT validation is attempted; refresh token is NOT tried
+			expect(mockValidateJwt).toHaveBeenCalledTimes(1);
+			expect(mockValidateJwt).toHaveBeenCalledWith('wrongAudienceJwt', {
+				audience: 'https://mcp.myapp.com'
+			});
+			expect(NextResponse.redirect).toHaveBeenCalledWith(expect.anything());
+			expect(response).toEqual({ pathname: DEFAULT_PUBLIC_ROUTES.signIn });
+		});
+
+		it('calls validateJwt without audience when resource is not provided', async () => {
+			const authInfo = {
+				jwt: 'sessionJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			};
+			mockValidateJwt.mockResolvedValue(authInfo);
+
+			const middleware = authMiddleware();
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'sessionJwt' }
+			});
+
+			await middleware(mockReq);
+
+			expect(mockValidateJwt).toHaveBeenCalledWith('sessionJwt', {
+				audience: undefined
+			});
+		});
+	});
+
 	describe('Refresh token validation', () => {
 		it('validates refresh token when session JWT fails', async () => {
 			// First call fails (session JWT), second call succeeds (refresh token)
@@ -318,7 +407,9 @@ describe('authMiddleware', () => {
 
 			// Expect validateJwt to be called twice
 			expect(mockValidateJwt).toHaveBeenCalledTimes(2);
-			expect(mockValidateJwt).toHaveBeenNthCalledWith(1, 'expiredSessionJwt');
+			expect(mockValidateJwt).toHaveBeenNthCalledWith(1, 'expiredSessionJwt', {
+				audience: undefined
+			});
 			expect(mockValidateJwt).toHaveBeenNthCalledWith(2, 'validRefreshJwt');
 
 			// Expect no redirect since refresh token is valid

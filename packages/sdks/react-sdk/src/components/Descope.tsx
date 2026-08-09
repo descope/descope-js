@@ -179,9 +179,9 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
        * it can be removed once this issue will be solved
        * https://bugs.chromium.org/p/chromium/issues/detail?id=1404106#c2
        */
-      <form>
-        <Suspense fallback={null}>
-          <DescopeWC
+	<form>
+		<Suspense fallback={null}>
+			<DescopeWC
             projectId={projectId}
             flowId={flowId}
             baseUrl={baseUrl}
@@ -222,10 +222,10 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'customStorage.prop': customStorage,
             }}
           >
-            {children}
-          </DescopeWC>
-        </Suspense>
-      </form>
+				{children}
+			</DescopeWC>
+		</Suspense>
+	</form>
     );
   },
 );

@@ -18,6 +18,12 @@ type SessionConfig = CreateSdkParams & {
 	// The name of the refresh token cookie
 	// Defaults to 'DSR'
 	refreshTokenCookieName?: string;
+
+	// The Resource identifier (OAuth Resource Server) to validate the JWT audience against.
+	// Required when using Inbound Apps scoped to a specific Resource.
+	// Should match the resource identifier configured in the Descope console.
+	// Accepts a single resource identifier or an array for multi-audience scenarios.
+	resource?: string | string[];
 };
 
 const getSessionCookieName = (config?: SessionConfig) =>
@@ -34,7 +40,7 @@ const getSessionFromAuthorizationOrCookie = async (
 	if (sessionJwt) {
 		try {
 			const sdk = getGlobalSdk(config);
-			return await sdk.validateJwt(sessionJwt);
+			return await sdk.validateJwt(sessionJwt, { audience: config?.resource });
 		} catch (err) {
 			logger.debug('Error validating session from Authorization header', err);
 		}
@@ -47,7 +53,7 @@ const getSessionFromAuthorizationOrCookie = async (
 	}
 	try {
 		const sdk = getGlobalSdk(config);
-		return await sdk.validateJwt(cookieJwt);
+		return await sdk.validateJwt(cookieJwt, { audience: config?.resource });
 	} catch (err) {
 		logger.debug('Error getting session from cookie', err);
 		return undefined;
