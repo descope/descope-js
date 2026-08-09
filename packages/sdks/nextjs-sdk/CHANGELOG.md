@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.64](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.63...nextjs-sdk-0.15.64) (2026-08-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.4`
+* `react-sdk` updated to version `3.0.1`
+* `core-js-sdk` updated to version `2.67.1`
+* `web-component` updated to version `4.0.1`
 ## [0.15.63](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.62...nextjs-sdk-0.15.63) (2026-08-03)
 
 ### Dependency Updates
