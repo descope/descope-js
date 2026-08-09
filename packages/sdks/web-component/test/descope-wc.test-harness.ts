@@ -5,7 +5,6 @@ import { createSdk, ensureFingerprintIds } from '@descope/web-js-sdk';
 import '@testing-library/jest-dom';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 import { resetCustomStorage } from '../src/lib/helpers/storage';
-import { DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY } from '../src/lib/constants';
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
@@ -236,8 +235,8 @@ export function teardownWebComponentTestEnv() {
   window.location.search = '';
   fixtures.themeContent = {};
   fixtures.pageContent = '';
-  localStorage.removeItem('dls_ab_testing_id');
-  localStorage.removeItem(DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY);
+  localStorage.clear();
+  sessionStorage.clear();
   resetCustomStorage();
 }
 

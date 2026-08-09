@@ -2,6 +2,86 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.1](https://github.com/descope/descope-js/compare/react-sdk-3.0.0...react-sdk-3.0.1) (2026-08-09)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.10`
+* `audit-management-widget` updated to version `0.8.10`
+* `role-management-widget` updated to version `0.9.10`
+* `user-management-widget` updated to version `0.16.3`
+* `user-profile-widget` updated to version `0.15.3`
+* `applications-portal-widget` updated to version `0.8.10`
+* `outbound-applications-widget` updated to version `0.5.11`
+* `web-component` updated to version `4.0.1`
+* `web-js-sdk` updated to version `1.51.4`
+* `core-js-sdk` updated to version `2.67.1`
+* `tenant-profile-widget` updated to version `0.8.11`
+## [3.0.0](https://github.com/descope/descope-js/compare/react-sdk-2.30.11...react-sdk-3.0.0) (2026-08-03)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.2`
+* `user-profile-widget` updated to version `0.15.2`
+* `outbound-applications-widget` updated to version `0.5.10`
+* `web-component` updated to version `4.0.0`
+* `tenant-profile-widget` updated to version `0.8.10`
+
+### ⚠ BREAKING CHANGES
+
+* **sdks:** server-produced screen data in onScreenUpdate now lives under context.data instead of directly on context.
+
+### Features
+
+* **sdks:** onScreenUpdate screen data moved under context.data ([#1453](https://github.com/descope/descope-js/issues/1453)) RELEASE ([ddb9dbd](https://github.com/descope/descope-js/commit/ddb9dbd6daa9ae3019c06f3d40d5199ccf3d07ea))
+
+## [2.30.11](https://github.com/descope/descope-js/compare/react-sdk-2.30.10...react-sdk-2.30.11) (2026-08-03)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.1`
+* `user-profile-widget` updated to version `0.15.1`
+* `outbound-applications-widget` updated to version `0.5.9`
+* `web-component` updated to version `3.70.7`
+* `tenant-profile-widget` updated to version `0.8.9`
+## [2.30.10](https://github.com/descope/descope-js/compare/react-sdk-2.30.9...react-sdk-2.30.10) (2026-08-02)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.0`
+* `user-profile-widget` updated to version `0.15.0`
+* `outbound-applications-widget` updated to version `0.5.8`
+* `web-component` updated to version `3.70.6`
+* `tenant-profile-widget` updated to version `0.8.8`
+## [2.30.9](https://github.com/descope/descope-js/compare/react-sdk-2.30.8...react-sdk-2.30.9) (2026-07-27)
+
+
+### Bug Fixes
+
+* **react-sdk:** clear isSessionLoading via setTimeout so it also fires in backgrounded tabs ([#1436](https://github.com/descope/descope-js/issues/1436)) RELEASE ([d90fa9c](https://github.com/descope/descope-js/commit/d90fa9cc0bc613ff08222dec5f47f4f4508f3253)), closes [#1395](https://github.com/descope/descope-js/issues/1395) [#1393](https://github.com/descope/descope-js/issues/1393) [#1393](https://github.com/descope/descope-js/issues/1393) [#1433](https://github.com/descope/descope-js/issues/1433) [#1393](https://github.com/descope/descope-js/issues/1393) [#1393](https://github.com/descope/descope-js/issues/1393) [#1433](https://github.com/descope/descope-js/issues/1433)
+
+## [2.30.8](https://github.com/descope/descope-js/compare/react-sdk-2.30.7...react-sdk-2.30.8) (2026-07-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.9`
+* `audit-management-widget` updated to version `0.8.9`
+* `role-management-widget` updated to version `0.9.9`
+* `user-management-widget` updated to version `0.15.7`
+* `user-profile-widget` updated to version `0.14.6`
+* `applications-portal-widget` updated to version `0.8.9`
+* `outbound-applications-widget` updated to version `0.5.7`
+* `web-component` updated to version `3.70.5`
+* `tenant-profile-widget` updated to version `0.8.7`
+## [2.30.7](https://github.com/descope/descope-js/compare/react-sdk-2.30.6...react-sdk-2.30.7) (2026-07-22)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.15.6`
+* `user-profile-widget` updated to version `0.14.5`
+* `outbound-applications-widget` updated to version `0.5.6`
+* `web-component` updated to version `3.70.4`
+* `tenant-profile-widget` updated to version `0.8.6`
 ## [2.30.6](https://github.com/descope/descope-js/compare/react-sdk-2.30.5...react-sdk-2.30.6) (2026-07-16)
 
 ### Dependency Updates

@@ -8,6 +8,8 @@ import { initNameUserAttrMixin } from './initComponentsMixins/initNameUserAttrMi
 import { initPasskeyUserAuthMethodMixin } from './initComponentsMixins/initPasskeyUserAuthMethodMixin';
 import { initPasswordUserAuthMethodMixin } from './initComponentsMixins/initPasswordUserAuthMethodMixin';
 import { initPhoneUserAttrMixin } from './initComponentsMixins/initPhoneUserAttrMixin';
+import { initRecoveryEmailUserAttrMixin } from './initComponentsMixins/initRecoveryEmailUserAttrMixin';
+import { initRecoveryPhoneUserAttrMixin } from './initComponentsMixins/initRecoveryPhoneUserAttrMixin';
 import { initTotpUserAuthMethodMixin } from './initComponentsMixins/initTotpUserAuthMethodMixin';
 import { initUserBuiltinAttributesMixin } from './initComponentsMixins/initUserBuiltinAttributesMixin';
 import { initUserCustomAttributesMixin } from './initComponentsMixins/initUserCustomAttributesMixin';
@@ -29,6 +31,8 @@ export const initMixin = createSingletonMixin(
       initAvatarMixin,
       initNameUserAttrMixin,
       initPhoneUserAttrMixin,
+      initRecoveryEmailUserAttrMixin,
+      initRecoveryPhoneUserAttrMixin,
       initPasskeyUserAuthMethodMixin,
       initPasswordUserAuthMethodMixin,
       initTotpUserAuthMethodMixin,

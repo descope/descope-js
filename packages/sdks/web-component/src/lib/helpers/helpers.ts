@@ -31,8 +31,11 @@ import {
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
 import {
   AutoFocusOptions,
+  ComponentsConfig,
+  CustomScreenData,
   CustomScreenState,
   Direction,
+  ScreenState,
   SSOQueryParams,
   StepState,
 } from '../types';
@@ -833,6 +836,144 @@ const omitBy = <T extends Record<string, any>>(
     ),
   ) as T;
 
+// Reads the `data-name` value out of a `[data-name="x"]` selector (either quote style).
+const dataNameOf = (selector: string): string | undefined =>
+  selector.match(/\[data-name=["']([^"']+)["']\]/)?.[1];
+
+const PASSWORD_POLICY_KEYS: Record<string, string> = {
+  minLength: 'data-password-policy-value-minlength',
+  strength: 'data-password-policy-value-passwordstrength',
+  disallowedChars: 'data-password-policy-value-disallowedchars',
+  email: 'data-password-policy-value-email',
+  activePolicies: 'active-policies',
+  availablePolicies: 'available-policies',
+};
+
+// Renames the backend's password-policy attribute keys to clean names.
+// Returns undefined when the screen has no password policy.
+const normalizePasswordPolicy = (
+  newPassword: Record<string, any> | undefined,
+): Record<string, unknown> | undefined => {
+  if (!newPassword) return undefined;
+  const policy = Object.fromEntries(
+    Object.entries(PASSWORD_POLICY_KEYS)
+      .map(([clean, raw]) => [clean, newPassword[raw]])
+      .filter(([, v]) => v !== undefined),
+  );
+  return Object.keys(policy).length ? policy : undefined;
+};
+
+// Reads one `componentsDynamicAttrs` entry by its `[data-name="…"]` name. The backend
+// keys these by CSS selector, so we match on the data-name rather than the raw key.
+const dynamicAttrsOf = (
+  componentsConfig: ComponentsConfig | undefined,
+  name: string,
+): Record<string, any> | undefined => {
+  const entries = componentsConfig?.componentsDynamicAttrs;
+  if (!entries) return undefined;
+  const match = Object.entries(entries).find(
+    ([selector]) => dataNameOf(selector) === name,
+  );
+  return match?.[1]?.attributes;
+};
+
+const recoveryCodesOf = (componentsConfig: ComponentsConfig | undefined) => {
+  const attributes = dynamicAttrsOf(componentsConfig, 'recoveryCodes');
+  if (!attributes) return undefined;
+  return Array.isArray(attributes.data)
+    ? attributes.data.map((code: { value: string }) => code.value)
+    : [];
+};
+
+const outboundAppOf = (componentsConfig: ComponentsConfig | undefined) => {
+  const attributes = dynamicAttrsOf(componentsConfig, 'outboundApp');
+  if (!attributes) return undefined;
+  return {
+    label: attributes.label,
+    iconSrc: attributes['icon-src'],
+    appId: attributes['data-descope-outbound-oauth-app-id'],
+  };
+};
+
+// The complete, allow-listed contract for `context.data`: one entry per `data` field,
+// each with the `data` key and a `from` reader over the raw screen state. Every field
+// is defined the same way and at the same level. Because we only read the fields listed
+// here, all other screen-state data is left out by construction — internal backend
+// fields, and dynamic-select options (which the backend spreads into componentsConfig
+// under arbitrary flow-defined keys). Exposing those is reserved for a future
+// `data.selects` map. Mirrors the backend `ExternalStateContext` / `ComponentsConfig`
+// structs (orchestrationservice .../domain/context.go).
+const DATA_FIELDS: {
+  key: string;
+  from: (screenState: ScreenState) => unknown;
+}[] = [
+  // moved verbatim from the top level of the screen state
+  { key: 'totp', from: (s) => s.totp },
+  { key: 'notp', from: (s) => s.notp },
+  { key: 'sentTo', from: (s) => s.sentTo },
+  { key: 'sso', from: (s) => s.sso },
+  { key: 'selfProvisionDomains', from: (s) => s.selfProvisionDomains },
+  // from componentsConfig — renamed, most unwrapped from a `{ data }` / `{ options }` wrapper
+  {
+    key: 'inboundAppApproveScopes',
+    from: (s) => s.componentsConfig?.thirdPartyAppApproveScopes?.data,
+  },
+  { key: 'securityQuestionsSetup', from: (s) => s.componentsConfig?.sqSetup },
+  { key: 'securityQuestionsVerify', from: (s) => s.componentsConfig?.sqVerify },
+  {
+    key: 'userTenants',
+    from: (s) => s.componentsConfig?.userSelectedTenant?.data,
+  },
+  { key: 'userRoles', from: (s) => s.componentsConfig?.userRoles?.data },
+  {
+    key: 'ssoApplications',
+    from: (s) => s.componentsConfig?.ssoApplications?.data,
+  },
+  {
+    key: 'ssoConfigurations',
+    from: (s) => s.componentsConfig?.ssoConfigurations?.data,
+  },
+  {
+    key: 'samlAttributeMappings',
+    from: (s) => s.componentsConfig?.samlMappings?.options,
+  },
+  {
+    key: 'oidcAttributeMappings',
+    from: (s) => s.componentsConfig?.oidcMappings?.options,
+  },
+  {
+    key: 'samlGroupMappings',
+    from: (s) => s.componentsConfig?.samlGroupMappings?.options,
+  },
+  {
+    key: 'passwordPolicy',
+    from: (s) => normalizePasswordPolicy(s.componentsConfig?.newPassword),
+  },
+  // from componentsConfig.componentsDynamicAttrs, matched by [data-name="…"]
+  { key: 'recoveryCodes', from: (s) => recoveryCodesOf(s.componentsConfig) },
+  { key: 'outboundApp', from: (s) => outboundAppOf(s.componentsConfig) },
+];
+
+/**
+ * Build the custom-screen `data` field — all server-produced screen data in one place.
+ * Every field is declared in DATA_FIELDS as a `data` key + a reader over the raw screen
+ * state; this function just applies them and skips any whose reader returns undefined.
+ * Returns undefined when nothing was produced.
+ */
+const buildCustomScreenData = (
+  screenState: ScreenState | undefined,
+): CustomScreenData | undefined => {
+  if (!screenState) return undefined;
+
+  const data: Record<string, unknown> = {};
+  DATA_FIELDS.forEach(({ key, from }) => {
+    const value = from(screenState);
+    if (value !== undefined) data[key] = value;
+  });
+
+  return Object.keys(data).length ? (data as CustomScreenData) : undefined;
+};
+
 export const transformStepStateForCustomScreen = (
   state: Partial<StepState>,
 ) => {
@@ -853,9 +994,11 @@ export const transformStepStateForCustomScreen = (
     sanitizedState.action = state.action;
   }
 
-  if (state.screenState?.componentsConfig?.thirdPartyAppApproveScopes?.data) {
-    sanitizedState.inboundAppApproveScopes =
-      state.screenState.componentsConfig.thirdPartyAppApproveScopes.data;
+  // `data` is SDK-owned and stripped from the raw state via EXCLUDED_STATE_KEYS,
+  // so a backend-provided `data` never leaks through — we always set our own below.
+  const data = buildCustomScreenData(state.screenState);
+  if (data) {
+    sanitizedState.data = data;
   }
 
   return sanitizedState;

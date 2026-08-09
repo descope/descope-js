@@ -186,9 +186,8 @@ export const themeMixin = createSingletonMixin(
           );
           return fetchedTenantTheme;
         } catch (e) {
-          this.logger.error(
-            'Cannot fetch tenant theme file',
-            'make sure that your tenantId, projectId & flowId are correct',
+          this.logger.warn(
+            'No tenant style exists, using project default theme.',
           );
         }
         return undefined;

@@ -2,6 +2,67 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.1](https://github.com/descope/descope-js/compare/vue-sdk-3.0.0...vue-sdk-3.0.1) (2026-08-09)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.10`
+* `audit-management-widget` updated to version `0.8.10`
+* `role-management-widget` updated to version `0.9.10`
+* `user-management-widget` updated to version `0.16.3`
+* `user-profile-widget` updated to version `0.15.3`
+* `applications-portal-widget` updated to version `0.8.10`
+* `web-component` updated to version `4.0.1`
+* `web-js-sdk` updated to version `1.51.4`
+* `core-js-sdk` updated to version `2.67.1`
+## [3.0.0](https://github.com/descope/descope-js/compare/vue-sdk-2.17.15...vue-sdk-3.0.0) (2026-08-03)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.2`
+* `user-profile-widget` updated to version `0.15.2`
+* `web-component` updated to version `4.0.0`
+
+### ⚠ BREAKING CHANGES
+
+* **sdks:** server-produced screen data in onScreenUpdate now lives under context.data instead of directly on context.
+
+### Features
+
+* **sdks:** onScreenUpdate screen data moved under context.data ([#1453](https://github.com/descope/descope-js/issues/1453)) RELEASE ([ddb9dbd](https://github.com/descope/descope-js/commit/ddb9dbd6daa9ae3019c06f3d40d5199ccf3d07ea))
+
+## [2.17.15](https://github.com/descope/descope-js/compare/vue-sdk-2.17.14...vue-sdk-2.17.15) (2026-08-03)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.1`
+* `user-profile-widget` updated to version `0.15.1`
+* `web-component` updated to version `3.70.7`
+## [2.17.14](https://github.com/descope/descope-js/compare/vue-sdk-2.17.13...vue-sdk-2.17.14) (2026-08-02)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.0`
+* `user-profile-widget` updated to version `0.15.0`
+* `web-component` updated to version `3.70.6`
+## [2.17.13](https://github.com/descope/descope-js/compare/vue-sdk-2.17.12...vue-sdk-2.17.13) (2026-07-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.9`
+* `audit-management-widget` updated to version `0.8.9`
+* `role-management-widget` updated to version `0.9.9`
+* `user-management-widget` updated to version `0.15.7`
+* `user-profile-widget` updated to version `0.14.6`
+* `applications-portal-widget` updated to version `0.8.9`
+* `web-component` updated to version `3.70.5`
+## [2.17.12](https://github.com/descope/descope-js/compare/vue-sdk-2.17.11...vue-sdk-2.17.12) (2026-07-22)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.15.6`
+* `user-profile-widget` updated to version `0.14.5`
+* `web-component` updated to version `3.70.4`
 ## [2.17.11](https://github.com/descope/descope-js/compare/vue-sdk-2.17.10...vue-sdk-2.17.11) (2026-07-16)
 
 ### Dependency Updates

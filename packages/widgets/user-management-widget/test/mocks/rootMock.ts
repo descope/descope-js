@@ -23,6 +23,8 @@ export default `
     <descope-grid-text-column header="Name" path="name" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Email" path="email" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Phone" path="phone" resizable="true" sortable="true"></descope-grid-text-column>
+    <descope-grid-text-column header="Recovery Email" path="recoveryEmail" resizable="true" sortable="true"></descope-grid-text-column>
+    <descope-grid-text-column header="Recovery Phone" path="recoveryPhone" resizable="true" sortable="true"></descope-grid-text-column>
     <descope-grid-text-column header="Roles" path="roles" resizable="true"></descope-grid-text-column>
   </descope-grid>
 </descope-container>

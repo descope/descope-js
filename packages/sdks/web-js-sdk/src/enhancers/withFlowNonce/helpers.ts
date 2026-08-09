@@ -16,6 +16,20 @@ import {
 } from './constants';
 import { StorageItem } from './types';
 
+// The server may prefix the nonce as "<seq>.<random>" (descope/etc#17286).
+const parseNonceSeq = (nonce: string): number | undefined => {
+  const dot = nonce.indexOf('.');
+  if (dot <= 0) {
+    return undefined;
+  }
+  const prefix = nonce.slice(0, dot);
+  if (!/^\d+$/.test(prefix)) {
+    return undefined;
+  }
+  const seq = Number(prefix);
+  return Number.isSafeInteger(seq) ? seq : undefined;
+};
+
 // Helper to create storage key from execution ID
 const getNonceKeyForExecution = (
   executionId: string,
@@ -24,11 +38,10 @@ const getNonceKeyForExecution = (
   return `${prefix}${executionId}`;
 };
 
-// Get nonce from storage with expiration check
-const getFlowNonce = (
+const getFlowNonceRecord = (
   executionId: string,
   prefix: string = FLOW_NONCE_PREFIX,
-): string | null => {
+): { value: string; seq?: number } | null => {
   try {
     const key = getNonceKeyForExecution(executionId, prefix);
     const itemStr = getLocalStorage(key);
@@ -44,7 +57,7 @@ const getFlowNonce = (
       return null;
     }
 
-    return item.value;
+    return { value: item.value, seq: item.seq };
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('Error getting flow nonce:', e);
@@ -52,12 +65,19 @@ const getFlowNonce = (
   }
 };
 
+// Get nonce from storage with expiration check
+const getFlowNonce = (
+  executionId: string,
+  prefix: string = FLOW_NONCE_PREFIX,
+): string | null => getFlowNonceRecord(executionId, prefix)?.value ?? null;
+
 // Store nonce with appropriate TTL
 const setFlowNonce = (
   executionId: string,
   nonce: string,
   isStart: boolean,
   prefix: string = FLOW_NONCE_PREFIX,
+  seq?: number,
 ): void => {
   try {
     const key = getNonceKeyForExecution(executionId, prefix);
@@ -67,6 +87,7 @@ const setFlowNonce = (
       value: nonce,
       expiry: Date.now() + ttlSeconds * 1000,
       isStart,
+      seq,
     };
 
     setLocalStorage(key, JSON.stringify(item));
@@ -100,9 +121,14 @@ const extractExecId = (executionId: string): string | null => {
 const extractFlowNonce = async (
   req: RequestConfig,
   response: Response,
-): Promise<{ nonce: string | null; executionId: string | null }> => {
+): Promise<{
+  nonce: string | null;
+  seq: number | undefined;
+  executionId: string | null;
+}> => {
   try {
     const nonce = response.headers.get(FLOW_NONCE_HEADER);
+    const seq = nonce === null ? undefined : parseNonceSeq(nonce);
 
     // Clone the response to prevent body consumption
     let executionId = await response
@@ -118,10 +144,11 @@ const extractFlowNonce = async (
 
     return {
       nonce,
+      seq,
       executionId: extractExecId(executionId),
     };
   } catch (e) {
-    return { nonce: null, executionId: null };
+    return { nonce: null, seq: undefined, executionId: null };
   }
 };
 
@@ -170,7 +197,9 @@ export {
   extractFlowNonce,
   getExecutionIdFromRequest,
   getFlowNonce,
+  getFlowNonceRecord,
   getNonceKeyForExecution,
+  parseNonceSeq,
   removeFlowNonce,
   setFlowNonce,
 };

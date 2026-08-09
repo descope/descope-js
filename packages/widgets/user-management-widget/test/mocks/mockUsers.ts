@@ -7,8 +7,12 @@ export const mockUsers = [
     name: '',
     email: 'email1@email1.com',
     phone: '+9725485454',
+    recoveryEmail: 'recovery1@email1.com',
+    recoveryPhone: '+9725480000',
     verifiedEmail: true,
     verifiedPhone: false,
+    verifiedRecoveryEmail: true,
+    verifiedRecoveryPhone: true,
     roleNames: ['Tenant Admin', 'Role 2'],
     userTenants: [
       {

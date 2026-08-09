@@ -10,19 +10,19 @@ import {
 } from '@descope/sdk-helpers';
 import {
   localeMixin,
+  cookieConfigMixin,
   loggerMixin,
   modalMixin,
-  cookieConfigMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
-import { getPhone, getPhoneBadgeLabel } from '../../../state/selectors';
+import { getVerifiedRecoveryEmail } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 
-export const initPhoneUserAttrMixin = createSingletonMixin(
+export const initRecoveryEmailUserAttrMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
-    class PhoneUserAttrMixinClass extends compose(
+    class RecoveryEmailUserAttrMixinClass extends compose(
       localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
@@ -32,7 +32,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       modalMixin,
       flowInputMixin,
     )(superclass) {
-      phoneUserAttr: UserAttributeDriver;
+      recoveryEmailUserAttr: UserAttributeDriver;
 
       #editModal: ModalDriver;
 
@@ -43,10 +43,10 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #deleteFlow: FlowDriver;
 
       #initEditModal() {
-        if (!this.phoneUserAttr.editFlowId) return;
+        if (!this.recoveryEmailUserAttr.editFlowId) return;
 
         this.#editModal = this.createModal({
-          'data-id': 'edit-phone',
+          'data-id': 'edit-recovery-email',
           'close-on-outside-click': 'true',
         });
         this.#editFlow = new FlowDriver(
@@ -54,12 +54,15 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#editModal.afterClose = this.#initEditModalContent.bind(this);
+        this.#initEditModalContent();
         this.syncFlowTheme(this.#editFlow);
       }
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          this.createFlowTemplate({ flowId: this.phoneUserAttr.editFlowId }),
+          this.createFlowTemplate({
+            flowId: this.recoveryEmailUserAttr.editFlowId,
+          }),
         );
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
@@ -68,10 +71,10 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       }
 
       #initDeleteModal() {
-        if (!this.phoneUserAttr.deleteFlowId) return;
+        if (!this.recoveryEmailUserAttr.deleteFlowId) return;
 
         this.#deleteModal = this.createModal({
-          'data-id': 'delete-phone',
+          'data-id': 'delete-recovery-email',
           'close-on-outside-click': 'true',
         });
         this.#deleteFlow = new FlowDriver(
@@ -79,12 +82,15 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
+        this.#initDeleteModalContent();
         this.syncFlowTheme(this.#deleteFlow);
       }
 
       #initDeleteModalContent() {
         this.#deleteModal.setContent(
-          this.createFlowTemplate({ flowId: this.phoneUserAttr.deleteFlowId }),
+          this.createFlowTemplate({
+            flowId: this.recoveryEmailUserAttr.deleteFlowId,
+          }),
         );
         this.#deleteFlow.onSuccess(() => {
           this.#deleteModal.close();
@@ -92,61 +98,43 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
         });
       }
 
-      #initPhoneUserAttr() {
-        this.phoneUserAttr = new UserAttributeDriver(
+      #initRecoveryEmailUserAttr() {
+        this.recoveryEmailUserAttr = new UserAttributeDriver(
           () =>
             this.shadowRoot?.querySelector(
-              'descope-user-attribute[data-id="phone"]',
+              'descope-user-attribute[data-id="recoveryEmail"]',
             ),
           { logger: this.logger },
         );
 
-        this.phoneUserAttr.onEditClick(() => {
+        this.recoveryEmailUserAttr.onEditClick(() => {
           this.#editModal?.open();
         });
 
-        this.phoneUserAttr.onDeleteClick(() => {
+        this.recoveryEmailUserAttr.onDeleteClick(() => {
           this.#deleteModal?.open();
         });
       }
 
-      // (Re)build each modal's preloaded flow whenever the value changes. The
-      // first (seeding) call preloads it; a later change (e.g. a delete) rebuilds
-      // it so the flow re-fetches fresh data instead of the value it captured
-      // before. Skip a modal that is open - rebuilding would drop the flow the
-      // user is interacting with.
-      #refreshModalsContent() {
-        if (this.#editModal?.isClosed) {
-          this.#initEditModalContent();
-        }
-        if (this.#deleteModal?.isClosed) {
-          this.#initDeleteModalContent();
-        }
-      }
-
-      #onValueUpdate = withMemCache((phone: ReturnType<typeof getPhone>) => {
-        this.phoneUserAttr.value = phone;
-        this.#refreshModalsContent();
-      });
-
-      #onBadgeLabelUpdate = withMemCache(
-        (badgeLabel: ReturnType<typeof getPhoneBadgeLabel>) => {
-          this.phoneUserAttr.badgeLabel = badgeLabel;
+      // Value is gated on verified — an unverified/pending recovery email renders empty.
+      #onValueUpdate = withMemCache(
+        (recoveryEmail: ReturnType<typeof getVerifiedRecoveryEmail>) => {
+          this.recoveryEmailUserAttr.value = recoveryEmail;
         },
       );
 
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
 
-        this.#initPhoneUserAttr();
+        this.#initRecoveryEmailUserAttr();
         this.#initEditModal();
         this.#initDeleteModal();
 
-        this.#onValueUpdate(getPhone(this.state));
-        this.#onBadgeLabelUpdate(getPhoneBadgeLabel(this.state));
-
-        this.subscribe(this.#onValueUpdate.bind(this), getPhone);
-        this.subscribe(this.#onBadgeLabelUpdate.bind(this), getPhoneBadgeLabel);
+        this.#onValueUpdate(getVerifiedRecoveryEmail(this.state));
+        this.subscribe(
+          this.#onValueUpdate.bind(this),
+          getVerifiedRecoveryEmail,
+        );
       }
     },
 );

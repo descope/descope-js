@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.24.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.23.2...sdk-mixins-0.24.0) (2026-08-09)
+
+
+### Features
+
+* **widgets:** Change fail to fetch tenant team log level ([#1454](https://github.com/descope/descope-js/issues/1454)) ([53b2ffc](https://github.com/descope/descope-js/commit/53b2ffc7b229b21fa9f2410ede4808e659558b13))
+
+## [0.23.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.23.1...sdk-mixins-0.23.2) (2026-07-26)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.14.1`
 ## [0.23.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.23.0...sdk-mixins-0.23.1) (2026-07-12)
 
 

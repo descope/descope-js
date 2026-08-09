@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.67.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.67.0...core-js-sdk-2.67.1) (2026-08-09)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** make webauthn origin and name optional ([#1455](https://github.com/descope/descope-js/issues/1455)) RELEASE ([a2e27e4](https://github.com/descope/descope-js/commit/a2e27e492fd646bb3d03d2564b0c7bec183cc523))
+
 ## [2.67.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.66.0...core-js-sdk-2.67.0) (2026-07-12)
 
 

@@ -89,7 +89,6 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
           this.#editModals?.[editFlowId]?.open();
         });
 
-        this.#initEditModalContent(editFlowId);
         this.syncFlowTheme(this.#editFlows[editFlowId]);
       }
 
@@ -118,7 +117,6 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
           this.#deleteModals?.[deleteFlowId]?.open();
         });
 
-        this.#initDeleteModalContent(deleteFlowId);
         this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
       }
 
@@ -141,6 +139,20 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
         });
       }
 
+      // (Re)build each modal's preloaded flow whenever a value changes. The
+      // first (seeding) call preloads it; a later change (e.g. a delete) rebuilds
+      // it so the flow re-fetches fresh data instead of the value it captured
+      // before. Skip a modal that is open - rebuilding would drop the flow the
+      // user is interacting with.
+      #refreshModalsContent() {
+        Object.entries(this.#editModals).forEach(([flowId, modal]) => {
+          if (modal.isClosed) this.#initEditModalContent(flowId);
+        });
+        Object.entries(this.#deleteModals).forEach(([flowId, modal]) => {
+          if (modal.isClosed) this.#initDeleteModalContent(flowId);
+        });
+      }
+
       #onValueUpdate = withMemCache(
         (userBuiltinAttributes: ReturnType<typeof getUserBuiltinAttrs>) => {
           Object.keys(this.#drivers).forEach((field) => {
@@ -148,6 +160,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
               userBuiltinAttributes[field] || ''
             ).toString();
           });
+          this.#refreshModalsContent();
         },
       );
 

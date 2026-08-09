@@ -54,7 +54,6 @@ export const initEmailUserAttrMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#editModal.afterClose = this.#initEditModalContent.bind(this);
-        this.#initEditModalContent();
         this.syncFlowTheme(this.#editFlow);
       }
 
@@ -80,7 +79,6 @@ export const initEmailUserAttrMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.#deleteModal.afterClose = this.#initDeleteModalContent.bind(this);
-        this.#initDeleteModalContent();
         this.syncFlowTheme(this.#deleteFlow);
       }
 
@@ -112,8 +110,23 @@ export const initEmailUserAttrMixin = createSingletonMixin(
         });
       }
 
+      // (Re)build each modal's preloaded flow whenever the value changes. The
+      // first (seeding) call preloads it; a later change (e.g. a delete) rebuilds
+      // it so the flow re-fetches fresh data instead of the value it captured
+      // before. Skip a modal that is open - rebuilding would drop the flow the
+      // user is interacting with.
+      #refreshModalsContent() {
+        if (this.#editModal?.isClosed) {
+          this.#initEditModalContent();
+        }
+        if (this.#deleteModal?.isClosed) {
+          this.#initDeleteModalContent();
+        }
+      }
+
       #onValueUpdate = withMemCache((email: ReturnType<typeof getEmail>) => {
         this.emailUserAttr.value = email;
+        this.#refreshModalsContent();
       });
 
       #onBadgeLabelUpdate = withMemCache(
