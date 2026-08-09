@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.0.2](https://github.com/descope/descope-js/compare/web-component-4.0.1...web-component-4.0.2) (2026-08-09)
+
+
+### Bug Fixes
+
+* **web-component:** catch rejected credentials.store promise ([#1457](https://github.com/descope/descope-js/issues/1457)) ([9466aa0](https://github.com/descope/descope-js/commit/9466aa034a07b3ed29e95f2ec6df5da9c3123fcd)), closes [#1456](https://github.com/descope/descope-js/issues/1456)
+
 ## [4.0.1](https://github.com/descope/descope-js/compare/web-component-4.0.0...web-component-4.0.1) (2026-08-09)
 
 ### Dependency Updates
