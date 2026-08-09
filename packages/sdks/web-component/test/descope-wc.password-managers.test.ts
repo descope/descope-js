@@ -95,6 +95,50 @@ describe('web-component', () => {
       );
     });
 
+    it('should log and not throw when storing credentials rejects asynchronously', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      // headless Chromium rejects store() with NotSupportedError; the rejection
+      // must be caught, not surface as an unhandled rejection
+      Object.assign(navigator, {
+        credentials: {
+          store: jest
+            .fn()
+            .mockRejectedValue(
+              new Error(
+                'The user agent does not support public key credentials',
+              ),
+            ),
+        },
+      });
+      globalThis.PasswordCredential = class {
+        constructor(obj) {
+          Object.assign(this, obj);
+        }
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email" value="1@1.com"></input><input id="password" name="password" value="pass"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(
+        () =>
+          expect(console.error).toHaveBeenCalledWith(
+            '[Descope]',
+            'Could not store credentials',
+            'The user agent does not support public key credentials',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
     describe('username anchor injection', () => {
       const newPasswordPage =
         '<descope-new-password external-input="true" id="new-password"><input slot="password" type="password"/></descope-new-password><span>It works!</span>';

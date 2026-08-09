@@ -222,7 +222,15 @@ export const passwordManagerMixin = createSingletonMixin(
             }
             const cred = new globalThis.PasswordCredential({ id, password });
 
-            navigator?.credentials?.store?.(cred);
+            // store() may be missing (optional chain -> undefined) or reject
+            // async (e.g. NotSupportedError in headless Chromium). catch the
+            // rejection so it doesn't surface as an unhandled rejection.
+            void navigator?.credentials?.store?.(cred)?.catch((err) => {
+              this.logger.error(
+                'Could not store credentials',
+                err?.message ?? err,
+              );
+            });
           } catch (e) {
             this.logger.error('Could not store credentials', e.message);
           }
