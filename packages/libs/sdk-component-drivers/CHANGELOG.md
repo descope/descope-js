@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.14.1...sdk-component-drivers-0.15.0) (2026-08-10)
+
+
+### Features
+
+* **widgets:** Support UserMgmt Filter ([#1422](https://github.com/descope/descope-js/issues/1422)) ([ce182e9](https://github.com/descope/descope-js/commit/ce182e96c7f29558ad2b38ebb7513beaa030ca7e)), closes [/github.com/descope/etc/issues/14302#issuecomment-5178241391](https://github.com/descope//github.com/descope/etc/issues/14302/issues/issuecomment-5178241391)
+
 ## [0.14.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.14.0...sdk-component-drivers-0.14.1) (2026-07-26)
 
 

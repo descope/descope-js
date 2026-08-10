@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.1.0](https://github.com/descope/descope-js/compare/web-component-4.0.2...web-component-4.1.0) (2026-08-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.24.1`
+* `web-js-sdk` updated to version `1.51.5`
+
+### Features
+
+* **widgets/user-profile-widget:** native bridge for mobile SDKs ([#1415](https://github.com/descope/descope-js/issues/1415)) RELEASE ([0b3fa43](https://github.com/descope/descope-js/commit/0b3fa43eda59a59c4b0938a446bcc844c490a16e))
+
 ## [4.0.2](https://github.com/descope/descope-js/compare/web-component-4.0.1...web-component-4.0.2) (2026-08-09)
 
 

@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.0](https://github.com/descope/descope-js/compare/user-management-widget-0.16.4...user-management-widget-0.17.0) (2026-08-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.5`
+* `web-component` updated to version `4.1.0`
+* `sdk-mixins` updated to version `0.24.1`
+* `sdk-component-drivers` updated to version `0.15.0`
+
+### Features
+
+* **widgets:** Support UserMgmt Filter ([#1422](https://github.com/descope/descope-js/issues/1422)) ([ce182e9](https://github.com/descope/descope-js/commit/ce182e96c7f29558ad2b38ebb7513beaa030ca7e)), closes [/github.com/descope/etc/issues/14302#issuecomment-5178241391](https://github.com/descope//github.com/descope/etc/issues/14302/issues/issuecomment-5178241391)
+
 ## [0.16.4](https://github.com/descope/descope-js/compare/user-management-widget-0.16.3...user-management-widget-0.16.4) (2026-08-09)
 
 ### Dependency Updates
