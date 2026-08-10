@@ -48,12 +48,9 @@ export const enrichFilterCustomAttributeColumns = (
   customAttrs: CustomAttr[] | undefined,
 ): FilterColumn[] =>
   cols
-    // Drop a custom-attribute column whose attribute no longer exists, so users
-    // cannot filter on a deleted attribute (which always returns zero results).
-    // Only drop when the schema is loaded AND non-empty: an empty read is the
-    // initial/loading state (data starts as []), and cannot be told apart from a
-    // real deletion - dropping then would hide every CA column until the schema
-    // arrives.
+    // Empty schema ([], the initial state before getCustomAttributes resolves):
+    // keep every column. Loaded schema missing this attribute: it was deleted,
+    // so drop the column.
     .filter((col) => {
       if (!col?.id?.startsWith(CA_COL_PREFIX) || !customAttrs?.length) {
         return true;
