@@ -19,10 +19,16 @@ describe('enrichFilterCustomAttributeColumns', () => {
     expect(enrichOne(input, undefined)).toBe(input);
   });
 
+  it('keeps a custom-attribute column while the schema is empty (loading, not a deletion)', () => {
+    // data starts as [] before the CA schema loads; an empty read must not be
+    // mistaken for a deleted attribute, or every CA column vanishes.
+    const input = col({ id: 'customAttributes.dept', inputType: 'text' });
+    expect(enrichFilterCustomAttributeColumns([input], [])).toEqual([input]);
+  });
+
   it('drops a custom-attribute column whose attribute no longer exists', () => {
     const input = col({ id: 'customAttributes.dept', inputType: 'text' });
-    // schema loaded (array) but dept is gone -> column removed
-    expect(enrichFilterCustomAttributeColumns([input], [])).toEqual([]);
+    // schema loaded and non-empty, but dept is gone -> column removed
     expect(
       enrichFilterCustomAttributeColumns(
         [input],
