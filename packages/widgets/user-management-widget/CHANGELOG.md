@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.1](https://github.com/descope/descope-js/compare/user-management-widget-0.17.0...user-management-widget-0.17.1) (2026-08-10)
+
+
+### Bug Fixes
+
+* **user-mgmt-widget:** keep custom-attribute filter columns while schema loads RELEASE ([#1460](https://github.com/descope/descope-js/issues/1460)) ([1a0c793](https://github.com/descope/descope-js/commit/1a0c7934833b8d28440aa851ced0939c9d88305a))
+
 ## [0.17.0](https://github.com/descope/descope-js/compare/user-management-widget-0.16.4...user-management-widget-0.17.0) (2026-08-10)
 
 ### Dependency Updates
