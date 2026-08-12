@@ -106,6 +106,7 @@ const App = () => {
 	// NOTE - `useDescope`, `useSession`, `useUser` should be used inside `AuthProvider` context,
 	// and will throw an exception if this requirement is not met
 	// useSession retrieves authentication state, session loading status, and session token
+	// Use `isAuthenticated` to check whether there is an active session - not `sessionToken`
 	const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
 	// useUser retrieves the logged in user information
 	const { user } = useUser();
@@ -133,6 +134,24 @@ const App = () => {
 	return <p>You are not logged in</p>;
 };
 ```
+
+> **Important:** always use `isAuthenticated` to determine whether there is an active session - never `sessionToken`.
+>
+> `sessionToken` is empty whenever the session token is not accessible to client-side code, for example when the Descope project is configured to manage the session token in cookies (`Secure` + `HttpOnly` `DS` cookie), or when `persistTokens={false}` is set. In those setups the user is fully authenticated while `sessionToken` is an empty string, so guarding logic on it silently skips that logic:
+>
+> ```js
+> // WRONG - skipped for authenticated users when the session token lives in an HttpOnly cookie
+> if (!sessionToken && !isSessionLoading) {
+> 	return; // e.g. bailing out before calling sdk.logout()
+> }
+>
+> // CORRECT
+> if (!isAuthenticated && !isSessionLoading) {
+> 	return;
+> }
+> ```
+>
+> `isAuthenticated` is derived from the session's expiration, which the SDK receives in every token-storage mode. Read `sessionToken` only when you actually need the raw JWT (for example to attach it to an API request), and use `claims` to read claims out of the session. On the server side, use [`session()`](#read-session-information-in-server-side) instead.
 
 #### Activity-Based Session Refresh
 
