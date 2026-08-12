@@ -50,6 +50,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/mixins/injectStyleMixin.js"
       }
+    },
+    "./telemetry-mixin": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/mixins/telemetryMixin/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/mixins/telemetryMixin/index.js"
+      }
     }
   },
   "type": "module",
