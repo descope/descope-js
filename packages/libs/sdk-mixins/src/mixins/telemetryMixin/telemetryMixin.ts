@@ -103,6 +103,20 @@ export const telemetryMixin = createSingletonMixin(
             },
             this.logger,
           );
+
+          // The TelemetryManager constructor swallows RUM-client init errors
+          // (it sets an internal failure flag instead of throwing). Confirm it
+          // actually came up before flagging success - otherwise we'd log
+          // "initialized" and, because #initializeTelemetry early-returns once
+          // #telemetryInitialized is true, permanently block any retry.
+          if (!this.#telemetryManager.isReady()) {
+            this.logger.error(
+              'Telemetry manager failed to initialize (RUM client not ready)',
+            );
+            this.#telemetryManager = null;
+            return;
+          }
+
           this.#telemetryInitialized = true;
 
           this.logger.info('Telemetry initialized successfully');
@@ -188,7 +202,7 @@ export const telemetryMixin = createSingletonMixin(
         // at WC build time via rollup.config.app.mjs). We MERGE rather than
         // replace so the backend can override individual fields (e.g. just
         // expiration) without re-stating every credential.
-        const resolvedConfig = (await this.config) as any;
+        const resolvedConfig = await this.config;
         // config.json content is nested under `projectConfig` in the current
         // configMixin; fall back to the top level for older shapes.
         const beTelemetry =

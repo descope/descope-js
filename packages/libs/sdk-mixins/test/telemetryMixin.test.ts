@@ -122,13 +122,18 @@ const createTelemetryHost = () => {
 };
 
 describe('telemetryMixin', () => {
-  let telemetryManagerMock: { shutdown: jest.Mock; updateContext: jest.Mock };
+  let telemetryManagerMock: {
+    shutdown: jest.Mock;
+    updateContext: jest.Mock;
+    isReady: jest.Mock;
+  };
   let TelemetryManagerCtor: jest.Mock;
 
   beforeEach(() => {
     telemetryManagerMock = {
       shutdown: jest.fn(),
       updateContext: jest.fn(),
+      isReady: jest.fn(() => true),
     };
 
     TelemetryManagerCtor = jest
@@ -176,6 +181,50 @@ describe('telemetryMixin', () => {
     expect(logger.info).toHaveBeenCalledWith(
       'Telemetry initialized successfully',
     );
+    expect(instance.telemetryManager).toBe(telemetryManagerMock);
+  });
+
+  it('reads telemetry config from projectConfig.telemetry (nested shape)', async () => {
+    const { instance, logger, configValue } = createTelemetryHost();
+    // The backend ships telemetry nested under projectConfig, not at the top
+    // level. Drop the top-level shape so only the nested one can satisfy init.
+    delete configValue.telemetry;
+    configValue.projectConfig = { telemetry: { enabled: true } };
+
+    await instance.init();
+    await (instance as any).telemetryReady;
+
+    expect(TelemetryManagerCtor).toHaveBeenCalledWith(
+      expect.objectContaining({ enabled: true }),
+      expect.anything(),
+      expect.anything(),
+    );
+    expect(logger.info).toHaveBeenCalledWith(
+      'Telemetry initialized successfully',
+    );
+    expect(instance.telemetryManager).toBe(telemetryManagerMock);
+  });
+
+  it('does not flag success (and allows retry) when the RUM client fails to init', async () => {
+    const { instance, logger } = createTelemetryHost();
+    // TelemetryManager swallows RUM init errors and reports it via isReady().
+    telemetryManagerMock.isReady.mockReturnValue(false);
+
+    await instance.init();
+    await (instance as any).telemetryReady;
+
+    expect(logger.error).toHaveBeenCalledWith(
+      'Telemetry manager failed to initialize (RUM client not ready)',
+    );
+    expect(logger.info).not.toHaveBeenCalledWith(
+      'Telemetry initialized successfully',
+    );
+    expect(instance.telemetryManager).toBeNull();
+
+    // A failed init must not permanently block a later attempt.
+    telemetryManagerMock.isReady.mockReturnValue(true);
+    await instance.init();
+    await (instance as any).telemetryReady;
     expect(instance.telemetryManager).toBe(telemetryManagerMock);
   });
 
