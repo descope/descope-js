@@ -188,7 +188,11 @@ export const telemetryMixin = createSingletonMixin(
         // at WC build time via rollup.config.app.mjs). We MERGE rather than
         // replace so the backend can override individual fields (e.g. just
         // expiration) without re-stating every credential.
-        const beTelemetry = (await this.config)?.telemetry;
+        const resolvedConfig = (await this.config) as any;
+        // config.json content is nested under `projectConfig` in the current
+        // configMixin; fall back to the top level for older shapes.
+        const beTelemetry =
+          resolvedConfig?.projectConfig?.telemetry ?? resolvedConfig?.telemetry;
 
         const sampleRate = Number(
           process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE,
