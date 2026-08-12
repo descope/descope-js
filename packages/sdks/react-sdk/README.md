@@ -291,7 +291,7 @@ const App = () => {
   // NOTE - `useDescope`, `useSession`, `useUser` should be used inside `AuthProvider` context,
   // and will throw an exception if this requirement is not met
   // useSession retrieves authentication state, session loading status, useful claims, and the session token
-  // If the session token is managed in cookies in project settings, sessionToken will be empty.
+  // Use `isAuthenticated` to check whether there is an active session - not `sessionToken`
   const { isAuthenticated, isSessionLoading, sessionToken, claims } = useSession();
   // useUser retrieves the logged in user information
   const { user, isUserLoading } = useUser();
@@ -319,6 +319,24 @@ const App = () => {
   return <p>You are not logged in</p>;
 };
 ```
+
+> **Important:** always use `isAuthenticated` to determine whether there is an active session - never `sessionToken`.
+>
+> `sessionToken` is empty whenever the session token is not accessible to client-side code, for example when the Descope project is [configured to manage the session token in cookies](#3-configure-descope-project-to-manage-session-token-in-cookies) (`Secure` + `HttpOnly` `DS` cookie), or when `persistTokens={false}` is set. In those setups the user is fully authenticated while `sessionToken` is an empty string, so guarding logic on it silently skips that logic:
+>
+> ```js
+> // WRONG - skipped for authenticated users when the session token lives in an HttpOnly cookie
+> if (!sessionToken && !isSessionLoading) {
+>   return; // e.g. bailing out before calling sdk.logout()
+> }
+>
+> // CORRECT
+> if (!isAuthenticated && !isSessionLoading) {
+>   return;
+> }
+> ```
+>
+> `isAuthenticated` is derived from the session's expiration, which the SDK receives in every token-storage mode. Read `sessionToken` only when you actually need the raw JWT (for example to attach it to an API request), and use `claims` to read claims out of the session.
 
 ### Trigger Auto Refresh
 
@@ -489,10 +507,8 @@ If you need to customize this, you can set `sessionTokenViaCookie={{sameSite: 'L
 
 If project settings are configured to manage session token in cookies, Descope services will automatically set the session token in the `DS` cookie as a `Secure` and `HttpOnly` cookie. In this case, the session token will not be stored in the browser's and will not be accessible to the client-side code using `useSession` or `getSessionToken`.
 
-However, `useSession`'s returned `claims` field will always be available to retrieve custom claims & common Descope claims
-from the token.
+However, `useSession`'s returned `isAuthenticated` and `claims` fields are always available - `isAuthenticated` still reflects the active session, and `claims` still exposes custom claims & common Descope claims from the token. Make sure your app checks authentication state with `isAuthenticated` and not with `sessionToken`, which will be empty in this mode.
 
-````js
 ### Helper Functions
 
 You can also use the following functions to assist with various actions managing your JWT.
@@ -546,7 +562,7 @@ const AppRoot = () => {
     </AuthProvider>
   );
 };
-````
+```
 
 ### Custom Storage
 
