@@ -8,6 +8,7 @@ import {
   MockAwsRum,
   mockRecord,
   waitFor,
+  waitForRecord,
   createTestElement,
   cleanupTestElements,
 } from './setup';
@@ -118,7 +119,7 @@ describe('TelemetryManager Integration', () => {
       // Test DOM
       const container = createTestElement('integration-test');
       container.appendChild(document.createElement('div'));
-      await waitFor(100);
+      await waitForRecord('dom_mutation');
 
       expect(mockRecord).toHaveBeenCalledWith(
         'dom_mutation',
@@ -219,7 +220,7 @@ describe('TelemetryManager Integration', () => {
       history.pushState(null, '', '/nav-event');
       container.appendChild(document.createElement('div'));
 
-      await waitFor(100);
+      await waitForRecord('dom_mutation');
 
       // Should have recorded all three
       const eventTypes = mockRecord.mock.calls.map((call) => call[0]);
@@ -748,7 +749,7 @@ describe('TelemetryManager Integration', () => {
           container.appendChild(element);
         }
 
-        await waitFor(150);
+        await waitForRecord('dom_mutation');
 
         // Should have handled all mutations without error
         expect(mockRecord).toHaveBeenCalledWith(

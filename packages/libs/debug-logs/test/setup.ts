@@ -90,6 +90,21 @@ export function waitFor(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Poll until mockRecord has recorded an event of the given type (or timeoutMs
+// elapses). Use this instead of a fixed waitFor() when asserting that an ASYNC
+// event was captured (e.g. dom_mutation via MutationObserver): a fixed sleep
+// under-waits on a slow/loaded CI runner, which is what made these tests flaky.
+export async function waitForRecord(
+  eventType: string,
+  timeoutMs = 2000,
+): Promise<void> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (mockRecord.mock.calls.some((call) => call[0] === eventType)) return;
+    await waitFor(20);
+  }
+}
+
 // Helper to create a DOM element for testing
 export function createTestElement(id: string, innerHTML = ''): HTMLElement {
   const element = document.createElement('div');
