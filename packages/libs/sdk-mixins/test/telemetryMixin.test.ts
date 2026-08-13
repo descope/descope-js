@@ -96,9 +96,12 @@ const createTelemetryHost = () => {
   instance.injectNpmLib = jest.fn().mockResolvedValue(undefined);
   (instance as any).onReset = jest.fn().mockReturnValue(() => {});
 
+  // The backend ships telemetry nested under projectConfig; tests mirror that.
   let configValue: any = {
-    telemetry: {
-      enabled: true,
+    projectConfig: {
+      telemetry: {
+        enabled: true,
+      },
     },
   };
 
@@ -185,11 +188,9 @@ describe('telemetryMixin', () => {
   });
 
   it('reads telemetry config from projectConfig.telemetry (nested shape)', async () => {
-    const { instance, logger, configValue } = createTelemetryHost();
-    // The backend ships telemetry nested under projectConfig, not at the top
-    // level. Drop the top-level shape so only the nested one can satisfy init.
-    delete configValue.telemetry;
-    configValue.projectConfig = { telemetry: { enabled: true } };
+    const { instance, logger } = createTelemetryHost();
+    // configValue nests telemetry under projectConfig - the shape the backend
+    // actually ships in config.json (there is no top-level telemetry fallback).
 
     await instance.init();
     await (instance as any).telemetryReady;
@@ -296,7 +297,7 @@ describe('telemetryMixin', () => {
 
       // Set expiration to 1 hour ago
       const pastExpiration = Date.now() - 60 * 60 * 1000;
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         expiration: pastExpiration,
       };
@@ -316,7 +317,7 @@ describe('telemetryMixin', () => {
 
       // Set expiration to 30 minutes from now
       const futureExpiration = Date.now() + 30 * 60 * 1000;
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         expiration: futureExpiration,
       };
@@ -338,7 +339,7 @@ describe('telemetryMixin', () => {
 
       // Set expiration to 5 minutes from now
       const futureExpiration = Date.now() + 5 * 60 * 1000;
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         expiration: futureExpiration,
       };
@@ -362,7 +363,7 @@ describe('telemetryMixin', () => {
 
       // Set expiration to 2 days from now
       const futureExpiration = Date.now() + 2 * 24 * 60 * 60 * 1000;
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         expiration: futureExpiration,
       };
@@ -385,7 +386,7 @@ describe('telemetryMixin', () => {
 
       // Set expiration to 30 minutes from now
       const futureExpiration = Date.now() + 30 * 60 * 1000;
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         expiration: futureExpiration,
       };
@@ -406,7 +407,7 @@ describe('telemetryMixin', () => {
     it('should work without expiration field (indefinite)', async () => {
       const { instance, logger, configValue } = createTelemetryHost();
 
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         // No expiration field
       };
@@ -449,7 +450,7 @@ describe('telemetryMixin', () => {
       process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE = '0.5';
 
       const { instance, configValue } = createTelemetryHost();
-      configValue.telemetry = { enabled: true };
+      configValue.projectConfig.telemetry = { enabled: true };
 
       await instance.init();
       await (instance as any).telemetryReady;
@@ -474,7 +475,7 @@ describe('telemetryMixin', () => {
       process.env.DESCOPE_TELEMETRY_REGION = 'env-region';
 
       const { instance, configValue } = createTelemetryHost();
-      configValue.telemetry = {
+      configValue.projectConfig.telemetry = {
         enabled: true,
         rumConfig: {
           applicationId: 'be-app',
@@ -504,7 +505,7 @@ describe('telemetryMixin', () => {
       delete process.env.DESCOPE_TELEMETRY_REGION;
 
       const { instance, logger, configValue } = createTelemetryHost();
-      configValue.telemetry = { enabled: true };
+      configValue.projectConfig.telemetry = { enabled: true };
 
       await instance.init();
       await (instance as any).telemetryReady;

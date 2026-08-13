@@ -1,7 +1,7 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { injectNpmLibMixin } from '../injectNpmLibMixin';
 import { loggerMixin } from '../loggerMixin';
-import { Config } from '../configMixin/types';
+import { TelemetryConfig } from '../configMixin/types';
 import {
   DEBUG_LOGS_LIB_NAME,
   JS_FILE_PATH,
@@ -48,7 +48,7 @@ export const telemetryMixin = createSingletonMixin(
       #expirationTimeoutId: NodeJS.Timeout | null = null;
 
       async #initializeTelemetry(
-        config: Config['telemetry'],
+        config: TelemetryConfig,
         context: {
           projectId: string;
           flowId?: string;
@@ -195,24 +195,22 @@ export const telemetryMixin = createSingletonMixin(
         return this.#telemetryManager;
       }
 
-      async #getTelemetryConfig(): Promise<Config['telemetry']> {
+      async #getTelemetryConfig(): Promise<TelemetryConfig> {
         // Prefer telemetry config shipped by the backend in the project's
         // config.json. Otherwise, fall back to values from
         // packages/sdks/web-component/.env (DESCOPE_TELEMETRY_* — substituted
         // at WC build time via rollup.config.app.mjs). We MERGE rather than
         // replace so the backend can override individual fields (e.g. just
         // expiration) without re-stating every credential.
+        // The backend ships telemetry nested under `projectConfig` in config.json.
         const resolvedConfig = await this.config;
-        // config.json content is nested under `projectConfig` in the current
-        // configMixin; fall back to the top level for older shapes.
-        const beTelemetry =
-          resolvedConfig?.projectConfig?.telemetry ?? resolvedConfig?.telemetry;
+        const beTelemetry = resolvedConfig?.projectConfig?.telemetry;
 
         const sampleRate = Number(
           process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE,
         );
 
-        const fallback: NonNullable<Config['telemetry']> = {
+        const fallback: NonNullable<TelemetryConfig> = {
           enabled:
             (process.env.DESCOPE_TELEMETRY_ENABLED || '').toLowerCase() ===
             'true',
@@ -229,7 +227,7 @@ export const telemetryMixin = createSingletonMixin(
           },
         };
 
-        const cfg: NonNullable<Config['telemetry']> = {
+        const cfg: NonNullable<TelemetryConfig> = {
           ...fallback,
           ...beTelemetry,
           rumConfig: {
@@ -270,8 +268,8 @@ export const telemetryMixin = createSingletonMixin(
        * inject this.shadowRoot here. Respect an explicit `dom: false`.
        */
       #resolveCapture(
-        beCapture: NonNullable<Config['telemetry']>['capture'],
-      ): NonNullable<Config['telemetry']>['capture'] {
+        beCapture: NonNullable<TelemetryConfig>['capture'],
+      ): NonNullable<TelemetryConfig>['capture'] {
         // `network: true` = capture ALL network traffic. We used to default to
         // `{ urlFilter: [] }` but the two network paths had inverted semantics
         // for the empty array: the custom NetworkPlugin treated it as

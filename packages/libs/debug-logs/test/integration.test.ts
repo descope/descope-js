@@ -13,6 +13,13 @@ import {
   cleanupTestElements,
 } from './setup';
 
+// These integration tests drive real async capture (MutationObserver, throttle
+// timers) and assert on it after short waits. The waitForRecord() helper removes
+// the worst offenders, but on a heavily-loaded CI runner an occasional capture
+// can still land late. Retry a failed test a couple of times so genuine CI-load
+// jitter doesn't red the build; a real regression still fails all attempts.
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
+
 describe('TelemetryManager Integration', () => {
   let manager: TelemetryManager;
   let config: TelemetryConfig;

@@ -117,6 +117,7 @@ export type ProjectConfiguration = {
     [key: string]: WidgetConfig; // dynamic key names for widgets
   };
   styles: Record<string, Style>;
+  // The backend ships RUM debug-telemetry config nested here in config.json.
   telemetry?: TelemetryConfig;
 };
 
@@ -125,5 +126,4 @@ export type Config = {
   executionContext: {
     geo: string;
   };
-  telemetry?: TelemetryConfig;
 };
