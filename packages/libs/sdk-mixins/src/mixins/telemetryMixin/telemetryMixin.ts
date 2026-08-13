@@ -52,7 +52,7 @@ export const telemetryMixin = createSingletonMixin(
         context: {
           projectId: string;
           flowId?: string;
-          version?: string;
+          sdkVersion?: string;
         },
       ) {
         if (!config?.enabled) {
@@ -99,7 +99,7 @@ export const telemetryMixin = createSingletonMixin(
             {
               projectId: context.projectId,
               flowId: context.flowId,
-              version: context.version || '1.0.0',
+              version: context.sdkVersion || '1.0.0',
             },
             this.logger,
           );
@@ -195,6 +195,17 @@ export const telemetryMixin = createSingletonMixin(
         return this.#telemetryManager;
       }
 
+      // A RUM client needs applicationId, identityPoolId and region. If any is
+      // missing, AwsRum either throws at construction or silently records
+      // nothing, so we treat the config as unusable.
+      #isRumConfigComplete(rumConfig?: TelemetryConfig['rumConfig']): boolean {
+        return Boolean(
+          rumConfig?.applicationId &&
+            rumConfig?.identityPoolId &&
+            rumConfig?.region,
+        );
+      }
+
       async #getTelemetryConfig(): Promise<TelemetryConfig> {
         // Prefer telemetry config shipped by the backend in the project's
         // config.json. Otherwise, fall back to values from
@@ -241,12 +252,7 @@ export const telemetryMixin = createSingletonMixin(
         // the BE block and the .env fallback), disable rather than hand AwsRum
         // an empty applicationId/identityPoolId/region — that would either
         // throw at construction or silently no-op with no session recorded.
-        if (
-          cfg.enabled &&
-          (!cfg.rumConfig?.applicationId ||
-            !cfg.rumConfig?.identityPoolId ||
-            !cfg.rumConfig?.region)
-        ) {
+        if (cfg.enabled && !this.#isRumConfigComplete(cfg.rumConfig)) {
           this.logger.warn(
             'Telemetry enabled but rumConfig is incomplete (applicationId/identityPoolId/region required). Skipping initialization.',
           );
@@ -258,6 +264,9 @@ export const telemetryMixin = createSingletonMixin(
         // the backend owns the config it controls expiration explicitly.
         if (!beTelemetry) {
           cfg.expiration = Date.now() + 5 * 60 * 1000;
+          this.logger.debug(
+            'No backend telemetry config present; applying a 5-minute safety cap on the session.',
+          );
         }
 
         return cfg;
@@ -327,7 +336,7 @@ export const telemetryMixin = createSingletonMixin(
             this.#initializeTelemetry(config as any, {
               projectId: this.projectId,
               flowId: this.flowId,
-              version: sdkVersion,
+              sdkVersion,
             }),
           )
           .catch((error) => {
