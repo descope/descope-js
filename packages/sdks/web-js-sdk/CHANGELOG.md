@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.51.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.4...web-js-sdk-1.51.5) (2026-08-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.68.0`
+## [1.51.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.3...web-js-sdk-1.51.4) (2026-08-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.67.1`
+
+### Bug Fixes
+
+* **web-js-sdk:** order flow nonce writes by embedded sequence ([#1452](https://github.com/descope/descope-js/issues/1452)) ([6f1956f](https://github.com/descope/descope-js/commit/6f1956fa6ba191c7a069d4292bad8abb39da45a5))
+
 ## [1.51.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.2...web-js-sdk-1.51.3) (2026-07-16)
 
 

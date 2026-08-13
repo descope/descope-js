@@ -76,6 +76,13 @@ const Page = () => {
 
 Refer to the [Descope React SDK Section](../react-sdk/README.md) for a list of available props.
 
+> **Breaking change (v-next):** if you render custom screens via `onScreenUpdate`, the
+> server-produced screen data that used to sit directly on `context` now lives under
+> **`context.data`** — e.g. `context.totp` → `context.data.totp`. See the
+> [React SDK `onScreenUpdate` section](../react-sdk/README.md#onscreenupdate) and the
+> [@descope/web-component README](https://www.npmjs.com/package/@descope/web-component#the-context-object)
+> for the full list of `context.data` fields.
+
 **Note:** Descope is a client component. if the component that renders it is a server component, you cannot pass `onSuccess`/`onError`/`errorTransformer`/`logger` props because they are not serializable. To redirect the user after the flow is completed, use the `redirectAfterSuccess` and `redirectAfterError` props.
 
 #### Client Side Usage
@@ -99,6 +106,7 @@ const App = () => {
 	// NOTE - `useDescope`, `useSession`, `useUser` should be used inside `AuthProvider` context,
 	// and will throw an exception if this requirement is not met
 	// useSession retrieves authentication state, session loading status, and session token
+	// Use `isAuthenticated` to check whether there is an active session - not `sessionToken`
 	const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
 	// useUser retrieves the logged in user information
 	const { user } = useUser();
@@ -127,6 +135,24 @@ const App = () => {
 };
 ```
 
+> **Important:** always use `isAuthenticated` to determine whether there is an active session - never `sessionToken`.
+>
+> `sessionToken` is empty whenever the session token is not accessible to client-side code, for example when the Descope project is configured to manage the session token in cookies (`Secure` + `HttpOnly` `DS` cookie), or when `persistTokens={false}` is set. In those setups the user is fully authenticated while `sessionToken` is an empty string, so guarding logic on it silently skips that logic:
+>
+> ```js
+> // WRONG - skipped for authenticated users when the session token lives in an HttpOnly cookie
+> if (!sessionToken && !isSessionLoading) {
+> 	return; // e.g. bailing out before calling sdk.logout()
+> }
+>
+> // CORRECT
+> if (!isAuthenticated && !isSessionLoading) {
+> 	return;
+> }
+> ```
+>
+> `isAuthenticated` is derived from the session's expiration, which the SDK receives in every token-storage mode. Read `sessionToken` only when you actually need the raw JWT (for example to attach it to an API request), and use `claims` to read claims out of the session. On the server side, use [`session()`](#read-session-information-in-server-side) instead.
+
 #### Activity-Based Session Refresh
 
 By default, the SDK fires a periodic heartbeat (refresh call) whenever the tab is active. You can opt in to fine-grained control by passing `autoRefresh={{ customActivityTracking: true }}` to `AuthProvider`. With this mode enabled, the SDK only refreshes when `sdk.markUserActive()` has been called since the last refresh — useful for enforcing server-side inactivity timeouts.
@@ -136,9 +162,12 @@ By default, the SDK fires a periodic heartbeat (refresh call) whenever the tab i
 ```tsx
 import { AuthProvider } from '@descope/nextjs-sdk';
 
-<AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
-  <App />
-</AuthProvider>
+<AuthProvider
+	projectId="my-project-id"
+	autoRefresh={{ customActivityTracking: true }}
+>
+	<App />
+</AuthProvider>;
 ```
 
 **Step 2:** Call `markUserActive()` on user interactions using the `useDescope` hook from `@descope/nextjs-sdk/client`:
@@ -149,27 +178,27 @@ import { useEffect } from 'react';
 import { useDescope } from '@descope/nextjs-sdk/client';
 
 function useActivityTracking() {
-  const sdk = useDescope();
+	const sdk = useDescope();
 
-  useEffect(() => {
-    const { markUserActive } = sdk;
+	useEffect(() => {
+		const { markUserActive } = sdk;
 
-    document.addEventListener('click', markUserActive);
-    document.addEventListener('keydown', markUserActive);
-    document.addEventListener('touchstart', markUserActive);
+		document.addEventListener('click', markUserActive);
+		document.addEventListener('keydown', markUserActive);
+		document.addEventListener('touchstart', markUserActive);
 
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') markUserActive();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
+		const onVisibility = () => {
+			if (document.visibilityState === 'visible') markUserActive();
+		};
+		document.addEventListener('visibilitychange', onVisibility);
 
-    return () => {
-      document.removeEventListener('click', markUserActive);
-      document.removeEventListener('keydown', markUserActive);
-      document.removeEventListener('touchstart', markUserActive);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [sdk]);
+		return () => {
+			document.removeEventListener('click', markUserActive);
+			document.removeEventListener('keydown', markUserActive);
+			document.removeEventListener('touchstart', markUserActive);
+			document.removeEventListener('visibilitychange', onVisibility);
+		};
+	}, [sdk]);
 }
 ```
 
@@ -184,7 +213,7 @@ import { useEffect } from 'react';
 
 const { refresh } = useDescope();
 useEffect(() => {
-  refresh().catch(console.error);
+	refresh().catch(console.error);
 }, [refresh]);
 ```
 
