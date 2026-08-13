@@ -4,7 +4,13 @@ import { initMixin } from './mixins/initMixin/initMixin';
 declare const BUILD_VERSION: string;
 
 const rootMixin = (superclass: CustomElementConstructor) =>
-  class RootMixinClass extends initMixin(superclass) {
+  // The composed mixin chain is deep enough that TypeScript hits its
+  // instantiation-depth limit here (TS2589). Cast the base to a shallow but
+  // compatible constructor (HTMLElement + the init hook we call) to stop the
+  // deep type inference; runtime behavior is unchanged.
+  class RootMixinClass extends (initMixin(superclass) as unknown as new (
+    ...args: any[]
+  ) => HTMLElement & { init?(): Promise<void> }) {
     async init() {
       await super.init?.();
 
