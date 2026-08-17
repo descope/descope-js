@@ -1,3 +1,6 @@
+/* eslint-disable jest-dom/prefer-to-have-attribute, jest-dom/prefer-to-have-style --
+   sdk-mixins does not install @testing-library/jest-dom (only the lint plugin), so
+   those matchers aren't available here; assert on the DOM directly. */
 // componentsConditionsMixin composes initElementMixin (which attaches a shadow
 // DOM and builds contentRootElement) and loggerMixin. Mock both down to identity
 // mixins - the same approach modalMixin.test.ts uses - and let the bare base

@@ -7,17 +7,17 @@ type ComponentsState = Record<string, string>;
 
 const COMPONENTS_STATE_PATH = '/v1/mgmt/widget/components-state';
 
-// Minimal client contract the mixin needs. Widgets expose their existing
-// web-js-sdk httpClient (the same instance used for every other API call),
-// narrowed to this so no web-js-sdk/core-js-sdk type leaks into the widget's
-// public sdk surface.
-export interface ConditionsHttpClient {
-  get: (path: string) => Promise<Response>;
-}
-
 // The widget's sdk (built by apiMixin) is expected to expose the client here.
 interface ComponentsConditionsHost {
   api?: { httpClient?: ConditionsHttpClient };
+}
+
+// Minimal client contract the mixin needs. Widgets expose their existing
+// web-js-sdk httpClient (the same instance used for every other API call),
+// narrowed to this so no web-js-sdk/core-js-sdk type leaks into the widget's
+// public sdk surface. Declared last (with the mixin) to satisfy import/exports-last.
+export interface ConditionsHttpClient {
+  get: (path: string) => Promise<Response>;
 }
 
 /**

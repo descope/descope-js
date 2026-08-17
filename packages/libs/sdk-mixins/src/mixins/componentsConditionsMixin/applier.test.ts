@@ -1,3 +1,6 @@
+/* eslint-disable jest-dom/prefer-to-have-attribute, jest-dom/prefer-to-have-style --
+   sdk-mixins does not install @testing-library/jest-dom (only the lint plugin), so
+   those matchers aren't available here; assert on the DOM directly. */
 import { applyComponentsState, clearComponentsState } from './applier';
 
 function root(html: string): HTMLElement {

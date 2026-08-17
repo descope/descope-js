@@ -4,9 +4,6 @@
 // via inline style + the `hidden` attribute rather than a `.hidden` class, which
 // widgets do not inject into their shadow DOM.
 
-export const COMPONENT_ACTIONS = ['hide', 'disable', 'read-only'] as const;
-export type ComponentAction = (typeof COMPONENT_ACTIONS)[number];
-
 const ATTR_SELECTOR_ESCAPE_PATTERN = /(["\\])/g;
 
 // CSS.escape with a narrow fallback for environments that lack it.
