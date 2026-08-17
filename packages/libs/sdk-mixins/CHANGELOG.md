@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.25.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.24.1...sdk-mixins-0.25.0) (2026-08-17)
+
+
+### Features
+
+* **telemetry:** add opt-in AWS CloudWatch RUM debug telemetry for web-component SDK RELEASE ([#1461](https://github.com/descope/descope-js/issues/1461)) ([0e02d52](https://github.com/descope/descope-js/commit/0e02d52263fc22d876efa907a336449214f8f8c4)), closes [#1446](https://github.com/descope/descope-js/issues/1446) [descope/backend#2045](https://github.com/descope/backend/issues/2045) [descope/etc#13172](https://github.com/descope/etc/issues/13172) [descope/backend#2045](https://github.com/descope/backend/issues/2045)
+
 ## [0.24.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.24.0...sdk-mixins-0.24.1) (2026-08-10)
 
 ### Dependency Updates
