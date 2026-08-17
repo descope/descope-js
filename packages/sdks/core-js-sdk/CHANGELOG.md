@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.69.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.68.0...core-js-sdk-2.69.0) (2026-08-17)
+
+
+### Features
+
+* **telemetry:** add opt-in AWS CloudWatch RUM debug telemetry for web-component SDK RELEASE ([#1461](https://github.com/descope/descope-js/issues/1461)) ([0e02d52](https://github.com/descope/descope-js/commit/0e02d52263fc22d876efa907a336449214f8f8c4)), closes [#1446](https://github.com/descope/descope-js/issues/1446) [descope/backend#2045](https://github.com/descope/backend/issues/2045) [descope/etc#13172](https://github.com/descope/etc/issues/13172) [descope/backend#2045](https://github.com/descope/backend/issues/2045)
+
+## [2.68.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.67.1...core-js-sdk-2.68.0) (2026-08-10)
+
+
+### Features
+
+* **widgets:** Support UserMgmt Filter ([#1422](https://github.com/descope/descope-js/issues/1422)) ([ce182e9](https://github.com/descope/descope-js/commit/ce182e96c7f29558ad2b38ebb7513beaa030ca7e)), closes [/github.com/descope/etc/issues/14302#issuecomment-5178241391](https://github.com/descope//github.com/descope/etc/issues/14302/issues/issuecomment-5178241391)
+
+## [2.67.1](https://github.com/descope/descope-js/compare/core-js-sdk-2.67.0...core-js-sdk-2.67.1) (2026-08-09)
+
+
+### Bug Fixes
+
+* **core-js-sdk:** make webauthn origin and name optional ([#1455](https://github.com/descope/descope-js/issues/1455)) RELEASE ([a2e27e4](https://github.com/descope/descope-js/commit/a2e27e492fd646bb3d03d2564b0c7bec183cc523))
+
 ## [2.67.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.66.0...core-js-sdk-2.67.0) (2026-07-12)
 
 

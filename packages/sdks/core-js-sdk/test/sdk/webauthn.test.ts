@@ -28,10 +28,10 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.signUp.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() =>
+          sdk.webauthn.signUp.start('loginId', '', 'name'),
+        ).not.toThrow();
       });
 
       it('should throw an error when name is not a string', () => {
@@ -229,10 +229,8 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.signIn.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() => sdk.webauthn.signIn.start('loginId', '')).not.toThrow();
       });
 
       it('should send the correct request', () => {
@@ -453,10 +451,10 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.signUpOrIn.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() =>
+          sdk.webauthn.signUpOrIn.start('loginId', ''),
+        ).not.toThrow();
       });
 
       it('should send the correct request', () => {
@@ -575,10 +573,8 @@ describe('webauthn', () => {
         );
       });
 
-      it('should throw an error when origin is empty', () => {
-        expect(() => sdk.webauthn.update.start('loginId', '')).toThrow(
-          '"origin" must not be empty',
-        );
+      it('should not throw when origin is empty', () => {
+        expect(() => sdk.webauthn.update.start('loginId', '')).not.toThrow();
       });
 
       it('should throw an error when token is undefined', () => {
@@ -655,7 +651,13 @@ describe('webauthn', () => {
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
 
-        sdk.webauthn.update.start('loginId', 'origin', 'token', undefined, true);
+        sdk.webauthn.update.start(
+          'loginId',
+          'origin',
+          'token',
+          undefined,
+          true,
+        );
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.webauthn.update.start,
@@ -743,7 +745,9 @@ describe('webauthn', () => {
       });
 
       it('should return the merged session under jwt for an mfa enrollment', async () => {
-        const httpRespJson = { jwt: { sessionJwt: 'session', refreshJwt: 'refresh' } };
+        const httpRespJson = {
+          jwt: { sessionJwt: 'session', refreshJwt: 'refresh' },
+        };
         const httpResponse = {
           ok: true,
           json: () => httpRespJson,
@@ -754,7 +758,10 @@ describe('webauthn', () => {
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
 
-        const resp = await sdk.webauthn.update.finish('transactionId', 'response');
+        const resp = await sdk.webauthn.update.finish(
+          'transactionId',
+          'response',
+        );
 
         expect(resp.data?.jwt?.sessionJwt).toEqual('session');
       });

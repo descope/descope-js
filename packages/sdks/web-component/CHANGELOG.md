@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.2.0](https://github.com/descope/descope-js/compare/web-component-4.1.0...web-component-4.2.0) (2026-08-17)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.25.0`
+* `web-js-sdk` updated to version `1.51.6`
+
+### Features
+
+* **telemetry:** add opt-in AWS CloudWatch RUM debug telemetry for web-component SDK RELEASE ([#1461](https://github.com/descope/descope-js/issues/1461)) ([0e02d52](https://github.com/descope/descope-js/commit/0e02d52263fc22d876efa907a336449214f8f8c4)), closes [#1446](https://github.com/descope/descope-js/issues/1446) [descope/backend#2045](https://github.com/descope/backend/issues/2045) [descope/etc#13172](https://github.com/descope/etc/issues/13172) [descope/backend#2045](https://github.com/descope/backend/issues/2045)
+
+## [4.1.0](https://github.com/descope/descope-js/compare/web-component-4.0.2...web-component-4.1.0) (2026-08-10)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.24.1`
+* `web-js-sdk` updated to version `1.51.5`
+
+### Features
+
+* **widgets/user-profile-widget:** native bridge for mobile SDKs ([#1415](https://github.com/descope/descope-js/issues/1415)) RELEASE ([0b3fa43](https://github.com/descope/descope-js/commit/0b3fa43eda59a59c4b0938a446bcc844c490a16e))
+
+## [4.0.2](https://github.com/descope/descope-js/compare/web-component-4.0.1...web-component-4.0.2) (2026-08-09)
+
+
+### Bug Fixes
+
+* **web-component:** catch rejected credentials.store promise ([#1457](https://github.com/descope/descope-js/issues/1457)) ([9466aa0](https://github.com/descope/descope-js/commit/9466aa034a07b3ed29e95f2ec6df5da9c3123fcd)), closes [#1456](https://github.com/descope/descope-js/issues/1456)
+
+## [4.0.1](https://github.com/descope/descope-js/compare/web-component-4.0.0...web-component-4.0.1) (2026-08-09)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.24.0`
+* `web-js-sdk` updated to version `1.51.4`
 ## [4.0.0](https://github.com/descope/descope-js/compare/web-component-3.70.7...web-component-4.0.0) (2026-08-03)
 
 

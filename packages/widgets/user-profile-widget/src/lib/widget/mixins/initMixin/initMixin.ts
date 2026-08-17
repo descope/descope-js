@@ -5,6 +5,7 @@ import {
   themeMixin,
 } from '@descope/sdk-mixins';
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
+import { nativeBridgeMixin } from '../nativeBridgeMixin';
 import { initAvatarMixin } from './initComponentsMixins/initAvatarMixin';
 import { initEmailUserAttrMixin } from './initComponentsMixins/initEmailUserAttrMixin';
 import { initLogoutMixin } from './initComponentsMixins/initLogoutMixin';
@@ -42,6 +43,9 @@ export const initMixin = createSingletonMixin(
       initTotpUserAuthMethodMixin,
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
+      // IMPORTANT: ORDER MATTERS
+      // nativeBridgeMixin overrides `init()` and `handleLogout()` from the mixins above it
+      nativeBridgeMixin,
       initTrustedDevicesMixin,
       initUserPasskeysMixin,
       initNotificationsMixin,

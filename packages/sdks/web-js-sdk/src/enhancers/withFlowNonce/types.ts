@@ -21,6 +21,12 @@ export interface StorageItem {
    * - false: 3 hours TTL (for flow next)
    */
   isStart?: boolean;
+
+  /**
+   * Highest sequence seen, from the server nonce prefix "<seq>.<random>".
+   * Undefined until the first sequenced nonce arrives.
+   */
+  seq?: number;
 }
 
 /**

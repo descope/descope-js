@@ -2,6 +2,70 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.1.0](https://github.com/descope/descope-js/compare/react-sdk-3.0.4...react-sdk-3.1.0) (2026-08-17)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.12`
+* `audit-management-widget` updated to version `0.8.12`
+* `role-management-widget` updated to version `0.9.12`
+* `user-management-widget` updated to version `0.17.2`
+* `user-profile-widget` updated to version `0.17.0`
+* `applications-portal-widget` updated to version `0.8.12`
+* `outbound-applications-widget` updated to version `0.5.14`
+* `web-component` updated to version `4.2.0`
+* `web-js-sdk` updated to version `1.51.6`
+* `core-js-sdk` updated to version `2.69.0`
+* `tenant-profile-widget` updated to version `0.8.14`
+
+### Features
+
+* **telemetry:** add opt-in AWS CloudWatch RUM debug telemetry for web-component SDK RELEASE ([#1461](https://github.com/descope/descope-js/issues/1461)) ([0e02d52](https://github.com/descope/descope-js/commit/0e02d52263fc22d876efa907a336449214f8f8c4)), closes [#1446](https://github.com/descope/descope-js/issues/1446) [descope/backend#2045](https://github.com/descope/backend/issues/2045) [descope/etc#13172](https://github.com/descope/etc/issues/13172) [descope/backend#2045](https://github.com/descope/backend/issues/2045)
+
+## [3.0.4](https://github.com/descope/descope-js/compare/react-sdk-3.0.3...react-sdk-3.0.4) (2026-08-10)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.17.1`
+## [3.0.3](https://github.com/descope/descope-js/compare/react-sdk-3.0.2...react-sdk-3.0.3) (2026-08-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.11`
+* `audit-management-widget` updated to version `0.8.11`
+* `role-management-widget` updated to version `0.9.11`
+* `user-management-widget` updated to version `0.17.0`
+* `user-profile-widget` updated to version `0.16.0`
+* `applications-portal-widget` updated to version `0.8.11`
+* `outbound-applications-widget` updated to version `0.5.13`
+* `web-component` updated to version `4.1.0`
+* `web-js-sdk` updated to version `1.51.5`
+* `core-js-sdk` updated to version `2.68.0`
+* `tenant-profile-widget` updated to version `0.8.13`
+## [3.0.2](https://github.com/descope/descope-js/compare/react-sdk-3.0.1...react-sdk-3.0.2) (2026-08-09)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.16.4`
+* `user-profile-widget` updated to version `0.15.4`
+* `outbound-applications-widget` updated to version `0.5.12`
+* `web-component` updated to version `4.0.2`
+* `tenant-profile-widget` updated to version `0.8.12`
+## [3.0.1](https://github.com/descope/descope-js/compare/react-sdk-3.0.0...react-sdk-3.0.1) (2026-08-09)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.9.10`
+* `audit-management-widget` updated to version `0.8.10`
+* `role-management-widget` updated to version `0.9.10`
+* `user-management-widget` updated to version `0.16.3`
+* `user-profile-widget` updated to version `0.15.3`
+* `applications-portal-widget` updated to version `0.8.10`
+* `outbound-applications-widget` updated to version `0.5.11`
+* `web-component` updated to version `4.0.1`
+* `web-js-sdk` updated to version `1.51.4`
+* `core-js-sdk` updated to version `2.67.1`
+* `tenant-profile-widget` updated to version `0.8.11`
 ## [3.0.0](https://github.com/descope/descope-js/compare/react-sdk-2.30.11...react-sdk-3.0.0) (2026-08-03)
 
 ### Dependency Updates

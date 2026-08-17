@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.2](https://github.com/descope/descope-js/compare/user-management-widget-0.17.1...user-management-widget-0.17.2) (2026-08-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.6`
+* `web-component` updated to version `4.2.0`
+* `sdk-mixins` updated to version `0.25.0`
+## [0.17.1](https://github.com/descope/descope-js/compare/user-management-widget-0.17.0...user-management-widget-0.17.1) (2026-08-10)
+
+
+### Bug Fixes
+
+* **user-mgmt-widget:** keep custom-attribute filter columns while schema loads RELEASE ([#1460](https://github.com/descope/descope-js/issues/1460)) ([1a0c793](https://github.com/descope/descope-js/commit/1a0c7934833b8d28440aa851ced0939c9d88305a))
+
+## [0.17.0](https://github.com/descope/descope-js/compare/user-management-widget-0.16.4...user-management-widget-0.17.0) (2026-08-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.5`
+* `web-component` updated to version `4.1.0`
+* `sdk-mixins` updated to version `0.24.1`
+* `sdk-component-drivers` updated to version `0.15.0`
+
+### Features
+
+* **widgets:** Support UserMgmt Filter ([#1422](https://github.com/descope/descope-js/issues/1422)) ([ce182e9](https://github.com/descope/descope-js/commit/ce182e96c7f29558ad2b38ebb7513beaa030ca7e)), closes [/github.com/descope/etc/issues/14302#issuecomment-5178241391](https://github.com/descope//github.com/descope/etc/issues/14302/issues/issuecomment-5178241391)
+
+## [0.16.4](https://github.com/descope/descope-js/compare/user-management-widget-0.16.3...user-management-widget-0.16.4) (2026-08-09)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.0.2`
+## [0.16.3](https://github.com/descope/descope-js/compare/user-management-widget-0.16.2...user-management-widget-0.16.3) (2026-08-09)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.51.4`
+* `web-component` updated to version `4.0.1`
+* `sdk-mixins` updated to version `0.24.0`
 ## [0.16.2](https://github.com/descope/descope-js/compare/user-management-widget-0.16.1...user-management-widget-0.16.2) (2026-08-03)
 
 ### Dependency Updates

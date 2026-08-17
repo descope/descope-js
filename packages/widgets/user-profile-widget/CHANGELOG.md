@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.16.0...user-profile-widget-0.17.0) (2026-08-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.69.0`
+* `web-js-sdk` updated to version `1.51.6`
+* `web-component` updated to version `4.2.0`
+* `sdk-mixins` updated to version `0.25.0`
+
+### Features
+
+* **telemetry:** add opt-in AWS CloudWatch RUM debug telemetry for web-component SDK RELEASE ([#1461](https://github.com/descope/descope-js/issues/1461)) ([0e02d52](https://github.com/descope/descope-js/commit/0e02d52263fc22d876efa907a336449214f8f8c4)), closes [#1446](https://github.com/descope/descope-js/issues/1446) [descope/backend#2045](https://github.com/descope/backend/issues/2045) [descope/etc#13172](https://github.com/descope/etc/issues/13172) [descope/backend#2045](https://github.com/descope/backend/issues/2045)
+
+## [0.16.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.15.4...user-profile-widget-0.16.0) (2026-08-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.68.0`
+* `web-js-sdk` updated to version `1.51.5`
+* `web-component` updated to version `4.1.0`
+* `sdk-mixins` updated to version `0.24.1`
+* `sdk-component-drivers` updated to version `0.15.0`
+
+### Features
+
+* **widgets/user-profile-widget:** native bridge for mobile SDKs ([#1415](https://github.com/descope/descope-js/issues/1415)) RELEASE ([0b3fa43](https://github.com/descope/descope-js/commit/0b3fa43eda59a59c4b0938a446bcc844c490a16e))
+
+## [0.15.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.15.3...user-profile-widget-0.15.4) (2026-08-09)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.0.2`
+## [0.15.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.15.2...user-profile-widget-0.15.3) (2026-08-09)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.67.1`
+* `web-js-sdk` updated to version `1.51.4`
+* `web-component` updated to version `4.0.1`
+* `sdk-mixins` updated to version `0.24.0`
 ## [0.15.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.15.1...user-profile-widget-0.15.2) (2026-08-03)
 
 ### Dependency Updates

@@ -138,9 +138,14 @@ class DescopeWc extends BaseDescopeWc {
     }
   }
 
-  // Native bridge version native / web syncing - change this when
-  // a major change happens that requires some form of compatibility
-  bridgeVersion = 2;
+  // bridgeVersion tracks compatibility with the native SDK bridges.
+  // v3: support multiple WCs in a single page via new registration mechanism (User Profile Widget)
+  static readonly bridgeVersion = 3; // readable off the constructor before any wc mounts
+
+  bridgeVersion = DescopeWc.bridgeVersion; // readable off a live instance
+
+  // Key returned from `descopeBridge.registerFlow(this)`; used to unregister on disconnect.
+  #bridgeKey?: string;
 
   // A collection of callbacks that are maintained as part of the web-component state
   // when it's connected to a native bridge.
@@ -409,6 +414,9 @@ class DescopeWc extends BaseDescopeWc {
     }
     // eslint-disable-next-line no-underscore-dangle
     (this as any).lazyInit = this._init;
+    // from bridge version 3 onwards, wc registers itself with the descopeBridge instead
+    // of the previous polling mechanism, which still works for backwards compat
+    this.#bridgeKey = (window as any)?.descopeBridge?.registerFlow?.(this);
     return undefined;
   }
 
@@ -437,6 +445,19 @@ class DescopeWc extends BaseDescopeWc {
         errorType: state?.screenState?.errorType,
       }),
       { forceUpdate: true },
+    );
+
+    // Track screenId & executionId changes for telemetry
+    this.flowState?.subscribe(
+      ({ screenId, executionId }) => {
+        try {
+          this.updateTelemetryContext({ screenId, executionId });
+        } catch (error) {
+          // Fail silently - telemetry errors should never break the web-component
+          this.logger?.error('Error updating telemetry screenId:', error);
+        }
+      },
+      (state) => ({ screenId: state.screenId, executionId: state.executionId }),
     );
   }
 
@@ -479,6 +500,12 @@ class DescopeWc extends BaseDescopeWc {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+
+    // Drop our handle from the native bridge (mirror of the init-time register).
+    if (this.#bridgeKey) {
+      (window as any).descopeBridge?.unregisterFlow?.(this.#bridgeKey);
+      this.#bridgeKey = undefined;
+    }
 
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();

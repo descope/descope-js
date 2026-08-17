@@ -6,6 +6,7 @@ declare global {
       newValue: string | null,
     ): void;
     connectedCallback(): void;
+    disconnectedCallback(): void;
   }
 }
 
@@ -34,5 +35,6 @@ export * from './mixins/cookieConfigMixin';
 export * from './mixins/injectNpmLibMixin';
 export * from './mixins/injectStyleMixin';
 export * from './mixins/cspNonceMixin';
+export * from './mixins/telemetryMixin';
 export * from './mixins/flowInputMixin';
 export * from './mixins/componentsConditionsMixin';

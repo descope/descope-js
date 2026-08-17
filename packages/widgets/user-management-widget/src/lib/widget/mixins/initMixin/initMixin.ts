@@ -10,6 +10,7 @@ import { initDisableUserButtonMixin } from './initComponentsMixins/initDisableUs
 import { initEditUserButtonMixin } from './initComponentsMixins/initEditUsersButtonMixin';
 import { initEnableUserButtonMixin } from './initComponentsMixins/initEnableUserButtonMixin';
 import { initFilterUsersInputMixin } from './initComponentsMixins/initFilterUsersInputMixin';
+import { initFilterMixin } from './initComponentsMixins/initFilterMixin';
 import { initNotificationsMixin } from './initComponentsMixins/initNotificationsMixin';
 import { initRemovePasskeyButtonMixin } from './initComponentsMixins/initRemovePasskeyButtonMixin';
 import { initUsersTableMixin } from './initComponentsMixins/initUsersTableMixin';
@@ -33,6 +34,7 @@ export const initMixin = createSingletonMixin(
       initResetPasswordButtonMixin,
       initRemovePasskeyButtonMixin,
       initFilterUsersInputMixin,
+      initFilterMixin,
       initNotificationsMixin,
       initGenericFlowButtonMixin,
       // Last so its init wraps the widget render: it fires the conditions fetch
