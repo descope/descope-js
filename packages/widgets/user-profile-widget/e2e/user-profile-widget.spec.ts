@@ -65,6 +65,12 @@ test.describe('widget', () => {
       }),
     );
 
+    // Default: no components-conditions verdict (hide nothing). Individual tests
+    // in the "components conditions" block override this before navigating.
+    await page.route('**/v1/mgmt/widget/components-state', async (route) =>
+      route.fulfill({ json: { componentsState: {} } }),
+    );
+
     await page.goto(`http://localhost:${widgetPort}`);
     await page.waitForTimeout(STATE_TIMEOUT);
   });
@@ -331,6 +337,53 @@ test.describe('widget', () => {
         }
       });
     }
+  });
+
+  test.describe('components conditions', () => {
+    // Override the server verdict, then reload so the mixin fetches + applies it
+    // during the widget's init/onWidgetRootReady. Routes from the outer
+    // beforeEach (config/root/auth/me/...) persist across the re-navigation.
+    const loadWithVerdict = async (
+      page,
+      fulfill: Parameters<typeof page.route>[1],
+    ) => {
+      await page.route('**/v1/mgmt/widget/components-state', fulfill);
+      await page.goto(`http://localhost:${widgetPort}`);
+      await page.waitForTimeout(STATE_TIMEOUT);
+    };
+
+    const passkey = (page) =>
+      page.locator('descope-user-auth-method[data-id="passkey"]').first();
+
+    test('hides a component when the verdict is "hide"', async ({ page }) => {
+      await loadWithVerdict(page, (route) =>
+        route.fulfill({ json: { componentsState: { passkey: 'hide' } } }),
+      );
+      await expect(passkey(page)).toBeHidden();
+    });
+
+    test('disables a component when the verdict is "disable"', async ({
+      page,
+    }) => {
+      await loadWithVerdict(page, (route) =>
+        route.fulfill({ json: { componentsState: { passkey: 'disable' } } }),
+      );
+      // Applier sets disabled="true" (see applier.ts). Component stays visible.
+      await expect(passkey(page)).toBeVisible();
+      await expect(passkey(page)).toHaveAttribute('disabled', 'true');
+    });
+
+    test('fails open (renders everything) when the endpoint errors', async ({
+      page,
+    }) => {
+      await loadWithVerdict(page, (route) =>
+        route.fulfill({ status: 500, json: {} }),
+      );
+      // A hide verdict is presentation-only, so an endpoint failure must not
+      // break the widget - the component renders normally, nothing hidden.
+      await expect(passkey(page)).toBeVisible();
+      await expect(passkey(page)).not.toHaveAttribute('hidden', '');
+    });
   });
 
   test.describe('generic flow button', () => {

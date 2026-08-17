@@ -1,5 +1,9 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
+import {
+  componentsConditionsMixin,
+  debuggerMixin,
+  themeMixin,
+} from '@descope/sdk-mixins';
 import { initAccessKeysTableMixin } from './initComponentsMixins/initAccessKeysTableMixin';
 import { initActivateAccessKeysButtonMixin } from './initComponentsMixins/initActivateAccessKeysButtonMixin';
 import { initCreateAccessKeyButtonMixin } from './initComponentsMixins/initCreateAccessKeyButtonMixin';
@@ -23,6 +27,9 @@ export const initMixin = createSingletonMixin(
       initDeactivateAccessKeysButtonMixin,
       initRotateAccessKeyButtonMixin,
       initNotificationsMixin,
+      // Last so its init wraps the widget render: it fires the conditions fetch
+      // before render and applies the verdict in onWidgetRootReady.
+      componentsConditionsMixin,
     )(superclass) {
       async init() {
         await super.init?.();
