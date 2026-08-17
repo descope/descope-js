@@ -95,7 +95,7 @@ Object.defineProperty(window.history, 'replaceState', {
 
 describe('debugger', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    jest.useRealTimers();
 
     fetchMock.mockImplementation((url: string) => {
       const res = {
