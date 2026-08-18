@@ -1,7 +1,6 @@
 {
   "name": "@descope/debug-logs",
   "version": "0.1.0",
-  "private": true,
   "author": "Descope Team <info@descope.com>",
   "description": "CloudWatch RUM-based telemetry collector for Descope SDK",
   "main": "dist/cjs/index.cjs.js",
