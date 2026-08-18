@@ -110,6 +110,33 @@ export class DomMutationPlugin implements Plugin {
         attributeOldValue: false,
         characterDataOldValue: false,
       });
+
+      // The observer attaches after first paint, so the initial render's node
+      // additions never arrive as mutations. Emit one baseline snapshot of the
+      // current (post-render) HTML so the DOM state is captured. Same
+      // text-stripping privacy rule as the mutation path (includeText=false
+      // strips rendered copy - OTP codes, emails, error messages).
+      const source = this.includeText
+        ? this.rootElement
+        : stripTextNodes(this.rootElement);
+      const raw = source.innerHTML;
+      const rootElementHTML =
+        raw.length > this.maxHtmlLength
+          ? raw.substring(0, this.maxHtmlLength - 20) + '... [truncated]'
+          : raw;
+      // Only emit when there is actually content to snapshot - an empty root
+      // carries no signal.
+      if (rootElementHTML) {
+        this.context.record('dom_mutation', {
+          addedNodes: 0,
+          removedNodes: 0,
+          attributeChanges: 0,
+          characterDataChanges: 0,
+          timestamp: Date.now(),
+          rootElementHTML,
+          initial: true,
+        });
+      }
     } catch (error) {
       // Fail silently if MutationObserver fails
       console.debug('DOM mutation plugin failed to start:', error);

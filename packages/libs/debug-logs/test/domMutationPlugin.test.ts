@@ -371,6 +371,7 @@ describe('DomMutationPlugin', () => {
         includeText: true,
       });
       plugin.load(mockContext);
+      mockRecord.mockClear(); // discard the initial baseline snapshot
 
       const container = document.getElementById('state-target')!;
       container.innerHTML = '<span>Modified</span>';
@@ -382,6 +383,37 @@ describe('DomMutationPlugin', () => {
       expect(call.rootElementHTML).not.toContain('Original');
     });
 
+    it('emits a baseline snapshot on start when the root already has content', () => {
+      createTestElement('initial-target', '<p>Rendered before observe</p>');
+      plugin = new DomMutationPlugin({
+        rootElement: '#initial-target',
+        throttleMs: 50,
+        includeText: true,
+      });
+      plugin.load(mockContext);
+      // No mutation triggered - the snapshot is emitted synchronously on start,
+      // because the observer attaches after first paint and would otherwise miss
+      // the initial render.
+      const call = mockRecord.mock.calls[0];
+      expect(call[0]).toBe('dom_mutation');
+      expect(call[1]).toMatchObject({
+        initial: true,
+        addedNodes: 0,
+        removedNodes: 0,
+      });
+      expect(call[1].rootElementHTML).toContain('Rendered before observe');
+    });
+
+    it('does not emit a baseline snapshot when the root is empty', () => {
+      createTestElement('empty-initial-target');
+      plugin = new DomMutationPlugin({
+        rootElement: '#empty-initial-target',
+        throttleMs: 50,
+      });
+      plugin.load(mockContext);
+      expect(mockRecord).not.toHaveBeenCalled();
+    });
+
     it('should strip text nodes by default (structure-only snapshot)', async () => {
       createTestElement('strip-target', '<p>Existing text</p>');
       plugin = new DomMutationPlugin({
@@ -389,6 +421,7 @@ describe('DomMutationPlugin', () => {
         throttleMs: 50,
       });
       plugin.load(mockContext);
+      mockRecord.mockClear(); // discard the initial baseline snapshot
 
       const container = document.getElementById('strip-target')!;
       const div = document.createElement('div');
@@ -411,6 +444,7 @@ describe('DomMutationPlugin', () => {
         throttleMs: 50,
       });
       plugin.load(mockContext);
+      mockRecord.mockClear(); // discard the initial baseline snapshot
 
       document
         .getElementById('attr-only-target')!
@@ -654,6 +688,7 @@ describe('DomMutationPlugin', () => {
 
       // Enable again
       plugin.enable();
+      mockRecord.mockClear(); // discard the initial baseline snapshot on re-enable
       container.appendChild(document.createElement('div'));
       await waitFor(100);
       expect(mockRecord).toHaveBeenCalledTimes(1);
