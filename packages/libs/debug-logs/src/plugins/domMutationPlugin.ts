@@ -120,14 +120,7 @@ export class DomMutationPlugin implements Plugin {
       // current (post-render) HTML so the DOM state is captured. Same
       // text-stripping privacy rule as the mutation path (includeText=false
       // strips rendered copy - OTP codes, emails, error messages).
-      const source = this.includeText
-        ? this.rootElement
-        : stripTextNodes(this.rootElement);
-      const raw = source.innerHTML;
-      const rootElementHTML =
-        raw.length > this.maxHtmlLength
-          ? raw.substring(0, this.maxHtmlLength - 20) + '... [truncated]'
-          : raw;
+      const rootElementHTML = this.snapshotHTML();
       // Only emit when there is actually content to snapshot - an empty root
       // carries no signal.
       if (rootElementHTML) {
@@ -145,6 +138,22 @@ export class DomMutationPlugin implements Plugin {
       // Fail silently if MutationObserver fails
       console.debug('DOM mutation plugin failed to start:', error);
     }
+  }
+
+  /**
+   * Serialize the observed root's HTML for a snapshot: strips text nodes unless
+   * includeText is set, then truncates to maxHtmlLength. Shared by the initial
+   * baseline snapshot and the structural-mutation path so the truncation math
+   * can't drift between the two.
+   */
+  private snapshotHTML(): string {
+    const source = this.includeText
+      ? this.rootElement
+      : stripTextNodes(this.rootElement);
+    const raw = source.innerHTML;
+    return raw.length > this.maxHtmlLength
+      ? raw.substring(0, this.maxHtmlLength - 20) + '... [truncated]'
+      : raw;
   }
 
   disable(): void {
@@ -239,17 +248,7 @@ export class DomMutationPlugin implements Plugin {
       // codes, error messages) never reaches RUM. Set config.includeText =
       // true only during a controlled support session.
       const hasStructuralChange = addedNodes > 0 || removedNodes > 0;
-      let rootElementHTML = '';
-      if (hasStructuralChange) {
-        const source = this.includeText
-          ? this.rootElement
-          : stripTextNodes(this.rootElement);
-        const raw = source.innerHTML;
-        rootElementHTML =
-          raw.length > this.maxHtmlLength
-            ? raw.substring(0, this.maxHtmlLength - 20) + '... [truncated]'
-            : raw;
-      }
+      const rootElementHTML = hasStructuralChange ? this.snapshotHTML() : '';
 
       this.context.record('dom_mutation', {
         addedNodes,

@@ -3,6 +3,8 @@ import type {
   Logger,
   TelemetryConfig,
   TelemetryContext,
+  NetworkCaptureConfig,
+  ConsoleLevel,
 } from '../src';
 
 /**
@@ -20,10 +22,13 @@ import type {
  * intended, updating this test is the explicit signal that consumers loading
  * `latest` will be affected.
  *
- * Also exported and part of the contract (verified by these imports compiling):
- * `NetworkCaptureConfig`, `ConsoleLevel`.
+ * `NetworkCaptureConfig` and `ConsoleLevel` are also part of the exported
+ * contract; they are referenced in the config below, so this file fails to
+ * compile if either is removed or renamed.
  */
 describe('public API contract (deployed SDKs load @latest)', () => {
+  const consoleLevels: ConsoleLevel[] = ['error', 'warn'];
+  const network: NetworkCaptureConfig = { maxHeaderLength: 2048 };
   const config: TelemetryConfig = {
     enabled: false, // false -> constructor does not build a RUM client
     rumConfig: {
@@ -31,6 +36,10 @@ describe('public API contract (deployed SDKs load @latest)', () => {
       applicationId: 'app',
       identityPoolId: 'pool',
       region: 'eu-west-1',
+    },
+    capture: {
+      console: { levels: consoleLevels },
+      network,
     },
   };
   const context: TelemetryContext = { projectId: 'P1', flowId: 'sign-in' };
