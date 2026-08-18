@@ -23,9 +23,13 @@ export interface DomMutationPluginConfig {
  * false (the default) so error messages, one-time codes, and displayed
  * emails don't reach RUM.
  */
-function stripTextNodes(root: HTMLElement): HTMLElement {
-  const clone = root.cloneNode(true) as HTMLElement;
-  const walker = document.createTreeWalker(clone, NodeFilter.SHOW_TEXT);
+function stripTextNodes(root: HTMLElement | ShadowRoot): HTMLElement {
+  // root may be a ShadowRoot (the web-component observes its shadow root),
+  // which does not support cloneNode. Re-parse its markup into a detached
+  // container so this works for both elements and shadow roots.
+  const container = document.createElement('div');
+  container.innerHTML = root.innerHTML;
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
   const toRemove: Node[] = [];
   let node = walker.nextNode();
   while (node) {
@@ -33,7 +37,7 @@ function stripTextNodes(root: HTMLElement): HTMLElement {
     node = walker.nextNode();
   }
   toRemove.forEach((n) => n.parentNode?.removeChild(n));
-  return clone;
+  return container;
 }
 
 // AWS RUM has a 256KB limit for the entire event payload
