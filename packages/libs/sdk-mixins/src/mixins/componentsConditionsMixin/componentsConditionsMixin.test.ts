@@ -143,3 +143,82 @@ describe('componentsConditionsMixin lifecycle', () => {
     expect(passkey.style.display).toBe('');
   });
 });
+
+// reevaluateComponentsState is a public hook for the upcoming
+// re-evaluate-on-mutation work. No widget wires it to a mutating flow yet, so
+// it is exercised here directly: it must clear the previously applied verdict,
+// re-fetch, and apply the new one - failing open like the initial apply.
+describe('componentsConditionsMixin reevaluateComponentsState', () => {
+  it('re-fetches and applies the new verdict, clearing the previous one', async () => {
+    const httpClient = {
+      get: jest
+        .fn()
+        .mockResolvedValueOnce(okResponse({ passkey: 'hide' }))
+        .mockResolvedValueOnce(okResponse({ email: 'disable' })),
+    };
+    const { el, contentRootElement } = createWidgetEl({ httpClient });
+    const passkey = addComponent(contentRootElement, 'passkey');
+    const email = addComponent(contentRootElement, 'email');
+
+    await el.init();
+    await el.onWidgetRootReady();
+    expect(passkey.hasAttribute('hidden')).toBe(true);
+
+    await el.reevaluateComponentsState();
+
+    expect(httpClient.get).toHaveBeenCalledTimes(2);
+    // previous verdict cleared
+    expect(passkey.hasAttribute('hidden')).toBe(false);
+    expect(passkey.style.display).toBe('');
+    // new verdict applied
+    expect(email.getAttribute('disabled')).toBe('true');
+  });
+
+  it('clears the previous verdict when the new state is empty', async () => {
+    const httpClient = {
+      get: jest
+        .fn()
+        .mockResolvedValueOnce(okResponse({ passkey: 'hide' }))
+        .mockResolvedValueOnce(okResponse({})),
+    };
+    const { el, contentRootElement } = createWidgetEl({ httpClient });
+    const passkey = addComponent(contentRootElement, 'passkey');
+
+    await el.init();
+    await el.onWidgetRootReady();
+    expect(passkey.hasAttribute('hidden')).toBe(true);
+
+    await el.reevaluateComponentsState();
+
+    expect(passkey.hasAttribute('hidden')).toBe(false);
+    expect(passkey.style.display).toBe('');
+  });
+
+  it('fails open when the re-fetch rejects (clears old verdict, no throw)', async () => {
+    const httpClient = {
+      get: jest
+        .fn()
+        .mockResolvedValueOnce(okResponse({ passkey: 'hide' }))
+        .mockRejectedValueOnce(new Error('network')),
+    };
+    const { el, contentRootElement } = createWidgetEl({ httpClient });
+    const passkey = addComponent(contentRootElement, 'passkey');
+
+    await el.init();
+    await el.onWidgetRootReady();
+    expect(passkey.hasAttribute('hidden')).toBe(true);
+
+    await expect(el.reevaluateComponentsState()).resolves.not.toThrow();
+
+    expect(passkey.hasAttribute('hidden')).toBe(false);
+    expect(passkey.style.display).toBe('');
+  });
+
+  it('throws when the sdk does not expose httpClient', async () => {
+    const { el } = createWidgetEl({ withApi: false });
+
+    await expect(el.reevaluateComponentsState()).rejects.toThrow(
+      /must expose `httpClient`/,
+    );
+  });
+});
