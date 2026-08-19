@@ -197,6 +197,7 @@ describe('TelemetryManager Integration', () => {
 
       // Re-enable
       manager.enable();
+      mockRecord.mockClear(); // discard the DOM plugin's initial baseline snapshot
       console.log('Re-enabled');
       expect(mockRecord).toHaveBeenCalledTimes(1);
     });

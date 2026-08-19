@@ -222,6 +222,27 @@ warning banner above the form and logs a `console.warn` to DevTools.
 - **Need to reuse after shutdown**: Instantiate a new `TelemetryManager`. A
   shutdown instance intentionally cannot be restarted.
 
+## Backward compatibility (important)
+
+The web-component SDK loads `@descope/debug-logs` from the CDN **at runtime**,
+pinned to `latest` (`config.version || 'latest'`). This is intentional - it lets
+us adapt telemetry logic without redeploying every SDK. The consequence: **a new
+release of this package is picked up immediately by already-deployed SDKs.**
+
+So the public API must stay backward compatible across releases:
+
+- Do not remove or rename the exported `TelemetryManager` methods
+  (`isReady`, `shutdown`, `enable`, `disable`, `updateContext`, `getRumClient`),
+  change the constructor shape `(config, context, logger?)`, or drop an exported
+  type.
+- Prefer additive changes (new optional config, new methods).
+- Recorded event shapes are additive too - adding fields is safe; removing or
+  renaming fields breaks consumers of the RUM data.
+
+`test/apiContract.test.ts` asserts this surface. If it fails, a deployed SDK
+loading `latest` will be affected - change it only as a deliberate, coordinated
+decision.
+
 ## License
 
 MIT License. See the root repository `LICENSE` file for details.
