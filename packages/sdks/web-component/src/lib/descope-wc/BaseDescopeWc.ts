@@ -367,14 +367,24 @@ class BaseDescopeWc extends BaseClass {
 
     this.sdk = createSdk(config);
 
+    // Position of the `input` argument in core-js-sdk's flow calls:
+    //   flow.start(flowId, options, conditionInteractionId, interactionId, componentsVersion, flowVersions, input, isCustomScreen)
+    //   flow.next(executionId, stepId, interactionId, version, componentsVersion, input, isCustomScreen)
+    // We rely on these positions staying fixed - core-js-sdk keeps them stable
+    // for backwards compatibility, and new params are only appended at the end
+    const flowInputArgIdx = { start: 6, next: 5 };
+
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
       const origFn = this.sdk.flow[key];
       const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
+        const callArgs = [...args] as Parameters<typeof origFn>;
+        const inputIdx = flowInputArgIdx[key];
+        callArgs[inputIdx] = this.#injectSessionJwt(callArgs[inputIdx]);
         try {
-          const resp = await fnWithRetry(...args);
+          const resp = await fnWithRetry(...callArgs);
           return resp;
         } catch (e) {
           this.logger.error(`Error in sdk flow ${key} function`, e);
@@ -388,49 +398,6 @@ class BaseDescopeWc extends BaseClass {
         }
       };
     });
-
-    // inject the session JWT into the `input` argument of flow start/next.
-    // Parameter lists mirror core-js-sdk's signatures so `input` is named
-    // explicitly; any params added later flow through untouched via rest
-    const { start, next } = this.sdk.flow;
-    this.sdk.flow.start = (
-      flowId,
-      options,
-      conditionInteractionId,
-      interactionId,
-      componentsVersion,
-      flowVersions,
-      input,
-      ...rest
-    ) =>
-      start(
-        flowId,
-        options,
-        conditionInteractionId,
-        interactionId,
-        componentsVersion,
-        flowVersions,
-        this.#injectSessionJwt(input),
-        ...rest,
-      );
-    this.sdk.flow.next = (
-      executionId,
-      stepId,
-      interactionId,
-      version,
-      componentsVersion,
-      input,
-      ...rest
-    ) =>
-      next(
-        executionId,
-        stepId,
-        interactionId,
-        version,
-        componentsVersion,
-        this.#injectSessionJwt(input),
-        ...rest,
-      );
   }
 
   // adds the current session JWT to a flow request input (opt-in via the
