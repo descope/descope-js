@@ -367,32 +367,14 @@ class BaseDescopeWc extends BaseClass {
 
     this.sdk = createSdk(config);
 
-    // arg position of the input parameter in core-js-sdk flow.start / flow.next
-    const flowInputArgIdx = { start: 6, next: 5 };
-
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
       const origFn = this.sdk.flow[key];
       const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
-        const callArgs = [...args] as Parameters<typeof origFn>;
-        // opt-in: send the current session JWT on flow requests so the flow can
-        // read its validated claims via the sessionJwtClaims context key.
-        // The token is read via the standalone helper - the wrapping SDKs (e.g. react-sdk)
-        // override the inner sdk with persistTokens: false, so the instance getter is absent
-        if (this.sendSessionToken) {
-          const sessionToken = getSessionToken?.(this.storagePrefix);
-          if (sessionToken) {
-            const idx = flowInputArgIdx[key];
-            callArgs[idx] = {
-              ...(callArgs[idx] || {}),
-              sessionJwt: sessionToken,
-            };
-          }
-        }
         try {
-          const resp = await fnWithRetry(...callArgs);
+          const resp = await fnWithRetry(...args);
           return resp;
         } catch (e) {
           this.logger.error(`Error in sdk flow ${key} function`, e);
@@ -406,6 +388,63 @@ class BaseDescopeWc extends BaseClass {
         }
       };
     });
+
+    // inject the session JWT into the `input` argument of flow start/next.
+    // Parameter lists mirror core-js-sdk's signatures so `input` is named
+    // explicitly; any params added later flow through untouched via rest
+    const { start, next } = this.sdk.flow;
+    this.sdk.flow.start = (
+      flowId,
+      options,
+      conditionInteractionId,
+      interactionId,
+      componentsVersion,
+      flowVersions,
+      input,
+      ...rest
+    ) =>
+      start(
+        flowId,
+        options,
+        conditionInteractionId,
+        interactionId,
+        componentsVersion,
+        flowVersions,
+        this.#injectSessionJwt(input),
+        ...rest,
+      );
+    this.sdk.flow.next = (
+      executionId,
+      stepId,
+      interactionId,
+      version,
+      componentsVersion,
+      input,
+      ...rest
+    ) =>
+      next(
+        executionId,
+        stepId,
+        interactionId,
+        version,
+        componentsVersion,
+        this.#injectSessionJwt(input),
+        ...rest,
+      );
+  }
+
+  // adds the current session JWT to a flow request input (opt-in via the
+  // send-session-token attribute), so the flow can read its validated claims
+  // through the sessionJwtClaims context key. The token is read via the
+  // standalone helper - the wrapping SDKs (e.g. react-sdk) override the inner
+  // sdk with persistTokens: false, so the instance getter is absent
+  #injectSessionJwt(
+    input?: Record<string, any>,
+  ): Record<string, any> | undefined {
+    if (!this.sendSessionToken) return input;
+    const sessionToken = getSessionToken?.(this.storagePrefix);
+    if (!sessionToken) return input;
+    return { ...(input || {}), sessionJwt: sessionToken };
   }
 
   async #onFlowChange(
