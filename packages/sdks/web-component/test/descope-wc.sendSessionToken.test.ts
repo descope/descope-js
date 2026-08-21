@@ -15,8 +15,8 @@ import { waitFor } from '@testing-library/dom';
 
 import '../src/lib/descope-wc';
 
-// arg position of the input parameter in core-js-sdk flow.start
-const START_INPUT_ARG_IDX = 6;
+// arg position of the options parameter in core-js-sdk flow.start
+const START_OPTIONS_ARG_IDX = 1;
 
 describe('web-component', () => {
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('web-component', () => {
       await waitFor(() => expect(startMock).toHaveBeenCalled(), {
         timeout: WAIT_TIMEOUT,
       });
-      expect(startMock.mock.calls[0][START_INPUT_ARG_IDX]).toEqual(
+      expect(startMock.mock.calls[0][START_OPTIONS_ARG_IDX]).toEqual(
         expect.objectContaining({ sessionJwt: 'the-session-jwt' }),
       );
     });
@@ -52,7 +52,7 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
       expect(
-        startMock.mock.calls[0][START_INPUT_ARG_IDX]?.sessionJwt,
+        startMock.mock.calls[0][START_OPTIONS_ARG_IDX]?.sessionJwt,
       ).toBeUndefined();
     });
 
@@ -66,7 +66,7 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
       expect(
-        startMock.mock.calls[0][START_INPUT_ARG_IDX]?.sessionJwt,
+        startMock.mock.calls[0][START_OPTIONS_ARG_IDX]?.sessionJwt,
       ).toBeUndefined();
     });
   });

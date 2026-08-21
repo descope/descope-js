@@ -367,12 +367,12 @@ class BaseDescopeWc extends BaseClass {
 
     this.sdk = createSdk(config);
 
-    // Position of the `input` argument in core-js-sdk's flow calls:
+    // Position of the `options` argument in core-js-sdk's flow calls:
     //   flow.start(flowId, options, conditionInteractionId, interactionId, componentsVersion, flowVersions, input, isCustomScreen)
-    //   flow.next(executionId, stepId, interactionId, version, componentsVersion, input, isCustomScreen)
+    //   flow.next(executionId, stepId, interactionId, version, componentsVersion, input, isCustomScreen, options)
     // We rely on these positions staying fixed - core-js-sdk keeps them stable
     // for backwards compatibility, and new params are only appended at the end
-    const flowInputArgIdx = { start: 6, next: 5 };
+    const flowOptionsArgIdx = { start: 1, next: 7 };
 
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
@@ -381,8 +381,11 @@ class BaseDescopeWc extends BaseClass {
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
         const callArgs = [...args] as Parameters<typeof origFn>;
-        const inputIdx = flowInputArgIdx[key];
-        callArgs[inputIdx] = this.#injectSessionJwt(callArgs[inputIdx]);
+        const optionsIdx = flowOptionsArgIdx[key];
+        const options = this.#injectSessionJwt(callArgs[optionsIdx]);
+        if (options !== undefined) {
+          callArgs[optionsIdx] = options;
+        }
         try {
           const resp = await fnWithRetry(...callArgs);
           return resp;
@@ -400,18 +403,18 @@ class BaseDescopeWc extends BaseClass {
     });
   }
 
-  // adds the current session JWT to a flow request input (opt-in via the
+  // adds the current session JWT to a flow request options (opt-in via the
   // send-session-token attribute), so the flow can read its validated claims
   // through the sessionJwtClaims context key. The token is read via the
   // standalone helper - the wrapping SDKs (e.g. react-sdk) override the inner
   // sdk with persistTokens: false, so the instance getter is absent
   #injectSessionJwt(
-    input?: Record<string, any>,
+    options?: Record<string, any>,
   ): Record<string, any> | undefined {
-    if (!this.sendSessionToken) return input;
+    if (!this.sendSessionToken) return options;
     const sessionToken = getSessionToken?.(this.storagePrefix);
-    if (!sessionToken) return input;
-    return { ...(input || {}), sessionJwt: sessionToken };
+    if (!sessionToken) return options;
+    return { ...(options || {}), sessionJwt: sessionToken };
   }
 
   async #onFlowChange(
