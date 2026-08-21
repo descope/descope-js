@@ -14,9 +14,15 @@ jest.mock('@descope/web-js-sdk', () => ({
   createSdk: jest.fn(),
   clearFingerprintData: jest.fn(),
   ensureFingerprintIds: jest.fn(),
+  getSessionToken: jest.fn(),
 }));
 
 export { createSdk, ensureFingerprintIds };
+
+// eslint-disable-next-line import/first
+import { getSessionToken } from '@descope/web-js-sdk';
+
+export const getSessionTokenMock = getSessionToken as jest.Mock;
 
 export const WAIT_TIMEOUT = 25000;
 

@@ -85,6 +85,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       autoFocus,
       validateOnBlur,
       restartOnError,
+      sendSessionToken,
       errorTransformer,
       styleId,
       onScreenUpdate,
@@ -213,6 +214,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'outbound-app-scopes.attr': outboundAppScopes,
               'popup-origin.attr': popupOrigin,
               'store-last-authenticated-user.attr': storeLastAuthenticatedUser,
+              'send-session-token.attr': sendSessionToken,
               'refreshCookieName.attr': refreshCookieName,
               'dismiss-screen-error-on-input.attr': dismissScreenErrorOnInput,
               // props

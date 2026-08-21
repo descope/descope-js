@@ -7,7 +7,7 @@ import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { telemetryMixin } from '@descope/sdk-mixins/telemetry-mixin';
-import { createSdk } from '@descope/web-js-sdk';
+import { createSdk, getSessionToken } from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
@@ -82,6 +82,7 @@ class BaseDescopeWc extends BaseClass {
       'refresh-cookie-name',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
+      'send-session-token',
       'style-id',
     ];
   }
@@ -248,6 +249,10 @@ class BaseDescopeWc extends BaseClass {
     return this.getAttribute('storage-prefix') || '';
   }
 
+  get sendSessionToken() {
+    return this.getAttribute('send-session-token') === 'true';
+  }
+
   get preview() {
     return !!this.getAttribute('preview');
   }
@@ -317,6 +322,7 @@ class BaseDescopeWc extends BaseClass {
       'form',
       'client',
       'validate-on-blur',
+      'send-session-token',
       'style-id',
       'outbound-app-id',
       'outbound-app-scopes',
@@ -361,12 +367,24 @@ class BaseDescopeWc extends BaseClass {
 
     this.sdk = createSdk(config);
 
+    // arg position of the input parameter in core-js-sdk flow.start / flow.next
+    const flowInputArgIdx = { start: 6, next: 5 };
+
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
       const origFn = this.sdk.flow[key];
       const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
+        // opt-in: send the current session JWT on flow requests so the flow can
+        // read its validated claims via the sessionJwtClaims context key
+        // read the token via the standalone helper - the wrapping SDKs (e.g. react-sdk)
+        // override the inner sdk with persistTokens: false, so the instance getter is absent
+        const sessionToken = getSessionToken(this.storagePrefix);
+        if (this.sendSessionToken && sessionToken) {
+          const idx = flowInputArgIdx[key];
+          args[idx] = { ...(args[idx] || {}), sessionJwt: sessionToken };
+        }
         try {
           const resp = await fnWithRetry(...args);
           return resp;
