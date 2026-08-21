@@ -376,17 +376,21 @@ class BaseDescopeWc extends BaseClass {
       const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
+        const callArgs = [...args] as Parameters<typeof origFn>;
         // opt-in: send the current session JWT on flow requests so the flow can
-        // read its validated claims via the sessionJwtClaims context key
-        // read the token via the standalone helper - the wrapping SDKs (e.g. react-sdk)
+        // read its validated claims via the sessionJwtClaims context key.
+        // The token is read via the standalone helper - the wrapping SDKs (e.g. react-sdk)
         // override the inner sdk with persistTokens: false, so the instance getter is absent
         const sessionToken = getSessionToken(this.storagePrefix);
         if (this.sendSessionToken && sessionToken) {
           const idx = flowInputArgIdx[key];
-          args[idx] = { ...(args[idx] || {}), sessionJwt: sessionToken };
+          callArgs[idx] = {
+            ...(callArgs[idx] || {}),
+            sessionJwt: sessionToken,
+          };
         }
         try {
-          const resp = await fnWithRetry(...args);
+          const resp = await fnWithRetry(...callArgs);
           return resp;
         } catch (e) {
           this.logger.error(`Error in sdk flow ${key} function`, e);

@@ -1,7 +1,11 @@
 /* eslint-disable max-classes-per-file */
 // @ts-nocheck
 
-import { createSdk, ensureFingerprintIds } from '@descope/web-js-sdk';
+import {
+  createSdk,
+  ensureFingerprintIds,
+  getSessionToken,
+} from '@descope/web-js-sdk';
 import '@testing-library/jest-dom';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 import { resetCustomStorage } from '../src/lib/helpers/storage';
@@ -18,9 +22,6 @@ jest.mock('@descope/web-js-sdk', () => ({
 }));
 
 export { createSdk, ensureFingerprintIds };
-
-// eslint-disable-next-line import/first
-import { getSessionToken } from '@descope/web-js-sdk';
 
 export const getSessionTokenMock = getSessionToken as jest.Mock;
 
