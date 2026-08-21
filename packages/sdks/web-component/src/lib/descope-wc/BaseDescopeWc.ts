@@ -381,13 +381,15 @@ class BaseDescopeWc extends BaseClass {
         // read its validated claims via the sessionJwtClaims context key.
         // The token is read via the standalone helper - the wrapping SDKs (e.g. react-sdk)
         // override the inner sdk with persistTokens: false, so the instance getter is absent
-        const sessionToken = getSessionToken(this.storagePrefix);
-        if (this.sendSessionToken && sessionToken) {
-          const idx = flowInputArgIdx[key];
-          callArgs[idx] = {
-            ...(callArgs[idx] || {}),
-            sessionJwt: sessionToken,
-          };
+        if (this.sendSessionToken) {
+          const sessionToken = getSessionToken?.(this.storagePrefix);
+          if (sessionToken) {
+            const idx = flowInputArgIdx[key];
+            callArgs[idx] = {
+              ...(callArgs[idx] || {}),
+              sessionJwt: sessionToken,
+            };
+          }
         }
         try {
           const resp = await fnWithRetry(...callArgs);
