@@ -1,5 +1,9 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
+import {
+  componentsConditionsMixin,
+  debuggerMixin,
+  themeMixin,
+} from '@descope/sdk-mixins';
 import { flowRedirectUrlMixin } from '../flowRedirectUrlMixin';
 import { initMultiSsoConfigurationsMixin } from './initComponentsMixins/initMultiSsoConfigurationsMixin';
 import { initTenantAdminLinkSSOMixin } from './initComponentsMixins/initTenantAdminLinkSSOMixin';
@@ -29,6 +33,9 @@ export const initMixin = createSingletonMixin(
       initTenantPasswordPolicyUserAuthMethodMixin,
       initTenantSessionSettingsUserAuthMethodMixin,
       initMultiSsoConfigurationsMixin,
+      // Last so its init wraps the widget render: it fires the conditions fetch
+      // before render and applies the verdict in onWidgetRootReady.
+      componentsConditionsMixin,
     )(superclass) {
       async init() {
         await super.init?.();

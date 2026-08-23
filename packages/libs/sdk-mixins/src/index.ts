@@ -37,3 +37,4 @@ export * from './mixins/injectStyleMixin';
 export * from './mixins/cspNonceMixin';
 export * from './mixins/telemetryMixin';
 export * from './mixins/flowInputMixin';
+export * from './mixins/componentsConditionsMixin';

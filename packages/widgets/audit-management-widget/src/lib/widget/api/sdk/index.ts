@@ -1,4 +1,5 @@
 import createWebSdk from '@descope/web-js-sdk';
+import type { ConditionsHttpClient } from '@descope/sdk-mixins';
 import { createAuditSdk } from './createAuditSdk';
 
 declare const BUILD_VERSION: string;
@@ -21,6 +22,9 @@ export const createSdk = (
 
   return {
     audit: createAuditSdk({ httpClient: webSdk.httpClient, tenant, mock }),
+    // Exposed (narrowed to a minimal type) so the shared conditions mixin reuses
+    // this same webSdk instance for its fetch instead of creating its own.
+    httpClient: webSdk.httpClient as ConditionsHttpClient,
   };
 };
 

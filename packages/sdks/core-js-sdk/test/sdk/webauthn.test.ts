@@ -452,7 +452,9 @@ describe('webauthn', () => {
       });
 
       it('should not throw when origin is empty', () => {
-        expect(() => sdk.webauthn.signUpOrIn.start('loginId', '')).not.toThrow();
+        expect(() =>
+          sdk.webauthn.signUpOrIn.start('loginId', ''),
+        ).not.toThrow();
       });
 
       it('should send the correct request', () => {
