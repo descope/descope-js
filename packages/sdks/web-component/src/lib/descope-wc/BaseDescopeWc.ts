@@ -7,7 +7,8 @@ import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { telemetryMixin } from '@descope/sdk-mixins/telemetry-mixin';
-import { createSdk } from '@descope/web-js-sdk';
+import { createSdk, getSessionToken } from '@descope/web-js-sdk';
+import type { FlowNextOptions, FlowStartOptions } from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
@@ -82,6 +83,7 @@ class BaseDescopeWc extends BaseClass {
       'refresh-cookie-name',
       'keep-last-authenticated-user-after-logout',
       'validate-on-blur',
+      'send-session-token',
       'style-id',
     ];
   }
@@ -248,6 +250,10 @@ class BaseDescopeWc extends BaseClass {
     return this.getAttribute('storage-prefix') || '';
   }
 
+  get sendSessionToken() {
+    return this.getAttribute('send-session-token') === 'true';
+  }
+
   get preview() {
     return !!this.getAttribute('preview');
   }
@@ -317,6 +323,7 @@ class BaseDescopeWc extends BaseClass {
       'form',
       'client',
       'validate-on-blur',
+      'send-session-token',
       'style-id',
       'outbound-app-id',
       'outbound-app-scopes',
@@ -361,14 +368,27 @@ class BaseDescopeWc extends BaseClass {
 
     this.sdk = createSdk(config);
 
+    // Position of the `options` argument in core-js-sdk's flow calls:
+    //   flow.start(flowId, options, conditionInteractionId, interactionId, componentsVersion, flowVersions, input, isCustomScreen)
+    //   flow.next(executionId, stepId, interactionId, version, componentsVersion, input, isCustomScreen, options)
+    // We rely on these positions staying fixed - core-js-sdk keeps them stable
+    // for backwards compatibility, and new params are only appended at the end
+    const flowOptionsArgIdx = { start: 1, next: 7 };
+
     // we are wrapping the next & start function so we can indicate the request status
     ['start', 'next'].forEach((key) => {
       const origFn = this.sdk.flow[key];
       const fnWithRetry = withRetry(origFn, 1000, 3);
 
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
+        const callArgs = [...args] as Parameters<typeof origFn>;
+        const optionsIdx = flowOptionsArgIdx[key];
+        const options = this.#injectSessionJwt(callArgs[optionsIdx]);
+        if (options !== undefined) {
+          callArgs[optionsIdx] = options;
+        }
         try {
-          const resp = await fnWithRetry(...args);
+          const resp = await fnWithRetry(...callArgs);
           return resp;
         } catch (e) {
           this.logger.error(`Error in sdk flow ${key} function`, e);
@@ -382,6 +402,21 @@ class BaseDescopeWc extends BaseClass {
         }
       };
     });
+  }
+
+  // adds the current session JWT to a flow request options (opt-in via the
+  // send-session-token attribute), so the flow can read its validated claims
+  // through the sessionJwtClaims context key. Accepts only the flow start/next
+  // options types and preserves the given type on return. The token is read
+  // via the standalone helper - the wrapping SDKs (e.g. react-sdk) override
+  // the inner sdk with persistTokens: false, so the instance getter is absent
+  #injectSessionJwt<T extends FlowStartOptions | FlowNextOptions>(
+    options?: T,
+  ): T | undefined {
+    if (!this.sendSessionToken) return options;
+    const sessionToken = getSessionToken?.(this.storagePrefix);
+    if (!sessionToken) return options;
+    return { ...(options ?? {}), sessionJwt: sessionToken } as T;
   }
 
   async #onFlowChange(

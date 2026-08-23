@@ -45,6 +45,7 @@ import OverrideThemes from '@descope/web-component';
       [attr.auto-focus]="autoFocus"
       [attr.validate-on-blur]="validateOnBlur"
       [attr.restart-on-error]="restartOnError"
+      [attr.send-session-token]="sendSessionToken"
       [attr.debug]="debug"
       [attr.style-id]="styleId"
       [attr.theme-override]="themeOverride"
@@ -102,6 +103,7 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() autoFocus: true | false | 'skipFirstScreen';
   @Input() validateOnBlur: boolean;
   @Input() restartOnError: boolean;
+  @Input() sendSessionToken: boolean;
 
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;

@@ -48,6 +48,8 @@ export type {
   UserHistoryResponse,
   UserResponse,
 } from './sdk/types';
+export type { Options as FlowStartOptions } from './sdk/types';
+export type { NextOptions as FlowNextOptions } from './sdk/flow/types';
 export * from './utils';
 export type { SdkFnWrapper } from './utils';
 export type {
