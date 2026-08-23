@@ -3,6 +3,7 @@ import createWebSdk from '@descope/web-js-sdk';
 import { createUserSdk } from './createUserSdk';
 import { createDeviceSdk } from './createDeviceSdk';
 import { createPasskeySdk } from './createPasskeySdk';
+import type { ConditionsHttpClient } from '@descope/sdk-mixins';
 
 declare const BUILD_VERSION: string;
 
@@ -34,6 +35,9 @@ export const createSdk = (
     passkey: {
       ...createPasskeySdk({ httpClient: webSdk.httpClient, mock }),
     },
+    // Exposed (narrowed to a minimal type) so the shared conditions mixin reuses
+    // this same webSdk instance for its fetch instead of creating its own.
+    httpClient: webSdk.httpClient as ConditionsHttpClient,
   };
 };
 

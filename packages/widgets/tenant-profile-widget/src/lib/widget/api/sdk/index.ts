@@ -1,5 +1,6 @@
 import '@descope/core-js-sdk';
 import createWebSdk from '@descope/web-js-sdk';
+import type { ConditionsHttpClient } from '@descope/sdk-mixins';
 import { createTenantSdk } from './createTenantSdk';
 import { createUserSdk } from './createUserSdk';
 
@@ -28,6 +29,9 @@ export const createSdk = (
       tenantId: tenant,
       mock,
     }),
+    // Exposed (narrowed to a minimal type) so the shared conditions mixin reuses
+    // this same webSdk instance for its fetch instead of creating its own.
+    httpClient: webSdk.httpClient as ConditionsHttpClient,
   };
 };
 

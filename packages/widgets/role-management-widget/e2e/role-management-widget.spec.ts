@@ -94,6 +94,13 @@ test.describe('widget', () => {
       }),
     );
 
+    // Default: no components-conditions verdict (hide nothing). The mixin
+    // now fetches this endpoint on init; stub it so the widget doesn't make
+    // a live call. (Shuni #1463)
+    await page.route('**/v1/mgmt/widget/components-state', async (route) =>
+      route.fulfill({ json: { componentsState: {} } }),
+    );
+
     await page.goto(`http://localhost:${widgetPort}`, {
       waitUntil: 'networkidle',
     });
