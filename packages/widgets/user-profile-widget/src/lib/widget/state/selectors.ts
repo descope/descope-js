@@ -63,7 +63,9 @@ export const getHasTotp = createSelector(getMe, (me) => me.TOTP);
 
 export const getUserCustomAttrs = createSelector(
   getMe,
-  (me) => me.customAttributes as Record<string, any>,
+  // Default to an empty object: a user with no custom attributes has an
+  // undefined `customAttributes`, and consumers index into the result.
+  (me) => (me.customAttributes ?? {}) as Record<string, any>,
 );
 
 export const getUserBuiltinAttrs = createSelector(getMe, (me) => ({
