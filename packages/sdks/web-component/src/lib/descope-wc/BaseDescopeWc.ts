@@ -8,6 +8,7 @@ import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { telemetryMixin } from '@descope/sdk-mixins/telemetry-mixin';
 import { createSdk, getSessionToken } from '@descope/web-js-sdk';
+import type { FlowNextOptions, FlowStartOptions } from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
   ELEMENTS_TO_IGNORE_ENTER_KEY_ON,
@@ -382,7 +383,9 @@ class BaseDescopeWc extends BaseClass {
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
         const callArgs = [...args] as Parameters<typeof origFn>;
         const optionsIdx = flowOptionsArgIdx[key];
-        const options = this.#injectSessionJwt(callArgs[optionsIdx]);
+        const options = this.#injectSessionJwt(
+          callArgs[optionsIdx] as FlowStartOptions | FlowNextOptions,
+        );
         if (options !== undefined) {
           callArgs[optionsIdx] = options;
         }
@@ -405,16 +408,17 @@ class BaseDescopeWc extends BaseClass {
 
   // adds the current session JWT to a flow request options (opt-in via the
   // send-session-token attribute), so the flow can read its validated claims
-  // through the sessionJwtClaims context key. The token is read via the
-  // standalone helper - the wrapping SDKs (e.g. react-sdk) override the inner
-  // sdk with persistTokens: false, so the instance getter is absent
-  #injectSessionJwt(
-    options?: Record<string, any>,
-  ): Record<string, any> | undefined {
+  // through the sessionJwtClaims context key. Accepts only the flow start/next
+  // options types and preserves the given type on return. The token is read
+  // via the standalone helper - the wrapping SDKs (e.g. react-sdk) override
+  // the inner sdk with persistTokens: false, so the instance getter is absent
+  #injectSessionJwt<T extends FlowStartOptions | FlowNextOptions>(
+    options?: T,
+  ): T | undefined {
     if (!this.sendSessionToken) return options;
     const sessionToken = getSessionToken?.(this.storagePrefix);
     if (!sessionToken) return options;
-    return { ...(options || {}), sessionJwt: sessionToken };
+    return { ...(options ?? {}), sessionJwt: sessionToken } as T;
   }
 
   async #onFlowChange(
