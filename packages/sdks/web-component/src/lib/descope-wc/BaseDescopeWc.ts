@@ -383,9 +383,7 @@ class BaseDescopeWc extends BaseClass {
       this.sdk.flow[key] = async (...args: Parameters<typeof origFn>) => {
         const callArgs = [...args] as Parameters<typeof origFn>;
         const optionsIdx = flowOptionsArgIdx[key];
-        const options = this.#injectSessionJwt(
-          callArgs[optionsIdx] as FlowStartOptions | FlowNextOptions,
-        );
+        const options = this.#injectSessionJwt(callArgs[optionsIdx]);
         if (options !== undefined) {
           callArgs[optionsIdx] = options;
         }
