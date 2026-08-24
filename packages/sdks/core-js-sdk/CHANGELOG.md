@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.70.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.69.0...core-js-sdk-2.70.0) (2026-08-24)
+
+
+### Features
+
+* **web-component:** opt-in send-session-token to expose session JWT claims to flows ([#1467](https://github.com/descope/descope-js/issues/1467)) RELEASE ([369d986](https://github.com/descope/descope-js/commit/369d986cbb895f268e924c9c782cf97b6d63e695))
+* **widgets:** componentsConditionsMixin to apply server condition verdicts RELEASE ([#1463](https://github.com/descope/descope-js/issues/1463)) ([68634d1](https://github.com/descope/descope-js/commit/68634d17097e9687c96d088ab1ad7cecdd889cbb)), closes [descope/etc#17289](https://github.com/descope/etc/issues/17289)
+
 ## [2.69.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.68.0...core-js-sdk-2.69.0) (2026-08-17)
 
 
