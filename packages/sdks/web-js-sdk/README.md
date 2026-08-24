@@ -113,7 +113,7 @@ const sessionToken = sdk.getSessionToken();
 
 Descope also supports OIDC login. To enable OIDC login, pass `oidcConfig` attribute to the SDK initialization. The `oidcConfig` attribute is either a boolean or a configuration object. If you pass `oidcConfig: true`, the SDK will use the Descope OIDC default application
 
-<!-- readme-check: skip two alternative initializations shown side by side, so `sdk` is declared twice -->
+Initialize the SDK with the default OIDC application:
 
 ```js
 // Initialize the SDK with OIDC
@@ -121,7 +121,11 @@ const sdk = descopeSdk({
   projectId: 'xxx',
   oidcConfig: true,
 });
+```
 
+Or initialize it with a custom OIDC application instead:
+
+```js
 // Initialize the SDK with custom OIDC application
 const sdk = descopeSdk({
   projectId: 'xxx',
