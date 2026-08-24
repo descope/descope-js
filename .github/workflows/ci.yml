@@ -86,6 +86,9 @@ jobs:
       - name: License validation
         run: pnpm run licenseCheck
 
+      - name: README code samples
+        run: pnpm run readmeCheck
+
       - name: Build
         run: pnpm run build
 
