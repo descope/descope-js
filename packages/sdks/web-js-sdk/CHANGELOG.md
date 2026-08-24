@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.52.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.6...web-js-sdk-1.52.0) (2026-08-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.70.0`
+
+### Features
+
+* **web-component:** opt-in send-session-token to expose session JWT claims to flows ([#1467](https://github.com/descope/descope-js/issues/1467)) RELEASE ([369d986](https://github.com/descope/descope-js/commit/369d986cbb895f268e924c9c782cf97b6d63e695))
+
 ## [1.51.6](https://github.com/descope/descope-js/compare/web-js-sdk-1.51.5...web-js-sdk-1.51.6) (2026-08-17)
 
 ### Dependency Updates
