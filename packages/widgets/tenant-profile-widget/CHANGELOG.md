@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.14...tenant-profile-widget-0.9.0) (2026-08-24)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.70.0`
+* `web-js-sdk` updated to version `1.52.0`
+* `web-component` updated to version `4.3.0`
+* `sdk-mixins` updated to version `0.26.0`
+
+### Features
+
+* **widgets:** componentsConditionsMixin to apply server condition verdicts RELEASE ([#1463](https://github.com/descope/descope-js/issues/1463)) ([68634d1](https://github.com/descope/descope-js/commit/68634d17097e9687c96d088ab1ad7cecdd889cbb)), closes [descope/etc#17289](https://github.com/descope/etc/issues/17289)
+
 ## [0.8.14](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.8.13...tenant-profile-widget-0.8.14) (2026-08-17)
 
 ### Dependency Updates
