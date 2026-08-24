@@ -392,7 +392,7 @@ describe('web-component', () => {
       delete (window as any).descopeBridge;
     });
 
-    it('Exposes bridgeVersion = 3 as both an instance field and a static field', async () => {
+    it('Exposes bridgeVersion = 4 as both an instance field and a static field', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
 
       // legacy bridges omit registerFlow/unregisterFlow; ensure that path still works
@@ -408,9 +408,9 @@ describe('web-component', () => {
         },
       );
 
-      expect(wcEle.bridgeVersion).toBe(3);
+      expect(wcEle.bridgeVersion).toBe(4);
       // static accessor for natives that read the version from the constructor
-      expect((wcEle.constructor as any).bridgeVersion).toBe(3);
+      expect((wcEle.constructor as any).bridgeVersion).toBe(4);
     });
 
     it('Calls descopeBridge.registerFlow(this) on connect with the wc instance', async () => {

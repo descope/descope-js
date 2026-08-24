@@ -76,6 +76,28 @@ describe('web-component', () => {
       ).toBeUndefined();
     });
 
+    it('sends the native bridge session jwt even without the attribute', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse());
+      getSessionTokenMock.mockReturnValue('');
+
+      document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      const wc = document.getElementsByTagName('descope-wc')[0] as any;
+      wc.nativeOptions = {
+        platform: 'android',
+        bridgeVersion: 4,
+        sessionJwt: 'native-session-jwt',
+      };
+      await wc.sdk.flow.next('exec-id', 'step-id', 'interaction-id');
+      expect(nextMock.mock.calls[0][NEXT_OPTIONS_ARG_IDX]).toEqual(
+        expect.objectContaining({ sessionJwt: 'native-session-jwt' }),
+      );
+    });
+
     it('does not add the key when no session token exists', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       getSessionTokenMock.mockReturnValue('');
