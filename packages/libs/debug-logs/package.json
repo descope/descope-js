@@ -5,14 +5,14 @@
   "description": "CloudWatch RUM-based telemetry collector for Descope SDK",
   "main": "dist/cjs/index.cjs.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "exports": {
     "require": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/cjs/types/index.d.ts",
       "default": "./dist/cjs/index.cjs.js"
     },
     "import": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/types/index.d.ts",
       "default": "./dist/index.esm.js"
     }
   },
