@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.3.0](https://github.com/descope/descope-js/compare/web-component-4.2.0...web-component-4.3.0) (2026-08-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.26.0`
+* `web-js-sdk` updated to version `1.52.0`
+
+### Features
+
+* **web-component:** opt-in send-session-token to expose session JWT claims to flows ([#1467](https://github.com/descope/descope-js/issues/1467)) RELEASE ([369d986](https://github.com/descope/descope-js/commit/369d986cbb895f268e924c9c782cf97b6d63e695))
+
 ## [4.2.0](https://github.com/descope/descope-js/compare/web-component-4.1.0...web-component-4.2.0) (2026-08-17)
 
 ### Dependency Updates
