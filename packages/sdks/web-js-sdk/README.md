@@ -39,7 +39,6 @@ const sdk = descopeSdk({
     - If the cookie domain set on Descope configuration doesn't match, or is not a parent domain of the current domain, The cookie will be stored on the current domain that runs the code. Examples:
      - Project cookie domain is acme.com, current domain is app.acme.com - the domain will be set to app.acme.com
      - Project cookie domain is acme.com, current domain is my-app.com - the domain will be set to my-app.com
-     */
   */
   sessionTokenViaCookie: false,
   /* Automatically schedule a call refresh session call after a successful authentication:
@@ -57,7 +56,7 @@ const sdk = descopeSdk({
 
   /*  When managing multiple Descope projects on the same domain, you can prevent refresh cookie conflicts by assigning a custom name to your refresh token cookie during the login process (for example, using Descope Flows). However, you must also configure the SDK to recognize this unique name by passing the `refreshCookieName` option.
   */
-  refreshCookieName: "cookie-1"
+  refreshCookieName: 'cookie-1',
 
   // Pass this function to the SDK if you want to seamlessly migrate session from an external authentication provider to Descope.
   getExternalToken: async () => {
