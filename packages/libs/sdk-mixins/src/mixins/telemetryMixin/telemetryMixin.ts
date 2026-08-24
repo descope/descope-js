@@ -217,26 +217,51 @@ export const telemetryMixin = createSingletonMixin(
         const resolvedConfig = await this.config;
         const beTelemetry = resolvedConfig?.projectConfig?.telemetry;
 
-        const sampleRate = Number(
-          process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE,
-        );
+        // The DESCOPE_TELEMETRY_* reads below are build-time env tokens: the WC
+        // app build substitutes them from .env (rollup.config.app.mjs) and the
+        // WC lib build strips them to "" (stubEnvInProd). But @descope/sdk-mixins
+        // ships its own dist with these tokens RAW, so a non-WC consumer that
+        // bundles this file for the browser hits a bare `process`, which is
+        // undefined there -> "ReferenceError: process is not defined".
+        // Wrap the reads in try/catch: this keeps the literal `process.env.*`
+        // tokens intact (so the WC build-time replace/strip still match them),
+        // while falling back to an empty config wherever `process` doesn't
+        // exist. Real config comes from the backend (projectConfig.telemetry).
+        let fallback: NonNullable<TelemetryConfig>;
+        try {
+          const sampleRate = Number(
+            process.env.DESCOPE_TELEMETRY_SESSION_SAMPLE_RATE,
+          );
 
-        const fallback: NonNullable<TelemetryConfig> = {
-          enabled:
-            (process.env.DESCOPE_TELEMETRY_ENABLED || '').toLowerCase() ===
-            'true',
-          rumConfig: {
-            applicationId: process.env.DESCOPE_TELEMETRY_APPLICATION_ID || '',
-            identityPoolId:
-              process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID || '',
-            region: process.env.DESCOPE_TELEMETRY_REGION || '',
-            sessionSampleRate:
-              Number.isFinite(sampleRate) && sampleRate > 0 ? sampleRate : 1,
-            ...(process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN && {
-              guestRoleArn: process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN,
-            }),
-          },
-        };
+          fallback = {
+            enabled:
+              (process.env.DESCOPE_TELEMETRY_ENABLED || '').toLowerCase() ===
+              'true',
+            rumConfig: {
+              applicationId: process.env.DESCOPE_TELEMETRY_APPLICATION_ID || '',
+              identityPoolId:
+                process.env.DESCOPE_TELEMETRY_IDENTITY_POOL_ID || '',
+              region: process.env.DESCOPE_TELEMETRY_REGION || '',
+              sessionSampleRate:
+                Number.isFinite(sampleRate) && sampleRate > 0 ? sampleRate : 1,
+              ...(process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN && {
+                guestRoleArn: process.env.DESCOPE_TELEMETRY_GUEST_ROLE_ARN,
+              }),
+            },
+          };
+        } catch {
+          // `process` is not defined (browser, no build-time replacement).
+          // No .env fallback here - rely on the backend telemetry config.
+          fallback = {
+            enabled: false,
+            rumConfig: {
+              applicationId: '',
+              identityPoolId: '',
+              region: '',
+              sessionSampleRate: 1,
+            },
+          };
+        }
 
         const cfg: NonNullable<TelemetryConfig> = {
           ...fallback,
