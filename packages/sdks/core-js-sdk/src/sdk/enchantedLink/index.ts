@@ -24,6 +24,33 @@ import {
   withUpdateEmailValidations,
 } from './validations';
 
+// Enchanted Link currently supports delivery by email or SMS (unlike Magic Link, which also supports whatsapp)
+const deliveryMethods = [DeliveryMethods.email, DeliveryMethods.sms];
+
+type EnchantedLinkDeliveryMethod =
+  | typeof DeliveryMethods.email
+  | typeof DeliveryMethods.sms;
+
+type EnchantedLinkSignInFn = (
+  loginId: string,
+  URI?: string,
+  loginOptions?: LoginOptions & { providerId?: string },
+  token?: string,
+) => Promise<SdkResponse<EnchantedLinkResponse>>;
+
+type EnchantedLinkSignUpFn = (
+  loginId: string,
+  URI?: string,
+  user?: User,
+  signUpOptions?: SignUpOptions & { providerId?: string },
+) => Promise<SdkResponse<EnchantedLinkResponse>>;
+
+type EnchantedLinkSignUpOrInFn = (
+  loginId: string,
+  URI?: string,
+  signUpOptions?: SignUpOptions & { providerId?: string },
+) => Promise<SdkResponse<EnchantedLinkResponse>>;
+
 const withEnchantedLink = (httpClient: HttpClient) => ({
   verify: withVerifyValidations(
     (token: string): Promise<SdkResponse<never>> =>
@@ -32,75 +59,90 @@ const withEnchantedLink = (httpClient: HttpClient) => ({
       ),
   ),
 
-  signIn: withSignValidations(
-    (
-      loginId: string,
-      URI?: string,
-      {
-        providerId,
-        ...loginOptions
-      }: LoginOptions & { providerId?: string } = {},
-      token?: string,
-    ): Promise<SdkResponse<EnchantedLinkResponse>> =>
-      transformResponse(
-        httpClient.post(
-          pathJoin(apiPaths.enchantedLink.signIn, DeliveryMethods.email),
+  signIn: deliveryMethods.reduce(
+    (acc, delivery) => ({
+      ...acc,
+      [delivery]: withSignValidations(
+        (
+          loginId: string,
+          URI?: string,
           {
-            loginId,
-            URI,
-            loginOptions,
             providerId,
-          },
-          { token },
-        ),
+            ...loginOptions
+          }: LoginOptions & { providerId?: string } = {},
+          token?: string,
+        ) =>
+          transformResponse(
+            httpClient.post(
+              pathJoin(apiPaths.enchantedLink.signIn, delivery),
+              {
+                loginId,
+                URI,
+                loginOptions,
+                providerId,
+              },
+              { token },
+            ),
+          ),
       ),
-  ),
+    }),
+    {},
+  ) as Record<EnchantedLinkDeliveryMethod, EnchantedLinkSignInFn>,
 
-  signUpOrIn: withSignValidations(
-    (
-      loginId: string,
-      URI?: string,
-      {
-        providerId,
-        ...signUpOptions
-      }: SignUpOptions & { providerId?: string } = {},
-    ): Promise<SdkResponse<EnchantedLinkResponse>> =>
-      transformResponse(
-        httpClient.post(
-          pathJoin(apiPaths.enchantedLink.signUpOrIn, DeliveryMethods.email),
+  signUpOrIn: deliveryMethods.reduce(
+    (acc, delivery) => ({
+      ...acc,
+      [delivery]: withSignValidations(
+        (
+          loginId: string,
+          URI?: string,
           {
-            loginId,
-            URI,
-            loginOptions: signUpOptions,
             providerId,
-          },
-        ),
+            ...signUpOptions
+          }: SignUpOptions & { providerId?: string } = {},
+        ) =>
+          transformResponse(
+            httpClient.post(
+              pathJoin(apiPaths.enchantedLink.signUpOrIn, delivery),
+              {
+                loginId,
+                URI,
+                loginOptions: signUpOptions,
+                providerId,
+              },
+            ),
+          ),
       ),
-  ),
+    }),
+    {},
+  ) as Record<EnchantedLinkDeliveryMethod, EnchantedLinkSignUpOrInFn>,
 
-  signUp: withSignValidations(
-    (
-      loginId: string,
-      URI?: string,
-      user?: User,
-      {
-        providerId,
-        ...signUpOptions
-      }: SignUpOptions & { providerId?: string } = {},
-    ): Promise<SdkResponse<EnchantedLinkResponse>> =>
-      transformResponse(
-        httpClient.post(
-          pathJoin(apiPaths.enchantedLink.signUp, DeliveryMethods.email),
+  signUp: deliveryMethods.reduce(
+    (acc, delivery) => ({
+      ...acc,
+      [delivery]: withSignValidations(
+        (
+          loginId: string,
+          URI?: string,
+          user?: User,
           {
-            loginId,
-            URI,
-            user,
-            loginOptions: signUpOptions,
             providerId,
-          },
-        ),
+            ...signUpOptions
+          }: SignUpOptions & { providerId?: string } = {},
+        ) =>
+          transformResponse(
+            httpClient.post(pathJoin(apiPaths.enchantedLink.signUp, delivery), {
+              loginId,
+              URI,
+              user,
+              loginOptions: signUpOptions,
+              providerId,
+            }),
+          ),
       ),
-  ),
+    }),
+    {},
+  ) as Record<EnchantedLinkDeliveryMethod, EnchantedLinkSignUpFn>,
 
   waitForSession: withWaitForSessionValidations(
     (

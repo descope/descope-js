@@ -190,8 +190,10 @@ export type EnchantedLinkResponse = {
   pendingRef: string;
   /** Link id, on which link the user should click */
   linkId: string;
-  /** Email to which the link was sent to */
-  maskedEmail: string;
+  /** Email to which the link was sent to, when delivered by email */
+  maskedEmail?: string;
+  /** Phone to which the link was sent to, when delivered by SMS */
+  maskedPhone?: string;
 };
 
 /** URL response to redirect user in case of OAuth or SSO */
