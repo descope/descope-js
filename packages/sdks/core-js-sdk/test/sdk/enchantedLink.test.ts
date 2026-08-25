@@ -101,11 +101,15 @@ describe('Enchanted Link', () => {
       });
     });
 
-    describe('signUpSMS', () => {
+    describe('signUpWithPhone', () => {
       it('should send the correct request', () => {
-        sdk.enchantedLink.signUpSMS('+9720000000', 'http://some.thing.com', {
-          phone: '+9720000000',
-        });
+        sdk.enchantedLink.signUpWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+          {
+            phone: '+9720000000',
+          },
+        );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.enchantedLink.signUp + '/sms',
           {
@@ -132,7 +136,7 @@ describe('Enchanted Link', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        const resp = await sdk.enchantedLink.signUpSMS(
+        const resp = await sdk.enchantedLink.signUpWithPhone(
           '+9720000000',
           'http://some.thing.com',
         );
@@ -240,15 +244,18 @@ describe('Enchanted Link', () => {
       });
     });
 
-    describe('signInSMS', () => {
+    describe('signInWithPhone', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() =>
-          sdk.enchantedLink.signInSMS(undefined, 'http://some.thing.com'),
+          sdk.enchantedLink.signInWithPhone(undefined, 'http://some.thing.com'),
         ).toThrow('"loginId" must be a string');
       });
 
       it('should send the correct request', () => {
-        sdk.enchantedLink.signInSMS('+9720000000', 'http://some.thing.com');
+        sdk.enchantedLink.signInWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.enchantedLink.signIn + '/sms',
           {
@@ -275,7 +282,7 @@ describe('Enchanted Link', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        const resp = await sdk.enchantedLink.signInSMS(
+        const resp = await sdk.enchantedLink.signInWithPhone(
           '+9720000000',
           'http://some.thing.com',
         );
@@ -361,9 +368,12 @@ describe('Enchanted Link', () => {
       });
     });
 
-    describe('signUpOrInSMS', () => {
+    describe('signUpOrInWithPhone', () => {
       it('should send the correct request', () => {
-        sdk.enchantedLink.signUpOrInSMS('+9720000000', 'http://some.thing.com');
+        sdk.enchantedLink.signUpOrInWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.enchantedLink.signUpOrIn + '/sms',
           {
@@ -389,7 +399,7 @@ describe('Enchanted Link', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        const resp = await sdk.enchantedLink.signUpOrInSMS(
+        const resp = await sdk.enchantedLink.signUpOrInWithPhone(
           '+9720000000',
           'http://some.thing.com',
         );

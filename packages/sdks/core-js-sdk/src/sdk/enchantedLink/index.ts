@@ -11,8 +11,6 @@ import {
   SdkResponse,
   JWTResponse,
   EnchantedLinkResponse,
-  EnchantedLinkPhoneResponse,
-  ResponseData,
   User,
   LoginOptions,
   UpdateOptions,
@@ -28,9 +26,9 @@ import {
 
 const withEnchantedLink = (httpClient: HttpClient) => {
   // Shared request builders, parameterized by delivery method. The public signIn/signUp/signUpOrIn
-  // keep their original email-only signatures; the SMS variants are additive siblings so existing
-  // callers are unaffected.
-  const postSignIn = <T extends ResponseData>(
+  // keep their original email-only signatures and behavior; the *WithPhone methods are additive
+  // siblings for SMS delivery, so existing callers are unaffected.
+  const postSignIn = (
     delivery: DeliveryMethods,
     loginId: string,
     URI?: string,
@@ -39,8 +37,8 @@ const withEnchantedLink = (httpClient: HttpClient) => {
       ...loginOptions
     }: LoginOptions & { providerId?: string } = {},
     token?: string,
-  ): Promise<SdkResponse<T>> =>
-    transformResponse<T>(
+  ): Promise<SdkResponse<EnchantedLinkResponse>> =>
+    transformResponse(
       httpClient.post(
         pathJoin(apiPaths.enchantedLink.signIn, delivery),
         { loginId, URI, loginOptions, providerId },
@@ -48,7 +46,7 @@ const withEnchantedLink = (httpClient: HttpClient) => {
       ),
     );
 
-  const postSignUpOrIn = <T extends ResponseData>(
+  const postSignUpOrIn = (
     delivery: DeliveryMethods,
     loginId: string,
     URI?: string,
@@ -56,8 +54,8 @@ const withEnchantedLink = (httpClient: HttpClient) => {
       providerId,
       ...signUpOptions
     }: SignUpOptions & { providerId?: string } = {},
-  ): Promise<SdkResponse<T>> =>
-    transformResponse<T>(
+  ): Promise<SdkResponse<EnchantedLinkResponse>> =>
+    transformResponse(
       httpClient.post(pathJoin(apiPaths.enchantedLink.signUpOrIn, delivery), {
         loginId,
         URI,
@@ -66,7 +64,7 @@ const withEnchantedLink = (httpClient: HttpClient) => {
       }),
     );
 
-  const postSignUp = <T extends ResponseData>(
+  const postSignUp = (
     delivery: DeliveryMethods,
     loginId: string,
     URI?: string,
@@ -75,8 +73,8 @@ const withEnchantedLink = (httpClient: HttpClient) => {
       providerId,
       ...signUpOptions
     }: SignUpOptions & { providerId?: string } = {},
-  ): Promise<SdkResponse<T>> =>
-    transformResponse<T>(
+  ): Promise<SdkResponse<EnchantedLinkResponse>> =>
+    transformResponse(
       httpClient.post(pathJoin(apiPaths.enchantedLink.signUp, delivery), {
         loginId,
         URI,
@@ -101,29 +99,17 @@ const withEnchantedLink = (httpClient: HttpClient) => {
         loginOptions?: LoginOptions & { providerId?: string },
         token?: string,
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
-        postSignIn<EnchantedLinkResponse>(
-          DeliveryMethods.email,
-          loginId,
-          URI,
-          loginOptions,
-          token,
-        ),
+        postSignIn(DeliveryMethods.email, loginId, URI, loginOptions, token),
     ),
 
-    signInSMS: withSignValidations(
+    signInWithPhone: withSignValidations(
       (
         loginId: string,
         URI?: string,
         loginOptions?: LoginOptions & { providerId?: string },
         token?: string,
-      ): Promise<SdkResponse<EnchantedLinkPhoneResponse>> =>
-        postSignIn<EnchantedLinkPhoneResponse>(
-          DeliveryMethods.sms,
-          loginId,
-          URI,
-          loginOptions,
-          token,
-        ),
+      ): Promise<SdkResponse<EnchantedLinkResponse>> =>
+        postSignIn(DeliveryMethods.sms, loginId, URI, loginOptions, token),
     ),
 
     signUpOrIn: withSignValidations(
@@ -132,26 +118,16 @@ const withEnchantedLink = (httpClient: HttpClient) => {
         URI?: string,
         signUpOptions?: SignUpOptions & { providerId?: string },
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
-        postSignUpOrIn<EnchantedLinkResponse>(
-          DeliveryMethods.email,
-          loginId,
-          URI,
-          signUpOptions,
-        ),
+        postSignUpOrIn(DeliveryMethods.email, loginId, URI, signUpOptions),
     ),
 
-    signUpOrInSMS: withSignValidations(
+    signUpOrInWithPhone: withSignValidations(
       (
         loginId: string,
         URI?: string,
         signUpOptions?: SignUpOptions & { providerId?: string },
-      ): Promise<SdkResponse<EnchantedLinkPhoneResponse>> =>
-        postSignUpOrIn<EnchantedLinkPhoneResponse>(
-          DeliveryMethods.sms,
-          loginId,
-          URI,
-          signUpOptions,
-        ),
+      ): Promise<SdkResponse<EnchantedLinkResponse>> =>
+        postSignUpOrIn(DeliveryMethods.sms, loginId, URI, signUpOptions),
     ),
 
     signUp: withSignValidations(
@@ -161,29 +137,17 @@ const withEnchantedLink = (httpClient: HttpClient) => {
         user?: User,
         signUpOptions?: SignUpOptions & { providerId?: string },
       ): Promise<SdkResponse<EnchantedLinkResponse>> =>
-        postSignUp<EnchantedLinkResponse>(
-          DeliveryMethods.email,
-          loginId,
-          URI,
-          user,
-          signUpOptions,
-        ),
+        postSignUp(DeliveryMethods.email, loginId, URI, user, signUpOptions),
     ),
 
-    signUpSMS: withSignValidations(
+    signUpWithPhone: withSignValidations(
       (
         loginId: string,
         URI?: string,
         user?: User,
         signUpOptions?: SignUpOptions & { providerId?: string },
-      ): Promise<SdkResponse<EnchantedLinkPhoneResponse>> =>
-        postSignUp<EnchantedLinkPhoneResponse>(
-          DeliveryMethods.sms,
-          loginId,
-          URI,
-          user,
-          signUpOptions,
-        ),
+      ): Promise<SdkResponse<EnchantedLinkResponse>> =>
+        postSignUp(DeliveryMethods.sms, loginId, URI, user, signUpOptions),
     ),
 
     waitForSession: withWaitForSessionValidations(
