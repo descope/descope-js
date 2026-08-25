@@ -32,6 +32,7 @@ export { default as createHttpClient } from './httpClient';
 export { transformResponse } from './sdk/helpers';
 export type {
   AccessKeyLoginOptions,
+  EnchantedLinkPhoneResponse,
   EnchantedLinkResponse,
   ExchangeAccessKeyResponse,
   FlowAction,

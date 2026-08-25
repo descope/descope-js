@@ -16,19 +16,19 @@ describe('Enchanted Link', () => {
 
   describe('signUp', () => {
     it('should throw an error when loginId is not a string', () => {
-      expect(() => sdk.enchantedLink.signUp.email(undefined)).toThrow(
+      expect(() => sdk.enchantedLink.signUp(undefined)).toThrow(
         '"loginId" must be a string',
       );
     });
 
     it('should throw an error when loginId is empty', () => {
-      expect(() => sdk.enchantedLink.signUp.email('')).toThrow(
+      expect(() => sdk.enchantedLink.signUp('')).toThrow(
         '"loginId" must not be empty',
       );
     });
 
     it('should send the correct request', () => {
-      sdk.enchantedLink.signUp.email('loginId', 'http://some.thing.com', {
+      sdk.enchantedLink.signUp('loginId', 'http://some.thing.com', {
         name: 'John Doe',
       });
       expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -43,7 +43,7 @@ describe('Enchanted Link', () => {
     });
 
     it('should send the correct request with sign up options', () => {
-      sdk.enchantedLink.signUp.email(
+      sdk.enchantedLink.signUp(
         'loginId',
         'http://some.thing.com',
         {
@@ -85,7 +85,7 @@ describe('Enchanted Link', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
-      const resp = await sdk.enchantedLink.signUp.email(
+      const resp = await sdk.enchantedLink.signUp(
         'loginId',
         'http://some.thing.com',
         {
@@ -101,9 +101,9 @@ describe('Enchanted Link', () => {
       });
     });
 
-    describe('sms', () => {
+    describe('signUpSMS', () => {
       it('should send the correct request', () => {
-        sdk.enchantedLink.signUp.sms('+9720000000', 'http://some.thing.com', {
+        sdk.enchantedLink.signUpSMS('+9720000000', 'http://some.thing.com', {
           phone: '+9720000000',
         });
         expect(mockHttpClient.post).toHaveBeenCalledWith(
@@ -132,7 +132,7 @@ describe('Enchanted Link', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        const resp = await sdk.enchantedLink.signUp.sms(
+        const resp = await sdk.enchantedLink.signUpSMS(
           '+9720000000',
           'http://some.thing.com',
         );
@@ -149,18 +149,18 @@ describe('Enchanted Link', () => {
   describe('signIn', () => {
     it('should throw an error when loginId is not a string', () => {
       expect(() =>
-        sdk.enchantedLink.signUp.email(undefined, 'http://some.thing.com'),
+        sdk.enchantedLink.signUp(undefined, 'http://some.thing.com'),
       ).toThrow('"loginId" must be a string');
     });
 
     it('should throw an error when loginId is empty', () => {
       expect(() =>
-        sdk.enchantedLink.signUp.email('', 'http://some.thing.com'),
+        sdk.enchantedLink.signUp('', 'http://some.thing.com'),
       ).toThrow('"loginId" must not be empty');
     });
 
     it('should send the correct request', () => {
-      sdk.enchantedLink.signIn.email('loginId', 'http://some.thing.com');
+      sdk.enchantedLink.signIn('loginId', 'http://some.thing.com');
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.enchantedLink.signIn + '/email',
         {
@@ -173,7 +173,7 @@ describe('Enchanted Link', () => {
     });
 
     it('should send the correct request with login options', () => {
-      sdk.enchantedLink.signIn.email(
+      sdk.enchantedLink.signIn(
         'loginId',
         'http://some.thing.com',
         {
@@ -199,7 +199,7 @@ describe('Enchanted Link', () => {
     });
 
     it('should send tenantId inside loginOptions', () => {
-      sdk.enchantedLink.signIn.email(
+      sdk.enchantedLink.signIn(
         'loginId',
         'http://some.thing.com',
         { tenantId: 'tenant1', stepup: true },
@@ -227,7 +227,7 @@ describe('Enchanted Link', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
-      const resp = await sdk.enchantedLink.signIn.email(
+      const resp = await sdk.enchantedLink.signIn(
         'loginId',
         'http://some.thing.com',
       );
@@ -240,15 +240,15 @@ describe('Enchanted Link', () => {
       });
     });
 
-    describe('sms', () => {
+    describe('signInSMS', () => {
       it('should throw an error when loginId is not a string', () => {
         expect(() =>
-          sdk.enchantedLink.signIn.sms(undefined, 'http://some.thing.com'),
+          sdk.enchantedLink.signInSMS(undefined, 'http://some.thing.com'),
         ).toThrow('"loginId" must be a string');
       });
 
       it('should send the correct request', () => {
-        sdk.enchantedLink.signIn.sms('+9720000000', 'http://some.thing.com');
+        sdk.enchantedLink.signInSMS('+9720000000', 'http://some.thing.com');
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.enchantedLink.signIn + '/sms',
           {
@@ -275,7 +275,7 @@ describe('Enchanted Link', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        const resp = await sdk.enchantedLink.signIn.sms(
+        const resp = await sdk.enchantedLink.signInSMS(
           '+9720000000',
           'http://some.thing.com',
         );
@@ -293,18 +293,18 @@ describe('Enchanted Link', () => {
   describe('signUpOrIn', () => {
     it('should throw an error when loginId is not a string', () => {
       expect(() =>
-        sdk.enchantedLink.signUpOrIn.email(undefined, 'http://some.thing.com'),
+        sdk.enchantedLink.signUpOrIn(undefined, 'http://some.thing.com'),
       ).toThrow('"loginId" must be a string');
     });
 
     it('should throw an error when loginId is empty', () => {
       expect(() =>
-        sdk.enchantedLink.signUpOrIn.email('', 'http://some.thing.com'),
+        sdk.enchantedLink.signUpOrIn('', 'http://some.thing.com'),
       ).toThrow('"loginId" must not be empty');
     });
 
     it('should send the correct request', () => {
-      sdk.enchantedLink.signUpOrIn.email('loginId', 'http://some.thing.com');
+      sdk.enchantedLink.signUpOrIn('loginId', 'http://some.thing.com');
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         apiPaths.enchantedLink.signUpOrIn + '/email',
         {
@@ -316,7 +316,7 @@ describe('Enchanted Link', () => {
     });
 
     it('should send the correct request with sign up options', () => {
-      sdk.enchantedLink.signUpOrIn.email('loginId', 'http://some.thing.com', {
+      sdk.enchantedLink.signUpOrIn('loginId', 'http://some.thing.com', {
         templateOptions: {
           ble: 'blue',
         },
@@ -348,7 +348,7 @@ describe('Enchanted Link', () => {
         status: 200,
       };
       mockHttpClient.post.mockResolvedValue(httpResponse);
-      const resp = await sdk.enchantedLink.signUpOrIn.email(
+      const resp = await sdk.enchantedLink.signUpOrIn(
         'loginId',
         'http://some.thing.com',
       );
@@ -361,12 +361,9 @@ describe('Enchanted Link', () => {
       });
     });
 
-    describe('sms', () => {
+    describe('signUpOrInSMS', () => {
       it('should send the correct request', () => {
-        sdk.enchantedLink.signUpOrIn.sms(
-          '+9720000000',
-          'http://some.thing.com',
-        );
+        sdk.enchantedLink.signUpOrInSMS('+9720000000', 'http://some.thing.com');
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           apiPaths.enchantedLink.signUpOrIn + '/sms',
           {
@@ -392,7 +389,7 @@ describe('Enchanted Link', () => {
           status: 200,
         };
         mockHttpClient.post.mockResolvedValue(httpResponse);
-        const resp = await sdk.enchantedLink.signUpOrIn.sms(
+        const resp = await sdk.enchantedLink.signUpOrInSMS(
           '+9720000000',
           'http://some.thing.com',
         );
