@@ -264,6 +264,10 @@ class DescopeWc extends BaseDescopeWc {
     sessionJwt?: string;
   };
 
+  protected get nativeSessionJwt(): string | undefined {
+    return this.nativeOptions?.sessionJwt;
+  }
+
   /**
    * Get all loaded SDK script modules from elements with data-script-id attribute
    * @returns Array of script modules that can be refreshed before form submission

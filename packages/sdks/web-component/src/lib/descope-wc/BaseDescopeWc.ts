@@ -410,15 +410,19 @@ class BaseDescopeWc extends BaseClass {
   // options types and preserves the given type on return. The token is read
   // via the standalone helper - the wrapping SDKs (e.g. react-sdk) override
   // the inner sdk with persistTokens: false, so the instance getter is absent
+  // the session JWT provided by a native host, if any - overridden by DescopeWc
+  // when it's connected to a native bridge (bridge v4+)
+  protected get nativeSessionJwt(): string | undefined {
+    return undefined;
+  }
+
   #injectSessionJwt<T extends FlowStartOptions | FlowNextOptions>(
     options?: T,
   ): T | undefined {
     if (!this.sendSessionToken) return options;
-    // a native host (bridge v4+) passes the session JWT in nativeOptions -
-    // the session lives natively, not in this web view - so it wins over storage
+    // a native host's token wins - the session lives natively, not in this web view
     const sessionToken =
-      (this as { nativeOptions?: { sessionJwt?: string } }).nativeOptions
-        ?.sessionJwt || getSessionToken?.(this.storagePrefix);
+      this.nativeSessionJwt || getSessionToken?.(this.storagePrefix);
     if (!sessionToken) return options;
     return { ...(options ?? {}), sessionJwt: sessionToken } as T;
   }
