@@ -140,9 +140,9 @@ class DescopeWc extends BaseDescopeWc {
 
   // bridgeVersion tracks compatibility with the native SDK bridges.
   // v3: support multiple WCs in a single page via new registration mechanism (User Profile Widget)
-  // v4: nativeOptions.sessionJwt - the native layer can opt in to sending the
-  //     current session JWT on flow start/next, exposing its validated claims
-  //     to the flow via the sessionJwtClaims context key
+  // v4: nativeOptions.sessionJwt - the native layer passes the current session
+  //     JWT; when the send-session-token opt-in is enabled it is sent on flow
+  //     start/next, exposing its validated claims via sessionJwtClaims
   static readonly bridgeVersion = 4; // readable off the constructor before any wc mounts
 
   bridgeVersion = DescopeWc.bridgeVersion; // readable off a live instance
@@ -258,8 +258,9 @@ class DescopeWc extends BaseDescopeWc {
     ssoRedirect?: string;
     externalAuthRedirect?: string;
     origin?: string;
-    // set only when the native host app opted in to sending the session JWT
-    // on flow requests; the session lives natively, not in this web view
+    // the current session JWT of the native host app - the session lives
+    // natively, not in this web view. Sent on flow requests only when the
+    // send-session-token opt-in is enabled on this component
     sessionJwt?: string;
   };
 

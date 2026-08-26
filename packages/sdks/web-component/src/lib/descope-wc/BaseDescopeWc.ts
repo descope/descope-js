@@ -413,16 +413,12 @@ class BaseDescopeWc extends BaseClass {
   #injectSessionJwt<T extends FlowStartOptions | FlowNextOptions>(
     options?: T,
   ): T | undefined {
-    // a native host (bridge v4+) passes the session JWT in nativeOptions only
-    // when the app opted in - the session lives natively, not in this web view
-    const nativeSessionJwt = (
-      this as { nativeOptions?: { sessionJwt?: string } }
-    ).nativeOptions?.sessionJwt;
-    if (nativeSessionJwt) {
-      return { ...(options ?? {}), sessionJwt: nativeSessionJwt } as T;
-    }
     if (!this.sendSessionToken) return options;
-    const sessionToken = getSessionToken?.(this.storagePrefix);
+    // a native host (bridge v4+) passes the session JWT in nativeOptions -
+    // the session lives natively, not in this web view - so it wins over storage
+    const sessionToken =
+      (this as { nativeOptions?: { sessionJwt?: string } }).nativeOptions
+        ?.sessionJwt || getSessionToken?.(this.storagePrefix);
     if (!sessionToken) return options;
     return { ...(options ?? {}), sessionJwt: sessionToken } as T;
   }
