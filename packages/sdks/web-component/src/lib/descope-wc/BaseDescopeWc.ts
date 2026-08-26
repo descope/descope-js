@@ -412,6 +412,7 @@ class BaseDescopeWc extends BaseClass {
   // the inner sdk with persistTokens: false, so the instance getter is absent
   // the session JWT provided by a native host, if any - overridden by DescopeWc
   // when it's connected to a native bridge (bridge v4+)
+  // eslint-disable-next-line class-methods-use-this
   protected get nativeSessionJwt(): string | undefined {
     return undefined;
   }
