@@ -23,6 +23,45 @@ describe('templates', () => {
     await waitFor(() => screen.getByShadowDisplayValue('email1'));
   });
 
+  it('should forward totp.key from screenState to inputs', async () => {
+    document.body.innerHTML = `<div>
+			<input class="descope-input" name="totp.key">
+		</div>`;
+
+    updateScreenFromScreenState(document.body, {
+      totp: { key: 'my-totp-key' },
+    });
+    await waitFor(() => screen.getByShadowDisplayValue('my-totp-key'));
+  });
+
+  it('should forward totp.key alongside other inputs', async () => {
+    document.body.innerHTML = `<div>
+			<input class="descope-input" name="email">
+			<input class="descope-input" name="totp.key">
+		</div>`;
+
+    updateScreenFromScreenState(document.body, {
+      inputs: { email: 'email1' },
+      totp: { key: 'totp-key-123' },
+    });
+    await waitFor(() => screen.getByShadowDisplayValue('email1'));
+    await waitFor(() => screen.getByShadowDisplayValue('totp-key-123'));
+  });
+
+  it('should not set totp.key input when totp is missing', async () => {
+    document.body.innerHTML = `<div>
+			<input class="descope-input" name="totp.key">
+		</div>`;
+
+    updateScreenFromScreenState(document.body, {
+      inputs: { email: 'email1' },
+    });
+    const input = document.querySelector(
+      'input[name="totp.key"]',
+    ) as HTMLInputElement;
+    expect(input.value).toBe('');
+  });
+
   it('should handle descope form', async () => {
     document.body.innerHTML = `<div>
 			<input class="descope-input" name="email"></input>
