@@ -20,7 +20,7 @@ describe('Flows', () => {
 
     it('should send the correct request', async () => {
       await sdk.flow.start('flow1');
-      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/start', {
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/v2/flow/start', {
         flowId: 'flow1',
         isCustomScreen: false,
       });
@@ -92,7 +92,7 @@ describe('Flows', () => {
 
     it('should send the correct request without input', async () => {
       await sdk.flow.next('e1', 's1', 'a1');
-      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/next', {
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/v2/flow/next', {
         executionId: 'e1',
         stepId: 's1',
         interactionId: 'a1',
@@ -103,7 +103,7 @@ describe('Flows', () => {
     it('should send the correct request with input', () => {
       const input = { key1: 'val1' };
       sdk.flow.next('e1', 's1', 'a1', 'v1', 'cv1', input);
-      expect(mockHttpClient.post).toHaveBeenCalledWith('/v1/flow/next', {
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/v2/flow/next', {
         executionId: 'e1',
         stepId: 's1',
         interactionId: 'a1',

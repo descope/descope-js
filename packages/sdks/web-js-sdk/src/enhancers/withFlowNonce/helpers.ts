@@ -113,7 +113,7 @@ const removeFlowNonce = (
 
 // Extract execution ID from special format
 const extractExecId = (executionId: string): string | null => {
-  const regex = /.*\|#\|(.*)/;
+  const regex = /.*---(.*)/;
   return regex.exec(executionId)?.[1] || null;
 };
 
