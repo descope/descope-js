@@ -45,7 +45,10 @@ export class MultiSelectDriver extends BaseDriver {
       ).renderItem = renderItemWithDescription;
     }
 
-    ele.setAttribute('data', JSON.stringify(data.sort()));
+    ele.setAttribute(
+      'data',
+      JSON.stringify([...data].sort((a, b) => a.label.localeCompare(b.label))),
+    );
   }
 }
 
