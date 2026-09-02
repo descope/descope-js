@@ -40,6 +40,9 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         });
         button.onClick(() => {
           this.#initModalContent(button.flowId, getUserId(this.state));
+          // the flow does not start until it is visible, so it cannot report a page
+          // before the modal opens
+          this.#modal.open();
         });
         this.#flowButtons.push(button);
       }

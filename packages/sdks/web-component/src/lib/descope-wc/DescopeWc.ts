@@ -110,6 +110,13 @@ class DescopeWc extends BaseDescopeWc {
 
   #sdkScriptsLoading = null;
 
+  #visibilityObserver: ResizeObserver | null = null;
+
+  // the flow id this element already decided how to start, so a failed start is not retried
+  // in a loop: a rejected start leaves executionId unset, and the flowState update it
+  // triggers re-enters onFlowChange right back into the start branch
+  #startAttemptedForFlowId: string | undefined;
+
   constructor() {
     const flowState = new State<FlowState>({
       deferredRedirect: false,
@@ -498,6 +505,19 @@ class DescopeWc extends BaseDescopeWc {
     await super.init?.();
   }
 
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string,
+    newValue: string,
+  ) {
+    // BaseDescopeWc clears stepId/executionId on an attribute change, i.e. it deliberately
+    // restarts the flow - so the once-per-element start guard has to let go
+    if (oldValue !== newValue) {
+      this.#startAttemptedForFlowId = undefined;
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
 
@@ -510,6 +530,7 @@ class DescopeWc extends BaseDescopeWc {
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();
     this.#resetPollingTimeout();
+    this.#clearVisibilityObserver();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
 
@@ -517,6 +538,56 @@ class DescopeWc extends BaseDescopeWc {
       'visibilitychange',
       this.#eventsCbRefs.visibilitychange,
     );
+  }
+
+  // An execution that has no start screen cannot render anything before the server
+  // responds, and starting it runs the flow's first node - so when the element is not
+  // visible (the common case: a flow preloaded inside a closed widget modal) the start
+  // waits until it is. Everything else about mounting is unaffected: the flow config is
+  // fetched, components load, and a flow that *does* have a start screen still renders
+  // it locally and starts on the first interaction, exactly as before.
+  // Starting an execution runs the flow's first node, so a flow the user cannot see yet
+  // must not start: mounting one would send the SMS, call the connector and so on before
+  // anything was asked for. Applies to any hidden flow - a widget preloading a modal is
+  // the common case, but a flow mounted inside a collapsed section is the same situation.
+  #shouldDeferStart() {
+    // the native layer runs the flow in a webview and renders screens natively, so the
+    // element may legitimately never be visible - the host asked for this flow, start it
+    if (this.nativeOptions) return false;
+
+    // only defer when the browser positively reports the element as hidden. Engines
+    // without checkVisibility (and jsdom) keep the previous start-on-mount behavior
+    return (
+      typeof this.checkVisibility === 'function' && !this.checkVisibility()
+    );
+  }
+
+  // Re-runs onFlowChange once the flow is visible. Nothing about the pending request is
+  // captured: the branch above simply runs again, with whatever the flow state is by then.
+  #startWhenVisible() {
+    this.loggerWrapper.debug(
+      'Flow start deferred until the flow becomes visible',
+    );
+
+    if (this.#visibilityObserver || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    // the element gets a box when the modal containing it opens
+    this.#visibilityObserver = new ResizeObserver(() => {
+      if (this.#shouldDeferStart()) return;
+
+      this.#clearVisibilityObserver();
+      // reqTimestamp is the existing cache-buster for forcing a state change (see
+      // #handleSdkResponse), which is exactly what re-entering onFlowChange needs
+      this.flowState.update({ reqTimestamp: Date.now() });
+    });
+    this.#visibilityObserver.observe(this);
+  }
+
+  #clearVisibilityObserver() {
+    this.#visibilityObserver?.disconnect();
+    this.#visibilityObserver = null;
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
@@ -560,6 +631,8 @@ class DescopeWc extends BaseDescopeWc {
 
   async #handleFlowRestart() {
     this.loggerWrapper.debug('Trying to restart the flow');
+    // a restart is deliberate, so it is allowed to start the flow again
+    this.#startAttemptedForFlowId = undefined;
     const prevCompVersion = await this.getComponentsVersion();
     this.reset();
     const compVersion = await this.getComponentsVersion();
@@ -779,6 +852,26 @@ class DescopeWc extends BaseDescopeWc {
 
       // As an optimization - we want to show the first screen if it is possible
       if (!showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
+        // there is no start screen to render locally, so starting the execution is the only
+        // way to get a first screen - and that runs the flow's first node. When that node is
+        // an action (send SMS, HTTP connector, ...) starting is itself a side effect, so a
+        // flow the user cannot see yet must not start at all. Wait for it to be shown and
+        // re-run this with fresh state instead of holding a stale request.
+        if (this.#shouldDeferStart()) {
+          this.#startWhenVisible();
+          return;
+        }
+
+        // a failed start leaves executionId unset, and the flowState update it triggers
+        // re-enters this branch - so remember the attempt rather than retrying in a loop
+        if (this.#startAttemptedForFlowId === flowId) {
+          this.loggerWrapper.debug(
+            'Flow start was already attempted by this element - not starting again',
+          );
+          return;
+        }
+        this.#startAttemptedForFlowId = flowId;
+
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
