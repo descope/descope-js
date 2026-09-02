@@ -39,11 +39,11 @@ export class MultiSelectDriver extends BaseDriver {
     const ele = await this.asyncEle;
     if (!ele) return;
 
-    (
-      ele as Element & { renderItem?: typeof renderItemWithDescription }
-    ).renderItem = data.some((item) => item.description)
-      ? renderItemWithDescription
-      : undefined;
+    if (data.some((item) => item.description)) {
+      (
+        ele as Element & { renderItem?: typeof renderItemWithDescription }
+      ).renderItem = renderItemWithDescription;
+    }
 
     ele.setAttribute(
       'data',
