@@ -6,6 +6,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../examples/app/App';
 import { AuthProvider, useSession, useUser } from '../../src';
+import { waitForListener } from '../../testUtils/wcListeners';
 
 Object.defineProperty(global, 'Response', {
   value: class {},
@@ -99,20 +100,20 @@ describe('App', () => {
       expect(container.querySelector('descope-wc')).toBeInTheDocument(),
     );
 
-    // `<Descope />` attaches its `error` listener from a `useEffect`, which
-    // runs after paint. React flushes it before `waitFor` above resolves, but
-    // Preact schedules it on the next frame - so dispatch until it sticks
-    // instead of assuming the listener is already there.
-    await waitFor(() => {
-      fireEvent(
-        // eslint-disable-next-line testing-library/no-container
-        container.querySelector('descope-wc'),
-        new CustomEvent('error', {}),
-      );
+    // eslint-disable-next-line testing-library/no-container
+    const wc = container.querySelector('descope-wc');
+    // `<Descope />` attaches its `error` listener from a `useEffect`. React has
+    // flushed that by now, Preact has not - and an event dispatched before the
+    // listener exists is lost, so wait for the attachment before dispatching.
+    await waitForListener(wc, 'error');
 
-      // ensure error is shown
-      expect(document.querySelector('.error')).not.toBeNull();
-    });
+    // mock error
+    fireEvent(wc, new CustomEvent('error', {}));
+
+    // ensure error is shown
+    await waitFor(() =>
+      expect(document.querySelector('.error')).not.toBeNull(),
+    );
   });
 
   it('should render logout button and and call sdk logout', async () => {

@@ -24,6 +24,7 @@ import {
   useSession,
   useUser,
 } from '../src';
+import { findWcWithListener } from '../testUtils/wcListeners';
 
 Object.defineProperty(global, 'Response', {
   value: class {},
@@ -69,16 +70,19 @@ const withProvider = (ui: React.ReactNode) => (
   <AuthProvider projectId="p1">{ui}</AuthProvider>
 );
 
-// Waits for the web component to mount *and* for the SDK's `useEffect`s to
-// have run - under Preact effects are scheduled after paint, so the element
-// being in the DOM does not imply its listeners are attached yet.
+// Attributes and properties are applied from the ref callback, which runs
+// before effects, so mounting is all these need to wait for.
 const findWc = async (container: HTMLElement, tag = 'descope-wc') => {
   await waitFor(() => expect(container.querySelector(tag)).toBeTruthy());
-  await new Promise((resolve) => {
-    setTimeout(resolve, 0);
-  });
   return container.querySelector(tag) as HTMLElement;
 };
+
+// Event tests need more: `<Descope />` attaches its listeners from a
+// `useEffect`, which Preact runs after paint, and an event dispatched before
+// then is lost rather than deferred. `success` is the one listener it always
+// registers, so its attachment marks the whole effect as having run.
+const findFlowWc = (container: HTMLElement) =>
+  findWcWithListener(container, 'descope-wc', 'success');
 
 describe('preact/compat aliasing', () => {
   it('resolves `react` to preact/compat, not React', () => {
@@ -161,7 +165,7 @@ describe('custom events under preact/compat', () => {
     const { container } = render(
       withProvider(<Descope flowId="f" onError={onError} onReady={onReady} />),
     );
-    const wc = await findWc(container);
+    const wc = await findFlowWc(container);
 
     fireEvent(wc, new CustomEvent('error', { detail: { a: 1 } }));
     fireEvent(wc, new CustomEvent('ready', {}));
@@ -175,7 +179,7 @@ describe('custom events under preact/compat', () => {
     const { container } = render(
       withProvider(<Descope flowId="f" onSuccess={onSuccess} />),
     );
-    const wc = await findWc(container);
+    const wc = await findFlowWc(container);
 
     fireEvent(wc, new CustomEvent('success', { detail: { sessionJwt: 'x' } }));
 
@@ -188,7 +192,7 @@ describe('custom events under preact/compat', () => {
     const { container, unmount } = render(
       withProvider(<Descope flowId="f" onError={onError} />),
     );
-    const wc = await findWc(container);
+    const wc = await findFlowWc(container);
     unmount();
 
     fireEvent(wc, new CustomEvent('error', {}));
