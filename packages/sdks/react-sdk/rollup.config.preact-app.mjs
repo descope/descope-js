@@ -76,8 +76,12 @@ export default {
     html(),
     // Only serve in watch mode (`npm run start:preact`); a plain build is what
     // CI runs to prove the app compiles against `preact/compat`.
+    //
+    // An explicit port keeps this off 3000, which `npm start` (the React
+    // example) already takes by browsersync default - so the two can run side
+    // by side, which is the whole point of having both.
     ...(process.env.ROLLUP_WATCH
-      ? [browsersync({ server: 'build-preact', single: true })]
+      ? [browsersync({ server: 'build-preact', single: true, port: 3001 })]
       : []),
   ],
 };
