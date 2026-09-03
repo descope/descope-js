@@ -16,5 +16,12 @@
     "noErrorTruncation": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "build", "dist", "test"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "build-preact",
+    "dist",
+    "test",
+    "test-preact"
+  ]
 }

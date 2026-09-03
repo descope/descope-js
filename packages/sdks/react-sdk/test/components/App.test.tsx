@@ -99,16 +99,20 @@ describe('App', () => {
       expect(container.querySelector('descope-wc')).toBeInTheDocument(),
     );
 
-    // mock error
-    fireEvent(
-      // eslint-disable-next-line testing-library/no-container
-      container.querySelector('descope-wc'),
-      new CustomEvent('error', {}),
-    );
+    // `<Descope />` attaches its `error` listener from a `useEffect`, which
+    // runs after paint. React flushes it before `waitFor` above resolves, but
+    // Preact schedules it on the next frame - so dispatch until it sticks
+    // instead of assuming the listener is already there.
+    await waitFor(() => {
+      fireEvent(
+        // eslint-disable-next-line testing-library/no-container
+        container.querySelector('descope-wc'),
+        new CustomEvent('error', {}),
+      );
 
-    // ensure error is shown
-    const error = document.querySelector('.error');
-    expect(error).not.toBeNull();
+      // ensure error is shown
+      expect(document.querySelector('.error')).not.toBeNull();
+    });
   });
 
   it('should render logout button and and call sdk logout', async () => {

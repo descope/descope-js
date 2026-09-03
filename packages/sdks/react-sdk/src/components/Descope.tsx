@@ -25,7 +25,10 @@ const DescopeWC = lazy(async () => {
   };
 
   const WebComponent: any =
-    customElements?.get('descope-wc') ||
+    // `customElements` is undeclared (not just undefined) on the server, so it
+    // has to be reached through `globalThis` - `customElements?.` alone throws
+    // a ReferenceError and defeats the lazy loading above.
+    globalThis.customElements?.get('descope-wc') ||
     (await import('@descope/web-component').then((module) => module.default));
 
   WebComponent.sdkConfigOverrides = {
