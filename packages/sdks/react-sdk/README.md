@@ -5,6 +5,7 @@ The Descope SDK for React provides convenient access to the Descope for an appli
 ## Requirements
 
 - The SDK supports React version 16 and above.
+- The SDK also runs on [Preact](#preact-support) 10.11+ via `preact/compat`.
 - A Descope `Project ID` is required for using the SDK. Find it on the [project page in the Descope Console](https://app.descope.com/settings/project).
 
 ## Installing the SDK
@@ -410,7 +411,7 @@ function Layout() {
 
 <AuthProvider projectId="my-project-id" autoRefresh={{ customActivityTracking: true }}>
   <Layout />
-</AuthProvider>
+</AuthProvider>;
 ```
 
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
@@ -808,7 +809,9 @@ Example:
 
 ## Code Example
 
-You can find an example react app in the [examples folder](./examples).
+You can find an example react app in the [examples folder](./examples), and a
+Preact one in [examples/preact-app](./examples/preact-app) (see
+[Preact Support](#preact-support)).
 
 ### Setup
 
@@ -852,6 +855,123 @@ See the following table for customization environment variables for the example 
 |                             |                                                                                                               |                                  |
 | DESCOPE_OIDC_ENABLED        | **"true"** - Use OIDC login                                                                                   | None                             |
 | DESCOPE_OIDC_APPLICATION_ID | Descope OIDC Application ID, In case OIDC login is used                                                       | None                             |
+
+## Preact Support
+
+The SDK runs unmodified on Preact 10.11+ through `preact/compat` - the same
+package, the same API, no Preact-specific entry point. Its test suite is
+executed twice in CI: once against React and once with `react` aliased to
+`preact/compat` (`npm run test:preact`), so hooks, `<Descope />`, and the
+widgets are covered under both.
+
+### Setup
+
+Alias `react` and `react-dom` to `preact/compat` in your bundler. Most Preact
+setups already do this:
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite';
+import preact from '@preact/preset-vite';
+
+export default defineConfig({
+  plugins: [preact()], // aliases react/react-dom -> preact/compat
+});
+```
+
+```js
+// webpack.config.js
+module.exports = {
+  resolve: {
+    alias: {
+      react: 'preact/compat',
+      'react-dom': 'preact/compat',
+      'react-dom/test-utils': 'preact/compat/test-utils',
+      'react/jsx-runtime': 'preact/compat/jsx-runtime',
+    },
+  },
+};
+```
+
+The SDK declares `react` as a peer dependency. Point it at `preact/compat` so
+installs stay quiet without pulling React in:
+
+```json
+{
+  "dependencies": {
+    "react": "npm:@preact/compat",
+    "react-dom": "npm:@preact/compat"
+  }
+}
+```
+
+For TypeScript, map the types as well - the SDK's declarations reference
+`React.FC`, `React.Ref` and `DOMAttributes`:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"]
+    }
+  }
+}
+```
+
+Then use the SDK exactly as documented above:
+
+```jsx
+import { render } from 'preact';
+import { AuthProvider, Descope, useSession } from '@descope/react-sdk';
+
+render(
+  <AuthProvider projectId="my-project-id">
+    <App />
+  </AuthProvider>,
+  document.getElementById('root'),
+);
+```
+
+A complete working app is in [examples/preact-app](./examples/preact-app) -
+run it with `npm run start:preact`.
+
+### Behavioural differences to be aware of
+
+Two things differ from React. Neither blocks any SDK feature, but both can
+surface in tests or on the server:
+
+1. **Effects run after paint.** Preact schedules `useEffect` on the next
+   frame, while React flushes it before the browser paints. `<Descope />`
+   attaches its `success` / `error` / `ready` listeners from an effect, so an
+   event dispatched in the same tick as mount can be missed. Real flows emit
+   these events long after mount, so this only tends to matter in tests - wait
+   for the listener rather than assuming it is attached:
+
+   ```js
+   await waitFor(() => {
+     fireEvent(container.querySelector('descope-wc'), new CustomEvent('error'));
+     expect(document.querySelector('.error')).not.toBeNull();
+   });
+   ```
+
+2. **SSR needs the async renderer.** `<Descope />` and the widgets lazy-load
+   their web component, so the first server render suspends.
+   `preact-render-to-string`'s synchronous `renderToString` throws on a
+   suspended subtree instead of emitting the `<Suspense>` fallback - use
+   `renderToStringAsync` (v6+):
+
+   ```js
+   import { renderToStringAsync } from 'preact-render-to-string';
+
+   const html = await renderToStringAsync(<App />);
+   ```
+
+If you would rather not pull in a compat layer at all,
+[`@descope/web-component`](https://www.npmjs.com/package/@descope/web-component)
+is a framework-agnostic custom element - but it does not provide the
+`useSession` / `useUser` / `useDescope` hooks or the `AuthProvider` session
+management this SDK adds.
 
 ## Performance / Bundle Size
 

@@ -6,6 +6,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../examples/app/App';
 import { AuthProvider, useSession, useUser } from '../../src';
+import { waitForListener } from '../../testUtils/wcListeners';
 
 Object.defineProperty(global, 'Response', {
   value: class {},
@@ -99,16 +100,20 @@ describe('App', () => {
       expect(container.querySelector('descope-wc')).toBeInTheDocument(),
     );
 
+    // eslint-disable-next-line testing-library/no-container
+    const wc = container.querySelector('descope-wc');
+    // `<Descope />` attaches its `error` listener from a `useEffect`. React has
+    // flushed that by now, Preact has not - and an event dispatched before the
+    // listener exists is lost, so wait for the attachment before dispatching.
+    await waitForListener(wc, 'error');
+
     // mock error
-    fireEvent(
-      // eslint-disable-next-line testing-library/no-container
-      container.querySelector('descope-wc'),
-      new CustomEvent('error', {}),
-    );
+    fireEvent(wc, new CustomEvent('error', {}));
 
     // ensure error is shown
-    const error = document.querySelector('.error');
-    expect(error).not.toBeNull();
+    await waitFor(() =>
+      expect(document.querySelector('.error')).not.toBeNull(),
+    );
   });
 
   it('should render logout button and and call sdk logout', async () => {
