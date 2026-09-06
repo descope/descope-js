@@ -18,7 +18,16 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.usersList.data.unshift(action.payload);
+      // Re-inviting an existing login id returns the same user. Replace the
+      // existing row instead of prepending a duplicate (matches updateUser).
+      const userIdx = state.usersList.data.findIndex(
+        (user) => user.userId === action.payload.userId,
+      );
+      if (userIdx !== -1) {
+        state.usersList.data[userIdx] = action.payload;
+      } else {
+        state.usersList.data.unshift(action.payload);
+      }
     },
   },
   withRequestStatus((state: State) => state.createUser),
