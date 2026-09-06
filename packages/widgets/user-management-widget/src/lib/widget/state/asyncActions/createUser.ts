@@ -20,9 +20,11 @@ const reducer = buildAsyncReducer(action)(
     onFulfilled: (state, action) => {
       // Re-inviting an existing login id returns the same user. Replace the
       // existing row instead of prepending a duplicate (matches updateUser).
-      const userIdx = state.usersList.data.findIndex(
-        (user) => user.userId === action.payload.userId,
-      );
+      const userIdx = action.payload?.userId
+        ? state.usersList.data.findIndex(
+            (user) => user.userId === action.payload.userId,
+          )
+        : -1;
       if (userIdx !== -1) {
         state.usersList.data[userIdx] = action.payload;
       } else {
