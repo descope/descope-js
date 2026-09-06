@@ -57,25 +57,6 @@ export const withAutoRefresh =
 
     let refreshWasSkipped = false;
 
-    // the timer, the visibilitychange handler and markUserActive() can each trigger a refresh,
-    // and concurrent refreshes with the same refresh token are harmful when token rotation is
-    // enabled - so a refresh is skipped while another one is still in flight
-    let refreshInFlight = false;
-    const triggerRefresh = (token: string) => {
-      if (refreshInFlight) {
-        logger.debug('Skipping refresh - a refresh is already in flight');
-        return;
-      }
-      refreshInFlight = true;
-      Promise.resolve(sdk.refresh(token))
-        .catch(() => {
-          // a failed refresh only needs to release the flag - callers are fire-and-forget
-        })
-        .finally(() => {
-          refreshInFlight = false;
-        });
-    };
-
     if (customActivityTracking) {
       logger.debug('Activity-based refresh enabled');
       activityTracker = createActivityTracker();
@@ -91,25 +72,13 @@ export const withAutoRefresh =
           sessionExpirationDate &&
           Date.now() > sessionExpirationDate.getTime() - REFRESH_THRESHOLD
         ) {
-          // respect the inactivity feature - an idle session should not be extended just by
-          // focusing the tab, markUserActive() will catch up when the user becomes active
-          if (
-            activityTracker &&
-            hasInactivityTimeout &&
-            !activityTracker.hadActivity()
-          ) {
-            logger.debug('Skipping refresh due to visibility - user is idle');
-            refreshWasSkipped = true;
-            return;
-          }
           logger.debug(
             'Session is expired or about to expire, refreshing session',
           );
-          clearAllTimers(); // Prevent race condition with a pending timer
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
-          triggerRefresh(getRefreshToken() || refreshToken);
+          sdk.refresh(getRefreshToken() || refreshToken);
         }
       });
     }
@@ -187,7 +156,7 @@ export const withAutoRefresh =
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
-          triggerRefresh(getRefreshToken() || refreshJwt);
+          sdk.refresh(getRefreshToken() || refreshJwt);
         }, timeout);
       }
     };
@@ -222,7 +191,7 @@ export const withAutoRefresh =
                 );
                 refreshWasSkipped = false;
                 clearAllTimers(); // Prevent race condition with pending timer
-                triggerRefresh(getRefreshToken() || refreshToken);
+                sdk.refresh(getRefreshToken() || refreshToken);
               }
             }
           : () => {
