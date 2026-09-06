@@ -969,8 +969,9 @@ describe('autoRefresh', () => {
     });
   });
 
-  it('should refresh when timer fires even when document is hidden', async () => {
+  it('should not refresh when timer fires and document is hidden', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
 
     const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
     const mockFetch = jest.fn().mockReturnValue(
@@ -1002,8 +1003,11 @@ describe('autoRefresh', () => {
     // Trigger the timeout callback
     timeoutFn();
 
-    // Ensure refresh was called even though the document is hidden
-    expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+    // Ensure refresh was NOT called because document is hidden
+    expect(refreshSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Skipping refresh due to timer - document is hidden',
+    );
 
     // Restore visibilityState
     Object.defineProperty(document, 'visibilityState', {
@@ -1014,9 +1018,9 @@ describe('autoRefresh', () => {
   });
 
   it('should refresh when tab becomes visible before expiration but within the refresh threshold', async () => {
-    // the refresh timer may not fire on time in a hidden tab (browser throttling, OS suspend),
-    // so when the user returns after the scheduled refresh time but before the session expired,
-    // the visibilitychange handler must refresh - otherwise the session expires with no timer pending
+    // reproduces the "20 second hole": the refresh timer fires while the tab is hidden and is skipped,
+    // the user returns after the scheduled refresh time but before the session expired,
+    // and without a refresh here the session expires in a visible tab with no timer pending
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
     const sessionExpiration = Math.floor(Date.now() / 1000) + 45; // 45 seconds from now
@@ -1036,8 +1040,17 @@ describe('autoRefresh', () => {
 
     await new Promise(process.nextTick);
 
-    // a refresh timer was set but is treated as throttled - it is never fired in this test
     expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+    // the tab is hidden when the refresh timer fires, so the refresh is skipped
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'hidden',
+      writable: true,
+      configurable: true,
+    });
+    timeoutFn();
+    expect(refreshSpy).not.toHaveBeenCalled();
 
     // the user returns while the session is still valid but past its scheduled refresh time
     jest.useFakeTimers();
