@@ -65,8 +65,9 @@ export const withAutoRefresh =
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
         // tab becomes visible and the session is expired or about to expire, do a refresh
-        // the refresh timer is skipped while the document is hidden, so the session may be
-        // past its scheduled refresh time (within REFRESH_THRESHOLD of expiration) or already expired
+        // the refresh timer may not have fired on time while the document was hidden
+        // (browsers throttle background timers, and timers do not run while the OS is suspended),
+        // so the session may be past its scheduled refresh time or already expired
         if (
           document.visibilityState === 'visible' &&
           sessionExpirationDate &&
@@ -135,12 +136,6 @@ export const withAutoRefresh =
         }
 
         setTimer(() => {
-          // Skip refresh if document is hidden - the visibilitychange handler will refresh when user returns
-          if (IS_BROWSER && document.visibilityState === 'hidden') {
-            logger.debug('Skipping refresh due to timer - document is hidden');
-            return;
-          }
-
           // Check activity if tracking is enabled and server signals inactivity timeout
           if (
             activityTracker &&
