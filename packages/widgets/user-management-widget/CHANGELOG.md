@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.19.0](https://github.com/descope/descope-js/compare/user-management-widget-0.18.0...user-management-widget-0.19.0) (2026-09-07)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.3.1`
+* `sdk-mixins` updated to version `0.26.1`
+* `sdk-component-drivers` updated to version `0.16.0`
+
+### Features
+
+* **user-management-widget:** show role descriptions in roles selector ([#1476](https://github.com/descope/descope-js/issues/1476)) ([70b7232](https://github.com/descope/descope-js/commit/70b72322229668aac5467c8a509288a34c1c2de6)), closes [descope/etc#18131](https://github.com/descope/etc/issues/18131)
+
+
+### Bug Fixes
+
+* **user-management-widget:** dedupe re-invited user in the users table RELEASE ([#1480](https://github.com/descope/descope-js/issues/1480)) ([bf6ea0b](https://github.com/descope/descope-js/commit/bf6ea0b1b0d43778ba224b35759d2b91d18901ac)), closes [descope/etc#17997](https://github.com/descope/etc/issues/17997)
+
 ## [0.18.0](https://github.com/descope/descope-js/compare/user-management-widget-0.17.2...user-management-widget-0.18.0) (2026-08-24)
 
 ### Dependency Updates
