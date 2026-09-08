@@ -194,6 +194,16 @@ export type EnchantedLinkResponse = {
   maskedEmail: string;
 };
 
+/** Enchanted link response for the SMS delivery routes */
+export type PhoneEnchantedLinkResponse = {
+  /** Pending reference URL to poll while waiting for user to click the link */
+  pendingRef: string;
+  /** Link id, on which link the user should click */
+  linkId: string;
+  /** Phone to which the link was sent to */
+  maskedPhone: string;
+};
+
 /** URL response to redirect user in case of OAuth or SSO */
 export type URLResponse = {
   url: string;
