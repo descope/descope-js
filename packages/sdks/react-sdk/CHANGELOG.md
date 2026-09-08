@@ -2,6 +2,39 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.1](https://github.com/descope/descope-js/compare/react-sdk-3.3.0...react-sdk-3.3.1) (2026-09-08)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.2`
+* `applications-portal-widget` updated to version `0.9.2`
+* `audit-management-widget` updated to version `0.9.2`
+* `core-js-sdk` updated to version `2.70.1`
+* `outbound-applications-widget` updated to version `0.6.2`
+* `role-management-widget` updated to version `0.10.2`
+* `tenant-profile-widget` updated to version `0.9.2`
+* `user-management-widget` updated to version `0.19.1`
+* `user-profile-widget` updated to version `0.18.2`
+* `web-component` updated to version `4.3.2`
+* `web-js-sdk` updated to version `1.52.1`
+## [3.3.0](https://github.com/descope/descope-js/compare/react-sdk-3.2.0...react-sdk-3.3.0) (2026-09-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.1`
+* `applications-portal-widget` updated to version `0.9.1`
+* `audit-management-widget` updated to version `0.9.1`
+* `outbound-applications-widget` updated to version `0.6.1`
+* `role-management-widget` updated to version `0.10.1`
+* `tenant-profile-widget` updated to version `0.9.1`
+* `user-management-widget` updated to version `0.19.0`
+* `user-profile-widget` updated to version `0.18.1`
+* `web-component` updated to version `4.3.1`
+
+### Features
+
+* **react-sdk:** support Preact via preact/compat ([#1478](https://github.com/descope/descope-js/issues/1478)) ([c3fa1ee](https://github.com/descope/descope-js/commit/c3fa1ee9b38b48699fde507fc2797312a94513fe))
+
 ## [3.2.0](https://github.com/descope/descope-js/compare/react-sdk-3.1.0...react-sdk-3.2.0) (2026-08-24)
 
 ### Dependency Updates
