@@ -30,11 +30,14 @@ const setupRoutes = async (page, flowConfig: Record<string, unknown>) => {
     }),
   );
 
-  // The screen carries a real required email input, so validity and
-  // validationMessage come from the browser rather than from a stub.
+  // A screen shaped like a real one: a required email field and a submit
+  // button. [data-type="button"] is what #hydrate binds to, so clicking it goes
+  // through the component's own #handleSubmit -> #validateInputs path, exactly
+  // as a user pressing the button does.
   await page.route('*/**/*.html', async (route) =>
     route.fulfill({
-      body: `<form><input name="email" type="email" required /></form>`,
+      body: `<input name="email" type="email" required />
+             <button data-type="button" id="submit-btn">Continue</button>`,
     }),
   );
 
@@ -79,27 +82,13 @@ const setupRoutes = async (page, flowConfig: Record<string, unknown>) => {
   return events;
 };
 
-// Drives the component the way a failed submit does: hand it a real invalid
-// input from the live DOM, then force the flush that a page-hide would.
-const reportRealValidationFailure = (page) =>
-  page.evaluate(() => {
-    const input = document.createElement('input');
-    input.setAttribute('name', 'email');
-    input.type = 'email';
-    input.required = true;
-    input.value = 'john.doe';
-    document.body.appendChild(input);
-    input.checkValidity();
-
-    const el = document.querySelector('descope-wc') as any;
-    el.trackValidationErrors([input], {
-      executionId: 'pass|#|2tlLFAOthDriBZIOVXahmLnYv8Q',
-      stepId: '4',
-      stepName: 'Sign In',
-    });
-    window.dispatchEvent(new Event('pagehide'));
-    return input.validationMessage;
-  });
+// What a user does: type an address that isn't one, then press the button.
+// Nothing here reaches into the component - the component runs its own
+// validation, blocks the submit, and decides on its own to report.
+const typeBadEmailAndSubmit = async (page) => {
+  await page.locator('input[name="email"]').fill('john.doe');
+  await page.locator('#submit-btn').click();
+};
 
 test.describe('client-side validation tracking', () => {
   test('sends events when the flow config enables it', async ({ page }) => {
@@ -107,8 +96,10 @@ test.describe('client-side validation tracking', () => {
       clientValidationTrackingEnabled: true,
     });
 
-    const validationMessage = await reportRealValidationFailure(page);
-    await expect.poll(() => events.length).toBe(1);
+    await typeBadEmailAndSubmit(page);
+
+    // The batch leaves on the component's own inactivity flush, no nudging.
+    await expect.poll(() => events.length, { timeout: 10000 }).toBe(1);
 
     const [batch] = events;
     expect(batch.executionId).toBe('pass|#|2tlLFAOthDriBZIOVXahmLnYv8Q');
@@ -116,8 +107,29 @@ test.describe('client-side validation tracking', () => {
     expect(batch.events[0].field).toBe('email');
     expect(batch.events[0].rule).toBe('format');
     expect(batch.events[0].screen).toBe('Sign In');
-    // The message is whatever the browser showed the user.
-    expect(batch.events[0].message).toBe(validationMessage);
+    // The message is the exact text the browser showed the user.
+    expect(batch.events[0].message).toBe(
+      await page
+        .locator('input[name="email"]')
+        .evaluate((el: HTMLInputElement) => el.validationMessage),
+    );
+  });
+
+  test('the invalid submit is blocked either way', async ({ page }) => {
+    let nextCalled = false;
+    await page.route('**/next', async (route) => {
+      nextCalled = true;
+      return route.fulfill({ json: {} });
+    });
+    const events = await setupRoutes(page, {
+      clientValidationTrackingEnabled: true,
+    });
+
+    await typeBadEmailAndSubmit(page);
+    await expect.poll(() => events.length, { timeout: 10000 }).toBe(1);
+
+    // Tracking must not change what the flow does: the bad value never submits.
+    expect(nextCalled).toBe(false);
   });
 
   test('sends nothing when the flow config omits the flag', async ({
@@ -125,9 +137,9 @@ test.describe('client-side validation tracking', () => {
   }) => {
     const events = await setupRoutes(page, {});
 
-    await reportRealValidationFailure(page);
-    // Give a real flush window before concluding nothing was sent.
-    await page.waitForTimeout(3000);
+    await typeBadEmailAndSubmit(page);
+    // Well past the component's own flush window.
+    await page.waitForTimeout(5000);
 
     expect(events).toHaveLength(0);
   });
