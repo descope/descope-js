@@ -1878,13 +1878,22 @@ class DescopeWc extends BaseDescopeWc {
   // field in the model; config.json's startScreenName is the same task name.
   get #currentFlowContext() {
     const flow = this.flowState?.current;
+    // With no live execution we are on the config-rendered start screen. The
+    // flow state can still hold the previous screen here - a restart and a
+    // flow-id change clear only executionId/stepId - so the config wins.
+    if (!flow?.executionId) {
+      return {
+        executionId: undefined,
+        screenId: this.#startScreenId ?? flow?.screenId,
+        screenName:
+          this.#startScreenName ??
+          (this.stepState?.current?.stepName || flow?.stepName),
+      };
+    }
     return {
-      executionId: flow?.executionId,
-      screenId: flow?.screenId || this.#startScreenId,
-      screenName:
-        this.stepState?.current?.stepName ||
-        flow?.stepName ||
-        this.#startScreenName,
+      executionId: flow.executionId,
+      screenId: flow.screenId,
+      screenName: this.stepState?.current?.stepName || flow.stepName,
     };
   }
 

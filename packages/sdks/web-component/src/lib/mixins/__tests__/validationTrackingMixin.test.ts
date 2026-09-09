@@ -496,6 +496,29 @@ describe('validationTrackingMixin', () => {
     jest.useRealTimers();
   });
 
+  it('stops retrying a batch when tracking is switched off mid-flight', async () => {
+    jest.useFakeTimers();
+    fetchMock.mockRejectedValue(new Error('network'));
+    const el = mount();
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    expect(fetchMock).toHaveBeenCalledTimes(1); // first attempt, in flight
+
+    // The customer turns it off before the failure comes back.
+    el.setValidationTrackingEnabled(false);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(1); // no retry after the switch
+    jest.useRealTimers();
+  });
+
   it('does not retry the unload (page-hide) send', async () => {
     fetchMock.mockRejectedValue(new Error('network'));
     const el = mount();
