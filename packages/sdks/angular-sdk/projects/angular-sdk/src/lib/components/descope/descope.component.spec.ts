@@ -5,7 +5,6 @@ import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
 import { DescopeAuthService } from '../../services/descope-auth.service';
 import {
-  ApplicationRef,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   EventEmitter,
@@ -122,7 +121,7 @@ describe('DescopeComponent', () => {
     ).toEqual('true');
   });
 
-  it('should emit success when web component emits success', () => {
+  it('should emit success when web component emits success', async () => {
     const html: HTMLElement = fixture.nativeElement;
     const webComponentHtml = html.querySelector('descope-wc')!;
 
@@ -134,6 +133,9 @@ describe('DescopeComponent', () => {
       emitted.push(e);
     });
     webComponentHtml.dispatchEvent(new CustomEvent('success', event));
+    // The handler pipes the afterRequest promise through rxjs before emitting,
+    // so don't assume the output has arrived by the time dispatch returns.
+    await flush();
 
     expect(afterRequestHooksSpy).toHaveBeenCalled();
     expect(emitted).toHaveLength(1);
@@ -317,10 +319,10 @@ describe('DescopeComponent', () => {
 
       f.destroy();
 
-      expect(f.nativeElement.querySelector('descope-wc')).toBeNull();
       // isConnected going false is what makes the browser run the web
       // component's disconnectedCallback so it can clean up after itself.
       expect(element.isConnected).toBe(false);
+      expect(f.nativeElement.querySelector('descope-wc')).toBeNull();
     });
 
     it('projects content into the element (custom screens)', async () => {
@@ -380,17 +382,15 @@ describe('DescopeComponent', () => {
       });
       const f = TestBed.createComponent(DescopeComponent);
       f.componentInstance.flowId = 'sign-in';
-      const appRef = TestBed.inject(ApplicationRef);
-      const attachedBefore = appRef.viewCount;
 
       f.detectChanges(); // ngOnInit starts and hits the await
       f.destroy(); // destroyed before the continuation runs
       await flush();
 
-      // ngOnDestroy already ran and had no view to clean up, so the continuation
-      // must not build one - it would stay attached to ApplicationRef for good.
-      expect(appRef.viewCount).toBe(attachedBefore);
+      // The continuation must not build the view: inserting into a destroyed
+      // ViewContainerRef throws, and nothing would ever clean it up.
       expect(connects).toHaveLength(0);
+      expect(f.nativeElement.querySelector('descope-wc')).toBeNull();
     });
 
     it('still renders the element when loading the web component fails', async () => {

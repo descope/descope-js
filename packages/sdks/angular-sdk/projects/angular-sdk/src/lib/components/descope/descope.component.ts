@@ -1,5 +1,4 @@
 import {
-  ApplicationRef,
   Component,
   ElementRef,
   EmbeddedViewRef,
@@ -9,9 +8,9 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  Renderer2,
   TemplateRef,
   ViewChild,
+  ViewContainerRef,
   CUSTOM_ELEMENTS_SCHEMA,
   Inject,
   PLATFORM_ID
@@ -48,6 +47,7 @@ const ELEMENT_NODE = 1;
   // mount after the first (descope/etc#18415). Building the template by hand
   // lets the bindings run while the nodes are still detached.
   template: `
+    <ng-container #wcAnchor></ng-container>
     <ng-template #wcTpl>
       <descope-wc
         [attr.project-id]="projectId"
@@ -83,6 +83,11 @@ const ELEMENT_NODE = 1;
 export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('wcTpl', { static: true })
   private readonly wcTpl!: TemplateRef<unknown>;
+
+  // Anchor inside this component's own view, so the inserted view stays in the
+  // component's change-detection tree and Angular destroys it with the component.
+  @ViewChild('wcAnchor', { read: ViewContainerRef, static: true })
+  private readonly wcAnchor!: ViewContainerRef;
 
   private wcView?: EmbeddedViewRef<unknown>;
 
@@ -161,9 +166,7 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
     private elementRef: ElementRef,
     private authService: DescopeAuthService,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) private platformId: object,
-    private appRef: ApplicationRef,
-    private renderer: Renderer2
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -199,30 +202,29 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
   private createWebComponent(): void {
     // ngOnInit awaits the import, so the component can already be destroyed by
     // the time we get here (a route change while the chunk is downloading).
-    // ngOnDestroy has run by then and had no view to clean up, so building one
-    // now would leave it attached to ApplicationRef for good.
+    // Inserting into a destroyed ViewContainerRef would throw, and nothing
+    // would ever clean the view up.
     if (this.isDestroyed || this.wcView) return;
 
+    // createEmbeddedView builds the nodes without putting them in the document,
+    // so the element is not connected yet and its connectedCallback has not run.
     const view = this.wcTpl.createEmbeddedView(undefined);
-    // Apply the [attr.*] bindings while the nodes are detached.
+    // Apply the [attr.*] bindings while the nodes are still detached.
     view.detectChanges();
-    // Keep the view change-detected so later input changes reach the attributes.
-    this.appRef.attachView(view);
     this.wcView = view;
 
     // rootNodes can include whitespace text nodes, so find the element. The
     // nodeType is compared to a literal rather than Node.ELEMENT_NODE because
     // this also runs during SSR, where the Node global may not exist.
-    const element = view.rootNodes.find(
+    this.webComponent = view.rootNodes.find(
       (node: { nodeType: number }) => node.nodeType === ELEMENT_NODE
     ) as DescopeWebComponent | undefined;
 
-    if (!element) return;
+    // Inserting connects the element - its connectedCallback runs here, with
+    // every attribute already set.
+    this.wcAnchor.insert(view);
 
-    this.webComponent = element;
-    // Connects the element - its connectedCallback runs here, with every
-    // attribute already set.
-    this.renderer.appendChild(this.elementRef.nativeElement, element);
+    if (!this.webComponent) return;
 
     this.setupNonAttributeProperties();
     this.setupEventListeners();
@@ -268,23 +270,20 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // Guards the ngOnInit race - the continuation can still be pending here.
     this.isDestroyed = true;
 
-    if (!this.wcView) return;
-
-    this.appRef.detachView(this.wcView);
-    // Removes the element from the DOM, so the web component's
-    // disconnectedCallback runs and cleans up its own listeners.
-    this.wcView.destroy();
+    // wcAnchor owns the view, so Angular would tear it down anyway - but when a
+    // parent view is going away Angular skips removing the individual nodes, and
+    // then the element never disconnects. Destroying it here takes the element
+    // out of the DOM, so the web component's disconnectedCallback runs and drops
+    // its window listeners and flow-state subscriptions.
+    this.wcView?.destroy();
     this.wcView = undefined;
     this.webComponent = undefined;
   }
 
   ngOnChanges(): void {
-    // The element lives in a manually created view, so refresh it here rather
-    // than relying on the host's change detection reaching it.
-    this.wcView?.detectChanges();
-
     if (this.webComponent) {
       this.setupNonAttributeProperties();
     }
