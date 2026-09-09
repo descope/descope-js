@@ -102,6 +102,10 @@ export const validationTrackingMixin = createSingletonMixin(
 
       #flushTimer?: ReturnType<typeof setTimeout>;
 
+      // Pending retry timers. A failed flush leaves a chain in flight, and two
+      // flushes can fail at once, so this holds more than one.
+      #retryTimers = new Set<ReturnType<typeof setTimeout>>();
+
       #listenersAttached = false;
 
       #boundFlushOnEnd = () => this.#flush(false);
@@ -243,10 +247,11 @@ export const validationTrackingMixin = createSingletonMixin(
 
       #scheduleRetry(url: string, init: RequestInit, retriesLeft: number) {
         const attempt = MAX_SEND_RETRIES - retriesLeft + 1;
-        setTimeout(
-          () => this.#sendWithRetry(url, init, retriesLeft - 1),
-          RETRY_BACKOFF_MS * attempt,
-        );
+        const timer = setTimeout(() => {
+          this.#retryTimers.delete(timer);
+          this.#sendWithRetry(url, init, retriesLeft - 1);
+        }, RETRY_BACKOFF_MS * attempt);
+        this.#retryTimers.add(timer);
       }
 
       #attachListeners() {
@@ -268,6 +273,9 @@ export const validationTrackingMixin = createSingletonMixin(
       // issue. Listeners are attached lazily on first capture instead.
       teardownValidationTracking() {
         this.#flush(false);
+        // Drop any retry still waiting out its backoff - the component is gone.
+        this.#retryTimers.forEach(clearTimeout);
+        this.#retryTimers.clear();
         if (!this.#listenersAttached) return;
         this.#listenersAttached = false;
         this.removeEventListener('screen-updated', this.#boundFlushOnEnd);

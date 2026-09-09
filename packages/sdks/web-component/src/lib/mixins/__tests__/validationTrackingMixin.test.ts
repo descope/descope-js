@@ -243,6 +243,29 @@ describe('validationTrackingMixin', () => {
     jest.useRealTimers();
   });
 
+  it('cancels a pending retry when the component disconnects', async () => {
+    jest.useFakeTimers();
+    fetchMock.mockRejectedValue(new Error('network'));
+    const el = mount();
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1); // first attempt
+    await Promise.resolve();
+    await Promise.resolve(); // let the rejection's .catch schedule the retry
+
+    el.remove(); // teardown while the retry is still waiting out its backoff
+
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(1); // retry never fired
+    jest.useRealTimers();
+  });
+
   it('does not retry the unload (page-hide) send', async () => {
     fetchMock.mockRejectedValue(new Error('network'));
     const el = mount();
