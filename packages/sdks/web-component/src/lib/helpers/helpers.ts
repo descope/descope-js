@@ -600,7 +600,13 @@ export const handleAutoFocus = (
   }
 };
 
-export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
+export const handleReportValidityOnBlur = (
+  rootEle: HTMLElement,
+  // Best-effort callback invoked with the input when it fails validation on
+  // blur, so callers can track client-side validation errors. Never throws
+  // into the blur handler.
+  onInvalid?: (inputs: HTMLInputElement[]) => void,
+) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
     ele.addEventListener('blur', () => {
       const onBlur = () => {
@@ -609,7 +615,10 @@ export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
         const origFocus = ele.focus;
         // eslint-disable-next-line no-param-reassign
         ele.focus = () => {};
-        ele.reportValidity?.();
+        const valid = ele.reportValidity?.();
+        if (onInvalid && valid === false) {
+          onInvalid([ele]);
+        }
         setTimeout(() => {
           // eslint-disable-next-line no-param-reassign
           ele.focus = origFocus;

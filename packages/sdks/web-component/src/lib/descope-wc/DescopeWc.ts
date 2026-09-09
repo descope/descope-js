@@ -501,6 +501,9 @@ class DescopeWc extends BaseDescopeWc {
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    // Flush + detach any client-side validation tracking (validationTrackingMixin).
+    this.teardownValidationTracking();
+
     // Drop our handle from the native bridge (mirror of the init-time register).
     if (this.#bridgeKey) {
       (window as any).descopeBridge?.unregisterFlow?.(this.#bridgeKey);
@@ -1791,7 +1794,9 @@ class DescopeWc extends BaseDescopeWc {
         this.updateUsernameAnchor();
 
         if (this.validateOnBlur) {
-          handleReportValidityOnBlur(rootElement);
+          handleReportValidityOnBlur(rootElement, (inputs) =>
+            this.trackValidationErrors(inputs, this.#currentFlowContext),
+          );
         }
 
         // we need to wait for all components to render before we can set its value
@@ -1834,8 +1839,21 @@ class DescopeWc extends BaseDescopeWc {
     this.#handlePageSwitchTransition(injectNextPage);
   }
 
+  // Flow context used to attribute client-side validation events to a point in
+  // the funnel (passed to trackValidationErrors at capture time). Private: only
+  // this component reads it.
+  get #currentFlowContext() {
+    const flow = this.flowState?.current;
+    return {
+      executionId: flow?.executionId,
+      stepId: flow?.stepId,
+      stepName: this.stepState?.current?.stepName || flow?.stepName,
+    };
+  }
+
   #validateInputs() {
     let isValid = true;
+    const invalidInputs: HTMLInputElement[] = [];
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
@@ -1844,10 +1862,20 @@ class DescopeWc extends BaseDescopeWc {
           return;
         }
         input.reportValidity?.();
+        // Collect from the validity reportValidity just computed - avoids an
+        // extra checkValidity() call (and the extra `invalid` event it fires).
+        if (input.validity && !input.validity.valid) {
+          invalidInputs.push(input);
+        }
         if (isValid) {
           isValid = input.checkValidity?.();
         }
       });
+
+    // Best-effort: report the fields that failed validation on submit.
+    if (invalidInputs.length) {
+      this.trackValidationErrors(invalidInputs, this.#currentFlowContext);
+    }
 
     return isValid;
   }
