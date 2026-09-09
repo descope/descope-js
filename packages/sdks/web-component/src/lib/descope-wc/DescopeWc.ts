@@ -716,7 +716,7 @@ class DescopeWc extends BaseDescopeWc {
     // The start screen renders before the flow starts, so validation errors
     // there are held until an execution exists. This is that moment.
     if (executionId && isChanged('executionId')) {
-      this.adoptPendingValidationErrors({ executionId });
+      this.setValidationTrackingExecution(executionId);
     }
     const projectConfig = await this.getProjectConfig();
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
@@ -1867,6 +1867,10 @@ class DescopeWc extends BaseDescopeWc {
   // Where a client-side validation event happened (passed to
   // trackValidationErrors at capture time). Validation only happens on screens,
   // so the screen is the location. Private: only this component reads it.
+  //
+  // screenName is the screen task's name - what the flow author sees on the
+  // node and the end user sees as the screen. There is no separate screen-name
+  // field in the model; config.json's startScreenName is the same task name.
   get #currentFlowContext() {
     const flow = this.flowState?.current;
     return {

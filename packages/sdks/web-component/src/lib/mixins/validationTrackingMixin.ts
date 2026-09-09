@@ -3,11 +3,14 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin, projectIdMixin } from '@descope/sdk-mixins';
 
 // Client-side form validation happens entirely in the browser (native
-// reportValidity/checkValidity) and produces no signal today - and because an
+// reportValidity/checkValidity) and produces no signal on its own - because an
 // invalid form never submits, the server never sees it. This mixin captures
-// those validation failures, batches them, and best-effort relays them to a new
-// backend endpoint so customers get visibility into where users hit friction
-// (and where they abandon a flow). It never blocks or fails the flow.
+// those failures, batches them, and best-effort relays them to POST
+// /v1/flow/event so customers get visibility into where users hit friction.
+//
+// Off unless the flow turns it on: the host calls setValidationTrackingEnabled
+// from the flow's config.json entry, and nothing is captured until it does.
+// It never blocks or fails the flow.
 
 const FLOW_EVENT_PATH = '/v1/flow/event';
 
@@ -41,16 +44,10 @@ type FlowContext = {
   screenName?: string;
 };
 
-// The transport handle this mixin reads off the host component (DescopeWc, a
-// subclass in the compose() chain, so it exists at runtime). Flow context is
-// passed in per capture (see trackValidationErrors) rather than read off the
-// host, to keep the capture logic testable and the coupling explicit.
-type ValidationTrackingHost = {
-  sdk?: { httpClient?: { buildUrl?: (path: string) => string } };
-};
-
-const dedupeKey = (e: { field: string; rule: string }, screenId?: string) =>
-  `${screenId ?? ''}|${e.field}|${e.rule}`;
+// Same field failing the same way on the same screen is one signal, however
+// many times it fires (blur then submit).
+const dedupeKey = (e: ValidationErrorEvent) =>
+  `${e.screenId}|${e.field}|${e.rule}`;
 
 const newId = (): string => {
   try {
@@ -112,15 +109,17 @@ export const validationTrackingMixin = createSingletonMixin(
     const BaseClass = compose(loggerMixin, projectIdMixin)(superclass);
 
     return class ValidationTrackingMixinClass extends BaseClass {
-      // Buffered events for the current step. Flushed on step change, flow end,
-      // page hide, a size cap, or a short inactivity debounce.
+      // Captured events waiting to go out. Flushed on screen change, flow end,
+      // page hide, a size cap, or a short inactivity debounce. Each event
+      // carries its own screen, so a batch need not be single-screen.
       #buffer: ValidationErrorEvent[] = [];
 
-      // executionId/screenId the current buffer belongs to. A batch is always
-      // single-screen (we flush before the screen changes).
+      // The execution the buffer belongs to. Unset until the flow starts: the
+      // start screen renders from config.json before /v1/flow/start, and the
+      // endpoint only accepts a live execution, so those events wait here. If
+      // the flow never starts - the user gave up on the first screen - they are
+      // dropped. That is the known abandonment gap.
       #bufferExecutionId?: string;
-
-      #bufferScreenId?: string;
 
       #flushTimer?: ReturnType<typeof setTimeout>;
 
@@ -135,12 +134,6 @@ export const validationTrackingMixin = createSingletonMixin(
       // so a missing or stale config can never start collecting on its own.
       #enabled = false;
 
-      // Events captured before the flow had an execution to attribute them to.
-      // /v1/flow/event only accepts a live execution, so these wait here until
-      // one exists. If the flow never starts - the user gives up on the first
-      // screen - they are dropped, which is the known abandonment gap.
-      #pending: ValidationErrorEvent[] = [];
-
       #boundFlushOnEnd = () => this.#flush(false);
 
       #boundFlushOnHide = () => {
@@ -150,10 +143,6 @@ export const validationTrackingMixin = createSingletonMixin(
       };
 
       #boundFlushOnPageHide = () => this.#flush(true);
-
-      get #host(): ValidationTrackingHost {
-        return this as unknown as ValidationTrackingHost;
-      }
 
       /**
        * Turn capture on or off. The host calls this from the flow's config,
@@ -167,37 +156,13 @@ export const validationTrackingMixin = createSingletonMixin(
       }
 
       /**
-       * Called by the host once the flow has an execution. Anything captured on
-       * the start screen can now be attributed and sent.
+       * The flow now has an execution. Anything captured before it started -
+       * on the start screen - can finally be attributed and sent.
        */
-      adoptPendingValidationErrors(context: FlowContext) {
-        try {
-          if (!this.#enabled || !this.#pending.length) {
-            this.#pending = [];
-            return;
-          }
-          const ctx = context || {};
-          if (!ctx.executionId) return;
-
-          this.#attachListeners();
-          // These belong to the screen they were captured on, which each event
-          // already carries. Flush anything buffered for a different screen
-          // first, then adopt under the held events' own screen.
-          const heldScreenId = this.#pending[0].screenId;
-          if (this.#buffer.length && this.#bufferScreenId !== heldScreenId) {
-            this.#flush(false);
-          }
-          this.#bufferExecutionId = ctx.executionId;
-          this.#bufferScreenId = heldScreenId;
-          this.#buffer.push(...this.#pending);
-          this.#pending = [];
-          this.#flush(false);
-        } catch (e) {
-          this.logger?.debug?.(
-            'Failed to send held validation errors',
-            String(e),
-          );
-        }
+      setValidationTrackingExecution(executionId: string) {
+        if (!this.#enabled || !executionId) return;
+        this.#bufferExecutionId = executionId;
+        this.#flush(false);
       }
 
       /**
@@ -219,34 +184,21 @@ export const validationTrackingMixin = createSingletonMixin(
         if (!this.#enabled) return;
         if (!inputs?.length) return;
         const ctx = context || {};
-        // The start screen renders from config.json before the flow starts, so
-        // there is no execution yet. Hold those events until there is one.
-        if (!ctx.executionId) {
-          this.#collectPending(inputs, ctx);
-          return;
-        }
 
         // Attach flush triggers on first real capture (nothing to flush before
         // there is a buffered event, so there's no reason to attach earlier).
         this.#attachListeners();
-
-        // The buffer is single-screen. If the screen changed since we started
-        // buffering, flush the old screen first.
-        if (this.#buffer.length && this.#bufferScreenId !== ctx.screenId) {
-          this.#flush(false);
-        }
-        this.#bufferExecutionId = ctx.executionId;
-        this.#bufferScreenId = ctx.screenId;
+        // Before the flow starts this stays unset and the buffer just holds.
+        this.#bufferExecutionId = ctx.executionId || this.#bufferExecutionId;
 
         inputs.forEach((input) => {
+          // The cap also bounds a buffer that is holding because the flow never
+          // started, so an abandoned start screen cannot grow without bound.
+          if (this.#buffer.length >= MAX_BATCH_SIZE) return;
           const event = toEvent(input, ctx);
           if (!event) return;
-          const key = dedupeKey(event, ctx.screenId);
-          // Collapse the blur+submit double-fire of the SAME failure. Genuine
-          // repeat failures land in a later batch (different flush), so this
-          // does not hide real friction signal.
-          if (this.#buffer.some((e) => dedupeKey(e, ctx.screenId) === key))
-            return;
+          const key = dedupeKey(event);
+          if (this.#buffer.some((e) => dedupeKey(e) === key)) return;
           this.#buffer.push(event);
         });
 
@@ -255,20 +207,6 @@ export const validationTrackingMixin = createSingletonMixin(
         } else {
           this.#scheduleFlush();
         }
-      }
-
-      // Pre-execution capture. Same dedupe, but keyed without a step, since the
-      // start screen has no step id. Capped like a normal batch so a user who
-      // never starts the flow cannot grow this without bound.
-      #collectPending(inputs: HTMLInputElement[], ctx: FlowContext) {
-        inputs.forEach((input) => {
-          if (this.#pending.length >= MAX_BATCH_SIZE) return;
-          const event = toEvent(input, ctx);
-          if (!event) return;
-          const key = dedupeKey(event);
-          if (this.#pending.some((e) => dedupeKey(e) === key)) return;
-          this.#pending.push(event);
-        });
       }
 
       #scheduleFlush() {
@@ -288,23 +226,26 @@ export const validationTrackingMixin = createSingletonMixin(
         this.#retryTimers.forEach(clearTimeout);
         this.#retryTimers.clear();
         this.#buffer = [];
-        this.#pending = [];
         this.#bufferExecutionId = undefined;
-        this.#bufferScreenId = undefined;
       }
 
       #flush(isUnload: boolean) {
         clearTimeout(this.#flushTimer);
+        // No execution yet - hold, don't drop. The endpoint would reject it.
+        if (!this.#buffer.length || !this.#bufferExecutionId) return;
+
         const events = this.#buffer;
         const executionId = this.#bufferExecutionId;
         this.#buffer = [];
         this.#bufferExecutionId = undefined;
-        this.#bufferScreenId = undefined;
-
-        if (!events.length || !executionId) return;
 
         const { projectId } = this;
-        const buildUrl = this.#host.sdk?.httpClient?.buildUrl;
+        // The SDK instance lives on the host (DescopeWc, a subclass in the
+        // compose() chain, so it exists at runtime).
+        const { sdk } = this as unknown as {
+          sdk?: { httpClient?: { buildUrl?: (path: string) => string } };
+        };
+        const buildUrl = sdk?.httpClient?.buildUrl;
         // buildUrl resolves the region-aware flow API base the SDK uses for
         // flow/start & flow/next - do NOT reconstruct the URL from an attribute
         // (empty in prod).
@@ -378,9 +319,9 @@ export const validationTrackingMixin = createSingletonMixin(
       // chain already do, and a third override trips a TS intersection typing
       // issue. Listeners are attached lazily on first capture instead.
       teardownValidationTracking() {
+        // Anything still held never got an execution - #flush leaves it, and
+        // the component is going away, so it is dropped with the instance.
         this.#flush(false);
-        // Anything still waiting for an execution never got one - drop it.
-        this.#pending = [];
         // Drop any retry still waiting out its backoff - the component is gone.
         this.#retryTimers.forEach(clearTimeout);
         this.#retryTimers.clear();

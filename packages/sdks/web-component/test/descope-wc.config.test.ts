@@ -195,7 +195,7 @@ describe('web-component config', () => {
       expect(eventCalls()).toHaveLength(0);
 
       // The flow starts (user fixed the input and continued).
-      el.adoptPendingValidationErrors({ executionId: 'exec-1' });
+      el.setValidationTrackingExecution('exec-1');
 
       expect(eventCalls()).toHaveLength(1);
       const event = lastEvent();

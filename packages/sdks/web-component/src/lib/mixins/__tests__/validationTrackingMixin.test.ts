@@ -236,7 +236,7 @@ describe('validationTrackingMixin', () => {
     expect(fetchMock).not.toHaveBeenCalled();
 
     // The user fixes the input and continues - the flow now has an execution.
-    el.adoptPendingValidationErrors({ executionId: 'e1' });
+    el.setValidationTrackingExecution('e1');
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
@@ -270,7 +270,7 @@ describe('validationTrackingMixin', () => {
       screenName: 'Welcome Screen',
     });
     el.setValidationTrackingEnabled(true);
-    el.adoptPendingValidationErrors({ executionId: 'e1' });
+    el.setValidationTrackingExecution('e1');
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -305,7 +305,7 @@ describe('validationTrackingMixin', () => {
       screenId: 'scr-2',
       screenName: 'Verify',
     };
-    el.adoptPendingValidationErrors(el.currentFlowContext);
+    el.setValidationTrackingExecution(el.currentFlowContext.executionId);
 
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.events[0].screenId).toBe('start-scr');
@@ -320,8 +320,8 @@ describe('validationTrackingMixin', () => {
       screenName: 'Welcome Screen',
     });
 
-    el.adoptPendingValidationErrors({ executionId: 'e1' });
-    el.adoptPendingValidationErrors({ executionId: 'e1' });
+    el.setValidationTrackingExecution('e1');
+    el.setValidationTrackingExecution('e1');
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -340,7 +340,7 @@ describe('validationTrackingMixin', () => {
       );
     }
 
-    el.adoptPendingValidationErrors({ executionId: 'e1' });
+    el.setValidationTrackingExecution('e1');
 
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.events).toHaveLength(20);
@@ -356,7 +356,7 @@ describe('validationTrackingMixin', () => {
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], ctx);
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], ctx);
 
-    el.adoptPendingValidationErrors({ executionId: 'e1' });
+    el.setValidationTrackingExecution('e1');
 
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.events).toHaveLength(1);
@@ -375,13 +375,21 @@ describe('validationTrackingMixin', () => {
     expect(fetchMock.mock.calls[0][1].keepalive).toBe(true);
   });
 
-  it('flushes the previous screen before buffering a new one', () => {
+  it('sends the batch when the screen changes, and starts a fresh one', () => {
     const el = mount();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
     );
-    // the flow moves to another screen
+
+    // The component signals a screen change - that is what closes a batch.
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const first = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(first.events).toHaveLength(1);
+    expect(first.events[0].screenId).toBe('scr-1');
+
     el.currentFlowContext = {
       executionId: 'e1',
       screenId: 'scr-2',
@@ -391,13 +399,31 @@ describe('validationTrackingMixin', () => {
       [makeInput('phone', { valueMissing: true })],
       el.currentFlowContext,
     );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    // the first screen's batch went out on its own when the screen changed
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const second = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(second.events).toHaveLength(1);
+    expect(second.events[0].screenId).toBe('scr-2');
+  });
+
+  it('keeps each event on its own screen if a batch spans two', () => {
+    const el = mount();
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    // Same batch, different screen - the batch has no screen of its own, so
+    // this is fine and each event stays truthful.
+    el.trackValidationErrors([makeInput('phone', { valueMissing: true })], {
+      executionId: 'e1',
+      screenId: 'scr-2',
+      screenName: 'Screen 2',
+    });
+    window.dispatchEvent(new Event('pagehide'));
+
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events).toHaveLength(1);
-    expect(body.events[0].field).toBe('email');
-    expect(body.events[0].screenId).toBe('scr-1');
+    expect(body.events.map((e: any) => e.screenId)).toEqual(['scr-1', 'scr-2']);
   });
 
   it('retries a failed non-unload send, then stops on success', async () => {

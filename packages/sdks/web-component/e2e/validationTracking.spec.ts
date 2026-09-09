@@ -106,7 +106,8 @@ test.describe('client-side validation tracking', () => {
     expect(batch.events).toHaveLength(1);
     expect(batch.events[0].field).toBe('email');
     expect(batch.events[0].rule).toBe('format');
-    expect(batch.events[0].screen).toBe('Sign In');
+    expect(batch.events[0].screenName).toBe('Sign In');
+    expect(batch.events[0].screenId).toBe('pass/SC2sIjJonbfhE16bTzi1ZWZIlUCsu');
     // The message is the exact text the browser showed the user.
     expect(batch.events[0].message).toBe(
       await page
