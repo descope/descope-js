@@ -129,33 +129,39 @@ describe('web-component config', () => {
   });
 
   // Client-side validation tracking is per flow and off unless config.json says
-  // otherwise. These two cover the wiring from the config file to the mixin.
+  // otherwise. These drive the component's own submit path, so they cover the
+  // wiring from config.json through to what actually goes on the wire.
   describe('client-side validation tracking', () => {
-    const mountFlow = async (flowConfig: Record<string, any>) => {
-      startMock.mockReturnValueOnce(generateSdkResponse());
+    // A screen shaped like a real one: a required field and the button
+    // #hydrate binds to, so clicking it runs the component's own validation.
+    const SCREEN = `<input name="email" required />
+      <button data-type="button" id="submit-btn">Continue</button>`;
+
+    const mountFlow = async (
+      flowConfig: Record<string, any>,
+      startResponse?: any,
+    ) => {
+      startMock.mockReturnValueOnce(startResponse ?? generateSdkResponse());
       fixtures.configContent = { flows: { 'sign-in': flowConfig } };
-      fixtures.pageContent = '<div>hey</div>';
+      fixtures.pageContent = SCREEN;
       document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" base-url="http://base.url"></descope-wc>`;
-      await waitFor(() => screen.getByShadowText('hey'), {
-        timeout: WAIT_TIMEOUT,
-      });
-      return document.querySelector('descope-wc');
+      const el: any = await waitFor(
+        () => {
+          const node: any = document.querySelector('descope-wc');
+          if (!node?.shadowRoot?.querySelector('#submit-btn')) {
+            throw new Error('screen not rendered yet');
+          }
+          return node;
+        },
+        { timeout: WAIT_TIMEOUT },
+      );
+      return el;
     };
 
-    // Feed the component one failed field and force a flush, the way a real
-    // submit would.
-    const reportOneFailure = (el: any) => {
-      el.trackValidationErrors(
-        [
-          {
-            getAttribute: () => 'email',
-            validity: { valueMissing: true },
-            validationMessage: 'Please fill out this field',
-          },
-        ],
-        { executionId: 'e1', stepId: 's1', stepName: 'Sign in' },
-      );
-      window.dispatchEvent(new Event('pagehide'));
+    // What a user does: press the button with the field left empty.
+    const submitEmpty = (el: any) => {
+      el.shadowRoot.querySelector('#submit-btn').click();
+      window.dispatchEvent(new Event('pagehide')); // force any pending flush
     };
 
     const eventCalls = () =>
@@ -163,23 +169,61 @@ describe('web-component config', () => {
         String(call[0]).endsWith('/v1/flow/event'),
       );
 
-    it('sends validation events when the flow config enables it', async () => {
-      const el = await mountFlow({
-        startScreenId: 'screen-0',
-        clientValidationTrackingEnabled: true,
-      });
-
-      reportOneFailure(el);
-
-      expect(eventCalls()).toHaveLength(1);
-    });
+    const lastEvent = () => {
+      const [, init] = eventCalls()[eventCalls().length - 1];
+      return JSON.parse(init.body).events[0];
+    };
 
     it('sends nothing when the flow config omits the flag', async () => {
       const el = await mountFlow({ startScreenId: 'screen-0' });
 
-      reportOneFailure(el);
+      submitEmpty(el);
 
       expect(eventCalls()).toHaveLength(0);
+    });
+
+    it('holds a start-screen failure, then sends it with the start screen identity', async () => {
+      const el = await mountFlow({
+        startScreenId: 'start-screen-id',
+        startScreenName: 'Welcome Screen',
+        clientValidationTrackingEnabled: true,
+      });
+
+      submitEmpty(el);
+      // The start screen renders before the flow starts, so there is nothing to
+      // attribute this to yet.
+      expect(eventCalls()).toHaveLength(0);
+
+      // The flow starts (user fixed the input and continued).
+      el.adoptPendingValidationErrors({ executionId: 'exec-1' });
+
+      expect(eventCalls()).toHaveLength(1);
+      const event = lastEvent();
+      expect(event.field).toBe('email');
+      expect(event.rule).toBe('required');
+      // identity comes from config.json, the only place that knows it
+      expect(event.screenId).toBe('start-screen-id');
+      expect(event.screenName).toBe('Welcome Screen');
+    });
+
+    it('uses the running flow screen identity once the flow has started', async () => {
+      // No startScreenId, so the component starts the flow and renders the
+      // screen the response names.
+      const el = await mountFlow(
+        { clientValidationTrackingEnabled: true },
+        generateSdkResponse({
+          executionId: 'exec-1',
+          screenId: 'screen-9',
+          stepName: 'Step Nine',
+        }),
+      );
+
+      submitEmpty(el);
+
+      expect(eventCalls()).toHaveLength(1);
+      const event = lastEvent();
+      expect(event.screenId).toBe('screen-9');
+      expect(event.screenName).toBe('Step Nine');
     });
   });
 });

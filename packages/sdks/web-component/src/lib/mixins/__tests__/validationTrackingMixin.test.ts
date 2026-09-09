@@ -275,16 +275,91 @@ describe('validationTrackingMixin', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('does not send when there is no live execution', () => {
+  it('sends nothing while there is no live execution, whatever fires', () => {
     const el = mount();
     el.currentFlowContext = { executionId: undefined };
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
     );
+    // every flush trigger - the endpoint would reject a batch with no execution
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    el.dispatchEvent(new CustomEvent('error', { detail: {} }));
+    window.dispatchEvent(new Event('pagehide'));
 
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps the screen an event was captured on when it is adopted later', () => {
+    const el = mount();
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
+      executionId: '',
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
+    });
+
+    // By the time the flow starts it is on a different screen - the held event
+    // still belongs to the one the user actually saw.
+    el.currentFlowContext = {
+      executionId: 'e1',
+      screenId: 'scr-2',
+      screenName: 'Verify',
+    };
+    el.adoptPendingValidationErrors(el.currentFlowContext);
+
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.events[0].screenId).toBe('start-scr');
+    expect(body.events[0].screenName).toBe('Welcome Screen');
+  });
+
+  it('does not send held events twice if adoption runs again', () => {
+    const el = mount();
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
+      executionId: '',
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
+    });
+
+    el.adoptPendingValidationErrors({ executionId: 'e1' });
+    el.adoptPendingValidationErrors({ executionId: 'e1' });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('caps what it holds so an abandoned start screen cannot grow forever', () => {
+    const el = mount();
+    // 25 distinct failures, cap is 20
+    for (let i = 0; i < 25; i += 1) {
+      el.trackValidationErrors(
+        [makeInput(`field-${i}`, { valueMissing: true })],
+        {
+          executionId: '',
+          screenId: 'start-scr',
+          screenName: 'Welcome Screen',
+        },
+      );
+    }
+
+    el.adoptPendingValidationErrors({ executionId: 'e1' });
+
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.events).toHaveLength(20);
+  });
+
+  it('dedupes the same failure while holding (blur + submit on the start screen)', () => {
+    const el = mount();
+    const ctx = {
+      executionId: '',
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
+    };
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], ctx);
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], ctx);
+
+    el.adoptPendingValidationErrors({ executionId: 'e1' });
+
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.events).toHaveLength(1);
   });
 
   it('captures a blur-only failure and sends on flush (abandonment via page hide, keepalive)', () => {
