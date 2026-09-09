@@ -85,6 +85,23 @@ export const deriveValidationRule = (validity?: ValidityState): string => {
   return 'unknown';
 };
 
+/** Build one event from a failed input, or null if it has no name to report. */
+const toEvent = (
+  input: HTMLInputElement,
+  ctx: FlowContext,
+): ValidationErrorEvent | null => {
+  const field = input?.getAttribute?.('name');
+  if (!field) return null;
+  return {
+    id: newId(),
+    field,
+    rule: deriveValidationRule(input.validity),
+    message: input.validationMessage || '',
+    screen: ctx.stepName || '',
+    ts: Date.now(),
+  };
+};
+
 export const validationTrackingMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
     const BaseClass = compose(loggerMixin, projectIdMixin)(superclass);
@@ -113,6 +130,12 @@ export const validationTrackingMixin = createSingletonMixin(
       // so a missing or stale config can never start collecting on its own.
       #enabled = false;
 
+      // Events captured before the flow had an execution to attribute them to.
+      // /v1/flow/event only accepts a live execution, so these wait here until
+      // one exists. If the flow never starts - the user gives up on the first
+      // screen - they are dropped, which is the known abandonment gap.
+      #pending: ValidationErrorEvent[] = [];
+
       #boundFlushOnEnd = () => this.#flush(false);
 
       #boundFlushOnHide = () => {
@@ -139,6 +162,41 @@ export const validationTrackingMixin = createSingletonMixin(
       }
 
       /**
+       * Called by the host once the flow has an execution. Anything captured on
+       * the start screen can now be attributed and sent.
+       */
+      adoptPendingValidationErrors(context: FlowContext) {
+        try {
+          if (!this.#enabled || !this.#pending.length) {
+            this.#pending = [];
+            return;
+          }
+          const ctx = context || {};
+          if (!ctx.executionId) return;
+
+          this.#attachListeners();
+          // The buffer is single-step; don't mix the adopted events into a
+          // batch belonging to another step.
+          if (this.#buffer.length && this.#bufferStepId !== ctx.stepId) {
+            this.#flush(false);
+          }
+          this.#bufferExecutionId = ctx.executionId;
+          // These happened on the start screen, which has no step. Sending the
+          // step the flow has now would point at the wrong place in the funnel;
+          // the screen name on each event is what identifies where it happened.
+          this.#bufferStepId = '';
+          this.#buffer.push(...this.#pending);
+          this.#pending = [];
+          this.#flush(false);
+        } catch (e) {
+          this.logger?.debug?.(
+            'Failed to send held validation errors',
+            String(e),
+          );
+        }
+      }
+
+      /**
        * Public capture entry point. Called by the web-component at the two
        * validation points it already runs (submit + blur), passing the current
        * flow context. Best-effort: any failure here is swallowed so it can
@@ -157,8 +215,12 @@ export const validationTrackingMixin = createSingletonMixin(
         if (!this.#enabled) return;
         if (!inputs?.length) return;
         const ctx = context || {};
-        // No execution to attribute to - nothing useful to report.
-        if (!ctx.executionId) return;
+        // The start screen renders from config.json before the flow starts, so
+        // there is no execution yet. Hold those events until there is one.
+        if (!ctx.executionId) {
+          this.#collectPending(inputs, ctx);
+          return;
+        }
 
         // Attach flush triggers on first real capture (nothing to flush before
         // there is a buffered event, so there's no reason to attach earlier).
@@ -173,23 +235,15 @@ export const validationTrackingMixin = createSingletonMixin(
         this.#bufferStepId = ctx.stepId;
 
         inputs.forEach((input) => {
-          const field = input?.getAttribute?.('name');
-          if (!field) return;
-          const rule = deriveValidationRule(input.validity);
-          const key = dedupeKey({ field, rule }, ctx.stepId);
+          const event = toEvent(input, ctx);
+          if (!event) return;
+          const key = dedupeKey(event, ctx.stepId);
           // Collapse the blur+submit double-fire of the SAME failure. Genuine
           // repeat failures land in a later batch (different flush), so this
           // does not hide real friction signal.
           if (this.#buffer.some((e) => dedupeKey(e, ctx.stepId) === key))
             return;
-          this.#buffer.push({
-            id: newId(),
-            field,
-            rule,
-            message: input.validationMessage || '',
-            screen: ctx.stepName || '',
-            ts: Date.now(),
-          });
+          this.#buffer.push(event);
         });
 
         if (this.#buffer.length >= MAX_BATCH_SIZE) {
@@ -197,6 +251,20 @@ export const validationTrackingMixin = createSingletonMixin(
         } else {
           this.#scheduleFlush();
         }
+      }
+
+      // Pre-execution capture. Same dedupe, but keyed without a step, since the
+      // start screen has no step id. Capped like a normal batch so a user who
+      // never starts the flow cannot grow this without bound.
+      #collectPending(inputs: HTMLInputElement[], ctx: FlowContext) {
+        inputs.forEach((input) => {
+          if (this.#pending.length >= MAX_BATCH_SIZE) return;
+          const event = toEvent(input, ctx);
+          if (!event) return;
+          const key = dedupeKey(event);
+          if (this.#pending.some((e) => dedupeKey(e) === key)) return;
+          this.#pending.push(event);
+        });
       }
 
       #scheduleFlush() {
@@ -216,6 +284,7 @@ export const validationTrackingMixin = createSingletonMixin(
         this.#retryTimers.forEach(clearTimeout);
         this.#retryTimers.clear();
         this.#buffer = [];
+        this.#pending = [];
         this.#bufferExecutionId = undefined;
         this.#bufferStepId = undefined;
       }
@@ -265,7 +334,10 @@ export const validationTrackingMixin = createSingletonMixin(
       #sendWithRetry(url: string, init: RequestInit, retriesLeft: number) {
         fetch(url, init)
           .then((res) => {
-            if (!res.ok && retriesLeft > 0) {
+            // Only retry what can succeed later. A 4xx means this batch is
+            // rejected on its merits - retrying it just triples the load.
+            const worthRetrying = res.status >= 500 || res.status === 429;
+            if (!res.ok && worthRetrying && retriesLeft > 0) {
               this.#scheduleRetry(url, init, retriesLeft);
             }
           })
@@ -304,6 +376,8 @@ export const validationTrackingMixin = createSingletonMixin(
       // issue. Listeners are attached lazily on first capture instead.
       teardownValidationTracking() {
         this.#flush(false);
+        // Anything still waiting for an execution never got one - drop it.
+        this.#pending = [];
         // Drop any retry still waiting out its backoff - the component is gone.
         this.#retryTimers.forEach(clearTimeout);
         this.#retryTimers.clear();

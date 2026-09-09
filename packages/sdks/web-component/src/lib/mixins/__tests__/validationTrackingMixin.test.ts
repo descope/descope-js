@@ -221,6 +221,56 @@ describe('validationTrackingMixin', () => {
     expect(body.events).toHaveLength(2);
   });
 
+  it('holds start-screen errors until the flow has an execution', () => {
+    const el = mount();
+    // Start screen: config-rendered, so no execution yet.
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
+      executionId: '',
+      stepId: '',
+      stepName: 'Welcome Screen',
+    });
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    // The user fixes the input and continues - the flow now has an execution.
+    el.adoptPendingValidationErrors({ executionId: 'e1', stepId: 's1' });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.executionId).toBe('e1');
+    // The start screen has no step - don't attribute these to the step the
+    // flow happens to be on now.
+    expect(body.stepId).toBe('');
+    expect(body.events).toHaveLength(1);
+    expect(body.events[0].field).toBe('email');
+    expect(body.events[0].screen).toBe('Welcome Screen');
+  });
+
+  it('drops held start-screen errors if the flow never starts', () => {
+    const el = mount();
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
+      executionId: '',
+      stepName: 'Welcome Screen',
+    });
+
+    el.remove(); // the user gave up and left
+
+    window.dispatchEvent(new Event('pagehide'));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('does not hold anything while tracking is off', () => {
+    const el = mountRaw();
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
+      executionId: '',
+      stepName: 'Welcome Screen',
+    });
+    el.setValidationTrackingEnabled(true);
+    el.adoptPendingValidationErrors({ executionId: 'e1', stepId: 's1' });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it('does not send when there is no live execution', () => {
     const el = mount();
     el.currentFlowContext = { executionId: undefined };
@@ -316,6 +366,27 @@ describe('validationTrackingMixin', () => {
     jest.advanceTimersByTime(5000);
     await Promise.resolve();
     expect(fetchMock).toHaveBeenCalledTimes(1); // retry never fired
+    jest.useRealTimers();
+  });
+
+  it('does not retry a rejected batch (4xx)', async () => {
+    jest.useFakeTimers();
+    fetchMock.mockResolvedValue({ ok: false, status: 400 });
+    const el = mount();
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await Promise.resolve();
+    await Promise.resolve();
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve();
+    // A 400 will not become a 200 - one attempt only.
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     jest.useRealTimers();
   });
 

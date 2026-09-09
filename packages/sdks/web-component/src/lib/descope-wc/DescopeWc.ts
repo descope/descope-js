@@ -710,6 +710,11 @@ class DescopeWc extends BaseDescopeWc {
     this.setValidationTrackingEnabled(
       !!flowConfig.clientValidationTrackingEnabled,
     );
+    // The start screen renders before the flow starts, so validation errors
+    // there are held until an execution exists. This is that moment.
+    if (executionId && isChanged('executionId')) {
+      this.adoptPendingValidationErrors({ executionId, stepId });
+    }
     const projectConfig = await this.getProjectConfig();
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow
