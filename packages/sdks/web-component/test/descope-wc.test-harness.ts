@@ -78,6 +78,11 @@ export const sdk = {
   },
   getLastUserLoginId: jest.fn().mockName('getLastUserLoginId'),
   getLastUserDisplayName: jest.fn().mockName('getLastUserDisplayName'),
+  // The real SDK exposes this; validation tracking uses it to resolve the
+  // region-aware flow API base.
+  httpClient: {
+    buildUrl: (path: string) => `https://api.test${path}`,
+  },
 };
 
 export const nextMock = sdk.flow.next as jest.Mock;

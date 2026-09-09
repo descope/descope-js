@@ -127,4 +127,59 @@ describe('web-component config', () => {
       'http://base.url',
     );
   });
+
+  // Client-side validation tracking is per flow and off unless config.json says
+  // otherwise. These two cover the wiring from the config file to the mixin.
+  describe('client-side validation tracking', () => {
+    const mountFlow = async (flowConfig: Record<string, any>) => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      fixtures.configContent = { flows: { 'sign-in': flowConfig } };
+      fixtures.pageContent = '<div>hey</div>';
+      document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" base-url="http://base.url"></descope-wc>`;
+      await waitFor(() => screen.getByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      return document.querySelector('descope-wc');
+    };
+
+    // Feed the component one failed field and force a flush, the way a real
+    // submit would.
+    const reportOneFailure = (el: any) => {
+      el.trackValidationErrors(
+        [
+          {
+            getAttribute: () => 'email',
+            validity: { valueMissing: true },
+            validationMessage: 'Please fill out this field',
+          },
+        ],
+        { executionId: 'e1', stepId: 's1', stepName: 'Sign in' },
+      );
+      window.dispatchEvent(new Event('pagehide'));
+    };
+
+    const eventCalls = () =>
+      fetchMock.mock.calls.filter((call: any[]) =>
+        String(call[0]).endsWith('/v1/flow/event'),
+      );
+
+    it('sends validation events when the flow config enables it', async () => {
+      const el = await mountFlow({
+        startScreenId: 'screen-0',
+        clientValidationTrackingEnabled: true,
+      });
+
+      reportOneFailure(el);
+
+      expect(eventCalls()).toHaveLength(1);
+    });
+
+    it('sends nothing when the flow config omits the flag', async () => {
+      const el = await mountFlow({ startScreenId: 'screen-0' });
+
+      reportOneFailure(el);
+
+      expect(eventCalls()).toHaveLength(0);
+    });
+  });
 });

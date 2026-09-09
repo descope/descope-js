@@ -699,7 +699,17 @@ class DescopeWc extends BaseDescopeWc {
     const { outboundAppId } = this;
     const { outboundAppScopes } = this;
     const loginId = this.sdk.getLastUserLoginId();
+    // Switching flows: turn validation tracking off before we know the new
+    // flow's setting, so the previous flow's "on" can't carry over while the
+    // config resolves (or stay on for good if it never does).
+    if (isChanged('flowId')) {
+      this.setValidationTrackingEnabled(false);
+    }
     const flowConfig = await this.getFlowConfig();
+    // Per-flow switch from config.json. Absent means off.
+    this.setValidationTrackingEnabled(
+      !!flowConfig.clientValidationTrackingEnabled,
+    );
     const projectConfig = await this.getProjectConfig();
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow

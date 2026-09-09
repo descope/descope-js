@@ -493,6 +493,8 @@ export type FlowConfig = {
   condition?: ClientCondition;
   fingerprintEnabled?: boolean;
   fingerprintKey?: string;
+  // Per-flow switch for client-side validation error tracking. Absent means off.
+  clientValidationTrackingEnabled?: boolean;
   sdkScripts?: [
     {
       id: string;

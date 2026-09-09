@@ -35,10 +35,20 @@ class TestHost extends validationTrackingMixin(HTMLElement) {
 }
 customElements.define('vt-test-host', TestHost);
 
-const mount = (): TestHost => {
+// A host exactly as constructed, with the setter never called.
+const mountRaw = (): TestHost => {
   const el = document.createElement('vt-test-host') as TestHost;
   el.setAttribute('project-id', 'p1');
   document.body.appendChild(el);
+  return el;
+};
+
+// Mounts a host with tracking already switched on, which is what DescopeWc does
+// for a flow whose config enables it. The mixin itself starts off - see the
+// "captures nothing until it is switched on" test, which never calls the setter.
+const mount = (): TestHost => {
+  const el = mountRaw();
+  el.setValidationTrackingEnabled(true);
   return el;
 };
 
@@ -102,6 +112,49 @@ describe('validationTrackingMixin', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     jest.clearAllMocks();
+  });
+
+  it('captures nothing until it is switched on', () => {
+    // The setter is never called here - this is the shipped default, and the
+    // reason a flow whose config says nothing sends nothing.
+    const el = mountRaw();
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    window.dispatchEvent(new Event('pagehide'));
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('drops what it buffered when it is switched off', () => {
+    const el = mount();
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+
+    el.setValidationTrackingEnabled(false);
+    // Every flush trigger, and nothing should go out.
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    window.dispatchEvent(new Event('pagehide'));
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('captures again after being switched back on', () => {
+    const el = mount();
+    el.setValidationTrackingEnabled(false);
+    el.setValidationTrackingEnabled(true);
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('batches and POSTs to the resolved /v1/flow/event URL on flush', () => {

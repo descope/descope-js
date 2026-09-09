@@ -108,6 +108,11 @@ export const validationTrackingMixin = createSingletonMixin(
 
       #listenersAttached = false;
 
+      // Off until the host turns it on from the flow's config.json entry. The
+      // default matters: a host that never calls the setter captures nothing,
+      // so a missing or stale config can never start collecting on its own.
+      #enabled = false;
+
       #boundFlushOnEnd = () => this.#flush(false);
 
       #boundFlushOnHide = () => {
@@ -120,6 +125,17 @@ export const validationTrackingMixin = createSingletonMixin(
 
       get #host(): ValidationTrackingHost {
         return this as unknown as ValidationTrackingHost;
+      }
+
+      /**
+       * Turn capture on or off. The host calls this from the flow's config,
+       * where the setting is per flow and off unless the customer enabled it.
+       * Turning it off drops whatever is buffered without sending it.
+       */
+      setValidationTrackingEnabled(enabled: boolean) {
+        if (this.#enabled === enabled) return;
+        this.#enabled = enabled;
+        if (!enabled) this.#discard();
       }
 
       /**
@@ -137,6 +153,8 @@ export const validationTrackingMixin = createSingletonMixin(
       }
 
       #collect(inputs: HTMLInputElement[], context: FlowContext) {
+        // Not enabled for this flow - capture nothing and attach no listeners.
+        if (!this.#enabled) return;
         if (!inputs?.length) return;
         const ctx = context || {};
         // No execution to attribute to - nothing useful to report.
@@ -187,6 +205,19 @@ export const validationTrackingMixin = createSingletonMixin(
           () => this.#flush(false),
           FLUSH_DEBOUNCE_MS,
         );
+      }
+
+      // Drop everything buffered without sending it, and cancel anything
+      // already scheduled. Used when capture is switched off. Listeners that
+      // were attached while it was on are left in place - they only call
+      // #flush, which does nothing on an empty buffer.
+      #discard() {
+        clearTimeout(this.#flushTimer);
+        this.#retryTimers.forEach(clearTimeout);
+        this.#retryTimers.clear();
+        this.#buffer = [];
+        this.#bufferExecutionId = undefined;
+        this.#bufferStepId = undefined;
       }
 
       #flush(isUnload: boolean) {
