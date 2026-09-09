@@ -1,13 +1,17 @@
 import {
+  ApplicationRef,
   Component,
   ElementRef,
+  EmbeddedViewRef,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
+  Renderer2,
+  TemplateRef,
   ViewChild,
-  AfterViewInit,
   CUSTOM_ELEMENTS_SCHEMA,
   Inject,
   PLATFORM_ID
@@ -24,45 +28,65 @@ import type DescopeWebComponent from '@descope/web-component';
 import type { CustomStorage } from '@descope/web-component';
 import OverrideThemes from '@descope/web-component';
 
+// Node.ELEMENT_NODE, as a literal - the Node global is not guaranteed to exist
+// during server-side rendering.
+const ELEMENT_NODE = 1;
+
 @Component({
   selector: 'descope[flowId]',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  // The subtree is built imperatively (see ngOnInit), so there is nothing for
+  // Angular to hydrate here - it re-renders it on the client instead.
+  host: { ngSkipHydration: 'true' },
+  // The element is intentionally declared inside an <ng-template> instead of
+  // rendered directly. Angular appends an element to the DOM in its creation
+  // pass but applies [attr.*] bindings in the later update pass, so a
+  // <descope-wc> rendered directly here would be connected - and would run its
+  // connectedCallback - before it had a project-id. The custom element reads
+  // project-id at that moment, fails, and can never recover, which broke every
+  // mount after the first (descope/etc#18415). Building the template by hand
+  // lets the bindings run while the nodes are still detached.
   template: `
-    <descope-wc
-      #descopeWc
-      [attr.project-id]="projectId"
-      [attr.flow-id]="flowId"
-      [attr.base-url]="baseUrl"
-      [attr.base-static-url]="baseStaticUrl"
-      [attr.base-cdn-url]="baseCdnUrl"
-      [attr.store-last-authenticated-user]="storeLastAuthenticatedUser"
-      [attr.theme]="theme"
-      [attr.locale]="locale"
-      [attr.tenant]="tenant"
-      [attr.telemetry-key]="telemetryKey"
-      [attr.redirect-url]="redirectUrl"
-      [attr.auto-focus]="autoFocus"
-      [attr.validate-on-blur]="validateOnBlur"
-      [attr.restart-on-error]="restartOnError"
-      [attr.send-session-token]="sendSessionToken"
-      [attr.debug]="debug"
-      [attr.style-id]="styleId"
-      [attr.theme-override]="themeOverride"
-      [attr.client]="clientString"
-      [attr.nonce]="nonceString"
-      [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
-      [attr.popup-origin]="popupOrigin"
-      [attr.form]="formString"
-      [customStorage]="customStorage"
-    >
-      <ng-content></ng-content>
-    </descope-wc>
+    <ng-template #wcTpl>
+      <descope-wc
+        [attr.project-id]="projectId"
+        [attr.flow-id]="flowId"
+        [attr.base-url]="baseUrl"
+        [attr.base-static-url]="baseStaticUrl"
+        [attr.base-cdn-url]="baseCdnUrl"
+        [attr.store-last-authenticated-user]="storeLastAuthenticatedUser"
+        [attr.theme]="theme"
+        [attr.locale]="locale"
+        [attr.tenant]="tenant"
+        [attr.telemetry-key]="telemetryKey"
+        [attr.redirect-url]="redirectUrl"
+        [attr.auto-focus]="autoFocus"
+        [attr.validate-on-blur]="validateOnBlur"
+        [attr.restart-on-error]="restartOnError"
+        [attr.send-session-token]="sendSessionToken"
+        [attr.debug]="debug"
+        [attr.style-id]="styleId"
+        [attr.theme-override]="themeOverride"
+        [attr.client]="clientString"
+        [attr.nonce]="nonceString"
+        [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
+        [attr.popup-origin]="popupOrigin"
+        [attr.form]="formString"
+        [customStorage]="customStorage"
+      >
+        <ng-content></ng-content>
+      </descope-wc>
+    </ng-template>
   `
 })
-export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
-  @ViewChild('descopeWc')
-  private readonly descopeWc!: ElementRef<DescopeWebComponent>;
+export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
+  @ViewChild('wcTpl', { static: true })
+  private readonly wcTpl!: TemplateRef<unknown>;
+
+  private wcView?: EmbeddedViewRef<unknown>;
+
+  private isDestroyed = false;
 
   get clientString(): string | undefined {
     if (!this.client) return undefined;
@@ -137,7 +161,9 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     private elementRef: ElementRef,
     private authService: DescopeAuthService,
     descopeConfig: DescopeAuthConfig,
-    @Inject(PLATFORM_ID) private platformId: object
+    @Inject(PLATFORM_ID) private platformId: object,
+    private appRef: ApplicationRef,
+    private renderer: Renderer2
   ) {
     this.projectId = descopeConfig.projectId;
     this.baseUrl = descopeConfig.baseUrl;
@@ -148,12 +174,58 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-    // Only load web component in browser environment
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
+    // Load the web component before building the element. The order matters:
+    // loadWebComponent sets DescopeWc.sdkConfigOverrides, and if something else
+    // on the page already imported @descope/web-component then descope-wc is
+    // already defined, so the element would initialize the moment it is
+    // connected. Connecting it first would let the flow start without the
+    // Angular SDK's base headers, persistTokens: false, and beforeRequest hook.
+    if (isPlatformBrowser(this.platformId)) {
+      await this.loadWebComponent();
     }
 
-    await this.loadWebComponent();
+    // Built on the server too, so the server-rendered markup keeps containing
+    // descope-wc as it did before. ngSkipHydration means the client re-renders
+    // this subtree anyway, so the server copy only serves the first paint.
+    this.createWebComponent();
+  }
+
+  /**
+   * Builds the template while its nodes are still detached from the document,
+   * applies the attribute bindings, and only then connects the element. This is
+   * what guarantees project-id and flow-id are present when the custom element
+   * runs its connectedCallback.
+   */
+  private createWebComponent(): void {
+    // ngOnInit awaits the import, so the component can already be destroyed by
+    // the time we get here (a route change while the chunk is downloading).
+    // ngOnDestroy has run by then and had no view to clean up, so building one
+    // now would leave it attached to ApplicationRef for good.
+    if (this.isDestroyed || this.wcView) return;
+
+    const view = this.wcTpl.createEmbeddedView(undefined);
+    // Apply the [attr.*] bindings while the nodes are detached.
+    view.detectChanges();
+    // Keep the view change-detected so later input changes reach the attributes.
+    this.appRef.attachView(view);
+    this.wcView = view;
+
+    // rootNodes can include whitespace text nodes, so find the element. The
+    // nodeType is compared to a literal rather than Node.ELEMENT_NODE because
+    // this also runs during SSR, where the Node global may not exist.
+    const element = view.rootNodes.find(
+      (node: { nodeType: number }) => node.nodeType === ELEMENT_NODE
+    ) as DescopeWebComponent | undefined;
+
+    if (!element) return;
+
+    this.webComponent = element;
+    // Connects the element - its connectedCallback runs here, with every
+    // attribute already set.
+    this.renderer.appendChild(this.elementRef.nativeElement, element);
+
+    this.setupNonAttributeProperties();
+    this.setupEventListeners();
   }
 
   private async loadWebComponent(): Promise<void> {
@@ -195,15 +267,24 @@ export class DescopeComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    if (!this.descopeWc?.nativeElement) return;
+  ngOnDestroy(): void {
+    this.isDestroyed = true;
 
-    this.webComponent = this.descopeWc.nativeElement;
-    this.setupNonAttributeProperties();
-    this.setupEventListeners();
+    if (!this.wcView) return;
+
+    this.appRef.detachView(this.wcView);
+    // Removes the element from the DOM, so the web component's
+    // disconnectedCallback runs and cleans up its own listeners.
+    this.wcView.destroy();
+    this.wcView = undefined;
+    this.webComponent = undefined;
   }
 
   ngOnChanges(): void {
+    // The element lives in a manually created view, so refresh it here rather
+    // than relying on the host's change detection reaching it.
+    this.wcView?.detectChanges();
+
     if (this.webComponent) {
       this.setupNonAttributeProperties();
     }
