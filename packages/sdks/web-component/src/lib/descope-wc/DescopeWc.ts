@@ -1525,6 +1525,11 @@ class DescopeWc extends BaseDescopeWc {
       if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
         payload.flowOutput = sdkResp.data.output;
       }
+      // A flow that completes on its first submit returns here before the
+      // execution ever reaches flowState, so onFlowChange's hand-over never
+      // runs. Do it here, or validation errors held from the start screen are
+      // dropped when the component tears down.
+      this.setValidationTrackingExecution(sdkResp.data.executionId);
       this.#dispatch('success', payload);
       return;
     }

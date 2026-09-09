@@ -7,18 +7,29 @@ import { test } from './fixtures/cspFixture.js';
 
 const componentsVersion = '1.2.3';
 
-// Must match the flow-id the demo page renders, or getFlowConfig resolves to an
-// empty object and every flag reads as off.
-const DEMO_FLOW_ID = 'sign-up-or-in';
+// The config has to be keyed under whatever flow-id the demo page was built
+// with, or getFlowConfig resolves to an empty object and every flag reads as
+// off. Read it from the page instead of hardcoding it.
+const demoFlowId = async (page) => {
+  const html = await (await page.request.get('http://localhost:5565/')).text();
+  const match = html.match(/flow-id="([^"]+)"/);
+  if (!match) throw new Error('no flow-id on the demo page');
+  return match[1];
+};
 
-const configFor = (flowConfig: Record<string, unknown>) => ({
-  flows: { [DEMO_FLOW_ID]: { version: 1, ...flowConfig } },
-  componentsVersion,
-});
-
-const setupRoutes = async (page, flowConfig: Record<string, unknown>) => {
+const setupRoutes = async (
+  page,
+  flowConfig: Record<string, unknown>,
+  startResponse?: Record<string, unknown>,
+) => {
+  const flowId = await demoFlowId(page);
   await page.route('*/**/config.json', async (route) =>
-    route.fulfill({ json: configFor(flowConfig) }),
+    route.fulfill({
+      json: {
+        flows: { [flowId]: { version: 1, ...flowConfig } },
+        componentsVersion,
+      },
+    }),
   );
 
   await page.route('*/**/theme.json', async (route) =>
@@ -56,7 +67,7 @@ const setupRoutes = async (page, flowConfig: Record<string, unknown>) => {
 
   await page.route('**/start', async (route) =>
     route.fulfill({
-      json: {
+      json: startResponse ?? {
         executionId: 'pass|#|2tlLFAOthDriBZIOVXahmLnYv8Q',
         stepId: '4',
         status: 'waiting',
@@ -131,6 +142,37 @@ test.describe('client-side validation tracking', () => {
 
     // Tracking must not change what the flow does: the bad value never submits.
     expect(nextCalled).toBe(false);
+  });
+
+  // A single-screen flow can finish on the first submit. That response never
+  // reaches flowState, so the hand-over has to happen on the completed response
+  // itself, or errors held from the start screen are lost.
+  test('sends held errors when the flow completes on the first submit', async ({
+    page,
+  }) => {
+    const events = await setupRoutes(
+      page,
+      {
+        clientValidationTrackingEnabled: true,
+        // The start screen comes from config, so nothing starts until submit.
+        startScreenId: 'start-screen',
+        startScreenName: 'Welcome Screen',
+      },
+      { status: 'completed', executionId: 'exec-done', action: '' },
+    );
+
+    await typeBadEmailAndSubmit(page);
+    await page.waitForTimeout(1000);
+    expect(events).toHaveLength(0);
+
+    // Fix it and continue - this submit both starts and completes the flow.
+    await page.locator('input[name="email"]').fill('someone@example.com');
+    await page.locator('#submit-btn').click();
+
+    await expect.poll(() => events.length, { timeout: 10000 }).toBe(1);
+    const [batch] = events;
+    expect(batch.executionId).toBe('exec-done');
+    expect(batch.events[0].screenName).toBe('Welcome Screen');
   });
 
   test('sends nothing when the flow config omits the flag', async ({
