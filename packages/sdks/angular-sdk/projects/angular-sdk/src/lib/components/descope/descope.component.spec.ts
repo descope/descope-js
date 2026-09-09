@@ -249,7 +249,7 @@ describe('DescopeComponent', () => {
 
     // A stand-in for descope-wc that records what it can see when connected.
     class ProbeElement extends HTMLElement {
-      override connectedCallback() {
+      connectedCallback() {
         connects.push({
           projectId: this.getAttribute('project-id'),
           flowId: this.getAttribute('flow-id'),
