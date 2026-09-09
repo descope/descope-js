@@ -20,9 +20,9 @@ const makeInput = (
 class TestHost extends validationTrackingMixin(HTMLElement) {
   currentFlowContext: {
     executionId?: string;
-    stepId?: string;
-    stepName?: string;
-  } = { executionId: 'e1', stepId: 's1', stepName: 'Sign in' };
+    screenId?: string;
+    screenName?: string;
+  } = { executionId: 'e1', screenId: 'scr-1', screenName: 'Sign in' };
 
   sdk: any = {
     httpClient: { buildUrl: (path: string) => `https://api.test${path}` },
@@ -178,13 +178,16 @@ describe('validationTrackingMixin', () => {
     expect(init.method).toBe('POST');
     expect(init.headers.Authorization).toBe('Bearer p1');
     const body = JSON.parse(init.body);
-    expect(body).toMatchObject({ executionId: 'e1', stepId: 's1' });
+    expect(body).toMatchObject({ executionId: 'e1' });
+    // Validation happens on screens - there is no step in this model.
+    expect(body.stepId).toBeUndefined();
     expect(body.events).toHaveLength(1);
     expect(body.events[0]).toMatchObject({
       field: 'email',
       rule: 'required',
       message: 'Please fill out this field',
-      screen: 'Sign in',
+      screenId: 'scr-1',
+      screenName: 'Sign in',
     });
     expect(body.events[0].id).toBeTruthy();
     expect(typeof body.events[0].ts).toBe('number');
@@ -226,31 +229,31 @@ describe('validationTrackingMixin', () => {
     // Start screen: config-rendered, so no execution yet.
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
-      stepId: '',
-      stepName: 'Welcome Screen',
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
     });
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
     expect(fetchMock).not.toHaveBeenCalled();
 
     // The user fixes the input and continues - the flow now has an execution.
-    el.adoptPendingValidationErrors({ executionId: 'e1', stepId: 's1' });
+    el.adoptPendingValidationErrors({ executionId: 'e1' });
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.executionId).toBe('e1');
-    // The start screen has no step - don't attribute these to the step the
-    // flow happens to be on now.
-    expect(body.stepId).toBe('');
     expect(body.events).toHaveLength(1);
     expect(body.events[0].field).toBe('email');
-    expect(body.events[0].screen).toBe('Welcome Screen');
+    // The event keeps the screen it was captured on.
+    expect(body.events[0].screenId).toBe('start-scr');
+    expect(body.events[0].screenName).toBe('Welcome Screen');
   });
 
   it('drops held start-screen errors if the flow never starts', () => {
     const el = mount();
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
-      stepName: 'Welcome Screen',
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
     });
 
     el.remove(); // the user gave up and left
@@ -263,10 +266,11 @@ describe('validationTrackingMixin', () => {
     const el = mountRaw();
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
-      stepName: 'Welcome Screen',
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
     });
     el.setValidationTrackingEnabled(true);
-    el.adoptPendingValidationErrors({ executionId: 'e1', stepId: 's1' });
+    el.adoptPendingValidationErrors({ executionId: 'e1' });
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -296,28 +300,29 @@ describe('validationTrackingMixin', () => {
     expect(fetchMock.mock.calls[0][1].keepalive).toBe(true);
   });
 
-  it('flushes the previous step before buffering a new one', () => {
+  it('flushes the previous screen before buffering a new one', () => {
     const el = mount();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
     );
-    // step advances
+    // the flow moves to another screen
     el.currentFlowContext = {
       executionId: 'e1',
-      stepId: 's2',
-      stepName: 'Step 2',
+      screenId: 'scr-2',
+      screenName: 'Screen 2',
     };
     el.trackValidationErrors(
       [makeInput('phone', { valueMissing: true })],
       el.currentFlowContext,
     );
 
-    // the s1 batch was flushed automatically when the step changed
+    // the first screen's batch went out on its own when the screen changed
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.stepId).toBe('s1');
+    expect(body.events).toHaveLength(1);
     expect(body.events[0].field).toBe('email');
+    expect(body.events[0].screenId).toBe('scr-1');
   });
 
   it('retries a failed non-unload send, then stops on success', async () => {

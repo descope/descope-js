@@ -26,15 +26,19 @@ export type ValidationErrorEvent = {
   field: string;
   rule: string;
   message: string;
-  screen: string;
+  screenId: string;
+  screenName: string;
   ts: number;
 };
 
-/** The flow context needed to attribute a batch to a point in the funnel. */
+/**
+ * Where a batch belongs. Validation only ever happens on a screen, so the
+ * screen is the location - there is no step in this model.
+ */
 type FlowContext = {
   executionId?: string;
-  stepId?: string;
-  stepName?: string;
+  screenId?: string;
+  screenName?: string;
 };
 
 // The transport handle this mixin reads off the host component (DescopeWc, a
@@ -45,8 +49,8 @@ type ValidationTrackingHost = {
   sdk?: { httpClient?: { buildUrl?: (path: string) => string } };
 };
 
-const dedupeKey = (e: { field: string; rule: string }, stepId?: string) =>
-  `${stepId ?? ''}|${e.field}|${e.rule}`;
+const dedupeKey = (e: { field: string; rule: string }, screenId?: string) =>
+  `${screenId ?? ''}|${e.field}|${e.rule}`;
 
 const newId = (): string => {
   try {
@@ -97,7 +101,8 @@ const toEvent = (
     field,
     rule: deriveValidationRule(input.validity),
     message: input.validationMessage || '',
-    screen: ctx.stepName || '',
+    screenId: ctx.screenId || '',
+    screenName: ctx.screenName || '',
     ts: Date.now(),
   };
 };
@@ -111,11 +116,11 @@ export const validationTrackingMixin = createSingletonMixin(
       // page hide, a size cap, or a short inactivity debounce.
       #buffer: ValidationErrorEvent[] = [];
 
-      // executionId/stepId the current buffer belongs to. A batch is always
-      // single-step (we flush before the step changes).
+      // executionId/screenId the current buffer belongs to. A batch is always
+      // single-screen (we flush before the screen changes).
       #bufferExecutionId?: string;
 
-      #bufferStepId?: string;
+      #bufferScreenId?: string;
 
       #flushTimer?: ReturnType<typeof setTimeout>;
 
@@ -175,16 +180,15 @@ export const validationTrackingMixin = createSingletonMixin(
           if (!ctx.executionId) return;
 
           this.#attachListeners();
-          // The buffer is single-step; don't mix the adopted events into a
-          // batch belonging to another step.
-          if (this.#buffer.length && this.#bufferStepId !== ctx.stepId) {
+          // These belong to the screen they were captured on, which each event
+          // already carries. Flush anything buffered for a different screen
+          // first, then adopt under the held events' own screen.
+          const heldScreenId = this.#pending[0].screenId;
+          if (this.#buffer.length && this.#bufferScreenId !== heldScreenId) {
             this.#flush(false);
           }
           this.#bufferExecutionId = ctx.executionId;
-          // These happened on the start screen, which has no step. Sending the
-          // step the flow has now would point at the wrong place in the funnel;
-          // the screen name on each event is what identifies where it happened.
-          this.#bufferStepId = '';
+          this.#bufferScreenId = heldScreenId;
           this.#buffer.push(...this.#pending);
           this.#pending = [];
           this.#flush(false);
@@ -226,22 +230,22 @@ export const validationTrackingMixin = createSingletonMixin(
         // there is a buffered event, so there's no reason to attach earlier).
         this.#attachListeners();
 
-        // The buffer is single-step. If the step changed since we started
-        // buffering, flush the old step first.
-        if (this.#buffer.length && this.#bufferStepId !== ctx.stepId) {
+        // The buffer is single-screen. If the screen changed since we started
+        // buffering, flush the old screen first.
+        if (this.#buffer.length && this.#bufferScreenId !== ctx.screenId) {
           this.#flush(false);
         }
         this.#bufferExecutionId = ctx.executionId;
-        this.#bufferStepId = ctx.stepId;
+        this.#bufferScreenId = ctx.screenId;
 
         inputs.forEach((input) => {
           const event = toEvent(input, ctx);
           if (!event) return;
-          const key = dedupeKey(event, ctx.stepId);
+          const key = dedupeKey(event, ctx.screenId);
           // Collapse the blur+submit double-fire of the SAME failure. Genuine
           // repeat failures land in a later batch (different flush), so this
           // does not hide real friction signal.
-          if (this.#buffer.some((e) => dedupeKey(e, ctx.stepId) === key))
+          if (this.#buffer.some((e) => dedupeKey(e, ctx.screenId) === key))
             return;
           this.#buffer.push(event);
         });
@@ -286,17 +290,16 @@ export const validationTrackingMixin = createSingletonMixin(
         this.#buffer = [];
         this.#pending = [];
         this.#bufferExecutionId = undefined;
-        this.#bufferStepId = undefined;
+        this.#bufferScreenId = undefined;
       }
 
       #flush(isUnload: boolean) {
         clearTimeout(this.#flushTimer);
         const events = this.#buffer;
         const executionId = this.#bufferExecutionId;
-        const stepId = this.#bufferStepId;
         this.#buffer = [];
         this.#bufferExecutionId = undefined;
-        this.#bufferStepId = undefined;
+        this.#bufferScreenId = undefined;
 
         if (!events.length || !executionId) return;
 
@@ -315,7 +318,7 @@ export const validationTrackingMixin = createSingletonMixin(
               'Content-Type': 'application/json',
               Authorization: `Bearer ${projectId}`,
             },
-            body: JSON.stringify({ executionId, stepId, events }),
+            body: JSON.stringify({ executionId, events }),
           };
           if (isUnload) {
             // Page is going away: single keepalive shot, retry isn't possible.

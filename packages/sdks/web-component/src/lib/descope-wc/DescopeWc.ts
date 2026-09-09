@@ -710,10 +710,13 @@ class DescopeWc extends BaseDescopeWc {
     this.setValidationTrackingEnabled(
       !!flowConfig.clientValidationTrackingEnabled,
     );
+    // Remember the start screen so a validation error there can name it.
+    this.#startScreenId = flowConfig.startScreenId;
+    this.#startScreenName = flowConfig.startScreenName;
     // The start screen renders before the flow starts, so validation errors
     // there are held until an execution exists. This is that moment.
     if (executionId && isChanged('executionId')) {
-      this.adoptPendingValidationErrors({ executionId, stepId });
+      this.adoptPendingValidationErrors({ executionId });
     }
     const projectConfig = await this.getProjectConfig();
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
@@ -1854,15 +1857,25 @@ class DescopeWc extends BaseDescopeWc {
     this.#handlePageSwitchTransition(injectNextPage);
   }
 
-  // Flow context used to attribute client-side validation events to a point in
-  // the funnel (passed to trackValidationErrors at capture time). Private: only
-  // this component reads it.
+  // The start screen is rendered from config.json before the flow starts, so
+  // the flow state has no screen id yet. config.json is the only place that
+  // knows it.
+  #startScreenId?: string;
+
+  #startScreenName?: string;
+
+  // Where a client-side validation event happened (passed to
+  // trackValidationErrors at capture time). Validation only happens on screens,
+  // so the screen is the location. Private: only this component reads it.
   get #currentFlowContext() {
     const flow = this.flowState?.current;
     return {
       executionId: flow?.executionId,
-      stepId: flow?.stepId,
-      stepName: this.stepState?.current?.stepName || flow?.stepName,
+      screenId: flow?.screenId || this.#startScreenId,
+      screenName:
+        this.stepState?.current?.stepName ||
+        flow?.stepName ||
+        this.#startScreenName,
     };
   }
 
