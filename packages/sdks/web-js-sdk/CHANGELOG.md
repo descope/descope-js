@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.53.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.52.1...web-js-sdk-1.53.0) (2026-09-10)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.71.0`
+
+### Features
+
+* support saving and retrieving Descope Known Device (DKD) Token from local storage ([#1474](https://github.com/descope/descope-js/issues/1474)) ([0518830](https://github.com/descope/descope-js/commit/05188302782bc1686be93407154a2b2d0256d4c0)), closes [#1290](https://github.com/descope/descope-js/issues/1290) [#1290](https://github.com/descope/descope-js/issues/1290)
+
 ## [1.52.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.52.0...web-js-sdk-1.52.1) (2026-09-08)
 
 ### Dependency Updates
