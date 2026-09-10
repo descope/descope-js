@@ -148,6 +148,7 @@ export type JWTResponse = {
   sessionExpiration: number;
   claims: Claims;
   trustedDeviceJwt?: string;
+  knownDeviceJwt?: string;
   nextRefreshSeconds?: number;
   externalToken?: string;
 };
