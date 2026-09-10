@@ -207,7 +207,10 @@ const createHttpClient = ({
   };
 
   return {
-    get: (path: string, { headers, queryParams, token } = {}) =>
+    get: (
+      path: string,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -215,6 +218,8 @@ const createHttpClient = ({
         body: undefined,
         method: HTTPMethods.get,
         token,
+        keepalive,
+        disableRetry,
       }),
     post: (
       path,
@@ -231,7 +236,11 @@ const createHttpClient = ({
         keepalive,
         disableRetry,
       }),
-    patch: (path, body, { headers, queryParams, token } = {}) =>
+    patch: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -239,8 +248,14 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.patch,
         token,
+        keepalive,
+        disableRetry,
       }),
-    put: (path, body, { headers, queryParams, token } = {}) =>
+    put: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -248,8 +263,13 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.put,
         token,
+        keepalive,
+        disableRetry,
       }),
-    delete: (path, { headers, queryParams, token } = {}) =>
+    delete: (
+      path,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -257,6 +277,8 @@ const createHttpClient = ({
         body: undefined,
         method: HTTPMethods.delete,
         token,
+        keepalive,
+        disableRetry,
       }),
     hooks,
     buildUrl: (path, queryParams) => {
