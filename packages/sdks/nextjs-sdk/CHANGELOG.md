@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.16.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.71...nextjs-sdk-0.16.0) (2026-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.0`
+* `react-sdk` updated to version `3.3.2`
+* `core-js-sdk` updated to version `2.71.0`
+* `web-component` updated to version `4.3.3`
+
+### Features
+
+* **nextjs-sdk:** add skipRefreshTokenValidation option to authMiddleware ([#1486](https://github.com/descope/descope-js/issues/1486)) RELEASE ([edd051c](https://github.com/descope/descope-js/commit/edd051c38d06359a447049fbdce89b40c6d1848c))
+
 ## [0.15.71](https://github.com/descope/descope-js/compare/nextjs-sdk-0.15.70...nextjs-sdk-0.15.71) (2026-09-08)
 
 ### Dependency Updates
