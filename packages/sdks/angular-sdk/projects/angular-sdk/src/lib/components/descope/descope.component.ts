@@ -213,9 +213,11 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
     view.detectChanges();
     this.wcView = view;
 
-    // rootNodes can include whitespace text nodes, so find the element. The
-    // nodeType is compared to a literal rather than Node.ELEMENT_NODE because
-    // this also runs during SSR, where the Node global may not exist.
+    // The template holds exactly one element, <descope-wc>, and each component
+    // instance builds its own view - so this picks that instance's own element
+    // and never sees another instance's. Selected by node type rather than as
+    // rootNodes[0] so template whitespace can never shift it, and compared
+    // against a literal because Node is not guaranteed to exist during SSR.
     this.webComponent = view.rootNodes.find(
       (node: { nodeType: number }) => node.nodeType === ELEMENT_NODE
     ) as DescopeWebComponent | undefined;

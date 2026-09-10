@@ -4,6 +4,7 @@ import { DescopeComponent } from './descope.component';
 import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
 import { DescopeAuthService } from '../../services/descope-auth.service';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -391,6 +392,102 @@ describe('DescopeComponent', () => {
       // ViewContainerRef throws, and nothing would ever clean it up.
       expect(connects).toHaveLength(0);
       expect(f.nativeElement.querySelector('descope-wc')).toBeNull();
+    });
+
+    // Several <descope> components can sit on one page at the same time. Each
+    // one builds its own view, so nothing is shared between them - these cover
+    // that, since the original bug only showed up on a second mount.
+    describe('multiple instances on the same page', () => {
+      const mountHost = async <T>(host: new () => T) => {
+        TestBed.resetTestingModule();
+        TestBed.configureTestingModule({
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            DescopeAuthConfig,
+            { provide: DescopeAuthConfig, useValue: mockConfig }
+          ]
+        });
+        const f = TestBed.createComponent(host);
+        f.detectChanges();
+        await flush();
+        f.detectChanges();
+        return f;
+      };
+
+      it('gives every instance its attributes before it connects', async () => {
+        @Component({
+          standalone: true,
+          imports: [DescopeComponent],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template: `
+            <descope [flowId]="'sign-in'"></descope>
+            <descope [flowId]="'sign-up'"></descope>
+          `
+        })
+        class TwoFlowsHostComponent {}
+
+        const f = await mountHost(TwoFlowsHostComponent);
+
+        expect(connects).toHaveLength(2);
+        expect(connects.map((c) => c.flowId)).toEqual(['sign-in', 'sign-up']);
+        // every instance saw a project-id, not just the first
+        expect(connects.every((c) => c.projectId === 'someProject')).toBe(true);
+        expect(f.nativeElement.querySelectorAll('descope-wc')).toHaveLength(2);
+      });
+
+      // Running the same project + flow twice is documented as unsupported by
+      // the web component (duplicateFlowWarningMixin warns about it). The
+      // attribute timing still has to hold, so a consumer who does it gets the
+      // warning rather than a flow that silently never starts.
+      it('still sets attributes when the same flow is rendered twice', async () => {
+        @Component({
+          standalone: true,
+          imports: [DescopeComponent],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template: `
+            <descope [flowId]="'sign-in'"></descope>
+            <descope [flowId]="'sign-in'"></descope>
+          `
+        })
+        class SameFlowHostComponent {}
+
+        await mountHost(SameFlowHostComponent);
+
+        expect(connects).toHaveLength(2);
+        expect(
+          connects.every(
+            (c) => c.projectId === 'someProject' && c.flowId === 'sign-in'
+          )
+        ).toBe(true);
+      });
+
+      it('leaves the other instance connected when one is destroyed', async () => {
+        @Component({
+          standalone: true,
+          imports: [DescopeComponent, CommonModule],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template: `
+            <descope *ngIf="showFirst" [flowId]="'sign-in'"></descope>
+            <descope [flowId]="'sign-up'"></descope>
+          `
+        })
+        class TogglableHostComponent {
+          showFirst = true;
+        }
+
+        const f = await mountHost(TogglableHostComponent);
+        const [first, second] = Array.from(
+          f.nativeElement.querySelectorAll('descope-wc')
+        ) as HTMLElement[];
+
+        f.componentInstance.showFirst = false;
+        f.detectChanges();
+
+        // ngOnDestroy destroys that instance's view only
+        expect(first.isConnected).toBe(false);
+        expect(second.isConnected).toBe(true);
+        expect(second.getAttribute('flow-id')).toBe('sign-up');
+      });
     });
 
     it('still renders the element when loading the web component fails', async () => {
