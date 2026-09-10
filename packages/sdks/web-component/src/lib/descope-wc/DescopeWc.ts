@@ -1913,8 +1913,17 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        // Loader component in the screen triggers polling interaction
-        next(CUSTOM_INTERACTIONS.polling, {});
+        // Loader component in the screen triggers polling interaction.
+        // A polling screen is the one screen that starts its own execution: rendering it
+        // fires this interaction, and on a start screen that means calling flow/start. A
+        // widget pre-renders its flows into closed modals, so without this check a polling
+        // screen would run the flow - and whatever follows it - before the user opened
+        // anything (issue 17399).
+        if (this.#shouldDeferStart()) {
+          this.#startWhenVisible();
+        } else {
+          next(CUSTOM_INTERACTIONS.polling, {});
+        }
       }
     };
 

@@ -6,6 +6,7 @@ import {
   teardownWebComponentTestEnv,
   startMock,
   generateSdkResponse,
+  fixtures,
   WAIT_TIMEOUT,
 } from './descope-wc.test-harness';
 
@@ -127,6 +128,34 @@ describe('deferring the start of a hidden flow', () => {
     await Promise.resolve();
 
     expect(startMock).toHaveBeenCalledTimes(1);
+  });
+
+  // A polling screen is the one screen that starts its own execution: rendering it fires
+  // the polling interaction, which on a start screen means calling flow/start. Rendering it
+  // into a closed widget modal must not do that.
+  it('does not fire the polling interaction of a hidden screen', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.configContent = {
+      flows: { 'sign-in': { version: 1, startScreenId: 'screen-1' } },
+      componentsVersion: '1.2.3',
+    };
+    fixtures.pageContent = '<div data-type="polling">waiting</div>';
+
+    const ele = render();
+    setVisibility(ele, false);
+
+    await waitFor(() => expect(observerCallbacks.length).toBeGreaterThan(0), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(startMock).not.toHaveBeenCalled();
+
+    becomeVisible(ele);
+
+    await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+    // the interaction the polling screen fires, passed as flow/start's interactionId
+    expect(startMock.mock.calls[0][3]).toBe('polling');
   });
 
   it('starts on mount when the browser cannot report visibility', async () => {
