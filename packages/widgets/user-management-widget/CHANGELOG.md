@@ -2,6 +2,41 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.19.1](https://github.com/descope/descope-js/compare/user-management-widget-0.19.0...user-management-widget-0.19.1) (2026-09-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.52.1`
+* `web-component` updated to version `4.3.2`
+## [0.19.0](https://github.com/descope/descope-js/compare/user-management-widget-0.18.0...user-management-widget-0.19.0) (2026-09-07)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.3.1`
+* `sdk-mixins` updated to version `0.26.1`
+* `sdk-component-drivers` updated to version `0.16.0`
+
+### Features
+
+* **user-management-widget:** show role descriptions in roles selector ([#1476](https://github.com/descope/descope-js/issues/1476)) ([70b7232](https://github.com/descope/descope-js/commit/70b72322229668aac5467c8a509288a34c1c2de6)), closes [descope/etc#18131](https://github.com/descope/etc/issues/18131)
+
+
+### Bug Fixes
+
+* **user-management-widget:** dedupe re-invited user in the users table RELEASE ([#1480](https://github.com/descope/descope-js/issues/1480)) ([bf6ea0b](https://github.com/descope/descope-js/commit/bf6ea0b1b0d43778ba224b35759d2b91d18901ac)), closes [descope/etc#17997](https://github.com/descope/etc/issues/17997)
+
+## [0.18.0](https://github.com/descope/descope-js/compare/user-management-widget-0.17.2...user-management-widget-0.18.0) (2026-08-24)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.52.0`
+* `web-component` updated to version `4.3.0`
+* `sdk-mixins` updated to version `0.26.0`
+
+### Features
+
+* **widgets:** componentsConditionsMixin to apply server condition verdicts RELEASE ([#1463](https://github.com/descope/descope-js/issues/1463)) ([68634d1](https://github.com/descope/descope-js/commit/68634d17097e9687c96d088ab1ad7cecdd889cbb)), closes [descope/etc#17289](https://github.com/descope/etc/issues/17289)
+
 ## [0.17.2](https://github.com/descope/descope-js/compare/user-management-widget-0.17.1...user-management-widget-0.17.2) (2026-08-17)
 
 ### Dependency Updates

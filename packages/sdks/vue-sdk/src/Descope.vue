@@ -18,6 +18,7 @@
       :therme-override="themeOverride"
       :validate-on-blur="validateOnBlur"
       :restart-on-error="restartOnError"
+      :send-session-token="sendSessionToken"
       :store-last-authenticated-user="storeLastAuthenticatedUser"
       :customStorage.prop="customStorage"
       :errorTransformer.prop="errorTransformer"
@@ -99,6 +100,9 @@ const props = defineProps({
     type: Boolean,
   },
   restartOnError: {
+    type: Boolean,
+  },
+  sendSessionToken: {
     type: Boolean,
   },
   errorTransformer: {

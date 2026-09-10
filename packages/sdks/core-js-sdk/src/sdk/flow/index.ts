@@ -3,7 +3,7 @@ import { HttpClient } from '../../httpClient';
 import { transformResponse } from '../helpers';
 import { FlowResponse, Options, SdkResponse } from '../types';
 import { stringNonEmpty, withValidations } from '../validations';
-import { FlowInput, FlowValidationEvent } from './types';
+import { FlowInput, FlowValidationEvent, NextOptions } from './types';
 
 const withStartValidations = withValidations(stringNonEmpty('flowId'));
 const withNextValidations = withValidations(
@@ -47,6 +47,7 @@ const withFlow = (httpClient: HttpClient) => ({
       componentsVersion?: string,
       input?: FlowInput,
       isCustomScreen = false,
+      options?: NextOptions,
     ): Promise<SdkResponse<FlowResponse>> => {
       return transformResponse(
         httpClient.post(apiPaths.flow.next, {
@@ -57,6 +58,7 @@ const withFlow = (httpClient: HttpClient) => ({
           componentsVersion,
           input,
           isCustomScreen,
+          options,
         }),
       );
     },

@@ -61,9 +61,17 @@ export const getHasPasskey = createSelector(getMe, (me) => me.webauthn);
 export const getHasPassword = createSelector(getMe, (me) => me.password);
 export const getHasTotp = createSelector(getMe, (me) => me.TOTP);
 
+// Shared empty default so the no-attributes case keeps a stable reference
+// across recomputes (getMe is a plain extractor, so this selector re-runs on
+// every me.data replacement; a fresh {} each time would defeat downstream
+// shallow-compare / effect-dep checks).
+const EMPTY_ATTRS: Record<string, any> = {};
+
 export const getUserCustomAttrs = createSelector(
   getMe,
-  (me) => me.customAttributes as Record<string, any>,
+  // Default to an empty object: a user with no custom attributes has an
+  // undefined `customAttributes`, and consumers index into the result.
+  (me) => (me.customAttributes ?? EMPTY_ATTRS) as Record<string, any>,
 );
 
 export const getUserBuiltinAttrs = createSelector(getMe, (me) => ({

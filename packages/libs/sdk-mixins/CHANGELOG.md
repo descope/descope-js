@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.26.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.26.0...sdk-mixins-0.26.1) (2026-09-07)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.16.0`
+
+### Bug Fixes
+
+* **sdk-mixins:** guard process.env telemetry reads for the browser RELEASE ([#1469](https://github.com/descope/descope-js/issues/1469)) ([4c1a89c](https://github.com/descope/descope-js/commit/4c1a89cd3d4487f9c0a46154e695f150ff1a5338))
+
+## [0.26.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.25.0...sdk-mixins-0.26.0) (2026-08-24)
+
+
+### Features
+
+* **widgets:** componentsConditionsMixin to apply server condition verdicts RELEASE ([#1463](https://github.com/descope/descope-js/issues/1463)) ([68634d1](https://github.com/descope/descope-js/commit/68634d17097e9687c96d088ab1ad7cecdd889cbb)), closes [descope/etc#17289](https://github.com/descope/etc/issues/17289)
+
 ## [0.25.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.24.1...sdk-mixins-0.25.0) (2026-08-17)
 
 

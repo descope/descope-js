@@ -148,6 +148,8 @@ export type DescopeProps = {
   autoFocus?: AutoFocusOptions;
   validateOnBlur?: boolean;
   restartOnError?: boolean;
+  // when true, flow start/next requests include the current session JWT, exposing its validated claims to the flow via the sessionJwtClaims context key
+  sendSessionToken?: boolean;
   debug?: boolean;
   telemetryKey?: string;
   redirectUrl?: string;

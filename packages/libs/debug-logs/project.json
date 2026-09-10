@@ -17,6 +17,22 @@
         "command": "pnpm run test",
         "cwd": "packages/libs/debug-logs"
       }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": false,
+        "preset": "conventional"
+      }
+    },
+    "licenseCheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
+        ]
+      }
     }
   },
   "tags": []

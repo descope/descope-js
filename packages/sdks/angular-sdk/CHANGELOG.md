@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.2](https://github.com/descope/descope-js/compare/angular-sdk-0.28.1...angular-sdk-0.28.2) (2026-09-08)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.2`
+* `audit-management-widget` updated to version `0.9.2`
+* `role-management-widget` updated to version `0.10.2`
+* `user-management-widget` updated to version `0.19.1`
+* `user-profile-widget` updated to version `0.18.2`
+* `tenant-profile-widget` updated to version `0.9.2`
+* `applications-portal-widget` updated to version `0.9.2`
+* `web-component` updated to version `4.3.2`
+* `web-js-sdk` updated to version `1.52.1`
+* `core-js-sdk` updated to version `2.70.1`
+## [0.28.1](https://github.com/descope/descope-js/compare/angular-sdk-0.28.0...angular-sdk-0.28.1) (2026-09-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.1`
+* `audit-management-widget` updated to version `0.9.1`
+* `role-management-widget` updated to version `0.10.1`
+* `user-management-widget` updated to version `0.19.0`
+* `user-profile-widget` updated to version `0.18.1`
+* `tenant-profile-widget` updated to version `0.9.1`
+* `applications-portal-widget` updated to version `0.9.1`
+* `web-component` updated to version `4.3.1`
+## [0.28.0](https://github.com/descope/descope-js/compare/angular-sdk-0.27.16...angular-sdk-0.28.0) (2026-08-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.0`
+* `audit-management-widget` updated to version `0.9.0`
+* `role-management-widget` updated to version `0.10.0`
+* `user-management-widget` updated to version `0.18.0`
+* `user-profile-widget` updated to version `0.18.0`
+* `tenant-profile-widget` updated to version `0.9.0`
+* `applications-portal-widget` updated to version `0.9.0`
+* `web-component` updated to version `4.3.0`
+* `web-js-sdk` updated to version `1.52.0`
+* `core-js-sdk` updated to version `2.70.0`
+
+### Features
+
+* **web-component:** opt-in send-session-token to expose session JWT claims to flows ([#1467](https://github.com/descope/descope-js/issues/1467)) RELEASE ([369d986](https://github.com/descope/descope-js/commit/369d986cbb895f268e924c9c782cf97b6d63e695))
+
 ## [0.27.16](https://github.com/descope/descope-js/compare/angular-sdk-0.27.15...angular-sdk-0.27.16) (2026-08-17)
 
 ### Dependency Updates

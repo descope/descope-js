@@ -148,6 +148,7 @@ export type JWTResponse = {
   sessionExpiration: number;
   claims: Claims;
   trustedDeviceJwt?: string;
+  knownDeviceJwt?: string;
   nextRefreshSeconds?: number;
   externalToken?: string;
 };
@@ -353,6 +354,8 @@ export type FlowResponse = {
 
 export type Options = {
   redirectUrl?: string;
+  // current session JWT, exposing its validated claims to the flow via the sessionJwtClaims context key
+  sessionJwt?: string;
   location?: string;
   tenant?: string;
   deviceInfo?: DeviceInfo;

@@ -1,5 +1,9 @@
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { debuggerMixin, themeMixin } from '@descope/sdk-mixins';
+import {
+  componentsConditionsMixin,
+  debuggerMixin,
+  themeMixin,
+} from '@descope/sdk-mixins';
 import { initCreateRoleButtonMixin } from './initComponentsMixins/initCreateRoleButtonMixin';
 import { initDeleteRolesButtonMixin } from './initComponentsMixins/initDeleteRolesButtonMixin';
 import { initDuplicateRoleButtonMixin } from './initComponentsMixins/initDuplicateRoleButtonMixin';
@@ -21,6 +25,9 @@ export const initMixin = createSingletonMixin(
       initEditRoleButtonMixin,
       initFilterRolesInputMixin,
       initNotificationsMixin,
+      // Last so its init wraps the widget render: it fires the conditions fetch
+      // before render and applies the verdict in onWidgetRootReady.
+      componentsConditionsMixin,
     )(superclass) {
       async init() {
         await super.init?.();

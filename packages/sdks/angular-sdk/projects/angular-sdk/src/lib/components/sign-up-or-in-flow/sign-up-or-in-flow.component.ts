@@ -26,6 +26,7 @@ export class SignUpOrInFlowComponent {
   @Input() autoFocus: true | false | 'skipFirstScreen';
   @Input() validateOnBlur: boolean;
   @Input() restartOnError: boolean;
+  @Input() sendSessionToken: boolean;
 
   @Input() debug: boolean;
   @Input() errorTransformer: (error: { text: string; type: string }) => string;

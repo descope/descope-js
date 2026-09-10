@@ -1,4 +1,5 @@
 import createWebSdk from '@descope/web-js-sdk';
+import type { ConditionsHttpClient } from '@descope/sdk-mixins';
 import { createRoleSdk } from './createRoleSdk';
 import { createTenantSdk } from './createTenantSdk';
 
@@ -23,6 +24,9 @@ export const createSdk = (
   return {
     role: createRoleSdk({ httpClient: webSdk.httpClient, tenant, mock }),
     tenant: createTenantSdk({ httpClient: webSdk.httpClient, tenant, mock }),
+    // Exposed (narrowed to a minimal type) so the shared conditions mixin reuses
+    // this same webSdk instance for its fetch instead of creating its own.
+    httpClient: webSdk.httpClient as ConditionsHttpClient,
   };
 };
 
