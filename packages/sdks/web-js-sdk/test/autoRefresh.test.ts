@@ -470,8 +470,6 @@ describe('autoRefresh', () => {
   });
 
   it('should not refresh token when visibilitychange event and there is no session', async () => {
-    const loggerDebugMock = logger.debug as jest.Mock;
-
     const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
     const refreshSpy = jest
       .spyOn(sdk, 'refresh')
@@ -479,14 +477,11 @@ describe('autoRefresh', () => {
 
     await new Promise(process.nextTick);
 
-    // trigger visibilitychange event and ensure refresh called
+    // trigger visibilitychange event and ensure refresh is not called
+    // (the logger is not asserted here - it is shared with sdk instances leaked from previous tests)
     const event = new Event('visibilitychange');
     document.dispatchEvent(event);
     expect(refreshSpy).not.toHaveBeenCalled();
-
-    expect(loggerDebugMock).not.toHaveBeenCalledWith(
-      'Expiration time passed, refreshing session',
-    );
   });
 
   it('should refresh token when visibilitychange event and session expired', async () => {
@@ -516,7 +511,7 @@ describe('autoRefresh', () => {
     expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
 
     expect(loggerDebugMock).toHaveBeenCalledWith(
-      'Expiration time passed, refreshing session',
+      'Session is expired or about to expire, refreshing session',
     );
     loggerDebugMock.mockClear();
   });
@@ -557,7 +552,7 @@ describe('autoRefresh', () => {
     expect(setTimeoutSpy).not.toBeCalled();
   });
 
-  it('should refresh token when visibilitychange event and session is not expired', async () => {
+  it('should not refresh token when visibilitychange event and session is not close to expiration', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
     const mockFetch = jest.fn().mockReturnValue(
@@ -1020,5 +1015,57 @@ describe('autoRefresh', () => {
       writable: true,
       configurable: true,
     });
+  });
+
+  it('should refresh when tab becomes visible before expiration but within the refresh threshold', async () => {
+    // reproduces the "20 second hole": the refresh timer fires while the tab is hidden and is skipped,
+    // the user returns after the scheduled refresh time but before the session expired,
+    // and without a refresh here the session expires in a visible tab with no timer pending
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 45; // 45 seconds from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+
+    // the tab is hidden when the refresh timer fires, so the refresh is skipped
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'hidden',
+      writable: true,
+      configurable: true,
+    });
+    timeoutFn();
+    expect(refreshSpy).not.toHaveBeenCalled();
+
+    // the user returns while the session is still valid but past its scheduled refresh time
+    jest.useFakeTimers();
+    try {
+      jest.setSystemTime(Date.now() + 30 * 1000); // 15 seconds before expiration
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        writable: true,
+        configurable: true,
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
