@@ -28,7 +28,6 @@ const configContent = {
 };
 
 const STATE_TIMEOUT = 2000;
-const MODAL_TIMEOUT = 500;
 
 test.describe('early flow execution (issue 17399)', () => {
   let started: string[];
@@ -106,8 +105,9 @@ test.describe('early flow execution (issue 17399)', () => {
       .first();
 
     await editBtn.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
-    expect(started).toHaveLength(1);
+    // opening the modal makes the flow visible, which triggers polling, which starts the
+    // flow - a chain of a render and a request, so poll for it rather than guess a delay
+    await expect.poll(() => started.length, { timeout: 15000 }).toBe(1);
   });
 });
