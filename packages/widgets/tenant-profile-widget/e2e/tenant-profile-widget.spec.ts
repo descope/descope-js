@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import {
+  installWidgetReadyProbe,
+  waitForWidgetReady,
+} from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import { mockTenant, mockTenantAdminLinkSSO } from '../test/mocks/mockTenant';
 import mockTheme from '../test/mocks/mockTheme';
@@ -17,6 +21,10 @@ const STATE_TIMEOUT = 2000;
 
 test.describe('tenant profile widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await installWidgetReadyProbe(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -82,7 +90,7 @@ test.describe('tenant profile widget', () => {
     );
 
     await page.goto(`http://localhost:${widgetPort}`);
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
   });
 
   const mockTenantAfterEdit = {
@@ -157,7 +165,7 @@ test.describe('tenant profile widget', () => {
           .locator(`descope-button[data-id="${attr.action}-btn"]`)
           .first();
 
-        editBtn.click();
+        await editBtn.click();
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
@@ -174,7 +182,7 @@ test.describe('tenant profile widget', () => {
           }),
         );
 
-        finishFlowBtn.click();
+        await finishFlowBtn.click();
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 

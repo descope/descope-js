@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import {
+  installWidgetReadyProbe,
+  waitForWidgetReady,
+} from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -24,6 +28,10 @@ const apiPath = (prop: 'outboundApps' | 'user', path: string) =>
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await installWidgetReadyProbe(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -74,6 +82,7 @@ test.describe('widget', () => {
     );
 
     await page.goto(`http://localhost:${widgetPort}`);
+    await waitForWidgetReady(page);
   });
 
   test('apps are in the list', async ({ page }) => {
@@ -178,7 +187,7 @@ test.describe('widget', () => {
           .locator('descope-modal[data-id="outbound-apps-disconnect"]')
           .locator('button', { hasText: 'Finish Flow' });
 
-        finishFlowBtn.click();
+        await finishFlowBtn.click();
 
         await page.waitForTimeout(STATE_TIMEOUT);
 
@@ -187,7 +196,7 @@ test.describe('widget', () => {
           .first()
           .getByText('Connect');
 
-        expect(connectBtn).toBeVisible();
+        await expect(connectBtn).toBeVisible();
       });
 
       test('forwards caller client/form flow inputs into the disconnect flow', async ({
@@ -275,18 +284,18 @@ test.describe('widget', () => {
           .nth(1)
           .getByText('Disconnect');
 
-        expect(disconnectBtn).toBeVisible();
+        await expect(disconnectBtn).toBeVisible();
       });
     });
 
+    // The widget reads `tenant` lazily (apiMixin's `get tenantId()`), and
+    // `tenant` is NOT in its observedAttributes - only
+    // `allowed-outbound-apps-ids` is. So a tenant set after init never triggers
+    // a refetch. It has to be in place before the widget initializes, which is
+    // how a consumer sets it (an attribute at mount time, as the demo app does).
     test('handle tenant id', async ({ page }) => {
-      await page.evaluate(() => {
-        const widget = document.querySelector(
-          'descope-outbound-applications-widget',
-        );
-        widget?.setAttribute('tenant', 'mocktenantid');
-      });
-
+      // this tenant-scoped response is the only one that reports obapp2 as
+      // connected, so seeing its effect proves tenantId reached the API
       await page.route(
         apiPath('outboundApps', 'connectedOutboundApps') +
           `?userId=${mockUser.userId}&tenantId=mocktenantid`,
@@ -296,23 +305,39 @@ test.describe('widget', () => {
           }),
       );
 
-      await page.waitForTimeout(STATE_TIMEOUT);
+      await page.addInitScript(() => {
+        // Mount the widget with a tenant. The demo app sets `tenant` from its
+        // build-time DESCOPE_TENANT (empty for this widget) right after
+        // createElement, so pin the attribute on this one element rather than
+        // just setting it - otherwise the shell immediately clears it again.
+        const originalCreateElement = document.createElement.bind(document);
+        document.createElement = function patchedCreateElement(
+          ...args: Parameters<Document['createElement']>
+        ) {
+          const element = originalCreateElement(...args);
+          if (args[0] === 'descope-outbound-applications-widget') {
+            const originalSetAttribute = element.setAttribute.bind(element);
+            element.setAttribute = (name: string, value: string) =>
+              originalSetAttribute(
+                name,
+                name === 'tenant' ? 'mocktenantid' : value,
+              );
+            originalSetAttribute('tenant', 'mocktenantid');
+          }
+          return element;
+        } as Document['createElement'];
+      });
 
-      const connectBtn = page
-        .locator('descope-list-item')
-        .nth(1)
-        .getByText('Connect');
+      await page.reload();
+      await waitForWidgetReady(page);
 
-      expect(connectBtn).toBeVisible({ timeout: 3000 });
-
-      await page.waitForTimeout(STATE_TIMEOUT);
-
+      // obapp2 is connected only in the tenant-scoped response
       const disconnectBtn = page
         .locator('descope-list-item')
         .nth(1)
         .getByText('Disconnect');
 
-      expect(disconnectBtn).toBeVisible();
+      await expect(disconnectBtn).toBeVisible();
     });
   });
 });

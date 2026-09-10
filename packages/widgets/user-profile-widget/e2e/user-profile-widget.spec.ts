@@ -1,4 +1,8 @@
 import { test, expect } from '@playwright/test';
+import {
+  installWidgetReadyProbe,
+  waitForWidgetReady,
+} from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import { mockUser } from '../test/mocks/mockUser';
 import mockTheme from '../test/mocks/mockTheme';
@@ -16,6 +20,10 @@ const STATE_TIMEOUT = 2000;
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await installWidgetReadyProbe(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -72,7 +80,7 @@ test.describe('widget', () => {
     );
 
     await page.goto(`http://localhost:${widgetPort}`);
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
   });
 
   test('avatar', async ({ page }) => {
@@ -116,7 +124,7 @@ test.describe('widget', () => {
       }
     });
 
-    logout.click();
+    await logout.click();
 
     await page.waitForTimeout(STATE_TIMEOUT);
 
@@ -143,7 +151,7 @@ test.describe('widget', () => {
           .locator(`descope-button[data-id="${attr.action}-btn"]`)
           .first();
 
-        editBtn.click();
+        await editBtn.click();
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
@@ -157,7 +165,7 @@ test.describe('widget', () => {
           }),
         );
 
-        finishFlowBtn.click();
+        await finishFlowBtn.click();
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
@@ -276,7 +284,7 @@ test.describe('widget', () => {
         .locator(`descope-button[data-id="edit-btn"]`)
         .first();
 
-      editBtn.click();
+      await editBtn.click();
       await page.waitForTimeout(MODAL_TIMEOUT);
 
       await expect(
@@ -306,7 +314,7 @@ test.describe('widget', () => {
 
         const editBtn = userAttr.locator(`descope-button`).first();
 
-        editBtn.click();
+        await editBtn.click();
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 
@@ -326,7 +334,7 @@ test.describe('widget', () => {
 
         await finishFlowBtn.waitFor({ state: 'visible' });
 
-        finishFlowBtn.click();
+        await finishFlowBtn.click();
 
         await page.waitForTimeout(MODAL_TIMEOUT);
 

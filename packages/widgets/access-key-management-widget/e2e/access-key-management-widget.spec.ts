@@ -1,4 +1,8 @@
 import { test, expect } from '@playwright/test';
+import {
+  installWidgetReadyProbe,
+  waitForWidgetReady,
+} from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -59,6 +63,10 @@ const readShadowDomElementValue = (
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await installWidgetReadyProbe(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -160,9 +168,8 @@ test.describe('widget', () => {
       route.fulfill({ json: { componentsState: {} } }),
     );
 
-    await page.goto(`http://localhost:${widgetPort}`, {
-      waitUntil: 'networkidle',
-    });
+    await page.goto(`http://localhost:${widgetPort}`);
+    await waitForWidgetReady(page);
   });
 
   test('access keys table', async ({ page }) => {
@@ -265,7 +272,7 @@ test.describe('widget', () => {
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // delete button initial state is disabled
-    expect(deleteAccessKeyTrigger).toBeDisabled();
+    await expect(deleteAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
@@ -273,14 +280,14 @@ test.describe('widget', () => {
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete button is enabled on selection
-    expect(deleteAccessKeyTrigger).toBeEnabled();
+    await expect(deleteAccessKeyTrigger).toBeEnabled();
 
     // delete access keys
     await deleteAccessKeyTrigger.click();
 
     // show delete access keys modal
     const deleteAccessKeyModal = page.locator('text=Delete Access Keys');
-    expect(deleteAccessKeyModal).toBeVisible();
+    await expect(deleteAccessKeyModal).toBeVisible();
 
     // click modal delete button
     await deleteAccessKeyModalButton.click();
@@ -321,7 +328,7 @@ test.describe('widget', () => {
     await page.waitForTimeout(MODAL_TIMEOUT);
 
     // deactivate button is enabled on selection
-    expect(deactivateAccessKeyTrigger).toBeEnabled();
+    await expect(deactivateAccessKeyTrigger).toBeEnabled();
 
     // deactivate access keys
     await deactivateAccessKeyTrigger.click();
@@ -482,7 +489,7 @@ test.describe('widget', () => {
 
     // show delete access keys modal
     const deleteAccessKeyModal = page.locator('text=Delete Access Keys');
-    expect(deleteAccessKeyModal).toBeVisible();
+    await expect(deleteAccessKeyModal).toBeVisible();
 
     // click modal delete button
     await deleteAccessKeyModalButton.click();
@@ -517,7 +524,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithNonEditable.keys }),
       }),
     );
-    page.reload();
+    await page.reload();
     await page.waitForLoadState('networkidle');
 
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -550,7 +557,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithNonEditable.keys }),
       }),
     );
-    page.reload();
+    await page.reload();
     await page.waitForLoadState('networkidle');
 
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -583,7 +590,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
+    await page.reload();
     await page.waitForLoadState('networkidle');
 
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -615,7 +622,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
+    await page.reload();
     await page.waitForLoadState('networkidle');
 
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -833,7 +840,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
+    await page.reload();
     await page.waitForLoadState('networkidle');
 
     await page.waitForTimeout(STATE_TIMEOUT);
@@ -864,7 +871,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
+    await page.reload();
     await page.waitForLoadState('networkidle');
 
     await page.waitForTimeout(STATE_TIMEOUT);
