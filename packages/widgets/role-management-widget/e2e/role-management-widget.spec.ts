@@ -257,8 +257,6 @@ test.describe('widget', () => {
   });
 
   test('search roles', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
-
     // Handle all search requests (initial empty-text mount call AND the user-typed
     // call). Branch on `text` to filter — asserting inside the handler would race
     // with the initial mount call where text is "".

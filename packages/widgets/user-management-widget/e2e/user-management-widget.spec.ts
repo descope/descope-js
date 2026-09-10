@@ -39,9 +39,6 @@ const configContent = {
 const apiPath = (prop: 'user' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
-
 const getTableBodyCellContentLocatorByIndex = async (
   page: Page,
   rowIdx: number,
@@ -369,7 +366,11 @@ test.describe('widget', () => {
     // open add user modal
     await openEditUserModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // the modal's content is fetched separately from the widget's own init, so
+    // wait for something inside it rather than assuming it is open
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible();
 
     const editUserEmailInput = page.getByLabel('Email').last();
     const editUserNameInput = page.getByLabel('Name').last();
@@ -429,7 +430,12 @@ test.describe('widget', () => {
 
     await openEditUserModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // page.evaluate does not auto-wait, so the modal has to be open first.
+    // Wait on the modal rather than on descope-phone-field: several modals
+    // carry one, and the first in document order sits in a closed modal.
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible();
 
     await page.evaluate(() => {
       const phoneField = document.querySelector(
@@ -1135,9 +1141,8 @@ test.describe('widget', () => {
       }),
     );
     await page.goto(`http://localhost:${widgetPort}`);
-    await page.waitForLoadState('networkidle');
-    // let the widget finish init and wire the generic-flow button
-    await page.waitForTimeout(STATE_TIMEOUT);
+    // `ready` fires once init has wired the generic-flow button
+    await waitForWidgetReady(page);
 
     // a consumer sets client/form on the widget element; the widget reads them
     // lazily when it opens a flow
@@ -1195,7 +1200,9 @@ test.describe('widget', () => {
     });
 
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible();
 
     await page.getByLabel('Login Id').first().fill('someLoginId@test.com');
     await page
@@ -1307,9 +1314,13 @@ test.describe('widget', () => {
       .getByTestId('create-user-modal-cancel')
       .first()
       .click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
-    // Reopen the modal — sub-tenant section should still be visible (not broken by reset)
+    // the modal has to close before it can be reopened
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeHidden();
+
+    // Reopen the modal — sub-tenant section should still be visible (notbroken by reset)
     await page.getByTestId('create-user-trigger').first().click();
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
@@ -1335,7 +1346,9 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible();
 
     const responsePromise = page.waitForResponse(apiPath('user', 'update'));
     await page
@@ -1371,7 +1384,6 @@ test.describe('widget', () => {
 
     await page.reload();
     await waitForWidgetReady(page);
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // Open create modal — should not trigger the API either
     await page.getByTestId('create-user-trigger').first().click();
@@ -1389,7 +1401,13 @@ test.describe('widget', () => {
     );
     await cellContentLocator.click();
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // You cannot wait for the absence of a call, so anchor on a positive event
+    // that must happen after it would have: once the edit modal is open, every
+    // action that could have triggered getSubTenantRoles has run.
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible();
 
     expect(subTenantRolesCallCount).toBe(0);
   });

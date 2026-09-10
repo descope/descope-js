@@ -32,8 +32,6 @@ const configContent = {
 const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 // Reads `.value` from a custom element matching `selector` anywhere in the
@@ -391,8 +389,6 @@ test.describe('widget', () => {
   });
 
   test('search access keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
-
     // Handle all search requests (initial empty-text mount call AND the user-typed
     // call). Branch on `text` to filter — asserting inside the handler would race
     // with the initial mount call where text is "".
@@ -492,7 +488,6 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys for non editable key', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -501,9 +496,7 @@ test.describe('widget', () => {
       }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     const deactivateAccessKeyTrigger = page
       .getByTestId('deactivate-access-keys-trigger')
@@ -523,7 +516,6 @@ test.describe('widget', () => {
   });
 
   test('activate access keys for non editable key', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -532,9 +524,7 @@ test.describe('widget', () => {
       }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
@@ -554,7 +544,6 @@ test.describe('widget', () => {
   });
 
   test('activate button is disabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -563,9 +552,7 @@ test.describe('widget', () => {
       }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
@@ -584,7 +571,6 @@ test.describe('widget', () => {
   });
 
   test('deactivate button is disabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -593,9 +579,7 @@ test.describe('widget', () => {
       }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     const deactivateAccessKeyTrigger = page
       .getByTestId('deactivate-access-keys-trigger')
@@ -623,9 +607,6 @@ test.describe('widget', () => {
         },
       }),
     );
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -701,9 +682,6 @@ test.describe('widget', () => {
         }),
       }),
     );
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -744,9 +722,6 @@ test.describe('widget', () => {
         },
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -764,7 +739,10 @@ test.describe('widget', () => {
 
     // cancel → modal closes, no API call, no reveal
     await rotateModalCancelButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // You cannot wait for the absence of a call, so anchor on the modal
+    // closing: by then anything the cancel could have triggered has run.
+    await expect(page.locator('text=Rotate access key').first()).toBeHidden();
 
     expect(rotateCalls).toBe(0);
     await expect(page.locator('text=Access key secret rotated')).toBeHidden();
@@ -790,7 +768,6 @@ test.describe('widget', () => {
   });
 
   test('rotate button is disabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -799,9 +776,7 @@ test.describe('widget', () => {
       }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
@@ -819,7 +794,6 @@ test.describe('widget', () => {
   });
 
   test('delete button is still enabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -828,9 +802,7 @@ test.describe('widget', () => {
       }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     const deleteAccessKeyTrigger = page
       .getByTestId('delete-access-keys-trigger')

@@ -15,9 +15,6 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
-
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
@@ -87,9 +84,6 @@ test.describe('widget', () => {
     const avatar = page.locator('descope-avatar').first();
 
     await avatar.click();
-
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     const finishFlowBtn = page
       .locator('descope-modal[data-id="update-pic"]')
       .locator('button', { hasText: 'Finish Flow' });
@@ -102,9 +96,10 @@ test.describe('widget', () => {
 
     await finishFlowBtn.click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    expect(await avatar.getAttribute('img')).toBe(
+    // web-first form, so it retries until the avatar updates instead of
+    // reading the attribute once after a fixed delay
+    await expect(avatar).toHaveAttribute(
+      'img',
       'https://example.com/avatar.jpg',
     );
   });
@@ -112,19 +107,15 @@ test.describe('widget', () => {
   test('logout', async ({ page }) => {
     const logout = page.locator('descope-button[data-id="logout"]').first();
 
-    let isLoggedOut = false;
-
-    page.on('request', (request) => {
-      if (request.url().endsWith('/auth/logout')) {
-        isLoggedOut = true;
-      }
-    });
+    // The request itself is the signal, so wait for it rather than sleeping and
+    // then checking a flag. Registered before the click so it cannot be missed.
+    const logoutRequest = page.waitForRequest((request) =>
+      request.url().endsWith('/auth/logout'),
+    );
 
     await logout.click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    expect(isLoggedOut).toBe(true);
+    await logoutRequest;
   });
   test.describe('user attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
@@ -146,9 +137,6 @@ test.describe('widget', () => {
           .first();
 
         await editBtn.click();
-
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         const finishFlowBtn = page
           .locator(`descope-modal[data-id="${attr.action}-${attr.name}"]`)
           .locator('button', { hasText: 'Finish Flow' });
@@ -202,10 +190,8 @@ test.describe('widget', () => {
         .locator('descope-modal[data-id="delete-phone"]')
         .locator('button', { hasText: 'Finish Flow' })
         .click();
-      await page.waitForTimeout(STATE_TIMEOUT);
-
-      // the phone value cleared...
-      expect(await phoneAttr.getAttribute('value')).toBe('');
+      // the phone value cleared... (web-first, so it retries)
+      await expect(phoneAttr).toHaveAttribute('value', '');
 
       // ...and the preloaded edit-phone flow was rebuilt (fresh element, so the
       // tag is gone). Without the fix the element is built only once and would
@@ -294,8 +280,6 @@ test.describe('widget', () => {
 
         await editBtn.click();
 
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         await page.route('**/auth/me', async (route) =>
           route.fulfill({
             json: { ...mockUser, [attr.flagPath]: true },
@@ -313,9 +297,6 @@ test.describe('widget', () => {
         await finishFlowBtn.waitFor({ state: 'visible' });
 
         await finishFlowBtn.click();
-
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         if (attr.fulfilled !== null) {
           await expect(userAttr).toHaveAttribute('fulfilled', attr.fulfilled);
         } else {
@@ -335,7 +316,7 @@ test.describe('widget', () => {
     ) => {
       await page.route('**/v1/mgmt/widget/components-state', fulfill);
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
+      await waitForWidgetReady(page);
     };
 
     const passkey = (page) =>
@@ -381,7 +362,7 @@ test.describe('widget', () => {
         route.fulfill({ body: genericFlowButtonRoot }),
       );
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
+      await waitForWidgetReady(page);
     });
 
     test('discovers [data-generic-flow-button-id] and enables it on init', async ({
@@ -458,7 +439,16 @@ test.describe('widget', () => {
       page,
     }) => {
       await page.locator('[data-generic-flow-button-id]').first().click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
+
+      // The flow element has to exist before dispatching into it. Note the
+      // modal is deliberately NOT opened here - that only happens on
+      // `page-updated`, which the neighboring test covers - so wait for the
+      // element itself rather than for opened="true".
+      await expect(
+        page
+          .locator('descope-modal[data-id="generic-flow-modal"]')
+          .locator('descope-wc'),
+      ).toBeAttached();
 
       const getMeRequest = page.waitForRequest(
         (req) => req.url().includes('/auth/me') && req.method() === 'GET',
