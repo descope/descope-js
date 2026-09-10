@@ -295,8 +295,6 @@ export const validationTrackingMixin = createSingletonMixin(
       #scheduleRetry(url: string, init: RequestInit, retriesLeft: number) {
         // A request already in flight when tracking is switched off would
         // otherwise keep retrying past the switch.
-        // A request already in flight when tracking is switched off would
-        // otherwise keep retrying past the switch.
         if (!this.#enabled) return;
         const attempt = MAX_SEND_RETRIES - retriesLeft + 1;
         const timer = setTimeout(() => {
