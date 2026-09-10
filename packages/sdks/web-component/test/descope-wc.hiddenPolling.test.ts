@@ -20,15 +20,14 @@ import '../src/lib/descope-wc';
 // into closed modals, so that would run the flow - and whatever its polling edges lead to -
 // before the user opened anything. See issue 17399.
 describe('polling interaction of a hidden flow', () => {
-  let observerCallbacks: (() => void)[];
-
   const setVisibility = (ele: Element, visible: boolean) => {
     Object.assign(ele, { checkVisibility: () => visible });
   };
 
+  // the deferred flow re-checks visibility on a timer
   const becomeVisible = (ele: Element) => {
     setVisibility(ele, true);
-    observerCallbacks.forEach((cb) => cb());
+    jest.advanceTimersByTime(500);
   };
 
   const render = (attrs = '') => {
@@ -38,23 +37,10 @@ describe('polling interaction of a hidden flow', () => {
 
   beforeEach(() => {
     setupWebComponentTestEnv();
-
-    observerCallbacks = [];
-    // jsdom has no ResizeObserver - collect the callbacks so the test can fire them
-    global.ResizeObserver = class {
-      constructor(cb: () => void) {
-        observerCallbacks.push(cb);
-      }
-
-      observe() {}
-
-      disconnect() {}
-    } as any;
   });
 
   afterEach(() => {
     teardownWebComponentTestEnv();
-    delete global.ResizeObserver;
   });
 
   const renderPollingScreen = () => {
@@ -91,9 +77,10 @@ describe('polling interaction of a hidden flow', () => {
     const ele = renderPollingScreen();
     setVisibility(ele, false);
 
-    await waitFor(() => expect(observerCallbacks.length).toBeGreaterThan(0), {
-      timeout: WAIT_TIMEOUT,
-    });
+    await waitFor(
+      () => expect(ele.shadowRoot.textContent).toContain('waiting'),
+      { timeout: WAIT_TIMEOUT },
+    );
 
     becomeVisible(ele);
 
@@ -102,7 +89,7 @@ describe('polling interaction of a hidden flow', () => {
     });
 
     // the failure's flowState update re-enters onFlowChange; nothing should start again
-    observerCallbacks.forEach((cb) => cb());
+    jest.advanceTimersByTime(500);
     await Promise.resolve();
 
     expect(startMock).toHaveBeenCalledTimes(1);
@@ -117,9 +104,10 @@ describe('polling interaction of a hidden flow', () => {
     const ele = renderPollingScreen();
     setVisibility(ele, false);
 
-    await waitFor(() => expect(observerCallbacks.length).toBeGreaterThan(0), {
-      timeout: WAIT_TIMEOUT,
-    });
+    await waitFor(
+      () => expect(ele.shadowRoot.textContent).toContain('waiting'),
+      { timeout: WAIT_TIMEOUT },
+    );
     expect(startMock).not.toHaveBeenCalled();
 
     becomeVisible(ele);

@@ -110,7 +110,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #sdkScriptsLoading = null;
 
-  #visibilityObserver: ResizeObserver | null = null;
+  #visibilityTimer: ReturnType<typeof setInterval> | null = null;
 
   // whether the component already started this flow by itself, rather than on user input
   #autoStartAttempted = false;
@@ -528,7 +528,7 @@ class DescopeWc extends BaseDescopeWc {
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();
     this.#resetPollingTimeout();
-    this.#clearVisibilityObserver();
+    this.#clearVisibilityTimer();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
 
@@ -537,6 +537,9 @@ class DescopeWc extends BaseDescopeWc {
       this.#eventsCbRefs.visibilitychange,
     );
   }
+
+  // How often a deferred flow re-checks whether it became visible
+  static #VISIBILITY_POLL_INTERVAL = 250;
 
   // Whether the flow is hidden from the user, so anything the component would do by
   // itself has to wait. A widget preloading a modal is the common case.
@@ -554,28 +557,31 @@ class DescopeWc extends BaseDescopeWc {
 
   // Re-runs onFlowChange once the flow is visible, which re-renders the screen and gets
   // it back to whatever it deferred - with fresh state, nothing captured.
+  //
+  // Checked on a timer rather than with a ResizeObserver: becoming visible does not
+  // necessarily change the element's box - a screen whose content lays out to nothing
+  // keeps a zero size whether its modal is open or closed - and a resize that never
+  // arrives is a flow that never resumes.
   #resumeWhenVisible() {
+    if (this.#visibilityTimer) return;
+
     this.loggerWrapper.debug('Deferred until the flow becomes visible');
 
-    if (this.#visibilityObserver || typeof ResizeObserver === 'undefined') {
-      return;
-    }
-
-    // the element gets a box when the modal containing it opens
-    this.#visibilityObserver = new ResizeObserver(() => {
+    this.#visibilityTimer = setInterval(() => {
       if (this.#shouldWaitForVisibility()) return;
 
-      this.#clearVisibilityObserver();
+      this.#clearVisibilityTimer();
       // reqTimestamp is the existing cache-buster for forcing a state change (see
       // #handleSdkResponse), which is exactly what re-entering onFlowChange needs
       this.flowState.update({ reqTimestamp: Date.now() });
-    });
-    this.#visibilityObserver.observe(this);
+    }, DescopeWc.#VISIBILITY_POLL_INTERVAL);
   }
 
-  #clearVisibilityObserver() {
-    this.#visibilityObserver?.disconnect();
-    this.#visibilityObserver = null;
+  #clearVisibilityTimer() {
+    if (this.#visibilityTimer) {
+      clearInterval(this.#visibilityTimer);
+      this.#visibilityTimer = null;
+    }
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
