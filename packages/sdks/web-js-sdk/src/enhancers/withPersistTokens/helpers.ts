@@ -88,8 +88,7 @@ export const persistTokens = (
   refreshTokenViaCookie: boolean | CookieConfig = false,
 ): LastCookieOptions | undefined => {
   // persist refresh token
-  const { sessionJwt, refreshJwt, trustedDeviceJwt, knownDeviceJwt } =
-    authInfo;
+  const { sessionJwt, refreshJwt, trustedDeviceJwt, knownDeviceJwt } = authInfo;
   let cookieOptions: LastCookieOptions | undefined;
 
   if (refreshJwt) {
@@ -304,17 +303,12 @@ export const beforeRequest =
       };
     }
 
-    // A trusted device is a known device by definition - the backend derives known-device state
-    // from a valid trusted-device token whenever no DKD is presented, so there's no need to send
-    // both on every request. Only attach DKD when there's no DTD to send instead.
-    if (!dtd) {
-      const dkd = getKnownDeviceToken(prefix);
-      if (dkd) {
-        updatedConfig.headers = {
-          ...(updatedConfig.headers || {}),
-          'x-descope-known-device-token': dkd,
-        };
-      }
+    const dkd = getKnownDeviceToken(prefix);
+    if (dkd) {
+      updatedConfig.headers = {
+        ...(updatedConfig.headers || {}),
+        'x-descope-known-device-token': dkd,
+      };
     }
 
     return updatedConfig;
