@@ -451,6 +451,29 @@ describe('authMiddleware', () => {
 			expect(NextResponse.redirect).toHaveBeenCalled();
 		});
 
+		it('allows access with a valid session token when skipRefreshTokenValidation is true', async () => {
+			mockValidateJwt.mockResolvedValueOnce({
+				jwt: 'validSessionJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			});
+
+			const middleware = authMiddleware({
+				skipRefreshTokenValidation: true
+			});
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'validSessionJwt', DSR: 'validRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			expect(mockValidateJwt).toHaveBeenCalledTimes(1);
+			expect(mockValidateJwt).toHaveBeenCalledWith('validSessionJwt');
+
+			expect(NextResponse.redirect).not.toHaveBeenCalled();
+			expect(NextResponse.next).toHaveBeenCalled();
+		});
+
 		it('allows access to public routes even when both tokens fail', async () => {
 			// Both calls fail
 			mockValidateJwt

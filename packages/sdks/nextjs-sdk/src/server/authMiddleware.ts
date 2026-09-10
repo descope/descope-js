@@ -74,6 +74,9 @@ const getRefreshJwt = (
 	req: NextRequest,
 	options: MiddlewareOptions
 ): string | undefined => {
+	if (options?.skipRefreshTokenValidation) {
+		return undefined;
+	}
 	const refreshJwt = req.cookies?.get(
 		options?.refreshTokenCookieName || 'DSR'
 	)?.value;
@@ -151,9 +154,7 @@ const createAuthMiddleware =
 			logger.debug('[Auth middleware] Failed to validate session JWT', err);
 
 			// Try to validate the refresh token instead
-			const refreshJwt = options.skipRefreshTokenValidation
-				? undefined
-				: getRefreshJwt(req, options);
+			const refreshJwt = getRefreshJwt(req, options);
 			if (refreshJwt) {
 				logger.debug('[Auth middleware] Attempting to validate refresh token');
 				try {

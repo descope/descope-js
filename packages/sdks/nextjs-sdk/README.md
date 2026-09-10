@@ -308,6 +308,15 @@ const options = {
 };
 ```
 
+###### What the app is expected to do
+
+A user with an expired session token and a still valid refresh token is redirected to the sign-in route.
+On the client, `AuthProvider` refreshes the session token from the refresh token on its own (`autoRefresh` is on by default), so the user becomes authenticated again without re-authenticating.
+
+Your sign-in page is expected to send an already authenticated user away, otherwise they will sit on it.
+Rendering `<Descope />` with `redirectAfterSuccess` covers this, as does checking `useSession()` and routing away yourself.
+The redirect replaces the original pathname and only carries over its query parameters, so if you want to return the user to the page they came from, capture it yourself before redirecting.
+
 ##### Read session information in server side
 
 use the `session()` helper to read session information in Server Components and Route handlers.
