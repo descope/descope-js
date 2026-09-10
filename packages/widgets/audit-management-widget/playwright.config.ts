@@ -24,6 +24,10 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  /* Ceiling for web-first assertions. Not a delay: a fast machine returns as
+     soon as the condition holds. Replaces the ad-hoc per-call timeouts that
+     were sprinkled around the specs, and covers slower CI containers. */
+  expect: { timeout: 15_000 },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'html' : 'line',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -92,10 +96,17 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort} -C`,
+      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort} -C --no-port-switching`,
+      // Without a url, playwright starts this and moves straight on: the widget
+      // then loads the components bundle from a server that may not be
+      // listening yet, and every descope-* element silently fails to upgrade.
+      // Point it at the actual bundle, not just the root.
+      url: `http://localhost:${componentsPort}/umd/index.js`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
     },
     {
-      command: `npx serve build -l ${widgetPort}`,
+      command: `npx serve build -l ${widgetPort} --no-port-switching`,
       url: `http://localhost:${widgetPort}`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
