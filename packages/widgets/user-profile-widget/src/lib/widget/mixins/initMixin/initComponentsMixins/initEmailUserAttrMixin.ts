@@ -59,8 +59,13 @@ export const initEmailUserAttrMixin = createSingletonMixin(
 
       #initEditModalContent() {
         this.#editModal.setContent(
-          this.createFlowTemplate({ flowId: this.emailUserAttr.editFlowId }),
+          this.createFlowTemplate({
+            flowId: this.emailUserAttr.editFlowId,
+            // preload the flow, but only create an execution once opened
+            lazyStart: true,
+          }),
         );
+        this.#editModal.beforeOpen = () => this.#editFlow.start();
         this.#editFlow.onSuccess(() => {
           this.#editModal.close();
           this.actions.getMe();

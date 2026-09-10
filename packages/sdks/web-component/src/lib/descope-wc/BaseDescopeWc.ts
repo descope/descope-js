@@ -402,6 +402,18 @@ class BaseDescopeWc extends BaseClass {
         }
       };
     });
+
+    // While `lazy-start` is set, hold every flow start call until start() is
+    // called. Wrapping the sdk fn holds all call sites at once, and sits outside
+    // the wrapper above so the session JWT is read when the call is really sent.
+    const startFn = this.sdk.flow.start;
+    this.sdk.flow.start = async (
+      ...args: Parameters<typeof startFn>
+    ): ReturnType<typeof startFn> => {
+      await this.#waitForStart();
+
+      return startFn.apply(this.sdk.flow, args);
+    };
   }
 
   // adds the current session JWT to a flow request options (opt-in via the
@@ -470,6 +482,42 @@ class BaseDescopeWc extends BaseClass {
 
   #handleComponentsContext(e: CustomEvent) {
     this.#componentsContext = { ...this.#componentsContext, ...e.detail };
+  }
+
+  // Holds the flow's start call, so a host can preload a flow (config,
+  // components, first screen) without creating a flow execution - e.g. a modal
+  // that builds its flow ahead of being opened. `start()` is then the only way
+  // that flow starts.
+  get lazyStart() {
+    return this.getAttribute('lazy-start') === 'true';
+  }
+
+  #startGate: Promise<void> | undefined;
+
+  #releaseStartGate: (() => void) | undefined;
+
+  // resolves immediately unless `lazy-start` is set, in which case it waits for
+  // start()
+  #waitForStart(): Promise<void> {
+    if (!this.lazyStart) return Promise.resolve();
+
+    if (!this.#startGate) {
+      this.#startGate = new Promise((resolve) => {
+        this.#releaseStartGate = resolve;
+      });
+    }
+
+    return this.#startGate;
+  }
+
+  // Start a flow rendered with `lazy-start`. Safe to call before the flow
+  // reached the held start call - it then goes through on arrival. The gate is
+  // latched open rather than re-armed, so a flow restart (e.g. restart-on-error)
+  // is not left waiting for another call.
+  start() {
+    this.#releaseStartGate?.();
+    this.#startGate = Promise.resolve();
+    this.#releaseStartGate = undefined;
   }
 
   get isRestartOnError() {
