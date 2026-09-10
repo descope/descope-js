@@ -68,6 +68,7 @@ import {
   ClientScript,
   ComponentsConfig,
   CustomScreenState,
+  FlowConfig,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
@@ -119,6 +120,18 @@ class DescopeWc extends BaseDescopeWc {
     super(flowState.update.bind(flowState));
 
     this.flowState = flowState;
+
+    // The validation-tracking mixin captures and batches; delivery is ours, so
+    // validation events go out over the same SDK that runs flow.start and
+    // flow.next. `this.sdk` is read when a batch is actually sent, by which
+    // point it exists. A 4xx will never turn into a 2xx, so only 5xx and 429
+    // are worth another attempt.
+    this.setValidationTrackingSender(
+      async ({ executionId, events }, { keepalive }) => {
+        const res = await this.sdk.flow.event(executionId, events, keepalive);
+        return { ok: res.ok, retryable: res.code >= 500 || res.code === 429 };
+      },
+    );
   }
 
   #eventsCbRefs = {
@@ -501,6 +514,9 @@ class DescopeWc extends BaseDescopeWc {
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    // Flush + detach any client-side validation tracking (validationTrackingMixin).
+    this.teardownValidationTracking();
+
     // Drop our handle from the native bridge (mirror of the init-time register).
     if (this.#bridgeKey) {
       (window as any).descopeBridge?.unregisterFlow?.(this.#bridgeKey);
@@ -696,7 +712,13 @@ class DescopeWc extends BaseDescopeWc {
     const { outboundAppId } = this;
     const { outboundAppScopes } = this;
     const loginId = this.sdk.getLastUserLoginId();
+    // Switching flows: turn tracking off before we know the new flow's setting,
+    // so the previous flow's "on" cannot carry over while the config resolves.
+    if (isChanged('flowId')) {
+      this.setValidationTrackingEnabled(false);
+    }
     const flowConfig = await this.getFlowConfig();
+    this.#syncValidationTracking(flowConfig, executionId, isChanged);
     const projectConfig = await this.getProjectConfig();
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow
@@ -755,20 +777,25 @@ class DescopeWc extends BaseDescopeWc {
         ));
         clientScripts.push(...(conditionScripts || []));
       } else if (flowConfig.condition) {
-        ({ startScreenId, conditionInteractionId } = calculateCondition(
-          flowConfig.condition,
-          {
+        ({ startScreenId, startScreenName, conditionInteractionId } =
+          calculateCondition(flowConfig.condition, {
             loginId,
             code,
             token,
             abTestingKey,
             lastAuth: getLastAuth(loginId, this.loggerWrapper),
-          },
-        ));
+          }));
       } else {
         startScreenName = flowConfig.startScreenName;
         startScreenId = flowConfig.startScreenId;
       }
+
+      // Which screen the config actually renders first is only known here: with
+      // conditions, it is chosen above rather than read from the flow config.
+      // Validation errors on that screen are held until the flow starts, so the
+      // identity they carry has to be the resolved one.
+      this.#startScreenId = startScreenId;
+      this.#startScreenName = startScreenName;
 
       this.#sdkScriptsLoading = this.loadSdkScripts(clientScripts);
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
@@ -1504,6 +1531,11 @@ class DescopeWc extends BaseDescopeWc {
       if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
         payload.flowOutput = sdkResp.data.output;
       }
+      // A flow that completes on its first submit returns here before the
+      // execution ever reaches flowState, so onFlowChange's hand-over never
+      // runs. Do it here, or validation errors held from the start screen are
+      // dropped when the component tears down.
+      this.setValidationTrackingExecution(sdkResp.data.executionId);
       this.#dispatch('success', payload);
       return;
     }
@@ -1791,7 +1823,9 @@ class DescopeWc extends BaseDescopeWc {
         this.updateUsernameAnchor();
 
         if (this.validateOnBlur) {
-          handleReportValidityOnBlur(rootElement);
+          handleReportValidityOnBlur(rootElement, (input) =>
+            this.trackValidationErrors([input], this.#currentFlowContext),
+          );
         }
 
         // we need to wait for all components to render before we can set its value
@@ -1834,8 +1868,64 @@ class DescopeWc extends BaseDescopeWc {
     this.#handlePageSwitchTransition(injectNextPage);
   }
 
+  // The start screen is rendered from config.json before the flow starts, so
+  // the flow state has no screen id yet. Set in onFlowChange once conditions
+  // have picked the screen, because #currentFlowContext is sync and cannot
+  // resolve them itself.
+  #startScreenId?: string;
+
+  #startScreenName?: string;
+
+  // Everything the validation-tracking mixin needs from a flow change, in one
+  // place: whether this flow wants it, which screen the config renders first,
+  // and the moment an execution finally exists to attribute held events to.
+  #syncValidationTracking(
+    flowConfig: FlowConfig,
+    executionId: string,
+    isChanged: IsChanged<FlowState>,
+  ) {
+    // Per-flow switch from config.json. Absent means off.
+    this.setValidationTrackingEnabled(
+      !!flowConfig.clientValidationTrackingEnabled,
+    );
+    // The start screen renders before the flow starts, so errors there are
+    // held until an execution exists. This is that moment.
+    if (executionId && isChanged('executionId')) {
+      this.setValidationTrackingExecution(executionId);
+    }
+  }
+
+  // Where a client-side validation event happened (passed to
+  // trackValidationErrors at capture time). Validation only happens on screens,
+  // so the screen is the location. Private: only this component reads it.
+  //
+  // screenName is the screen task's name - what the flow author sees on the
+  // node and the end user sees as the screen. There is no separate screen-name
+  // field in the model; config.json's startScreenName is the same task name.
+  get #currentFlowContext() {
+    const flow = this.flowState?.current;
+    // With no live execution we are on the config-rendered start screen. The
+    // flow state can still hold the previous screen here - a restart and a
+    // flow-id change clear only executionId/stepId - so the config wins.
+    if (!flow?.executionId) {
+      return {
+        executionId: undefined,
+        screenId: this.#startScreenId ?? flow?.screenId,
+        screenName:
+          this.#startScreenName ??
+          (this.stepState?.current?.stepName || flow?.stepName),
+      };
+    }
+    return {
+      executionId: flow.executionId,
+      screenId: flow.screenId,
+      screenName: this.stepState?.current?.stepName || flow.stepName,
+    };
+  }
+
   #validateInputs() {
     let isValid = true;
+    const invalidInputs: HTMLInputElement[] = [];
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
@@ -1844,10 +1934,20 @@ class DescopeWc extends BaseDescopeWc {
           return;
         }
         input.reportValidity?.();
+        // Collect from the validity reportValidity just computed - avoids an
+        // extra checkValidity() call (and the extra `invalid` event it fires).
+        if (input.validity && !input.validity.valid) {
+          invalidInputs.push(input);
+        }
         if (isValid) {
           isValid = input.checkValidity?.();
         }
       });
+
+    // Best-effort: report the fields that failed validation on submit.
+    if (invalidInputs.length) {
+      this.trackValidationErrors(invalidInputs, this.#currentFlowContext);
+    }
 
     return isValid;
   }

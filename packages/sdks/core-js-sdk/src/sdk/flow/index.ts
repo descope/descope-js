@@ -3,7 +3,7 @@ import { HttpClient } from '../../httpClient';
 import { transformResponse } from '../helpers';
 import { FlowResponse, Options, SdkResponse } from '../types';
 import { stringNonEmpty, withValidations } from '../validations';
-import { FlowInput, NextOptions } from './types';
+import { FlowInput, FlowValidationEvent, NextOptions } from './types';
 
 const withStartValidations = withValidations(stringNonEmpty('flowId'));
 const withNextValidations = withValidations(
@@ -11,6 +11,7 @@ const withNextValidations = withValidations(
   stringNonEmpty('stepId'),
   stringNonEmpty('interactionId'),
 );
+const withEventValidations = withValidations(stringNonEmpty('executionId'));
 
 const withFlow = (httpClient: HttpClient) => ({
   start: withStartValidations(
@@ -61,6 +62,29 @@ const withFlow = (httpClient: HttpClient) => ({
         }),
       );
     },
+  ),
+  /**
+   * Report client-side form validation failures for a running flow. Best-effort
+   * telemetry: the backend relays them to the project's connectors and persists
+   * nothing. `keepalive` lets a final batch survive the page going away.
+   *
+   * disableRetry: the caller already retries a failed batch on its own. Letting
+   * the shared transient-error retry run as well would multiply one failure
+   * into many POSTs against an endpoint that is deliberately rate limited.
+   */
+  event: withEventValidations(
+    (
+      executionId: string,
+      events: FlowValidationEvent[],
+      keepalive?: boolean,
+    ): Promise<SdkResponse<never>> =>
+      transformResponse(
+        httpClient.post(
+          apiPaths.flow.event,
+          { executionId, events },
+          { keepalive, disableRetry: true },
+        ),
+      ),
   ),
 });
 

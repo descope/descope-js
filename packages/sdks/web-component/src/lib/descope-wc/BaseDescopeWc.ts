@@ -36,6 +36,7 @@ import {
   componentConditionsMixin,
   duplicateFlowWarningMixin,
   passwordManagerMixin,
+  validationTrackingMixin,
 } from '../mixins';
 import {
   AutoFocusOptions,
@@ -63,6 +64,7 @@ const BaseClass = compose(
   passwordManagerMixin,
   injectStyleMixin,
   telemetryMixin,
+  validationTrackingMixin,
 )(HTMLElement);
 
 // this base class is responsible for WC initialization
