@@ -110,6 +110,11 @@ class DescopeWc extends BaseDescopeWc {
 
   #sdkScriptsLoading = null;
 
+  #visibilityTimer: ReturnType<typeof setInterval> | null = null;
+
+  // whether the component already started this flow by itself, rather than on user input
+  #autoStartAttempted = false;
+
   constructor() {
     const flowState = new State<FlowState>({
       deferredRedirect: false,
@@ -498,6 +503,19 @@ class DescopeWc extends BaseDescopeWc {
     await super.init?.();
   }
 
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string,
+    newValue: string,
+  ) {
+    if (oldValue !== newValue) {
+      // BaseDescopeWc treats an attribute change as a deliberate restart (it clears
+      // stepId/executionId), so a flow whose start failed may be auto-started again
+      this.#autoStartAttempted = false;
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
 
@@ -510,6 +528,7 @@ class DescopeWc extends BaseDescopeWc {
     this.flowState.unsubscribeAll();
     this.stepState.unsubscribeAll();
     this.#resetPollingTimeout();
+    this.#clearVisibilityTimer();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
 
@@ -517,6 +536,52 @@ class DescopeWc extends BaseDescopeWc {
       'visibilitychange',
       this.#eventsCbRefs.visibilitychange,
     );
+  }
+
+  // How often a deferred flow re-checks whether it became visible
+  static #VISIBILITY_POLL_INTERVAL = 250;
+
+  // Whether the flow is hidden from the user, so anything the component would do by
+  // itself has to wait. A widget preloading a modal is the common case.
+  #shouldWaitForVisibility() {
+    // a native webview may never report the element as visible, and the host asked for
+    // this flow explicitly
+    if (this.nativeOptions) return false;
+
+    // only wait when the browser positively reports the element as hidden - engines
+    // without checkVisibility keep the previous behavior
+    return (
+      typeof this.checkVisibility === 'function' && !this.checkVisibility()
+    );
+  }
+
+  // Re-runs onFlowChange once the flow is visible, which re-renders the screen and gets
+  // it back to whatever it deferred - with fresh state, nothing captured.
+  //
+  // Checked on a timer rather than with a ResizeObserver: becoming visible does not
+  // necessarily change the element's box - a screen whose content lays out to nothing
+  // keeps a zero size whether its modal is open or closed - and a resize that never
+  // arrives is a flow that never resumes.
+  #resumeWhenVisible() {
+    if (this.#visibilityTimer) return;
+
+    this.loggerWrapper.debug('Deferred until the flow becomes visible');
+
+    this.#visibilityTimer = setInterval(() => {
+      if (this.#shouldWaitForVisibility()) return;
+
+      this.#clearVisibilityTimer();
+      // reqTimestamp is the existing cache-buster for forcing a state change (see
+      // #handleSdkResponse), which is exactly what re-entering onFlowChange needs
+      this.flowState.update({ reqTimestamp: Date.now() });
+    }, DescopeWc.#VISIBILITY_POLL_INTERVAL);
+  }
+
+  #clearVisibilityTimer() {
+    if (this.#visibilityTimer) {
+      clearInterval(this.#visibilityTimer);
+      this.#visibilityTimer = null;
+    }
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
@@ -560,6 +625,8 @@ class DescopeWc extends BaseDescopeWc {
 
   async #handleFlowRestart() {
     this.loggerWrapper.debug('Trying to restart the flow');
+    // a restart is deliberate, so the flow may be auto-started again
+    this.#autoStartAttempted = false;
     const prevCompVersion = await this.getComponentsVersion();
     this.reset();
     const compVersion = await this.getComponentsVersion();
@@ -1820,8 +1887,24 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        // Loader component in the screen triggers polling interaction
-        next(CUSTOM_INTERACTIONS.polling, {});
+        // Loader component in the screen triggers polling interaction - on a start screen
+        // that call is what starts the flow, so it waits until the user can see it.
+        // Re-triggering while running is just the polling loop; before that it would
+        // re-start the flow on every render, hence the guard.
+        const running = Boolean(this.flowState.current.executionId);
+
+        if (this.#shouldWaitForVisibility()) {
+          this.#resumeWhenVisible();
+        } else if (!running && this.#autoStartAttempted) {
+          this.loggerWrapper.debug(
+            'Flow was already auto-started by this element - not starting again',
+          );
+        } else {
+          if (!running) {
+            this.#autoStartAttempted = true;
+          }
+          next(CUSTOM_INTERACTIONS.polling, {});
+        }
       }
     };
 
