@@ -43,6 +43,13 @@ type MiddlewareOptions = {
 	// Defaults to 'DSR'
 	// Used to refresh the session when the JWT expires
 	refreshTokenCookieName?: string;
+
+	// Skip the refresh token validation fallback
+	// By default, a valid refresh token is enough to pass the middleware even
+	// when the session token is expired. Set to true to require a valid session
+	// token, e.g. when server side code relies on `session()`
+	// Defaults to false
+	skipRefreshTokenValidation?: boolean;
 };
 
 const getSessionJwt = (
@@ -144,7 +151,9 @@ const createAuthMiddleware =
 			logger.debug('[Auth middleware] Failed to validate session JWT', err);
 
 			// Try to validate the refresh token instead
-			const refreshJwt = getRefreshJwt(req, options);
+			const refreshJwt = options.skipRefreshTokenValidation
+				? undefined
+				: getRefreshJwt(req, options);
 			if (refreshJwt) {
 				logger.debug('[Auth middleware] Attempting to validate refresh token');
 				try {
