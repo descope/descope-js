@@ -1032,6 +1032,33 @@ describe('createFetchLogger', () => {
       expect(response.retries).toBe(3);
     });
 
+    it('should not retry when the request opts out', async () => {
+      // Callers that run their own bounded retry (best-effort telemetry) opt
+      // out, so a single failure is not multiplied by two stacked policies.
+      fetch.mockResolvedValue({
+        ok: false,
+        text: () => 'Error',
+        url: 'http://descope.com/',
+        headers: new Headers({ header: 'header' }),
+        status: 503,
+        statusText: 'Service Unavailable',
+      });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'POST',
+        headers: new Headers({ test: '123' }),
+        disableRetry: true,
+      } as any);
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      // One attempt only, where the same 503 would otherwise cost four.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(503);
+      expect(response.retries).toBeUndefined();
+    });
+
     it('should use correct delays: 100ms for first retry, 5000ms for subsequent retries', async () => {
       fetch
         .mockResolvedValueOnce({

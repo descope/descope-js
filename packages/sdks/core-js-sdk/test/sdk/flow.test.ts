@@ -167,7 +167,7 @@ describe('Flows', () => {
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         '/v1/flow/event',
         { executionId: 'e1', events },
-        { keepalive: undefined },
+        { keepalive: undefined, disableRetry: true },
       );
       expect(resp.ok).toBe(true);
     });
@@ -185,7 +185,27 @@ describe('Flows', () => {
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         '/v1/flow/event',
         expect.anything(),
-        { keepalive: true },
+        { keepalive: true, disableRetry: true },
+      );
+    });
+
+    it('should opt out of the shared retry so one failure is not multiplied', async () => {
+      // The caller retries a failed batch itself. If the shared transient-error
+      // retry ran too, a single 503 would turn into many POSTs against an
+      // endpoint that is deliberately rate limited.
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        json: () => ({}),
+        clone: () => ({ json: () => Promise.resolve({}) }),
+        status: 200,
+      });
+
+      await sdk.flow.event('e1', []);
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/event',
+        expect.anything(),
+        expect.objectContaining({ disableRetry: true }),
       );
     });
 

@@ -206,6 +206,36 @@ describe('web-component config', () => {
       expect(event.screenName).toBe('Welcome Screen');
     });
 
+    it('uses the condition-resolved screen, not the flow-level config', async () => {
+      // With conditions, the screen the config renders first is picked by
+      // calculateConditions and there is no flow-level startScreenId at all.
+      // The held error must carry the resolved screen, not an empty identity.
+      // 'ELSE' always matches, so the resolved screen is deterministic here.
+      const el = await mountFlow({
+        clientValidationTrackingEnabled: true,
+        conditions: [
+          {
+            key: 'ELSE',
+            met: {
+              screenId: 'condition-screen-id',
+              screenName: 'Condition Screen',
+              interactionId: 'else-branch',
+            },
+          },
+        ],
+      });
+
+      submitEmpty(el);
+      expect(eventCalls()).toHaveLength(0); // held, no execution yet
+
+      el.setValidationTrackingExecution('exec-1');
+
+      expect(eventCalls()).toHaveLength(1);
+      const event = lastEvent();
+      expect(event.screenId).toBe('condition-screen-id');
+      expect(event.screenName).toBe('Condition Screen');
+    });
+
     it('uses the running flow screen identity once the flow has started', async () => {
       // No startScreenId, so the component starts the flow and renders the
       // screen the response names.

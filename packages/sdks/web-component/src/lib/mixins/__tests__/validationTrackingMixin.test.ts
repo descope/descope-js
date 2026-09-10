@@ -558,6 +558,131 @@ describe('validationTrackingMixin', () => {
     expect(sentOptions().keepalive).toBe(true);
   });
 
+  it('does not attribute a later batch to a finished execution', () => {
+    // A flow that starts with no validation errors: adoption runs against an
+    // empty buffer and must not leave the execution id behind.
+    const el = mount();
+    el.setValidationTrackingExecution('e1');
+
+    // The flow restarts, so the component is back on the config-rendered start
+    // screen with no execution. An error here belongs to the NEXT execution,
+    // not the finished one.
+    el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
+      executionId: undefined,
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
+    });
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    // Held, not sent to the expired execution.
+    expect(senderMock).not.toHaveBeenCalled();
+
+    // The new execution arrives and the held error goes out under it.
+    el.setValidationTrackingExecution('e2');
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    expect(sentBatch().executionId).toBe('e2');
+  });
+
+  it('sends every failure of a big submit, not just the first MAX_BATCH_SIZE', () => {
+    const el = mount();
+    // One submit, 25 distinct invalid fields, and a live execution - so the
+    // batch is deliverable and nothing has to be dropped.
+    const inputs = Array.from({ length: 25 }, (_, i) =>
+      makeInput(`field-${i}`, { valueMissing: true }),
+    );
+    el.trackValidationErrors(inputs, el.currentFlowContext);
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(senderMock).toHaveBeenCalledTimes(2);
+    expect(sentBatch(0).events).toHaveLength(20);
+    expect(sentBatch(1).events).toHaveLength(5);
+    // Every field is accounted for exactly once.
+    const fields = [...sentBatch(0).events, ...sentBatch(1).events].map(
+      (e: any) => e.field,
+    );
+    expect(new Set(fields).size).toBe(25);
+  });
+
+  it('still caps what it holds when the batch cannot be sent', () => {
+    const el = mount();
+    // Same 25 failures, but no execution - nothing is deliverable, so the cap
+    // has to stay a hard bound or an abandoned start screen grows forever.
+    const inputs = Array.from({ length: 25 }, (_, i) =>
+      makeInput(`field-${i}`, { valueMissing: true }),
+    );
+    el.trackValidationErrors(inputs, {
+      executionId: undefined,
+      screenId: 'start-scr',
+      screenName: 'Welcome Screen',
+    });
+    expect(senderMock).not.toHaveBeenCalled();
+
+    el.setValidationTrackingExecution('e1');
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    expect(sentBatch().events).toHaveLength(20);
+  });
+
+  it('does not schedule a retry when the send fails after teardown', async () => {
+    jest.useFakeTimers();
+    // The failure lands only after the component is gone - the case a plain
+    // "is tracking still on?" check misses, because it still is.
+    let rejectSend: (e: Error) => void;
+    senderMock.mockReturnValue(
+      new Promise((_, reject) => {
+        rejectSend = reject;
+      }),
+    );
+    const el = mount();
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    expect(senderMock).toHaveBeenCalledTimes(1); // in flight
+
+    el.remove(); // teardown while the request is still open
+    rejectSend(new Error('network'));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve();
+    expect(senderMock).toHaveBeenCalledTimes(1); // no retry after teardown
+    jest.useRealTimers();
+  });
+
+  it('does not retry an old batch after tracking is switched off and on again', async () => {
+    jest.useFakeTimers();
+    let rejectSend: (e: Error) => void;
+    senderMock.mockReturnValue(
+      new Promise((_, reject) => {
+        rejectSend = reject;
+      }),
+    );
+    const el = mount();
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    expect(senderMock).toHaveBeenCalledTimes(1);
+
+    // Flow switch: off, then on for the next flow. The in-flight request
+    // belongs to the old flow and must not be retried under the new one.
+    el.setValidationTrackingEnabled(false);
+    el.setValidationTrackingEnabled(true);
+    rejectSend(new Error('network'));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve();
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
+  });
+
   it('never throws out of trackValidationErrors', () => {
     const el = mount();
     // a sender that blows up must be swallowed

@@ -130,8 +130,16 @@ const createHttpClient = ({
       ? hooks.beforeRequest(config)
       : config;
 
-    const { path, body, headers, queryParams, method, token, keepalive } =
-      requestConfig;
+    const {
+      path,
+      body,
+      headers,
+      queryParams,
+      method,
+      token,
+      keepalive,
+      disableRetry,
+    } = requestConfig;
 
     const serializedBody = serializeBody(body);
     const requestInit: RequestInit = {
@@ -146,6 +154,8 @@ const createHttpClient = ({
       body: serializedBody,
       // only set when asked - fetch treats keepalive:false as a real value
       ...(keepalive ? { keepalive: true } : {}),
+      // read back by fetchWithRetries; not a standard RequestInit field
+      ...(disableRetry ? { disableRetry: true } : {}),
     };
 
     // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
@@ -206,7 +216,11 @@ const createHttpClient = ({
         method: HTTPMethods.get,
         token,
       }),
-    post: (path, body, { headers, queryParams, token, keepalive } = {}) =>
+    post: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -215,6 +229,7 @@ const createHttpClient = ({
         method: HTTPMethods.post,
         token,
         keepalive,
+        disableRetry,
       }),
     patch: (path, body, { headers, queryParams, token } = {}) =>
       sendRequest({

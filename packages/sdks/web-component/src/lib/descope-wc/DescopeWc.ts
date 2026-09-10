@@ -777,20 +777,25 @@ class DescopeWc extends BaseDescopeWc {
         ));
         clientScripts.push(...(conditionScripts || []));
       } else if (flowConfig.condition) {
-        ({ startScreenId, conditionInteractionId } = calculateCondition(
-          flowConfig.condition,
-          {
+        ({ startScreenId, startScreenName, conditionInteractionId } =
+          calculateCondition(flowConfig.condition, {
             loginId,
             code,
             token,
             abTestingKey,
             lastAuth: getLastAuth(loginId, this.loggerWrapper),
-          },
-        ));
+          }));
       } else {
         startScreenName = flowConfig.startScreenName;
         startScreenId = flowConfig.startScreenId;
       }
+
+      // Which screen the config actually renders first is only known here: with
+      // conditions, it is chosen above rather than read from the flow config.
+      // Validation errors on that screen are held until the flow starts, so the
+      // identity they carry has to be the resolved one.
+      this.#startScreenId = startScreenId;
+      this.#startScreenName = startScreenName;
 
       this.#sdkScriptsLoading = this.loadSdkScripts(clientScripts);
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
@@ -1864,8 +1869,9 @@ class DescopeWc extends BaseDescopeWc {
   }
 
   // The start screen is rendered from config.json before the flow starts, so
-  // the flow state has no screen id yet. config.json is the only place that
-  // knows it, and #currentFlowContext is sync, so it is cached here.
+  // the flow state has no screen id yet. Set in onFlowChange once conditions
+  // have picked the screen, because #currentFlowContext is sync and cannot
+  // resolve them itself.
   #startScreenId?: string;
 
   #startScreenName?: string;
@@ -1882,8 +1888,6 @@ class DescopeWc extends BaseDescopeWc {
     this.setValidationTrackingEnabled(
       !!flowConfig.clientValidationTrackingEnabled,
     );
-    this.#startScreenId = flowConfig.startScreenId;
-    this.#startScreenName = flowConfig.startScreenName;
     // The start screen renders before the flow starts, so errors there are
     // held until an execution exists. This is that moment.
     if (executionId && isChanged('executionId')) {

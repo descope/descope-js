@@ -143,6 +143,12 @@ export const validationTrackingMixin = createSingletonMixin(
 
       #listenersAttached = false;
 
+      // Bumped whenever in-flight work stops being wanted: tracking switched
+      // off, or the component torn down. A send captures the value it started
+      // with, so a response that lands after either event cannot resurrect a
+      // retry chain the switch/teardown was supposed to end.
+      #generation = 0;
+
       // Supplied by the host. Without it nothing can be sent, which is the
       // same safe default as being switched off.
       #send?: ValidationSender;
@@ -183,7 +189,10 @@ export const validationTrackingMixin = createSingletonMixin(
        * on the start screen - can finally be attributed and sent.
        */
       setValidationTrackingExecution(executionId: string) {
-        if (!this.#enabled || !executionId) return;
+        // Nothing held means nothing to attribute. Storing the id anyway would
+        // leave it behind for a later batch that belongs to a different
+        // execution - see the matching guard in #flush.
+        if (!this.#enabled || !executionId || !this.#buffer.length) return;
         this.#bufferExecutionId = executionId;
         this.#flush(false);
       }
@@ -211,18 +220,25 @@ export const validationTrackingMixin = createSingletonMixin(
         // Attach flush triggers on first real capture (nothing to flush before
         // there is a buffered event, so there's no reason to attach earlier).
         this.#attachListeners();
-        // Before the flow starts this stays unset and the buffer just holds.
-        this.#bufferExecutionId = ctx.executionId || this.#bufferExecutionId;
 
         inputs.forEach((input) => {
-          // The cap also bounds a buffer that is holding because the flow never
-          // started, so an abandoned start screen cannot grow without bound.
+          // Still full after the flush below tried to drain it, which means it
+          // cannot be sent yet. Hold at the cap so an abandoned start screen
+          // cannot grow without bound - dropping the rest is the price.
           if (this.#buffer.length >= MAX_BATCH_SIZE) return;
           const event = toEvent(input, ctx);
           if (!event) return;
           const key = dedupeKey(event);
           if (this.#buffer.some((e) => dedupeKey(e) === key)) return;
           this.#buffer.push(event);
+          // Tied to the batch, so it is set only once something is actually in
+          // it, and re-set after a flush below empties it. Before the flow
+          // starts this stays unset and the buffer just holds.
+          this.#bufferExecutionId = ctx.executionId || this.#bufferExecutionId;
+          // A deliverable batch is sent as soon as it fills up, and the rest of
+          // this submit keeps collecting into a fresh one. A submit with more
+          // than MAX_BATCH_SIZE invalid fields then loses nothing.
+          if (this.#buffer.length >= MAX_BATCH_SIZE) this.#flush(false);
         });
 
         if (this.#buffer.length >= MAX_BATCH_SIZE) {
@@ -246,6 +262,7 @@ export const validationTrackingMixin = createSingletonMixin(
       // #flush, which does nothing on an empty buffer.
       #discard() {
         clearTimeout(this.#flushTimer);
+        this.#generation += 1;
         this.#retryTimers.forEach(clearTimeout);
         this.#retryTimers.clear();
         this.#buffer = [];
@@ -254,8 +271,16 @@ export const validationTrackingMixin = createSingletonMixin(
 
       #flush(isUnload: boolean) {
         clearTimeout(this.#flushTimer);
+        // Nothing buffered: drop the execution too. Holding it would outlive
+        // the batch it belonged to, and after a flow restart the next
+        // start-screen error would be attributed to the finished execution
+        // instead of being held for the new one.
+        if (!this.#buffer.length) {
+          this.#bufferExecutionId = undefined;
+          return;
+        }
         // No execution yet - hold, don't drop. The endpoint would reject it.
-        if (!this.#buffer.length || !this.#bufferExecutionId) return;
+        if (!this.#bufferExecutionId) return;
 
         // No way to deliver yet - hold rather than drain into nothing.
         if (!this.#send) return;
@@ -271,7 +296,7 @@ export const validationTrackingMixin = createSingletonMixin(
             // Page is going away: single keepalive shot, retry isn't possible.
             this.#send(batch, { keepalive: true }).catch(() => {});
           } else {
-            this.#sendWithRetry(batch, MAX_SEND_RETRIES);
+            this.#sendWithRetry(batch, MAX_SEND_RETRIES, this.#generation);
           }
         } catch (e) {
           this.logger?.debug?.('Failed to send validation events', String(e));
@@ -281,31 +306,40 @@ export const validationTrackingMixin = createSingletonMixin(
       // Best-effort send with bounded retry (non-unload flushes only). Gives up
       // quietly after the last attempt. Events carry a stable `id`, so a retried
       // batch is deduped downstream.
-      #sendWithRetry(batch: ValidationBatch, retriesLeft: number) {
+      #sendWithRetry(
+        batch: ValidationBatch,
+        retriesLeft: number,
+        generation: number,
+      ) {
         this.#send(batch, { keepalive: false })
           .then((res) => {
             // Only retry what can succeed later - a rejected batch will not
             // become accepted, and retrying it just multiplies the load.
             if (!res.ok && res.retryable && retriesLeft > 0) {
-              this.#scheduleRetry(batch, retriesLeft);
+              this.#scheduleRetry(batch, retriesLeft, generation);
             }
           })
           .catch(() => {
             // transport failure - worth another go
             if (retriesLeft > 0) {
-              this.#scheduleRetry(batch, retriesLeft);
+              this.#scheduleRetry(batch, retriesLeft, generation);
             }
           });
       }
 
-      #scheduleRetry(batch: ValidationBatch, retriesLeft: number) {
-        // A request already in flight when tracking is switched off would
-        // otherwise keep retrying past the switch.
-        if (!this.#enabled) return;
+      #scheduleRetry(
+        batch: ValidationBatch,
+        retriesLeft: number,
+        generation: number,
+      ) {
+        // A request already in flight when tracking is switched off - or when
+        // the component went away - would otherwise keep retrying past it.
+        if (generation !== this.#generation) return;
         const attempt = MAX_SEND_RETRIES - retriesLeft + 1;
         const timer = setTimeout(() => {
           this.#retryTimers.delete(timer);
-          this.#sendWithRetry(batch, retriesLeft - 1);
+          if (generation !== this.#generation) return;
+          this.#sendWithRetry(batch, retriesLeft - 1, generation);
         }, RETRY_BACKOFF_MS * attempt);
         this.#retryTimers.add(timer);
       }
@@ -332,6 +366,9 @@ export const validationTrackingMixin = createSingletonMixin(
         // the component is going away, so it is dropped with the instance.
         this.#flush(false);
         // Drop any retry still waiting out its backoff - the component is gone.
+        // Bumping the generation also covers a send still in flight, whose
+        // response would otherwise schedule a fresh timer after this cleanup.
+        this.#generation += 1;
         this.#retryTimers.forEach(clearTimeout);
         this.#retryTimers.clear();
         if (!this.#listenersAttached) return;

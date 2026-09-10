@@ -7,6 +7,12 @@ type HttpClientReqConfig = {
   token?: string;
   /** Let the request outlive the page - for best-effort sends on unload. */
   keepalive?: boolean;
+  /**
+   * Skip the shared transient-error retry in createFetchLogger. For callers
+   * that do their own bounded retry - stacking the two multiplies the number
+   * of requests a single failure produces.
+   */
+  disableRetry?: boolean;
 };
 
 export type ExtendedResponse = Response & { cookies: Record<string, string> };
@@ -66,6 +72,7 @@ export type RequestConfig = {
   method: HTTPMethods;
   token?: string;
   keepalive?: boolean;
+  disableRetry?: boolean;
 };
 
 export type BeforeRequest = (config: RequestConfig) => RequestConfig;

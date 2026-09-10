@@ -67,6 +67,10 @@ const withFlow = (httpClient: HttpClient) => ({
    * Report client-side form validation failures for a running flow. Best-effort
    * telemetry: the backend relays them to the project's connectors and persists
    * nothing. `keepalive` lets a final batch survive the page going away.
+   *
+   * disableRetry: the caller already retries a failed batch on its own. Letting
+   * the shared transient-error retry run as well would multiply one failure
+   * into many POSTs against an endpoint that is deliberately rate limited.
    */
   event: withEventValidations(
     (
@@ -78,7 +82,7 @@ const withFlow = (httpClient: HttpClient) => ({
         httpClient.post(
           apiPaths.flow.event,
           { executionId, events },
-          { keepalive },
+          { keepalive, disableRetry: true },
         ),
       ),
   ),
