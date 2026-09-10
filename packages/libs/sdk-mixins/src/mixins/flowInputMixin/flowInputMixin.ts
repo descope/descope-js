@@ -6,6 +6,8 @@ type FlowInputConfig = {
   // per-flow inputs the widget supplies; merged over the caller-supplied inputs
   client?: Record<string, any>;
   form?: Record<string, any>;
+  // hold the flow's start call until the element's start() is called
+  lazyStart?: boolean;
   // widget-specific context forwarded as-is (e.g. tenant, outboundAppId)
   tenant?: string;
   outboundAppId?: string;

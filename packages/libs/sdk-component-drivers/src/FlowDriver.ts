@@ -23,6 +23,12 @@ export class FlowDriver extends BaseDriver {
     }
   }
 
+  // start a flow rendered with `lazy-start`, which preloads but holds its
+  // start call until asked
+  start() {
+    (this.ele as any)?.start?.();
+  }
+
   onSuccess(cb: () => void) {
     this.ele?.addEventListener('success', cb);
 

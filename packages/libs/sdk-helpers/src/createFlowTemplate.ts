@@ -3,6 +3,7 @@ import { isPlainObject, kebabCase } from './generic';
 
 const stringifyValue = (value: unknown) => {
   if (typeof value === 'string') return value;
+  if (typeof value === 'boolean') return String(value);
   if (isPlainObject(value)) return JSON.stringify(value);
   return '';
 };
@@ -20,6 +21,8 @@ export type FlowConfig = {
   // flow inputs - objects are JSON-stringified, strings pass through
   form?: Record<string, any> | string;
   client?: Record<string, any> | string;
+  // hold the flow's start call until the element's start() is called
+  lazyStart?: boolean;
   // widget-specific context
   tenant?: string;
   outboundAppId?: string;
