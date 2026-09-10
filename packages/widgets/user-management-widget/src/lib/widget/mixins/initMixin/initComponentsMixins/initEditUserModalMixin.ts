@@ -106,9 +106,10 @@ export const initEditUserModalMixin = createSingletonMixin(
 
       #updateRolesMultiSelect = async () => {
         await this.#rolesMultiSelect.setData(
-          getTenantRoles(this.state).map(({ name }) => ({
+          getTenantRoles(this.state).map(({ name, description }) => ({
             value: name,
             label: name,
+            description,
           })),
         );
       };
