@@ -120,6 +120,18 @@ class DescopeWc extends BaseDescopeWc {
     super(flowState.update.bind(flowState));
 
     this.flowState = flowState;
+
+    // The validation-tracking mixin captures and batches; delivery is ours, so
+    // validation events go out over the same SDK that runs flow.start and
+    // flow.next. `this.sdk` is read when a batch is actually sent, by which
+    // point it exists. A 4xx will never turn into a 2xx, so only 5xx and 429
+    // are worth another attempt.
+    this.setValidationTrackingSender(
+      async ({ executionId, events }, { keepalive }) => {
+        const res = await this.sdk.flow.event(executionId, events, keepalive);
+        return { ok: res.ok, retryable: res.code >= 500 || res.code === 429 };
+      },
+    );
   }
 
   #eventsCbRefs = {

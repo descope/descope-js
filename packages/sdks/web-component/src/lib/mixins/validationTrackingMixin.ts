@@ -1,18 +1,32 @@
 /* eslint-disable import/prefer-default-export */
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { loggerMixin, projectIdMixin } from '@descope/sdk-mixins';
+import { loggerMixin } from '@descope/sdk-mixins';
 
 // Client-side form validation happens entirely in the browser (native
 // reportValidity/checkValidity) and produces no signal on its own - because an
 // invalid form never submits, the server never sees it. This mixin captures
-// those failures, batches them, and best-effort relays them to POST
-// /v1/flow/event so customers get visibility into where users hit friction.
+// those failures and batches them, so customers get visibility into where users
+// hit friction. Sending is the host's job - see ValidationSender below.
 //
 // Off unless the flow turns it on: the host calls setValidationTrackingEnabled
 // from the flow's config.json entry, and nothing is captured until it does.
 // It never blocks or fails the flow.
 
-const FLOW_EVENT_PATH = '/v1/flow/event';
+/**
+ * How a batch reaches the backend. The host supplies this (DescopeWc hands over
+ * sdk.flow.event), so the mixin owns capture and batching and knows nothing
+ * about transport, URLs or the SDK. Resolves to whether the batch was accepted
+ * and whether retrying could ever help.
+ */
+export type ValidationSendResult = { ok: boolean; retryable: boolean };
+export type ValidationBatch = {
+  executionId: string;
+  events: ValidationErrorEvent[];
+};
+export type ValidationSender = (
+  batch: ValidationBatch,
+  options: { keepalive: boolean },
+) => Promise<ValidationSendResult>;
 
 // Flush the batch after this much inactivity, or once it reaches the cap.
 const FLUSH_DEBOUNCE_MS = 2000;
@@ -106,7 +120,7 @@ const toEvent = (
 
 export const validationTrackingMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) => {
-    const BaseClass = compose(loggerMixin, projectIdMixin)(superclass);
+    const BaseClass = compose(loggerMixin)(superclass);
 
     return class ValidationTrackingMixinClass extends BaseClass {
       // Captured events waiting to go out. Flushed on screen change, flow end,
@@ -128,6 +142,10 @@ export const validationTrackingMixin = createSingletonMixin(
       #retryTimers = new Set<ReturnType<typeof setTimeout>>();
 
       #listenersAttached = false;
+
+      // Supplied by the host. Without it nothing can be sent, which is the
+      // same safe default as being switched off.
+      #send?: ValidationSender;
 
       // Off until the host turns it on from the flow's config.json entry. The
       // default matters: a host that never calls the setter captures nothing,
@@ -153,6 +171,11 @@ export const validationTrackingMixin = createSingletonMixin(
         if (this.#enabled === enabled) return;
         this.#enabled = enabled;
         if (!enabled) this.#discard();
+      }
+
+      /** The host tells the mixin how to deliver a batch. */
+      setValidationTrackingSender(send: ValidationSender) {
+        this.#send = send;
       }
 
       /**
@@ -234,38 +257,21 @@ export const validationTrackingMixin = createSingletonMixin(
         // No execution yet - hold, don't drop. The endpoint would reject it.
         if (!this.#buffer.length || !this.#bufferExecutionId) return;
 
+        // No way to deliver yet - hold rather than drain into nothing.
+        if (!this.#send) return;
+
         const events = this.#buffer;
         const executionId = this.#bufferExecutionId;
         this.#buffer = [];
         this.#bufferExecutionId = undefined;
 
-        const { projectId } = this;
-        // The SDK instance lives on the host (DescopeWc, a subclass in the
-        // compose() chain, so it exists at runtime).
-        const { sdk } = this as unknown as {
-          sdk?: { httpClient?: { buildUrl?: (path: string) => string } };
-        };
-        const buildUrl = sdk?.httpClient?.buildUrl;
-        // buildUrl resolves the region-aware flow API base the SDK uses for
-        // flow/start & flow/next - do NOT reconstruct the URL from an attribute
-        // (empty in prod).
-        if (!projectId || !buildUrl) return;
-
         try {
-          const url = buildUrl(FLOW_EVENT_PATH);
-          const init: RequestInit = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${projectId}`,
-            },
-            body: JSON.stringify({ executionId, events }),
-          };
+          const batch = { executionId, events };
           if (isUnload) {
             // Page is going away: single keepalive shot, retry isn't possible.
-            fetch(url, { ...init, keepalive: true }).catch(() => {});
+            this.#send(batch, { keepalive: true }).catch(() => {});
           } else {
-            this.#sendWithRetry(url, init, MAX_SEND_RETRIES);
+            this.#sendWithRetry(batch, MAX_SEND_RETRIES);
           }
         } catch (e) {
           this.logger?.debug?.('Failed to send validation events', String(e));
@@ -275,31 +281,31 @@ export const validationTrackingMixin = createSingletonMixin(
       // Best-effort send with bounded retry (non-unload flushes only). Gives up
       // quietly after the last attempt. Events carry a stable `id`, so a retried
       // batch is deduped downstream.
-      #sendWithRetry(url: string, init: RequestInit, retriesLeft: number) {
-        fetch(url, init)
+      #sendWithRetry(batch: ValidationBatch, retriesLeft: number) {
+        this.#send(batch, { keepalive: false })
           .then((res) => {
-            // Only retry what can succeed later. A 4xx means this batch is
-            // rejected on its merits - retrying it just triples the load.
-            const worthRetrying = res.status >= 500 || res.status === 429;
-            if (!res.ok && worthRetrying && retriesLeft > 0) {
-              this.#scheduleRetry(url, init, retriesLeft);
+            // Only retry what can succeed later - a rejected batch will not
+            // become accepted, and retrying it just multiplies the load.
+            if (!res.ok && res.retryable && retriesLeft > 0) {
+              this.#scheduleRetry(batch, retriesLeft);
             }
           })
           .catch(() => {
+            // transport failure - worth another go
             if (retriesLeft > 0) {
-              this.#scheduleRetry(url, init, retriesLeft);
+              this.#scheduleRetry(batch, retriesLeft);
             }
           });
       }
 
-      #scheduleRetry(url: string, init: RequestInit, retriesLeft: number) {
+      #scheduleRetry(batch: ValidationBatch, retriesLeft: number) {
         // A request already in flight when tracking is switched off would
         // otherwise keep retrying past the switch.
         if (!this.#enabled) return;
         const attempt = MAX_SEND_RETRIES - retriesLeft + 1;
         const timer = setTimeout(() => {
           this.#retryTimers.delete(timer);
-          this.#sendWithRetry(url, init, retriesLeft - 1);
+          this.#sendWithRetry(batch, retriesLeft - 1);
         }, RETRY_BACKOFF_MS * attempt);
         this.#retryTimers.add(timer);
       }

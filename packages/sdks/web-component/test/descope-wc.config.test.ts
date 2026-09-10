@@ -7,6 +7,7 @@ import {
   startMock,
   fixtures,
   fetchMock,
+  flowEventMock,
   generateSdkResponse,
   WAIT_TIMEOUT,
   ensureFingerprintIds,
@@ -164,14 +165,12 @@ describe('web-component config', () => {
       window.dispatchEvent(new Event('pagehide')); // force any pending flush
     };
 
-    const eventCalls = () =>
-      fetchMock.mock.calls.filter((call: any[]) =>
-        String(call[0]).endsWith('/v1/flow/event'),
-      );
+    // Validation events go out over the SDK, the same as flow.start/flow.next.
+    const eventCalls = () => flowEventMock.mock.calls;
 
     const lastEvent = () => {
-      const [, init] = eventCalls()[eventCalls().length - 1];
-      return JSON.parse(init.body).events[0];
+      const [, events] = eventCalls()[eventCalls().length - 1];
+      return events[0];
     };
 
     it('sends nothing when the flow config omits the flag', async () => {
@@ -198,6 +197,7 @@ describe('web-component config', () => {
       el.setValidationTrackingExecution('exec-1');
 
       expect(eventCalls()).toHaveLength(1);
+      expect(eventCalls()[0][0]).toBe('exec-1');
       const event = lastEvent();
       expect(event.field).toBe('email');
       expect(event.rule).toBe('required');

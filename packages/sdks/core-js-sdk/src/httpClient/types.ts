@@ -5,6 +5,8 @@ type HttpClientReqConfig = {
   headers?: HeadersInit;
   queryParams?: { [key: string]: string };
   token?: string;
+  /** Let the request outlive the page - for best-effort sends on unload. */
+  keepalive?: boolean;
 };
 
 export type ExtendedResponse = Response & { cookies: Record<string, string> };
@@ -63,6 +65,7 @@ export type RequestConfig = {
   body?: any;
   method: HTTPMethods;
   token?: string;
+  keepalive?: boolean;
 };
 
 export type BeforeRequest = (config: RequestConfig) => RequestConfig;

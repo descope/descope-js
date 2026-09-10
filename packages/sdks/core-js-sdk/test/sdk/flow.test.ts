@@ -140,4 +140,60 @@ describe('Flows', () => {
       });
     });
   });
+
+  describe('event', () => {
+    it('should send the events for the execution', async () => {
+      const httpResponse = {
+        ok: true,
+        json: () => ({}),
+        clone: () => ({ json: () => Promise.resolve({}) }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+      const events = [
+        {
+          id: '1',
+          field: 'email',
+          rule: 'format',
+          message: 'Must be a valid email',
+          screenId: 'scr-1',
+          screenName: 'Welcome Screen',
+          ts: 1730900000000,
+        },
+      ];
+
+      const resp = await sdk.flow.event('e1', events);
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/event',
+        { executionId: 'e1', events },
+        { keepalive: undefined },
+      );
+      expect(resp.ok).toBe(true);
+    });
+
+    it('should pass keepalive so a final batch survives the page closing', async () => {
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        json: () => ({}),
+        clone: () => ({ json: () => Promise.resolve({}) }),
+        status: 200,
+      });
+
+      await sdk.flow.event('e1', [], true);
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/event',
+        expect.anything(),
+        { keepalive: true },
+      );
+    });
+
+    it('should reject an empty execution id', () => {
+      // validations throw synchronously, before any request is made
+      expect(() => sdk.flow.event('', [])).toThrow(
+        '"executionId" must not be empty',
+      );
+    });
+  });
 });

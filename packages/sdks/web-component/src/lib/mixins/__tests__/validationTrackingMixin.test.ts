@@ -14,19 +14,16 @@ const makeInput = (
     validationMessage: message,
   }) as unknown as HTMLInputElement;
 
-// A minimal host that composes the mixin. It provides `sdk` (read by the mixin
-// for transport) and a `currentFlowContext` that the tests pass into
-// trackValidationErrors, mirroring how DescopeWc calls it.
+// A minimal host that composes the mixin. The mixin owns capture and batching
+// only - delivery is the host's job - so the host supplies a sender, the same
+// way DescopeWc hands over sdk.flow.event. `currentFlowContext` mirrors what
+// DescopeWc passes into trackValidationErrors.
 class TestHost extends validationTrackingMixin(HTMLElement) {
   currentFlowContext: {
     executionId?: string;
     screenId?: string;
     screenName?: string;
   } = { executionId: 'e1', screenId: 'scr-1', screenName: 'Sign in' };
-
-  sdk: any = {
-    httpClient: { buildUrl: (path: string) => `https://api.test${path}` },
-  };
 
   // Mirror DescopeWc: forward disconnect into the mixin teardown.
   disconnectedCallback() {
@@ -35,11 +32,15 @@ class TestHost extends validationTrackingMixin(HTMLElement) {
 }
 customElements.define('vt-test-host', TestHost);
 
-// A host exactly as constructed, with the setter never called.
+// Stands in for DescopeWc's sender. Accepts by default; individual tests make
+// it fail to cover the retry rules.
+let senderMock: jest.Mock;
+
+// A host exactly as constructed, with the enable setter never called.
 const mountRaw = (): TestHost => {
   const el = document.createElement('vt-test-host') as TestHost;
-  el.setAttribute('project-id', 'p1');
   document.body.appendChild(el);
+  el.setValidationTrackingSender(senderMock);
   return el;
 };
 
@@ -51,6 +52,10 @@ const mount = (): TestHost => {
   el.setValidationTrackingEnabled(true);
   return el;
 };
+
+// What the sender was handed on the nth flush.
+const sentBatch = (i = 0) => senderMock.mock.calls[i][0];
+const sentOptions = (i = 0) => senderMock.mock.calls[i][1];
 
 describe('deriveValidationRule', () => {
   it('maps native validity flags to coarse rules', () => {
@@ -102,11 +107,8 @@ describe('deriveValidationRule', () => {
 });
 
 describe('validationTrackingMixin', () => {
-  let fetchMock: jest.Mock;
-
   beforeEach(() => {
-    fetchMock = jest.fn().mockResolvedValue({});
-    global.fetch = fetchMock as any;
+    senderMock = jest.fn().mockResolvedValue({ ok: true, retryable: false });
   });
 
   afterEach(() => {
@@ -125,7 +127,7 @@ describe('validationTrackingMixin', () => {
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
     window.dispatchEvent(new Event('pagehide'));
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(senderMock).not.toHaveBeenCalled();
   });
 
   it('drops what it buffered when it is switched off', () => {
@@ -140,7 +142,7 @@ describe('validationTrackingMixin', () => {
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
     window.dispatchEvent(new Event('pagehide'));
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(senderMock).not.toHaveBeenCalled();
   });
 
   it('captures again after being switched back on', () => {
@@ -154,10 +156,10 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(senderMock).toHaveBeenCalledTimes(1);
   });
 
-  it('batches and POSTs to the resolved /v1/flow/event URL on flush', () => {
+  it('hands the batch to the sender on flush', () => {
     const el = mount();
     el.trackValidationErrors(
       [
@@ -171,26 +173,45 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchMock.mock.calls[0];
-    // uses the SDK-resolved (region-aware) URL, not a reconstructed one
-    expect(url).toBe('https://api.test/v1/flow/event');
-    expect(init.method).toBe('POST');
-    expect(init.headers.Authorization).toBe('Bearer p1');
-    const body = JSON.parse(init.body);
-    expect(body).toMatchObject({ executionId: 'e1' });
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    const batch = sentBatch();
+    expect(batch.executionId).toBe('e1');
     // Validation happens on screens - there is no step in this model.
-    expect(body.stepId).toBeUndefined();
-    expect(body.events).toHaveLength(1);
-    expect(body.events[0]).toMatchObject({
+    expect(batch.stepId).toBeUndefined();
+    expect(batch.events).toHaveLength(1);
+    expect(batch.events[0]).toMatchObject({
       field: 'email',
       rule: 'required',
       message: 'Please fill out this field',
       screenId: 'scr-1',
       screenName: 'Sign in',
     });
-    expect(body.events[0].id).toBeTruthy();
-    expect(typeof body.events[0].ts).toBe('number');
+    expect(batch.events[0].id).toBeTruthy();
+    expect(typeof batch.events[0].ts).toBe('number');
+    // A normal flush is a plain request - keepalive is for the unload path.
+    expect(sentOptions().keepalive).toBe(false);
+  });
+
+  it('holds the batch when the host never supplied a sender', () => {
+    // Nothing can be delivered yet, so the events must stay put rather than be
+    // drained into nothing.
+    const el = document.createElement('vt-test-host') as TestHost;
+    document.body.appendChild(el);
+    el.setValidationTrackingEnabled(true);
+
+    el.trackValidationErrors(
+      [makeInput('email', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+    expect(senderMock).not.toHaveBeenCalled();
+
+    // The sender arrives late - the held events still go out.
+    el.setValidationTrackingSender(senderMock);
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    expect(sentBatch().events).toHaveLength(1);
   });
 
   it('dedupes the same field+rule within a batch (blur + submit double-fire)', () => {
@@ -205,8 +226,8 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events).toHaveLength(1);
+    const batch = sentBatch();
+    expect(batch.events).toHaveLength(1);
   });
 
   it('keeps distinct fields/rules in the same batch', () => {
@@ -220,8 +241,8 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events).toHaveLength(2);
+    const batch = sentBatch();
+    expect(batch.events).toHaveLength(2);
   });
 
   it('holds start-screen errors until the flow has an execution', () => {
@@ -233,19 +254,19 @@ describe('validationTrackingMixin', () => {
       screenName: 'Welcome Screen',
     });
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(senderMock).not.toHaveBeenCalled();
 
     // The user fixes the input and continues - the flow now has an execution.
     el.setValidationTrackingExecution('e1');
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.executionId).toBe('e1');
-    expect(body.events).toHaveLength(1);
-    expect(body.events[0].field).toBe('email');
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    const batch = sentBatch();
+    expect(batch.executionId).toBe('e1');
+    expect(batch.events).toHaveLength(1);
+    expect(batch.events[0].field).toBe('email');
     // The event keeps the screen it was captured on.
-    expect(body.events[0].screenId).toBe('start-scr');
-    expect(body.events[0].screenName).toBe('Welcome Screen');
+    expect(batch.events[0].screenId).toBe('start-scr');
+    expect(batch.events[0].screenName).toBe('Welcome Screen');
   });
 
   it('drops held start-screen errors if the flow never starts', () => {
@@ -259,7 +280,7 @@ describe('validationTrackingMixin', () => {
     el.remove(); // the user gave up and left
 
     window.dispatchEvent(new Event('pagehide'));
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(senderMock).not.toHaveBeenCalled();
   });
 
   it('does not hold anything while tracking is off', () => {
@@ -272,7 +293,7 @@ describe('validationTrackingMixin', () => {
     el.setValidationTrackingEnabled(true);
     el.setValidationTrackingExecution('e1');
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(senderMock).not.toHaveBeenCalled();
   });
 
   it('sends nothing while there is no live execution, whatever fires', () => {
@@ -287,7 +308,7 @@ describe('validationTrackingMixin', () => {
     el.dispatchEvent(new CustomEvent('error', { detail: {} }));
     window.dispatchEvent(new Event('pagehide'));
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(senderMock).not.toHaveBeenCalled();
   });
 
   it('keeps the screen an event was captured on when it is adopted later', () => {
@@ -307,9 +328,9 @@ describe('validationTrackingMixin', () => {
     };
     el.setValidationTrackingExecution(el.currentFlowContext.executionId);
 
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events[0].screenId).toBe('start-scr');
-    expect(body.events[0].screenName).toBe('Welcome Screen');
+    const batch = sentBatch();
+    expect(batch.events[0].screenId).toBe('start-scr');
+    expect(batch.events[0].screenName).toBe('Welcome Screen');
   });
 
   it('does not send held events twice if adoption runs again', () => {
@@ -323,7 +344,7 @@ describe('validationTrackingMixin', () => {
     el.setValidationTrackingExecution('e1');
     el.setValidationTrackingExecution('e1');
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(senderMock).toHaveBeenCalledTimes(1);
   });
 
   it('caps what it holds so an abandoned start screen cannot grow forever', () => {
@@ -342,8 +363,8 @@ describe('validationTrackingMixin', () => {
 
     el.setValidationTrackingExecution('e1');
 
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events).toHaveLength(20);
+    const batch = sentBatch();
+    expect(batch.events).toHaveLength(20);
   });
 
   it('dedupes the same failure while holding (blur + submit on the start screen)', () => {
@@ -358,8 +379,8 @@ describe('validationTrackingMixin', () => {
 
     el.setValidationTrackingExecution('e1');
 
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events).toHaveLength(1);
+    const batch = sentBatch();
+    expect(batch.events).toHaveLength(1);
   });
 
   it('captures a blur-only failure and sends on flush (abandonment via page hide, keepalive)', () => {
@@ -371,8 +392,8 @@ describe('validationTrackingMixin', () => {
     );
     window.dispatchEvent(new Event('pagehide'));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0][1].keepalive).toBe(true);
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    expect(sentOptions().keepalive).toBe(true);
   });
 
   it('sends the batch when the screen changes, and starts a fresh one', () => {
@@ -385,8 +406,8 @@ describe('validationTrackingMixin', () => {
     // The component signals a screen change - that is what closes a batch.
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const first = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(senderMock).toHaveBeenCalledTimes(1);
+    const first = sentBatch();
     expect(first.events).toHaveLength(1);
     expect(first.events[0].screenId).toBe('scr-1');
 
@@ -401,8 +422,8 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-    const second = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(senderMock).toHaveBeenCalledTimes(2);
+    const second = sentBatch(1);
     expect(second.events).toHaveLength(1);
     expect(second.events[0].screenId).toBe('scr-2');
   });
@@ -422,15 +443,18 @@ describe('validationTrackingMixin', () => {
     });
     window.dispatchEvent(new Event('pagehide'));
 
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-    expect(body.events.map((e: any) => e.screenId)).toEqual(['scr-1', 'scr-2']);
+    const batch = sentBatch();
+    expect(batch.events.map((e: any) => e.screenId)).toEqual([
+      'scr-1',
+      'scr-2',
+    ]);
   });
 
   it('retries a failed non-unload send, then stops on success', async () => {
     jest.useFakeTimers();
-    fetchMock
+    senderMock
       .mockRejectedValueOnce(new Error('network'))
-      .mockResolvedValue({ ok: true });
+      .mockResolvedValue({ ok: true, retryable: false });
     const el = mount();
 
     el.trackValidationErrors(
@@ -439,22 +463,22 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1); // first attempt
+    expect(senderMock).toHaveBeenCalledTimes(1); // first attempt
     await Promise.resolve();
     await Promise.resolve(); // let the rejection's .catch schedule the retry
     jest.advanceTimersByTime(2000);
     await Promise.resolve();
-    expect(fetchMock).toHaveBeenCalledTimes(2); // retried once
+    expect(senderMock).toHaveBeenCalledTimes(2); // retried once
 
     jest.advanceTimersByTime(5000);
     await Promise.resolve();
-    expect(fetchMock).toHaveBeenCalledTimes(2); // 2nd attempt succeeded -> no more retries
+    expect(senderMock).toHaveBeenCalledTimes(2); // 2nd attempt succeeded -> no more retries
     jest.useRealTimers();
   });
 
   it('cancels a pending retry when the component disconnects', async () => {
     jest.useFakeTimers();
-    fetchMock.mockRejectedValue(new Error('network'));
+    senderMock.mockRejectedValue(new Error('network'));
     const el = mount();
 
     el.trackValidationErrors(
@@ -463,7 +487,7 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1); // first attempt
+    expect(senderMock).toHaveBeenCalledTimes(1); // first attempt
     await Promise.resolve();
     await Promise.resolve(); // let the rejection's .catch schedule the retry
 
@@ -471,13 +495,13 @@ describe('validationTrackingMixin', () => {
 
     jest.advanceTimersByTime(5000);
     await Promise.resolve();
-    expect(fetchMock).toHaveBeenCalledTimes(1); // retry never fired
+    expect(senderMock).toHaveBeenCalledTimes(1); // retry never fired
     jest.useRealTimers();
   });
 
   it('does not retry a rejected batch (4xx)', async () => {
     jest.useFakeTimers();
-    fetchMock.mockResolvedValue({ ok: false, status: 400 });
+    senderMock.mockResolvedValue({ ok: false, retryable: false });
     const el = mount();
 
     el.trackValidationErrors(
@@ -486,19 +510,19 @@ describe('validationTrackingMixin', () => {
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(senderMock).toHaveBeenCalledTimes(1);
     await Promise.resolve();
     await Promise.resolve();
     jest.advanceTimersByTime(5000);
     await Promise.resolve();
     // A 400 will not become a 200 - one attempt only.
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(senderMock).toHaveBeenCalledTimes(1);
     jest.useRealTimers();
   });
 
   it('stops retrying a batch when tracking is switched off mid-flight', async () => {
     jest.useFakeTimers();
-    fetchMock.mockRejectedValue(new Error('network'));
+    senderMock.mockRejectedValue(new Error('network'));
     const el = mount();
 
     el.trackValidationErrors(
@@ -506,7 +530,7 @@ describe('validationTrackingMixin', () => {
       el.currentFlowContext,
     );
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
-    expect(fetchMock).toHaveBeenCalledTimes(1); // first attempt, in flight
+    expect(senderMock).toHaveBeenCalledTimes(1); // first attempt, in flight
 
     // The customer turns it off before the failure comes back.
     el.setValidationTrackingEnabled(false);
@@ -515,12 +539,12 @@ describe('validationTrackingMixin', () => {
 
     jest.advanceTimersByTime(5000);
     await Promise.resolve();
-    expect(fetchMock).toHaveBeenCalledTimes(1); // no retry after the switch
+    expect(senderMock).toHaveBeenCalledTimes(1); // no retry after the switch
     jest.useRealTimers();
   });
 
   it('does not retry the unload (page-hide) send', async () => {
-    fetchMock.mockRejectedValue(new Error('network'));
+    senderMock.mockRejectedValue(new Error('network'));
     const el = mount();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -530,20 +554,16 @@ describe('validationTrackingMixin', () => {
 
     await Promise.resolve();
     await Promise.resolve();
-    expect(fetchMock).toHaveBeenCalledTimes(1); // keepalive, single shot
-    expect(fetchMock.mock.calls[0][1].keepalive).toBe(true);
+    expect(senderMock).toHaveBeenCalledTimes(1); // keepalive, single shot
+    expect(sentOptions().keepalive).toBe(true);
   });
 
   it('never throws out of trackValidationErrors', () => {
     const el = mount();
-    // buildUrl throwing must be swallowed
-    el.sdk = {
-      httpClient: {
-        buildUrl: () => {
-          throw new Error('boom');
-        },
-      },
-    };
+    // a sender that blows up must be swallowed
+    el.setValidationTrackingSender(() => {
+      throw new Error('boom');
+    });
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,

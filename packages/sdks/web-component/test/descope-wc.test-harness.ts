@@ -67,6 +67,7 @@ export const sdk = {
   flow: {
     start: jest.fn().mockName('flow.start'),
     next: jest.fn().mockName('flow.next'),
+    event: jest.fn().mockName('flow.event'),
   },
   webauthn: {
     helpers: {
@@ -78,15 +79,11 @@ export const sdk = {
   },
   getLastUserLoginId: jest.fn().mockName('getLastUserLoginId'),
   getLastUserDisplayName: jest.fn().mockName('getLastUserDisplayName'),
-  // The real SDK exposes this; validation tracking uses it to resolve the
-  // region-aware flow API base.
-  httpClient: {
-    buildUrl: (path: string) => `https://api.test${path}`,
-  },
 };
 
 export const nextMock = sdk.flow.next as jest.Mock;
 export const startMock = sdk.flow.start as jest.Mock;
+export const flowEventMock = sdk.flow.event as jest.Mock;
 export const isWebauthnSupportedMock = sdk.webauthn.helpers
   .isSupported as jest.Mock;
 export const getLastUserLoginIdMock = sdk.getLastUserLoginId as jest.Mock;
@@ -229,6 +226,10 @@ export function teardownWebComponentTestEnv() {
   // mutates these properties with withRetry wrappers, and resetAllMocks() does not undo that.
   sdk.flow.start = startMock;
   sdk.flow.next = nextMock;
+  sdk.flow.event = flowEventMock;
+  // Validation events are best-effort; default to accepted so no test has to
+  // care unless it is specifically about tracking.
+  flowEventMock.mockResolvedValue({ ok: true, code: 200 });
   mockClientScript.mockImplementation(() => ({
     id: 'grecaptcha',
     start: mockStartScript,
