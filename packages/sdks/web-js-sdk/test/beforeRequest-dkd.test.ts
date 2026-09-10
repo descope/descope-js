@@ -94,11 +94,8 @@ describe('beforeRequest hook - DKD header', () => {
     });
   });
 
-  // A trusted device is a known device by definition (the backend derives known-device state
-  // from a valid trusted-device token when no DKD is presented), so the SDK never needs to send
-  // both on the same request - DTD takes precedence, and DKD is only sent as a fallback.
-  describe('DTD takes precedence over DKD - never sent together', () => {
-    it('should NOT add x-descope-known-device-token header when DTD is also present', () => {
+  describe('DTD and DKD are sent independently', () => {
+    it('should add both x-descope-trusted-device-token and x-descope-known-device-token headers when both are present', () => {
       localStorage.setItem(TRUSTED_DEVICE_TOKEN_KEY, 'my-dtd-token');
       localStorage.setItem(KNOWN_DEVICE_TOKEN_KEY, 'my-dkd-token');
 
@@ -113,10 +110,8 @@ describe('beforeRequest hook - DKD header', () => {
 
       expect(result.headers).toEqual({
         'x-descope-trusted-device-token': 'my-dtd-token',
+        'x-descope-known-device-token': 'my-dkd-token',
       });
-      expect(result.headers).not.toHaveProperty(
-        'x-descope-known-device-token',
-      );
     });
 
     it('should add x-descope-known-device-token header when only DKD is present (no DTD)', () => {
