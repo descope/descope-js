@@ -72,9 +72,15 @@ const installWidgetReadyProbe = async (page: Page): Promise<void> => {
   );
 };
 
+// 30s, not 10s: init fetches root.html, the components bundle and several API
+// responses, and CI runs 4 workers x 3 browsers in a container. A 10s ceiling
+// timed out 10 times in one CI run while passing locally every time. This is a
+// ceiling, not a delay - a fast machine still returns as soon as `ready` fires.
+const DEFAULT_READY_TIMEOUT = 30_000;
+
 const waitForWidgetReady = async (
   page: Page,
-  { timeout = 10_000 }: { timeout?: number } = {},
+  { timeout = DEFAULT_READY_TIMEOUT }: { timeout?: number } = {},
 ): Promise<void> => {
   try {
     await page.waitForFunction(

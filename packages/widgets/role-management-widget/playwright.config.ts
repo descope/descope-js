@@ -92,10 +92,17 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort} -C`,
+      command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort} -C --no-port-switching`,
+      // Without a url, playwright starts this and moves straight on: the widget
+      // then loads the components bundle from a server that may not be
+      // listening yet, and every descope-* element silently fails to upgrade.
+      // Point it at the actual bundle, not just the root.
+      url: `http://localhost:${componentsPort}/umd/index.js`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
     },
     {
-      command: `npx serve build -l ${widgetPort}`,
+      command: `npx serve build -l ${widgetPort} --no-port-switching`,
       url: `http://localhost:${widgetPort}`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
