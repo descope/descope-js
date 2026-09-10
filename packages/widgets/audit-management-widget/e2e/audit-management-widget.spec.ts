@@ -92,7 +92,6 @@ test.describe('widget', () => {
   });
 
   test('search audit', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('');
@@ -118,8 +117,6 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
     ).toBeVisible();
-
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -139,16 +136,22 @@ test.describe('widget', () => {
       .locator('input')
       .first();
 
-    await page.waitForTimeout(1000);
-
     // focus search input
     await searchInput.focus();
+
+    // Register before typing: fill() starts the search, so waiting afterwards
+    // can miss the response entirely.
+    const searchResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.audit.search) &&
+        response.request().postDataJSON()?.text === 'mockSearchString',
+    );
 
     // enter search string
     await searchInput.fill('mockSearchString');
     await page.keyboard.press('Enter');
 
-    await page.waitForTimeout(1000);
+    await searchResponse;
 
     // only search results shown in grid
     await expect(
@@ -162,8 +165,6 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
     ).toBeHidden();
-
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -187,10 +188,20 @@ test.describe('widget', () => {
     // focus search input
     await rangeInput.focus();
 
+    // The narrower range is what distinguishes this search from the previous
+    // one - same text, but `from` moves from 2 days ago to within the hour.
+    const rangeResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.audit.search) &&
+        response.request().postDataJSON()?.from >
+          Date.now() - 2 * 60 * 60 * 1000,
+    );
+
     // enter search string
     await rangeInput.fill('Last Hour');
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(1000);
+
+    await rangeResponse;
 
     // only search results shown in grid
     await expect(

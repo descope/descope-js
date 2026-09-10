@@ -26,8 +26,6 @@ const configContent = {
 const apiPath = (prop: 'role' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
@@ -227,8 +225,6 @@ test.describe('widget', () => {
       .getByTestId('delete-roles-modal-submit')
       .first();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // delete button initial state is disabled
     await expect(deleteRoleTrigger).toBeDisabled();
 
@@ -247,9 +243,6 @@ test.describe('widget', () => {
 
     // click modal delete button
     await deleteRoleModalButton.click();
-
-    // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete modal closed
     await expect(page.locator('Delete Roles')).toBeHidden();
@@ -318,8 +311,6 @@ test.describe('widget', () => {
     page,
   }) => {
     const duplicateTrigger = page.getByTestId('duplicate-role-trigger').first();
-
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // initially disabled
     await expect(duplicateTrigger).toBeDisabled();
@@ -397,9 +388,6 @@ test.describe('widget', () => {
 
     // click modal delete button
     await deleteRoleModalButton.click();
-
-    // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // show notification
     await expect(

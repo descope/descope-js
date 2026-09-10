@@ -16,9 +16,6 @@ const configContent = {
   componentsVersion: '1.2.3',
 };
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
-
 test.describe('tenant profile widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
@@ -155,8 +152,6 @@ test.describe('tenant profile widget', () => {
       },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
-        await page.waitForTimeout(STATE_TIMEOUT);
-
         const userAttr = page
           .locator(`descope-user-attribute[data-id="${attr.name}"]`)
           .first();
@@ -166,8 +161,6 @@ test.describe('tenant profile widget', () => {
           .first();
 
         await editBtn.click();
-
-        await page.waitForTimeout(MODAL_TIMEOUT);
 
         const finishFlowBtn = page
           .locator(`descope-modal[data-id="${attr.modalName}"]`)
@@ -184,8 +177,6 @@ test.describe('tenant profile widget', () => {
 
         await finishFlowBtn.click();
 
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         // eslint-disable-next-line jest-dom/prefer-to-have-value
         await expect(userAttr).toHaveAttribute(
           'value',
@@ -199,8 +190,6 @@ test.describe('tenant profile widget', () => {
     test('forwards caller client/form flow inputs into an edit flow', async ({
       page,
     }) => {
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       // a consumer sets client/form on the widget; read lazily at flow open
       await page.evaluate(() => {
         const widget = document.querySelector('descope-tenant-profile-widget');
@@ -218,7 +207,6 @@ test.describe('tenant profile widget', () => {
         .locator('descope-button[data-id="edit-btn"]')
         .first()
         .click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
 
       const descopeWc = page
         .locator('descope-modal[data-id="tenant-profile-set-name"]')
@@ -239,8 +227,6 @@ test.describe('tenant profile widget', () => {
 
   test.describe('tenant admin sso configuration link', () => {
     test('get tenant admin sso configuration link', async ({ page }) => {
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const userAttr = page
         .locator(`descope-link[data-id="tenant-admin-link-sso"]`)
         .first();
@@ -311,8 +297,6 @@ test.describe('tenant profile widget', () => {
       test(`${attr.name} should persist updated value in form data`, async ({
         page,
       }) => {
-        await page.waitForTimeout(STATE_TIMEOUT);
-
         const userAttr = page
           .locator(`descope-user-attribute[data-id="${attr.name}"]`)
           .first();
@@ -323,7 +307,6 @@ test.describe('tenant profile widget', () => {
 
         // Click edit button to open modal
         await editBtn.click();
-        await page.waitForTimeout(MODAL_TIMEOUT);
 
         const modal = page.locator(
           `descope-modal[data-id="${attr.modalName}"]`,
@@ -340,19 +323,25 @@ test.describe('tenant profile widget', () => {
         );
 
         await finishFlowBtn.click();
-        await page.waitForTimeout(MODAL_TIMEOUT);
+
+        // the modal has to close before it can be reopened
+        await expect(modal).not.toHaveAttribute('opened', 'true');
 
         // Click edit again to reopen the modal
         await editBtn.click();
-        await page.waitForTimeout(MODAL_TIMEOUT);
+        await expect(modal).toHaveAttribute('opened', 'true');
 
-        // Verify that the descope-wc component was recreated with the updated form data
-        const descopeWc = modal.locator('descope-wc');
-        const formAttr = await descopeWc.getAttribute('form');
-
-        // Parse the form JSON and verify it contains the updated value
-        const formData = JSON.parse(formAttr);
-        expect(formData[attr.formField]).toEqual(attr.expectedFormValue);
+        // Verify that the descope-wc component was recreated with the updated
+        // form data. Poll rather than read once: the rebuild lands after the
+        // modal opens, so a single read can catch the old element.
+        await expect
+          .poll(async () => {
+            const formAttr = await modal
+              .locator('descope-wc')
+              .getAttribute('form');
+            return formAttr ? JSON.parse(formAttr)[attr.formField] : undefined;
+          })
+          .toEqual(attr.expectedFormValue);
       });
     }
   });

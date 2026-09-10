@@ -13,9 +13,6 @@ import {
   mockUser,
 } from '../test/mocks/mockOutboundApps';
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
-
 const configContent = {
   flows: {
     flow1: { version: 1 },
@@ -105,8 +102,6 @@ test.describe('widget', () => {
         widget?.setAttribute('allowed-outbound-apps-ids', app.id);
       }, allowedApp);
 
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       // Validate first app is visible
       await expect(
         page.locator(`text=${allowedApp.name}`).first(),
@@ -130,8 +125,6 @@ test.describe('widget', () => {
         );
         widget?.setAttribute('allowed-outbound-apps-ids', '');
       });
-
-      await page.waitForTimeout(STATE_TIMEOUT);
 
       // Validate all apps are not visible
       for (let i = 0; i < mockOutboundApps.apps.length; i++) {
@@ -172,8 +165,6 @@ test.describe('widget', () => {
           .getByRole('button');
         await disconnectBtn.click();
 
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         await page.route(
           apiPath('outboundApps', 'connectedOutboundApps') +
             `?userId=${mockUser.userId}`,
@@ -188,8 +179,6 @@ test.describe('widget', () => {
           .locator('button', { hasText: 'Finish Flow' });
 
         await finishFlowBtn.click();
-
-        await page.waitForTimeout(STATE_TIMEOUT);
 
         const connectBtn = page
           .locator('descope-list-item')
@@ -221,8 +210,6 @@ test.describe('widget', () => {
         });
 
         await disconnectBtn.click();
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         const descopeWc = page
           .locator('descope-modal[data-id="outbound-apps-disconnect"]')
           .locator('descope-wc');
@@ -276,8 +263,6 @@ test.describe('widget', () => {
               json: { appIds: ['obapp1', 'obapp2'] },
             }),
         );
-
-        await page.waitForTimeout(STATE_TIMEOUT);
 
         const disconnectBtn = page
           .locator('descope-list-item')
