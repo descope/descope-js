@@ -112,9 +112,6 @@ class DescopeWc extends BaseDescopeWc {
 
   #visibilityObserver: ResizeObserver | null = null;
 
-  // the flow id this element already decided how to start, so a failed start is not retried
-  // in a loop: a rejected start leaves executionId unset, and the flowState update it
-  // triggers re-enters onFlowChange right back into the start branch
   #startAttemptedForFlowId: string | undefined;
 
   constructor() {
@@ -510,8 +507,6 @@ class DescopeWc extends BaseDescopeWc {
     oldValue: string,
     newValue: string,
   ) {
-    // BaseDescopeWc clears stepId/executionId on an attribute change, i.e. it deliberately
-    // restarts the flow - so the once-per-element start guard has to let go
     if (oldValue !== newValue) {
       this.#startAttemptedForFlowId = undefined;
     }
@@ -540,16 +535,9 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  // An execution that has no start screen cannot render anything before the server
-  // responds, and starting it runs the flow's first node - so when the element is not
-  // visible (the common case: a flow preloaded inside a closed widget modal) the start
-  // waits until it is. Everything else about mounting is unaffected: the flow config is
-  // fetched, components load, and a flow that *does* have a start screen still renders
-  // it locally and starts on the first interaction, exactly as before.
-  // Starting an execution runs the flow's first node, so a flow the user cannot see yet
-  // must not start: mounting one would send the SMS, call the connector and so on before
-  // anything was asked for. Applies to any hidden flow - a widget preloading a modal is
-  // the common case, but a flow mounted inside a collapsed section is the same situation.
+  // Starting an execution runs the flow's first node, so a flow the user cannot see must
+  // not start - it would send the SMS or call the connector unasked. A widget preloading
+  // a modal is the common case; any hidden flow is the same situation.
   #shouldDeferStart() {
     // the native layer runs the flow in a webview and renders screens natively, so the
     // element may legitimately never be visible - the host asked for this flow, start it
@@ -562,8 +550,8 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  // Re-runs onFlowChange once the flow is visible. Nothing about the pending request is
-  // captured: the branch above simply runs again, with whatever the flow state is by then.
+  // Re-runs onFlowChange once the flow is visible - nothing about the request is captured,
+  // so it starts with fresh state.
   #startWhenVisible() {
     this.loggerWrapper.debug(
       'Flow start deferred until the flow becomes visible',
@@ -852,11 +840,8 @@ class DescopeWc extends BaseDescopeWc {
 
       // As an optimization - we want to show the first screen if it is possible
       if (!showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
-        // there is no start screen to render locally, so starting the execution is the only
-        // way to get a first screen - and that runs the flow's first node. When that node is
-        // an action (send SMS, HTTP connector, ...) starting is itself a side effect, so a
-        // flow the user cannot see yet must not start at all. Wait for it to be shown and
-        // re-run this with fresh state instead of holding a stale request.
+        // no start screen to render locally, so the only way to get one is to start the
+        // execution - see #shouldDeferStart
         if (this.#shouldDeferStart()) {
           this.#startWhenVisible();
           return;
@@ -1913,12 +1898,8 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        // Loader component in the screen triggers polling interaction.
-        // A polling screen is the one screen that starts its own execution: rendering it
-        // fires this interaction, and on a start screen that means calling flow/start. A
-        // widget pre-renders its flows into closed modals, so without this check a polling
-        // screen would run the flow - and whatever follows it - before the user opened
-        // anything (issue 17399).
+        // Loader component in the screen triggers polling interaction - which on a start
+        // screen means calling flow/start, so it waits for the flow to be visible too.
         if (this.#shouldDeferStart()) {
           this.#startWhenVisible();
         } else {
