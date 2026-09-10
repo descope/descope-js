@@ -41,6 +41,7 @@ export type {
   JWTResponse,
   LoginOptions,
   PasskeyOptions,
+  PhoneEnchantedLinkResponse,
   ResponseData,
   SdkResponse,
   TOTPResponse,

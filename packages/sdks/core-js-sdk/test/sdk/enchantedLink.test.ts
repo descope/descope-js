@@ -100,6 +100,61 @@ describe('Enchanted Link', () => {
         response: httpResponse,
       });
     });
+
+    describe('signUpWithPhone', () => {
+      it('should throw an error when loginId is not a string', () => {
+        expect(() => sdk.enchantedLink.signUpWithPhone(undefined)).toThrow(
+          '"loginId" must be a string',
+        );
+      });
+
+      it('should send the correct request', () => {
+        sdk.enchantedLink.signUpWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+          {
+            phone: '+9720000000',
+          },
+        );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.enchantedLink.signUp + '/sms',
+          {
+            loginId: '+9720000000',
+            URI: 'http://some.thing.com',
+            user: { phone: '+9720000000' },
+            loginOptions: {},
+          },
+        );
+      });
+
+      it('should return the correct response with maskedPhone', async () => {
+        const httpRespJson = {
+          pendingRef: 'pendingRef',
+          linkId: 'linkId',
+          maskedPhone: '+972********00',
+        };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        const resp = await sdk.enchantedLink.signUpWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
+
+        expect(resp).toEqual({
+          code: 200,
+          data: httpRespJson,
+          ok: true,
+          response: httpResponse,
+        });
+      });
+    });
   });
   describe('signIn', () => {
     it('should throw an error when loginId is not a string', () => {
@@ -194,6 +249,58 @@ describe('Enchanted Link', () => {
         response: httpResponse,
       });
     });
+
+    describe('signInWithPhone', () => {
+      it('should throw an error when loginId is not a string', () => {
+        expect(() =>
+          sdk.enchantedLink.signInWithPhone(undefined, 'http://some.thing.com'),
+        ).toThrow('"loginId" must be a string');
+      });
+
+      it('should send the correct request', () => {
+        sdk.enchantedLink.signInWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.enchantedLink.signIn + '/sms',
+          {
+            loginId: '+9720000000',
+            URI: 'http://some.thing.com',
+            loginOptions: {},
+          },
+          { token: undefined },
+        );
+      });
+
+      it('should return the correct response with maskedPhone', async () => {
+        const httpRespJson = {
+          pendingRef: 'pendingRef',
+          linkId: 'linkId',
+          maskedPhone: '+972********00',
+        };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        const resp = await sdk.enchantedLink.signInWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
+
+        expect(resp).toEqual({
+          code: 200,
+          data: httpRespJson,
+          ok: true,
+          response: httpResponse,
+        });
+      });
+    });
   });
 
   describe('signUpOrIn', () => {
@@ -264,6 +371,57 @@ describe('Enchanted Link', () => {
         data: httpRespJson,
         ok: true,
         response: httpResponse,
+      });
+    });
+
+    describe('signUpOrInWithPhone', () => {
+      it('should throw an error when loginId is not a string', () => {
+        expect(() => sdk.enchantedLink.signUpOrInWithPhone(undefined)).toThrow(
+          '"loginId" must be a string',
+        );
+      });
+
+      it('should send the correct request', () => {
+        sdk.enchantedLink.signUpOrInWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.enchantedLink.signUpOrIn + '/sms',
+          {
+            loginId: '+9720000000',
+            loginOptions: {},
+            URI: 'http://some.thing.com',
+          },
+        );
+      });
+
+      it('should return the correct response with maskedPhone', async () => {
+        const httpRespJson = {
+          pendingRef: 'pendingRef',
+          linkId: 'linkId',
+          maskedPhone: '+972********00',
+        };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        const resp = await sdk.enchantedLink.signUpOrInWithPhone(
+          '+9720000000',
+          'http://some.thing.com',
+        );
+
+        expect(resp).toEqual({
+          code: 200,
+          data: httpRespJson,
+          ok: true,
+          response: httpResponse,
+        });
       });
     });
   });
@@ -518,6 +676,94 @@ describe('Enchanted Link', () => {
           'loginId',
           'new@email.com',
           'new@email.com',
+        );
+
+        expect(resp).toEqual({
+          code: 200,
+          data: httpRespJson,
+          ok: true,
+          response: httpResponse,
+        });
+      });
+    });
+
+    describe('phone.sms', () => {
+      it('should throw an error when loginId is not a string', () => {
+        expect(() =>
+          sdk.enchantedLink.update.phone.sms(1, '+9720000000'),
+        ).toThrow('"loginId" must be a string');
+      });
+
+      it('should throw an error when phone is not in phone format', () => {
+        expect(() =>
+          sdk.enchantedLink.update.phone.sms('loginId', 'nonPhone'),
+        ).toThrow('"nonPhone" is not a valid phone number');
+      });
+
+      it('should send the correct request', () => {
+        sdk.enchantedLink.update.phone.sms(
+          'loginId',
+          '+9720000000',
+          'http://some.thing.com',
+          'token',
+        );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.enchantedLink.update.phone + '/sms',
+          {
+            phone: '+9720000000',
+            loginId: 'loginId',
+            URI: 'http://some.thing.com',
+          },
+          { token: 'token' },
+        );
+      });
+
+      it('should send the correct request with template options', () => {
+        sdk.enchantedLink.update.phone.sms(
+          'loginId',
+          '+9720000000',
+          'http://some.thing.com',
+          'token',
+          {
+            providerId: 'some-provider',
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+        );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(
+          apiPaths.enchantedLink.update.phone + '/sms',
+          {
+            phone: '+9720000000',
+            loginId: 'loginId',
+            URI: 'http://some.thing.com',
+            providerId: 'some-provider',
+            templateOptions: {
+              ble: 'blue',
+            },
+          },
+          { token: 'token' },
+        );
+      });
+
+      it('should return the correct response with maskedPhone', async () => {
+        const httpRespJson = {
+          pendingRef: 'pendingRef',
+          linkId: 'linkId',
+          maskedPhone: '+972********00',
+        };
+        const httpResponse = {
+          ok: true,
+          json: () => httpRespJson,
+          clone: () => ({
+            json: () => Promise.resolve(httpRespJson),
+          }),
+          status: 200,
+        };
+        mockHttpClient.post.mockResolvedValue(httpResponse);
+        const resp = await sdk.enchantedLink.update.phone.sms(
+          'loginId',
+          '+9720000000',
         );
 
         expect(resp).toEqual({
