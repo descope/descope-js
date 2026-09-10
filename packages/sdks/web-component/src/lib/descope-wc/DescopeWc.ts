@@ -509,6 +509,8 @@ class DescopeWc extends BaseDescopeWc {
     newValue: string,
   ) {
     if (oldValue !== newValue) {
+      // BaseDescopeWc treats an attribute change as a deliberate restart (it clears
+      // stepId/executionId), so a flow whose start failed may be auto-started again
       this.#autoStartAttempted = false;
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -1879,12 +1881,10 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        // Loader component in the screen triggers polling interaction. This is the one
-        // interaction the component fires by itself, and on a start screen it is what
-        // calls flow/start - so a hidden flow would run before the user opened anything.
-        // Once the flow is running, re-triggering on each render IS the polling loop; only
-        // the start needs the once-per-flow guard, since a failed start re-renders the
-        // screen and would otherwise re-run the flow per attempt.
+        // Loader component in the screen triggers polling interaction - on a start screen
+        // that call is what starts the flow, so it waits until the user can see it.
+        // Re-triggering while running is just the polling loop; before that it would
+        // re-start the flow on every render, hence the guard.
         const running = Boolean(this.flowState.current.executionId);
 
         if (this.#shouldWaitForVisibility()) {

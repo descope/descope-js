@@ -131,6 +131,26 @@ describe('polling interaction of a hidden flow', () => {
     expect(startMock.mock.calls[0][3]).toBe('polling');
   });
 
+  // An attribute change is a deliberate restart: BaseDescopeWc clears stepId/executionId,
+  // so a flow whose start had failed has to be allowed to start again.
+  it('triggers polling again after an attribute change restarts the flow', async () => {
+    startMock.mockReturnValue(
+      Promise.resolve({ ok: false, error: { errorCode: 'E102121' } }),
+    );
+
+    const ele = renderPollingScreen();
+
+    await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    ele.setAttribute('locale', 'fr');
+
+    await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+  });
+
   it('triggers polling on mount when the browser cannot report visibility', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 
