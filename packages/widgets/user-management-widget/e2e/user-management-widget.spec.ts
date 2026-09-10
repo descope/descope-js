@@ -237,8 +237,6 @@ test.describe('widget', () => {
       route.fulfill({ json: { user: mockDisabledUser } }),
     );
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const createUserTrigger = page
       .locator('descope-button')
       .getByTestId('create-user-trigger')
@@ -280,8 +278,6 @@ test.describe('widget', () => {
     await NonEditableUserCheckbox.click();
 
     // wait for widget state
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(createUserTrigger).toBeEnabled();
     await expect(editUserTrigger).toBeDisabled();
     await expect(enableUserTrigger).toBeDisabled();
@@ -331,8 +327,6 @@ test.describe('widget', () => {
     // open add user modal
     await openAddUserModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     const createUserLoginIdInput = page.getByLabel('Login Id').first();
     const createUserEmailInput = page.getByLabel('Email').first();
 
@@ -363,8 +357,6 @@ test.describe('widget', () => {
     const openEditUserModalButton = page
       .getByTestId('edit-user-trigger')
       .first();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // select user
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
@@ -427,8 +419,6 @@ test.describe('widget', () => {
       .getByTestId('edit-user-trigger')
       .first();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select user
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -488,8 +478,6 @@ test.describe('widget', () => {
     await deleteUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // delete modal closed
     await expect(page.locator('Delete Users')).toBeHidden();
 
@@ -519,8 +507,6 @@ test.describe('widget', () => {
     await expect(disableUserTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select first user (status: active)
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -543,8 +529,6 @@ test.describe('widget', () => {
     await disableUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // disable modal closed
     await expect(page.locator('Disable')).toBeHidden();
 
@@ -569,8 +553,6 @@ test.describe('widget', () => {
     await expect(enableUserTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select second user (status: disabled)
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -593,8 +575,6 @@ test.describe('widget', () => {
     await enableUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // enable modal closed
     await expect(page.locator('Activate')).toBeHidden();
 
@@ -619,8 +599,6 @@ test.describe('widget', () => {
     await expect(removePasskeyTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select second user
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -628,8 +606,6 @@ test.describe('widget', () => {
       0,
     );
     await cellContentLocator.click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // enable user button is enabled on selection
     await expect(removePasskeyTrigger).toBeEnabled();
@@ -645,8 +621,6 @@ test.describe('widget', () => {
     await removePasskeyModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // enable modal closed
     await expect(page.locator('Remove passkey for')).toBeHidden();
 
@@ -674,8 +648,6 @@ test.describe('widget', () => {
     await expect(resetPasswordTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select second user (status: active)
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -697,8 +669,6 @@ test.describe('widget', () => {
     await resetPasswordModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // reset password modal closed
     await expect(resetPasswordModalButton).toBeHidden();
 
@@ -1043,8 +1013,6 @@ test.describe('widget', () => {
     await deleteUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // show notification
     await expect(
       page.locator(`text=${mockUsers.length - 1} users deleted successfully`),
@@ -1112,8 +1080,6 @@ test.describe('widget', () => {
       0,
     );
     await firstUserCheckbox.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Test state with one user selected
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await expect(genericFlowButtonOneOrMore).toBeEnabled();
@@ -1132,8 +1098,6 @@ test.describe('widget', () => {
       0,
     );
     await secondUserCheckbox.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Test state with multiple users selected
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await expect(genericFlowButtonOneOrMore).toBeEnabled();
@@ -1166,13 +1130,9 @@ test.describe('widget', () => {
       0,
     );
     await firstUserCheckbox.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Test clicking button opens modal
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await genericFlowButtonOneOrMore.click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       // Check that modal opens
       const modal = page.locator('[data-id="generic-flow-modal"]');
       await expect(modal).toBeVisible();
@@ -1183,7 +1143,6 @@ test.describe('widget', () => {
 
       // Test modal close functionality
       await page.keyboard.press('Escape');
-      await page.waitForTimeout(MODAL_TIMEOUT);
       await expect(modal).toBeHidden();
     }
   });
@@ -1216,8 +1175,6 @@ test.describe('widget', () => {
     const flowButton = page.locator('[data-generic-flow-button-id]').first();
     await expect(flowButton).toBeEnabled();
     await flowButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     const descopeWc = page
       .locator('descope-modal[data-id="generic-flow-modal"]')
       .locator('descope-wc');
@@ -1238,7 +1195,6 @@ test.describe('widget', () => {
     page,
   }) => {
     // mockUsers[0]: roleNames=['Tenant Admin','Role 2'], userTenants[0].roleNames=['Role 1','Role 2'] — mismatch
-    await page.waitForTimeout(STATE_TIMEOUT);
     await expect(page.locator('text=Multiple roles').first()).toBeVisible();
   });
 
@@ -1246,7 +1202,6 @@ test.describe('widget', () => {
     page,
   }) => {
     // mockUsers[1] has no userTenants, so only top-level roleNames — always "same"
-    await page.waitForTimeout(STATE_TIMEOUT);
     await expect(
       page.locator(`text=${mockUsers[1].roleNames.join(', ')}`).first(),
     ).toBeVisible();
@@ -1282,8 +1237,6 @@ test.describe('widget', () => {
       .first();
 
     await openAddUserModalButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
     ).toBeVisible();
@@ -1305,8 +1258,6 @@ test.describe('widget', () => {
       .first();
 
     await openAddUserModalButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
     ).toBeHidden();
@@ -1315,8 +1266,6 @@ test.describe('widget', () => {
   test('edit user - sub-tenant displays tenant name, not tenant id', async ({
     page,
   }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
       0,
@@ -1325,7 +1274,6 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
@@ -1352,8 +1300,6 @@ test.describe('widget', () => {
     );
     await page.reload();
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
       0,
@@ -1362,8 +1308,6 @@ test.describe('widget', () => {
     await cellContentLocator.click();
 
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
@@ -1374,8 +1318,6 @@ test.describe('widget', () => {
     page,
   }) => {
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Sub-tenant section is present on first open
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
@@ -1391,8 +1333,6 @@ test.describe('widget', () => {
 
     // Reopen the modal — sub-tenant section should still be visible (not broken by reset)
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
     ).toBeVisible();
@@ -1408,8 +1348,6 @@ test.describe('widget', () => {
       capturedRequestBody = route.request().postDataJSON();
       return route.fulfill({ json: { user: mockUsers[0] } });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
@@ -1459,16 +1397,12 @@ test.describe('widget', () => {
 
     // Open create modal — should not trigger the API either
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Close create modal
     await page
       .locator('descope-button')
       .getByTestId('create-user-modal-cancel')
       .first()
       .click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Open edit modal — should not trigger the API either
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,

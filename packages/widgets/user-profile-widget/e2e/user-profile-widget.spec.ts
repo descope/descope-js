@@ -84,8 +84,6 @@ test.describe('widget', () => {
   });
 
   test('avatar', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const avatar = page.locator('descope-avatar').first();
 
     await avatar.click();
@@ -112,8 +110,6 @@ test.describe('widget', () => {
   });
 
   test('logout', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const logout = page.locator('descope-button[data-id="logout"]').first();
 
     let isLoggedOut = false;
@@ -141,8 +137,6 @@ test.describe('widget', () => {
       { name: 'phone', action: 'delete', newValue: '' },
     ]) {
       test(`${attr.action} ${attr.name}`, async ({ page }) => {
-        await page.waitForTimeout(STATE_TIMEOUT);
-
         const userAttr = page
           .locator(`descope-user-attribute[data-id="${attr.name}"]`)
           .first();
@@ -167,8 +161,6 @@ test.describe('widget', () => {
 
         await finishFlowBtn.click();
 
-        await page.waitForTimeout(MODAL_TIMEOUT);
-
         await expect(userAttr).toHaveAttribute('value', attr.newValue);
       });
     }
@@ -183,8 +175,6 @@ test.describe('widget', () => {
     test('rebuilds the preloaded edit-phone flow after the phone is deleted', async ({
       page,
     }) => {
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const editPhoneWc = page
         .locator('descope-modal[data-id="edit-phone"]')
         .locator('descope-wc');
@@ -208,7 +198,6 @@ test.describe('widget', () => {
         .locator('descope-button[data-id="delete-btn"]')
         .first()
         .click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
       await page
         .locator('descope-modal[data-id="delete-phone"]')
         .locator('button', { hasText: 'Finish Flow' })
@@ -231,8 +220,6 @@ test.describe('widget', () => {
     test('does not rebuild an edit modal while it is open', async ({
       page,
     }) => {
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       // open the edit-phone modal and tag its flow element
       const phoneAttr = page
         .locator('descope-user-attribute[data-id="phone"]')
@@ -241,7 +228,6 @@ test.describe('widget', () => {
         .locator('descope-button[data-id="edit-btn"]')
         .first()
         .click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
       await page
         .locator('descope-modal[data-id="edit-phone"]')
         .locator('descope-wc')
@@ -255,8 +241,6 @@ test.describe('widget', () => {
         .locator('descope-modal[data-id="delete-phone"]')
         .locator('descope-wc')
         .dispatchEvent('success');
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       // the open modal keeps its flow (tag intact) - rebuilding it would drop
       // the flow the user is interacting with.
       await expect(
@@ -276,8 +260,6 @@ test.describe('widget', () => {
     test('sets close-on-outside-click on the modals it opens', async ({
       page,
     }) => {
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const editBtn = page
         .locator(`descope-user-attribute[data-id="email"]`)
         .first()
@@ -285,8 +267,6 @@ test.describe('widget', () => {
         .first();
 
       await editBtn.click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       await expect(
         page.locator(`descope-modal[data-id="edit-email"]`),
       ).toHaveAttribute('close-on-outside-click', 'true');
@@ -306,8 +286,6 @@ test.describe('widget', () => {
       { name: 'totp', flagPath: 'TOTP', fulfilled: 'true' },
     ]) {
       test(`${attr.name}`, async ({ page }) => {
-        await page.waitForTimeout(STATE_TIMEOUT);
-
         const userAttr = page
           .locator(`descope-user-auth-method[data-id="${attr.name}"]`)
           .first();
@@ -418,8 +396,6 @@ test.describe('widget', () => {
       page,
     }) => {
       await page.locator('[data-generic-flow-button-id]').first().click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       const descopeWc = page
         .locator('descope-modal[data-id="generic-flow-modal"]')
         .locator('descope-wc');
@@ -446,8 +422,6 @@ test.describe('widget', () => {
       });
 
       await page.locator('[data-generic-flow-button-id]').first().click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       const descopeWc = page
         .locator('descope-modal[data-id="generic-flow-modal"]')
         .locator('descope-wc');
@@ -471,14 +445,10 @@ test.describe('widget', () => {
       page,
     }) => {
       await page.locator('[data-generic-flow-button-id]').first().click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       await page
         .locator('descope-modal[data-id="generic-flow-modal"]')
         .locator('descope-wc')
         .dispatchEvent('page-updated');
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       await expect(
         page.locator('descope-modal[data-id="generic-flow-modal"]'),
       ).toHaveAttribute('opened');
@@ -548,8 +518,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const passkeysEl = page.locator('descope-user-passkeys').first();
 
       await expect(passkeysEl.getByText('iPhone')).toBeVisible();
@@ -581,8 +549,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const badge = page
         .locator('descope-user-attribute[data-id="email"]')
         .locator('descope-badge');
@@ -599,8 +565,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const badge = page
         .locator('descope-user-attribute[data-id="email"]')
         .locator('descope-badge');
@@ -617,8 +581,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const badge = page
         .locator('descope-user-attribute[data-id="email"]')
         .locator('descope-badge');
@@ -635,8 +597,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
         .locator('descope-badge');
@@ -653,8 +613,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
         .locator('descope-badge');
@@ -671,8 +629,6 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-
       const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
         .locator('descope-badge');
