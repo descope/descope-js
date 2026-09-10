@@ -700,7 +700,6 @@ test.describe('widget', () => {
 
   test('search users', async ({ page }) => {
     test.setTimeout(60_000);
-    await page.waitForLoadState('networkidle');
 
     // Set up route handler - fulfill all search requests; filter on mockSearchString
     await page.route(apiPath('user', 'search'), async (route) => {
@@ -714,30 +713,25 @@ test.describe('widget', () => {
       });
     });
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const searchInput = page
       .getByTestId('search-input')
       .locator('input')
       .first();
 
-    await searchInput.waitFor({ state: 'visible' });
-
     // focus search input
     await searchInput.focus();
 
-    // Trigger search by typing (simulates user behavior more accurately)
-    await searchInput.fill('mockSearchString');
-
-    // Register before the action so the response isn't missed
+    // fill() is what triggers the search - it fires `input`, and the widget's
+    // handler is debounced by 500ms. Register the wait BEFORE typing: register
+    // it after and the response can land first and never be seen. Pressing
+    // Enter does not help, because the driver listens to `input`, not keys.
     const searchResponsePromise = page.waitForResponse(
       (response) =>
         response.url().includes(apiPaths.user.search) &&
         response.request().postDataJSON()?.text === 'mockSearchString',
     );
 
-    // Trigger search with Enter key to ensure it fires
-    await searchInput.press('Enter');
+    await searchInput.fill('mockSearchString');
 
     await searchResponsePromise;
 
@@ -754,7 +748,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     // Set up route handler — fulfill all search requests; payload is asserted via
     // the waitForResponse predicate below.
@@ -771,15 +765,11 @@ test.describe('widget', () => {
         }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // Dispatch the filter-apply event directly on the descope-filter element —
     // we don't drive the popover UI in unit-style e2e since the popover's
     // operator/value combos require multi-step click sequences and the wire
     // shape is what we want to assert here.
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const searchResponsePromise = page.waitForResponse(
       (response) =>
@@ -820,7 +810,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     // Assert the wire shape of the search request; never hits a real backend.
     await page.route(apiPath('user', 'search'), async (route) => {
@@ -838,11 +828,7 @@ test.describe('widget', () => {
         }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const searchResponsePromise = page.waitForResponse((response) => {
       if (!response.url().includes(apiPaths.user.search)) return false;
@@ -891,7 +877,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     await page.route(apiPath('user', 'search'), async (route) => {
       const { roleNames } = route.request().postDataJSON();
@@ -906,11 +892,7 @@ test.describe('widget', () => {
         }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const searchResponsePromise = page.waitForResponse(
       (response) =>
@@ -954,7 +936,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     await page.route(apiPath('user', 'search'), async (route) => {
       return route.fulfill({
@@ -963,11 +945,7 @@ test.describe('widget', () => {
         body: JSON.stringify({ users: mockUsers }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const clearResponsePromise = page.waitForResponse(
       (response) =>
@@ -1251,7 +1229,7 @@ test.describe('widget', () => {
       route.fulfill({ json: { roles: [] } }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     const openAddUserModalButton = page
       .getByTestId('create-user-trigger')
@@ -1299,7 +1277,7 @@ test.describe('widget', () => {
       route.fulfill({ json: { roles: [] } }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
     const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
       page,
       0,
@@ -1392,7 +1370,7 @@ test.describe('widget', () => {
     });
 
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
     await page.waitForTimeout(STATE_TIMEOUT);
 
     // Open create modal — should not trigger the API either
