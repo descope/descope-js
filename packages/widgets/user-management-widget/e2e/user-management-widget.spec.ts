@@ -686,7 +686,8 @@ test.describe('widget', () => {
     const generatedPasswordInput = page
       .getByPlaceholder('Generated password')
       .last();
-    expect(await generatedPasswordInput.inputValue()).toEqual(cleartext);
+    // web-first, so it retries while the password lands in the field
+    await expect(generatedPasswordInput).toHaveValue(cleartext);
 
     // click modal button
     const closeGeneratedPasswordButton = page
@@ -744,7 +745,7 @@ test.describe('widget', () => {
     // only search results shown in grid
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('filter users by status', async ({ page }) => {
@@ -804,7 +805,7 @@ test.describe('widget', () => {
     // Only filtered users shown in grid.
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('filter users by name sends a searchFields LIKE query', async ({
@@ -873,7 +874,7 @@ test.describe('widget', () => {
 
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('filter users by roles', async ({ page }) => {
@@ -930,7 +931,7 @@ test.describe('widget', () => {
 
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('clearing the filter sends a search with no filter fields', async ({
@@ -1161,7 +1162,7 @@ test.describe('widget', () => {
     const descopeWc = page
       .locator('descope-modal[data-id="generic-flow-modal"]')
       .locator('descope-wc');
-    await expect(descopeWc).toBeAttached({ timeout: 10000 });
+    await expect(descopeWc).toBeAttached();
 
     // caller form is forwarded into the flow as-is
     await expect(descopeWc).toHaveAttribute(
@@ -1262,19 +1263,21 @@ test.describe('widget', () => {
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).toBeVisible({ timeout: 8000 });
+    ).toBeVisible();
 
     // The data attribute should map tenantId → { label: tenantName, options: roleNames }
     // so the component receives 'Sub Tenant One' as the display label for 'sub-tenant-1'
-    const dataAttr = await page
-      .locator('[data-id="sub-tenant-mappings"]')
-      .nth(1)
-      .getAttribute('data', { timeout: 8000 });
-    const parsedData = JSON.parse(dataAttr || '{}');
-    expect(parsedData['sub-tenant-1']).toHaveProperty(
-      'label',
-      'Sub Tenant One',
-    );
+    // Poll rather than read once: the attribute is written after the modal
+    // renders, so a single getAttribute can catch it empty.
+    await expect
+      .poll(async () => {
+        const dataAttr = await page
+          .locator('[data-id="sub-tenant-mappings"]')
+          .nth(1)
+          .getAttribute('data');
+        return JSON.parse(dataAttr || '{}')['sub-tenant-1'];
+      })
+      .toMatchObject({ label: 'Sub Tenant One' });
   });
 
   test('edit user - sub-tenant section is hidden when no sub-tenants', async ({
@@ -1296,7 +1299,7 @@ test.describe('widget', () => {
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).toBeHidden({ timeout: 8000 });
+    ).toBeHidden();
   });
 
   test('create user - sub-tenant values reset after cancel', async ({

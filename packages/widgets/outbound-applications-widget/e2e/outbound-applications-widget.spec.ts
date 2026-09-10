@@ -113,8 +113,8 @@ test.describe('widget', () => {
       // Validate all other apps are not visible
       for (let i = 1; i < mockOutboundApps.apps.length; i++) {
         const app = mockOutboundApps.apps[i];
-        await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
-        await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
+        await expect(page.locator(`text=${app.name}`)).toHaveCount(0);
+        await expect(page.locator(`text=${app.description}`)).toHaveCount(0);
       }
     });
 
@@ -129,8 +129,8 @@ test.describe('widget', () => {
       // Validate all apps are not visible
       for (let i = 0; i < mockOutboundApps.apps.length; i++) {
         const app = mockOutboundApps.apps[i];
-        await expect(page.locator(`text=${app.name}`)).not.toBeVisible();
-        await expect(page.locator(`text=${app.description}`)).not.toBeVisible();
+        await expect(page.locator(`text=${app.name}`)).toHaveCount(0);
+        await expect(page.locator(`text=${app.description}`)).toHaveCount(0);
       }
     });
   });

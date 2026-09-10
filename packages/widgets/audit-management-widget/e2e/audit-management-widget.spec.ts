@@ -80,15 +80,15 @@ test.describe('widget', () => {
   test('audit table', async ({ page }) => {
     await expect(
       page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     await expect(
       page.locator(`text=${mockAudit.audit[1]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
   });
 
   test('search audit', async ({ page }) => {
@@ -221,7 +221,7 @@ test.describe('widget', () => {
     // wait for audit data to load
     await expect(
       page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     // verify export button is visible
     const exportButton = page.locator(

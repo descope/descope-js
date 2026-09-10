@@ -192,8 +192,10 @@ test.describe('widget', () => {
     // open add access key modal
     await openAddAccessKeyModalButton.click();
 
+    // web-first, so it retries while the modal finishes rendering rather than
+    // reading the value once
     const expirationInput = page.getByText('Expiration');
-    expect(await expirationInput.last().inputValue()).toEqual('30 Days');
+    await expect(expirationInput.last()).toHaveValue('30 Days');
 
     // submit name
     const createAccessKeyNameInput = page.getByText('Name');
@@ -434,17 +436,17 @@ test.describe('widget', () => {
     // only search results shown in grid - wait longer for UI to update
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].name}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     // The unfiltered key is no longer in the grid — proves the filter actually
     // ran on the typed text (not just that the response renders).
     await expect(
       page.locator(`text=${mockAccessKeys.keys[0].name}`).first(),
-    ).toBeHidden({ timeout: 10000 });
+    ).toBeHidden();
   });
 
   test('close notification', async ({ page }) => {

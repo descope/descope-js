@@ -160,9 +160,14 @@ test.describe('widget', () => {
   });
 
   test('edit role', async ({ page }) => {
-    await page.getByTestId('edit-role-trigger').first().isDisabled();
+    // These were isDisabled()/isEnabled() calls whose boolean was discarded, so
+    // they asserted nothing. Same family as the missing awaits: they read like
+    // a check but never fail.
+    const editRoleTrigger = page.getByTestId('edit-role-trigger').first();
+
+    await expect(editRoleTrigger).toBeDisabled();
     await page.locator('descope-checkbox').last().click();
-    await page.getByTestId('edit-role-trigger').first().isEnabled();
+    await expect(editRoleTrigger).toBeEnabled();
 
     // open edit role modal
     const openEditRoleModalButton = page
