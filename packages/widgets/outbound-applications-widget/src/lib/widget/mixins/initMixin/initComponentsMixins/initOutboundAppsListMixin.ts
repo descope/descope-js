@@ -154,17 +154,12 @@ export const initOutboundAppsListMixin = createSingletonMixin(
           { logger: this.logger },
         );
 
-        // Both modals open on click rather than waiting for the flow to report a page:
-        // the flow does not start until it is visible, so it cannot report one while its
-        // modal is still closed.
         this.#obAppsList.onConnectClick(({ id }) => {
           this.#initConnectModalContent(id);
-          this.#connectModal.open();
         });
 
         this.#obAppsList.onDisconnectClick(({ id }) => {
           this.#initDisconnectModalContent(id);
-          this.#disconnectModal.open();
         });
 
         this.#obAppsList.data = appsList;

@@ -4,11 +4,10 @@ import { mockUser } from '../test/mocks/mockUser';
 import mockTheme from '../test/mocks/mockTheme';
 import rootMock from '../test/mocks/rootMock';
 
-// Every flow referenced by rootMock, declared WITHOUT a startScreenId. That is what
-// makes a flow "action-first": descope-wc has no first screen to render locally, so
-// showFirstScreenOnExecutionInit() is false and it calls POST /v1/flow/start as soon
-// as it is mounted - which is exactly what executes the flow's first action node
-// (send SMS, HTTP connector, ...) with no user interaction.
+// The flows referenced by rootMock. Declared with a startScreenId whose screen holds a
+// polling element: rendering such a screen fires the polling interaction, which on a
+// start screen calls POST /v1/flow/start. A widget pre-renders its flows into closed
+// modals, so that would run the flow before the user opened anything.
 const FLOW_IDS = [
   'add-passkey-flow',
   'remove-passkey-flow',
@@ -22,7 +21,9 @@ const FLOW_IDS = [
 ];
 
 const configContent = {
-  flows: Object.fromEntries(FLOW_IDS.map((id) => [id, { version: 1 }])),
+  flows: Object.fromEntries(
+    FLOW_IDS.map((id) => [id, { version: 1, startScreenId: 'screen-1' }]),
+  ),
   componentsVersion: '1.2.3',
 };
 
@@ -57,6 +58,10 @@ test.describe('early flow execution (issue 17399)', () => {
       route.fulfill({ body: rootMock }),
     );
 
+    await page.route('*/**/screen-1.html', async (route) =>
+      route.fulfill({ body: '<div data-type="polling">waiting</div>' }),
+    );
+
     await page.route('**/auth/me', async (route) =>
       route.fulfill({ json: mockUser }),
     );
@@ -89,43 +94,6 @@ test.describe('early flow execution (issue 17399)', () => {
     );
 
     expect(started).toEqual([]);
-  });
-
-  // The prewarm is only unsafe for action-first flows. A flow that starts with a screen
-  // still renders that screen at widget render time, inside the closed modal, without
-  // calling the server - so opening its modal is instant, exactly as before the fix.
-  test.describe('flows that start with a screen', () => {
-    test.beforeEach(async ({ page }) => {
-      await page.route('*/**/config.json', async (route) =>
-        route.fulfill({
-          json: {
-            flows: Object.fromEntries(
-              FLOW_IDS.map((id) => [
-                id,
-                { version: 1, startScreenId: 'screen-1' },
-              ]),
-            ),
-            componentsVersion: '1.2.3',
-          },
-        }),
-      );
-
-      await page.route('*/**/screen-1.html', async (route) =>
-        route.fulfill({ body: '<div>PREWARMED SCREEN</div>' }),
-      );
-
-      await page.goto(`http://localhost:${widgetPort}`);
-      await page.waitForTimeout(STATE_TIMEOUT);
-    });
-
-    test('still prerenders the first screen without starting the flow', async ({
-      page,
-    }) => {
-      expect(started).toEqual([]);
-
-      // rendered into a modal that is still closed
-      await expect(page.getByText('PREWARMED SCREEN').first()).toBeAttached();
-    });
   });
 
   test('runs exactly one flow when one button is pressed', async ({ page }) => {

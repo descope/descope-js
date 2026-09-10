@@ -112,7 +112,8 @@ class DescopeWc extends BaseDescopeWc {
 
   #visibilityObserver: ResizeObserver | null = null;
 
-  #startAttemptedForFlowId: string | undefined;
+  // whether the component already started this flow by itself, rather than on user input
+  #autoStartAttempted = false;
 
   constructor() {
     const flowState = new State<FlowState>({
@@ -508,7 +509,7 @@ class DescopeWc extends BaseDescopeWc {
     newValue: string,
   ) {
     if (oldValue !== newValue) {
-      this.#startAttemptedForFlowId = undefined;
+      this.#autoStartAttempted = false;
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
@@ -535,27 +536,24 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  // Starting an execution runs the flow's first node, so a flow the user cannot see must
-  // not start - it would send the SMS or call the connector unasked. A widget preloading
-  // a modal is the common case; any hidden flow is the same situation.
-  #shouldDeferStart() {
-    // the native layer runs the flow in a webview and renders screens natively, so the
-    // element may legitimately never be visible - the host asked for this flow, start it
+  // Whether the flow is hidden from the user, so anything the component would do by
+  // itself has to wait. A widget preloading a modal is the common case.
+  #shouldWaitForVisibility() {
+    // a native webview may never report the element as visible, and the host asked for
+    // this flow explicitly
     if (this.nativeOptions) return false;
 
-    // only defer when the browser positively reports the element as hidden. Engines
-    // without checkVisibility (and jsdom) keep the previous start-on-mount behavior
+    // only wait when the browser positively reports the element as hidden - engines
+    // without checkVisibility keep the previous behavior
     return (
       typeof this.checkVisibility === 'function' && !this.checkVisibility()
     );
   }
 
-  // Re-runs onFlowChange once the flow is visible - nothing about the request is captured,
-  // so it starts with fresh state.
-  #startWhenVisible() {
-    this.loggerWrapper.debug(
-      'Flow start deferred until the flow becomes visible',
-    );
+  // Re-runs onFlowChange once the flow is visible, which re-renders the screen and gets
+  // it back to whatever it deferred - with fresh state, nothing captured.
+  #resumeWhenVisible() {
+    this.loggerWrapper.debug('Deferred until the flow becomes visible');
 
     if (this.#visibilityObserver || typeof ResizeObserver === 'undefined') {
       return;
@@ -563,7 +561,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // the element gets a box when the modal containing it opens
     this.#visibilityObserver = new ResizeObserver(() => {
-      if (this.#shouldDeferStart()) return;
+      if (this.#shouldWaitForVisibility()) return;
 
       this.#clearVisibilityObserver();
       // reqTimestamp is the existing cache-buster for forcing a state change (see
@@ -619,8 +617,8 @@ class DescopeWc extends BaseDescopeWc {
 
   async #handleFlowRestart() {
     this.loggerWrapper.debug('Trying to restart the flow');
-    // a restart is deliberate, so it is allowed to start the flow again
-    this.#startAttemptedForFlowId = undefined;
+    // a restart is deliberate, so the flow may be auto-started again
+    this.#autoStartAttempted = false;
     const prevCompVersion = await this.getComponentsVersion();
     this.reset();
     const compVersion = await this.getComponentsVersion();
@@ -840,23 +838,6 @@ class DescopeWc extends BaseDescopeWc {
 
       // As an optimization - we want to show the first screen if it is possible
       if (!showFirstScreenOnExecutionInit(startScreenId, ssoQueryParams)) {
-        // no start screen to render locally, so the only way to get one is to start the
-        // execution - see #shouldDeferStart
-        if (this.#shouldDeferStart()) {
-          this.#startWhenVisible();
-          return;
-        }
-
-        // a failed start leaves executionId unset, and the flowState update it triggers
-        // re-enters this branch - so remember the attempt rather than retrying in a loop
-        if (this.#startAttemptedForFlowId === flowId) {
-          this.loggerWrapper.debug(
-            'Flow start was already attempted by this element - not starting again',
-          );
-          return;
-        }
-        this.#startAttemptedForFlowId = flowId;
-
         const sdkResp = await this.sdk.flow.start(
           flowId,
           {
@@ -1898,11 +1879,24 @@ class DescopeWc extends BaseDescopeWc {
         `[${ELEMENT_TYPE_ATTRIBUTE}="polling"]`,
       );
       if (loader) {
-        // Loader component in the screen triggers polling interaction - which on a start
-        // screen means calling flow/start, so it waits for the flow to be visible too.
-        if (this.#shouldDeferStart()) {
-          this.#startWhenVisible();
+        // Loader component in the screen triggers polling interaction. This is the one
+        // interaction the component fires by itself, and on a start screen it is what
+        // calls flow/start - so a hidden flow would run before the user opened anything.
+        // Once the flow is running, re-triggering on each render IS the polling loop; only
+        // the start needs the once-per-flow guard, since a failed start re-renders the
+        // screen and would otherwise re-run the flow per attempt.
+        const running = Boolean(this.flowState.current.executionId);
+
+        if (this.#shouldWaitForVisibility()) {
+          this.#resumeWhenVisible();
+        } else if (!running && this.#autoStartAttempted) {
+          this.loggerWrapper.debug(
+            'Flow was already auto-started by this element - not starting again',
+          );
         } else {
+          if (!running) {
+            this.#autoStartAttempted = true;
+          }
           next(CUSTOM_INTERACTIONS.polling, {});
         }
       }
