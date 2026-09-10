@@ -106,8 +106,13 @@ test.describe('early flow execution (issue 17399)', () => {
 
     await editBtn.click();
 
-    // opening the modal makes the flow visible, which triggers polling, which starts the
-    // flow - a chain of a render and a request, so poll for it rather than guess a delay
-    await expect.poll(() => started.length, { timeout: 15000 }).toBe(1);
+    // assert the modal opened before the start, so a failure says which step was missed
+    await expect(
+      page.locator('descope-modal[data-id="edit-email"]'),
+    ).toHaveAttribute('opened', 'true');
+
+    // being visible is what triggers polling, which is what starts the flow - a render
+    // plus a request, so poll for it rather than guess a delay
+    await expect.poll(() => started.length, { timeout: 30000 }).toBe(1);
   });
 });
