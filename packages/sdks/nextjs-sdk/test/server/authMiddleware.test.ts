@@ -429,6 +429,51 @@ describe('authMiddleware', () => {
 			expect(headersArg.get('x-descope-session')).toBeNull();
 		});
 
+		it('skips refresh token validation when skipRefreshTokenValidation is true', async () => {
+			// Session JWT fails, refresh token should never be validated
+			mockValidateJwt.mockRejectedValueOnce(new Error('Session JWT expired'));
+
+			const middleware = authMiddleware({
+				skipRefreshTokenValidation: true
+			});
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'expiredSessionJwt', DSR: 'validRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			// Only the session JWT is validated
+			expect(mockValidateJwt).toHaveBeenCalledTimes(1);
+			expect(mockValidateJwt).toHaveBeenCalledWith('expiredSessionJwt');
+
+			// Expect redirect since the session token is the only thing that counts
+			expect(NextResponse.redirect).toHaveBeenCalled();
+		});
+
+		it('allows access with a valid session token when skipRefreshTokenValidation is true', async () => {
+			mockValidateJwt.mockResolvedValueOnce({
+				jwt: 'validSessionJwt',
+				token: { iss: 'project-1', sub: 'user-123' }
+			});
+
+			const middleware = authMiddleware({
+				skipRefreshTokenValidation: true
+			});
+			const mockReq = createMockNextRequest({
+				pathname: '/private',
+				cookies: { DS: 'validSessionJwt', DSR: 'validRefreshJwt' }
+			});
+
+			await middleware(mockReq);
+
+			expect(mockValidateJwt).toHaveBeenCalledTimes(1);
+			expect(mockValidateJwt).toHaveBeenCalledWith('validSessionJwt');
+
+			expect(NextResponse.redirect).not.toHaveBeenCalled();
+			expect(NextResponse.next).toHaveBeenCalled();
+		});
+
 		it('allows access to public routes even when both tokens fail', async () => {
 			// Both calls fail
 			mockValidateJwt
