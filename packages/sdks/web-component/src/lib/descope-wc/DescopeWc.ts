@@ -319,7 +319,7 @@ class DescopeWc extends BaseDescopeWc {
         if (!globalThis.descope?.[script.id]) {
           await this.injectNpmLib(
             '@descope/flow-scripts',
-            '1.0.18', // currently using a fixed version when loading scripts
+            '1.0.19', // currently using a fixed version when loading scripts
             `dist/${script.id}.js`,
           );
         }
