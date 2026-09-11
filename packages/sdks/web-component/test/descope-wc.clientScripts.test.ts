@@ -298,6 +298,67 @@ describe('web-component', () => {
       );
     });
 
+    // The mirror of the test below: a module with no `present` has no submit-time
+    // gate, so its result can only arrive via the load callback. Releasing it at
+    // construction would let the flow request go out without that result - e.g.
+    // fingerprint and forter, which expose neither `present` nor `refresh`.
+    it('should keep waiting for a module that has no present hook', async () => {
+      const mockSilentScript = jest.fn(() => ({
+        id: 'grecaptcha',
+        start: jest.fn(),
+        stop: jest.fn(),
+      }));
+      window.descope = { grecaptcha: mockSilentScript };
+
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          'sign-in': {
+            startScreenId: 'screen-0',
+            clientScripts: [
+              {
+                id: 'grecaptcha',
+                initArgs: {
+                  enterprise: true,
+                  siteKey: 'SITE_KEY',
+                },
+                resultKey: 'riskToken',
+              },
+            ],
+          },
+        },
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email"></input><span>hey</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      scriptMock.onload();
+      await waitFor(() => expect(mockSilentScript).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      // Flush microtasks only. The module never called the callback, so nothing
+      // should release the submit until the load timeout elapses.
+      for (let i = 0; i < 50; i += 1) {
+        await Promise.resolve(); // eslint-disable-line no-await-in-loop
+      }
+
+      expect(startMock).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(SDK_SCRIPTS_LOAD_TIMEOUT + 1);
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+    });
+
     it('should not wait for the load timeout when the module implements present', async () => {
       mockPresentScript.mockClear();
       mockPresentScript.mockResolvedValueOnce(true);
