@@ -319,7 +319,7 @@ class DescopeWc extends BaseDescopeWc {
         if (!globalThis.descope?.[script.id]) {
           await this.injectNpmLib(
             '@descope/flow-scripts',
-            '1.0.17', // currently using a fixed version when loading scripts
+            '1.0.19', // currently using a fixed version when loading scripts
             `dist/${script.id}.js`,
           );
         }
@@ -351,6 +351,14 @@ class DescopeWc extends BaseDescopeWc {
                   this.shadowRoot.removeChild(newScriptElement);
                 }
               });
+              // Modules that implement `present` mint their token when presented
+              // (awaited before the next call), not while loading, so they never
+              // invoke the callback here. Consider them loaded once constructed,
+              // otherwise loading always races SDK_SCRIPTS_LOAD_TIMEOUT and the
+              // first submit is delayed by the remainder of that timeout.
+              if (typeof moduleRes.present === 'function') {
+                resolve(script.id);
+              }
             }
           } catch (e) {
             reject(e);
