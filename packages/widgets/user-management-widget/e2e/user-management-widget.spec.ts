@@ -39,6 +39,14 @@ const configContent = {
 const apiPath = (prop: 'user' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
+// Ceiling for waiting on a user modal to open - deliberately above the global
+// expect timeout. This is NOT a sleep: it returns the moment the modal appears.
+// ModalDriver.open() awaits beforeOpen before setting opened="true", and both
+// the create and edit modals fetch the widget config, the tenant roles and the
+// sub-tenant roles in there, so opening one is several round trips rather than
+// a repaint. Webkit under 4 workers was exceeding the 15s global ceiling.
+const MODAL_OPEN_TIMEOUT = 30_000;
+
 const getTableBodyCellContentLocatorByIndex = async (
   page: Page,
   rowIdx: number,
@@ -345,14 +353,9 @@ test.describe('widget', () => {
     // Wait for something inside the modal: without this, fill() can sit on an
     // input that exists but is still hidden - the create and edit modals are
     // both built at init and both carry a "Login ID" field.
-    //
-    // Above the global expect ceiling on purpose. ModalDriver.open() awaits
-    // beforeOpen before setting opened="true", and this modal's beforeOpen
-    // fetches the widget config, the tenant roles and the sub-tenant roles
-    // first, so opening it is several round trips rather than a repaint.
     await expect(
       page.getByTestId('create-user-modal-submit').first(),
-    ).toBeVisible({ timeout: 30_000 });
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     const createUserLoginIdInput = page.getByLabel('Login Id').first();
     const createUserEmailInput = page.getByLabel('Email').first();
@@ -395,7 +398,7 @@ test.describe('widget', () => {
     // wait for something inside it rather than assuming it is open
     await expect(
       page.getByTestId('edit-user-modal-submit').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     const editUserEmailInput = page.getByLabel('Email').last();
     const editUserNameInput = page.getByLabel('Name').last();
@@ -457,7 +460,7 @@ test.describe('widget', () => {
     // carry one, and the first in document order sits in a closed modal.
     await expect(
       page.getByTestId('edit-user-modal-submit').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     await page.evaluate(() => {
       const phoneField = document.querySelector(
@@ -1184,7 +1187,7 @@ test.describe('widget', () => {
     await page.getByTestId('create-user-trigger').first().click();
     await expect(
       page.getByTestId('create-user-modal-submit').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     await page.getByLabel('Login Id').first().fill('someLoginId@test.com');
     await page
@@ -1317,7 +1320,7 @@ test.describe('widget', () => {
     await page.getByTestId('edit-user-trigger').first().click();
     await expect(
       page.getByTestId('edit-user-modal-submit').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     const responsePromise = page.waitForResponse(apiPath('user', 'update'));
     await page
@@ -1371,7 +1374,7 @@ test.describe('widget', () => {
     // action that could have triggered getSubTenantRoles has run.
     await expect(
       page.getByTestId('edit-user-modal-submit').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     expect(subTenantRolesCallCount).toBe(0);
   });
