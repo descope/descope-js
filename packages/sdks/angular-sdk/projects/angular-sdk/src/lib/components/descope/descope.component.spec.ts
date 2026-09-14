@@ -3,7 +3,10 @@ import { default as DescopeWC } from '@descope/web-component';
 import { DescopeComponent } from './descope.component';
 import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthService } from '../../services/descope-auth.service';
+import { CommonModule } from '@angular/common';
 import {
+  Component,
   CUSTOM_ELEMENTS_SCHEMA,
   EventEmitter,
   PLATFORM_ID
@@ -27,12 +30,19 @@ describe('DescopeComponent', () => {
   const onIsAuthenticatedChangeSpy = jest.fn();
   const onUserChangeSpy = jest.fn();
   const onClaimsChangeSpy = jest.fn();
-  const afterRequestHooksSpy = jest.fn();
+  // The real afterRequest hook returns a promise, and the success handler pipes
+  // it through rxjs `from`, so the mock has to return one too.
+  const afterRequestHooksSpy = jest.fn(() => Promise.resolve());
   const mockConfig: DescopeAuthConfig = {
     projectId: 'someProject'
   };
 
-  beforeEach(() => {
+  // The element is created in ngOnInit, after the dynamic import resolves, so it
+  // is not in the DOM until the task queue drains. fixture.whenStable() is not
+  // enough here - it can return before that continuation has run.
+  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  beforeEach(async () => {
     mockedCreateSdk = mocked(createSdk);
 
     mockedCreateSdk.mockReturnValue({
@@ -75,6 +85,8 @@ describe('DescopeComponent', () => {
     component.form = {};
     component.storeLastAuthenticatedUser = true;
     fixture.detectChanges();
+    await flush();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -110,18 +122,25 @@ describe('DescopeComponent', () => {
     ).toEqual('true');
   });
 
-  it('should emit success when web component emits success', () => {
+  it('should emit success when web component emits success', async () => {
     const html: HTMLElement = fixture.nativeElement;
     const webComponentHtml = html.querySelector('descope-wc')!;
 
     const event = {
       detail: { user: { name: 'user1' }, sessionJwt: 'session1' }
     };
+    const emitted: CustomEvent[] = [];
     component.success.subscribe((e) => {
-      expect(afterRequestHooksSpy).toHaveBeenCalled();
-      expect(e.detail).toHaveBeenCalledWith(event.detail);
+      emitted.push(e);
     });
     webComponentHtml.dispatchEvent(new CustomEvent('success', event));
+    // The handler pipes the afterRequest promise through rxjs before emitting,
+    // so don't assume the output has arrived by the time dispatch returns.
+    await flush();
+
+    expect(afterRequestHooksSpy).toHaveBeenCalled();
+    expect(emitted).toHaveLength(1);
+    expect(emitted[0].detail).toEqual(event.detail);
   });
 
   it('should emit error when web component emits error', () => {
@@ -214,6 +233,301 @@ describe('DescopeComponent', () => {
         'descope-wc'
       ) as any;
       expect(webComponent.customStorage).toBe(newCustomStorage);
+    });
+  });
+
+  // Regression tests for descope/etc#18415. The custom element reads project-id
+  // in its connectedCallback, so the attribute has to be there before the
+  // element is connected. It used to be missing on every mount after the first,
+  // which left the flow stuck loading forever with no error.
+  describe('attributes are set before the element connects', () => {
+    type ConnectRecord = {
+      projectId: string | null;
+      flowId: string | null;
+      projected: string | null;
+    };
+    const connects: ConnectRecord[] = [];
+
+    // A stand-in for descope-wc that records what it can see when connected.
+    class ProbeElement extends HTMLElement {
+      connectedCallback() {
+        connects.push({
+          projectId: this.getAttribute('project-id'),
+          flowId: this.getAttribute('flow-id'),
+          projected: this.textContent?.trim() || null
+        });
+      }
+    }
+
+    const mountProbe = async () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig }
+        ]
+      });
+      const f = TestBed.createComponent(DescopeComponent);
+      f.componentInstance.projectId = 'P_TEST';
+      f.componentInstance.flowId = 'sign-in';
+      f.detectChanges();
+      await flush();
+      f.detectChanges();
+      return f;
+    };
+
+    beforeAll(() => {
+      // The real descope-wc is mocked away in this suite, so the element name
+      // used by the component is registered here instead. Registering it is
+      // what makes the test meaningful: an unregistered element never upgrades,
+      // so it would never read its attributes and the bug would not show.
+      if (!customElements.get('descope-wc')) {
+        customElements.define('descope-wc', ProbeElement);
+      }
+    });
+
+    beforeEach(() => {
+      connects.length = 0;
+    });
+
+    it('sets project-id and flow-id before connectedCallback runs', async () => {
+      await mountProbe();
+
+      expect(connects).toHaveLength(1);
+      expect(connects[0].projectId).toBe('P_TEST');
+      expect(connects[0].flowId).toBe('sign-in');
+    });
+
+    it('sets them on remount too, when the element is already defined', async () => {
+      const first = await mountProbe();
+      first.destroy();
+      connects.length = 0;
+
+      // This is the case the customer hit: by now descope-wc is defined, so the
+      // element upgrades the moment it is connected.
+      await mountProbe();
+
+      expect(connects).toHaveLength(1);
+      expect(connects[0].projectId).toBe('P_TEST');
+      expect(connects[0].flowId).toBe('sign-in');
+    });
+
+    it('removes the element and disconnects it on destroy', async () => {
+      const f = await mountProbe();
+      const element = f.nativeElement.querySelector('descope-wc');
+      expect(element).toBeTruthy();
+
+      f.destroy();
+
+      // isConnected going false is what makes the browser run the web
+      // component's disconnectedCallback so it can clean up after itself.
+      expect(element.isConnected).toBe(false);
+      expect(f.nativeElement.querySelector('descope-wc')).toBeNull();
+    });
+
+    it('projects content into the element (custom screens)', async () => {
+      @Component({
+        standalone: true,
+        imports: [DescopeComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        // the binding form is required - a static flowId="..." attribute is
+        // lowercased by the HTML parser and would not match the
+        // `descope[flowId]` selector
+        template: `<descope [flowId]="'sign-in'"
+          ><span class="custom-screen">CUSTOM</span></descope
+        >`
+      })
+      class HostComponent {}
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig }
+        ]
+      });
+      const f = TestBed.createComponent(HostComponent);
+      f.detectChanges();
+      await flush();
+      f.detectChanges();
+
+      const element = f.nativeElement.querySelector('descope-wc');
+      expect(element.querySelector('.custom-screen')).toBeTruthy();
+      // the projected content must be there when the element connects, not later
+      expect(connects[0].projected).toBe('CUSTOM');
+    });
+
+    it('updates an attribute when an input changes, and removes it when unset', async () => {
+      const f = await mountProbe();
+      const element = f.nativeElement.querySelector('descope-wc');
+
+      f.componentInstance.locale = 'en-US';
+      f.detectChanges();
+      expect(element.getAttribute('locale')).toBe('en-US');
+
+      f.componentInstance.locale = undefined as unknown as string;
+      f.detectChanges();
+      expect(element.getAttribute('locale')).toBeNull();
+    });
+
+    it('builds nothing when destroyed before the import resolves', async () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig }
+        ]
+      });
+      const f = TestBed.createComponent(DescopeComponent);
+      f.componentInstance.flowId = 'sign-in';
+
+      f.detectChanges(); // ngOnInit starts and hits the await
+      f.destroy(); // destroyed before the continuation runs
+      await flush();
+
+      // The continuation must not build the view: inserting into a destroyed
+      // ViewContainerRef throws, and nothing would ever clean it up.
+      expect(connects).toHaveLength(0);
+      expect(f.nativeElement.querySelector('descope-wc')).toBeNull();
+    });
+
+    // Several <descope> components can sit on one page at the same time. Each
+    // one builds its own view, so nothing is shared between them - these cover
+    // that, since the original bug only showed up on a second mount.
+    describe('multiple instances on the same page', () => {
+      const mountHost = async <T>(host: new () => T) => {
+        TestBed.resetTestingModule();
+        TestBed.configureTestingModule({
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            DescopeAuthConfig,
+            { provide: DescopeAuthConfig, useValue: mockConfig }
+          ]
+        });
+        const f = TestBed.createComponent(host);
+        f.detectChanges();
+        await flush();
+        f.detectChanges();
+        return f;
+      };
+
+      it('gives every instance its attributes before it connects', async () => {
+        @Component({
+          standalone: true,
+          imports: [DescopeComponent],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template: `
+            <descope [flowId]="'sign-in'"></descope>
+            <descope [flowId]="'sign-up'"></descope>
+          `
+        })
+        class TwoFlowsHostComponent {}
+
+        const f = await mountHost(TwoFlowsHostComponent);
+
+        expect(connects).toHaveLength(2);
+        expect(connects.map((c) => c.flowId)).toEqual(['sign-in', 'sign-up']);
+        // every instance saw a project-id, not just the first
+        expect(connects.every((c) => c.projectId === 'someProject')).toBe(true);
+        expect(f.nativeElement.querySelectorAll('descope-wc')).toHaveLength(2);
+      });
+
+      // Running the same project + flow twice is documented as unsupported by
+      // the web component (duplicateFlowWarningMixin warns about it). The
+      // attribute timing still has to hold, so a consumer who does it gets the
+      // warning rather than a flow that silently never starts.
+      it('still sets attributes when the same flow is rendered twice', async () => {
+        @Component({
+          standalone: true,
+          imports: [DescopeComponent],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template: `
+            <descope [flowId]="'sign-in'"></descope>
+            <descope [flowId]="'sign-in'"></descope>
+          `
+        })
+        class SameFlowHostComponent {}
+
+        await mountHost(SameFlowHostComponent);
+
+        expect(connects).toHaveLength(2);
+        expect(
+          connects.every(
+            (c) => c.projectId === 'someProject' && c.flowId === 'sign-in'
+          )
+        ).toBe(true);
+      });
+
+      it('leaves the other instance connected when one is destroyed', async () => {
+        @Component({
+          standalone: true,
+          imports: [DescopeComponent, CommonModule],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template: `
+            <descope *ngIf="showFirst" [flowId]="'sign-in'"></descope>
+            <descope [flowId]="'sign-up'"></descope>
+          `
+        })
+        class TogglableHostComponent {
+          showFirst = true;
+        }
+
+        const f = await mountHost(TogglableHostComponent);
+        const [first, second] = Array.from(
+          f.nativeElement.querySelectorAll('descope-wc')
+        ) as HTMLElement[];
+
+        f.componentInstance.showFirst = false;
+        f.detectChanges();
+
+        // ngOnDestroy destroys that instance's view only
+        expect(first.isConnected).toBe(false);
+        expect(second.isConnected).toBe(true);
+        expect(second.getAttribute('flow-id')).toBe('sign-up');
+      });
+    });
+
+    it('still renders the element when loading the web component fails', async () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          DescopeAuthConfig,
+          { provide: DescopeAuthConfig, useValue: mockConfig }
+        ]
+      });
+      const f = TestBed.createComponent(DescopeComponent);
+      f.componentInstance.projectId = 'P_TEST';
+      f.componentInstance.flowId = 'sign-in';
+
+      // Makes loadWebComponent throw inside its own try/catch.
+      Object.defineProperty(TestBed.inject(DescopeAuthService), 'descopeSdk', {
+        get() {
+          throw new Error('failed to load');
+        }
+      });
+
+      f.detectChanges();
+      await flush();
+      f.detectChanges();
+
+      // loadWebComponent swallows the error, so the element still has to render
+      // - matching a failed chunk load rather than rendering nothing at all.
+      expect(consoleError).toHaveBeenCalledWith(
+        'Failed to load Descope web component:',
+        expect.any(Error)
+      );
+      expect(f.nativeElement.querySelector('descope-wc')).toBeTruthy();
+      expect(connects[0].projectId).toBe('P_TEST');
+
+      consoleError.mockRestore();
     });
   });
 
