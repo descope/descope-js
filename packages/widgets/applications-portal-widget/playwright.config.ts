@@ -24,6 +24,11 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 4 : undefined,
+  /* Budget for a whole test. Playwright's default is 30s, which is the same as
+     the longest single wait in these specs, so a slow-but-correct wait would
+     kill the test before it could succeed. A ceiling, not a delay: a passing
+     test never spends it. */
+  timeout: process.env.CI ? 60_000 : 30_000,
   /* Ceiling for web-first assertions. Not a delay: a fast machine returns as
      soon as the condition holds. Replaces the ad-hoc per-call timeouts that
      were sprinkled around the specs, and covers slower CI containers. */

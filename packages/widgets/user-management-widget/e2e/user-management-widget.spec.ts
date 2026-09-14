@@ -1359,12 +1359,23 @@ test.describe('widget', () => {
 
     // Open create modal — should not trigger the API either
     await page.getByTestId('create-user-trigger').first().click();
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
+
     // Close create modal
     await page
       .locator('descope-button')
       .getByTestId('create-user-modal-cancel')
       .first()
       .click();
+    // The create modal has to finish closing before the edit modal is asked to
+    // open. Both are built at init, and opening one while the other is still
+    // animating out leaves the edit modal's submit button attached but hidden.
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeHidden();
+
     // Open edit modal — should not trigger the API either
     await clickTableBodyCellByIndex(page, 0, 0);
     await page.getByTestId('edit-user-trigger').first().click();
