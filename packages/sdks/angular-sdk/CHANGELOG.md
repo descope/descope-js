@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.5](https://github.com/descope/descope-js/compare/angular-sdk-0.28.4...angular-sdk-0.28.5) (2026-09-14)
+
+
+### Bug Fixes
+
+* **angular-sdk:** set attributes before descope-wc connects RELEASE ([#1484](https://github.com/descope/descope-js/issues/1484)) ([7386aac](https://github.com/descope/descope-js/commit/7386aac9133acd2813a92190f9357782a4770029)), closes [#1293](https://github.com/descope/descope-js/issues/1293) [#1181](https://github.com/descope/descope-js/issues/1181)
+
 ## [0.28.4](https://github.com/descope/descope-js/compare/angular-sdk-0.28.3...angular-sdk-0.28.4) (2026-09-11)
 
 ### Dependency Updates
