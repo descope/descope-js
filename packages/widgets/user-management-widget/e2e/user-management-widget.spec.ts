@@ -378,7 +378,9 @@ test.describe('widget', () => {
     const editUserRolesInput = page.getByLabel('Roles').last();
 
     // clear previous email
-    await editUserEmailInput.evaluate((e: HTMLInputElement) => (e.value = ''));
+    await editUserEmailInput.evaluate((e: HTMLInputElement) => {
+      e.value = '';
+    });
     // edit email
     await editUserEmailInput.fill(updatedUser.email);
 
@@ -945,13 +947,13 @@ test.describe('widget', () => {
     await page.reload();
     await waitForWidgetReady(page);
 
-    await page.route(apiPath('user', 'search'), async (route) => {
-      return route.fulfill({
+    await page.route(apiPath('user', 'search'), async (route) =>
+      route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ users: mockUsers }),
-      });
-    });
+      }),
+    );
     const filter = page.locator('descope-filter').first();
 
     const clearResponsePromise = page.waitForResponse(
