@@ -975,6 +975,20 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
+    // Tested against an error notification on purpose. A success notification
+    // is created with a 3s duration and removes itself, so clicking its close
+    // button races that timer - on a loaded machine the element detaches
+    // mid-click and the click never lands. Error notifications are created with
+    // duration 0 and stay until dismissed, which is what the close button is
+    // supposed to do. The success notification appearing is already covered by
+    // the 'delete users' test above.
+    await page.route(apiPath('user', 'deleteBatch'), async (route) =>
+      route.fulfill({
+        status: 400,
+        json: { errorDescription: 'could not delete users' },
+      }),
+    );
+
     const deleteUserTrigger = page.getByTestId('delete-users-trigger').first();
     const deleteUserModalButton = page
       .getByTestId('delete-users-modal-submit')
@@ -996,19 +1010,20 @@ test.describe('widget', () => {
     // click modal delete button
     await deleteUserModalButton.click();
 
-    // wait for modal to close
-    // show notification
-    await expect(
-      page.locator(`text=${mockUsers.length - 1} users deleted successfully`),
-    ).toBeVisible();
+    // The failed delete raises a notification. Anchor on its close icon by slot
+    // name rather than on a positional getByRole('img').nth(1), which used to
+    // pick whichever image happened to be second on the page. The icon is not a
+    // descendant of descope-notification or of the vaadin card - the component
+    // renders its content into a separate overlay - so it is addressed from the
+    // page.
+    const closeIcon = page.locator('[slot="close"]').last();
+    await expect(closeIcon).toBeVisible();
 
     // click close button
-    await page.getByRole('img').nth(1).click();
+    await closeIcon.click();
 
     // notification closed
-    await expect(
-      page.locator(`text=${mockUsers.length} users deleted successfully`),
-    ).toBeHidden();
+    await expect(closeIcon).toBeHidden();
   });
 
   test('generic flow buttons - initial state and enable modes', async ({
