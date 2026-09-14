@@ -37,7 +37,7 @@
         "{projectRoot}/playwright.config.ts"
       ],
       "dependsOn": ["^build"],
-      "cache": true
+      "cache": false
     }
   },
   "namedInputs": {
