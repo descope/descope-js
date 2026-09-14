@@ -7,6 +7,12 @@
  * notices that. Each widget calls this from its own jest test, so the config is
  * an input to that package's own test target and a change cannot be cache-
  * replayed as green.
+ *
+ * A related trap, worth knowing before you trust a green run: `test:e2e` is a
+ * cacheable nx target, so re-running CI on an unchanged commit replays the
+ * previous result instead of running playwright again. The job goes green in
+ * seconds and proves nothing. To actually re-run a suite you have to change one
+ * of its inputs, or pass `--skip-nx-cache` locally.
  */
 
 type WebServerLike = {
