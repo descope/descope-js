@@ -1243,6 +1243,13 @@ test.describe('widget', () => {
       .first();
 
     await openAddUserModalButton.click();
+    // The modal has to be open before "the section is hidden" means anything -
+    // while it is still closed the section is hidden no matter what the widget
+    // does, so the assertion below would pass even on a regression.
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
+
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
     ).toBeHidden();
@@ -1285,6 +1292,12 @@ test.describe('widget', () => {
     await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
+    // Same reason as the create-user case above: wait for the modal to actually
+    // open, otherwise "hidden" is true simply because nothing is on screen yet.
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
+
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),

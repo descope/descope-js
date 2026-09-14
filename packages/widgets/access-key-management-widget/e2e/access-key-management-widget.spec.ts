@@ -450,6 +450,20 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
+    // Tested against an error notification on purpose. A success notification is
+    // created with a 3s duration and removes itself, so clicking its close button
+    // races that timer - and the "notification closed" assertion would pass on the
+    // timer expiring even if the close button did nothing. Error notifications are
+    // created with duration 0 and stay until dismissed, so closing one is the only
+    // thing that can hide it. The success notification is already covered by the
+    // 'delete access keys' test above.
+    await page.route(apiPath('accesskey', 'deleteBatch'), async (route) =>
+      route.fulfill({
+        status: 400,
+        json: { errorDescription: 'could not delete access keys' },
+      }),
+    );
+
     const deleteAccessKeyTrigger = page
       .getByTestId('delete-access-keys-trigger')
       .first();
@@ -470,23 +484,17 @@ test.describe('widget', () => {
     // click modal delete button
     await deleteAccessKeyModalButton.click();
 
-    // wait for modal to close
-    // show notification
-    await expect(
-      page.locator(
-        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
-      ),
-    ).toBeVisible();
+    // The failed delete raises a notification. Anchor on its close icon by slot
+    // name rather than a positional getByRole('img').nth(1), which picked
+    // whichever image happened to be second on the page.
+    const closeIcon = page.locator('[slot="close"]').last();
+    await expect(closeIcon).toBeVisible();
 
     // click close button
-    await page.getByRole('img').nth(1).click();
+    await closeIcon.click();
 
     // notification closed
-    await expect(
-      page.locator(
-        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
-      ),
-    ).toBeHidden();
+    await expect(closeIcon).toBeHidden();
   });
 
   test('deactivate access keys for non editable key', async ({ page }) => {
@@ -701,14 +709,20 @@ test.describe('widget', () => {
 
     // submit → API rejects → no reveal modal, error notification surfaces
     await rotateModalSubmitButton.click();
-    // The "secret isn't lost" invariant: reveal modal must NOT open on failure,
-    // otherwise the user would see an empty/stale cleartext input.
-    await expect(page.locator('text=Access key secret rotated')).toBeHidden();
 
-    // Error notification surfaced via the withNotifications helper.
+    // Wait for the failure to be handled before checking the reveal modal. The
+    // click does not await the submit handler, so asserting "hidden" first would
+    // only prove the modal had not opened yet - it would pass even if the reveal
+    // modal opened a moment later, which is the regression this test exists to
+    // catch. The error notification is the proof that the rejection has been
+    // processed.
     await expect(
       page.locator('text=Failed to rotate access key').first(),
     ).toBeVisible();
+
+    // The "secret isn't lost" invariant: reveal modal must NOT open on failure,
+    // otherwise the user would see an empty/stale cleartext input.
+    await expect(page.locator('text=Access key secret rotated')).toBeHidden();
   });
 
   test('rotate confirm modal can be cancelled without firing the API', async ({

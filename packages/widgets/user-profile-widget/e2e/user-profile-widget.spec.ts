@@ -227,6 +227,14 @@ test.describe('widget', () => {
         .locator('descope-modal[data-id="delete-phone"]')
         .locator('descope-wc')
         .dispatchEvent('success');
+
+      // Wait for the refresh to actually land before checking the tag.
+      // dispatchEvent('success') only starts getMe(); it does not await it. A
+      // rebuild - the thing this test is guarding against - could only happen
+      // once the new value arrives, so asserting the tag before then would pass
+      // even on a regression. The cleared phone is the proof it arrived.
+      await expect(phoneAttr).toHaveAttribute('value', '');
+
       // the open modal keeps its flow (tag intact) - rebuilding it would drop
       // the flow the user is interacting with.
       await expect(
@@ -555,6 +563,12 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
+      // This test navigates again, so the readiness wait in beforeEach applied
+      // to the previous document. Without waiting again, toBeHidden() succeeds
+      // simply because the widget has not rendered yet - it would pass even if
+      // the badge were shown once rendering finished.
+      await waitForWidgetReady(page);
+
       const badge = page
         .locator('descope-user-attribute[data-id="email"]')
         .locator('descope-badge');
@@ -571,6 +585,12 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
+      // This test navigates again, so the readiness wait in beforeEach applied
+      // to the previous document. Without waiting again, toBeHidden() succeeds
+      // simply because the widget has not rendered yet - it would pass even if
+      // the badge were shown once rendering finished.
+      await waitForWidgetReady(page);
+
       const badge = page
         .locator('descope-user-attribute[data-id="email"]')
         .locator('descope-badge');
@@ -603,6 +623,12 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
+      // This test navigates again, so the readiness wait in beforeEach applied
+      // to the previous document. Without waiting again, toBeHidden() succeeds
+      // simply because the widget has not rendered yet - it would pass even if
+      // the badge were shown once rendering finished.
+      await waitForWidgetReady(page);
+
       const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
         .locator('descope-badge');
@@ -619,6 +645,12 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
+      // This test navigates again, so the readiness wait in beforeEach applied
+      // to the previous document. Without waiting again, toBeHidden() succeeds
+      // simply because the widget has not rendered yet - it would pass even if
+      // the badge were shown once rendering finished.
+      await waitForWidgetReady(page);
+
       const badge = page
         .locator('descope-user-attribute[data-id="phone"]')
         .locator('descope-badge');

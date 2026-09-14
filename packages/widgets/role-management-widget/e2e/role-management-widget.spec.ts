@@ -374,6 +374,20 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
+    // Tested against an error notification on purpose. A success notification is
+    // created with a 3s duration and removes itself, so clicking its close button
+    // races that timer - and the "notification closed" assertion would pass on the
+    // timer expiring even if the close button did nothing. Error notifications are
+    // created with duration 0 and stay until dismissed, so closing one is the only
+    // thing that can hide it. The success notification is already covered by the
+    // 'delete roles' test above.
+    await page.route(apiPath('role', 'deleteBatch'), async (route) =>
+      route.fulfill({
+        status: 400,
+        json: { errorDescription: 'could not delete roles' },
+      }),
+    );
+
     const deleteRoleTrigger = page.getByTestId('delete-roles-trigger').first();
     const deleteRoleModalButton = page
       .getByTestId('delete-roles-modal-submit')
@@ -392,17 +406,16 @@ test.describe('widget', () => {
     // click modal delete button
     await deleteRoleModalButton.click();
 
-    // show notification
-    await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
-    ).toBeVisible();
+    // The failed delete raises a notification. Anchor on its close icon by slot
+    // name rather than a positional getByRole('img').nth(1), which picked
+    // whichever image happened to be second on the page.
+    const closeIcon = page.locator('[slot="close"]').last();
+    await expect(closeIcon).toBeVisible();
 
     // click close button
-    await page.getByRole('img').nth(1).click();
+    await closeIcon.click();
 
     // notification closed
-    await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
-    ).toBeHidden();
+    await expect(closeIcon).toBeHidden();
   });
 });
