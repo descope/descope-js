@@ -20,7 +20,21 @@ export const modalMixin = createSingletonMixin(
         return class ModalDriverWrapper extends ModalDriver {
           setContent(template: HTMLTemplateElement) {
             loadDescopeUiComponents(template);
+            // A modal builds its flow ahead of being opened, so hold the flow's
+            // start call by default - otherwise every preloaded modal creates a
+            // flow execution the user may never open. Released in open() below.
+            // A caller that wants its flow to start on render opts out with
+            // `lazyStart: false`, which is already on the template by now.
+            const flowEle = template.content.querySelector('descope-wc');
+            if (flowEle && !flowEle.hasAttribute('lazy-start')) {
+              flowEle.setAttribute('lazy-start', 'true');
+            }
             super.setContent(template);
+          }
+
+          async open() {
+            await super.open();
+            (this.ele?.querySelector('descope-wc') as any)?.start?.();
           }
         };
       })();

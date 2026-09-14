@@ -21,7 +21,8 @@ export type FlowConfig = {
   // flow inputs - objects are JSON-stringified, strings pass through
   form?: Record<string, any> | string;
   client?: Record<string, any> | string;
-  // hold the flow's start call until the element's start() is called
+  // hold the flow's start call until the element's start() is called - modals
+  // default this to true, pass false to start the flow as soon as it renders
   lazyStart?: boolean;
   // widget-specific context
   tenant?: string;

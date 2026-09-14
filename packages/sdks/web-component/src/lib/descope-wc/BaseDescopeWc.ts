@@ -517,7 +517,6 @@ class BaseDescopeWc extends BaseClass {
   start() {
     this.#releaseStartGate?.();
     this.#startGate = Promise.resolve();
-    this.#releaseStartGate = undefined;
   }
 
   get isRestartOnError() {
