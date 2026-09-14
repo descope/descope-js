@@ -56,6 +56,29 @@ const getTableBodyCellContentLocatorByIndex = async (
   return page.locator(`vaadin-grid-cell-content[slot="${slotName}"]`);
 };
 
+/**
+ * vaadin-grid recycles its cell-content elements and rewrites their slot names
+ * as it renders, so a slot resolved a moment ago can already belong to a
+ * different cell - the click then hangs in "scrolling into view if needed"
+ * until the test times out. Re-resolve the slot and retry the click as one
+ * unit. Only used where a single click is intended, since toPass may run the
+ * body more than once.
+ */
+const clickTableBodyCellByIndex = async (
+  page: Page,
+  rowIdx: number,
+  columnIdx: number,
+) => {
+  await expect(async () => {
+    const cell = await getTableBodyCellContentLocatorByIndex(
+      page,
+      rowIdx,
+      columnIdx,
+    );
+    await cell.click({ timeout: 5_000 });
+  }).toPass({ timeout: 20_000 });
+};
+
 const getTableHeadCellContentLocatorByIndex = async (
   page: Page,
   columnIdx: number,
@@ -302,12 +325,7 @@ test.describe('widget', () => {
     await editableUserCheckbox.click();
 
     // select disabled and editable user
-    const disabledUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await disabledUserCheckbox.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     await expect(createUserTrigger).toBeEnabled();
     await expect(editUserTrigger).toBeEnabled();
@@ -324,13 +342,17 @@ test.describe('widget', () => {
     // open add user modal
     await openAddUserModalButton.click();
 
-    // The modal's content is fetched separately from the widget's own init, so
-    // wait for something inside it. Without this, fill() can sit on an input
-    // that exists but is still hidden - the create and edit modals are both
-    // built at init and both carry a "Login ID" field.
+    // Wait for something inside the modal: without this, fill() can sit on an
+    // input that exists but is still hidden - the create and edit modals are
+    // both built at init and both carry a "Login ID" field.
+    //
+    // Above the global expect ceiling on purpose. ModalDriver.open() awaits
+    // beforeOpen before setting opened="true", and this modal's beforeOpen
+    // fetches the widget config, the tenant roles and the sub-tenant roles
+    // first, so opening it is several round trips rather than a repaint.
     await expect(
       page.getByTestId('create-user-modal-submit').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 30_000 });
 
     const createUserLoginIdInput = page.getByLabel('Login Id').first();
     const createUserEmailInput = page.getByLabel('Email').first();
@@ -364,12 +386,7 @@ test.describe('widget', () => {
       .first();
 
     // select user
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     // open add user modal
     await openEditUserModalButton.click();
@@ -431,12 +448,7 @@ test.describe('widget', () => {
       .first();
 
     // select user
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     await openEditUserModalButton.click();
 
@@ -473,12 +485,7 @@ test.describe('widget', () => {
     // delete button is enabled on selection (even for non editable user)
     await expect(deleteUserTrigger).toBeEnabled();
 
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      3,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 3, 0);
 
     // delete button is enabled on selection
     await expect(deleteUserTrigger).toBeEnabled();
@@ -524,12 +531,7 @@ test.describe('widget', () => {
 
     // wait for widget state
     // select first user (status: active)
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     // disable user button is enabled on selection
     await expect(disableUserTrigger).toBeEnabled();
@@ -570,12 +572,7 @@ test.describe('widget', () => {
 
     // wait for widget state
     // select second user (status: disabled)
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     // enable user button is enabled on selection
     await expect(enableUserTrigger).toBeEnabled();
@@ -616,12 +613,7 @@ test.describe('widget', () => {
 
     // wait for widget state
     // select second user
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     // enable user button is enabled on selection
     await expect(removePasskeyTrigger).toBeEnabled();
@@ -665,12 +657,7 @@ test.describe('widget', () => {
 
     // wait for widget state
     // select second user (status: active)
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     // enable user button is enabled on selection
     await expect(resetPasswordTrigger).toBeEnabled();
@@ -994,8 +981,7 @@ test.describe('widget', () => {
     const selectAll = await getTableHeadCellContentLocatorByIndex(page, 0);
     await selectAll.click();
 
-    const lastUser = await getTableBodyCellContentLocatorByIndex(page, 3, 0);
-    await lastUser.click();
+    await clickTableBodyCellByIndex(page, 3, 0);
 
     // delete users
     await deleteUserTrigger.click();
@@ -1069,12 +1055,7 @@ test.describe('widget', () => {
       .first();
 
     // Select one user
-    const firstUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await firstUserCheckbox.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
     // Test state with one user selected
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await expect(genericFlowButtonOneOrMore).toBeEnabled();
@@ -1087,12 +1068,7 @@ test.describe('widget', () => {
     }
 
     // Select second user (multiple users selected)
-    const secondUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await secondUserCheckbox.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
     // Test state with multiple users selected
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await expect(genericFlowButtonOneOrMore).toBeEnabled();
@@ -1119,12 +1095,7 @@ test.describe('widget', () => {
       .first();
 
     // Select a user first to enable the button
-    const firstUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await firstUserCheckbox.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
     // Test clicking button opens modal
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await genericFlowButtonOneOrMore.click();
@@ -1262,12 +1233,7 @@ test.describe('widget', () => {
   test('edit user - sub-tenant displays tenant name, not tenant id', async ({
     page,
   }) => {
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
@@ -1298,12 +1264,7 @@ test.describe('widget', () => {
     );
     await page.reload();
     await waitForWidgetReady(page);
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
@@ -1351,12 +1312,7 @@ test.describe('widget', () => {
       return route.fulfill({ json: { user: mockUsers[0] } });
     });
 
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
     await expect(
@@ -1407,12 +1363,7 @@ test.describe('widget', () => {
       .first()
       .click();
     // Open edit modal — should not trigger the API either
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
     await page.getByTestId('edit-user-trigger').first().click();
 
     // You cannot wait for the absence of a call, so anchor on a positive event
