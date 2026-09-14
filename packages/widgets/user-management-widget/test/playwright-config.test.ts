@@ -18,10 +18,10 @@ describe('playwright config', () => {
   it('keeps its e2e invariants', () => {
     // A ratchet, not a target: retries may go down and workers may go up, but
     // not the reverse. Update these numbers in the same commit that improves
-    // them. Today's values for this package are retries=2, workers=4.
+    // them. Today's values for this package are retries=1, workers=4.
     expect(() =>
       assertPlaywrightConfigInvariants(config, {
-        maxRetries: 2,
+        maxRetries: 1,
         minWorkers: 4,
       }),
     ).not.toThrow();

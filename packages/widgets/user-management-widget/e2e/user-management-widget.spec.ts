@@ -324,6 +324,14 @@ test.describe('widget', () => {
     // open add user modal
     await openAddUserModalButton.click();
 
+    // The modal's content is fetched separately from the widget's own init, so
+    // wait for something inside it. Without this, fill() can sit on an input
+    // that exists but is still hidden - the create and edit modals are both
+    // built at init and both carry a "Login ID" field.
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible();
+
     const createUserLoginIdInput = page.getByLabel('Login Id').first();
     const createUserEmailInput = page.getByLabel('Email').first();
 

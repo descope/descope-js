@@ -21,9 +21,9 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 4 : 0,
+  retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 4 : undefined,
   /* Ceiling for web-first assertions. Not a delay: a fast machine returns as
      soon as the condition holds. Replaces the ad-hoc per-call timeouts that
      were sprinkled around the specs, and covers slower CI containers. */
