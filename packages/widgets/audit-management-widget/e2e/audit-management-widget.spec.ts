@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'fs';
+import {
+  installWidgetReadyProbe,
+  waitForWidgetReady,
+} from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -18,6 +22,10 @@ const apiPath = (prop: 'audit' | 'tenant', path: string) =>
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await installWidgetReadyProbe(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -66,24 +74,24 @@ test.describe('widget', () => {
     );
 
     await page.goto(`http://localhost:${widgetPort}`);
+    await waitForWidgetReady(page);
   });
 
   test('audit table', async ({ page }) => {
     await expect(
       page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     await expect(
       page.locator(`text=${mockAudit.audit[1]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
   });
 
   test('search audit', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('');
@@ -109,8 +117,6 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
     ).toBeVisible();
-
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -130,16 +136,22 @@ test.describe('widget', () => {
       .locator('input')
       .first();
 
-    await page.waitForTimeout(1000);
-
     // focus search input
     await searchInput.focus();
+
+    // Register before typing: fill() starts the search, so waiting afterwards
+    // can miss the response entirely.
+    const searchResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.audit.search) &&
+        response.request().postDataJSON()?.text === 'mockSearchString',
+    );
 
     // enter search string
     await searchInput.fill('mockSearchString');
     await page.keyboard.press('Enter');
 
-    await page.waitForTimeout(1000);
+    await searchResponse;
 
     // only search results shown in grid
     await expect(
@@ -153,8 +165,6 @@ test.describe('widget', () => {
     await expect(
       page.locator(`text=${mockAudit.audit[2]['actorId']}`).first(),
     ).toBeHidden();
-
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('audit', 'search'), async (route) => {
       const { text, from } = route.request().postDataJSON();
       expect(text).toEqual('mockSearchString');
@@ -178,10 +188,20 @@ test.describe('widget', () => {
     // focus search input
     await rangeInput.focus();
 
+    // The narrower range is what distinguishes this search from the previous
+    // one - same text, but `from` moves from 2 days ago to within the hour.
+    const rangeResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(apiPaths.audit.search) &&
+        response.request().postDataJSON()?.from >
+          Date.now() - 2 * 60 * 60 * 1000,
+    );
+
     // enter search string
     await rangeInput.fill('Last Hour');
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(1000);
+
+    await rangeResponse;
 
     // only search results shown in grid
     await expect(
@@ -201,7 +221,7 @@ test.describe('widget', () => {
     // wait for audit data to load
     await expect(
       page.locator(`text=${mockAudit.audit[0]['actorId']}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     // verify export button is visible
     const exportButton = page.locator(

@@ -1,9 +1,9 @@
 import '@descope/core-js-sdk';
 import createWebSdk from '@descope/web-js-sdk';
+import type { ConditionsHttpClient } from '@descope/sdk-mixins';
 import { createUserSdk } from './createUserSdk';
 import { createDeviceSdk } from './createDeviceSdk';
 import { createPasskeySdk } from './createPasskeySdk';
-import type { ConditionsHttpClient } from '@descope/sdk-mixins';
 
 declare const BUILD_VERSION: string;
 
