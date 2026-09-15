@@ -22,6 +22,7 @@ import {
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
+  WEBAUTHN_TIMEOUT,
 } from '../constants';
 import {
   clearPreviousExternalInputs,
@@ -79,6 +80,12 @@ import {
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
 
+// Marks a passkey ceremony that ran out of time. timeoutPromise can only reject
+// with a plain Error, which is exactly what some password manager extensions
+// throw, so we take its resolve-with-a-fallback form instead. A real ceremony
+// resolves with encoded JSON, so this value cannot collide with one.
+const WEBAUTHN_TIMED_OUT = '__descope_webauthn_timed_out__';
+
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
   errorTransformer:
@@ -100,6 +107,25 @@ class DescopeWc extends BaseDescopeWc {
   #pollingTimeout: NodeJS.Timeout;
 
   #conditionalUiAbortController = null;
+
+  // Everything the current submit disabled, excluding the submitter itself.
+  // A passkey ceremony re-enables these so the user can pick another method
+  // while the browser dialog is up. Elements only, not a closure, so this does
+  // not pin the enclosing scope.
+  #elementsDisabledBySubmit: Element[] = null;
+
+  // A passkey ceremony captures this and drops its result if it changed, which
+  // means the user gave up waiting and moved on. Anything that advances the flow
+  // must call #invalidatePendingWebauthn.
+  #flowGeneration = 0;
+
+  // The flow moved on, so a passkey ceremony still waiting on the browser is
+  // answering for a step we have left. Called both when the user submits (which
+  // is before any response, closing the window where a ceremony could settle
+  // mid-escape) and when any flow response lands.
+  #invalidatePendingWebauthn() {
+    this.#flowGeneration += 1;
+  }
 
   onScreenUpdate?: (
     screenName: string,
@@ -520,6 +546,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
+    this.#elementsDisabledBySubmit = null;
 
     window.removeEventListener(
       'visibilitychange',
@@ -1060,11 +1087,48 @@ class DescopeWc extends BaseDescopeWc {
       let failureReason: string;
       let failureMessage: string;
 
+      // No request is in flight while the browser dialog is up, and an extension
+      // may never tell us it was dismissed, so hand the screen back: the user
+      // can pick another method instead of watching a spinner. The submitter is
+      // left alone - its 'loading' attribute sets pointer-events:none, which is
+      // what stops a second ceremony.
+      this.#elementsDisabledBySubmit?.forEach((ele) => {
+        ele.removeAttribute('disabled');
+      });
+      this.#elementsDisabledBySubmit = null;
+
+      // If the user gives up and takes another action, the flow advances and a
+      // late result from this ceremony must be dropped.
+      const ceremonyGeneration = this.#flowGeneration;
+
+      const abortController = new AbortController();
+
       try {
-        response =
+        const ceremony =
           action === RESPONSE_ACTIONS.webauthnCreate
-            ? await this.sdk.webauthn.helpers.create(webauthnOptions)
-            : await this.sdk.webauthn.helpers.get(webauthnOptions);
+            ? this.sdk.webauthn.helpers.create(webauthnOptions, abortController)
+            : this.sdk.webauthn.helpers.get(webauthnOptions, abortController);
+
+        const outcome = await timeoutPromise(
+          WEBAUTHN_TIMEOUT,
+          ceremony,
+          WEBAUTHN_TIMED_OUT,
+        );
+
+        if (outcome === WEBAUTHN_TIMED_OUT) {
+          // We gave up, the browser did not. Asking it to stop is honoured by
+          // some extensions and ignored by others, so it is cleanup rather than
+          // the mechanism.
+          abortController.abort();
+          this.loggerWrapper.warn(
+            `WebAuthn operation timed out after ${WEBAUTHN_TIMEOUT}ms`,
+          );
+          failure = 'TimeoutError';
+          failureReason = 'timeout';
+          failureMessage = 'Passkey operation timed out';
+        } else {
+          response = outcome;
+        }
       } catch (e) {
         if (e.name === 'InvalidStateError') {
           // currently returned in Chrome when trying to register a WebAuthn device
@@ -1078,6 +1142,16 @@ class DescopeWc extends BaseDescopeWc {
         failureReason = e.reason;
         failureMessage = e.message;
       }
+
+      if (this.#flowGeneration !== ceremonyGeneration) {
+        // The user moved on while we were waiting. Reporting now would answer
+        // for a step the flow has already left.
+        this.loggerWrapper.debug(
+          'Ignoring a webauthn result for a step the flow already left',
+        );
+        return;
+      }
+
       // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
         executionId,
@@ -1443,6 +1517,8 @@ class DescopeWc extends BaseDescopeWc {
     );
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
+    this.#invalidatePendingWebauthn();
+
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -1908,12 +1984,21 @@ class DescopeWc extends BaseDescopeWc {
     const screenClientScripts =
       this.flowState.current?.screenState?.clientScripts || [];
 
+    // Like resetComponentsState, but the submitter keeps its 'loading'
+    // attribute. A passkey ceremony runs with no request in flight and no way to
+    // observe a dismissed prompt, so we give the rest of the screen back
+    // (letting the user pick another method) while 'loading' keeps the passkey
+    // button itself unclickable - descope-button sets pointer-events:none for
+    // loading="true".
+    this.#elementsDisabledBySubmit = enabledElements;
+
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
       submitter.removeAttribute('loading');
       enabledElements.forEach((ele) => {
         ele.removeAttribute('disabled');
       });
+      this.#elementsDisabledBySubmit = null;
     };
 
     const restoreComponentsState = async (e?: Event) => {
@@ -2066,6 +2151,8 @@ class DescopeWc extends BaseDescopeWc {
       ) {
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
+
+        this.#invalidatePendingWebauthn();
 
         this.#handleComponentsLoadingState(submitter);
 
