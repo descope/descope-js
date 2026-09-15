@@ -12,6 +12,7 @@ import {
   nextMock,
   sdk,
   fixtures,
+  fetchMock,
   generateSdkResponse,
   WAIT_TIMEOUT,
 } from './descope-wc.test-harness';
@@ -236,6 +237,44 @@ describe('webauthn ceremony timeout', () => {
         (call) => call[5]?.response === 'the-abandoned-assertion',
       ),
     ).toBe(false);
+  });
+
+  it('drops the response when the user escapes while the reply is in flight', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+
+    // the passkey reply is slow, leaving a window where the user can switch
+    let respondToCeremonyReply: (v: unknown) => void;
+    nextMock.mockReturnValueOnce(
+      new Promise((res) => {
+        respondToCeremonyReply = res;
+      }),
+    );
+    // the escape lands while that reply is still in flight
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '2' }));
+
+    sdk.webauthn.helpers.get.mockResolvedValue('the-assertion');
+
+    await startCeremony();
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // user gives up on the passkey and picks another method
+    fireEvent.click(fallbackButton());
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(3), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // only now does the passkey reply come back - it must not clobber the
+    // screen the user moved to, so its screen is never even fetched
+    respondToCeremonyReply(generateSdkResponse({ screenId: '99' }));
+    await jest.advanceTimersByTimeAsync(2000);
+
+    const fetchedScreens = fetchMock.mock.calls
+      .map(([url]) => String(url))
+      .filter((url) => url.endsWith('.html'));
+    expect(fetchedScreens.some((url) => url.includes('99'))).toBe(false);
   });
 
   it('still reports a real NotAllowedError unchanged', async () => {

@@ -1167,6 +1167,17 @@ class DescopeWc extends BaseDescopeWc {
           failureMessage,
         },
       );
+
+      // The alternatives stayed usable while that request was in flight, so the
+      // user may have switched methods in the meantime. Handing this response on
+      // now would overwrite the screen they moved to.
+      if (this.#flowGeneration !== ceremonyGeneration) {
+        this.loggerWrapper.debug(
+          'Dropping a webauthn response for a step the flow already left',
+        );
+        return;
+      }
+
       this.#handleSdkResponse(sdkResp);
     }
 

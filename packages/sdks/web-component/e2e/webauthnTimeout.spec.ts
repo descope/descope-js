@@ -97,10 +97,17 @@ test.describe('webauthn ceremony that never settles', () => {
       });
     });
 
-    // the browser never answers, which is what the extension bug looks like
+    // The browser never answers, which is what the extension bug looks like.
+    // The flag lets a test wait until the ceremony has really begun - the 90s
+    // timer is registered inside this call, so advancing the clock any earlier
+    // would start it after the jump and it would never fire.
     await page.addInitScript(() => {
+      (window as any).__ceremonyStarted = false;
       Object.defineProperty(navigator.credentials, 'get', {
-        value: () => new Promise(() => {}),
+        value: () => {
+          (window as any).__ceremonyStarted = true;
+          return new Promise(() => {});
+        },
         configurable: true,
         writable: true,
       });
@@ -139,6 +146,12 @@ test.describe('webauthn ceremony that never settles', () => {
     await expect(passkey).toBeVisible();
     await passkey.click();
     await expect.poll(() => nextBodies.length).toBe(1);
+
+    // the ceremony must be underway before the clock jumps, otherwise its timer
+    // is registered after the jump and never fires
+    await expect
+      .poll(() => page.evaluate(() => (window as any).__ceremonyStarted))
+      .toBe(true);
 
     // jump past the ceremony budget instead of waiting it out
     await page.clock.fastForward(95_000);
