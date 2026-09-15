@@ -157,6 +157,10 @@ class DescopeWc extends BaseDescopeWc {
 
   #eventsCbRefs = {
     visibilitychange: this.#syncStateWithVisibility.bind(this),
+    // BaseDescopeWc syncs the run ids from the URL into its own state, which
+    // only reaches this component through a subscriber on a setTimeout. Bump
+    // here too so a ceremony settling in that gap is still invalidated.
+    popstate: () => this.#invalidatePendingWebauthn(),
   };
 
   #syncStateWithVisibility() {
@@ -536,6 +540,7 @@ class DescopeWc extends BaseDescopeWc {
         'visibilitychange',
         this.#eventsCbRefs.visibilitychange,
       );
+      window.addEventListener('popstate', this.#eventsCbRefs.popstate);
     }
     await super.init?.();
   }
@@ -562,6 +567,7 @@ class DescopeWc extends BaseDescopeWc {
       'visibilitychange',
       this.#eventsCbRefs.visibilitychange,
     );
+    window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
@@ -1102,7 +1108,8 @@ class DescopeWc extends BaseDescopeWc {
       // can pick another method instead of watching a spinner. The submitter is
       // left alone - its 'loading' attribute sets pointer-events:none, which is
       // what stops a second ceremony.
-      this.#elementsDisabledBySubmit?.forEach((ele) => {
+      const releasedElements = this.#elementsDisabledBySubmit || [];
+      releasedElements.forEach((ele) => {
         ele.removeAttribute('disabled');
       });
       this.#elementsDisabledBySubmit = null;
@@ -1165,6 +1172,14 @@ class DescopeWc extends BaseDescopeWc {
         );
         return;
       }
+
+      // From here a request really is in flight, and withFlowNonce serializes
+      // flow.next, so anything the user submits now queues behind this reply and
+      // would run against a flow we have already advanced. Put the screen back
+      // under the normal in-flight lock until a new one renders.
+      releasedElements.forEach((ele) => {
+        ele.setAttribute('disabled', 'true');
+      });
 
       // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
@@ -1542,6 +1557,11 @@ class DescopeWc extends BaseDescopeWc {
     );
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
+    // Not every response moves executionId/stepId - polling and completion
+    // responses do not - so the position check alone would let a ceremony
+    // survive them.
+    this.#invalidatePendingWebauthn();
+
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;

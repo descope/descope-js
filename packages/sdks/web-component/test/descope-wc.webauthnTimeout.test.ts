@@ -279,7 +279,7 @@ describe('webauthn ceremony timeout', () => {
 
   // The guard must not depend on any particular caller remembering to
   // invalidate. These cover the moves that do not go through a submit.
-  it('drops the result when the flow moved by itself, not by a submit', async () => {
+  it('drops the result when the browser back button moves the flow', async () => {
     await renderPasskeyScreen();
     respondWithCeremony();
 
@@ -295,20 +295,49 @@ describe('webauthn ceremony timeout', () => {
       timeout: WAIT_TIMEOUT,
     });
 
-    // the flow advances without anyone submitting - this is what a popstate
-    // from the browser back button does
-    const wc = document.querySelector('descope-wc') as any;
-    wc.flowState.update({
-      stepId: 'another-step',
-      executionId: 'another-exec',
-      action: '',
-    });
-    await jest.advanceTimersByTimeAsync(100);
-
+    // the real navigation route, not a direct state poke
+    window.dispatchEvent(new PopStateEvent('popstate'));
     settle('the-abandoned-assertion');
     await jest.advanceTimersByTimeAsync(2000);
 
     expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('locks the screen again while the passkey reply is in flight', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+
+    let settleCeremony: (v: string) => void;
+    sdk.webauthn.helpers.get.mockReturnValue(
+      new Promise((res) => {
+        settleCeremony = res;
+      }),
+    );
+    let respondToReply: (v: unknown) => void;
+    nextMock.mockReturnValueOnce(
+      new Promise((res) => {
+        respondToReply = res;
+      }),
+    );
+
+    await startCeremony();
+
+    // while the browser dialog is up the screen is usable
+    await waitFor(
+      () => expect(fallbackButton()).not.toHaveAttribute('disabled', 'true'),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    // once the reply request goes out it is not: flow.next is serialized by
+    // withFlowNonce, so a submit now would queue behind it and run against a
+    // flow we have already advanced
+    settleCeremony('the-assertion');
+    await waitFor(
+      () => expect(fallbackButton()).toHaveAttribute('disabled', 'true'),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    respondToReply(generateSdkResponse({ screenId: '1' }));
   });
 
   it('still reports a real NotAllowedError unchanged', async () => {
