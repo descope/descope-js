@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getEmail, getEmailBadgeLabel } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       emailUserAttr: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.emailUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-email',
           'close-on-outside-click': 'true',
         });
@@ -70,7 +70,7 @@ export const initEmailUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.emailUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-email',
           'close-on-outside-click': 'true',
         });

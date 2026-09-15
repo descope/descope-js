@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -29,7 +29,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       passkeyUserAuthMethod: UserAuthMethodDriver;
@@ -45,7 +45,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       #initAddModal() {
         if (!this.passkeyUserAuthMethod.flowId) return;
 
-        this.#addModal = this.createModal({
+        this.#addModal = this.createFlowModal({
           'data-id': 'add-passkey',
           'close-on-outside-click': 'true',
         });
@@ -73,7 +73,7 @@ export const initPasskeyUserAuthMethodMixin = createSingletonMixin(
       #initRemoveModal() {
         if (!this.passkeyUserAuthMethod.fulfilledFlowId) return;
 
-        this.#removeModal = this.createModal({
+        this.#removeModal = this.createFlowModal({
           'data-id': 'remove-passkey',
           'close-on-outside-click': 'true',
         });

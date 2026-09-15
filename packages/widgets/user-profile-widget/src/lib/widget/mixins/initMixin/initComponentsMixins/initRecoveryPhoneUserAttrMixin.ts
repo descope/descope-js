@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getVerifiedRecoveryPhone } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initRecoveryPhoneUserAttrMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       recoveryPhoneUserAttr: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initRecoveryPhoneUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.recoveryPhoneUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-recovery-phone',
           'close-on-outside-click': 'true',
         });
@@ -73,7 +73,7 @@ export const initRecoveryPhoneUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.recoveryPhoneUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-recovery-phone',
           'close-on-outside-click': 'true',
         });
