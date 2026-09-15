@@ -248,6 +248,10 @@ export default authMiddleware({
   // Optional: log level for the middleware
   // Defaults to 'info'
   // logLevel: 'debug' | 'info' | 'warn' | 'error'
+
+	// Optional: skip the refresh token validation fallback
+	// Defaults to false
+	skipRefreshTokenValidation?: boolean
 })
 
 export const config = {
@@ -289,6 +293,29 @@ This setup ensures that you can clearly define which routes in your application 
   	privateRoutes: ['/dashboard', '/profile']
   };
   ```
+
+##### Skipping Refresh Token Validation
+
+By default, when the session token is missing or expired, the middleware falls back to validating the refresh token, and lets the request through if it is valid.
+The middleware does not refresh the session, so server side code that relies on `session()` will still see no valid session.
+
+Set `skipRefreshTokenValidation: true` to require a valid session token - requests with only a valid refresh token will be redirected to the sign-in route.
+This is useful when your server side code needs a valid session on every private route.
+
+```typescript
+const options = {
+	skipRefreshTokenValidation: true
+};
+```
+
+###### What the app is expected to do
+
+A user with an expired session token and a still valid refresh token is redirected to the sign-in route.
+On the client, `AuthProvider` refreshes the session token from the refresh token on its own (`autoRefresh` is on by default), so the user becomes authenticated again without re-authenticating.
+
+Your sign-in page is expected to send an already authenticated user away, otherwise they will sit on it.
+Rendering `<Descope />` with `redirectAfterSuccess` covers this, as does checking `useSession()` and routing away yourself.
+The redirect replaces the original pathname and only carries over its query parameters, so if you want to return the user to the page they came from, capture it yourself before redirecting.
 
 ##### Read session information in server side
 
