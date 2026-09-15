@@ -108,35 +108,6 @@ class DescopeWc extends BaseDescopeWc {
 
   #conditionalUiAbortController = null;
 
-  // Everything the current submit disabled, excluding the submitter itself.
-  // The screen elements we turned off while a submit is in flight, plus the
-  // button that was clicked. The passkey branch uses this to hand the screen
-  // back while the browser dialog is up, so the user can pick another method.
-  // Elements only, not a closure, so this does not pin the enclosing scope.
-  #screenLockedBySubmit: { submitter: Element; elements: Element[] } = null;
-
-  // A passkey answer can arrive long after the user gave up on it, so before we
-  // use one we check the flow is still where it was. Two checks, because
-  // neither covers everything on its own.
-  //
-  // #flowPosition is read from the flow state, so it catches every move even
-  // when the code doing the moving knows nothing about passkeys.
-  //
-  // #flowGeneration is bumped by hand where the flow is dead but the position
-  // did not change: a new submit whose response has not arrived yet, a
-  // completed flow, a popstate or attribute change (the base updates its own
-  // state first and tells us later), and the component being removed.
-  #flowGeneration = 0;
-
-  get #flowPosition() {
-    const { executionId, stepId } = this.flowState?.current || {};
-    return `${executionId}|${stepId}`;
-  }
-
-  #dropPendingPasskeyResult() {
-    this.#flowGeneration += 1;
-  }
-
   onScreenUpdate?: (
     screenName: string,
     context: CustomScreenState,
@@ -159,10 +130,6 @@ class DescopeWc extends BaseDescopeWc {
 
   #eventsCbRefs = {
     visibilitychange: this.#syncStateWithVisibility.bind(this),
-    // BaseDescopeWc syncs the run ids from the URL into its own state, which
-    // only reaches this component through a subscriber on a setTimeout. Bump
-    // here too so a ceremony settling in that gap is still invalidated.
-    popstate: () => this.#dropPendingPasskeyResult(),
   };
 
   #syncStateWithVisibility() {
@@ -542,32 +509,8 @@ class DescopeWc extends BaseDescopeWc {
         'visibilitychange',
         this.#eventsCbRefs.visibilitychange,
       );
-      window.addEventListener('popstate', this.#eventsCbRefs.popstate);
     }
     await super.init?.();
-  }
-
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string,
-    newValue: string,
-  ) {
-    // BaseDescopeWc clears the run ids on any observed attribute change after
-    // the first one, which restarts the flow. It updates its own state right
-    // away but this component only hears about it on a later timer, so drop the
-    // passkey here - otherwise one settling in between reports against the run
-    // that was just thrown away. Mirrors the conditions BaseDescopeWc uses, so
-    // we do not drop a passkey on the initial attribute set or before init.
-    const restartsTheRun =
-      this.shadowRoot.isConnected &&
-      oldValue !== null &&
-      oldValue !== newValue &&
-      BaseDescopeWc.observedAttributes.includes(attrName);
-
-    if (restartsTheRun) {
-      this.#dropPendingPasskeyResult();
-    }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   disconnectedCallback() {
@@ -584,15 +527,11 @@ class DescopeWc extends BaseDescopeWc {
     this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
-    this.#screenLockedBySubmit = null;
-    // no further state change will arrive to drop a pending passkey answer
-    this.#dropPendingPasskeyResult();
 
     window.removeEventListener(
       'visibilitychange',
       this.#eventsCbRefs.visibilitychange,
     );
-    window.removeEventListener('popstate', this.#eventsCbRefs.popstate);
   }
 
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
@@ -1128,26 +1067,6 @@ class DescopeWc extends BaseDescopeWc {
       let failureReason: string;
       let failureMessage: string;
 
-      // No request is in flight while the browser dialog is up, and an extension
-      // may never tell us it was dismissed, so hand the screen back: the user
-      // can pick another method instead of watching a spinner. The submitter is
-      // left alone - its 'loading' attribute sets pointer-events:none, which is
-      // what stops a second ceremony.
-      const lockedBySubmit = this.#screenLockedBySubmit;
-      const releasedElements = lockedBySubmit?.elements || [];
-      releasedElements.forEach((ele) => {
-        ele.removeAttribute('disabled');
-      });
-      this.#screenLockedBySubmit = null;
-
-      // If the flow moves while the browser is still thinking, this passkey is
-      // answering for a step we have left, and its result must be dropped.
-      const ceremonyGeneration = this.#flowGeneration;
-      const ceremonyPosition = this.#flowPosition;
-      const flowMovedOn = () =>
-        this.#flowGeneration !== ceremonyGeneration ||
-        this.#flowPosition !== ceremonyPosition;
-
       const abortController = new AbortController();
 
       try {
@@ -1192,26 +1111,6 @@ class DescopeWc extends BaseDescopeWc {
         failureMessage = e.message;
       }
 
-      if (flowMovedOn()) {
-        // The flow moved on while we were waiting. Reporting now would answer
-        // for a step it has already left. We never sent a request, so the
-        // screen is still the one we handed back - clear the spinner too, so
-        // the passkey button is clickable again if that screen is still up.
-        lockedBySubmit?.submitter?.removeAttribute('loading');
-        this.loggerWrapper.warn(
-          'Ignoring a webauthn result for a step the flow already left',
-        );
-        return;
-      }
-
-      // From here a request really is in flight, and withFlowNonce serializes
-      // flow.next, so anything the user submits now queues behind this reply and
-      // would run against a flow we have already advanced. Put the screen back
-      // under the normal in-flight lock until a new one renders.
-      releasedElements.forEach((ele) => {
-        ele.setAttribute('disabled', 'true');
-      });
-
       // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
         executionId,
@@ -1227,22 +1126,6 @@ class DescopeWc extends BaseDescopeWc {
           failureMessage,
         },
       );
-
-      // The alternatives stayed usable while that request was in flight, so the
-      // user may have switched methods in the meantime. Handing this response on
-      // now would overwrite the screen they moved to.
-      //
-      // A completed response is the exception: the tokens were already written
-      // to storage inside flow.next (withPersistTokens), so dropping it would
-      // leave the user logged in with the host app never told. Whatever else is
-      // going on, the login happened and has to be reported.
-      if (flowMovedOn() && sdkResp?.data?.status !== 'completed') {
-        this.loggerWrapper.warn(
-          'Dropping a webauthn response for a step the flow already left',
-        );
-        return;
-      }
-
       this.#handleSdkResponse(sdkResp);
     }
 
@@ -1593,14 +1476,6 @@ class DescopeWc extends BaseDescopeWc {
     );
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
-    // A completed response does not move executionId/stepId, so the position
-    // check alone would let a pending passkey survive it. Polling responses do
-    // not move the flow either, but they also do not end it - they are the flow
-    // waiting, so they must not drop a passkey the user is still answering.
-    if (sdkResp?.data?.action !== RESPONSE_ACTIONS.poll) {
-      this.#dropPendingPasskeyResult();
-    }
-
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
@@ -2066,21 +1941,12 @@ class DescopeWc extends BaseDescopeWc {
     const screenClientScripts =
       this.flowState.current?.screenState?.clientScripts || [];
 
-    // Like resetComponentsState, but the submitter keeps its 'loading'
-    // attribute. A passkey ceremony runs with no request in flight and no way to
-    // observe a dismissed prompt, so we give the rest of the screen back
-    // (letting the user pick another method) while 'loading' keeps the passkey
-    // button itself unclickable - descope-button sets pointer-events:none for
-    // loading="true".
-    this.#screenLockedBySubmit = { submitter, elements: enabledElements };
-
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
       submitter.removeAttribute('loading');
       enabledElements.forEach((ele) => {
         ele.removeAttribute('disabled');
       });
-      this.#screenLockedBySubmit = null;
     };
 
     const restoreComponentsState = async (e?: Event) => {
@@ -2233,8 +2099,6 @@ class DescopeWc extends BaseDescopeWc {
       ) {
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
-
-        this.#dropPendingPasskeyResult();
 
         this.#handleComponentsLoadingState(submitter);
 

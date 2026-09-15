@@ -124,29 +124,6 @@ test.describe('webauthn ceremony that never settles', () => {
     });
   });
 
-  test('leaves the rest of the screen usable while the ceremony is pending', async ({
-    page,
-  }) => {
-    await page.goto('http://localhost:5565');
-
-    const passkey = page.locator('descope-button#passkey');
-    const fallback = page.locator('descope-button#fallback');
-    await expect(passkey).toBeVisible();
-
-    await passkey.click();
-    await expect.poll(() => nextBodies.length).toBe(1);
-
-    // the passkey button keeps spinning, which is what stops a second ceremony
-    await expect(passkey).toHaveAttribute('loading', 'true');
-
-    // the escape route is usable again even though the call is still pending
-    await expect(fallback).not.toHaveAttribute('disabled', 'true');
-    // Clicking it is not asserted here: these mocked screens are plain markup
-    // without the flow's form wiring, so a click never becomes a submit in this
-    // fixture. That path is covered by the jest suite (which drives the real
-    // form) and end to end against a real extension.
-  });
-
   test('reports a timeout once the budget expires', async ({ page }) => {
     await page.clock.install();
     await page.goto('http://localhost:5565');
