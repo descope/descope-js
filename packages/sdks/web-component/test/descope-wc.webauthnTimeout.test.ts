@@ -371,6 +371,37 @@ describe('webauthn ceremony timeout', () => {
     ).toBe(false);
   });
 
+  it('keeps the passkey when an attribute changes that does not restart the run', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    let settle: (v: string) => void;
+    sdk.webauthn.helpers.get.mockReturnValue(
+      new Promise((res) => {
+        settle = res;
+      }),
+    );
+
+    await startCeremony();
+    await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // setting an attribute to the value it already has changes nothing
+    const wc = document.querySelector('descope-wc');
+    wc.setAttribute('flow-id', wc.getAttribute('flow-id'));
+
+    settle('the-assertion');
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(nextMock.mock.calls[1][5]).toEqual(
+      expect.objectContaining({ response: 'the-assertion' }),
+    );
+  });
+
   it('still reports a real NotAllowedError unchanged', async () => {
     await renderPasskeyScreen();
     respondWithCeremony();

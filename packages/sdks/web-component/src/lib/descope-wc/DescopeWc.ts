@@ -131,7 +131,7 @@ class DescopeWc extends BaseDescopeWc {
     return `${executionId}|${stepId}`;
   }
 
-  #invalidatePendingWebauthn() {
+  #dropPendingPasskeyResult() {
     this.#flowGeneration += 1;
   }
 
@@ -160,7 +160,7 @@ class DescopeWc extends BaseDescopeWc {
     // BaseDescopeWc syncs the run ids from the URL into its own state, which
     // only reaches this component through a subscriber on a setTimeout. Bump
     // here too so a ceremony settling in that gap is still invalidated.
-    popstate: () => this.#invalidatePendingWebauthn(),
+    popstate: () => this.#dropPendingPasskeyResult(),
   };
 
   #syncStateWithVisibility() {
@@ -550,11 +550,20 @@ class DescopeWc extends BaseDescopeWc {
     oldValue: string,
     newValue: string,
   ) {
-    // A new flow-id or project-id restarts the flow. BaseDescopeWc updates its
-    // own state right away but this component only hears about it on a later
-    // timer, so invalidate here or a passkey settling in between still reports.
-    if (oldValue !== newValue) {
-      this.#invalidatePendingWebauthn();
+    // BaseDescopeWc clears the run ids on any observed attribute change after
+    // the first one, which restarts the flow. It updates its own state right
+    // away but this component only hears about it on a later timer, so drop the
+    // passkey here - otherwise one settling in between reports against the run
+    // that was just thrown away. Mirrors the conditions BaseDescopeWc uses, so
+    // we do not drop a passkey on the initial attribute set or before init.
+    const restartsTheRun =
+      this.shadowRoot.isConnected &&
+      oldValue !== null &&
+      oldValue !== newValue &&
+      BaseDescopeWc.observedAttributes.includes(attrName);
+
+    if (restartsTheRun) {
+      this.#dropPendingPasskeyResult();
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
@@ -575,7 +584,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#conditionalUiAbortController = null;
     this.#elementsDisabledBySubmit = null;
     // no further state change will arrive to invalidate a pending ceremony
-    this.#invalidatePendingWebauthn();
+    this.#dropPendingPasskeyResult();
 
     window.removeEventListener(
       'visibilitychange',
@@ -1132,7 +1141,7 @@ class DescopeWc extends BaseDescopeWc {
       // answering for a step we have left, and its result must be dropped.
       const ceremonyGeneration = this.#flowGeneration;
       const ceremonyPosition = this.#flowPosition;
-      const ceremonyIsStale = () =>
+      const flowMovedOn = () =>
         this.#flowGeneration !== ceremonyGeneration ||
         this.#flowPosition !== ceremonyPosition;
 
@@ -1178,7 +1187,7 @@ class DescopeWc extends BaseDescopeWc {
         failureMessage = e.message;
       }
 
-      if (ceremonyIsStale()) {
+      if (flowMovedOn()) {
         // The flow moved on while we were waiting. Reporting now would answer
         // for a step it has already left.
         this.loggerWrapper.debug(
@@ -1214,7 +1223,7 @@ class DescopeWc extends BaseDescopeWc {
       // The alternatives stayed usable while that request was in flight, so the
       // user may have switched methods in the meantime. Handing this response on
       // now would overwrite the screen they moved to.
-      if (ceremonyIsStale()) {
+      if (flowMovedOn()) {
         this.loggerWrapper.debug(
           'Dropping a webauthn response for a step the flow already left',
         );
@@ -1574,7 +1583,7 @@ class DescopeWc extends BaseDescopeWc {
     // Not every response moves executionId/stepId - polling and completion
     // responses do not - so the position check alone would let a ceremony
     // survive them.
-    this.#invalidatePendingWebauthn();
+    this.#dropPendingPasskeyResult();
 
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
@@ -2209,7 +2218,7 @@ class DescopeWc extends BaseDescopeWc {
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
 
-        this.#invalidatePendingWebauthn();
+        this.#dropPendingPasskeyResult();
 
         this.#handleComponentsLoadingState(submitter);
 
