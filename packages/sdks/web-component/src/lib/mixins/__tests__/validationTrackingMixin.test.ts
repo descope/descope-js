@@ -37,7 +37,7 @@ customElements.define('vt-test-host', TestHost);
 let senderMock: jest.Mock;
 
 // A host exactly as constructed, with the enable setter never called.
-const mountRaw = (): TestHost => {
+const mount = (): TestHost => {
   const el = document.createElement('vt-test-host') as TestHost;
   document.body.appendChild(el);
   el.setValidationTrackingSender(senderMock);
@@ -47,8 +47,8 @@ const mountRaw = (): TestHost => {
 // Mounts a host with tracking already switched on, which is what DescopeWc does
 // for a flow whose config enables it. The mixin itself starts off - see the
 // "captures nothing until it is switched on" test, which never calls the setter.
-const mount = (): TestHost => {
-  const el = mountRaw();
+const mountAndEnable = (): TestHost => {
+  const el = mount();
   el.setValidationTrackingEnabled(true);
   return el;
 };
@@ -58,22 +58,21 @@ const sentBatch = (i = 0) => senderMock.mock.calls[i][0];
 const sentOptions = (i = 0) => senderMock.mock.calls[i][1];
 
 describe('deriveValidationRule', () => {
-  it('maps native validity flags to coarse rules', () => {
+  it('maps each native validity flag to its own rule', () => {
     expect(deriveValidationRule({ valueMissing: true } as ValidityState)).toBe(
       'required',
     );
-    // type/pattern/badInput all collapse into a single `format` bucket
-    expect(deriveValidationRule({ typeMismatch: true } as ValidityState)).toBe(
-      'format',
-    );
     expect(
       deriveValidationRule({ patternMismatch: true } as ValidityState),
-    ).toBe('format');
+    ).toBe('pattern');
     expect(deriveValidationRule({ badInput: true } as ValidityState)).toBe(
-      'format',
+      'bad-input',
     );
     expect(deriveValidationRule({ tooShort: true } as ValidityState)).toBe(
       'too-short',
+    );
+    expect(deriveValidationRule({ tooLong: true } as ValidityState)).toBe(
+      'too-long',
     );
     expect(deriveValidationRule({ rangeOverflow: true } as ValidityState)).toBe(
       'range',
@@ -83,21 +82,42 @@ describe('deriveValidationRule', () => {
     );
   });
 
+  it('names the type a typeMismatch failed, which needs the input type', () => {
+    // typeMismatch only says "wrong shape", not for what - it fires for email
+    // and url only, so the input's type is what makes the rule meaningful.
+    const typeMismatch = { typeMismatch: true } as ValidityState;
+    expect(deriveValidationRule(typeMismatch, 'email')).toBe('email');
+    expect(deriveValidationRule(typeMismatch, 'url')).toBe('url');
+    // A custom screen can carry any input; do not guess one of the two above.
+    expect(deriveValidationRule(typeMismatch, 'text')).toBe('type-mismatch');
+    expect(deriveValidationRule(typeMismatch)).toBe('type-mismatch');
+  });
+
   it('prefers the higher-precedence flag when several are set', () => {
-    // an invalid email trips both typeMismatch and patternMismatch -> format
+    // an invalid email trips both typeMismatch and patternMismatch
     expect(
-      deriveValidationRule({
-        typeMismatch: true,
-        patternMismatch: true,
-      } as ValidityState),
-    ).toBe('format');
-    // required wins over everything
+      deriveValidationRule(
+        { typeMismatch: true, patternMismatch: true } as ValidityState,
+        'email',
+      ),
+    ).toBe('email');
+    // required wins over a shape failure
     expect(
       deriveValidationRule({
         valueMissing: true,
         patternMismatch: true,
       } as ValidityState),
     ).toBe('required');
+    // ...but NOT over bad input. A control that cannot parse what was typed
+    // reports an empty value, so a required field sets both flags (verified in
+    // Chromium: type="number" + "5e"). Reporting `required` would claim the
+    // user left it blank when they typed something the browser rejected.
+    expect(
+      deriveValidationRule({
+        badInput: true,
+        valueMissing: true,
+      } as ValidityState),
+    ).toBe('bad-input');
   });
 
   it('returns unknown when there is no validity or no flag set', () => {
@@ -119,7 +139,7 @@ describe('validationTrackingMixin', () => {
   it('captures nothing until it is switched on', () => {
     // The setter is never called here - this is the shipped default, and the
     // reason a flow whose config says nothing sends nothing.
-    const el = mountRaw();
+    const el = mount();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
@@ -131,7 +151,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('drops what it buffered when it is switched off', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
@@ -146,8 +166,14 @@ describe('validationTrackingMixin', () => {
   });
 
   it('captures again after being switched back on', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.setValidationTrackingEnabled(false);
+    // Captured while off: must be dropped outright, not carried into the batch
+    // that goes out after it is switched back on.
+    el.trackValidationErrors(
+      [makeInput('phone', { valueMissing: true })],
+      el.currentFlowContext,
+    );
     el.setValidationTrackingEnabled(true);
 
     el.trackValidationErrors(
@@ -157,10 +183,14 @@ describe('validationTrackingMixin', () => {
     el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
 
     expect(senderMock).toHaveBeenCalledTimes(1);
+    // The call count alone would not catch a leak - a kept event would ride
+    // along inside this same batch - so check what actually went out.
+    expect(sentBatch().events).toHaveLength(1);
+    expect(sentBatch().events[0].field).toBe('email');
   });
 
   it('hands the batch to the sender on flush', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [
         makeInput(
@@ -215,7 +245,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('dedupes the same field+rule within a batch (blur + submit double-fire)', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
@@ -231,7 +261,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('keeps distinct fields/rules in the same batch', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [
         makeInput('email', { valueMissing: true }),
@@ -246,7 +276,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('holds start-screen errors until the flow has an execution', () => {
-    const el = mount();
+    const el = mountAndEnable();
     // Start screen: config-rendered, so no execution yet.
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
@@ -270,7 +300,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('drops held start-screen errors if the flow never starts', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
       screenId: 'start-scr',
@@ -284,7 +314,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('does not hold anything while tracking is off', () => {
-    const el = mountRaw();
+    const el = mount();
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
       screenId: 'start-scr',
@@ -297,7 +327,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('sends nothing while there is no live execution, whatever fires', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.currentFlowContext = { executionId: undefined };
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -312,7 +342,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('keeps the screen an event was captured on when it is adopted later', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
       screenId: 'start-scr',
@@ -334,7 +364,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('does not send held events twice if adoption runs again', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors([makeInput('email', { typeMismatch: true })], {
       executionId: '',
       screenId: 'start-scr',
@@ -348,7 +378,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('caps what it holds so an abandoned start screen cannot grow forever', () => {
-    const el = mount();
+    const el = mountAndEnable();
     // 25 distinct failures, cap is 20
     for (let i = 0; i < 25; i += 1) {
       el.trackValidationErrors(
@@ -368,7 +398,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('dedupes the same failure while holding (blur + submit on the start screen)', () => {
-    const el = mount();
+    const el = mountAndEnable();
     const ctx = {
       executionId: '',
       screenId: 'start-scr',
@@ -384,7 +414,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('captures a blur-only failure and sends on flush (abandonment via page hide, keepalive)', () => {
-    const el = mount();
+    const el = mountAndEnable();
     // only a blur failure, no submit
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -397,7 +427,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('sends the batch when the screen changes, and starts a fresh one', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
@@ -429,7 +459,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('keeps each event on its own screen if a batch spans two', () => {
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
@@ -455,7 +485,7 @@ describe('validationTrackingMixin', () => {
     senderMock
       .mockRejectedValueOnce(new Error('network'))
       .mockResolvedValue({ ok: true, retryable: false });
-    const el = mount();
+    const el = mountAndEnable();
 
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -479,7 +509,7 @@ describe('validationTrackingMixin', () => {
   it('cancels a pending retry when the component disconnects', async () => {
     jest.useFakeTimers();
     senderMock.mockRejectedValue(new Error('network'));
-    const el = mount();
+    const el = mountAndEnable();
 
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -502,7 +532,7 @@ describe('validationTrackingMixin', () => {
   it('does not retry a rejected batch (4xx)', async () => {
     jest.useFakeTimers();
     senderMock.mockResolvedValue({ ok: false, retryable: false });
-    const el = mount();
+    const el = mountAndEnable();
 
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -523,7 +553,7 @@ describe('validationTrackingMixin', () => {
   it('stops retrying a batch when tracking is switched off mid-flight', async () => {
     jest.useFakeTimers();
     senderMock.mockRejectedValue(new Error('network'));
-    const el = mount();
+    const el = mountAndEnable();
 
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -545,7 +575,7 @@ describe('validationTrackingMixin', () => {
 
   it('does not retry the unload (page-hide) send', async () => {
     senderMock.mockRejectedValue(new Error('network'));
-    const el = mount();
+    const el = mountAndEnable();
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
       el.currentFlowContext,
@@ -561,7 +591,7 @@ describe('validationTrackingMixin', () => {
   it('does not attribute a later batch to a finished execution', () => {
     // A flow that starts with no validation errors: adoption runs against an
     // empty buffer and must not leave the execution id behind.
-    const el = mount();
+    const el = mountAndEnable();
     el.setValidationTrackingExecution('e1');
 
     // The flow restarts, so the component is back on the config-rendered start
@@ -584,7 +614,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('sends every failure of a big submit, not just the first MAX_BATCH_SIZE', () => {
-    const el = mount();
+    const el = mountAndEnable();
     // One submit, 25 distinct invalid fields, and a live execution - so the
     // batch is deliverable and nothing has to be dropped.
     const inputs = Array.from({ length: 25 }, (_, i) =>
@@ -604,7 +634,7 @@ describe('validationTrackingMixin', () => {
   });
 
   it('still caps what it holds when the batch cannot be sent', () => {
-    const el = mount();
+    const el = mountAndEnable();
     // Same 25 failures, but no execution - nothing is deliverable, so the cap
     // has to stay a hard bound or an abandoned start screen grows forever.
     const inputs = Array.from({ length: 25 }, (_, i) =>
@@ -632,7 +662,7 @@ describe('validationTrackingMixin', () => {
         rejectSend = reject;
       }),
     );
-    const el = mount();
+    const el = mountAndEnable();
 
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -660,7 +690,7 @@ describe('validationTrackingMixin', () => {
         rejectSend = reject;
       }),
     );
-    const el = mount();
+    const el = mountAndEnable();
 
     el.trackValidationErrors(
       [makeInput('email', { valueMissing: true })],
@@ -680,11 +710,25 @@ describe('validationTrackingMixin', () => {
     jest.advanceTimersByTime(5000);
     await Promise.resolve();
     expect(senderMock).toHaveBeenCalledTimes(1);
+
+    // The stale chain is dead, but the component is not: after the flow switch
+    // a fresh capture still has to reach the sender. Guards a disable that
+    // tears down too much (dropping the sender or the listeners along with the
+    // in-flight batch), which the assertion above would not notice.
+    senderMock.mockResolvedValue({ ok: true, retryable: false });
+    el.trackValidationErrors(
+      [makeInput('phone', { valueMissing: true })],
+      el.currentFlowContext,
+    );
+    el.dispatchEvent(new CustomEvent('screen-updated', { detail: {} }));
+
+    expect(senderMock).toHaveBeenCalledTimes(2);
+    expect(sentBatch(1).events[0].field).toBe('phone');
     jest.useRealTimers();
   });
 
   it('never throws out of trackValidationErrors', () => {
-    const el = mount();
+    const el = mountAndEnable();
     // a sender that blows up must be swallowed
     el.setValidationTrackingSender(() => {
       throw new Error('boom');

@@ -709,8 +709,7 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
-    const { outboundAppId } = this;
-    const { outboundAppScopes } = this;
+    const { outboundAppId, outboundAppScopes } = this;
     const loginId = this.sdk.getLastUserLoginId();
     // Switching flows: turn tracking off before we know the new flow's setting,
     // so the previous flow's "on" cannot carry over while the config resolves.

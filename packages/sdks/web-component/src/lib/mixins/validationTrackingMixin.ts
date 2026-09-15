@@ -73,20 +73,32 @@ const newId = (): string => {
 };
 
 /**
- * Map an input's ValidityState to a coarse machine-readable rule. We keep it
- * intentionally coarse: any "value is present but the wrong shape" failure
- * (bad email, pattern mismatch, bad input) collapses into a single `format`
- * bucket. This never mislabels - the exact reason the user saw is always in
- * `message`, and the field is in `field`. A field with a custom validation
- * message still keeps its native flag, so this stays accurate; only a fully
- * custom validator (setCustomValidity) reports `custom`.
+ * Map an input's ValidityState to a machine-readable rule, one rule per native
+ * failure so a customer can tell "not a valid email" from "failed the pattern
+ * the flow author wrote" - different problems with different fixes. The exact
+ * text the user saw is always in `message` as well. A field with a custom
+ * validation message still keeps its native flag, so this stays accurate; only
+ * a fully custom validator (setCustomValidity) reports `custom`.
+ *
+ * `inputType` is the input's `type`, needed because typeMismatch only says the
+ * value is the wrong shape, not for what: it fires for `email` and `url` only.
  */
-export const deriveValidationRule = (validity?: ValidityState): string => {
+export const deriveValidationRule = (
+  validity?: ValidityState,
+  inputType?: string,
+): string => {
   if (!validity) return 'unknown';
+  // Before valueMissing: a control that cannot parse what was typed reports an
+  // empty value, so a required field sets BOTH flags (verified in Chromium:
+  // type="number" + "5e" -> badInput AND valueMissing). Reporting `required`
+  // there would claim the user left it blank when they did type something.
+  if (validity.badInput) return 'bad-input';
   if (validity.valueMissing) return 'required';
-  if (validity.typeMismatch || validity.patternMismatch || validity.badInput) {
-    return 'format';
+  if (validity.typeMismatch) {
+    if (inputType === 'email' || inputType === 'url') return inputType;
+    return 'type-mismatch';
   }
+  if (validity.patternMismatch) return 'pattern';
   if (validity.tooShort) return 'too-short';
   if (validity.tooLong) return 'too-long';
   if (
@@ -110,7 +122,7 @@ const toEvent = (
   return {
     id: newId(),
     field,
-    rule: deriveValidationRule(input.validity),
+    rule: deriveValidationRule(input.validity, input.type),
     message: input.validationMessage || '',
     screenId: ctx.screenId || '',
     screenName: ctx.screenName || '',
@@ -212,9 +224,9 @@ export const validationTrackingMixin = createSingletonMixin(
       }
 
       #collect(inputs: HTMLInputElement[], context: FlowContext) {
-        // Not enabled for this flow - capture nothing and attach no listeners.
-        if (!this.#enabled) return;
-        if (!inputs?.length) return;
+        // Off for this flow, or nothing to report - capture nothing and attach
+        // no listeners.
+        if (!this.#enabled || !inputs?.length) return;
         const ctx = context || {};
 
         // Attach flush triggers on first real capture (nothing to flush before

@@ -116,7 +116,8 @@ test.describe('client-side validation tracking', () => {
     expect(batch.executionId).toBe('pass|#|2tlLFAOthDriBZIOVXahmLnYv8Q');
     expect(batch.events).toHaveLength(1);
     expect(batch.events[0].field).toBe('email');
-    expect(batch.events[0].rule).toBe('format');
+    // A real type="email" input in a real engine - the rule names the type.
+    expect(batch.events[0].rule).toBe('email');
     expect(batch.events[0].screenName).toBe('Sign In');
     expect(batch.events[0].screenId).toBe('pass/SC2sIjJonbfhE16bTzi1ZWZIlUCsu');
     // The message is the exact text the browser showed the user.
