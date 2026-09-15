@@ -22,6 +22,7 @@ import {
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
+  WEBAUTHN_TIMEOUT,
 } from '../constants';
 import {
   clearPreviousExternalInputs,
@@ -78,6 +79,12 @@ import {
   FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+
+// Marks a passkey ceremony that ran out of time. timeoutPromise can only reject
+// with a plain Error, which is exactly what some password manager extensions
+// throw, so we take its resolve-with-a-fallback form instead. A real ceremony
+// resolves with encoded JSON, so this value cannot collide with one.
+const WEBAUTHN_TIMED_OUT = '__descope_webauthn_timed_out__';
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -1060,11 +1067,36 @@ class DescopeWc extends BaseDescopeWc {
       let failureReason: string;
       let failureMessage: string;
 
+      const abortController = new AbortController();
+
       try {
-        response =
+        const ceremony =
           action === RESPONSE_ACTIONS.webauthnCreate
-            ? await this.sdk.webauthn.helpers.create(webauthnOptions)
-            : await this.sdk.webauthn.helpers.get(webauthnOptions);
+            ? this.sdk.webauthn.helpers.create(webauthnOptions, abortController)
+            : this.sdk.webauthn.helpers.get(webauthnOptions, abortController);
+
+        const outcome = await timeoutPromise(
+          WEBAUTHN_TIMEOUT,
+          ceremony,
+          WEBAUTHN_TIMED_OUT,
+        );
+
+        if (outcome === WEBAUTHN_TIMED_OUT) {
+          // We gave up, the browser did not. Asking it to stop is honoured by
+          // some extensions and ignored by others, so it is cleanup rather than
+          // the mechanism.
+          abortController.abort();
+          this.loggerWrapper.warn(
+            `WebAuthn operation timed out after ${WEBAUTHN_TIMEOUT}ms`,
+          );
+          // Report it as an abort, which is what it is from the flow's side and
+          // a value the SDK already produces (see identifyWebauthnError).
+          failure = 'AbortError';
+          failureReason = 'aborted';
+          failureMessage = 'Passkey operation timed out';
+        } else {
+          response = outcome;
+        }
       } catch (e) {
         if (e.name === 'InvalidStateError') {
           // currently returned in Chrome when trying to register a WebAuthn device
@@ -1078,6 +1110,7 @@ class DescopeWc extends BaseDescopeWc {
         failureReason = e.reason;
         failureMessage = e.message;
       }
+
       // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
         executionId,
