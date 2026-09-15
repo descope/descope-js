@@ -545,6 +545,20 @@ class DescopeWc extends BaseDescopeWc {
     await super.init?.();
   }
 
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string,
+    newValue: string,
+  ) {
+    // A new flow-id or project-id restarts the flow. BaseDescopeWc updates its
+    // own state right away but this component only hears about it on a later
+    // timer, so invalidate here or a passkey settling in between still reports.
+    if (oldValue !== newValue) {
+      this.#invalidatePendingWebauthn();
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
 

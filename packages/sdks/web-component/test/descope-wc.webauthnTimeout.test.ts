@@ -340,6 +340,37 @@ describe('webauthn ceremony timeout', () => {
     respondToReply(generateSdkResponse({ screenId: '1' }));
   });
 
+  it('drops the result when the flow-id attribute changes', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+
+    let settle: (v: string) => void;
+    sdk.webauthn.helpers.get.mockReturnValue(
+      new Promise((res) => {
+        settle = res;
+      }),
+    );
+
+    await startCeremony();
+    await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // pointing the component at another flow restarts it
+    document
+      .querySelector('descope-wc')
+      .setAttribute('flow-id', 'a-different-flow');
+
+    settle('the-abandoned-assertion');
+    await jest.advanceTimersByTimeAsync(2000);
+
+    expect(
+      nextMock.mock.calls.some(
+        (call) => call[5]?.response === 'the-abandoned-assertion',
+      ),
+    ).toBe(false);
+  });
+
   it('still reports a real NotAllowedError unchanged', async () => {
     await renderPasskeyScreen();
     respondWithCeremony();
