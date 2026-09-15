@@ -16,6 +16,7 @@ export * from './mixins/debuggerMixin';
 export * from './mixins/descopeUiMixin';
 export * from './mixins/loggerMixin';
 export * from './mixins/modalMixin';
+export * from './mixins/flowModalMixin';
 export * from './mixins/notificationsMixin';
 export * from './mixins/observeAttributesMixin';
 export * from './mixins/staticResourcesMixin';

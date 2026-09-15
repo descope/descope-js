@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getName } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       nameUserAttr: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.nameUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-name',
           'close-on-outside-click': 'true',
         });
@@ -70,7 +70,7 @@ export const initNameUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.nameUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-name',
           'close-on-outside-click': 'true',
         });
