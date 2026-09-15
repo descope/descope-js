@@ -103,6 +103,16 @@ test.describe('webauthn ceremony that never settles', () => {
     // would start it after the jump and it would never fire.
     await page.addInitScript(() => {
       (window as any).__ceremonyStarted = false;
+      // Not every engine we test on exposes navigator.credentials (Linux WebKit
+      // does not), and defining a property on undefined would throw and take the
+      // whole init script with it.
+      if (!navigator.credentials) {
+        Object.defineProperty(navigator, 'credentials', {
+          value: {},
+          configurable: true,
+          writable: true,
+        });
+      }
       Object.defineProperty(navigator.credentials, 'get', {
         value: () => {
           (window as any).__ceremonyStarted = true;
