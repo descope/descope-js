@@ -277,6 +277,40 @@ describe('webauthn ceremony timeout', () => {
     expect(fetchedScreens.some((url) => url.includes('99'))).toBe(false);
   });
 
+  // The guard must not depend on any particular caller remembering to
+  // invalidate. These cover the moves that do not go through a submit.
+  it('drops the result when the flow moved by itself, not by a submit', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+
+    let settle: (v: string) => void;
+    sdk.webauthn.helpers.get.mockReturnValue(
+      new Promise((res) => {
+        settle = res;
+      }),
+    );
+
+    await startCeremony();
+    await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // the flow advances without anyone submitting - this is what a popstate
+    // from the browser back button does
+    const wc = document.querySelector('descope-wc') as any;
+    wc.flowState.update({
+      stepId: 'another-step',
+      executionId: 'another-exec',
+      action: '',
+    });
+    await jest.advanceTimersByTimeAsync(100);
+
+    settle('the-abandoned-assertion');
+    await jest.advanceTimersByTimeAsync(2000);
+
+    expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
   it('still reports a real NotAllowedError unchanged', async () => {
     await renderPasskeyScreen();
     respondWithCeremony();

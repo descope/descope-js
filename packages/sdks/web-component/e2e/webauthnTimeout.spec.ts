@@ -159,15 +159,21 @@ test.describe('webauthn ceremony that never settles', () => {
 
     // the ceremony must be underway before the clock jumps, otherwise its timer
     // is registered after the jump and never fires
+    // generous timeouts: CI runs three engines at once and the default 5s poll
+    // is not always enough on a loaded machine
     await expect
-      .poll(() => page.evaluate(() => (window as any).__ceremonyStarted))
+      .poll(() => page.evaluate(() => (window as any).__ceremonyStarted), {
+        timeout: 20_000,
+      })
       .toBe(true);
 
     // jump past the ceremony budget instead of waiting it out
     await page.clock.fastForward(95_000);
 
     await expect
-      .poll(() => nextBodies.find((b) => b.includes('TimeoutError')))
+      .poll(() => nextBodies.find((b) => b.includes('TimeoutError')), {
+        timeout: 20_000,
+      })
       .toBeTruthy();
   });
 });

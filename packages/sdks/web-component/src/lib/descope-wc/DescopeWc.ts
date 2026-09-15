@@ -114,15 +114,23 @@ class DescopeWc extends BaseDescopeWc {
   // not pin the enclosing scope.
   #elementsDisabledBySubmit: Element[] = null;
 
-  // A passkey ceremony captures this and drops its result if it changed, which
-  // means the user gave up waiting and moved on. Anything that advances the flow
-  // must call #invalidatePendingWebauthn.
+  // Staleness for a pending passkey ceremony is checked two ways, because no
+  // single one covers everything.
+  //
+  // #flowPosition is read from the flow state, so *any* move invalidates a
+  // ceremony without a code path having to remember: an SDK response, a
+  // popstate from the back button, an attribute-driven restart.
+  //
+  // #flowGeneration covers the two moments where no state change happens but
+  // the ceremony is still dead: the user submitting something else (which is
+  // before its response arrives), and the component being disconnected.
   #flowGeneration = 0;
 
-  // The flow moved on, so a passkey ceremony still waiting on the browser is
-  // answering for a step we have left. Called both when the user submits (which
-  // is before any response, closing the window where a ceremony could settle
-  // mid-escape) and when any flow response lands.
+  get #flowPosition() {
+    const { executionId, stepId } = this.flowState?.current || {};
+    return `${executionId}|${stepId}`;
+  }
+
   #invalidatePendingWebauthn() {
     this.#flowGeneration += 1;
   }
@@ -547,6 +555,8 @@ class DescopeWc extends BaseDescopeWc {
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
     this.#elementsDisabledBySubmit = null;
+    // no further state change will arrive to invalidate a pending ceremony
+    this.#invalidatePendingWebauthn();
 
     window.removeEventListener(
       'visibilitychange',
@@ -1097,9 +1107,13 @@ class DescopeWc extends BaseDescopeWc {
       });
       this.#elementsDisabledBySubmit = null;
 
-      // If the user gives up and takes another action, the flow advances and a
-      // late result from this ceremony must be dropped.
+      // If the flow moves while the browser is still thinking, this ceremony is
+      // answering for a step we have left, and its result must be dropped.
       const ceremonyGeneration = this.#flowGeneration;
+      const ceremonyPosition = this.#flowPosition;
+      const ceremonyIsStale = () =>
+        this.#flowGeneration !== ceremonyGeneration ||
+        this.#flowPosition !== ceremonyPosition;
 
       const abortController = new AbortController();
 
@@ -1143,9 +1157,9 @@ class DescopeWc extends BaseDescopeWc {
         failureMessage = e.message;
       }
 
-      if (this.#flowGeneration !== ceremonyGeneration) {
-        // The user moved on while we were waiting. Reporting now would answer
-        // for a step the flow has already left.
+      if (ceremonyIsStale()) {
+        // The flow moved on while we were waiting. Reporting now would answer
+        // for a step it has already left.
         this.loggerWrapper.debug(
           'Ignoring a webauthn result for a step the flow already left',
         );
@@ -1171,7 +1185,7 @@ class DescopeWc extends BaseDescopeWc {
       // The alternatives stayed usable while that request was in flight, so the
       // user may have switched methods in the meantime. Handing this response on
       // now would overwrite the screen they moved to.
-      if (this.#flowGeneration !== ceremonyGeneration) {
+      if (ceremonyIsStale()) {
         this.loggerWrapper.debug(
           'Dropping a webauthn response for a step the flow already left',
         );
@@ -1528,8 +1542,6 @@ class DescopeWc extends BaseDescopeWc {
     );
 
   #handleSdkResponse = (sdkResp: NextFnReturnPromiseValue) => {
-    this.#invalidatePendingWebauthn();
-
     if (!sdkResp?.ok) {
       const defaultMessage = sdkResp?.response?.url;
       const defaultDescription = `${sdkResp?.response?.status} - ${sdkResp?.response?.statusText}`;
