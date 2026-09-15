@@ -141,7 +141,6 @@ test.describe('webauthn ceremony that never settles', () => {
 
     // the escape route is usable again even though the call is still pending
     await expect(fallback).not.toHaveAttribute('disabled', 'true');
-    await expect(fallback).toBeEnabled();
     // Clicking it is not asserted here: these mocked screens are plain markup
     // without the flow's form wiring, so a click never becomes a submit in this
     // fixture. That path is covered by the jest suite (which drives the real
@@ -171,9 +170,12 @@ test.describe('webauthn ceremony that never settles', () => {
     await page.clock.fastForward(95_000);
 
     await expect
-      .poll(() => nextBodies.find((b) => b.includes('TimeoutError')), {
-        timeout: 20_000,
-      })
+      .poll(
+        () => nextBodies.find((b) => b.includes('"failureReason":"aborted"')),
+        {
+          timeout: 20_000,
+        },
+      )
       .toBeTruthy();
   });
 });

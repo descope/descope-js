@@ -121,8 +121,8 @@ describe('webauthn ceremony timeout', () => {
     expect(nextMock.mock.calls[1][5]).toEqual(
       expect.objectContaining({
         transactionId: 'tx-1',
-        failure: 'TimeoutError',
-        failureReason: 'timeout',
+        failure: 'AbortError',
+        failureReason: 'aborted',
       }),
     );
 
@@ -279,6 +279,74 @@ describe('webauthn ceremony timeout', () => {
 
   // The guard must not depend on any particular caller remembering to
   // invalidate. These cover the moves that do not go through a submit.
+  it('still reports a completed login even though the flow moved on', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+
+    // the passkey reply is slow, leaving a window where the user can switch
+    let respondToReply: (v: unknown) => void;
+    nextMock.mockReturnValueOnce(
+      new Promise((res) => {
+        respondToReply = res;
+      }),
+    );
+    // the escape lands while that reply is still in flight
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '2' }));
+
+    sdk.webauthn.helpers.get.mockResolvedValue('the-assertion');
+
+    const onSuccess = jest.fn();
+    document.querySelector('descope-wc').addEventListener('success', onSuccess);
+
+    await startCeremony();
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(fallbackButton());
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(3), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // the passkey worked after all. The tokens were already stored inside
+    // flow.next, so this has to be reported even though the flow moved on -
+    // otherwise the user is logged in and the host app never hears about it.
+    respondToReply(generateSdkResponse({ status: 'completed' }));
+
+    await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+  });
+
+  it('clears the spinner when a dropped result never reached a request', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony();
+
+    let settle: (v: string) => void;
+    sdk.webauthn.helpers.get.mockReturnValue(
+      new Promise((res) => {
+        settle = res;
+      }),
+    );
+
+    await startCeremony();
+    await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(passkeyButton()).toHaveAttribute('loading', 'true');
+
+    // the flow moves with no new screen rendered
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    settle('the-abandoned-assertion');
+
+    // the answer is dropped, and the button must not be left spinning
+    await waitFor(
+      () => expect(passkeyButton()).not.toHaveAttribute('loading'),
+      { timeout: WAIT_TIMEOUT },
+    );
+    expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
   it('drops the result when the browser back button moves the flow', async () => {
     await renderPasskeyScreen();
     respondWithCeremony();
