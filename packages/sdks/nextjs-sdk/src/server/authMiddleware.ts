@@ -43,6 +43,13 @@ type MiddlewareOptions = {
 	// Defaults to 'DSR'
 	// Used to refresh the session when the JWT expires
 	refreshTokenCookieName?: string;
+
+	// Skip the refresh token validation fallback
+	// By default, a valid refresh token is enough to pass the middleware even
+	// when the session token is expired. Set to true to require a valid session
+	// token, e.g. when server side code relies on `session()`
+	// Defaults to false
+	skipRefreshTokenValidation?: boolean;
 };
 
 const getSessionJwt = (
@@ -67,6 +74,9 @@ const getRefreshJwt = (
 	req: NextRequest,
 	options: MiddlewareOptions
 ): string | undefined => {
+	if (options?.skipRefreshTokenValidation) {
+		return undefined;
+	}
 	const refreshJwt = req.cookies?.get(
 		options?.refreshTokenCookieName || 'DSR'
 	)?.value;

@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.3.4](https://github.com/descope/descope-js/compare/web-component-4.3.3...web-component-4.3.4) (2026-09-11)
+
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.19 ([#1489](https://github.com/descope/descope-js/issues/1489)) ([c94cd0f](https://github.com/descope/descope-js/commit/c94cd0fb0971e5137f0d18f76b046d5a1f5d2344)), closes [descope/content#2333](https://github.com/descope/content/issues/2333) [descope/descope-js#1487](https://github.com/descope/descope-js/issues/1487)
+
+## [4.3.3](https://github.com/descope/descope-js/compare/web-component-4.3.2...web-component-4.3.3) (2026-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.0`
+## [4.3.2](https://github.com/descope/descope-js/compare/web-component-4.3.1...web-component-4.3.2) (2026-09-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.52.1`
+## [4.3.1](https://github.com/descope/descope-js/compare/web-component-4.3.0...web-component-4.3.1) (2026-09-07)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.26.1`
 ## [4.3.0](https://github.com/descope/descope-js/compare/web-component-4.2.0...web-component-4.3.0) (2026-08-24)
 
 ### Dependency Updates

@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   themeMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
@@ -31,7 +31,7 @@ export const initAvatarMixin = createSingletonMixin(
       loggerMixin,
       cookieConfigMixin,
       initWidgetRootMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       avatar: AvatarDriver;
@@ -43,7 +43,7 @@ export const initAvatarMixin = createSingletonMixin(
       #initModal() {
         if (!this.avatar.flowId) return;
 
-        this.#modal = this.createModal({
+        this.#modal = this.createFlowModal({
           'data-id': 'update-pic',
           'close-on-outside-click': 'true',
         });

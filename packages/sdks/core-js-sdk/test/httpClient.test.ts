@@ -643,6 +643,114 @@ describe('createFetchLogger', () => {
     });
   });
 
+  describe('transformResponse with prototype-accessor responses', () => {
+    // Unlike the plain-object mocks above, a spec-compliant `Response` keeps
+    // `ok`, `status` and `headers` on the prototype.
+    class ProtoAccessorResponse {
+      constructor(
+        private body: string,
+        private code: number,
+        private setCookie = '',
+      ) {}
+
+      get ok() {
+        return this.code >= 200 && this.code < 300;
+      }
+
+      get status() {
+        return this.code;
+      }
+
+      get statusText() {
+        return this.ok ? 'OK' : 'Bad Request';
+      }
+
+      get headers() {
+        return new Headers(
+          this.setCookie ? { 'set-cookie': this.setCookie } : {},
+        );
+      }
+
+      text() {
+        return Promise.resolve(this.body);
+      }
+    }
+
+    it('should keep ok, status and headers on a 2xx response', async () => {
+      mockFetch.mockReturnValue(
+        new ProtoAccessorResponse(
+          JSON.stringify({ test: 123 }),
+          200,
+          'DSR=123, DS=456',
+        ),
+      );
+
+      const res = await hookedHttpClient.post('1/2/3', {});
+
+      expect(res.ok).toBe(true);
+      expect(res.status).toBe(200);
+      expect(res.headers.get('set-cookie')).toBe('DSR=123, DS=456');
+      expect(await res.json()).toEqual({
+        test: 123,
+        refreshJwt: '123',
+        sessionJwt: '456',
+      });
+    });
+
+    it('should keep ok and status on a non-2xx response', async () => {
+      mockFetch.mockReturnValue(
+        new ProtoAccessorResponse(
+          JSON.stringify({ errorCode: 'E011002' }),
+          400,
+        ),
+      );
+
+      const res = await hookedHttpClient.post('1/2/3', {});
+
+      expect(res.ok).toBe(false);
+      expect(res.status).toBe(400);
+      expect(await res.json()).toEqual({ errorCode: 'E011002' });
+    });
+
+    it('should keep the transformed json when the response is cloned', async () => {
+      mockFetch.mockReturnValue(
+        new ProtoAccessorResponse(JSON.stringify({ test: 123 }), 200, 'DS=456'),
+      );
+
+      const res = await hookedHttpClient.post('1/2/3', {});
+      const clone = res.clone();
+
+      expect(clone.ok).toBe(true);
+      expect(clone.status).toBe(200);
+      expect(await clone.json()).toEqual({ test: 123, sessionJwt: '456' });
+    });
+
+    it('should let a hook mutate the response without touching the original', async () => {
+      const original = new ProtoAccessorResponse(
+        JSON.stringify({ test: 123 }),
+        200,
+      );
+      mockFetch.mockReturnValue(original);
+
+      const mutatingClient = createHttpClient({
+        baseUrl: 'http://descope.com',
+        projectId,
+        hooks: {
+          transformResponse: async (response: ExtendedResponse) => {
+            (response as any).extra = 'added';
+            return response;
+          },
+        },
+      });
+
+      const res = await mutatingClient.post('1/2/3', {});
+
+      expect((res as any).extra).toBe('added');
+      expect((original as any).extra).toBeUndefined();
+      expect(res.ok).toBe(true);
+    });
+  });
+
   describe('retry functionality', () => {
     let logger: any;
     let fetch: jest.Mock;

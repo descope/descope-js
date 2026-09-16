@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getTenantEnforceSSO } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       tenantEnforceSSODriver: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.tenantEnforceSSODriver.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-tenant-enforce-sso',
         });
         this.#editFlow = new FlowDriver(
@@ -76,7 +76,7 @@ export const initTenantEnforceSSOMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.tenantEnforceSSODriver.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-tenant-enforce-sso',
         });
         this.#deleteFlow = new FlowDriver(

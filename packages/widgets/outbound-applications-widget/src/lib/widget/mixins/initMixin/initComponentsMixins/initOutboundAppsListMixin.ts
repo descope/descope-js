@@ -11,7 +11,7 @@ import {
 import {
   localeMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getAppsList, getUserId } from '../../../state/selectors';
@@ -27,7 +27,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       #obAppsList: OutboundAppsListDriver;
@@ -47,7 +47,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       #initConnectModal() {
         if (!this.#obAppsList.connectFlowId) return;
 
-        this.#connectModal = this.createModal({
+        this.#connectModal = this.createFlowModal({
           'data-id': 'outbound-apps-connect',
         });
 
@@ -85,7 +85,7 @@ export const initOutboundAppsListMixin = createSingletonMixin(
       }
 
       #initDisconnectModal() {
-        this.#disconnectModal = this.createModal({
+        this.#disconnectModal = this.createFlowModal({
           'data-id': 'outbound-apps-disconnect',
         });
 
