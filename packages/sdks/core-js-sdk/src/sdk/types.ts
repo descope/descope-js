@@ -198,7 +198,7 @@ export type EnchantedLinkResponse = {
 export type PhoneEnchantedLinkResponse = {
   /** Pending reference URL to poll while waiting for user to click the link */
   pendingRef: string;
-  /** Link id, on which link the user should click */
+  /** Link id, printed at the start of the text message so the user can confirm it */
   linkId: string;
   /** Phone to which the link was sent to */
   maskedPhone: string;
