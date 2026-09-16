@@ -76,27 +76,6 @@ describe('webauthn ceremony timeout', () => {
     teardownWebComponentTestEnv();
   });
 
-  it('reports a timeout for the create (sign-up) ceremony too', async () => {
-    await renderPasskeyScreen();
-    respondWithCeremony('webauthnCreate');
-    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
-    sdk.webauthn.helpers.create.mockReturnValue(new Promise(() => {}));
-
-    await startCeremony();
-    await jest.advanceTimersByTimeAsync(PAST_WEBAUTHN_TIMEOUT);
-
-    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
-      timeout: WAIT_TIMEOUT,
-    });
-    expect(passkeyReplyPayload()).toEqual(
-      expect.objectContaining({
-        transactionId: 'tx-1',
-        failure: 'AbortError',
-        failureReason: 'aborted',
-      }),
-    );
-  });
-
   it('reports a timeout once the budget expires and clears the spinner', async () => {
     await renderPasskeyScreen();
     respondWithCeremony();
@@ -122,6 +101,27 @@ describe('webauthn ceremony timeout', () => {
       {
         timeout: WAIT_TIMEOUT,
       },
+    );
+  });
+
+  it('reports a timeout for the create (sign-up) ceremony too', async () => {
+    await renderPasskeyScreen();
+    respondWithCeremony('webauthnCreate');
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+    sdk.webauthn.helpers.create.mockReturnValue(new Promise(() => {}));
+
+    await startCeremony();
+    await jest.advanceTimersByTimeAsync(PAST_WEBAUTHN_TIMEOUT);
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(passkeyReplyPayload()).toEqual(
+      expect.objectContaining({
+        transactionId: 'tx-1',
+        failure: 'AbortError',
+        failureReason: 'aborted',
+      }),
     );
   });
 
