@@ -55,6 +55,18 @@ const startCeremony = async () => {
 
 const passkeyButton = () => screen.getByShadowText('Sign in with passkey');
 
+// The passkey reply is the second flow.next call, and its payload is the 6th
+// argument. Read it through here so the positions live in one place.
+const PASSKEY_REPLY_CALL = 1;
+const NEXT_PAYLOAD_ARG = 5;
+const passkeyReplyPayload = () =>
+  nextMock.mock.calls[PASSKEY_REPLY_CALL]?.[NEXT_PAYLOAD_ARG];
+
+// Enough past the budget that the timer has certainly fired.
+const PAST_WEBAUTHN_TIMEOUT = WEBAUTHN_TIMEOUT + 1000;
+// Comfortably inside it, so a ceremony settling here is not cut off.
+const WITHIN_WEBAUTHN_TIMEOUT = WEBAUTHN_TIMEOUT - 5000;
+
 describe('webauthn ceremony timeout', () => {
   beforeEach(() => {
     setupWebComponentTestEnv();
@@ -71,12 +83,12 @@ describe('webauthn ceremony timeout', () => {
     sdk.webauthn.helpers.create.mockReturnValue(new Promise(() => {}));
 
     await startCeremony();
-    await jest.advanceTimersByTimeAsync(WEBAUTHN_TIMEOUT + 1000);
+    await jest.advanceTimersByTimeAsync(PAST_WEBAUTHN_TIMEOUT);
 
     await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock.mock.calls[1][5]).toEqual(
+    expect(passkeyReplyPayload()).toEqual(
       expect.objectContaining({
         transactionId: 'tx-1',
         failure: 'AbortError',
@@ -92,12 +104,12 @@ describe('webauthn ceremony timeout', () => {
     sdk.webauthn.helpers.get.mockReturnValue(new Promise(() => {}));
 
     await startCeremony();
-    await jest.advanceTimersByTimeAsync(WEBAUTHN_TIMEOUT + 1000);
+    await jest.advanceTimersByTimeAsync(PAST_WEBAUTHN_TIMEOUT);
 
     await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock.mock.calls[1][5]).toEqual(
+    expect(passkeyReplyPayload()).toEqual(
       expect.objectContaining({
         transactionId: 'tx-1',
         failure: 'AbortError',
@@ -120,7 +132,7 @@ describe('webauthn ceremony timeout', () => {
     sdk.webauthn.helpers.get.mockReturnValue(new Promise(() => {}));
 
     await startCeremony();
-    await jest.advanceTimersByTimeAsync(WEBAUTHN_TIMEOUT + 1000);
+    await jest.advanceTimersByTimeAsync(PAST_WEBAUTHN_TIMEOUT);
 
     const abortController = sdk.webauthn.helpers.get.mock.calls[0][1];
     expect(abortController).toBeInstanceOf(AbortController);
@@ -140,19 +152,19 @@ describe('webauthn ceremony timeout', () => {
     );
 
     await startCeremony();
-    await jest.advanceTimersByTimeAsync(WEBAUTHN_TIMEOUT - 5000);
+    await jest.advanceTimersByTimeAsync(WITHIN_WEBAUTHN_TIMEOUT);
     settle('the-assertion');
 
     await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock.mock.calls[1][5]).toEqual(
+    expect(passkeyReplyPayload()).toEqual(
       expect.objectContaining({
         transactionId: 'tx-1',
         response: 'the-assertion',
       }),
     );
-    expect(nextMock.mock.calls[1][5].failure).toBeUndefined();
+    expect(passkeyReplyPayload().failure).toBeUndefined();
   });
 
   it('drops a result that arrives after the budget expired', async () => {
@@ -168,7 +180,7 @@ describe('webauthn ceremony timeout', () => {
     );
 
     await startCeremony();
-    await jest.advanceTimersByTimeAsync(WEBAUTHN_TIMEOUT + 1000);
+    await jest.advanceTimersByTimeAsync(PAST_WEBAUTHN_TIMEOUT);
     await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
       timeout: WAIT_TIMEOUT,
     });
@@ -195,7 +207,7 @@ describe('webauthn ceremony timeout', () => {
     await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock.mock.calls[1][5]).toEqual(
+    expect(passkeyReplyPayload()).toEqual(
       expect.objectContaining({
         failure: 'NotAllowedError',
         failureReason: 'not_allowed',

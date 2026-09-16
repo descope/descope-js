@@ -63,12 +63,9 @@ export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
 
 export const SDK_SCRIPTS_LOAD_TIMEOUT = 5000;
 
-// Upper bound on a passkey ceremony. Password manager extensions can leave
-// navigator.credentials.get/create pending for minutes after their prompt is
-// dismissed (Bitwarden waits up to 5 minutes for a window focus event before
-// falling back), and there is no signal we can observe. Without this the flow
-// waits forever. Kept long so a slow but genuine ceremony is not cut off - the
-// user's fast way out is the rest of the screen staying usable.
+// Password manager extensions can leave navigator.credentials.get/create
+// pending for minutes after their prompt is dismissed, with no signal we can
+// observe. Long on purpose, so a slow but genuine passkey is not cut off.
 export const WEBAUTHN_TIMEOUT = 90000;
 
 export const DESCOPE_LAST_AUTH_BADGE_COMPONENT =
