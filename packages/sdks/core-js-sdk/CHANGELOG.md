@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.72.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.71.0...core-js-sdk-2.72.0) (2026-09-16)
+
+
+### Features
+
+* **web-component:** track client-side form validation errors RELEASE ([#1482](https://github.com/descope/descope-js/issues/1482)) ([4846b6b](https://github.com/descope/descope-js/commit/4846b6b72a0e1a9e90e2dbe3600ac2d10d5ad675)), closes [descope/etc#15181](https://github.com/descope/etc/issues/15181) [descope/etc#15181](https://github.com/descope/etc/issues/15181)
+
 ## [2.71.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.70.1...core-js-sdk-2.71.0) (2026-09-10)
 
 
