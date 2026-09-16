@@ -4,7 +4,7 @@ import {
   localeMixin,
   initLifecycleMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   cookieConfigMixin,
   themeMixin,
   flowInputMixin,
@@ -19,7 +19,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
     class FlowRedirectUrlMixinClass extends compose(
       localeMixin,
       initLifecycleMixin,
-      modalMixin,
+      flowModalMixin,
       stateManagementMixin,
       cookieConfigMixin,
       loggerMixin,
@@ -41,7 +41,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
         // this modal is auto-opened from a URL param and removes itself on close,
         // so it intentionally does not opt into close-on-outside-click - an
         // accidental tap should not discard the redirect flow
-        const modal = this.createModal({ 'data-id': 'redirect-flow' });
+        const modal = this.createFlowModal({ 'data-id': 'redirect-flow' });
         modal.setContent(this.createFlowTemplate({ flowId: widgetFlow }));
 
         const flow = new FlowDriver(

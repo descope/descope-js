@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getTenantName } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initTenantNameMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       tenantNameDriver: UserAttributeDriver;
@@ -41,7 +41,7 @@ export const initTenantNameMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.tenantNameDriver.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'tenant-profile-set-name',
         });
         this.#editFlow = new FlowDriver(

@@ -25,7 +25,17 @@ export const modalMixin = createSingletonMixin(
         };
       })();
 
-      createModal(config?: Record<string, string>) {
+      // the driver class createModal instantiates - subclass it to build a
+      // modal driver with extra behavior (see flowModalMixin) and hand the
+      // result to createModal
+      get modalDriverClass() {
+        return this.#ModalDriverWrapper;
+      }
+
+      createModal(
+        config?: Record<string, string>,
+        DriverClass: typeof ModalDriver = this.#ModalDriverWrapper,
+      ) {
         const baseConfig = {};
 
         const modal = createModalEle({
@@ -35,7 +45,7 @@ export const modalMixin = createSingletonMixin(
 
         this.rootElement.append(modal);
 
-        return new this.#ModalDriverWrapper(modal, {
+        return new DriverClass(modal, {
           logger: this.logger,
         }) as ModalDriver;
       }

@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getUserBuiltinAttrs } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       // field name (e.g. `givenName`) -> driver wrapping the matching descope-user-attribute
@@ -73,7 +73,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (!editFlowId) return;
 
-        this.#editModals[editFlowId] = this.createModal({
+        this.#editModals[editFlowId] = this.createFlowModal({
           'data-id': `edit-${field}`,
           'close-on-outside-click': 'true',
         });
@@ -100,7 +100,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
         const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
         if (!deleteFlowId) return;
 
-        this.#deleteModals[deleteFlowId] = this.createModal({
+        this.#deleteModals[deleteFlowId] = this.createFlowModal({
           'data-id': `delete-${field}`,
           'close-on-outside-click': 'true',
         });

@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
@@ -30,7 +30,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       // flow Id is key in all maps
@@ -108,7 +108,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       ) {
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (editFlowId) {
-          this.#editModals[editFlowId] = this.createModal({
+          this.#editModals[editFlowId] = this.createFlowModal({
             'data-id': `edit-${customAttrName}`,
             'close-on-outside-click': 'true',
           });
@@ -137,7 +137,7 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       ) {
         const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
         if (deleteFlowId) {
-          this.#deleteModals[deleteFlowId] = this.createModal({
+          this.#deleteModals[deleteFlowId] = this.createFlowModal({
             'data-id': `delete-${customAttrName}`,
             'close-on-outside-click': 'true',
           });
