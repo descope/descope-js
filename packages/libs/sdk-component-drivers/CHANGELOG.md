@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.16.0...sdk-component-drivers-0.17.0) (2026-09-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.10.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
 ## [0.16.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.15.0...sdk-component-drivers-0.16.0) (2026-09-07)
 
 
