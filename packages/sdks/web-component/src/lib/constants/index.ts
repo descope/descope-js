@@ -63,6 +63,11 @@ export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
 
 export const SDK_SCRIPTS_LOAD_TIMEOUT = 5000;
 
+// Password manager extensions can leave navigator.credentials.get/create
+// pending for minutes after their prompt is dismissed, with no signal we can
+// observe. Long on purpose, so a slow but genuine passkey is not cut off.
+export const WEBAUTHN_TIMEOUT = 90000;
+
 export const DESCOPE_LAST_AUTH_BADGE_COMPONENT =
   'descope-attachment[data-type="last-auth-badge"]';
 

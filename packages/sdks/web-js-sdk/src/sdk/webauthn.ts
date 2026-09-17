@@ -130,8 +130,14 @@ const createWebAuthn = (sdk: CoreSdk) => ({
 
 // Helpers functions
 
-async function create(options: string): Promise<string> {
+async function create(
+  options: string,
+  abort?: AbortController,
+): Promise<string> {
   const createOptions = decodeCreateOptions(options);
+  if (abort) {
+    createOptions.signal = abort.signal;
+  }
   try {
     const createResponse = (await navigator.credentials.create(
       createOptions,
@@ -142,8 +148,11 @@ async function create(options: string): Promise<string> {
   }
 }
 
-async function get(options: string): Promise<string> {
+async function get(options: string, abort?: AbortController): Promise<string> {
   const getOptions = decodeGetOptions(options);
+  if (abort) {
+    getOptions.signal = abort.signal;
+  }
   try {
     const getResponse = (await navigator.credentials.get(
       getOptions,
