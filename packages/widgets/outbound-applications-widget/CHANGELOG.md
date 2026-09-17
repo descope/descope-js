@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.1](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.0...outbound-applications-widget-0.7.1) (2026-09-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.1`
 ## [0.7.0](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.6.4...outbound-applications-widget-0.7.0) (2026-09-16)
 
 ### Dependency Updates

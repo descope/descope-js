@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.1](https://github.com/descope/descope-js/compare/web-component-4.4.0...web-component-4.4.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* **web-component:** build SAML IdP form with DOM APIs instead of innerHTML RELEASE ([#1492](https://github.com/descope/descope-js/issues/1492)) ([13368be](https://github.com/descope/descope-js/commit/13368bece41d3c736f5ee721423d806b803d1d0b)), closes [descope/etc#18632](https://github.com/descope/etc/issues/18632)
+
 ## [4.4.0](https://github.com/descope/descope-js/compare/web-component-4.3.4...web-component-4.4.0) (2026-09-16)
 
 ### Dependency Updates
