@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.53.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.1...web-js-sdk-1.53.2) (2026-09-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.73.0`
+
+### Bug Fixes
+
+* **web-component:** recover when a passkey prompt is never answered RELEASE ([#1491](https://github.com/descope/descope-js/issues/1491)) ([e2d2f57](https://github.com/descope/descope-js/commit/e2d2f57612d59be47807eb6f17e7c25330fc4aef)), closes [descope/etc#18538](https://github.com/descope/etc/issues/18538)
+
 ## [1.53.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.0...web-js-sdk-1.53.1) (2026-09-16)
 
 ### Dependency Updates
