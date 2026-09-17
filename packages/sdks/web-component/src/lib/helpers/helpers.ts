@@ -764,15 +764,6 @@ const createHiddenInput = (name: string, value: string, role?: string) => {
   return input;
 };
 
-const createSubmitButton = (id: string) => {
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = id;
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  return submitBtn;
-};
-
 export const injectSamlIdpForm = (
   url: string,
   samlResponse: string,
@@ -789,8 +780,6 @@ export const injectSamlIdpForm = (
   formEle.appendChild(
     createHiddenInput('RelayState', relayState, 'saml-relay-state'),
   );
-
-  formEle.appendChild(createSubmitButton('SAMLSubmitButton'));
 
   document.body.appendChild(formEle);
 
@@ -810,8 +799,6 @@ export const injectWsFedIdpForm = (
   formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
   formEle.appendChild(createHiddenInput('wresult', wresult));
   formEle.appendChild(createHiddenInput('wctx', wctx));
-
-  formEle.appendChild(createSubmitButton('WSFedSubmitButton'));
 
   document.body.appendChild(formEle);
 

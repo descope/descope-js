@@ -82,17 +82,16 @@ describe('web-component', () => {
 
       expect(form).toBeInTheDocument();
 
-      // validate inputs exist
-      const inputSamlResponse = document.querySelector(
-        `form[action="${samlUrl}"] input[role="saml-response"]`,
+      // validate inputs exist and are hidden
+      const inputSamlResponse = form.querySelector(
+        'input[role="saml-response"]',
       );
       expect(inputSamlResponse).toBeInTheDocument();
       expect(inputSamlResponse).not.toBeVisible();
       expect(inputSamlResponse).toHaveValue('saml-response-dummy-value');
 
-      // validate inputs are hidden
-      const inputSamlRelayState = document.querySelector(
-        `form[action="${samlUrl}"] input[role="saml-relay-state"]`,
+      const inputSamlRelayState = form.querySelector(
+        'input[role="saml-relay-state"]',
       );
       expect(inputSamlRelayState).toBeInTheDocument();
       expect(inputSamlRelayState).not.toBeVisible();
@@ -117,7 +116,7 @@ describe('web-component', () => {
 
       // no foreign nodes were created from the markup-shaped values
       expect(form.querySelector('img')).toBeNull();
-      expect(form.children).toHaveLength(3);
+      expect(form.children).toHaveLength(2);
 
       // full values are preserved
       expect(form.querySelector('input[role="saml-response"]')).toHaveValue(
