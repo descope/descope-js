@@ -1021,4 +1021,34 @@ describe('autoRefresh', () => {
       configurable: true,
     });
   });
+
+  it('should catch refresh rejection when the timer fires while offline', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerWarnMock = logger.warn as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60; // 10 minutes from now
+    global.fetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const error = new TypeError('Failed to fetch');
+    jest.spyOn(sdk, 'refresh').mockRejectedValue(error);
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+    timeoutFn();
+
+    await new Promise(process.nextTick);
+
+    expect(loggerWarnMock).toHaveBeenCalledWith(
+      'Automatic session refresh failed',
+      error,
+    );
+  });
 });
