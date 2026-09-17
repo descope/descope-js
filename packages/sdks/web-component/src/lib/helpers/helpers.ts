@@ -750,8 +750,9 @@ export const showFirstScreenOnExecutionInit = (
   !thirdPartyAppStateId &&
   !applicationScopes;
 
-// Use DOM APIs to set values safely - these are server-provided values (raw XML,
-// base64, opaque relay state) that would break innerHTML interpolation
+// DOM APIs only, never innerHTML: these values are attacker-controllable
+// (SAML RelayState), so interpolating them into markup is HTML injection.
+// Do not escape either - they must round-trip byte for byte.
 const createHiddenInput = (name: string, value: string, role?: string) => {
   const input = document.createElement('input');
   input.type = 'hidden';
@@ -761,6 +762,15 @@ const createHiddenInput = (name: string, value: string, role?: string) => {
     input.setAttribute('role', role);
   }
   return input;
+};
+
+const createSubmitButton = (id: string) => {
+  const submitBtn = document.createElement('input');
+  submitBtn.type = 'submit';
+  submitBtn.id = id;
+  submitBtn.value = 'Continue';
+  submitBtn.style.display = 'none';
+  return submitBtn;
 };
 
 export const injectSamlIdpForm = (
@@ -780,12 +790,7 @@ export const injectSamlIdpForm = (
     createHiddenInput('RelayState', relayState, 'saml-relay-state'),
   );
 
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = 'SAMLSubmitButton';
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  formEle.appendChild(submitBtn);
+  formEle.appendChild(createSubmitButton('SAMLSubmitButton'));
 
   document.body.appendChild(formEle);
 
@@ -806,12 +811,7 @@ export const injectWsFedIdpForm = (
   formEle.appendChild(createHiddenInput('wresult', wresult));
   formEle.appendChild(createHiddenInput('wctx', wctx));
 
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = 'WSFedSubmitButton';
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  formEle.appendChild(submitBtn);
+  formEle.appendChild(createSubmitButton('WSFedSubmitButton'));
 
   document.body.appendChild(formEle);
 
