@@ -57,3 +57,13 @@ describe('getSSOConfigurations', () => {
     expect(configs.every((c) => c.authenticationOnly === false)).toBe(true);
   });
 });
+
+// reselect compares input-selector results by identity, so an absent map must come back as the same
+// object each time or the list recomputes on every unrelated store update.
+describe('getSSOConfigurations memoization', () => {
+  it('returns the same array when nothing it reads has changed', () => {
+    const state = buildState(undefined);
+
+    expect(getSSOConfigurations(state)).toBe(getSSOConfigurations(state));
+  });
+});

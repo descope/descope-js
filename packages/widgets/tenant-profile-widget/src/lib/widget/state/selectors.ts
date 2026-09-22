@@ -17,8 +17,15 @@ const DEFAULT_SSO_ID = 'default_ssoid';
 export const getTenantSSOIdToSSOLink = (state: State) =>
   state.tenantAdminLinkSSO.data.ssoIdToLink;
 
+// A stable reference, not a fresh {} per call: reselect compares input-selector results by identity,
+// so allocating here would make getSSOConfigurations recompute on every unrelated store update and
+// hand the multi-SSO driver a new array each time. The absent case is the common one - it is the
+// initial state, and what an older server sends.
+const EMPTY_AUTHENTICATION_ONLY: Record<string, boolean> = {};
+
 export const getTenantSSOIdToAuthenticationOnly = (state: State) =>
-  state.tenantAdminLinkSSO.data.ssoIdToAuthenticationOnly || {};
+  state.tenantAdminLinkSSO.data.ssoIdToAuthenticationOnly ||
+  EMPTY_AUTHENTICATION_ONLY;
 export const getTenantAdminLinkSSOError = (state: State) =>
   state.tenantAdminLinkSSO.error;
 
