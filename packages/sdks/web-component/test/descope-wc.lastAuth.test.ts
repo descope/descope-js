@@ -259,6 +259,26 @@ describe('web-component lastAuth', () => {
         timeout: WAIT_TIMEOUT,
       });
 
+      // wait for the first submit to actually settle before clicking again:
+      // a click while the request is still in flight is ignored as a duplicate.
+      // the submitter is marked loading for the duration of the request, and the
+      // re-rendered screen clears it, so that transition is the settle signal
+      await waitFor(
+        () =>
+          expect(screen.getByShadowText('click a')).toHaveAttribute(
+            'loading',
+            'true',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+      await waitFor(
+        () =>
+          expect(screen.getByShadowText('click a')).not.toHaveAttribute(
+            'loading',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
       // Same screen rendered again, click a different button
       fireEvent.click(screen.getByShadowText('click b'));
 

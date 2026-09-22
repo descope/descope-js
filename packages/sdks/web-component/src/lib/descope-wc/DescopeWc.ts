@@ -1910,6 +1910,7 @@ class DescopeWc extends BaseDescopeWc {
 
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
+      this.#isSubmitting = false;
       submitter.removeAttribute('loading');
       enabledElements.forEach((ele) => {
         ele.removeAttribute('disabled');
@@ -2053,6 +2054,12 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
+  // Guards a second submit while one is in flight. Has to be a plain field
+  // rather than something derived from nextRequestStatus: State.update defers
+  // its subscribers to a setTimeout, so the loading/disabled attributes always
+  // land in a later task than the click that set them off.
+  #isSubmitting = false;
+
   // we are wrapping this function with a leading debounce,
   // to prevent a scenario where we are calling it multiple times
   // this can caused by focusing on a button and pressing enter
@@ -2060,10 +2067,17 @@ class DescopeWc extends BaseDescopeWc {
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn, screenId: string) => {
+      if (this.#isSubmitting) {
+        this.loggerWrapper.debug('Submit already in flight, ignoring');
+        return;
+      }
+
       if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
       ) {
+        this.#isSubmitting = true;
+
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
 
@@ -2086,6 +2100,7 @@ class DescopeWc extends BaseDescopeWc {
 
         const res = await next(submitterId, actionArgs);
 
+        this.#isSubmitting = false;
         this.nextRequestStatus.update({ isLoading: false });
 
         this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
