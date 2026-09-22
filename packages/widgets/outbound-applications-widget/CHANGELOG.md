@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.2...outbound-applications-widget-0.7.3) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.7.2](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.1...outbound-applications-widget-0.7.2) (2026-09-17)
 
 ### Dependency Updates

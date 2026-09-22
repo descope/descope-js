@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.6](https://github.com/descope/descope-js/compare/audit-management-widget-0.9.5...audit-management-widget-0.9.6) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.9.5](https://github.com/descope/descope-js/compare/audit-management-widget-0.9.4...audit-management-widget-0.9.5) (2026-09-17)
 
 ### Dependency Updates

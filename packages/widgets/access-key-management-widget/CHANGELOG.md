@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.6](https://github.com/descope/descope-js/compare/access-key-management-widget-0.10.5...access-key-management-widget-0.10.6) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.10.5](https://github.com/descope/descope-js/compare/access-key-management-widget-0.10.4...access-key-management-widget-0.10.5) (2026-09-17)
 
 ### Dependency Updates
