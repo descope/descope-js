@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.19.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.19.2...user-profile-widget-0.19.3) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.19.2](https://github.com/descope/descope-js/compare/user-profile-widget-0.19.1...user-profile-widget-0.19.2) (2026-09-17)
 
 ### Dependency Updates
