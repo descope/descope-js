@@ -2201,7 +2201,11 @@ class DescopeWc extends BaseDescopeWc {
   // Guards a second submit while one is in flight. Has to be a plain field
   // rather than something derived from nextRequestStatus: State.update defers
   // its subscribers to a setTimeout, so the loading/disabled attributes always
-  // land in a later task than the click that set them off.
+  // land in a later task than the click that set them off. Unlike those
+  // attributes this is instance state, outliving the screen that set it, so it
+  // has to be cleared on every exit path - including a rejected next(), which
+  // happens when a client script fails to load - or later screens render fresh
+  // buttons whose clicks are all silently dropped.
   #isSubmitting = false;
 
   // we are wrapping this function with a leading debounce,
@@ -2222,33 +2226,36 @@ class DescopeWc extends BaseDescopeWc {
       ) {
         this.#isSubmitting = true;
 
-        const submitterId = submitter?.getAttribute('id');
-        this.#trackLastUsed(submitter, submitterId, screenId);
+        try {
+          const submitterId = submitter?.getAttribute('id');
+          this.#trackLastUsed(submitter, submitterId, screenId);
 
-        this.#handleComponentsLoadingState(submitter);
+          this.#handleComponentsLoadingState(submitter);
 
-        const formData = await this.#getFormData();
-        const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+          const formData = await this.#getFormData();
+          const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
-        this.nextRequestStatus.update({ isLoading: true });
+          this.nextRequestStatus.update({ isLoading: true });
 
-        const actionArgs = {
-          ...eleDescopeAttrs,
-          ...formData,
-          // 'origin' is required to start webauthn. For now we'll add it to every request.
-          // When running in a native flow in a Android app the webauthn authentication
-          // is performed in the native app, so a custom origin needs to be injected
-          // into the webauthn request data.
-          origin: this.nativeOptions?.origin || window.location.origin,
-        };
+          const actionArgs = {
+            ...eleDescopeAttrs,
+            ...formData,
+            // 'origin' is required to start webauthn. For now we'll add it to every request.
+            // When running in a native flow in a Android app the webauthn authentication
+            // is performed in the native app, so a custom origin needs to be injected
+            // into the webauthn request data.
+            origin: this.nativeOptions?.origin || window.location.origin,
+          };
 
-        const res = await next(submitterId, actionArgs);
+          const res = await next(submitterId, actionArgs);
 
-        this.#isSubmitting = false;
-        this.nextRequestStatus.update({ isLoading: false });
+          this.nextRequestStatus.update({ isLoading: false });
 
-        this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
-        this.storeCredentials(formData);
+          this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
+          this.storeCredentials(formData);
+        } finally {
+          this.#isSubmitting = false;
+        }
       }
     },
   );
