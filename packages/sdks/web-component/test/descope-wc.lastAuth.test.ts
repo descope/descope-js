@@ -235,8 +235,16 @@ describe('web-component lastAuth', () => {
       startMock.mockReturnValueOnce(
         generateSdkResponse({ screenId: 'screen-1' }),
       );
+      // hold the first next() open until the test releases it, so the in-flight
+      // window is ours rather than a race with how fast the mock resolves
+      let releaseFirstNext: () => void;
+      const firstNext = new Promise<void>((resolve) => {
+        releaseFirstNext = resolve;
+      });
       nextMock
-        .mockReturnValueOnce(generateSdkResponse({ screenId: 'screen-1' }))
+        .mockReturnValueOnce(
+          firstNext.then(() => generateSdkResponse({ screenId: 'screen-1' })),
+        )
         .mockReturnValueOnce(
           generateSdkResponse({
             status: 'completed',
@@ -271,6 +279,9 @@ describe('web-component lastAuth', () => {
           ),
         { timeout: WAIT_TIMEOUT },
       );
+
+      releaseFirstNext();
+
       await waitFor(
         () =>
           expect(screen.getByShadowText('click a')).not.toHaveAttribute(

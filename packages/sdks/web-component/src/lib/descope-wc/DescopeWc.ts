@@ -2035,6 +2035,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
 
+  // Returns a reset for the loading/disabled state, for the error path.
   #handleComponentsLoadingState(submitter: HTMLElement) {
     const enabledElements = Array.from(
       this.contentRootElement.querySelectorAll(
@@ -2052,9 +2053,12 @@ class DescopeWc extends BaseDescopeWc {
     const screenClientScripts =
       this.flowState.current?.screenState?.clientScripts || [];
 
+    // set in the click task - from the subscriber below they land too late
+    submitter.setAttribute('loading', 'true');
+    enabledElements.forEach((ele) => ele.setAttribute('disabled', 'true'));
+
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
-      this.#isSubmitting = false;
       submitter.removeAttribute('loading');
       enabledElements.forEach((ele) => {
         ele.removeAttribute('disabled');
@@ -2139,14 +2143,10 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          // the loading/disabled attributes are already set, at click time
           this.addEventListener('popupclosed', restoreComponentsState, {
             once: true,
           });
-          // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
-          submitter.setAttribute('loading', 'true');
-          enabledElements.forEach((ele) =>
-            ele.setAttribute('disabled', 'true'),
-          );
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
           // If the flow completed successfully, no new screen will render to
@@ -2163,6 +2163,8 @@ class DescopeWc extends BaseDescopeWc {
         }
       },
     );
+
+    return resetComponentsState;
   }
 
   #updateExternalInputs() {
@@ -2198,16 +2200,6 @@ class DescopeWc extends BaseDescopeWc {
     });
   }
 
-  // Guards a second submit while one is in flight. Has to be a plain field
-  // rather than something derived from nextRequestStatus: State.update defers
-  // its subscribers to a setTimeout, so the loading/disabled attributes always
-  // land in a later task than the click that set them off. Unlike those
-  // attributes this is instance state, outliving the screen that set it, so it
-  // has to be cleared on every exit path - including a rejected next(), which
-  // happens when a client script fails to load - or later screens render fresh
-  // buttons whose clicks are all silently dropped.
-  #isSubmitting = false;
-
   // we are wrapping this function with a leading debounce,
   // to prevent a scenario where we are calling it multiple times
   // this can caused by focusing on a button and pressing enter
@@ -2215,7 +2207,12 @@ class DescopeWc extends BaseDescopeWc {
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn, screenId: string) => {
-      if (this.#isSubmitting) {
+      // the components only refuse a repeat via click(), and these attributes
+      // live on the screen, so they also cover the gap after next() resolves
+      if (
+        submitter.getAttribute('loading') === 'true' ||
+        submitter.getAttribute('disabled') === 'true'
+      ) {
         this.loggerWrapper.debug('Submit already in flight, ignoring');
         return;
       }
@@ -2224,14 +2221,14 @@ class DescopeWc extends BaseDescopeWc {
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
       ) {
-        this.#isSubmitting = true;
+        const submitterId = submitter?.getAttribute('id');
+        this.#trackLastUsed(submitter, submitterId, screenId);
 
-        try {
-          const submitterId = submitter?.getAttribute('id');
-          this.#trackLastUsed(submitter, submitterId, screenId);
-
+        // sets the attributes the guard above reads
+        const resetComponentsState =
           this.#handleComponentsLoadingState(submitter);
 
+        try {
           const formData = await this.#getFormData();
           const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
@@ -2253,8 +2250,10 @@ class DescopeWc extends BaseDescopeWc {
 
           this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
           this.storeCredentials(formData);
-        } finally {
-          this.#isSubmitting = false;
+        } catch (e) {
+          // no new screen will render, so clear the loading state here
+          resetComponentsState();
+          throw e;
         }
       }
     },
