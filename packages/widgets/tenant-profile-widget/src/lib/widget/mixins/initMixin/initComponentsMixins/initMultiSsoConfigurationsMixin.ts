@@ -37,6 +37,10 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
 
       #deleteFlow: FlowDriver;
 
+      #editModal: ModalDriver;
+
+      #editFlow: FlowDriver;
+
       #initCreateModal() {
         this.#createModal = this.createFlowModal({
           'data-id': 'multi-sso-create-modal',
@@ -58,6 +62,17 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
           { logger: this.logger },
         );
         this.syncFlowTheme(this.#deleteFlow);
+      }
+
+      #initEditModal() {
+        this.#editModal = this.createFlowModal({
+          'data-id': 'multi-sso-edit-modal',
+        });
+        this.#editFlow = new FlowDriver(
+          () => this.#editModal.ele?.querySelector('descope-wc'),
+          { logger: this.logger },
+        );
+        this.syncFlowTheme(this.#editFlow);
       }
 
       #openCreateModal(createFlowId: string) {
@@ -91,8 +106,34 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
         });
       }
 
+      // The edit flow is handed the configuration it was opened for, and what that configuration is
+      // today, so the Descoper's flow can show the current state rather than guess it.
+      #openEditModal(
+        editFlowId: string,
+        id: string,
+        authenticationOnly?: boolean,
+      ) {
+        this.#editModal.setContent(
+          this.createFlowTemplate({
+            flowId: editFlowId,
+            tenant: this.tenantId,
+            form: {
+              ssoConfigurationId: id,
+              authenticationOnly: !!authenticationOnly,
+            },
+          }),
+        );
+        this.#editModal.open();
+        this.#editFlow.onSuccess(async () => {
+          this.#editModal.close();
+          await this.actions.getTenant();
+          const ssoIds = getAdditionalSSOIds(this.state);
+          await this.actions.getTenantAdminLinkSSO({ ssoIds });
+        });
+      }
+
       #initFlowModals() {
-        const { createFlowId, deleteFlowId } = this.#multiSso;
+        const { createFlowId, deleteFlowId, editFlowId } = this.#multiSso;
 
         if (deleteFlowId) {
           this.#initDeleteModal();
@@ -105,6 +146,13 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
           this.#initCreateModal();
           this.#multiSso.onCreateClicked(() =>
             this.#openCreateModal(createFlowId),
+          );
+        }
+
+        if (editFlowId) {
+          this.#initEditModal();
+          this.#multiSso.onEditClicked(({ id, authenticationOnly }) =>
+            this.#openEditModal(editFlowId, id, authenticationOnly),
           );
         }
       }
