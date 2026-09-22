@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.20.3](https://github.com/descope/descope-js/compare/user-management-widget-0.20.2...user-management-widget-0.20.3) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.20.2](https://github.com/descope/descope-js/compare/user-management-widget-0.20.1...user-management-widget-0.20.2) (2026-09-17)
 
 ### Dependency Updates
