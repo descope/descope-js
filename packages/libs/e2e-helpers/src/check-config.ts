@@ -20,6 +20,8 @@ type WebServerLike = {
 
 type ConfigLike = {
   retries?: number;
+  /** budget for a whole test */
+  timeout?: number;
   /** playwright also accepts a percentage string such as '50%' */
   workers?: number | string;
   expect?: { timeout?: number };
@@ -53,9 +55,27 @@ const checkPlaywrightConfig = (config: ConfigLike, limits: Limits): void => {
 
   // Without this, web-first assertions run on playwright's 5s default, which is
   // too tight for a loaded CI container.
-  if (!config.expect?.timeout) {
+  const expectTimeout = config.expect?.timeout;
+  if (!expectTimeout) {
     throw new Error(
       'playwright config: expect.timeout is not set, so web-first assertions fall back to the 5s default',
+    );
+  }
+
+  // The budget for a whole test has to leave room for the waits inside it.
+  // Playwright's default is 30s, which is the same as the longest single wait
+  // in these specs, so a slow-but-correct wait was killed before it could
+  // succeed and the failure read as "Test timeout" rather than naming the
+  // assertion. Requiring a value larger than expect.timeout is the version of
+  // that rule a config can actually check.
+  if (!config.timeout) {
+    throw new Error(
+      "playwright config: timeout is not set, so a whole test gets playwright's 30s default. A single wait can then use the entire budget and the test dies before the wait can succeed.",
+    );
+  }
+  if (config.timeout <= expectTimeout) {
+    throw new Error(
+      `playwright config: timeout is ${config.timeout}, not above the ${expectTimeout} expect.timeout. One assertion could spend the whole test budget, so the test would fail before the assertion could.`,
     );
   }
 
@@ -78,5 +98,23 @@ const checkPlaywrightConfig = (config: ConfigLike, limits: Limits): void => {
   }
 };
 
-export { checkPlaywrightConfig };
+/**
+ * The jest test every widget wraps around checkPlaywrightConfig. It lives here
+ * so the eight packages do not each carry a copy of the same describe/it.
+ *
+ * Each widget still calls this from its own test file, which is the point: its
+ * playwright.config is then an input to that package's test target, so a config
+ * change cannot be cache-replayed as green.
+ */
+const describePlaywrightConfig = (config: ConfigLike, limits: Limits): void => {
+  describe('playwright config', () => {
+    it('keeps the rules in checkPlaywrightConfig', () => {
+      // These may improve, never regress: retries may go down and workers up,
+      // but not the reverse. Update the numbers in the commit that improves them.
+      expect(() => checkPlaywrightConfig(config, limits)).not.toThrow();
+    });
+  });
+};
+
+export { checkPlaywrightConfig, describePlaywrightConfig };
 export type { Limits, ConfigLike };

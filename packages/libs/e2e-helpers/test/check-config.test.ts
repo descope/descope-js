@@ -1,10 +1,11 @@
 import { checkPlaywrightConfig } from '../src/check-config';
 
-// A guard that cannot fail is worse than no guard, so each invariant is tested
-// from both sides: it passes on a good config and throws on a bad one.
+// A guard that cannot fail is worse than no guard, so each rule is tested from
+// both sides: it passes on a good config and throws on a bad one.
 const validConfig = {
   retries: 2,
   workers: 4,
+  timeout: 60_000,
   expect: { timeout: 15_000 },
   webServer: [
     { command: 'serve components', url: 'http://localhost:3001/umd/index.js' },
@@ -15,7 +16,7 @@ const validConfig = {
 const baseline = { maxRetries: 2, minWorkers: 4 };
 
 describe('checkPlaywrightConfig', () => {
-  it('accepts a config that meets every invariant', () => {
+  it('accepts a config that meets every rule', () => {
     expect(() => checkPlaywrightConfig(validConfig, baseline)).not.toThrow();
   });
 
@@ -57,6 +58,25 @@ describe('checkPlaywrightConfig', () => {
     expect(() => checkPlaywrightConfig(withoutExpect, baseline)).toThrow(
       /expect\.timeout is not set/,
     );
+  });
+
+  it('rejects a missing test timeout', () => {
+    const { timeout: _dropped, ...withoutTimeout } = validConfig;
+    expect(() => checkPlaywrightConfig(withoutTimeout, baseline)).toThrow(
+      /timeout is not set/,
+    );
+  });
+
+  it('rejects a test timeout that does not exceed expect.timeout', () => {
+    expect(() =>
+      checkPlaywrightConfig({ ...validConfig, timeout: 15_000 }, baseline),
+    ).toThrow(/not above the 15000 expect\.timeout/);
+  });
+
+  it('accepts a test timeout just above expect.timeout', () => {
+    expect(() =>
+      checkPlaywrightConfig({ ...validConfig, timeout: 15_001 }, baseline),
+    ).not.toThrow();
   });
 
   it('rejects retries above the baseline', () => {

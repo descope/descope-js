@@ -561,10 +561,14 @@ describe('TelemetryManager Integration', () => {
       const instrumented = averageCallCost((msg) => console.log(msg));
 
       // Deliberately generous. This guards against a plugin that does something
-      // pathological on every call - a sync network write, an unbounded copy -
-      // not against small movements in overhead, which this kind of measurement
-      // cannot tell apart from noise anyway.
-      expect(instrumented).toBeLessThan(baseline * 5 + 1);
+      // pathological on every call, like a sync network write, not against small
+      // movements in overhead that this measurement cannot separate from noise.
+      //
+      // The floor matters: if console.log is ever cheap enough that the baseline
+      // measures near zero, `baseline * 5` collapses and we are back to the flat
+      // 1ms budget that was already failing at 1.6ms on a loaded runner.
+      const budget = Math.max(baseline, 0.5) * 5 + 1;
+      expect(instrumented).toBeLessThan(budget);
     });
 
     it('should throttle DOM mutations effectively', async () => {
