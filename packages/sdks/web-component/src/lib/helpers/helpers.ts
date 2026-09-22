@@ -600,7 +600,13 @@ export const handleAutoFocus = (
   }
 };
 
-export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
+export const handleReportValidityOnBlur = (
+  rootEle: HTMLElement,
+  // Best-effort callback invoked with the input that failed validation on
+  // blur, so callers can track client-side validation errors. Never throws
+  // into the blur handler.
+  onInvalid?: (input: HTMLInputElement) => void,
+) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
     ele.addEventListener('blur', () => {
       const onBlur = () => {
@@ -609,7 +615,10 @@ export const handleReportValidityOnBlur = (rootEle: HTMLElement) => {
         const origFocus = ele.focus;
         // eslint-disable-next-line no-param-reassign
         ele.focus = () => {};
-        ele.reportValidity?.();
+        const valid = ele.reportValidity?.();
+        if (onInvalid && valid === false) {
+          onInvalid(ele);
+        }
         setTimeout(() => {
           // eslint-disable-next-line no-param-reassign
           ele.focus = origFocus;
@@ -741,6 +750,19 @@ export const showFirstScreenOnExecutionInit = (
   !thirdPartyAppStateId &&
   !applicationScopes;
 
+// Use DOM APIs to set values safely - these are server-provided values (raw XML,
+// base64, opaque relay state) that would break innerHTML interpolation
+const createHiddenInput = (name: string, value: string, role?: string) => {
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = name;
+  input.value = value;
+  if (role) {
+    input.setAttribute('role', role);
+  }
+  return input;
+};
+
 export const injectSamlIdpForm = (
   url: string,
   samlResponse: string,
@@ -750,11 +772,20 @@ export const injectSamlIdpForm = (
   const formEle = document.createElement('form');
   formEle.method = 'POST';
   formEle.action = url;
-  formEle.innerHTML = `
-  <input type="hidden" role="saml-response" name="SAMLResponse" value="${samlResponse}" />
-  <input type="hidden" role="saml-relay-state" name="RelayState" value="${relayState}" />
-  <input style="display: none;" id="SAMLSubmitButton" type="submit" value="Continue" />
-  `;
+
+  formEle.appendChild(
+    createHiddenInput('SAMLResponse', samlResponse, 'saml-response'),
+  );
+  formEle.appendChild(
+    createHiddenInput('RelayState', relayState, 'saml-relay-state'),
+  );
+
+  const submitBtn = document.createElement('input');
+  submitBtn.type = 'submit';
+  submitBtn.id = 'SAMLSubmitButton';
+  submitBtn.value = 'Continue';
+  submitBtn.style.display = 'none';
+  formEle.appendChild(submitBtn);
 
   document.body.appendChild(formEle);
 
@@ -770,15 +801,6 @@ export const injectWsFedIdpForm = (
   const formEle = document.createElement('form');
   formEle.method = 'POST';
   formEle.action = url;
-
-  // Use DOM APIs to set values safely — wresult is raw XML that would break innerHTML interpolation
-  const createHiddenInput = (name: string, value: string) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = name;
-    input.value = value;
-    return input;
-  };
 
   formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
   formEle.appendChild(createHiddenInput('wresult', wresult));

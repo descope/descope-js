@@ -1032,6 +1032,85 @@ describe('createFetchLogger', () => {
       expect(response.retries).toBe(3);
     });
 
+    it('should not retry when the request opts out', async () => {
+      // Callers that run their own bounded retry (best-effort telemetry) opt
+      // out, so a single failure is not multiplied by two stacked policies.
+      fetch.mockResolvedValue({
+        ok: false,
+        text: () => 'Error',
+        url: 'http://descope.com/',
+        headers: new Headers({ header: 'header' }),
+        status: 503,
+        statusText: 'Service Unavailable',
+      });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'POST',
+        headers: new Headers({ test: '123' }),
+        disableRetry: true,
+      } as any);
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      // One attempt only, where the same 503 would otherwise cost four.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(503);
+      expect(response.retries).toBeUndefined();
+    });
+
+    it.each(['get', 'delete'] as const)(
+      'should honour disableRetry on %s',
+      async (verb) => {
+        // The option is advertised on every verb's config, so every verb has to
+        // forward it - otherwise it silently does nothing.
+        fetch.mockResolvedValue({
+          ok: false,
+          text: () => 'Error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+        const client = createHttpClient({
+          baseUrl: 'http://descope.com',
+          projectId,
+          fetch,
+        }) as any;
+        const promise = client[verb]('/path', { disableRetry: true });
+        await jest.runAllTimersAsync();
+        await promise;
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it.each(['patch', 'put'] as const)(
+      'should honour disableRetry on %s',
+      async (verb) => {
+        fetch.mockResolvedValue({
+          ok: false,
+          text: () => 'Error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+        const client = createHttpClient({
+          baseUrl: 'http://descope.com',
+          projectId,
+          fetch,
+        }) as any;
+        const promise = client[verb]('/path', {}, { disableRetry: true });
+        await jest.runAllTimersAsync();
+        await promise;
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+      },
+    );
+
     it('should use correct delays: 100ms for first retry, 5000ms for subsequent retries', async () => {
       fetch
         .mockResolvedValueOnce({
