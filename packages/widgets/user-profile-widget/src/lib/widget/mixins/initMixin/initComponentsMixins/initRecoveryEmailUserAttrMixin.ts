@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getVerifiedRecoveryEmail } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initRecoveryEmailUserAttrMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       recoveryEmailUserAttr: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initRecoveryEmailUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.recoveryEmailUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-recovery-email',
           'close-on-outside-click': 'true',
         });
@@ -73,7 +73,7 @@ export const initRecoveryEmailUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.recoveryEmailUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-recovery-email',
           'close-on-outside-click': 'true',
         });

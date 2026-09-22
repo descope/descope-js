@@ -93,6 +93,64 @@ describe('web-component', () => {
       );
     });
 
+    it('should not parse markup-shaped saml idp values as HTML', async () => {
+      const samlUrl = 'http://acs.dummy.com';
+      const maliciousRelayState = '"><img src=x onerror=alert(1)>';
+      const maliciousSamlResponse = '"><input name="submit" value="clobbered">';
+
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          ok: true,
+          executionId: 'e1',
+          action: RESPONSE_ACTIONS.loadForm,
+          samlIdpResponseUrl: samlUrl,
+          samlIdpResponseSamlResponse: maliciousSamlResponse,
+          samlIdpResponseRelayState: maliciousRelayState,
+        }),
+      );
+
+      const mockSubmitForm = jest.spyOn(helpers, 'submitForm');
+      mockSubmitForm.mockImplementation(() => {});
+
+      document.body.innerHTML = `<h1>Custom element test</h1><descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+      const form = (await waitFor(
+        () => {
+          const samlForm = document.querySelector(`form[action="${samlUrl}"]`);
+
+          if (!samlForm) {
+            throw Error();
+          }
+          return samlForm;
+        },
+        {
+          timeout: 8000,
+        },
+      )) as HTMLFormElement;
+
+      // no foreign nodes were created from the markup-shaped values
+      expect(form.querySelector('img')).toBeNull();
+      expect(form.children).toHaveLength(3);
+
+      // full values are preserved
+      expect(form.querySelector('input[role="saml-response"]')).toHaveValue(
+        maliciousSamlResponse,
+      );
+      expect(form.querySelector('input[role="saml-relay-state"]')).toHaveValue(
+        maliciousRelayState,
+      );
+
+      // form.submit is not clobbered by an injected control named "submit"
+      expect(typeof form.submit).toBe('function');
+
+      await waitFor(
+        () => {
+          expect(mockSubmitForm).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 6000 },
+      );
+    });
+
     it('should automatic fill saml idp username in form element', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({

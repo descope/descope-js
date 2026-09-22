@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.2](https://github.com/descope/descope-js/compare/web-component-4.4.1...web-component-4.4.2) (2026-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.2`
+
+### Bug Fixes
+
+* **web-component:** recover when a passkey prompt is never answered RELEASE ([#1491](https://github.com/descope/descope-js/issues/1491)) ([e2d2f57](https://github.com/descope/descope-js/commit/e2d2f57612d59be47807eb6f17e7c25330fc4aef)), closes [descope/etc#18538](https://github.com/descope/etc/issues/18538)
+
+## [4.4.1](https://github.com/descope/descope-js/compare/web-component-4.4.0...web-component-4.4.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* **web-component:** build SAML IdP form with DOM APIs instead of innerHTML RELEASE ([#1492](https://github.com/descope/descope-js/issues/1492)) ([13368be](https://github.com/descope/descope-js/commit/13368bece41d3c736f5ee721423d806b803d1d0b)), closes [descope/etc#18632](https://github.com/descope/etc/issues/18632)
+
+## [4.4.0](https://github.com/descope/descope-js/compare/web-component-4.3.4...web-component-4.4.0) (2026-09-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.10.0`
+* `sdk-mixins` updated to version `0.27.0`
+* `web-js-sdk` updated to version `1.53.1`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+* **web-component:** track client-side form validation errors RELEASE ([#1482](https://github.com/descope/descope-js/issues/1482)) ([4846b6b](https://github.com/descope/descope-js/commit/4846b6b72a0e1a9e90e2dbe3600ac2d10d5ad675)), closes [descope/etc#15181](https://github.com/descope/etc/issues/15181) [descope/etc#15181](https://github.com/descope/etc/issues/15181)
+
+## [4.3.4](https://github.com/descope/descope-js/compare/web-component-4.3.3...web-component-4.3.4) (2026-09-11)
+
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.19 ([#1489](https://github.com/descope/descope-js/issues/1489)) ([c94cd0f](https://github.com/descope/descope-js/commit/c94cd0fb0971e5137f0d18f76b046d5a1f5d2344)), closes [descope/content#2333](https://github.com/descope/content/issues/2333) [descope/descope-js#1487](https://github.com/descope/descope-js/issues/1487)
+
+## [4.3.3](https://github.com/descope/descope-js/compare/web-component-4.3.2...web-component-4.3.3) (2026-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.0`
 ## [4.3.2](https://github.com/descope/descope-js/compare/web-component-4.3.1...web-component-4.3.2) (2026-09-08)
 
 ### Dependency Updates

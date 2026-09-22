@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getTenantSSOExclusions } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       tenantSSOExclusionsDriver: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.tenantSSOExclusionsDriver.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-tenant-sso-exclusions',
         });
         this.#editFlow = new FlowDriver(
@@ -76,7 +76,7 @@ export const initTenantSSOExclusionsMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.tenantSSOExclusionsDriver.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-tenant-sso-exclusions',
         });
         this.#deleteFlow = new FlowDriver(

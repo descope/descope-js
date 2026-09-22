@@ -8,7 +8,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -24,7 +24,7 @@ export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       TenantPasswordPolicyUserAuthMethodDriver: UserAuthMethodDriver;
@@ -36,7 +36,7 @@ export const initTenantPasswordPolicyUserAuthMethodMixin = createSingletonMixin(
       #initModal() {
         if (!this.TenantPasswordPolicyUserAuthMethodDriver.flowId) return;
 
-        this.#modal = this.createModal({
+        this.#modal = this.createFlowModal({
           'data-id': 'password-policy',
         });
         this.#flow = new FlowDriver(

@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.20.2](https://github.com/descope/descope-js/compare/user-management-widget-0.20.1...user-management-widget-0.20.2) (2026-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.2`
+* `web-component` updated to version `4.4.2`
+## [0.20.1](https://github.com/descope/descope-js/compare/user-management-widget-0.20.0...user-management-widget-0.20.1) (2026-09-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.1`
+## [0.20.0](https://github.com/descope/descope-js/compare/user-management-widget-0.19.3...user-management-widget-0.20.0) (2026-09-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.1`
+* `web-component` updated to version `4.4.0`
+* `sdk-helpers` updated to version `0.10.0`
+* `sdk-mixins` updated to version `0.27.0`
+* `sdk-component-drivers` updated to version `0.17.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
+## [0.19.3](https://github.com/descope/descope-js/compare/user-management-widget-0.19.2...user-management-widget-0.19.3) (2026-09-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.3.4`
+## [0.19.2](https://github.com/descope/descope-js/compare/user-management-widget-0.19.1...user-management-widget-0.19.2) (2026-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.0`
+* `web-component` updated to version `4.3.3`
 ## [0.19.1](https://github.com/descope/descope-js/compare/user-management-widget-0.19.0...user-management-widget-0.19.1) (2026-09-08)
 
 ### Dependency Updates

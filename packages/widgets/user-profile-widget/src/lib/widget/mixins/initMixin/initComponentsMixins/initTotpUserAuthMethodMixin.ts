@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -29,7 +29,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       totpUserAuthMethod: UserAuthMethodDriver;
@@ -45,7 +45,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initAddModal() {
         if (!this.totpUserAuthMethod.flowId) return;
 
-        this.#addModal = this.createModal({
+        this.#addModal = this.createFlowModal({
           'data-id': 'totp',
           'close-on-outside-click': 'true',
         });
@@ -71,7 +71,7 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
       #initRemoveTotpModal() {
         if (!this.totpUserAuthMethod.fulfilledFlowId) return;
 
-        this.#removeTotpModal = this.createModal({
+        this.#removeTotpModal = this.createFlowModal({
           'data-id': 'remove-totp',
           'close-on-outside-click': 'true',
         });

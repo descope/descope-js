@@ -7,7 +7,7 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
   localeMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -21,7 +21,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       localeMixin,
       flowSyncThemeMixin,
       stateManagementMixin,
-      modalMixin,
+      flowModalMixin,
       loggerMixin,
       initWidgetRootMixin,
       flowInputMixin,
@@ -54,7 +54,7 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
       }
 
       #initModal() {
-        this.#modal = this.createModal({
+        this.#modal = this.createFlowModal({
           'data-id': 'generic-flow-modal',
           'close-on-outside-click': 'true',
         });
@@ -76,7 +76,13 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
 
       #initModalContent(flowId: string, userId: string) {
         this.#modal.setContent(
-          this.createFlowTemplate({ flowId, client: { userId } }),
+          // this modal is built on click and opened once the flow renders a
+          // page, so the flow has to start before the modal opens
+          this.createFlowTemplate({
+            flowId,
+            client: { userId },
+            lazyStart: false,
+          }),
         );
         const cb = () => this.#onModalNeeded();
         this.#removePageUpdatedCallback = this.#flow.onPageUpdated(cb);

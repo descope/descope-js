@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   themeMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
@@ -31,7 +31,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       loggerMixin,
       cookieConfigMixin,
       initWidgetRootMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       deviceList: DeviceListDriver;
@@ -43,7 +43,7 @@ export const initTrustedDevicesMixin = createSingletonMixin(
       #initModal() {
         if (!this.deviceList.flowId) return;
 
-        this.#modal = this.createModal({
+        this.#modal = this.createFlowModal({
           'data-id': 'untrust-device',
           'close-on-outside-click': 'true',
         });
