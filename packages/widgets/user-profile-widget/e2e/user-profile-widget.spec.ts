@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-  installWidgetReadyProbe,
-  waitForWidgetReady,
-} from '@descope/e2e-helpers';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import { mockUser } from '../test/mocks/mockUser';
 import mockTheme from '../test/mocks/mockTheme';
@@ -19,7 +16,7 @@ test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
     // to finish loading instead of sleeping. Must run before page.goto().
-    await installWidgetReadyProbe(page);
+    await listenForWidgetReady(page);
 
     await page.addInitScript((port) => {
       window.localStorage.setItem(
@@ -228,11 +225,9 @@ test.describe('widget', () => {
         .locator('descope-wc')
         .dispatchEvent('success');
 
-      // Wait for the refresh to actually land before checking the tag.
-      // dispatchEvent('success') only starts getMe(); it does not await it. A
-      // rebuild - the thing this test is guarding against - could only happen
-      // once the new value arrives, so asserting the tag before then would pass
-      // even on a regression. The cleared phone is the proof it arrived.
+      // dispatchEvent('success') only starts getMe(). A rebuild could only
+      // happen once the value arrives, so wait for the cleared phone first -
+      // otherwise the tag check below passes even on a regression.
       await expect(phoneAttr).toHaveAttribute('value', '');
 
       // the open modal keeps its flow (tag intact) - rebuilding it would drop
@@ -563,10 +558,8 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      // This test navigates again, so the readiness wait in beforeEach applied
-      // to the previous document. Without waiting again, toBeHidden() succeeds
-      // simply because the widget has not rendered yet - it would pass even if
-      // the badge were shown once rendering finished.
+      // Navigates again, so the beforeEach readiness wait applied to the old
+      // document. Without this, toBeHidden() passes on an unrendered widget.
       await waitForWidgetReady(page);
 
       const badge = page
@@ -585,10 +578,8 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      // This test navigates again, so the readiness wait in beforeEach applied
-      // to the previous document. Without waiting again, toBeHidden() succeeds
-      // simply because the widget has not rendered yet - it would pass even if
-      // the badge were shown once rendering finished.
+      // Navigates again, so the beforeEach readiness wait applied to the old
+      // document. Without this, toBeHidden() passes on an unrendered widget.
       await waitForWidgetReady(page);
 
       const badge = page
@@ -623,10 +614,8 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      // This test navigates again, so the readiness wait in beforeEach applied
-      // to the previous document. Without waiting again, toBeHidden() succeeds
-      // simply because the widget has not rendered yet - it would pass even if
-      // the badge were shown once rendering finished.
+      // Navigates again, so the beforeEach readiness wait applied to the old
+      // document. Without this, toBeHidden() passes on an unrendered widget.
       await waitForWidgetReady(page);
 
       const badge = page
@@ -645,10 +634,8 @@ test.describe('widget', () => {
       );
 
       await page.goto(`http://localhost:${widgetPort}`);
-      // This test navigates again, so the readiness wait in beforeEach applied
-      // to the previous document. Without waiting again, toBeHidden() succeeds
-      // simply because the widget has not rendered yet - it would pass even if
-      // the badge were shown once rendering finished.
+      // Navigates again, so the beforeEach readiness wait applied to the old
+      // document. Without this, toBeHidden() passes on an unrendered widget.
       await waitForWidgetReady(page);
 
       const badge = page

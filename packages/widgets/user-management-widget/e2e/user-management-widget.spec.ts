@@ -1,8 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import {
-  installWidgetReadyProbe,
-  waitForWidgetReady,
-} from '@descope/e2e-helpers';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import {
   mockUsers,
@@ -39,12 +36,9 @@ const configContent = {
 const apiPath = (prop: 'user' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-// Ceiling for waiting on a user modal to open - deliberately above the global
-// expect timeout. This is NOT a sleep: it returns the moment the modal appears.
-// ModalDriver.open() awaits beforeOpen before setting opened="true", and both
-// the create and edit modals fetch the widget config, the tenant roles and the
-// sub-tenant roles in there, so opening one is several round trips rather than
-// a repaint. Webkit under 4 workers was exceeding the 15s global ceiling.
+// Above the global expect ceiling on purpose: ModalDriver.open() awaits
+// beforeOpen, which fetches the config and both role lists, so opening a user
+// modal is several round trips rather than a repaint.
 const MODAL_OPEN_TIMEOUT = 30_000;
 
 const getTableBodyCellContentLocatorByIndex = async (
@@ -109,7 +103,7 @@ test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
     // to finish loading instead of sleeping. Must run before page.goto().
-    await installWidgetReadyProbe(page);
+    await listenForWidgetReady(page);
 
     await page.addInitScript((port) => {
       window.localStorage.setItem(
@@ -728,10 +722,8 @@ test.describe('widget', () => {
     // focus search input
     await searchInput.focus();
 
-    // fill() is what triggers the search - it fires `input`, and the widget's
-    // handler is debounced by 500ms. Register the wait BEFORE typing: register
-    // it after and the response can land first and never be seen. Pressing
-    // Enter does not help, because the driver listens to `input`, not keys.
+    // Register the wait before typing - fill() fires the `input` the widget
+    // listens on, and a wait registered after it can miss the response.
     const searchResponsePromise = page.waitForResponse(
       (response) =>
         response.url().includes(apiPaths.user.search) &&
@@ -772,10 +764,8 @@ test.describe('widget', () => {
         }),
       });
     });
-    // Dispatch the filter-apply event directly on the descope-filter element —
-    // we don't drive the popover UI in unit-style e2e since the popover's
-    // operator/value combos require multi-step click sequences and the wire
-    // shape is what we want to assert here.
+    // Dispatch filter-apply directly rather than driving the popover UI - the
+    // request shape is what this asserts.
     const filter = page.locator('descope-filter').first();
 
     const searchResponsePromise = page.waitForResponse(
@@ -975,13 +965,10 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
-    // Tested against an error notification on purpose. A success notification
-    // is created with a 3s duration and removes itself, so clicking its close
-    // button races that timer - on a loaded machine the element detaches
-    // mid-click and the click never lands. Error notifications are created with
-    // duration 0 and stay until dismissed, which is what the close button is
-    // supposed to do. The success notification appearing is already covered by
-    // the 'delete users' test above.
+    // Uses an error notification on purpose: a success one self-dismisses
+    // after 3s, so clicking its close button races that timer and the
+    // "closed" assertion would pass on the timer alone. Error notifications
+    // have duration 0. Success is covered by the 'delete users' test.
     await page.route(apiPath('user', 'deleteBatch'), async (route) =>
       route.fulfill({
         status: 400,
@@ -1010,12 +997,9 @@ test.describe('widget', () => {
     // click modal delete button
     await deleteUserModalButton.click();
 
-    // The failed delete raises a notification. Anchor on its close icon by slot
-    // name rather than on a positional getByRole('img').nth(1), which used to
-    // pick whichever image happened to be second on the page. The icon is not a
-    // descendant of descope-notification or of the vaadin card - the component
-    // renders its content into a separate overlay - so it is addressed from the
-    // page.
+    // Address the close icon by slot name, not a positional getByRole('img').
+    // It sits outside descope-notification and the vaadin card, because the
+    // component renders its content into a separate overlay.
     const closeIcon = page.locator('[slot="close"]').last();
     await expect(closeIcon).toBeVisible();
 

@@ -1,8 +1,5 @@
 import { expect, test } from '@playwright/test';
-import {
-  installWidgetReadyProbe,
-  waitForWidgetReady,
-} from '@descope/e2e-helpers';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -27,7 +24,7 @@ test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
     // to finish loading instead of sleeping. Must run before page.goto().
-    await installWidgetReadyProbe(page);
+    await listenForWidgetReady(page);
 
     await page.addInitScript((port) => {
       window.localStorage.setItem(
@@ -273,11 +270,9 @@ test.describe('widget', () => {
       });
     });
 
-    // The widget reads `tenant` lazily (apiMixin's `get tenantId()`), and
-    // `tenant` is NOT in its observedAttributes - only
-    // `allowed-outbound-apps-ids` is. So a tenant set after init never triggers
-    // a refetch. It has to be in place before the widget initializes, which is
-    // how a consumer sets it (an attribute at mount time, as the demo app does).
+    // `tenant` is not in the widget's observedAttributes, so one set after init
+    // never triggers a refetch. It has to be in place before init, which is how
+    // a consumer sets it - an attribute at mount time, as the demo app does.
     test('handle tenant id', async ({ page }) => {
       // this tenant-scoped response is the only one that reports obapp2 as
       // connected, so seeing its effect proves tenantId reached the API

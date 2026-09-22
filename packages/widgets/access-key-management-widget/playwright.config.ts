@@ -24,14 +24,11 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 4 : undefined,
-  /* Budget for a whole test. Playwright's default is 30s, which is the same as
-     the longest single wait in these specs, so a slow-but-correct wait would
-     kill the test before it could succeed. A ceiling, not a delay: a passing
-     test never spends it. */
+  /* Playwright's default is 30s - the same as the longest single wait here, so
+     a slow-but-correct wait would be killed before it could succeed. */
   timeout: process.env.CI ? 60_000 : 30_000,
-  /* Ceiling for web-first assertions. Not a delay: a fast machine returns as
-     soon as the condition holds. Replaces the ad-hoc per-call timeouts that
-     were sprinkled around the specs, and covers slower CI containers. */
+  /* Ceiling for web-first assertions - too tight by default for a loaded CI
+     container. A fast machine still returns as soon as the condition holds. */
   expect: { timeout: 15_000 },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'html' : 'line',
@@ -109,10 +106,9 @@ export default defineConfig({
   webServer: [
     {
       command: `npx serve node_modules/@descope/web-components-ui/dist -p ${componentsPort} -C --no-port-switching`,
-      // Without a url, playwright starts this and moves straight on: the widget
-      // then loads the components bundle from a server that may not be
-      // listening yet, and every descope-* element silently fails to upgrade.
-      // Point it at the actual bundle, not just the root.
+      // Without a url playwright moves straight on, so the widget can load the
+      // components bundle before this server is listening and every descope-*
+      // element silently fails to upgrade. Point at the bundle, not the root.
       url: `http://localhost:${componentsPort}/umd/index.js`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,

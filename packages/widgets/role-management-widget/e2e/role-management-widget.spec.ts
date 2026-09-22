@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-  installWidgetReadyProbe,
-  waitForWidgetReady,
-} from '@descope/e2e-helpers';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -30,7 +27,7 @@ test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
     // to finish loading instead of sleeping. Must run before page.goto().
-    await installWidgetReadyProbe(page);
+    await listenForWidgetReady(page);
 
     await page.addInitScript((port) => {
       window.localStorage.setItem(
@@ -374,13 +371,10 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
-    // Tested against an error notification on purpose. A success notification is
-    // created with a 3s duration and removes itself, so clicking its close button
-    // races that timer - and the "notification closed" assertion would pass on the
-    // timer expiring even if the close button did nothing. Error notifications are
-    // created with duration 0 and stay until dismissed, so closing one is the only
-    // thing that can hide it. The success notification is already covered by the
-    // 'delete roles' test above.
+    // Uses an error notification on purpose: a success one self-dismisses
+    // after 3s, so clicking its close button races that timer and the
+    // "closed" assertion would pass on the timer alone. Error notifications
+    // have duration 0. Success is covered by the 'delete roles' test.
     await page.route(apiPath('role', 'deleteBatch'), async (route) =>
       route.fulfill({
         status: 400,
@@ -406,9 +400,9 @@ test.describe('widget', () => {
     // click modal delete button
     await deleteRoleModalButton.click();
 
-    // The failed delete raises a notification. Anchor on its close icon by slot
-    // name rather than a positional getByRole('img').nth(1), which picked
-    // whichever image happened to be second on the page.
+    // Address the close icon by slot name, not a positional getByRole('img').
+    // It sits outside descope-notification and the vaadin card, because the
+    // component renders its content into a separate overlay.
     const closeIcon = page.locator('[slot="close"]').last();
     await expect(closeIcon).toBeVisible();
 

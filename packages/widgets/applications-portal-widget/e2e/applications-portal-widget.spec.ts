@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-  installWidgetReadyProbe,
-  waitForWidgetReady,
-} from '@descope/e2e-helpers';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -35,7 +32,7 @@ test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
     // Watches for the widget's `ready` event so tests can wait for the widget
     // to finish loading instead of sleeping. Must run before page.goto().
-    await installWidgetReadyProbe(page);
+    await listenForWidgetReady(page);
 
     await page.addInitScript((port) => {
       window.localStorage.setItem(

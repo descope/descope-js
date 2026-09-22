@@ -1,4 +1,4 @@
-import { assertPlaywrightConfigInvariants } from '../src/assert-config';
+import { checkPlaywrightConfig } from '../src/check-config';
 
 // A guard that cannot fail is worse than no guard, so each invariant is tested
 // from both sides: it passes on a good config and throws on a bad one.
@@ -14,16 +14,14 @@ const validConfig = {
 
 const baseline = { maxRetries: 2, minWorkers: 4 };
 
-describe('assertPlaywrightConfigInvariants', () => {
+describe('checkPlaywrightConfig', () => {
   it('accepts a config that meets every invariant', () => {
-    expect(() =>
-      assertPlaywrightConfigInvariants(validConfig, baseline),
-    ).not.toThrow();
+    expect(() => checkPlaywrightConfig(validConfig, baseline)).not.toThrow();
   });
 
   it('accepts a single webServer object rather than an array', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
+      checkPlaywrightConfig(
         { ...validConfig, webServer: { command: 'serve', port: 3002 } },
         baseline,
       ),
@@ -32,7 +30,7 @@ describe('assertPlaywrightConfigInvariants', () => {
 
   it('rejects a webServer with no url or port', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
+      checkPlaywrightConfig(
         {
           ...validConfig,
           webServer: [
@@ -47,7 +45,7 @@ describe('assertPlaywrightConfigInvariants', () => {
 
   it('accepts a webServer that uses port instead of url', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
+      checkPlaywrightConfig(
         { ...validConfig, webServer: [{ command: 'serve', port: 3001 }] },
         baseline,
       ),
@@ -56,51 +54,37 @@ describe('assertPlaywrightConfigInvariants', () => {
 
   it('rejects a missing expect.timeout', () => {
     const { expect: _dropped, ...withoutExpect } = validConfig;
-    expect(() =>
-      assertPlaywrightConfigInvariants(withoutExpect, baseline),
-    ).toThrow(/expect\.timeout is not set/);
+    expect(() => checkPlaywrightConfig(withoutExpect, baseline)).toThrow(
+      /expect\.timeout is not set/,
+    );
   });
 
   it('rejects retries above the baseline', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
-        { ...validConfig, retries: 3 },
-        baseline,
-      ),
+      checkPlaywrightConfig({ ...validConfig, retries: 3 }, baseline),
     ).toThrow(/retries is 3, above the 2/);
   });
 
   it('allows retries below the baseline, so it can only improve', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
-        { ...validConfig, retries: 1 },
-        baseline,
-      ),
+      checkPlaywrightConfig({ ...validConfig, retries: 1 }, baseline),
     ).not.toThrow();
   });
 
   it('rejects workers below the baseline', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
-        { ...validConfig, workers: 1 },
-        baseline,
-      ),
+      checkPlaywrightConfig({ ...validConfig, workers: 1 }, baseline),
     ).toThrow(/workers is 1, below the 4/);
   });
 
   it('allows workers above the baseline', () => {
     expect(() =>
-      assertPlaywrightConfigInvariants(
-        { ...validConfig, workers: 8 },
-        baseline,
-      ),
+      checkPlaywrightConfig({ ...validConfig, workers: 8 }, baseline),
     ).not.toThrow();
   });
 
   it('tolerates an undefined workers (playwright picks its own)', () => {
     const { workers: _dropped, ...withoutWorkers } = validConfig;
-    expect(() =>
-      assertPlaywrightConfigInvariants(withoutWorkers, baseline),
-    ).not.toThrow();
+    expect(() => checkPlaywrightConfig(withoutWorkers, baseline)).not.toThrow();
   });
 });

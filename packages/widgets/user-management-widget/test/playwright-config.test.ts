@@ -4,7 +4,7 @@
  * playwright.config imports @playwright/test, which is node-only, while this
  * package's jest preset is jsdom - hence the environment override above.
  */
-import { assertPlaywrightConfigInvariants } from '@descope/e2e-helpers';
+import { checkPlaywrightConfig } from '@descope/e2e-helpers';
 
 // Seed the ports so importing the config is deterministic: getWidgetTestPorts
 // reuses these when present instead of generating random ones.
@@ -20,7 +20,7 @@ describe('playwright config', () => {
     // not the reverse. Update these numbers in the same commit that improves
     // them. Today's values for this package are retries=1, workers=4.
     expect(() =>
-      assertPlaywrightConfigInvariants(config, {
+      checkPlaywrightConfig(config, {
         maxRetries: 1,
         minWorkers: 4,
       }),
