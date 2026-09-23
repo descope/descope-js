@@ -7,6 +7,40 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
+// Production regions, used to check the SDK resolves each one's host. Only the
+// symbol matters here - it is the part that ends up in a project id and so in
+// the host the SDK derives.
+const FALLBACK_REGIONS = ['use1', 'euc1', 'euw2', 'aps1', 'aps2', 'cac1', 'sae1'];
+
+/**
+ * Regions to check, from the REGIONS env var when CI sets one, else the list
+ * above. Accepts a JSON array of either bare symbols or the region objects
+ * consoleServiceRegions already uses, so whichever shape devops settles on
+ * drops in without touching this file.
+ */
+const regionsUnderTest = (): string[] => {
+  const raw = process.env.REGIONS;
+  if (!raw) return FALLBACK_REGIONS;
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error(
+      `REGIONS must be a JSON array of symbols or region objects, got: ${raw}`,
+    );
+  }
+
+  const symbols = (parsed as unknown[])
+    .map((r) => (typeof r === 'string' ? r : (r as { symbol?: string })?.symbol))
+    .filter((s): s is string => !!s);
+
+  if (symbols.length === 0) {
+    throw new Error(`REGIONS parsed but yielded no region symbols: ${raw}`);
+  }
+  return symbols;
+};
+
 const afterRequestHook = jest.fn();
 
 const projectId = '456';
@@ -464,6 +498,36 @@ describe('httpClient', () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       'https://api.descope.com/1/2/3',
+      expect.anything(),
+    );
+  });
+  it.each(regionsUnderTest())(
+    'should resolve the %s region from the project id',
+    (region) => {
+      const httpClient = createHttpClient({
+        baseUrl: DEFAULT_BASE_API_URL,
+        projectId: `P${region}2aAc4T2V93bddihGEx2Ryhc8e5Z`,
+      });
+
+      httpClient.get('1/2/3', { token: null });
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `https://api.${region}.descope.com/1/2/3`,
+        expect.anything(),
+      );
+    },
+  );
+
+  it('should resolve a region that does not exist', () => {
+    const httpClient = createHttpClient({
+      baseUrl: DEFAULT_BASE_API_URL,
+      projectId: 'Pzz992aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+
+    httpClient.get('1/2/3', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.zz99.descope.com/1/2/3',
       expect.anything(),
     );
   });

@@ -94,6 +94,8 @@ jobs:
 
       - name: Test
         run: pnpm run test
+        env:
+          REGIONS: '["use1", "euc1", "euw2", "aps1", "aps2", "cac1", "sae1"]'
 
       - name: E2E
         run: pnpm nx affected --target test:e2e
