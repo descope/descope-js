@@ -116,12 +116,14 @@ describe('web-component loading state', () => {
     {
       repeatWith: 'a click',
       pageContent: SINGLE_BUTTON,
+      expectedId: 'submit',
       resubmit: () => fireEvent.click(screen.getByShadowText('Authorize')),
     },
     {
       // the impatient second Enter that reproduces on a real consent screen
       repeatWith: 'Enter',
       pageContent: SINGLE_BUTTON,
+      expectedId: 'submit',
       resubmit: () =>
         fireEvent.keyDown(getRootEle(), {
           key: 'Enter',
@@ -133,6 +135,7 @@ describe('web-component loading state', () => {
       // el.click(), the path the Enter handler and the passcode auto-submit take
       repeatWith: 'a programmatic click',
       pageContent: SINGLE_BUTTON,
+      expectedId: 'submit',
       resubmit: () =>
         (screen.getByShadowText('Authorize') as HTMLElement).click(),
     },
@@ -140,11 +143,12 @@ describe('web-component loading state', () => {
       // without a guard this submits Cancel on top of an already-submitted Authorize
       repeatWith: 'a click on a different button',
       pageContent: TWO_BUTTONS,
+      expectedId: 'approve',
       resubmit: () => fireEvent.click(screen.getByShadowText('Cancel')),
     },
   ])(
     'should ignore $repeatWith while the first submit is still in flight',
-    async ({ pageContent, resubmit }) => {
+    async ({ pageContent, resubmit, expectedId }) => {
       jest.useRealTimers();
 
       startMock.mockReturnValue(generateSdkResponse());
@@ -183,13 +187,84 @@ describe('web-component loading state', () => {
       );
 
       expect(nextMock).toHaveBeenCalledTimes(1);
-      // interactionId is the 3rd arg of sdk.flow.next - the one that went
-      // through is Authorize, not whatever landed while it was in flight
-      expect(nextMock.mock.calls[0][2]).toBe(
-        pageContent === TWO_BUTTONS ? 'approve' : 'submit',
+      // the call that went through is the first submit, not whatever landed
+      // while it was in flight
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        expectedId,
+        0,
+        '1.2.3',
+        { origin: 'http://localhost' },
+        false,
       );
     },
   );
+
+  it('should ignore a submit after next() resolves, before the new screen renders', async () => {
+    jest.useRealTimers();
+
+    startMock.mockReturnValue(generateSdkResponse());
+
+    let releaseNext: () => void;
+    const nextSettled = new Promise<void>((resolve) => {
+      releaseNext = resolve;
+    });
+    nextMock.mockReturnValueOnce(
+      nextSettled.then(() => generateSdkResponse({ screenId: 'screen-2' })),
+    );
+
+    fixtures.pageContent = SINGLE_BUTTON;
+    document.body.innerHTML = `<descope-wc flow-id="test-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Test Page'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const debug = spyOnDebug();
+    const button = screen.getByShadowText('Authorize');
+
+    fireEvent.click(button);
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // hold the next screen's content, so once next() resolves the flow parks in
+    // onStepChange with the old screen still mounted - the gap the attributes
+    // exist to cover, and the one a flag cleared on resolve would leave open
+    let releasePage: () => void;
+    fixtures.pageContent = new Promise<string>((resolve) => {
+      releasePage = () => resolve('<span>Second Screen</span>');
+    }) as unknown as string;
+
+    releaseNext();
+    await nextSettled;
+    await pastDebounceWindow();
+
+    // still the old screen, and the response is already in
+    expect(screen.queryByShadowText('Second Screen')).toBeNull();
+    expect(button).toHaveAttribute('loading', 'true');
+
+    fireEvent.click(button);
+
+    await waitFor(
+      () =>
+        expect(debug).toHaveBeenCalledWith(
+          'Submit already in flight, ignoring',
+          '',
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    expect(nextMock).toHaveBeenCalledTimes(1);
+
+    // release the render, to prove the gate was really in the path
+    releasePage();
+    await waitFor(() => screen.getByShadowText('Second Screen'), {
+      timeout: WAIT_TIMEOUT,
+    });
+  });
 
   it('should ignore rapid repeated clicks within the debounce window', async () => {
     jest.useRealTimers();

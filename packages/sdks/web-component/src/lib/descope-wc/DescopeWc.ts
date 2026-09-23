@@ -2053,7 +2053,11 @@ class DescopeWc extends BaseDescopeWc {
     const screenClientScripts =
       this.flowState.current?.screenState?.clientScripts || [];
 
-    // set in the click task - from the subscriber below they land too late
+    // Set in the click task - from the nextRequestStatus subscriber below they
+    // land a task late and a second submit slips through. #handleSubmit reads
+    // them back as its guard: the components only refuse a repeat via click(),
+    // and these live on the screen, so they also cover the gap after next()
+    // resolves, while the old screen is still mounted.
     submitter.setAttribute('loading', 'true');
     enabledElements.forEach((ele) => ele.setAttribute('disabled', 'true'));
 
@@ -2207,8 +2211,6 @@ class DescopeWc extends BaseDescopeWc {
   // it will submit the form once again and we will end up with 2 identical calls for next
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn, screenId: string) => {
-      // the components only refuse a repeat via click(), and these attributes
-      // live on the screen, so they also cover the gap after next() resolves
       if (
         submitter.getAttribute('loading') === 'true' ||
         submitter.getAttribute('disabled') === 'true'
@@ -2224,7 +2226,6 @@ class DescopeWc extends BaseDescopeWc {
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
 
-        // sets the attributes the guard above reads
         const resetComponentsState =
           this.#handleComponentsLoadingState(submitter);
 
