@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.8](https://github.com/descope/descope-js/compare/react-sdk-3.3.7...react-sdk-3.3.8) (2026-09-23)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.4`
+* `tenant-profile-widget` updated to version `0.10.4`
+* `user-management-widget` updated to version `0.20.4`
+* `user-profile-widget` updated to version `0.19.4`
+* `web-component` updated to version `4.4.3`
 ## [3.3.7](https://github.com/descope/descope-js/compare/react-sdk-3.3.6...react-sdk-3.3.7) (2026-09-22)
 
 ### Dependency Updates
