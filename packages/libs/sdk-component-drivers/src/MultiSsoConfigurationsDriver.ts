@@ -12,8 +12,17 @@ type Data = {
 
 type DeleteDetail = { id: string; name: string };
 
-type EditDetail = { id: string; name: string; authenticationOnly?: boolean };
+type EditDetail = { id: string; authenticationOnly?: boolean };
 
+// The edit half of this driver is the contract descope-multi-sso has to honor, and it is written
+// here first because the component lives in another repo. Pinned so the two cannot drift:
+//
+//   - attribute `data-edit-flow-id` - the Descoper's edit flow; absent means render no edit control
+//   - event `edit-clicked`, detail `{ id, authenticationOnly }` - id is the SSO configuration id
+//   - `data[].authenticationOnly` - marks a row as verifying identity only
+//
+// Names, not shapes, are what break silently: a component emitting `editClicked` or sending
+// `configId` would leave the widget looking wired and doing nothing.
 export class MultiSsoConfigurationsDriver extends BaseDriver {
   nodeName = 'descope-multi-sso';
 
